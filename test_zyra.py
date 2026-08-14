@@ -1,4 +1,6 @@
 import tempfile
+import base64
+import json
 import unittest
 from pathlib import Path
 
@@ -32,6 +34,15 @@ class ZyraTests(unittest.TestCase):
         verdict = self.zyra.inspect("publish the release")
         self.assertTrue(verdict.allowed)
         self.assertTrue(verdict.requires_approval)
+
+    def test_hmac_chains_audit_events(self):
+        path = Path(self.tmp.name) / "chained.jsonl"
+        zyra = Zyra(path, audit_key=b"k" * 32)
+        zyra.inspect("first")
+        zyra.inspect("second")
+        events = [json.loads(line) for line in path.read_text().splitlines()]
+        self.assertEqual(events[0]["previous_hmac"], "GENESIS")
+        self.assertEqual(events[1]["previous_hmac"], events[0]["hmac_sha256"])
 
 
 if __name__ == "__main__":

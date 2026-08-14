@@ -13,6 +13,9 @@ from zyra import Zyra
 from foundry_guard import FoundrySecuritySink
 from compliance import ComplianceGate, UserContext
 from auth_gate import ThreeFactorGate, VerifiedIdentity
+from dev_terminal import DevTerminal
+from pathlib import Path
+from astral import AstralConfig, AstralGate
 
 MODEL = "gpt-doug"
 API = "http://127.0.0.1:11434/api/chat"
@@ -65,17 +68,25 @@ def main():
     if not auth.authenticate(getpass.getpass("Google Authenticator code: ").strip()):
         raise SystemExit("3FA ACCESS DENIED: invalid authenticator code")
     try:
+        astral_config = AstralConfig.from_environment(identity)
+        astral = AstralGate(astral_config, auth)
+    except ValueError as error:
+        raise SystemExit(f"ASTRAL FAIL-CLOSED: {error}")
+    try:
         foundry_sink = FoundrySecuritySink.from_environment()
     except ValueError as error:
         raise SystemExit(f"Zyra Foundry configuration rejected: {error}")
-    zyra = Zyra(event_sink=foundry_sink)
-    compliance = ComplianceGate(UserContext.from_environment())
+    zyra = Zyra(event_sink=foundry_sink, audit_key=astral_config.audit_hmac_key)
+    user_context = UserContext.from_environment()
+    compliance = ComplianceGate(user_context)
+    dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
     print(CYAN + ("FOUNDRY // GOVERNANCE BRIDGE ACTIVE" if foundry_sink else "FOUNDRY // BRIDGE DISABLED") + RESET)
     print(CYAN + "COMPLIANCE // " + compliance.status() + RESET)
     print(CYAN + "3FA // " + auth.summary() + RESET)
+    print(CYAN + "ASTRAL // S.AGI × Q // TWO-PERSON CONTROL ACTIVE" + RESET)
     history = []
     while True:
         try:
@@ -92,7 +103,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /compliance  /quit")
+            print("/help  /clear  /mission  /zyra  /compliance  /eureka 369  /quit")
             continue
         if prompt == "/mission":
             print("Build useful things. Protect privacy. Keep humans in command.")
@@ -102,6 +113,15 @@ def main():
             continue
         if prompt == "/compliance":
             print(compliance.status())
+            continue
+        if prompt.lower() in {"eureka 369", "/eureka 369"}:
+            zyra.inspect("EUREKA 369 developer elevation request", "control")
+            fresh_code = getpass.getpass("Developer Google Authenticator code: ").strip()
+            officer_code = getpass.getpass("Security officer Google Authenticator code: ").strip()
+            if not dev_terminal.elevate(fresh_code) or not astral.authorize(fresh_code, officer_code):
+                print("ASTRAL DENIED // developer role plus independent security-officer approval required")
+                continue
+            dev_terminal.run(session_seconds=astral_config.session_seconds, max_commands=astral_config.max_commands)
             continue
         compliance_decision = compliance.inspect(prompt)
         if not compliance_decision.allowed:

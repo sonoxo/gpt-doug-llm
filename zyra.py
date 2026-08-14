@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import hmac
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -43,9 +44,11 @@ class Zyra:
         (re.compile(r"(?i)\b(?:curl|wget|ssh|scp)\b"), "network command"),
     )
 
-    def __init__(self, audit_path: str | Path | None = None, event_sink=None):
+    def __init__(self, audit_path: str | Path | None = None, event_sink=None, audit_key: bytes | None = None):
         self.audit_path = Path(audit_path or Path.home() / ".gpt-doug" / "zyra-audit.jsonl")
         self.event_sink = event_sink
+        self.audit_key = audit_key
+        self._previous_mac = "GENESIS"
 
     def inspect(self, text: str, direction: str = "input") -> Verdict:
         if not isinstance(text, str) or len(text) > 100_000:
@@ -76,6 +79,11 @@ class Zyra:
             "reasons": verdict.reasons,
             "content_sha256": hashlib.sha256(original.encode(errors="replace")).hexdigest(),
         }
+        if self.audit_key:
+            event["previous_hmac"] = self._previous_mac
+            canonical = json.dumps(event, separators=(",", ":"), sort_keys=True).encode()
+            event["hmac_sha256"] = hmac.new(self.audit_key, canonical, hashlib.sha256).hexdigest()
+            self._previous_mac = event["hmac_sha256"]
         try:
             self.audit_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
             with self.audit_path.open("a", encoding="utf-8") as handle:
