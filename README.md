@@ -98,6 +98,26 @@ For production, use a least-privilege OAuth2 client managed by the Foundry admin
 4. Ask before destructive or external actions.
 5. Keep humans in command.
 
+## EUREKA cooperative language
+
+`EUREKA/1.0` is GPT Doug's compact JSON protocol for AI systems helping each other without bypassing controls. It supports six explicit signals: `HELLO`, `PLAN`, `REQUEST`, `EVIDENCE`, `DECISION`, and `HANDOFF`.
+
+Every message includes sender, recipient, purpose, payload, human/service authorization, timestamp, and a unique ID. Messages are limited to 32 KiB and remain subject to Zyra inspection and the compliance gate. EUREKA does not grant tools, permissions, identity, or authority by itself.
+
+```python
+from eureka import EurekaMessage, Signal
+
+message = EurekaMessage.create(
+    Signal.REQUEST,
+    sender="gpt-doug",
+    recipient="review-agent",
+    purpose="review a proposed patch",
+    payload={"commit": "abc123"},
+    authorized_by="project-owner",
+)
+print(message.to_json())
+```
+
 ## License
 
 MIT. GPT Doug is an independent open-source project.
