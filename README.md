@@ -118,6 +118,17 @@ message = EurekaMessage.create(
 print(message.to_json())
 ```
 
+## EUREKA 369 Dev Terminal
+
+Enter `/eureka 369` inside GPT Doug to request a constrained developer session. The phrase is not a password and grants nothing by itself. Elevation requires:
+
+- successful startup 3FA;
+- `GPT_DOUG_ROLE=developer` or `GPT_DOUG_ROLE=admin`;
+- a fresh Google Authenticator code;
+- a Zyra audit event.
+
+The terminal supports only `status`, `test`, `audit`, `config`, `help`, and `exit`. It has no arbitrary shell, code evaluation, file mutation, secret display, network operation, permission change, or security-control bypass.
+
 ## License
 
 MIT. GPT Doug is an independent open-source project.

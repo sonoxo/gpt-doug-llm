@@ -13,6 +13,8 @@ from zyra import Zyra
 from foundry_guard import FoundrySecuritySink
 from compliance import ComplianceGate, UserContext
 from auth_gate import ThreeFactorGate, VerifiedIdentity
+from dev_terminal import DevTerminal
+from pathlib import Path
 
 MODEL = "gpt-doug"
 API = "http://127.0.0.1:11434/api/chat"
@@ -69,7 +71,9 @@ def main():
     except ValueError as error:
         raise SystemExit(f"Zyra Foundry configuration rejected: {error}")
     zyra = Zyra(event_sink=foundry_sink)
-    compliance = ComplianceGate(UserContext.from_environment())
+    user_context = UserContext.from_environment()
+    compliance = ComplianceGate(user_context)
+    dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -92,7 +96,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /compliance  /quit")
+            print("/help  /clear  /mission  /zyra  /compliance  /eureka 369  /quit")
             continue
         if prompt == "/mission":
             print("Build useful things. Protect privacy. Keep humans in command.")
@@ -102,6 +106,14 @@ def main():
             continue
         if prompt == "/compliance":
             print(compliance.status())
+            continue
+        if prompt.lower() in {"eureka 369", "/eureka 369"}:
+            zyra.inspect("EUREKA 369 developer elevation request", "control")
+            fresh_code = getpass.getpass("Fresh Google Authenticator code: ").strip()
+            if not dev_terminal.elevate(fresh_code):
+                print("EUREKA 369 DENIED // authorized developer/admin role and fresh 3FA required")
+                continue
+            dev_terminal.run()
             continue
         compliance_decision = compliance.inspect(prompt)
         if not compliance_decision.allowed:
