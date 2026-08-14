@@ -7,6 +7,12 @@ import subprocess
 import sys
 import urllib.error
 import urllib.request
+import getpass
+
+from zyra import Zyra
+from foundry_guard import FoundrySecuritySink
+from compliance import ComplianceGate, UserContext
+from auth_gate import ThreeFactorGate, VerifiedIdentity
 
 MODEL = "gpt-doug"
 API = "http://127.0.0.1:11434/api/chat"
@@ -42,8 +48,7 @@ def chat(messages):
                 event = json.loads(line)
                 token = event.get("message", {}).get("content", "")
                 answer += token
-                print(token, end="", flush=True)
-            print()
+                # Buffer the answer so Zyra can inspect it before display.
             return answer
     except urllib.error.URLError as error:
         print(f"Unable to reach Ollama: {error}")
@@ -52,8 +57,25 @@ def chat(messages):
 
 def main():
     ensure_runtime()
+    try:
+        identity = VerifiedIdentity.from_environment()
+    except ValueError as error:
+        raise SystemExit(f"3FA ACCESS DENIED: {error}")
+    auth = ThreeFactorGate(identity)
+    if not auth.authenticate(getpass.getpass("Google Authenticator code: ").strip()):
+        raise SystemExit("3FA ACCESS DENIED: invalid authenticator code")
+    try:
+        foundry_sink = FoundrySecuritySink.from_environment()
+    except ValueError as error:
+        raise SystemExit(f"Zyra Foundry configuration rejected: {error}")
+    zyra = Zyra(event_sink=foundry_sink)
+    compliance = ComplianceGate(UserContext.from_environment())
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
+    print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
+    print(CYAN + ("FOUNDRY // GOVERNANCE BRIDGE ACTIVE" if foundry_sink else "FOUNDRY // BRIDGE DISABLED") + RESET)
+    print(CYAN + "COMPLIANCE // " + compliance.status() + RESET)
+    print(CYAN + "3FA // " + auth.summary() + RESET)
     history = []
     while True:
         try:
@@ -70,16 +92,43 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /quit")
+            print("/help  /clear  /mission  /zyra  /compliance  /quit")
             continue
         if prompt == "/mission":
             print("Build useful things. Protect privacy. Keep humans in command.")
             continue
-        history.append({"role": "user", "content": prompt})
+        if prompt == "/zyra":
+            print(zyra.status())
+            continue
+        if prompt == "/compliance":
+            print(compliance.status())
+            continue
+        compliance_decision = compliance.inspect(prompt)
+        if not compliance_decision.allowed:
+            print("COMPLIANCE BLOCKED // " + compliance_decision.reason)
+            continue
+        if compliance_decision.requires_review:
+            review = input("HUMAN REVIEW REQUIRED // approve this request? [y/N] ").strip().lower()
+            if review not in {"y", "yes"}:
+                print("Request cancelled.")
+                continue
+        verdict = zyra.inspect(prompt, "input")
+        if not verdict.allowed:
+            print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
+            continue
+        if verdict.requires_approval:
+            answer = input("ZYRA APPROVAL REQUIRED // continue? [y/N] ").strip().lower()
+            if answer not in {"y", "yes"}:
+                print("Action cancelled.")
+                continue
+        history.append({"role": "user", "content": verdict.text})
         print(GREEN + "doug > " + RESET, end="")
         answer = chat(history)
         if answer:
-            history.append({"role": "assistant", "content": answer})
+            output_verdict = zyra.inspect(answer, "output")
+            print(output_verdict.text)
+            if output_verdict.text != answer: print("ZYRA NOTICE // sensitive output was redacted")
+            history.append({"role": "assistant", "content": output_verdict.text})
 
 
 if __name__ == "__main__":
