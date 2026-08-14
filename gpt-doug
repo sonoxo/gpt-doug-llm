@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Minimal local terminal client for the GPT Doug Ollama model."""
+
+import json
+import shutil
+import subprocess
+import sys
+import urllib.error
+import urllib.request
+
+MODEL = "gpt-doug"
+API = "http://127.0.0.1:11434/api/chat"
+GREEN = "\033[38;5;154m"
+CYAN = "\033[38;5;51m"
+RESET = "\033[0m"
+
+BANNER = r"""
+   ██████╗ ██████╗ ████████╗    ██████╗  ██████╗ ██╗   ██╗ ██████╗
+  ██╔════╝ ██╔══██╗╚══██╔══╝    ██╔══██╗██╔═══██╗██║   ██║██╔════╝
+  ██║  ███╗██████╔╝   ██║       ██║  ██║██║   ██║██║   ██║██║  ███╗
+  ╚██████╔╝██║        ██║       ██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝
+   ╚═════╝ ╚═╝        ╚═╝       ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝
+"""
+
+
+def ensure_runtime():
+    if not shutil.which("ollama"):
+        raise SystemExit("Ollama is not installed. Visit https://ollama.com")
+    try:
+        urllib.request.urlopen("http://127.0.0.1:11434", timeout=1)
+    except Exception:
+        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def chat(messages):
+    body = json.dumps({"model": MODEL, "messages": messages, "stream": True}).encode()
+    request = urllib.request.Request(API, body, {"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(request, timeout=300) as response:
+            answer = ""
+            for line in response:
+                event = json.loads(line)
+                token = event.get("message", {}).get("content", "")
+                answer += token
+                print(token, end="", flush=True)
+            print()
+            return answer
+    except urllib.error.URLError as error:
+        print(f"Unable to reach Ollama: {error}")
+        return ""
+
+
+def main():
+    ensure_runtime()
+    print(CYAN + BANNER + RESET)
+    print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
+    history = []
+    while True:
+        try:
+            prompt = input("\nyou > ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nSignal closed.")
+            return
+        if not prompt:
+            continue
+        if prompt == "/quit":
+            return
+        if prompt == "/clear":
+            history.clear()
+            print("Memory cleared.")
+            continue
+        if prompt == "/help":
+            print("/help  /clear  /mission  /quit")
+            continue
+        if prompt == "/mission":
+            print("Build useful things. Protect privacy. Keep humans in command.")
+            continue
+        history.append({"role": "user", "content": prompt})
+        print(GREEN + "doug > " + RESET, end="")
+        answer = chat(history)
+        if answer:
+            history.append({"role": "assistant", "content": answer})
+
+
+if __name__ == "__main__":
+    main()
