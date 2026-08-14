@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from auth_gate import ThreeFactorGate
@@ -62,15 +63,21 @@ class DevTerminal:
             return "EXIT"
         return "DENIED // command is not allowlisted. Type help."
 
-    def run(self, input_fn=input, output_fn=print) -> None:
-        output_fn("EUREKA 369 // CONSTRAINED DEV TERMINAL // NO SHELL ACCESS")
+    def run(self, input_fn=input, output_fn=print, session_seconds: int = 300, max_commands: int = 20) -> None:
+        output_fn("ASTRAL // EUREKA 369 // TWO-PERSON DEV TERMINAL // NO SHELL ACCESS")
+        deadline = time.monotonic() + min(session_seconds, 300)
+        commands = 0
         while True:
+            if time.monotonic() >= deadline or commands >= min(max_commands, 20):
+                output_fn("ASTRAL SESSION EXPIRED // re-authentication required")
+                return
             try:
                 command = input_fn("e369 > ")
             except (EOFError, KeyboardInterrupt):
                 output_fn("Developer session closed.")
                 return
             result = self.execute(command)
+            commands += 1
             if result == "EXIT":
                 output_fn("Developer session closed.")
                 return

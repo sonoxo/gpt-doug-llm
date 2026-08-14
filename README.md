@@ -129,6 +129,19 @@ Enter `/eureka 369` inside GPT Doug to request a constrained developer session. 
 
 The terminal supports only `status`, `test`, `audit`, `config`, `help`, and `exit`. It has no arbitrary shell, code evaluation, file mutation, secret display, network operation, permission change, or security-control bypass.
 
+### ASTRAL — S.AGI × Q
+
+ASTRAL is the fail-closed high-assurance layer above EUREKA 369. It requires an independent security officer with a separate business identity, phone, and Google Authenticator secret; enforces two-person approval; caps elevated sessions at five minutes and 20 commands; locks authorization after repeated failures; and HMAC-chains Zyra audit records using a key of at least 256 bits.
+
+```bash
+export ASTRAL_SECURITY_OFFICER_EMAIL="security@example.com"
+export ASTRAL_SECURITY_OFFICER_PHONE="+12125550124"
+export ASTRAL_SECURITY_OFFICER_TOTP_SECRET="SEPARATEBASE32SECRET"
+export ASTRAL_AUDIT_HMAC_KEY="$(openssl rand -base64 32)"
+```
+
+Store these values in a managed secret store—not source code or shell history. ASTRAL is an unclassified engineering baseline, not a Top Secret accreditation, clearance, authorization to operate, or substitute for an accredited government environment.
+
 ## License
 
 MIT. GPT Doug is an independent open-source project.
