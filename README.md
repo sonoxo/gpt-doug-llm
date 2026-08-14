@@ -14,8 +14,12 @@ Zyra is an always-on, deterministic defense layer between the user and model. It
 - requires confirmation for publishing, deletion, transfers, purchases, and network commands;
 - writes content-free audit events containing timestamps, verdicts, reasons, and SHA-256 hashes;
 - stores its local audit log with owner-only permissions at `~/.gpt-doug/zyra-audit.jsonl`.
+- versions policy decisions with stable control IDs and unique event IDs;
+- HMAC-chains audit records and fails closed if required local evidence cannot be written;
+- generates content-free, machine-readable review evidence with `./security_review.py`.
 
 Zyra provides defense in depth. It does not replace operating-system sandboxing, least-privilege credentials, dependency scanning, or professional security review.
+See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the control inventory, evidence procedure, and residual risks.
 
 ## Compliance gate
 
@@ -127,7 +131,9 @@ Enter `/eureka 369` inside GPT Doug to request a constrained developer session. 
 - a fresh Google Authenticator code;
 - a Zyra audit event.
 
-The terminal supports only `status`, `test`, `audit`, `config`, `help`, and `exit`. It has no arbitrary shell, code evaluation, file mutation, secret display, network operation, permission change, or security-control bypass.
+The terminal supports only `status`, `audit`, `config`, `help`, and `exit`. It has no arbitrary shell, test discovery, code evaluation, file mutation, secret display, network operation, permission change, or security-control bypass.
+
+Security secrets are loaded directly from the operating-system secret store. macOS uses Keychain; environment-secret fallback is rejected unless explicitly enabled for non-production development. Child processes are never given privileged diagnostic access.
 
 ### ASTRAL — S.AGI × Q
 

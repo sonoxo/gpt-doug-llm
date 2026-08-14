@@ -2,6 +2,7 @@
 """Minimal local terminal client for the GPT Doug Ollama model."""
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -16,6 +17,7 @@ from auth_gate import ThreeFactorGate, VerifiedIdentity
 from dev_terminal import DevTerminal
 from pathlib import Path
 from astral import AstralConfig, AstralGate
+from secret_store import SecretStore
 
 MODEL = "gpt-doug"
 API = "http://127.0.0.1:11434/api/chat"
@@ -61,6 +63,11 @@ def chat(messages):
 def main():
     ensure_runtime()
     try:
+        developer_account = os.getenv("GPT_DOUG_VERIFIED_BUSINESS_EMAIL", "").strip()
+        officer_account = os.getenv("ASTRAL_SECURITY_OFFICER_EMAIL", "").strip()
+        os.environ["GPT_DOUG_TOTP_SECRET"] = SecretStore.get("developer_totp", developer_account)
+        os.environ["ASTRAL_SECURITY_OFFICER_TOTP_SECRET"] = SecretStore.get("officer_totp", officer_account)
+        os.environ["ASTRAL_AUDIT_HMAC_KEY"] = SecretStore.get("audit_hmac", developer_account)
         identity = VerifiedIdentity.from_environment()
     except ValueError as error:
         raise SystemExit(f"3FA ACCESS DENIED: {error}")
@@ -69,9 +76,13 @@ def main():
         raise SystemExit("3FA ACCESS DENIED: invalid authenticator code")
     try:
         astral_config = AstralConfig.from_environment(identity)
-        astral = AstralGate(astral_config, auth)
     except ValueError as error:
         raise SystemExit(f"ASTRAL FAIL-CLOSED: {error}")
+    finally:
+        os.environ.pop("GPT_DOUG_TOTP_SECRET", None)
+        os.environ.pop("ASTRAL_SECURITY_OFFICER_TOTP_SECRET", None)
+        os.environ.pop("ASTRAL_AUDIT_HMAC_KEY", None)
+    astral = AstralGate(astral_config, auth)
     try:
         foundry_sink = FoundrySecuritySink.from_environment()
     except ValueError as error:

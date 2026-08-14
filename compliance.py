@@ -9,6 +9,7 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
+from security_text import normalize_security_text
 
 
 @dataclass(frozen=True)
@@ -47,7 +48,8 @@ class ComplianceGate:
     """
 
     PROHIBITED = (
-        (re.compile(r"(?i)\b(?:autonomous|automated)\b.{0,35}\b(?:weapon|targeting|lethal|combat)\b"), "autonomous weapons or targeting"),
+        (re.compile(r"(?i)\b(?:autonom\w*|automat\w*)\b.{0,50}\b(?:weapon|target\w*|lethal|combat|drone)\b"), "autonomous weapons or targeting"),
+        (re.compile(r"(?i)\b(?:weapon|drone)\b.{0,50}\b(?:target selection|targeting)\b"), "autonomous weapons or targeting"),
         (re.compile(r"(?i)\b(?:social scoring|citizen score)\b"), "social scoring"),
         (re.compile(r"(?i)\b(?:infer|classify|rank)\b.{0,40}\b(?:race|religion|sexual orientation|disability|ethnicity)\b"), "protected-trait inference"),
         (re.compile(r"(?i)\b(?:deepfake|impersonate)\b.{0,30}\b(?:official|election|candidate)\b"), "deceptive civic impersonation"),
@@ -59,6 +61,7 @@ class ComplianceGate:
         self.context = context
 
     def inspect(self, text: str) -> ComplianceDecision:
+        text = normalize_security_text(text)
         for pattern, label in self.PROHIBITED:
             if pattern.search(text):
                 return ComplianceDecision(False, f"prohibited use: {label}")
