@@ -60,6 +60,34 @@ def chat(messages):
         return ""
 
 
+DEEP_THINK_CRITIQUE_PROMPT = (
+    "Review your previous answer for factual errors, gaps, or unstated assumptions. "
+    "Then give a corrected, final answer only — no meta-commentary about the review itself."
+)
+
+
+def deep_think_chat(history, zyra):
+    """Draft -> self-critique -> revise. Every intermediate pass is still
+    audited through Zyra, same as a normal single-pass reply — depth of
+    reasoning never reduces the number of safety checks."""
+    draft = chat(history)
+    if not draft:
+        return "", []
+    passes = [zyra.inspect(draft, "output")]
+    if not passes[0].allowed:
+        return passes[0].text, passes
+
+    critique_history = history + [
+        {"role": "assistant", "content": passes[0].text},
+        {"role": "user", "content": DEEP_THINK_CRITIQUE_PROMPT},
+    ]
+    revised = chat(critique_history)
+    if not revised:
+        return passes[0].text, passes
+    passes.append(zyra.inspect(revised, "output"))
+    return passes[-1].text, passes
+
+
 def main():
     ensure_runtime()
     try:
@@ -91,6 +119,7 @@ def main():
     user_context = UserContext.from_environment()
     compliance = ComplianceGate(user_context)
     dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
+    deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -98,6 +127,7 @@ def main():
     print(CYAN + "COMPLIANCE // " + compliance.status() + RESET)
     print(CYAN + "3FA // " + auth.summary() + RESET)
     print(CYAN + "ASTRAL // S.AGI × Q // TWO-PERSON CONTROL ACTIVE" + RESET)
+    print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
     history = []
     while True:
         try:
@@ -114,7 +144,11 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /compliance  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /compliance  /deepthink  /eureka 369  /quit")
+            continue
+        if prompt == "/deepthink":
+            deep_think = not deep_think
+            print(f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'}")
             continue
         if prompt == "/mission":
             print("Build useful things. Protect privacy. Keep humans in command.")
@@ -153,13 +187,21 @@ def main():
                 print("Action cancelled.")
                 continue
         history.append({"role": "user", "content": verdict.text})
-        print(GREEN + "doug > " + RESET, end="")
-        answer = chat(history)
-        if answer:
-            output_verdict = zyra.inspect(answer, "output")
-            print(output_verdict.text)
-            if output_verdict.text != answer: print("ZYRA NOTICE // sensitive output was redacted")
-            history.append({"role": "assistant", "content": output_verdict.text})
+        print(GREEN + ("doug (deep think) > " if deep_think else "doug > ") + RESET, end="")
+        if deep_think:
+            final_text, think_passes = deep_think_chat(history, zyra)
+            print(final_text)
+            if len(think_passes) > 1 and think_passes[0].text != think_passes[-1].text:
+                print("DEEP THINK // revised after self-critique")
+            if final_text:
+                history.append({"role": "assistant", "content": final_text})
+        else:
+            answer = chat(history)
+            if answer:
+                output_verdict = zyra.inspect(answer, "output")
+                print(output_verdict.text)
+                if output_verdict.text != answer: print("ZYRA NOTICE // sensitive output was redacted")
+                history.append({"role": "assistant", "content": output_verdict.text})
 
 
 if __name__ == "__main__":
