@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
-# License (see repository LICENSE). Part of the "Doug", "Zyra", and
-# "Xuniaverse" project — first authored 2026-08-14.
 """
 Xuni Agent daemon (Doug Mode task runner).
 
@@ -15,7 +12,9 @@ Task file format:
 import json
 import shutil
 import subprocess
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import sys
@@ -24,6 +23,7 @@ import zyra_guard
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
+CLAIMED_DIR = ROOT / "xuni-workers" / "claimed"
 PROCESSED_DIR = ROOT / "xuni-workers" / "processed"
 RESULTS_DIR = ROOT / "xuni-workers" / "results"
 CONTEXT_LOG = ROOT / "xuni-workers" / "live" / "context.jsonl"
@@ -31,6 +31,13 @@ KNOWLEDGE_DIR = ROOT / "xuni-workers" / "knowledge"
 CONTEXT_WINDOW = 5
 KNOWLEDGE_MATCHES = 3
 POLL_SECONDS = 0.5
+WORKER_COUNT = 4
+
+# Each claude -p dispatch is I/O-bound (waiting on a subprocess), so a
+# thread pool gives real concurrency without needing multiprocessing.
+# CONTEXT_LOG appends must stay serialized across threads, or two workers
+# finishing at once could interleave/corrupt writes to the same file.
+_context_lock = threading.Lock()
 
 
 def _load_knowledge() -> list:
@@ -122,8 +129,9 @@ def _explain(result: dict) -> str:
 def _append_context(task_id: str, prompt: str, result: dict):
     CONTEXT_LOG.parent.mkdir(parents=True, exist_ok=True)
     record = {"id": task_id, "prompt": prompt, "stdout": result.get("stdout"), "error": result.get("error")}
-    with CONTEXT_LOG.open("a") as f:
-        f.write(json.dumps(record) + "\n")
+    with _context_lock:
+        with CONTEXT_LOG.open("a") as f:
+            f.write(json.dumps(record) + "\n")
 
 # launchd runs this daemon with a minimal PATH that doesn't include the
 # interactive shell's PATH, so a bare "claude" lookup fails even though it
@@ -145,8 +153,21 @@ def _resolve_claude_bin() -> str:
 
 CLAUDE_BIN = _resolve_claude_bin()
 
-for d in (TASKS_DIR, PROCESSED_DIR, RESULTS_DIR):
+for d in (TASKS_DIR, CLAIMED_DIR, PROCESSED_DIR, RESULTS_DIR):
     d.mkdir(parents=True, exist_ok=True)
+
+
+def claim_task(task_path: Path):
+    """Atomically move a task file from tasks/ to claimed/ so exactly one
+    worker thread ever picks it up, even if two threads glob the tasks
+    directory in the same instant. Returns the new path, or None if
+    another worker already claimed it first (a real, expected race)."""
+    claimed_path = CLAIMED_DIR / task_path.name
+    try:
+        task_path.rename(claimed_path)
+        return claimed_path
+    except FileNotFoundError:
+        return None
 
 
 def run_task(task_path: Path):
@@ -235,18 +256,25 @@ def run_task(task_path: Path):
     task_path.rename(PROCESSED_DIR / task_path.name)
 
 
+def _run_claimed(claimed_path: Path):
+    try:
+        run_task(claimed_path)
+    except Exception as e:
+        # Never let one bad task file kill a worker thread.
+        print(f"[error] unhandled failure on {claimed_path.name}: {e}", flush=True)
+        if claimed_path.exists():
+            claimed_path.rename(PROCESSED_DIR / claimed_path.name)
+
+
 def main():
-    print("xuni agent daemon started, watching", TASKS_DIR, flush=True)
-    while True:
-        for task_path in sorted(TASKS_DIR.glob("*.json")):
-            try:
-                run_task(task_path)
-            except Exception as e:
-                # Never let one bad task file kill the daemon loop.
-                print(f"[error] unhandled failure on {task_path.name}: {e}", flush=True)
-                if task_path.exists():
-                    task_path.rename(PROCESSED_DIR / task_path.name)
-        time.sleep(POLL_SECONDS)
+    print(f"xuni agent daemon started, watching {TASKS_DIR} with {WORKER_COUNT} workers", flush=True)
+    with ThreadPoolExecutor(max_workers=WORKER_COUNT) as pool:
+        while True:
+            for task_path in sorted(TASKS_DIR.glob("*.json")):
+                claimed_path = claim_task(task_path)
+                if claimed_path is not None:
+                    pool.submit(_run_claimed, claimed_path)
+            time.sleep(POLL_SECONDS)
 
 
 if __name__ == "__main__":
