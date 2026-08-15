@@ -5,15 +5,19 @@ on:
     paths:
       - "xuniaverse-production/xuni-workers/zyra_guard.py"
       - "xuniaverse-production/xuni-workers/ontology.py"
+      - "xuniaverse-production/xuni-workers/agent-daemon.py"
       - "xuniaverse-production/xuni-workers/test_zyra_guard.py"
       - "xuniaverse-production/xuni-workers/test_ontology.py"
+      - "xuniaverse-production/xuni-workers/test_agent_daemon.py"
       - ".github/workflows/zyra-tests.yml"
   pull_request:
     paths:
       - "xuniaverse-production/xuni-workers/zyra_guard.py"
       - "xuniaverse-production/xuni-workers/ontology.py"
+      - "xuniaverse-production/xuni-workers/agent-daemon.py"
       - "xuniaverse-production/xuni-workers/test_zyra_guard.py"
       - "xuniaverse-production/xuni-workers/test_ontology.py"
+      - "xuniaverse-production/xuni-workers/test_agent_daemon.py"
 
 jobs:
   test:
@@ -27,3 +31,5 @@ jobs:
         run: python3 xuniaverse-production/xuni-workers/test_zyra_guard.py
       - name: Run ontology regression suite
         run: python3 xuniaverse-production/xuni-workers/test_ontology.py
+      - name: Run agent-daemon regression suite
+        run: python3 xuniaverse-production/xuni-workers/test_agent_daemon.py
