@@ -6,7 +6,9 @@ The contents of `xuniaverse-production/` were authored by **Douglas Brown Jr**, 
 
 ## License
 
-Code in this directory is licensed under the repository's MIT License (see `../LICENSE`). Copyright exists automatically on original code the moment it's written; this NOTICE and the per-file headers exist to create a clear, dated record of authorship, not to change the license terms.
+As of 2026-08-14, this directory (`xuniaverse-production/`) is licensed **All Rights Reserved** under its own `LICENSE` file, which overrides the repository root's MIT License for this directory only. Code elsewhere in this repository remains MIT-licensed under the root `LICENSE`. No use, copying, modification, or redistribution of anything in this directory is permitted without prior written permission from the copyright holder.
+
+Copyright exists automatically on original code the moment it's written; this NOTICE and the per-file headers exist to create a clear, dated record of authorship in addition to the license terms above.
 
 ## Project / product names
 
