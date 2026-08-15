@@ -10,13 +10,16 @@ This does NOT replace the daemon. It is a thin client: POST /submit writes
 a task file to xuni-workers/tasks/, GET /result/<id> reads back whatever
 the daemon already wrote to xuni-workers/results/.
 """
+import hmac
 import json
+import os
 import re
+import secrets
 import time
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 # Task IDs come straight off the URL path for GET /result/<id>. Without
 # validation, an id like "../../../../etc/hosts" lets a request read any
@@ -27,10 +30,29 @@ _SAFE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
 RESULTS_DIR = ROOT / "xuni-workers" / "results"
+TOKEN_PATH = ROOT / "xuni-workers" / "live" / "webui.token"
 PORT = 8765
 
-for d in (TASKS_DIR, RESULTS_DIR):
+for d in (TASKS_DIR, RESULTS_DIR, TOKEN_PATH.parent):
     d.mkdir(parents=True, exist_ok=True)
+
+
+def _load_or_create_token() -> str:
+    """Every request must present this token — binding to 127.0.0.1 alone
+    doesn't stop other local processes/users on the same machine, and the
+    path-traversal bug found in this session's review showed unauthenticated
+    localhost access is a real attack surface, not a theoretical one."""
+    if TOKEN_PATH.exists():
+        existing = TOKEN_PATH.read_text().strip()
+        if existing:
+            return existing
+    token = secrets.token_urlsafe(32)
+    TOKEN_PATH.write_text(token)
+    os.chmod(TOKEN_PATH, 0o600)
+    return token
+
+
+AUTH_TOKEN = _load_or_create_token()
 
 INDEX_HTML = """<!doctype html>
 <html><head><meta charset="utf-8"><title>Xuni Agent</title>
@@ -49,6 +71,12 @@ pre{background:#f2f0e8;padding:1rem;border-radius:6px;white-space:pre-wrap;font-
 <div class="status" id="status"></div>
 <pre id="output"></pre>
 <script>
+const TOKEN = new URLSearchParams(window.location.search).get('token') || '';
+function authed(url, opts){
+  opts = opts || {};
+  opts.headers = Object.assign({}, opts.headers, {'X-Auth-Token': TOKEN});
+  return fetch(url, opts);
+}
 async function submitTask(){
   const prompt = document.getElementById('prompt').value.trim();
   const status = document.getElementById('status');
@@ -56,12 +84,13 @@ async function submitTask(){
   if(!prompt){ status.textContent = 'Enter a prompt first.'; return; }
   output.textContent = '';
   status.textContent = 'Submitting...';
-  const res = await fetch('/submit', {method:'POST', body: JSON.stringify({prompt})});
+  const res = await authed('/submit', {method:'POST', body: JSON.stringify({prompt})});
+  if(res.status === 401){ status.textContent = 'Not authorized — missing or wrong token.'; return; }
   const {id} = await res.json();
   status.textContent = 'Task ' + id + ' queued. Waiting for result...';
   for(let i=0;i<120;i++){
     await new Promise(r=>setTimeout(r,1000));
-    const r = await fetch('/result/' + id);
+    const r = await authed('/result/' + id);
     if(r.status === 200){
       const data = await r.json();
       status.textContent = data.blocked_by ? 'Blocked by Zyra' : ('Done in ' + data.duration_seconds + 's');
@@ -80,8 +109,21 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass  # keep stdout clean; daemon.log pattern already covers this
 
+    def _authorized(self, query: dict) -> bool:
+        """Constant-time comparison so response timing can't be used to
+        guess the token a character at a time."""
+        supplied = self.headers.get("X-Auth-Token") or (query.get("token", [""])[0])
+        return hmac.compare_digest(supplied or "", AUTH_TOKEN)
+
     def do_GET(self):
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
+        query = parse_qs(parsed.query)
+
+        if not self._authorized(query):
+            self._send(401, b'{"error":"unauthorized"}', "application/json")
+            return
+
         if path == "/":
             self._send(200, INDEX_HTML.encode(), "text/html")
         elif path.startswith("/result/"):
@@ -98,6 +140,9 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, b"not found", "text/plain")
 
     def do_POST(self):
+        if not self._authorized({}):
+            self._send(401, b'{"error":"unauthorized"}', "application/json")
+            return
         if urlparse(self.path).path != "/submit":
             self._send(404, b"not found", "text/plain")
             return
@@ -126,7 +171,8 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"xuni web ui listening on http://127.0.0.1:{PORT}", flush=True)
+    print(f"xuni web ui listening on http://127.0.0.1:{PORT}?token={AUTH_TOKEN}", flush=True)
+    print(f"token also saved at {TOKEN_PATH}", flush=True)
     server.serve_forever()
 
 
