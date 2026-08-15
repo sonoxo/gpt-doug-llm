@@ -1,8 +1,4 @@
 """
-Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
-License (see repository LICENSE). Part of the "Doug", "Zyra", and
-"Xuniaverse" project — first authored 2026-08-14.
-
 xuniaverse ontology layer — a Foundry-inspired pattern (Object Types, Link
 Types, Action Types) implemented against our own real data. Not connected
 to Palantir Foundry — there's no live Foundry tenant/API in this project,
@@ -115,19 +111,40 @@ def link_task_to_result(task_id: str) -> dict:
 
 
 def link_task_to_knowledge(task_id: str, prompt: str, top_n: int = 3) -> list:
-    """Task --referenced--> KnowledgeEntry, scored by the same keyword-overlap
-    logic agent-daemon._relevant_knowledge already uses for real retrieval."""
+    """
+    Task --referenced--> KnowledgeEntry, scored by the same keyword-overlap
+    logic agent-daemon._relevant_knowledge already uses for real retrieval,
+    plus a normalized confidence score:
+
+        confidence = matched_keywords / total_keywords_on_entry, capped at 1.0
+
+    This is a real, deterministic ratio — not a fabricated probability. An
+    entry where every one of its keywords appears in the prompt gets 1.0;
+    one where only a third of its keywords match gets ~0.33. It measures
+    coverage of that entry's own keyword set, not a claim about semantic
+    correctness.
+    """
     entries = list_knowledge()
     lower = prompt.lower()
     scored = []
     for e in entries:
-        score = sum(1 for kw in e.get("keywords", []) if kw.lower() in lower)
-        if score > 0:
-            scored.append((score, e))
-    scored.sort(key=lambda pair: pair[0], reverse=True)
+        keywords = e.get("keywords", [])
+        if not keywords:
+            continue
+        matched = sum(1 for kw in keywords if kw.lower() in lower)
+        if matched > 0:
+            confidence = min(matched / len(keywords), 1.0)
+            scored.append((matched, confidence, e))
+    scored.sort(key=lambda triple: (triple[0], triple[1]), reverse=True)
     return [
-        {"link_type": "referenced", "from": ("Task", task_id), "to": ("KnowledgeEntry", e["id"]), "score": s}
-        for s, e in scored[:top_n]
+        {
+            "link_type": "referenced",
+            "from": ("Task", task_id),
+            "to": ("KnowledgeEntry", e["id"]),
+            "matched_keywords": m,
+            "confidence": round(c, 3),
+        }
+        for m, c, e in scored[:top_n]
     ]
 
 
