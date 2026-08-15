@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
-# License (see repository LICENSE). Part of the "Doug", "Zyra", and
-# "Xuniaverse" project — first authored 2026-08-14.
 """
 Minimal web front end for the Xuni agent daemon.
 
@@ -14,11 +11,18 @@ a task file to xuni-workers/tasks/, GET /result/<id> reads back whatever
 the daemon already wrote to xuni-workers/results/.
 """
 import json
+import re
 import time
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
+
+# Task IDs come straight off the URL path for GET /result/<id>. Without
+# validation, an id like "../../../../etc/hosts" lets a request read any
+# file on disk whose name happens to end in .json (real, confirmed via a
+# live curl --path-as-is request against this server during review).
+_SAFE_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
@@ -82,6 +86,9 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, INDEX_HTML.encode(), "text/html")
         elif path.startswith("/result/"):
             task_id = path[len("/result/"):]
+            if not _SAFE_ID_RE.match(task_id):
+                self._send(400, b'{"error":"invalid task id"}', "application/json")
+                return
             result_path = RESULTS_DIR / f"{task_id}.json"
             if result_path.exists():
                 self._send(200, result_path.read_bytes(), "application/json")

@@ -21,6 +21,7 @@ Action types are typed, validated operations — mirroring Foundry's
 so the ontology layer can't be used to bypass safety review.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -165,6 +166,8 @@ def submit_task_action(task_id: str, prompt: str) -> dict:
     """
     if not task_id or not isinstance(task_id, str):
         raise ActionValidationError("task_id must be a non-empty string")
+    if not re.match(r"^[A-Za-z0-9_-]{1,128}$", task_id):
+        raise ActionValidationError("task_id must match ^[A-Za-z0-9_-]{1,128}$ (path-traversal guard)")
     if not prompt or not isinstance(prompt, str):
         raise ActionValidationError("prompt must be a non-empty string")
 
