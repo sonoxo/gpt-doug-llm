@@ -1,0 +1,1 @@
+"""GPT Doug hackathon package."""

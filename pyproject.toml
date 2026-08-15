@@ -49,7 +49,7 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 packages = ["agents", "web", "workers", "tests", "models"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "hackathon/tests"]
 python_files = ["test_*.py"]
 python_classes = ["*Tests"]
 python_functions = ["test_*"]

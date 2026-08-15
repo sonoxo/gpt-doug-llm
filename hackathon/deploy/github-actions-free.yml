@@ -1,0 +1,36 @@
+# FREE deployment: GitHub Actions for public repos
+# Runs all agents on schedule + webhook — zero cost
+name: GPT Doug Agent Runner
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # every 6 hours
+  workflow_dispatch:
+  issues:
+    types: [opened]
+
+jobs:
+  sentinel-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest
+      - name: Run Sentinel home scan
+        run: python3 -c "from hackathon.agents.sentinel_bot import run_home_scan; print(run_home_scan())"
+      - name: Run Emergency Mesh feed check
+        run: python3 -c "from hackathon.agents.emergency_mesh import check_emergency_feeds; print(check_emergency_feeds())"
+
+  code-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest
+      - name: Run code reviewer on PR
+        run: python3 -c "from hackathon.agents.code_reviewer import review_pr; print(review_pr({'number':1,'title':'test','body':'test','diff':'print(hello)','files':['test.py'],'author':'test'}))"
