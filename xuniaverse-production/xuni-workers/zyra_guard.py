@@ -1,4 +1,8 @@
 """
+Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
+License (see repository LICENSE). Part of the "Doug", "Zyra", and
+"Xuniaverse" project — first authored 2026-08-14.
+
 Zyra — safety/guard layer for the Xuni agent pipeline.
 
 Runs as a pre-flight check before any task is dispatched to Doug. Rejects

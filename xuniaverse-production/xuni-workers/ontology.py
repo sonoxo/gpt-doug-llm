@@ -1,4 +1,8 @@
 """
+Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
+License (see repository LICENSE). Part of the "Doug", "Zyra", and
+"Xuniaverse" project — first authored 2026-08-14.
+
 xuniaverse ontology layer — a Foundry-inspired pattern (Object Types, Link
 Types, Action Types) implemented against our own real data. Not connected
 to Palantir Foundry — there's no live Foundry tenant/API in this project,

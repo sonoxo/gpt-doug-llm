@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
+# License (see repository LICENSE). Part of the "Doug", "Zyra", and
+# "Xuniaverse" project — first authored 2026-08-14.
 """
 Xuni Agent daemon (Doug Mode task runner).
 
