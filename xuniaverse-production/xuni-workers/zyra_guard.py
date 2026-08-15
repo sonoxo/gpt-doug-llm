@@ -1,8 +1,4 @@
 """
-Copyright (c) 2026 Douglas Brown Jr / Xuniaverse. Licensed under the MIT
-License (see repository LICENSE). Part of the "Doug", "Zyra", and
-"Xuniaverse" project — first authored 2026-08-14.
-
 Zyra — safety/guard layer for the Xuni agent pipeline.
 
 Runs as a pre-flight check before any task is dispatched to Doug. Rejects
@@ -15,6 +11,7 @@ danger, not everything. Treat it as one layer, not a full sandbox.
 import base64
 import hashlib
 import re
+import threading
 import time
 from pathlib import Path
 from typing import Optional
@@ -22,6 +19,13 @@ from typing import Optional
 ROOT = Path(__file__).resolve().parent.parent
 LOG_PATH = ROOT / "xuni-workers" / "live" / "zyra.log"
 CHAIN_STATE_PATH = ROOT / "xuni-workers" / "live" / "zyra.log.chainstate"
+
+# agent-daemon.py calls review() -> _log() from a 4-worker thread pool.
+# The hash chain read-then-write in _log() is a real race without a lock:
+# two threads reading the same prev_hash concurrently would both write
+# entries claiming that prev, breaking the chain verify_log_integrity()
+# depends on for a log that was never actually tampered with.
+_log_lock = threading.Lock()
 MAX_PROMPT_CHARS = 20_000
 GENESIS_HASH = "0" * 64
 
@@ -80,7 +84,7 @@ def classify(prompt: str, allowed: bool, block_reason: Optional[str], rice_hits:
 DENY_PATTERNS = [
     r"\brm\s+-\S*[rR]\S*[fF]\S*\b",       # rm -rf, rm -fr, rm  -rf (whitespace-tolerant)
     r"\brm\s+-\S*\$",                     # rm -$VAR / rm -${VAR} — flag built from a shell variable
-    r"\bgit\s+push\s+--force\b",
+    r"\bgit\s+push\s+(--force\b|-f\b)",
     r"\bDROP\s+TABLE\b",
     r"\btruncate\s+table\b",
     r"--allow-dangerously-skip-permissions",
@@ -165,12 +169,13 @@ def _log(task_id: str, verdict: str, reason: str, level: str = "UNCLASSIFIED"):
     from that point forward, which verify_log_integrity() detects.
     """
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    prev_hash = _last_chain_hash()
-    body = f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] [{level}] {task_id}: {reason}"
-    entry_hash = hashlib.sha256((prev_hash + body).encode()).hexdigest()
-    with LOG_PATH.open("a") as f:
-        f.write(f"{body} |prev={prev_hash[:12]} hash={entry_hash[:12]}|\n")
-    CHAIN_STATE_PATH.write_text(entry_hash)
+    with _log_lock:
+        prev_hash = _last_chain_hash()
+        body = f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] [{level}] {task_id}: {reason}"
+        entry_hash = hashlib.sha256((prev_hash + body).encode()).hexdigest()
+        with LOG_PATH.open("a") as f:
+            f.write(f"{body} |prev={prev_hash[:12]} hash={entry_hash[:12]}|\n")
+        CHAIN_STATE_PATH.write_text(entry_hash)
 
 
 _LOG_LINE_RE = re.compile(r"^(.*) \|prev=([0-9a-f]{12}) hash=([0-9a-f]{12})\|$")
@@ -247,6 +252,10 @@ def _base64_layers(text: str, depth: int = 3):
 
 
 def _hex_decoded(text: str) -> Optional[str]:
+    """Decode every hex token in the text, not just the first — a benign
+    token before a malicious one must not hide the malicious payload from
+    the checks that run on this function's return value."""
+    decoded_parts = []
     for token in _HEX_TOKEN_RE.findall(text):
         clean = token[2:] if token.lower().startswith("0x") else token
         if len(clean) % 2:
@@ -256,8 +265,8 @@ def _hex_decoded(text: str) -> Optional[str]:
         except Exception:
             continue
         if decoded.strip():
-            return decoded
-    return None
+            decoded_parts.append(decoded)
+    return " ".join(decoded_parts) if decoded_parts else None
 
 
 def _concat_normalized(text: str) -> Optional[str]:
@@ -316,9 +325,10 @@ def review(task: dict) -> tuple[bool, str]:
     normalized = _strip_invisible(_normalize_confusables(prompt))
 
     for check in (_pattern_hit, _semantic_hit, _decoded_hit):
-        reason = check(prompt) or check(normalized)
+        direct_reason = check(prompt)
+        reason = direct_reason or check(normalized)
         if reason:
-            if check(prompt) is None:
+            if direct_reason is None:
                 reason = f"confusable-normalized payload: {reason}"
             level = classify(prompt, False, reason, [])
             _log(task_id, "BLOCK", reason, level)

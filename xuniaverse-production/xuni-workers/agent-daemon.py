@@ -10,6 +10,7 @@ Task file format:
   {"id": "<string>", "prompt": "<string>"}
 """
 import json
+import re
 import shutil
 import subprocess
 import threading
@@ -180,6 +181,18 @@ def run_task(task_path: Path):
 
     task_id = task.get("id", task_path.stem)
     prompt = task.get("prompt")
+
+    # task_id is interpolated directly into RESULTS_DIR/PROCESSED_DIR paths
+    # below. An id like "../../../../tmp/evil" or an absolute path like
+    # "/tmp/evil" (which discards RESULTS_DIR entirely under pathlib's
+    # join semantics) would otherwise let a crafted task file write
+    # outside the intended directories. Reject anything that isn't a
+    # plain filename-safe token before it touches any path.
+    if not re.match(r"^[A-Za-z0-9_-]{1,128}$", str(task_id)):
+        print(f"[skip] {task_path.name}: invalid task id {task_id!r} (path-traversal guard)", flush=True)
+        task_path.rename(PROCESSED_DIR / task_path.name)
+        return
+
     if not prompt:
         print(f"[skip] {task_path.name}: missing 'prompt'", flush=True)
         task_path.rename(PROCESSED_DIR / task_path.name)
