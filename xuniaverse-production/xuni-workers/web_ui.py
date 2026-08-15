@@ -15,11 +15,35 @@ import json
 import os
 import re
 import secrets
+import threading
 import time
 import uuid
+from collections import defaultdict, deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
+
+# Even with a valid token, unlimited request rate is still a gap — this
+# is a real defense-in-depth follow-on to the auth work: a leaked or
+# guessed token shouldn't let someone hammer the daemon with unlimited
+# claude -p dispatches (each one costs real usage). Simple sliding-window
+# counter per client IP, held in memory (this process is the only writer).
+RATE_LIMIT_MAX = 20
+RATE_LIMIT_WINDOW_S = 60
+_rate_lock = threading.Lock()
+_rate_hits = defaultdict(deque)
+
+
+def _rate_limited(client_ip: str) -> bool:
+    now = time.time()
+    with _rate_lock:
+        hits = _rate_hits[client_ip]
+        while hits and now - hits[0] > RATE_LIMIT_WINDOW_S:
+            hits.popleft()
+        if len(hits) >= RATE_LIMIT_MAX:
+            return True
+        hits.append(now)
+        return False
 
 # Task IDs come straight off the URL path for GET /result/<id>. Without
 # validation, an id like "../../../../etc/hosts" lets a request read any
@@ -116,6 +140,10 @@ class Handler(BaseHTTPRequestHandler):
         return hmac.compare_digest(supplied or "", AUTH_TOKEN)
 
     def do_GET(self):
+        if _rate_limited(self.client_address[0]):
+            self._send(429, b'{"error":"rate limited"}', "application/json")
+            return
+
         parsed = urlparse(self.path)
         path = parsed.path
         query = parse_qs(parsed.query)
@@ -140,6 +168,9 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, b"not found", "text/plain")
 
     def do_POST(self):
+        if _rate_limited(self.client_address[0]):
+            self._send(429, b'{"error":"rate limited"}', "application/json")
+            return
         if not self._authorized({}):
             self._send(401, b'{"error":"unauthorized"}', "application/json")
             return
