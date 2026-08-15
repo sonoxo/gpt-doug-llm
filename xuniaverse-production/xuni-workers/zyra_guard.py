@@ -103,6 +103,22 @@ _ROT13 = str.maketrans(
     "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm",
 )
 
+# Common Unicode "confusable" characters (Cyrillic/Greek) that look
+# identical or near-identical to Latin letters in most fonts, mapped back
+# to their ASCII lookalike so deny/semantic patterns still match after
+# normalization. Not exhaustive — covers the common single-letter swaps.
+_CONFUSABLES = {
+    "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "х": "x", "у": "y",
+    "і": "i", "ѕ": "s", "ԁ": "d", "һ": "h", "ո": "n", "Ꭺ": "A", "В": "B",
+    "Е": "E", "Ν": "N", "Ρ": "P", "Ѕ": "S", "Т": "T", "Х": "X",
+    "α": "a", "ε": "e", "ο": "o", "ρ": "p", "ν": "v", "κ": "k",
+}
+_CONFUSABLE_RE = re.compile("|".join(re.escape(c) for c in _CONFUSABLES))
+
+
+def _normalize_confusables(text: str) -> str:
+    return _CONFUSABLE_RE.sub(lambda m: _CONFUSABLES[m.group(0)], text)
+
 
 def _log(task_id: str, verdict: str, reason: str, level: str = "UNCLASSIFIED"):
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -214,9 +230,13 @@ def review(task: dict) -> tuple[bool, str]:
         _log(task_id, "BLOCK", reason, level)
         return False, reason
 
+    normalized = _normalize_confusables(prompt)
+
     for check in (_pattern_hit, _semantic_hit, _decoded_hit):
-        reason = check(prompt)
+        reason = check(prompt) or check(normalized)
         if reason:
+            if check(prompt) is None:
+                reason = f"confusable-normalized payload: {reason}"
             level = classify(prompt, False, reason, [])
             _log(task_id, "BLOCK", reason, level)
             return False, reason
