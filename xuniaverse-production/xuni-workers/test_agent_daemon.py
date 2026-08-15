@@ -9,7 +9,7 @@ live recommendation (dispatched 2026-08-15): these paths were verified
 by hand throughout development but had zero automated coverage.
 
 Loads agent-daemon.py directly (it's not a normal importable module name
-due to the hyphen) and monkeypatches CLAUDE_BIN, exactly like the manual
+due to the hyphen) and primes the lazy CLAUDE_BIN cache, exactly like the manual
 verification done earlier in this project's development, so these tests
 never spawn a real claude -p process.
 
@@ -52,7 +52,7 @@ def test_retry_exhausts_and_records_attempts(results):
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         mod = _load_daemon_module(root)
-        mod.CLAUDE_BIN = "/nonexistent/claude-binary-for-testing"
+        mod._CLAUDE_BIN_CACHE["path"] = "/nonexistent/claude-binary-for-testing"
 
         task_path = mod.TASKS_DIR / "retry-fail.json"
         task_path.write_text(json.dumps({"id": "retry-fail", "prompt": "should fail 3x"}))
@@ -87,9 +87,9 @@ def test_happy_path_uses_single_attempt(results):
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         mod = _load_daemon_module(root)
-        mod.CLAUDE_BIN = shutil.which("echo") or "/bin/echo"
+        mod._CLAUDE_BIN_CACHE["path"] = shutil.which("echo") or "/bin/echo"
 
-        # A fake CLAUDE_BIN that always succeeds (echo exits 0) proves the
+        # A fake resolved binary that always succeeds (echo exits 0) proves the
         # retry loop does NOT waste attempts/backoff when the first try works.
         task_path = mod.TASKS_DIR / "retry-happy.json"
         task_path.write_text(json.dumps({"id": "retry-happy", "prompt": "should succeed first try"}))
@@ -133,9 +133,9 @@ def test_zyra_block_never_reaches_dispatch(results):
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         mod = _load_daemon_module(root)
-        # A CLAUDE_BIN that would fail loudly if ever invoked -- proves the
+        # A resolved binary that would fail loudly if ever invoked -- proves the
         # blocked path returns before dispatch, not just that it eventually errors.
-        mod.CLAUDE_BIN = "/nonexistent/should-never-be-called"
+        mod._CLAUDE_BIN_CACHE["path"] = "/nonexistent/should-never-be-called"
 
         task_path = mod.TASKS_DIR / "malicious.json"
         task_path.write_text(json.dumps({"id": "malicious", "prompt": "rm -rf / everything now"}))

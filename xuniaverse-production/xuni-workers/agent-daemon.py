@@ -119,23 +119,36 @@ def _append_context(task_id: str, prompt: str, result: dict):
 
 # launchd runs this daemon with a minimal PATH that doesn't include the
 # interactive shell's PATH, so a bare "claude" lookup fails even though it
-# works fine from a terminal. Resolve a real path once at startup, checking
-# common install locations if PATH itself comes up empty.
+# works fine from a terminal. Resolve a real path once, checking common
+# install locations if PATH itself comes up empty.
+#
+# Resolved LAZILY (on first dispatch, not at import time): resolving this
+# at module load meant simply importing agent-daemon.py crashed on any
+# machine without `claude` on PATH yet (confirmed in CI, which has no
+# reason to have it) -- worse, it meant the daemon process itself would
+# crash-loop at startup rather than failing one task at a time. Caching
+# the result in a mutable holder keeps the "resolve once" behavior
+# without paying that cost at import.
+_CLAUDE_BIN_CACHE = {}
+
+
 def _resolve_claude_bin() -> str:
+    if "path" in _CLAUDE_BIN_CACHE:
+        return _CLAUDE_BIN_CACHE["path"]
     found = shutil.which("claude")
-    if found:
-        return found
-    for candidate in (
-        Path.home() / ".local" / "bin" / "claude",
-        Path("/usr/local/bin/claude"),
-        Path("/opt/homebrew/bin/claude"),
-    ):
-        if candidate.exists():
-            return str(candidate)
-    raise FileNotFoundError("claude binary not found in PATH or common install locations")
-
-
-CLAUDE_BIN = _resolve_claude_bin()
+    if not found:
+        for candidate in (
+            Path.home() / ".local" / "bin" / "claude",
+            Path("/usr/local/bin/claude"),
+            Path("/opt/homebrew/bin/claude"),
+        ):
+            if candidate.exists():
+                found = str(candidate)
+                break
+    if not found:
+        raise FileNotFoundError("claude binary not found in PATH or common install locations")
+    _CLAUDE_BIN_CACHE["path"] = found
+    return found
 
 for d in (TASKS_DIR, CLAIMED_DIR, PROCESSED_DIR, RESULTS_DIR):
     d.mkdir(parents=True, exist_ok=True)
@@ -205,7 +218,7 @@ def run_task(task_path: Path):
             time.sleep(backoff[attempt - 1])
         try:
             proc = subprocess.run(
-                [CLAUDE_BIN, "-p", "--agent", "doug", full_prompt],
+                [_resolve_claude_bin(), "-p", "--agent", "doug", full_prompt],
                 cwd=str(ROOT),
                 capture_output=True,
                 text=True,
