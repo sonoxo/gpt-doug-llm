@@ -120,6 +120,25 @@ def _normalize_confusables(text: str) -> str:
     return _CONFUSABLE_RE.sub(lambda m: _CONFUSABLES[m.group(0)], text)
 
 
+# Zero-width / invisible Unicode code points that can be injected inside a
+# word to break \b and \s-based patterns without changing how the text
+# looks to a human or to Doug (e.g. "r<ZWSP>m -<ZWSP>rf"). Stripped before
+# pattern/semantic matching so this class of evasion doesn't work.
+_INVISIBLE_CHARS = (
+    "​"  # zero-width space
+    "‌"  # zero-width non-joiner
+    "‍"  # zero-width joiner
+    "﻿"  # BOM / zero-width no-break space
+    "⁠"  # word joiner
+    "᠎"  # Mongolian vowel separator
+)
+_INVISIBLE_RE = re.compile("[" + _INVISIBLE_CHARS + "]")
+
+
+def _strip_invisible(text: str) -> str:
+    return _INVISIBLE_RE.sub("", text)
+
+
 def _log(task_id: str, verdict: str, reason: str, level: str = "UNCLASSIFIED"):
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with LOG_PATH.open("a") as f:
@@ -230,7 +249,7 @@ def review(task: dict) -> tuple[bool, str]:
         _log(task_id, "BLOCK", reason, level)
         return False, reason
 
-    normalized = _normalize_confusables(prompt)
+    normalized = _strip_invisible(_normalize_confusables(prompt))
 
     for check in (_pattern_hit, _semantic_hit, _decoded_hit):
         reason = check(prompt) or check(normalized)
