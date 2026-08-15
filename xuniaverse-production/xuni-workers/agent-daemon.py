@@ -21,6 +21,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import zyra_guard
+import ontology
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
@@ -28,7 +29,6 @@ CLAIMED_DIR = ROOT / "xuni-workers" / "claimed"
 PROCESSED_DIR = ROOT / "xuni-workers" / "processed"
 RESULTS_DIR = ROOT / "xuni-workers" / "results"
 CONTEXT_LOG = ROOT / "xuni-workers" / "live" / "context.jsonl"
-KNOWLEDGE_DIR = ROOT / "xuni-workers" / "knowledge"
 CONTEXT_WINDOW = 5
 KNOWLEDGE_MATCHES = 3
 POLL_SECONDS = 0.5
@@ -41,46 +41,29 @@ WORKER_COUNT = 4
 _context_lock = threading.Lock()
 
 
-def _load_knowledge() -> list:
-    """Load every *.jsonl file in xuni-workers/knowledge/. Each line is one
-    attributed, summarized entry — never a verbatim transcript — with an
-    id, topic, attribution, summary, and keyword list for retrieval."""
-    entries = []
-    if not KNOWLEDGE_DIR.exists():
-        return entries
-    for path in sorted(KNOWLEDGE_DIR.glob("*.jsonl")):
-        for line in path.read_text().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                entries.append(json.loads(line))
-            except json.JSONDecodeError:
-                continue
-    return entries
-
-
 def _relevant_knowledge(prompt: str) -> str:
-    """Keyword-match the prompt against the knowledge base and return the
-    top matches as a labeled, attributed context block. Real retrieval —
-    scored by keyword overlap, not fabricated relevance."""
-    entries = _load_knowledge()
-    if not entries:
+    """
+    Keyword-match the prompt against the knowledge base and return the top
+    matches as a labeled, attributed context block.
+
+    Delegates to ontology.link_task_to_knowledge() rather than re-scoring
+    independently — this used to be a separate, simpler implementation
+    that had drifted from the confidence-scored version in ontology.py.
+    Unified so the daemon and the ontology layer agree on what "relevant"
+    means, with one real scoring formula instead of two.
+    """
+    links = ontology.link_task_to_knowledge("_daemon_context_lookup", prompt, top_n=KNOWLEDGE_MATCHES)
+    if not links:
         return ""
-    lower = prompt.lower()
-    scored = []
-    for entry in entries:
-        score = sum(1 for kw in entry.get("keywords", []) if kw.lower() in lower)
-        if score > 0:
-            scored.append((score, entry))
-    if not scored:
+    entries_by_id = {e["id"]: e for e in ontology.list_knowledge()}
+    lines = []
+    for link in links:
+        entry = entries_by_id.get(link["to"][1])
+        if not entry:
+            continue
+        lines.append(f"- ({entry['attribution']}) {entry['summary']} [confidence={link['confidence']}]")
+    if not lines:
         return ""
-    scored.sort(key=lambda pair: pair[0], reverse=True)
-    top = [e for _, e in scored[:KNOWLEDGE_MATCHES]]
-    lines = [
-        f"- ({e['attribution']}) {e['summary']}"
-        for e in top
-    ]
     return "Relevant knowledge (attributed, summarized — not verbatim source material):\n" + "\n".join(lines) + "\n\n"
 
 
