@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xuniaverse</title>
+<style>
+:root{ --bg:#f5f4f0; --surface:#ffffff; --line:#dcd8cc; --ink:#20241f; --dim:#6b6f63; --accent:#3f6b4f; }
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14170f; --surface:#1c2018; --line:#33392c; --ink:#e9e7dd; --dim:#a2a596; --accent:#7fbd94; }
+}
+*{box-sizing:border-box;}
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,sans-serif; }
+.wrap{ max-width:720px; margin:0 auto; padding:3rem 1.5rem; }
+h1{ font-size:1.8rem; margin:0 0 .4rem; }
+p.sub{ color:var(--dim); margin:0 0 2rem; line-height:1.5; }
+.links{ display:flex; flex-direction:column; gap:.9rem; }
+a.card{
+  display:block; padding:1.1rem 1.3rem; border:1px solid var(--line); border-radius:8px;
+  background:var(--surface); color:inherit; text-decoration:none;
+}
+a.card:hover{ border-color:var(--accent); }
+a.card .name{ font-weight:600; font-size:1rem; }
+a.card .desc{ color:var(--dim); font-size:.85rem; margin-top:.25rem; }
+footer{ margin-top:2.5rem; font-size:.78rem; color:var(--dim); border-top:1px solid var(--line); padding-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Xuniaverse</h1>
+  <p class="sub">Public status pages for the xuniaverse-production project — static, no live daemon access. Source: <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/xuniaverse-production" style="color:inherit;">github.com/sonoxo/gpt-doug-llm</a>.</p>
+  <div class="links">
+    <a class="card" href="status.html">
+      <div class="name">Build status</div>
+      <div class="desc">Real audit of every component against the codebase — done / partial / not started.</div>
+    </a>
+    <a class="card" href="metrics.html">
+      <div class="name">Metrics</div>
+      <div class="desc">Ontology object counts, Zyra defense coverage, knowledge base composition.</div>
+    </a>
+    <a class="card" href="pipeline.html">
+      <div class="name">Agent pipeline</div>
+      <div class="desc">How a task actually flows through the daemon, Zyra, and Doug.</div>
+    </a>
+  </div>
+  <footer>xuniaverse-production is licensed All Rights Reserved. These pages are informational only.</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<title>Xuniaverse Metrics</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --surface-1:      #f5f4f0;
+  --surface-2:      #ffffff;
+  --line:           #dcd8cc;
+  --text-primary:   #20241f;
+  --text-secondary: #52514e;
+  --text-muted:     #6b6f63;
+  --series-1:       #2a78d6;
+  --series-2:       #eb6834;
+  --series-3:       #1baf7a;
+  --series-4:       #eda100;
+  --track:          #e3e0d5;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --surface-1:      #14170f;
+    --surface-2:      #1c2018;
+    --line:           #33392c;
+    --text-primary:   #e9e7dd;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #a2a596;
+    --series-1:       #3987e5;
+    --series-2:       #d95926;
+    --series-3:       #199e70;
+    --series-4:       #c98500;
+    --track:          #2a2e24;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --surface-1:      #14170f;
+  --surface-2:      #1c2018;
+  --line:           #33392c;
+  --text-primary:   #e9e7dd;
+  --text-secondary: #c3c2b7;
+  --text-muted:     #a2a596;
+  --series-1:       #3987e5;
+  --series-2:       #d95926;
+  --series-3:       #199e70;
+  --series-4:       #c98500;
+  --track:          #2a2e24;
+}
+
+*{box-sizing:border-box;}
+.viz-root{
+  margin:0;
+  background:var(--surface-1);
+  color:var(--text-primary);
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  min-height:100vh;
+}
+.wrap{max-width:980px; margin:0 auto; padding:2.25rem 1.5rem 4rem;}
+header{margin-bottom:1.75rem;}
+h1{font-size:1.7rem; margin:0 0 .3rem; letter-spacing:-0.01em; text-wrap:balance;}
+.sub{color:var(--text-muted); font-size:.92rem; margin:0; max-width:66ch; line-height:1.5;}
+
+.tiles{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:.9rem;
+  margin-bottom:2rem;
+}
+@media(min-width:700px){ .tiles{grid-template-columns:repeat(4,1fr);} }
+.tile{
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:1.1rem 1.2rem;
+}
+.tile .num{font-size:1.9rem; font-weight:700; font-variant-numeric:tabular-nums; line-height:1;}
+.tile .label{font-size:.76rem; color:var(--text-muted); margin-top:.4rem; text-transform:uppercase; letter-spacing:.04em;}
+
+.panel{
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:1.4rem 1.5rem 1.2rem;
+  margin-bottom:1.5rem;
+}
+.panel h2{font-size:.95rem; margin:0 0 .15rem; font-weight:600;}
+.panel .panel-sub{font-size:.78rem; color:var(--text-muted); margin:0 0 1.1rem;}
+
+.bar-row{display:flex; align-items:center; gap:.9rem; margin-bottom:.85rem;}
+.bar-row:last-child{margin-bottom:0;}
+.bar-label{width:180px; flex-shrink:0; font-size:.82rem; color:var(--text-secondary);}
+.bar-track{flex:1; height:22px; background:var(--track); border-radius:4px; position:relative; overflow:visible;}
+.bar-fill{
+  height:100%;
+  border-radius:4px;
+  display:flex;
+  align-items:center;
+  transition:width 1s cubic-bezier(.22,.8,.28,1);
+}
+.bar-value{
+  font-size:.78rem;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  color:var(--text-primary);
+  margin-left:.6rem;
+  white-space:nowrap;
+}
+
+.table-toggle{
+  font-size:.76rem;
+  color:var(--text-muted);
+  background:none;
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:.3rem .6rem;
+  cursor:pointer;
+  margin-top:.9rem;
+}
+.table-toggle:hover{color:var(--text-primary); border-color:var(--text-muted);}
+table{width:100%; border-collapse:collapse; margin-top:.9rem; font-size:.8rem; display:none;}
+table.show{display:table;}
+th,td{text-align:left; padding:.4rem .5rem; border-bottom:1px solid var(--line);}
+th{color:var(--text-muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em;}
+td{font-variant-numeric:tabular-nums;}
+
+.note{
+  font-size:.8rem;
+  color:var(--text-muted);
+  border-top:1px solid var(--line);
+  margin-top:1.5rem;
+  padding-top:1rem;
+  line-height:1.55;
+  max-width:70ch;
+}
+.note a{color:inherit;}
+</style>
+
+<div class="viz-root">
+<div class="wrap">
+  <header>
+    <h1>Xuniaverse metrics</h1>
+    <p class="sub">Real, computed data from <code>xuniaverse-production</code> — live ontology counts and this session's verified Zyra defense/knowledge-base results, not projections.</p>
+  </header>
+
+  <div class="tiles">
+    <div class="tile"><div class="num" id="t-tasks">0</div><div class="label">Tasks</div></div>
+    <div class="tile"><div class="num" id="t-results">0</div><div class="label">Results</div></div>
+    <div class="tile"><div class="num" id="t-knowledge">0</div><div class="label">Knowledge entries</div></div>
+    <div class="tile"><div class="num" id="t-links">0</div><div class="label">Ontology links</div></div>
+  </div>
+
+  <div class="panel">
+    <h2>Zyra: attacks blocked by category</h2>
+    <p class="panel-sub">Every case attack→fix→verify tested this session. All currently pass (100% blocked).</p>
+    <div id="attack-chart"></div>
+    <button class="table-toggle" data-target="attack-table">Show as table</button>
+    <table id="attack-table">
+      <thead><tr><th>Category</th><th>Blocked</th><th>Total</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2>Knowledge base by source</h2>
+    <p class="panel-sub">25 paraphrased, attributed entries — never verbatim source text.</p>
+    <div id="knowledge-chart"></div>
+    <button class="table-toggle" data-target="knowledge-table">Show as table</button>
+    <table id="knowledge-table">
+      <thead><tr><th>Source</th><th>Entries</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <p class="note">Source: <code>python3 xuni-workers/ontology.py</code> and this session's Zyra regression runs, 2026-08-14. Code: <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/xuniaverse-production">github.com/sonoxo/gpt-doug-llm</a>.</p>
+</div>
+</div>
+
+<script>
+const ONTOLOGY = { tasks: 18, results: 18, knowledge: 25, links: 20 };
+
+const ATTACKS = [
+  { label: "Literal destructive commands", blocked: 6, total: 6, color: "var(--series-1)" },
+  { label: "Whitespace / semantic evasion", blocked: 3, total: 3, color: "var(--series-2)" },
+  { label: "Encoding evasion (b64/hex/rot13)", blocked: 5, total: 5, color: "var(--series-3)" },
+  { label: "Unicode evasion (confusables/ZW)", blocked: 2, total: 2, color: "var(--series-4)" },
+];
+
+const KNOWLEDGE = [
+  { label: "Andrew Bustamante (CIA tradecraft)", value: 14, color: "var(--series-1)" },
+  { label: "Gary Brecka (health/longevity)", value: 5, color: "var(--series-2)" },
+  { label: "Rob Luna (wealth strategy)", value: 3, color: "var(--series-3)" },
+  { label: "Palantir (systems architecture)", value: 3, color: "var(--series-4)" },
+];
+
+document.getElementById("t-tasks").textContent = ONTOLOGY.tasks;
+document.getElementById("t-results").textContent = ONTOLOGY.results;
+document.getElementById("t-knowledge").textContent = ONTOLOGY.knowledge;
+document.getElementById("t-links").textContent = ONTOLOGY.links;
+
+function renderBars(containerId, data, valueFn, labelFn, maxVal) {
+  const container = document.getElementById(containerId);
+  data.forEach(d => {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    const pct = Math.round((valueFn(d) / maxVal) * 100);
+    row.innerHTML = `
+      <div class="bar-label">${d.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%; background:${d.color};" data-pct="${pct}"></div>
+      </div>
+      <div class="bar-value">${labelFn(d)}</div>
+    `;
+    container.appendChild(row);
+  });
+  requestAnimationFrame(() => {
+    container.querySelectorAll(".bar-fill").forEach(el => {
+      el.style.width = el.dataset.pct + "%";
+    });
+  });
+}
+
+renderBars("attack-chart", ATTACKS, d => d.blocked, d => `${d.blocked}/${d.total}`, 6);
+renderBars("knowledge-chart", KNOWLEDGE, d => d.value, d => `${d.value}`, 14);
+
+const attackBody = document.querySelector("#attack-table tbody");
+ATTACKS.forEach(d => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${d.label}</td><td>${d.blocked}</td><td>${d.total}</td>`;
+  attackBody.appendChild(tr);
+});
+
+const knowledgeBody = document.querySelector("#knowledge-table tbody");
+KNOWLEDGE.forEach(d => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${d.label}</td><td>${d.value}</td>`;
+  knowledgeBody.appendChild(tr);
+});
+
+document.querySelectorAll(".table-toggle").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const table = document.getElementById(btn.dataset.target);
+    table.classList.toggle("show");
+    btn.textContent = table.classList.contains("show") ? "Hide table" : "Show as table";
+  });
+});
+</script>

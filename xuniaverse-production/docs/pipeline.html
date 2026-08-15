@@ -1,0 +1,142 @@
+<title>Agent Pipeline</title>
+<style>
+:root{
+  --bg:#f5f4f0;
+  --surface:#ffffff;
+  --line:#dcd8cc;
+  --ink:#20241f;
+  --dim:#6b6f63;
+  --accent:#3f6b4f;
+  --block:#a14b3a;
+  --block-bg:#f7e6e1;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14170f;
+    --surface:#1c2018;
+    --line:#33392c;
+    --ink:#e9e7dd;
+    --dim:#a2a596;
+    --accent:#7fbd94;
+    --block:#e07a63;
+    --block-bg:#2e1a15;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14170f;
+  --surface:#1c2018;
+  --line:#33392c;
+  --ink:#e9e7dd;
+  --dim:#a2a596;
+  --accent:#7fbd94;
+  --block:#e07a63;
+  --block-bg:#2e1a15;
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,sans-serif;}
+.wrap{max-width:1040px; margin:0 auto; padding:2.25rem 1.5rem 4rem;}
+h1{font-size:1.6rem; margin:0 0 .3rem; letter-spacing:-0.01em;}
+.sub{color:var(--dim); font-size:.9rem; max-width:66ch; line-height:1.5; margin:0 0 2rem;}
+figure{margin:0 0 2rem;}
+svg{width:100%; height:auto; display:block; color:var(--ink);}
+figcaption{font-size:.8rem; color:var(--dim); margin-top:.75rem; line-height:1.5;}
+.legend{
+  display:flex; gap:1.5rem; flex-wrap:wrap;
+  font-size:.78rem; color:var(--dim); margin-top:1.25rem;
+  border-top:1px solid var(--line); padding-top:1rem;
+}
+.legend span{display:flex; align-items:center; gap:.4rem;}
+.sw{width:14px; height:2px; background:currentColor;}
+.sw.block{background:var(--block);}
+.sw.accent{background:var(--accent);}
+</style>
+
+<div class="wrap">
+  <h1>xuniaverse-production agent pipeline</h1>
+  <p class="sub">The real, running path a task takes — from file to result — as verified live this session. Not the aspirational ecosystem diagram; this is what actually executes.</p>
+
+  <figure>
+    <svg viewBox="0 0 1000 460" role="img" aria-label="A task file is claimed by one of four worker threads, checked by the Zyra guard which either blocks it with a written reason or allows it through to the Doug agent (which delegates to coder and tester sub-agents), producing a result that is written to disk and also appended to a context log which feeds back into future tasks.">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+        </marker>
+        <marker id="arrowBlock" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--block)"/>
+        </marker>
+      </defs>
+
+      <!-- tasks dir -->
+      <rect x="20" y="60" width="140" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <text x="90" y="83" text-anchor="middle" font-size="12" font-weight="600">tasks/*.json</text>
+      <text x="90" y="99" text-anchor="middle" font-size="10" fill="currentColor" opacity="0.6">task file written</text>
+
+      <!-- claim -->
+      <line x1="160" y1="88" x2="215" y2="88" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="187" y="78" text-anchor="middle" font-size="10">claim (atomic)</text>
+      <rect x="220" y="60" width="140" height="56" rx="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <text x="290" y="83" text-anchor="middle" font-size="12" font-weight="600">claimed/</text>
+      <text x="290" y="99" text-anchor="middle" font-size="10" opacity="0.6">1 of 4 worker threads</text>
+
+      <!-- down to zyra -->
+      <line x1="290" y1="116" x2="290" y2="160" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="300" y="142" font-size="10">review()</text>
+
+      <!-- zyra guard -->
+      <rect x="190" y="164" width="200" height="64" rx="6" fill="none" stroke="var(--accent)" stroke-width="2"/>
+      <text x="290" y="190" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">Zyra guard</text>
+      <text x="290" y="206" text-anchor="middle" font-size="10" opacity="0.7">pattern + semantic + decode +</text>
+      <text x="290" y="219" text-anchor="middle" font-size="10" opacity="0.7">confusable + RICE checks</text>
+
+      <!-- block branch -->
+      <line x1="230" y1="228" x2="120" y2="290" stroke="var(--block)" stroke-width="1.5" marker-end="url(#arrowBlock)"/>
+      <text x="130" y="255" font-size="10" fill="var(--block)">blocked</text>
+      <rect x="20" y="294" width="180" height="56" rx="6" fill="var(--block-bg)" stroke="var(--block)" stroke-width="1.5"/>
+      <text x="110" y="317" text-anchor="middle" font-size="12" font-weight="600" fill="var(--block)">result: blocked_by=zyra</text>
+      <text x="110" y="333" text-anchor="middle" font-size="10" opacity="0.7">reason + classification logged</text>
+
+      <!-- allow branch -->
+      <line x1="360" y1="228" x2="480" y2="290" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="440" y="255" font-size="10">allowed</text>
+
+      <!-- doug -->
+      <rect x="420" y="294" width="200" height="90" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
+      <text x="520" y="318" text-anchor="middle" font-size="13" font-weight="700">Doug agent</text>
+      <text x="520" y="334" text-anchor="middle" font-size="10" opacity="0.7">claude -p --agent doug</text>
+      <text x="520" y="350" text-anchor="middle" font-size="10" opacity="0.7">reason→plan→act→observe</text>
+      <text x="520" y="366" text-anchor="middle" font-size="10" opacity="0.7">→test→fix→retest</text>
+
+      <!-- coder/tester sub-agents -->
+      <line x1="520" y1="384" x2="520" y2="420" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="530" y="405" font-size="10">delegates</text>
+      <rect x="440" y="420" width="80" height="34" rx="5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <text x="480" y="441" text-anchor="middle" font-size="11">coder</text>
+      <rect x="530" y="420" width="80" height="34" rx="5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <text x="570" y="441" text-anchor="middle" font-size="11">tester</text>
+
+      <!-- retry loop -->
+      <path d="M 420 320 Q 395 320 395 250 Q 395 210 420 210" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+      <text x="345" y="270" font-size="9" opacity="0.7">retry x3</text>
+      <text x="345" y="282" font-size="9" opacity="0.7">(0/2/5s backoff)</text>
+
+      <!-- result -->
+      <line x1="620" y1="330" x2="700" y2="330" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <rect x="704" y="294" width="180" height="72" rx="6" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <text x="794" y="318" text-anchor="middle" font-size="12" font-weight="600">results/*.json</text>
+      <text x="794" y="334" text-anchor="middle" font-size="10" opacity="0.7">stdout, exit code,</text>
+      <text x="794" y="349" text-anchor="middle" font-size="10" opacity="0.7">explain, attempts</text>
+
+      <!-- context loop back -->
+      <path d="M 794 294 Q 794 60 290 60 Q 240 60 240 118" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+      <text x="500" y="50" text-anchor="middle" font-size="10" fill="var(--accent)">context.jsonl — feeds prior task history into the next dispatch</text>
+
+    </svg>
+    <figcaption>The live pipeline in <code>agent-daemon.py</code>: 4 worker threads atomically claim task files, Zyra reviews every one before anything runs, blocked tasks never reach Doug, allowed tasks dispatch to Doug (which delegates to coder/tester and retries up to 3× on failure), and every real result feeds back into a context log that shapes future dispatches.</figcaption>
+  </figure>
+
+  <div class="legend">
+    <span><span class="sw"></span>normal flow</span>
+    <span><span class="sw block"></span>Zyra block path</span>
+    <span><span class="sw accent"></span>context feedback loop</span>
+  </div>
+</div>
