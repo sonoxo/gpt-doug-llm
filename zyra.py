@@ -1,4 +1,10 @@
-"""Zyra: local policy guardrails for GPT Doug.
+"""Zyra: unified local policy guardrails for GPT Doug.
+
+Merges three prior implementations:
+  - gpt-doug-llm/zyra.py (HMAC audit chain, strict mode, Foundry sink)
+  - gpt-doug-web/zyra.py (same lineage, web-facing variant)
+  - xuni-workers/zyra_guard.py (RICE social-engineering signals,
+    classification taxonomy, thread-safe logging)
 
 Zyra is a deterministic defense-in-depth layer, not a security boundary.
 It inspects user input and model output, redacts common secrets, and records
@@ -13,9 +19,11 @@ import re
 import hmac
 import fcntl
 import uuid
+import threading
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
+
 from security_text import normalize_security_text
 
 
@@ -27,12 +35,14 @@ class Verdict:
     reasons: list[str] = field(default_factory=list)
     requires_approval: bool = False
     control_ids: list[str] = field(default_factory=list)
+    classification: str = "UNCLASSIFIED"
+    rice_signals: list[str] = field(default_factory=list)
 
 
 class Zyra:
     """Fail-closed watchdog for terminal AI conversations."""
 
-    POLICY_VERSION = "ZYRA/2.0"
+    POLICY_VERSION = "ZYRA/3.0"
     VALID_DIRECTIONS = frozenset({"input", "output", "control"})
 
     SECRET_PATTERNS = (
@@ -54,6 +64,31 @@ class Zyra:
         (re.compile(r"(?i)\b(?:curl|wget|ssh|scp)\b"), "network command"),
     )
 
+    # RICE social-engineering pressure signals (from xuni-workers/zyra_guard.py)
+    RICE_SIGNALS = {
+        "reward": [r"\bI('ll| will) (pay|tip|reward) you\b", r"\byou('ll| will) (get|receive) .*(bonus|reward)\b"],
+        "ideology": [r"\bfor the greater good\b", r"\beveryone (else )?is doing (it|this)\b", r"\bit'?s the right thing to do\b"],
+        "coercion": [r"\bor (else|there will be consequences)\b", r"\byou (have|need) to.{0,20}(now|immediately)\b", r"\bif you don'?t.{0,40}(fired|fail|in trouble)\b"],
+        "ego": [r"\bonly you can\b", r"\ba (real|true) (expert|pro) would\b", r"\bprove (you're|you are) (smart|capable|good enough)\b"],
+    }
+    RICE_RE = {cat: [re.compile(p, re.IGNORECASE) for p in pats] for cat, pats in RICE_SIGNALS.items()}
+
+    # Classification taxonomy (from xuni-workers/zyra_guard.py)
+    CLASSIFICATION_LEVELS = {
+        "UNCLASSIFIED": 0,
+        "CUI": 1,
+        "CONFIDENTIAL": 2,
+        "SECRET": 3,
+        "TOP_SECRET": 4,
+    }
+    CLASSIFICATION_PENALTIES = {
+        "UNCLASSIFIED": 0,
+        "CUI": 5,
+        "CONFIDENTIAL": 15,
+        "SECRET": 30,
+        "TOP_SECRET": 60,
+    }
+
     def __init__(self, audit_path: str | Path | None = None, event_sink=None, audit_key: bytes | None = None, strict_audit: bool | None = None):
         self.audit_path = Path(audit_path or Path.home() / ".gpt-doug" / "zyra-audit.jsonl")
         self.event_sink = event_sink
@@ -63,8 +98,30 @@ class Zyra:
             raise ValueError("strict audit mode requires an HMAC key")
         self.sink_failures = 0
         self._previous_mac = "GENESIS"
+        self._audit_lock = threading.Lock()
         if self.audit_key and self.audit_path.exists() and self.audit_path.stat().st_size:
             self._previous_mac = self.verify_audit_chain()
+
+    def _rice_scan(self, text: str) -> list:
+        hits = []
+        for category, patterns in self.RICE_RE.items():
+            for pattern in patterns:
+                m = pattern.search(text)
+                if m:
+                    hits.append(f"{category}:{m.group(0)!r}")
+        return hits
+
+    def _classify(self, text: str) -> str:
+        text_lower = text.lower()
+        if any(kw in text_lower for kw in ("top secret", "ts//", "sap//")):
+            return "TOP_SECRET"
+        if any(kw in text_lower for kw in ("secret//", "classified secret")):
+            return "SECRET"
+        if any(kw in text_lower for kw in ("confidential//", "classified confidential")):
+            return "CONFIDENTIAL"
+        if any(kw in text_lower for kw in ("cui//", "controlled unclassified")):
+            return "CUI"
+        return "UNCLASSIFIED"
 
     def inspect(self, text: str, direction: str = "input") -> Verdict:
         if direction not in self.VALID_DIRECTIONS:
@@ -74,6 +131,8 @@ class Zyra:
             self._audit(direction, text if isinstance(text, str) else "", verdict)
             return verdict
         cleaned = normalize_security_text(text)
+        rice_hits = self._rice_scan(cleaned)
+        classification = self._classify(cleaned)
         reasons: list[str] = []
         for pattern, label in self.SECRET_PATTERNS:
             cleaned, count = pattern.subn(f"[REDACTED {label.upper()}]", cleaned)
@@ -82,10 +141,12 @@ class Zyra:
         blocked = [label for pattern, label in self.BLOCK_PATTERNS if pattern.search(cleaned)]
         approval = [label for pattern, label in self.APPROVAL_PATTERNS if pattern.search(cleaned)]
         if blocked:
-            verdict = Verdict(False, cleaned, "critical", reasons + blocked, control_ids=["ZYRA-POLICY-001"])
+            verdict = Verdict(False, cleaned, "critical", reasons + blocked, control_ids=["ZYRA-POLICY-001"],
+                              classification=classification, rice_signals=rice_hits)
         else:
             controls = (["ZYRA-DLP-001"] if reasons else []) + (["ZYRA-HITL-001"] if approval else [])
-            verdict = Verdict(True, cleaned, "medium" if approval or reasons else "low", reasons + approval, bool(approval), controls)
+            verdict = Verdict(True, cleaned, "medium" if approval or reasons else "low", reasons + approval, bool(approval), controls,
+                              classification=classification, rice_signals=rice_hits)
         self._audit(direction, text, verdict)
         return verdict
 
@@ -99,6 +160,8 @@ class Zyra:
             "risk": verdict.risk,
             "reasons": verdict.reasons,
             "control_ids": verdict.control_ids,
+            "classification": verdict.classification,
+            "rice_signals": verdict.rice_signals,
             "content_sha256": hashlib.sha256(original.encode(errors="replace")).hexdigest(),
         }
         if self.audit_key:
@@ -108,11 +171,12 @@ class Zyra:
             self._previous_mac = event["hmac_sha256"]
         try:
             self.audit_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-            with self.audit_path.open("a", encoding="utf-8") as handle:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
-                handle.write(json.dumps(event) + "\n")
-                handle.flush()
-                self.audit_path.chmod(0o600)
+            with self._audit_lock:
+                with self.audit_path.open("a", encoding="utf-8") as handle:
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+                    handle.write(json.dumps(event) + "\n")
+                    handle.flush()
+                    self.audit_path.chmod(0o600)
         except OSError as error:
             if self.strict_audit:
                 raise RuntimeError("Zyra audit write failed; request denied") from error
@@ -120,15 +184,25 @@ class Zyra:
             try:
                 self.event_sink.emit(event)
             except Exception:
-                # Foundry is supplemental: local enforcement never depends on
-                # external availability and conversation content is not queued.
                 self.sink_failures += 1
+
+    def review(self, prompt: str) -> dict:
+        """Compatibility method for xuni-workers interface."""
+        verdict = self.inspect(prompt, "input")
+        return {
+            "allowed": verdict.allowed,
+            "classification": verdict.classification,
+            "rice_signals": verdict.rice_signals,
+            "reasons": verdict.reasons,
+            "risk": verdict.risk,
+            "requires_approval": verdict.requires_approval,
+            "prompt_length": len(prompt),
+        }
 
     def status(self) -> str:
         return f"Zyra active // policy: {self.POLICY_VERSION} // audit: {self.audit_path} // sink failures: {self.sink_failures} // fail-closed policy online"
 
     def review_report(self) -> dict:
-        """Return content-free evidence suitable for a security review."""
         final_hmac = self.verify_audit_chain() if self.audit_key and self.audit_path.exists() else None
         events = []
         if self.audit_path.exists():

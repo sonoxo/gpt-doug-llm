@@ -1,0 +1,100 @@
+name: GPT Doug unified regression suite
+
+on:
+  push:
+    branches: [main, dev, "*"]
+  pull_request:
+    branches: [main, dev, "*"]
+  workflow_dispatch:
+    inputs:
+      run_full_suite:
+        description: "Run the full test suite including standalone tests"
+        required: false
+        default: "true"
+  schedule:
+    - cron: "0 8 * * *"
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+  issues: read
+  actions: read
+  deployments: read
+  statuses: write
+  security-events: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov
+          pip install cryptography  # for web/crypto_store.py
+
+      - name: Run unified pytest suite
+        run: python3 -m pytest tests/ -v --tb=short --cov=. --cov-report=xml
+
+      - name: Run zyra_guard standalone regression suite
+        run: python3 tests/test_zyra_guard.py
+
+      - name: Run ontology standalone regression suite
+        run: python3 tests/test_ontology_workers.py
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-py${{ matrix.python-version }}
+          path: coverage.xml
+
+  lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install linter
+        run: pip install ruff
+      - name: Run ruff check
+        run: ruff check . --output-format=github || true
+      - name: Run ruff format check
+        run: ruff format --check . || true
+
+  security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run Zyra security review
+        run: python3 security_review.py || true
+      - name: Run trust dossier
+        run: python3 workers/trust_dossier.py || true
+      - name: Python security scan (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit . || true

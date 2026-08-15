@@ -1,0 +1,632 @@
+(() => {
+  "use strict";
+
+  const $ = (sel) => document.querySelector(sel);
+
+  const chatLog = $("#chatLog");
+  const composerForm = $("#composerForm");
+  const composerInput = $("#composerInput");
+  const sendBtn = $("#sendBtn");
+  const stopBtn = $("#stopBtn");
+  const regenBtn = $("#regenBtn");
+  const historyList = $("#historyList");
+  const projectList = $("#projectList");
+  const newChatBtn = $("#newChatBtn");
+  const newProjectForm = $("#newProjectForm");
+  const newProjectName = $("#newProjectName");
+  const activeProjectLabel = $("#activeProject");
+  const runBtn = $("#runBtn");
+  const stopProjectBtn = $("#stopProjectBtn");
+  const runStatus = $("#runStatus");
+  const buildLogs = $("#buildLogs");
+  const previewFrame = $("#previewFrame");
+  const previewEmpty = $("#previewEmpty");
+  const fileListEl = $("#fileList");
+  const statusDot = $("#statusDot");
+  const connStatus = $("#connStatus");
+  const modelSelect = $("#modelSelect");
+
+  const STORAGE_KEY = "gpt-doug-conversations";
+  const MODEL_KEY = "gpt-doug-model";
+
+  let state = {
+    conversations: loadConversations(),
+    activeConvId: null,
+    activeProject: null,
+    controller: null, // AbortController for in-flight stream
+    lastUserMessage: null,
+  };
+
+  function loadConversations() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveConversations() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.conversations));
+  }
+
+  function newConversation() {
+    const conv = { id: crypto.randomUUID(), title: "New chat", messages: [] };
+    state.conversations.unshift(conv);
+    state.activeConvId = conv.id;
+    saveConversations();
+    renderHistory();
+    renderChat();
+  }
+
+  function activeConv() {
+    return state.conversations.find((c) => c.id === state.activeConvId) || null;
+  }
+
+  function renderHistory() {
+    historyList.innerHTML = "";
+    for (const conv of state.conversations) {
+      const div = document.createElement("div");
+      div.className = "side-item" + (conv.id === state.activeConvId ? " active" : "");
+      div.textContent = conv.title || "New chat";
+      div.title = conv.title || "New chat";
+      div.addEventListener("click", () => {
+        state.activeConvId = conv.id;
+        renderHistory();
+        renderChat();
+      });
+      historyList.appendChild(div);
+    }
+  }
+
+  // ---------- chat rendering ----------
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  }
+
+  function renderMarkdownish(text) {
+    // Minimal fenced-code-block rendering; everything else stays plain text.
+    const parts = text.split(/```/g);
+    let html = "";
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 0) {
+        html += escapeHtml(parts[i]);
+      } else {
+        const lines = parts[i].split("\n");
+        const first = lines[0];
+        const code = lines.slice(1).join("\n");
+        html += `<pre><code>${escapeHtml(code || first)}</code></pre>`;
+      }
+    }
+    return html;
+  }
+
+  function parseGeneratedFiles(text) {
+    // Looks for fenced blocks preceded by a "// filename: path" or "# filename: path" marker,
+    // or a markdown heading like "**path/to/file**" right before the fence.
+    const files = [];
+    const fenceRe = /```[a-zA-Z0-9_-]*\n([\s\S]*?)```/g;
+    const lines = text.split("\n");
+    let match;
+    const fenceStarts = [];
+    let idx = 0;
+    while ((match = fenceRe.exec(text)) !== null) {
+      fenceStarts.push({ start: match.index, content: match[1] });
+    }
+    const markerRe = /(?:\/\/|#)\s*filename:\s*(\S+)/i;
+    for (const fence of fenceStarts) {
+      let name = null;
+      let content = fence.content;
+
+      // Marker as the first line inside the fence (model sometimes puts it there
+      // despite instructions), e.g. ```html\n// filename: index.html\n<...>
+      const contentLines = content.split("\n");
+      const firstLineMatch = contentLines[0].match(markerRe);
+      if (firstLineMatch) {
+        name = firstLineMatch[1];
+        content = contentLines.slice(1).join("\n").replace(/^\n/, "");
+      }
+
+      if (!name) {
+        const before = text.slice(0, fence.start);
+        const beforeLines = before.trim().split("\n");
+        const lastLine = beforeLines[beforeLines.length - 1] || "";
+        let m = lastLine.match(markerRe);
+        if (m) name = m[1];
+        if (!name) {
+          m = lastLine.match(/\*\*([\w./-]+\.\w+)\*\*/);
+          if (m) name = m[1];
+        }
+        if (!name) {
+          m = lastLine.match(/^`([\w./-]+\.\w+)`$/);
+          if (m) name = m[1];
+        }
+      }
+
+      if (name) {
+        files.push({ path: name.replace(/^\/+/, ""), content });
+      }
+    }
+    return files;
+  }
+
+  function addMessageEl(role, text, opts = {}) {
+    const wrap = document.createElement("div");
+    wrap.className = `msg ${role}${opts.error ? " error" : ""}`;
+    const roleLabel = document.createElement("div");
+    roleLabel.className = "msg-role";
+    roleLabel.textContent = role === "user" ? "You" : role === "doug" ? "Doug" : "System";
+    const bubble = document.createElement("div");
+    bubble.className = "msg-bubble" + (opts.streaming ? " cursor-blink" : "");
+    bubble.innerHTML = renderMarkdownish(text || "");
+    wrap.appendChild(roleLabel);
+    wrap.appendChild(bubble);
+    chatLog.appendChild(wrap);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return { wrap, bubble };
+  }
+
+  function renderChat() {
+    chatLog.innerHTML = "";
+    const conv = activeConv();
+    if (!conv) return;
+    for (const m of conv.messages) {
+      const { wrap } = addMessageEl(m.role === "user" ? "user" : "doug", m.content, { error: m.error });
+      if (m.role === "assistant") {
+        const files = parseGeneratedFiles(m.content);
+        if (files.length) attachFileActions(wrap, files);
+      }
+    }
+  }
+
+  function attachFileActions(wrap, files) {
+    const row = document.createElement("div");
+    row.className = "file-chip-row";
+    for (const f of files) {
+      const chip = document.createElement("span");
+      chip.className = "file-chip";
+      chip.textContent = f.path;
+      row.appendChild(chip);
+    }
+    wrap.appendChild(row);
+
+    const btn = document.createElement("button");
+    btn.className = "save-files-btn";
+    btn.textContent = state.activeProject
+      ? `Save ${files.length} file(s) to "${state.activeProject}"`
+      : "Create a project first to save these files";
+    btn.disabled = !state.activeProject;
+    btn.addEventListener("click", () => saveFilesToProject(files, btn));
+    wrap.appendChild(btn);
+  }
+
+  async function saveFilesToProject(files, btn) {
+    if (!state.activeProject) return;
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(state.activeProject)}/files`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Doug-Client": "1" },
+        body: JSON.stringify({ files }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "save failed");
+      btn.textContent = `Saved ${data.written.length} file(s) ✓`;
+      logLine(`Saved ${data.written.length} file(s) to project "${state.activeProject}": ${data.written.join(", ")}`);
+      refreshFileList();
+      runBtn.disabled = false;
+    } catch (err) {
+      btn.textContent = "Save failed — retry";
+      btn.disabled = false;
+      logLine(`ERROR saving files: ${err.message}`);
+    }
+  }
+
+  // ---------- projects ----------
+
+  async function refreshProjects() {
+    try {
+      const res = await fetch("/api/projects");
+      const data = await res.json();
+      projectList.innerHTML = "";
+      for (const name of data.projects) {
+        const div = document.createElement("div");
+        div.className = "side-item" + (name === state.activeProject ? " active" : "");
+        div.textContent = name;
+        div.addEventListener("click", () => selectProject(name));
+        projectList.appendChild(div);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function selectProject(name) {
+    stopLogPolling();
+    state.activeProject = name;
+    activeProjectLabel.textContent = `Project: ${name}`;
+    runBtn.disabled = false;
+    runBtn.textContent = "▶ Run Project";
+    stopProjectBtn.hidden = true;
+    runStatus.textContent = "";
+    runStatus.className = "run-status";
+    previewFrame.hidden = true;
+    previewEmpty.hidden = false;
+    buildLogs.textContent = "";
+    refreshProjects();
+    refreshFileList();
+    switchTab("files");
+  }
+
+  async function refreshFileList() {
+    if (!state.activeProject) {
+      fileListEl.innerHTML = '<div class="empty-state">No files yet.</div>';
+      return;
+    }
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(state.activeProject)}/files`);
+      const data = await res.json();
+      if (!data.files || !data.files.length) {
+        fileListEl.innerHTML = '<div class="empty-state">No files yet — ask Doug to build something.</div>';
+        return;
+      }
+      fileListEl.innerHTML = "";
+      for (const f of data.files) {
+        const row = document.createElement("div");
+        row.className = "file-row";
+        row.textContent = f;
+        fileListEl.appendChild(row);
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  newProjectForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = newProjectName.value.trim();
+    if (!name) return;
+    if (!/^[a-zA-Z0-9_-]{1,64}$/.test(name)) {
+      logLine("ERROR: project names may only contain letters, numbers, - and _");
+      return;
+    }
+    try {
+      const res = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Doug-Client": "1" },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "failed to create project");
+      newProjectName.value = "";
+      await refreshProjects();
+      selectProject(name);
+      logLine(`Created project "${name}"`);
+    } catch (err) {
+      logLine(`ERROR: ${err.message}`);
+    }
+  });
+
+  runBtn.addEventListener("click", runProject);
+  stopProjectBtn.addEventListener("click", stopProject);
+
+  let logPollTimer = null;
+  let knownLogLines = 0;
+
+  function stopLogPolling() {
+    if (logPollTimer) clearInterval(logPollTimer);
+    logPollTimer = null;
+    knownLogLines = 0;
+  }
+
+  async function runProject() {
+    if (!state.activeProject) return;
+    const project = state.activeProject;
+    switchTab("logs");
+    logLine(`\n$ run "${project}"`);
+    runBtn.disabled = true;
+    runBtn.textContent = "Starting...";
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(project)}/start`, {
+        method: "POST",
+        headers: { "X-Doug-Client": "1" },
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        // Real server process — point the preview straight at its port.
+        logLine(`started ${data.kind || ""} server${data.cmd ? ` (${data.cmd})` : ""} on port ${data.port}`);
+        runStatus.textContent = `● running on :${data.port}`;
+        runStatus.className = "run-status live";
+        stopProjectBtn.hidden = false;
+        runBtn.textContent = "Restart";
+        startLogPolling(project, data.port);
+        // Give the process a moment to actually start listening before loading it.
+        setTimeout(() => {
+          previewFrame.src = `http://localhost:${data.port}/`;
+          previewFrame.hidden = false;
+          previewEmpty.hidden = true;
+          switchTab("preview");
+        }, 900);
+      } else {
+        // No runnable entry point (package.json/app.py/etc) — fall back to
+        // treating it as a static site and serving index.html directly.
+        logLine(data.error || "no server entry point found");
+        await runStaticFallback(project);
+      }
+    } catch (err) {
+      logLine(`ERROR: ${err.message}`);
+    } finally {
+      runBtn.disabled = false;
+      if (runBtn.textContent === "Starting...") runBtn.textContent = "▶ Run Project";
+    }
+  }
+
+  async function runStaticFallback(project) {
+    logLine(`$ falling back to static preview for "${project}"`);
+    try {
+      const res = await fetch(`/api/projects/${encodeURIComponent(project)}/run`);
+      const data = await res.json();
+      for (const line of data.logs) logLine(line);
+      if (data.ok && data.preview_url) {
+        previewFrame.src = data.preview_url + "?t=" + Date.now();
+        previewFrame.hidden = false;
+        previewEmpty.hidden = true;
+        switchTab("preview");
+      } else {
+        previewFrame.hidden = true;
+        previewEmpty.hidden = false;
+      }
+    } catch (err) {
+      logLine(`ERROR: ${err.message}`);
+    }
+  }
+
+  function startLogPolling(project, port) {
+    stopLogPolling();
+    logPollTimer = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/projects/${encodeURIComponent(project)}/status`);
+        const data = await res.json();
+        for (let i = knownLogLines; i < data.logs.length; i++) logLine(data.logs[i]);
+        knownLogLines = data.logs.length;
+        if (!data.running) {
+          logLine(`$ process exited`);
+          runStatus.textContent = "○ stopped";
+          runStatus.className = "run-status";
+          stopProjectBtn.hidden = true;
+          runBtn.textContent = "▶ Run Project";
+          stopLogPolling();
+        }
+      } catch {
+        /* transient — keep polling */
+      }
+    }, 1500);
+  }
+
+  async function stopProject() {
+    if (!state.activeProject) return;
+    stopProjectBtn.disabled = true;
+    try {
+      await fetch(`/api/projects/${encodeURIComponent(state.activeProject)}/stop`, {
+        method: "POST",
+        headers: { "X-Doug-Client": "1" },
+      });
+      logLine(`$ stopped "${state.activeProject}"`);
+      runStatus.textContent = "○ stopped";
+      runStatus.className = "run-status";
+      stopProjectBtn.hidden = true;
+      runBtn.textContent = "▶ Run Project";
+      stopLogPolling();
+    } catch (err) {
+      logLine(`ERROR stopping: ${err.message}`);
+    } finally {
+      stopProjectBtn.disabled = false;
+    }
+  }
+
+  function logLine(line) {
+    buildLogs.textContent += (buildLogs.textContent ? "\n" : "") + line;
+    buildLogs.scrollTop = buildLogs.scrollHeight;
+  }
+
+  // ---------- tabs ----------
+
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+  });
+
+  function switchTab(name) {
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+    document.querySelectorAll(".tab-pane").forEach((p) => p.classList.toggle("active", p.id === `tab-${name}`));
+  }
+
+  // ---------- streaming chat ----------
+
+  composerForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = composerInput.value.trim();
+    if (!text) return;
+    composerInput.value = "";
+    autoGrow();
+    sendMessage(text);
+  });
+
+  composerInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      composerForm.requestSubmit();
+    }
+  });
+  composerInput.addEventListener("input", autoGrow);
+  function autoGrow() {
+    composerInput.style.height = "auto";
+    composerInput.style.height = Math.min(composerInput.scrollHeight, 160) + "px";
+  }
+
+  stopBtn.addEventListener("click", () => {
+    if (state.controller) state.controller.abort();
+  });
+
+  regenBtn.addEventListener("click", () => {
+    if (!state.lastUserMessage) return;
+    const conv = activeConv();
+    if (!conv) return;
+    // Drop the last assistant message (and any trailing error) before regenerating.
+    while (conv.messages.length && conv.messages[conv.messages.length - 1].role !== "user") {
+      conv.messages.pop();
+    }
+    renderChat();
+    streamAssistantReply(conv);
+  });
+
+  async function sendMessage(text) {
+    if (!state.activeConvId) newConversation();
+    const conv = activeConv();
+    conv.messages.push({ role: "user", content: text });
+    if (conv.title === "New chat") conv.title = text.slice(0, 40);
+    state.lastUserMessage = text;
+    saveConversations();
+    renderHistory();
+    addMessageEl("user", text);
+    await streamAssistantReply(conv);
+  }
+
+  async function streamAssistantReply(conv) {
+    setBusy(true);
+    const { wrap, bubble } = addMessageEl("doug", "", { streaming: true });
+    let full = "";
+    const controller = new AbortController();
+    state.controller = controller;
+
+    try {
+      const res = await fetch("/api/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Doug-Client": "1" },
+        signal: controller.signal,
+        body: JSON.stringify({
+          messages: conv.messages.map(({ role, content }) => ({ role, content })),
+          model: modelSelect.value || undefined,
+        }),
+      });
+      if (!res.ok || !res.body) {
+        throw new Error(`server responded ${res.status}`);
+      }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        const chunks = buf.split("\n\n");
+        buf = chunks.pop();
+        for (const chunk of chunks) {
+          const line = chunk.trim();
+          if (!line.startsWith("data:")) continue;
+          const jsonStr = line.slice(5).trim();
+          if (!jsonStr) continue;
+          let evt;
+          try {
+            evt = JSON.parse(jsonStr);
+          } catch {
+            continue;
+          }
+          if (evt.error) {
+            throw new Error(evt.error);
+          }
+          const token = evt.message && evt.message.content ? evt.message.content : "";
+          if (token) {
+            full += token;
+            bubble.innerHTML = renderMarkdownish(full) + '<span class="cursor-blink"></span>';
+            chatLog.scrollTop = chatLog.scrollHeight;
+          }
+        }
+      }
+      bubble.innerHTML = renderMarkdownish(full);
+      conv.messages.push({ role: "assistant", content: full });
+      saveConversations();
+      const files = parseGeneratedFiles(full);
+      if (files.length) attachFileActions(wrap, files);
+    } catch (err) {
+      if (err.name === "AbortError") {
+        bubble.innerHTML = renderMarkdownish(full || "(stopped)");
+        if (full) conv.messages.push({ role: "assistant", content: full });
+        saveConversations();
+      } else {
+        wrap.classList.add("error");
+        bubble.textContent = `Error talking to GPT Doug: ${err.message}`;
+        conv.messages.push({ role: "assistant", content: `Error: ${err.message}`, error: true });
+        saveConversations();
+      }
+    } finally {
+      state.controller = null;
+      setBusy(false);
+    }
+  }
+
+  function setBusy(busy) {
+    sendBtn.disabled = busy;
+    stopBtn.hidden = !busy;
+    regenBtn.hidden = busy || !state.lastUserMessage;
+  }
+
+  // ---------- health check ----------
+
+  async function checkHealth() {
+    try {
+      const res = await fetch("/api/health");
+      const data = await res.json();
+      populateModelSelect(data.models || [], data.model);
+      const zyra = data.zyra_active ? ` · Zyra ${data.zyra_policy_version} watching` : "";
+      if (data.ollama_reachable && data.model_available) {
+        statusDot.className = "dot online";
+        connStatus.textContent = `Connected — model "${data.model}" ready${zyra}`;
+      } else if (data.ollama_reachable) {
+        statusDot.className = "dot offline";
+        connStatus.textContent = `Ollama up, but model "${data.model}" not found`;
+      } else {
+        statusDot.className = "dot offline";
+        connStatus.textContent = "Ollama unreachable at localhost:11434";
+      }
+    } catch {
+      statusDot.className = "dot offline";
+      connStatus.textContent = "Health check failed";
+    }
+  }
+
+  let modelsPopulated = false;
+  function populateModelSelect(models, defaultModel) {
+    if (modelsPopulated || !models.length) return;
+    modelsPopulated = true;
+    const saved = localStorage.getItem(MODEL_KEY);
+    modelSelect.innerHTML = "";
+    for (const name of models) {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      modelSelect.appendChild(opt);
+    }
+    modelSelect.value = saved && models.includes(saved) ? saved : defaultModel;
+  }
+  modelSelect.addEventListener("change", () => {
+    localStorage.setItem(MODEL_KEY, modelSelect.value);
+  });
+
+  // ---------- init ----------
+
+  newChatBtn.addEventListener("click", newConversation);
+
+  renderHistory();
+  if (state.conversations.length) {
+    state.activeConvId = state.conversations[0].id;
+    renderChat();
+  }
+  refreshProjects();
+  checkHealth();
+  setInterval(checkHealth, 15000);
+  regenBtn.hidden = true;
+  stopBtn.hidden = true;
+})();

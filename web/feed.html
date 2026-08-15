@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPT Doug — Idea Feed</title>
+<link rel="stylesheet" href="/app.css">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4726887877045421" crossorigin="anonymous"></script>
+<style>
+  body { padding: 24px; max-width: 900px; margin: 0 auto; }
+  .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .feed-header h1 { font-size: 1.2rem; margin: 0; color: var(--text); }
+  .feed-header a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; margin-left: 12px; }
+  .hint { color: var(--text-dim); font-size: 0.82rem; margin: 0 0 16px; }
+  .error { color: var(--danger); font-size: 0.85rem; }
+  .feed-list { display: flex; flex-direction: column; gap: 14px; }
+  .feed-card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .feed-card h2 { font-size: 1rem; margin: 0 0 4px; color: var(--text); }
+  .feed-card .meta { color: var(--text-dim); font-size: 0.78rem; margin-bottom: 10px; }
+  .feed-card .meta .owner { color: var(--accent); }
+  .feed-card .task { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 10px; }
+  .feed-card .output { white-space: pre-wrap; color: var(--text); font-size: 0.88rem; max-height: 120px; overflow: hidden; position: relative; }
+  .feed-card .output.expanded { max-height: none; }
+  .feed-card .show-more { margin-top: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; }
+  .empty { color: var(--text-dim); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+  <div class="feed-header">
+    <h1>Idea Feed</h1>
+    <div>
+      <a href="/agents">Agent chain</a>
+      <a href="/">&larr; Back to chat</a>
+    </div>
+  </div>
+  <p class="hint">Shipped ideas from everyone, newest first.</p>
+  <div id="feedError" class="error" hidden></div>
+  <div id="feedList" class="feed-list"></div>
+
+<script src="/feed.js"></script>
+</body>
+</html>

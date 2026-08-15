@@ -1,89 +1,146 @@
-# GPT Doug LLM
+# GPT Doug LLM — Unified Agentic System
 
 **EUREKA // Build anything // Keep humans in command.**
 
-GPT Doug is a free, local-first terminal AI powered by [Ollama](https://ollama.com). It provides a bold builder personality while keeping inference and conversations on your machine.
+GPT Doug is a free, local-first terminal AI powered by [Ollama](https://ollama.com),
+now unified into a single agentic system merging all prior GPT Doug projects:
 
-## Zyra cyber watchdog
+- **gpt-doug-llm** — terminal client, Zyra watchdog, 3FA auth, ASTRAL, EUREKA protocol
+- **gpt-doug-web** — web platform, multi-agent chain, LLM backend, crypto store, runner
+- **xuniaverse-production/xuni-workers** — agent daemon, ontology, XQE engine, trust dossier
+- **gpt-doug-roblox** — Roblox game director persona
+- **Modelfile.gpt-freewill** — autonomous engineering agent mode
 
-Zyra is an always-on, deterministic defense layer between the user and model. It:
+## Architecture
 
-- blocks destructive filesystem and disk commands;
-- detects common prompt-injection and security-bypass phrases;
-- redacts API keys, credentials, and private keys;
-- requires confirmation for publishing, deletion, transfers, purchases, and network commands;
-- writes content-free audit events containing timestamps, verdicts, reasons, and SHA-256 hashes;
-- stores its local audit log with owner-only permissions at `~/.gpt-doug/zyra-audit.jsonl`.
-- versions policy decisions with stable control IDs and unique event IDs;
-- HMAC-chains audit records and fails closed if required local evidence cannot be written;
-- generates content-free, machine-readable review evidence with `./security_review.py`.
-
-Zyra provides defense in depth. It does not replace operating-system sandboxing, least-privilege credentials, dependency scanning, or professional security review.
-See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the control inventory, evidence procedure, and residual risks.
-
-## Compliance gate
-
-GPT Doug applies a conservative, jurisdiction-aware baseline using verified operational context—not sensitive identity traits. Configure only claims your deployment can verify:
-
-```bash
-export GPT_DOUG_JURISDICTION="US-NY"
-export GPT_DOUG_ORG_TYPE="individual"       # individual, company, government
-export GPT_DOUG_ROLE="user"
-export GPT_DOUG_AGE_VERIFIED="true"
-export GPT_DOUG_GOV_AUTHORIZED="false"
-export GPT_DOUG_HUMAN_OVERSIGHT="true"
+```
+gpt-doug-llm/
+├── gpt-doug              # Terminal client (main entry point)
+├── zyra.py               # Unified watchdog (ZYRA/3.0)
+├── compliance.py         # Jurisdiction-aware policy gate
+├── auth_gate.py          # Three-factor access (3FA)
+├── astral.py             # Two-person high-assurance elevation
+├── eureka.py             # Cooperative AI messaging protocol
+├── dev_terminal.py       # Constrained EUREKA 369 terminal
+├── secret_store.py       # OS-backed secret retrieval (Keychain)
+├── foundry_guard.py      # Palantir Foundry governance bridge
+├── security_review.py    # Machine-readable review evidence
+├── security_text.py      # Unicode normalization for policy checks
+│
+├── agents/               # Multi-agent chain & LLM backend
+│   ├── agent_chain.py    #   Planner → Executor → Reviewer with sub-agent spawning
+│   ├── llm_backend.py    #   Ollama + OpenAI abstraction
+│   ├── ontology.py       #   Task-graph schema (Task → Steps → Artifacts)
+│   └── security_text.py  #   Unicode normalization (shared)
+│
+├── web/                  # Web platform
+│   ├── server.py         #   HTTP server + SSE streaming
+│   ├── auth.py           #   Single-password gate
+│   ├── crypto_store.py   #   At-rest AES encryption for projects
+│   ├── runner.py         #   Real project server execution
+│   ├── worker.py         #   Autonomous marketplace worker
+│   ├── ideas.py           #   Idea/task management
+│   ├── users.py          #   User management
+│   ├── paid_tasks.py     #   Paid task system
+│   ├── stripe_checkout.py #  Stripe payment integration
+│   ├── twilio_webhook.py #   Twilio SMS webhook
+│   ├── draft_comments.py #   YouTube comment drafting
+│   ├── youtube_comment.py #  YouTube comment automation
+│   └── *.html / *.js / *.css  # Frontend assets
+│
+├── workers/              # Background workers
+│   ├── agent-daemon.py   #   Task queue daemon (watches tasks/*.json)
+│   ├── zyra_guard.py     #   Pipeline-specific guard (RICE + classification)
+│   ├── ontology_workers.py #  Foundry-inspired ontology (objects, links, actions)
+│   ├── web_ui.py         #   Minimal web front end for the daemon
+│   ├── xqe.py            #   XQE reasoning pipeline (Superposition → Collapse)
+│   ├── trust_dossier.py  #   Security posture report generator
+│   └── twilio_calling.py #   Outbound calling via Twilio Voice API
+│
+├── models/               # Ollama Modelfiles
+│   ├── Modelfile         #   Base GPT Doug (qwen2.5-coder:7b)
+│   ├── Modelfile.gpt-freewill  #  Autonomous engineering agent
+│   └── AGENTS.md         #   Roblox game director persona
+│
+└── tests/                # Unified test suite (55 tests)
+    ├── test_zyra.py             #   Core Zyra tests
+    ├── test_zyra_unified.py     #   RICE signals + classification tests
+    ├── test_zyra_guard.py        #   Attack/evasion regression suite
+    ├── test_eureka.py            #   EUREKA protocol tests
+    ├── test_auth_gate.py         #   3FA authentication tests
+    ├── test_astral.py            #   ASTRAL two-person control tests
+    ├── test_compliance.py        #   Compliance gate tests
+    ├── test_dev_terminal.py      #   Dev terminal tests
+    ├── test_foundry_guard.py     #   Foundry bridge tests
+    ├── test_agent_daemon.py      #   Agent daemon tests
+    ├── test_ontology_workers.py  #   Ontology regression suite
+    └── test_dev_terminal.py      #   Dev terminal tests
 ```
 
-The gate blocks autonomous weapons/targeting, social scoring, protected-trait inference, and deceptive civic impersonation. Government and high-impact use requires verified authorization and recorded human review. Race, religion, gender, disability, sexual orientation, ethnicity, and similar protected traits are never accepted as access-control inputs.
+## Zyra 3.0 — Unified Watchdog
 
-This code is a technical baseline—not legal advice, government authorization, certification, or a guarantee of global compliance. Deployers must maintain a current jurisdictional policy register, complete impact assessments, obtain counsel, and independently validate controls. The design is informed by the NIST AI RMF's Govern/Map/Measure/Manage lifecycle and its Generative AI Profile.
+Zyra is the deterministic defense-in-depth layer. Version 3.0 merges:
 
-## Required three-factor access
+- **HMAC audit chain** (from gpt-doug-llm) — tamper-evident, fail-closed logging
+- **Secret redaction** (from gpt-doug-llm) — API keys, private keys, credentials
+- **Block patterns** (from gpt-doug-llm) — destructive commands, prompt injection
+- **RICE social-engineering signals** (from xuni-workers) — Reward/Ideology/Coercion/Ego detection
+- **Classification taxonomy** (from xuni-workers) — UNCLASSIFIED through TOP_SECRET
+- **Thread-safe logging** (from xuni-workers) — lock-protected audit writes
+- **`review()` interface** (from xuni-workers) — dict-return compatibility for the daemon
 
-GPT Doug refuses to start unless an administrator or identity provider supplies three verified factors: an approved business email, an E.164 telephone number, and a Google Authenticator-compatible TOTP secret. Free consumer email domains are rejected.
+Zyra does not replace OS sandboxing, least-privilege, dependency scanning, or professional review.
+
+## Quick Start
+
+### Terminal Client
 
 ```bash
+# Install Ollama and pull a model
+ollama pull qwen2.5-coder:7b
+
+# Create GPT Doug
+ollama create gpt-doug -f models/Modelfile
+
+# Set up 3FA environment
 export GPT_DOUG_VERIFIED_BUSINESS_EMAIL="builder@example.com"
 export GPT_DOUG_ALLOWED_EMAIL_DOMAINS="example.com"
 export GPT_DOUG_VERIFIED_PHONE="+12125550123"
-export GPT_DOUG_TOTP_SECRET="BASE32SECRET"
+export GPT_DOUG_JURISDICTION="US-NY"
+
+# Launch
 ./gpt-doug
 ```
 
-The secret should be provisioned to Google Authenticator through your identity provider. Never commit it or store it in shell history. The CLI validates identity claims but does not send email or SMS; production deployments must obtain those verified claims from an IdP with phishing-resistant MFA, rate limiting, recovery controls, and session revocation.
-
-### Optional Palantir Foundry governance bridge
-
-Zyra can send metadata-only policy events to an administrator-provisioned Foundry ingestion or Action endpoint. It never exports prompts, responses, credentials, or content hashes, and it cannot receive commands from Foundry.
+### Web Platform
 
 ```bash
-export FOUNDRY_SECURITY_ENDPOINT="https://your-stack.palantirfoundry.com/your-approved-ingestion-endpoint"
-export FOUNDRY_ALLOWED_HOST="your-stack.palantirfoundry.com"
-export FOUNDRY_TOKEN="your-short-lived-token"
-./gpt-doug
+cd web
+python3 server.py
+# Opens at http://localhost:8787
 ```
 
-For production, use a least-privilege OAuth2 client managed by the Foundry administrator. Never commit tokens. The bridge is intended for authorized cybersecurity governance and incident auditing—not weapons, targeting, or autonomous combat decisions.
+### Agent Daemon
 
-## Quick start
+```bash
+# Drop a task file
+echo '{"id": "task-1", "prompt": "build a REST API"}' > workers/tasks/task-1.json
 
-1. Install Ollama and download a supported model:
+# Run the daemon
+python3 workers/agent-daemon.py
+```
 
-   ```bash
-   ollama pull llama3.2
-   ```
+### FreeWill Autonomous Mode
 
-2. Create GPT Doug:
+```bash
+ollama create gpt-freewill -f models/Modelfile.gpt-freewill
+```
 
-   ```bash
-   ollama create gpt-doug -f Modelfile
-   ```
+### Run Tests
 
-3. Launch:
-
-   ```bash
-   ./gpt-doug
-   ```
+```bash
+python3 -m pytest tests/ -v
+```
 
 ## Commands
 
@@ -92,6 +149,8 @@ For production, use a least-privilege OAuth2 client managed by the Foundry admin
 - `/mission` — display the operating principles
 - `/zyra` — show watchdog status
 - `/compliance` — show declared compliance context
+- `/deepthink` — toggle deep think mode (draft → self-critique → revise)
+- `/eureka 369` — request constrained developer session
 - `/quit` — exit
 
 ## Principles
@@ -102,52 +161,19 @@ For production, use a least-privilege OAuth2 client managed by the Foundry admin
 4. Ask before destructive or external actions.
 5. Keep humans in command.
 
-## EUREKA cooperative language
-
-`EUREKA/1.0` is GPT Doug's compact JSON protocol for AI systems helping each other without bypassing controls. It supports six explicit signals: `HELLO`, `PLAN`, `REQUEST`, `EVIDENCE`, `DECISION`, and `HANDOFF`.
-
-Every message includes sender, recipient, purpose, payload, human/service authorization, timestamp, and a unique ID. Messages are limited to 32 KiB and remain subject to Zyra inspection and the compliance gate. EUREKA does not grant tools, permissions, identity, or authority by itself.
-
-```python
-from eureka import EurekaMessage, Signal
-
-message = EurekaMessage.create(
-    Signal.REQUEST,
-    sender="gpt-doug",
-    recipient="review-agent",
-    purpose="review a proposed patch",
-    payload={"commit": "abc123"},
-    authorized_by="project-owner",
-)
-print(message.to_json())
-```
-
-## EUREKA 369 Dev Terminal
-
-Enter `/eureka 369` inside GPT Doug to request a constrained developer session. The phrase is not a password and grants nothing by itself. Elevation requires:
-
-- successful startup 3FA;
-- `GPT_DOUG_ROLE=developer` or `GPT_DOUG_ROLE=admin`;
-- a fresh Google Authenticator code;
-- a Zyra audit event.
-
-The terminal supports only `status`, `audit`, `config`, `help`, and `exit`. It has no arbitrary shell, test discovery, code evaluation, file mutation, secret display, network operation, permission change, or security-control bypass.
-
-Security secrets are loaded directly from the operating-system secret store. macOS uses Keychain; environment-secret fallback is rejected unless explicitly enabled for non-production development. Child processes are never given privileged diagnostic access.
-
-### ASTRAL — S.AGI × Q
-
-ASTRAL is the fail-closed high-assurance layer above EUREKA 369. It requires an independent security officer with a separate business identity, phone, and Google Authenticator secret; enforces two-person approval; caps elevated sessions at five minutes and 20 commands; locks authorization after repeated failures; and HMAC-chains Zyra audit records using a key of at least 256 bits.
-
-```bash
-export ASTRAL_SECURITY_OFFICER_EMAIL="security@example.com"
-export ASTRAL_SECURITY_OFFICER_PHONE="+12125550124"
-export ASTRAL_SECURITY_OFFICER_TOTP_SECRET="SEPARATEBASE32SECRET"
-export ASTRAL_AUDIT_HMAC_KEY="$(openssl rand -base64 32)"
-```
-
-Store these values in a managed secret store—not source code or shell history. ASTRAL is an unclassified engineering baseline, not a Top Secret accreditation, clearance, authorization to operate, or substitute for an accredited government environment.
-
 ## License
 
 MIT. GPT Doug is an independent open-source project.
+
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for the security policy, vulnerability reporting process, and known limitations.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR process.
+
+## Disclaimer
+
+GPT Doug is an independent open-source project. All knowledge base entries are from public sources, properly attributed. No government entity (CIA, FBI, NSA) or corporation (IBM, MIT) has reviewed, endorsed, or authorized this software. Palantir Foundry references are pattern-inspired, not connected to any live Foundry tenant or API. Zyra is a keyword/pattern guard, not a semantic security system. OS-level sandboxing, least-privilege, and professional security review are still required.

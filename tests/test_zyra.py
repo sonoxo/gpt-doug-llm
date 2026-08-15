@@ -67,7 +67,7 @@ class ZyraTests(unittest.TestCase):
         verdict = zyra.inspect("publish the release")
         report = zyra.review_report()
         self.assertIn("ZYRA-HITL-001", verdict.control_ids)
-        self.assertEqual(report["policy_version"], "ZYRA/2.0")
+        self.assertEqual(report["policy_version"], "ZYRA/3.0")
         self.assertEqual(report["audit_integrity"], "verified")
         self.assertTrue(report["audit_owner_only"])
 

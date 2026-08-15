@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPT Doug — Your task</title>
+<link rel="stylesheet" href="/app.css">
+<style>
+  body { padding: 24px; max-width: 700px; margin: 0 auto; }
+  .card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+  .card h1 { font-size: 1.2rem; margin: 0 0 10px; color: var(--text); }
+  .hint { color: var(--text-dim); font-size: 0.85rem; }
+  .status-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; margin-left: 8px; }
+  .status-pill.paid, .status-pill.processing { background: #17251d; color: var(--accent); border: 1px solid var(--accent-dim); }
+  .status-pill.done { background: #17251d; color: var(--accent); border: 1px solid var(--accent-dim); }
+  .status-pill.failed { background: #3a1b1b; color: #ffb3b3; border: 1px solid #6b2c2c; }
+  .result { white-space: pre-wrap; color: var(--text); font-size: 0.9rem; margin-top: 16px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Your task <span id="statusPill" class="status-pill"></span></h1>
+    <div id="taskText" class="hint"></div>
+    <div id="resultBox" class="result"></div>
+  </div>
+<script src="/paid-task.js"></script>
+</body>
+</html>

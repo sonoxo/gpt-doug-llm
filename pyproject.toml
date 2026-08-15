@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "gpt-doug-llm"
+version = "1.0.0"
+description = "Unified local-first agentic AI system with Zyra cybersecurity watchdog, Golden Shield perimeter defense, and 24/7 Sentinel threat intelligence scanner."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Douglas Brown Jr", email = "zyra.localhost@gmail.com"},
+]
+keywords = ["ai", "security", "agents", "ollama", "cybersecurity", "watchdog", "threat-intelligence", "sentinel", "ddos", "local-first"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Security :: Cryptography",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.optional-dependencies]
+web = ["cryptography"]
+test = ["pytest", "pytest-cov"]
+lint = ["ruff"]
+all = ["cryptography", "pytest", "pytest-cov", "ruff"]
+
+[project.scripts]
+gpt-doug = "gpt_doug:main"
+zyra-sentinel = "golden_shield:start_247_monitoring"
+
+[project.urls]
+Homepage = "https://github.com/sonoxo/gpt-doug-llm"
+Repository = "https://github.com/sonoxo/gpt-doug-llm"
+Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
+
+[tool.setuptools]
+packages = ["agents", "web", "workers", "tests", "models"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["*Tests"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.coverage.run]
+source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard"]

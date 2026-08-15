@@ -11,6 +11,8 @@ import urllib.request
 import getpass
 
 from zyra import Zyra
+from golden_shield import GoldenShield
+from golden_shield import ZyraSentinel
 from foundry_guard import FoundrySecuritySink
 from compliance import ComplianceGate, UserContext
 from auth_gate import ThreeFactorGate, VerifiedIdentity
@@ -18,6 +20,7 @@ from dev_terminal import DevTerminal
 from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
+from ontology import Ontology
 
 MODEL = "gpt-doug"
 API = "http://127.0.0.1:11434/api/chat"
@@ -116,6 +119,8 @@ def main():
     except ValueError as error:
         raise SystemExit(f"Zyra Foundry configuration rejected: {error}")
     zyra = Zyra(event_sink=foundry_sink, audit_key=astral_config.audit_hmac_key)
+    shield = GoldenShield(audit_key=astral_config.audit_hmac_key)
+    sentinel = ZyraSentinel()
     user_context = UserContext.from_environment()
     compliance = ComplianceGate(user_context)
     dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
@@ -125,8 +130,11 @@ def main():
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
     print(CYAN + ("FOUNDRY // GOVERNANCE BRIDGE ACTIVE" if foundry_sink else "FOUNDRY // BRIDGE DISABLED") + RESET)
     print(CYAN + "COMPLIANCE // " + compliance.status() + RESET)
+    print(CYAN + "ONTOLOGY // " + Ontology.display().split("\n")[0] + " // " + str(len(Ontology.knowledge())) + " knowledge entries" + RESET)
     print(CYAN + "3FA // " + auth.summary() + RESET)
     print(CYAN + "ASTRAL // S.AGI × Q // TWO-PERSON CONTROL ACTIVE" + RESET)
+    print(CYAN + "GOLDEN SHIELD // PERIMETER DEFENSE ACTIVE" + RESET)
+    print(CYAN + "SENTINEL // 24/7 THREAT MONITORING // ON AND OFF PLANET" + RESET)
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
     history = []
     while True:
@@ -144,7 +152,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /compliance  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -156,8 +164,66 @@ def main():
         if prompt == "/zyra":
             print(zyra.status())
             continue
+        if prompt == "/shield":
+            print(shield.display())
+            continue
+        if prompt == "/sentinel":
+            print(sentinel.display())
+            continue
+        if prompt == "/scan":
+            print("SENTINEL // Running full sweep scan...")
+            report = sentinel.full_sweep()
+            print(sentinel.latest_findings_display())
+            continue
+        if prompt == "/sentinel start":
+            sentinel.start_continuous()
+            print("SENTINEL // 24/7 continuous monitoring started")
+            continue
+        if prompt == "/sentinel stop":
+            sentinel.stop_continuous()
+            print("SENTINEL // continuous monitoring stopped")
+            continue
         if prompt == "/compliance":
             print(compliance.status())
+            continue
+        if prompt == "/ontology":
+            print(Ontology.display())
+            continue
+        if prompt.startswith("/knowledge "):
+            query = prompt[len("/knowledge "):]
+            links = Ontology.task_knowledge("search", query, top_n=5)
+            if not links:
+                print("No matching knowledge entries found.")
+            else:
+                entries = {e["id"]: e for e in Ontology.knowledge()}
+                for link in links:
+                    entry = entries.get(link["to"][1])
+                    if entry:
+                        print(f"  - ({entry.get('attribution', '?')}) {entry.get('summary', '?')[:80]} [confidence={link['confidence']}]")
+            continue
+        if prompt == "/tasks":
+            tasks = Ontology.tasks()
+            if not tasks:
+                print("No tasks in queue.")
+            else:
+                for t in tasks:
+                    print(f"  [{t['status']}] {t['id']}: {t.get('prompt', '?')[:60]}")
+            continue
+        if prompt.startswith("/submit "):
+            parts = prompt[len("/submit "):].split(" ", 1)
+            if len(parts) < 2:
+                print("Usage: /submit <task_id> <prompt>")
+            else:
+                task_id, task_prompt = parts[0], parts[1]
+                verdict = zyra.inspect(task_prompt, "input")
+                if not verdict.allowed:
+                    print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
+                else:
+                    try:
+                        result = Ontology.submit_task(task_id, verdict.text)
+                        print(f"Task submitted: {result['task_id']} -> {result['path']}")
+                    except Exception as e:
+                        print(f"Submit failed: {e}")
             continue
         if prompt.lower() in {"eureka 369", "/eureka 369"}:
             zyra.inspect("EUREKA 369 developer elevation request", "control")
@@ -177,20 +243,37 @@ def main():
             if review not in {"y", "yes"}:
                 print("Request cancelled.")
                 continue
-        verdict = zyra.inspect(prompt, "input")
-        if not verdict.allowed:
-            print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
+        assessment = shield.inspect_inbound(prompt, "terminal")
+        if assessment.action == "ELIMINATE":
+            print("GOLDEN SHIELD // THREAT ELIMINATED // " + assessment.reason)
             continue
-        if verdict.requires_approval:
-            answer = input("ZYRA APPROVAL REQUIRED // continue? [y/N] ").strip().lower()
-            if answer not in {"y", "yes"}:
+        if assessment.action == "BLOCK":
+            print("GOLDEN SHIELD // BLOCKED // " + assessment.reason)
+            continue
+        if assessment.action == "QUARANTINE":
+            if assessment.rate_limited:
+                print("GOLDEN SHIELD // RATE LIMITED // " + assessment.reason)
+                continue
+            review = input("GOLDEN SHIELD // APPROVAL REQUIRED // continue? [y/N] ").strip().lower()
+            if review not in {"y", "yes"}:
                 print("Action cancelled.")
+                continue
+        verdict = assessment.zyra_verdict
+        if not verdict:
+            verdict = zyra.inspect(prompt, "input")
+            if not verdict.allowed:
+                print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
                 continue
         history.append({"role": "user", "content": verdict.text})
         print(GREEN + ("doug (deep think) > " if deep_think else "doug > ") + RESET, end="")
         if deep_think:
             final_text, think_passes = deep_think_chat(history, zyra)
-            print(final_text)
+            out_assessment = shield.inspect_outbound(final_text, "model")
+            if out_assessment.action == "BLOCK":
+                print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
+                continue
+            safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else final_text
+            print(safe_text)
             if len(think_passes) > 1 and think_passes[0].text != think_passes[-1].text:
                 print("DEEP THINK // revised after self-critique")
             if final_text:
@@ -198,10 +281,15 @@ def main():
         else:
             answer = chat(history)
             if answer:
-                output_verdict = zyra.inspect(answer, "output")
-                print(output_verdict.text)
-                if output_verdict.text != answer: print("ZYRA NOTICE // sensitive output was redacted")
-                history.append({"role": "assistant", "content": output_verdict.text})
+                out_assessment = shield.inspect_outbound(answer, "model")
+                if out_assessment.action == "BLOCK":
+                    print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
+                    continue
+                safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else answer
+                print(safe_text)
+                if safe_text != answer:
+                    print("GOLDEN SHIELD // output was sterilized")
+                history.append({"role": "assistant", "content": safe_text})
 
 
 if __name__ == "__main__":

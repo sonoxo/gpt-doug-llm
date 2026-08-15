@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPT Doug — Agent Chain</title>
+<link rel="stylesheet" href="/app.css">
+<style>
+  body { padding: 24px; max-width: 900px; margin: 0 auto; }
+  .agents-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .agents-header h1 { font-size: 1.2rem; margin: 0; color: var(--text); }
+  .agents-header a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; }
+  #taskForm { display: flex; gap: 10px; margin-bottom: 20px; }
+  #taskInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; }
+  #taskForm button { background: var(--accent); color: #03140a; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .stage-list { display: flex; flex-direction: column; gap: 10px; }
+  .stage-card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .stage-card .model { color: var(--accent); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stage-card .out { white-space: pre-wrap; color: var(--text); font-size: 0.88rem; margin-top: 6px; }
+  .status-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; margin-left: 10px; }
+  .status-pill.running { background: #17251d; color: var(--accent); border: 1px solid var(--accent-dim); }
+  .status-pill.done { background: #17251d; color: var(--accent); border: 1px solid var(--accent-dim); }
+  .status-pill.error { background: #3a1b1b; color: #ffb3b3; border: 1px solid #6b2c2c; }
+  #reviewBox { margin-top: 16px; padding: 14px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-2); }
+  #reviewBox.pass { border-color: var(--accent-dim); }
+  #reviewBox.fail { border-color: #6b2c2c; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn { background: var(--panel-2); color: var(--text-dim); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+  .tab-btn.active { color: var(--accent); border-color: var(--accent-dim); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  #saveIdeaBox { margin-top: 14px; }
+  #saveIdeaForm { display: flex; gap: 8px; }
+  #saveIdeaForm input { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; }
+  #saveIdeaForm button { background: var(--accent); color: #03140a; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .history-item, .idea-item { display: flex; justify-content: space-between; align-items: center; }
+  .idea-item .status { font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); }
+  .idea-item .status.shipped { color: var(--accent); border-color: var(--accent-dim); }
+  .idea-item button { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+  .card { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  .card h2 { font-size: 0.95rem; margin: 0 0 8px; color: var(--text); }
+  .hint { color: var(--text-dim); font-size: 0.82rem; margin: 0 0 12px; }
+  .error { color: var(--danger); font-size: 0.85rem; }
+  #accountForm { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+  #accountForm input { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; }
+  #accountForm button[type="submit"] { background: var(--accent); color: #03140a; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  #whoami { color: var(--text-dim); font-size: 0.85rem; margin-right: 12px; }
+</style>
+</head>
+<body>
+  <div class="agents-header">
+    <h1>Autonomous Agent Chain <span id="jobStatus"></span></h1>
+    <div>
+      <span id="whoami"></span>
+      <a href="/feed">Browse feed</a>
+      <a href="/">&larr; Back to chat</a>
+    </div>
+  </div>
+
+  <div id="workerBox" class="card">
+    <h2>Autonomous worker</h2>
+    <div id="workerStatus" class="hint">checking...</div>
+  </div>
+
+  <div id="accountBox" class="card" hidden>
+    <h2>Account</h2>
+    <p class="hint">Log in with a personal account to attribute your saved ideas to yourself instead of "operator".</p>
+    <div class="tabs">
+      <button class="tab-btn active" data-acct-tab="login">Log in</button>
+      <button class="tab-btn" data-acct-tab="signup">Sign up</button>
+    </div>
+    <form id="accountForm">
+      <input id="acctUsername" placeholder="Username" autocomplete="username" required />
+      <input id="acctPassword" type="password" placeholder="Password" autocomplete="current-password" required />
+      <button type="submit" id="acctSubmit">Log in</button>
+      <div id="acctError" class="error" hidden></div>
+    </form>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="run">New run</button>
+    <button class="tab-btn" data-tab="history">History</button>
+    <button class="tab-btn" data-tab="ideas">Ideas</button>
+  </div>
+
+  <div id="tab-run" class="tab-pane active">
+    <form id="taskForm">
+      <input id="taskInput" placeholder="Describe a task for the agents to complete end-to-end..." autocomplete="off" required />
+      <button type="submit">Run</button>
+    </form>
+
+    <div id="stages" class="stage-list"></div>
+    <div id="reviewBox" hidden></div>
+    <div id="saveIdeaBox" hidden>
+      <form id="saveIdeaForm">
+        <input id="ideaTitle" placeholder="Title this idea to save it..." autocomplete="off" required />
+        <button type="submit">Save as idea</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="tab-history" class="tab-pane">
+    <div id="historyList" class="stage-list"></div>
+  </div>
+
+  <div id="tab-ideas" class="tab-pane">
+    <div id="ideasList" class="stage-list"></div>
+  </div>
+
+<script src="/agents.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPT Doug — vibe coding</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div id="shell">
+
+  <aside id="sidebar">
+    <div class="brand">
+      <span class="dot" id="statusDot"></span>
+      <span>GPT DOUG</span>
+    </div>
+
+    <button id="newChatBtn" class="side-btn primary">+ New chat</button>
+
+    <div class="side-section">
+      <div class="side-heading">Model</div>
+      <select id="modelSelect" class="model-select"></select>
+    </div>
+
+    <div class="side-section">
+      <div class="side-heading">Conversations</div>
+      <div id="historyList" class="side-list"></div>
+    </div>
+
+    <div class="side-section">
+      <div class="side-heading">Projects</div>
+      <div id="projectList" class="side-list"></div>
+      <form id="newProjectForm" class="inline-form">
+        <input id="newProjectName" placeholder="project-name" autocomplete="off" />
+        <button type="submit">+</button>
+      </form>
+    </div>
+
+    <div id="connStatus" class="conn-status">checking Ollama...</div>
+  </aside>
+
+  <main id="main">
+    <header id="topbar">
+      <div id="activeProject">No project selected</div>
+      <div class="topbar-actions">
+        <span id="runStatus" class="run-status"></span>
+        <button id="stopProjectBtn" class="ghost-btn" hidden>■ Stop Server</button>
+        <button id="runBtn" class="run-btn" disabled>▶ Run Project</button>
+      </div>
+    </header>
+
+    <div id="chatLog"></div>
+
+    <div id="composerWrap">
+      <div id="composerActions">
+        <button id="stopBtn" class="ghost-btn" hidden>■ Stop</button>
+        <button id="regenBtn" class="ghost-btn" hidden>↻ Regenerate</button>
+      </div>
+      <form id="composerForm">
+        <textarea id="composerInput" rows="1" placeholder="Describe what to build, or ask Doug anything..."></textarea>
+        <button id="sendBtn" type="submit">Send</button>
+      </form>
+    </div>
+  </main>
+
+  <section id="rightPanel">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="preview">Preview</button>
+      <button class="tab-btn" data-tab="logs">Build Logs</button>
+      <button class="tab-btn" data-tab="files">Files</button>
+    </div>
+
+    <div id="tab-preview" class="tab-pane active">
+      <div id="previewEmpty" class="empty-state">Create a project and hit "Run Project" to preview it here.</div>
+      <iframe id="previewFrame" hidden sandbox="allow-scripts allow-forms allow-popups" referrerpolicy="no-referrer"></iframe>
+    </div>
+
+    <div id="tab-logs" class="tab-pane">
+      <pre id="buildLogs"></pre>
+    </div>
+
+    <div id="tab-files" class="tab-pane">
+      <div id="fileList" class="empty-state">No files yet.</div>
+    </div>
+  </section>
+
+  <div id="lockOverlay" class="modal-overlay">
+    <form id="lockForm" class="modal">
+      <h3 id="lockTitle">Unlock conversation history</h3>
+      <p id="lockHint" class="lock-hint"></p>
+      <input id="lockPassphrase" type="password" placeholder="Passphrase" autocomplete="current-password" required />
+      <div id="lockError" class="lock-error" hidden></div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">Unlock</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
