@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import subprocess
-import sys
 import time
 from pathlib import Path
 
@@ -35,16 +33,9 @@ class DevTerminal:
     def execute(self, command: str) -> str:
         command = command.strip().lower()
         if command == "help":
-            return "help | status | test | audit | config | exit"
+            return "help | status | audit | config | exit"
         if command == "status":
             return f"EUREKA 369 ACTIVE // role={self.context.role} // root={self.project_root.name}"
-        if command == "test":
-            result = subprocess.run(
-                [sys.executable, "-m", "unittest", "-v"], cwd=self.project_root,
-                capture_output=True, text=True, timeout=60, check=False,
-            )
-            output = (result.stdout + result.stderr).strip()
-            return f"exit={result.returncode}\n{output[-12_000:]}"
         if command == "audit":
             if not self.audit_path.exists():
                 return "No Zyra audit events."

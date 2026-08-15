@@ -1,6 +1,7 @@
 import base64
 import os
 import unittest
+import tempfile
 from unittest.mock import Mock, patch
 
 from astral import AstralConfig, AstralGate
@@ -32,7 +33,7 @@ class AstralTests(unittest.TestCase):
         with patch.dict(os.environ, self.env(), clear=True):
             config = AstralConfig.from_environment(primary_identity)
         primary = Mock(); primary.authenticate.return_value = True
-        gate = AstralGate(config, primary)
+        gate = AstralGate(config, primary, tempfile.mktemp())
         gate.officer_gate.authenticate = Mock(return_value=True)
         self.assertTrue(gate.authorize("111111", "222222"))
 
@@ -41,7 +42,7 @@ class AstralTests(unittest.TestCase):
         with patch.dict(os.environ, self.env(), clear=True):
             config = AstralConfig.from_environment(primary_identity)
         primary = Mock(); primary.authenticate.return_value = False
-        gate = AstralGate(config, primary)
+        gate = AstralGate(config, primary, tempfile.mktemp())
         for _ in range(5): self.assertFalse(gate.authorize("bad", "bad", now=1000))
         primary.authenticate.return_value = True
         self.assertFalse(gate.authorize("good", "good", now=1001))
