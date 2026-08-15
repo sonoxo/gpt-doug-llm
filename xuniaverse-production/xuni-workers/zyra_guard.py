@@ -18,6 +18,58 @@ ROOT = Path(__file__).resolve().parent.parent
 LOG_PATH = ROOT / "xuni-workers" / "live" / "zyra.log"
 MAX_PROMPT_CHARS = 20_000
 
+# Social-engineering pressure signals, categorized after the public RICE
+# framework (Reward / Ideology / Coercion / Ego) as taught by former CIA
+# officer Andrew Bustamante (EverydaySpy) for reading human motivation and
+# manipulation tactics. This does not block on its own — it's a labeled
+# signal added to the log so a human reviewing zyra.log can see *why* a
+# prompt might be manipulative, not just whether it matched a deny-list.
+RICE_SIGNALS = {
+    "reward": [r"\bI('ll| will) (pay|tip|reward) you\b", r"\byou('ll| will) (get|receive) .*(bonus|reward)\b"],
+    "ideology": [r"\bfor the greater good\b", r"\beveryone (else )?is doing (it|this)\b", r"\bit'?s the right thing to do\b"],
+    "coercion": [r"\bor (else|there will be consequences)\b", r"\byou (have|need) to.{0,20}(now|immediately)\b", r"\bif you don'?t.{0,40}(fired|fail|in trouble)\b"],
+    "ego": [r"\bonly you can\b", r"\ba (real|true) (expert|pro) would\b", r"\bprove (you're|you are) (smart|capable|good enough)\b"],
+}
+RICE_RE = {cat: [re.compile(p, re.IGNORECASE) for p in pats] for cat, pats in RICE_SIGNALS.items()}
+
+
+def _rice_scan(text: str) -> list:
+    hits = []
+    for category, patterns in RICE_RE.items():
+        for pattern in patterns:
+            m = pattern.search(text)
+            if m:
+                hits.append(f"{category}:{m.group(0)!r}")
+    return hits
+
+
+# --- Sensitivity classification -------------------------------------------
+# A self-imposed severity taxonomy for what Zyra logs, using the standard
+# U.S. government classification tier *names* as familiar labels for
+# escalating risk. This is NOT real government classification authority —
+# nothing here is actually classified information, and no agency reviewed
+# or assigned these labels. It's an internal severity scale for this
+# codebase's own logs, borrowing recognizable terminology.
+CLASSIFICATION_LEVELS = ["UNCLASSIFIED", "CONFIDENTIAL", "SECRET", "TOP SECRET"]
+
+
+def classify(prompt: str, allowed: bool, block_reason: Optional[str], rice_hits: list) -> str:
+    """
+    UNCLASSIFIED — normal task, nothing flagged.
+    CONFIDENTIAL — allowed, but social-engineering (RICE) signals present.
+    SECRET       — blocked outright (destructive pattern, oversized, semantic).
+    TOP SECRET   — blocked AND the payload used an obfuscation/decode channel
+                   (base64/hex/rot13/concat) — deliberate evasion attempt,
+                   not just a blunt destructive request.
+    """
+    if not allowed:
+        if block_reason and block_reason.startswith("decoded/normalized payload"):
+            return "TOP SECRET"
+        return "SECRET"
+    if rice_hits:
+        return "CONFIDENTIAL"
+    return "UNCLASSIFIED"
+
 DENY_PATTERNS = [
     r"\brm\s+-\S*[rR]\S*[fF]\S*\b",       # rm -rf, rm -fr, rm  -rf (whitespace-tolerant)
     r"\brm\s+-\S*\$",                     # rm -$VAR / rm -${VAR} — flag built from a shell variable
@@ -52,10 +104,10 @@ _ROT13 = str.maketrans(
 )
 
 
-def _log(task_id: str, verdict: str, reason: str):
+def _log(task_id: str, verdict: str, reason: str, level: str = "UNCLASSIFIED"):
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with LOG_PATH.open("a") as f:
-        f.write(f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] {task_id}: {reason}\n")
+        f.write(f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] [{level}] {task_id}: {reason}\n")
 
 
 def _pattern_hit(text: str) -> Optional[str]:
@@ -145,25 +197,34 @@ def _decoded_hit(text: str) -> Optional[str]:
 
 
 def review(task: dict) -> tuple[bool, str]:
-    """Returns (allowed, reason). Logs the decision as a side effect."""
+    """Returns (allowed, reason). Logs the decision, with a classification
+    label, as a side effect."""
     task_id = task.get("id", "unknown")
     prompt = task.get("prompt")
 
     if not prompt or not isinstance(prompt, str):
         reason = "missing or non-string 'prompt'"
-        _log(task_id, "BLOCK", reason)
+        level = classify(prompt or "", False, reason, [])
+        _log(task_id, "BLOCK", reason, level)
         return False, reason
 
     if len(prompt) > MAX_PROMPT_CHARS:
         reason = f"prompt exceeds {MAX_PROMPT_CHARS} chars ({len(prompt)})"
-        _log(task_id, "BLOCK", reason)
+        level = classify(prompt, False, reason, [])
+        _log(task_id, "BLOCK", reason, level)
         return False, reason
 
     for check in (_pattern_hit, _semantic_hit, _decoded_hit):
         reason = check(prompt)
         if reason:
-            _log(task_id, "BLOCK", reason)
+            level = classify(prompt, False, reason, [])
+            _log(task_id, "BLOCK", reason, level)
             return False, reason
 
-    _log(task_id, "ALLOW", "passed all checks")
+    rice_hits = _rice_scan(prompt)
+    level = classify(prompt, True, None, rice_hits)
+    if rice_hits:
+        _log(task_id, "ALLOW", f"passed all checks; RICE signals noted: {', '.join(rice_hits)}", level)
+    else:
+        _log(task_id, "ALLOW", "passed all checks", level)
     return True, "ok"
