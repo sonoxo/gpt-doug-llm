@@ -9,6 +9,7 @@ This is a keyword/shape guard, not a semantic one — it catches obvious
 danger, not everything. Treat it as one layer, not a full sandbox.
 """
 import base64
+import hashlib
 import re
 import time
 from pathlib import Path
@@ -16,7 +17,9 @@ from typing import Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 LOG_PATH = ROOT / "xuni-workers" / "live" / "zyra.log"
+CHAIN_STATE_PATH = ROOT / "xuni-workers" / "live" / "zyra.log.chainstate"
 MAX_PROMPT_CHARS = 20_000
+GENESIS_HASH = "0" * 64
 
 # Social-engineering pressure signals, categorized after the public RICE
 # framework (Reward / Ideology / Coercion / Ego) as taught by former CIA
@@ -139,10 +142,67 @@ def _strip_invisible(text: str) -> str:
     return _INVISIBLE_RE.sub("", text)
 
 
+def _last_chain_hash() -> str:
+    if CHAIN_STATE_PATH.exists():
+        stored = CHAIN_STATE_PATH.read_text().strip()
+        if stored:
+            return stored
+    return GENESIS_HASH
+
+
 def _log(task_id: str, verdict: str, reason: str, level: str = "UNCLASSIFIED"):
+    """
+    Append a tamper-evident audit entry: each log line embeds a SHA-256
+    hash of (previous entry's hash + this entry's content), forming a hash
+    chain (AU-9-style audit-record-integrity control). CHAIN_STATE_PATH
+    tracks only the latest hash so appends stay O(1) — it does not need to
+    be replayed to log new entries, only to verify the whole chain later.
+    Any edit, deletion, or reordering of a past log line breaks the chain
+    from that point forward, which verify_log_integrity() detects.
+    """
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    prev_hash = _last_chain_hash()
+    body = f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] [{level}] {task_id}: {reason}"
+    entry_hash = hashlib.sha256((prev_hash + body).encode()).hexdigest()
     with LOG_PATH.open("a") as f:
-        f.write(f"{time.strftime('%Y-%m-%dT%H:%M:%S')} [{verdict}] [{level}] {task_id}: {reason}\n")
+        f.write(f"{body} |prev={prev_hash[:12]} hash={entry_hash[:12]}|\n")
+    CHAIN_STATE_PATH.write_text(entry_hash)
+
+
+_LOG_LINE_RE = re.compile(r"^(.*) \|prev=([0-9a-f]{12}) hash=([0-9a-f]{12})\|$")
+
+
+def verify_log_integrity() -> dict:
+    """
+    Replay the full hash chain in zyra.log from GENESIS_HASH and confirm
+    every entry's embedded hash matches what it should be given the prior
+    entry — proving the log hasn't been edited, reordered, or had entries
+    deleted since it was written. Returns a real, computed result, not a
+    fabricated "compliant" status.
+    """
+    if not LOG_PATH.exists():
+        return {"valid": True, "entries_checked": 0, "reason": "log does not exist yet"}
+
+    prev_hash = GENESIS_HASH
+    checked = 0
+    for lineno, line in enumerate(LOG_PATH.read_text().splitlines(), start=1):
+        m = _LOG_LINE_RE.match(line)
+        if not m:
+            return {"valid": False, "entries_checked": checked, "reason": f"line {lineno} does not match expected format (possible tampering or pre-chain entry)"}
+        body, claimed_prev, claimed_hash = m.groups()
+        expected_hash = hashlib.sha256((prev_hash + body).encode()).hexdigest()
+        if claimed_prev != prev_hash[:12]:
+            return {"valid": False, "entries_checked": checked, "reason": f"line {lineno}: prev-hash mismatch — chain broken (log likely edited or reordered)"}
+        if claimed_hash != expected_hash[:12]:
+            return {"valid": False, "entries_checked": checked, "reason": f"line {lineno}: hash mismatch — entry content altered after being logged"}
+        prev_hash = expected_hash
+        checked += 1
+
+    stored = CHAIN_STATE_PATH.read_text().strip() if CHAIN_STATE_PATH.exists() else None
+    if stored and stored != prev_hash:
+        return {"valid": False, "entries_checked": checked, "reason": "chain state file does not match end of log — log may have been truncated"}
+
+    return {"valid": True, "entries_checked": checked, "reason": "chain intact"}
 
 
 def _pattern_hit(text: str) -> Optional[str]:
