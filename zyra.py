@@ -37,14 +37,16 @@ class Zyra:
 
     SECRET_PATTERNS = (
         (re.compile(r"\b(?:sk|ghp|github_pat|xox[baprs])[-_][A-Za-z0-9_-]{16,}\b"), "API token"),
+        (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS access key"),
+        (re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b"), "Google API key"),
         (re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----[\s\S]+?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"), "private key"),
-        (re.compile(r"(?i)\b(password|passwd|secret|api[_ -]?key)\s*[:=]\s*[^\s,;]{6,}"), "credential"),
+        (re.compile(r"(?i)\b[\w-]*?(?:password|passwd|secret|key|token|credential)\s*[:=]\s*[^\s,;]{6,}"), "credential"),
     )
     BLOCK_PATTERNS = (
-        (re.compile(r"(?i)\brm\s+(?:-(?:[a-z]*r[a-z]*f|[a-z]*f[a-z]*r)|-r\s+-f|-f\s+-r)\s+(?:/(?:\s|$)|~(?:/|\s|$)|\$home(?:/|\s|$))"), "destructive filesystem command"),
+        (re.compile(r"(?i)\brm\s+(?:-(?:[a-z]*r[a-z]*f|[a-z]*f[a-z]*r)|-r\s+-f|-f\s+-r)\s+(?:/[\w./-]*|~[\w./-]*|\$home[\w./-]*)(?:\s|$)"), "destructive filesystem command"),
         (re.compile(r"(?i)\b(?:mkfs|dd\s+if=.*\s+of=/dev/|diskutil\s+erase)\b"), "disk destruction command"),
-        (re.compile(r"(?i)\b(?:disable|bypass|evade)\b.{0,35}\b(?:security|authentication|firewall|guardrail)\b"), "security bypass request"),
-        (re.compile(r"(?i)ignore\s+(?:all\s+|any\s+)?(?:previous|prior|system)\s+instructions"), "prompt-injection phrase"),
+        (re.compile(r"(?i)\b(?:disable|bypass|evade|circumvent|defeat|turn\s+off|shut\s+off|get\s+around|work\s+around)\b.{0,35}\b(?:security|authentication|auth|firewall|guardrail|safety\s+check|zyra)\b"), "security bypass request"),
+        (re.compile(r"(?i)\b(?:ignore|disregard|forget|discard)\s+(?:the\s+)?(?:all\s+|any\s+)?(?:previous|prior|system|earlier|above)\s+instructions"), "prompt-injection phrase"),
         (re.compile(r"(?i)\b(?:wipe|erase|destroy)\b.{0,35}\b(?:root|entire filesystem|system disk)\b"), "destructive filesystem intent"),
     )
     APPROVAL_PATTERNS = (
