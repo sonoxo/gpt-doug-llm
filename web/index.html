@@ -12,8 +12,17 @@
   <aside id="sidebar">
     <div class="brand">
       <span class="dot" id="statusDot"></span>
+      <span class="brand-mark">GD</span>
       <span>GPT DOUG</span>
     </div>
+
+    <nav class="primary-nav" aria-label="Command center">
+      <a class="nav-item active" href="/" aria-current="page"><span>⌁</span> Workspace</a>
+      <a class="nav-item" href="/dashboard"><span>◫</span> Dashboard</a>
+      <a class="nav-item" href="/agents"><span>◇</span> Agents</a>
+      <a class="nav-item" href="/feed"><span>◎</span> Activity feed</a>
+      <a class="nav-item" href="/buy"><span>↗</span> Task market</a>
+    </nav>
 
     <button id="newChatBtn" class="side-btn primary">+ New chat</button>
 
@@ -36,12 +45,17 @@
       </form>
     </div>
 
-    <div id="connStatus" class="conn-status">checking Ollama...</div>
+    <div id="connStatus" class="conn-status">checking provider...</div>
   </aside>
 
   <main id="main">
     <header id="topbar">
-      <div id="activeProject">No project selected</div>
+      <div class="topbar-context">
+        <div class="mobile-nav" aria-label="Mobile navigation">
+          <a href="/">Workspace</a><a href="/dashboard">Dashboard</a><a href="/agents">Agents</a>
+        </div>
+        <div id="activeProject">No project selected</div>
+      </div>
       <div class="topbar-actions">
         <span id="runStatus" class="run-status"></span>
         <button id="stopProjectBtn" class="ghost-btn" hidden>■ Stop Server</button>
@@ -68,6 +82,7 @@
       <button class="tab-btn active" data-tab="preview">Preview</button>
       <button class="tab-btn" data-tab="logs">Build Logs</button>
       <button class="tab-btn" data-tab="files">Files</button>
+      <button class="tab-btn" data-tab="systems">Systems</button>
     </div>
 
     <div id="tab-preview" class="tab-pane active">
@@ -81,6 +96,30 @@
 
     <div id="tab-files" class="tab-pane">
       <div id="fileList" class="empty-state">No files yet.</div>
+    </div>
+
+    <div id="tab-systems" class="tab-pane">
+      <div class="systems-panel">
+        <div class="panel-eyebrow">COMMAND CENTER</div>
+        <h2>System surfaces</h2>
+        <p class="panel-copy">Core capabilities remain available with or without an AI provider.</p>
+        <div class="system-grid">
+          <a class="system-card" href="/agents"><span class="system-icon">◇</span><span><strong>Agents</strong><small id="agentSystemStatus">Ready · manual runs</small></span></a>
+          <button class="system-card" type="button" data-system="workers"><span class="system-icon">◉</span><span><strong>Workers</strong><small id="workerSystemStatus">Checking status…</small></span></button>
+          <button class="system-card" type="button" data-system="memory"><span class="system-icon">▤</span><span><strong>Memory</strong><small id="memorySystemStatus">Local conversation memory</small></span></button>
+          <button class="system-card" type="button" data-system="terminal"><span class="system-icon">⌘</span><span><strong>Terminal</strong><small>Guarded local runtime</small></span></button>
+          <button class="system-card" type="button" data-system="tools"><span class="system-icon">⚙</span><span><strong>Tools</strong><small>Project runner · file tools</small></span></button>
+          <a class="system-card" href="/dashboard"><span class="system-icon">◫</span><span><strong>Projects</strong><small id="projectSystemStatus">Checking workspace…</small></span></a>
+        </div>
+        <div class="system-detail" id="systemDetail" aria-live="polite">
+          <strong>Systems are standing by</strong>
+          <p>Select a surface to inspect how it works in offline mode.</p>
+        </div>
+        <div class="provider-card">
+          <span class="dot" id="providerPanelDot"></span>
+          <span><strong id="providerPanelTitle">Checking provider…</strong><small id="providerPanelCopy">The workspace does not require external AI.</small></span>
+        </div>
+      </div>
     </div>
   </section>
 

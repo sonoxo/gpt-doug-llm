@@ -11,7 +11,7 @@ class TestGeminiBackend:
     def test_auto_select(self):
         from google.gemini_backend import auto_select_backend
         r = auto_select_backend()
-        assert r["backend"] in ("gemini", "openai", "ollama")
+        assert r["backend"] in ("gemini", "openai", "none")
 
 class TestADKWrapper:
     def test_tools(self):

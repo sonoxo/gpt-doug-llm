@@ -1,0 +1,262 @@
+#!/usr/bin/env python3
+"""Autonomous multi-agent task chain.
+
+Given one task in plain language, runs it through three specialized local
+models with no human in the loop:
+  1. Planner  (gemma3)          — breaks the task into concrete steps
+  2. Executor (qwen2.5-coder)   — does the actual work per step
+  3. Reviewer (nous-hermes2)    — checks the output, flags problems
+
+Every step's raw input/output is logged so the full reasoning trace is
+inspectable afterward. This calls the *same* llm_backend.chat_once used by
+server.py, so it automatically uses OpenAI instead of Ollama if
+OPENAI_API_KEY is set — no separate backend to maintain.
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import time
+import uuid
+
+from agents import llm_backend_free as llm_backend_free as llm_backend
+from agentsenv_guard import is_free_mode  # blocks paid APIs by default
+from agents import ontology
+
+PLANNER_MODEL = os.environ.get("AGENT_PLANNER_MODEL", "gemma3")
+EXECUTOR_MODEL = os.environ.get("AGENT_EXECUTOR_MODEL", "qwen2.5-coder:7b")
+# nous-hermes2 measured ~90s+ for even a trivial reply on this hardware
+# (CPU-only inference) vs. qwen2.5-coder's 5-15s per call in the same run —
+# default to the fast model; override via env if you have GPU acceleration
+# or don't mind the wait.
+REVIEWER_MODEL = os.environ.get("AGENT_REVIEWER_MODEL", "qwen2.5-coder:7b")
+
+OPTIONS = {"temperature": 0.4, "num_ctx": 8192}
+
+RUNS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs")
+os.makedirs(RUNS_DIR, exist_ok=True)
+
+# Agents can spawn sub-agents (a step too complex to do directly kicks off
+# its own nested plan->execute->review chain) but NOT without a ceiling —
+# an uncapped spawn tree is a fork bomb on this machine, since each hop is
+# a 60-90s+ local model call. These caps are generous, not "infinite":
+# depth controls how many spawn-levels deep a chain of sub-agents can go,
+# total_budget is a hard ceiling on the whole tree's sub-agent count shared
+# across every branch, checked before every spawn.
+MAX_SPAWN_DEPTH = int(os.environ.get("AGENT_MAX_SPAWN_DEPTH", "4"))
+MAX_TOTAL_SUBAGENTS = int(os.environ.get("AGENT_MAX_TOTAL_SUBAGENTS", "25"))
+SPAWN_MARKER = "SPAWN_SUBAGENT:"
+
+# Purely cosmetic tier names for how deep a sub-agent chain has nested —
+# depth is still hard-capped at MAX_SPAWN_DEPTH regardless of naming.
+DEPTH_TIER_NAMES = ["chain", "micro", "meso", "nano", "neo"]
+
+
+def depth_tier(depth):
+    if depth < len(DEPTH_TIER_NAMES):
+        return DEPTH_TIER_NAMES[depth]
+    return f"tier-{depth}"
+
+
+def _call(model, system, user):
+    messages = [
+        {"role": "system", "content": system},
+        {"role": "user", "content": user},
+    ]
+    result = llm_backend.chat_once(messages, model, OPTIONS)
+    return result.get("message", {}).get("content", "").strip()
+
+
+def _plan_ontology(task):
+    """Ontology-driven planning: asks the model for a typed task graph
+    (Task -> Steps, each with an assigned agent role, a produced artifact,
+    and constraints) instead of freeform numbered-list prose. Raises
+    ontology.OntologyError if the model doesn't produce valid graph JSON —
+    callers should catch this and fall back to legacy free-text planning,
+    since local 7B-class models aren't always reliable at strict formats."""
+    system = (
+        "You are a planning agent using a formal task ontology. "
+        + ontology.TASK_GRAPH_SCHEMA_DESCRIPTION
+    )
+    raw = _call(PLANNER_MODEL, system, task)
+    graph_json = ontology.extract_json_object(raw)
+    try:
+        graph = json.loads(graph_json)
+    except json.JSONDecodeError as err:
+        raise ontology.OntologyError(f"invalid JSON: {err}") from err
+    return ontology.validate_task_graph(graph), raw
+
+
+def _plan_legacy(task):
+    """Fallback when ontology-driven planning fails: freeform numbered
+    list, parsed into the same internal step-dict shape so the rest of
+    run() doesn't need to know which planning mode produced it."""
+    system = (
+        "You are a planning agent. Break the given task into 3-6 concrete, "
+        "numbered steps that another agent can execute one at a time. Output "
+        "ONLY the numbered list, no preamble, no explanation."
+    )
+    plan_text = _call(PLANNER_MODEL, system, task)
+    step_re = re.compile(r"^\d+[.)]\s")
+    lines = []
+    for line in plan_text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if step_re.match(line):
+            lines.append(line)
+        elif lines:
+            break
+    steps = [
+        {
+            "id": f"s{i}",
+            "description": line,
+            "assigned_agent": "executor",
+            "produces": "",
+            "constraints": [],
+            "requires_subagent": False,
+        }
+        for i, line in enumerate(lines, 1)
+    ]
+    return {"task": task, "steps": steps}, plan_text
+
+
+def _execute_step(task, step, prior_context, can_spawn):
+    constraints = step.get("constraints") or []
+    constraints_text = (
+        "\n\nThis step's output must satisfy: " + "; ".join(constraints)
+        if constraints else ""
+    )
+    hint = (
+        "\n\nThis step was flagged at planning time as complex enough to warrant its own sub-agent chain."
+        if step.get("requires_subagent") else ""
+    )
+    spawn_instruction = (
+        f"\n\nIf this step is itself complex enough to deserve its own "
+        f"plan->execute->review sub-agent chain (not just a normal answer), "
+        f"respond with ONLY a single line: {SPAWN_MARKER} <clear description of "
+        f"the sub-task>. Use this rarely, only for genuinely complex nested "
+        f"work — most steps should just be done directly."
+        if can_spawn else ""
+    )
+    system = (
+        "You are an execution agent completing one step of a larger task. "
+        "Do the work for this step directly and concretely (write the code, "
+        "text, or answer — don't describe what you would do, actually do it). "
+        "Keep your output focused on this step only."
+        + constraints_text + hint + spawn_instruction
+    )
+    description = step["description"]
+    user = f"Overall task: {task}\n\nPrior steps completed:\n{prior_context}\n\nCurrent step to complete:\n{description}"
+    return _call(EXECUTOR_MODEL, system, user)
+
+
+def _review(task, transcript, task_graph=None):
+    constraint_lines = []
+    if task_graph:
+        for step in task_graph.get("steps", []):
+            for c in step.get("constraints") or []:
+                constraint_lines.append(f"- [{step['id']}] {c}")
+    constraints_block = (
+        "\n\nThe task's ontology defined these constraints that must all be satisfied:\n" + "\n".join(constraint_lines)
+        if constraint_lines else ""
+    )
+    system = (
+        "You are a reviewing agent. Given the original task and the full "
+        "transcript of steps taken, judge whether the task was actually "
+        "completed correctly." + constraints_block + " Respond with a JSON object only: "
+        '{"passed": true/false, "issues": ["..."], "summary": "..."}'
+    )
+    user = f"Task: {task}\n\nTranscript:\n{transcript}"
+    raw = _call(REVIEWER_MODEL, system, user)
+    try:
+        start = raw.index("{")
+        end = raw.rindex("}") + 1
+        return json.loads(raw[start:end])
+    except (ValueError, json.JSONDecodeError):
+        return {"passed": None, "issues": ["reviewer output was not valid JSON"], "summary": raw[:500]}
+
+
+def run(task, on_event=None, _depth=0, _budget=None):
+    """Runs the full plan -> execute -> review chain. Calls on_event(dict)
+    for each step if provided, and always returns the final result dict.
+    Also writes a full trace to runs/<id>.json.
+
+    _depth and _budget are internal — used when a step spawns its own
+    sub-agent chain, to enforce MAX_SPAWN_DEPTH and a shared
+    MAX_TOTAL_SUBAGENTS ceiling across the whole tree. Callers should not
+    pass these directly."""
+    if _budget is None:
+        _budget = {"spawned": 0}
+
+    run_id = uuid.uuid4().hex[:12]
+    started = time.time()
+    trace = {"run_id": run_id, "task": task, "started_at": started, "depth": _depth, "tier": depth_tier(_depth), "events": []}
+
+    def emit(event):
+        event["ts"] = time.time()
+        trace["events"].append(event)
+        if on_event:
+            on_event(event)
+
+    emit({"stage": "plan_start", "model": PLANNER_MODEL})
+    try:
+        task_graph, plan_text = _plan_ontology(task)
+        plan_mode = "ontology"
+    except ontology.OntologyError as err:
+        # Local 7B-class models aren't always reliable at strict JSON —
+        # fall back to legacy free-text planning rather than fail the run.
+        task_graph, plan_text = _plan_legacy(task)
+        plan_mode = f"legacy_fallback ({err})"
+    steps = task_graph["steps"]
+    step_descriptions = [s["description"] for s in steps]
+    emit({
+        "stage": "plan_done", "model": PLANNER_MODEL, "output": plan_text,
+        "steps": step_descriptions, "plan_mode": plan_mode, "task_graph": task_graph,
+    })
+
+    can_spawn = _depth < MAX_SPAWN_DEPTH and _budget["spawned"] < MAX_TOTAL_SUBAGENTS
+
+    transcript_parts = []
+    for i, step in enumerate(steps, 1):
+        prior = "\n\n".join(transcript_parts) or "(none yet)"
+        emit({"stage": "execute_start", "model": EXECUTOR_MODEL, "step_index": i, "step": step["description"]})
+        output = _execute_step(task, step, prior, can_spawn)
+
+        if can_spawn and output.strip().startswith(SPAWN_MARKER):
+            subtask = output.strip()[len(SPAWN_MARKER):].strip()
+            _budget["spawned"] += 1
+            emit({"stage": "subagent_spawn", "step_index": i, "subtask": subtask, "depth": _depth + 1, "tier": depth_tier(_depth + 1)})
+            sub_trace = run(subtask, on_event=on_event, _depth=_depth + 1, _budget=_budget)
+            output = f"[sub-agent {sub_trace['run_id']}] {sub_trace.get('transcript', '')}"
+            emit({"stage": "subagent_done", "step_index": i, "sub_run_id": sub_trace["run_id"], "passed": (sub_trace.get("review") or {}).get("passed")})
+            can_spawn = _depth < MAX_SPAWN_DEPTH and _budget["spawned"] < MAX_TOTAL_SUBAGENTS
+
+        transcript_parts.append(f"Step {i}: {step['description']}\nResult: {output}")
+        emit({"stage": "execute_done", "model": EXECUTOR_MODEL, "step_index": i, "step": step["description"], "output": output})
+
+    full_transcript = "\n\n".join(transcript_parts)
+    emit({"stage": "review_start", "model": REVIEWER_MODEL})
+    review = _review(task, full_transcript, task_graph)
+    emit({"stage": "review_done", "model": REVIEWER_MODEL, "review": review})
+
+    trace["finished_at"] = time.time()
+    trace["duration_s"] = round(trace["finished_at"] - started, 2)
+    trace["plan_mode"] = plan_mode
+    trace["task_graph"] = task_graph
+    trace["plan"] = step_descriptions
+    trace["transcript"] = full_transcript
+    trace["review"] = review
+
+    with open(os.path.join(RUNS_DIR, f"{run_id}.json"), "w") as f:
+        json.dump(trace, f, indent=2)
+
+    return trace
+
+
+if __name__ == "__main__":
+    import sys
+    task_arg = " ".join(sys.argv[1:]) or "Write a haiku about autonomous AI agents."
+    result = run(task_arg, on_event=lambda e: print(f"[{e['stage']}]"))
+    print(json.dumps(result["review"], indent=2))

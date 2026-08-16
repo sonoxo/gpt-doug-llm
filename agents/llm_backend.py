@@ -1,10 +1,9 @@
-"""LLM backend abstraction: local Ollama or OpenAI's API.
+"""Provider-neutral chat facade for every GPT Doug surface.
 
-server.py's chat/SSE plumbing is written against Ollama's event shape
-({"message": {"role", "content"}, "done": bool}), so both backends here
-normalize to that same shape rather than forking the request-handling code.
-Selection is automatic: if OPENAI_API_KEY is set, use OpenAI (needed for
-any deploy target without a local Ollama daemon); otherwise use Ollama.
+The default provider is ``none``: the application remains usable without an
+API key and importing this module never probes the network. Providers are
+selected explicitly with ``GPT_DOUG_PROVIDER``. Ollama is retained only as an
+opt-in compatibility provider and is never discovered or started implicitly.
 """
 
 from __future__ import annotations
@@ -13,141 +12,211 @@ import json
 import os
 import urllib.error
 import urllib.request
-
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
-OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
-
-OLLAMA_CHAT_URL = "http://localhost:11434/api/chat"
-OLLAMA_TAGS_URL = "http://localhost:11434/api/tags"
-OLLAMA_MODEL = os.environ.get("GPT_DOUG_MODEL", "gpt-doug")
-
-USING_OPENAI = bool(OPENAI_API_KEY)
-DEFAULT_MODEL = OPENAI_MODEL if USING_OPENAI else OLLAMA_MODEL
+from dataclasses import dataclass
+from typing import Iterator
 
 
-def health() -> dict:
-    if USING_OPENAI:
-        # No cheap "is the key valid" probe worth spending a request on —
-        # report configured, not verified-reachable, and let an actual
-        # chat call surface auth errors.
+Message = dict[str, str]
+Event = dict
+
+
+@dataclass(frozen=True)
+class ProviderConfig:
+    name: str
+    model: str
+    configured: bool
+    free: bool | None
+
+
+class Provider:
+    config: ProviderConfig
+
+    def health(self) -> dict:
         return {
-            "backend": "openai",
-            "ollama_reachable": None,
-            "model": OPENAI_MODEL,
-            "model_available": True,
-            "models": [OPENAI_MODEL],
+            "backend": self.config.name,
+            "provider": self.config.name,
+            "configured": self.config.configured,
+            "model": self.config.model,
+            "model_available": self.config.configured,
+            "models": [self.config.model] if self.config.model else [],
+            "free": self.config.free,
+            "message": "Provider ready" if self.config.configured else "No AI provider configured",
         }
-    ok = True
-    model_names = []
-    try:
-        with urllib.request.urlopen(OLLAMA_TAGS_URL, timeout=3) as resp:
-            tags = json.loads(resp.read())
-            model_names = [m.get("name", "") for m in tags.get("models", [])]
-    except Exception:
-        ok = False
+
+    def chat_once(self, messages: list[Message], model: str | None, options: dict) -> Event:
+        raise NotImplementedError
+
+    def chat_stream(self, messages: list[Message], model: str | None, options: dict) -> Iterator[Event]:
+        result = self.chat_once(messages, model, options)
+        yield result
+
+
+class NoProvider(Provider):
+    config = ProviderConfig("none", "", False, True)
+
+    def chat_once(self, messages, model, options):
+        content = (
+            "GPT Doug is running in offline workspace mode. Chat generation is unavailable until "
+            "an AI provider is explicitly configured, but projects, files, previews, memory, tools, "
+            "agents, terminal features, and security controls remain available."
+        )
+        return {
+            "message": {"role": "assistant", "content": content},
+            "done": True,
+            "offline": True,
+            "error": "provider_not_configured",
+        }
+
+
+class OpenAIProvider(Provider):
+    def __init__(self):
+        self.api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+        model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+        self.config = ProviderConfig("openai", model, bool(self.api_key), False)
+
+    def _request(self, messages, model, options, stream):
+        body = json.dumps({
+            "model": model or self.config.model,
+            "messages": messages,
+            "temperature": options.get("temperature", 0.7),
+            "stream": stream,
+        }).encode()
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}"}
+        return urllib.request.Request("https://api.openai.com/v1/chat/completions", body, headers)
+
+    def chat_once(self, messages, model, options):
+        if not self.api_key:
+            return _configuration_error("OPENAI_API_KEY")
+        with urllib.request.urlopen(self._request(messages, model, options, False), timeout=120) as response:
+            data = json.loads(response.read())
+        content = data["choices"][0]["message"]["content"]
+        return {"model": model or self.config.model, "message": {"role": "assistant", "content": content}, "done": True}
+
+    def chat_stream(self, messages, model, options):
+        if not self.api_key:
+            yield _configuration_error("OPENAI_API_KEY")
+            return
+        with urllib.request.urlopen(self._request(messages, model, options, True), timeout=120) as response:
+            for raw in response:
+                line = raw.decode(errors="replace").strip()
+                if not line.startswith("data:"):
+                    continue
+                payload = line[5:].strip()
+                if payload == "[DONE]":
+                    yield {"done": True}
+                    return
+                try:
+                    token = json.loads(payload).get("choices", [{}])[0].get("delta", {}).get("content", "")
+                except json.JSONDecodeError:
+                    continue
+                if token:
+                    yield {"message": {"role": "assistant", "content": token}, "done": False}
+        yield {"done": True}
+
+
+class GeminiProvider(Provider):
+    def __init__(self):
+        self.api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+        self.config = ProviderConfig("gemini", model, bool(self.api_key), True)
+
+    def chat_once(self, messages, model, options):
+        if not self.api_key:
+            return _configuration_error("GEMINI_API_KEY")
+        used_model = model or self.config.model
+        contents = [
+            {
+                "role": "model" if item.get("role") == "assistant" else "user",
+                "parts": [{"text": item.get("content", "")}],
+            }
+            for item in messages if item.get("role") != "system"
+        ]
+        system = "\n\n".join(item.get("content", "") for item in messages if item.get("role") == "system")
+        body = {"contents": contents, "generationConfig": {"temperature": options.get("temperature", 0.7)}}
+        if system:
+            body["systemInstruction"] = {"parts": [{"text": system}]}
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{used_model}:generateContent?key={self.api_key}"
+        request = urllib.request.Request(url, json.dumps(body).encode(), {"Content-Type": "application/json"})
+        with urllib.request.urlopen(request, timeout=120) as response:
+            data = json.loads(response.read())
+        content = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+        return {"model": used_model, "message": {"role": "assistant", "content": content}, "done": True}
+
+
+class OllamaProvider(Provider):
+    """Legacy local provider. Constructed only after explicit opt-in."""
+
+    def __init__(self):
+        model = os.environ.get("OLLAMA_MODEL", os.environ.get("GPT_DOUG_MODEL", "gpt-doug"))
+        self.base_url = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
+        self.config = ProviderConfig("ollama", model, True, True)
+
+    def chat_once(self, messages, model, options):
+        body = json.dumps({"model": model or self.config.model, "messages": messages, "stream": False, "options": options}).encode()
+        request = urllib.request.Request(f"{self.base_url}/api/chat", body, {"Content-Type": "application/json"})
+        with urllib.request.urlopen(request, timeout=600) as response:
+            return json.loads(response.read())
+
+    def chat_stream(self, messages, model, options):
+        body = json.dumps({"model": model or self.config.model, "messages": messages, "stream": True, "options": options}).encode()
+        request = urllib.request.Request(f"{self.base_url}/api/chat", body, {"Content-Type": "application/json"})
+        with urllib.request.urlopen(request, timeout=600) as response:
+            for raw in response:
+                if not raw.strip():
+                    continue
+                try:
+                    event = json.loads(raw)
+                except json.JSONDecodeError:
+                    continue
+                yield event
+                if event.get("done"):
+                    return
+
+
+def _configuration_error(variable: str) -> Event:
     return {
-        "backend": "ollama",
-        "ollama_reachable": ok,
-        "model": OLLAMA_MODEL,
-        "model_available": any(m.split(":")[0] == OLLAMA_MODEL.split(":")[0] for m in model_names),
-        "models": model_names,
+        "message": {"role": "assistant", "content": f"The selected provider is not configured. Set {variable} or choose GPT_DOUG_PROVIDER=none."},
+        "done": True,
+        "error": "provider_not_configured",
     }
 
 
-def chat_once(messages: list, model: str | None, options: dict) -> dict:
-    """Non-streaming call. Returns an Ollama-shaped dict."""
-    if USING_OPENAI:
-        return _openai_chat_once(messages, model or OPENAI_MODEL, options)
-    return _ollama_chat_once(messages, model or OLLAMA_MODEL, options)
+PROVIDER_FACTORIES = {
+    "none": NoProvider,
+    "openai": OpenAIProvider,
+    "gemini": GeminiProvider,
+    "ollama": OllamaProvider,
+}
 
 
-def chat_stream(messages: list, model: str | None, options: dict):
-    """Streaming call. Yields Ollama-shaped event dicts, ending with done=True."""
-    if USING_OPENAI:
-        yield from _openai_chat_stream(messages, model or OPENAI_MODEL, options)
-    else:
-        yield from _ollama_chat_stream(messages, model or OLLAMA_MODEL, options)
+def _load_provider() -> Provider:
+    name = os.environ.get("GPT_DOUG_PROVIDER", "none").strip().lower() or "none"
+    factory = PROVIDER_FACTORIES.get(name)
+    if factory is None:
+        return NoProvider()
+    return factory()
 
 
-# ---------- Ollama ----------
-
-def _ollama_chat_once(messages, model, options) -> dict:
-    body = json.dumps({"model": model, "messages": messages, "stream": False, "options": options}).encode()
-    req = urllib.request.Request(OLLAMA_CHAT_URL, body, {"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=600) as resp:
-        return json.loads(resp.read())
+_provider = _load_provider()
+DEFAULT_MODEL = _provider.config.model
 
 
-def _ollama_chat_stream(messages, model, options):
-    body = json.dumps({"model": model, "messages": messages, "stream": True, "options": options}).encode()
-    req = urllib.request.Request(OLLAMA_CHAT_URL, body, {"Content-Type": "application/json"})
-    upstream = urllib.request.urlopen(req, timeout=600)
-    try:
-        for line in upstream:
-            if not line.strip():
-                continue
-            try:
-                event = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            yield event
-            if event.get("done"):
-                break
-    finally:
-        upstream.close()
+def health() -> dict:
+    return _provider.health()
 
 
-# ---------- OpenAI ----------
-
-def _openai_headers():
-    return {"Content-Type": "application/json", "Authorization": f"Bearer {OPENAI_API_KEY}"}
+def chat_once(messages: list[Message], model: str | None = None, options: dict | None = None) -> Event:
+    return _provider.chat_once(messages, model, options or {})
 
 
-def _openai_chat_once(messages, model, options) -> dict:
-    body = json.dumps({
-        "model": model,
-        "messages": messages,
-        "temperature": options.get("temperature", 0.7),
-    }).encode()
-    req = urllib.request.Request(OPENAI_CHAT_URL, body, _openai_headers())
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        data = json.loads(resp.read())
-    content = data["choices"][0]["message"]["content"]
-    return {"model": model, "message": {"role": "assistant", "content": content}, "done": True}
+def chat_stream(messages: list[Message], model: str | None = None, options: dict | None = None):
+    yield from _provider.chat_stream(messages, model, options or {})
 
 
-def _openai_chat_stream(messages, model, options):
-    body = json.dumps({
-        "model": model,
-        "messages": messages,
-        "temperature": options.get("temperature", 0.7),
-        "stream": True,
-    }).encode()
-    req = urllib.request.Request(OPENAI_CHAT_URL, body, _openai_headers())
-    try:
-        upstream = urllib.request.urlopen(req, timeout=120)
-    except urllib.error.HTTPError as err:
-        detail = err.read().decode(errors="replace")
-        yield {"error": f"OpenAI API error {err.code}: {detail[:300]}"}
-        yield {"done": True}
-        return
-    try:
-        for raw in upstream:
-            line = raw.decode("utf-8", errors="replace").strip()
-            if not line or not line.startswith("data:"):
-                continue
-            payload = line[len("data:"):].strip()
-            if payload == "[DONE]":
-                yield {"done": True}
-                break
-            try:
-                chunk = json.loads(payload)
-            except json.JSONDecodeError:
-                continue
-            delta = chunk.get("choices", [{}])[0].get("delta", {})
-            token = delta.get("content", "")
-            if token:
-                yield {"model": model, "message": {"role": "assistant", "content": token}, "done": False}
-    finally:
-        upstream.close()
+def available_providers() -> list[dict]:
+    return [
+        {"id": "none", "label": "Offline workspace", "configured": True},
+        {"id": "openai", "label": "OpenAI", "configured": bool(os.environ.get("OPENAI_API_KEY"))},
+        {"id": "gemini", "label": "Google Gemini", "configured": bool(os.environ.get("GEMINI_API_KEY"))},
+        {"id": "ollama", "label": "Ollama (optional)", "configured": False},
+    ]

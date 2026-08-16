@@ -7,6 +7,7 @@ const saveIdeaBox = document.getElementById("saveIdeaBox");
 let pollTimer = null;
 let currentTask = null;
 let currentRunId = null;
+let providerConfigured = false;
 
 document.querySelectorAll(".tab-btn[data-tab]").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -66,7 +67,9 @@ async function loadWorkerStatus() {
     const s = await api("/api/worker/status");
     const el = document.getElementById("workerStatus");
     const lastTick = s.last_tick_at ? new Date(s.last_tick_at * 1000).toLocaleTimeString() : "never";
-    el.textContent = s.current_idea_id
+    el.textContent = !s.running
+      ? `Disabled by default · ${s.processed_count} processed this session.`
+      : s.current_idea_id
       ? `Processing idea ${s.current_idea_id}... (${s.processed_count} done so far)`
       : `Idle, watching for draft ideas. Processed: ${s.processed_count}. Last check: ${lastTick}.`;
   } catch {
@@ -75,6 +78,29 @@ async function loadWorkerStatus() {
 }
 loadWorkerStatus();
 setInterval(loadWorkerStatus, 10000);
+
+async function loadProviderStatus() {
+  const dot = document.getElementById("agentProviderDot");
+  const title = document.getElementById("agentProviderTitle");
+  const copy = document.getElementById("agentProviderCopy");
+  const runButton = form.querySelector('button[type="submit"]');
+  try {
+    const health = await api("/api/health");
+    providerConfigured = Boolean(health.configured);
+    dot.className = `dot ${health.provider === "none" || providerConfigured ? "online" : "offline"}`;
+    title.textContent = health.provider === "none" ? "Offline / No AI Provider" : `${health.provider} · ${health.model || "Not configured"}`;
+    copy.textContent = health.provider === "none" ? "History, ideas, and worker controls remain available." : health.message;
+    runButton.disabled = !providerConfigured;
+    runButton.title = providerConfigured ? "Run agent chain" : "Configure an AI provider to run the agent chain";
+  } catch (error) {
+    dot.className = "dot offline";
+    title.textContent = "Provider status unavailable";
+    copy.textContent = error.message;
+    runButton.disabled = true;
+  }
+}
+loadProviderStatus();
+setInterval(loadProviderStatus, 15000);
 
 function escapeHtml(s) {
   return (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -186,6 +212,11 @@ async function poll(jobId) {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  if (!providerConfigured) {
+    statusEl.innerHTML = '<span class="status-pill error">AI provider not configured</span>';
+    stagesEl.innerHTML = '<div class="stage-card"><div class="model">Offline mode</div><div class="out">Configure a provider before starting an agent run. History, saved ideas, workers, projects, memory, tools, and terminal surfaces remain available.</div></div>';
+    return;
+  }
   if (pollTimer) clearTimeout(pollTimer);
   reviewEl.hidden = true;
   saveIdeaBox.hidden = true;

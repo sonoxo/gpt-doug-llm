@@ -1,6 +1,6 @@
 """
 Gemini API integration for GPT Doug — satisfies mandatory requirement #1.
-Uses Google's Gemini 3.5+ API as an alternative LLM backend alongside Ollama.
+Uses Google's Gemini API as an optional GPT Doug provider.
 
 Setup:
   1. Get free Google Cloud account
@@ -34,10 +34,10 @@ class GeminiConfig:
     max_tokens: int = 8192
 
 class GeminiBackend:
-    """Gemini API backend — drop-in replacement for Ollama in the agent chain.
+    """Gemini API backend for the normalized agent-chain contract.
     
     Same interface as agents/llm_backend.py so agent_chain.py works
-    with either Ollama (local), OpenAI, or Gemini (Google Cloud).
+    with any provider supported by the shared facade.
     """
 
     def __init__(self, config: GeminiConfig | None = None):
@@ -47,7 +47,7 @@ class GeminiBackend:
             raise ValueError("Set GEMINI_API_KEY environment variable")
 
     def chat_once(self, messages: list, model: str | None = None, options: dict | None = None) -> dict:
-        """Non-streaming chat. Returns Ollama-shaped dict for compatibility."""
+        """Non-streaming chat. Returns the shared normalized event shape."""
         contents = self._convert_messages(messages)
         body = {
             "contents": contents,
@@ -66,13 +66,13 @@ class GeminiBackend:
             with urllib.request.urlopen(request, timeout=60) as response:
                 data = json.loads(response.read())
             text = data.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
-            # Return in Ollama format for agent_chain compatibility
+            # Return the normalized event shape used by agent_chain.
             return {"message": {"role": "assistant", "content": text}, "done": True}
         except urllib.error.URLError as e:
             return {"message": {"role": "assistant", "content": f"Gemini API error: {e}"}, "done": True, "error": str(e)}
 
     def _convert_messages(self, messages: list) -> list:
-        """Convert Ollama/OpenAI message format to Gemini format."""
+        """Convert the shared message format to Gemini format."""
         contents = []
         for msg in messages:
             role = msg.get("role", "user")
@@ -93,13 +93,13 @@ class GeminiBackend:
 
 def auto_select_backend() -> dict:
     """Automatically select the best available backend.
-    Priority: Gemini (Google Cloud) > OpenAI > Ollama (local)
+    Priority: an explicitly configured cloud provider, otherwise offline.
     """
     if os.environ.get("GEMINI_API_KEY"):
         return {"backend": "gemini", "config": GeminiConfig()}
     if os.environ.get("OPENAI_API_KEY"):
         return {"backend": "openai"}
-    return {"backend": "ollama"}
+    return {"backend": "none"}
 
 
 if __name__ == "__main__":

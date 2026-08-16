@@ -9,8 +9,8 @@ models with no human in the loop:
 
 Every step's raw input/output is logged so the full reasoning trace is
 inspectable afterward. This calls the *same* llm_backend.chat_once used by
-server.py, so it automatically uses OpenAI instead of Ollama if
-OPENAI_API_KEY is set — no separate backend to maintain.
+server.py, so every agent follows the explicitly selected provider and
+offline-safe default — no separate backend to maintain.
 """
 from __future__ import annotations
 
@@ -20,8 +20,7 @@ import re
 import time
 import uuid
 
-from agents import llm_backend_free as llm_backend_free as llm_backend
-from .env_guard import is_free_mode  # blocks paid APIs by default
+from agents import llm_backend
 from agents import ontology
 
 PLANNER_MODEL = os.environ.get("AGENT_PLANNER_MODEL", "gemma3")

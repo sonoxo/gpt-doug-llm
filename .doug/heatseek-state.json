@@ -1,0 +1,78 @@
+{
+  "version": "6.0.0",
+  "timestamp": 1786854780.031473,
+  "project_root": "/Users/almightysonoxo/gpt-doug-llm",
+  "cia": {
+    "confidentiality": 40,
+    "integrity": 100,
+    "availability": 85,
+    "overall": 75
+  },
+  "findings": [
+    {
+      "control": "C",
+      "severity": "HIGH",
+      "title": "Potential embedded secret",
+      "detail": "Pattern 'generic_secret_assignment' detected.",
+      "file": "hackathon/deploy/streamlit-free.py",
+      "remediation": "Remove embedded credential, store it outside source control, and rotate it if real.",
+      "points": 20
+    },
+    {
+      "control": "C",
+      "severity": "HIGH",
+      "title": "Potential embedded secret",
+      "detail": "Pattern 'generic_secret_assignment' detected.",
+      "file": "hackathon/deploy/streamlit_dashboard.py",
+      "remediation": "Remove embedded credential, store it outside source control, and rotate it if real.",
+      "points": 20
+    },
+    {
+      "control": "C",
+      "severity": "HIGH",
+      "title": "Potential embedded secret",
+      "detail": "Pattern 'generic_secret_assignment' detected.",
+      "file": "hackathon/agents/code_reviewer.py",
+      "remediation": "Remove embedded credential, store it outside source control, and rotate it if real.",
+      "points": 20
+    },
+    {
+      "control": "A",
+      "severity": "MEDIUM",
+      "title": "Low disk space",
+      "detail": "7.7% disk space remains.",
+      "file": "",
+      "remediation": "Clear unnecessary build artifacts and caches.",
+      "points": 15
+    }
+  ],
+  "checks": {
+    "confidentiality": {
+      "files_checked": 222,
+      "sensitive_files": [],
+      "tracked_sensitive_files": []
+    },
+    "integrity": {
+      "baseline_exists": true,
+      "baseline_valid": true,
+      "modified": [],
+      "deleted": [],
+      "added": [],
+      "git_dirty": true,
+      "audit_chain_valid": true,
+      "audit_chain_message": "Audit chain verified"
+    },
+    "availability": {
+      "disk_free_percent": 7.74,
+      "web_port": 8788,
+      "web_port_open": true,
+      "web_healthy": true,
+      "ollama_11434_open": false,
+      "load_average": [
+        4.275390625,
+        4.01123046875,
+        3.91552734375
+      ]
+    }
+  }
+}
