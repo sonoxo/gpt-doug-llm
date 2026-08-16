@@ -9,7 +9,7 @@ from pathlib import Path
 from agents import llm_backend
 
 MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", llm_backend.DEFAULT_MODEL)
-MAX_STEPS = 20
+MAX_STEPS = int(os.getenv("GPT_DOUG_MAX_STEPS", "60"))
 
 workspace = Path.cwd().resolve()
 
@@ -40,6 +40,12 @@ RULES:
 - Never wrap JSON in markdown.
 - Never pretend a command ran.
 - Inspect before changing unfamiliar projects.
+- Spend no more than 3 consecutive steps only inspecting files.
+- After initial inspection, make a concrete code change or run a targeted test.
+- Do not repeatedly run ls, find, pwd, git status, git diff, grep, rg, head, tail, or sed without making progress.
+- A successful inspection command is not implementation progress.
+- For build/fix/upgrade/add requests, make actual source changes whenever technically possible.
+- Prefer targeted edits over repeatedly surveying the entire repository.
 - Use relative paths inside the workspace whenever possible.
 - Preserve existing files unless modification is necessary.
 - Read command output before choosing the next action.
@@ -116,6 +122,26 @@ def run(command):
 
     return proc.returncode, proc.stdout[-12000:], proc.stderr[-12000:]
 
+
+INSPECTION_PREFIXES = (
+    "pwd",
+    "ls",
+    "find ",
+    "git status",
+    "git diff",
+    "git log",
+    "git branch",
+    "rg ",
+    "grep ",
+    "sed -n ",
+    "head ",
+    "tail ",
+)
+
+def is_inspection_command(command):
+    value = command.strip()
+    return any(value.startswith(prefix) for prefix in INSPECTION_PREFIXES)
+
 def main():
     if len(sys.argv) < 2:
         print('Usage: doug-agent "build a web app"')
@@ -123,9 +149,29 @@ def main():
 
     objective = " ".join(sys.argv[1:])
 
+    _, snapshot_out, snapshot_err = run(
+        "git status --short; "
+        "printf '\\n--- PROJECT FILES ---\\n'; "
+        "find . -maxdepth 2 -type f "
+        "-not -path './.git/*' "
+        "-not -path './.venv-mlx/*' "
+        "-not -path './node_modules/*' "
+        "| sort | head -140"
+    )
+
+    initial_context = (
+        objective
+        + "\n\nINITIAL WORKSPACE SNAPSHOT:\n"
+        + snapshot_out
+        + "\n"
+        + snapshot_err
+        + "\n\nChoose the relevant implementation surface immediately. "
+          "Do not spend more than three steps browsing before editing or testing."
+    )
+
     messages = [
         {"role": "system", "content": SYSTEM},
-        {"role": "user", "content": objective},
+        {"role": "user", "content": initial_context},
     ]
 
     print()
@@ -140,6 +186,8 @@ def main():
     last_command = None
     last_exit_code = None
     repeat_failures = 0
+    successful_inspections = set()
+    inspection_streak = 0
 
     for step in range(1, MAX_STEPS + 1):
 
@@ -249,6 +297,53 @@ def main():
             })
             continue
 
+        inspection = is_inspection_command(command)
+
+        if inspection and command in successful_inspections:
+            print()
+            print("⛔ INSPECTION LOOP BLOCKED")
+            print(f"│ Already completed successfully: {command}")
+            print("│ Make a code change or run a targeted verification command.")
+            print()
+
+            messages.append({
+                "role": "assistant",
+                "content": json.dumps(action)
+            })
+
+            messages.append({
+                "role": "user",
+                "content":
+                    "PROGRESS_GUARD: This inspection already succeeded. "
+                    "Do not repeat repository browsing. "
+                    "Make a concrete source-code modification or run a targeted test now."
+            })
+
+            continue
+
+        if inspection and inspection_streak >= 3:
+            print()
+            print("⛔ INSPECTION LIMIT REACHED")
+            print("│ Three consecutive browsing steps completed.")
+            print("│ Implementation or targeted testing is now required.")
+            print()
+
+            messages.append({
+                "role": "assistant",
+                "content": json.dumps(action)
+            })
+
+            messages.append({
+                "role": "user",
+                "content":
+                    "PROGRESS_GUARD: You have completed enough inspection. "
+                    "Your next action must implement the requested feature, "
+                    "repair code, or run a targeted test. "
+                    "Do not list or search the repository again."
+            })
+
+            continue
+
         print()
         print("┌─ GPT6-DOUG → TERMINAL")
         print(f"│ $ {command}")
@@ -272,6 +367,15 @@ def main():
         last_exit_code = code
         if code == 0:
             repeat_failures = 0
+
+            if inspection:
+                successful_inspections.add(command)
+                inspection_streak += 1
+            else:
+                inspection_streak = 0
+        else:
+            if not inspection:
+                inspection_streak = 0
 
         observation = {
             "command": command,
