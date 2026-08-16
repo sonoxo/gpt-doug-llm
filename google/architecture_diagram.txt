@@ -1,0 +1,53 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║           GPT DOUG LLM — ARCHITECTURE DIAGRAM                             ║
+║           All Things Agentic Hackathon — Fortified Enterprise Fleet       ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║                                                                          ║
+║  ┌─────────────┐     ┌──────────────┐     ┌─────────────┐                ║
+║  │  User/Client │────▶│  Cloud Run   │────▶│  Gemini 3.5 │                ║
+║  │  (Browser)  │     │  (.run.app)  │     │  API        │                ║
+║  └─────────────┘     └──────┬───────┘     └─────────────┘                ║
+║                             │                                            ║
+║                    ┌────────┴────────┐                                   ║
+║                    │  API Gateway    │                                   ║
+║                    │  (server.py)    │                                   ║
+║                    └────────┬────────┘                                   ║
+║                             │                                            ║
+║           ┌─────────────────┼─────────────────┐                        ║
+║           ▼                 ▼                  ▼                         ║
+║  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                   ║
+║  │ Golden Shield │  │ Zyra 3.0     │  │  Sentinel    │                   ║
+║  │ (Perimeter)   │  │ (Watchdog)   │  │  (24/7 Scan) │                   ║
+║  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘                   ║
+║         │                 │                  │                           ║
+║         └─────────────────┼──────────────────┘                          ║
+║                           │                                             ║
+║                    ┌──────┴───────┐                                    ║
+║                    │ ADK Wrapper   │                                    ║
+║                    │ (6 tools)     │                                    ║
+║                    └──────┬───────┘                                    ║
+║                           │                                             ║
+║         ┌─────────────────┼─────────────────┐                        ║
+║         ▼                 ▼                  ▼                         ║
+║  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                   ║
+║  │  Firestore    │  │  Pub/Sub     │  │  Knowledge   │                   ║
+║  │  (Agent Reg)  │  │  (Coord)    │  │  (173 entries)│                  ║
+║  └──────────────┘  └──────────────┘  └──────────────┘                   ║
+║                                                                          ║
+║  ┌──────────────────────────────────────────────────────────────────┐    ║
+║  │  ZERO-TRUST ARCHITECTURE                                         │    ║
+║  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐     │    ║
+║  │  │ Zyra   │→│Comply  │→│ 3FA    │→│ ASTRAL │→│EUREKA  │     │    ║
+║  │  │Inspect │  │Gate    │  │Auth   │  │2-Person│  │369 Term│     │    ║
+║  │  └────────┘  └────────┘  └────────┘  └────────┘  └────────┘     │    ║
+║  │  Every request passes through ALL 5 layers. No bypass.          │    ║
+║  └──────────────────────────────────────────────────────────────────┘    ║
+║                                                                          ║
+║  GOOGLE CLOUD SERVICES USED:                                             ║
+║  • Cloud Run  — hosts the API Gateway (.run.app URL)                    ║
+║  • Firestore  — agent registry + scan results + audit logs              ║
+║  • Pub/Sub    — agent task coordination + async dispatch                ║
+║  • Gemini API — LLM backend (mandatory requirement #1)                  ║
+║  • ADK        — agent orchestration framework (requirement #2)         ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝

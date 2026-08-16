@@ -1,0 +1,24 @@
+# Google Cloud Run Dockerfile — satisfies mandatory requirement #3
+# Build: gcloud builds submit --tag gcr.io/PROJECT_ID/gpt-doug-api
+# Deploy: gcloud run deploy gpt-doug-api --image gcr.io/PROJECT_ID/gpt-doug-api --allow-unauthenticated --port 8080
+
+FROM python:3.11-slim
+
+LABEL org.opencontainers.image.title="GPT Doug LLM — Fortified Enterprise Fleet"
+LABEL org.opencontainers.image.description="Zero-trust agent network for All Things Agentic Hackathon"
+LABEL org.opencontainers.image.source="https://github.com/sonoxo/gpt-doug-llm"
+
+WORKDIR /app
+
+# Copy project
+COPY . .
+
+# No external dependencies — pure stdlib
+# (Gemini API uses urllib, Firestore/Pub/Sub use gcloud CLI not Python SDK)
+
+# Expose port (Cloud Run default)
+ENV API_PORT=8080
+EXPOSE 8080
+
+# Run the API Gateway
+CMD ["python3", "-m", "api_gateway.server"]
