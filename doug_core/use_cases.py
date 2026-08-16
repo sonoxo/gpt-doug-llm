@@ -14,98 +14,148 @@ class UseCase:
 
 USE_CASES = {
     "build": UseCase(
-        id="build",
-        title="Application Builder",
-        description="Turn product requirements into an implementation plan and project workspace.",
-        capabilities=[
+        "build",
+        "Application Builder",
+        "Turn requirements into structured implementation work.",
+        [
             "project planning",
-            "repository inspection",
-            "file discovery",
+            "codebase inspection",
             "implementation sequencing",
-            "test planning",
+            "testing",
             "deployment readiness",
         ],
     ),
+
     "debug": UseCase(
-        id="debug",
-        title="Software Debugger",
-        description="Inspect a project, identify likely failure surfaces, and produce a repair plan.",
-        capabilities=[
+        "debug",
+        "Software Debugger",
+        "Locate software failures and create safe repair plans.",
+        [
+            "runtime diagnosis",
             "source inspection",
-            "configuration checks",
             "dependency checks",
             "test discovery",
-            "runtime diagnostics",
+            "repair planning",
         ],
     ),
+
     "architect": UseCase(
-        id="architect",
-        title="Systems Architect",
-        description="Map a codebase and recommend scalable architecture improvements.",
-        capabilities=[
+        "architect",
+        "Systems Architect",
+        "Map and improve software architecture.",
+        [
             "architecture mapping",
-            "dependency analysis",
             "service boundaries",
-            "risk analysis",
+            "dependency analysis",
             "migration planning",
+            "risk analysis",
         ],
     ),
+
     "operator": UseCase(
-        id="operator",
-        title="Local Project Operator",
-        description="Operate and inspect local GPT-Doug projects without a model provider.",
-        capabilities=[
-            "project discovery",
-            "health checks",
-            "test discovery",
-            "Git status",
+        "operator",
+        "Local Project Operator",
+        "Operate local projects independently of model availability.",
+        [
+            "workspace inspection",
             "runtime discovery",
-            "workspace summaries",
+            "Git status",
+            "project health",
+            "test discovery",
         ],
     ),
+
     "security": UseCase(
-        id="security",
-        title="Defensive Security Auditor",
-        description="Perform defensive local checks for exposed secrets and risky project configuration.",
-        capabilities=[
-            "secret-pattern detection",
-            "dangerous config detection",
+        "security",
+        "Defensive Security Auditor",
+        "Identify defensive configuration and secret-management risks.",
+        [
+            "secret pattern detection",
+            "unsafe config detection",
             "dependency inventory",
-            "security file discovery",
+            "security inventory",
         ],
     ),
+
     "release": UseCase(
-        id="release",
-        title="Release Readiness",
-        description="Determine whether a repository is ready to build, test, commit, and deploy.",
-        capabilities=[
+        "release",
+        "Release Engineer",
+        "Determine whether a repository is ready for release.",
+        [
             "Git cleanliness",
             "test discovery",
-            "configuration inventory",
-            "deployment file discovery",
+            "deployment inventory",
+            "documentation checks",
             "readiness scoring",
         ],
     ),
+
     "docs": UseCase(
-        id="docs",
-        title="Documentation Engineer",
-        description="Inventory project structure and documentation gaps.",
-        capabilities=[
+        "docs",
+        "Documentation Engineer",
+        "Identify project documentation surfaces and gaps.",
+        [
             "README discovery",
-            "API surface inventory",
             "entrypoint discovery",
-            "documentation gap analysis",
+            "architecture documentation",
+            "test documentation",
+        ],
+    ),
+
+    "research": UseCase(
+        "research",
+        "Technical Research Planner",
+        "Structure technical research questions and evidence requirements.",
+        [
+            "question decomposition",
+            "evidence planning",
+            "assumption tracking",
+            "comparison framework",
+        ],
+        True,
+    ),
+
+    "product": UseCase(
+        "product",
+        "Product Engineering Planner",
+        "Translate a product idea into engineering milestones.",
+        [
+            "requirements",
+            "MVP definition",
+            "technical milestones",
+            "risk prioritization",
+            "release planning",
+        ],
+    ),
+
+    "agents": UseCase(
+        "agents",
+        "Agent Systems Designer",
+        "Design controlled multi-agent workflows.",
+        [
+            "agent responsibilities",
+            "task routing",
+            "state management",
+            "verification loops",
+            "permission boundaries",
         ],
     ),
 }
 
 
 def list_use_cases() -> list[dict]:
-    return [asdict(x) for x in USE_CASES.values()]
+    return [
+        asdict(case)
+        for case in USE_CASES.values()
+    ]
 
 
 def get_use_case(name: str) -> UseCase:
     key = name.strip().lower()
+
     if key not in USE_CASES:
-        raise KeyError(f"Unknown use case: {name}")
+        raise KeyError(
+            f"Unknown use case: {name}"
+        )
+
     return USE_CASES[key]

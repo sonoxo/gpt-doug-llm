@@ -15,11 +15,15 @@ class UseCaseResult:
     actions: list[str]
     data: dict
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return asdict(self)
 
 
-def run_use_case(name: str, root: str | Path = ".") -> UseCaseResult:
+def run_use_case(
+    name: str,
+    root: str | Path = ".",
+) -> UseCaseResult:
+
     case = get_use_case(name)
     report = inspect_workspace(root)
     data = report.to_dict()
@@ -28,53 +32,57 @@ def run_use_case(name: str, root: str | Path = ".") -> UseCaseResult:
 
     if name == "build":
         actions = [
-            "Choose the primary application entrypoint",
-            "Confirm required runtime and dependencies",
-            "Create or update tests before large changes",
-            "Implement one feature increment at a time",
-            "Run tests after each increment",
-            "Validate deployment configuration",
+            "Identify the primary application surface",
+            "Confirm runtime and dependencies",
+            "Inspect current behavior",
+            "Implement one feature increment",
+            "Run tests",
+            "Inspect diff",
+            "Repeat until objective is satisfied",
         ]
 
     elif name == "debug":
         actions = [
-            "Check Git status before modifying files",
-            f"Inspect {len(report.entrypoints)} detected entrypoint(s)",
-            f"Run {len(report.tests)} discovered test file(s)",
-            "Capture the first reproducible failure",
-            "Fix the smallest root cause",
-            "Re-run tests and verify runtime behavior",
+            "Capture the reproducible failure",
+            "Check Git state",
+            "Inspect likely entrypoints",
+            "Run relevant tests",
+            "Identify root cause",
+            "Implement smallest safe fix",
+            "Re-run verification",
         ]
 
     elif name == "architect":
         actions = [
-            "Map entrypoints and runtime boundaries",
-            "Separate UI, API, agents, tools, and persistence",
-            "Identify duplicated provider logic",
-            "Centralize configuration and routing",
-            "Add health checks between components",
-            "Benchmark before and after architectural changes",
+            "Map application entrypoints",
+            "Map UI and API boundaries",
+            "Map agents and workers",
+            "Map storage and memory",
+            "Centralize duplicated configuration",
+            "Define health boundaries",
+            "Benchmark changes",
         ]
 
     elif name == "operator":
         actions = [
-            f"Current Git branch: {report.git_branch}",
-            f"Workspace contains {report.files} files",
-            f"Detected {len(report.tests)} test files",
-            f"Detected {len(report.entrypoints)} entrypoints",
-            "Keep project runtime independent from AI provider availability",
+            f"Git branch: {report.git_branch}",
+            f"Workspace files: {report.files}",
+            f"Test files: {len(report.tests)}",
+            f"Entrypoints: {len(report.entrypoints)}",
+            "Maintain provider-independent local operation",
         ]
 
     elif name == "security":
         actions = [
-            f"Review {len(report.security_findings)} potential secret finding(s)",
-            "Keep credentials outside committed source files",
-            "Validate guarded terminal execution",
-            "Keep local services bound to loopback unless intentionally exposed",
-            "Review dependencies and deployment permissions",
+            f"Review {len(report.security_findings)} potential secret findings",
+            "Keep credentials outside committed source",
+            "Review runtime permissions",
+            "Review deployment permissions",
+            "Keep local services loopback-bound by default",
         ]
 
     elif name == "release":
+
         score = 100
 
         if report.git_dirty:
@@ -87,26 +95,61 @@ def run_use_case(name: str, root: str | Path = ".") -> UseCaseResult:
             score -= 10
 
         if report.security_findings:
-            score -= min(30, 10 * len(report.security_findings))
+            score -= min(
+                30,
+                len(report.security_findings) * 10,
+            )
 
-        data["readiness_score"] = max(score, 0)
+        data["readiness_score"] = max(
+            0,
+            score,
+        )
 
         actions = [
-            "Run the complete test suite",
+            "Run complete test suite",
             "Resolve unexpected Git changes",
             "Review security findings",
-            "Verify startup commands",
+            "Verify startup command",
             "Verify deployment configuration",
-            "Tag only after tests and runtime checks pass",
+            "Create release only after verification",
         ]
 
     elif name == "docs":
         actions = [
-            "Document detected entrypoints",
-            "Document local startup procedure",
-            "Document provider-independent functionality",
+            "Document primary entrypoints",
+            "Document local startup",
+            "Document provider configuration",
             "Document test commands",
-            "Document architecture and security boundaries",
+            "Document security boundaries",
+        ]
+
+    elif name == "research":
+        actions = [
+            "Define the exact research question",
+            "Separate facts from assumptions",
+            "Identify required authoritative sources",
+            "Compare evidence",
+            "Document uncertainty",
+        ]
+
+    elif name == "product":
+        actions = [
+            "Define target user",
+            "Define core problem",
+            "Define minimum viable workflow",
+            "Map required engineering surfaces",
+            "Prioritize implementation milestones",
+            "Define verification metrics",
+        ]
+
+    elif name == "agents":
+        actions = [
+            "Define agent roles",
+            "Define permissions",
+            "Define routing rules",
+            "Define shared state",
+            "Define verification checkpoints",
+            "Define failure and retry behavior",
         ]
 
     return UseCaseResult(
