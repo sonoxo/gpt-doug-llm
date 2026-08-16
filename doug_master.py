@@ -71,7 +71,7 @@ os.environ.setdefault(
 
 os.environ.setdefault(
     "QWEN_MAX_TOKENS",
-    "1600",
+    "4096",
 )
 
 for variable in (
@@ -94,7 +94,7 @@ MODEL = os.environ["QWEN_MODEL"]
 MAX_STEPS = int(
     os.environ.get(
         "GPT_DOUG_MASTER_STEPS",
-        "18",
+        "24",
     )
 )
 
@@ -238,7 +238,12 @@ IMPORTANT ENGINEERING RULES:
 - Do not assume npm scripts exist.
 - Inspect package.json before using npm scripts.
 - Do not assume a file is a directory.
-- Prefer write/replace actions for source edits.
+- Prefer replace actions for existing source files.
+- Keep every individual edit SMALL and focused.
+- Never return an entire large existing file when a small replace can implement the change.
+- For large features, perform several small replace/write actions across multiple turns.
+- Keep JSON responses comfortably below the model output limit.
+- After reading a file, modify only the relevant section rather than rewriting the whole file.
 - Use shell mainly for tests, builds, diagnostics and runtime checks.
 - Read stdout/stderr literally.
 - Repair root causes rather than hiding errors.
@@ -639,13 +644,13 @@ def ask_model(messages):
             "max_tokens": int(
                 os.environ.get(
                     "QWEN_MAX_TOKENS",
-                    "1600",
+                    "4096",
                 )
             ),
             "num_predict": int(
                 os.environ.get(
                     "QWEN_MAX_TOKENS",
-                    "1600",
+                    "4096",
                 )
             ),
         },
@@ -1482,16 +1487,13 @@ def execute_objective(
             )
 
             messages.append({
-                "role": "assistant",
-                "content": raw,
-            })
-
-            messages.append({
                 "role": "user",
                 "content": (
-                    "PROTOCOL ERROR. "
-                    "Return exactly one valid JSON tool action. "
-                    "No markdown and no commentary."
+                    "PROTOCOL ERROR: your previous JSON was truncated or malformed. "
+                    "Do NOT repeat the large response. "
+                    "Return ONE much smaller valid JSON action. "
+                    "Prefer a small read or replace action. "
+                    "Do not output markdown or commentary."
                 ),
             })
 
