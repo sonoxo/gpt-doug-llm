@@ -41,6 +41,8 @@ import shutil
 import subprocess
 import signal
 import sys
+import threading
+import queue
 import time
 from pathlib import Path
 
@@ -2157,9 +2159,15 @@ def interactive():
     )
     agent_max_workers = 3
     agent_tasks = {}
+    agent_processes = {}
     agent_queue = []
     agent_trace = ["supervisor initialized"]
     agent_counter = 0
+
+    agent_work_queue = queue.Queue()
+    agent_stop_event = threading.Event()
+    agent_state_lock = threading.RLock()
+
 
     print()
     print(
@@ -2199,6 +2207,265 @@ def interactive():
     print(
         "Type what you want built."
     )
+
+    read_only_roles = {
+        "planner",
+        "tester",
+        "security",
+        "reviewer",
+        "retriever",
+        "profiler",
+    }
+
+    role_prompts = {
+        "planner": (
+            "You are a read-only planning agent. Analyze repository evidence "
+            "and return a concise implementation plan. Do not modify files."
+        ),
+        "tester": (
+            "You are a read-only testing agent. Identify relevant tests, "
+            "risks, and verification steps. Do not modify files."
+        ),
+        "security": (
+            "You are a read-only security reviewer. Identify concrete "
+            "security risks and mitigations. Do not modify files."
+        ),
+        "reviewer": (
+            "You are a read-only code reviewer. Return concise findings "
+            "and recommended next actions. Do not modify files."
+        ),
+        "retriever": (
+            "You are a read-only repository retrieval agent. Identify "
+            "relevant repository evidence. Do not modify files."
+        ),
+        "profiler": (
+            "You are a read-only performance profiler. Identify likely "
+            "bottlenecks and useful measurements. Do not modify files."
+        ),
+    }
+
+    def run_background_agent(task_id):
+        with agent_state_lock:
+            record = agent_tasks.get(task_id)
+
+            if not record:
+                return
+
+            if record["state"] == "CANCELLED":
+                return
+
+            record["state"] = "EXECUTING"
+            agent_trace.append(f"{task_id} EXECUTING")
+
+            role = record["role"]
+            task_text = record["task"]
+
+        target_excerpt = ""
+
+        candidates = re.findall(
+            r"(?:^|\s)([A-Za-z0-9_./-]+\.(?:py|js|ts|json|md|toml|yaml|yml|sh))",
+            task_text,
+        )
+
+        for relative in candidates[:1]:
+            candidate = safe_path(relative)
+
+            if candidate is not None and candidate.is_file():
+                try:
+                    raw_text = candidate.read_text(
+                        encoding="utf-8",
+                        errors="replace",
+                    )
+                    target_excerpt = (
+                        "\n\nTARGET FILE EVIDENCE: "
+                        + relative
+                        + "\n"
+                        + raw_text[:12000]
+                    )
+                except Exception:
+                    pass
+
+        try:
+            payload = {
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": role_prompts[role],
+                    },
+                    {
+                        "role": "user",
+                        "content": (
+                            "TASK:\n"
+                            + task_text
+                            + "\n\nREAL REPOSITORY EVIDENCE:\n"
+                            + json.dumps(
+                                repository_snapshot(),
+                                indent=2,
+                                default=str,
+                            )
+                            + "\n\nAnalyze only the real evidence provided. "
+                            + "Do not give generic repository-inspection instructions."
+                            + target_excerpt
+                        ),
+                    },
+                ],
+                "model": MODEL,
+                "options": {
+                    "temperature": 0,
+                    "max_tokens": 256,
+                    "num_predict": 256,
+                },
+            }
+
+            proc = subprocess.Popen(
+                [
+                    sys.executable,
+                    "-m",
+                    "agents.agent_subprocess",
+                ],
+                cwd=str(ROOT),
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                start_new_session=True,
+            )
+
+            with agent_state_lock:
+                agent_processes[task_id] = proc
+
+            try:
+                stdout, stderr = proc.communicate(
+                    input=json.dumps(payload),
+                    timeout=30,
+                )
+            except subprocess.TimeoutExpired:
+                try:
+                    os.killpg(proc.pid, signal.SIGTERM)
+                    proc.wait(timeout=2)
+                except Exception:
+                    try:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                    except Exception:
+                        pass
+                    proc.wait()
+
+                raise TimeoutError(
+                    "agent generation exceeded 30-second deadline"
+                )
+
+            if proc.returncode != 0:
+                with agent_state_lock:
+                    record = agent_tasks.get(task_id)
+                    if record and record["state"] == "CANCELLED":
+                        agent_processes.pop(task_id, None)
+                        return
+
+                raise RuntimeError(
+                    "agent subprocess failed: "
+                    + (stderr.strip() or f"exit {proc.returncode}")
+                )
+
+            try:
+                result = json.loads(stdout)
+            except json.JSONDecodeError as exc:
+                raise RuntimeError(
+                    "agent subprocess returned invalid JSON: "
+                    + stdout[-500:]
+                ) from exc
+
+            content = (
+                result
+                .get("message", {})
+                .get("content", "")
+                .strip()
+            )
+
+            if not content:
+                raise RuntimeError("worker returned empty result")
+
+            with agent_state_lock:
+                record = agent_tasks.get(task_id)
+
+                if not record or record["state"] == "CANCELLED":
+                    return
+
+                record["result"] = content
+                record["error"] = None
+                record["state"] = "DONE"
+                agent_processes.pop(task_id, None)
+
+                agent_trace.append(
+                    f"{task_id} DONE: {content[:240]}"
+                )
+
+        except Exception as exc:
+            with agent_state_lock:
+                record = agent_tasks.get(task_id)
+
+                if not record:
+                    return
+
+                if record["state"] == "CANCELLED":
+                    return
+
+                record["state"] = "FAILED"
+                agent_processes.pop(task_id, None)
+                record["error"] = str(exc)
+                record["result"] = ""
+
+                agent_trace.append(
+                    f"{task_id} FAILED: {exc}"
+                )
+
+    def agent_worker_loop():
+        while not agent_stop_event.is_set():
+            try:
+                task_id = agent_work_queue.get(timeout=0.25)
+            except queue.Empty:
+                continue
+
+            try:
+                if task_id is None:
+                    return
+
+                run_background_agent(task_id)
+
+            finally:
+                agent_work_queue.task_done()
+
+                active_count = sum(
+                    1
+                    for task in agent_tasks.values()
+                    if task["state"] in {"RUNNING", "EXECUTING"}
+                )
+
+                while (
+                    active_count < agent_max_workers
+                    and agent_queue
+                ):
+                    next_task_id = agent_queue.pop(0)
+                    next_task = agent_tasks.get(next_task_id)
+
+                    if (
+                        next_task is None
+                        or next_task["state"] != "QUEUED"
+                    ):
+                        continue
+
+                    next_task["state"] = "RUNNING"
+                    agent_trace.append(
+                        f"{next_task_id} PROMOTED"
+                    )
+                    agent_work_queue.put(next_task_id)
+                    active_count += 1
+
+    agent_worker_thread = threading.Thread(
+        target=agent_worker_loop,
+        name="doug-agent-mlx-worker",
+        daemon=True,
+    )
+    agent_worker_thread.start()
 
     while True:
 
@@ -2314,7 +2581,7 @@ def interactive():
         if text in {"/agents", "/agents status"}:
             active = [
                 t for t in agent_tasks.values()
-                if t["state"] == "RUNNING"
+                if t["state"] in {"RUNNING", "EXECUTING"}
             ]
 
             print()
@@ -2327,7 +2594,6 @@ def interactive():
                 matches = [
                     t for t in agent_tasks.values()
                     if t["role"] == role
-                    and t["state"] in {"RUNNING", "QUEUED"}
                 ]
 
                 if matches:
@@ -2364,7 +2630,7 @@ def interactive():
             active_count = sum(
                 1
                 for t in agent_tasks.values()
-                if t["state"] == "RUNNING"
+                if t["state"] in {"RUNNING", "EXECUTING"}
             )
 
             state_name = (
@@ -2396,166 +2662,65 @@ def interactive():
             print(f"state: {state_name}")
             print(f"task: {task_text}")
 
-            read_only_roles = {
-                "planner",
-                "tester",
-                "security",
-                "reviewer",
-                "retriever",
-                "profiler",
-            }
+            if role in read_only_roles:
+                if state_name == "RUNNING":
+                    agent_work_queue.put(task_id)
 
-            # First execution milestone:
-            # run only read-only agents through the existing local MLX backend.
-            # Coder/release remain state-only until write locking is implemented.
-            if (
-                state_name == "RUNNING"
-                and role in read_only_roles
-            ):
-                role_prompts = {
-                    "planner": (
-                        "You are a read-only planning agent. Inspect the task "
-                        "conceptually and return a concise implementation plan. "
-                        "Do not modify files."
-                    ),
-                    "tester": (
-                        "You are a read-only testing agent. Identify relevant "
-                        "tests, risks, and verification steps. Do not modify files."
-                    ),
-                    "security": (
-                        "You are a read-only security reviewer. Identify concrete "
-                        "security risks and mitigations. Do not modify files."
-                    ),
-                    "reviewer": (
-                        "You are a read-only code reviewer. Return concise findings "
-                        "and recommended next actions. Do not modify files."
-                    ),
-                    "retriever": (
-                        "You are a read-only repository retrieval agent. Determine "
-                        "what repository evidence is relevant to the task. "
-                        "Do not modify files."
-                    ),
-                    "profiler": (
-                        "You are a read-only performance profiler. Identify likely "
-                        "bottlenecks and useful measurements. Do not modify files."
-                    ),
-                }
-
-                print(f"AGENT EXECUTING: {task_id}", flush=True)
-                agent_trace.append(f"{task_id} EXECUTING")
-
-                target_excerpt = ""
-                candidates = re.findall(
-                    r"(?:^|\s)([A-Za-z0-9_./-]+\.(?:py|js|ts|json|md|toml|yaml|yml|sh))",
-                    task_text,
-                )
-
-                for relative in candidates[:1]:
-                    candidate = safe_path(relative)
-                    if (
-                        candidate is not None
-                        and candidate.is_file()
-                    ):
-                        try:
-                            raw_text = candidate.read_text(
-                                encoding="utf-8",
-                                errors="replace",
-                            )
-                            target_excerpt = (
-                                "\n\nTARGET FILE EVIDENCE: "
-                                + relative
-                                + "\n"
-                                + raw_text[:12000]
-                            )
-                        except Exception:
-                            pass
-
-                try:
-                    result = llm_backend.chat_once(
-                        [
-                            {
-                                "role": "system",
-                                "content": role_prompts[role],
-                            },
-                            {
-                                "role": "user",
-                                "content": (
-                                    "TASK:\n"
-                                    + task_text
-                                    + "\n\nREAL REPOSITORY EVIDENCE:\n"
-                                    + json.dumps(
-                                        repository_snapshot(),
-                                        indent=2,
-                                        default=str,
-                                    )
-                                    + "\n\nIMPORTANT: Analyze the evidence above. "
-                                    + "Do not give generic instructions about how to inspect "
-                                    + "a repository. Refer to actual files, directories, branch, "
-                                    + "tests, and git state present in the evidence."
-                                    + target_excerpt
-                                ),
-                            },
-                        ],
-                        MODEL,
-                        {
-                            "temperature": 0,
-                            "max_tokens": 256,
-                            "num_predict": 256,
-                        },
-                    )
-
-                    content = (
-                        result
-                        .get("message", {})
-                        .get("content", "")
-                        .strip()
-                    )
-
-                    if not content:
-                        raise RuntimeError("worker returned empty result")
-
-                    record["result"] = content
-                    record["error"] = None
-                    record["state"] = "DONE"
-
-                    agent_trace.append(
-                        f"{task_id} DONE: {content[:240]}"
-                    )
-
-                    print(f"AGENT DONE: {task_id}")
-                    print(content)
-
-                except KeyboardInterrupt:
-                    record["state"] = "CANCELLED"
-                    record["error"] = "cancelled by user"
-                    agent_trace.append(
-                        f"{task_id} CANCELLED"
-                    )
-                    print(f"AGENT CANCELLED: {task_id}")
-                    continue
-
-                except Exception as exc:
-                    record["state"] = "FAILED"
-                    record["error"] = str(exc)
-                    record["result"] = ""
-                    agent_trace.append(
-                        f"{task_id} FAILED: {exc}"
-                    )
-                    print(f"AGENT FAILED: {task_id}: {exc}")
-
-            elif (
-                state_name == "RUNNING"
-                and role in {"coder", "release"}
-            ):
-                print(
-                    f"AGENT HELD: {task_id} "
-                    "(write-capable execution not enabled yet)"
-                )
+            elif role in {"coder", "release"}:
                 record["state"] = "HELD"
                 agent_trace.append(
                     f"{task_id} HELD: write execution disabled"
                 )
+                print(
+                    f"AGENT HELD: {task_id} "
+                    "(write-capable execution not enabled yet)"
+                )
 
+            continue
+
+        if text == "/agents list":
+            print()
+            print("AGENT TASKS")
+
+            if not agent_tasks:
+                print("(none)")
+            else:
+                for task in agent_tasks.values():
+                    print(
+                        f"{task['task_id']:<12} "
+                        f"{task['role']:<10} "
+                        f"{task['state']:<10} "
+                        f"{task['task']}"
+                    )
+
+            continue
+
+        if text.startswith("/agents result"):
+            parts = text.split(maxsplit=2)
+
+            if len(parts) != 3:
+                print("usage: /agents result <task_id>")
+                continue
+
+            task_id = parts[2].strip()
+            task = agent_tasks.get(task_id)
+
+            if task is None:
+                print(f"unknown task_id: {task_id}")
+                continue
+
+            print()
+            print("AGENT RESULT")
+            print(f"task_id: {task['task_id']}")
+            print(f"role: {task['role']}")
+            print(f"state: {task['state']}")
+            print(f"task: {task['task']}")
+
+            if task.get("error"):
+                print(f"error: {task['error']}")
+
+            print("result:")
+            print(task.get("result") or "(none)")
             continue
 
         if text == "/agents trace":
@@ -2568,10 +2733,37 @@ def interactive():
             continue
 
         if text == "/agents stop":
+            # MARK ACTIVE TASKS CANCELLED BEFORE KILL
+            with agent_state_lock:
+                cancelled_count = 0
+                for task in agent_tasks.values():
+                    if task["state"] in {"RUNNING", "EXECUTING", "QUEUED"}:
+                        task["state"] = "CANCELLED"
+                        cancelled_count += 1
+                agent_queue.clear()
+
+            # STOP-KILL: terminate live MLX subprocesses
+            with agent_state_lock:
+                live_processes = list(agent_processes.items())
+
+            for running_task_id, running_proc in live_processes:
+                if running_proc.poll() is not None:
+                    continue
+                try:
+                    os.killpg(running_proc.pid, signal.SIGTERM)
+                    running_proc.wait(timeout=2)
+                except Exception:
+                    try:
+                        os.killpg(running_proc.pid, signal.SIGKILL)
+                    except Exception:
+                        pass
+                with agent_state_lock:
+                    agent_processes.pop(running_task_id, None)
+
             cancelled = 0
 
             for task in agent_tasks.values():
-                if task["state"] in {"RUNNING", "QUEUED"}:
+                if task["state"] in {"RUNNING", "QUEUED", "EXECUTING"}:
                     task["state"] = "CANCELLED"
                     cancelled += 1
                     agent_trace.append(
@@ -2585,6 +2777,22 @@ def interactive():
             print(f"cancelled: {cancelled}")
             print("queued cleared: 0")
             print("all workers stopped")
+            continue
+
+        # Background agent owns MLX: never start another generation.
+        mlx_busy = any(
+            task.get("state") == "EXECUTING"
+            for task in agent_tasks.values()
+        )
+
+        if mlx_busy:
+            print()
+            print(
+                "MLX BUSY: background agent is executing. "
+                "Use /agents status, /agents list, "
+                "/agents trace, /agents result <task_id>, "
+                "or /agents stop."
+            )
             continue
 
         success, touched = (
