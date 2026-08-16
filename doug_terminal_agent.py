@@ -33,7 +33,7 @@ You have exactly these actions:
 {{"action":"shell","command":"pwd && ls"}}
 
 2. finish
-{{"action":"finish","summary":"what was actually completed and verified"}}
+{{"action":"finish","summary":"what was actually completed and verified","verify_command":"python -m pytest -q && git diff --check"}}
 
 RULES:
 - Return exactly ONE JSON object.
@@ -58,7 +58,10 @@ RULES:
 - Never use finish after a failed command.
 - Before finish, repair every failure.
 - finish MUST include verify_command.
+- finish JSON example MUST contain verify_command.
 - verify_command must actually test the requested result.
+- Do not rerun an identical successful test unless source files changed afterward.
+- When tests already passed and the requested implementation is complete, finish immediately with verification.
 - Examples: test files exist, run tests, curl the server, compile the code.
 - A claim is not verification.
 - Do not execute destructive disk/system commands.
@@ -215,13 +218,31 @@ def main():
             verify = action.get("verify_command", "").strip()
 
             if not verify:
-                print("⚠️ FINISH REJECTED // no verification command")
-                messages.append({"role": "assistant", "content": raw})
-                messages.append({
-                    "role": "user",
-                    "content": "You may not finish yet. Supply a real shell verification command and fix any remaining failures."
-                })
-                continue
+                # Qwen occasionally omits verify_command even when requested.
+                # Choose a deterministic repository-aware fallback instead
+                # of wasting another inference step.
+                checks = []
+
+                if (workspace / "tests").is_dir():
+                    checks.append("python -m pytest -q")
+
+                for js_file in (
+                    "web/app.js",
+                    "web/dashboard.js",
+                    "web/agents.js",
+                    "web/worker.py",
+                ):
+                    candidate = workspace / js_file
+
+                    if candidate.exists() and candidate.suffix == ".js":
+                        checks.append(f"node --check {js_file}")
+
+                checks.append("git diff --check")
+
+                verify = " && ".join(checks)
+
+                print("⚡ AUTO-VERIFY // model omitted verify_command")
+                print(f"│ using: {verify}")
 
             print()
             print("┌─ GPT6-DOUG → VERIFY")
