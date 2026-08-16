@@ -20,7 +20,8 @@ import re
 import time
 import uuid
 
-from agents import llm_backend
+from agents import llm_backend_free as llm_backend_free as llm_backend
+from .env_guard import is_free_mode  # blocks paid APIs by default
 from agents import ontology
 
 PLANNER_MODEL = os.environ.get("AGENT_PLANNER_MODEL", "gemma3")
