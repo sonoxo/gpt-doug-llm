@@ -102,8 +102,9 @@ class TestEmergencyMesh:
         from hackathon.agents.emergency_mesh import check_emergency_feeds
         r = check_emergency_feeds()
         assert "threat_level" in r
-    def test_register(self):
+    def test_register(self, tmp_path, monkeypatch):
         from hackathon.agents.emergency_mesh import register_neighbor
+        monkeypatch.setenv("GPT_DOUG_NEIGHBORHOOD_REGISTRY", str(tmp_path / "neighbors.json"))
         assert register_neighbor("Test","+15551234567",vulnerable=True)["status"] == "registered"
     def test_no_threats(self):
         from hackathon.agents.emergency_mesh import coordinate_response

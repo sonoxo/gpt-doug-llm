@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """GPT Doug vibe-coding platform server.
 
-Serves the frontend, streams chat responses from a local Ollama model,
+Serves the frontend, streams chat responses from the selected AI provider,
 and manages simple file-based "projects" that can be generated, saved,
 and previewed statically — all on one origin so there's no CORS to fight.
 """
@@ -122,7 +122,7 @@ SYSTEM_PROMPT = (
 
 # Matches the tuning in gpt-doug-llm/Modelfile so both surfaces reason the
 # same way; callers may still override per-request via payload["options"].
-DEFAULT_OLLAMA_OPTIONS = {"temperature": 0.7, "num_ctx": 8192}
+DEFAULT_PROVIDER_OPTIONS = {"temperature": 0.7, "num_ctx": 8192}
 
 NAME_RE = re.compile(r"^[a-zA-Z0-9_-]{1,64}$")
 MAX_BODY_BYTES = 10 * 1024 * 1024  # 10MB — generous for source files, small enough to bound abuse
@@ -383,7 +383,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, {
                 "projects": projects,
                 "server_uptime_s": round(time.time() - SERVER_STARTED_AT, 1),
-                "ollama": llm_backend.health(),
+                "provider": llm_backend.health(),
             })
 
         m = re.match(r"^/api/projects/([^/]+)/files$", path)
@@ -683,7 +683,7 @@ class Handler(BaseHTTPRequestHandler):
             {"role": "user", "content": text},
         ]
         try:
-            result = llm_backend.chat_once(messages, MODEL, DEFAULT_OLLAMA_OPTIONS)
+            result = llm_backend.chat_once(messages, MODEL, DEFAULT_PROVIDER_OPTIONS)
         except urllib.error.URLError:
             return "Doug is offline right now — try again shortly."
         return result.get("message", {}).get("content", "").strip()[:1500]
@@ -755,7 +755,7 @@ class Handler(BaseHTTPRequestHandler):
         if not messages or messages[0].get("role") != "system":
             messages = [{"role": "system", "content": SYSTEM_PROMPT}] + list(messages)
 
-        options = {**DEFAULT_OLLAMA_OPTIONS, **payload.get("options", {})}
+        options = {**DEFAULT_PROVIDER_OPTIONS, **payload.get("options", {})}
 
         if not stream:
             try:
@@ -833,8 +833,11 @@ if __name__ == "__main__":
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     print(f"GPT Doug running at http://localhost:{PORT}")
     print(auth.startup_message())
-    worker.start()
-    print("Autonomous marketplace worker started (polls every 15s for unclaimed draft ideas).")
+    if os.environ.get("GPT_DOUG_ENABLE_WORKER", "false").lower() in {"1", "true", "yes"}:
+        worker.start()
+        print("Autonomous marketplace worker started (polls every 15s for unclaimed draft ideas).")
+    else:
+        print("Autonomous marketplace worker disabled (set GPT_DOUG_ENABLE_WORKER=true to enable).")
     try:
         server.serve_forever()
     finally:

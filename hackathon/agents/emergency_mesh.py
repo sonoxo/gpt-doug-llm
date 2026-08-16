@@ -16,6 +16,7 @@ Free deployment:
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -38,8 +39,10 @@ You do NOT make medical decisions. You do NOT dispatch emergency services
 
 def register_neighbor(name: str, phone: str, needs: list = None, vulnerable: bool = False) -> dict:
     """Register a neighbor in the emergency mesh."""
-    import os, json
-    registry_path = _PROJECT_ROOT / "hackathon" / "neighborhood_registry.json"
+    registry_path = Path(os.environ.get(
+        "GPT_DOUG_NEIGHBORHOOD_REGISTRY",
+        _PROJECT_ROOT / "hackathon" / "neighborhood_registry.json",
+    ))
     registry = []
     if registry_path.exists():
         registry = json.loads(registry_path.read_text())

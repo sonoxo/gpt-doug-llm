@@ -6,9 +6,10 @@
 <title>GPT Doug — Agent Chain</title>
 <link rel="stylesheet" href="/app.css">
 <style>
-  body { padding: 24px; max-width: 900px; margin: 0 auto; }
+  body { min-height:100%;overflow:auto;padding:0 28px 48px;max-width:1100px;margin:0 auto; }
   .agents-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .agents-header h1 { font-size: 1.2rem; margin: 0; color: var(--text); }
+  .agents-header {padding-top:30px}
+  .agents-header h1 { font-size: clamp(1.45rem,3vw,2.1rem);letter-spacing:-.04em; margin: 6px 0 0; color: var(--text); }
   .agents-header a { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; }
   #taskForm { display: flex; gap: 10px; margin-bottom: 20px; }
   #taskInput { flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; }
@@ -45,22 +46,23 @@
   #accountForm input { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 8px; }
   #accountForm button[type="submit"] { background: var(--accent); color: #03140a; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer; }
   #whoami { color: var(--text-dim); font-size: 0.85rem; margin-right: 12px; }
+  .agent-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px}.agent-main{min-width:0}.agent-rail{min-width:0}.agent-rail .card{position:sticky;top:72px}.provider-state{display:flex;align-items:center;gap:10px}.provider-state strong,.provider-state small{display:block}.provider-state small{margin-top:3px;color:var(--text-dim)}
+  @media(max-width:760px){body{padding:0 14px 30px}.agent-layout{display:block}.agents-header{align-items:flex-start;flex-direction:column;gap:12px}#taskForm{flex-direction:column}.agent-rail .card{position:static}}
 </style>
 </head>
 <body>
+  <nav class="page-nav" aria-label="Command center">
+    <a href="/">Workspace</a><a href="/dashboard">Dashboard</a><a class="active" href="/agents">Agents</a><a href="/feed">Feed</a>
+  </nav>
   <div class="agents-header">
-    <h1>Autonomous Agent Chain <span id="jobStatus"></span></h1>
+    <div><div class="panel-eyebrow">AGENT OPERATIONS</div><h1>Agent command chain <span id="jobStatus"></span></h1></div>
     <div>
       <span id="whoami"></span>
-      <a href="/feed">Browse feed</a>
-      <a href="/">&larr; Back to chat</a>
+      <a class="page-action" href="/">Open workspace →</a>
     </div>
   </div>
 
-  <div id="workerBox" class="card">
-    <h2>Autonomous worker</h2>
-    <div id="workerStatus" class="hint">checking...</div>
-  </div>
+  <div class="agent-layout"><div class="agent-main">
 
   <div id="accountBox" class="card" hidden>
     <h2>Account</h2>
@@ -106,6 +108,10 @@
   <div id="tab-ideas" class="tab-pane">
     <div id="ideasList" class="stage-list"></div>
   </div>
+  </div><aside class="agent-rail">
+    <div class="card"><h2>Runtime status</h2><div class="provider-state"><span class="dot" id="agentProviderDot"></span><span><strong id="agentProviderTitle">Checking provider…</strong><small id="agentProviderCopy">No external provider required for the UI.</small></span></div></div>
+    <div id="workerBox" class="card"><h2>Autonomous worker</h2><div id="workerStatus" class="hint">Checking worker status…</div><p class="hint">Background processing is opt-in. Manual agent controls remain available.</p></div>
+  </aside></div>
 
 <script src="/agents.js"></script>
 </body>

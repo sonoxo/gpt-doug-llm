@@ -7,11 +7,9 @@ needed] -> review), replaces the draft's output with the fresh result,
 and auto-ships it if the review passed — no human clicks "Run" or "Ship"
 for any of it.
 
-Deliberately sequential, not "100 parallel enterprises": the local Ollama
-server only serves one request at a time (-np 1), so concurrency here
-would just queue at that layer anyway. This processes the real queue as
-fast as the hardware actually allows, continuously, forever, until you
-stop it — which is genuine unattended autonomy, just honestly paced.
+Deliberately sequential, not "100 parallel enterprises": provider rate limits
+and shared project state need deterministic processing. This processes the real
+queue continuously until the host application stops.
 """
 from __future__ import annotations
 

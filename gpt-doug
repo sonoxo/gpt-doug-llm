@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-"""Minimal local terminal client for the GPT Doug Ollama model."""
+"""Secure terminal client for GPT Doug's configured AI provider."""
 
-import json
 import os
-import shutil
-import subprocess
 import sys
-import urllib.error
-import urllib.request
 import getpass
+
+from agents import llm_backend
 
 from zyra import Zyra
 from golden_shield import GoldenShield
@@ -22,8 +19,7 @@ from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
 
-MODEL = "gpt-doug"
-API = "http://127.0.0.1:11434/api/chat"
+MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
 CYAN = "\033[38;5;51m"
 RESET = "\033[0m"
@@ -37,29 +33,14 @@ BANNER = r"""
 """
 
 
-def ensure_runtime():
-    if not shutil.which("ollama"):
-        raise SystemExit("Ollama is not installed. Visit https://ollama.com")
-    try:
-        urllib.request.urlopen("http://127.0.0.1:11434", timeout=1)
-    except Exception:
-        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-
 def chat(messages):
-    body = json.dumps({"model": MODEL, "messages": messages, "stream": True}).encode()
-    request = urllib.request.Request(API, body, {"Content-Type": "application/json"})
     try:
-        with urllib.request.urlopen(request, timeout=300) as response:
-            answer = ""
-            for line in response:
-                event = json.loads(line)
-                token = event.get("message", {}).get("content", "")
-                answer += token
-                # Buffer the answer so Zyra can inspect it before display.
-            return answer
-    except urllib.error.URLError as error:
-        print(f"Unable to reach Ollama: {error}")
+        answer = ""
+        for event in llm_backend.chat_stream(messages, MODEL, {}):
+            answer += event.get("message", {}).get("content", "")
+        return answer
+    except Exception as error:
+        print(f"Unable to reach the selected AI provider: {error}")
         return ""
 
 
@@ -92,7 +73,6 @@ def deep_think_chat(history, zyra):
 
 
 def main():
-    ensure_runtime()
     try:
         developer_account = os.getenv("GPT_DOUG_VERIFIED_BUSINESS_EMAIL", "").strip()
         officer_account = os.getenv("ASTRAL_SECURITY_OFFICER_EMAIL", "").strip()
@@ -135,7 +115,8 @@ def main():
     print(CYAN + "ASTRAL // S.AGI × Q // TWO-PERSON CONTROL ACTIVE" + RESET)
     print(CYAN + "GOLDEN SHIELD // PERIMETER DEFENSE ACTIVE" + RESET)
     print(CYAN + "SENTINEL // 24/7 THREAT MONITORING // ON AND OFF PLANET" + RESET)
-    print(CYAN + "FREE MODE // NO PAID APIS // OLLAMA + GEMINI FREE TIER ONLY" + RESET)
+    provider = llm_backend.health()
+    print(CYAN + f"AI PROVIDER // {provider['provider'].upper()} // {provider['message']}" + RESET)
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
     history = []
     while True:

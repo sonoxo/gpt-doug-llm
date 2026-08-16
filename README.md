@@ -2,8 +2,8 @@
 
 **EUREKA // Build anything // Keep humans in command.**
 
-GPT Doug is a free, local-first terminal AI powered by [Ollama](https://ollama.com),
-now unified into a single agentic system merging all prior GPT Doug projects:
+GPT Doug is a provider-neutral, local-first agentic workspace. It boots safely
+without an AI provider and keeps cloud or local providers behind explicit opt-in:
 
 - **gpt-doug-llm** — terminal client, Zyra watchdog, 3FA auth, ASTRAL, EUREKA protocol
 - **gpt-doug-web** — web platform, multi-agent chain, LLM backend, crypto store, runner
@@ -15,7 +15,7 @@ now unified into a single agentic system merging all prior GPT Doug projects:
 
 ```
 gpt-doug-llm/
-├── gpt-doug              # Terminal client (main entry point)
+├── gpt-doug              # Secure terminal client
 ├── zyra.py               # Unified watchdog (ZYRA/3.0)
 ├── compliance.py         # Jurisdiction-aware policy gate
 ├── auth_gate.py          # Three-factor access (3FA)
@@ -29,7 +29,7 @@ gpt-doug-llm/
 │
 ├── agents/               # Multi-agent chain & LLM backend
 │   ├── agent_chain.py    #   Planner → Executor → Reviewer with sub-agent spawning
-│   ├── llm_backend.py    #   Ollama + OpenAI abstraction
+│   ├── llm_backend.py    #   Provider registry + normalized chat contract
 │   ├── ontology.py       #   Task-graph schema (Task → Steps → Artifacts)
 │   └── security_text.py  #   Unicode normalization (shared)
 │
@@ -93,14 +93,23 @@ Zyra does not replace OS sandboxing, least-privilege, dependency scanning, or pr
 
 ## Quick Start
 
+### Main Web Interface
+
+```bash
+export GPT_DOUG_PROVIDER=none
+export DOUG_ACCESS_PASSWORD="choose-a-local-password"
+python3 web/server.py
+# http://localhost:8787
+```
+
+The autonomous marketplace worker is disabled by default. Enable it deliberately
+with `GPT_DOUG_ENABLE_WORKER=true`.
+
 ### Terminal Client
 
 ```bash
-# Install Ollama and pull a model
-ollama pull qwen2.5-coder:7b
-
-# Create GPT Doug
-ollama create gpt-doug -f models/Modelfile
+# Select none (default), gemini, openai, or the optional legacy ollama provider.
+export GPT_DOUG_PROVIDER=none
 
 # Set up 3FA environment
 export GPT_DOUG_VERIFIED_BUSINESS_EMAIL="builder@example.com"
@@ -110,14 +119,6 @@ export GPT_DOUG_JURISDICTION="US-NY"
 
 # Launch
 ./gpt-doug
-```
-
-### Web Platform
-
-```bash
-cd web
-python3 server.py
-# Opens at http://localhost:8787
 ```
 
 ### Agent Daemon

@@ -7,14 +7,6 @@ LABEL org.opencontainers.image.source="https://github.com/sonoxo/gpt-doug-llm"
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Ollama
-RUN curl -fsSL https://ollama.com/install.sh | sh
-
 # Install Python dependencies
 RUN pip install --no-cache-dir pytest cryptography
 
@@ -25,5 +17,6 @@ COPY . .
 RUN mkdir -p /root/.gpt-doug /app/workers/tasks /app/workers/claimed \
     /app/workers/processed /app/workers/results /app/workers/live
 
-# Default to the terminal client
-ENTRYPOINT ["python3", "gpt-doug"]
+# Default to the provider-neutral web interface.
+ENV GPT_DOUG_PROVIDER=none
+CMD ["python3", "web/server.py"]

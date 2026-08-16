@@ -7,6 +7,14 @@
   --surface-2:#141a20;
   --surface-3:#192128;
 
+  /* Compatibility aliases used by the dashboard and agents surfaces. */
+  --panel:var(--surface);
+  --panel-2:var(--surface-2);
+  --border:var(--line);
+  --text-dim:var(--muted);
+  --accent-dim:var(--accent-2);
+  --danger:var(--red);
+
   --line:#222c34;
   --line-bright:#30404a;
 
@@ -67,6 +75,10 @@ button{
   user-select:none;
 }
 
+.page-nav{position:sticky;z-index:20;top:0;display:flex;gap:5px;padding:12px 0;border-bottom:1px solid var(--line);background:rgba(7,9,12,.88);backdrop-filter:blur(18px)}
+.page-nav a{padding:7px 11px;border-radius:8px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:700}.page-nav a:hover{color:var(--text);background:var(--surface)}.page-nav a.active{color:var(--accent);background:var(--accent-soft)}
+.page-action{padding:9px 12px;border:1px solid var(--line);border-radius:9px;color:var(--text)!important;background:var(--surface);text-decoration:none;font-size:11px!important;font-weight:700}.page-action:hover{border-color:var(--line-bright);color:var(--accent)!important}
+
 /* ───────── APPLICATION SHELL ───────── */
 
 #shell{
@@ -107,6 +119,45 @@ button{
   font-weight:800;
   letter-spacing:.08em;
 }
+
+.brand-mark{
+  display:grid;
+  width:28px;
+  height:28px;
+  place-items:center;
+  border:1px solid rgba(83,244,154,.3);
+  border-radius:8px;
+  color:var(--accent);
+  background:rgba(83,244,154,.08);
+  font-size:10px;
+  letter-spacing:.04em;
+}
+
+.primary-nav{
+  display:grid;
+  gap:4px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+
+.nav-item{
+  display:flex;
+  min-height:36px;
+  align-items:center;
+  gap:10px;
+  padding:0 10px;
+  border-radius:9px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:12px;
+  font-weight:650;
+  transition:background .15s,color .15s;
+}
+
+.nav-item span{width:16px;color:var(--faint);text-align:center}
+.nav-item:hover{color:var(--text);background:var(--surface)}
+.nav-item.active{color:var(--accent);background:var(--accent-soft)}
+.nav-item.active span{color:var(--accent)}
 
 .brand::after{
   content:"LOCAL";
@@ -341,6 +392,9 @@ button{
   backdrop-filter:blur(16px);
 }
 
+.topbar-context{min-width:0}
+.mobile-nav{display:none}
+
 #activeProject{
   min-width:0;
 
@@ -507,6 +561,22 @@ button{
   border-color:rgba(255,107,116,.3);
   background:rgba(255,107,116,.08);
   color:#ffb9be;
+}
+
+.msg.offline-message .msg-bubble{
+  border-color:rgba(103,183,255,.26);
+  background:linear-gradient(145deg,rgba(103,183,255,.08),var(--surface));
+}
+
+.msg.offline-message .msg-role::after{
+  content:"OFFLINE";
+  margin-left:8px;
+  padding:2px 5px;
+  border:1px solid rgba(103,183,255,.25);
+  border-radius:999px;
+  color:var(--blue);
+  font-size:8px;
+  letter-spacing:.1em;
 }
 
 .msg-bubble pre{
@@ -692,6 +762,73 @@ button{
   color:var(--text);
   border-color:var(--line-bright);
 }
+
+/* ───────── EMPTY WORKSPACE ───────── */
+
+.welcome-card{
+  width:min(620px,calc(100% - 32px));
+  margin:auto;
+  padding:34px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:linear-gradient(145deg,rgba(83,244,154,.055),rgba(15,20,25,.92) 45%);
+  box-shadow:var(--shadow);
+}
+
+.welcome-kicker{
+  color:var(--accent);
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.16em;
+}
+
+.welcome-card h1{
+  margin:12px 0 10px;
+  font-size:clamp(25px,4vw,38px);
+  letter-spacing:-.04em;
+}
+
+.welcome-card p{
+  max-width:540px;
+  margin:0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.65;
+}
+
+.welcome-capabilities{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:24px;
+}
+
+.welcome-capabilities span{
+  padding:7px 10px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:#aabbb3;
+  background:rgba(7,9,12,.55);
+  font-size:11px;
+}
+
+.systems-panel{padding:24px;overflow:auto}
+.panel-eyebrow{color:var(--accent);font-size:9px;font-weight:850;letter-spacing:.16em}
+.systems-panel h2{margin:8px 0 6px;font-size:18px;letter-spacing:-.02em}
+.panel-copy{margin:0 0 18px;color:var(--muted);font-size:12px;line-height:1.55}
+.system-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.system-card{display:flex;width:100%;min-width:0;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:11px;background:rgba(15,20,25,.72);color:var(--text);text-align:left;text-decoration:none;cursor:pointer}
+.system-card:hover{border-color:var(--line-bright);background:var(--surface-2)}
+.system-card.active{border-color:rgba(83,244,154,.35);background:var(--accent-soft)}
+.system-icon{display:grid;width:29px;height:29px;flex:none;place-items:center;border-radius:8px;background:var(--accent-soft);color:var(--accent)}
+.system-card strong,.system-card small{display:block}
+.system-card strong{font-size:12px}
+.system-card small{margin-top:3px;overflow:hidden;color:var(--muted);font-size:9px;text-overflow:ellipsis;white-space:nowrap}
+.provider-card{display:flex;align-items:center;gap:11px;margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:11px;background:linear-gradient(135deg,rgba(83,244,154,.07),rgba(15,20,25,.8))}
+.system-detail{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:11px;background:#090d10}.system-detail strong{font-size:12px}.system-detail p{margin:6px 0 0;color:var(--muted);font-size:10px;line-height:1.55}.system-detail code{color:var(--blue);font-family:"SF Mono",Menlo,monospace}
+.provider-card strong,.provider-card small{display:block}
+.provider-card strong{font-size:12px}
+.provider-card small{margin-top:3px;color:var(--muted);font-size:10px}
 
 /* ───────── RIGHT BUILD PANEL ───────── */
 
@@ -893,6 +1030,10 @@ button{
   #sidebar{
     display:none;
   }
+
+  .mobile-nav{display:flex;gap:12px;margin-bottom:5px}
+  .mobile-nav a{color:var(--muted);font-size:10px;text-decoration:none}
+  .mobile-nav a:first-child{color:var(--accent)}
 
   #main{
     width:100%;

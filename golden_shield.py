@@ -715,7 +715,7 @@ class ZyraSentinel:
         """Check for suspicious open ports on localhost."""
         findings = []
         suspicious = set(self.MALICIOUS_INDICATORS["suspicious_ports"])
-        common_safe = {22, 80, 443, 3000, 5432, 6379, 8080, 8443, 11434}
+        common_safe = {22, 80, 443, 3000, 5432, 6379, 8080, 8443}
         for port in range(1, 1025):
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

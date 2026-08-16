@@ -25,6 +25,13 @@
   const statusDot = $("#statusDot");
   const connStatus = $("#connStatus");
   const modelSelect = $("#modelSelect");
+  const providerPanelDot = $("#providerPanelDot");
+  const providerPanelTitle = $("#providerPanelTitle");
+  const providerPanelCopy = $("#providerPanelCopy");
+  const workerSystemStatus = $("#workerSystemStatus");
+  const memorySystemStatus = $("#memorySystemStatus");
+  const projectSystemStatus = $("#projectSystemStatus");
+  const systemDetail = $("#systemDetail");
 
   const STORAGE_KEY = "gpt-doug-conversations";
   const MODEL_KEY = "gpt-doug-model";
@@ -171,6 +178,18 @@
     chatLog.innerHTML = "";
     const conv = activeConv();
     if (!conv) return;
+    if (!conv.messages.length) {
+      const welcome = document.createElement("section");
+      welcome.className = "welcome-card";
+      welcome.innerHTML = `
+        <div class="welcome-kicker">SECURE BUILD WORKSPACE</div>
+        <h1>What are we building?</h1>
+        <p>Chat with a configured provider, or keep working offline with projects, files, previews, logs, memory, tools, and security controls.</p>
+        <div class="welcome-capabilities">
+          <span>Projects</span><span>Live preview</span><span>Zyra guarded</span><span>Provider-ready</span>
+        </div>`;
+      chatLog.appendChild(welcome);
+    }
     for (const m of conv.messages) {
       const { wrap } = addMessageEl(m.role === "user" ? "user" : "doug", m.content, { error: m.error });
       if (m.role === "assistant") {
@@ -238,6 +257,7 @@
         div.addEventListener("click", () => selectProject(name));
         projectList.appendChild(div);
       }
+      if (projectSystemStatus) projectSystemStatus.textContent = `${data.projects.length} project${data.projects.length === 1 ? "" : "s"} in workspace`;
     } catch {
       /* ignore */
     }
@@ -534,7 +554,7 @@
           } catch {
             continue;
           }
-          if (evt.error) {
+          if (evt.error && evt.error !== "provider_not_configured") {
             throw new Error(evt.error);
           }
           const token = evt.message && evt.message.content ? evt.message.content : "";
@@ -542,6 +562,9 @@
             full += token;
             bubble.innerHTML = renderMarkdownish(full) + '<span class="cursor-blink"></span>';
             chatLog.scrollTop = chatLog.scrollHeight;
+          }
+          if (evt.error === "provider_not_configured") {
+            wrap.classList.add("offline-message");
           }
         }
       }
@@ -665,35 +688,64 @@
       const data = await res.json();
       populateModelSelect(data.models || [], data.model);
       const zyra = data.zyra_active ? ` · Zyra ${data.zyra_policy_version} watching` : "";
-      if (data.ollama_reachable && data.model_available) {
+      if (data.configured && data.model_available) {
         statusDot.className = "dot online";
-        connStatus.textContent = `Connected — model "${data.model}" ready${zyra}`;
-      } else if (data.ollama_reachable) {
-        statusDot.className = "dot offline";
-        connStatus.textContent = `Ollama up, but model "${data.model}" not found`;
+        connStatus.textContent = `${data.provider} · ${data.model} ready${zyra}`;
+      } else if (data.provider === "none") {
+        statusDot.className = "dot online";
+        connStatus.textContent = `Offline workspace ready${zyra}`;
       } else {
         statusDot.className = "dot offline";
-        connStatus.textContent = "Ollama unreachable at localhost:11434";
+        connStatus.textContent = `${data.provider || "AI provider"} needs configuration${zyra}`;
       }
+      if (providerPanelDot) providerPanelDot.className = `dot ${data.provider === "none" || data.configured ? "online" : "offline"}`;
+      if (providerPanelTitle) providerPanelTitle.textContent = data.provider === "none" ? "Offline / No AI Provider" : `${data.provider} · ${data.model || "Not configured"}`;
+      if (providerPanelCopy) providerPanelCopy.textContent = data.provider === "none" ? "Workspace, memory, tools, projects, and security are available." : data.message;
     } catch {
       statusDot.className = "dot offline";
       connStatus.textContent = "Health check failed";
     }
   }
 
+  async function checkWorkerStatus() {
+    if (!workerSystemStatus) return;
+    try {
+      const res = await fetch("/api/worker/status");
+      const data = await res.json();
+      workerSystemStatus.textContent = data.running ? `Active · ${data.processed_count || 0} processed` : "Available · disabled by default";
+    } catch {
+      workerSystemStatus.textContent = "Status unavailable";
+    }
+    if (memorySystemStatus) memorySystemStatus.textContent = `${state.conversations.length} local conversation${state.conversations.length === 1 ? "" : "s"}`;
+  }
+
+  const systemDescriptions = {
+    workers: ["Workers · opt-in automation", "Background workers are preserved and currently disabled by default. Enable them deliberately at server startup with <code>GPT_DOUG_ENABLE_WORKER=true</code>."],
+    memory: ["Memory · local-first", "Conversation history stays in this browser via localStorage. Project files use the encrypted project store; no external AI provider is required."],
+    terminal: ["Terminal · guarded runtime", "The secure terminal remains a local entrypoint protected by GPT Doug’s authentication, compliance, ASTRAL, Golden Shield, and Zyra controls. Launch it from the repository with <code>./gpt-doug</code>."],
+    tools: ["Tools · project operations", "File creation, encrypted storage, project preview, process runner, logs, agent history, ontology, and security tools remain available in offline mode."],
+  };
+  document.querySelectorAll("[data-system]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const [title, copy] = systemDescriptions[card.dataset.system];
+      systemDetail.innerHTML = `<strong>${title}</strong><p>${copy}</p>`;
+      document.querySelectorAll("[data-system]").forEach((item) => item.classList.toggle("active", item === card));
+    });
+  });
+
   let modelsPopulated = false;
   function populateModelSelect(models, defaultModel) {
-    if (modelsPopulated || !models.length) return;
+    if (modelsPopulated) return;
     modelsPopulated = true;
     const saved = localStorage.getItem(MODEL_KEY);
     modelSelect.innerHTML = "";
-    for (const name of models) {
+    for (const name of (models.length ? models : ["offline"])) {
       const opt = document.createElement("option");
       opt.value = name;
       opt.textContent = name;
       modelSelect.appendChild(opt);
     }
-    modelSelect.value = saved && models.includes(saved) ? saved : defaultModel;
+    modelSelect.value = saved && models.includes(saved) ? saved : (defaultModel || "offline");
   }
   modelSelect.addEventListener("change", () => {
     localStorage.setItem(MODEL_KEY, modelSelect.value);
@@ -710,7 +762,9 @@
   }
   refreshProjects();
   checkHealth();
+  checkWorkerStatus();
   setInterval(checkHealth, 15000);
+  setInterval(checkWorkerStatus, 15000);
   regenBtn.hidden = true;
   stopBtn.hidden = true;
 })();

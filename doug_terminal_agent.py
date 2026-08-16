@@ -4,11 +4,11 @@ import json
 import os
 import subprocess
 import sys
-import urllib.request
 from pathlib import Path
 
-MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", "gpt6-doug-llm:latest")
-OLLAMA = "http://127.0.0.1:11434/api/chat"
+from agents import llm_backend
+
+MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", llm_backend.DEFAULT_MODEL)
 MAX_STEPS = 20
 
 workspace = Path.cwd().resolve()
@@ -71,14 +71,9 @@ BLOCKED = (
 )
 
 def ask(messages):
-    body = json.dumps({
-        "model": MODEL,
-        "messages": messages,
-        "stream": False,
-        "think": False,
-        "keep_alive": "30m",
-        "think": False,
-        "keep_alive": "30m",
+    result = llm_backend.chat_once(messages, MODEL, {
+        "temperature": 0,
+        "num_ctx": 4096,
         "format": {
             "type": "object",
             "properties": {
@@ -87,23 +82,9 @@ def ask(messages):
                 "summary": {"type": "string"}
             },
             "required": ["action"]
-        },
-        "options": {
-            "temperature": 0,
-            "num_ctx": 4096
         }
-    }).encode()
-
-    req = urllib.request.Request(
-        OLLAMA,
-        data=body,
-        headers={"Content-Type": "application/json"},
-    )
-
-    with urllib.request.urlopen(req, timeout=90) as r:
-        data = json.loads(r.read())
-
-    return data["message"]["content"].strip()
+    })
+    return result["message"]["content"].strip()
 
 def parse_action(text):
     text = text.strip()

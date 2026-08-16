@@ -24,7 +24,7 @@ if os.environ.get("PAID_MODE", "false").lower() != "true":
             print(f"🔒 FREE MODE: blocked {key} (set PAID_MODE=true to enable)", file=sys.stderr)
 
 # Gemini free tier is allowed (15 req/min, no charge)
-# Ollama is always allowed (local, free)
+# Local providers remain disabled unless explicitly selected.
 # OpenAI is BLOCKED by default
 
 def is_free_mode() -> bool:

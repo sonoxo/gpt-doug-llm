@@ -1,6 +1,7 @@
 const rowsEl = document.getElementById("rows");
 const statsEl = document.getElementById("stats");
 const emptyEl = document.getElementById("empty");
+const errorEl = document.getElementById("dashError");
 
 function fmtUptime(s) {
   if (s == null) return "—";
@@ -14,14 +15,20 @@ async function api(path, opts = {}) {
     ...opts,
     headers: { ...(opts.headers || {}), "X-Doug-Client": "dashboard" },
   });
-  return res.json();
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+  return body;
 }
 
 async function refresh() {
   let data;
   try {
     data = await api("/api/dashboard");
-  } catch {
+    errorEl.hidden = true;
+  } catch (error) {
+    errorEl.textContent = `Dashboard data unavailable: ${error.message}`;
+    errorEl.hidden = false;
+    statsEl.innerHTML = '<div class="stat-card"><div class="label">Status</div><div class="value">Unavailable</div></div>';
     return;
   }
 
@@ -30,7 +37,7 @@ async function refresh() {
     <div class="stat-card"><div class="label">Projects</div><div class="value">${data.projects.length}</div></div>
     <div class="stat-card"><div class="label">Running</div><div class="value">${running}</div></div>
     <div class="stat-card"><div class="label">Server uptime</div><div class="value">${fmtUptime(data.server_uptime_s)}</div></div>
-    <div class="stat-card"><div class="label">Ollama</div><div class="value">${data.ollama?.ollama_reachable ? "online" : "offline"}</div></div>
+    <div class="stat-card"><div class="label">AI provider</div><div class="value">${data.provider?.provider === "none" ? "Offline" : (data.provider?.provider || "none")}</div></div>
   `;
 
   if (!data.projects.length) {

@@ -13,6 +13,8 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
+from agents import llm_backend
+
 ROOT = Path.home() / "gpt-doug-llm"
 LOGS = ROOT / ".doug-logs"
 AGENT_LOG = LOGS / "terminal-agent.log"
@@ -50,15 +52,7 @@ def status(ok):
     return "[bold green]● ONLINE[/]" if ok else "[bold red]● OFFLINE[/]"
 
 def get_model():
-    output = cmd("ollama ps")
-    for name in (
-        "gpt6-doug-fast",
-        "gpt6-doug-llm",
-        "gpt-doug"
-    ):
-        if name in output:
-            return name
-    return "idle"
+    return llm_backend.health().get("model") or "offline"
 
 def recent_activity():
     if not AGENT_LOG.exists():
@@ -115,7 +109,7 @@ def speak(text):
 
 def build_layout():
 
-    ollama = port_alive(11434)
+    provider = llm_backend.health()
     web = port_alive(8787)
     daemon = process_alive("workers/agent-daemon.py")
     agent = process_alive("doug_terminal_agent.py")
@@ -138,7 +132,7 @@ def build_layout():
     title.append(" // MISSION CONTROL", style="bold bright_cyan")
     title.append("\n")
     title.append(
-        "LOCAL AGENTIC COMPUTE • OLLAMA • ZYRA • TERMINAL",
+        "LOCAL AGENTIC COMPUTE • PROVIDERS • ZYRA • TERMINAL",
         style="green"
     )
 
@@ -150,7 +144,7 @@ def build_layout():
     table.add_column("System")
     table.add_column("State")
 
-    table.add_row("OLLAMA", status(ollama))
+    table.add_row("AI PROVIDER", provider["provider"].upper())
     table.add_row("WEB UI :8787", status(web))
     table.add_row("AGENT DAEMON", status(daemon))
     table.add_row("TERMINAL AGENT", status(agent))
