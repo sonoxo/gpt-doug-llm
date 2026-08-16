@@ -1,0 +1,131 @@
+#!/bin/zsh
+set -e
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+source .venv-mlx/bin/activate
+
+# Native local Qwen provider
+export GPT_DOUG_PROVIDER=qwen
+
+export QWEN_MODEL="${QWEN_MODEL:-mlx-community/Qwen2.5-Coder-3B-Instruct-4bit}"
+export GPT_DOUG_MODEL="$QWEN_MODEL"
+
+# Keep local workload reasonable
+export QWEN_MAX_CONTEXT_CHARS="${QWEN_MAX_CONTEXT_CHARS:-36000}"
+export QWEN_MAX_TOKENS="${QWEN_MAX_TOKENS:-1200}"
+
+# Explicitly remove Ollama runtime variables
+unset OLLAMA_HOST
+unset OLLAMA_API_BASE
+unset OLLAMA_BASE_URL
+unset OLLAMA_MODEL
+
+MODE="${1:-help}"
+
+case "$MODE" in
+
+    web)
+        shift
+        export PORT="${PORT:-8788}"
+        export DOUG_ACCESS_PASSWORD="${DOUG_ACCESS_PASSWORD:-gpt-doug-local}"
+
+        echo
+        echo "GPT-DOUG × QWEN"
+        echo "Mode     : WEB"
+        echo "Provider : qwen"
+        echo "Runtime  : MLX"
+        echo "Model    : $QWEN_MODEL"
+        echo "URL      : http://localhost:$PORT"
+        echo
+
+        exec python web/server.py
+        ;;
+
+    agent)
+        shift
+
+        if [ "$#" -eq 0 ]; then
+            echo 'Usage: ./doug-qwen agent "your vibe-code command"'
+            exit 1
+        fi
+
+        echo
+        echo "GPT-DOUG × QWEN"
+        echo "Mode     : AUTONOMOUS TERMINAL AGENT"
+        echo "Provider : qwen"
+        echo "Runtime  : MLX"
+        echo "Model    : $QWEN_MODEL"
+        echo
+
+        exec python doug_terminal_agent.py "$@"
+        ;;
+
+    health)
+        python - <<'PY'
+from agents import llm_backend
+import json
+print(json.dumps(llm_backend.health(), indent=2))
+PY
+        ;;
+
+    test)
+        echo "Running GPT-Doug verification..."
+        python -m pytest -q
+        ;;
+
+    chat)
+        python - <<'PY'
+from agents import llm_backend
+
+print()
+print("GPT-DOUG × QWEN LOCAL CHAT")
+print("Type exit to quit.")
+print()
+
+while True:
+    try:
+        text = input("doug> ").strip()
+    except (EOFError, KeyboardInterrupt):
+        print()
+        break
+
+    if not text:
+        continue
+
+    if text.lower() in {"exit", "quit"}:
+        break
+
+    result = llm_backend.chat_once(
+        [{"role": "user", "content": text}],
+        options={"max_tokens": 1200},
+    )
+
+    print()
+    print(result["message"]["content"])
+    print()
+PY
+        ;;
+
+    *)
+        echo
+        echo "GPT-DOUG × QWEN CODER"
+        echo
+        echo "DIRECT VIBE CODING:"
+        echo '  ./doug-qwen agent "build me a dashboard and test it"'
+        echo
+        echo "LOCAL CHAT:"
+        echo "  ./doug-qwen chat"
+        echo
+        echo "WEB UI:"
+        echo "  ./doug-qwen web"
+        echo
+        echo "HEALTH:"
+        echo "  ./doug-qwen health"
+        echo
+        echo "TESTS:"
+        echo "  ./doug-qwen test"
+        echo
+        ;;
+esac

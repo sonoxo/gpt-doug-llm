@@ -9,6 +9,8 @@ opt-in compatibility provider and is never discovered or started implicitly.
 from __future__ import annotations
 
 import json
+import importlib.util
+import platform
 import os
 import urllib.error
 import urllib.request
@@ -143,6 +145,167 @@ class GeminiProvider(Provider):
         return {"model": used_model, "message": {"role": "assistant", "content": content}, "done": True}
 
 
+
+class QwenMLXProvider(Provider):
+    """Native local Qwen Coder provider powered by Apple MLX.
+
+    The model loads lazily on the first generation request, so importing
+    GPT-Doug does not allocate model weights or probe any network service.
+    No Ollama daemon or localhost API is required.
+    """
+
+    def __init__(self):
+        self.model_name = os.environ.get(
+            "QWEN_MODEL",
+            os.environ.get(
+                "GPT_DOUG_MODEL",
+                "mlx-community/Qwen2.5-Coder-3B-Instruct-4bit",
+            ),
+        )
+
+        self._model = None
+        self._tokenizer = None
+
+        mlx_ready = importlib.util.find_spec("mlx_lm") is not None
+
+        self.config = ProviderConfig(
+            "qwen",
+            self.model_name,
+            mlx_ready,
+            True,
+        )
+
+    def health(self):
+        result = super().health()
+
+        result.update({
+            "backend": "qwen",
+            "provider": "qwen",
+            "runtime": "mlx",
+            "local": True,
+            "ollama": False,
+            "model_loaded": self._model is not None,
+            "architecture": platform.machine(),
+            "message": (
+                "Qwen Coder / MLX ready"
+                if self.config.configured
+                else "mlx-lm is not installed"
+            ),
+        })
+
+        return result
+
+    def _ensure_loaded(self):
+        if not self.config.configured:
+            raise RuntimeError(
+                "Qwen provider requires mlx-lm. "
+                "Install it with: python -m pip install mlx-lm"
+            )
+
+        if self._model is not None:
+            return
+
+        from mlx_lm import load
+
+        self._model, self._tokenizer = load(
+            self.model_name
+        )
+
+    def _fit_messages(self, messages):
+        """Keep system instructions plus recent conversation within a
+        configurable lightweight local-context budget.
+        """
+
+        budget = int(
+            os.environ.get(
+                "QWEN_MAX_CONTEXT_CHARS",
+                "36000",
+            )
+        )
+
+        system_messages = [
+            item
+            for item in messages
+            if item.get("role") == "system"
+        ]
+
+        conversation = [
+            item
+            for item in messages
+            if item.get("role") != "system"
+        ]
+
+        used = sum(
+            len(item.get("content", ""))
+            for item in system_messages
+        )
+
+        selected = []
+
+        for item in reversed(conversation):
+            size = len(
+                item.get("content", "")
+            )
+
+            if selected and used + size > budget:
+                break
+
+            selected.append(item)
+            used += size
+
+        selected.reverse()
+
+        return system_messages + selected
+
+    def chat_once(self, messages, model, options):
+        self._ensure_loaded()
+
+        from mlx_lm import generate
+
+        used_model = model or self.model_name
+
+        fitted = self._fit_messages(messages)
+
+        prompt = self._tokenizer.apply_chat_template(
+            fitted,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+
+        max_tokens = int(
+            options.get(
+                "max_tokens",
+                options.get(
+                    "num_predict",
+                    os.environ.get(
+                        "QWEN_MAX_TOKENS",
+                        "1200",
+                    ),
+                ),
+            )
+        )
+
+        content = generate(
+            self._model,
+            self._tokenizer,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            verbose=False,
+        )
+
+        return {
+            "model": used_model,
+            "backend": "qwen",
+            "provider": "qwen",
+            "runtime": "mlx",
+            "message": {
+                "role": "assistant",
+                "content": content,
+            },
+            "done": True,
+            "local": True,
+        }
+
 class OllamaProvider(Provider):
     """Legacy local provider. Constructed only after explicit opt-in."""
 
@@ -183,6 +346,8 @@ def _configuration_error(variable: str) -> Event:
 
 PROVIDER_FACTORIES = {
     "none": NoProvider,
+    "qwen": QwenMLXProvider,
+    "mlx": QwenMLXProvider,
     "openai": OpenAIProvider,
     "gemini": GeminiProvider,
     "ollama": OllamaProvider,
@@ -216,6 +381,11 @@ def chat_stream(messages: list[Message], model: str | None = None, options: dict
 def available_providers() -> list[dict]:
     return [
         {"id": "none", "label": "Offline workspace", "configured": True},
+        {
+            "id": "qwen",
+            "label": "GPT-Doug × Qwen Coder (Local MLX)",
+            "configured": importlib.util.find_spec("mlx_lm") is not None,
+        },
         {"id": "openai", "label": "OpenAI", "configured": bool(os.environ.get("OPENAI_API_KEY"))},
         {"id": "gemini", "label": "Google Gemini", "configured": bool(os.environ.get("GEMINI_API_KEY"))},
         {"id": "ollama", "label": "Ollama (optional)", "configured": False},
