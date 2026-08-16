@@ -3,6 +3,8 @@
 import json
 import os
 import subprocess
+import shlex
+import re
 import sys
 from pathlib import Path
 
@@ -47,6 +49,11 @@ RULES:
 - For build/fix/upgrade/add requests, make actual source changes whenever technically possible.
 - Prefer targeted edits over repeatedly surveying the entire repository.
 - Use relative paths inside the workspace whenever possible.
+- Never assume the launcher command name is a directory.
+- Before using cd, confirm the destination is a directory.
+- Before creating nested paths, confirm no parent component is an existing file.
+- doug-vibe is an executable launcher FILE at repository root, not a source directory.
+- Tests belong in the existing tests directory unless repository structure proves otherwise.
 - Preserve existing files unless modification is necessary.
 - Read command output before choosing the next action.
 - If something fails, diagnose it and try a corrected approach.
@@ -106,8 +113,77 @@ def parse_action(text):
 
     return json.loads(text)
 
+
+def filesystem_guard(command):
+    """Stop the agent from treating existing files as directories."""
+
+    segments = re.split(r"\s*(?:&&|\|\||;)\s*", command)
+
+    for segment in segments:
+        try:
+            parts = shlex.split(segment)
+        except ValueError:
+            continue
+
+        if not parts:
+            continue
+
+        operation = parts[0]
+
+        targets = []
+
+        if operation == "cd" and len(parts) >= 2:
+            targets = [parts[1]]
+
+        elif operation == "mkdir":
+            targets = [
+                item
+                for item in parts[1:]
+                if not item.startswith("-")
+            ]
+
+        for target in targets:
+            if target.startswith(("~", "$")):
+                continue
+
+            candidate = Path(target)
+
+            if not candidate.is_absolute():
+                candidate = workspace / candidate
+
+            try:
+                candidate = candidate.resolve()
+                candidate.relative_to(workspace)
+            except Exception:
+                continue
+
+            current = candidate
+
+            while current != workspace:
+                if current.exists() and current.is_file():
+                    try:
+                        rel = current.relative_to(workspace)
+                    except Exception:
+                        rel = current
+
+                    return (
+                        f"PATH TYPE ERROR: {rel} is an existing FILE, "
+                        "not a directory. Do not cd into it and do not "
+                        "create child paths underneath it. Inspect the "
+                        "actual repository structure and choose another path."
+                    )
+
+                current = current.parent
+
+    return None
+
 def run(command):
     low = command.lower()
+
+    path_error = filesystem_guard(command)
+
+    if path_error:
+        return 126, "", path_error
 
     for bad in BLOCKED:
         if bad in low:
