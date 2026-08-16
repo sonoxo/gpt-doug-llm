@@ -2732,6 +2732,114 @@ def interactive():
 
             continue
 
+        # ========================================================
+        # ONTOLOGY COMMANDS
+        # Local/read-only graph queries. These must not invoke MLX.
+        # ========================================================
+        if text == "/ontology" or text == "/ontology help":
+            print()
+            print("ONTOLOGY COMMANDS")
+            print("  /ontology status")
+            print("  /ontology entity <name>")
+            print("  /ontology path <source> -> <target>")
+            print()
+            continue
+
+        if text == "/ontology status":
+            from ontology.store import OntologyStore
+            import json as _ontology_json
+
+            store = OntologyStore()
+            print()
+            print("ONTOLOGY STATUS")
+            print(
+                _ontology_json.dumps(
+                    store.status(),
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
+            continue
+
+        if text.startswith("/ontology entity "):
+            from ontology.store import OntologyStore
+            import json as _ontology_json
+
+            query = text[len("/ontology entity "):].strip()
+
+            if not query:
+                print("usage: /ontology entity <name>")
+                continue
+
+            store = OntologyStore()
+            matches = store.search_entities(query)
+
+            print()
+            print(f"ONTOLOGY ENTITY: {query}")
+
+            if not matches:
+                print("No matching entities.")
+            else:
+                print(
+                    _ontology_json.dumps(
+                        matches,
+                        indent=2,
+                        ensure_ascii=False,
+                    )
+                )
+
+            continue
+
+        if text.startswith("/ontology path "):
+            from ontology.store import OntologyStore
+            import json as _ontology_json
+
+            query = text[len("/ontology path "):].strip()
+
+            if "->" not in query:
+                print(
+                    "usage: /ontology path "
+                    "<source> -> <target>"
+                )
+                continue
+
+            source_query, target_query = (
+                part.strip()
+                for part in query.split("->", 1)
+            )
+
+            if not source_query or not target_query:
+                print(
+                    "usage: /ontology path "
+                    "<source> -> <target>"
+                )
+                continue
+
+            store = OntologyStore()
+
+            try:
+                result = store.path(
+                    source_query,
+                    target_query,
+                )
+            except Exception as exc:
+                print(f"ontology path error: {exc}")
+                continue
+
+            print()
+            print(
+                f"ONTOLOGY PATH: "
+                f"{source_query} -> {target_query}"
+            )
+            print(
+                _ontology_json.dumps(
+                    result,
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
+            continue
+
         if text == "/agents stop":
             # MARK ACTIVE TASKS CANCELLED BEFORE KILL
             with agent_state_lock:
