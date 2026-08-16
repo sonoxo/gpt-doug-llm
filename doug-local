@@ -1,0 +1,8 @@
+#!/bin/zsh
+set -e
+cd "$(dirname "$0")"
+source .venv-mlx/bin/activate
+unset OLLAMA_HOST
+unset OLLAMA_API_BASE
+export DOUG_LOCAL_MODEL="${DOUG_LOCAL_MODEL:-mlx-community/Qwen2.5-Coder-3B-Instruct-4bit}"
+exec python doug_local_agent.py
