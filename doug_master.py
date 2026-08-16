@@ -39,6 +39,7 @@ import re
 import shlex
 import shutil
 import subprocess
+import signal
 import sys
 import time
 from pathlib import Path
@@ -218,7 +219,7 @@ TOOLS AVAILABLE:
 
 5. shell
 
-{{"action":"shell","command":"python -m pytest -q tests/test_example.py"}}
+{{"action":"shell","command":"./.venv-mlx/bin/python -m pytest -q -x --tb=short"}}
 
 6. finish
 
@@ -296,37 +297,87 @@ def command(
     shell=False,
     timeout=COMMAND_TIMEOUT,
 ):
+    proc = subprocess.Popen(
+        args,
+        cwd=ROOT,
+        shell=shell,
+        executable="/bin/zsh" if shell else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+
+    started = time.monotonic()
+    deadline = started + timeout
+
     try:
-        result = subprocess.run(
-            args,
-            cwd=ROOT,
-            shell=shell,
-            executable="/bin/zsh" if shell else None,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-        )
+        while True:
+            remaining = deadline - time.monotonic()
+
+            if remaining <= 0:
+                try:
+                    os.killpg(proc.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
+
+                try:
+                    stdout, stderr = proc.communicate(timeout=3)
+                except subprocess.TimeoutExpired:
+                    try:
+                        os.killpg(proc.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    stdout, stderr = proc.communicate()
+
+                elapsed = int(time.monotonic() - started)
+
+                return {
+                    "exit": 124,
+                    "stdout": (stdout or "")[-16000:],
+                    "stderr": (
+                        (stderr or "")
+                        + f"\\nCOMMAND TIMEOUT after {elapsed}s: process group terminated"
+                    )[-16000:],
+                }
+
+            try:
+                stdout, stderr = proc.communicate(
+                    timeout=min(10, remaining)
+                )
+                break
+
+            except subprocess.TimeoutExpired:
+                elapsed = int(time.monotonic() - started)
+                print(
+                    f"  verification still running... {elapsed}s/{timeout}s",
+                    flush=True,
+                )
 
         return {
-            "exit": result.returncode,
-            "stdout": result.stdout[-16000:],
-            "stderr": result.stderr[-16000:],
+            "exit": proc.returncode,
+            "stdout": (stdout or "")[-16000:],
+            "stderr": (stderr or "")[-16000:],
         }
 
-    except subprocess.TimeoutExpired as exc:
-        return {
-            "exit": 124,
-            "stdout": (
-                exc.stdout.decode()
-                if isinstance(exc.stdout, bytes)
-                else exc.stdout or ""
-            )[-16000:],
-            "stderr": (
-                "COMMAND TIMEOUT: "
-                f"{timeout} seconds"
-            ),
-        }
+    except KeyboardInterrupt:
+        print("\n  cancelling verification...", flush=True)
 
+        try:
+            os.killpg(proc.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+
+        try:
+            proc.communicate(timeout=3)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            proc.communicate()
+
+        raise
 
 def safe_path(relative):
     if not isinstance(relative, str):
@@ -1243,12 +1294,12 @@ def verification_suite(
         )
     )
 
-    tests = (
-        ROOT
-        / "tests"
-    )
+    tests = ROOT / "tests"
+    full_verify = os.environ.get(
+        "GPT_DOUG_FULL_VERIFY", "0"
+    ).lower() in ("1", "true", "yes", "on")
 
-    if tests.is_dir():
+    if tests.is_dir() and full_verify:
         checks.append(
             run_check(
                 "Python test suite",
@@ -1257,9 +1308,17 @@ def verification_suite(
                     "-m",
                     "pytest",
                     "-q",
+                    "-x",
+                    "--tb=short",
                 ],
-                timeout=240,
+                timeout=max(COMMAND_TIMEOUT, 360),
             )
+        )
+    elif tests.is_dir():
+        print(
+            "[SKIP] Full Python test suite "
+            "(FAST mode; use FULL mode for release verification)",
+            flush=True,
         )
 
     scripts = package_scripts()
@@ -1289,7 +1348,7 @@ def verification_suite(
                     "run",
                     "build",
                 ],
-                timeout=240,
+                timeout=30,
             )
         )
 
@@ -1467,88 +1526,111 @@ def execute_objective(
             "GPT-DOUG THINKING..."
         )
 
-        raw = ask_model(
-            messages
-        )
+        action = None
+        protocol_attempts = 0
+        duplicate_attempts = 0
 
-        try:
-            action = extract_json(
-                raw
-            )
+        # Repair malformed/duplicate model actions INSIDE the current
+        # agent step instead of wasting another outer GPT-DOUG step.
+        while action is None:
+            raw = ask_model(messages)
 
-            protocol_failures = 0
+            try:
+                candidate = extract_json(raw)
+            except Exception as exc:
+                protocol_attempts += 1
 
-        except Exception as exc:
-            protocol_failures += 1
-
-            print(
-                "↳ JSON protocol repair:"
-                f" {exc}"
-            )
-
-            messages.append({
-                "role": "user",
-                "content": (
-                    "PROTOCOL ERROR: your previous JSON was truncated or malformed. "
-                    "Do NOT repeat the large response. "
-                    "Return ONE much smaller valid JSON action. "
-                    "Prefer a small read or replace action. "
-                    "Do not output markdown or commentary."
-                ),
-            })
-
-            if protocol_failures >= 3:
-                print()
                 print(
-                    "✗ Model repeatedly failed the tool protocol."
+                    "↳ JSON protocol repair in-step:"
+                    f" {exc}"
                 )
 
-                return False, touched
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "PROTOCOL ERROR: Return exactly ONE small valid JSON object. "
+                        "No markdown, commentary, code fences, or multiple actions. "
+                        "Use scan/read/replace/shell/finish. "
+                        "Prefer a surgical replace over a complete-file write."
+                    ),
+                })
 
-            continue
+                if protocol_attempts >= 2:
+                    print(
+                        "✗ Tool protocol failed twice in one step; "
+                        "aborting cleanly instead of burning the step budget."
+                    )
+                    return False, touched
 
-        kind = action.get(
-            "action"
-        )
+                continue
 
-        signature = action_signature(
-            action
-        )
+            kind = candidate.get("action")
 
-        seen[
-            signature
-        ] = seen.get(
-            signature,
-            0,
-        ) + 1
+            if kind not in {
+                "scan",
+                "read",
+                "write",
+                "replace",
+                "shell",
+                "finish",
+            }:
+                protocol_attempts += 1
 
-        if (
-            seen[signature]
-            > 1
-            and kind != "finish"
-        ):
+                print(
+                    f"↳ invalid action repaired in-step: {kind!r}"
+                )
 
-            print(
-                "↳ duplicate action skipped"
-            )
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "Invalid action. Return ONE JSON action using only: "
+                        "scan, read, write, replace, shell, finish."
+                    ),
+                })
 
-            messages.append({
-                "role": "assistant",
-                "content": json.dumps(
-                    action
-                ),
-            })
+                if protocol_attempts >= 2:
+                    print("✗ Invalid action protocol; stopping cleanly.")
+                    return False, touched
 
-            messages.append({
-                "role": "user",
-                "content": (
-                    "That exact action already ran. "
-                    "Do not loop. "
-                    "Choose a different action that advances implementation."
-                ),
-            })
+                continue
 
-            continue
+            signature = action_signature(candidate)
+
+            if (
+                seen.get(signature, 0) > 0
+                and kind != "finish"
+            ):
+                duplicate_attempts += 1
+
+                print(
+                    "↳ duplicate action repaired in-step"
+                )
+
+                messages.append({
+                    "role": "assistant",
+                    "content": json.dumps(candidate),
+                })
+
+                messages.append({
+                    "role": "user",
+                    "content": (
+                        "That exact action already ran. "
+                        "Return ONE DIFFERENT small JSON action that advances "
+                        "the objective. Do not repeat scans or reads already done."
+                    ),
+                })
+
+                if duplicate_attempts >= 2:
+                    print(
+                        "✗ Model repeated the same action twice; "
+                        "stopping cleanly instead of looping."
+                    )
+                    return False, touched
+
+                continue
+
+            seen[signature] = seen.get(signature, 0) + 1
+            action = candidate
 
         if kind == "scan":
             result = scan_action(
@@ -2011,7 +2093,7 @@ def self_test():
     ) is None
 
     ok, _ = safe_shell(
-        "python -m pytest -q"
+        "./.venv-mlx/bin/python -m pytest -q -x --tb=short"
     )
 
     assert ok
@@ -2062,6 +2144,22 @@ The model remains loaded between vibe commands.
 
 def interactive():
     global LAST_TOUCHED
+
+    agent_roles = (
+        "planner",
+        "coder",
+        "tester",
+        "security",
+        "reviewer",
+        "retriever",
+        "profiler",
+        "release",
+    )
+    agent_max_workers = 3
+    agent_tasks = {}
+    agent_queue = []
+    agent_trace = ["supervisor initialized"]
+    agent_counter = 0
 
     print()
     print(
@@ -2210,6 +2308,283 @@ def interactive():
             os.system(
                 "clear"
             )
+            continue
+
+        # Native agent control plane: bypass LLM/objective execution.
+        if text in {"/agents", "/agents status"}:
+            active = [
+                t for t in agent_tasks.values()
+                if t["state"] == "RUNNING"
+            ]
+
+            print()
+            print("AGENT SUPERVISOR")
+            print(f"max_workers: {agent_max_workers}")
+            print(f"active: {len(active)}")
+            print(f"queued: {len(agent_queue)}")
+
+            for role in agent_roles:
+                matches = [
+                    t for t in agent_tasks.values()
+                    if t["role"] == role
+                    and t["state"] in {"RUNNING", "QUEUED"}
+                ]
+
+                if matches:
+                    task = matches[-1]
+                    print(
+                        f"{role:<10} {task['state']:<9} "
+                        f"task_id={task['task_id']}"
+                    )
+                else:
+                    print(f"{role:<10} IDLE      task_id=-")
+
+            continue
+
+        if text.startswith("/agents spawn "):
+            parts = text.split(maxsplit=3)
+
+            if len(parts) < 4:
+                print("usage: /agents spawn <role> <task>")
+                continue
+
+            role = parts[2].lower()
+            task_text = parts[3].strip()
+
+            if role not in agent_roles:
+                print(
+                    "invalid role; choose: "
+                    + ", ".join(agent_roles)
+                )
+                continue
+
+            agent_counter += 1
+            task_id = f"agent-{agent_counter:03d}"
+
+            active_count = sum(
+                1
+                for t in agent_tasks.values()
+                if t["state"] == "RUNNING"
+            )
+
+            state_name = (
+                "RUNNING"
+                if active_count < agent_max_workers
+                else "QUEUED"
+            )
+
+            record = {
+                "task_id": task_id,
+                "role": role,
+                "task": task_text,
+                "state": state_name,
+            }
+
+            agent_tasks[task_id] = record
+
+            if state_name == "QUEUED":
+                agent_queue.append(task_id)
+
+            agent_trace.append(
+                f"{task_id} {role} {state_name}: {task_text}"
+            )
+
+            print()
+            print("AGENT SPAWNED")
+            print(f"task_id: {task_id}")
+            print(f"role: {role}")
+            print(f"state: {state_name}")
+            print(f"task: {task_text}")
+
+            read_only_roles = {
+                "planner",
+                "tester",
+                "security",
+                "reviewer",
+                "retriever",
+                "profiler",
+            }
+
+            # First execution milestone:
+            # run only read-only agents through the existing local MLX backend.
+            # Coder/release remain state-only until write locking is implemented.
+            if (
+                state_name == "RUNNING"
+                and role in read_only_roles
+            ):
+                role_prompts = {
+                    "planner": (
+                        "You are a read-only planning agent. Inspect the task "
+                        "conceptually and return a concise implementation plan. "
+                        "Do not modify files."
+                    ),
+                    "tester": (
+                        "You are a read-only testing agent. Identify relevant "
+                        "tests, risks, and verification steps. Do not modify files."
+                    ),
+                    "security": (
+                        "You are a read-only security reviewer. Identify concrete "
+                        "security risks and mitigations. Do not modify files."
+                    ),
+                    "reviewer": (
+                        "You are a read-only code reviewer. Return concise findings "
+                        "and recommended next actions. Do not modify files."
+                    ),
+                    "retriever": (
+                        "You are a read-only repository retrieval agent. Determine "
+                        "what repository evidence is relevant to the task. "
+                        "Do not modify files."
+                    ),
+                    "profiler": (
+                        "You are a read-only performance profiler. Identify likely "
+                        "bottlenecks and useful measurements. Do not modify files."
+                    ),
+                }
+
+                print(f"AGENT EXECUTING: {task_id}", flush=True)
+                agent_trace.append(f"{task_id} EXECUTING")
+
+                target_excerpt = ""
+                candidates = re.findall(
+                    r"(?:^|\s)([A-Za-z0-9_./-]+\.(?:py|js|ts|json|md|toml|yaml|yml|sh))",
+                    task_text,
+                )
+
+                for relative in candidates[:1]:
+                    candidate = safe_path(relative)
+                    if (
+                        candidate is not None
+                        and candidate.is_file()
+                    ):
+                        try:
+                            raw_text = candidate.read_text(
+                                encoding="utf-8",
+                                errors="replace",
+                            )
+                            target_excerpt = (
+                                "\n\nTARGET FILE EVIDENCE: "
+                                + relative
+                                + "\n"
+                                + raw_text[:12000]
+                            )
+                        except Exception:
+                            pass
+
+                try:
+                    result = llm_backend.chat_once(
+                        [
+                            {
+                                "role": "system",
+                                "content": role_prompts[role],
+                            },
+                            {
+                                "role": "user",
+                                "content": (
+                                    "TASK:\n"
+                                    + task_text
+                                    + "\n\nREAL REPOSITORY EVIDENCE:\n"
+                                    + json.dumps(
+                                        repository_snapshot(),
+                                        indent=2,
+                                        default=str,
+                                    )
+                                    + "\n\nIMPORTANT: Analyze the evidence above. "
+                                    + "Do not give generic instructions about how to inspect "
+                                    + "a repository. Refer to actual files, directories, branch, "
+                                    + "tests, and git state present in the evidence."
+                                    + target_excerpt
+                                ),
+                            },
+                        ],
+                        MODEL,
+                        {
+                            "temperature": 0,
+                            "max_tokens": 256,
+                            "num_predict": 256,
+                        },
+                    )
+
+                    content = (
+                        result
+                        .get("message", {})
+                        .get("content", "")
+                        .strip()
+                    )
+
+                    if not content:
+                        raise RuntimeError("worker returned empty result")
+
+                    record["result"] = content
+                    record["error"] = None
+                    record["state"] = "DONE"
+
+                    agent_trace.append(
+                        f"{task_id} DONE: {content[:240]}"
+                    )
+
+                    print(f"AGENT DONE: {task_id}")
+                    print(content)
+
+                except KeyboardInterrupt:
+                    record["state"] = "CANCELLED"
+                    record["error"] = "cancelled by user"
+                    agent_trace.append(
+                        f"{task_id} CANCELLED"
+                    )
+                    print(f"AGENT CANCELLED: {task_id}")
+                    continue
+
+                except Exception as exc:
+                    record["state"] = "FAILED"
+                    record["error"] = str(exc)
+                    record["result"] = ""
+                    agent_trace.append(
+                        f"{task_id} FAILED: {exc}"
+                    )
+                    print(f"AGENT FAILED: {task_id}: {exc}")
+
+            elif (
+                state_name == "RUNNING"
+                and role in {"coder", "release"}
+            ):
+                print(
+                    f"AGENT HELD: {task_id} "
+                    "(write-capable execution not enabled yet)"
+                )
+                record["state"] = "HELD"
+                agent_trace.append(
+                    f"{task_id} HELD: write execution disabled"
+                )
+
+            continue
+
+        if text == "/agents trace":
+            print()
+            print("AGENT TRACE")
+
+            for event in agent_trace[-25:]:
+                print(event)
+
+            continue
+
+        if text == "/agents stop":
+            cancelled = 0
+
+            for task in agent_tasks.values():
+                if task["state"] in {"RUNNING", "QUEUED"}:
+                    task["state"] = "CANCELLED"
+                    cancelled += 1
+                    agent_trace.append(
+                        f"{task['task_id']} CANCELLED"
+                    )
+
+            agent_queue.clear()
+
+            print()
+            print("AGENT SUPERVISOR STOP")
+            print(f"cancelled: {cancelled}")
+            print("queued cleared: 0")
+            print("all workers stopped")
             continue
 
         success, touched = (

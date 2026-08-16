@@ -1,0 +1,23 @@
+#!/bin/zsh
+
+export HF_HUB_OFFLINE=1
+export TRANSFORMERS_OFFLINE=1
+export HF_HUB_DISABLE_TELEMETRY=1
+export PYTHONUNBUFFERED=1
+
+case "$1" in
+  full)
+    export GPT_DOUG_MASTER_STEPS=6
+    export GPT_DOUG_COMMAND_TIMEOUT=360
+    export GPT_DOUG_FULL_VERIFY=1
+    echo "DOUG FULL: 6 steps / full pytest / 360s"
+    ;;
+  *)
+    export GPT_DOUG_MASTER_STEPS=3
+    export GPT_DOUG_COMMAND_TIMEOUT=30
+    export GPT_DOUG_FULL_VERIFY=0
+    echo "DOUG FAST: 3 steps / full pytest SKIPPED"
+    ;;
+esac
+
+exec ./doug-master
