@@ -1,0 +1,23 @@
+#!/bin/zsh
+set -e
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT"
+
+source .venv-mlx/bin/activate
+
+export GPT_DOUG_PROVIDER=qwen
+export QWEN_MODEL="${QWEN_MODEL:-mlx-community/Qwen2.5-Coder-3B-Instruct-4bit}"
+export GPT_DOUG_MODEL="$QWEN_MODEL"
+
+export QWEN_MAX_CONTEXT_CHARS="${QWEN_MAX_CONTEXT_CHARS:-36000}"
+export QWEN_MAX_TOKENS="${QWEN_MAX_TOKENS:-1400}"
+
+export GPT_DOUG_IMPLEMENT_STEPS="${GPT_DOUG_IMPLEMENT_STEPS:-50}"
+
+unset OLLAMA_HOST
+unset OLLAMA_API_BASE
+unset OLLAMA_BASE_URL
+unset OLLAMA_MODEL
+
+exec python doug_implement_shell.py "$@"
