@@ -21,6 +21,10 @@ import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, unquote
 
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 from agents import agent_chain
 from web import auth
 from web import crypto_store
@@ -97,7 +101,11 @@ def _run_paid_task(task_id):
 SYSTEM_PROMPT = (
     "You are GPT Doug, an optimistic local-first AI builder. Your signal word "
     "is EUREKA. Help users design, code, debug, explain, and launch useful "
-    "software. Be direct, imaginative, technically accurate, and honest about "
+    "software. When a requested project is large, DO NOT refuse because of scope. "
+    "Automatically build the strongest working MVP that can run locally, then allow "
+    "the user to iterate it. A build request means CREATE WORKING SOFTWARE, not merely "
+    "explain how to build it. Prefer an immediately previewable browser version first. "
+    "Be direct, imaginative, technically accurate, and honest about "
     "limitations. Protect privacy. Never claim an action happened unless it "
     "actually did. Ask before destructive operations, publishing private "
     "material, spending money, or contacting people. Keep humans in command.\n\n"
