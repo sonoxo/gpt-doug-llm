@@ -1,57 +1,34 @@
-# Contributing to GPT Doug LLM
+# Contributing to GPT-Doug-LLM
 
-## Quick Start
+Contributions are welcome.
 
-```bash
-git clone https://github.com/sonoxo/gpt-doug-llm.git
-cd gpt-doug-llm
-python3 -m pytest tests/ -v
-```
+## Development
 
-All 105 tests must pass before submitting a PR.
+1. Fork or clone the repository.
+2. Create a focused branch.
+3. Add tests for behavioral changes.
+4. Run the test suite before submitting.
+5. Keep commits small and descriptive.
 
-## Code Style
+## Project Principles
 
-- Python 3.9+ (3.11/3.12 preferred)
-- No external dependencies for core modules (stdlib only)
-- Type hints encouraged
-- Every security-relevant change must include or update a test
-- No secrets, credentials, or personal paths in code
+GPT-Doug is ontology-first.
 
-## Security Contributions
+Contributions should preserve:
 
-Security improvements are welcome. When adding or modifying Zyra patterns:
+- structured knowledge as a primary source of truth
+- provenance for knowledge changes
+- explicit proposal approval/rejection
+- deterministic regression testing
+- compatibility with local and open-source models
 
-1. Add the attack vector to `tests/test_zyra_guard.py` or `tests/test_golden_shield.py`
-2. Verify the test fails without your fix
-3. Verify the test passes with your fix
-4. Verify no existing tests break
-5. Add legitimate (non-attacking) test cases to check for false positives
+## Pull Requests
 
-## Adding Knowledge Base Entries
+Describe:
 
-Add JSONL files to `workers/knowledge/`. Each entry must have:
+- what changed
+- why it changed
+- how it was tested
+- any compatibility considerations
 
-```json
-{
-  "id": "unique-id",
-  "topic": "category",
-  "attribution": "source",
-  "summary": "factual summary (not verbatim source material)",
-  "keywords": ["searchable", "terms"]
-}
-```
-
-All knowledge must be from public sources, properly attributed, and not classified or sensitive information.
-
-## Pull Request Process
-
-1. Fork the repo
-2. Create a branch: `git checkout -b fix/my-improvement`
-3. Run tests: `python3 -m pytest tests/ -v`
-4. Commit with clear message
-5. Open a PR describing what changed and why
-
-## License
-
-By contributing, you agree your contributions are licensed under MIT.
+Avoid unrelated changes in the same pull request.
