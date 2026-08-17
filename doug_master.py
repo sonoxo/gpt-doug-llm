@@ -1489,8 +1489,8 @@ def execute_objective(
     
         _knowledge_context = _knowledge_store.context(
             objective,
-            limit=8,
-            max_chars=8000,
+            limit=3,
+            max_chars=2500,
         )
     
     except Exception as _knowledge_exc:
