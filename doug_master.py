@@ -1554,9 +1554,12 @@ def execute_objective(
 
     protocol_failures = 0
 
+    # MAX_STEPS=0 means no practical fixed step ceiling.
+    _step_budget = MAX_STEPS if MAX_STEPS > 0 else (2**63 - 1)
+
     for step in range(
         1,
-        MAX_STEPS + 1,
+        _step_budget + 1,
     ):
 
         print(
