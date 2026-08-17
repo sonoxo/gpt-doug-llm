@@ -82,9 +82,28 @@ class OntologyStore:
                 relation_types.get(relation.type, 0) + 1
             )
 
+        document_count = 0
+        page_count = 0
+
+        documents_root = self.root / "documents"
+
+        if documents_root.exists():
+            for manifest_path in documents_root.glob("*/manifest.json"):
+                try:
+                    manifest = json.loads(
+                        manifest_path.read_text(encoding="utf-8")
+                    )
+                except Exception:
+                    continue
+
+                document_count += 1
+                page_count += int(manifest.get("page_count", 0))
+
         return {
             "entities": len(self.entities),
             "relations": len(self.relations),
+            "documents": document_count,
+            "pages": page_count,
             "entity_types": types,
             "relation_types": relation_types,
             "data_directory": str(self.root),

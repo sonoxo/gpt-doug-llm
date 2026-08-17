@@ -4,6 +4,7 @@ import argparse
 import json
 
 from .models import Entity, Relation
+from .ingest import DocumentIngestor
 from .store import OntologyStore
 
 
@@ -29,6 +30,11 @@ def main():
     )
 
     sub.add_parser("status")
+
+    ingest = sub.add_parser("ingest")
+    ingest.add_argument("path")
+
+    sub.add_parser("documents")
 
     entity = sub.add_parser("entity")
     entity.add_argument("query")
@@ -56,6 +62,16 @@ def main():
 
     if args.command == "status":
         emit(store.status())
+        return
+
+    if args.command == "ingest":
+        ingestor = DocumentIngestor()
+        emit(ingestor.ingest_pdf(args.path))
+        return
+
+    if args.command == "documents":
+        ingestor = DocumentIngestor()
+        emit(ingestor.list_documents())
         return
 
     if args.command == "entity":

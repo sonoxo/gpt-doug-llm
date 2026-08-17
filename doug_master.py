@@ -2740,9 +2740,59 @@ def interactive():
             print()
             print("ONTOLOGY COMMANDS")
             print("  /ontology status")
+            print("  /ontology ingest <pdf>")
+            print("  /ontology documents")
             print("  /ontology entity <name>")
             print("  /ontology path <source> -> <target>")
             print()
+            continue
+
+        if text.startswith("/ontology ingest "):
+            from ontology.ingest import DocumentIngestor
+            import json as _ontology_json
+            from pathlib import Path as _ontology_path
+
+            raw_path = text[len("/ontology ingest "):].strip()
+
+            if not raw_path:
+                print("usage: /ontology ingest <pdf>")
+                continue
+
+            candidate = _ontology_path(raw_path).expanduser()
+
+            if not candidate.is_absolute():
+                candidate = ROOT / candidate
+
+            try:
+                result = DocumentIngestor().ingest_pdf(candidate)
+            except Exception as exc:
+                print(f"ontology ingest error: {exc}")
+                continue
+
+            print()
+            print("ONTOLOGY INGEST")
+            print(
+                _ontology_json.dumps(
+                    result,
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
+            continue
+
+        if text == "/ontology documents":
+            from ontology.ingest import DocumentIngestor
+            import json as _ontology_json
+
+            print()
+            print("ONTOLOGY DOCUMENTS")
+            print(
+                _ontology_json.dumps(
+                    DocumentIngestor().list_documents(),
+                    indent=2,
+                    ensure_ascii=False,
+                )
+            )
             continue
 
         if text == "/ontology status":
