@@ -2,10 +2,12 @@ import subprocess
 from dataclasses import dataclass
 from typing import Callable, Optional
 
+from .tools import run_tool
+
 
 @dataclass
 class VoiceAssistant:
-    name: str = "Doug"
+    name: str = "GPT6-Doug-Zyra-LLM"
     wake_word: str = "hey doug"
     responder: Optional[Callable[[str], str]] = None
 
@@ -25,13 +27,17 @@ class VoiceAssistant:
         if not cleaned:
             return "I'm listening."
 
+        tool_result = run_tool(cleaned)
+        if tool_result:
+            return tool_result
+
         if self.responder:
             return self.responder(cleaned)
 
         return "I heard: " + cleaned
 
     def run(self) -> None:
-        self.speak("GPT Doug voice assistant is online.")
+        self.speak("GPT6 Doug Zyra is online.")
 
         while True:
             try:

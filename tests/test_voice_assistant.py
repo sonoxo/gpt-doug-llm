@@ -3,7 +3,13 @@ from voice import VoiceAssistant
 
 def test_wake_word():
     doug = VoiceAssistant()
-    assert doug.handle("hey doug what time is it") == "I heard: what time is it"
+    assert doug.handle("hey doug hello") == "I heard: hello"
+
+
+def test_time_tool():
+    doug = VoiceAssistant()
+    result = doug.handle("hey doug what time is it")
+    assert result.startswith("It is ")
 
 
 def test_custom_brain():
