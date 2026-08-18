@@ -7,6 +7,7 @@ import shlex
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
+from .effects import TerminalFX
 from .engine import GameEngine, Ontology, ValidationError
 
 BANNER = r'''
@@ -27,11 +28,13 @@ def _pairs(items: Dict[str, Any]) -> None:
         print(f"  {key.replace('_', ' ').title()}: {value}")
 
 
-def print_event(engine: GameEngine) -> None:
+def print_event(engine: GameEngine, fx: Optional[TerminalFX] = None) -> None:
     scenario = engine.current_scenario()
     if not scenario:
-        print_executive_assessment(engine)
+        print_executive_assessment(engine, fx)
         return
+    if fx:
+        fx.turn(engine.turn + 1, engine.MAX_TURNS, scenario["title"])
     _heading("SCENARIO", f"Turn {engine.turn + 1}/{engine.MAX_TURNS}: {scenario['title']}")
     print(f"  {scenario['brief']}")
     _heading("FACT", "Known conditions")
@@ -51,7 +54,9 @@ def print_event(engine: GameEngine) -> None:
     print("\n  Use: decide <number-or-choice-id>")
 
 
-def print_mission(engine: GameEngine) -> None:
+def print_mission(engine: GameEngine, fx: Optional[TerminalFX] = None) -> None:
+    if fx:
+        fx.boot()
     print(BANNER)
     _heading("SCENARIO", "Mission briefing")
     print("  You are the resilience council for the fictional Meridian Civic Cooperative.\n"
@@ -63,7 +68,7 @@ def print_mission(engine: GameEngine) -> None:
         _heading("RECOMMENDATION", f"{horizon.replace('_', ' ').title()} objectives")
         for goal in goals:
             print(f"  - {goal}")
-    print_event(engine)
+    print_event(engine, fx)
 
 
 def print_risks(engine: GameEngine, risk_id: Optional[str] = None) -> None:
@@ -171,7 +176,9 @@ def print_decision(record: Dict[str, Any]) -> None:
         print(f"  - Control {change['id']} maturity: {change['maturity'][0]} -> {change['maturity'][1]}")
 
 
-def print_executive_assessment(engine: GameEngine) -> None:
+def print_executive_assessment(engine: GameEngine, fx: Optional[TerminalFX] = None) -> None:
+    if fx:
+        fx.finale()
     assessment = engine.executive_assessment()
     _heading("FACT", "Executive assessment")
     print(f"  Turns completed: {assessment['turns_completed']}/{engine.MAX_TURNS}")
@@ -203,7 +210,7 @@ Commands:
 """.strip())
 
 
-def execute_command(engine: GameEngine, line: str) -> bool:
+def execute_command(engine: GameEngine, line: str, fx: Optional[TerminalFX] = None) -> bool:
     try:
         parts = shlex.split(line)
     except ValueError as exc:
@@ -227,16 +234,27 @@ def execute_command(engine: GameEngine, line: str) -> bool:
                 print("Usage: decide <number-or-choice-id>")
             else:
                 record = engine.decide(args[0])
+                if fx:
+                    fx.decision()
                 print_decision(record)
-                print_executive_assessment(engine) if engine.finished else print_event(engine)
+                print_executive_assessment(engine, fx) if engine.finished else print_event(engine, fx)
         elif command == "save":
-            print(f"Saved simulation: {engine.save(Path(args[0]))}") if args else print("Usage: save <path>")
-        elif command == "load":
-            if not args: print("Usage: load <path>")
+            if not args:
+                print("Usage: save <path>")
             else:
+                path = engine.save(Path(args[0]))
+                if fx:
+                    fx.io("Writing simulation state", "SAVED")
+                print(f"Saved simulation: {path}")
+        elif command == "load":
+            if not args:
+                print("Usage: load <path>")
+            else:
+                if fx:
+                    fx.io("Reading simulation state", "LOADED")
                 engine.load(Path(args[0]))
                 print(f"Loaded simulation: {args[0]}")
-                print_executive_assessment(engine) if engine.finished else print_event(engine)
+                print_executive_assessment(engine, fx) if engine.finished else print_event(engine, fx)
         elif command in ("quit", "exit"):
             return False
         else:
@@ -246,16 +264,19 @@ def execute_command(engine: GameEngine, line: str) -> bool:
     return True
 
 
-def run_demo(engine: GameEngine) -> None:
-    print_mission(engine)
+def run_demo(engine: GameEngine, fx: Optional[TerminalFX] = None) -> None:
+    print_mission(engine, fx)
     print("\nresilience> status")
     print_status(engine)
     print("\nresilience> map")
     print(engine.dependency_map())
     print("\nresilience> decide 1")
-    print_decision(engine.decide("1"))
+    record = engine.decide("1")
+    if fx:
+        fx.decision()
+    print_decision(record)
     if not engine.finished:
-        print_event(engine)
+        print_event(engine, fx)
     print("\nSAMPLE — Demo stopped after one decision; interactive play continues to eight turns.")
 
 
@@ -266,6 +287,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ontology", type=Path, help="custom ontology JSON file")
     parser.add_argument("--scenarios", type=Path, help="custom scenarios JSON file")
     parser.add_argument("--validate-only", action="store_true", help="validate JSON model files and exit")
+    parser.add_argument("--no-animations", action="store_true", help="disable terminal animations")
     return parser
 
 
@@ -283,20 +305,24 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     if args.validate_only:
         print("VALID — ontology and scenarios passed reference and schema validation.")
         return 0
+
+    fx = TerminalFX(enabled=not args.no_animations)
     if args.demo:
-        run_demo(engine)
+        run_demo(engine, fx)
         return 0
-    print_mission(engine)
+
+    print_mission(engine, fx)
     while not engine.finished:
         try:
             line = input("\nresilience> ")
         except (EOFError, KeyboardInterrupt):
             print()
             return 0
-        if not execute_command(engine, line):
+        if not execute_command(engine, line, fx):
             return 0
     print("\nSimulation complete. Final assessment shown above.")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
