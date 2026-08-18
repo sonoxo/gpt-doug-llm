@@ -7,17 +7,11 @@ import os
 import shutil
 import sys
 import time
-from typing import Callable, List, Optional, TextIO, Tuple
+from typing import Callable, Dict, List, Optional, TextIO, Tuple
 
 
 class TerminalFX:
-    """ANSI-aware terminal effects with a quiet non-TTY fallback.
-
-    Interactive terminals use pseudo-3D wireframe scenes by default. The scenes
-    run in the terminal's alternate screen buffer so normal game output is not
-    erased. Redirected output, CI, TERM=dumb, or RESILIENCE_NO_ANIMATIONS
-    disables animation cleanly. NO_COLOR suppresses ANSI color only.
-    """
+    """ANSI-aware terminal effects with a quiet non-TTY fallback."""
 
     SPINNER = ("|", "/", "-", "\\")
     HIDE_CURSOR = "\x1b[?25l"
@@ -33,14 +27,10 @@ class TerminalFX:
     RESET = "\x1b[0m"
 
     CUBE_VERTICES: Tuple[Tuple[float, float, float], ...] = (
-        (-1.0, -1.0, -1.0),
-        (1.0, -1.0, -1.0),
-        (1.0, 1.0, -1.0),
-        (-1.0, 1.0, -1.0),
-        (-1.0, -1.0, 1.0),
-        (1.0, -1.0, 1.0),
-        (1.0, 1.0, 1.0),
-        (-1.0, 1.0, 1.0),
+        (-1.0, -1.0, -1.0), (1.0, -1.0, -1.0),
+        (1.0, 1.0, -1.0), (-1.0, 1.0, -1.0),
+        (-1.0, -1.0, 1.0), (1.0, -1.0, 1.0),
+        (1.0, 1.0, 1.0), (-1.0, 1.0, 1.0),
     )
     CUBE_EDGES: Tuple[Tuple[int, int], ...] = (
         (0, 1), (1, 2), (2, 3), (3, 0),
@@ -60,10 +50,25 @@ class TerminalFX:
         self.stream = stream or sys.stdout
         self.sleep = sleep
         self.three_d = bool(three_d)
-        self.scene_seconds = max(0.2, float(scene_seconds))
-        self.fps = max(6, int(fps))
-        self.enabled = bool(enabled) and self._terminal_supports_animation()
-        self.color = self.enabled and "NO_COLOR" not in os.environ
+        self.scene_seconds = self._validate_seconds(scene_seconds)
+        self.fps = self._validate_fps(fps)
+        self.supported = self._terminal_supports_animation()
+        self.enabled = bool(enabled) and self.supported
+        self._refresh_color()
+
+    @staticmethod
+    def _validate_seconds(seconds: float) -> float:
+        value = float(seconds)
+        if value <= 0:
+            raise ValueError("3D scene duration must be greater than zero")
+        return value
+
+    @staticmethod
+    def _validate_fps(fps: int) -> int:
+        value = int(fps)
+        if value < 6 or value > 60:
+            raise ValueError("3D FPS must be between 6 and 60")
+        return value
 
     def _terminal_supports_animation(self) -> bool:
         is_tty = bool(getattr(self.stream, "isatty", lambda: False)())
@@ -73,6 +78,32 @@ class TerminalFX:
             in {"1", "true", "yes", "on"}
         )
         return is_tty and not disabled
+
+    def _refresh_color(self) -> None:
+        self.color = self.enabled and "NO_COLOR" not in os.environ
+
+    def set_enabled(self, enabled: bool) -> bool:
+        self.enabled = bool(enabled) and self.supported
+        self._refresh_color()
+        return self.enabled
+
+    def set_scene_seconds(self, seconds: float) -> float:
+        self.scene_seconds = self._validate_seconds(seconds)
+        return self.scene_seconds
+
+    def set_fps(self, fps: int) -> int:
+        self.fps = self._validate_fps(fps)
+        return self.fps
+
+    def settings(self) -> Dict[str, object]:
+        return {
+            "supported": self.supported,
+            "enabled": self.enabled,
+            "three_d": self.three_d,
+            "scene_seconds": self.scene_seconds,
+            "fps": self.fps,
+            "color": self.color,
+        }
 
     def _write(self, text: str) -> None:
         self.stream.write(text)
@@ -202,13 +233,13 @@ class TerminalFX:
     def scene3d(self, label: str, *, seconds: Optional[float] = None) -> None:
         if not self.enabled or not self.three_d:
             return
-        duration = self.scene_seconds if seconds is None else max(0.2, float(seconds))
+        duration = self.scene_seconds if seconds is None else self._validate_seconds(seconds)
         frames = max(1, round(duration * self.fps))
         delay = duration / frames
         self._write(self.ALT_SCREEN_ON + self.HIDE_CURSOR)
         try:
             for index in range(frames):
-                angle = index * (2 * math.pi / max(frames, 1)) * 1.4
+                angle = index * (2 * math.pi / frames) * 1.4
                 frame = self._render_3d_frame(angle, label)
                 if self.color:
                     frame = self.CYAN + frame + self.RESET
@@ -217,10 +248,17 @@ class TerminalFX:
         finally:
             self._write(self.RESET + self.SHOW_CURSOR + self.ALT_SCREEN_OFF)
 
+    def showcase(self, seconds: Optional[float] = None) -> None:
+        if not self.enabled:
+            return
+        if self.three_d:
+            self.scene3d("MANUAL EFFECTS SHOWCASE", seconds=seconds)
+        self.phase("Terminal effects channel", frames=8, delay=0.02, final="ONLINE")
+
     def boot(self) -> None:
         if not self.enabled:
             return
-        self.scene3d("ONTOLOGY LINK ESTABLISHED", seconds=self.scene_seconds)
+        self.scene3d("ONTOLOGY LINK ESTABLISHED")
         self._write("\n")
         self.phase("Loading ontology graph", frames=7, final="LINKED")
         self.phase("Calibrating ordinal risk matrix", frames=8, final="CALIBRATED")
@@ -231,13 +269,13 @@ class TerminalFX:
     def turn(self, turn: int, total: int, title: str) -> None:
         if not self.enabled:
             return
-        self.scene3d(f"TURN {turn}/{total} // {title}", seconds=self.scene_seconds)
+        self.scene3d(f"TURN {turn}/{total} // {title}")
         self.phase(f"TURN {turn}/{total} :: {title}", frames=6, delay=0.018, width=16, final="EVENT")
 
     def decision(self) -> None:
         if not self.enabled:
             return
-        self.scene3d("DEFENSIVE DECISION RESOLUTION", seconds=self.scene_seconds)
+        self.scene3d("DEFENSIVE DECISION RESOLUTION")
         self.phase("Applying defensive decision", frames=6, delay=0.02, width=16, final="APPLIED")
         self.phase("Recalculating resilience posture", frames=7, delay=0.018, width=16, final="UPDATED")
 
@@ -249,5 +287,5 @@ class TerminalFX:
     def finale(self) -> None:
         if not self.enabled:
             return
-        self.scene3d("EXECUTIVE ASSESSMENT // FINAL", seconds=self.scene_seconds)
+        self.scene3d("EXECUTIVE ASSESSMENT // FINAL")
         self.phase("Compiling executive assessment", frames=9, delay=0.02, width=20, final="COMPLETE")
