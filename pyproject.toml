@@ -39,6 +39,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 [project.scripts]
 gpt-doug = "gpt_doug:main"
 zyra-sentinel = "golden_shield:start_247_monitoring"
+resilience-matrix = "resilience_matrix.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/sonoxo/gpt-doug-llm"
@@ -46,7 +47,10 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["agents", "web", "workers", "tests", "models"]
+packages = ["agents", "web", "workers", "tests", "models", "resilience_matrix"]
+
+[tool.setuptools.package-data]
+resilience_matrix = ["data/*.json", "README.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
