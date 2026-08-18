@@ -1,189 +1,18 @@
-"""Core ontology validation and game engine for The Resilience Matrix.
-
-The simulator is intentionally defensive and abstract. It models governance,
-resilience, safety, quantum readiness, and compliance decisions without
-operational attack instructions.
-"""
+"""Runtime engine for The Resilience Matrix."""
 from __future__ import annotations
+
 import json
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
-LIKELIHOOD = ['Rare', 'Unlikely', 'Possible', 'Likely', 'Almost Certain']
-IMPACT = ['Minor', 'Moderate', 'Major', 'Severe', 'Critical']
-CONFIDENCE = ['Low', 'Medium', 'High']
-EFFECTIVENESS = ['Ineffective', 'Limited', 'Moderate', 'Strong']
-MATURITY = ['Initial', 'Repeatable', 'Defined', 'Managed']
-OVERALL_RISK = ['Low', 'Guarded', 'Elevated', 'High', 'Extreme']
-READINESS = ['Fragile', 'Developing', 'Prepared', 'Resilient']
-BUDGET = ['Depleted', 'Constrained', 'Guarded', 'Adequate', 'Strong']
-TRUST = ['Eroding', 'Cautious', 'Stable', 'High']
-COMPLIANCE = ['At Risk', 'Watch', 'Managed', 'Strong']
-EVIDENCE_QUALITY = ['Weak', 'Partial', 'Adequate', 'Robust']
-ENTITY_SECTIONS = ('assets', 'threats', 'dependencies', 'controls', 'stakeholders', 'risks', 'evidence')
+from typing import Any, Dict, List, Mapping, Optional
 
-class ValidationError(ValueError):
-    """Raised when ontology or scenario references are invalid."""
-
-def _require(mapping: Mapping[str, Any], fields: Iterable[str], context: str) -> None:
-    missing = [field for field in fields if field not in mapping]
-    if missing:
-        raise ValidationError(f"{context} missing required fields: {', '.join(missing)}")
-
-def _check_enum(value: str, allowed: Sequence[str], context: str) -> None:
-    if value not in allowed:
-        raise ValidationError(f"{context} must be one of {', '.join(allowed)}; got {value!r}")
-
-def _clamp(value: int, low: int, high: int) -> int:
-    return max(low, min(high, value))
-
-def _step_label(labels: Sequence[str], current: str, delta: int) -> str:
-    index = labels.index(current)
-    return labels[_clamp(index + delta, 0, len(labels) - 1)]
-
-@dataclass
-class Ontology:
-    data: Dict[str, Any]
-    scenarios: Dict[str, Any]
-    indexes: Dict[str, Dict[str, Dict[str, Any]]] = field(init=False)
-
-    def __post_init__(self) -> None:
-        self.validate()
-        self.indexes = {section: {item['id']: item for item in self.data.get(section, [])} for section in ENTITY_SECTIONS}
-
-    @classmethod
-    def from_files(cls, ontology_path: Path, scenario_path: Path) -> 'Ontology':
-        with ontology_path.open('r', encoding='utf-8') as handle:
-            ontology_data = json.load(handle)
-        with scenario_path.open('r', encoding='utf-8') as handle:
-            scenario_data = json.load(handle)
-        return cls(ontology_data, scenario_data)
-
-    def validate(self) -> None:
-        for section in ENTITY_SECTIONS:
-            if section not in self.data or not isinstance(self.data[section], list):
-                raise ValidationError(f'ontology section {section!r} must be a list')
-        all_ids: Dict[str, str] = {}
-        for section in ENTITY_SECTIONS:
-            for item in self.data[section]:
-                _require(item, ['id'], section)
-                item_id = item['id']
-                if item_id in all_ids:
-                    raise ValidationError(f'duplicate id {item_id!r} in {section}; already used in {all_ids[item_id]}')
-                all_ids[item_id] = section
-        ids = {section: {item['id'] for item in self.data[section]} for section in ENTITY_SECTIONS}
-        for asset in self.data['assets']:
-            _require(asset, ['id', 'name', 'function', 'criticality', 'data_longevity', 'owner'], f"asset {asset.get('id', '?')}")
-            _check_enum(asset['criticality'], IMPACT, f"asset {asset['id']} criticality")
-            if asset['owner'] not in ids['stakeholders']:
-                raise ValidationError(f"asset {asset['id']} owner {asset['owner']} does not exist")
-        for threat in self.data['threats']:
-            _require(threat, ['id', 'name', 'category', 'affected_assets', 'likelihood', 'impact', 'rationale'], f"threat {threat.get('id', '?')}")
-            _check_enum(threat['likelihood'], LIKELIHOOD, f"threat {threat['id']} likelihood")
-            _check_enum(threat['impact'], IMPACT, f"threat {threat['id']} impact")
-            for asset_id in threat['affected_assets']:
-                if asset_id not in ids['assets']:
-                    raise ValidationError(f"threat {threat['id']} references unknown asset {asset_id}")
-        for dependency in self.data['dependencies']:
-            _require(dependency, ['id', 'provider', 'consumer', 'type', 'substitutability', 'failure_mode'], f"dependency {dependency.get('id', '?')}")
-            for field_name in ('provider', 'consumer'):
-                if dependency[field_name] not in ids['assets']:
-                    raise ValidationError(f"dependency {dependency['id']} {field_name} references unknown asset {dependency[field_name]}")
-        for control in self.data['controls']:
-            _require(control, ['id', 'name', 'control_type', 'mitigated_threats', 'protected_assets', 'effectiveness', 'maturity', 'evidence'], f"control {control.get('id', '?')}")
-            _check_enum(control['effectiveness'], EFFECTIVENESS, f"control {control['id']} effectiveness")
-            _check_enum(control['maturity'], MATURITY, f"control {control['id']} maturity")
-            for threat_id in control['mitigated_threats']:
-                if threat_id not in ids['threats']:
-                    raise ValidationError(f"control {control['id']} references unknown threat {threat_id}")
-            for asset_id in control['protected_assets']:
-                if asset_id not in ids['assets']:
-                    raise ValidationError(f"control {control['id']} references unknown asset {asset_id}")
-            for evidence_id in control['evidence']:
-                if evidence_id not in ids['evidence']:
-                    raise ValidationError(f"control {control['id']} references unknown evidence {evidence_id}")
-        for stakeholder in self.data['stakeholders']:
-            _require(stakeholder, ['id', 'name', 'role', 'authority', 'responsibilities'], f"stakeholder {stakeholder.get('id', '?')}")
-        for risk in self.data['risks']:
-            _require(risk, ['id', 'threat', 'asset', 'dependency_path', 'controls', 'owner', 'confidence', 'rationale'], f"risk {risk.get('id', '?')}")
-            if risk['threat'] not in ids['threats']:
-                raise ValidationError(f"risk {risk['id']} references unknown threat {risk['threat']}")
-            if risk['asset'] not in ids['assets']:
-                raise ValidationError(f"risk {risk['id']} references unknown asset {risk['asset']}")
-            if risk['owner'] not in ids['stakeholders']:
-                raise ValidationError(f"risk {risk['id']} references unknown owner {risk['owner']}")
-            _check_enum(risk['confidence'], CONFIDENCE, f"risk {risk['id']} confidence")
-            for dep_id in risk['dependency_path']:
-                if dep_id not in ids['dependencies']:
-                    raise ValidationError(f"risk {risk['id']} references unknown dependency {dep_id}")
-            for control_id in risk['controls']:
-                if control_id not in ids['controls']:
-                    raise ValidationError(f"risk {risk['id']} references unknown control {control_id}")
-        for evidence in self.data['evidence']:
-            _require(evidence, ['id', 'source', 'date', 'confidence', 'provenance', 'supports'], f"evidence {evidence.get('id', '?')}")
-            _check_enum(evidence['confidence'], CONFIDENCE, f"evidence {evidence['id']} confidence")
-            support = evidence['supports']
-            _require(support, ['type', 'id'], f"evidence {evidence['id']} supports")
-            target_section = {'control': 'controls', 'risk': 'risks'}.get(support['type'])
-            if not target_section:
-                raise ValidationError(f"evidence {evidence['id']} supports type must be control or risk")
-            if support['id'] not in ids[target_section]:
-                raise ValidationError(f"evidence {evidence['id']} references unknown {support['type']} {support['id']}")
-        self._validate_relationships(ids)
-        self._validate_scenarios(ids)
-
-    def _validate_relationships(self, ids: Dict[str, set]) -> None:
-        relationships = self.data.get('relationships', [])
-        if not isinstance(relationships, list):
-            raise ValidationError('relationships must be a list')
-        valid = {'OWNS': ('stakeholders', 'assets'), 'DEPENDS_ON': ('assets', 'dependencies'), 'THREATENS': ('threats', 'assets'), 'PROPAGATES_FAILURE_TO': ('dependencies', 'assets'), 'PROTECTS': ('controls', 'assets'), 'MITIGATES': ('controls', 'threats'), 'OPERATES': ('stakeholders', 'controls'), 'ACCEPTS_OR_ESCALATES': ('stakeholders', 'risks'), 'SUPPORTS': ('evidence', None)}
-        all_ids = set().union(*ids.values())
-        for rel in relationships:
-            _require(rel, ['subject', 'predicate', 'object'], 'relationship')
-            predicate = rel['predicate']
-            if predicate not in valid:
-                raise ValidationError(f'unsupported relationship predicate {predicate}')
-            subject_section, object_section = valid[predicate]
-            if rel['subject'] not in ids[subject_section]:
-                raise ValidationError(f"relationship {predicate} has invalid subject {rel['subject']} for {subject_section}")
-            if object_section:
-                if rel['object'] not in ids[object_section]:
-                    raise ValidationError(f"relationship {predicate} has invalid object {rel['object']} for {object_section}")
-            elif rel['object'] not in all_ids:
-                raise ValidationError(f"relationship {predicate} references unknown object {rel['object']}")
-
-    def _validate_scenarios(self, ids: Dict[str, set]) -> None:
-        scenarios = self.scenarios.get('scenarios')
-        if not isinstance(scenarios, list) or len(scenarios) < 8:
-            raise ValidationError('scenarios.json must contain at least 8 scenarios')
-        seen = set()
-        for scenario in scenarios:
-            _require(scenario, ['id', 'title', 'threat_id', 'risk_id', 'brief', 'facts', 'assumptions', 'choices'], f"scenario {scenario.get('id', '?')}")
-            if scenario['id'] in seen:
-                raise ValidationError(f"duplicate scenario id {scenario['id']}")
-            seen.add(scenario['id'])
-            if scenario['threat_id'] not in ids['threats']:
-                raise ValidationError(f"scenario {scenario['id']} unknown threat {scenario['threat_id']}")
-            if scenario['risk_id'] not in ids['risks']:
-                raise ValidationError(f"scenario {scenario['id']} unknown risk {scenario['risk_id']}")
-            if not 3 <= len(scenario['choices']) <= 5:
-                raise ValidationError(f"scenario {scenario['id']} must offer 3-5 choices")
-            choice_ids = set()
-            for choice in scenario['choices']:
-                _require(choice, ['id', 'label', 'description', 'effects', 'why'], f"scenario {scenario['id']} choice")
-                if choice['id'] in choice_ids:
-                    raise ValidationError(f"scenario {scenario['id']} duplicate choice {choice['id']}")
-                choice_ids.add(choice['id'])
-                effects = choice['effects']
-                if 'control_id' in effects and effects['control_id'] not in ids['controls']:
-                    raise ValidationError(f"scenario {scenario['id']} choice {choice['id']} unknown control {effects['control_id']}")
-
-    def get(self, entity_id: str) -> Optional[Tuple[str, Dict[str, Any]]]:
-        for section, index in self.indexes.items():
-            if entity_id in index:
-                return (section, index[entity_id])
-        return None
+from .model import (
+    BUDGET, COMPLIANCE, CONFIDENCE, EFFECTIVENESS, EVIDENCE_QUALITY, IMPACT,
+    LIKELIHOOD, MATURITY, OVERALL_RISK, READINESS, TRACK_LABELS, TRUST,
+    Ontology, ValidationError, _check_enum, _clamp, _require, _step_label,
+    load_default_ontology,
+)
 
 @dataclass
 class RiskState:
@@ -203,187 +32,275 @@ class RiskState:
         return OVERALL_RISK[band]
 
 class GameEngine:
-    SAVE_VERSION = 1
+    SAVE_VERSION = 2
     MAX_TURNS = 8
 
-    def __init__(self, ontology: Ontology, seed: int=7) -> None:
+    def __init__(self, ontology: Ontology, seed: int = 7) -> None:
         self.ontology = ontology
         self.seed = seed
         self.rng = random.Random(seed)
-        scenario_ids = [scenario['id'] for scenario in ontology.scenarios['scenarios']]
-        self.rng.shuffle(scenario_ids)
-        self.scenario_order = scenario_ids[:self.MAX_TURNS]
+        ids = [s["id"] for s in ontology.scenarios["scenarios"]]
+        self.rng.shuffle(ids)
+        self.scenario_order = ids[:self.MAX_TURNS]
         self.turn = 0
         self.finished = False
-        self.tracks = {'readiness': 1, 'budget': 3, 'trust': 2, 'compliance': 1, 'evidence_quality': 1}
+        self.tracks = {"readiness": 1, "budget": 3, "trust": 2, "compliance": 1, "evidence_quality": 1}
         self.risks: Dict[str, RiskState] = {}
-        for risk in ontology.data['risks']:
-            threat = ontology.indexes['threats'][risk['threat']]
-            self.risks[risk['id']] = RiskState(risk_id=risk['id'], likelihood=threat['likelihood'], impact=threat['impact'], confidence=risk['confidence'])
-        self.control_effectiveness = {control['id']: control['effectiveness'] for control in ontology.data['controls']}
-        self.control_maturity = {control['id']: control['maturity'] for control in ontology.data['controls']}
+        for risk in ontology.data["risks"]:
+            threat = ontology.indexes["threats"][risk["threat"]]
+            self.risks[risk["id"]] = RiskState(risk["id"], threat["likelihood"], threat["impact"], risk["confidence"])
+        self.control_effectiveness = {c["id"]: c["effectiveness"] for c in ontology.data["controls"]}
+        self.control_maturity = {c["id"]: c["maturity"] for c in ontology.data["controls"]}
         self.history: List[Dict[str, Any]] = []
 
     @classmethod
-    def default(cls, seed: int=7) -> 'GameEngine':
-        base = Path(__file__).resolve().parent / 'data'
-        ontology = Ontology.from_files(base / 'ontology.json', base / 'scenarios.json')
-        return cls(ontology, seed=seed)
+    def default(cls, seed: int = 7) -> "GameEngine":
+        return cls(load_default_ontology(), seed)
 
     def current_scenario(self) -> Optional[Dict[str, Any]]:
         if self.finished or self.turn >= self.MAX_TURNS:
             return None
-        scenario_id = self.scenario_order[self.turn]
-        return next((item for item in self.ontology.scenarios['scenarios'] if item['id'] == scenario_id))
+        sid = self.scenario_order[self.turn]
+        return next(s for s in self.ontology.scenarios["scenarios"] if s["id"] == sid)
 
     def track_labels(self) -> Dict[str, str]:
-        return {'readiness': READINESS[self.tracks['readiness']], 'budget': BUDGET[self.tracks['budget']], 'trust': TRUST[self.tracks['trust']], 'compliance': COMPLIANCE[self.tracks['compliance']], 'evidence_quality': EVIDENCE_QUALITY[self.tracks['evidence_quality']]}
+        return {name: labels[self.tracks[name]] for name, labels in TRACK_LABELS.items()}
 
     def readiness_level(self) -> str:
-        return READINESS[self.tracks['readiness']]
+        return READINESS[self.tracks["readiness"]]
+
+    def status(self) -> Dict[str, Any]:
+        scenario = self.current_scenario()
+        return {
+            "turn": self.turn,
+            "max_turns": self.MAX_TURNS,
+            "finished": self.finished,
+            "next_scenario": scenario["id"] if scenario else None,
+            "tracks": self.track_labels(),
+        }
 
     def _risk_explanation(self, risk_id: str) -> Dict[str, str]:
-        risk_def = self.ontology.indexes['risks'][risk_id]
-        threat = self.ontology.indexes['threats'][risk_def['threat']]
-        asset = self.ontology.indexes['assets'][risk_def['asset']]
+        rd = self.ontology.indexes["risks"][risk_id]
+        threat = self.ontology.indexes["threats"][rd["threat"]]
+        asset = self.ontology.indexes["assets"][rd["asset"]]
         state = self.risks[risk_id]
-        controls = [self.ontology.indexes['controls'][cid]['name'] for cid in risk_def['controls']]
-        dependency_text = 'none identified' if not risk_def['dependency_path'] else ', '.join(risk_def['dependency_path'])
-        control_text = ', '.join(controls) if controls else 'no mapped controls'
-        return {'likelihood': f"{state.likelihood}: {threat['rationale']['likelihood']} Current decisions may move this ordinal rating up or down; no probability is implied.", 'impact': f"{state.impact}: {threat['rationale']['impact']} The asset is rated {asset['criticality']} criticality and the dependency path is {dependency_text}.", 'confidence': f"{state.confidence}: {risk_def['rationale']['confidence']} Evidence quality and assurance decisions can change this confidence label.", 'overall': f'{state.overall()}: derived from the ordinal combination of {state.likelihood} likelihood and {state.impact} impact, considering mapped defensive controls ({control_text}). It is a qualitative priority band, not a numeric risk score.'}
+        controls = [self.ontology.indexes["controls"][cid]["name"] for cid in rd["controls"]]
+        deps = "none identified" if not rd["dependency_path"] else ", ".join(rd["dependency_path"])
+        return {
+            "likelihood": f"{state.likelihood}: {threat['rationale']['likelihood']} Current decisions may move this ordinal rating; no probability is implied.",
+            "impact": f"{state.impact}: {threat['rationale']['impact']} Asset criticality is {asset['criticality']}; dependency path: {deps}.",
+            "confidence": f"{state.confidence}: {rd['rationale']['confidence']} Evidence and assurance decisions may change this label.",
+            "overall": f"{state.overall()}: qualitative priority derived from ordinal likelihood and impact with mapped controls ({', '.join(controls) or 'none'}); not a numeric score.",
+        }
 
     def risk_view(self, risk_id: str) -> Dict[str, Any]:
         if risk_id not in self.risks:
             raise KeyError(risk_id)
-        risk_def = self.ontology.indexes['risks'][risk_id]
+        rd = self.ontology.indexes["risks"][risk_id]
         state = self.risks[risk_id]
-        return {'id': risk_id, 'threat': risk_def['threat'], 'asset': risk_def['asset'], 'dependency_path': list(risk_def['dependency_path']), 'controls': list(risk_def['controls']), 'owner': risk_def['owner'], 'likelihood': state.likelihood, 'impact': state.impact, 'confidence': state.confidence, 'overall': state.overall(), 'explanations': self._risk_explanation(risk_id)}
+        return {
+            "id": risk_id, "threat": rd["threat"], "asset": rd["asset"],
+            "dependency_path": list(rd["dependency_path"]), "controls": list(rd["controls"]),
+            "owner": rd["owner"], "likelihood": state.likelihood, "impact": state.impact,
+            "confidence": state.confidence, "overall": state.overall(),
+            "explanations": self._risk_explanation(risk_id),
+        }
 
     def all_risks(self) -> List[Dict[str, Any]]:
-        return [self.risk_view(risk['id']) for risk in self.ontology.data['risks']]
+        return [self.risk_view(r["id"]) for r in self.ontology.data["risks"]]
+
+    def _resolve_choice(self, scenario: Dict[str, Any], token: str) -> Dict[str, Any]:
+        token = token.strip()
+        choices = scenario["choices"]
+        if token.isdigit():
+            idx = int(token) - 1
+            if 0 <= idx < len(choices):
+                return choices[idx]
+        for choice in choices:
+            if choice["id"].lower() == token.lower():
+                return choice
+        raise ValueError(f"unknown choice {token!r}; use a displayed number or choice id")
+
+    def _apply_track_effects(self, effects: Mapping[str, Any]) -> None:
+        for name, delta in effects.items():
+            if name not in TRACK_LABELS:
+                continue
+            self.tracks[name] = _clamp(self.tracks[name] + int(delta), 0, len(TRACK_LABELS[name]) - 1)
 
     def decide(self, choice_token: str) -> Dict[str, Any]:
         scenario = self.current_scenario()
         if scenario is None:
-            raise RuntimeError('the simulation has already ended')
+            raise RuntimeError("the simulation has already ended")
         choice = self._resolve_choice(scenario, choice_token)
         before_tracks = self.track_labels()
-        risk_id = scenario['risk_id']
+        risk_id = scenario["risk_id"]
         before_risk = self.risk_view(risk_id)
-        effects = choice['effects']
-        self._apply_track_effects(effects.get('tracks', {}))
+        effects = choice["effects"]
+        self._apply_track_effects(effects.get("tracks", {}))
         state = self.risks[risk_id]
-        if effects.get('likelihood_delta'):
-            state.likelihood = _step_label(LIKELIHOOD, state.likelihood, int(effects['likelihood_delta']))
-        if effects.get('impact_delta'):
-            state.impact = _step_label(IMPACT, state.impact, int(effects['impact_delta']))
-        if effects.get('confidence_delta'):
-            state.confidence = _step_label(CONFIDENCE, state.confidence, int(effects['confidence_delta']))
+        for key, labels, attr in (
+            ("likelihood_delta", LIKELIHOOD, "likelihood"),
+            ("impact_delta", IMPACT, "impact"),
+            ("confidence_delta", CONFIDENCE, "confidence"),
+        ):
+            if key in effects:
+                setattr(state, attr, _step_label(labels, getattr(state, attr), int(effects[key])))
         control_change = None
-        control_id = effects.get('control_id')
+        control_id = effects.get("control_id")
         if control_id:
-            old_effectiveness = self.control_effectiveness[control_id]
-            old_maturity = self.control_maturity[control_id]
-            eff_delta = int(effects.get('effectiveness_delta', 0))
-            mat_delta = int(effects.get('maturity_delta', 0))
-            self.control_effectiveness[control_id] = _step_label(EFFECTIVENESS, old_effectiveness, eff_delta)
-            self.control_maturity[control_id] = _step_label(MATURITY, old_maturity, mat_delta)
-            control_change = {'id': control_id, 'effectiveness': [old_effectiveness, self.control_effectiveness[control_id]], 'maturity': [old_maturity, self.control_maturity[control_id]]}
-        after_tracks = self.track_labels()
-        after_risk = self.risk_view(risk_id)
-        record = {'turn': self.turn + 1, 'scenario_id': scenario['id'], 'choice_id': choice['id'], 'choice': choice['label'], 'why': choice['why'], 'before_tracks': before_tracks, 'after_tracks': after_tracks, 'before_risk': before_risk, 'after_risk': after_risk, 'control_change': control_change}
+            old_eff = self.control_effectiveness[control_id]
+            old_mat = self.control_maturity[control_id]
+            self.control_effectiveness[control_id] = _step_label(EFFECTIVENESS, old_eff, int(effects.get("effectiveness_delta", 0)))
+            self.control_maturity[control_id] = _step_label(MATURITY, old_mat, int(effects.get("maturity_delta", 0)))
+            control_change = {
+                "id": control_id,
+                "effectiveness": [old_eff, self.control_effectiveness[control_id]],
+                "maturity": [old_mat, self.control_maturity[control_id]],
+            }
+        record = {
+            "turn": self.turn + 1, "scenario_id": scenario["id"], "choice_id": choice["id"],
+            "choice": choice["label"], "why": choice["why"], "before_tracks": before_tracks,
+            "after_tracks": self.track_labels(), "before_risk": before_risk,
+            "after_risk": self.risk_view(risk_id), "control_change": control_change,
+        }
         self.history.append(record)
         self.turn += 1
-        if self.turn >= self.MAX_TURNS:
-            self.finished = True
+        self.finished = self.turn >= self.MAX_TURNS
         return record
 
-    def _resolve_choice(self, scenario: Dict[str, Any], token: str) -> Dict[str, Any]:
-        token = token.strip()
-        choices = scenario['choices']
-        if token.isdigit():
-            index = int(token) - 1
-            if 0 <= index < len(choices):
-                return choices[index]
-        for choice in choices:
-            if choice['id'].lower() == token.lower():
-                return choice
-        raise ValueError(f'unknown choice {token!r}; use a displayed number or choice id')
-
-    def _apply_track_effects(self, track_effects: Mapping[str, Any]) -> None:
-        labels = {'readiness': READINESS, 'budget': BUDGET, 'trust': TRUST, 'compliance': COMPLIANCE, 'evidence_quality': EVIDENCE_QUALITY}
-        for name, delta in track_effects.items():
-            if name not in self.tracks:
-                continue
-            self.tracks[name] = _clamp(self.tracks[name] + int(delta), 0, len(labels[name]) - 1)
-
     def dependency_map(self) -> str:
-        lines = ['FACT — ASCII DEPENDENCY GRAPH']
-        for dep in self.ontology.data['dependencies']:
-            provider = self.ontology.indexes['assets'][dep['provider']]
-            consumer = self.ontology.indexes['assets'][dep['consumer']]
-            lines.append(f"[{provider['id']}] {provider['name']} --{dep['id']}:{dep['type']}--> [{consumer['id']}] {consumer['name']}")
+        lines = ["FACT — ASCII DEPENDENCY GRAPH"]
+        for dep in self.ontology.data["dependencies"]:
+            p = self.ontology.indexes["assets"][dep["provider"]]
+            c = self.ontology.indexes["assets"][dep["consumer"]]
+            lines.append(f"[{p['id']}] {p['name']} --{dep['id']}:{dep['type']}--> [{c['id']}] {c['name']}")
             lines.append(f"    failure: {dep['failure_mode']} | substitutability: {dep['substitutability']}")
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def objectives(self) -> Dict[str, List[str]]:
-        return {'immediate': ['Keep severe risks visible and owned.', 'Preserve decision-quality evidence during each event.'], 'near_term': ['Improve redundancy, control maturity, and assurance coverage.', 'Reduce cryptographic and supplier concentration risk without exhausting capacity.'], 'long_term': ['Reach a resilient readiness posture with durable governance.', 'Maintain auditable evidence and a credible migration path for long-lived data.']}
+        return {
+            "immediate": ["Keep severe risks visible and owned.", "Preserve decision-quality evidence during each event."],
+            "near_term": ["Improve redundancy, control maturity, and assurance coverage.", "Reduce cryptographic and supplier concentration risk without exhausting capacity."],
+            "long_term": ["Reach a resilient readiness posture with durable governance.", "Maintain auditable evidence and a credible migration path for long-lived data."],
+        }
 
     def executive_assessment(self) -> Dict[str, Any]:
-        risk_counts = {label: 0 for label in OVERALL_RISK}
+        counts = {label: 0 for label in OVERALL_RISK}
         for risk in self.risks.values():
-            risk_counts[risk.overall()] += 1
+            counts[risk.overall()] += 1
         labels = self.track_labels()
-        recommendations = []
-        if labels['readiness'] != 'Resilient':
-            recommendations.append('Prioritize the weakest resilience controls and dependency alternatives.')
-        if labels['evidence_quality'] in ('Weak', 'Partial'):
-            recommendations.append('Raise evidence quality through documented assurance tests and reviews.')
-        if labels['compliance'] in ('At Risk', 'Watch'):
-            recommendations.append('Close governance and audit gaps with owned, time-bounded remediation.')
-        if any((label in risk_counts and risk_counts[label] for label in ('High', 'Extreme'))):
-            recommendations.append('Escalate remaining High or Extreme risks to their accountable owners.')
-        if not recommendations:
-            recommendations.append('Sustain current controls, test assumptions, and refresh evidence periodically.')
-        return {'turns_completed': self.turn, 'tracks': labels, 'risk_distribution': risk_counts, 'recommendations': recommendations}
+        recs: List[str] = []
+        if labels["readiness"] != "Resilient":
+            recs.append("Prioritize the weakest resilience controls and dependency alternatives.")
+        if labels["evidence_quality"] in ("Weak", "Partial"):
+            recs.append("Raise evidence quality through documented assurance tests and reviews.")
+        if labels["compliance"] in ("At Risk", "Watch"):
+            recs.append("Close governance and audit gaps with owned, time-bounded remediation.")
+        if counts["High"] or counts["Extreme"]:
+            recs.append("Escalate remaining High or Extreme risks to their accountable owners.")
+        if not recs:
+            recs.append("Sustain current controls, test assumptions, and refresh evidence periodically.")
+        priority = sorted(self.all_risks(), key=lambda r: (OVERALL_RISK.index(r["overall"]), IMPACT.index(r["impact"]), LIKELIHOOD.index(r["likelihood"])), reverse=True)[:3]
+        return {
+            "turns_completed": self.turn, "tracks": labels, "risk_distribution": counts,
+            "priority_risks": [{k: r[k] for k in ("id", "overall", "likelihood", "impact", "owner")} for r in priority],
+            "recommendations": recs,
+        }
 
     def save(self, path: Path) -> Path:
-        payload = {'version': self.SAVE_VERSION, 'seed': self.seed, 'turn': self.turn, 'finished': self.finished, 'scenario_order': self.scenario_order, 'tracks': self.tracks, 'risks': {rid: {'likelihood': state.likelihood, 'impact': state.impact, 'confidence': state.confidence} for rid, state in self.risks.items()}, 'control_effectiveness': self.control_effectiveness, 'control_maturity': self.control_maturity, 'history': self.history}
+        payload = {
+            "version": self.SAVE_VERSION, "ontology_fingerprint": self.ontology.fingerprint(),
+            "seed": self.seed, "turn": self.turn, "finished": self.finished,
+            "scenario_order": self.scenario_order, "tracks": self.tracks,
+            "risks": {rid: {"likelihood": s.likelihood, "impact": s.impact, "confidence": s.confidence} for rid, s in self.risks.items()},
+            "control_effectiveness": self.control_effectiveness, "control_maturity": self.control_maturity,
+            "history": self.history,
+        }
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open('w', encoding='utf-8') as handle:
+        tmp = path.with_name(f".{path.name}.tmp")
+        with tmp.open("w", encoding="utf-8") as handle:
             json.dump(payload, handle, indent=2, sort_keys=True)
-            handle.write('\n')
+            handle.write("\n")
+        tmp.replace(path)
         return path
 
-    def load(self, path: Path) -> None:
-        with Path(path).open('r', encoding='utf-8') as handle:
-            payload = json.load(handle)
-        if payload.get('version') != self.SAVE_VERSION:
-            raise ValidationError(f"unsupported save version {payload.get('version')!r}")
-        scenario_ids = {item['id'] for item in self.ontology.scenarios['scenarios']}
-        if len(payload.get('scenario_order', [])) != self.MAX_TURNS:
-            raise ValidationError('save file has invalid scenario order')
-        if not set(payload['scenario_order']).issubset(scenario_ids):
-            raise ValidationError('save file references unknown scenarios')
-        risk_ids = set(self.risks)
-        if set(payload.get('risks', {})) != risk_ids:
-            raise ValidationError('save file risk set does not match ontology')
-        self.seed = int(payload['seed'])
-        self.rng = random.Random(self.seed)
-        self.turn = int(payload['turn'])
-        self.finished = bool(payload['finished'])
-        self.scenario_order = list(payload['scenario_order'])
-        self.tracks = {key: int(value) for key, value in payload['tracks'].items()}
-        for rid, values in payload['risks'].items():
-            _check_enum(values['likelihood'], LIKELIHOOD, f'save risk {rid} likelihood')
-            _check_enum(values['impact'], IMPACT, f'save risk {rid} impact')
-            _check_enum(values['confidence'], CONFIDENCE, f'save risk {rid} confidence')
-            self.risks[rid] = RiskState(rid, values['likelihood'], values['impact'], values['confidence'])
-        self.control_effectiveness = dict(payload['control_effectiveness'])
-        self.control_maturity = dict(payload['control_maturity'])
-        self.history = list(payload['history'])
+    def _validate_save_payload(self, payload: Mapping[str, Any]) -> Dict[str, Any]:
+        version = payload.get("version")
+        if version not in (1, self.SAVE_VERSION):
+            raise ValidationError(f"unsupported save version {version!r}")
+        if version == self.SAVE_VERSION and payload.get("ontology_fingerprint") != self.ontology.fingerprint():
+            raise ValidationError("save file was created for a different ontology or scenario set")
+        required = {"seed", "turn", "finished", "scenario_order", "tracks", "risks", "control_effectiveness", "control_maturity", "history"}
+        missing = sorted(required - set(payload))
+        if missing:
+            raise ValidationError(f"save file missing required fields: {', '.join(missing)}")
+        try:
+            seed, turn = int(payload["seed"]), int(payload["turn"])
+        except (TypeError, ValueError) as exc:
+            raise ValidationError("save seed and turn must be integers") from exc
+        if not 0 <= turn <= self.MAX_TURNS:
+            raise ValidationError(f"save turn must be between 0 and {self.MAX_TURNS}")
+        if type(payload["finished"]) is not bool or payload["finished"] != (turn >= self.MAX_TURNS):
+            raise ValidationError("save finished flag is inconsistent with turn count")
+        order = payload["scenario_order"]
+        valid_scenarios = {s["id"] for s in self.ontology.scenarios["scenarios"]}
+        if not isinstance(order, list) or len(order) != self.MAX_TURNS or len(set(order)) != self.MAX_TURNS or not set(order).issubset(valid_scenarios):
+            raise ValidationError("save file has invalid scenario order")
+        tracks = payload["tracks"]
+        if not isinstance(tracks, dict) or set(tracks) != set(TRACK_LABELS):
+            raise ValidationError("save file track set does not match the simulation")
+        checked_tracks = {}
+        for name, labels in TRACK_LABELS.items():
+            value = tracks[name]
+            if type(value) is not int or not 0 <= value < len(labels):
+                raise ValidationError(f"save track {name} is outside its ordinal range")
+            checked_tracks[name] = value
+        risks = payload["risks"]
+        if not isinstance(risks, dict) or set(risks) != set(self.risks):
+            raise ValidationError("save file risk set does not match ontology")
+        checked_risks = {}
+        for rid, values in risks.items():
+            _require(values, ["likelihood", "impact", "confidence"], f"save risk {rid}")
+            _check_enum(values["likelihood"], LIKELIHOOD, f"save risk {rid} likelihood")
+            _check_enum(values["impact"], IMPACT, f"save risk {rid} impact")
+            _check_enum(values["confidence"], CONFIDENCE, f"save risk {rid} confidence")
+            checked_risks[rid] = RiskState(rid, values["likelihood"], values["impact"], values["confidence"])
+        control_ids = set(self.control_effectiveness)
+        ce, cm = payload["control_effectiveness"], payload["control_maturity"]
+        if not isinstance(ce, dict) or set(ce) != control_ids or not isinstance(cm, dict) or set(cm) != control_ids:
+            raise ValidationError("save control sets do not match ontology")
+        for cid in control_ids:
+            _check_enum(ce[cid], EFFECTIVENESS, f"save control {cid} effectiveness")
+            _check_enum(cm[cid], MATURITY, f"save control {cid} maturity")
+        history = payload["history"]
+        if not isinstance(history, list) or len(history) != turn:
+            raise ValidationError("save history length must match completed turns")
+        scenario_index = {s["id"]: s for s in self.ontology.scenarios["scenarios"]}
+        for expected, record in enumerate(history, 1):
+            _require(record, ["turn", "scenario_id", "choice_id"], f"save history turn {expected}")
+            if record["turn"] != expected or record["scenario_id"] != order[expected - 1]:
+                raise ValidationError("save history sequence is invalid")
+            valid_choices = {c["id"] for c in scenario_index[record["scenario_id"]]["choices"]}
+            if record["choice_id"] not in valid_choices:
+                raise ValidationError("save history references an unknown choice")
+        return {"seed": seed, "turn": turn, "finished": payload["finished"], "scenario_order": list(order), "tracks": checked_tracks, "risks": checked_risks, "control_effectiveness": dict(ce), "control_maturity": dict(cm), "history": list(history)}
 
-def load_default_ontology() -> Ontology:
-    base = Path(__file__).resolve().parent / 'data'
-    return Ontology.from_files(base / 'ontology.json', base / 'scenarios.json')
+    def load(self, path: Path) -> None:
+        with Path(path).open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+        if not isinstance(payload, dict):
+            raise ValidationError("save file root must be a JSON object")
+        valid = self._validate_save_payload(payload)
+        self.seed = valid["seed"]
+        self.rng = random.Random(self.seed)
+        self.turn = valid["turn"]
+        self.finished = valid["finished"]
+        self.scenario_order = valid["scenario_order"]
+        self.tracks = valid["tracks"]
+        self.risks = valid["risks"]
+        self.control_effectiveness = valid["control_effectiveness"]
+        self.control_maturity = valid["control_maturity"]
+        self.history = valid["history"]
+
+__all__ = ["GameEngine", "Ontology", "ValidationError", "load_default_ontology"]
