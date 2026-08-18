@@ -191,6 +191,50 @@ def print_executive_assessment(engine: GameEngine, fx: Optional[TerminalFX] = No
         print(f"  - {item}")
 
 
+def print_effects(fx: TerminalFX) -> None:
+    _heading("FACT", "Terminal effects")
+    settings = fx.settings()
+    print(f"  Supported: {settings['supported']}")
+    print(f"  Enabled: {settings['enabled']}")
+    print(f"  3D mode: {settings['three_d']}")
+    print(f"  Scene seconds: {settings['scene_seconds']}")
+    print(f"  FPS: {settings['fps']}")
+    print(f"  Color: {settings['color']}")
+    print("  Commands: effects demo | effects on | effects off | effects seconds <n> | effects fps <6-60>")
+
+
+def handle_effects_command(fx: TerminalFX, args: list[str]) -> None:
+    if not args or args[0].lower() == "status":
+        print_effects(fx)
+        return
+    action = args[0].lower()
+    if action == "demo":
+        seconds = float(args[1]) if len(args) > 1 else None
+        fx.showcase(seconds=seconds)
+        return
+    if action == "on":
+        enabled = fx.set_enabled(True)
+        print(f"Terminal effects {'enabled' if enabled else 'unavailable on this terminal'}.")
+        return
+    if action == "off":
+        fx.set_enabled(False)
+        print("Terminal effects disabled.")
+        return
+    if action == "seconds":
+        if len(args) != 2:
+            raise ValueError("usage: effects seconds <number>")
+        seconds = fx.set_scene_seconds(float(args[1]))
+        print(f"3D scene duration set to {seconds:g} seconds.")
+        return
+    if action == "fps":
+        if len(args) != 2:
+            raise ValueError("usage: effects fps <6-60>")
+        fps = fx.set_fps(int(args[1]))
+        print(f"3D frame rate set to {fps} FPS.")
+        return
+    raise ValueError("usage: effects [status|demo [seconds]|on|off|seconds <n>|fps <6-60>]")
+
+
 def print_help() -> None:
     print("""
 Commands:
@@ -203,6 +247,11 @@ Commands:
   stakeholders [id]           Show stakeholder authority and responsibilities.
   evidence [evidence-id]      Show evidence confidence and provenance.
   decide <number|choice-id>   Apply one defensive decision for the current turn.
+  effects                     Show terminal animation settings.
+  effects demo [seconds]      Replay the pseudo-3D effects showcase.
+  effects on|off              Enable or disable effects during play.
+  effects seconds <n>         Change 3D scene duration without restarting.
+  effects fps <6-60>          Change pseudo-3D frame rate.
   save <path>                 Save the current simulation to JSON.
   load <path>                 Load a saved simulation.
   help                        Show this command reference.
@@ -229,6 +278,11 @@ def execute_command(engine: GameEngine, line: str, fx: Optional[TerminalFX] = No
         elif command == "controls": print_controls(engine, args[0] if args else None)
         elif command == "stakeholders": print_stakeholders(engine, args[0] if args else None)
         elif command == "evidence": print_evidence(engine, args[0] if args else None)
+        elif command == "effects":
+            if fx is None:
+                print("Terminal effects controller is unavailable.")
+            else:
+                handle_effects_command(fx, args)
         elif command == "decide":
             if not args:
                 print("Usage: decide <number-or-choice-id>")
@@ -290,6 +344,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-animations", action="store_true", help="disable terminal animations")
     parser.add_argument("--3d-seconds", dest="three_d_seconds", type=float, default=3.0,
                         help="seconds per pseudo-3D scene (default: 3.0)")
+    parser.add_argument("--3d-fps", dest="three_d_fps", type=int, default=24,
+                        help="pseudo-3D frame rate, 6-60 (default: 24)")
     return parser
 
 
@@ -301,6 +357,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     if args.three_d_seconds <= 0:
         print("Unable to start: --3d-seconds must be greater than zero")
         return 2
+    if not 6 <= args.three_d_fps <= 60:
+        print("Unable to start: --3d-fps must be between 6 and 60")
+        return 2
     try:
         ontology = Ontology.from_files(args.ontology, args.scenarios) if args.ontology else None
         engine = GameEngine(ontology, args.seed) if ontology else GameEngine.default(args.seed)
@@ -311,7 +370,11 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         print("VALID — ontology and scenarios passed reference and schema validation.")
         return 0
 
-    fx = TerminalFX(enabled=not args.no_animations, scene_seconds=args.three_d_seconds)
+    fx = TerminalFX(
+        enabled=not args.no_animations,
+        scene_seconds=args.three_d_seconds,
+        fps=args.three_d_fps,
+    )
     if args.demo:
         run_demo(engine, fx)
         return 0
