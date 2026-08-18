@@ -81,6 +81,9 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -139,6 +142,9 @@ jobs:
       checks: write
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -147,7 +153,13 @@ jobs:
         id: diff
         run: |
           echo "diff<<EOF" >> $GITHUB_OUTPUT
-          git diff origin/main...HEAD >> $GITHUB_OUTPUT
+          BASE="$(git merge-base origin/main HEAD || true)"
+if [ -n "$BASE" ]; then
+  git diff "$BASE" HEAD >> "$GITHUB_OUTPUT"
+else
+  echo "No merge base with origin/main; falling back to HEAD diff"
+  git show --format= --no-ext-diff HEAD >> "$GITHUB_OUTPUT"
+fi
           echo "EOF" >> $GITHUB_OUTPUT
       - name: Run Doug Code Reviewer
         run: |
@@ -234,6 +246,9 @@ jobs:
     if: github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -264,6 +279,9 @@ jobs:
     if: github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -286,6 +304,9 @@ jobs:
     if: github.event_name == 'schedule'
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -319,6 +340,9 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: false
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
