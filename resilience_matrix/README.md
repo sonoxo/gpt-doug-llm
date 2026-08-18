@@ -20,6 +20,25 @@ python -m resilience_matrix --seed 17 --demo
 
 If installed from the project package, the `resilience-matrix` console entry point is also available.
 
+## Terminal animations
+
+Interactive terminals now show a standard-library-only animation layer for:
+
+- ontology/risk/control boot synchronization
+- turn transitions
+- defensive decision application
+- resilience-posture recalculation
+- save/load activity
+- final executive-assessment compilation
+
+Animations automatically stay quiet when stdout is not a TTY or when `TERM=dumb` is set. Disable them explicitly with:
+
+```bash
+python -m resilience_matrix --no-animations
+```
+
+You can also set `RESILIENCE_NO_ANIMATIONS=1` for scripts or CI.
+
 ## Gameplay
 
 You lead the fictional Meridian Civic Cooperative through eight turns. Each turn presents an abstract event such as supplier failure, cryptographic obsolescence, an audit finding, communications outage, insider-policy violation, integrity anomaly, governance ambiguity, or a recovery-assurance gap.
@@ -38,6 +57,8 @@ Risk ratings deliberately avoid numeric probability or loss estimates. Every dis
 
 ## Commands
 
+- `status` — show turn and current readiness tracks
+- `history` — show prior decisions
 - `map` — render an ASCII dependency graph
 - `inspect <id>` — inspect any ontology entity
 - `risks [risk-id]` — show risk ratings and explanations
@@ -59,6 +80,12 @@ The model is data-driven:
 
 The ontology contains assets, threats, dependencies, controls, stakeholders, risks, evidence, and explicit relationships. References are validated at startup. Scenario choices may change qualitative tracks, a referenced risk, and a referenced control.
 
+Validate custom model files without starting the game:
+
+```bash
+python -m resilience_matrix --ontology path/to/ontology.json --scenarios path/to/scenarios.json --validate-only
+```
+
 ### Allowed risk ordinals
 
 - likelihood: `Rare`, `Unlikely`, `Possible`, `Likely`, `Almost Certain`
@@ -73,10 +100,10 @@ The engine also uses qualitative control maturity and overall-priority bands. Th
 The tests use only Python's standard library:
 
 ```bash
-python -m unittest tests.test_resilience_matrix -v
+python -m unittest tests.test_resilience_matrix tests.test_resilience_matrix_effects -v
 ```
 
-Coverage includes ontology reference validation, risk updates, save/load behavior, and deterministic seeded scenario ordering.
+Coverage includes ontology reference validation, risk updates, save/load behavior, deterministic seeded scenario ordering, and terminal-animation fallback behavior.
 
 ## Extending safely
 
