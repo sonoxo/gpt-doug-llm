@@ -158,7 +158,7 @@ def inspect_entity(engine: GameEngine, entity_id: str) -> None:
 
 def print_decision(record: Dict[str, Any]) -> None:
     _heading("FACT", "Decision applied")
-    print(f"  Choice: {record['choice']} [{record['choice_id']}]")
+    print(f"  Choice: {record['choice']} [{record['choice_id']}")
     _heading("RECOMMENDATION", "Why the system changed")
     print(f"  {record['why']}")
     for key, before in record["before_tracks"].items():
@@ -288,6 +288,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--scenarios", type=Path, help="custom scenarios JSON file")
     parser.add_argument("--validate-only", action="store_true", help="validate JSON model files and exit")
     parser.add_argument("--no-animations", action="store_true", help="disable terminal animations")
+    parser.add_argument("--3d-seconds", type=float, default=3.0, help="seconds per pseudo-3D scene (default: 3.0)")
     return parser
 
 
@@ -295,6 +296,9 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
     args = build_parser().parse_args(list(argv) if argv is not None else None)
     if bool(args.ontology) != bool(args.scenarios):
         print("Unable to start: --ontology and --scenarios must be provided together")
+        return 2
+    if args.__dict__["3d_seconds"] <= 0:
+        print("Unable to start: --3d-seconds must be greater than zero")
         return 2
     try:
         ontology = Ontology.from_files(args.ontology, args.scenarios) if args.ontology else None
@@ -306,7 +310,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         print("VALID — ontology and scenarios passed reference and schema validation.")
         return 0
 
-    fx = TerminalFX(enabled=not args.no_animations)
+    fx = TerminalFX(enabled=not args.no_animations, scene_seconds=args.__dict__["3d_seconds"])
     if args.demo:
         run_demo(engine, fx)
         return 0
