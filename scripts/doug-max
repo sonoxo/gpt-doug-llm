@@ -1,0 +1,25 @@
+#!/bin/zsh
+set -e
+
+CPU=$(sysctl -n hw.logicalcpu 2>/dev/null || echo 1)
+RAM_BYTES=$(sysctl -n hw.memsize 2>/dev/null || echo 0)
+RAM_GB=$((RAM_BYTES / 1024 / 1024 / 1024))
+
+export DOUG_WORKERS="$CPU"
+export OMP_NUM_THREADS="$CPU"
+export VECLIB_MAXIMUM_THREADS="$CPU"
+export OPENBLAS_NUM_THREADS="$CPU"
+export NUMEXPR_NUM_THREADS="$CPU"
+
+# Keep macOS alive: Doug may budget up to 80%, not literally exhaust RAM.
+export DOUG_RAM_BUDGET_GB=$((RAM_GB * 80 / 100))
+
+ARCH=$(uname -m)
+if [ "$ARCH" = "arm64" ]; then
+    export DOUG_ACCELERATOR="metal"
+    export PYTORCH_ENABLE_MPS_FALLBACK=1
+else
+    export DOUG_ACCELERATOR="cpu"
+fi
+
+exec python3 -m agentic.activate
