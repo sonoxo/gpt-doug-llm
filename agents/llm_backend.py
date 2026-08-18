@@ -1,10 +1,8 @@
-"""Provider-neutral chat facade for every GPT Doug surface.
+"""Provider-neutral chat facade for GPT Doug.
 
-Providers are explicitly selectable with ``GPT_DOUG_PROVIDER``. Supported
-values are ``none``, ``openai``, ``claude``/``anthropic``, ``gemini``,
-``ollama``, and ``auto``. ``auto`` tries configured providers in the order in
-``GPT_DOUG_PROVIDER_ORDER`` (default: claude,openai,gemini,ollama) and falls
-back when a provider is unavailable.
+Supported providers: none, openai, claude/anthropic, gemini, ollama, auto.
+The auto router only uses providers that pass local configuration/readiness
+checks and does not log or echo credential material.
 """
 
 from __future__ import annotations
@@ -18,6 +16,28 @@ from typing import Iterator
 
 Message = dict[str, str]
 Event = dict
+
+DEFAULT_TIMEOUT = float(os.environ.get("GPT_DOUG_PROVIDER_TIMEOUT", "120"))
+PLACEHOLDERS = {"", "...", "***", "changeme", "change-me", "your_real_key", "your-api-key", "test"}
+
+
+def _valid_secret(value: str) -> bool:
+    value = (value or "").strip()
+    if value.lower() in PLACEHOLDERS:
+        return False
+    if len(value) < 12:
+        return False
+    return True
+
+
+def _safe_provider_error(name: str, exc: Exception) -> str:
+    if isinstance(exc, urllib.error.HTTPError):
+        return f"{name}: HTTP {exc.code}"
+    if isinstance(exc, urllib.error.URLError):
+        return f"{name}: network unavailable"
+    if isinstance(exc, TimeoutError):
+        return f"{name}: timeout"
+    return f"{name}: provider failure"
 
 
 @dataclass(frozen=True)
@@ -40,8 +60,11 @@ class Provider:
             "model_available": self.config.configured,
             "models": [self.config.model] if self.config.model else [],
             "free": self.config.free,
-            "message": "Provider ready" if self.config.configured else "No AI provider configured",
+            "message": "Provider ready" if self.config.configured else "Provider not configured",
         }
+
+    def ready(self) -> bool:
+        return bool(self.health().get("configured") and self.health().get("model_available"))
 
     def chat_once(self, messages: list[Message], model: str | None, options: dict) -> Event:
         raise NotImplementedError
@@ -65,7 +88,7 @@ class NoProvider(Provider):
 class OpenAIProvider(Provider):
     def __init__(self):
         self.api_key = os.environ.get("OPENAI_API_KEY", "").strip()
-        self.config = ProviderConfig("openai", os.environ.get("OPENAI_MODEL", "gpt-4o-mini"), bool(self.api_key), False)
+        self.config = ProviderConfig("openai", os.environ.get("OPENAI_MODEL", "gpt-4o-mini"), _valid_secret(self.api_key), False)
 
     def _request(self, messages, model, options, stream):
         body = json.dumps({
@@ -81,41 +104,21 @@ class OpenAIProvider(Provider):
         )
 
     def chat_once(self, messages, model, options):
-        if not self.api_key:
+        if not self.config.configured:
             return _configuration_error("OPENAI_API_KEY")
-        with urllib.request.urlopen(self._request(messages, model, options, False), timeout=120) as response:
+        with urllib.request.urlopen(self._request(messages, model, options, False), timeout=DEFAULT_TIMEOUT) as response:
             data = json.loads(response.read())
         return {"model": model or self.config.model, "message": data["choices"][0]["message"], "done": True, "provider": "openai"}
-
-    def chat_stream(self, messages, model, options):
-        if not self.api_key:
-            yield _configuration_error("OPENAI_API_KEY")
-            return
-        with urllib.request.urlopen(self._request(messages, model, options, True), timeout=120) as response:
-            for raw in response:
-                line = raw.decode(errors="replace").strip()
-                if not line.startswith("data:"):
-                    continue
-                payload = line[5:].strip()
-                if payload == "[DONE]":
-                    yield {"done": True, "provider": "openai"}
-                    return
-                try:
-                    token = json.loads(payload).get("choices", [{}])[0].get("delta", {}).get("content", "")
-                except json.JSONDecodeError:
-                    continue
-                if token:
-                    yield {"message": {"role": "assistant", "content": token}, "done": False, "provider": "openai"}
 
 
 class AnthropicProvider(Provider):
     def __init__(self):
         self.api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
         model = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-20250514")
-        self.config = ProviderConfig("claude", model, bool(self.api_key), False)
+        self.config = ProviderConfig("claude", model, _valid_secret(self.api_key), False)
 
     def chat_once(self, messages, model, options):
-        if not self.api_key:
+        if not self.config.configured:
             return _configuration_error("ANTHROPIC_API_KEY")
         used_model = model or self.config.model
         system = "\n\n".join(m.get("content", "") for m in messages if m.get("role") == "system")
@@ -134,13 +137,9 @@ class AnthropicProvider(Provider):
         request = urllib.request.Request(
             "https://api.anthropic.com/v1/messages",
             json.dumps(body).encode(),
-            {
-                "content-type": "application/json",
-                "x-api-key": self.api_key,
-                "anthropic-version": "2023-06-01",
-            },
+            {"content-type": "application/json", "x-api-key": self.api_key, "anthropic-version": "2023-06-01"},
         )
-        with urllib.request.urlopen(request, timeout=120) as response:
+        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
             data = json.loads(response.read())
         content = "".join(block.get("text", "") for block in data.get("content", []) if block.get("type") == "text")
         return {"model": used_model, "message": {"role": "assistant", "content": content}, "done": True, "provider": "claude"}
@@ -150,10 +149,10 @@ class GeminiProvider(Provider):
     def __init__(self):
         self.api_key = os.environ.get("GEMINI_API_KEY", "").strip()
         model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-        self.config = ProviderConfig("gemini", model, bool(self.api_key), True)
+        self.config = ProviderConfig("gemini", model, _valid_secret(self.api_key), True)
 
     def chat_once(self, messages, model, options):
-        if not self.api_key:
+        if not self.config.configured:
             return _configuration_error("GEMINI_API_KEY")
         used_model = model or self.config.model
         contents = [{
@@ -169,7 +168,7 @@ class GeminiProvider(Provider):
             json.dumps(body).encode(),
             {"Content-Type": "application/json", "x-goog-api-key": self.api_key},
         )
-        with urllib.request.urlopen(request, timeout=120) as response:
+        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
             data = json.loads(response.read())
         parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
         content = "".join(part.get("text", "") for part in parts)
@@ -182,29 +181,43 @@ class OllamaProvider(Provider):
         self.base_url = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
         self.config = ProviderConfig("ollama", model, True, True)
 
+    def health(self) -> dict:
+        models = []
+        reachable = False
+        try:
+            request = urllib.request.Request(f"{self.base_url}/api/tags", headers={"Accept": "application/json"})
+            with urllib.request.urlopen(request, timeout=3) as response:
+                data = json.loads(response.read())
+            models = [item.get("name", "") for item in data.get("models", []) if item.get("name")]
+            reachable = True
+        except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError):
+            reachable = False
+        wanted = self.config.model
+        model_available = reachable and any(name == wanted or name.startswith(wanted + ":") for name in models)
+        return {
+            "backend": "ollama",
+            "provider": "ollama",
+            "configured": reachable,
+            "model": wanted,
+            "model_available": model_available,
+            "models": models,
+            "free": True,
+            "message": "Provider ready" if model_available else ("Ollama reachable; requested model missing" if reachable else "Ollama not reachable"),
+        }
+
     def chat_once(self, messages, model, options):
-        body = json.dumps({"model": model or self.config.model, "messages": messages, "stream": False, "options": options}).encode()
+        state = self.health()
+        if not state["configured"]:
+            return {"message": {"role": "assistant", "content": "Ollama is not reachable."}, "done": True, "error": "provider_unreachable"}
+        used_model = model or self.config.model
+        if used_model == self.config.model and not state["model_available"]:
+            return {"message": {"role": "assistant", "content": "Configured Ollama model is not installed."}, "done": True, "error": "model_unavailable"}
+        body = json.dumps({"model": used_model, "messages": messages, "stream": False, "options": options}).encode()
         request = urllib.request.Request(f"{self.base_url}/api/chat", body, {"Content-Type": "application/json"})
-        with urllib.request.urlopen(request, timeout=600) as response:
+        with urllib.request.urlopen(request, timeout=max(DEFAULT_TIMEOUT, 600)) as response:
             data = json.loads(response.read())
         data["provider"] = "ollama"
         return data
-
-    def chat_stream(self, messages, model, options):
-        body = json.dumps({"model": model or self.config.model, "messages": messages, "stream": True, "options": options}).encode()
-        request = urllib.request.Request(f"{self.base_url}/api/chat", body, {"Content-Type": "application/json"})
-        with urllib.request.urlopen(request, timeout=600) as response:
-            for raw in response:
-                if not raw.strip():
-                    continue
-                try:
-                    event = json.loads(raw)
-                except json.JSONDecodeError:
-                    continue
-                event["provider"] = "ollama"
-                yield event
-                if event.get("done"):
-                    return
 
 
 class AutoProvider(Provider):
@@ -212,28 +225,30 @@ class AutoProvider(Provider):
         requested = os.environ.get("GPT_DOUG_PROVIDER_ORDER", "claude,openai,gemini,ollama")
         self.order = [item.strip().lower() for item in requested.split(",") if item.strip()]
         self.providers = [_make_provider(name) for name in self.order if name not in {"none", "auto"}]
-        configured = any(p.config.configured for p in self.providers)
-        self.config = ProviderConfig("auto", "router", configured, None)
+        self.config = ProviderConfig("auto", "router", True, None)
 
     def health(self):
         states = [p.health() for p in self.providers]
+        ready_states = [s for s in states if s.get("configured") and s.get("model_available")]
         return {
             "backend": "auto",
             "provider": "auto",
-            "configured": any(s["configured"] for s in states),
+            "configured": bool(ready_states),
             "model": "router",
-            "model_available": any(s["configured"] for s in states),
-            "models": [s["model"] for s in states if s.get("model")],
+            "model_available": bool(ready_states),
+            "models": [s["model"] for s in ready_states if s.get("model")],
             "providers": states,
             "order": self.order,
             "free": None,
-            "message": "Multi-provider router ready" if any(s["configured"] for s in states) else "No AI provider configured",
+            "message": "Multi-provider router ready" if ready_states else "No provider passed readiness checks",
         }
 
     def chat_once(self, messages, model, options):
         errors = []
         for provider in self.providers:
-            if not provider.config.configured:
+            state = provider.health()
+            if not (state.get("configured") and state.get("model_available")):
+                errors.append(f"{provider.config.name}: not ready")
                 continue
             try:
                 result = provider.chat_once(messages, model, options)
@@ -241,23 +256,19 @@ class AutoProvider(Provider):
                     result["routed_by"] = "auto"
                     return result
                 errors.append(f"{provider.config.name}: {result.get('error')}")
-            except (OSError, ValueError, KeyError, urllib.error.URLError, urllib.error.HTTPError) as exc:
-                errors.append(f"{provider.config.name}: {exc}")
+            except Exception as exc:  # sanitized below; never expose provider response body or secrets
+                errors.append(_safe_provider_error(provider.config.name, exc))
         return {
-            "message": {"role": "assistant", "content": "All configured AI providers failed."},
+            "message": {"role": "assistant", "content": "All configured AI providers failed readiness or request checks."},
             "done": True,
             "error": "all_providers_failed",
             "provider_errors": errors,
         }
 
-    def chat_stream(self, messages, model, options):
-        result = self.chat_once(messages, model, options)
-        yield result
-
 
 def _configuration_error(variable: str) -> Event:
     return {
-        "message": {"role": "assistant", "content": f"The selected provider is not configured. Set {variable} or choose another provider."},
+        "message": {"role": "assistant", "content": f"The selected provider is not configured with a valid credential. Set {variable} or choose another provider."},
         "done": True,
         "error": "provider_not_configured",
     }
@@ -300,11 +311,12 @@ def chat_stream(messages: list[Message], model: str | None = None, options: dict
 
 
 def available_providers() -> list[dict]:
+    providers = [AnthropicProvider(), OpenAIProvider(), GeminiProvider(), OllamaProvider()]
     return [
         {"id": "none", "label": "Offline workspace", "configured": True},
-        {"id": "auto", "label": "Auto router", "configured": any((os.environ.get("ANTHROPIC_API_KEY"), os.environ.get("OPENAI_API_KEY"), os.environ.get("GEMINI_API_KEY"))) or True},
-        {"id": "claude", "label": "Anthropic Claude", "configured": bool(os.environ.get("ANTHROPIC_API_KEY"))},
-        {"id": "openai", "label": "OpenAI", "configured": bool(os.environ.get("OPENAI_API_KEY"))},
-        {"id": "gemini", "label": "Google Gemini", "configured": bool(os.environ.get("GEMINI_API_KEY"))},
-        {"id": "ollama", "label": "Ollama (local)", "configured": True},
+        {"id": "auto", "label": "Auto router", "configured": any(p.ready() for p in providers)},
+        {"id": "claude", "label": "Anthropic Claude", "configured": providers[0].ready()},
+        {"id": "openai", "label": "OpenAI", "configured": providers[1].ready()},
+        {"id": "gemini", "label": "Google Gemini", "configured": providers[2].ready()},
+        {"id": "ollama", "label": "Ollama (local)", "configured": providers[3].ready()},
     ]
