@@ -23,6 +23,21 @@ class Provider:
     cooldown: int = 0
 
 
+def _advance_cooldowns(providers):
+    """Advance breaker timers even when a provider is not selected.
+
+    Circuit cooldown is wall-clock/time-step state, not request-order state.
+    Without this, a lower-priority provider can remain open forever whenever
+    an earlier provider keeps succeeding.
+    """
+    for p in providers:
+        if p.circuit == "open":
+            p.cooldown -= 1
+            if p.cooldown <= 0:
+                p.cooldown = 0
+                p.circuit = "half_open"
+
+
 def simulate(steps: int = 60, seed: int = 7, threshold: int = 3, cooldown_steps: int = 5):
     rng = random.Random(seed)
     providers = [
@@ -34,6 +49,9 @@ def simulate(steps: int = 60, seed: int = 7, threshold: int = 3, cooldown_steps:
     rows = []
 
     for t in range(steps):
+        # Breaker timers advance independently of whether routing reaches them.
+        _advance_cooldowns(providers)
+
         # Deliberately inject a temporary outage into the first providers so
         # circuit breakers and failover are visible in a deterministic demo.
         outage = 18 <= t < 30
@@ -42,12 +60,8 @@ def simulate(steps: int = 60, seed: int = 7, threshold: int = 3, cooldown_steps:
 
         for p in providers:
             if p.circuit == "open":
-                p.cooldown -= 1
-                if p.cooldown <= 0:
-                    p.circuit = "half_open"
-                else:
-                    attempt_log.append({"provider": p.name, "result": "circuit_open"})
-                    continue
+                attempt_log.append({"provider": p.name, "result": "circuit_open"})
+                continue
 
             success_prob = p.base_success
             if outage and p.name in {"claude", "openai", "gemini"}:
@@ -57,6 +71,7 @@ def simulate(steps: int = 60, seed: int = 7, threshold: int = 3, cooldown_steps:
             if ok:
                 p.failures = 0
                 p.circuit = "closed"
+                p.cooldown = 0
                 selected = p.name
                 attempt_log.append({"provider": p.name, "result": "success"})
                 break
@@ -74,6 +89,7 @@ def simulate(steps: int = 60, seed: int = 7, threshold: int = 3, cooldown_steps:
             "attempts": attempt_log,
             "circuits": {p.name: p.circuit for p in providers},
             "failures": {p.name: p.failures for p in providers},
+            "cooldowns": {p.name: p.cooldown for p in providers},
         })
     return rows
 
