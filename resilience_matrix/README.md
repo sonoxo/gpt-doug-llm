@@ -9,35 +9,64 @@ The simulation is intentionally abstract and non-operational. It does **not** in
 From the repository root:
 
 ```bash
-python -m resilience_matrix
+python3 -m resilience_matrix
+```
+
+Run with longer pseudo-3D scenes:
+
+```bash
+python3 -m resilience_matrix --seed 17 --3d-seconds 8
+```
+
+Raise the pseudo-3D frame rate:
+
+```bash
+python3 -m resilience_matrix --seed 17 --3d-seconds 8 --3d-fps 30
 ```
 
 Run a deterministic one-decision sample:
 
 ```bash
-python -m resilience_matrix --seed 17 --demo
+python3 -m resilience_matrix --seed 17 --demo
 ```
 
 If installed from the project package, the `resilience-matrix` console entry point is also available.
 
-## Terminal animations
+## Terminal effects
 
-Interactive terminals now show a standard-library-only animation layer for:
+Interactive terminals show a standard-library-only pseudo-3D animation layer for:
 
 - ontology/risk/control boot synchronization
+- rotating wireframe cube and perspective tunnel
 - turn transitions
 - defensive decision application
 - resilience-posture recalculation
 - save/load activity
 - final executive-assessment compilation
 
+The cinematic runs in the terminal alternate-screen buffer so the game transcript remains intact when the effect ends.
+
 Animations automatically stay quiet when stdout is not a TTY or when `TERM=dumb` is set. Disable them explicitly with:
 
 ```bash
-python -m resilience_matrix --no-animations
+python3 -m resilience_matrix --no-animations
 ```
 
-You can also set `RESILIENCE_NO_ANIMATIONS=1` for scripts or CI.
+You can also set `RESILIENCE_NO_ANIMATIONS=1` for scripts or CI. `NO_COLOR` suppresses ANSI color without disabling the animation.
+
+Change animation settings while the game is running:
+
+```text
+effects
+effects demo
+effects demo 10
+effects seconds 8
+effects fps 30
+effects off
+effects on
+```
+
+`effects demo 10` replays a ten-second cinematic without advancing the current turn.
 
 ## Gameplay
 
@@ -66,6 +95,11 @@ Risk ratings deliberately avoid numeric probability or loss estimates. Every dis
 - `stakeholders [id]` — show authority and responsibilities
 - `evidence [evidence-id]` — show provenance and confidence
 - `decide <number|choice-id>` — apply a defensive choice
+- `effects` — show terminal-effects settings
+- `effects demo [seconds]` — replay the 3D cinematic
+- `effects on|off` — toggle effects during play
+- `effects seconds <n>` — change scene duration without restarting
+- `effects fps <6-60>` — change pseudo-3D frame rate
 - `save <path>` — save simulation state as JSON
 - `load <path>` — restore simulation state
 - `help` — show command help
@@ -83,7 +117,7 @@ The ontology contains assets, threats, dependencies, controls, stakeholders, ris
 Validate custom model files without starting the game:
 
 ```bash
-python -m resilience_matrix --ontology path/to/ontology.json --scenarios path/to/scenarios.json --validate-only
+python3 -m resilience_matrix --ontology path/to/ontology.json --scenarios path/to/scenarios.json --validate-only
 ```
 
 ### Allowed risk ordinals
@@ -100,10 +134,10 @@ The engine also uses qualitative control maturity and overall-priority bands. Th
 The tests use only Python's standard library:
 
 ```bash
-python -m unittest tests.test_resilience_matrix tests.test_resilience_matrix_effects -v
+python3 -m unittest tests.test_resilience_matrix tests.test_resilience_matrix_effects -v
 ```
 
-Coverage includes ontology reference validation, risk updates, save/load behavior, deterministic seeded scenario ordering, and terminal-animation fallback behavior.
+Coverage includes ontology reference validation, risk updates, save/load behavior, deterministic seeded scenario ordering, terminal-state restoration, animation fallback behavior, and live effect controls.
 
 ## Extending safely
 
