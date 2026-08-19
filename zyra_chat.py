@@ -33,15 +33,18 @@ When a request requires external or privileged action, explain what would be nee
 """
 
 
-def _json_request(path: str, body: dict | None = None, timeout: float | None = None) -> dict:
+def _request(path: str, body: dict | None = None) -> urllib.request.Request:
     data = None if body is None else json.dumps(body).encode("utf-8")
-    request = urllib.request.Request(
+    return urllib.request.Request(
         f"{BASE_URL}{path}",
         data=data,
         headers={"Accept": "application/json", "Content-Type": "application/json"},
         method="GET" if body is None else "POST",
     )
-    with urllib.request.urlopen(request, timeout=timeout or TIMEOUT) as response:
+
+
+def _json_request(path: str, body: dict | None = None, timeout: float | None = None) -> dict:
+    with urllib.request.urlopen(_request(path, body), timeout=timeout or TIMEOUT) as response:
         return json.loads(response.read().decode("utf-8"))
 
 
@@ -88,7 +91,7 @@ def show_dashboard(model: str) -> None:
     print(f"🧠 Model: {model}")
     print(f"🌿 Branch: {branch}")
     print(f"📝 Working tree: {changed} changed")
-    print("🛡️ Mode: local chat // one response per message // no recursive loop")
+    print("🛡️ Mode: local streaming chat // one response per message // no recursive loop")
     print("⌨️  Commands: /help /status /fleet /xunia /clear /quit\n")
 
 
@@ -101,6 +104,38 @@ def show_fleet() -> None:
         print("   agents:", ", ".join(agents[:12]))
     if workers:
         print("   workers:", ", ".join(workers[:12]))
+
+
+def stream_chat(model: str, messages: list[dict[str, str]]) -> str:
+    body = {
+        "model": model,
+        "messages": messages,
+        "stream": True,
+        "keep_alive": "15m",
+        "options": {"temperature": 0.35},
+    }
+    chunks: list[str] = []
+    done_reason = ""
+    with urllib.request.urlopen(_request("/api/chat", body), timeout=TIMEOUT) as response:
+        for raw_line in response:
+            line = raw_line.decode("utf-8", errors="replace").strip()
+            if not line:
+                continue
+            event = json.loads(line)
+            if event.get("error"):
+                raise RuntimeError(str(event["error"]))
+            text = (event.get("message") or {}).get("content", "")
+            if text:
+                print(text, end="", flush=True)
+                chunks.append(text)
+            if event.get("done"):
+                done_reason = str(event.get("done_reason") or "")
+                break
+    answer = "".join(chunks).strip()
+    if not answer:
+        raise RuntimeError(done_reason or "empty model response")
+    print()
+    return answer
 
 
 def main() -> int:
@@ -149,21 +184,9 @@ def main() -> int:
 
         history.append({"role": "user", "content": verdict.text})
         request_history = history[:1] + history[-(MAX_TURNS * 2):]
+        print("🧠 ZYRA thinking…", flush=True)
         try:
-            result = _json_request(
-                "/api/chat",
-                {
-                    "model": model,
-                    "messages": request_history,
-                    "stream": False,
-                    "options": {"temperature": 0.35},
-                },
-            )
-            answer = (result.get("message") or {}).get("content", "").strip()
-            if not answer:
-                error = result.get("error") or result.get("done_reason") or "empty model response"
-                print(f"ZYRA ERROR // {error}")
-                continue
+            answer = stream_chat(model, request_history)
         except urllib.error.HTTPError as exc:
             print(f"ZYRA ERROR // Ollama HTTP {exc.code}")
             continue
@@ -182,7 +205,8 @@ def main() -> int:
             print("ZYRA OUTPUT BLOCKED // " + "; ".join(output.reasons))
             continue
 
-        print(output.text)
+        if output.text != answer:
+            print("ZYRA // output sanitized by policy")
         history.append({"role": "assistant", "content": output.text})
 
 
