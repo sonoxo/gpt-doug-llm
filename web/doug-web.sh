@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Process supervisor for the GPT Doug web server: start/stop/restart/status
+# Process supervisor for the GPT XUNIA streaming web server: start/stop/restart/status
 # with a pidfile, so you don't need to hand-manage `nohup`/`kill` anymore.
 set -euo pipefail
 
@@ -17,7 +17,6 @@ start() {
     echo "already running (pid $(cat "$PIDFILE"), port $PORT)"
     return 0
   fi
-  # Clean up anything else squatting on the port from outside this supervisor.
   local stray
   stray=$(lsof -ti ":$PORT" 2>/dev/null || true)
   if [[ -n "$stray" ]]; then
@@ -26,12 +25,12 @@ start() {
     sleep 0.5
   fi
   cd "$DIR"
-  nohup python3 server.py > "$LOGFILE" 2>&1 &
+  nohup python3 xunia_server.py > "$LOGFILE" 2>&1 &
   echo $! > "$PIDFILE"
   disown
   sleep 1
   if is_running; then
-    echo "started (pid $(cat "$PIDFILE")) — http://localhost:$PORT"
+    echo "GPT XUNIA streaming started (pid $(cat "$PIDFILE")) — http://localhost:$PORT"
   else
     echo "failed to start — check $LOGFILE"
     tail -20 "$LOGFILE" || true
