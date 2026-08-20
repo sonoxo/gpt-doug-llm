@@ -1,0 +1,13 @@
+{
+  "graphId": "eon:sonoxo:dev",
+  "namespace": "sonoxo",
+  "environment": "local-dev",
+  "workerPolicy": { "executor": "ION", "bounded": true, "maxWorkers": 2, "maxTaskAttempts": 2 },
+  "tasks": [
+    { "id": "TASK-1", "type": "PROJECT_CHECK", "dependsOn": [], "command": "node --version && npm --version", "state": "REGISTERED" },
+    { "id": "TASK-2", "type": "WORKSPACE_INSPECT", "dependsOn": ["TASK-1"], "command": "test -f apps/sonoxo/server.ts && test -f apps/sonoxo/store.ts", "state": "REGISTERED" },
+    { "id": "TASK-3", "type": "PROJECT_BUILD", "dependsOn": ["TASK-2"], "command": "npm run build", "state": "REGISTERED" },
+    { "id": "TASK-4", "type": "PROJECT_TEST", "dependsOn": ["TASK-3"], "command": "npm test", "state": "REGISTERED" },
+    { "id": "TASK-5", "type": "PREVIEW_START", "dependsOn": ["TASK-4"], "command": "PORT=3001 npm start", "state": "REGISTERED" }
+  ]
+}
