@@ -14,8 +14,14 @@ from __future__ import annotations
 import json
 import os
 import re
+import sys
 import time
 import uuid
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from zyra_self_heal import load_runtime_env
 
@@ -325,7 +331,6 @@ def run(task, on_event=None, _depth=0, _budget=None):
 
 
 if __name__ == "__main__":
-    import sys
     task_arg = " ".join(sys.argv[1:]) or "Write a haiku about autonomous AI agents."
     try:
         result = run(task_arg, on_event=lambda e: print(f"[{e['stage']}]"))
