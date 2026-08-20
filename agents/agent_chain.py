@@ -2,15 +2,12 @@
 """Autonomous multi-agent task chain.
 
 Given one task in plain language, runs it through three specialized local
-models with no human in the loop:
-  1. Planner  (gemma3)          — breaks the task into concrete steps
-  2. Executor (qwen2.5-coder)   — does the actual work per step
-  3. Reviewer (nous-hermes2)    — checks the output, flags problems
+models with bounded recursion and a final reviewer.
 
-Every step's raw input/output is logged so the full reasoning trace is
-inspectable afterward. This calls the *same* llm_backend.chat_once used by
-server.py, so every agent follows the explicitly selected provider and
-offline-safe default — no separate backend to maintain.
+Provider configuration is self-healing for the local runtime: legacy
+LLM_PROVIDER=ollama is normalized to GPT_DOUG_PROVIDER=ollama, persisted ZYRA
+runtime settings are loaded, and requested role models fall back to an
+installed Ollama model when needed.
 """
 from __future__ import annotations
 
@@ -20,15 +17,24 @@ import re
 import time
 import uuid
 
+from zyra_self_heal import load_runtime_env
+
+# Load ZYRA's persisted runtime settings before llm_backend creates its
+# module-level provider object. This fixes the common case where the shell
+# used LLM_PROVIDER=ollama while llm_backend expected GPT_DOUG_PROVIDER.
+load_runtime_env()
+if not os.environ.get("GPT_DOUG_PROVIDER", "").strip():
+    alias = os.environ.get("LLM_PROVIDER", "").strip().lower()
+    if alias:
+        os.environ["GPT_DOUG_PROVIDER"] = alias
+    elif "11434" in os.environ.get("OPENAI_API_BASE", ""):
+        os.environ["GPT_DOUG_PROVIDER"] = "ollama"
+
 from agents import llm_backend
 from agents import ontology
 
 PLANNER_MODEL = os.environ.get("AGENT_PLANNER_MODEL", "gemma3")
 EXECUTOR_MODEL = os.environ.get("AGENT_EXECUTOR_MODEL", "qwen2.5-coder:7b")
-# nous-hermes2 measured ~90s+ for even a trivial reply on this hardware
-# (CPU-only inference) vs. qwen2.5-coder's 5-15s per call in the same run —
-# default to the fast model; override via env if you have GPU acceleration
-# or don't mind the wait.
 REVIEWER_MODEL = os.environ.get("AGENT_REVIEWER_MODEL", "qwen2.5-coder:7b")
 
 OPTIONS = {"temperature": 0.4, "num_ctx": 8192}
@@ -36,19 +42,10 @@ OPTIONS = {"temperature": 0.4, "num_ctx": 8192}
 RUNS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runs")
 os.makedirs(RUNS_DIR, exist_ok=True)
 
-# Agents can spawn sub-agents (a step too complex to do directly kicks off
-# its own nested plan->execute->review chain) but NOT without a ceiling —
-# an uncapped spawn tree is a fork bomb on this machine, since each hop is
-# a 60-90s+ local model call. These caps are generous, not "infinite":
-# depth controls how many spawn-levels deep a chain of sub-agents can go,
-# total_budget is a hard ceiling on the whole tree's sub-agent count shared
-# across every branch, checked before every spawn.
 MAX_SPAWN_DEPTH = int(os.environ.get("AGENT_MAX_SPAWN_DEPTH", "4"))
 MAX_TOTAL_SUBAGENTS = int(os.environ.get("AGENT_MAX_TOTAL_SUBAGENTS", "25"))
 SPAWN_MARKER = "SPAWN_SUBAGENT:"
 
-# Purely cosmetic tier names for how deep a sub-agent chain has nested —
-# depth is still hard-capped at MAX_SPAWN_DEPTH regardless of naming.
 DEPTH_TIER_NAMES = ["chain", "micro", "meso", "nano", "neo"]
 
 
@@ -58,22 +55,60 @@ def depth_tier(depth):
     return f"tier-{depth}"
 
 
+def _model_matches(name: str, wanted: str) -> bool:
+    return name == wanted or name.startswith(wanted + ":")
+
+
+def _resolve_model(requested: str) -> str:
+    """Resolve a requested role model to one that the active provider can use.
+
+    For Ollama, if the requested model is missing, fall back to the healed
+    runtime model or the first installed local model instead of failing the
+    whole chain. Other providers keep the requested model unchanged.
+    """
+    try:
+        state = llm_backend.health()
+    except Exception:
+        return requested
+    provider = str(state.get("provider") or state.get("backend") or "").lower()
+    if provider != "ollama":
+        return requested
+    models = [m for m in state.get("models", []) if m]
+    if not models:
+        return requested
+    for name in models:
+        if _model_matches(name, requested):
+            return name
+    for fallback in (
+        os.environ.get("OLLAMA_MODEL", ""),
+        os.environ.get("GPT_DOUG_MODEL", ""),
+        "gpt-doug",
+        "qwen2.5-coder:7b",
+        "llama3",
+    ):
+        if not fallback:
+            continue
+        for name in models:
+            if _model_matches(name, fallback):
+                return name
+    return models[0]
+
+
 def _call(model, system, user):
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": user},
     ]
-    result = llm_backend.chat_once(messages, model, OPTIONS)
+    used_model = _resolve_model(model)
+    result = llm_backend.chat_once(messages, used_model, OPTIONS)
+    if result.get("error"):
+        error = result.get("error")
+        detail = (result.get("message") or {}).get("content", "")
+        raise RuntimeError(f"AI provider error: {error}: {detail}")
     return result.get("message", {}).get("content", "").strip()
 
 
 def _plan_ontology(task):
-    """Ontology-driven planning: asks the model for a typed task graph
-    (Task -> Steps, each with an assigned agent role, a produced artifact,
-    and constraints) instead of freeform numbered-list prose. Raises
-    ontology.OntologyError if the model doesn't produce valid graph JSON —
-    callers should catch this and fall back to legacy free-text planning,
-    since local 7B-class models aren't always reliable at strict formats."""
     system = (
         "You are a planning agent using a formal task ontology. "
         + ontology.TASK_GRAPH_SCHEMA_DESCRIPTION
@@ -88,9 +123,6 @@ def _plan_ontology(task):
 
 
 def _plan_legacy(task):
-    """Fallback when ontology-driven planning fails: freeform numbered
-    list, parsed into the same internal step-dict shape so the rest of
-    run() doesn't need to know which planning mode produced it."""
     system = (
         "You are a planning agent. Break the given task into 3-6 concrete, "
         "numbered steps that another agent can execute one at a time. Output "
@@ -118,6 +150,17 @@ def _plan_legacy(task):
         }
         for i, line in enumerate(lines, 1)
     ]
+    if not steps:
+        # A model may occasionally ignore numbered-list formatting. Keep the
+        # chain bounded and useful by turning the task itself into one step.
+        steps = [{
+            "id": "s1",
+            "description": task,
+            "assigned_agent": "executor",
+            "produces": "",
+            "constraints": [],
+            "requires_subagent": False,
+        }]
     return {"task": task, "steps": steps}, plan_text
 
 
@@ -151,6 +194,21 @@ def _execute_step(task, step, prior_context, can_spawn):
     return _call(EXECUTOR_MODEL, system, user)
 
 
+def _parse_review_json(raw: str):
+    try:
+        start = raw.index("{")
+        end = raw.rindex("}") + 1
+        value = json.loads(raw[start:end])
+        if not isinstance(value, dict):
+            return None
+        value.setdefault("passed", None)
+        value.setdefault("issues", [])
+        value.setdefault("summary", "")
+        return value
+    except (ValueError, json.JSONDecodeError):
+        return None
+
+
 def _review(task, transcript, task_graph=None):
     constraint_lines = []
     if task_graph:
@@ -169,23 +227,37 @@ def _review(task, transcript, task_graph=None):
     )
     user = f"Task: {task}\n\nTranscript:\n{transcript}"
     raw = _call(REVIEWER_MODEL, system, user)
-    try:
-        start = raw.index("{")
-        end = raw.rindex("}") + 1
-        return json.loads(raw[start:end])
-    except (ValueError, json.JSONDecodeError):
-        return {"passed": None, "issues": ["reviewer output was not valid JSON"], "summary": raw[:500]}
+    parsed = _parse_review_json(raw)
+    if parsed is not None:
+        return parsed
+
+    # One bounded repair pass for malformed reviewer output. This directly
+    # fixes the repeated "reviewer output was not valid JSON" failure without
+    # introducing an open-ended retry loop.
+    repair_system = (
+        "Convert the supplied reviewer text into exactly one valid JSON object "
+        "with keys passed (boolean), issues (array of strings), and summary "
+        "(string). Output JSON only. Do not use markdown."
+    )
+    repaired_raw = _call(REVIEWER_MODEL, repair_system, raw[:4000])
+    repaired = _parse_review_json(repaired_raw)
+    if repaired is not None:
+        repaired["self_repaired_review"] = True
+        return repaired
+
+    return {
+        "passed": None,
+        "issues": ["reviewer output was not valid JSON after one repair pass"],
+        "summary": raw[:500],
+    }
 
 
 def run(task, on_event=None, _depth=0, _budget=None):
-    """Runs the full plan -> execute -> review chain. Calls on_event(dict)
-    for each step if provided, and always returns the final result dict.
-    Also writes a full trace to runs/<id>.json.
+    """Runs the full plan -> execute -> review chain.
 
-    _depth and _budget are internal — used when a step spawns its own
-    sub-agent chain, to enforce MAX_SPAWN_DEPTH and a shared
-    MAX_TOTAL_SUBAGENTS ceiling across the whole tree. Callers should not
-    pass these directly."""
+    _depth and _budget are internal and enforce hard ceilings on nested
+    sub-agents so self-repair can never become a recursive runaway loop.
+    """
     if _budget is None:
         _budget = {"spawned": 0}
 
@@ -199,19 +271,17 @@ def run(task, on_event=None, _depth=0, _budget=None):
         if on_event:
             on_event(event)
 
-    emit({"stage": "plan_start", "model": PLANNER_MODEL})
+    emit({"stage": "plan_start", "model": _resolve_model(PLANNER_MODEL)})
     try:
         task_graph, plan_text = _plan_ontology(task)
         plan_mode = "ontology"
     except ontology.OntologyError as err:
-        # Local 7B-class models aren't always reliable at strict JSON —
-        # fall back to legacy free-text planning rather than fail the run.
         task_graph, plan_text = _plan_legacy(task)
         plan_mode = f"legacy_fallback ({err})"
     steps = task_graph["steps"]
     step_descriptions = [s["description"] for s in steps]
     emit({
-        "stage": "plan_done", "model": PLANNER_MODEL, "output": plan_text,
+        "stage": "plan_done", "model": _resolve_model(PLANNER_MODEL), "output": plan_text,
         "steps": step_descriptions, "plan_mode": plan_mode, "task_graph": task_graph,
     })
 
@@ -220,7 +290,7 @@ def run(task, on_event=None, _depth=0, _budget=None):
     transcript_parts = []
     for i, step in enumerate(steps, 1):
         prior = "\n\n".join(transcript_parts) or "(none yet)"
-        emit({"stage": "execute_start", "model": EXECUTOR_MODEL, "step_index": i, "step": step["description"]})
+        emit({"stage": "execute_start", "model": _resolve_model(EXECUTOR_MODEL), "step_index": i, "step": step["description"]})
         output = _execute_step(task, step, prior, can_spawn)
 
         if can_spawn and output.strip().startswith(SPAWN_MARKER):
@@ -233,12 +303,12 @@ def run(task, on_event=None, _depth=0, _budget=None):
             can_spawn = _depth < MAX_SPAWN_DEPTH and _budget["spawned"] < MAX_TOTAL_SUBAGENTS
 
         transcript_parts.append(f"Step {i}: {step['description']}\nResult: {output}")
-        emit({"stage": "execute_done", "model": EXECUTOR_MODEL, "step_index": i, "step": step["description"], "output": output})
+        emit({"stage": "execute_done", "model": _resolve_model(EXECUTOR_MODEL), "step_index": i, "step": step["description"], "output": output})
 
     full_transcript = "\n\n".join(transcript_parts)
-    emit({"stage": "review_start", "model": REVIEWER_MODEL})
+    emit({"stage": "review_start", "model": _resolve_model(REVIEWER_MODEL)})
     review = _review(task, full_transcript, task_graph)
-    emit({"stage": "review_done", "model": REVIEWER_MODEL, "review": review})
+    emit({"stage": "review_done", "model": _resolve_model(REVIEWER_MODEL), "review": review})
 
     trace["finished_at"] = time.time()
     trace["duration_s"] = round(trace["finished_at"] - started, 2)
@@ -257,5 +327,13 @@ def run(task, on_event=None, _depth=0, _budget=None):
 if __name__ == "__main__":
     import sys
     task_arg = " ".join(sys.argv[1:]) or "Write a haiku about autonomous AI agents."
-    result = run(task_arg, on_event=lambda e: print(f"[{e['stage']}]"))
-    print(json.dumps(result["review"], indent=2))
+    try:
+        result = run(task_arg, on_event=lambda e: print(f"[{e['stage']}]"))
+        print(json.dumps(result["review"], indent=2))
+    except Exception as exc:
+        print(json.dumps({
+            "passed": False,
+            "issues": [f"{type(exc).__name__}: {exc}"],
+            "summary": "Agent chain stopped cleanly; run `python3 zyra_self_heal.py` then retry.",
+        }, indent=2))
+        raise SystemExit(1)
