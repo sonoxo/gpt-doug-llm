@@ -1,0 +1,58 @@
+{
+  "name": "sonoxo",
+  "summary": "High-throughput telemetry harvester and media processing pipeline for local private-cloud deployment.",
+  "requirements": [
+    "Expose GET health and POST telemetry ingestion at /api/sonoxo/harvest",
+    "Persist ingested events in SQLite database.sql",
+    "Write ephemeral summaries to .xray/harvest/sonoxo.json",
+    "Handle SIGTERM and SIGINT with graceful shutdown"
+  ],
+  "architecture": {
+    "cloud": "xray",
+    "project": "sonoxo",
+    "environment": "dev",
+    "region": "virginia-local",
+    "compute": { "name": "web", "provider": "local", "port": 3001 },
+    "database": { "name": "main", "provider": "local", "engine": "sqlite", "path": "database.sql" },
+    "policy": "zero-trust",
+    "runtime": "node>=22.5.0"
+  },
+  "files": [
+    "apps/sonoxo/server.ts",
+    "apps/sonoxo/store.ts",
+    "tests/sonoxo.test.ts",
+    "infra/sonoxo.virginia",
+    ".eon/sonoxo-task-graph.json",
+    ".ether/sonoxo-execution.json",
+    ".matrix/resources.json",
+    ".matrix/operations.json"
+  ],
+  "services": [
+    { "name": "sonoxo-web", "protocol": "http", "host": "127.0.0.1", "port": 3001, "endpoint": "/api/sonoxo/harvest" }
+  ],
+  "resources": [
+    { "id": "compute:web", "kind": "compute", "provider": "local", "state": "DECLARED" },
+    { "id": "database:main", "kind": "database", "provider": "local", "engine": "sqlite", "state": "DECLARED" }
+  ],
+  "tasks": [
+    { "id": "TASK-1", "type": "PROJECT_CHECK", "dependsOn": [] },
+    { "id": "TASK-2", "type": "WORKSPACE_INSPECT", "dependsOn": ["TASK-1"] },
+    { "id": "TASK-3", "type": "PROJECT_BUILD", "dependsOn": ["TASK-2"] },
+    { "id": "TASK-4", "type": "PROJECT_TEST", "dependsOn": ["TASK-3"] },
+    { "id": "TASK-5", "type": "PREVIEW_START", "dependsOn": ["TASK-4"] }
+  ],
+  "risks": [
+    { "id": "R1", "risk": "node:sqlite requires Node 22.5+", "mitigation": "Pin runtime engine and CI to Node 22" },
+    { "id": "R2", "risk": "Ephemeral summary log may contain sensitive telemetry", "mitigation": "Recursive secret-key redaction before writing summaries" },
+    { "id": "R3", "risk": "Local preview port collision", "mitigation": "Default to 3001 and allow PORT override" }
+  ],
+  "verificationPlan": [
+    "npm install",
+    "npm run build",
+    "npm test",
+    "PORT=3001 npm start",
+    "GET /api/sonoxo/harvest returns HTTP 200",
+    "POST /api/sonoxo/harvest returns HTTP 202 and increments persisted event count",
+    "SIGTERM/SIGINT closes HTTP server and SQLite handle cleanly"
+  ]
+}
