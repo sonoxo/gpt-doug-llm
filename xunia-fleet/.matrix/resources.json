@@ -1,0 +1,10 @@
+{
+  "matrixVersion": "0.8",
+  "project": "sonoxo",
+  "environment": "dev",
+  "region": "virginia-local",
+  "resources": [
+    { "id": "compute:web", "provider": "local", "port": 3001, "status": "DECLARED" },
+    { "id": "database:main", "provider": "local", "engine": "sqlite", "path": "database.sql", "status": "DECLARED" }
+  ]
+}
