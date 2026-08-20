@@ -4,6 +4,11 @@ from __future__ import annotations
 import json, os, subprocess, urllib.error, urllib.request
 from pathlib import Path
 from zyra import Zyra
+from zyra_self_heal import load_runtime_env, print_heal_report, run_self_heal
+
+# Load previously repaired provider/model settings before resolving runtime
+# constants so ZYRA can recover across terminal restarts.
+load_runtime_env()
 
 ROOT = Path(__file__).resolve().parent
 BASE_URL = os.environ.get('OLLAMA_BASE_URL','http://127.0.0.1:11434').rstrip('/')
@@ -19,6 +24,7 @@ Never reply with PASS or BLOCKED unless the deterministic local policy layer act
 Do not claim background work, consciousness, government authority, or access you do not have.
 The fleet means local agent/orchestration code in this repository, not a physical location.
 Keep one user message to one bounded model response. No recursive self-calls or autonomous loops.
+ZYRA self-heal may repair only its own local runtime provider/model configuration and restart Ollama. It must not rewrite arbitrary code, auto-download large models, or create recursive repair loops.
 Be concise by default. For terminal questions, prefer one tested command or one short next step.
 '''
 
@@ -34,7 +40,8 @@ def installed_models():
 
 def choose_model(models):
     if not models: raise RuntimeError('No Ollama models are installed.')
-    for wanted in (REQUESTED_MODEL,'gpt-doug','qwen2.5-coder','qwen2.5'):
+    for wanted in (os.environ.get('OLLAMA_MODEL',''),REQUESTED_MODEL,'gpt-doug','qwen2.5-coder','llama3','qwen2.5'):
+        if not wanted: continue
         for name in models:
             if name==wanted or name.startswith(wanted+':'): return name
     return models[0]
@@ -45,17 +52,19 @@ def git_run(*args):
         return r.returncode,(r.stdout.strip() or r.stderr.strip())
     except Exception: return 1,'unavailable'
 
-def show_dashboard(model, mode):
+def show_dashboard(model, mode, heal_report=None):
     brc,b=git_run('branch','--show-current'); src,s=git_run('status','--short')
     changed=len([x for x in s.splitlines() if x.strip()]) if src==0 else '?'
+    heal_state='NOT RUN' if heal_report is None else ('HEALTHY' if heal_report.get('healthy') else 'ATTENTION')
     print('\n🟣 ZYRA // GPT-DOUG-LLM')
     print(f'🧠 Model: {model}')
     print(f'⚡ Mode: {mode.upper()}')
     print(f'🌿 Branch: {b if brc==0 and b else "unknown"}')
     print(f'📝 Working tree: {changed} changed')
     print(f'🚀 Default terminal: {"ON" if AUTOSTART_FLAG.exists() else "OFF"}')
+    print(f'🩺 Self-Heal: {heal_state} // one bounded repair pass // no recursive loop')
     print('🛡️ Local streaming chat // bounded memory // no recursive loop')
-    print('⌨️  /help /status /fleet /xunia /fast /balanced /default-on /default-off /clear /quit\n')
+    print('⌨️  /help /status /fleet /xunia /heal /heal-status /fast /balanced /default-on /default-off /clear /quit\n')
 
 def show_fleet():
     agents=sorted(p.name for p in (ROOT/'agents').glob('*.py') if not p.name.startswith('__'))
@@ -83,10 +92,14 @@ def stream_chat(model,messages,mode):
 
 def main():
     zyra=Zyra(); mode=os.environ.get('ZYRA_MODE','fast').lower(); mode=mode if mode in {'fast','balanced'} else 'fast'
+    heal_report=run_self_heal(start_ollama=True,persist=True)
     try: model=choose_model(installed_models())
-    except Exception as exc:
-        print(f'ZYRA OFFLINE // Ollama check failed: {exc}'); print('Start Ollama and confirm at least one local model is installed.'); return 1
-    show_dashboard(model,mode)
+    except Exception:
+        # One bounded startup recovery pass already ran above. Do not loop.
+        print_heal_report(heal_report)
+        print('ZYRA OFFLINE // local model chat is unavailable after self-heal. Security policy remains intact.')
+        return 1
+    show_dashboard(model,mode,heal_report)
     history=[{'role':'system','content':SYSTEM}]
     while True:
         try: prompt=input('ZYRA > ').strip()
@@ -94,9 +107,19 @@ def main():
         if not prompt: continue
         command=prompt.lower()
         if command in {'/quit','/exit'}: return 0
-        if command=='/help': print('/status /fleet /xunia /fast /balanced /default-on /default-off /clear /quit'); continue
-        if command in {'/status','/xunia','/dashboard'}: show_dashboard(model,mode); continue
+        if command=='/help': print('/status /fleet /xunia /heal /heal-status /fast /balanced /default-on /default-off /clear /quit'); continue
+        if command in {'/status','/xunia','/dashboard'}: show_dashboard(model,mode,heal_report); continue
         if command=='/fleet': show_fleet(); continue
+        if command=='/heal':
+            heal_report=run_self_heal(start_ollama=True,persist=True)
+            print_heal_report(heal_report)
+            if heal_report.get('healthy'):
+                try: model=choose_model(installed_models())
+                except Exception: pass
+            continue
+        if command=='/heal-status':
+            print_heal_report(heal_report)
+            continue
         if command=='/fast': mode='fast'; print('⚡ FAST mode enabled.'); continue
         if command=='/balanced': mode='balanced'; print('🧠 BALANCED mode enabled.'); continue
         if command=='/default-on': CONFIG_DIR.mkdir(parents=True,exist_ok=True); AUTOSTART_FLAG.touch(); print('🚀 ZYRA will open automatically in new interactive Terminal windows.'); continue
@@ -107,9 +130,19 @@ def main():
         history.append({'role':'user','content':verdict.text}); request_history=history[:1]+history[-(MAX_TURNS*2):]
         print('🧠 ZYRA thinking…',flush=True)
         try: answer=stream_chat(model,request_history,mode)
+        except (urllib.error.URLError, TimeoutError):
+            print('🩺 ZYRA detected local model failure // running one self-heal pass…')
+            heal_report=run_self_heal(start_ollama=True,persist=True)
+            if not heal_report.get('healthy'):
+                print_heal_report(heal_report)
+                continue
+            try:
+                model=choose_model(installed_models())
+                answer=stream_chat(model,request_history,mode)
+            except Exception as exc:
+                print(f'ZYRA ERROR // recovery stopped cleanly: {type(exc).__name__}: {exc}')
+                continue
         except urllib.error.HTTPError as exc: print(f'ZYRA ERROR // Ollama HTTP {exc.code}'); continue
-        except urllib.error.URLError: print('ZYRA ERROR // Ollama became unreachable'); continue
-        except TimeoutError: print('ZYRA ERROR // model response timed out'); continue
         except Exception as exc: print(f'ZYRA ERROR // {type(exc).__name__}: {exc}'); continue
         output=zyra.inspect(answer,'output')
         if not output.allowed: print('ZYRA OUTPUT BLOCKED // '+'; '.join(output.reasons)); continue
