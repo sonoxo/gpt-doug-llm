@@ -9,6 +9,7 @@ from doug_core.runtime import DougRuntime
 from doug_core.use_cases import list_use_cases
 from doug_core.use_case_engine import run_use_case
 from doug_core.workspace import inspect_workspace
+from zyra_self_heal import run_self_heal
 
 
 def dump(value):
@@ -38,6 +39,11 @@ def main():
 
     sub.add_parser(
         "capabilities"
+    )
+
+    sub.add_parser(
+        "heal",
+        help="Run one bounded ZYRA local runtime self-heal pass",
     )
 
     inspect_cmd = sub.add_parser(
@@ -91,6 +97,11 @@ def main():
             list_use_cases()
         )
         return
+
+    if args.command == "heal":
+        report = run_self_heal(start_ollama=True, persist=True)
+        dump(report)
+        raise SystemExit(0 if report.get("healthy") else 1)
 
     if args.command == "inspect":
         dump(
