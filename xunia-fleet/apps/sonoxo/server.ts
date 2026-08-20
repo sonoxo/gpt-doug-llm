@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { TelemetryStore, type HarvestEvent } from './store.js';
 
 const PORT = Number(process.env.PORT ?? 3001);
@@ -80,7 +81,9 @@ export function createSonoxoServer(options: { dbPath?: string; harvestLog?: stri
   return { server, store, close };
 }
 
-if (process.env.NODE_ENV !== 'test') {
+const isDirectExecution = Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectExecution) {
   const app = createSonoxoServer();
   app.server.listen(PORT, '127.0.0.1', () => {
     writeSummary({ application: 'sonoxo', status: 'READY', port: PORT, pid: process.pid, startedAt: new Date().toISOString() });
