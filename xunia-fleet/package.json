@@ -1,0 +1,17 @@
+{
+  "name": "xunia-fleet-sonoxo",
+  "version": "0.8.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.5.0" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test dist/tests/*.test.js",
+    "start": "node dist/apps/sonoxo/server.js",
+    "verify": "npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  }
+}
