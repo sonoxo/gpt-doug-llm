@@ -1,0 +1,16 @@
+cloud "xray"
+project "sonoxo"
+environment "dev"
+region "virginia-local"
+
+compute "web":
+    provider = "local"
+    port = 3001
+
+database "main":
+    provider = "local"
+    engine = "sqlite"
+    path = "database.sql"
+
+policy "zero-trust"
+deploy
