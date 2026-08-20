@@ -46,5 +46,13 @@ jobs:
             http://127.0.0.1:3001/api/sonoxo/harvest >/tmp/sonoxo-ingest.json
           grep -q '\[REDACTED\]' .xray/harvest/sonoxo.json
           kill -TERM "$PID"
+          set +e
           wait "$PID"
+          EXIT_CODE=$?
+          set -e
+          if [ "$EXIT_CODE" -ne 0 ] && [ "$EXIT_CODE" -ne 143 ]; then
+            echo "Unexpected preview exit code: $EXIT_CODE"
+            cat /tmp/sonoxo-preview.log
+            exit "$EXIT_CODE"
+          fi
           trap - EXIT
