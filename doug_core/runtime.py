@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .classifier import classify
+from .core_profile import get_core_profile
 from .memory import Memory
 from .planner import make_plan
 from .reasoner import reason
@@ -12,6 +13,7 @@ from .verifier import verify_text
 class DougRuntime:
     def __init__(self):
         self.memory = Memory()
+        self.core_profile = get_core_profile()
 
     def analyze(
         self,
@@ -28,6 +30,7 @@ class DougRuntime:
             "routing": routing,
             "plan": plan,
             "reasoning": reasoning,
+            "core_profile": self.core_profile,
         }
 
     def offline_response(
@@ -40,11 +43,12 @@ class DougRuntime:
         best = analysis["routing"][0]
 
         answer = (
-            "GPT Doug is operating in local orchestration mode. "
-            "Project inspection, planning, routing, memory, "
-            "verification, release analysis, defensive security "
-            "inspection and workspace tools remain available "
-            "without an AI provider."
+            f"{self.core_profile.name} is operating in local orchestration mode. "
+            "Project inspection, planning, routing, memory, verification, "
+            "release analysis, defensive security inspection, mission-assurance "
+            "analysis, non-weaponized UAV readiness, and workspace tools remain "
+            "available without an AI provider. Capability claims use the "
+            "PLANNED -> IMPLEMENTED -> TESTED -> VERIFIED truth model."
         )
 
         verification = verify_text(
@@ -63,6 +67,8 @@ class DougRuntime:
                 "verification": (
                     verification.score
                 ),
+                "core_profile": self.core_profile.name,
+                "core_version": self.core_profile.version,
             },
         )
 
@@ -72,6 +78,10 @@ class DougRuntime:
             confidence=verification.score,
             steps=analysis["plan"],
             metadata={
+                "core_profile": self.core_profile.name,
+                "core_version": self.core_profile.version,
+                "truth_labels": list(self.core_profile.truth_labels),
+                "max_same_failure_retries": self.core_profile.max_same_failure_retries,
                 "routing": [
                     {
                         "provider": item.name,
@@ -80,6 +90,6 @@ class DougRuntime:
                     }
                     for item
                     in analysis["routing"]
-                ]
+                ],
             },
         )
