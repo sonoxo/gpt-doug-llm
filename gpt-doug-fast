@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""Fast launcher for GPT Doug.
+
+Uses the normal GPT Doug terminal client, but selects a low-latency provider/model
+profile and disables deep-think unless explicitly re-enabled.
+"""
+
+from __future__ import annotations
+
+import os
+import runpy
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+
+# Fast mode still uses the real chat path. Zyra remains an input/output guard;
+# its PASS/BLOCK verdict is never used as the assistant's response.
+os.environ.setdefault("GPT_DOUG_PROVIDER", "ollama")
+os.environ.setdefault("OLLAMA_MODEL", os.environ.get("GPT_DOUG_FAST_MODEL", "gpt-doug"))
+os.environ.setdefault("GPT_DOUG_PROVIDER_TIMEOUT", "45")
+os.environ.setdefault("GPT_DOUG_DEEP_THINK", "0")
+
+runpy.run_path(str(ROOT / "gpt-doug"), run_name="__main__")
