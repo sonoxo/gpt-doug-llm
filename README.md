@@ -1,180 +1,362 @@
-# GPT Doug LLM — Unified Agentic System
+<div align="center">
 
-**EUREKA // Build anything // Keep humans in command.**
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0B1021,45:4C1D95,100:06B6D4&height=220&section=header&text=ZYRA&fontSize=76&fontColor=FFFFFF&fontAlignY=34&desc=Agentic%20GPT%20Runtime%20for%20GPT-DOUG-LLM&descAlignY=58&descSize=20&animation=fadeIn" alt="ZYRA header" />
 
-GPT Doug is a provider-neutral, local-first agentic workspace. It boots safely
-without an AI provider and keeps cloud or local providers behind explicit opt-in:
+# 🟣 ZYRA // AGENTIC GPT-DOUG-LLM
 
-- **gpt-doug-llm** — terminal client, Zyra watchdog, 3FA auth, ASTRAL, EUREKA protocol
-- **gpt-doug-web** — web platform, multi-agent chain, LLM backend, crypto store, runner
-- **xuniaverse-production/xuni-workers** — agent daemon, ontology, XQE engine, trust dossier
-- **gpt-doug-roblox** — Roblox game director persona
-- **Modelfile.gpt-freewill** — autonomous engineering agent mode
+**Local-first autonomous coding runtime · deterministic guardrails · checkpointed self-improvement**
 
-## Architecture
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&pause=900&color=A78BFA&center=true&vCenter=true&width=850&lines=Plan+%E2%86%92+Build+%E2%86%92+Test+%E2%86%92+Review+%E2%86%92+Rollback+or+Keep;Repository-scoped+autonomy+with+hard+mission+budgets;Native+LASER+circuit+breaker+%2B+runtime+self-heal;Ollama-first+local+AI+with+provider-neutral+architecture;Human+control+at+the+boundary" alt="ZYRA runtime loop" />
 
+[![Security Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/security-gate.yml?branch=main&style=for-the-badge&label=Security%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/security-gate.yml)
+[![Unified Tests](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/unified-tests.yml?branch=main&style=for-the-badge&label=Unified%20Tests)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/unified-tests.yml)
+[![MIT](https://img.shields.io/github/license/sonoxo/gpt-doug-llm?style=for-the-badge)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/stargazers)
+[![Issues](https://img.shields.io/github/issues/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/commits/main)
+
+**EUREKA // Build anything useful. Keep humans in command.**
+
+</div>
+
+---
+
+<div align="center">
+
+### 🧭 Navigation
+
+[Why ZYRA](#-why-zyra) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Agent Mode](#-agent-mode) · [LASER](#-native-laser) · [Commands](#-terminal-command-center) · [Security](#-autonomy-contract) · [Roadmap](#-roadmap) · [Docs](#-documentation)
+
+</div>
+
+---
+
+## ⚡ Why ZYRA
+
+ZYRA turns GPT-DOUG-LLM into a **local agentic engineering environment** instead of a single chat loop. The runtime separates model reasoning from deterministic controls so planning can be flexible while execution stays inspectable and bounded.
+
+| System | Role | Boundary |
+|---|---|---|
+| 🤖 **Agent Core** | Plans and executes repository coding missions | Repo-scoped tools, checkpoints, rollback, hard budgets |
+| 🔴 **Native LASER** | Defensive circuit breaker | Intercept → isolate → recover; no retaliation |
+| 🩺 **Self-Heal** | Repairs local provider/model runtime configuration | One bounded pass; no recursive repair loop |
+| 🧠 **Agent Chain** | Planner → Executor → Reviewer orchestration | Depth and spawn budgets |
+| 🧬 **Evolve Mode** | Improves ZYRA-owned agent/runtime/test code | Same checkpoint + validation gates |
+| 🌐 **Web Runtime** | Local interface and streaming services | Explicitly configured execution |
+| ⚙️ **Worker Fleet** | Queue-based background task processing | Repository-defined workers |
+| 🛡️ **Security Gate** | CI tests, static analysis, dependency audit, SBOM | Runs on GitHub Actions |
+
+### What makes it different
+
+- **Local-first inference** through Ollama with provider-neutral backend code.
+- **Autonomy with an audit trail**, not hidden background mutation.
+- **Checkpoint-before-write** behavior for autonomous missions.
+- **Automatic rollback** when a mission fails its final validation gate.
+- **Native defensive isolation** when policy events reach LASER thresholds.
+- **Human-controlled external boundaries**: the local agent does not gain arbitrary shell, push/deploy/send, or external-targeting tools.
+
+---
+
+## 🧠 Architecture
+
+```mermaid
+flowchart TD
+    U[User / ZYRA Terminal] --> P[Deterministic Policy Layer]
+    P -->|allowed| R[Agentic Runtime]
+    P -->|blocked| L[Native LASER]
+    L --> I[Local Model-Path Isolation]
+
+    R --> PL[Planner]
+    PL --> AC[Agent Core]
+    AC --> T1[Read / Search]
+    AC --> T2[Exact Repository Edits]
+    AC --> T3[Validation Gates]
+    T3 --> RV[Reviewer]
+    RV -->|pass| K[Keep Checkpointed Changes]
+    RV -->|fail| RB[Automatic Rollback]
+
+    R --> O[Ollama / Provider Backend]
+    H[Self-Heal] --> O
+    CI[GitHub Security Gate] --> T3
 ```
+
+The guiding rule is simple: **models may propose; deterministic code decides what can execute.**
+
+Deep dive: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone
+
+```bash
+git clone https://github.com/sonoxo/gpt-doug-llm.git
+cd gpt-doug-llm
+```
+
+### 2. Heal the local runtime
+
+```bash
+python3 dougctl.py heal
+```
+
+### 3. Launch ZYRA
+
+```bash
+python3 zyra_chat.py
+```
+
+A healthy launch should identify the local model, branch, self-heal status, LASER state, and Agent Core state before presenting:
+
+```text
+ZYRA >
+```
+
+### 4. Verify native systems
+
+Inside ZYRA:
+
+```text
+/laser-test
+/agent-test
+/status
+```
+
+---
+
+## 🤖 Agent Mode
+
+ZYRA's Agent Core is designed for **bounded autonomous repository work**.
+
+Default mission envelope:
+
+```text
+8 steps
+240 seconds
+12 model calls
+repository scope only
+checkpoint before write
+auto-rollback on failed final gate
+```
+
+### Mission flow
+
+```text
+OBSERVE → PLAN → EDIT → TEST → REVIEW → KEEP / ROLLBACK
+```
+
+### Natural vibe-code commands
+
+```text
+/plan build a better fleet dashboard
+/do add structured mission telemetry to the agent runtime
+/evolve improve your own mission planning and error recovery
+/mission-status
+/undo
+```
+
+`/evolve` is not an unrestricted self-modification switch. It operates through the same bounded repository tools and validation path used by ordinary missions.
+
+Deep dive: [docs/AGENTIC_RUNTIME.md](docs/AGENTIC_RUNTIME.md)
+
+---
+
+## 🔴 Native LASER
+
+LASER is ZYRA's local defensive circuit breaker.
+
+```text
+normal request        → ALLOW
+blocked input         → INTERCEPT
+repeated violations   → ISOLATE
+blocked model output  → ISOLATE immediately
+recovery              → reset / timeout
+```
+
+The native self-test is deterministic and intentionally does **not** execute attack payloads or target external systems.
+
+```text
+/laser-test
+/laser-status
+/laser-reset
+```
+
+---
+
+## 🩺 Runtime Self-Heal
+
+Self-Heal repairs ZYRA's own local runtime wiring when the model/provider configuration drifts.
+
+It can:
+
+- reload persisted runtime environment settings;
+- normalize provider selection;
+- detect the local Ollama endpoint;
+- start Ollama once when needed;
+- select an installed compatible model;
+- persist non-secret runtime settings.
+
+It intentionally does not run recursive healing loops or silently download large models.
+
+```bash
+python3 dougctl.py heal
+```
+
+---
+
+## ⌨️ Terminal Command Center
+
+| Command | Purpose |
+|---|---|
+| `/status` | Full ZYRA runtime dashboard |
+| `/fleet` | Agent + worker inventory |
+| `/heal` | Run one bounded runtime repair pass |
+| `/heal-status` | Show last self-heal report |
+| `/laser-test` | Native LASER deterministic self-test |
+| `/laser-status` | Circuit-breaker state |
+| `/laser-reset` | Clear LASER lock/strike state |
+| `/agent-test` | Native Agent Core safety/self-test |
+| `/agent-status` | Mission envelope + last mission |
+| `/plan <goal>` | Generate a bounded mission plan |
+| `/do <goal>` | Execute a bounded repository mission |
+| `/evolve <goal>` | Improve ZYRA-owned runtime/agent/test code |
+| `/mission-status` | Show latest autonomous mission result |
+| `/undo` | Restore the latest agent checkpoint |
+| `/fast` | Lower-latency local chat mode |
+| `/balanced` | Larger-context local chat mode |
+| `/default-on` | Auto-open ZYRA in new interactive terminal windows |
+| `/clear` | Clear conversation memory |
+| `/quit` | Exit cleanly |
+
+Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
+
+---
+
+## 🛡️ Autonomy Contract
+
+ZYRA is built around **capability boundaries**, not claims of unlimited autonomy.
+
+### Agent Core can
+
+- inspect text files inside the repository;
+- search repository content;
+- create and edit allowlisted text/code files;
+- create checkpoints before mission-owned writes;
+- run allowlisted validation gates;
+- keep successful mission changes;
+- roll back failed mission changes.
+
+### Agent Core does not receive
+
+- unrestricted arbitrary shell execution;
+- arbitrary filesystem access outside the repository;
+- autonomous credential harvesting;
+- external offensive scanning or exploitation;
+- automatic push/deploy/send tools;
+- unbounded recursive sub-agent spawning.
+
+For security policy and limitations, read [SECURITY.md](SECURITY.md) and [docs/SECURITY_BASELINE.md](docs/SECURITY_BASELINE.md).
+
+---
+
+## 🧩 Repository Map
+
+```text
 gpt-doug-llm/
-├── gpt-doug              # Secure terminal client
-├── zyra.py               # Unified watchdog (ZYRA/3.0)
-├── compliance.py         # Jurisdiction-aware policy gate
-├── auth_gate.py          # Three-factor access (3FA)
-├── astral.py             # Two-person high-assurance elevation
-├── eureka.py             # Cooperative AI messaging protocol
-├── dev_terminal.py       # Constrained EUREKA 369 terminal
-├── secret_store.py       # OS-backed secret retrieval (Keychain)
-├── foundry_guard.py      # Palantir Foundry governance bridge
-├── security_review.py    # Machine-readable review evidence
-├── security_text.py      # Unicode normalization for policy checks
-│
-├── agents/               # Multi-agent chain & LLM backend
-│   ├── agent_chain.py    #   Planner → Executor → Reviewer with sub-agent spawning
-│   ├── llm_backend.py    #   Provider registry + normalized chat contract
-│   ├── ontology.py       #   Task-graph schema (Task → Steps → Artifacts)
-│   └── security_text.py  #   Unicode normalization (shared)
-│
-├── web/                  # Web platform
-│   ├── server.py         #   HTTP server + SSE streaming
-│   ├── auth.py           #   Single-password gate
-│   ├── crypto_store.py   #   At-rest AES encryption for projects
-│   ├── runner.py         #   Real project server execution
-│   ├── worker.py         #   Autonomous marketplace worker
-│   ├── ideas.py           #   Idea/task management
-│   ├── users.py          #   User management
-│   ├── paid_tasks.py     #   Paid task system
-│   ├── stripe_checkout.py #  Stripe payment integration
-│   ├── twilio_webhook.py #   Twilio SMS webhook
-│   ├── draft_comments.py #   YouTube comment drafting
-│   ├── youtube_comment.py #  YouTube comment automation
-│   └── *.html / *.js / *.css  # Frontend assets
-│
-├── workers/              # Background workers
-│   ├── agent-daemon.py   #   Task queue daemon (watches tasks/*.json)
-│   ├── zyra_guard.py     #   Pipeline-specific guard (RICE + classification)
-│   ├── ontology_workers.py #  Foundry-inspired ontology (objects, links, actions)
-│   ├── web_ui.py         #   Minimal web front end for the daemon
-│   ├── xqe.py            #   XQE reasoning pipeline (Superposition → Collapse)
-│   ├── trust_dossier.py  #   Security posture report generator
-│   └── twilio_calling.py #   Outbound calling via Twilio Voice API
-│
-├── models/               # Ollama Modelfiles
-│   ├── Modelfile         #   Base GPT Doug (qwen2.5-coder:7b)
-│   ├── Modelfile.gpt-freewill  #  Autonomous engineering agent
-│   └── AGENTS.md         #   Roblox game director persona
-│
-└── tests/                # Unified test suite (55 tests)
-    ├── test_zyra.py             #   Core Zyra tests
-    ├── test_zyra_unified.py     #   RICE signals + classification tests
-    ├── test_zyra_guard.py        #   Attack/evasion regression suite
-    ├── test_eureka.py            #   EUREKA protocol tests
-    ├── test_auth_gate.py         #   3FA authentication tests
-    ├── test_astral.py            #   ASTRAL two-person control tests
-    ├── test_compliance.py        #   Compliance gate tests
-    ├── test_dev_terminal.py      #   Dev terminal tests
-    ├── test_foundry_guard.py     #   Foundry bridge tests
-    ├── test_agent_daemon.py      #   Agent daemon tests
-    ├── test_ontology_workers.py  #   Ontology regression suite
-    └── test_dev_terminal.py      #   Dev terminal tests
+├── zyra_chat.py             # Interactive ZYRA terminal
+├── zyra_agent.py            # Bounded autonomous Agent Core
+├── zyra_laser.py            # Native defensive circuit breaker
+├── zyra_self_heal.py        # Local runtime repair
+├── zyra.py                  # Deterministic watchdog/policy layer
+├── dougctl.py               # Runtime control CLI
+├── agents/                  # Planner, executor, reviewer, provider backend
+├── workers/                 # Queue workers and orchestration services
+├── web/                     # Local web platform
+├── docs/                    # Architecture, security, APIs, roadmap
+├── tests/                   # Core regression tests
+└── .github/workflows/       # CI, security, releases, fleet automation
 ```
 
-## Zyra 3.0 — Unified Watchdog
+---
 
-Zyra is the deterministic defense-in-depth layer. Version 3.0 merges:
+## ✅ CI / Engineering Gates
 
-- **HMAC audit chain** (from gpt-doug-llm) — tamper-evident, fail-closed logging
-- **Secret redaction** (from gpt-doug-llm) — API keys, private keys, credentials
-- **Block patterns** (from gpt-doug-llm) — destructive commands, prompt injection
-- **RICE social-engineering signals** (from xuni-workers) — Reward/Ideology/Coercion/Ego detection
-- **Classification taxonomy** (from xuni-workers) — UNCLASSIFIED through TOP_SECRET
-- **Thread-safe logging** (from xuni-workers) — lock-protected audit writes
-- **`review()` interface** (from xuni-workers) — dict-return compatibility for the daemon
+The repository includes dedicated workflows for:
 
-Zyra does not replace OS sandboxing, least-privilege, dependency scanning, or professional review.
+- unified tests;
+- Agent Core native self-test;
+- LASER native self-test;
+- Ruff linting;
+- Bandit security analysis;
+- dependency auditing;
+- CycloneDX SBOM generation;
+- Docker publishing;
+- release automation;
+- automated agent-fleet workflows.
 
-## Quick Start
+The goal is not "AI generated = accepted." The goal is **generated → inspected → validated → accepted**.
 
-### Main Web Interface
+---
 
-```bash
-export GPT_DOUG_PROVIDER=none
-export DOUG_ACCESS_PASSWORD="choose-a-local-password"
-python3 web/server.py
-# http://localhost:8787
-```
+## 🗺️ Roadmap
 
-The autonomous marketplace worker is disabled by default. Enable it deliberately
-with `GPT_DOUG_ENABLE_WORKER=true`.
+Current direction:
 
-### Terminal Client
+- [x] Local ZYRA conversational runtime
+- [x] Runtime self-heal
+- [x] Native LASER circuit breaker
+- [x] Bounded Agent Core
+- [x] Checkpoint + rollback missions
+- [x] Agent/LASER CI gates
+- [ ] Structured mission event journal
+- [ ] DAG mission scheduler with dependency-aware execution
+- [ ] Capability manifest per tool/agent
+- [ ] Reproducible sandbox runner for generated apps
+- [ ] Web mission console with live event streaming
+- [ ] Signed autonomous-change attestations
+- [ ] Release-grade benchmark suite for agent reliability
 
-```bash
-# Select none (default), gemini, openai, or the optional legacy ollama provider.
-export GPT_DOUG_PROVIDER=none
+See [docs/ROADMAP.md](docs/ROADMAP.md).
 
-# Set up 3FA environment
-export GPT_DOUG_VERIFIED_BUSINESS_EMAIL="builder@example.com"
-export GPT_DOUG_ALLOWED_EMAIL_DOMAINS="example.com"
-export GPT_DOUG_VERIFIED_PHONE="+12125550123"
-export GPT_DOUG_JURISDICTION="US-NY"
+---
 
-# Launch
-./gpt-doug
-```
+## 📚 Documentation
 
-### Agent Daemon
+| Document | Purpose |
+|---|---|
+| [Architecture](docs/ARCHITECTURE.md) | Runtime layers, trust boundaries, mission flow |
+| [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Agent Core budgets, tools, checkpoints, rollback |
+| [Commands](docs/COMMANDS.md) | ZYRA terminal command reference |
+| [Roadmap](docs/ROADMAP.md) | Engineering milestones |
+| [Security](SECURITY.md) | Vulnerability reporting + limitations |
+| [Secure Development Baseline](docs/SECURE_DEVELOPMENT_BASELINE.md) | Engineering controls |
+| [Contributing](CONTRIBUTING.md) | Development and pull-request process |
 
-```bash
-# Drop a task file
-echo '{"id": "task-1", "prompt": "build a REST API"}' > workers/tasks/task-1.json
+---
 
-# Run the daemon
-python3 workers/agent-daemon.py
-```
+## 🤝 Contributing
 
-### FreeWill Autonomous Mode
+PRs are welcome when they keep the runtime testable, deterministic at security boundaries, and understandable to another developer.
 
-```bash
-ollama create gpt-freewill -f models/Modelfile.gpt-freewill
-```
+Start with [CONTRIBUTING.md](CONTRIBUTING.md), use the issue templates for bugs/features, and run the native Agent/LASER tests before opening a PR.
 
-### Run Tests
+---
 
-```bash
-python3 -m pytest tests/ -v
-```
+## 📄 License
 
-## Commands
+MIT — see [LICENSE](LICENSE).
 
-- `/help` — show commands
-- `/clear` — clear conversation memory
-- `/mission` — display the operating principles
-- `/zyra` — show watchdog status
-- `/compliance` — show declared compliance context
-- `/deepthink` — toggle deep think mode (draft → self-critique → revise)
-- `/eureka 369` — request constrained developer session
-- `/quit` — exit
+## ⚠️ Project Scope
 
-## Principles
+GPT-DOUG-LLM and ZYRA are independent open-source software. References to external products, organizations, or engineering patterns do not imply endorsement, affiliation, authorization, or certification. ZYRA's policy and safety layers complement rather than replace OS sandboxing, least privilege, dependency review, and professional security assessment.
 
-1. Build useful things.
-2. Explain important decisions.
-3. Protect user data.
-4. Ask before destructive or external actions.
-5. Keep humans in command.
+<div align="center">
 
-## License
+### 🟣 ZYRA
 
-MIT. GPT Doug is an independent open-source project.
+**Build fast. Validate everything. Keep autonomy bounded by capability.**
 
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:06B6D4,55:4C1D95,100:0B1021&height=120&section=footer" alt="footer" />
 
-## Security
-
-See [SECURITY.md](SECURITY.md) for the security policy, vulnerability reporting process, and known limitations.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR process.
-
-## Disclaimer
-
-GPT Doug is an independent open-source project. All knowledge base entries are from public sources, properly attributed. No government entity (CIA, FBI, NSA) or corporation (IBM, MIT) has reviewed, endorsed, or authorized this software. Palantir Foundry references are pattern-inspired, not connected to any live Foundry tenant or API. Zyra is a keyword/pattern guard, not a semantic security system. OS-level sandboxing, least-privilege, and professional security review are still required.
+</div>

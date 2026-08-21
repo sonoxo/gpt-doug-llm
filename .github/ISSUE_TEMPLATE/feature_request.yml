@@ -1,0 +1,57 @@
+name: Feature request
+description: Propose a ZYRA capability, workflow, or reliability improvement
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What user or engineering problem should this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed capability
+      description: Describe the desired behavior, not just the implementation.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Primary area
+      options:
+        - Agent Core
+        - Mission planning
+        - Native LASER
+        - Self-Heal
+        - Terminal UX
+        - Web mission console
+        - Worker fleet
+        - Provider/model support
+        - CI / security / testing
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable conditions that would prove the feature works.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Capability and safety boundaries
+      description: What should this feature explicitly not be allowed to do?
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I would be willing to test this feature.
+        - label: I would be willing to help implement this feature.

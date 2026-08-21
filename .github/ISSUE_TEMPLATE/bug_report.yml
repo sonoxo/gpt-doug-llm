@@ -1,0 +1,62 @@
+name: Bug report
+description: Report a reproducible ZYRA/GPT-DOUG-LLM defect
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve ZYRA. Remove secrets, tokens, private keys, personal data, and unrelated logs before submitting.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the observed behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: Give the smallest reliable sequence that reproduces the issue.
+      placeholder: |
+        1. Run ...
+        2. Enter ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Runtime area
+      options:
+        - ZYRA terminal
+        - Agent Core
+        - Native LASER
+        - Self-Heal
+        - Agent chain / provider backend
+        - Web runtime
+        - Worker fleet
+        - GitHub Actions / CI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, model/provider, branch/commit if known.
+      placeholder: "macOS; Python 3.x; Ollama; main"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant sanitized output
+      description: Paste only the minimal error/output needed to diagnose the problem. Do not include credentials.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed secrets, credentials, private keys, and personal data from this report.
+          required: true
