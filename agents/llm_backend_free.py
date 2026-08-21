@@ -22,13 +22,21 @@ def health():
 def chat_once(messages, model=None, options=None):
     if _backend.health()["backend"] == "openai" and not PAID_MODE:
         return {
-            "message": {"role": "assistant", "content": "OpenAI is blocked unless PAID_MODE=true is explicitly set."},
+            "message": {
+                "role": "assistant",
+                "content": (
+                    "OpenAI is blocked unless PAID_MODE=true is explicitly set."
+                ),
+            },
             "done": True,
             "error": "paid_provider_blocked",
         }
     result = _backend.chat_once(messages, model, options)
     if result.get("error") == "provider_not_configured":
-        message = result.setdefault("message", {"role": "assistant", "content": ""})
+        message = result.setdefault(
+            "message",
+            {"role": "assistant", "content": ""},
+        )
         content = str(message.get("content") or "").strip()
         if "offline workspace mode" not in content:
             message["content"] = (
