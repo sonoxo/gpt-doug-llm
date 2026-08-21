@@ -26,7 +26,16 @@ def chat_once(messages, model=None, options=None):
             "done": True,
             "error": "paid_provider_blocked",
         }
-    return _backend.chat_once(messages, model, options)
+    result = _backend.chat_once(messages, model, options)
+    if result.get("error") == "provider_not_configured":
+        message = result.setdefault("message", {"role": "assistant", "content": ""})
+        content = str(message.get("content") or "").strip()
+        if "offline workspace mode" not in content:
+            message["content"] = (
+                content
+                + " offline workspace mode remains available for local inspection and planning."
+            ).strip()
+    return result
 
 
 def stream_chat(messages, model=None, options=None):
