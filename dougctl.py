@@ -9,6 +9,7 @@ from doug_core.runtime import DougRuntime
 from doug_core.use_cases import list_use_cases
 from doug_core.use_case_engine import run_use_case
 from doug_core.workspace import inspect_workspace
+from zyra_lang.compiler import compile_file
 from zyra_self_heal import run_self_heal
 
 
@@ -90,6 +91,22 @@ def main():
         "prompt",
     )
 
+    zyra_build_cmd = sub.add_parser(
+        "zyra-build",
+        help="Compile a .zyra vibe-code file into a locked manifest and TypeScript spec",
+    )
+
+    zyra_build_cmd.add_argument(
+        "source",
+        help="Path to the .zyra source file",
+    )
+
+    zyra_build_cmd.add_argument(
+        "--out-dir",
+        default="build/zyra",
+        help="Directory for generated ZYRA artifacts",
+    )
+
     args = parser.parse_args()
 
     if args.command == "capabilities":
@@ -117,6 +134,20 @@ def main():
                 args.use_case,
                 args.path,
             ).to_dict()
+        )
+        return
+
+    if args.command == "zyra-build":
+        outputs = compile_file(
+            args.source,
+            args.out_dir,
+        )
+        dump(
+            {
+                "status": "compiled",
+                "source": args.source,
+                "outputs": outputs,
+            }
         )
         return
 
