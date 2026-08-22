@@ -1,0 +1,22 @@
+app ZyraEnterprise {
+  runtime web
+  language typescript
+  strict true
+  verbatim true
+
+  build verbatim """
+Create the Zyra Enterprise vibe-coding runtime.
+
+Include:
+- .zyra source files
+- TypeScript-compatible generated output
+- deterministic requirement manifests
+- exact preservation of user-specified names
+- exact preservation of routes and visible copy
+- validation before success is reported
+
+Do not rename requested features.
+Do not silently remove requested functionality.
+Do not replace working requirements with placeholders.
+"""
+}
