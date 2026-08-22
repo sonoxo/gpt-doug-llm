@@ -1,0 +1,479 @@
+{
+  "metadata": {
+    "title": "The Resilience Matrix",
+    "organization": "Meridian Civic Cooperative",
+    "classification": "FICTIONAL DEFENSIVE SIMULATION",
+    "facts": [
+      "All named systems, suppliers, stakeholders, and incidents are fictional.",
+      "Threats are modeled as abstract risk classes rather than operational attack techniques."
+    ],
+    "assumptions": [
+      "Ordinal ratings support prioritization only and do not represent measured probabilities or losses.",
+      "Control effectiveness describes simulated governance confidence, not a guarantee of protection."
+    ]
+  },
+  "assets": [
+    {
+      "id": "A-REGISTRY",
+      "name": "Civic Services Registry",
+      "function": "Maintains authoritative service and eligibility records for fictional public programs.",
+      "criticality": "Severe",
+      "data_longevity": "Long-lived",
+      "owner": "S-OPS"
+    },
+    {
+      "id": "A-COMMS",
+      "name": "Coordination Mesh",
+      "function": "Carries operational notifications and continuity coordination messages.",
+      "criticality": "Major",
+      "data_longevity": "Short-lived",
+      "owner": "S-OPS"
+    },
+    {
+      "id": "A-ARCHIVE",
+      "name": "Long-Lived Records Vault",
+      "function": "Preserves records whose confidentiality and integrity must endure for many years.",
+      "criticality": "Critical",
+      "data_longevity": "Very long-lived",
+      "owner": "S-RISK"
+    },
+    {
+      "id": "A-IDENTITY",
+      "name": "Workforce Identity Broker",
+      "function": "Provides identity, authorization context, and policy enforcement signals.",
+      "criticality": "Severe",
+      "data_longevity": "Medium-lived",
+      "owner": "S-SEC"
+    },
+    {
+      "id": "A-ASSURANCE",
+      "name": "Assurance Evidence Repository",
+      "function": "Stores review records, control evidence, findings, and risk decisions.",
+      "criticality": "Major",
+      "data_longevity": "Long-lived",
+      "owner": "S-AUDIT"
+    }
+  ],
+  "threats": [
+    {
+      "id": "T-SUPPLIER",
+      "name": "Supplier Service Failure",
+      "category": "Resilience",
+      "affected_assets": ["A-REGISTRY", "A-COMMS"],
+      "likelihood": "Possible",
+      "impact": "Severe",
+      "rationale": {
+        "likelihood": "A material upstream dependency can fail even when internal controls are functioning.",
+        "impact": "Loss of an upstream service could interrupt essential workflows and coordinated recovery."
+      }
+    },
+    {
+      "id": "T-CRYPTO",
+      "name": "Cryptographic Obsolescence",
+      "category": "Quantum readiness",
+      "affected_assets": ["A-ARCHIVE", "A-IDENTITY"],
+      "likelihood": "Likely",
+      "impact": "Critical",
+      "rationale": {
+        "likelihood": "Long-lived systems and records are expected to outlast some currently deployed cryptographic choices.",
+        "impact": "Loss of durable confidentiality or integrity assurance would affect records with very long protection horizons."
+      }
+    },
+    {
+      "id": "T-AUDIT",
+      "name": "Audit Control Finding",
+      "category": "Compliance",
+      "affected_assets": ["A-ASSURANCE", "A-REGISTRY"],
+      "likelihood": "Possible",
+      "impact": "Major",
+      "rationale": {
+        "likelihood": "Evidence gaps and uneven control maturity can surface during independent review.",
+        "impact": "Unresolved findings can weaken compliance posture, trust, and risk acceptance decisions."
+      }
+    },
+    {
+      "id": "T-COMMS",
+      "name": "Communications Outage",
+      "category": "Continuity",
+      "affected_assets": ["A-COMMS", "A-REGISTRY"],
+      "likelihood": "Possible",
+      "impact": "Major",
+      "rationale": {
+        "likelihood": "Shared communications dependencies periodically experience service disruption.",
+        "impact": "Coordination delays can compound operational disruption even when core records remain intact."
+      }
+    },
+    {
+      "id": "T-POLICY",
+      "name": "Insider Policy Violation",
+      "category": "Governance",
+      "affected_assets": ["A-IDENTITY", "A-ASSURANCE"],
+      "likelihood": "Unlikely",
+      "impact": "Severe",
+      "rationale": {
+        "likelihood": "Policy deviations are less frequent when access governance and training are consistently applied.",
+        "impact": "A significant violation could undermine authorization boundaries, accountability, and stakeholder trust."
+      }
+    },
+    {
+      "id": "T-INTEGRITY",
+      "name": "Integrity Anomaly",
+      "category": "Cyber resilience",
+      "affected_assets": ["A-REGISTRY", "A-ARCHIVE"],
+      "likelihood": "Possible",
+      "impact": "Critical",
+      "rationale": {
+        "likelihood": "Complex data flows can produce anomalies that require investigation without implying hostile activity.",
+        "impact": "Unresolved integrity uncertainty in authoritative or long-lived records could affect critical decisions."
+      }
+    },
+    {
+      "id": "T-GOVERNANCE",
+      "name": "Risk Ownership Ambiguity",
+      "category": "Governance",
+      "affected_assets": ["A-ASSURANCE", "A-ARCHIVE"],
+      "likelihood": "Possible",
+      "impact": "Major",
+      "rationale": {
+        "likelihood": "Cross-functional risks can remain unresolved when authority and escalation paths are unclear.",
+        "impact": "Delayed ownership can leave material exposures unaccepted, unmitigated, or poorly evidenced."
+      }
+    },
+    {
+      "id": "T-RECOVERY",
+      "name": "Recovery Assurance Gap",
+      "category": "Safety and resilience",
+      "affected_assets": ["A-REGISTRY", "A-COMMS", "A-ARCHIVE"],
+      "likelihood": "Unlikely",
+      "impact": "Severe",
+      "rationale": {
+        "likelihood": "Documented recovery processes reduce frequency, but assurance can degrade when exercises are deferred.",
+        "impact": "A recovery gap could prolong service disruption and weaken confidence in restored information."
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "D-IDENTITY-REG",
+      "provider": "A-IDENTITY",
+      "consumer": "A-REGISTRY",
+      "type": "identity and authorization",
+      "substitutability": "Limited",
+      "failure_mode": "The registry enters restricted continuity mode when identity assertions are unavailable."
+    },
+    {
+      "id": "D-COMMS-REG",
+      "provider": "A-COMMS",
+      "consumer": "A-REGISTRY",
+      "type": "operational coordination",
+      "substitutability": "Moderate",
+      "failure_mode": "Registry operations continue, but coordination and escalation become slower."
+    },
+    {
+      "id": "D-REG-ARCHIVE",
+      "provider": "A-REGISTRY",
+      "consumer": "A-ARCHIVE",
+      "type": "records transfer",
+      "substitutability": "Limited",
+      "failure_mode": "New archival intake pauses until authoritative records can be verified."
+    },
+    {
+      "id": "D-ASSURANCE-REG",
+      "provider": "A-ASSURANCE",
+      "consumer": "A-REGISTRY",
+      "type": "governance evidence",
+      "substitutability": "Moderate",
+      "failure_mode": "Operations continue, but auditability and risk acceptance confidence decline."
+    }
+  ],
+  "controls": [
+    {
+      "id": "C-MONITOR",
+      "name": "Integrity and Availability Monitoring",
+      "control_type": "Monitoring",
+      "mitigated_threats": ["T-SUPPLIER", "T-COMMS", "T-INTEGRITY"],
+      "protected_assets": ["A-REGISTRY", "A-COMMS", "A-ARCHIVE"],
+      "effectiveness": "Moderate",
+      "maturity": "Defined",
+      "evidence": ["E-MONITOR"]
+    },
+    {
+      "id": "C-REDUNDANCY",
+      "name": "Continuity and Dependency Redundancy",
+      "control_type": "Resilience",
+      "mitigated_threats": ["T-SUPPLIER", "T-COMMS", "T-RECOVERY"],
+      "protected_assets": ["A-REGISTRY", "A-COMMS"],
+      "effectiveness": "Limited",
+      "maturity": "Repeatable",
+      "evidence": ["E-RECOVERY"]
+    },
+    {
+      "id": "C-ACCESS",
+      "name": "Role and Access Governance",
+      "control_type": "Access control",
+      "mitigated_threats": ["T-POLICY", "T-INTEGRITY"],
+      "protected_assets": ["A-IDENTITY", "A-REGISTRY", "A-ASSURANCE"],
+      "effectiveness": "Moderate",
+      "maturity": "Defined",
+      "evidence": ["E-ACCESS"]
+    },
+    {
+      "id": "C-CRYPTO-MIGRATION",
+      "name": "Cryptographic Agility and Migration Program",
+      "control_type": "Cryptographic migration",
+      "mitigated_threats": ["T-CRYPTO"],
+      "protected_assets": ["A-ARCHIVE", "A-IDENTITY"],
+      "effectiveness": "Limited",
+      "maturity": "Repeatable",
+      "evidence": ["E-CRYPTO"]
+    },
+    {
+      "id": "C-TRAINING",
+      "name": "Policy Training and Role Reinforcement",
+      "control_type": "Training",
+      "mitigated_threats": ["T-POLICY", "T-GOVERNANCE"],
+      "protected_assets": ["A-IDENTITY", "A-ASSURANCE"],
+      "effectiveness": "Moderate",
+      "maturity": "Defined",
+      "evidence": ["E-TRAINING"]
+    },
+    {
+      "id": "C-SUPPLIER",
+      "name": "Supplier Resilience Review",
+      "control_type": "Supplier review",
+      "mitigated_threats": ["T-SUPPLIER", "T-COMMS"],
+      "protected_assets": ["A-REGISTRY", "A-COMMS"],
+      "effectiveness": "Limited",
+      "maturity": "Repeatable",
+      "evidence": ["E-SUPPLIER"]
+    },
+    {
+      "id": "C-ASSURANCE",
+      "name": "Independent Assurance Testing",
+      "control_type": "Assurance testing",
+      "mitigated_threats": ["T-AUDIT", "T-INTEGRITY", "T-RECOVERY"],
+      "protected_assets": ["A-ASSURANCE", "A-REGISTRY", "A-ARCHIVE"],
+      "effectiveness": "Moderate",
+      "maturity": "Defined",
+      "evidence": ["E-AUDIT"]
+    },
+    {
+      "id": "C-ESCALATION",
+      "name": "Incident and Risk Escalation Protocol",
+      "control_type": "Incident escalation",
+      "mitigated_threats": ["T-INTEGRITY", "T-GOVERNANCE", "T-RECOVERY"],
+      "protected_assets": ["A-REGISTRY", "A-ARCHIVE", "A-ASSURANCE"],
+      "effectiveness": "Moderate",
+      "maturity": "Defined",
+      "evidence": ["E-ESCALATION"]
+    }
+  ],
+  "stakeholders": [
+    {
+      "id": "S-OPS",
+      "name": "Avery Quill",
+      "role": "Continuity Operations Lead",
+      "authority": "May activate continuity procedures and allocate operational capacity.",
+      "responsibilities": ["service continuity", "dependency coordination", "operational recovery"]
+    },
+    {
+      "id": "S-SEC",
+      "name": "Mira Vale",
+      "role": "Security and Identity Lead",
+      "authority": "May change defensive access policy and escalate integrity concerns.",
+      "responsibilities": ["access governance", "security monitoring", "identity assurance"]
+    },
+    {
+      "id": "S-RISK",
+      "name": "Rowan Hale",
+      "role": "Enterprise Risk Officer",
+      "authority": "May accept, defer, or escalate enterprise risk within governance thresholds.",
+      "responsibilities": ["risk ownership", "quantum readiness", "executive escalation"]
+    },
+    {
+      "id": "S-AUDIT",
+      "name": "Tess Arden",
+      "role": "Assurance and Compliance Lead",
+      "authority": "May open findings, require evidence, and recommend remediation priorities.",
+      "responsibilities": ["audit", "evidence quality", "compliance posture"]
+    }
+  ],
+  "risks": [
+    {
+      "id": "R-SUPPLIER",
+      "threat": "T-SUPPLIER",
+      "asset": "A-REGISTRY",
+      "dependency_path": ["D-COMMS-REG", "D-IDENTITY-REG"],
+      "controls": ["C-MONITOR", "C-REDUNDANCY", "C-SUPPLIER"],
+      "owner": "S-OPS",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Supplier review evidence exists, but alternate-path assurance is incomplete."}
+    },
+    {
+      "id": "R-CRYPTO",
+      "threat": "T-CRYPTO",
+      "asset": "A-ARCHIVE",
+      "dependency_path": ["D-REG-ARCHIVE"],
+      "controls": ["C-CRYPTO-MIGRATION", "C-ASSURANCE"],
+      "owner": "S-RISK",
+      "confidence": "High",
+      "rationale": {"confidence": "The record longevity and current migration inventory are well documented."}
+    },
+    {
+      "id": "R-AUDIT",
+      "threat": "T-AUDIT",
+      "asset": "A-ASSURANCE",
+      "dependency_path": [],
+      "controls": ["C-ASSURANCE", "C-TRAINING"],
+      "owner": "S-AUDIT",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Prior evidence is available, but freshness and coverage are uneven."}
+    },
+    {
+      "id": "R-COMMS",
+      "threat": "T-COMMS",
+      "asset": "A-COMMS",
+      "dependency_path": ["D-COMMS-REG"],
+      "controls": ["C-MONITOR", "C-REDUNDANCY", "C-SUPPLIER"],
+      "owner": "S-OPS",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Continuity evidence covers routine outages more strongly than correlated dependency failures."}
+    },
+    {
+      "id": "R-POLICY",
+      "threat": "T-POLICY",
+      "asset": "A-IDENTITY",
+      "dependency_path": ["D-IDENTITY-REG"],
+      "controls": ["C-ACCESS", "C-TRAINING", "C-ESCALATION"],
+      "owner": "S-SEC",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Access reviews are documented, while behavioral and training evidence is less current."}
+    },
+    {
+      "id": "R-INTEGRITY",
+      "threat": "T-INTEGRITY",
+      "asset": "A-REGISTRY",
+      "dependency_path": ["D-IDENTITY-REG", "D-REG-ARCHIVE"],
+      "controls": ["C-MONITOR", "C-ACCESS", "C-ASSURANCE", "C-ESCALATION"],
+      "owner": "S-SEC",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Monitoring produces useful signals, but anomaly causes require corroboration before conclusions are reliable."}
+    },
+    {
+      "id": "R-GOVERNANCE",
+      "threat": "T-GOVERNANCE",
+      "asset": "A-ASSURANCE",
+      "dependency_path": ["D-ASSURANCE-REG"],
+      "controls": ["C-TRAINING", "C-ESCALATION"],
+      "owner": "S-RISK",
+      "confidence": "High",
+      "rationale": {"confidence": "Authority records and escalation paths are directly observable and reviewable."}
+    },
+    {
+      "id": "R-RECOVERY",
+      "threat": "T-RECOVERY",
+      "asset": "A-REGISTRY",
+      "dependency_path": ["D-COMMS-REG", "D-REG-ARCHIVE"],
+      "controls": ["C-REDUNDANCY", "C-ASSURANCE", "C-ESCALATION"],
+      "owner": "S-OPS",
+      "confidence": "Medium",
+      "rationale": {"confidence": "Recovery procedures are documented, but the most recent full-scope exercise is not current."}
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-MONITOR",
+      "source": "Monthly monitoring review",
+      "date": "2026-06-30",
+      "confidence": "High",
+      "provenance": "Signed review record in the fictional assurance repository.",
+      "supports": {"type": "control", "id": "C-MONITOR"}
+    },
+    {
+      "id": "E-RECOVERY",
+      "source": "Continuity exercise summary",
+      "date": "2025-11-14",
+      "confidence": "Medium",
+      "provenance": "Exercise notes and owner attestations; full end-to-end retest pending.",
+      "supports": {"type": "control", "id": "C-REDUNDANCY"}
+    },
+    {
+      "id": "E-ACCESS",
+      "source": "Quarterly access review",
+      "date": "2026-07-15",
+      "confidence": "High",
+      "provenance": "Approved access-review export with accountable owner sign-off.",
+      "supports": {"type": "control", "id": "C-ACCESS"}
+    },
+    {
+      "id": "E-CRYPTO",
+      "source": "Cryptographic inventory and migration register",
+      "date": "2026-05-20",
+      "confidence": "High",
+      "provenance": "Version-controlled architecture inventory and migration decisions.",
+      "supports": {"type": "control", "id": "C-CRYPTO-MIGRATION"}
+    },
+    {
+      "id": "E-TRAINING",
+      "source": "Role training completion review",
+      "date": "2026-03-31",
+      "confidence": "Medium",
+      "provenance": "Learning records sampled against active role assignments.",
+      "supports": {"type": "control", "id": "C-TRAINING"}
+    },
+    {
+      "id": "E-SUPPLIER",
+      "source": "Supplier resilience review",
+      "date": "2026-02-12",
+      "confidence": "Medium",
+      "provenance": "Supplier attestations corroborated by internal dependency mapping.",
+      "supports": {"type": "control", "id": "C-SUPPLIER"}
+    },
+    {
+      "id": "E-AUDIT",
+      "source": "Independent assurance test report",
+      "date": "2026-04-08",
+      "confidence": "High",
+      "provenance": "Independent review evidence with documented scope and exceptions.",
+      "supports": {"type": "control", "id": "C-ASSURANCE"}
+    },
+    {
+      "id": "E-ESCALATION",
+      "source": "Risk escalation tabletop record",
+      "date": "2026-01-19",
+      "confidence": "Medium",
+      "provenance": "Facilitated tabletop notes approved by enterprise risk leadership.",
+      "supports": {"type": "control", "id": "C-ESCALATION"}
+    },
+    {
+      "id": "E-RISK-CRYPTO",
+      "source": "Long-lived data risk review",
+      "date": "2026-05-20",
+      "confidence": "High",
+      "provenance": "Risk workshop tied to the cryptographic inventory.",
+      "supports": {"type": "risk", "id": "R-CRYPTO"}
+    }
+  ],
+  "relationships": [
+    {"subject": "S-OPS", "predicate": "OWNS", "object": "A-REGISTRY"},
+    {"subject": "S-OPS", "predicate": "OWNS", "object": "A-COMMS"},
+    {"subject": "S-RISK", "predicate": "OWNS", "object": "A-ARCHIVE"},
+    {"subject": "S-SEC", "predicate": "OWNS", "object": "A-IDENTITY"},
+    {"subject": "S-AUDIT", "predicate": "OWNS", "object": "A-ASSURANCE"},
+    {"subject": "A-REGISTRY", "predicate": "DEPENDS_ON", "object": "D-IDENTITY-REG"},
+    {"subject": "A-REGISTRY", "predicate": "DEPENDS_ON", "object": "D-COMMS-REG"},
+    {"subject": "A-ARCHIVE", "predicate": "DEPENDS_ON", "object": "D-REG-ARCHIVE"},
+    {"subject": "D-IDENTITY-REG", "predicate": "PROPAGATES_FAILURE_TO", "object": "A-REGISTRY"},
+    {"subject": "D-COMMS-REG", "predicate": "PROPAGATES_FAILURE_TO", "object": "A-REGISTRY"},
+    {"subject": "T-CRYPTO", "predicate": "THREATENS", "object": "A-ARCHIVE"},
+    {"subject": "T-INTEGRITY", "predicate": "THREATENS", "object": "A-REGISTRY"},
+    {"subject": "C-MONITOR", "predicate": "PROTECTS", "object": "A-REGISTRY"},
+    {"subject": "C-MONITOR", "predicate": "MITIGATES", "object": "T-INTEGRITY"},
+    {"subject": "S-SEC", "predicate": "OPERATES", "object": "C-ACCESS"},
+    {"subject": "S-RISK", "predicate": "OPERATES", "object": "C-CRYPTO-MIGRATION"},
+    {"subject": "S-AUDIT", "predicate": "OPERATES", "object": "C-ASSURANCE"},
+    {"subject": "S-RISK", "predicate": "ACCEPTS_OR_ESCALATES", "object": "R-CRYPTO"},
+    {"subject": "E-CRYPTO", "predicate": "SUPPORTS", "object": "C-CRYPTO-MIGRATION"},
+    {"subject": "E-RISK-CRYPTO", "predicate": "SUPPORTS", "object": "R-CRYPTO"}
+  ]
+}
