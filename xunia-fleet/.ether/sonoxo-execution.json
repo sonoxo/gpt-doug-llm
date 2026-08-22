@@ -1,0 +1,20 @@
+{
+  "journal": "ETHER",
+  "application": "sonoxo",
+  "environment": "local-dev",
+  "redactionPolicy": "keys matching token|secret|password|authorization|api-key are replaced with [REDACTED]",
+  "digestAlgorithm": "sha256",
+  "executions": [
+    {
+      "digest": "758d2207ce9050aba877453d2c0dd712c701f6ae206de84e9420f01ac473832e",
+      "runtime": "node v22.16.0",
+      "checks": [
+        { "task": "TASK-1", "status": "PASS", "detail": "Node 22.16.0 and npm 10.9.2 available" },
+        { "task": "TASK-2", "status": "PASS", "detail": "workspace files reconstructed from committed branch content" },
+        { "task": "TASK-3", "status": "DEFERRED_TO_CI", "detail": "local tsc blocked only because @types/node cannot be downloaded in offline container" },
+        { "task": "TASK-4", "status": "PASS", "detail": "2/2 runtime integration tests passed using Node type stripping" },
+        { "task": "TASK-5", "status": "PARTIAL", "detail": "HTTP server exercised through integration tests; dedicated SIGTERM smoke delegated to CI" }
+      ]
+    }
+  ]
+}
