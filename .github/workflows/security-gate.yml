@@ -16,6 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - uses: actions/setup-python@v5
@@ -37,7 +38,20 @@ jobs:
         run: python -m pytest tests agents/tests google/tests hackathon/tests -q
 
       - name: Ruff
-        run: ruff check .
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            mapfile -t PY_FILES < <(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" -- '*.py')
+            if [ "${#PY_FILES[@]}" -gt 0 ]; then
+              printf 'Linting changed Python files:\n%s\n' "${PY_FILES[@]}"
+              ruff check "${PY_FILES[@]}"
+            else
+              echo "No changed Python files to lint."
+            fi
+          else
+            ruff check .
+          fi
 
       - name: Bandit
         run: bandit -r . -x ./tests,./agents/tests,./google/tests,./hackathon/tests -ll
