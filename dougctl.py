@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+from dataclasses import asdict
 
+from agents.max_agentic import MAX_PROFILE
+from agents.protective_order import status as protective_order_status
 from doug_core.runtime import DougRuntime
 from doug_core.use_cases import list_use_cases
 from doug_core.use_case_engine import run_use_case
@@ -45,6 +48,16 @@ def main():
     sub.add_parser(
         "heal",
         help="Run one bounded ZYRA local runtime self-heal pass",
+    )
+
+    sub.add_parser(
+        "max-profile",
+        help="Show the ZYRA MAX agentic engineering profile",
+    )
+
+    sub.add_parser(
+        "protective-order",
+        help="Show the non-destructive ZYRA protective-order policy",
     )
 
     inspect_cmd = sub.add_parser(
@@ -119,6 +132,21 @@ def main():
         report = run_self_heal(start_ollama=True, persist=True)
         dump(report)
         raise SystemExit(0 if report.get("healthy") else 1)
+
+    if args.command == "max-profile":
+        dump(
+            {
+                "status": "available",
+                "profile": asdict(MAX_PROFILE),
+                "no_rebellion": True,
+                "operator_authority": "required",
+            }
+        )
+        return
+
+    if args.command == "protective-order":
+        dump(protective_order_status())
+        return
 
     if args.command == "inspect":
         dump(
