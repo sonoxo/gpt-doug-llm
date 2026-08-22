@@ -53,9 +53,13 @@ class ComplianceGate:
         (re.compile(r"(?i)\b(?:social scoring|citizen score)\b"), "social scoring"),
         (re.compile(r"(?i)\b(?:infer|classify|rank)\b.{0,40}\b(?:race|religion|sexual orientation|disability|ethnicity)\b"), "protected-trait inference"),
         (re.compile(r"(?i)\b(?:deepfake|impersonate)\b.{0,30}\b(?:official|election|candidate)\b"), "deceptive civic impersonation"),
+        (re.compile(r"(?i)\b(?:identify|find|locate|select|rank|recommend)\b.{0,80}\b(?:weak|vulnerable|soft|unguarded)\b.{0,50}\b(?:military|army|naval|airbase|outpost|facility|target)\b"), "real-world military weak-point identification"),
+        (re.compile(r"(?i)\b(?:first[- ]strike|strike planning|attack plan|sabotage)\b"), "operational attack planning"),
+        (re.compile(r"(?i)\b(?:bypass|evade|defeat)\b.{0,50}\b(?:access control|authentication|security control)\b"), "unauthorized access-control bypass"),
     )
     HIGH_IMPACT = re.compile(r"(?i)\b(?:employment|hiring|credit|loan|housing|benefits|healthcare|education admission|law enforcement)\b")
     GOVERNMENT = re.compile(r"(?i)\b(?:government|defen[cs]e|military|intelligence agency|classified)\b")
+    INTELLIGENCE_RESEARCH = re.compile(r"(?i)\b(?:osint|open[- ]source intelligence|intelligence analysis|declassified|public records?|source provenance|analytic confidence)\b")
 
     def __init__(self, context: UserContext):
         self.context = context
@@ -75,6 +79,10 @@ class ComplianceGate:
             if not self.context.human_oversight:
                 return ComplianceDecision(False, "high-impact use requires human oversight")
             return ComplianceDecision(True, "high-impact decision support requires human review", True)
+        if self.INTELLIGENCE_RESEARCH.search(text):
+            if not self.context.human_oversight:
+                return ComplianceDecision(False, "intelligence research requires human oversight")
+            return ComplianceDecision(True, "intelligence research requires provenance and human review", True)
         return ComplianceDecision(True)
 
     def status(self) -> str:
