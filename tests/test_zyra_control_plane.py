@@ -7,7 +7,7 @@ import pytest
 
 from zyra_control_plane.attestation import AttestationSigner
 from zyra_control_plane.benchmark import BenchmarkSuite
-from zyra_control_plane.capabilities import CapabilityRegistry, READ_ONLY, WRITE_LOCAL
+from zyra_control_plane.capabilities import READ_ONLY, WRITE_LOCAL, CapabilityRegistry
 from zyra_control_plane.control_plane import MissionControl
 from zyra_control_plane.dag import MissionDAG, MissionStep, StepResult
 from zyra_control_plane.journal import MissionJournal
