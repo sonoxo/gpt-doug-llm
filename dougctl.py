@@ -4,13 +4,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 
 from doug_core.runtime import DougRuntime
 from doug_core.use_cases import list_use_cases
 from doug_core.use_case_engine import run_use_case
 from doug_core.workspace import inspect_workspace
+from zyra_agent import MissionBudget
 from zyra_lang.compiler import compile_file
+from zyra_protective_order import ProtectiveOrder, describe_capabilities
 from zyra_self_heal import run_self_heal
+from zyra_sleeper import ZyraSleeper
 
 
 def dump(value):
@@ -20,6 +24,17 @@ def dump(value):
             indent=2,
             default=lambda obj: obj.__dict__,
         )
+    )
+
+
+def _sleeper(root: str, max_steps: int, max_seconds: int, max_model_calls: int):
+    model = os.environ.get("GPT_DOUG_MODEL") or os.environ.get("OLLAMA_MODEL") or "gpt-doug"
+    base_url = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+    return ZyraSleeper(
+        root,
+        model=model,
+        base_url=base_url,
+        budget=MissionBudget(max_steps, max_seconds, max_model_calls),
     )
 
 
@@ -107,6 +122,22 @@ def main():
         help="Directory for generated ZYRA artifacts",
     )
 
+    sub.add_parser(
+        "sleeper-status",
+        help="Show defensive SLEEPER policy and activation status",
+    )
+
+    sleeper_run = sub.add_parser(
+        "sleeper-run",
+        help="Run one defensive, repository-scoped autonomous coding mission",
+    )
+    sleeper_run.add_argument("goal")
+    sleeper_run.add_argument("--root", default=".")
+    sleeper_run.add_argument("--evolve", action="store_true")
+    sleeper_run.add_argument("--max-steps", type=int, default=8)
+    sleeper_run.add_argument("--max-seconds", type=int, default=240)
+    sleeper_run.add_argument("--max-model-calls", type=int, default=12)
+
     args = parser.parse_args()
 
     if args.command == "capabilities":
@@ -147,6 +178,42 @@ def main():
                 "status": "compiled",
                 "source": args.source,
                 "outputs": outputs,
+            }
+        )
+        return
+
+    if args.command == "sleeper-status":
+        dump(describe_capabilities())
+        return
+
+    if args.command == "sleeper-run":
+        policy = ProtectiveOrder()
+        decision = policy.evaluate(args.goal)
+        if not decision.allowed:
+            dump(
+                {
+                    "ok": False,
+                    "protective_order": "DENIED",
+                    "reason": decision.reason,
+                    "matched_terms": decision.matched_terms,
+                    "no_rebellion": True,
+                }
+            )
+            raise SystemExit(2)
+
+        sleeper = _sleeper(
+            args.root,
+            args.max_steps,
+            args.max_seconds,
+            args.max_model_calls,
+        )
+        result = sleeper.run_once(args.goal, evolve=args.evolve)
+        dump(
+            {
+                "ok": result.status == "COMPLETED",
+                "protective_order": "ALLOWED",
+                "mission": result.to_dict(),
+                "sleeper_state_after_run": sleeper.status(),
             }
         )
         return
