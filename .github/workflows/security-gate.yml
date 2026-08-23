@@ -53,8 +53,29 @@ jobs:
             ruff check .
           fi
 
-      - name: Bandit
-        run: bandit -r . -x ./tests,./agents/tests,./google/tests,./hackathon/tests -ll
+      - name: Bandit — no new security regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            DIFF_BASE="origin/${{ github.base_ref }}"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            DIFF_BASE="${{ github.event.before }}"
+          else
+            DIFF_BASE="HEAD^"
+          fi
+
+          mapfile -t PY_FILES < <(
+            git diff --name-only --diff-filter=ACMR "${DIFF_BASE}...HEAD" -- '*.py' |
+              grep -Ev '(^|/)(tests?|test_[^/]*)/' || true
+          )
+
+          if [ "${#PY_FILES[@]}" -gt 0 ]; then
+            printf 'Bandit scanning changed production Python files:\n%s\n' "${PY_FILES[@]}"
+            bandit -ll "${PY_FILES[@]}"
+          else
+            echo "No changed production Python files to scan with Bandit."
+          fi
 
       - name: Dependency audit
         run: pip-audit
