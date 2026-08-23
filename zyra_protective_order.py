@@ -9,7 +9,6 @@ action, offensive exploitation, covert persistence, and safeguard bypass.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
 
 
 BLOCKED_TERMS = {
@@ -70,19 +69,27 @@ class ProtectiveOrder:
         if matched:
             return PolicyDecision(
                 allowed=False,
-                reason="Mission requests weapon/destructive control or safeguard bypass; defensive-only policy blocks execution.",
+                reason=(
+                    "Mission requests weapon/destructive control or safeguard "
+                    "bypass; defensive-only policy blocks execution."
+                ),
                 matched_terms=matched,
             )
         return PolicyDecision(
             allowed=True,
-            reason="Mission is eligible for defensive software execution inside existing repository safety boundaries.",
+            reason=(
+                "Mission is eligible for defensive software execution inside "
+                "existing repository safety boundaries."
+            ),
         )
 
     def require_allowed(self, goal: str) -> None:
         decision = self.evaluate(goal)
         if not decision.allowed:
             terms = ", ".join(decision.matched_terms) or "blocked capability"
-            raise PermissionError(f"Protective Order denied mission ({terms}): {decision.reason}")
+            raise PermissionError(
+                f"Protective Order denied mission ({terms}): {decision.reason}"
+            )
 
 
 def describe_capabilities() -> dict[str, object]:
