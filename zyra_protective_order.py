@@ -9,7 +9,6 @@ action, offensive exploitation, covert persistence, and safeguard bypass.
 
 from dataclasses import dataclass
 
-
 BLOCKED_TERMS = {
     "weapon control",
     "weapons control",
