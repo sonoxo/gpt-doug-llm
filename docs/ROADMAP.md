@@ -16,52 +16,62 @@ This roadmap favors reliability, observability, and useful autonomous execution 
 - [x] Native LASER self-test
 - [x] CI security gate
 
-## Phase 2 — Mission Intelligence
+## Phase 2 — Mission Intelligence ✅
 
-- [ ] Structured JSONL mission event journal
-- [ ] Step-level timing and token/model-call telemetry
-- [ ] Better failure taxonomy: planning, tool, validation, review, runtime
-- [ ] DAG mission planner with dependency-aware steps
-- [ ] Mission resume from explicit checkpoints
-- [ ] Deterministic acceptance criteria generated before editing
-- [ ] Multi-file patch previews before keep/rollback
+- [x] Structured JSONL mission event journal
+- [x] Step-level timing and token/model-call telemetry
+- [x] Better failure taxonomy: planning, tool, validation, review, runtime
+- [x] DAG mission planner with dependency-aware steps
+- [x] Mission resume from explicit checkpoints
+- [x] Deterministic acceptance criteria generated before editing
+- [x] Multi-file patch previews before keep/rollback
 
-## Phase 3 — Capability Manifests
+## Phase 3 — Capability Manifests ✅
 
-- [ ] Machine-readable capability manifest per agent/tool
-- [ ] Per-mission capability grants
-- [ ] Read-only vs write-enabled mission profiles
-- [ ] Explicit network capability boundary for approved integrations
-- [ ] Signed mission policy snapshot
-- [ ] Tamper-evident autonomous-change journal
+- [x] Machine-readable capability manifest per agent/tool
+- [x] Per-mission capability grants
+- [x] Read-only vs write-enabled mission profiles
+- [x] Explicit network capability boundary for approved integrations
+- [x] Signed mission policy snapshot
+- [x] Tamper-evident autonomous-change journal
 
-## Phase 4 — Reproducible Build Sandbox
+## Phase 4 — Reproducible Build Sandbox ✅
 
-- [ ] Ephemeral sandbox for generated apps
-- [ ] Dependency lock verification
-- [ ] Automatic local preview for web apps
-- [ ] Port/process lifecycle manager
-- [ ] Golden-path smoke tests
-- [ ] Artifact manifest and provenance report
+- [x] Ephemeral sandbox for generated apps
+- [x] Dependency lock verification
+- [x] Automatic local preview for web apps
+- [x] Port/process lifecycle manager
+- [x] Golden-path smoke tests
+- [x] Artifact manifest and provenance report
 
-## Phase 5 — ZYRA Mission Console
+## Phase 5 — ZYRA Mission Console ✅
 
-- [ ] Web dashboard for live mission events
-- [ ] Plan visualization
-- [ ] File-diff viewer
-- [ ] Checkpoint/rollback controls
-- [ ] Agent/LASER/self-heal telemetry
-- [ ] Mission history and benchmark views
+- [x] Web dashboard for live mission events
+- [x] Plan visualization
+- [x] File-diff viewer
+- [x] Checkpoint/rollback controls
+- [x] Agent/LASER/self-heal telemetry
+- [x] Mission history and benchmark views
 
-## Phase 6 — Reliability Benchmarks
+## Phase 6 — Reliability Benchmarks ✅
 
-- [ ] Curated autonomous coding benchmark suite
-- [ ] Repeatability tests across local models
-- [ ] Rollback correctness score
-- [ ] False-success tracking
-- [ ] Human-correction rate
-- [ ] Performance budget regression checks
-- [ ] Release scorecard
+- [x] Curated autonomous coding benchmark suite
+- [x] Repeatability tests across local models
+- [x] Rollback correctness score
+- [x] False-success tracking
+- [x] Human-correction rate
+- [x] Performance budget regression checks
+- [x] Release scorecard
+
+## Mission Control 1.0
+
+The Phase 2–6 foundations are implemented in `zyra_control_plane/` and exposed
+through `zyra_control.py`. The implementation is deliberately local-first and
+bounded: capability grants are explicit, the console binds to localhost by
+default, sandbox commands use an executable allowlist with `shell=False`, and
+external delivery remains subject to the repository's existing human/CI gates.
+
+See [ZYRA Mission Control](ZYRA_MISSION_CONTROL.md) for usage and architecture.
 
 ## Long-term direction
 
