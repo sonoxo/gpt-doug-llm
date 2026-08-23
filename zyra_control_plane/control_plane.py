@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .attestation import AttestationSigner
-from .capabilities import CapabilityRegistry, MissionGrant, WRITE_LOCAL
+from .capabilities import WRITE_LOCAL, CapabilityRegistry, MissionGrant
 from .dag import MissionDAG, MissionStep, StepResult
 from .journal import MissionJournal
 
