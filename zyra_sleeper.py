@@ -116,7 +116,9 @@ class ZyraSleeper:
         if not clean_goal:
             raise SleeperError("explicit mission goal is required")
         if self.state.state != DORMANT:
-            raise SleeperError(f"SLEEPER must be DORMANT before arming; current={self.state.state}")
+            raise SleeperError(
+                f"SLEEPER must be DORMANT before arming; current={self.state.state}"
+            )
         self.state.state = ARMED
         self.state.armed_at = time.time()
         self.state.mission_goal = clean_goal
@@ -158,7 +160,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog="zyra-sleeper")
     parser.add_argument("--root", default=".")
     parser.add_argument("--model", default=_default_model())
-    parser.add_argument("--base-url", default=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434"))
+    parser.add_argument(
+        "--base-url",
+        default=os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434"),
+    )
     parser.add_argument("--max-steps", type=int, default=8)
     parser.add_argument("--max-seconds", type=int, default=240)
     parser.add_argument("--max-model-calls", type=int, default=12)
@@ -168,7 +173,7 @@ def main() -> None:
     arm = sub.add_parser("arm")
     arm.add_argument("goal")
     arm.add_argument("--evolve", action="store_true")
-    execute = sub.add_parser("execute")
+    sub.add_parser("execute")
     run_once = sub.add_parser("run-once")
     run_once.add_argument("goal")
     run_once.add_argument("--evolve", action="store_true")
@@ -194,7 +199,12 @@ def main() -> None:
             output = sleeper.run_once(args.goal, evolve=args.evolve).to_dict()
         print(json.dumps(output, indent=2))
     except (SleeperError, MissionError) as exc:
-        print(json.dumps({"ok": False, "error": str(exc), "state": sleeper.status()}, indent=2))
+        print(
+            json.dumps(
+                {"ok": False, "error": str(exc), "state": sleeper.status()},
+                indent=2,
+            )
+        )
         raise SystemExit(1)
 
 
