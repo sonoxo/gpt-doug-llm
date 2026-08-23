@@ -7,8 +7,6 @@ emergency-stop workflows while rejecting weapon control, targeting, destructive
 action, offensive exploitation, covert persistence, and safeguard bypass.
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 
 
