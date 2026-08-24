@@ -11,9 +11,12 @@ from __future__ import annotations
 import json
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Iterator
+
+from agents.ai_action_plan import inject_policy
 
 Message = dict[str, str]
 Event = dict
@@ -39,6 +42,31 @@ def _safe_provider_error(name: str, exc: Exception) -> str:
     if isinstance(exc, TimeoutError):
         return f"{name}: timeout"
     return f"{name}: provider failure"
+
+
+def _safe_urlopen(
+    request: urllib.request.Request,
+    *,
+    timeout: float,
+    allow_local_http: bool = False,
+):
+    """Open a provider request only after validating its transport target.
+
+    Remote providers must use HTTPS. Plain HTTP is permitted only for explicit
+    loopback Ollama endpoints, preserving the local default without allowing a
+    configurable provider URL to become a file/custom-scheme read primitive.
+    """
+    parsed = urllib.parse.urlparse(request.full_url)
+    host = (parsed.hostname or "").lower()
+    is_https = parsed.scheme == "https"
+    is_loopback_http = (
+        allow_local_http
+        and parsed.scheme == "http"
+        and host in {"127.0.0.1", "localhost", "::1"}
+    )
+    if not (is_https or is_loopback_http):
+        raise ValueError(f"Refusing unsafe provider URL: {parsed.scheme}://{host}")
+    return urllib.request.urlopen(request, timeout=timeout)  # nosec B310 -- scheme/host validated above
 
 
 @dataclass(frozen=True)
@@ -113,7 +141,7 @@ class OpenAIProvider(Provider):
     def chat_once(self, messages, model, options):
         if not self.config.configured:
             return _configuration_error("OPENAI_API_KEY")
-        with urllib.request.urlopen(
+        with _safe_urlopen(
             self._request(messages, model, options, False),
             timeout=DEFAULT_TIMEOUT,
         ) as response:
@@ -161,7 +189,7 @@ class AnthropicProvider(Provider):
                 "anthropic-version": "2023-06-01",
             },
         )
-        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
+        with _safe_urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
             data = json.loads(response.read())
         content = "".join(
             block.get("text", "")
@@ -204,7 +232,7 @@ class GeminiProvider(Provider):
             json.dumps(body).encode(),
             {"Content-Type": "application/json", "x-goog-api-key": self.api_key},
         )
-        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
+        with _safe_urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
             data = json.loads(response.read())
         parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
         content = "".join(part.get("text", "") for part in parts)
@@ -230,7 +258,7 @@ class OllamaProvider(Provider):
                 f"{self.base_url}/api/tags",
                 headers={"Accept": "application/json"},
             )
-            with urllib.request.urlopen(request, timeout=3) as response:
+            with _safe_urlopen(request, timeout=3, allow_local_http=True) as response:
                 data = json.loads(response.read())
             models = [
                 item.get("name", "")
@@ -288,7 +316,11 @@ class OllamaProvider(Provider):
             body,
             {"Content-Type": "application/json"},
         )
-        with urllib.request.urlopen(request, timeout=max(DEFAULT_TIMEOUT, 600)) as response:
+        with _safe_urlopen(
+            request,
+            timeout=max(DEFAULT_TIMEOUT, 600),
+            allow_local_http=True,
+        ) as response:
             data = json.loads(response.read())
         data["provider"] = "ollama"
         return data
@@ -434,7 +466,9 @@ DEFAULT_MODEL = _provider.config.model
 
 
 def health() -> dict:
-    return _provider.health()
+    state = _provider.health()
+    state["ai_action_plan_profile"] = os.environ.get("GPT_DOUG_AI_ACTION_PLAN", "1").strip().lower() not in {"0", "false", "off", "no", "disabled"}
+    return state
 
 
 def chat_once(
@@ -442,7 +476,7 @@ def chat_once(
     model: str | None = None,
     options: dict | None = None,
 ) -> Event:
-    return _provider.chat_once(messages, model, options or {})
+    return _provider.chat_once(inject_policy(messages), model, options or {})
 
 
 def chat_stream(
@@ -452,14 +486,15 @@ def chat_stream(
 ):
     from agents.xunia_stream import stream_auto, stream_provider, xunia_stream
 
+    prepared = inject_policy(messages)
     opts = options or {}
     if isinstance(_provider, XuniaProvider):
-        yield from xunia_stream(_provider, messages, opts)
+        yield from xunia_stream(_provider, prepared, opts)
         return
     if isinstance(_provider, AutoProvider):
-        yield from stream_auto(_provider, messages, model, opts)
+        yield from stream_auto(_provider, prepared, model, opts)
         return
-    yield from stream_provider(_provider, messages, model, opts)
+    yield from stream_provider(_provider, prepared, model, opts)
 
 
 def available_providers() -> list[dict]:
