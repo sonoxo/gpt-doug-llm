@@ -117,14 +117,19 @@ def policy_text() -> str:
 
 
 def _already_injected(messages: Iterable[Message]) -> bool:
-    return any(POLICY_MARKER in str(message.get("content", "")) for message in messages)
+    return any(
+        message.get("role") == "system"
+        and POLICY_MARKER in str(message.get("content", ""))
+        for message in messages
+    )
 
 
 def inject_policy(messages: list[Message]) -> list[Message]:
     """Return a copy of messages with one engineering-profile system message.
 
     Injection is idempotent and can be disabled with GPT_DOUG_AI_ACTION_PLAN=0.
-    User content is never rewritten.
+    User content is never rewritten, and quoting the marker in user content does
+    not suppress the profile.
     """
     copied = [dict(message) for message in messages]
     if not enabled() or _already_injected(copied):
