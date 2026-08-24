@@ -6,7 +6,7 @@ This feature does **not** claim White House, U.S. Government, NIST, DOD, intelli
 
 ## Runtime behavior
 
-The profile is enabled by default and can be disabled with:
+The provider-gateway profile is enabled by default and can be disabled with:
 
 ```bash
 GPT_DOUG_AI_ACTION_PLAN=0
@@ -14,7 +14,14 @@ GPT_DOUG_AI_ACTION_PLAN=0
 
 When enabled, `agents.llm_backend` injects the profile once at the provider-neutral chat gateway. That means the same engineering defaults apply to supported OpenAI, Anthropic, Gemini, Ollama, Auto, and XUNIA execution paths that use the gateway.
 
-The `Modelfile` also carries equivalent defaults for direct local-model sessions that bypass the Python gateway.
+The default `Modelfile` remains profile-neutral so the environment opt-out is meaningful when the gateway selects the normal `gpt-doug` model. Direct Ollama users who explicitly want a model with the profile embedded can build a separate model from `Modelfile.ai-action-plan`, for example:
+
+```bash
+ollama create gpt-doug-ai-action-plan -f Modelfile.ai-action-plan
+ollama run gpt-doug-ai-action-plan
+```
+
+Because an embedded Ollama system prompt cannot be changed by a Python environment variable after the model is built, direct sessions use this separate opt-in model instead of silently overriding `GPT_DOUG_AI_ACTION_PLAN=0`.
 
 ## Translation from policy themes to engineering controls
 
@@ -51,8 +58,9 @@ Policy framing must remain distinct from verified technical facts. High-impact e
 `agents/tests/test_ai_action_plan.py` verifies:
 
 - all three operational pillars are represented;
-- injection is idempotent;
+- injection is idempotent for system messages;
 - user messages are preserved;
-- the profile can be disabled;
+- quoting the public profile marker cannot suppress injection;
+- the gateway profile can be disabled;
 - security and human-control language remains present;
 - evaluation, incident response, and secure-by-design capabilities remain part of the profile.
