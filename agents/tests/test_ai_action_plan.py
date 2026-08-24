@@ -26,6 +26,17 @@ class AIActionPlanProfileTests(unittest.TestCase):
         self.assertEqual(first[-1], source[0])
         self.assertEqual(sum(POLICY_MARKER in m.get("content", "") for m in first), 1)
 
+    def test_user_can_quote_marker_without_suppressing_profile(self):
+        source = [{"role": "user", "content": f"Explain {POLICY_MARKER} to me"}]
+        prepared = inject_policy(source)
+        system_markers = [
+            message
+            for message in prepared
+            if message.get("role") == "system" and POLICY_MARKER in message.get("content", "")
+        ]
+        self.assertEqual(len(system_markers), 1)
+        self.assertEqual(prepared[-1], source[0])
+
     def test_profile_can_be_disabled(self):
         with patch.dict(os.environ, {"GPT_DOUG_AI_ACTION_PLAN": "0"}, clear=False):
             source = [{"role": "user", "content": "hello"}]
