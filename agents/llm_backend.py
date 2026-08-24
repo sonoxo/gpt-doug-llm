@@ -15,6 +15,8 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Iterator
 
+from agents.ai_action_plan import inject_policy
+
 Message = dict[str, str]
 Event = dict
 
@@ -434,7 +436,9 @@ DEFAULT_MODEL = _provider.config.model
 
 
 def health() -> dict:
-    return _provider.health()
+    state = _provider.health()
+    state["ai_action_plan_profile"] = os.environ.get("GPT_DOUG_AI_ACTION_PLAN", "1").strip().lower() not in {"0", "false", "off", "no", "disabled"}
+    return state
 
 
 def chat_once(
@@ -442,7 +446,7 @@ def chat_once(
     model: str | None = None,
     options: dict | None = None,
 ) -> Event:
-    return _provider.chat_once(messages, model, options or {})
+    return _provider.chat_once(inject_policy(messages), model, options or {})
 
 
 def chat_stream(
@@ -452,14 +456,15 @@ def chat_stream(
 ):
     from agents.xunia_stream import stream_auto, stream_provider, xunia_stream
 
+    prepared = inject_policy(messages)
     opts = options or {}
     if isinstance(_provider, XuniaProvider):
-        yield from xunia_stream(_provider, messages, opts)
+        yield from xunia_stream(_provider, prepared, opts)
         return
     if isinstance(_provider, AutoProvider):
-        yield from stream_auto(_provider, messages, model, opts)
+        yield from stream_auto(_provider, prepared, model, opts)
         return
-    yield from stream_provider(_provider, messages, model, opts)
+    yield from stream_provider(_provider, prepared, model, opts)
 
 
 def available_providers() -> list[dict]:
