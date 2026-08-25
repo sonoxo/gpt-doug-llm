@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - feature/xunia-ontology-platform
+      - feature/xunia-sovereignty
     paths:
       - 'xunia-platform/**'
       - '.github/workflows/xunia-platform.yml'
@@ -65,5 +66,38 @@ jobs:
             sleep 1
           done
           curl -fsS -H 'Authorization: Bearer ci-viewer-token' http://127.0.0.1:4400/api/ontology/objects/site%3Aci | grep -q 'site:ci'
+      - name: Sovereign encrypted-state smoke test
+        env:
+          XUNIA_PLATFORM_HOST: 127.0.0.1
+          XUNIA_PLATFORM_PORT: 4401
+          XUNIA_DATA_DIR: /tmp/xunia-sovereign-state
+          XUNIA_AUTH_REQUIRED: '1'
+          XUNIA_SOVEREIGNTY_ENFORCED: '1'
+          XUNIA_REALM_ID: xunia-ci-realm
+          XUNIA_REGION: us-va-ci
+          XUNIA_ALLOWED_REGIONS: us-va-ci
+          XUNIA_KEY_AUTHORITY: customer
+          XUNIA_CUSTOMER_KEY_ID: kms://ci/xunia
+          XUNIA_REQUIRE_ENCRYPTED_STATE: '1'
+          XUNIA_STATE_ENCRYPTION_KEY: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+          XUNIA_API_KEYS: '{"sovereign-admin":{"role":"admin","subject":"ci-admin","realm":"xunia-ci-realm"},"sovereign-viewer":{"role":"viewer","subject":"ci-viewer","realm":"xunia-ci-realm"}}'
+        run: |
+          rm -rf "$XUNIA_DATA_DIR"
+          node dist/src/server.js > /tmp/xunia-sovereign.log 2>&1 &
+          PID=$!
+          cleanup() { kill "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4401/ready >/tmp/sovereign-ready.json; then break; fi
+            sleep 1
+          done
+          cat /tmp/sovereign-ready.json
+          node -e "const x=require('/tmp/sovereign-ready.json'); if(!x.ok || !x.auth.sovereignty.ready) process.exit(1)"
+          curl -fsS -X POST -H 'Authorization: Bearer sovereign-admin' -H 'X-Xunia-Realm: xunia-ci-realm' -H 'X-Xunia-Region: us-va-ci' -H 'Content-Type: application/json' \
+            -d '{"id":"site:sovereign","type":"Site","properties":{"realm":"xunia-ci-realm"}}' \
+            http://127.0.0.1:4401/api/ontology/objects >/tmp/sovereign-create.json
+          test "$(curl -sS -o /tmp/cross-realm.json -w '%{http_code}' -H 'Authorization: Bearer sovereign-viewer' -H 'X-Xunia-Realm: other-realm' http://127.0.0.1:4401/api/ontology)" = 401
+          grep -q 'encrypted-state-v1' "$XUNIA_DATA_DIR/ontology.json"
+          if grep -q 'site:sovereign' "$XUNIA_DATA_DIR/ontology.json"; then exit 1; fi
       - name: Build production image
         run: docker build -t xunia-platform:ci .

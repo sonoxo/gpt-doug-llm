@@ -49,6 +49,32 @@ spec:
                 secretKeyRef:
                   name: xunia-platform-secrets
                   key: api-keys
+            - name: XUNIA_SOVEREIGNTY_ENFORCED
+              value: "1"
+            - name: XUNIA_REALM_ID
+              value: xunia-us-va
+            - name: XUNIA_REGION
+              value: us-va
+            - name: XUNIA_ALLOWED_REGIONS
+              value: us-va
+            - name: XUNIA_AIR_GAPPED
+              value: "0"
+            - name: XUNIA_KEY_AUTHORITY
+              value: customer
+            - name: XUNIA_CUSTOMER_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: xunia-platform-secrets
+                  key: customer-key-id
+            - name: XUNIA_REQUIRE_ENCRYPTED_STATE
+              value: "1"
+            - name: XUNIA_STATE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: xunia-platform-secrets
+                  key: state-encryption-key
+            - name: XUNIA_EGRESS_ALLOWLIST
+              value: ""
             - name: XUNIA_CHAIN_URL
               value: http://xunia-chain:4317
             - name: SONOXO_URL
@@ -96,3 +122,44 @@ spec:
     - name: http
       port: 4400
       targetPort: http
+---
+# Sovereign default-deny egress. Add explicit policy entries for any approved external model/data endpoints.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: xunia-platform-sovereign-egress
+spec:
+  podSelector:
+    matchLabels:
+      app: xunia-platform
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app: xunia-chain
+      ports:
+        - protocol: TCP
+          port: 4317
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app: sonoxo
+      ports:
+        - protocol: TCP
+          port: 3001
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
