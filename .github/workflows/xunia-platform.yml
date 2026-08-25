@@ -1,0 +1,40 @@
+name: XUNIA Platform CI
+
+on:
+  pull_request:
+    paths:
+      - 'xunia-platform/**'
+      - '.github/workflows/xunia-platform.yml'
+  push:
+    branches:
+      - feature/xunia-ontology-platform
+    paths:
+      - 'xunia-platform/**'
+      - '.github/workflows/xunia-platform.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: xunia-platform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npm run build
+      - run: npm test
+      - name: Smoke test
+        run: |
+          node dist/src/server.js > /tmp/xunia-platform.log 2>&1 &
+          PID=$!
+          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4400/health >/tmp/health.json; then break; fi
+            sleep 1
+          done
+          cat /tmp/health.json
+          node -e "const x=require('/tmp/health.json'); if(!x.ok) process.exit(1)"
+          curl -fsS http://127.0.0.1:4400/api/aip/agents | grep -q xunia-analyst
