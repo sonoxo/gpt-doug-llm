@@ -37,20 +37,28 @@ jobs:
       - name: Tests
         run: python -m pytest tests agents/tests google/tests hackathon/tests -q
 
-      - name: Ruff
+      - name: Ruff — changed Python files
         shell: bash
         run: |
           set -euo pipefail
+
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            mapfile -t PY_FILES < <(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" -- '*.py')
-            if [ "${#PY_FILES[@]}" -gt 0 ]; then
-              printf 'Linting changed Python files:\n%s\n' "${PY_FILES[@]}"
-              ruff check "${PY_FILES[@]}"
-            else
-              echo "No changed Python files to lint."
-            fi
+            DIFF_BASE="origin/${{ github.base_ref }}"
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            DIFF_BASE="${{ github.event.before }}"
           else
-            ruff check .
+            DIFF_BASE="HEAD^"
+          fi
+
+          mapfile -t PY_FILES < <(
+            git diff --name-only --diff-filter=ACMR "${DIFF_BASE}...HEAD" -- '*.py'
+          )
+
+          if [ "${#PY_FILES[@]}" -gt 0 ]; then
+            printf 'Linting changed Python files:\n%s\n' "${PY_FILES[@]}"
+            ruff check "${PY_FILES[@]}"
+          else
+            echo "No changed Python files to lint."
           fi
 
       - name: Bandit — no new security regressions
