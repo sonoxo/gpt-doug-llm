@@ -1,0 +1,58 @@
+name: SONOXO XRAYCLOUD CI
+
+on:
+  pull_request:
+    paths:
+      - 'xunia-fleet/**'
+      - '.github/workflows/sonoxo-xraycloud.yml'
+  push:
+    branches:
+      - feature/sonoxo-xraycloud-pipeline
+    paths:
+      - 'xunia-fleet/**'
+      - '.github/workflows/sonoxo-xraycloud.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: xunia-fleet
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npm test
+      - name: Preview smoke test
+        shell: bash
+        run: |
+          PORT=3001 npm start > /tmp/sonoxo-preview.log 2>&1 &
+          PID=$!
+          trap 'kill -TERM "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true' EXIT
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:3001/api/sonoxo/harvest >/tmp/sonoxo-health.json; then break; fi
+            sleep 0.5
+          done
+          grep -q '"ok":true' /tmp/sonoxo-health.json
+          curl --fail --silent -X POST \
+            -H 'content-type: application/json' \
+            -d '{"type":"ci.harvest","payload":{"apiKey":"must-redact"}}' \
+            http://127.0.0.1:3001/api/sonoxo/harvest >/tmp/sonoxo-ingest.json
+          grep -q '\[REDACTED\]' .xray/harvest/sonoxo.json
+          kill -TERM "$PID"
+          set +e
+          wait "$PID"
+          EXIT_CODE=$?
+          set -e
+          if [ "$EXIT_CODE" -ne 0 ] && [ "$EXIT_CODE" -ne 143 ]; then
+            echo "Unexpected preview exit code: $EXIT_CODE"
+            cat /tmp/sonoxo-preview.log
+            exit "$EXIT_CODE"
+          fi
+          trap - EXIT

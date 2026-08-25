@@ -1,0 +1,45 @@
+{
+  "protocolId": "sonoxo:nsa-fbi:secure-operations:v1",
+  "namespace": "sonoxo",
+  "mode": "zero-trust",
+  "clearanceModel": {
+    "tier": "TSC",
+    "requirements": [
+      "verified_identity",
+      "mission_scope",
+      "need_to_know",
+      "compartment_match",
+      "least_privilege"
+    ]
+  },
+  "nsaControls": {
+    "cryptographicIntegrity": true,
+    "signedWorkloads": true,
+    "keyRotationRequired": true,
+    "tamperEvidentLogging": true,
+    "denyByDefault": true,
+    "secretRedaction": true
+  },
+  "fbiControls": {
+    "chainOfCustody": true,
+    "immutableEventIds": true,
+    "actorAttribution": true,
+    "missionCorrelation": true,
+    "auditRetention": true,
+    "reproducibleTimeline": true
+  },
+  "dualCustodian": {
+    "requiredFor": [
+      "policy_change",
+      "privilege_escalation",
+      "audit_deletion",
+      "production_deploy"
+    ]
+  },
+  "agentRules": {
+    "selfEscalation": "DENY",
+    "selfPolicyMutation": "DENY",
+    "auditBypass": "DENY",
+    "outOfScopeExecution": "DENY"
+  }
+}
