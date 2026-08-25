@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { JsonState } from './persistence.js';
 import { OntologyStore } from './ontology.js';
+import { sovereignty } from './sovereignty.js';
 
 export type ToolRisk = 'low' | 'medium' | 'high';
 export type ToolSpec = {
@@ -49,7 +50,6 @@ export type AuditRecord = {
 };
 
 type AipState = { audits: AuditRecord[]; runs: AipRun[]; agents: AgentSpec[] };
-
 type ProposedStep = Omit<PlanStep, 'id' | 'status'>;
 
 export class ToolRegistry {
@@ -71,6 +71,7 @@ export class ModelGateway {
       const summary = context.length ? ` Grounded on ${context.length} ontology object(s).` : '';
       return `AIP analysis: ${message.trim()}${summary}`;
     }
+    sovereignty.assertEgress(this.endpoint, 'aip.model_gateway');
     const response = await fetch(this.endpoint, {
       method: 'POST',
       signal: AbortSignal.timeout(this.timeoutMs),
@@ -180,6 +181,7 @@ export class AipEngine {
       risk: 'low',
       execute: async () => {
         const url = `${(process.env.XUNIA_CHAIN_URL ?? 'http://127.0.0.1:4317').replace(/\/$/, '')}/health`;
+        sovereignty.assertEgress(url, 'xunia_chain.health');
         const response = await fetch(url, { signal: AbortSignal.timeout(5_000) });
         if (!response.ok) throw new Error(`chain_health_${response.status}`);
         return response.json();
@@ -191,6 +193,7 @@ export class AipEngine {
       risk: 'medium',
       execute: async (input) => {
         const url = process.env.SONOXO_URL ?? 'http://127.0.0.1:3001/api/sonoxo/harvest';
+        sovereignty.assertEgress(url, 'sonoxo.telemetry');
         const response = await fetch(url, {
           method: 'POST', signal: AbortSignal.timeout(5_000), headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'xunia.aip', payload: input })
         });
@@ -233,8 +236,6 @@ export class AipEngine {
     const proposals = this.proposedSteps(message);
     const grounding = new Set<ProposedStep>();
 
-    // Ground the model before completion. Browser-console calls may provide no contextIds,
-    // so ontology search/neighborhood results must be available to the model itself.
     for (const proposal of proposals) {
       if (!this.isGroundingTool(proposal.tool)) continue;
       grounding.add(proposal);
@@ -300,8 +301,6 @@ export class AipEngine {
     const tool = this.tools.get(step.tool);
     if (!tool || !agent.tools.includes(step.tool)) throw new Error('tool_not_allowed');
 
-    // Claim the step synchronously before the first await. A concurrent approval now sees
-    // `executing` and fails closed instead of invoking the side effect twice.
     step.status = 'executing';
     this.persist();
     this.audit(runId, 'step_approval_claimed', { stepId, tool: tool.name }, actor);

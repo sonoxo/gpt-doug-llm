@@ -6,7 +6,8 @@ This is a clean-room XUNIA implementation. It does not contain proprietary Palan
 
 ## Production capabilities
 
-- persistent ontology objects and links with atomic JSON state writes
+- persistent ontology objects and links with atomic state writes
+- optional AES-256-GCM encryption of persisted ontology/AIP state
 - object search, type inventory, neighbor traversal, upsert, and controlled delete/cascade
 - AIP agent registry and ontology grounding
 - bounded tool registry with `low`, `medium`, and `high` risk levels
@@ -15,6 +16,9 @@ This is a clean-room XUNIA implementation. It does not contain proprietary Palan
 - SHA-256 hash-chained audit records with integrity verification
 - API-key authentication and RBAC (`viewer`, `editor`, `operator`, `admin`)
 - constant-time API-key comparison
+- sovereign realm and region enforcement
+- outbound AIP/network egress allowlisting with air-gap mode
+- customer-key boundary metadata and state-encryption readiness gates
 - request body limits, per-client rate limits, security headers, optional CORS allow-origin
 - liveness, readiness, and Prometheus-format metrics
 - graceful shutdown and HTTP timeout hardening
@@ -23,7 +27,7 @@ This is a clean-room XUNIA implementation. It does not contain proprietary Palan
 - browser console with session-scoped API-key connection
 - hardened non-root Docker image
 - Docker Compose and Kubernetes deployment manifests
-- CI build, tests, authenticated smoke test, persistence restart test, and container build
+- CI build, tests, RBAC/persistence restart tests, sovereign encrypted-state test, and container build
 
 ## Roles
 
@@ -60,6 +64,36 @@ npm start
 ```
 
 Put TLS in front of the service before exposing it to an untrusted network.
+
+## Sovereign mode
+
+Sovereign mode creates a deployment-level data and execution boundary. It is designed for private cloud, on-premises, restricted-network, and air-gapped deployments.
+
+```bash
+export XUNIA_SOVEREIGNTY_ENFORCED=1
+export XUNIA_REALM_ID=xunia-us-va
+export XUNIA_REGION=us-va
+export XUNIA_ALLOWED_REGIONS=us-va
+export XUNIA_KEY_AUTHORITY=customer
+export XUNIA_CUSTOMER_KEY_ID='kms://customer/xunia-platform'
+export XUNIA_REQUIRE_ENCRYPTED_STATE=1
+export XUNIA_STATE_ENCRYPTION_KEY="$(openssl rand -base64 32)"
+```
+
+Sovereign controls:
+
+- every credential is scoped to the deployment realm; API-key entries may explicitly set `realm`
+- optional `X-Xunia-Realm` and `X-Xunia-Region` request headers are fail-closed when they cross the configured boundary
+- AIP model calls, SONOXO telemetry, and XUNIA Chain network tools pass through the egress policy before any network request occurs
+- loopback, RFC1918/link-local, single-label internal service names, and `.internal`/`.local` hosts are treated as private-network targets
+- public origins are denied unless their exact origin appears in `XUNIA_EGRESS_ALLOWLIST`
+- `XUNIA_AIR_GAPPED=1` denies public egress regardless of the allowlist
+- `XUNIA_REQUIRE_ENCRYPTED_STATE=1` makes readiness fail when the state-encryption key is absent
+- state encryption uses AES-256-GCM with a 32-byte base64 key supplied at runtime; the key is never written into state files
+- `XUNIA_KEY_AUTHORITY=customer` requires a customer key identifier in readiness, allowing the runtime secret to be sourced from the customer KMS/HSM or secret manager
+- the canonical sovereignty manifest has a SHA-256 fingerprint; set `XUNIA_SOVEREIGNTY_EXPECTED_SHA256` to lock a deployment to an approved policy configuration
+
+The Kubernetes manifest adds a default-deny egress policy that only permits XUNIA Chain, SONOXO, and cluster DNS by default. Add explicit NetworkPolicy destinations when an external model gateway or data service is approved.
 
 ## Core API
 
@@ -107,19 +141,28 @@ or:
 X-API-Key: <api-key>
 ```
 
+In sovereign deployments, callers or trusted ingress proxies may additionally send:
+
+```http
+X-Xunia-Realm: xunia-us-va
+X-Xunia-Region: us-va
+```
+
 ## AIP execution pipeline
 
 ```text
 request
   -> authentication / RBAC
+  -> sovereign realm + region gate
   -> ontology context
   -> model gateway
+  -> outbound sovereignty gate
   -> bounded plan
   -> tool allowlist
   -> risk policy
   -> automatic low-risk reads OR approval-required side effects
   -> execution
-  -> persistent run state
+  -> encrypted persistent run state
   -> hash-chained audit record
 ```
 
@@ -133,6 +176,8 @@ Set `XUNIA_DATA_DIR` to enable file persistence. Two atomic state files are main
 ontology.json
 aip.json
 ```
+
+Set `XUNIA_STATE_ENCRYPTION_KEY` to a base64-encoded 32-byte key to store both files as AES-256-GCM envelopes. Existing plaintext files remain readable for migration, but new writes are encrypted whenever the key is configured. If an encrypted file cannot be decrypted, persistence fails closed and writes are blocked to avoid overwriting protected state.
 
 Without `XUNIA_DATA_DIR`, the platform runs in in-memory development mode. `/ready` reports the active persistence mode and any storage error.
 
@@ -148,7 +193,7 @@ Set `XUNIA_MODEL_URL` and optionally `XUNIA_MODEL_TOKEN`. The platform sends:
 }
 ```
 
-The endpoint may return `text`, `response`, or `output`. If no model URL is configured, AIP uses a deterministic local fallback for development.
+The endpoint may return `text`, `response`, or `output`. If no model URL is configured, AIP uses a deterministic local fallback for development. In sovereign mode, external model origins must be explicitly allowed by both the application egress allowlist and the deployment network policy.
 
 ## Security baseline
 
@@ -161,6 +206,8 @@ The endpoint may return `text`, `response`, or `output`. If no model URL is conf
 - request bodies and request rates are bounded
 - reverse-proxy client IPs are trusted only when `XUNIA_TRUST_PROXY=1`
 - container runs as an unprivileged user with a dedicated persistent volume
+- sovereign mode can pin data processing to one or more declared regions and deny cross-realm requests
+- public outbound model/telemetry connections are fail-closed unless approved
 
 This API-key baseline is suitable for controlled/private deployment. For large multi-user deployments, place the platform behind your organization’s identity-aware proxy/SSO and map authenticated identities into the XUNIA role model.
 
