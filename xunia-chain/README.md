@@ -57,6 +57,52 @@ API:
 - `GET /balance/:address`
 - `POST /tx`
 - `POST /mine` with `{ "miner": "xun_...", "difficulty": 2 }`
+- `GET /geo/schema`
+- `POST /geo/assess`
+
+## Geospatial public-safety assessment
+
+The geospatial module turns area-level defensive indicators into explainable map features for analyst review. It does not score people, identities, demographic groups, or protected classes, and its output is decision support rather than a prediction that an attack will occur.
+
+Fetch the supported factor schema:
+
+```bash
+curl http://127.0.0.1:4317/geo/schema
+```
+
+Assess one or more zones:
+
+```bash
+curl -s http://127.0.0.1:4317/geo/assess \
+  -H 'content-type: application/json' \
+  -d '{
+    "zones": [{
+      "id": "downtown-event-zone",
+      "name": "Downtown event zone",
+      "latitude": 38.90,
+      "longitude": -77.03,
+      "confidence": 0.9,
+      "factors": {
+        "credibleThreatReports": 0.55,
+        "largeGatheringExposure": 0.80,
+        "criticalInfrastructureExposure": 0.60,
+        "emergencyServiceStrain": 0.30
+      }
+    }]
+  }'
+```
+
+The response contains:
+
+- standard GeoJSON `FeatureCollection` output for map rendering
+- normalized area-level risk score and band
+- confidence value
+- ranked factor contributions
+- defensive recommended actions
+- a `reviewRequired` gate for elevated results
+- ontology nodes and edges connecting zones, factors, and assessments
+
+Supported factors are bounded from `0` to `1` and include confirmed incident history, vetted threat reporting, critical infrastructure exposure, large gathering exposure, transport disruption, emergency-service strain, cross-source anomaly, and protective-readiness gap. Unsupported fields are rejected.
 
 ## Signed payment example
 
@@ -71,7 +117,7 @@ SONOXO_TELEMETRY=1
 SONOXO_URL=http://127.0.0.1:3001/api/sonoxo/harvest
 ```
 
-Accepted transactions and mined blocks emit non-consensus telemetry to SONOXO. Telemetry failure never affects chain validity.
+Accepted transactions, mined blocks, and aggregate geospatial-assessment counts emit non-consensus telemetry to SONOXO. Telemetry failure never affects chain validity.
 
 ## Docker
 
@@ -91,6 +137,9 @@ docker run --rm -p 4317:4317 -e XUNIA_PORT=4317 -v xunia-data:/app/.xunia xunia-
 - proof-of-work checked for every non-genesis block
 - block-link and block-hash integrity checks
 - private wallet file permission hardening
+- geospatial inputs restricted to an explicit area-level factor allowlist
+- no individual or protected-class risk scoring in the geospatial engine
+- elevated geospatial results require human review
 - graceful SIGTERM/SIGINT shutdown
 
 ## Scope
