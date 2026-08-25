@@ -8,6 +8,7 @@ permissions, execution, approvals, and evidence.
 
 from __future__ import annotations
 
+import re
 from dataclasses import asdict, dataclass
 
 
@@ -93,8 +94,21 @@ HIGH_IMPACT_TERMS = {
 
 
 def _contains_any(prompt: str, terms: set[str]) -> bool:
+    """Match whole terms, not arbitrary substrings.
+
+    This prevents short terms like ``ui`` or ``api`` from matching unrelated
+    words such as ``build`` or ``capability`` and accidentally spawning the
+    application role for a pure data-pipeline task.
+    """
     lower = prompt.lower()
-    return any(term in lower for term in terms)
+    for term in terms:
+        if " " in term:
+            if term in lower:
+                return True
+            continue
+        if re.search(rf"(?<![a-z0-9]){re.escape(term)}(?![a-z0-9])", lower):
+            return True
+    return False
 
 
 def select_roles(prompt: str) -> list[FleetRole]:
