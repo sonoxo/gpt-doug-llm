@@ -1,0 +1,19 @@
+{
+  "graphId": "eon:sonoxo:dev",
+  "namespace": "sonoxo",
+  "environment": "local-dev",
+  "workerPolicy": { "executor": "ION", "bounded": true, "maxWorkers": 2, "maxTaskAttempts": 2 },
+  "securityProtocol": "policies/nsa-fbi-protocol.json",
+  "tasks": [
+    { "id": "TASK-1", "type": "PROJECT_CHECK", "dependsOn": [], "state": "REGISTERED" },
+    { "id": "TASK-1A", "type": "IDENTITY_VERIFY", "dependsOn": ["TASK-1"], "state": "REGISTERED" },
+    { "id": "TASK-1B", "type": "CLEARANCE_CHECK", "dependsOn": ["TASK-1A"], "state": "REGISTERED" },
+    { "id": "TASK-1C", "type": "INTEGRITY_VERIFY", "dependsOn": ["TASK-1B"], "state": "REGISTERED" },
+    { "id": "TASK-2", "type": "WORKSPACE_INSPECT", "dependsOn": ["TASK-1C"], "state": "REGISTERED" },
+    { "id": "TASK-3", "type": "PROJECT_BUILD", "dependsOn": ["TASK-2"], "state": "REGISTERED" },
+    { "id": "TASK-4", "type": "PROJECT_TEST", "dependsOn": ["TASK-3"], "state": "REGISTERED" },
+    { "id": "TASK-5", "type": "PREVIEW_START", "dependsOn": ["TASK-4"], "state": "REGISTERED" },
+    { "id": "TASK-6", "type": "AUDIT_COMMIT", "dependsOn": ["TASK-5"], "state": "REGISTERED" },
+    { "id": "TASK-7", "type": "MATRIX_UPDATE", "dependsOn": ["TASK-6"], "state": "REGISTERED" }
+  ]
+}
