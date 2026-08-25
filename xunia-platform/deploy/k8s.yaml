@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: xunia-platform-data
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xunia-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xunia-platform
+  template:
+    metadata:
+      labels:
+        app: xunia-platform
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: platform
+          image: ghcr.io/REPLACE_ORG/xunia-platform:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 4400
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: XUNIA_PLATFORM_HOST
+              value: 0.0.0.0
+            - name: XUNIA_PLATFORM_PORT
+              value: "4400"
+            - name: XUNIA_DATA_DIR
+              value: /data
+            - name: XUNIA_AUTH_REQUIRED
+              value: "1"
+            - name: XUNIA_API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: xunia-platform-secrets
+                  key: api-keys
+            - name: XUNIA_CHAIN_URL
+              value: http://xunia-chain:4317
+            - name: SONOXO_URL
+              value: http://sonoxo:3001/api/sonoxo/harvest
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: xunia-platform-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xunia-platform
+spec:
+  selector:
+    app: xunia-platform
+  ports:
+    - name: http
+      port: 4400
+      targetPort: http

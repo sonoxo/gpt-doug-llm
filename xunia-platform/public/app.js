@@ -1,11 +1,15 @@
 const $ = (id) => document.getElementById(id);
 let selectedAgent = 'xunia-analyst';
-let latestRun = null;
+let apiToken = sessionStorage.getItem('xuniaApiKey') || '';
+$('apiKey').value = apiToken;
 
-async function api(url, options) {
-  const res = await fetch(url, options);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+async function api(url, options = {}) {
+  const headers = new Headers(options.headers || {});
+  if (apiToken) headers.set('authorization', `Bearer ${apiToken}`);
+  const res = await fetch(url, { ...options, headers });
+  const type = res.headers.get('content-type') || '';
+  const data = type.includes('application/json') ? await res.json() : await res.text();
+  if (!res.ok) throw new Error((data && data.error) || `HTTP ${res.status}`);
   return data;
 }
 
@@ -21,15 +25,29 @@ function setView(name) {
 
 document.querySelectorAll('.nav').forEach((button) => button.addEventListener('click', () => setView(button.dataset.view)));
 
+async function loadSession() {
+  const session = await api('/api/session');
+  $('roleStatus').textContent = session.principal ? `ROLE ${session.principal.role.toUpperCase()}` : session.authRequired ? 'AUTH REQUIRED' : 'ROLE DEV';
+  if (session.authRequired && !session.principal) {
+    $('healthLabel').textContent = 'API key required';
+    return false;
+  }
+  return true;
+}
+
 async function loadPlatform() {
-  const [health, status, ontology, agents, tools, audit] = await Promise.all([
-    api('/health'), api('/api/platform/status'), api('/api/ontology'), api('/api/aip/agents'), api('/api/aip/tools'), api('/api/aip/audit')
-  ]);
+  const health = await api('/health');
   $('healthLabel').textContent = health.ok ? 'Platform online' : 'Degraded';
+  const connected = await loadSession();
+  if (!connected) return;
+  const [status, ontology, agents, tools, audit] = await Promise.all([
+    api('/api/platform/status'), api('/api/ontology'), api('/api/aip/agents'), api('/api/aip/tools'), api('/api/aip/audit')
+  ]);
   $('objectCount').textContent = health.ontologyObjects;
   $('agentCount').textContent = health.agents;
   $('toolCount').textContent = health.tools;
   $('auditCount').textContent = audit.records.length;
+  $('auditIntegrity').textContent = audit.integrity?.ok ? 'INTEGRITY OK' : 'INTEGRITY ALERT';
   $('modelStatus').textContent = `MODEL ${status.integrations.modelGateway.toUpperCase()}`;
   $('moduleList').innerHTML = status.modules.map((module) => `<div><span class="dot"></span><b>${esc(module)}</b><small>ready</small></div>`).join('');
   $('integrationList').innerHTML = Object.entries(status.integrations).map(([key, value]) => `<div><span>${esc(key)}</span><code>${esc(value)}</code></div>`).join('');
@@ -78,7 +96,6 @@ function addMessage(role, text) {
 }
 
 function renderPlan(run) {
-  latestRun = run;
   $('plan').innerHTML = run.steps.map((step, index) => `
     <div class="step">
       <div class="step-index">${index + 1}</div>
@@ -128,20 +145,26 @@ async function searchOntology() {
 async function refreshAudit() {
   const result = await api('/api/aip/audit');
   $('auditCount').textContent = result.records.length;
+  $('auditIntegrity').textContent = result.integrity?.ok ? 'INTEGRITY OK' : 'INTEGRITY ALERT';
   renderAudit(result.records);
 }
 
 function renderAudit(records) {
   $('auditRows').innerHTML = records.map((record) => `
-    <div class="audit-row"><time>${esc(new Date(record.at).toLocaleString())}</time><b>${esc(record.event)}</b><code>${esc(record.runId.slice(0, 8))}</code><span>${esc(JSON.stringify(record.details))}</span></div>`).join('') || '<p class="muted">No audit events yet.</p>';
+    <div class="audit-row"><time>${esc(new Date(record.at).toLocaleString())}</time><b>${esc(record.event)}</b><code>${esc(record.runId.slice(0, 8))}</code><span>${esc(record.actor || 'system')} · ${esc(JSON.stringify(record.details))}</span></div>`).join('') || '<p class="muted">No audit events yet.</p>';
 }
 
+$('connect').addEventListener('click', async () => {
+  apiToken = $('apiKey').value.trim();
+  if (apiToken) sessionStorage.setItem('xuniaApiKey', apiToken); else sessionStorage.removeItem('xuniaApiKey');
+  try { await loadPlatform(); } catch (error) { $('healthLabel').textContent = error.message; }
+});
 $('runAgent').addEventListener('click', runAgent);
 $('prompt').addEventListener('keydown', (event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') runAgent(); });
 $('ontologySearch').addEventListener('click', searchOntology);
-$('refresh').addEventListener('click', () => loadPlatform().catch(console.error));
+$('refresh').addEventListener('click', () => loadPlatform().catch((error) => { $('healthLabel').textContent = error.message; }));
 
 loadPlatform().catch((error) => {
-  $('healthLabel').textContent = 'Connection failed';
+  $('healthLabel').textContent = error.message === 'authentication_required' ? 'API key required' : 'Connection failed';
   console.error(error);
 });

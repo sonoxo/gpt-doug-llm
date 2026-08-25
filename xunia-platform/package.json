@@ -1,12 +1,13 @@
 {
   "name": "@xunia/platform",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test dist/test/*.test.js",
+    "check": "npm run test",
     "start": "node dist/src/server.js"
   },
   "devDependencies": {

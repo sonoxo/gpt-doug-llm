@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>XUNIA Platform</title>
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/auth.css" />
 </head>
 <body>
   <div class="shell">
@@ -23,15 +24,21 @@
     <main>
       <header class="topbar">
         <div><p class="eyebrow">XUNIA CONTROL PLANE</p><h1 id="viewTitle">Overview</h1></div>
-        <div class="top-actions"><span class="pill" id="modelStatus">MODEL —</span><button id="refresh">Refresh</button></div>
+        <div class="top-actions">
+          <input id="apiKey" type="password" autocomplete="off" placeholder="API key" aria-label="API key" />
+          <button id="connect">Connect</button>
+          <span class="pill" id="roleStatus">ROLE —</span>
+          <span class="pill" id="modelStatus">MODEL —</span>
+          <button id="refresh">Refresh</button>
+        </div>
       </header>
 
       <section class="view active" id="overview">
         <div class="metrics">
-          <article><span>Ontology Objects</span><strong id="objectCount">—</strong><small>connected knowledge</small></article>
+          <article><span>Ontology Objects</span><strong id="objectCount">—</strong><small>persistent knowledge</small></article>
           <article><span>AIP Agents</span><strong id="agentCount">—</strong><small>bounded operators</small></article>
           <article><span>Registered Tools</span><strong id="toolCount">—</strong><small>policy controlled</small></article>
-          <article><span>Audit Events</span><strong id="auditCount">—</strong><small>execution trail</small></article>
+          <article><span>Audit Events</span><strong id="auditCount">—</strong><small>hash-chained trail</small></article>
         </div>
         <div class="grid two">
           <article class="panel"><div class="panel-head"><h2>Platform Modules</h2><span>LIVE</span></div><div id="moduleList" class="module-list"></div></article>
@@ -57,7 +64,7 @@
           </article>
           <article class="panel console">
             <div class="panel-head"><h2>Agent Console</h2><span id="selectedAgentLabel">xunia-analyst</span></div>
-            <div id="messages" class="messages"><div class="system-card">Ask an agent to analyze the ontology or operate registered XUNIA tools. Every tool call is policy checked and audited.</div></div>
+            <div id="messages" class="messages"><div class="system-card">Agents are ontology-grounded, tool-bounded, policy checked, approval gated, and fully audited.</div></div>
             <div class="composer"><textarea id="prompt" rows="3" placeholder="Analyze service:sonoxo and its connected objects…"></textarea><button id="runAgent">Run AIP</button></div>
           </article>
           <article class="panel plan-panel"><div class="panel-head"><h2>Execution Plan</h2><span>POLICY</span></div><div id="plan" class="plan"><p class="muted">No run yet.</p></div></article>
@@ -66,13 +73,13 @@
 
       <section class="view" id="operations">
         <div class="grid two">
-          <article class="panel"><div class="panel-head"><h2>Runtime</h2><span>LOCAL / PRIVATE</span></div><pre id="runtimeStatus">Loading…</pre></article>
-          <article class="panel"><div class="panel-head"><h2>Execution Contract</h2><span>AIP</span></div><ol class="pipeline"><li>Prompt</li><li>Ontology grounding</li><li>Plan</li><li>Policy gate</li><li>Tool execution</li><li>Approval when required</li><li>Audit</li></ol></article>
+          <article class="panel"><div class="panel-head"><h2>Runtime</h2><span>DEPLOYMENT</span></div><pre id="runtimeStatus">Loading…</pre></article>
+          <article class="panel"><div class="panel-head"><h2>Execution Contract</h2><span>AIP</span></div><ol class="pipeline"><li>Authenticate + authorize</li><li>Prompt</li><li>Ontology grounding</li><li>Plan</li><li>Policy gate</li><li>Tool execution / approval</li><li>Hash-chained audit</li></ol></article>
         </div>
       </section>
 
       <section class="view" id="audit">
-        <article class="panel"><div class="panel-head"><h2>AIP Audit Trail</h2><span>APPEND ONLY VIEW</span></div><div id="auditRows" class="audit-list"></div></article>
+        <article class="panel"><div class="panel-head"><h2>AIP Audit Trail</h2><span id="auditIntegrity">VERIFYING</span></div><div id="auditRows" class="audit-list"></div></article>
       </section>
     </main>
   </div>

@@ -23,18 +23,47 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-      - name: Smoke test
+      - run: npm install --ignore-scripts
+      - run: npm run test
+      - name: Authenticated persistence smoke test
+        env:
+          XUNIA_PLATFORM_HOST: 127.0.0.1
+          XUNIA_PLATFORM_PORT: 4400
+          XUNIA_DATA_DIR: /tmp/xunia-platform-state
+          XUNIA_AUTH_REQUIRED: '1'
+          XUNIA_API_KEYS: '{"ci-admin-token":{"role":"admin","subject":"ci-admin"},"ci-operator-token":{"role":"operator","subject":"ci-operator"},"ci-viewer-token":{"role":"viewer","subject":"ci-viewer"}}'
         run: |
+          rm -rf "$XUNIA_DATA_DIR"
           node dist/src/server.js > /tmp/xunia-platform.log 2>&1 &
           PID=$!
-          trap 'kill "$PID" 2>/dev/null || true' EXIT
+          cleanup() { kill "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true; }
+          trap cleanup EXIT
           for i in $(seq 1 30); do
-            if curl -fsS http://127.0.0.1:4400/health >/tmp/health.json; then break; fi
+            if curl -fsS http://127.0.0.1:4400/ready >/tmp/ready.json; then break; fi
             sleep 1
           done
-          cat /tmp/health.json
-          node -e "const x=require('/tmp/health.json'); if(!x.ok) process.exit(1)"
-          curl -fsS http://127.0.0.1:4400/api/aip/agents | grep -q xunia-analyst
+          cat /tmp/ready.json
+          node -e "const x=require('/tmp/ready.json'); if(!x.ok) process.exit(1)"
+          test "$(curl -sS -o /tmp/unauth.json -w '%{http_code}' http://127.0.0.1:4400/api/ontology)" = 401
+          curl -fsS -H 'Authorization: Bearer ci-viewer-token' http://127.0.0.1:4400/api/ontology >/tmp/ontology.json
+          curl -fsS -X POST -H 'Authorization: Bearer ci-admin-token' -H 'Content-Type: application/json' \
+            -d '{"id":"site:ci","type":"Site","properties":{"source":"ci"}}' \
+            http://127.0.0.1:4400/api/ontology/objects >/tmp/create.json
+          curl -fsS -X POST -H 'Authorization: Bearer ci-operator-token' -H 'Content-Type: application/json' \
+            -d '{"agentId":"xunia-analyst","message":"Analyze site:ci"}' \
+            http://127.0.0.1:4400/api/aip/run >/tmp/run.json
+          curl -fsS -H 'Authorization: Bearer ci-viewer-token' http://127.0.0.1:4400/api/aip/audit/verify >/tmp/audit.json
+          node -e "const x=require('/tmp/audit.json'); if(!x.ok) process.exit(1)"
+          cleanup
+          trap - EXIT
+
+          node dist/src/server.js > /tmp/xunia-platform-restart.log 2>&1 &
+          PID=$!
+          trap cleanup EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4400/ready >/dev/null; then break; fi
+            sleep 1
+          done
+          curl -fsS -H 'Authorization: Bearer ci-viewer-token' http://127.0.0.1:4400/api/ontology/objects/site%3Aci | grep -q 'site:ci'
+      - name: Build production image
+        run: docker build -t xunia-platform:ci .
