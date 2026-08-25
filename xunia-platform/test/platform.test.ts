@@ -9,6 +9,15 @@ import { AipEngine, ModelGateway } from '../src/aip.js';
 import { createPlatformHandler } from '../src/server.js';
 import { AuthPolicy, RateLimiter } from '../src/security.js';
 
+class CapturingGateway extends ModelGateway {
+  seen: unknown[] = [];
+  constructor() { super('', ''); }
+  override async complete(_system: string, message: string, context: unknown[]) {
+    this.seen = context;
+    return `captured:${message}`;
+  }
+}
+
 test('ontology stores objects, relations, deletes, and persists', () => {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'xunia-ontology-'));
   const file = path.join(dir, 'ontology.json');
@@ -34,7 +43,7 @@ test('AIP grounds requests, requires approval for writes, persists, and hash-cha
   const run = await aip.run('xunia-analyst', 'Analyze service:sonoxo and record telemetry.', ['service:sonoxo'], 'test-user');
   assert.equal(run.agentId, 'xunia-analyst');
   assert.match(run.response, /AIP analysis/);
-  assert.equal(run.context.length, 1);
+  assert.ok(run.context.length >= 3);
   assert.ok(run.steps.some((step) => step.tool === 'ontology.search' && step.status === 'executed'));
   assert.ok(run.steps.some((step) => step.tool === 'ontology.neighbors' && step.status === 'executed'));
   assert.ok(run.steps.some((step) => step.tool === 'telemetry.write' && step.status === 'approval_required'));
@@ -42,6 +51,67 @@ test('AIP grounds requests, requires approval for writes, persists, and hash-cha
   const reloaded = new AipEngine(ontology, new ModelGateway('', ''), stateFile);
   assert.equal(reloaded.getRun(run.id)?.id, run.id);
   assert.equal(reloaded.verifyAuditChain().ok, true);
+});
+
+test('AIP sends ontology grounding outputs to the model before completion', async () => {
+  const ontology = new OntologyStore();
+  ontology.seed();
+  const gateway = new CapturingGateway();
+  const aip = new AipEngine(ontology, gateway);
+  const run = await aip.run('xunia-analyst', 'Analyze service:sonoxo and its connected objects.', [], 'grounding-test');
+  const groundedSources = gateway.seen.flatMap((entry) => {
+    if (!entry || typeof entry !== 'object') return [];
+    const source = (entry as { source?: unknown }).source;
+    return typeof source === 'string' ? [source] : [];
+  });
+  assert.ok(groundedSources.includes('ontology.search'));
+  assert.ok(groundedSources.includes('ontology.neighbors'));
+  assert.deepEqual(run.context, gateway.seen);
+});
+
+test('AIP atomically claims approval steps before awaiting side effects', async () => {
+  const ontology = new OntologyStore();
+  const aip = new AipEngine(ontology, new ModelGateway('', ''));
+  let calls = 0;
+  let release!: () => void;
+  const hold = new Promise<void>((resolve) => { release = resolve; });
+
+  aip.tools.register({
+    name: 'test.write',
+    description: 'Controlled side-effect test tool.',
+    risk: 'medium',
+    execute: async () => {
+      calls += 1;
+      await hold;
+      return { ok: true };
+    }
+  });
+  aip.registerAgent({
+    id: 'test-operator',
+    name: 'Test Operator',
+    system: 'test',
+    tools: ['test.write'],
+    approvalFor: ['medium']
+  });
+
+  const run = {
+    id: 'run-concurrency',
+    agentId: 'test-operator',
+    message: 'test',
+    createdAt: new Date().toISOString(),
+    context: [],
+    response: 'test',
+    steps: [{ id: 'step-write', tool: 'test.write', input: {}, reason: 'test', status: 'approval_required' as const }]
+  };
+  aip.runs.set(run.id, run);
+
+  const first = aip.approve(run.id, 'step-write', 'admin-a');
+  await Promise.resolve();
+  await assert.rejects(() => aip.approve(run.id, 'step-write', 'admin-b'), /step_not_approvable/);
+  release();
+  await first;
+  assert.equal(calls, 1);
+  assert.equal(run.steps[0].status, 'executed');
 });
 
 test('HTTP platform enforces RBAC and exposes readiness', async (t) => {
