@@ -1,0 +1,48 @@
+name: XUNIA Chain CI
+
+on:
+  pull_request:
+    paths:
+      - 'xunia-chain/**'
+      - '.github/workflows/xunia-chain.yml'
+  push:
+    branches:
+      - feature/xunia-chain
+    paths:
+      - 'xunia-chain/**'
+      - '.github/workflows/xunia-chain.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: xunia-chain
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npm test
+      - name: Node API smoke test
+        shell: bash
+        run: |
+          node dist/src/node.js >/tmp/xunia-node.log 2>&1 &
+          PID=$!
+          trap 'kill -TERM "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4317/health >/tmp/xunia-health.json; then break; fi
+            sleep 0.25
+          done
+          grep -q '"ok":true' /tmp/xunia-health.json
+          curl --fail --silent http://127.0.0.1:4317/chain >/tmp/xunia-chain.json
+          grep -q 'xunia-main-v1' /tmp/xunia-chain.json
+          kill -TERM "$PID"
+          wait "$PID" || STATUS=$?
+          test "${STATUS:-0}" -eq 0 -o "${STATUS:-0}" -eq 143
+          trap - EXIT
