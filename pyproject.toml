@@ -64,6 +64,7 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 "workers/agent-daemon.py" = ["E402", "I001"]
+"tests/test_palantir_engineering_knowledge.py" = ["I001"]
 
 [tool.coverage.run]
 source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard"]
