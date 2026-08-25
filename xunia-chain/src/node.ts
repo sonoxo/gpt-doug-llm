@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { XuniaChain } from './chain.js';
 import { formatXun } from './crypto.js';
+import { assessGeoCollection, geoFactorSchema } from './geospatial.js';
 
 const PORT = Number(process.env.XUNIA_PORT ?? 4317);
 const DATA = process.env.XUNIA_DATA ?? '.xunia/chain.json';
@@ -48,9 +49,20 @@ const server = createServer(async (req, res) => {
       void telemetry('xunia.block.mined', { height: block.height, hash: block.hash, txs: block.transactions.length });
       return send(res, 201, { ok: true, block });
     }
+    if (req.method === 'GET' && url.pathname === '/geo/schema') {
+      return send(res, 200, { ok: true, schema: geoFactorSchema() });
+    }
+    if (req.method === 'POST' && url.pathname === '/geo/assess') {
+      const body = await readJson(req);
+      const result = assessGeoCollection(body);
+      const elevated = result.assessments.filter(item => item.reviewRequired).length;
+      const critical = result.assessments.filter(item => item.riskBand === 'critical').length;
+      void telemetry('xunia.geo.assessed', { zones: result.assessments.length, elevated, critical });
+      return send(res, 200, { ok: true, ...result });
+    }
     if (req.method === 'GET' && url.pathname === '/') {
       res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
-      return res.end(`<!doctype html><meta charset="utf-8"><title>XUNIA Chain</title><style>body{font-family:system-ui;background:#0b0d10;color:#eef;max-width:900px;margin:48px auto;padding:20px}code{background:#191d24;padding:2px 6px;border-radius:6px}</style><h1>XUNIA Chain</h1><p>Native coin: <b>XUN</b></p><p>Chain: <code>${chain.chainId}</code></p><p>Height: <b>${chain.tip().height}</b></p><p>Mempool: <b>${chain.mempool.length}</b></p><p>API: <code>/health</code> <code>/chain</code> <code>/balance/:address</code> <code>POST /tx</code> <code>POST /mine</code></p>`);
+      return res.end(`<!doctype html><meta charset="utf-8"><title>XUNIA Chain</title><style>body{font-family:system-ui;background:#0b0d10;color:#eef;max-width:900px;margin:48px auto;padding:20px}code{background:#191d24;padding:2px 6px;border-radius:6px}</style><h1>XUNIA Chain</h1><p>Native coin: <b>XUN</b></p><p>Chain: <code>${chain.chainId}</code></p><p>Height: <b>${chain.tip().height}</b></p><p>Mempool: <b>${chain.mempool.length}</b></p><p>API: <code>/health</code> <code>/chain</code> <code>/balance/:address</code> <code>POST /tx</code> <code>POST /mine</code> <code>/geo/schema</code> <code>POST /geo/assess</code></p>`);
     }
     return send(res, 404, { ok: false, error: 'not_found' });
   } catch (error) {
