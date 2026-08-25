@@ -23,7 +23,7 @@ export type PlanStep = {
   tool: string;
   input: Record<string, unknown>;
   reason: string;
-  status: 'approval_required' | 'executed' | 'blocked';
+  status: 'approval_required' | 'executing' | 'executed' | 'blocked';
   output?: unknown;
 };
 
@@ -49,6 +49,8 @@ export type AuditRecord = {
 };
 
 type AipState = { audits: AuditRecord[]; runs: AipRun[]; agents: AgentSpec[] };
+
+type ProposedStep = Omit<PlanStep, 'id' | 'status'>;
 
 export class ToolRegistry {
   private tools = new Map<string, ToolSpec>();
@@ -198,9 +200,9 @@ export class AipEngine {
     });
   }
 
-  private proposedSteps(message: string): Omit<PlanStep, 'id' | 'status'>[] {
+  private proposedSteps(message: string): ProposedStep[] {
     const lower = message.toLowerCase();
-    const steps: Omit<PlanStep, 'id' | 'status'>[] = [
+    const steps: ProposedStep[] = [
       { tool: 'ontology.search', input: { query: message.slice(0, 160) }, reason: 'Ground the request in known XUNIA objects.' }
     ];
     const idMatch = message.match(/[a-z]+:[a-z0-9._-]+/i);
@@ -214,6 +216,10 @@ export class AipEngine {
     return steps;
   }
 
+  private isGroundingTool(name: string) {
+    return name === 'ontology.search' || name === 'ontology.neighbors';
+  }
+
   async run(agentId: string, message: string, contextIds: string[] = [], actor = 'system'): Promise<AipRun> {
     const agent = this.agents.get(agentId);
     if (!agent) throw new Error('agent_not_found');
@@ -221,11 +227,39 @@ export class AipEngine {
     if (message.length > 20_000) throw new Error('message_too_large');
 
     const id = randomUUID();
-    const context = contextIds.slice(0, 100).map((objectId) => this.ontology.getObject(objectId)).filter(Boolean);
-    const response = await this.model.complete(agent.system, message, context);
+    const explicitContext = contextIds.slice(0, 100).map((objectId) => this.ontology.getObject(objectId)).filter(Boolean);
+    const context: unknown[] = [...explicitContext];
     const steps: PlanStep[] = [];
+    const proposals = this.proposedSteps(message);
+    const grounding = new Set<ProposedStep>();
 
-    for (const proposal of this.proposedSteps(message)) {
+    // Ground the model before completion. Browser-console calls may provide no contextIds,
+    // so ontology search/neighborhood results must be available to the model itself.
+    for (const proposal of proposals) {
+      if (!this.isGroundingTool(proposal.tool)) continue;
+      grounding.add(proposal);
+      const tool = this.tools.get(proposal.tool);
+      const stepId = randomUUID();
+      if (!tool || !agent.tools.includes(proposal.tool)) {
+        steps.push({ ...proposal, id: stepId, status: 'blocked' });
+        this.audit(id, 'tool_blocked', { tool: proposal.tool }, actor);
+        continue;
+      }
+      try {
+        const output = await tool.execute(proposal.input);
+        steps.push({ ...proposal, id: stepId, status: 'executed', output });
+        context.push({ source: proposal.tool, input: proposal.input, output });
+        this.audit(id, 'tool_executed', { stepId, tool: tool.name, risk: tool.risk, phase: 'grounding' }, actor);
+      } catch (error) {
+        steps.push({ ...proposal, id: stepId, status: 'blocked', output: { error: error instanceof Error ? error.message : 'tool_failed' } });
+        this.audit(id, 'tool_failed', { stepId, tool: tool.name, phase: 'grounding' }, actor);
+      }
+    }
+
+    const response = await this.model.complete(agent.system, message, context);
+
+    for (const proposal of proposals) {
+      if (grounding.has(proposal)) continue;
       const tool = this.tools.get(proposal.tool);
       const stepId = randomUUID();
       if (!tool || !agent.tools.includes(proposal.tool)) {
@@ -265,6 +299,13 @@ export class AipEngine {
     const agent = this.agents.get(run.agentId)!;
     const tool = this.tools.get(step.tool);
     if (!tool || !agent.tools.includes(step.tool)) throw new Error('tool_not_allowed');
+
+    // Claim the step synchronously before the first await. A concurrent approval now sees
+    // `executing` and fails closed instead of invoking the side effect twice.
+    step.status = 'executing';
+    this.persist();
+    this.audit(runId, 'step_approval_claimed', { stepId, tool: tool.name }, actor);
+
     try {
       step.output = await tool.execute(step.input);
       step.status = 'executed';
