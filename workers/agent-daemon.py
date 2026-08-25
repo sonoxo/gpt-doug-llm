@@ -20,8 +20,9 @@ from pathlib import Path
 
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from workers import zyra_guard
+from workers import engineering_fleet
 from workers import ontology_workers as ontology
+from workers import zyra_guard
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
@@ -65,6 +66,20 @@ def _relevant_knowledge(prompt: str) -> str:
     if not lines:
         return ""
     return "Relevant knowledge (attributed, summarized — not verbatim source material):\n" + "\n".join(lines) + "\n\n"
+
+
+def _engineering_fleet_context(prompt: str) -> str:
+    """Render the bounded engineering fleet plan into the live agent prompt.
+
+    The planner does not execute tools; it gives the LLM the same clean-room
+    Data Engineer + Application Developer operating model that the model files
+    and knowledge base reference. Runtime permissions, approvals, and evidence
+    still come from the daemon/tooling layer.
+    """
+    context = engineering_fleet.fleet_context(prompt)
+    if not context:
+        return ""
+    return "Engineering fleet plan (bounded, auditable, clean-room):\n" + context + "\n\n"
 
 
 def _recent_context() -> str:
@@ -207,7 +222,8 @@ def run_task(task_path: Path):
     started = time.time()
     context_prefix = _recent_context()
     knowledge_prefix = _relevant_knowledge(prompt)
-    full_prompt = context_prefix + knowledge_prefix + prompt
+    fleet_prefix = _engineering_fleet_context(prompt)
+    full_prompt = context_prefix + knowledge_prefix + fleet_prefix + prompt
 
     max_attempts = 3
     backoff = [0, 2, 5]  # seconds before attempt 1, 2, 3
