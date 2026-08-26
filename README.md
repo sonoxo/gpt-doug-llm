@@ -1,5 +1,44 @@
 <div align="center">
 
+<img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA CORE animated ecosystem flow" />
+
+# ZYRA CORE
+
+### Give ZYRA a goal. Its policy layer bounds the mission, the agent works through approved repository tools, and validation decides whether the result is kept.
+
+[Start here](#start-here) · [Original project documentation](#original-project-documentation)
+
+</div>
+
+## Start here
+
+You do not need to understand the whole codebase first. Follow the illuminated path in the graphic:
+
+**01 — Type a command** →  **02 — Check policy** →  **03 — Plan and edit** →  **04 — Use the configured local model** →  **05 — Test, keep, or roll back**
+
+| What you are looking at | Plain-English meaning |
+|---|---|
+| **Input** | What the user or system supplies |
+| **Core** | The repository’s main processing loop |
+| **Guardrails** | Configuration, policy, filters, or approval boundaries |
+| **Output** | The result the system returns or deploys |
+| **Proof** | Tests, reports, previews, logs, or other visible evidence |
+
+> **Status, stated plainly:** Implemented repository runtime; exact availability depends on local provider and environment configuration.
+
+<details>
+<summary><strong>Accessibility and motion</strong></summary>
+
+The hero is a native SVG with descriptive text. Animation automatically stops when your device enables **Reduce Motion**. No JavaScript, tracking code, video autoplay, or external image host is required.
+
+</details>
+
+---
+
+## Original project documentation
+
+<div align="center">
+
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0B1021,45:4C1D95,100:06B6D4&height=220&section=header&text=ZYRA&fontSize=76&fontColor=FFFFFF&fontAlignY=34&desc=Agentic%20GPT%20Runtime%20for%20GPT-DOUG-LLM&descAlignY=58&descSize=20&animation=fadeIn" alt="ZYRA header" />
 
 # 🟣 ZYRA // AGENTIC GPT-DOUG-LLM
