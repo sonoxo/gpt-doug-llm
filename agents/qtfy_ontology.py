@@ -1,8 +1,8 @@
 """Ontology primitives for defensive QTFY intelligence operations.
 
-The graph is intentionally defensive and evidence-first. Indicators are investigative
-leads. Any containment action remains scoped to owned or explicitly authorized assets
-and requires the repository's human-review and operational-safety gates.
+The graph is defensive, evidence-first, and provenance-preserving. Indicators are
+investigative leads. Containment remains limited to owned or explicitly authorized
+assets and requires the repository's human-review and operational-safety gates.
 """
 
 from __future__ import annotations
@@ -29,6 +29,10 @@ def build_defensive_ontology(
     controls: Iterable[Mapping[str, Any]],
     target_sectors: Iterable[str],
     ioc_feeds: Iterable[str],
+    organizations: Iterable[Mapping[str, Any]] = (),
+    tools: Iterable[Mapping[str, Any]] = (),
+    vulnerabilities: Iterable[Mapping[str, Any]] = (),
+    campaign_events: Iterable[Mapping[str, Any]] = (),
 ) -> dict[str, Any]:
     """Build a Palantir-style object/link/action graph for the advisory."""
 
@@ -50,11 +54,10 @@ def build_defensive_ontology(
             label=threat_label,
             scope="PUBLIC_DEFENSIVE_INTELLIGENCE",
             disposition="MONITOR_AND_DEFEND",
+            attributionState="SOURCE_ATTRIBUTION_ONLY",
         ),
     ]
-    links: list[dict[str, str]] = [
-        _link("AdvisoryProfilesThreat", advisory_ref, threat_ref),
-    ]
+    links: list[dict[str, str]] = [_link("AdvisoryProfilesThreat", advisory_ref, threat_ref)]
 
     for technique_id, name in techniques.items():
         ref = f"AttackTechnique:{technique_id}"
@@ -99,15 +102,92 @@ def build_defensive_ontology(
         )
         links.append(_link("AdvisoryPublishesIOCFeed", advisory_ref, ref))
 
+    for organization in organizations:
+        organization_id = str(organization["id"])
+        ref = f"Organization:{organization_id}"
+        objects.append(
+            _object(
+                "Organization",
+                organization_id,
+                name=str(organization.get("name", organization_id)),
+                role=str(organization.get("role", "ADVISORY_MENTIONED_ENTITY")),
+                sourcePage=organization.get("sourcePage"),
+                claimNature="AUTHORING_AGENCY_REPORTING",
+            )
+        )
+        links.append(_link("AdvisoryMentionsOrganization", advisory_ref, ref))
+
+    tool_refs: dict[str, str] = {}
+    for tool in tools:
+        tool_id = str(tool["id"])
+        ref = f"ThreatTool:{tool_id}"
+        tool_refs[tool_id] = ref
+        objects.append(
+            _object(
+                "ThreatTool",
+                tool_id,
+                name=str(tool.get("name", tool_id)),
+                category=str(tool.get("category", "UNSPECIFIED")),
+                sourcePage=tool.get("sourcePage"),
+            )
+        )
+        links.append(_link("AdvisoryDescribesTool", advisory_ref, ref))
+        links.append(_link("ThreatUsesTool", threat_ref, ref))
+
+    vulnerability_refs: dict[str, str] = {}
+    for vulnerability in vulnerabilities:
+        vulnerability_id = str(vulnerability["id"])
+        ref = f"Vulnerability:{vulnerability_id}"
+        vulnerability_refs[vulnerability_id] = ref
+        objects.append(
+            _object(
+                "Vulnerability",
+                vulnerability_id,
+                cve=vulnerability_id,
+                context=str(vulnerability.get("context", "")),
+                sourcePage=vulnerability.get("sourcePage"),
+            )
+        )
+        links.append(_link("AdvisoryMentionsVulnerability", advisory_ref, ref))
+
+    for event in campaign_events:
+        event_id = str(event["id"])
+        ref = f"CampaignEvent:{event_id}"
+        objects.append(
+            _object(
+                "CampaignEvent",
+                event_id,
+                date=str(event.get("date", "")),
+                targetCategory=str(event.get("targetCategory", "")),
+                activity=str(event.get("activity", "")),
+                outcome=str(event.get("outcome", "")),
+                sourcePage=event.get("sourcePage"),
+                claimNature="AUTHORING_AGENCY_REPORTING",
+            )
+        )
+        links.append(_link("AdvisoryDescribesEvent", advisory_ref, ref))
+        for tool_id in event.get("toolIds", ()): 
+            tool_ref = tool_refs.get(str(tool_id))
+            if tool_ref:
+                links.append(_link("EventUsesTool", ref, tool_ref))
+        for vulnerability_id in event.get("vulnerabilityIds", ()): 
+            vulnerability_ref = vulnerability_refs.get(str(vulnerability_id))
+            if vulnerability_ref:
+                links.append(_link("EventReferencesVulnerability", ref, vulnerability_ref))
+
     return {
         "name": "VA3LM QTFY Defensive Intelligence Ontology",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "mode": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
         "objectTypes": [
             "CyberAdvisory",
             "ThreatProfile",
+            "Organization",
             "CriticalSector",
             "AttackTechnique",
+            "ThreatTool",
+            "Vulnerability",
+            "CampaignEvent",
             "IOCFeed",
             "Indicator",
             "Asset",
@@ -120,9 +200,16 @@ def build_defensive_ontology(
         ],
         "linkTypes": [
             "AdvisoryProfilesThreat",
+            "AdvisoryMentionsOrganization",
             "AdvisoryTargetsSector",
             "AdvisoryUsesTechnique",
             "ThreatUsesTechnique",
+            "AdvisoryDescribesTool",
+            "ThreatUsesTool",
+            "AdvisoryMentionsVulnerability",
+            "AdvisoryDescribesEvent",
+            "EventUsesTool",
+            "EventReferencesVulnerability",
             "AdvisoryPublishesIOCFeed",
             "AdvisoryRecommendsControl",
             "FeedContainsIndicator",
@@ -178,5 +265,6 @@ def build_defensive_ontology(
             "externalThirdPartyAction": False,
             "humanApprovalForContainment": True,
             "rawDataDefault": "REMAIN_WITH_OWNER",
+            "attributionHandling": "PRESERVE_SOURCE_CLAIM_NATURE",
         },
     }
