@@ -1,0 +1,58 @@
+name: VA3LM GCPXUNIA Identity Defense
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'va3lm/**'
+      - '.github/workflows/va3lm-identity-defense.yml'
+  pull_request:
+    paths:
+      - 'va3lm/**'
+      - '.github/workflows/va3lm-identity-defense.yml'
+
+jobs:
+  identity-defense:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: va3lm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e '.[dev]'
+      - run: pytest -q
+      - run: ruff check src tests
+      - run: bandit -q -ll -r src
+      - name: Identity defense contract lock
+        run: |
+          python - <<'PY'
+          from va3lm.agent_identity import AgentAccessRequest, AgentIdentity, evaluate_agent_access
+          from va3lm.auth_manager import AUTH_MANAGER_POLICY, AuthProvider, broker_auth
+          from va3lm.defense_ontology import DEFENSE_ONTOLOGY
+
+          identity = AgentIdentity(
+              agent_id='va3lm:ci',
+              spiffe_id='spiffe://xuniaverse.local/va3lm/agent/ci',
+              runtime='VA3LM',
+              credential_mode='SHORT_LIVED',
+              scopes=('evidence.read',),
+              provenance=('ci:identity',),
+          )
+          request = AgentAccessRequest(identity, 'provider:ci', ('evidence.read',))
+          assert evaluate_agent_access(request).decision == 'ALLOW'
+          assert evaluate_agent_access(AgentAccessRequest(identity, 'provider:ci', ('evidence.read',), shared_credential=True)).decision == 'BLOCK'
+          provider = AuthProvider('provider:ci', 'OAUTH2', ('evidence.read',))
+          result = broker_auth(request, provider)
+          assert result.decision.decision == 'ALLOW'
+          assert result.credential is not None
+          assert result.credential.raw_secret_exposed is False
+          assert AUTH_MANAGER_POLICY['rules']['shortLivedCredentials'] is True
+          assert DEFENSE_ONTOLOGY['root'] == 'sonoxo/xuniadao'
+          assert DEFENSE_ONTOLOGY['guardrails']['arbitraryRemoteShell'] is False
+          print('VA3LM GCPXUNIA IDENTITY DEFENSE: PASS')
+          PY
