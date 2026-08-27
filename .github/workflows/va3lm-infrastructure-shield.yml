@@ -1,0 +1,37 @@
+name: VA3LM Infrastructure Shield
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agents/va3lm_infrastructure_shield.py'
+      - 'tests/test_va3lm_infrastructure_shield.py'
+      - '.github/workflows/va3lm-infrastructure-shield.yml'
+      - 'USA_INFRASTRUCTURE_SHIELD.md'
+  pull_request:
+    paths:
+      - 'agents/va3lm_infrastructure_shield.py'
+      - 'tests/test_va3lm_infrastructure_shield.py'
+      - '.github/workflows/va3lm-infrastructure-shield.yml'
+      - 'USA_INFRASTRUCTURE_SHIELD.md'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test dependency
+        run: python -m pip install --upgrade pytest
+      - name: Run focused defensive-control tests
+        run: python -m pytest -q tests/test_va3lm_infrastructure_shield.py
+      - name: Compile shield module
+        run: python -m compileall -q agents/va3lm_infrastructure_shield.py
