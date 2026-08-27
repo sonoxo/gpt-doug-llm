@@ -20,8 +20,6 @@ from agency_cloud.models import (
     Workspace,
     new_id,
 )
-
-
 INTELLIGENCE_CLASSES = {
     "ADJUDICATED_LEGAL_FACT",
     "LEGAL_ACTION_FACT",
