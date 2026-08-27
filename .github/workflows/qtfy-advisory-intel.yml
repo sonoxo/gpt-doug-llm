@@ -1,0 +1,31 @@
+name: QTFY Advisory Intel
+
+on:
+  push:
+    paths:
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/adaptive_intelligence.py"
+      - "agents/va3lm_infrastructure_shield.py"
+      - "tests/test_qtfy_advisory_intel.py"
+      - ".github/workflows/qtfy-advisory-intel.yml"
+  pull_request:
+    paths:
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/adaptive_intelligence.py"
+      - "agents/va3lm_infrastructure_shield.py"
+      - "tests/test_qtfy_advisory_intel.py"
+      - ".github/workflows/qtfy-advisory-intel.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  qtfy-intel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run advisory intelligence tests
+        run: python -m pytest -q tests/test_qtfy_advisory_intel.py
