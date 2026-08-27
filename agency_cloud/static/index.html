@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>ZYRA Intelligence Cloud</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="/assets/zyra-mark.svg" alt="ZYRA Intelligence Cloud emblem" />
+      <div>
+        <p class="eyebrow">PRIVATE INTELLIGENCE COMPANY</p>
+        <h1>ZYRA Intelligence Cloud</h1>
+        <p class="subtitle">Business intelligence • strategic risk • cyber-defense intelligence</p>
+      </div>
+    </div>
+    <div class="status-pill" id="connectionStatus">DISCONNECTED</div>
+  </header>
+
+  <main>
+    <section class="warning-strip">
+      <strong>LEGAL STATUS:</strong> Private commercial intelligence platform. Not a government agency and does not confer governmental authority.
+    </section>
+
+    <section class="panel auth-panel">
+      <div>
+        <p class="eyebrow">COMMAND ACCESS</p>
+        <h2>Open intelligence workspace</h2>
+      </div>
+      <label>Bearer token
+        <input id="token" type="password" autocomplete="off" placeholder="director / analyst / auditor / client token" />
+      </label>
+      <label>Workspace ID
+        <input id="workspace" type="text" autocomplete="off" placeholder="ws_..." />
+      </label>
+      <div class="button-row">
+        <button id="connectBtn">CONNECT</button>
+        <button class="secondary" id="discoverBtn">DISCOVER WORKSPACES</button>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="workspace metrics">
+      <article><span>CASES</span><strong id="metricCases">—</strong></article>
+      <article><span>INTEL</span><strong id="metricIntel">—</strong></article>
+      <article><span>REPORTS</span><strong id="metricReports">—</strong></article>
+      <article><span>ALERTS</span><strong id="metricAlerts">—</strong></article>
+      <article><span>AUDIT CHAIN</span><strong id="metricAudit">—</strong></article>
+      <article><span>MASTER LOCK</span><strong id="metricLock">—</strong></article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">OPERATIONS</p><h2>Cases</h2></div>
+          <button class="secondary" data-load="cases">REFRESH</button>
+        </div>
+        <form id="caseForm" class="stack compact">
+          <input name="title" placeholder="Case title" required />
+          <textarea name="summary" placeholder="Mission summary"></textarea>
+          <select name="priority">
+            <option>MEDIUM</option><option>HIGH</option><option>CRITICAL</option><option>LOW</option>
+          </select>
+          <button>OPEN CASE</button>
+        </form>
+        <pre id="casesOutput">No case data loaded.</pre>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">INTELLIGENCE</p><h2>Provenance intake</h2></div>
+          <button class="secondary" data-load="intel">REFRESH</button>
+        </div>
+        <form id="intelForm" class="stack compact">
+          <input name="title" placeholder="Intel title" required />
+          <textarea name="summary" placeholder="Source-grounded intelligence statement" required></textarea>
+          <select name="intelligence_class">
+            <option>BUSINESS_INTELLIGENCE</option>
+            <option>CYBER_DEFENSE_INTELLIGENCE</option>
+            <option>CORROBORATED_INTELLIGENCE</option>
+            <option>LEGAL_ACTION_FACT</option>
+            <option>LEGAL_RECORD_ALLEGATION</option>
+            <option>MEDIA_INTELLIGENCE_CLAIM</option>
+            <option>ANALYTIC_JUDGMENT</option>
+            <option>UNVERIFIED_INTELLIGENCE</option>
+          </select>
+          <input name="source_id" placeholder="Source ID" required />
+          <input name="source_location" placeholder="Source location / URL / file" required />
+          <input name="provenance_locator" placeholder="Page / paragraph / timestamp / section" required />
+          <select name="confidence"><option>MEDIUM</option><option>HIGH</option><option>LOW</option></select>
+          <button>INGEST INTEL</button>
+        </form>
+        <pre id="intelOutput">No intelligence loaded.</pre>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">LOCKED GRAPH</p><h2>Ontology command query</h2></div>
+          <button class="secondary" id="ontologyStatusBtn">STATUS</button>
+        </div>
+        <form id="ontologyForm" class="command-form">
+          <input name="question" placeholder="Ask the MASTER-LOCKED ontology..." required />
+          <button>QUERY</button>
+        </form>
+        <pre id="ontologyOutput">Awaiting command.</pre>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div><p class="eyebrow">CROSS-SOURCE LAYER</p><h2>Glass Onion</h2></div>
+          <button class="secondary" id="glassStatusBtn">STATUS</button>
+        </div>
+        <form id="glassForm" class="command-form">
+          <input name="question" placeholder="Peel cross-source intelligence layers..." required />
+          <button>QUERY</button>
+        </form>
+        <pre id="glassOutput">Awaiting command.</pre>
+      </article>
+    </section>
+
+    <section class="grid three">
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">CLIENT PRODUCT</p><h2>Reports</h2></div><button class="secondary" data-load="reports">REFRESH</button></div>
+        <pre id="reportsOutput">No reports loaded.</pre>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">WATCH FLOOR</p><h2>Alerts</h2></div><button class="secondary" data-load="alerts">REFRESH</button></div>
+        <pre id="alertsOutput">No alerts loaded.</pre>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">LIVE INTEL</p><h2>Changes</h2></div><button class="secondary" id="liveBtn">REFRESH</button></div>
+        <pre id="liveOutput">Run ZYRA /live-sync to establish or refresh the source baseline.</pre>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div><p class="eyebrow">COMMAND INTEGRITY</p><h2>Audit verification</h2></div>
+        <button id="auditBtn">VERIFY CHAIN</button>
+      </div>
+      <pre id="auditOutput">Audit verification not yet requested.</pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>ZYRA Intelligence Cloud • Private business intelligence & cyber-defense platform • Evidence before assertion.</p>
+  </footer>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
