@@ -1,0 +1,71 @@
+name: VA3LM Red Hat Defensive Intelligence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/va3lm_redhat_defense.py"
+      - "agents/va3lm_redhat_ontology.py"
+      - "agents/tests/test_va3lm_redhat_defense.py"
+      - "intel/va3lm/**"
+      - "zyra_max.py"
+      - ".github/workflows/va3lm-redhat-defense.yml"
+  pull_request:
+    paths:
+      - "agents/va3lm_redhat_defense.py"
+      - "agents/va3lm_redhat_ontology.py"
+      - "agents/tests/test_va3lm_redhat_defense.py"
+      - "intel/va3lm/**"
+      - "zyra_max.py"
+      - ".github/workflows/va3lm-redhat-defense.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  va3lm-defense:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validation tooling
+        run: python -m pip install pytest ruff bandit
+      - name: Run VA3LM Red Hat ontology lock
+        run: python -m agents.va3lm_redhat_ontology lock --root .
+      - name: Run VA3LM tests
+        run: python -m pytest agents/tests/test_va3lm_redhat_defense.py -q
+      - name: Ruff VA3LM defensive agents
+        run: ruff check agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py agents/tests/test_va3lm_redhat_defense.py
+      - name: Bandit VA3LM defensive agents
+        run: bandit -q -r agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
+      - name: Verify lock and guardrails
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          lock = json.loads(Path("intel/va3lm/redhat-ontology-lock.json").read_text())
+          assert lock["locked"] is True
+          assert lock["publicationState"] == "LOCKED_DEFENSIVE_INTELLIGENCE"
+          assert all(stage["status"] == "PASS" for stage in lock["subagents"])
+          guardrails = lock["guardrails"]
+          assert guardrails["remoteScanning"] is False
+          assert guardrails["exploitExecution"] is False
+          assert guardrails["retaliation"] is False
+          assert guardrails["automaticContainment"] is False
+          assert guardrails["arbitraryShell"] is False
+          assert guardrails["humanReviewRequired"] is True
+          print("VA3LM defensive lock verified:", lock["lockId"])
+          PY
+      - name: Upload VA3LM defensive intelligence package
+        uses: actions/upload-artifact@v4
+        with:
+          name: va3lm-redhat-defense
+          path: |
+            intel/va3lm/redhat-defense-evidence.json
+            intel/va3lm/redhat-defense-lock.json
+            intel/va3lm/redhat-defense-ontology.json
+            intel/va3lm/redhat-ontology-lock.json
+          if-no-files-found: error
