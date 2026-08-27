@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# ruff: noqa: I001
 """Launch ZYRA with an expanded but still bounded mission envelope.
 
 This profile is intended for long local repository/document-analysis missions
@@ -75,7 +76,6 @@ def _candidate_strings(raw: str):
     if not text:
         return []
 
-    # Normalize smart punctuation commonly emitted by chat-oriented models.
     text = (
         text.replace("\u201c", '"')
         .replace("\u201d", '"')
@@ -85,17 +85,13 @@ def _candidate_strings(raw: str):
 
     candidates = [text]
 
-    # Markdown fenced JSON / generic code fences.
     for match in re.finditer(r"```(?:json)?\s*(.*?)```", text, flags=re.I | re.S):
         candidates.append(match.group(1).strip())
 
-    # Balanced object-like slices. JSONDecoder.raw_decode below will stop at the
-    # end of the first valid object, so prose after it does not matter.
     for index, char in enumerate(text):
         if char == "{":
             candidates.append(text[index:])
 
-    # Preserve order while removing exact duplicates.
     seen = set()
     ordered = []
     for item in candidates:
@@ -108,7 +104,6 @@ def _candidate_strings(raw: str):
 def _robust_extract_json(raw: str):
     decoder = json.JSONDecoder()
     for item in _candidate_strings(raw):
-        # Strict JSON first.
         try:
             value = json.loads(item)
             if _valid_action(value):
@@ -116,7 +111,6 @@ def _robust_extract_json(raw: str):
         except (json.JSONDecodeError, TypeError):
             pass
 
-        # Valid JSON object followed by commentary.
         try:
             value, _ = decoder.raw_decode(item.lstrip())
             if _valid_action(value):
@@ -124,7 +118,6 @@ def _robust_extract_json(raw: str):
         except (json.JSONDecodeError, TypeError):
             pass
 
-        # Some local models return Python dict syntax with single quotes.
         try:
             value = ast.literal_eval(item)
             if _valid_action(value):
@@ -161,8 +154,6 @@ Never repeat a failed action unchanged. When complete, return finish. Do not inv
         self._max_json_repairs = 0
         return _robust_extract_json(raw)
     except MissionError:
-        # Exactly one local repair call. This remains bounded by the mission time
-        # and step budgets and cannot invoke tools by itself.
         self._max_json_repairs = getattr(self, "_max_json_repairs", 0) + 1
         repair_system = """Convert the supplied malformed agent response into exactly one valid JSON object.
 Do not add prose or Markdown. Preserve the intended bounded action only.
