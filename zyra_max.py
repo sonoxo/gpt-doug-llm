@@ -11,18 +11,24 @@ wrap JSON in Markdown, emit a Python-style dict, or add prose around an action.
 The recovery layer below accepts those harmless formatting variations and, when
 necessary, performs one bounded repair request instead of terminating a mission
 on the first malformed action.
+
+MASTER-LOCKED ontology queries are intercepted locally before model chat. Every
+query verifies the publication manifest and source/ontology/analysis hashes.
 """
 from __future__ import annotations
 
 import ast
+import builtins
 import json
 import os
 import re
 
+from agents.ontology_query import OntologyQueryError, run_query_command
 from zyra_agent import MissionBudget, MissionError, ZyraAgent
 
 
 _ORIGINAL_INIT = ZyraAgent.__init__
+_ORIGINAL_INPUT = builtins.input
 _ALLOWED_ACTIONS = {
     "list_files",
     "read_file",
@@ -31,6 +37,13 @@ _ALLOWED_ACTIONS = {
     "create_file",
     "run_check",
     "finish",
+}
+_ONTOLOGY_COMMANDS = {
+    "/ontology-status": "status",
+    "/ontology-timeline": "timeline",
+    "/ontology-graph": "graph",
+    "/ontology-gaps": "gaps",
+    "/ontology-brief": "brief",
 }
 
 
@@ -164,11 +177,55 @@ If the intent cannot be recovered safely, return {"action":"list_files","path":"
         return _robust_extract_json(repaired)
 
 
+def _ontology_input(prompt: str = "") -> str:
+    while True:
+        value = _ORIGINAL_INPUT(prompt)
+        stripped = value.strip()
+        lowered = stripped.lower()
+
+        if lowered == "/help":
+            print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+            return value
+
+        query_command = _ONTOLOGY_COMMANDS.get(lowered)
+        query_argument = ""
+        if lowered.startswith("/ontology-query "):
+            query_command = "query"
+            query_argument = stripped[len("/ontology-query "):].strip()
+        elif lowered == "/ontology-query":
+            print("🔎 Usage: /ontology-query <question>")
+            continue
+
+        if query_command:
+            try:
+                print(run_query_command(os.path.dirname(os.path.abspath(__file__)), query_command, query_argument))
+            except OntologyQueryError as exc:
+                print(f"🔐 ONTOLOGY QUERY BLOCKED ❌ // {exc}")
+                print("   Run /master-lock to regenerate and verify the locked package.")
+            except Exception as exc:
+                print(f"🔐 ONTOLOGY QUERY ERROR ❌ // {type(exc).__name__}: {exc}")
+            continue
+
+        return value
+
+
 ZyraAgent.__init__ = _max_init
 ZyraAgent._extract_json = staticmethod(_robust_extract_json)
 ZyraAgent._next_action = _max_next_action
+builtins.input = _ontology_input
 
-from zyra_chat import main  # noqa: E402  (patch must be installed before import)
+import zyra_chat as _zyra_chat  # noqa: E402  (patches must be installed before import)
+
+_original_dashboard = _zyra_chat.show_dashboard
+
+
+def _max_dashboard(*args, **kwargs):
+    _original_dashboard(*args, **kwargs)
+    print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief\n")
+
+
+_zyra_chat.show_dashboard = _max_dashboard
+main = _zyra_chat.main
 
 
 if __name__ == "__main__":
