@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from agency_cloud.models import AuditEvent, new_id
+
 GENESIS_HASH = "0" * 64
 
 
