@@ -1,0 +1,88 @@
+{
+  "advisoryId": "JCSA-20260826-01",
+  "title": "China-Linked Hacking Group QTFY Targets Military and Critical Infrastructure with Malicious Distributed Systems",
+  "published": "2026-08-26",
+  "tlp": "TLP:CLEAR",
+  "sourceUrl": "https://www.ic3.gov/CSA/2026/260826.pdf",
+  "authoringAgencies": ["FBI", "NSA", "CNMF"],
+  "sourceClass": "VERIFIED_PUBLIC_CYBERSECURITY_ADVISORY",
+  "usePolicy": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
+  "claimPolicy": "Preserve attribution as claims made by the authoring agencies; do not infer guilt beyond the source.",
+  "threatProfile": {
+    "id": "QTFY",
+    "aliases": ["QT", "QTCYBER"],
+    "attribution": "The advisory attributes QTFY to Nanjing Xinjiuwei Network Technology Co. and describes links to the PRC cyber-enabler ecosystem.",
+    "disposition": "MONITOR_AND_DEFEND"
+  },
+  "organizations": [
+    {"id": "nanjing-xinjiuwei", "name": "Nanjing Xinjiuwei Network Technology Co.", "role": "ADVISORY_ATTRIBUTED_ENABLER", "sourcePage": 4},
+    {"id": "mss-unit-0718", "name": "Unit 0718", "role": "ADVISORY_MENTIONED_MSS_UNIT", "sourcePage": 5},
+    {"id": "mss-unit-9086", "name": "Unit 9086", "role": "ADVISORY_MENTIONED_MSS_UNIT", "sourcePage": 5},
+    {"id": "cnitsec-jilin", "name": "CNITSEC Jilin Subcenter", "role": "ADVISORY_MENTIONED_ENTITY", "sourcePage": 5},
+    {"id": "bozhi-elextec", "name": "Bozhi Security Technology Co., Ltd. / Elextec Cybersecurity, Inc.", "role": "ADVISORY_MENTIONED_ENTITY", "sourcePage": 5},
+    {"id": "cy-tech", "name": "Changyang Technology (Cy-Tech) (Beijing) Co., Ltd.", "role": "ADVISORY_MENTIONED_ENTITY", "sourcePage": 6},
+    {"id": "lexbell", "name": "Nanjing Lexbell Information Technology Co., Ltd.", "role": "ADVISORY_MENTIONED_ENTITY", "sourcePage": 6},
+    {"id": "fujian-ares", "name": "Fujian Ares Network Technology Co., Ltd.", "role": "ADVISORY_MENTIONED_ENTITY", "sourcePage": 6}
+  ],
+  "tools": [
+    {"id": "qscan", "name": "QScan", "category": "DISTRIBUTED_SCANNING_AND_EXPLOITATION_PLATFORM", "sourcePage": 8},
+    {"id": "qtrouter", "name": "QTRouter", "category": "TRAFFIC_OBFUSCATION_NETWORK", "sourcePage": 9},
+    {"id": "proxy-platform-management", "name": "Proxy Platform Management", "category": "BOTNET_MANAGEMENT_PLATFORM", "sourcePage": 10},
+    {"id": "proxy-pool-management", "name": "Proxy Pool Management System", "category": "BOTNET_AND_PROXY_AGGREGATOR", "sourcePage": 10},
+    {"id": "qtbotnet", "name": "QTBotnet", "category": "BOTNET_CONTROL_PLATFORM", "sourcePage": 10}
+  ],
+  "attackTechniques": [
+    {"id": "T1595.002", "name": "Active Scanning: Vulnerability Scanning"},
+    {"id": "T1190", "name": "Exploit Public-Facing Application"},
+    {"id": "T1505.003", "name": "Server Software Component: Web Shell"},
+    {"id": "T1583.003", "name": "Acquire Infrastructure: Virtual Private Server"},
+    {"id": "T1587", "name": "Develop Capabilities"}
+  ],
+  "vulnerabilities": [
+    {"id": "CVE-2019-11510", "context": "Pulse Secure VPN", "sourcePage": 6},
+    {"id": "CVE-2018-13379", "context": "Fortinet FortiOS SSL VPN", "sourcePage": 7},
+    {"id": "CVE-2019-19781", "context": "Citrix ADC and Gateway", "sourcePage": 7},
+    {"id": "CVE-2021-26855", "context": "Microsoft Exchange ProxyLogon", "sourcePage": 7},
+    {"id": "CVE-2020-5902", "context": "F5 BIG-IP", "sourcePage": 7},
+    {"id": "CVE-2019-10068", "context": "Kentico CMS", "sourcePage": 7},
+    {"id": "CVE-2021-44228", "context": "Log4Shell", "sourcePage": 7},
+    {"id": "CVE-2023-22515", "context": "Atlassian Confluence", "sourcePage": 7},
+    {"id": "CVE-2024-24919", "context": "Check Point Quantum Gateway", "sourcePage": 7},
+    {"id": "CVE-2024-8190", "context": "Ivanti CSA", "sourcePage": 8},
+    {"id": "CVE-2024-8963", "context": "Ivanti CSA", "sourcePage": 8},
+    {"id": "CVE-2024-9380", "context": "Ivanti CSA", "sourcePage": 8},
+    {"id": "CVE-2025-31161", "context": "CrushFTP", "sourcePage": 8},
+    {"id": "CVE-2026-1731", "context": "BeyondTrust Remote Support", "sourcePage": 8}
+  ],
+  "campaignEvents": [
+    {"id": "evt-2018-05-doe", "date": "2018-05", "targetCategory": "US Department of Energy", "activity": "vulnerability scanning", "outcome": "unsuccessful access attempt", "sourcePage": 6},
+    {"id": "evt-2019-07-election", "date": "2019-07", "targetCategory": "US election system", "activity": "vulnerability scanning", "outcome": "unsuccessful access attempt", "sourcePage": 6},
+    {"id": "evt-2019-08-pulse", "date": "2019-08", "targetCategory": "US federal organizations", "activity": "public-facing VPN exploitation", "outcome": "advisory-observed exploitation activity", "vulnerabilityIds": ["CVE-2019-11510"], "sourcePage": 6},
+    {"id": "evt-2020-01-citrix", "date": "2020-01", "targetCategory": "numerous US targets", "activity": "public-facing gateway exploitation", "outcome": "advisory-observed exploitation activity", "vulnerabilityIds": ["CVE-2019-19781"], "sourcePage": 7},
+    {"id": "evt-2021-taiwan-energy", "date": "2021", "targetCategory": "Taiwan energy sector", "activity": "remote access trojan installation", "outcome": "systems compromised according to advisory", "sourcePage": 7},
+    {"id": "evt-2021-12-log4shell", "date": "2021-12", "targetCategory": "internet-facing systems", "activity": "Log4Shell exploitation", "outcome": "advisory-observed exploitation activity", "vulnerabilityIds": ["CVE-2021-44228"], "sourcePage": 7},
+    {"id": "evt-2023-10-confluence", "date": "2023-10", "targetCategory": "Atlassian Confluence systems", "activity": "public-facing application exploitation", "outcome": "advisory-observed exploitation activity", "vulnerabilityIds": ["CVE-2023-22515"], "sourcePage": 7},
+    {"id": "evt-2024-05-qscan", "date": "2024-05", "targetCategory": "power and telecommunications organizations", "activity": "QScan scanning and exploitation", "outcome": "advisory reports data exfiltration from more than 300 organizations worldwide", "toolIds": ["qscan"], "vulnerabilityIds": ["CVE-2024-24919"], "sourcePage": 7},
+    {"id": "evt-2024-09-ivanti", "date": "2024-09", "targetCategory": "US government and research organizations", "activity": "Ivanti CSA zero-day exploitation", "outcome": "advisory-observed exploitation activity", "vulnerabilityIds": ["CVE-2024-8190", "CVE-2024-8963", "CVE-2024-9380"], "sourcePage": 8},
+    {"id": "evt-2026-02-beyondtrust", "date": "2026-02", "targetCategory": "US state government and water district", "activity": "QScan exploitation", "outcome": "advisory-observed targeting", "toolIds": ["qscan"], "vulnerabilityIds": ["CVE-2026-1731"], "sourcePage": 8},
+    {"id": "evt-2026-03-scan", "date": "2026-03", "targetCategory": "US Senate and hospital system", "activity": "vulnerability scanning", "outcome": "unsuccessful access attempts", "sourcePage": 8},
+    {"id": "evt-2026-06-election", "date": "2026-06", "targetCategory": "US election system", "activity": "QScan vulnerability scanning", "outcome": "unsuccessful access attempt", "toolIds": ["qscan"], "sourcePage": 8}
+  ],
+  "keyDefensiveActions": [
+    "Apply current software and firmware updates and identify end-of-support devices.",
+    "Audit internet-facing applications for exposed secrets and sensitive configuration.",
+    "Isolate critical systems from edge devices using zero-trust segmentation.",
+    "Hunt the published IOCs and establish network-activity baselines.",
+    "If compromise is detected, isolate affected hosts, scope the intrusion, preserve evidence, contain, eradicate, harden, and validate recovery."
+  ],
+  "iocFeeds": [
+    "https://www.ic3.gov/CSA/2026/QTFY_IOC_Files.csv",
+    "https://www.ic3.gov/CSA/2026/QTFY_IOC_Infrastructure.csv"
+  ],
+  "iocPolicy": {
+    "defaultAction": "INVESTIGATE_AND_VET",
+    "automaticBlocking": false,
+    "humanReviewRequired": true,
+    "reason": "An indicator match is evidence for defensive investigation, not proof of maliciousness or authority to act against third-party infrastructure."
+  }
+}
