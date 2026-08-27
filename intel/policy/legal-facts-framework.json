@@ -1,99 +1,116 @@
 {
-  "framework": "ZYRA LEGAL FACTS MASTER FRAMEWORK",
-  "version": "1.0.0",
-  "mode": "PROVENANCE_FIRST_FACT_GROUNDING",
-  "principle": "Every material claim used by the ecosystem must retain source provenance, legal/evidentiary status, and uncertainty. Official allegations are never promoted to adjudicated facts.",
-  "trustTiers": [
+  "framework": "ZYRA VIRGINIA LEGAL INTELLIGENCE COMMAND FRAMEWORK",
+  "version": "2.0.0",
+  "jurisdiction": "VIRGINIA",
+  "mode": "PROVENANCE_FIRST_INTELLIGENCE_COMMAND",
+  "commandDoctrine": "Every material intelligence claim entering the ecosystem must retain provenance, legal status, evidentiary status, corroboration state, and uncertainty. Allegations remain allegations. Adjudicated findings remain adjudicated findings. Analytic judgments remain intelligence analysis.",
+  "intelligenceTiers": [
     {
       "tier": 1,
-      "name": "PRIMARY_LEGAL_RECORD",
+      "name": "VIRGINIA_PRIMARY_LEGAL_INTELLIGENCE",
       "examples": [
-        "court order",
-        "judicial opinion",
-        "judgment",
-        "statute",
-        "regulation",
-        "official docket filing",
-        "search/seizure order metadata when publicly released"
+        "Code of Virginia",
+        "Virginia Constitution",
+        "Supreme Court of Virginia opinion or order",
+        "Court of Appeals of Virginia opinion or order",
+        "Virginia circuit court order or judgment",
+        "Virginia docket filing",
+        "Virginia regulation"
       ],
-      "defaultUse": "HIGHEST_TRUST_WITH_DOCUMENT_SPECIFIC_STATUS"
+      "commandUse": "HIGHEST_WEIGHT_WITH_DOCUMENT_SPECIFIC_LEGAL_STATUS"
     },
     {
       "tier": 2,
-      "name": "OFFICIAL_GOVERNMENT_RECORD",
+      "name": "FEDERAL_LEGAL_INTELLIGENCE_AFFECTING_VIRGINIA",
       "examples": [
-        "DOJ press release",
-        "FBI advisory",
-        "CISA advisory",
-        "NSA advisory",
-        "agency report",
-        "official government dataset"
+        "United States Supreme Court record",
+        "Fourth Circuit opinion or order",
+        "Eastern District of Virginia record",
+        "Western District of Virginia record",
+        "federal statute",
+        "federal regulation",
+        "federal court-authorized seizure or disruption record"
       ],
-      "defaultUse": "AUTHORITATIVE_FOR_WHAT_THE_AGENCY_REPORTS_OR_DID"
+      "commandUse": "HIGH_WEIGHT_WITH_JURISDICTION_AND_PROCEDURAL_STATUS_PRESERVED"
     },
     {
       "tier": 3,
-      "name": "CORROBORATING_PRIMARY_OR_INSTITUTIONAL_SOURCE",
+      "name": "AGENCY_INTELLIGENCE",
+      "examples": [
+        "FBI advisory",
+        "DOJ press release",
+        "CISA advisory",
+        "NSA advisory",
+        "Virginia agency bulletin",
+        "Virginia Attorney General release",
+        "government dataset"
+      ],
+      "commandUse": "AUTHORITATIVE_FOR_REPORTED_ACTIONS_AND_AGENCY_STATEMENTS_WITHOUT_AUTOMATIC_ADJUDICATION"
+    },
+    {
+      "tier": 4,
+      "name": "CORROBORATING_INSTITUTIONAL_INTELLIGENCE",
       "examples": [
         "company filing",
         "company incident disclosure",
         "sworn testimony",
-        "official vendor advisory",
-        "academic publication"
+        "vendor security advisory",
+        "peer-reviewed publication"
       ],
-      "defaultUse": "CORROBORATION_REQUIRED_FOR_HIGH_IMPACT_CLAIMS"
+      "commandUse": "CORROBORATION_LAYER_FOR_HIGH_IMPACT_INTELLIGENCE"
     },
     {
-      "tier": 4,
-      "name": "MEDIA_OR_COMMENTARY",
+      "tier": 5,
+      "name": "MEDIA_INTELLIGENCE",
       "examples": [
         "news transcript",
         "interview",
         "press article",
         "podcast",
-        "video commentary"
+        "video transcript"
       ],
-      "defaultUse": "CONTEXT_ONLY_UNLESS_CLAIM_IS_CROSS_SOURCED"
+      "commandUse": "CONTEXT_AND_SIGNAL_LAYER_UNTIL_CROSS_SOURCED"
     },
     {
-      "tier": 5,
-      "name": "UNVERIFIED_PUBLIC_COMMENT",
+      "tier": 6,
+      "name": "UNVERIFIED_OPEN_SOURCE_INTELLIGENCE",
       "examples": [
         "social comment",
         "forum post",
         "anonymous claim",
         "viewer comment"
       ],
-      "defaultUse": "NEVER_PROMOTE_TO_FACT_WITHOUT_INDEPENDENT_EVIDENCE"
+      "commandUse": "NEVER_PROMOTE_WITHOUT_HIGHER_TIER_CORROBORATION"
     }
   ],
-  "claimClasses": {
-    "ADJUDICATED_FACT": "A court or other legally competent tribunal made a finding or entered an order establishing the proposition for the relevant proceeding.",
-    "OFFICIAL_ACTION_FACT": "The source establishes that an official action occurred, such as filing, seizure, publication, sanction, or order execution.",
-    "OFFICIAL_AGENCY_REPORTING": "An agency states that an event, attribution, victimization, or technical condition occurred; authoritative as agency reporting, but not automatically an adjudicated fact.",
-    "ALLEGATION_IN_LEGAL_RECORD": "A complaint, indictment, affidavit, warrant application, or similar legal record alleges conduct that has not been adjudicated.",
-    "SUMMARY_OF_LEGAL_RECORD": "An official source summarizes a legal filing or court record; preserve the summary nature and underlying allegation/finding status.",
-    "CORROBORATED_FACT": "Two or more independent sufficiently reliable sources support the proposition without material contradiction.",
-    "MEDIA_REPORTED_CLAIM": "A media source reports or quotes a proposition; may be used as context, not promoted without corroboration.",
-    "ANALYTIC_INFERENCE": "A conclusion derived by ZYRA/GPT-DOUG/Glass Onion from evidence; never represented as a source fact.",
-    "UNVERIFIED_CLAIM": "A proposition lacking sufficient provenance or corroboration."
+  "intelligenceClasses": {
+    "ADJUDICATED_LEGAL_FACT": "A court or legally competent tribunal entered a finding, order, or judgment establishing the proposition for the relevant proceeding.",
+    "LEGAL_ACTION_FACT": "The evidence establishes that a filing, seizure, publication, sanction, order, or other legal action occurred.",
+    "AGENCY_REPORTED_INTELLIGENCE": "An agency states that an event, attribution, victimization, or technical condition occurred. Preserve the reporting status unless independently adjudicated or corroborated.",
+    "LEGAL_RECORD_ALLEGATION": "A complaint, indictment, affidavit, warrant application, or similar legal record alleges conduct that has not been adjudicated.",
+    "LEGAL_RECORD_SUMMARY": "A source summarizes a legal filing or court record. Preserve both the summary nature and the underlying allegation or finding status.",
+    "CORROBORATED_INTELLIGENCE": "Two or more independent sufficiently reliable intelligence sources support the proposition without material contradiction.",
+    "MEDIA_INTELLIGENCE_CLAIM": "A media source reports or quotes a proposition. Use as intelligence context until corroborated.",
+    "ANALYTIC_JUDGMENT": "A conclusion derived by ZYRA, GPT-DOUG, or GPT-GLASSONION from evidence. Never represent it as a source fact.",
+    "UNVERIFIED_INTELLIGENCE": "A proposition lacking sufficient provenance or corroboration."
   },
-  "promotionRules": [
-    "Never convert an allegation into ADJUDICATED_FACT merely because it appears in an official source.",
-    "Official government press releases are authoritative for the fact that the agency made the statement and for announced agency actions, but attribution and alleged conduct retain their stated evidentiary status.",
-    "Media transcripts can contribute architecture lessons, quoted viewpoints, and corroborated context, but cannot independently establish high-impact legal or attribution claims.",
-    "Viewer comments and social commentary are excluded from factual ontology promotion unless independently corroborated by higher-tier evidence.",
-    "Every promoted claim must include sourceId, sourceUrl or repository source path, sourceClass, claimClass, and a human-readable provenance locator such as lines, pages, timestamp, paragraph, docket entry, or section.",
-    "Analytic inference must be visibly separated from source claims in every brief and query result.",
-    "Conflicting sources remain represented as conflicts; the system must not silently select a preferred narrative.",
-    "Human review is required before a high-impact claim changes attribution, legal status, identity, culpability, or external defensive action."
+  "commandRules": [
+    "Never convert an allegation into ADJUDICATED_LEGAL_FACT because it appears in a high-trust source.",
+    "Agency intelligence may establish that an agency reported or performed an action; attribution and alleged conduct retain their evidence status.",
+    "Media intelligence can supply architecture lessons, quotations, chronology signals, and corroborated context, but cannot independently establish high-impact legal or attribution conclusions.",
+    "Viewer comments and social commentary are excluded from ontology fact promotion unless independently corroborated by higher-tier intelligence.",
+    "Every promoted intelligence object must retain sourceId, source location, intelligenceTier, intelligenceClass, and a provenance locator such as page, line, timestamp, paragraph, docket entry, or section.",
+    "Analytic judgment must be visibly separated from source intelligence in every brief, query result, graph edge, and command report.",
+    "Conflicting intelligence remains represented as conflict; the system must not silently collapse competing accounts into one narrative.",
+    "Command review is required before a high-impact intelligence promotion changes attribution, legal status, identity, culpability, or external defensive action.",
+    "Virginia jurisdiction must be explicit whenever Virginia law, Virginia courts, Virginia agencies, or Virginia entities materially control the analysis."
   ],
-  "operationalBoundaries": {
+  "commandBoundaries": {
     "externalThirdPartyAction": false,
     "offensiveReplication": false,
     "automaticAttributionEscalation": false,
     "automaticGuiltInference": false,
-    "automaticBlockingFromMediaOnly": false,
-    "humanReviewForHighImpactPromotion": true
+    "automaticBlockingFromMediaIntelOnly": false,
+    "commandReviewForHighImpactPromotion": true
   }
 }
