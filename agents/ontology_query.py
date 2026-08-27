@@ -160,7 +160,12 @@ def ontology_graph(package: LockedOntologyPackage) -> str:
     lines = ["🕸️ ONTOLOGY GRAPH // verified relationship summary"]
     for link_type, count in sorted(counts.items()):
         lines.append(f"{link_type}: {count}")
-    event_links = [link for link in links if str(link.get("from", "")).startswith("CampaignEvent:") and link.get("linkType") in {"EventUsesTool", "EventReferencesVulnerability"}]
+    event_links = [
+        link
+        for link in links
+        if str(link.get("from", "")).startswith("CampaignEvent:")
+        and link.get("linkType") in {"EventUsesTool", "EventReferencesVulnerability"}
+    ]
     if event_links:
         lines.append("\nCampaign event relationships:")
         by_event: dict[str, list[str]] = defaultdict(list)
@@ -243,7 +248,164 @@ def _query_terms(question: str) -> list[str]:
     return [term for term in terms if len(term) > 1 and term not in _STOPWORDS]
 
 
+def _event_relationship_index(package: LockedOntologyPackage) -> tuple[dict[str, dict[str, set[str]]], dict[str, dict[str, Any]]]:
+    objects = {_ref(item): item for item in _objects(package)}
+    event_refs = {_ref(item) for item in _objects(package, "CampaignEvent")}
+    index = {ref: {"tools": set(), "vulnerabilities": set(), "techniques": set()} for ref in event_refs}
+    relation_map = {
+        "EventUsesTool": "tools",
+        "EventReferencesVulnerability": "vulnerabilities",
+        "EventUsesTechnique": "techniques",
+    }
+    for link in package.ontology.get("links") or []:
+        source = str(link.get("from") or "")
+        bucket = relation_map.get(str(link.get("linkType") or ""))
+        if source in index and bucket:
+            index[source][bucket].add(str(link.get("to") or ""))
+    return index, objects
+
+
+def _shared_targets(index: dict[str, dict[str, set[str]]], bucket: str) -> dict[str, list[str]]:
+    target_events: dict[str, list[str]] = defaultdict(list)
+    for event_ref, relations in index.items():
+        for target in relations[bucket]:
+            target_events[target].append(event_ref)
+    return {
+        target: sorted(events)
+        for target, events in target_events.items()
+        if len(events) >= 2
+    }
+
+
+def _event_sort_key(objects: dict[str, dict[str, Any]], event_ref: str) -> tuple[str, str]:
+    item = objects.get(event_ref) or {}
+    props = item.get("properties") or {}
+    return str(props.get("date") or ""), event_ref
+
+
+def _cross_event_analysis(package: LockedOntologyPackage, question: str) -> str:
+    index, objects = _event_relationship_index(package)
+    shared_tools = _shared_targets(index, "tools")
+    shared_vulns = _shared_targets(index, "vulnerabilities")
+    shared_techniques = _shared_targets(index, "techniques")
+
+    lines = [
+        f"🔎 ONTOLOGY MULTI-HOP QUERY // {question}",
+        f"Lock ID: {package.lock_id}",
+        "Cross-event relationship analysis:",
+    ]
+
+    def emit_group(title: str, groups: dict[str, list[str]]) -> None:
+        lines.append(title)
+        if not groups:
+            lines.append("- No repeated event-specific relationship is modeled in the locked graph.")
+            return
+        for target_ref, event_refs in sorted(groups.items()):
+            target = objects.get(target_ref)
+            lines.append(f"- {(_display(target) if target else target_ref)}")
+            for event_ref in sorted(event_refs, key=lambda ref: _event_sort_key(objects, ref)):
+                event = objects.get(event_ref)
+                lines.append(f"  ↳ {(_display(event) if event else event_ref)}")
+
+    emit_group("Shared tools:", shared_tools)
+    emit_group("Shared vulnerabilities:", shared_vulns)
+    emit_group("Shared event-specific ATT&CK techniques:", shared_techniques)
+
+    advisory_techniques = sorted(_objects(package, "AttackTechnique"), key=lambda item: str(item.get("id")))
+    if advisory_techniques and not any(relations["techniques"] for relations in index.values()):
+        lines.append("ATT&CK scope note:")
+        lines.append(
+            "- The locked ontology models ATT&CK techniques at the advisory/threat-profile level, not per campaign event. "
+            "Therefore the engine will not claim that an individual event used a specific ATT&CK technique without an explicit event-to-technique edge."
+        )
+        lines.append("- Advisory-wide technique set: " + ", ".join(str(item.get("id")) for item in advisory_techniques))
+
+    repeated_events: set[str] = set()
+    for groups in (shared_tools, shared_vulns, shared_techniques):
+        for event_refs in groups.values():
+            repeated_events.update(event_refs)
+
+    if repeated_events:
+        dates = [
+            str((objects.get(ref, {}).get("properties") or {}).get("date") or "")
+            for ref in repeated_events
+        ]
+        sectors = sorted(
+            {
+                str((objects.get(ref, {}).get("properties") or {}).get("targetCategory") or "")
+                for ref in repeated_events
+                if (objects.get(ref, {}).get("properties") or {}).get("targetCategory")
+            }
+        )
+        lines.append("Recurring defensive pattern (structural inference from locked relationships):")
+        if shared_tools:
+            tool_names = [
+                str((objects.get(ref, {}).get("properties") or {}).get("name") or ref)
+                for ref in sorted(shared_tools)
+            ]
+            lines.append(
+                "- Reuse of the same modeled tooling across temporally separated campaign events supports prioritizing persistent telemetry, detection coverage, and exposure validation for: "
+                + ", ".join(tool_names)
+                + "."
+            )
+        if shared_vulns:
+            lines.append(
+                "- Repeated CVE relationships across events support prioritizing patch verification and external-exposure review for those recurring vulnerabilities."
+            )
+        if dates:
+            lines.append(f"- Repeated linked events span {min(dates)} through {max(dates)} in the locked record.")
+        if sectors:
+            lines.append("- Affected target categories in those repeated relationships include: " + "; ".join(sectors) + ".")
+    else:
+        lines.append(
+            "Recurring defensive pattern: the current locked graph does not contain repeated event-specific tool, vulnerability, or technique edges sufficient for a cross-event recurrence claim."
+        )
+
+    lines.append(
+        "Interpretation rule: repeated graph structure is a defensive analytic pattern, not proof of guilt, common control, or independent attribution beyond the source advisory."
+    )
+    return "\n".join(lines)
+
+
+def _is_cross_event_question(question: str) -> bool:
+    terms = set(_query_terms(question))
+    event_signal = bool(terms & {"campaign", "event", "events"})
+    relation_signal = bool(terms & {"share", "shared", "same", "recurring", "recur", "pattern", "patterns"})
+    return event_signal and relation_signal
+
+
+def _expanded_relationships(package: LockedOntologyPackage, seed_refs: set[str], max_links: int = 24) -> list[dict[str, Any]]:
+    links = package.ontology.get("links") or []
+    first_hop = [
+        link
+        for link in links
+        if str(link.get("from")) in seed_refs or str(link.get("to")) in seed_refs
+    ]
+    neighbor_refs = set(seed_refs)
+    for link in first_hop:
+        neighbor_refs.add(str(link.get("from")))
+        neighbor_refs.add(str(link.get("to")))
+    second_hop = [
+        link
+        for link in links
+        if str(link.get("from")) in neighbor_refs and str(link.get("to")) in neighbor_refs
+    ]
+    ordered: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for link in first_hop + second_hop:
+        key = (str(link.get("from")), str(link.get("linkType")), str(link.get("to")))
+        if key not in seen:
+            seen.add(key)
+            ordered.append(link)
+        if len(ordered) >= max_links:
+            break
+    return ordered
+
+
 def ontology_query(package: LockedOntologyPackage, question: str, limit: int = 8) -> str:
+    if _is_cross_event_question(question):
+        return _cross_event_analysis(package, question)
+
     terms = _query_terms(question)
     if not terms:
         raise OntologyQueryError("query needs at least one meaningful term")
@@ -260,10 +422,7 @@ def ontology_query(package: LockedOntologyPackage, question: str, limit: int = 8
         return "🔎 ONTOLOGY QUERY // no locked graph objects matched: " + question
 
     refs = {_ref(item) for item in selected}
-    related_links = [
-        link for link in package.ontology.get("links") or []
-        if str(link.get("from")) in refs or str(link.get("to")) in refs
-    ]
+    related_links = _expanded_relationships(package, refs)
     lines = [f"🔎 ONTOLOGY QUERY // {question}", f"Lock ID: {package.lock_id}", "Matched source-grounded objects:"]
     for item in selected:
         props = item.get("properties") or {}
@@ -276,8 +435,8 @@ def ontology_query(package: LockedOntologyPackage, question: str, limit: int = 8
         if details:
             lines.append("  " + " | ".join(details))
     if related_links:
-        lines.append("Relevant locked relationships:")
-        for link in related_links[:16]:
+        lines.append("Relevant locked relationships (up to two hops):")
+        for link in related_links:
             lines.append(f"- {link.get('from')} --{link.get('linkType')}--> {link.get('to')}")
     lines.append("Interpretation rule: these are locked source/graph matches, not a determination of guilt or independent attribution.")
     return "\n".join(lines)
