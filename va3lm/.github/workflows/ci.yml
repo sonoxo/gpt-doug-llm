@@ -1,0 +1,51 @@
+name: VA3LM 8088
+
+on:
+  push:
+    paths: ["va3lm/**"]
+  pull_request:
+    paths: ["va3lm/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  speed-run:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: va3lm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e '.[dev]' httpx
+      - name: Tests
+        run: pytest -q
+      - name: Ruff
+        run: ruff check src tests
+      - name: Bandit
+        run: bandit -q -ll -r src
+      - name: Compile
+        run: python -m compileall -q src
+      - name: 8088 smoke test
+        run: |
+          va3lm serve --host 127.0.0.1 --port 8088 > /tmp/va3lm.log 2>&1 &
+          PID=$!
+          trap 'kill $PID' EXIT
+          python - <<'PY'
+          import json, time, urllib.request
+          for _ in range(20):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8088/healthz', timeout=1) as r:
+                      data=json.load(r)
+                  assert data['status']=='ok' and data['port']==8088
+                  print('VA3LM 8088 GREEN')
+                  break
+              except Exception:
+                  time.sleep(.25)
+          else:
+              raise SystemExit('8088 smoke test failed')
+          PY

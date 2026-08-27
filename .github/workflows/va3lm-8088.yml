@@ -1,0 +1,46 @@
+name: VA3LM 8088 Speed Run
+
+on:
+  push:
+    branches: [main]
+    paths: ["va3lm/**", ".github/workflows/va3lm-8088.yml"]
+  pull_request:
+    paths: ["va3lm/**", ".github/workflows/va3lm-8088.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  va3lm-8088:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: va3lm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -e '.[dev]' httpx
+      - run: pytest -q
+      - run: ruff check src tests
+      - run: bandit -q -ll -r src
+      - run: python -m compileall -q src
+      - name: Port 8088 smoke
+        run: |
+          va3lm serve --host 127.0.0.1 --port 8088 > /tmp/va3lm.log 2>&1 &
+          PID=$!
+          trap 'kill $PID' EXIT
+          python - <<'PY'
+          import json, time, urllib.request
+          for _ in range(20):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8088/healthz', timeout=1) as r:
+                      d=json.load(r)
+                  assert d['port']==8088
+                  print('VA3LM 8088 GREEN')
+                  break
+              except Exception:
+                  time.sleep(.25)
+          else:
+              raise SystemExit(1)
+          PY
