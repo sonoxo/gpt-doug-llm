@@ -1,0 +1,126 @@
+{
+  "framework": "ZYRA GOVERNMENT INTELLIGENCE READINESS COMMAND",
+  "version": "1.0.0",
+  "jurisdiction": "VIRGINIA_AND_FEDERAL",
+  "mode": "EVIDENCE_DRIVEN_NO_SELF_CERTIFICATION",
+  "commandDoctrine": "Compliance is an evidence state, not a branding claim. ZYRA may report implemented controls, missing evidence, conditional applicability, and external authorization requirements. ZYRA must not self-declare FedRAMP authorization, CJIS acceptance, FIPS validation, CUI authorization, or Commonwealth approval.",
+  "baselines": [
+    {
+      "id": "VIRGINIA_SEC530_01_2",
+      "authority": "Virginia Information Technologies Agency",
+      "title": "Information Security Standard SEC530-01.2",
+      "date": "2025-06-17",
+      "source": "https://www.vita.virginia.gov/media/vitavirginiagov/it-governance/psgs/pdf/SEC530_Information_Security_Standard.pdf",
+      "applicability": "REQUIRED_WHEN_SYSTEM_IS_WITHIN_COMMONWEALTH_SCOPE",
+      "controlModel": "NIST_SP_800_53_REV5_BASED",
+      "statusRule": "READINESS_ONLY_UNTIL_COMMONWEALTH_GOVERNANCE_AND_SYSTEM_EVIDENCE_ARE_COMPLETE"
+    },
+    {
+      "id": "VIRGINIA_AI_GOVERNANCE",
+      "authority": "Virginia Information Technologies Agency",
+      "title": "Commonwealth Artificial Intelligence Governance",
+      "source": "https://www.vita.virginia.gov/policy--governance/governance/artificial-intelligence/",
+      "applicability": "REQUIRED_FOR_IN_SCOPE_COMMONWEALTH_AI_USE",
+      "requiredEvidence": [
+        "AI inventory and use-case record",
+        "human oversight design",
+        "data protection assessment",
+        "model documentation",
+        "risk and bias evaluation",
+        "required Commonwealth registration and approval evidence when applicable"
+      ]
+    },
+    {
+      "id": "NIST_SP_800_53_REV5",
+      "authority": "NIST",
+      "title": "Security and Privacy Controls for Information Systems and Organizations",
+      "source": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+      "applicability": "CONTROL_CATALOG_AND_BASELINE_FOUNDATION",
+      "families": ["AC","AT","AU","CA","CM","CP","IA","IR","MA","MP","PE","PL","PM","PS","PT","RA","SA","SC","SI","SR"]
+    },
+    {
+      "id": "FEDRAMP_REV5_2026",
+      "authority": "FedRAMP",
+      "title": "FedRAMP Rev5 Consolidated Rules for 2026",
+      "source": "https://preview.fedramp.gov/2026/providers/rev5/",
+      "applicability": "CONDITIONAL_FOR_CLOUD_SERVICES_USED_BY_FEDERAL_AGENCIES",
+      "requiredEvidence": [
+        "security decision record and applicable Rev5 baseline",
+        "system security plan",
+        "assessment evidence",
+        "POA&M",
+        "continuous monitoring evidence",
+        "required external assessment and authorization path"
+      ],
+      "statusRule": "NO_FEDRAMP_AUTHORIZATION_CLAIM_WITHOUT_FEDRAMP_ACCEPTED_AUTHORIZATION_EVIDENCE"
+    },
+    {
+      "id": "NIST_SP_800_171_REV3",
+      "authority": "NIST",
+      "title": "Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations",
+      "date": "2024-05",
+      "source": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
+      "applicability": "CONDITIONAL_WHEN_PROCESSING_STORING_OR_TRANSMITTING_CUI",
+      "statusRule": "NO_CUI_READY_CLAIM_WITHOUT_SCOPED_ASSESSMENT_AND_CONTRACTUAL_REQUIREMENTS"
+    },
+    {
+      "id": "FIPS_140_3",
+      "authority": "NIST CMVP",
+      "title": "FIPS 140-3 Cryptographic Module Validation",
+      "source": "https://csrc.nist.gov/projects/cryptographic-module-validation-program",
+      "applicability": "CONDITIONAL_WHEN_FIPS_VALIDATED_CRYPTOGRAPHY_IS_REQUIRED",
+      "requiredEvidence": [
+        "validated cryptographic module certificate or validated inherited service",
+        "runtime configuration evidence",
+        "key management evidence"
+      ],
+      "statusRule": "USING_STANDARD_CRYPTOGRAPHY_IS_NOT_EQUIVALENT_TO_FIPS_VALIDATION"
+    },
+    {
+      "id": "FBI_CJIS_SECURITY_POLICY_6_1",
+      "authority": "FBI CJIS",
+      "title": "CJIS Security Policy v6.1",
+      "date": "2026-06-25",
+      "source": "https://le.fbi.gov/file-repository/cjis_security_policy_v6-1_20260625.pdf/view",
+      "applicability": "CONDITIONAL_WHEN_ACCESSING_PROCESSING_STORING_OR_TRANSMITTING_CJI",
+      "statusRule": "NO_CJIS_ACCEPTANCE_CLAIM_WITHOUT_APPLICABLE_CSA_AND_AUDIT_EVIDENCE"
+    },
+    {
+      "id": "NIST_AI_RMF_AND_GAI_PROFILE",
+      "authority": "NIST",
+      "title": "AI RMF 1.0 and Generative AI Profile NIST AI 600-1",
+      "source": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "applicability": "AI_RISK_MANAGEMENT_INTELLIGENCE_BASELINE",
+      "statusRule": "USE_AS_AI_RISK_INTELLIGENCE_AND_TEVV_STRUCTURE"
+    }
+  ],
+  "requiredCommandArtifacts": [
+    "SECURITY.md",
+    ".github/workflows/security-gate.yml",
+    "intel/policy/legal-facts-framework.json",
+    "agents/virginia_intel_gate.py",
+    "intel/compliance/system-security-plan.md",
+    "intel/compliance/poam.json",
+    "intel/compliance/incident-response-plan.md",
+    "intel/compliance/access-control-plan.md",
+    "intel/compliance/configuration-management-plan.md",
+    "intel/compliance/contingency-plan.md",
+    "intel/compliance/cryptography-and-key-management-plan.md",
+    "intel/compliance/ai-governance-plan.md"
+  ],
+  "commandStates": [
+    "IMPLEMENTED_EVIDENCE_PRESENT",
+    "PARTIAL_EVIDENCE",
+    "DEPLOYMENT_EVIDENCE_REQUIRED",
+    "EXTERNAL_AUTHORIZATION_REQUIRED",
+    "NOT_APPLICABLE_BY_DECLARED_SCOPE"
+  ],
+  "prohibitions": [
+    "Do not label the ecosystem government compliant without naming the exact applicable baseline and evidence state.",
+    "Do not label the ecosystem FedRAMP authorized without authorization evidence.",
+    "Do not label cryptography FIPS validated without a CMVP-validated module or validated inherited service and runtime evidence.",
+    "Do not label the ecosystem CJIS accepted without the applicable criminal-justice authority and audit evidence.",
+    "Do not label the ecosystem CUI ready solely from source-code tests.",
+    "Do not treat passing CI as equivalent to system authorization."
+  ]
+}
