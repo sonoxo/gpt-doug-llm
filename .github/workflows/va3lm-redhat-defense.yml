@@ -8,6 +8,7 @@ on:
       - "agents/va3lm_redhat_ontology.py"
       - "agents/tests/test_va3lm_redhat_defense.py"
       - "intel/va3lm/**"
+      - "zyra_va3lm.py"
       - "zyra_max.py"
       - ".github/workflows/va3lm-redhat-defense.yml"
   pull_request:
@@ -16,6 +17,7 @@ on:
       - "agents/va3lm_redhat_ontology.py"
       - "agents/tests/test_va3lm_redhat_defense.py"
       - "intel/va3lm/**"
+      - "zyra_va3lm.py"
       - "zyra_max.py"
       - ".github/workflows/va3lm-redhat-defense.yml"
 
@@ -36,8 +38,10 @@ jobs:
         run: python -m agents.va3lm_redhat_ontology lock --root .
       - name: Run VA3LM tests
         run: python -m pytest agents/tests/test_va3lm_redhat_defense.py -q
+      - name: Compile native VA3LM launcher
+        run: python -m py_compile zyra_va3lm.py agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
       - name: Ruff VA3LM defensive agents
-        run: ruff check agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py agents/tests/test_va3lm_redhat_defense.py
+        run: ruff check zyra_va3lm.py agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py agents/tests/test_va3lm_redhat_defense.py
       - name: Bandit VA3LM defensive agents
         run: bandit -q -r agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
       - name: Verify lock and guardrails
