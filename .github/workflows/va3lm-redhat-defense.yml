@@ -42,8 +42,8 @@ jobs:
         run: python -m py_compile zyra_va3lm.py agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
       - name: Ruff VA3LM defensive agents
         run: ruff check zyra_va3lm.py agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py agents/tests/test_va3lm_redhat_defense.py
-      - name: Bandit VA3LM defensive agents
-        run: bandit -q -r agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
+      - name: Bandit medium-high VA3LM gate
+        run: bandit -q -ll -r agents/va3lm_redhat_defense.py agents/va3lm_redhat_ontology.py
       - name: Verify lock and guardrails
         run: |
           python - <<'PY'
