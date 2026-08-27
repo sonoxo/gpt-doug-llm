@@ -1,0 +1,39 @@
+name: Ghidra Defensive Stack
+
+on:
+  push:
+    branches:
+      - main
+      - feature/ghidra-defensive-analysis-stack
+    paths:
+      - "agents/ghidra_defensive_analysis.py"
+      - "tests/test_ghidra_defensive_analysis.py"
+      - "foundry/ontology/ghidra-defense-ontology.json"
+      - "GHIDRA_DEFENSIVE_STACK.md"
+      - ".github/workflows/ghidra-defensive-stack.yml"
+  pull_request:
+    paths:
+      - "agents/ghidra_defensive_analysis.py"
+      - "tests/test_ghidra_defensive_analysis.py"
+      - "foundry/ontology/ghidra-defense-ontology.json"
+      - "GHIDRA_DEFENSIVE_STACK.md"
+      - ".github/workflows/ghidra-defensive-stack.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install focused test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: Validate ontology JSON
+        run: python -m json.tool foundry/ontology/ghidra-defense-ontology.json >/dev/null
+      - name: Run Ghidra stack tests
+        run: python -m pytest -q tests/test_ghidra_defensive_analysis.py
