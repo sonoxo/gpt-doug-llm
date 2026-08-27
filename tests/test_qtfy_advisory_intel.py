@@ -1,7 +1,11 @@
+import json
+from pathlib import Path
+
 from agents.adaptive_intelligence import AdaptiveIntel
 from agents.qtfy_advisory_intel import (
     ADVISORY_ID,
     ATTACK_TECHNIQUES,
+    ONTOLOGY_CONTRACT_PATH,
     advisory_evidence,
     build_qtfy_defensive_plan,
     ioc_action_policy,
@@ -45,3 +49,36 @@ def test_qtfy_plan_extends_critical_infrastructure_shield():
         "agent-recovery",
         "agent-verify",
     } <= lanes
+
+
+def test_qtfy_plan_is_ontology_backed():
+    plan = build_qtfy_defensive_plan()
+    ontology = plan["ontology"]
+    assert plan["ontologyContract"] == ONTOLOGY_CONTRACT_PATH
+    assert {
+        "CyberAdvisory",
+        "ThreatProfile",
+        "AttackTechnique",
+        "IOCFeed",
+        "Indicator",
+        "Asset",
+        "Detection",
+        "Incident",
+        "DefensiveControl",
+        "DefensiveAction",
+        "Evidence",
+        "RecoveryValidation",
+    } <= set(ontology["objectTypes"])
+    assert ontology["guardrails"]["automaticBlocking"] is False
+    assert ontology["guardrails"]["externalThirdPartyAction"] is False
+    assert any(link["linkType"] == "AdvisoryProfilesThreat" for link in ontology["links"])
+    assert any(action["apiName"] == "requestAuthorizedContainment" and action["requiresHumanReview"] for action in ontology["actions"])
+
+
+def test_foundry_ontology_contract_matches_defensive_guardrails():
+    contract = json.loads(Path(ONTOLOGY_CONTRACT_PATH).read_text(encoding="utf-8"))
+    types = {item["apiName"] for item in contract["objectTypes"]}
+    assert {"CyberAdvisory", "Indicator", "Asset", "Incident", "Evidence"} <= types
+    assert contract["sourceAdvisory"] == ADVISORY_ID
+    assert contract["guardrails"]["automaticBlocking"] is False
+    assert contract["guardrails"]["humanApprovalForContainment"] is True
