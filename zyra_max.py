@@ -18,6 +18,10 @@ query verifies the publication manifest and source/ontology/analysis hashes.
 LIVE mode is separate from the agent tool loop. It permits read-only HTTPS GETs
 only to explicitly allowlisted public defensive-intelligence sources and stores
 local snapshots/diffs under intel/live/.
+
+GPT-GLASSONION is a separately locked cross-source overlay. It verifies the
+existing QTFY MASTER LOCK before correlating the DOJ disruption source pack and
+never mutates the base ontology.
 """
 from __future__ import annotations
 
@@ -27,6 +31,7 @@ import json
 import os
 import re
 
+from agents.glassonion_layer import GlassOnionError, run_command as run_glassonion_command, run_glassonion_lock
 from agents.live_feed_sync import LiveFeedError, live_changes, live_status, sync_live_sources
 from agents.ontology_query import OntologyQueryError, run_query_command
 from zyra_agent import MissionBudget, MissionError, ZyraAgent
@@ -49,6 +54,11 @@ _ONTOLOGY_COMMANDS = {
     "/ontology-graph": "graph",
     "/ontology-gaps": "gaps",
     "/ontology-brief": "brief",
+}
+_GLASSONION_COMMANDS = {
+    "/glassonion-status": "status",
+    "/glassonion-brief": "brief",
+    "/glassonion-graph": "graph",
 }
 
 
@@ -191,6 +201,7 @@ def _ontology_input(prompt: str = "") -> str:
 
         if lowered == "/help":
             print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+            print("🧅 Glass Onion: /glassonion-lock /glassonion-status /glassonion-brief /glassonion-graph /glassonion-query <question> /glass <question>")
             print("🌐 Live: /live-sync /live-status /live-changes  (allowlisted public defensive feeds only)")
             return value
 
@@ -207,6 +218,46 @@ def _ontology_input(prompt: str = "") -> str:
             continue
         if lowered == "/live-changes":
             print(live_changes(root))
+            continue
+
+        if lowered == "/glassonion-lock":
+            try:
+                report = run_glassonion_lock(root)
+                print("🧅 GPT-GLASSONION MASTER LOCK ✅")
+                print(f"Lock ID: {report['lockId']}")
+                print(f"Base MASTER LOCK: {report['baseMasterLockId']}")
+                print(f"Overlay: {report['counts']['objects']} objects / {report['counts']['links']} links")
+                print("Outputs: intel/glassonion/glassonion-overlay.json + glassonion-brief.md + glassonion-lock.json")
+            except GlassOnionError as exc:
+                print(f"🧅 GPT-GLASSONION LOCK FAILED ❌ // {exc}")
+                print("   Run /master-lock first, then retry /glassonion-lock.")
+            except Exception as exc:
+                print(f"🧅 GPT-GLASSONION ERROR ❌ // {type(exc).__name__}: {exc}")
+            continue
+
+        glass_command = _GLASSONION_COMMANDS.get(lowered)
+        glass_argument = ""
+        if lowered.startswith("/glassonion-query "):
+            glass_command = "query"
+            glass_argument = stripped[len("/glassonion-query "):].strip()
+        elif lowered == "/glassonion-query":
+            print("🧅 Usage: /glassonion-query <question>  (shortcut: /glass <question>)")
+            continue
+        elif lowered.startswith("/glass "):
+            glass_command = "query"
+            glass_argument = stripped[len("/glass "):].strip()
+        elif lowered == "/glass":
+            print("🧅 Usage: /glass <question>")
+            continue
+
+        if glass_command:
+            try:
+                print(run_glassonion_command(root, glass_command, glass_argument))
+            except GlassOnionError as exc:
+                print(f"🧅 GPT-GLASSONION QUERY BLOCKED ❌ // {exc}")
+                print("   Run /master-lock and /glassonion-lock to regenerate and verify the overlay.")
+            except Exception as exc:
+                print(f"🧅 GPT-GLASSONION QUERY ERROR ❌ // {type(exc).__name__}: {exc}")
             continue
 
         query_command = _ONTOLOGY_COMMANDS.get(lowered)
@@ -250,6 +301,7 @@ _original_dashboard = _zyra_chat.show_dashboard
 def _max_dashboard(*args, **kwargs):
     _original_dashboard(*args, **kwargs)
     print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+    print("🧅 GPT-GLASSONION overlay: /glassonion-lock /glassonion-status /glassonion-brief /glassonion-graph /glass <question>")
     print("🌐 Live public defensive feeds: /live-sync /live-status /live-changes\n")
 
 
