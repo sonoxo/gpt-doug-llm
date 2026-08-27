@@ -1,0 +1,95 @@
+{
+  "intelId": "NSA-QTFY-2026-08-26",
+  "title": "NSA Joins FBI in Issuing Warning about Chinese Hacking Group QTFY Cyber Activity",
+  "published": "2026-08-26",
+  "sourceUrl": "https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/4583539/nsa-joins-fbi-in-issuing-warning-about-chinese-hacking-group-qtfy-cyber-activity/",
+  "intelligenceClass": "AGENCY_INTELLIGENCE",
+  "usePolicy": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
+  "actors": [
+    "QTFY",
+    "QT",
+    "QTCYBER"
+  ],
+  "tooling": [
+    {
+      "id": "qscan",
+      "name": "QScan",
+      "role": "vulnerability scanning and exploitation platform"
+    },
+    {
+      "id": "qtrouter",
+      "name": "QTRouter",
+      "role": "obfuscation network"
+    },
+    {
+      "id": "proxy-platform-management",
+      "name": "Proxy Platform Management",
+      "role": "botnet management platform"
+    },
+    {
+      "id": "proxy-pool-management-system",
+      "name": "Proxy Pool Management System",
+      "role": "botnet management platform"
+    },
+    {
+      "id": "qtbotnet",
+      "name": "QTBotnet",
+      "role": "botnet management platform"
+    }
+  ],
+  "threatPatterns": [
+    {
+      "id": "zero-n-day",
+      "statement": "The source intelligence describes exploitation of zero-day and N-day vulnerabilities for initial access."
+    },
+    {
+      "id": "credential-persistence",
+      "statement": "The source intelligence describes obtaining legitimate credentials from compromised systems to maintain persistence."
+    },
+    {
+      "id": "iot-obfuscation",
+      "statement": "The source intelligence describes compromised IoT devices used as obfuscation-network nodes."
+    },
+    {
+      "id": "distributed-platforms",
+      "statement": "The source intelligence describes malicious distributed platforms used to compromise networks."
+    }
+  ],
+  "targetSectors": [
+    "Defense Industrial Base",
+    "telecommunications",
+    "local government",
+    "higher education"
+  ],
+  "recommendedDefenses": [
+    {
+      "id": "patch",
+      "statement": "Apply the latest software and firmware updates."
+    },
+    {
+      "id": "audit-public-facing",
+      "statement": "Regularly audit webpages and Internet-facing applications to protect operational information from unintended disclosure."
+    },
+    {
+      "id": "isolate-critical",
+      "statement": "Isolate critical systems from edge devices."
+    },
+    {
+      "id": "hunt-iocs",
+      "statement": "Hunt for the provided indicators of compromise."
+    }
+  ],
+  "redHatDefenseBindings": {
+    "patch": ["VA3LM-RH-PATCH"],
+    "audit-public-facing": ["VA3LM-RH-WEB", "VA3LM-RH-FIREWALL", "VA3LM-RH-SSH"],
+    "isolate-critical": ["VA3LM-RH-SEGMENT", "VA3LM-RH-SELINUX", "VA3LM-RH-FIREWALL"],
+    "hunt-iocs": ["VA3LM-RH-HUNT", "VA3LM-RH-AUDIT", "VA3LM-RH-JOURNAL", "VA3LM-RH-TIME"]
+  },
+  "guardrails": {
+    "remoteScanning": false,
+    "exploitExecution": false,
+    "retaliation": false,
+    "automaticContainment": false,
+    "humanReviewRequired": true
+  }
+}
