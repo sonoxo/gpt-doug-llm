@@ -19,18 +19,34 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("agents")
     sub.add_parser("ontology")
-    plan = sub.add_parser("plan"); plan.add_argument("goal")
-    brain = sub.add_parser("brain"); brain.add_argument("prompt")
-    exp = sub.add_parser("explain"); exp.add_argument("subject")
-    serve = sub.add_parser("serve"); serve.add_argument("--host", default="127.0.0.1"); serve.add_argument("--port", type=int, default=8088)
+
+    plan = sub.add_parser("plan")
+    plan.add_argument("goal")
+
+    brain = sub.add_parser("brain")
+    brain.add_argument("prompt")
+
+    exp = sub.add_parser("explain")
+    exp.add_argument("subject")
+
+    serve = sub.add_parser("serve")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8088)
+
     args = parser.parse_args()
-    if args.command == "agents": _dump(roster())
-    elif args.command == "ontology": _dump(schema())
-    elif args.command == "plan": _dump(build_plan(args.goal))
-    elif args.command == "brain": _dump(ask(args.prompt))
-    elif args.command == "explain": _dump(explain(args.subject))
+    if args.command == "agents":
+        _dump(roster())
+    elif args.command == "ontology":
+        _dump(schema())
+    elif args.command == "plan":
+        _dump(build_plan(args.goal))
+    elif args.command == "brain":
+        _dump(ask(args.prompt))
+    elif args.command == "explain":
+        _dump(explain(args.subject))
     elif args.command == "serve":
         import uvicorn
+
         uvicorn.run("va3lm.app:app", host=args.host, port=args.port)
     return 0
 
