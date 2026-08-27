@@ -1,0 +1,99 @@
+{
+  "framework": "ZYRA LEGAL FACTS MASTER FRAMEWORK",
+  "version": "1.0.0",
+  "mode": "PROVENANCE_FIRST_FACT_GROUNDING",
+  "principle": "Every material claim used by the ecosystem must retain source provenance, legal/evidentiary status, and uncertainty. Official allegations are never promoted to adjudicated facts.",
+  "trustTiers": [
+    {
+      "tier": 1,
+      "name": "PRIMARY_LEGAL_RECORD",
+      "examples": [
+        "court order",
+        "judicial opinion",
+        "judgment",
+        "statute",
+        "regulation",
+        "official docket filing",
+        "search/seizure order metadata when publicly released"
+      ],
+      "defaultUse": "HIGHEST_TRUST_WITH_DOCUMENT_SPECIFIC_STATUS"
+    },
+    {
+      "tier": 2,
+      "name": "OFFICIAL_GOVERNMENT_RECORD",
+      "examples": [
+        "DOJ press release",
+        "FBI advisory",
+        "CISA advisory",
+        "NSA advisory",
+        "agency report",
+        "official government dataset"
+      ],
+      "defaultUse": "AUTHORITATIVE_FOR_WHAT_THE_AGENCY_REPORTS_OR_DID"
+    },
+    {
+      "tier": 3,
+      "name": "CORROBORATING_PRIMARY_OR_INSTITUTIONAL_SOURCE",
+      "examples": [
+        "company filing",
+        "company incident disclosure",
+        "sworn testimony",
+        "official vendor advisory",
+        "academic publication"
+      ],
+      "defaultUse": "CORROBORATION_REQUIRED_FOR_HIGH_IMPACT_CLAIMS"
+    },
+    {
+      "tier": 4,
+      "name": "MEDIA_OR_COMMENTARY",
+      "examples": [
+        "news transcript",
+        "interview",
+        "press article",
+        "podcast",
+        "video commentary"
+      ],
+      "defaultUse": "CONTEXT_ONLY_UNLESS_CLAIM_IS_CROSS_SOURCED"
+    },
+    {
+      "tier": 5,
+      "name": "UNVERIFIED_PUBLIC_COMMENT",
+      "examples": [
+        "social comment",
+        "forum post",
+        "anonymous claim",
+        "viewer comment"
+      ],
+      "defaultUse": "NEVER_PROMOTE_TO_FACT_WITHOUT_INDEPENDENT_EVIDENCE"
+    }
+  ],
+  "claimClasses": {
+    "ADJUDICATED_FACT": "A court or other legally competent tribunal made a finding or entered an order establishing the proposition for the relevant proceeding.",
+    "OFFICIAL_ACTION_FACT": "The source establishes that an official action occurred, such as filing, seizure, publication, sanction, or order execution.",
+    "OFFICIAL_AGENCY_REPORTING": "An agency states that an event, attribution, victimization, or technical condition occurred; authoritative as agency reporting, but not automatically an adjudicated fact.",
+    "ALLEGATION_IN_LEGAL_RECORD": "A complaint, indictment, affidavit, warrant application, or similar legal record alleges conduct that has not been adjudicated.",
+    "SUMMARY_OF_LEGAL_RECORD": "An official source summarizes a legal filing or court record; preserve the summary nature and underlying allegation/finding status.",
+    "CORROBORATED_FACT": "Two or more independent sufficiently reliable sources support the proposition without material contradiction.",
+    "MEDIA_REPORTED_CLAIM": "A media source reports or quotes a proposition; may be used as context, not promoted without corroboration.",
+    "ANALYTIC_INFERENCE": "A conclusion derived by ZYRA/GPT-DOUG/Glass Onion from evidence; never represented as a source fact.",
+    "UNVERIFIED_CLAIM": "A proposition lacking sufficient provenance or corroboration."
+  },
+  "promotionRules": [
+    "Never convert an allegation into ADJUDICATED_FACT merely because it appears in an official source.",
+    "Official government press releases are authoritative for the fact that the agency made the statement and for announced agency actions, but attribution and alleged conduct retain their stated evidentiary status.",
+    "Media transcripts can contribute architecture lessons, quoted viewpoints, and corroborated context, but cannot independently establish high-impact legal or attribution claims.",
+    "Viewer comments and social commentary are excluded from factual ontology promotion unless independently corroborated by higher-tier evidence.",
+    "Every promoted claim must include sourceId, sourceUrl or repository source path, sourceClass, claimClass, and a human-readable provenance locator such as lines, pages, timestamp, paragraph, docket entry, or section.",
+    "Analytic inference must be visibly separated from source claims in every brief and query result.",
+    "Conflicting sources remain represented as conflicts; the system must not silently select a preferred narrative.",
+    "Human review is required before a high-impact claim changes attribution, legal status, identity, culpability, or external defensive action."
+  ],
+  "operationalBoundaries": {
+    "externalThirdPartyAction": false,
+    "offensiveReplication": false,
+    "automaticAttributionEscalation": false,
+    "automaticGuiltInference": false,
+    "automaticBlockingFromMediaOnly": false,
+    "humanReviewForHighImpactPromotion": true
+  }
+}
