@@ -3,8 +3,8 @@
 """Launch ZYRA with an expanded but still bounded mission envelope.
 
 This profile is intended for long local repository/document-analysis missions
-that need more than the default eight agent steps. It does not add shell,
-network, push/deploy/send, or external-targeting capabilities.
+that need more than the default eight agent steps. It does not add arbitrary
+shell, push/deploy/send, or external-targeting capabilities.
 
 MAX mode also hardens local-model action parsing. Small local models sometimes
 wrap JSON in Markdown, emit a Python-style dict, or add prose around an action.
@@ -14,6 +14,10 @@ on the first malformed action.
 
 MASTER-LOCKED ontology queries are intercepted locally before model chat. Every
 query verifies the publication manifest and source/ontology/analysis hashes.
+
+LIVE mode is separate from the agent tool loop. It permits read-only HTTPS GETs
+only to explicitly allowlisted public defensive-intelligence sources and stores
+local snapshots/diffs under intel/live/.
 """
 from __future__ import annotations
 
@@ -23,6 +27,7 @@ import json
 import os
 import re
 
+from agents.live_feed_sync import LiveFeedError, live_changes, live_status, sync_live_sources
 from agents.ontology_query import OntologyQueryError, run_query_command
 from zyra_agent import MissionBudget, MissionError, ZyraAgent
 
@@ -178,6 +183,7 @@ If the intent cannot be recovered safely, return {"action":"list_files","path":"
 
 
 def _ontology_input(prompt: str = "") -> str:
+    root = os.path.dirname(os.path.abspath(__file__))
     while True:
         value = _ORIGINAL_INPUT(prompt)
         stripped = value.strip()
@@ -185,7 +191,23 @@ def _ontology_input(prompt: str = "") -> str:
 
         if lowered == "/help":
             print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+            print("🌐 Live: /live-sync /live-status /live-changes  (allowlisted public defensive feeds only)")
             return value
+
+        if lowered == "/live-sync":
+            try:
+                print(sync_live_sources(root))
+            except LiveFeedError as exc:
+                print(f"🌐 ZYRA LIVE SYNC FAILED ❌ // {exc}")
+            except Exception as exc:
+                print(f"🌐 ZYRA LIVE SYNC ERROR ❌ // {type(exc).__name__}: {exc}")
+            continue
+        if lowered == "/live-status":
+            print(live_status(root))
+            continue
+        if lowered == "/live-changes":
+            print(live_changes(root))
+            continue
 
         query_command = _ONTOLOGY_COMMANDS.get(lowered)
         query_argument = ""
@@ -204,7 +226,7 @@ def _ontology_input(prompt: str = "") -> str:
 
         if query_command:
             try:
-                print(run_query_command(os.path.dirname(os.path.abspath(__file__)), query_command, query_argument))
+                print(run_query_command(root, query_command, query_argument))
             except OntologyQueryError as exc:
                 print(f"🔐 ONTOLOGY QUERY BLOCKED ❌ // {exc}")
                 print("   Run /master-lock to regenerate and verify the locked package.")
@@ -227,7 +249,8 @@ _original_dashboard = _zyra_chat.show_dashboard
 
 def _max_dashboard(*args, **kwargs):
     _original_dashboard(*args, **kwargs)
-    print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief\n")
+    print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+    print("🌐 Live public defensive feeds: /live-sync /live-status /live-changes\n")
 
 
 _zyra_chat.show_dashboard = _max_dashboard
