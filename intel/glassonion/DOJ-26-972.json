@@ -1,0 +1,97 @@
+{
+  "sourceId": "DOJ-26-972",
+  "title": "Justice Department and FBI Seize Platforms Operated and Used by China State-Sponsored Hackers to Target U.S. Critical Infrastructure",
+  "published": "2026-08-26",
+  "sourceUrl": "https://www.justice.gov/opa/pr/justice-department-and-fbi-seize-platforms-operated-and-used-china-state-sponsored-hackers",
+  "sourceClass": "VERIFIED_PUBLIC_DOJ_PRESS_RELEASE",
+  "pressReleaseNumber": "26-972",
+  "usePolicy": "DEFENSIVE_PUBLIC_SOURCE_RESEARCH_ONLY",
+  "claimPolicy": "Preserve statements as DOJ reporting and court-document allegations; do not infer guilt or attribution beyond the source.",
+  "crossSourceBase": "JCSA-20260826-01",
+  "coreFacts": [
+    {
+      "id": "fact-domain-seizures",
+      "statement": "DOJ and FBI announced court-authorized domain seizures intended to deny access to QScan and QTRouter.",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "61"
+    },
+    {
+      "id": "fact-operator-relationship",
+      "statement": "DOJ reports that court documents describe QTFY as employed by Nanjing Xinjiuwei Network Technology Company and as creator/operator of QScan and QTRouter.",
+      "claimNature": "DOJ_SUMMARY_OF_COURT_DOCUMENTS",
+      "sourceLines": "62"
+    },
+    {
+      "id": "fact-service-customers",
+      "statement": "According to court documents summarized by DOJ, QTFY offered hacking services to paying customers including the PRC Ministry of State Security and People's Liberation Army.",
+      "claimNature": "DOJ_SUMMARY_OF_COURT_DOCUMENTS",
+      "sourceLines": "71"
+    },
+    {
+      "id": "fact-qscan-iot",
+      "statement": "DOJ describes QScan as scanning and automatically infecting IoT devices that are then added to the QTRouter network.",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "71"
+    },
+    {
+      "id": "fact-qtrouter-obfuscation",
+      "statement": "DOJ describes QTRouter as comprising compromised IoT devices, commercial proxy devices, and leased VPS infrastructure used as an obfuscation network.",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "72"
+    },
+    {
+      "id": "fact-hardcoded-domains",
+      "statement": "DOJ states that seized domains were hard-coded into QScan and QTRouter and used for essential communication and authentication, making the platforms inoperable after seizure.",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "73"
+    },
+    {
+      "id": "fact-joint-advisory",
+      "statement": "DOJ notes that FBI and NSA published a same-day cybersecurity advisory with QTFY indicators of compromise and activity dating to at least 2018.",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "76"
+    }
+  ],
+  "organizations": [
+    {"id": "nanjing-xinjiuwei", "name": "Nanjing Xinjiuwei Network Technology Company", "role": "DOJ_REPORTED_QTFY_EMPLOYER", "claimNature": "DOJ_SUMMARY_OF_COURT_DOCUMENTS", "sourceLines": "62"},
+    {"id": "prc-mss", "name": "PRC Ministry of State Security", "role": "DOJ_REPORTED_SERVICE_CUSTOMER", "claimNature": "DOJ_SUMMARY_OF_COURT_DOCUMENTS", "sourceLines": "71"},
+    {"id": "pla", "name": "People's Liberation Army", "role": "DOJ_REPORTED_SERVICE_CUSTOMER", "claimNature": "DOJ_SUMMARY_OF_COURT_DOCUMENTS", "sourceLines": "71"},
+    {"id": "nasa", "name": "National Aeronautics and Space Administration", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "federal-reserve", "name": "Federal Reserve", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "us-doe", "name": "U.S. Department of Energy", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "us-doj", "name": "U.S. Department of Justice", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION_AND_DISRUPTION_AUTHORITY", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "61-63"},
+    {"id": "hhs", "name": "U.S. Department of Health and Human Services", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "nih", "name": "National Institutes of Health", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "us-senate", "name": "U.S. Senate", "role": "DOJ_REPORTED_VICTIM_ORGANIZATION", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "62-63"},
+    {"id": "fbi", "name": "Federal Bureau of Investigation", "role": "INVESTIGATIVE_AND_DISRUPTION_AUTHORITY", "claimNature": "DOJ_PRESS_RELEASE_REPORTING", "sourceLines": "61,77"}
+  ],
+  "infrastructure": [
+    {"id": "compromised-iot-devices", "name": "Compromised IoT devices", "role": "QROUTER_NETWORK_COMPONENT", "sourceLines": "71-72"},
+    {"id": "commercial-proxy-devices", "name": "Commercial proxy service devices", "role": "QROUTER_NETWORK_COMPONENT", "sourceLines": "72"},
+    {"id": "leased-vps", "name": "Leased virtual private servers", "role": "QROUTER_NETWORK_COMPONENT", "sourceLines": "72"},
+    {"id": "hardcoded-platform-domains", "name": "Hard-coded QScan/QTRouter domains", "role": "ESSENTIAL_COMMUNICATION_AND_AUTHENTICATION_DEPENDENCY", "sourceLines": "73"}
+  ],
+  "disruptionEvents": [
+    {
+      "id": "evt-2026-08-26-doj-domain-seizure",
+      "date": "2026-08-26",
+      "action": "court-authorized domain seizures",
+      "objective": "deny malicious actors access to QScan and QTRouter",
+      "reportedOutcome": "QScan and QTRouter made inoperable because seized domains were hard-coded dependencies",
+      "claimNature": "DOJ_PRESS_RELEASE_REPORTING",
+      "sourceLines": "61,73"
+    }
+  ],
+  "historicalDisruptions": [
+    {"id": "evt-2025-plugx-removal", "date": "2025", "description": "FBI removed PlugX surveillance malware from over 4,000 U.S. computers according to DOJ.", "sourceLines": "74"},
+    {"id": "evt-2024-flax-typhoon-botnet", "date": "2024", "description": "FBI disabled a botnet of hundreds of thousands of infected IoT devices associated in DOJ reporting with Flax Typhoon.", "sourceLines": "75"},
+    {"id": "evt-2023-volt-typhoon-botnet", "date": "2023", "description": "FBI disrupted a botnet used by Volt Typhoon to conceal exploitation activity according to DOJ.", "sourceLines": "75"}
+  ],
+  "guardrails": {
+    "automaticBlocking": false,
+    "externalThirdPartyAction": false,
+    "offensiveReplication": false,
+    "humanReviewRequired": true,
+    "attributionHandling": "PRESERVE_SOURCE_CLAIM_NATURE"
+  }
+}
