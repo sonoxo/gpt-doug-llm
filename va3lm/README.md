@@ -2,15 +2,24 @@
 
 **Virginia Agentic Large Learning Language Model**
 
-Coding and programming AI command center for **GPT-DOUG-LLM** and **ZYRA**.
+VA3LM is the **VIRGINIA execution and reasoning runtime** inside the XUNIAverse, rooted at [`sonoxo/xuniadao`](https://github.com/sonoxo/xuniadao).
+
+```text
+XUNIA → Agent Identity → GCPXUNIA Auth Broker → VIRGINIA Policy Boundary → VA3LM :8088 → Runtime Guardrails → ZYRA Action Gate → Evidence
+```
 
 - Port: **8088**
+- GPT-DOUG-LLM coding brain
 - Agent swarm
-- Coding workflows
-- Palantir-style ontology blueprint
-- Test + security gates
-- Human approval before write/publish actions
-- Commercial/explainer agent for plain-language demos
+- Palantir-style ontology contracts
+- GCPXUNIA agent identity + auth broker
+- SPIFFE-style first-class agent principals
+- Short-lived credential references
+- DPoP / mTLS token-binding model
+- Least-privilege scope checks
+- Runtime security guardrails
+- Human approval before consequential write/publish/access actions
+- Evidence-first execution claims
 
 ## Run
 
@@ -24,106 +33,95 @@ va3lm serve
 
 Open `http://127.0.0.1:8088`.
 
-## Interactive command deck
+## GCPXUNIA identity defense
 
-<details open>
-<summary><strong>Summon agents</strong></summary>
+Agent identity and outbound authentication are modeled separately from user identity.
+
+```text
+AgentIdentity
+  → SPIFFE validation
+  → agent scope check
+  → provider scope check
+  → GCPXUNIA Auth Manager
+  → short-lived credential reference
+  → DPoP / mTLS binding
+  → VIRGINIA policy boundary
+  → VA3LM runtime
+```
+
+Blocked by policy:
+
+- shared agent credentials
+- long-lived agent credentials
+- raw secret return from the broker
+- broad project/org grants without review
+- arbitrary remote shell
+- automatic fund movement
+
+Docs: [`docs/GCPXUNIA_AUTH.md`](docs/GCPXUNIA_AUTH.md)
+
+## Interactive command deck
 
 ```bash
 va3lm agents
-```
-</details>
-
-<details>
-<summary><strong>Build a coding workflow</strong></summary>
-
-```bash
 va3lm plan "Build a FastAPI endpoint with tests"
-```
-</details>
-
-<details>
-<summary><strong>Explain VA3LM like a commercial</strong></summary>
-
-```bash
-va3lm explain "VA3LM ontology workflow"
-```
-
-Output follows: **problem → what it is → how it works → proof → benefit → CTA**.
-</details>
-
-<details>
-<summary><strong>Inspect ontology</strong></summary>
-
-```bash
 va3lm ontology
+va3lm explain "VA3LM defense workflow"
 ```
-</details>
 
-<details>
-<summary><strong>Activate GPT-DOUG-LLM brain</strong></summary>
+Optional local model brain:
 
 ```bash
 export VA3LM_MODEL_URL=http://127.0.0.1:11434/v1
 export VA3LM_MODEL_NAME=gpt-doug-llm
 va3lm brain "Refactor this service safely"
 ```
-</details>
 
-<details>
-<summary><strong>Start the 8088 command center</strong></summary>
-
-```bash
-va3lm serve --host 127.0.0.1 --port 8088
-```
-</details>
-
-## Ecosystem
+## Defense ontology
 
 ```mermaid
 flowchart TD
-    U[Operator] --> C[VA3LM Commander :8088]
-    C --> B[GPT-DOUG-LLM Brain]
-    C --> A[Architect]
-    A --> D[Coder]
-    D --> O[Ontology]
-    O --> T[Test]
-    T --> S[Security]
-    S --> R[Reviewer]
-    R --> G{Human approval}
-    G -->|approve| E[Evidence + Build]
-    G -->|hold| D
-    E --> O
-    C --> X[Explainer Agent]
-    X --> M[Commercial / Demo Script]
+    X[XUNIA / XuniaDAO Root]
+    I[Agent Identity]
+    G[GCPXUNIA Auth Broker]
+    V[VIRGINIA Policy Boundary]
+    A[VA3LM :8088]
+    R[Runtime Guardrails]
+    Z[ZYRA Action Gate]
+    E[Audit Evidence]
+    X --> I --> G --> V --> A --> R --> Z --> E
 ```
 
-## Commercial explainer pattern
-
-```text
-HOOK:      What problem are we fixing?
-SIMPLE:    What is VA3LM in one sentence?
-SHOW:      What happens when you give it a task?
-PROOF:     What tests, evidence, or locks verify the work?
-BENEFIT:   Why does this save time or reduce risk?
-CTA:       What should the viewer do next?
-```
-
-Example:
-
-> Software teams lose time jumping between planning, coding, testing, security, and documentation. VA3LM puts those steps into one agentic workflow. Give it a coding goal, and the architect, coder, ontology, test, security, review, and evidence agents build a traceable plan around it. Nothing gets published automatically: approval gates stay in control. Open the command center on port 8088 and watch the workflow move from idea to verified build.
+Objects include `AgentIdentity`, `AuthProvider`, `AccessPolicy`, `PolicyBoundary`, `VA3LMRuntime`, `Guardrail`, `SecurityEvent`, `Evidence`, `TechnologyPeer`, `SecurityDomain`, and `XuniaverseNode`.
 
 ## API
 
 | Method | Route | Purpose |
 |---|---|---|
 | GET | `/healthz` | health |
-| GET | `/api/status` | runtime status |
+| GET | `/api/status` | runtime + identity-defense status |
 | GET | `/api/agents` | agent roster |
-| GET | `/api/ontology` | ontology |
+| GET | `/api/ontology` | VA3LM ontology |
+| GET | `/api/defense/ontology` | GCPXUNIA/VIRGINIA defense graph |
+| POST | `/api/identity/evaluate` | evaluate agent identity/scope policy |
+| POST | `/api/auth/broker` | broker a short-lived credential reference |
 | POST | `/api/plan` | build workflow |
-| POST | `/api/brain` | ask configured model |
-| POST | `/api/explain` | generate commercial-style explainer |
+| POST | `/api/brain` | ask configured local model |
+| POST | `/api/explain` | generate explainer |
+
+## Brain policy
+
+The VA3LM brain now defaults to:
+
+- agent-owned identity before brokered auth
+- short-lived credentials
+- no shared agent secrets
+- least privilege
+- separate user delegation
+- human review for broad grants and consequential actions
+- runtime guardrails
+- provenance-bearing evidence
+- no unsupported vendor/government deployment or endorsement claims
 
 ## Development
 
@@ -132,5 +130,7 @@ pytest -q
 ruff check src tests
 bandit -q -ll -r src
 ```
+
+Architecture references: Google Cloud IAM agent identity/Auth Manager guidance, Google Cloud Security Community IAM material, and public Palantir Ontology documentation. These references do not claim a live Google Cloud or Palantir deployment or vendor endorsement.
 
 Private software project. Not a government agency.
