@@ -1,0 +1,115 @@
+{
+  "name": "VA3LM Ghidra Defensive Reverse Engineering Ontology",
+  "version": "0.1.0",
+  "sourceRepository": "https://github.com/sonoxo/ghidraGPTDougLLMXYRA",
+  "mode": "DEFENSIVE_AUTHORIZED_BINARIES_ONLY",
+  "objectTypes": [
+    {
+      "apiName": "BinaryArtifact",
+      "primaryKey": "artifactId",
+      "properties": {
+        "artifactId": "string",
+        "sha256": "string",
+        "name": "string",
+        "format": "string",
+        "architecture": "string",
+        "authorizationScope": "string"
+      }
+    },
+    {
+      "apiName": "ReverseEngineeringSession",
+      "primaryKey": "sessionId",
+      "properties": {
+        "sessionId": "string",
+        "engine": "string",
+        "analysisVersion": "string",
+        "startedAt": "timestamp",
+        "completedAt": "timestamp",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "FunctionObservation",
+      "primaryKey": "functionId",
+      "properties": {
+        "functionId": "string",
+        "name": "string",
+        "address": "string",
+        "callingConvention": "string",
+        "decompiled": "boolean"
+      }
+    },
+    {
+      "apiName": "ReverseEngineeringFinding",
+      "primaryKey": "findingId",
+      "properties": {
+        "findingId": "string",
+        "findingType": "string",
+        "summary": "string",
+        "confidence": "double",
+        "address": "string",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "VulnerabilityHypothesis",
+      "primaryKey": "hypothesisId",
+      "properties": {
+        "hypothesisId": "string",
+        "summary": "string",
+        "confidence": "double",
+        "reviewState": "string",
+        "validationStatus": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "SessionAnalyzesArtifact", "from": "ReverseEngineeringSession", "to": "BinaryArtifact"},
+    {"apiName": "ArtifactContainsFunction", "from": "BinaryArtifact", "to": "FunctionObservation"},
+    {"apiName": "ArtifactHasFinding", "from": "BinaryArtifact", "to": "ReverseEngineeringFinding"},
+    {"apiName": "FindingObservedInFunction", "from": "ReverseEngineeringFinding", "to": "FunctionObservation"},
+    {"apiName": "FindingSupportsHypothesis", "from": "ReverseEngineeringFinding", "to": "VulnerabilityHypothesis"},
+    {"apiName": "FindingMapsTechnique", "from": "ReverseEngineeringFinding", "to": "AttackTechnique"},
+    {"apiName": "ArtifactAssociatedWithAsset", "from": "BinaryArtifact", "to": "Asset"},
+    {"apiName": "FindingSupportsIncident", "from": "ReverseEngineeringFinding", "to": "Incident"},
+    {"apiName": "SessionProducesEvidence", "from": "ReverseEngineeringSession", "to": "Evidence"}
+  ],
+  "actions": [
+    {
+      "apiName": "ingestGhidraAnalysis",
+      "objectType": "BinaryArtifact",
+      "effect": "create session, functions, findings, and evidence links",
+      "authorizedEnvironmentOnly": true
+    },
+    {
+      "apiName": "promoteFindingForReview",
+      "objectType": "ReverseEngineeringFinding",
+      "effect": "set reviewState=ANALYST_REVIEW",
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "openVulnerabilityHypothesis",
+      "objectType": "ReverseEngineeringFinding",
+      "effect": "create VulnerabilityHypothesis with validationStatus=UNVERIFIED",
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "linkFindingToIncident",
+      "objectType": "ReverseEngineeringFinding",
+      "effect": "link FindingSupportsIncident",
+      "requiresHumanReview": true
+    }
+  ],
+  "guardrails": {
+    "authorizedBinariesOnly": true,
+    "analysisOnly": true,
+    "exploitGeneration": false,
+    "payloadGeneration": false,
+    "credentialTheft": false,
+    "persistenceDeployment": false,
+    "thirdPartyExecution": false,
+    "autonomousOffensiveAction": false,
+    "humanApprovalForIncidentActions": true,
+    "rawBinaryDefault": "REMAIN_WITH_OWNER"
+  }
+}
