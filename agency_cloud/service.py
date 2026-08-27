@@ -10,7 +10,16 @@ from sqlalchemy.orm import Session
 
 from agency_cloud.audit import append_event, verify_chain
 from agency_cloud.config import Settings
-from agency_cloud.models import Alert, AuditEvent, Case, CaseIntel, IntelRecord, Report, Workspace, new_id
+from agency_cloud.models import (
+    Alert,
+    AuditEvent,
+    Case,
+    CaseIntel,
+    IntelRecord,
+    Report,
+    Workspace,
+    new_id,
+)
 
 
 INTELLIGENCE_CLASSES = {
