@@ -1,0 +1,218 @@
+{
+  "name": "VA3LM QTFY Defensive Intelligence Ontology",
+  "version": "0.1.0",
+  "sourceAdvisory": "JCSA-20260826-01",
+  "sourceUrl": "https://www.ic3.gov/CSA/2026/260826.pdf",
+  "tlp": "TLP:CLEAR",
+  "mode": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
+  "objectTypes": [
+    {
+      "apiName": "CyberAdvisory",
+      "primaryKey": "advisoryId",
+      "properties": {
+        "advisoryId": "string",
+        "title": "string",
+        "sourceUrl": "string",
+        "tlp": "string",
+        "published": "date",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "ThreatProfile",
+      "primaryKey": "threatId",
+      "properties": {
+        "threatId": "string",
+        "label": "string",
+        "scope": "string",
+        "disposition": "string"
+      }
+    },
+    {
+      "apiName": "CriticalSector",
+      "primaryKey": "sectorId",
+      "properties": {
+        "sectorId": "string",
+        "name": "string"
+      }
+    },
+    {
+      "apiName": "AttackTechnique",
+      "primaryKey": "techniqueId",
+      "properties": {
+        "techniqueId": "string",
+        "name": "string",
+        "framework": "string"
+      }
+    },
+    {
+      "apiName": "IOCFeed",
+      "primaryKey": "feedId",
+      "properties": {
+        "feedId": "string",
+        "sourceUrl": "string",
+        "tlp": "string",
+        "ingestMode": "string",
+        "automaticBlocking": "boolean",
+        "humanReviewRequired": "boolean"
+      }
+    },
+    {
+      "apiName": "Indicator",
+      "primaryKey": "indicatorId",
+      "properties": {
+        "indicatorId": "string",
+        "indicatorType": "string",
+        "value": "string",
+        "firstSeen": "timestamp",
+        "lastSeen": "timestamp",
+        "confidence": "double",
+        "reviewState": "string",
+        "sourceFeedId": "string"
+      }
+    },
+    {
+      "apiName": "Asset",
+      "primaryKey": "assetId",
+      "properties": {
+        "assetId": "string",
+        "name": "string",
+        "assetType": "string",
+        "criticality": "string",
+        "owner": "string",
+        "authorizationScope": "string",
+        "internetExposed": "boolean",
+        "status": "string"
+      }
+    },
+    {
+      "apiName": "Detection",
+      "primaryKey": "detectionId",
+      "properties": {
+        "detectionId": "string",
+        "observedAt": "timestamp",
+        "severity": "string",
+        "summary": "string",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "Incident",
+      "primaryKey": "incidentId",
+      "properties": {
+        "incidentId": "string",
+        "severity": "string",
+        "status": "string",
+        "openedAt": "timestamp",
+        "owner": "string",
+        "containmentState": "string",
+        "recoveryState": "string"
+      }
+    },
+    {
+      "apiName": "DefensiveControl",
+      "primaryKey": "controlId",
+      "properties": {
+        "controlId": "string",
+        "objective": "string",
+        "va3lmLane": "string",
+        "evidenceRequired": "string",
+        "authorizedOnly": "boolean"
+      }
+    },
+    {
+      "apiName": "DefensiveAction",
+      "primaryKey": "actionId",
+      "properties": {
+        "actionId": "string",
+        "actionType": "string",
+        "state": "string",
+        "requestedAt": "timestamp",
+        "approvedBy": "string",
+        "authorizationScope": "string"
+      }
+    },
+    {
+      "apiName": "Evidence",
+      "primaryKey": "evidenceId",
+      "properties": {
+        "evidenceId": "string",
+        "kind": "string",
+        "source": "string",
+        "recordedAt": "timestamp",
+        "hash": "string",
+        "summary": "string"
+      }
+    },
+    {
+      "apiName": "RecoveryValidation",
+      "primaryKey": "validationId",
+      "properties": {
+        "validationId": "string",
+        "validatedAt": "timestamp",
+        "serviceOperational": "boolean",
+        "backupValidated": "boolean",
+        "credentialsRotated": "boolean",
+        "vulnerablePathsMitigated": "boolean",
+        "reviewState": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "AdvisoryProfilesThreat", "from": "CyberAdvisory", "to": "ThreatProfile"},
+    {"apiName": "AdvisoryTargetsSector", "from": "CyberAdvisory", "to": "CriticalSector"},
+    {"apiName": "AdvisoryUsesTechnique", "from": "CyberAdvisory", "to": "AttackTechnique"},
+    {"apiName": "ThreatUsesTechnique", "from": "ThreatProfile", "to": "AttackTechnique"},
+    {"apiName": "AdvisoryPublishesIOCFeed", "from": "CyberAdvisory", "to": "IOCFeed"},
+    {"apiName": "AdvisoryRecommendsControl", "from": "CyberAdvisory", "to": "DefensiveControl"},
+    {"apiName": "FeedContainsIndicator", "from": "IOCFeed", "to": "Indicator"},
+    {"apiName": "IndicatorObservedOnAsset", "from": "Indicator", "to": "Asset"},
+    {"apiName": "DetectionMatchesIndicator", "from": "Detection", "to": "Indicator"},
+    {"apiName": "DetectionUsesTechnique", "from": "Detection", "to": "AttackTechnique"},
+    {"apiName": "DetectionOpensIncident", "from": "Detection", "to": "Incident"},
+    {"apiName": "IncidentAffectsAsset", "from": "Incident", "to": "Asset"},
+    {"apiName": "IncidentRequiresControl", "from": "Incident", "to": "DefensiveControl"},
+    {"apiName": "IncidentHasAction", "from": "Incident", "to": "DefensiveAction"},
+    {"apiName": "ActionHasEvidence", "from": "DefensiveAction", "to": "Evidence"},
+    {"apiName": "IncidentHasRecoveryValidation", "from": "Incident", "to": "RecoveryValidation"},
+    {"apiName": "AssetDependsOnAsset", "from": "Asset", "to": "Asset"}
+  ],
+  "actions": [
+    {
+      "apiName": "triageIndicator",
+      "objectType": "Indicator",
+      "effect": "set reviewState=UNDER_REVIEW",
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "openDefensiveIncident",
+      "objectType": "Detection",
+      "effect": "create Incident and link DetectionOpensIncident"
+    },
+    {
+      "apiName": "requestAuthorizedContainment",
+      "objectType": "Incident",
+      "effect": "create DefensiveAction with state=REQUESTED",
+      "requiresHumanReview": true,
+      "authorizedEnvironmentOnly": true
+    },
+    {
+      "apiName": "recordContainmentEvidence",
+      "objectType": "DefensiveAction",
+      "effect": "link ActionHasEvidence and set state=EVIDENCED"
+    },
+    {
+      "apiName": "verifyRecovery",
+      "objectType": "Incident",
+      "effect": "create RecoveryValidation and link IncidentHasRecoveryValidation",
+      "requiresHumanReview": true
+    }
+  ],
+  "guardrails": {
+    "indicatorDefault": "INVESTIGATE_AND_VET",
+    "automaticBlocking": false,
+    "externalThirdPartyAction": false,
+    "humanApprovalForContainment": true,
+    "rawDataDefault": "REMAIN_WITH_OWNER"
+  }
+}
