@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from agency_cloud import __version__
 from agency_cloud.audit import verify_chain
-from agency_cloud.config import Settings, load_settings
+from agency_cloud.config import load_settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
 from agency_cloud.integrations import (
     IntelligenceIntegrationError,
@@ -118,7 +118,11 @@ def get_principal(
         token = credentials.credentials if credentials else ""
         return authenticate(settings, token)
     except AuthenticationError as exc:
-        raise HTTPException(status_code=401, detail=str(exc), headers={"WWW-Authenticate": "Bearer"}) from exc
+        raise HTTPException(
+            status_code=401,
+            detail=str(exc),
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from exc
 
 
 def get_workspace_header(
@@ -197,7 +201,13 @@ def create_workspace(
 ):
     _guard(principal, "director")
     try:
-        return _row(_service(session).create_workspace(actor=principal.subject, name=payload.name, slug=payload.slug))
+        return _row(
+            _service(session).create_workspace(
+                actor=principal.subject,
+                name=payload.name,
+                slug=payload.slug,
+            )
+        )
     except IntelligenceServiceError as exc:
         raise _service_error(exc) from exc
 
@@ -308,7 +318,11 @@ def attach_intel(
             case_id=case_id,
             intel_id=intel_id,
         )
-        return {"caseId": link.case_id, "intelId": link.intel_id, "attachedBy": link.attached_by}
+        return {
+            "caseId": link.case_id,
+            "intelId": link.intel_id,
+            "attachedBy": link.attached_by,
+        }
     except IntelligenceServiceError as exc:
         raise _service_error(exc) from exc
 
@@ -322,7 +336,8 @@ def reports(
     _guard(principal, "director", "analyst", "auditor", "client")
     try:
         items = _service(session).list_reports(
-            workspace_id, client_visible_only=principal.role == "client"
+            workspace_id,
+            client_visible_only=principal.role == "client",
         )
         return [_row(item) for item in items]
     except IntelligenceServiceError as exc:
