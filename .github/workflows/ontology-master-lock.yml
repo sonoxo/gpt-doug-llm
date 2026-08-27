@@ -1,0 +1,65 @@
+name: Ontology MASTER LOCK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/ontology_master_lock.py"
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/qtfy_analyze.py"
+      - "agents/qtfy_ontology.py"
+      - "agents/tests/test_ontology_master_lock.py"
+      - "agents/tests/test_qtfy_ontology.py"
+      - "intel/qtfy/**"
+      - "foundry/ontology/qtfy-defense-ontology.json"
+      - "zyra_chat.py"
+      - ".github/workflows/ontology-master-lock.yml"
+  pull_request:
+    paths:
+      - "agents/ontology_master_lock.py"
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/qtfy_analyze.py"
+      - "agents/qtfy_ontology.py"
+      - "agents/tests/test_ontology_master_lock.py"
+      - "agents/tests/test_qtfy_ontology.py"
+      - "intel/qtfy/**"
+      - "foundry/ontology/qtfy-defense-ontology.json"
+      - "zyra_chat.py"
+      - ".github/workflows/ontology-master-lock.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  master-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run MASTER LOCK specialist subagents
+        run: python -m agents.ontology_master_lock --root .
+      - name: Verify MASTER LOCK tests
+        run: python -m pytest agents/tests/test_ontology_master_lock.py agents/tests/test_qtfy_ontology.py -q
+      - name: Verify lock manifest
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          lock = json.loads(Path("intel/qtfy/master-lock.json").read_text())
+          assert lock["locked"] is True
+          assert lock["publicationState"] == "LOCKED_AND_PUBLISHABLE"
+          assert all(stage["status"] == "PASS" for stage in lock["subagents"])
+          print("MASTER LOCK manifest verified:", lock["lockId"])
+          PY
+      - name: Upload locked ontology package
+        uses: actions/upload-artifact@v4
+        with:
+          name: qtfy-ontology-master-lock
+          path: |
+            intel/qtfy/master-lock.json
+            intel/qtfy/qtfy-ontology-runtime.json
+            intel/qtfy/qtfy-analysis.md
+          if-no-files-found: error
