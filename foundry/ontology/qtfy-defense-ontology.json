@@ -1,6 +1,6 @@
 {
   "name": "VA3LM QTFY Defensive Intelligence Ontology",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "sourceAdvisory": "JCSA-20260826-01",
   "sourceUrl": "https://www.ic3.gov/CSA/2026/260826.pdf",
   "sourcePack": "intel/qtfy/JCSA-20260826-01.json",
@@ -64,6 +64,21 @@
     "externalThirdPartyAction": false,
     "humanApprovalForContainment": true,
     "rawDataDefault": "REMAIN_WITH_OWNER",
-    "attributionHandling": "PRESERVE_SOURCE_CLAIM_NATURE"
+    "attributionHandling": "PRESERVE_SOURCE_CLAIM_NATURE",
+    "masterLockRequiredForPublish": true,
+    "masterLockRule": "ALL_SUBAGENTS_PASS_BEFORE_PUBLISH",
+    "masterLockManifest": "intel/qtfy/master-lock.json"
+  },
+  "masterLock": {
+    "framework": "ZYRA ONTOLOGY MASTER LOCK",
+    "version": "1.0.0",
+    "publicationCommitMarker": "intel/qtfy/master-lock.json",
+    "subagents": [
+      "source-agent",
+      "ontology-builder-agent",
+      "ontology-validator-agent",
+      "analysis-agent",
+      "master-lock-agent"
+    ]
   }
 }
