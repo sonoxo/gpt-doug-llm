@@ -12,6 +12,7 @@ from dataclasses import dataclass, asdict
 from typing import Any
 
 from agents.adaptive_intelligence import Evidence
+from agents.qtfy_ontology import build_defensive_ontology
 from agents.va3lm_infrastructure_shield import build_infrastructure_shield_plan
 
 ADVISORY_ID = "JCSA-20260826-01"
@@ -21,6 +22,7 @@ IOC_INFRASTRUCTURE_URL = "https://www.ic3.gov/CSA/2026/QTFY_IOC_Infrastructure.c
 TLP = "TLP:CLEAR"
 PUBLISHED = "2026-08-26"
 THREAT_LABEL = "QTFY"
+ONTOLOGY_CONTRACT_PATH = "foundry/ontology/qtfy-defense-ontology.json"
 
 ATTACK_TECHNIQUES = {
     "T1595.002": "Active Scanning: Vulnerability Scanning",
@@ -120,8 +122,20 @@ def ioc_action_policy(*, indicator_match: bool, corroborated: bool = False) -> d
 
 
 def build_qtfy_defensive_plan() -> dict[str, Any]:
-    """Adapt the VA3LM Infrastructure Shield to the public QTFY advisory."""
+    """Adapt the VA3LM Infrastructure Shield and intelligence ontology to QTFY."""
     shield = build_infrastructure_shield_plan(severity="critical")
+    control_records = [asdict(control) for control in CONTROLS]
+    ontology = build_defensive_ontology(
+        advisory_id=ADVISORY_ID,
+        advisory_url=ADVISORY_URL,
+        threat_label=THREAT_LABEL,
+        tlp=TLP,
+        published=PUBLISHED,
+        techniques=ATTACK_TECHNIQUES,
+        controls=control_records,
+        target_sectors=TARGET_SECTORS,
+        ioc_feeds=(IOC_FILES_URL, IOC_INFRASTRUCTURE_URL),
+    )
     return {
         "advisoryId": ADVISORY_ID,
         "source": ADVISORY_URL,
@@ -135,13 +149,15 @@ def build_qtfy_defensive_plan() -> dict[str, Any]:
         "keyActions": list(KEY_ACTIONS),
         "incidentResponse": list(INCIDENT_RESPONSE),
         "controlValidation": list(CONTROL_VALIDATION),
-        "controls": [asdict(control) for control in CONTROLS],
-        "iocFeeds": [IOC_FILES_URL, IOC_INFRASTRUCTURE_URL],
+        "controls": control_records,
+        "iocFeeds": [IOC_FILES_URL, IOC_INFSTRUCTURE_URL] if False else [IOC_FILES_URL, IOC_INFRASTRUCTURE_URL],
         "iocPolicy": {
             "default": "investigate-and-vet",
             "automaticBlocking": False,
             "humanReviewRequired": True,
         },
+        "ontologyContract": ONTOLOGY_CONTRACT_PATH,
+        "ontology": ontology,
         "shield": shield,
         "stopWhenAll": [
             "qtfy-hunt-complete",
