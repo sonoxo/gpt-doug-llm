@@ -9,6 +9,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from agents.ontology_master_lock import MasterLockError, print_master_lock_report, run_master_lock
 from zyra import Zyra
 from zyra_agent import ZyraAgent, print_agent_report, run_native_agent_test
 from zyra_laser import ZyraLaser, run_native_laser_test
@@ -33,6 +34,7 @@ Keep one user message to one bounded model response. No recursive self-calls or 
 ZYRA self-heal may repair only its own local runtime provider/model configuration and restart Ollama.
 ZYRA LASER is a defensive circuit breaker for ZYRA's own model path. It never retaliates, scans, exploits, or attacks another system.
 ZYRA Agent Core may autonomously inspect and edit files only inside its own repository with checkpointing, hard budgets, allowlisted tools, syntax gates, and automatic rollback. It cannot use arbitrary shell, push/deploy/send, or use network tools.
+ZYRA ONTOLOGY MASTER LOCK is a deterministic local publication pipeline. It validates source provenance, builds and validates ontology relationships, generates analysis, hashes staged outputs, and writes the lock manifest last. It remains defensive and authorized-environment-only.
 Be concise by default. For terminal questions, prefer one tested command or one short next step.
 """
 
@@ -113,8 +115,9 @@ def show_dashboard(model, mode, laser, agent, heal_report=None):
     print(f"🩺 Self-Heal: {heal_state} // bounded runtime repair")
     print(f"🔴 Native LASER: {laser_state} // local circuit breaker")
     print(f"🤖 Agent Core: {agent_state} // checkpoints + rollback + hard budgets")
+    print("🔒 Ontology MASTER LOCK: native // deterministic subagents + publish gate")
     print("🛡️ Repository-only autonomy // no arbitrary shell // no external targeting")
-    print("⌨️  /help /status /fleet /xunia /heal /laser-test /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit\n")
+    print("⌨️  /help /status /fleet /master-lock /xunia /heal /laser-test /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit\n")
 
 
 def show_fleet():
@@ -159,6 +162,12 @@ def _mission_goal(prompt: str, prefix: str) -> str:
     return prompt[len(prefix):].strip()
 
 
+def _looks_like_shell(prompt: str) -> bool:
+    stripped = prompt.strip()
+    starts = ("cd ", "git ", "python ", "python3 ", "exec ", "bash ", "sh ", "./")
+    return stripped.startswith(starts) or " && " in stripped or stripped.startswith("sudo ")
+
+
 def main():
     zyra = Zyra()
     laser = ZyraLaser()
@@ -189,13 +198,23 @@ def main():
         if command in {"/quit", "/exit"}:
             return 0
         if command == "/help":
-            print("/status /fleet /xunia /heal /heal-status /laser-test /laser-status /laser-reset /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit")
+            print("/status /fleet /master-lock /ontology-lock /xunia /heal /heal-status /laser-test /laser-status /laser-reset /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit")
             continue
         if command in {"/status", "/xunia", "/dashboard"}:
             show_dashboard(model, mode, laser, agent, heal_report)
             continue
         if command == "/fleet":
             show_fleet()
+            continue
+        if command in {"/master-lock", "/ontology-lock"}:
+            try:
+                report = run_master_lock(ROOT)
+            except MasterLockError as exc:
+                print(f"🔒 MASTER LOCK FAIL ❌ // {exc}")
+            except Exception as exc:
+                print(f"🔒 MASTER LOCK ERROR ❌ // {type(exc).__name__}: {exc}")
+            else:
+                print_master_lock_report(report)
             continue
         if command == "/heal":
             heal_report = run_self_heal(start_ollama=True, persist=True)
@@ -302,6 +321,11 @@ def main():
         if command == "/clear":
             history = [{"role": "system", "content": SYSTEM}]
             print("🧹 Conversation memory cleared.")
+            continue
+
+        if _looks_like_shell(prompt):
+            print("⌨️ SHELL COMMAND DETECTED // you are inside ZYRA, not the macOS shell.")
+            print("   Use /master-lock for the ontology pipeline, or /quit before running shell commands.")
             continue
 
         if laser.is_locked():
