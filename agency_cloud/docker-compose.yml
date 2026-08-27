@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: zyra_intel
+      POSTGRES_USER: zyra
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - zyra-intel-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zyra -d zyra_intel"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  intelligence-cloud:
+    build:
+      context: ..
+      dockerfile: agency_cloud/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      AGENCY_ENVIRONMENT: production
+      AGENCY_DATABASE_URL: postgresql+psycopg://zyra:${POSTGRES_PASSWORD}@db:5432/zyra_intel
+      AGENCY_AUDIT_KEY: ${AGENCY_AUDIT_KEY:?set AGENCY_AUDIT_KEY}
+      AGENCY_DIRECTOR_TOKEN: ${AGENCY_DIRECTOR_TOKEN:?set AGENCY_DIRECTOR_TOKEN}
+      AGENCY_ANALYST_TOKEN: ${AGENCY_ANALYST_TOKEN:?set AGENCY_ANALYST_TOKEN}
+      AGENCY_AUDITOR_TOKEN: ${AGENCY_AUDITOR_TOKEN:?set AGENCY_AUDITOR_TOKEN}
+      AGENCY_CLIENT_TOKEN: ${AGENCY_CLIENT_TOKEN:?set AGENCY_CLIENT_TOKEN}
+      AGENCY_ALLOW_DEMO_AUTH: "false"
+
+volumes:
+  zyra-intel-db:
