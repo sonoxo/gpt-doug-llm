@@ -1,0 +1,15 @@
+{
+  "framework": "ZYRA GOVERNMENT INTELLIGENCE POAM",
+  "version": "1.0.0",
+  "commandStatus": "ACTIVE",
+  "items": [
+    {"id":"GOV-001","priority":"HIGH","gap":"Deployment identity and MFA evidence not yet bound to a target government environment.","owner":"DEPLOYMENT_COMMAND","state":"OPEN","closureEvidence":"Target-environment IAM architecture, MFA enforcement evidence, privileged-role inventory, access review records."},
+    {"id":"GOV-002","priority":"HIGH","gap":"FIPS 140-3 validation cannot be established from repository code.","owner":"CRYPTO_COMMAND","state":"OPEN_CONDITIONAL","closureEvidence":"CMVP certificate or inherited validated service, runtime provider configuration, key-management evidence."},
+    {"id":"GOV-003","priority":"HIGH","gap":"FedRAMP authorization cannot be established from repository code.","owner":"FEDERAL_CLOUD_COMMAND","state":"OPEN_CONDITIONAL","closureEvidence":"Applicable FedRAMP path, SSP/SAP/SAR/POA&M evidence, continuous monitoring package, accepted authorization evidence."},
+    {"id":"GOV-004","priority":"HIGH","gap":"CJIS acceptance cannot be established unless CJI is in scope and the applicable CSA requirements are satisfied.","owner":"CJIS_COMMAND","state":"OPEN_CONDITIONAL","closureEvidence":"CJI scope declaration, CSA requirements, personnel/access evidence, audit evidence, applicable agreements."},
+    {"id":"GOV-005","priority":"HIGH","gap":"CUI readiness cannot be established unless CUI is in scope and SP 800-171 Rev. 3 requirements are assessed against the deployment boundary.","owner":"CUI_COMMAND","state":"OPEN_CONDITIONAL","closureEvidence":"CUI boundary, requirement assessment, SSP, remediation evidence, contractual flow-down requirements."},
+    {"id":"GOV-006","priority":"MEDIUM","gap":"Virginia AI deployment requires use-case registration and approval evidence when Commonwealth scope triggers it.","owner":"VIRGINIA_AI_COMMAND","state":"OPEN_CONDITIONAL","closureEvidence":"AI inventory, Archer/Planview records when applicable, human oversight and model-risk evidence."},
+    {"id":"GOV-007","priority":"MEDIUM","gap":"Physical, personnel, media, continuity-test, and production monitoring controls require deployment evidence.","owner":"OPERATIONS_COMMAND","state":"OPEN","closureEvidence":"Facility/cloud inheritance records, personnel controls, media handling, exercise results, monitoring/SLA evidence."},
+    {"id":"GOV-008","priority":"MEDIUM","gap":"Independent assessment evidence is not present.","owner":"ASSESSMENT_COMMAND","state":"OPEN","closureEvidence":"Assessment plan/results from the assessor or authority required by the selected deployment path."}
+  ]
+}
