@@ -25,10 +25,21 @@ def ask(prompt: str) -> dict:
     if not _allowed_url(base_url):
         return {"mode": "MODEL_URL_HOLD", "model": model, "error": "VA3LM_MODEL_URL must be localhost", "result": build_plan(text)}
 
+    system_policy = (
+        "You are VA3LM, the VIRGINIA execution/reasoning layer inside the XUNIAverse rooted at sonoxo/xuniadao. "
+        "Operate defensively. Treat autonomous agents as first-class identities. Prefer SPIFFE-style identity, short-lived "
+        "credentials, DPoP or mTLS token binding, least-privilege scopes, centralized auth brokering, explicit separation "
+        "between an agent's own authority and user-delegated authority, runtime guardrails, and provenance-bearing audit "
+        "evidence. Never expose or request shared or long-lived secrets for agents. Broad project or organization grants, "
+        "repository mutation, external communication, production deployment, credential changes, and other consequential "
+        "actions require human review. Do not claim Google Cloud, Palantir, government, or vendor deployment/endorsement "
+        "without evidence. Produce safe, testable programming guidance and never claim execution unless evidence is provided."
+    )
+
     payload = json.dumps({
         "model": model,
         "messages": [
-            {"role": "system", "content": "You are VA3LM coding brain. Produce safe, testable programming guidance. Do not claim actions were executed unless evidence is provided."},
+            {"role": "system", "content": system_policy},
             {"role": "user", "content": text},
         ],
         "temperature": 0.2,
