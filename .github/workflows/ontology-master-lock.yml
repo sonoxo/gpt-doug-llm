@@ -38,6 +38,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install pytest
       - name: Run MASTER LOCK specialist subagents
         run: python -m agents.ontology_master_lock --root .
       - name: Verify MASTER LOCK tests
