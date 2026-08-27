@@ -1,0 +1,65 @@
+name: Government Intelligence Readiness
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/gov_intel_compliance_fleet.py"
+      - "agents/virginia_intel_gate.py"
+      - "agents/tests/test_gov_intel_compliance_fleet.py"
+      - "intel/compliance/**"
+      - "intel/policy/**"
+      - ".github/workflows/security-gate.yml"
+      - ".github/workflows/government-intelligence-readiness.yml"
+      - "zyra_max.py"
+  pull_request:
+    paths:
+      - "agents/gov_intel_compliance_fleet.py"
+      - "agents/virginia_intel_gate.py"
+      - "agents/tests/test_gov_intel_compliance_fleet.py"
+      - "intel/compliance/**"
+      - "intel/policy/**"
+      - ".github/workflows/security-gate.yml"
+      - ".github/workflows/government-intelligence-readiness.yml"
+      - "zyra_max.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  intelligence-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install command test dependency
+        run: python -m pip install pytest
+      - name: Virginia intelligence doctrine status
+        run: python -m agents.virginia_intel_gate status
+      - name: Run government intelligence specialist fleet
+        run: python -m agents.gov_intel_compliance_fleet strict-source
+      - name: Run government intelligence regression tests
+        run: python -m pytest agents/tests/test_gov_intel_compliance_fleet.py -q
+      - name: Verify command report never self-certifies
+        run: |
+          python - <<'PY'
+          from agents.gov_intel_compliance_fleet import audit
+          report = audit('.')
+          assert report['selfCertification'] is False
+          assert report['commandState'] == 'SOURCE_READY_WITH_EXTERNAL_GATES'
+          assert report['counts']['sourceGaps'] == 0
+          print('Government intelligence command evidence verified')
+          PY
+      - name: Upload intelligence readiness evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: government-intelligence-readiness
+          path: |
+            intel/compliance/government-intelligence-audit.json
+            intel/compliance/government-intelligence-audit.md
+            intel/compliance/system-security-plan.md
+            intel/compliance/poam.json
+          if-no-files-found: error
