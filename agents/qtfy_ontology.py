@@ -1,8 +1,8 @@
 """Ontology primitives for defensive QTFY intelligence operations.
 
-The graph is defensive, evidence-first, and provenance-preserving. Indicators are
-investigative leads. Containment remains limited to owned or explicitly authorized
-assets and requires the repository's human-review and operational-safety gates.
+The graph is defensive, evidence-first, provenance-preserving, and publication
+locked. Indicators are investigative leads. Containment remains limited to owned
+or explicitly authorized assets and requires human review where specified.
 """
 
 from __future__ import annotations
@@ -61,7 +61,14 @@ def build_defensive_ontology(
 
     for technique_id, name in techniques.items():
         ref = f"AttackTechnique:{technique_id}"
-        objects.append(_object("AttackTechnique", technique_id, name=name, framework="MITRE ATT&CK Enterprise v19"))
+        objects.append(
+            _object(
+                "AttackTechnique",
+                technique_id,
+                name=name,
+                framework="MITRE ATT&CK Enterprise v19",
+            )
+        )
         links.append(_link("AdvisoryUsesTechnique", advisory_ref, ref))
         links.append(_link("ThreatUsesTechnique", threat_ref, ref))
 
@@ -166,18 +173,18 @@ def build_defensive_ontology(
             )
         )
         links.append(_link("AdvisoryDescribesEvent", advisory_ref, ref))
-        for tool_id in event.get("toolIds", ()): 
+        for tool_id in event.get("toolIds", ()):
             tool_ref = tool_refs.get(str(tool_id))
             if tool_ref:
                 links.append(_link("EventUsesTool", ref, tool_ref))
-        for vulnerability_id in event.get("vulnerabilityIds", ()): 
+        for vulnerability_id in event.get("vulnerabilityIds", ()):
             vulnerability_ref = vulnerability_refs.get(str(vulnerability_id))
             if vulnerability_ref:
                 links.append(_link("EventReferencesVulnerability", ref, vulnerability_ref))
 
     return {
         "name": "VA3LM QTFY Defensive Intelligence Ontology",
-        "version": "0.2.0",
+        "version": "0.3.0",
         "mode": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
         "objectTypes": [
             "CyberAdvisory",
@@ -266,5 +273,8 @@ def build_defensive_ontology(
             "humanApprovalForContainment": True,
             "rawDataDefault": "REMAIN_WITH_OWNER",
             "attributionHandling": "PRESERVE_SOURCE_CLAIM_NATURE",
+            "masterLockRequiredForPublish": True,
+            "masterLockRule": "ALL_SUBAGENTS_PASS_BEFORE_PUBLISH",
+            "masterLockManifest": "intel/qtfy/master-lock.json",
         },
     }
