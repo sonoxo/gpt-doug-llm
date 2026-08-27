@@ -43,6 +43,7 @@ def test_query_engine_reads_only_verified_master_lock(tmp_path):
     assert "qscan" in query.lower()
     assert "CVE-2024-24919" in query
     assert "EventReferencesVulnerability" in query or "AdvisoryMentionsVulnerability" in query
+    assert "up to two hops" in query
 
     brief = ontology_brief(package)
     assert "MASTER-LOCKED DEFENSIVE INTELLIGENCE BRIEF" in brief
@@ -51,6 +52,27 @@ def test_query_engine_reads_only_verified_master_lock(tmp_path):
     gaps = ontology_gaps(package)
     assert "linkage gaps" in gaps
     assert "absence of a link does not prove absence" in gaps
+
+
+def test_query_engine_aggregates_shared_campaign_relationships(tmp_path):
+    root = _locked_workspace(tmp_path)
+    package = load_locked_package(root)
+
+    result = ontology_query(
+        package,
+        "Which campaign events share the same tools, vulnerabilities, or ATT&CK techniques, and what recurring defensive pattern does that suggest?",
+    )
+
+    assert "ONTOLOGY MULTI-HOP QUERY" in result
+    assert "Shared tools:" in result
+    assert "ThreatTool:qscan" in result
+    assert "CampaignEvent:evt-2024-05-qscan" in result
+    assert "CampaignEvent:evt-2026-02-beyondtrust" in result
+    assert "CampaignEvent:evt-2026-06-election" in result
+    assert "ATT&CK scope note:" in result
+    assert "not per campaign event" in result
+    assert "Recurring defensive pattern" in result
+    assert "structural inference" in result
 
 
 def test_query_engine_rejects_tampered_locked_output(tmp_path):
