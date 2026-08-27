@@ -22,6 +22,10 @@ local snapshots/diffs under intel/live/.
 GPT-GLASSONION is a separately locked cross-source overlay. It verifies the
 existing QTFY MASTER LOCK before correlating the DOJ disruption source pack and
 never mutates the base ontology.
+
+Government Intelligence Readiness is a deterministic specialist fleet. It can
+prove repository evidence and expose unresolved external/deployment gates, but
+it cannot self-declare government authorization.
 """
 from __future__ import annotations
 
@@ -32,6 +36,7 @@ import os
 import re
 
 from agents.glassonion_layer import GlassOnionError, run_command as run_glassonion_command, run_glassonion_lock
+from agents.gov_intel_compliance_fleet import GovernmentIntelError, command_status as government_intel_status, write_report as write_government_intel_report
 from agents.live_feed_sync import LiveFeedError, live_changes, live_status, sync_live_sources
 from agents.ontology_query import OntologyQueryError, run_query_command
 from zyra_agent import MissionBudget, MissionError, ZyraAgent
@@ -200,10 +205,26 @@ def _ontology_input(prompt: str = "") -> str:
         lowered = stripped.lower()
 
         if lowered == "/help":
+            print("🛰️ Government Intelligence: /gov-intel-status /gov-intel-audit")
             print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
             print("🧅 Glass Onion: /glassonion-lock /glassonion-status /glassonion-brief /glassonion-graph /glassonion-query <question> /glass <question>")
-            print("🌐 Live: /live-sync /live-status /live-changes  (allowlisted public defensive feeds only)")
+            print("🌐 Live Intelligence: /live-sync /live-status /live-changes")
             return value
+
+        if lowered == "/gov-intel-status":
+            try:
+                print(government_intel_status(root))
+            except GovernmentIntelError as exc:
+                print(f"🛰️ GOVERNMENT INTELLIGENCE READINESS // GATE HOLD ❌ // {exc}")
+            continue
+        if lowered == "/gov-intel-audit":
+            try:
+                write_government_intel_report(root)
+                print(government_intel_status(root))
+                print("Evidence: intel/compliance/government-intelligence-audit.json + government-intelligence-audit.md")
+            except GovernmentIntelError as exc:
+                print(f"🛰️ GOVERNMENT INTELLIGENCE READINESS // GATE HOLD ❌ // {exc}")
+            continue
 
         if lowered == "/live-sync":
             try:
@@ -300,9 +321,10 @@ _original_dashboard = _zyra_chat.show_dashboard
 
 def _max_dashboard(*args, **kwargs):
     _original_dashboard(*args, **kwargs)
+    print("🛰️ Government Intelligence readiness: /gov-intel-status /gov-intel-audit")
     print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
     print("🧅 GPT-GLASSONION overlay: /glassonion-lock /glassonion-status /glassonion-brief /glassonion-graph /glass <question>")
-    print("🌐 Live public defensive feeds: /live-sync /live-status /live-changes\n")
+    print("🌐 Live Intelligence feeds: /live-sync /live-status /live-changes\n")
 
 
 _zyra_chat.show_dashboard = _max_dashboard
