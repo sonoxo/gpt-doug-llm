@@ -1,0 +1,88 @@
+name: GPT Glass Onion MASTER LOCK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/glassonion_layer.py"
+      - "agents/tests/test_glassonion_layer.py"
+      - "intel/glassonion/**"
+      - "agents/ontology_master_lock.py"
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/qtfy_analyze.py"
+      - "agents/qtfy_ontology.py"
+      - "intel/qtfy/**"
+      - "zyra_max.py"
+      - ".github/workflows/glassonion-master-lock.yml"
+  pull_request:
+    paths:
+      - "agents/glassonion_layer.py"
+      - "agents/tests/test_glassonion_layer.py"
+      - "intel/glassonion/**"
+      - "agents/ontology_master_lock.py"
+      - "agents/qtfy_advisory_intel.py"
+      - "agents/qtfy_analyze.py"
+      - "agents/qtfy_ontology.py"
+      - "intel/qtfy/**"
+      - "zyra_max.py"
+      - ".github/workflows/glassonion-master-lock.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  glassonion-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependency
+        run: python -m pip install pytest
+      - name: Build base QTFY MASTER LOCK
+        run: python -m agents.ontology_master_lock --root .
+      - name: Build GPT Glass Onion overlay lock
+        run: python -m agents.glassonion_layer lock --root .
+      - name: Run Glass Onion regression tests
+        run: python -m pytest agents/tests/test_glassonion_layer.py -q
+      - name: Verify Glass Onion lock and overlay
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from agents.glassonion_layer import verify_glassonion_lock
+
+          manifest, overlay = verify_glassonion_lock(".")
+          assert manifest["locked"] is True
+          assert manifest["publicationState"] == "LOCKED_DEFENSIVE_OVERLAY"
+          assert manifest["baseMasterLockId"]
+          assert overlay["guardrails"]["baseOntologyImmutable"] is True
+          assert overlay["guardrails"]["externalThirdPartyAction"] is False
+          assert overlay["guardrails"]["offensiveReplication"] is False
+          refs = {f"{item['objectType']}:{item['id']}" for item in overlay["objects"]}
+          assert "PublicSource:DOJ-26-972" in refs
+          assert "LegalDisruptionAction:evt-2026-08-26-doj-domain-seizure" in refs
+          print("GPT Glass Onion lock verified:", manifest["lockId"])
+          PY
+      - name: Verify Glass Onion query surface
+        run: |
+          python - <<'PY'
+          from agents.glassonion_layer import run_command
+
+          answer = run_command(".", "query", "QScan QTRouter hard-coded domains")
+          assert "QScan" in answer or "qscan" in answer
+          assert "qtrouter" in answer.lower()
+          assert "hardcoded-platform-domains" in answer
+          print("Glass Onion query verified")
+          PY
+      - name: Upload Glass Onion locked package
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-glassonion-master-lock
+          path: |
+            intel/glassonion/DOJ-26-972.json
+            intel/glassonion/glassonion-overlay.json
+            intel/glassonion/glassonion-brief.md
+            intel/glassonion/glassonion-lock.json
+          if-no-files-found: error
