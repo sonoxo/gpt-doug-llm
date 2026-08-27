@@ -1,0 +1,81 @@
+name: ZYRA Intelligence Cloud
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agency_cloud/**"
+      - "agents/ontology_query.py"
+      - "agents/glassonion_layer.py"
+      - ".github/workflows/agency-cloud.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "agency_cloud/**"
+      - "agents/ontology_query.py"
+      - "agents/glassonion_layer.py"
+      - ".github/workflows/agency-cloud.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install cloud test tooling
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r agency_cloud/requirements.txt pytest ruff bandit httpx
+
+      - name: Intelligence Cloud unit tests
+        run: python -m pytest agency_cloud/tests -q
+
+      - name: Ruff intelligence cloud
+        run: ruff check agency_cloud
+
+      - name: Bandit intelligence cloud
+        run: bandit -ll -r agency_cloud -x agency_cloud/tests
+
+      - name: Import API
+        env:
+          AGENCY_ENVIRONMENT: test
+          AGENCY_ALLOW_DEMO_AUTH: "true"
+        run: python -c "from agency_cloud.app import app; assert app.title == 'ZYRA Intelligence Cloud'"
+
+  container:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish intelligence cloud image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: agency_cloud/Dockerfile
+          push: ${{ github.event_name == 'push' }}
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/zyra-intelligence-cloud:latest
+            ghcr.io/${{ github.repository_owner }}/zyra-intelligence-cloud:${{ github.sha }}
+          provenance: mode=max
+          sbom: true
