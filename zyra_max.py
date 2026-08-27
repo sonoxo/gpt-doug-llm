@@ -184,7 +184,7 @@ def _ontology_input(prompt: str = "") -> str:
         lowered = stripped.lower()
 
         if lowered == "/help":
-            print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
+            print("🔐 Ontology: /master-lock /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief")
             return value
 
         query_command = _ONTOLOGY_COMMANDS.get(lowered)
@@ -193,7 +193,13 @@ def _ontology_input(prompt: str = "") -> str:
             query_command = "query"
             query_argument = stripped[len("/ontology-query "):].strip()
         elif lowered == "/ontology-query":
-            print("🔎 Usage: /ontology-query <question>")
+            print("🔎 Usage: /ontology-query <question>  (shortcut: /q <question>)")
+            continue
+        elif lowered.startswith("/q "):
+            query_command = "query"
+            query_argument = stripped[len("/q "):].strip()
+        elif lowered == "/q":
+            print("🔎 Usage: /q <question>")
             continue
 
         if query_command:
@@ -221,7 +227,7 @@ _original_dashboard = _zyra_chat.show_dashboard
 
 def _max_dashboard(*args, **kwargs):
     _original_dashboard(*args, **kwargs)
-    print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief\n")
+    print("🔐 Locked ontology query layer: /ontology-status /ontology-query <question> /q <question> /ontology-timeline /ontology-graph /ontology-gaps /ontology-brief\n")
 
 
 _zyra_chat.show_dashboard = _max_dashboard
