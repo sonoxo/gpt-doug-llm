@@ -23,6 +23,12 @@ def _event_hash(key: str, envelope: dict) -> str:
     return hmac.new(secret, _canonical_payload(envelope), hashlib.sha256).hexdigest()
 
 
+def _iso(value: datetime) -> str:
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc).isoformat()
+
+
 def append_event(
     session: Session,
     *,
@@ -47,7 +53,7 @@ def append_event(
         "objectId": object_id,
         "payload": payload or {},
         "prevHash": prev_hash,
-        "createdAt": created_at.isoformat(),
+        "createdAt": _iso(created_at),
     }
     event = AuditEvent(
         id=event_id,
@@ -81,7 +87,7 @@ def verify_chain(session: Session, *, audit_key: str) -> tuple[bool, str]:
             "objectId": event.object_id,
             "payload": event.payload or {},
             "prevHash": event.prev_hash,
-            "createdAt": event.created_at.isoformat(),
+            "createdAt": _iso(event.created_at),
         }
         if not hmac.compare_digest(event.event_hash, _event_hash(audit_key, body)):
             return False, f"audit event hash mismatch: {event.id}"
