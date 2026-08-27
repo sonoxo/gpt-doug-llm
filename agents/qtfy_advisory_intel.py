@@ -8,7 +8,7 @@ hack back, or take action against third-party infrastructure.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import Any
 
 from agents.adaptive_intelligence import Evidence
@@ -125,6 +125,7 @@ def build_qtfy_defensive_plan() -> dict[str, Any]:
     """Adapt the VA3LM Infrastructure Shield and intelligence ontology to QTFY."""
     shield = build_infrastructure_shield_plan(severity="critical")
     control_records = [asdict(control) for control in CONTROLS]
+    ioc_feeds = [IOC_FILES_URL, IOC_INFRASTRUCTURE_URL]
     ontology = build_defensive_ontology(
         advisory_id=ADVISORY_ID,
         advisory_url=ADVISORY_URL,
@@ -134,7 +135,7 @@ def build_qtfy_defensive_plan() -> dict[str, Any]:
         techniques=ATTACK_TECHNIQUES,
         controls=control_records,
         target_sectors=TARGET_SECTORS,
-        ioc_feeds=(IOC_FILES_URL, IOC_INFRASTRUCTURE_URL),
+        ioc_feeds=ioc_feeds,
     )
     return {
         "advisoryId": ADVISORY_ID,
@@ -150,7 +151,7 @@ def build_qtfy_defensive_plan() -> dict[str, Any]:
         "incidentResponse": list(INCIDENT_RESPONSE),
         "controlValidation": list(CONTROL_VALIDATION),
         "controls": control_records,
-        "iocFeeds": [IOC_FILES_URL, IOC_INFSTRUCTURE_URL] if False else [IOC_FILES_URL, IOC_INFRASTRUCTURE_URL],
+        "iocFeeds": ioc_feeds,
         "iocPolicy": {
             "default": "investigate-and-vet",
             "automaticBlocking": False,
