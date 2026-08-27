@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths:
       - "agents/glassonion_layer.py"
+      - "agents/glassonion_media.py"
       - "agents/tests/test_glassonion_layer.py"
+      - "agents/tests/test_glassonion_media.py"
       - "intel/glassonion/**"
       - "agents/ontology_master_lock.py"
       - "agents/qtfy_advisory_intel.py"
@@ -17,7 +19,9 @@ on:
   pull_request:
     paths:
       - "agents/glassonion_layer.py"
+      - "agents/glassonion_media.py"
       - "agents/tests/test_glassonion_layer.py"
+      - "agents/tests/test_glassonion_media.py"
       - "intel/glassonion/**"
       - "agents/ontology_master_lock.py"
       - "agents/qtfy_advisory_intel.py"
@@ -45,12 +49,20 @@ jobs:
       - name: Build GPT Glass Onion overlay lock
         run: python -m agents.glassonion_layer lock --root .
       - name: Run Glass Onion regression tests
-        run: python -m pytest agents/tests/test_glassonion_layer.py -q
+        run: python -m pytest agents/tests/test_glassonion_layer.py agents/tests/test_glassonion_media.py -q
+      - name: Verify unresolved video cannot mutate learned state
+        run: |
+          python - <<'PY'
+          from agents.glassonion_media import media_status
+
+          answer = media_status(".")
+          assert "EVIDENCE REQUIRED" in answer
+          assert "BLOCKED_UNTIL_EVIDENCE" in answer
+          print(answer)
+          PY
       - name: Verify Glass Onion lock and overlay
         run: |
           python - <<'PY'
-          import json
-          from pathlib import Path
           from agents.glassonion_layer import verify_glassonion_lock
 
           manifest, overlay = verify_glassonion_lock(".")
@@ -85,4 +97,5 @@ jobs:
             intel/glassonion/glassonion-overlay.json
             intel/glassonion/glassonion-brief.md
             intel/glassonion/glassonion-lock.json
+            intel/glassonion/media/yOlludp60zQ.json
           if-no-files-found: error
