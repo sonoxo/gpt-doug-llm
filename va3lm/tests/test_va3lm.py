@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from va3lm.agents import roster
 from va3lm.app import app
 from va3lm.brain import ask
@@ -30,7 +29,14 @@ def test_brain_falls_back_without_endpoint(monkeypatch):
 
 def test_explainer_has_required_beats():
     result = explain("VA3LM")
-    assert [item["beat"] for item in result["beats"]] == ["HOOK", "WHAT", "HOW", "PROOF", "BENEFIT", "CTA"]
+    assert [item["beat"] for item in result["beats"]] == [
+        "HOOK",
+        "WHAT",
+        "HOW",
+        "PROOF",
+        "BENEFIT",
+        "CTA",
+    ]
 
 
 def test_api_8088_identity():
