@@ -15,7 +15,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Optional
 
 
 class FoundryError(RuntimeError):
@@ -60,16 +60,24 @@ class FoundryClient:
             )
 
     @classmethod
-    def from_environment(cls) -> "FoundryClient | None":
+    def from_environment(cls) -> Optional["FoundryClient"]:
         base_url = os.getenv("FOUNDRY_BASE_URL", "").strip()
         client_id = os.getenv("FOUNDRY_CLIENT_ID", "").strip()
         client_secret = os.getenv("FOUNDRY_CLIENT_SECRET", "").strip()
         token = os.getenv("FOUNDRY_TOKEN", "").strip()
 
-        if not any((base_url, client_id, client_secret, token)):
-            return None
         if not base_url:
-            raise FoundryConfigurationError("FOUNDRY_BASE_URL is required when Foundry is configured")
+            if client_id or client_secret:
+                raise FoundryConfigurationError(
+                    "FOUNDRY_BASE_URL is required with Foundry OAuth credentials"
+                )
+            return None
+
+        raw_timeout = os.getenv("FOUNDRY_TIMEOUT_SECONDS", "10").strip()
+        try:
+            timeout = max(1.0, float(raw_timeout))
+        except ValueError as error:
+            raise FoundryConfigurationError("FOUNDRY_TIMEOUT_SECONDS must be a number") from error
 
         writes_enabled = os.getenv("FOUNDRY_ENABLE_WRITES", "").strip().lower() in {
             "1",
@@ -83,7 +91,7 @@ class FoundryClient:
             static_token=token,
             scopes=os.getenv("FOUNDRY_SCOPES", "api:ontologies-read").strip(),
             allowed_host=os.getenv("FOUNDRY_ALLOWED_HOST", "").strip(),
-            timeout=max(1.0, float(os.getenv("FOUNDRY_TIMEOUT_SECONDS", "10"))),
+            timeout=timeout,
             writes_enabled=writes_enabled,
         )
 
@@ -147,7 +155,7 @@ class FoundryClient:
             raise FoundryError(f"Foundry returned HTTP {error.code}{suffix}") from error
         except urllib.error.URLError as error:
             raise FoundryError(f"Unable to reach Foundry: {error.reason}") from error
-        except (ValueError, json.JSONDecodeError) as error:
+        except ValueError as error:
             raise FoundryError(f"Invalid Foundry response: {error}") from error
 
     def request(
@@ -155,8 +163,8 @@ class FoundryClient:
         method: str,
         path: str,
         *,
-        body: dict[str, Any] | None = None,
-        query: dict[str, Any] | None = None,
+        body: Optional[dict[str, Any]] = None,
+        query: Optional[dict[str, Any]] = None,
         write: bool = False,
     ) -> dict[str, Any]:
         method = method.upper().strip()
@@ -193,7 +201,7 @@ class FoundryClient:
             "writes_enabled": self.writes_enabled,
         }
 
-    def list_ontologies(self, page_size: int = 100, page_token: str | None = None) -> dict[str, Any]:
+    def list_ontologies(self, page_size: int = 100, page_token: Optional[str] = None) -> dict[str, Any]:
         return self.request(
             "GET",
             "/api/v2/ontologies",
@@ -204,7 +212,7 @@ class FoundryClient:
         self,
         ontology: str,
         page_size: int = 100,
-        page_token: str | None = None,
+        page_token: Optional[str] = None,
     ) -> dict[str, Any]:
         ontology = urllib.parse.quote(ontology, safe="")
         return self.request(
@@ -218,8 +226,8 @@ class FoundryClient:
         ontology: str,
         object_type: str,
         page_size: int = 100,
-        page_token: str | None = None,
-        select: list[str] | None = None,
+        page_token: Optional[str] = None,
+        select: Optional[list[str]] = None,
     ) -> dict[str, Any]:
         ontology = urllib.parse.quote(ontology, safe="")
         object_type = urllib.parse.quote(object_type, safe="")
@@ -238,7 +246,7 @@ class FoundryClient:
         ontology: str,
         object_type: str,
         primary_key: str,
-        select: list[str] | None = None,
+        select: Optional[list[str]] = None,
     ) -> dict[str, Any]:
         ontology = urllib.parse.quote(ontology, safe="")
         object_type = urllib.parse.quote(object_type, safe="")
@@ -269,7 +277,7 @@ class FoundryClient:
         action: str,
         parameters: dict[str, Any],
         *,
-        options: dict[str, Any] | None = None,
+        options: Optional[dict[str, Any]] = None,
     ) -> dict[str, Any]:
         ontology = urllib.parse.quote(ontology, safe="")
         action = urllib.parse.quote(action, safe="")
