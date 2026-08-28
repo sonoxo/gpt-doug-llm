@@ -52,6 +52,8 @@ jobs:
           test -f _site/pipeline.html
           test -f _site/zyra-theme.css
           test -f _site/zyra-shell.js
+          test -f _site/museum.css
+          test -f _site/museum.js
           test -f _site/eye-mouse/index.html
           test -f _site/eye-mouse/eye-mouse.js
           test -f _site/eye-mouse/eye-mouse.css
@@ -59,7 +61,26 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check docs/zyra-shell.js
+          node --check docs/museum.js
           node --check xunia-platform/public/eye-mouse.js
+
+      - name: Museum inventory contract
+        run: |
+          grep -q 'XUNIAverse Museum + HQ' docs/index.html
+          grep -q "'xuniadao'" docs/museum.js
+          grep -q "'gpt-doug-llm'" docs/museum.js
+          grep -q "'zyra'" docs/museum.js
+          grep -q "'NASA-3D-ResourcesXUNIA-'" docs/museum.js
+          grep -q "'xrpl4jXUNIA'" docs/museum.js
+          grep -q "'nsacyber.github.ioZYRA'" docs/museum.js
+          python3 - <<'PY'
+          import re
+          text = open('docs/museum.js', encoding='utf-8').read()
+          block = re.search(r'const STATIC_REPOS = \[(.*?)\];', text, re.S).group(1)
+          names = re.findall(r"'([^']+)'", block)
+          assert len(names) == 62, f'expected 62 public exhibits, found {len(names)}'
+          assert len(names) == len(set(names)), 'duplicate public exhibits'
+          PY
 
       - name: Zyra theme and motion contract
         run: |
@@ -81,7 +102,9 @@ jobs:
             if curl -fsS http://127.0.0.1:8080/ >/tmp/xunia-home.html; then break; fi
             sleep 0.2
           done
-          grep -q 'XUNIAverse Control Surface' /tmp/xunia-home.html
+          grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home.html
+          grep -q 'museum.js' /tmp/xunia-home.html
+          curl -fsS http://127.0.0.1:8080/museum.js | grep -q 'STATIC_REPOS'
           curl -fsS http://127.0.0.1:8080/status.html | grep -q 'XUNIAverse build status'
           curl -fsS http://127.0.0.1:8080/metrics.html | grep -q 'XUNIAverse metrics'
           curl -fsS http://127.0.0.1:8080/pipeline.html | grep -q 'agent pipeline'
