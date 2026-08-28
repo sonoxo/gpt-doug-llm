@@ -1,49 +1,144 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Xuniaverse</title>
-<style>
-:root{ --bg:#f5f4f0; --surface:#ffffff; --line:#dcd8cc; --ink:#20241f; --dim:#6b6f63; --accent:#3f6b4f; }
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#14170f; --surface:#1c2018; --line:#33392c; --ink:#e9e7dd; --dim:#a2a596; --accent:#7fbd94; }
-}
-*{box-sizing:border-box;}
-body{ margin:0; background:var(--bg); color:var(--ink); font-family:system-ui,sans-serif; }
-.wrap{ max-width:720px; margin:0 auto; padding:3rem 1.5rem; }
-h1{ font-size:1.8rem; margin:0 0 .4rem; }
-p.sub{ color:var(--dim); margin:0 0 2rem; line-height:1.5; }
-.links{ display:flex; flex-direction:column; gap:.9rem; }
-a.card{
-  display:block; padding:1.1rem 1.3rem; border:1px solid var(--line); border-radius:8px;
-  background:var(--surface); color:inherit; text-decoration:none;
-}
-a.card:hover{ border-color:var(--accent); }
-a.card .name{ font-weight:600; font-size:1rem; }
-a.card .desc{ color:var(--dim); font-size:.85rem; margin-top:.25rem; }
-footer{ margin-top:2.5rem; font-size:.78rem; color:var(--dim); border-top:1px solid var(--line); padding-top:1rem; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="XUNIAverse public control surface for GPT-Doug, Zyra, Eye Mouse, build evidence, metrics, and agent pipeline documentation.">
+  <title>XUNIAverse // Zyra Ecosystem</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <script src="./zyra-shell.js" defer></script>
 </head>
 <body>
-<div class="wrap">
-  <h1>Xuniaverse</h1>
-  <p class="sub">Public status pages for the xuniaverse-production project — static, no live daemon access. Source: <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/xuniaverse-production" style="color:inherit;">github.com/sonoxo/gpt-doug-llm</a>.</p>
-  <div class="links">
-    <a class="card" href="status.html">
-      <div class="name">Build status</div>
-      <div class="desc">Real audit of every component against the codebase — done / partial / not started.</div>
-    </a>
-    <a class="card" href="metrics.html">
-      <div class="name">Metrics</div>
-      <div class="desc">Ontology object counts, Zyra defense coverage, knowledge base composition.</div>
-    </a>
-    <a class="card" href="pipeline.html">
-      <div class="name">Agent pipeline</div>
-      <div class="desc">How a task actually flows through the daemon, Zyra, and Doug.</div>
-    </a>
-  </div>
-  <footer>xuniaverse-production is licensed All Rights Reserved. These pages are informational only.</footer>
-</div>
+  <main class="wrap">
+    <section class="zyra-hero" aria-labelledby="hero-title">
+      <div class="zyra-eyebrow">XUNIA // ZYRA ECOSYSTEM // PUBLIC EVIDENCE</div>
+      <h1 id="hero-title">XUNIAverse Control Surface</h1>
+      <p>A public view into the XUNIA ecosystem: accessibility experiments, GPT-Doug agent architecture, Zyra verification, measured status, and reproducible project evidence.</p>
+      <div class="zyra-badges" aria-label="Platform characteristics">
+        <span class="zyra-badge live">● PAGES ONLINE</span>
+        <span class="zyra-badge">ZYRA VISUAL SYSTEM</span>
+        <span class="zyra-badge">LOCAL-FIRST</span>
+        <span class="zyra-badge">EVIDENCE-ORIENTED</span>
+        <span class="zyra-badge">VIRGINIA</span>
+      </div>
+    </section>
+
+    <section class="zyra-grid" aria-label="XUNIA public modules">
+      <a class="zyra-card" href="./eye-mouse/">
+        <span class="arrow" aria-hidden="true">↗</span>
+        <div class="kicker">ACCESSIBILITY // CAMERA</div>
+        <h2>Eye Mouse</h2>
+        <p>Webcam gaze calibration, smoothed visual pointer, dwell activation, scrolling, and local-first accessibility controls.</p>
+      </a>
+      <a class="zyra-card" href="./status.html">
+        <span class="arrow" aria-hidden="true">↗</span>
+        <div class="kicker">BUILD // EVIDENCE</div>
+        <h2>Build Status</h2>
+        <p>Component-by-component audit showing what is verified, partial, or not yet implemented.</p>
+      </a>
+      <a class="zyra-card" href="./metrics.html">
+        <span class="arrow" aria-hidden="true">↗</span>
+        <div class="kicker">TELEMETRY // COUNTS</div>
+        <h2>Metrics</h2>
+        <p>Ontology counts, Zyra defensive test coverage, and attributed knowledge-base composition.</p>
+      </a>
+      <a class="zyra-card" href="./pipeline.html">
+        <span class="arrow" aria-hidden="true">↗</span>
+        <div class="kicker">AGENTS // VERIFY</div>
+        <h2>Agent Pipeline</h2>
+        <p>Animated view of task intake, Zyra review, GPT-Doug execution, testing, results, and feedback memory.</p>
+      </a>
+    </section>
+
+    <section class="motion-section" aria-label="Animated XUNIA architecture diagrams">
+      <article class="motion-panel">
+        <div class="motion-head">
+          <h2>ECOSYSTEM SIGNAL FLOW</h2>
+          <span>LIVE MOTION DIAGRAM</span>
+        </div>
+        <svg class="motion-diagram" viewBox="0 0 760 360" role="img" aria-labelledby="ecosystem-title ecosystem-desc">
+          <title id="ecosystem-title">XUNIA ecosystem signal flow</title>
+          <desc id="ecosystem-desc">Animated paths connect XUNIA, GPT-Doug, Zyra, Eye Mouse, verification, and evidence outputs.</desc>
+          <defs>
+            <filter id="cyanGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <marker id="arrowCyan" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+              <path d="M0 0L9 4.5 0 9Z" fill="#46f3ff"/>
+            </marker>
+            <marker id="arrowViolet" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+              <path d="M0 0L9 4.5 0 9Z" fill="#9d5cff"/>
+            </marker>
+          </defs>
+
+          <path class="flow-line cyan" d="M144 180 C210 180 222 92 292 92" marker-end="url(#arrowCyan)"/>
+          <path class="flow-line violet" d="M144 180 C210 180 224 268 292 268" marker-end="url(#arrowViolet)"/>
+          <path class="flow-line cyan" d="M420 92 C492 92 500 180 566 180" marker-end="url(#arrowCyan)"/>
+          <path class="flow-line violet" d="M420 268 C492 268 500 180 566 180" marker-end="url(#arrowViolet)"/>
+          <path class="flow-line lime" d="M632 214 C632 270 590 306 520 306 C390 306 376 180 420 180"/>
+
+          <g class="pulse">
+            <rect class="node node-cyan" x="36" y="143" width="108" height="74" rx="18"/>
+            <text x="90" y="174" text-anchor="middle" font-weight="800">XUNIA</text>
+            <text class="label" x="90" y="194" text-anchor="middle">CONTROL PLANE</text>
+          </g>
+          <g class="pulse alt">
+            <rect class="node node-violet" x="292" y="55" width="128" height="74" rx="18"/>
+            <text x="356" y="86" text-anchor="middle" font-weight="800">GPT-DOUG</text>
+            <text class="label" x="356" y="106" text-anchor="middle">PLAN + EXECUTE</text>
+          </g>
+          <g class="pulse">
+            <rect class="node node-cyan" x="292" y="231" width="128" height="74" rx="18"/>
+            <text x="356" y="262" text-anchor="middle" font-weight="800">EYE MOUSE</text>
+            <text class="label" x="356" y="282" text-anchor="middle">GAZE INPUT</text>
+          </g>
+          <g class="pulse alt" filter="url(#cyanGlow)">
+            <rect class="node node-lime" x="566" y="143" width="132" height="74" rx="18"/>
+            <text x="632" y="174" text-anchor="middle" font-weight="800">ZYRA</text>
+            <text class="label" x="632" y="194" text-anchor="middle">VERIFY + GUARD</text>
+          </g>
+          <g>
+            <rect class="node" x="292" y="143" width="128" height="74" rx="18"/>
+            <text x="356" y="174" text-anchor="middle" font-weight="800">EVIDENCE</text>
+            <text class="label" x="356" y="194" text-anchor="middle">RESULTS + AUDIT</text>
+          </g>
+        </svg>
+      </article>
+
+      <article class="motion-panel">
+        <div class="motion-head">
+          <h2>VERIFICATION LOOP</h2>
+          <span>BOUNDED AGENT FLOW</span>
+        </div>
+        <svg class="motion-diagram" viewBox="0 0 560 360" role="img" aria-labelledby="verify-title verify-desc">
+          <title id="verify-title">Agent verification loop</title>
+          <desc id="verify-desc">An animated loop cycles through plan, execute, test, verify, and memory stages.</desc>
+          <defs>
+            <marker id="arrowLoop" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+              <path d="M0 0L9 4.5 0 9Z" fill="#46f3ff"/>
+            </marker>
+          </defs>
+          <path class="flow-line cyan" d="M108 93 H225" marker-end="url(#arrowLoop)"/>
+          <path class="flow-line violet" d="M335 93 C420 93 438 132 438 178" marker-end="url(#arrowLoop)"/>
+          <path class="flow-line cyan" d="M438 218 C438 276 386 284 333 284" marker-end="url(#arrowLoop)"/>
+          <path class="flow-line violet" d="M225 284 H110" marker-end="url(#arrowLoop)"/>
+          <path class="flow-line lime" d="M73 247 C32 202 36 139 72 128" marker-end="url(#arrowLoop)"/>
+
+          <g class="pulse"><rect class="node node-cyan" x="37" y="58" width="100" height="70" rx="17"/><text x="87" y="88" text-anchor="middle" font-weight="800">PLAN</text><text class="label" x="87" y="108" text-anchor="middle">BOUNDED</text></g>
+          <g class="pulse alt"><rect class="node node-violet" x="225" y="58" width="110" height="70" rx="17"/><text x="280" y="88" text-anchor="middle" font-weight="800">EXECUTE</text><text class="label" x="280" y="108" text-anchor="middle">TOOLS</text></g>
+          <g class="pulse"><rect class="node node-cyan" x="383" y="178" width="110" height="70" rx="17"/><text x="438" y="208" text-anchor="middle" font-weight="800">TEST</text><text class="label" x="438" y="228" text-anchor="middle">REGRESSION</text></g>
+          <g class="pulse alt"><rect class="node node-lime" x="225" y="249" width="110" height="70" rx="17"/><text x="280" y="279" text-anchor="middle" font-weight="800">VERIFY</text><text class="label" x="280" y="299" text-anchor="middle">EVIDENCE</text></g>
+          <g class="pulse"><rect class="node" x="37" y="249" width="100" height="70" rx="17"/><text x="87" y="279" text-anchor="middle" font-weight="800">MEMORY</text><text class="label" x="87" y="299" text-anchor="middle">CONTEXT</text></g>
+        </svg>
+      </article>
+    </section>
+
+    <footer class="zyra-footer">
+      <span>XUNIAverse public pages · static documentation and demonstrations · no private daemon access.</span>
+      <span>Source: <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/xuniaverse-production">sonoxo/gpt-doug-llm</a></span>
+    </footer>
+  </main>
 </body>
 </html>
