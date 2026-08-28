@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>XUNIA Eye Mouse</title>
+  <link rel="stylesheet" href="/eye-mouse.css" />
+</head>
+<body>
+  <div id="gazeCursor" class="gaze-cursor" aria-hidden="true"><span></span></div>
+  <div id="calibrationLayer" class="calibration-layer" hidden>
+    <div id="calibrationTarget" class="calibration-target" aria-hidden="true"></div>
+    <div class="calibration-message">
+      <strong>CALIBRATING</strong>
+      <span id="calibrationText">Keep your head comfortable and look directly at the glowing target.</span>
+    </div>
+  </div>
+
+  <main class="shell">
+    <header class="hero">
+      <a class="back" href="/">← XUNIA Platform</a>
+      <p class="eyebrow">XUNIA ACCESSIBILITY LAB · VIRGINIA</p>
+      <h1>Eye Mouse</h1>
+      <p class="lede">A free webcam gaze controller that turns where you look into a visual pointer. Camera frames stay in your browser; XUNIA receives no video stream.</p>
+      <div class="status-row">
+        <span id="cameraStatus" class="pill">CAMERA OFF</span>
+        <span id="trackingStatus" class="pill">TRACKING OFF</span>
+        <span id="calibrationStatus" class="pill">NOT CALIBRATED</span>
+      </div>
+    </header>
+
+    <section class="panel launch-panel">
+      <div>
+        <h2>1. Start</h2>
+        <p>Allow camera access, sit comfortably, then follow nine calibration targets with your eyes. The first activation is a normal click or Space/Enter key; after calibration the controls below can be activated by gaze dwell.</p>
+      </div>
+      <div class="launch-actions">
+        <button id="startButton" class="primary" type="button">Start Eye Mouse</button>
+        <button id="recalibrateButton" type="button" disabled>Recalibrate</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel camera-card">
+        <div class="panel-head"><h2>Camera / Face Lock</h2><span id="faceStatus">NO FACE</span></div>
+        <div class="video-wrap">
+          <video id="camera" autoplay muted playsinline></video>
+          <div class="video-reticle" aria-hidden="true"></div>
+        </div>
+        <p class="hint">Keep both eyes visible and avoid strong backlighting. Nothing is recorded by XUNIA.</p>
+      </article>
+
+      <article class="panel settings-card">
+        <div class="panel-head"><h2>Control Tuning</h2><span>LOCAL</span></div>
+        <label>
+          <span>Dwell click <output id="dwellOutput">900 ms</output></span>
+          <input id="dwellTime" type="range" min="500" max="2000" step="100" value="900" />
+        </label>
+        <label>
+          <span>Pointer smoothing <output id="smoothOutput">82%</output></span>
+          <input id="smoothing" type="range" min="50" max="95" step="1" value="82" />
+        </label>
+        <label class="toggle-row">
+          <input id="showGaze" type="checkbox" checked />
+          <span>Show gaze pointer</span>
+        </label>
+        <label class="toggle-row">
+          <input id="soundCue" type="checkbox" />
+          <span>Sound cue on activation</span>
+        </label>
+        <div class="readout">
+          <span>GAZE</span>
+          <strong id="gazeReadout">— , —</strong>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel control-panel">
+      <div class="panel-head"><h2>2. Gaze Control Dock</h2><span>DWELL TO ACTIVATE</span></div>
+      <div class="control-dock">
+        <button class="gaze-target" data-gaze-action="scroll-up" type="button">↑<small>Scroll up</small></button>
+        <button id="pauseButton" class="gaze-target" data-gaze-action="pause" type="button">Ⅱ<small>Pause</small></button>
+        <button class="gaze-target" data-gaze-action="scroll-down" type="button">↓<small>Scroll down</small></button>
+        <button class="gaze-target danger" data-gaze-action="recalibrate" type="button">◎<small>Calibrate</small></button>
+      </div>
+      <p id="modeText" class="mode-text">Eye Mouse is waiting to start.</p>
+    </section>
+
+    <section class="panel demo-panel">
+      <div class="panel-head"><h2>3. Eye-Control Test Board</h2><span>NO PHYSICAL MOUSE AFTER CALIBRATION</span></div>
+      <p>Look at a target and hold your gaze. The ring around the visual pointer fills; when it completes, XUNIA activates the target.</p>
+      <div class="demo-grid">
+        <button class="demo-target gaze-target" data-gaze-action="demo" data-message="Target A activated" type="button"><strong>A</strong><span>Open</span></button>
+        <button class="demo-target gaze-target" data-gaze-action="demo" data-message="Target B activated" type="button"><strong>B</strong><span>Select</span></button>
+        <button class="demo-target gaze-target" data-gaze-action="demo" data-message="Target C activated" type="button"><strong>C</strong><span>Confirm</span></button>
+        <button class="demo-target gaze-target" data-gaze-action="demo" data-message="Target D activated" type="button"><strong>D</strong><span>Launch</span></button>
+      </div>
+      <div id="demoResult" class="demo-result" role="status" aria-live="polite">No eye-controlled target activated yet.</div>
+    </section>
+
+    <section class="panel privacy-panel">
+      <h2>Privacy + scope</h2>
+      <p>This prototype uses the open-source Apache-2.0 MediaPipe Tasks Vision face-landmark model. Video frames are processed on-device in the browser; model assets are downloaded at startup. The browser may retain only your calibration coefficients in local storage. This public build controls XUNIA web targets; system-wide macOS cursor control requires the separate local accessibility companion because browsers cannot move the operating-system mouse pointer.</p>
+    </section>
+  </main>
+
+  <script type="module" src="/eye-mouse.js"></script>
+</body>
+</html>
