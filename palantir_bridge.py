@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, List, Optional
 
 from doug_core.runtime import DougRuntime
 from palantir_foundry import FoundryClient, FoundryConfigurationError, FoundryError
@@ -18,7 +18,7 @@ class DougPalantirBridge:
     doug: DougRuntime
 
     @classmethod
-    def from_environment(cls) -> "DougPalantirBridge | None":
+    def from_environment(cls) -> Optional["DougPalantirBridge"]:
         client = FoundryClient.from_environment()
         if client is None:
             return None
@@ -121,7 +121,7 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: Optional[List[str]] = None) -> int:
     args = _parser().parse_args(argv)
     try:
         bridge = DougPalantirBridge.from_environment()
@@ -157,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
 
         print(json.dumps(payload, indent=2, default=str))
         return 0
-    except (FoundryError, ValueError, json.JSONDecodeError) as error:
+    except (FoundryError, ValueError) as error:
         print(f"PALANTIR ERROR // {error}", file=sys.stderr)
         return 2
 
