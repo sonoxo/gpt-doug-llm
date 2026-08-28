@@ -50,6 +50,8 @@ class FoundryClient:
             raise FoundryConfigurationError("FOUNDRY_BASE_URL must be an HTTPS Foundry URL")
         if parsed.username or parsed.password or parsed.query or parsed.fragment:
             raise FoundryConfigurationError("FOUNDRY_BASE_URL must not contain credentials, query, or fragment")
+        if parsed.path not in {"", "/"}:
+            raise FoundryConfigurationError("FOUNDRY_BASE_URL must contain only the Foundry origin")
         configured_host = (self.allowed_host or parsed.hostname).strip().lower()
         if parsed.hostname.lower() != configured_host:
             raise FoundryConfigurationError("Foundry base URL host is not allowlisted")
@@ -99,6 +101,16 @@ class FoundryClient:
     def host(self) -> str:
         return self.allowed_host
 
+    def _validated_request(self, request: urllib.request.Request) -> urllib.request.Request:
+        parsed = urllib.parse.urlparse(request.full_url)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise FoundryConfigurationError("Refusing non-HTTPS Foundry request")
+        if parsed.hostname.lower() != self.allowed_host:
+            raise FoundryConfigurationError("Refusing request outside the configured Foundry host")
+        if parsed.username or parsed.password or parsed.fragment:
+            raise FoundryConfigurationError("Refusing malformed Foundry request URL")
+        return request
+
     def _token(self) -> str:
         if self.static_token:
             return self.static_token
@@ -114,11 +126,13 @@ class FoundryClient:
         if self.scopes:
             form["scope"] = self.scopes
 
-        request = urllib.request.Request(
-            f"{self.base_url}/multipass/api/oauth2/token",
-            data=urllib.parse.urlencode(form).encode("utf-8"),
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-            method="POST",
+        request = self._validated_request(
+            urllib.request.Request(
+                f"{self.base_url}/multipass/api/oauth2/token",
+                data=urllib.parse.urlencode(form).encode("utf-8"),
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                method="POST",
+            )
         )
         payload = self._open_json(request)
         token = str(payload.get("access_token", ""))
@@ -130,8 +144,13 @@ class FoundryClient:
         return token
 
     def _open_json(self, request: urllib.request.Request) -> dict[str, Any]:
+        request = self._validated_request(request)
         try:
-            with urllib.request.urlopen(
+            # B310 is suppressed only after _validated_request has enforced HTTPS
+            # and exact-host pinning. Redirected requests are also revalidated by
+            # urllib against the original HTTPS handler; credentials never appear
+            # in the URL itself.
+            with urllib.request.urlopen(  # nosec B310
                 request,
                 timeout=self.timeout,
                 context=ssl.create_default_context(),
@@ -179,10 +198,6 @@ class FoundryClient:
             if clean_query:
                 url += "?" + urllib.parse.urlencode(clean_query, doseq=True)
 
-        parsed = urllib.parse.urlparse(url)
-        if parsed.hostname is None or parsed.hostname.lower() != self.allowed_host:
-            raise FoundryConfigurationError("Refusing request outside the configured Foundry host")
-
         data = None if body is None else json.dumps(body).encode("utf-8")
         headers = {
             "Accept": "application/json",
@@ -190,7 +205,10 @@ class FoundryClient:
         }
         if data is not None:
             headers["Content-Type"] = "application/json"
-        return self._open_json(urllib.request.Request(url, data=data, headers=headers, method=method))
+        request = self._validated_request(
+            urllib.request.Request(url, data=data, headers=headers, method=method)
+        )
+        return self._open_json(request)
 
     def status(self) -> dict[str, Any]:
         return {
