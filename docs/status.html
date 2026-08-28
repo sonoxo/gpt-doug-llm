@@ -1,309 +1,82 @@
-<title>Build Status</title>
-<style>
-:root{
-  --bg:#f5f4f0;
-  --surface:#ffffff;
-  --line:#dcd8cc;
-  --ink:#20241f;
-  --dim:#6b6f63;
-  --accent:#3f6b4f;
-  --done:#3f8c5c;
-  --done-bg:#e4f1e7;
-  --partial:#b8842e;
-  --partial-bg:#f7ecd8;
-  --todo:#9a968a;
-  --todo-bg:#eeece5;
-  --track:#e3e0d5;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#14170f;
-    --surface:#1c2018;
-    --line:#33392c;
-    --ink:#e9e7dd;
-    --dim:#a2a596;
-    --accent:#7fbd94;
-    --done:#6bc48c;
-    --done-bg:#1e3226;
-    --partial:#e0ab55;
-    --partial-bg:#332b18;
-    --todo:#82806f;
-    --todo-bg:#22251c;
-    --track:#2a2e24;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#14170f;
-  --surface:#1c2018;
-  --line:#33392c;
-  --ink:#e9e7dd;
-  --dim:#a2a596;
-  --accent:#7fbd94;
-  --done:#6bc48c;
-  --done-bg:#1e3226;
-  --partial:#e0ab55;
-  --partial-bg:#332b18;
-  --todo:#82806f;
-  --todo-bg:#22251c;
-  --track:#2a2e24;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-}
-.wrap{max-width:980px; margin:0 auto; padding:2.25rem 1.5rem 4rem;}
-header{margin-bottom:1.5rem;}
-h1{font-size:1.7rem; margin:0 0 .25rem; letter-spacing:-0.01em; text-wrap:balance;}
-.sub{color:var(--dim); font-size:.92rem; margin:0; max-width:64ch; line-height:1.5;}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <title>Build Status // XUNIAverse</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <script src="./zyra-shell.js" defer></script>
+  <style>
+    .status-head h1{font-size:clamp(34px,6vw,62px)!important;margin:8px 0 10px!important;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent!important}.status-head .sub{max-width:800px;line-height:1.65}.overall{padding:22px;margin:22px 0}.overall-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:10px}.overall-top .label{font-size:10px;letter-spacing:.15em;color:var(--cyan);font-weight:900}.overall-top .pct{font-size:34px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums}.bar{height:14px;border-radius:999px;overflow:hidden}.bar .fill{height:100%;width:0;border-radius:999px;transition:width 1.1s cubic-bezier(.22,.8,.28,1)}.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;color:var(--dim);font-size:11px}.legend span{display:flex;gap:6px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.layer{overflow:hidden;margin-bottom:13px}.layer-head{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:14px 16px;border-bottom:1px solid var(--line)}.layer-name{font-size:14px;font-weight:800;color:#dcefff}.mini-wrap{display:flex;align-items:center;gap:9px}.layer-frac{font-size:10px;color:var(--dim);font-variant-numeric:tabular-nums}.mini-bar{width:120px;height:6px;border-radius:999px;overflow:hidden}.mini-bar .fill{height:100%;width:0;transition:width 1.1s cubic-bezier(.22,.8,.28,1)}.items{padding:12px 14px 15px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.item{display:flex;align-items:flex-start;gap:8px;padding:10px}.pill{flex:0 0 auto;margin-top:2px;font-size:9px;font-weight:900;letter-spacing:.07em;padding:3px 7px;border-radius:999px;text-transform:uppercase}.item-body .name{font-size:12px;font-weight:800;color:#e9efff}.item-body .evidence{font-size:11px;color:var(--dim);line-height:1.45;margin-top:3px}.note{font-size:12px;color:var(--dim);border-top:1px solid var(--line);margin-top:22px;padding-top:14px;line-height:1.65;max-width:900px}@media(max-width:720px){.items{grid-template-columns:1fr}.mini-bar{width:80px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="status-head">
+      <div class="zyra-eyebrow">XUNIA // BUILD EVIDENCE // SNAPSHOT</div>
+      <h1>XUNIAverse build status</h1>
+      <p class="sub">A component-by-component snapshot of what was verified in <code>xuniaverse-production</code>. Partial credit only represents real code; planned or stub-only work remains marked not started.</p>
+    </header>
 
-.overall{
-  background:var(--surface);
-  border:1px solid var(--line);
-  border-radius:8px;
-  padding:1.25rem 1.5rem;
-  margin:1.5rem 0 2rem;
-}
-.overall-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:.6rem;}
-.overall-top .label{font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--dim);}
-.overall-top .pct{font-size:1.5rem; font-weight:700; font-variant-numeric:tabular-nums;}
-.bar{height:14px; background:var(--track); border-radius:7px; overflow:hidden; position:relative;}
-.bar .fill{
-  height:100%;
-  width:0%;
-  border-radius:7px;
-  background:linear-gradient(90deg, var(--accent), var(--done));
-  transition:width 1.1s cubic-bezier(.22,.8,.28,1);
-}
-.legend{display:flex; gap:1.25rem; margin-top:.85rem; font-size:.76rem; color:var(--dim); flex-wrap:wrap;}
-.legend span{display:inline-flex; align-items:center; gap:.35rem;}
-.dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
-.dot.done{background:var(--done);} .dot.partial{background:var(--partial);} .dot.todo{background:var(--todo);}
+    <section class="overall" aria-labelledby="overall-label">
+      <div class="overall-top"><span class="label" id="overall-label">OVERALL COMPLETION</span><span class="pct" id="overallPct">0%</span></div>
+      <div class="bar" aria-hidden="true"><div class="fill" id="overallFill"></div></div>
+      <div class="legend"><span><i class="dot done"></i>Done — verified</span><span><i class="dot partial"></i>Partial — real but incomplete</span><span><i class="dot todo"></i>Not started</span></div>
+    </section>
 
-.layer{
-  border:1px solid var(--line);
-  border-radius:8px;
-  background:var(--surface);
-  margin-bottom:1rem;
-  overflow:hidden;
-}
-.layer-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:.85rem 1.1rem;
-  border-bottom:1px solid var(--line);
-  gap:1rem;
-}
-.layer-title{display:flex; align-items:baseline; gap:.6rem;}
-.layer-num{
-  font-variant-numeric:tabular-nums;
-  color:var(--dim);
-  font-size:.78rem;
-  font-weight:700;
-}
-.layer-name{font-weight:600; font-size:.95rem;}
-.layer-frac{
-  font-size:.76rem;
-  color:var(--dim);
-  font-variant-numeric:tabular-nums;
-  white-space:nowrap;
-}
-.mini-bar{width:120px; height:6px; background:var(--track); border-radius:3px; overflow:hidden;}
-.mini-bar .fill{height:100%; width:0%; background:var(--accent); border-radius:3px; transition:width 1.1s cubic-bezier(.22,.8,.28,1);}
-.mini-wrap{display:flex; align-items:center; gap:.6rem;}
+    <div id="layers"></div>
 
-.items{padding:.6rem 1.1rem 1rem; display:grid; grid-template-columns:1fr; gap:.4rem;}
-@media(min-width:700px){ .items{grid-template-columns:1fr 1fr;} }
-.item{
-  display:flex;
-  align-items:flex-start;
-  gap:.55rem;
-  padding:.5rem .6rem;
-  border-radius:6px;
-  background:var(--bg);
-  border:1px solid var(--line);
-}
-.pill{
-  flex-shrink:0;
-  margin-top:.15rem;
-  font-size:.62rem;
-  font-weight:700;
-  letter-spacing:.03em;
-  padding:.12rem .4rem;
-  border-radius:20px;
-  text-transform:uppercase;
-}
-.pill.done{color:var(--done); background:var(--done-bg);}
-.pill.partial{color:var(--partial); background:var(--partial-bg);}
-.pill.todo{color:var(--todo); background:var(--todo-bg);}
-.item-body .name{font-size:.85rem; font-weight:600;}
-.item-body .evidence{font-size:.76rem; color:var(--dim); line-height:1.4; margin-top:.1rem;}
-
-.note{
-  font-size:.82rem;
-  color:var(--dim);
-  border-top:1px solid var(--line);
-  margin-top:2rem;
-  padding-top:1rem;
-  line-height:1.55;
-  max-width:70ch;
-}
-</style>
-
-<div class="wrap">
-  <header>
-    <h1>Xuniaverse build status</h1>
-    <p class="sub">Every item below is checked against what actually exists in <code>xuniaverse-production</code> right now — not the aspirational diagram. Partial credit only counts for real, running code; nothing here is marked done on a plan or a stub.</p>
-  </header>
-
-  <div class="overall">
-    <div class="overall-top">
-      <span class="label">Overall completion</span>
-      <span class="pct" id="overallPct">0%</span>
-    </div>
-    <div class="bar"><div class="fill" id="overallFill"></div></div>
-    <div class="legend">
-      <span><span class="dot done"></span>Done — verified running</span>
-      <span><span class="dot partial"></span>Partial — real code, incomplete</span>
-      <span><span class="dot todo"></span>Not started</span>
-    </div>
-  </div>
-
-  <div id="layers"></div>
-
-  <p class="note">Weighting: done = 1.0, partial = 0.5, not started = 0. Layer 7 ("Outputs / business value") is an outcome, not a build item, so it's excluded from the denominator. Source: direct filesystem/launchctl inspection of <code>~/xuniaverse-production</code> and <code>~/Library/LaunchAgents/</code> on 2026-08-14.</p>
-  <p class="note">Not on the original diagram but real and shipped: Zyra's guard layer now blocks 14+ attack/evasion patterns (destructive commands, obfuscation, Unicode confusables, zero-width injection — all attack→fix→verify tested) and hash-chains its own audit log for tamper detection. A 25-entry attributed knowledge base feeds Doug real context on request. <code>xuniaverse-production/</code> is now licensed All Rights Reserved (was MIT), requiring credit + written permission for use. Code: <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/xuniaverse-production" style="color:inherit;">github.com/sonoxo/gpt-doug-llm</a>.</p>
-</div>
+    <p class="note">Weighting: done = 1.0, partial = 0.5, not started = 0. This is a dated evidence snapshot, not an automatically refreshed production metric. Original inspection date: 2026-08-14.</p>
+    <p class="note">The repository contains additional Zyra guard and audit work beyond the original diagram. See the public repository for current implementation details and newer verification records.</p>
+  </main>
 
 <script>
 const DATA = [
-  {
-    name: "1 · Experience layer",
-    items: [
-      ["Home / Prompt-First Workspace","partial","Minimal web_ui.py: submit prompt, poll result, verified live end-to-end"],
-      ["Project Builder","todo","No scaffolding UI built"],
-      ["Preview Mode","todo","No live preview surface"],
-      ["Code Mode","todo","No in-app editor"],
-      ["Publish / Share","todo","No deploy/share flow"],
-      ["Mobile + Desktop Experience","todo","No client app of any kind"],
-    ]
-  },
-  {
-    name: "2 · Xuni Agent layer",
-    items: [
-      ["Build","partial","coder sub-agent defined + real dispatch pipeline; no full generator"],
-      ["Plan","partial","Reason→Plan step defined in doug.md loop"],
-      ["Fix","partial","Fix/retest step defined; tester sub-agent exists"],
-      ["Explain","done","Plain-English result summary generated per task; verified live"],
-      ["Human-readable Progress","partial","Daemon logs plain status lines, not a UI"],
-      ["Fallback Routing","partial","3-attempt retry w/ backoff (0/2/5s) on dispatch failure; verified live — not a model/agent handoff yet"],
-      ["Task Memory / Context","done","context.jsonl persists task history; verified live — Doug recalled a fact from a prior unrelated task"],
-      ["XQE (Xuni Quantum Engine)","todo","Not implemented — no simulate/score/collapse pipeline"],
-    ]
-  },
-  {
-    name: "3 · Codex + AI orchestration",
-    items: [
-      ["Codex Orchestrator","todo","No multi-agent coordinator built"],
-      ["Gemini API / Vertex AI","todo","No Google AI integration"],
-      ["Prompt Routing","todo","No model/tool routing layer"],
-      ["Tool Calling","partial","Inherited from Claude CLI itself, not a custom layer"],
-      ["Error Recovery","done","try/except + crash-loop fix verified live, exit 0 clean run"],
-      ["Verification / QA","partial","tester sub-agent + Zyra test suite exist, not auto-gated per task"],
-      ["Local Dev Loop","done","Real claude -p run verified twice live, correct stdout captured"],
-      ["Fallback Engine","todo","No graceful-degradation logic"],
-    ]
-  },
-  {
-    name: "4 · Core product engine",
-    items: [
-      ["Project Creation","todo","No scaffolding engine"],
-      ["File System","todo","No project file tree/browser"],
-      ["Code Editor","todo","No AI-native editor"],
-      ["Live Preview","todo","No preview runtime"],
-      ["Terminal Drawer","todo","No embedded terminal"],
-      ["Checkpoints / History","todo","No versioning/time-travel"],
-      ["Backup / Recovery","todo","No auto-backup system"],
-      ["Visual Editing","todo","No drag/drop design surface"],
-      ["Ontology / Data Model","partial","Foundry-inspired Object/Link/Action Type layer (ontology.py) over real Task/Result/KnowledgeEntry data; verified live end-to-end"],
-    ]
-  },
-  {
-    name: "5 · Google Cloud platform",
-    items: [
-      ["Firebase Auth","todo","No auth config found on this machine"],
-      ["Firestore","todo","No Firestore config found"],
-      ["Cloud Storage","todo","No GCS config found"],
-      ["Cloud Run","todo","No deploy target configured"],
-      ["Cloud Functions","todo","No functions defined"],
-      ["Firebase Hosting","todo","No hosting config found"],
-      ["Secret Manager","todo","No secrets integration"],
-      ["Cloud Build","todo","No build pipeline"],
-      ["Artifact Registry","todo","No container registry"],
-      ["Cloud Logging / Monitoring","todo","No GCP observability wired up"],
-      ["Pub/Sub","todo","No async event bus"],
-      ["Gemini / Vertex AI runtime","todo","No Vertex AI integration"],
-    ]
-  },
-  {
-    name: "6 · Creator tools / advanced",
-    items: [
-      ["Canva Graphics Studio","todo","No integration"],
-      ["Visual Sandbox","todo","No sandbox environment"],
-      ["Diagnostics","todo","No diagnostics tooling beyond raw logs"],
-      ["Tools Hub","todo","No unified tools UI"],
-      ["Local Setup","todo","No onboarding/setup flow"],
-      ["Import / Templates","todo","No template system"],
-      ["System Tools","todo","No admin/system utilities"],
-    ]
-  },
+  {name:"1 · Experience layer",items:[
+    ["Home / Prompt-First Workspace","partial","Minimal web UI with prompt submit + result polling verified end-to-end"],
+    ["Project Builder","todo","No scaffolding UI in this snapshot"],
+    ["Preview Mode","todo","No live preview surface in this snapshot"],
+    ["Code Mode","todo","No in-app editor in this snapshot"],
+    ["Publish / Share","todo","No deploy/share flow in this snapshot"],
+    ["Mobile + Desktop Experience","todo","No client application in this snapshot"]]},
+  {name:"2 · Xuni Agent layer",items:[
+    ["Build","partial","Coder sub-agent + dispatch pipeline; no complete generator"],
+    ["Plan","partial","Reason → Plan step defined"],
+    ["Fix","partial","Fix/retest step and tester role exist"],
+    ["Explain","done","Plain-English result summary generated per task"],
+    ["Human-readable Progress","partial","Daemon logs status; no dedicated UI in this snapshot"],
+    ["Fallback Routing","partial","Retry with backoff exists; no full model handoff in this snapshot"],
+    ["Task Memory / Context","done","Task context persisted and reused"],
+    ["XQE (Xuni Quantum Engine)","todo","No simulate/score/collapse pipeline in this snapshot"]]},
+  {name:"3 · AI orchestration",items:[
+    ["Codex Orchestrator","todo","No dedicated multi-agent coordinator in this snapshot"],
+    ["Gemini API / Vertex AI","todo","No Google AI integration in this snapshot"],
+    ["Prompt Routing","todo","No generalized model/tool router in this snapshot"],
+    ["Tool Calling","partial","Tool use available through underlying agent runtime"],
+    ["Error Recovery","done","Crash-loop handling and clean execution verified"],
+    ["Verification / QA","partial","Tester role and Zyra test suite exist"],
+    ["Local Dev Loop","done","Local agent execution verified"],
+    ["Fallback Engine","todo","No complete graceful-degradation layer in this snapshot"]]},
+  {name:"4 · Core product engine",items:[
+    ["Project Creation","todo","No scaffolding engine in this snapshot"],
+    ["File System","todo","No project file browser in this snapshot"],
+    ["Code Editor","todo","No AI-native editor in this snapshot"],
+    ["Live Preview","todo","No preview runtime in this snapshot"],
+    ["Terminal Drawer","todo","No embedded terminal in this snapshot"],
+    ["Checkpoints / History","todo","No time-travel/version UI in this snapshot"],
+    ["Backup / Recovery","todo","No automated recovery layer in this snapshot"],
+    ["Visual Editing","todo","No drag/drop design surface in this snapshot"],
+    ["Ontology / Data Model","partial","Object/link/action-style data layer exists over real task/result data"]]},
+  {name:"5 · Google Cloud platform",items:[
+    ["Firebase Auth","todo","Not configured in this snapshot"],["Firestore","todo","Not configured in this snapshot"],["Cloud Storage","todo","Not configured in this snapshot"],["Cloud Run","todo","No deploy target in this snapshot"],["Cloud Functions","todo","No functions in this snapshot"],["Firebase Hosting","todo","Not configured in this snapshot"],["Secret Manager","todo","No secrets integration in this snapshot"],["Cloud Build","todo","No build pipeline in this snapshot"],["Artifact Registry","todo","No registry in this snapshot"],["Cloud Logging / Monitoring","todo","No GCP observability in this snapshot"],["Pub/Sub","todo","No async event bus in this snapshot"],["Gemini / Vertex AI runtime","todo","No Vertex runtime in this snapshot"]]},
+  {name:"6 · Creator tools / advanced",items:[
+    ["Canva Graphics Studio","todo","No integration in this snapshot"],["Visual Sandbox","todo","No sandbox UI in this snapshot"],["Diagnostics","todo","Raw logs only in this snapshot"],["Tools Hub","todo","No unified tools UI in this snapshot"],["Local Setup","todo","No onboarding flow in this snapshot"],["Import / Templates","todo","No template system in this snapshot"],["System Tools","todo","No unified admin utilities in this snapshot"]]}
 ];
-
-const WEIGHT = { done: 1, partial: 0.5, todo: 0 };
-const layersEl = document.getElementById("layers");
-let totalEarned = 0, totalPossible = 0;
-
-DATA.forEach((layer, li) => {
-  const earned = layer.items.reduce((a,[,s]) => a + WEIGHT[s], 0);
-  const possible = layer.items.length;
-  totalEarned += earned; totalPossible += possible;
-  const pct = Math.round((earned/possible)*100);
-
-  const section = document.createElement("div");
-  section.className = "layer";
-  section.innerHTML = `
-    <div class="layer-head">
-      <div class="layer-title"><span class="layer-name">${layer.name}</span></div>
-      <div class="mini-wrap">
-        <span class="layer-frac">${earned}/${possible}</span>
-        <div class="mini-bar"><div class="fill" data-pct="${pct}"></div></div>
-      </div>
-    </div>
-    <div class="items">
-      ${layer.items.map(([name,status,evidence]) => `
-        <div class="item">
-          <span class="pill ${status}">${status === 'done' ? 'Done' : status === 'partial' ? 'Partial' : 'To do'}</span>
-          <div class="item-body">
-            <div class="name">${name}</div>
-            <div class="evidence">${evidence}</div>
-          </div>
-        </div>
-      `).join("")}
-    </div>
-  `;
-  layersEl.appendChild(section);
-});
-
-const overallPct = Math.round((totalEarned/totalPossible)*100);
-
-requestAnimationFrame(() => {
-  document.getElementById("overallFill").style.width = overallPct + "%";
-  document.getElementById("overallPct").textContent = overallPct + "%";
-  document.querySelectorAll(".mini-bar .fill").forEach(el => {
-    el.style.width = el.dataset.pct + "%";
-  });
-});
+const WEIGHT={done:1,partial:.5,todo:0};
+const layersEl=document.getElementById('layers');let totalEarned=0,totalPossible=0;
+DATA.forEach(layer=>{const earned=layer.items.reduce((a,[,s])=>a+WEIGHT[s],0),possible=layer.items.length,pct=Math.round(earned/possible*100);totalEarned+=earned;totalPossible+=possible;const section=document.createElement('section');section.className='layer';section.innerHTML=`<div class="layer-head"><span class="layer-name">${layer.name}</span><div class="mini-wrap"><span class="layer-frac">${earned}/${possible}</span><div class="mini-bar"><div class="fill" data-pct="${pct}"></div></div></div></div><div class="items">${layer.items.map(([name,status,evidence])=>`<div class="item"><span class="pill ${status}">${status==='done'?'Done':status==='partial'?'Partial':'To do'}</span><div class="item-body"><div class="name">${name}</div><div class="evidence">${evidence}</div></div></div>`).join('')}</div>`;layersEl.appendChild(section)});
+const overallPct=Math.round(totalEarned/totalPossible*100);requestAnimationFrame(()=>{document.getElementById('overallFill').style.width=overallPct+'%';document.getElementById('overallPct').textContent=overallPct+'%';document.querySelectorAll('.mini-bar .fill').forEach(el=>el.style.width=el.dataset.pct+'%')});
 </script>
+</body>
+</html>
