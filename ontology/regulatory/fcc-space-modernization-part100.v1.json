@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "ontologyId": "fcc-space-modernization-part100-v1",
+  "ontologyVersion": "1.0.0",
+  "domain": "US_FCC_SPACE_AND_EARTH_STATION_LICENSING",
+  "authority": {
+    "name": "Federal Communications Commission",
+    "bureau": "Space Bureau",
+    "order": "FCC 26-47",
+    "docket": "SB Docket No. 25-306",
+    "title": "Space Modernization for the 21st Century",
+    "adopted": "2026-07-22",
+    "released": "2026-07-23",
+    "source": "https://docs.fcc.gov/public/attachments/FCC-26-47A1.pdf",
+    "sourceType": "PRIMARY_AUTHORITY",
+    "confidence": 1
+  },
+  "truthBoundary": {
+    "legalStatusInference": "PROHIBITED",
+    "licenseGrantInference": "PROHIBITED",
+    "certificationInference": "PROHIBITED",
+    "humanReviewRequiredForExternalFiling": true,
+    "rule": "No system may represent an FCC authorization, certification, waiver, market-access grant, or compliance status as granted unless supported by authoritative evidence."
+  },
+  "framework": {
+    "legacyRulePart": "47_CFR_PART_25",
+    "newRulePart": "47_CFR_PART_100",
+    "name": "SPACE_AND_EARTH_STATION_SERVICES",
+    "transitionState": "ADOPTED_TRANSITION_MANAGED_BY_SPACE_BUREAU",
+    "effectiveDate": null,
+    "effectiveDateRule": "Track the Part 100 Effective Date and any rule-specific effective dates from FCC/Space Bureau primary sources before changing operative status."
+  },
+  "classes": {
+    "RegulatoryAuthority": ["FCC", "FCC_SPACE_BUREAU"],
+    "LicenseClass": ["GSO_SYSTEM", "NGSO_SYSTEM", "VTSS_SYSTEM", "MOSS_SYSTEM", "EARTH_STATION", "NATIONWIDE_NON_SITE_EARTH_STATION", "US_MARKET_ACCESS"],
+    "ApplicationModule": ["FCC_FORM_312_MAIN", "SCHEDULE_O_ORBITAL", "SCHEDULE_F_FREQUENCY", "SCHEDULE_B_EARTH_STATION", "SCHEDULE_A_ASSIGNMENT_TRANSFER", "SYSTEM_STATEMENT", "PUBLIC_INTEREST_SHOWING", "SUPPLEMENT_OR_EXHIBIT"],
+    "ApplicationState": ["PRE_CLEARANCE", "DRAFT", "FILED", "COMPLETENESS_REVIEW", "DEFICIENCY_NOTICE", "PUBLIC_NOTICE", "OPPOSITION_RESPONSE_WINDOW", "REPLY_WINDOW", "DECISION_REVIEW", "CONDITIONAL_GRANT", "GRANTED", "DENIED", "DISMISSED", "RETURNED", "PENDING_TRANSITION"],
+    "ReviewTrigger": ["FAILURE_TO_CERTIFY", "WAIVER_REQUEST", "MARKET_ACCESS", "FOREIGN_OWNERSHIP", "PROCESSING_ROUND", "SPECTRAL_CONSTRAINTS", "FEDERAL_COORDINATION"],
+    "OperationalObligation": ["AUTHORIZATION_REQUIRED", "INTERFERENCE_COMPLIANCE", "SPECTRUM_SHARING", "ORBITAL_DEBRIS_COMPLIANCE", "SPACE_SAFETY", "EPHEMERIS_DATA_SHARING", "POINT_OF_CONTACT_MAINTENANCE", "MILESTONE_COMPLIANCE", "SURETY_BOND_WHEN_APPLICABLE", "LICENSE_CONDITION_COMPLIANCE"],
+    "EvidenceArtifact": ["APPLICATION_FORM", "CERTIFICATION", "TECHNICAL_SCHEDULE", "WAIVER_REQUEST", "PUBLIC_NOTICE", "FCC_ORDER", "SPACE_BUREAU_PUBLIC_NOTICE", "LICENSE_OR_AUTHORIZATION", "COORDINATION_RECORD", "SSA_OR_EPHEMERIS_RECORD", "ORBITAL_DEBRIS_PLAN", "PROVENANCE_RECORD"]
+  },
+  "definitions": {
+    "VTSS_SYSTEM": "One or more space stations operating beyond geosynchronous orbit or without fixed/predictable orbital patterns over the lifetime under one call sign; may include orbital transfer, rendezvous/proximity, in-space servicing, lunar or other celestial-body missions.",
+    "MOSS_SYSTEM": "Two or more types of satellite systems operating together under one space-station call sign; each component remains subject to its otherwise applicable rules.",
+    "NATIONWIDE_NON_SITE_EARTH_STATION": "A single license for one or more immovable earth stations that may operate in the United States and territories subject to applicable site registration requirements."
+  },
+  "processingRules": [
+    {"id":"COMPLETENESS_30_DAY","trigger":"FILED","targetState":"PUBLIC_NOTICE_OR_DEFICIENCY_NOTICE","windowDays":30,"authority":"FCC_26_47"},
+    {"id":"TYPICAL_PUBLIC_NOTICE_15_DAY","trigger":"PUBLIC_NOTICE","windowDays":15,"exception":"Statutory periods may supersede","authority":"FCC_26_47"},
+    {"id":"OPPOSITION_RESPONSE_10_DAY","trigger":"END_OF_PUBLIC_NOTICE","windowDays":10,"authority":"47_CFR_100_133_B"},
+    {"id":"REPLY_5_DAY","trigger":"END_OF_OPPOSITION_RESPONSE_WINDOW","windowDays":5,"authority":"47_CFR_100_133_C"},
+    {"id":"UNRESOLVED_60_DAY_NOTICE","trigger":"END_OF_PUBLIC_COMMENT","windowDays":60,"action":"FCC informs applicant/public of reasons preventing action if full action has not occurred","authority":"FCC_26_47"}
+  ],
+  "applicationRouting": {
+    "GSO_SYSTEM": ["FCC_FORM_312_MAIN", "SCHEDULE_O_ORBITAL", "SCHEDULE_F_FREQUENCY"],
+    "NGSO_SYSTEM": ["FCC_FORM_312_MAIN", "SCHEDULE_O_ORBITAL", "SCHEDULE_F_FREQUENCY"],
+    "VTSS_SYSTEM": ["FCC_FORM_312_MAIN", "SCHEDULE_O_ORBITAL", "SCHEDULE_F_FREQUENCY", "SPACE_SAFETY_EVIDENCE"],
+    "MOSS_SYSTEM": ["FCC_FORM_312_MAIN", "SCHEDULE_O_ORBITAL", "SCHEDULE_F_FREQUENCY", "COMPONENT_SYSTEM_RULESETS"],
+    "EARTH_STATION": ["FCC_FORM_312_MAIN", "SCHEDULE_B_EARTH_STATION"],
+    "NATIONWIDE_NON_SITE_EARTH_STATION": ["FCC_FORM_312_MAIN", "SCHEDULE_B_EARTH_STATION", "SITE_REGISTRATION_AS_APPLICABLE"],
+    "US_MARKET_ACCESS": ["FCC_FORM_312_MAIN", "MARKET_ACCESS_INFORMATION"]
+  },
+  "decisionPolicy": {
+    "presumption": "PRESUMED_PUBLIC_INTEREST_IF_COMPLIANT",
+    "routeToTargetedReviewWhen": "Any ReviewTrigger is present",
+    "waiverRequiredWhen": "Applicant cannot certify compliance with an applicable Commission rule requiring affirmative certification",
+    "conditionalGrant": "Represent as a distinct authorization state with explicit unsatisfied conditions; never collapse to GRANTED."
+  },
+  "transitionRules": [
+    "Track Part 100 effective-date announcements as primary-source events.",
+    "New authorization applications after the Part 100 Effective Date must follow Part 100 application processes.",
+    "Pending pre-effective-date applications require transition-aware handling and are not assumed to receive new processing timelines.",
+    "Existing processing-round status is not retroactively changed solely by adoption of the Order.",
+    "Current license terms remain unless changed through an authorized transition mechanism; one-year extension election rules must be evaluated against the effective date.",
+    "Technical or operational inability to comply with Part 100 routes to waiver/transition procedures, not silent exception."
+  ],
+  "projectBindings": {
+    "VA3LLLM_GPT_DOUG": {"role":"REGULATORY_REASONING_ORCHESTRATOR","functions":["classify mission","build filing graph","identify missing evidence","track deadlines","route human review"]},
+    "XUNIA": {"role":"COMPLIANCE_WORKFLOW_ENGINE","functions":["state machine","checklist generation","evidence gating","deadline computation","audit trail"]},
+    "ZYRA": {"role":"PRODUCT_POLICY_AND_RUNTIME_CONTEXT","functions":["surface regulatory status","block unsupported claims","expose filing readiness","notify on rule-state changes"]},
+    "GLASS_ONION": {"role":"PROVENANCE_AND_REGULATORY_INTELLIGENCE_GRAPH","functions":["index primary sources","map rule lineage","track amendments","separate adopted rules from proposals","preserve source/date/confidence"]}
+  },
+  "invariants": ["NO REGULATORY FACT WITHOUT SOURCE + DATE + PROVENANCE + CONFIDENCE", "NO LICENSE STATUS WITHOUT AUTHORITATIVE EVIDENCE", "NO PROPOSED FNPRM CONCEPT MAY BE TREATED AS AN ADOPTED RULE", "NO DEADLINE CALCULATION WITHOUT A VERIFIED TRIGGER DATE", "NO EXTERNAL FILING OR CERTIFICATION WITHOUT HUMAN APPROVAL"]
+}
