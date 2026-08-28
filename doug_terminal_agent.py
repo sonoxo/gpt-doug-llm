@@ -9,9 +9,23 @@ from pathlib import Path
 from agents import llm_backend
 
 MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", llm_backend.DEFAULT_MODEL)
-MAX_STEPS = 20
+MAX_STEPS = max(1, int(os.getenv("GPT_DOUG_AGENT_MAX_STEPS", "40")))
+CONTEXT_WINDOW = max(4096, int(os.getenv("GPT_DOUG_AGENT_CONTEXT", "262144")))
+COMMAND_TIMEOUT = max(10, int(os.getenv("GPT_DOUG_AGENT_COMMAND_TIMEOUT", "300")))
+OUTPUT_LIMIT = max(4000, int(os.getenv("GPT_DOUG_AGENT_OUTPUT_LIMIT", "20000")))
 
 workspace = Path.cwd().resolve()
+
+ACTION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "action": {"type": "string", "enum": ["shell", "finish"]},
+        "command": {"type": "string"},
+        "summary": {"type": "string"},
+        "verify_command": {"type": "string"},
+    },
+    "required": ["action"],
+}
 
 SYSTEM = f"""
 You are GPT6-Doug Terminal Agent.
@@ -33,7 +47,7 @@ You have exactly these actions:
 {{"action":"shell","command":"pwd && ls"}}
 
 2. finish
-{{"action":"finish","summary":"what was actually completed and verified"}}
+{{"action":"finish","summary":"what was actually completed and verified","verify_command":"real verification command"}}
 
 RULES:
 - Return exactly ONE JSON object.
@@ -49,12 +63,15 @@ RULES:
 - If a path says 'No such file or directory', inspect/create its parent directories.
 - mkdir -p must include every required nested directory.
 - Run tests/build checks when available.
+- Prefer targeted tests during iteration, then a broader regression check before finish.
 - Never use finish after a failed command.
 - Before finish, repair every failure.
 - finish MUST include verify_command.
 - verify_command must actually test the requested result.
 - Examples: test files exist, run tests, curl the server, compile the code.
 - A claim is not verification.
+- Keep observations evidence-dense; do not waste context restating unchanged facts.
+- For long tasks, periodically inspect git diff/status so the plan stays grounded in actual changes.
 - Do not execute destructive disk/system commands.
 - Do not access credentials or unrelated private files.
 """
@@ -70,21 +87,21 @@ BLOCKED = (
     "reboot",
 )
 
+
 def ask(messages):
     result = llm_backend.chat_once(messages, MODEL, {
         "temperature": 0,
-        "num_ctx": 4096,
-        "format": {
-            "type": "object",
-            "properties": {
-                "action": {"type": "string", "enum": ["shell", "finish"]},
-                "command": {"type": "string"},
-                "summary": {"type": "string"}
-            },
-            "required": ["action"]
-        }
+        "num_ctx": CONTEXT_WINDOW,
+        "format": ACTION_SCHEMA,
     })
-    return result["message"]["content"].strip()
+    if result.get("error"):
+        raise RuntimeError(f"LLM provider error: {result['error']}")
+    message = result.get("message") or {}
+    content = message.get("content", "")
+    if not content:
+        raise RuntimeError("LLM provider returned an empty response")
+    return content.strip()
+
 
 def parse_action(text):
     text = text.strip()
@@ -94,7 +111,11 @@ def parse_action(text):
         if text.startswith("json"):
             text = text[4:].strip()
 
-    return json.loads(text)
+    action = json.loads(text)
+    if not isinstance(action, dict):
+        raise ValueError("agent action must be a JSON object")
+    return action
+
 
 def run(command):
     low = command.lower()
@@ -109,11 +130,12 @@ def run(command):
         cwd=str(workspace),
         text=True,
         capture_output=True,
-        timeout=300,
+        timeout=COMMAND_TIMEOUT,
         executable="/bin/zsh",
     )
 
-    return proc.returncode, proc.stdout[-12000:], proc.stderr[-12000:]
+    return proc.returncode, proc.stdout[-OUTPUT_LIMIT:], proc.stderr[-OUTPUT_LIMIT:]
+
 
 def main():
     if len(sys.argv) < 2:
@@ -132,19 +154,23 @@ def main():
     print("║ GPT6-DOUG TERMINAL AGENT // ONLINE   ║")
     print("╚══════════════════════════════════════╝")
     print(f"MODEL     : {MODEL}")
+    print(f"CONTEXT   : {CONTEXT_WINDOW:,} tokens")
+    print(f"MAX STEPS : {MAX_STEPS}")
     print(f"WORKSPACE : {workspace}")
     print(f"OBJECTIVE : {objective}")
     print()
 
     last_command = None
     last_exit_code = None
-    repeat_failures = 0
 
     for step in range(1, MAX_STEPS + 1):
-
         print(f"◉ STEP {step}/{MAX_STEPS} // THINKING")
 
-        raw = ask(messages)
+        try:
+            raw = ask(messages)
+        except Exception as exc:
+            print(f"❌ MODEL CALL FAILED // {exc}")
+            raise SystemExit(3) from exc
 
         try:
             action = parse_action(raw)
@@ -155,7 +181,7 @@ def main():
                 "content":
                 'Invalid protocol. Return ONLY JSON like '
                 '{"action":"shell","command":"pwd"} or '
-                '{"action":"finish","summary":"verified result"}'
+                '{"action":"finish","summary":"verified result","verify_command":"pytest -q"}'
             })
             print("  ↳ protocol correction")
             continue
@@ -182,7 +208,7 @@ def main():
             try:
                 code, stdout, stderr = run(verify)
             except subprocess.TimeoutExpired:
-                code, stdout, stderr = 124, "", "Verification timed out."
+                code, stdout, stderr = 124, "", f"Verification timed out after {COMMAND_TIMEOUT} seconds."
 
             if stdout:
                 print(stdout.rstrip())
@@ -223,11 +249,13 @@ def main():
         command = action.get("command", "").strip()
 
         if not command:
+            messages.append({
+                "role": "user",
+                "content": "A shell action requires a non-empty command."
+            })
             continue
 
-        # ANTI-LOOP: never execute the exact same failed command repeatedly.
         if command == last_command and last_exit_code not in (None, 0):
-            repeat_failures += 1
             print()
             print("⛔ REPEAT BLOCKED // previous identical command already failed")
             print(f"│ $ {command}")
@@ -256,7 +284,7 @@ def main():
         try:
             code, stdout, stderr = run(command)
         except subprocess.TimeoutExpired:
-            code, stdout, stderr = 124, "", "Command timed out after 300 seconds."
+            code, stdout, stderr = 124, "", f"Command timed out after {COMMAND_TIMEOUT} seconds."
 
         if stdout:
             print(stdout.rstrip())
@@ -269,8 +297,6 @@ def main():
 
         last_command = command
         last_exit_code = code
-        if code == 0:
-            repeat_failures = 0
 
         observation = {
             "command": command,
@@ -294,6 +320,7 @@ def main():
 
     print("⚠️ Maximum agent steps reached without verified completion.")
     raise SystemExit(2)
+
 
 if __name__ == "__main__":
     main()
