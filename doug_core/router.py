@@ -2,11 +2,16 @@ from __future__ import annotations
 
 import os
 
-from .types import Task, Candidate
+from agents import qwen_gateway
+
+from .types import Candidate, Task
 
 
 def available_providers() -> list[str]:
     providers = ["offline"]
+
+    if qwen_gateway.health().get("configured"):
+        providers.append("qwen")
 
     if os.getenv("OPENAI_API_KEY"):
         providers.append("openai")
@@ -42,7 +47,27 @@ def score_provider(provider: str, task: Task) -> Candidate:
 
         if task.complexity > 0.70:
             score -= 0.15
-            reasons.append("complex inference may benefit from cloud provider")
+            reasons.append("complex inference may benefit from a model provider")
+
+    elif provider == "qwen":
+        score += 0.82
+        reasons.append("Qwen coding and long-horizon agentic capability")
+
+        if task.needs_code:
+            score += 0.12
+            reasons.append("coding workload")
+
+        if task.needs_reasoning:
+            score += 0.06
+            reasons.append("reasoning workload")
+
+        if task.complexity > 0.70:
+            score += 0.05
+            reasons.append("complex multi-step workload")
+
+        if task.needs_tools:
+            score += 0.03
+            reasons.append("tool-oriented workflow")
 
     elif provider == "openai":
         score += 0.78
