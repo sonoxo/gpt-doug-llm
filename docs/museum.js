@@ -55,8 +55,8 @@
     'MMGISxunia-': ['Geospatial mission UI reference', 'Connects a mission-oriented geospatial visualization codebase into the XUNIA map/operations collection.'],
     VICARxunia: ['Scientific image-processing reference', 'Connects VICAR-style scientific image-processing source into the mission/vision collection for image-processing research and tooling.'],
     'plandevXUNIA-': ['Mission/planning source reference', 'Provides a planning-oriented source repository in the mission-systems collection; it is catalogued as a connected reference unless a direct runtime binding is documented.'],
-    plandev-uiXUNIA: ['Planning UI reference', 'Provides the user-interface side of the planning collection and complements planning/backend reference code.'],
-    AIT-CoreXUNIA: ['Mission engineering reference', 'A mission/engineering source repository connected to the XUNIA space-systems collection; exact upstream semantics remain defined by its source.'],
+    'plandev-uiXUNIA': ['Planning UI reference', 'Provides the user-interface side of the planning collection and complements planning/backend reference code.'],
+    'AIT-CoreXUNIA': ['Mission engineering reference', 'A mission/engineering source repository connected to the XUNIA space-systems collection; exact upstream semantics remain defined by its source.'],
     BSLxunia: ['Mission engineering reference', 'A connected mission/engineering repository used as a source/reference surface; no undocumented operational integration is implied.'],
     DCSxunia: ['Mission engineering reference', 'A connected mission/engineering repository used as a source/reference surface; no undocumented operational integration is implied.']
   };
