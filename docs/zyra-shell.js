@@ -2,7 +2,7 @@
   const path = location.pathname.replace(/\/+$/, '') || '/';
   const base = path.includes('/gpt-doug-llm') ? '/gpt-doug-llm/' : '/';
   const links = [
-    ['Home', base],
+    ['Museum + HQ', base],
     ['Eye Mouse', `${base}eye-mouse/`],
     ['Status', `${base}status.html`],
     ['Metrics', `${base}metrics.html`],
@@ -19,13 +19,13 @@
   bar.className = 'xunia-sitebar';
   bar.setAttribute('role', 'banner');
   bar.innerHTML = `
-    <a class="brand" href="${base}" aria-label="XUNIAverse home">
+    <a class="brand" href="${base}" aria-label="XUNIA Museum and Headquarters home">
       <span class="brand-mark" aria-hidden="true">X</span>
-      <span>XUNIA<small>ZYRA ECOSYSTEM</small></span>
+      <span>XUNIA<small>MUSEUM + HQ</small></span>
     </a>
     <nav aria-label="Public site navigation">
       ${links.map(([label, href]) => `<a href="${href}"${current(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('')}
-      <a href="https://github.com/sonoxo/gpt-doug-llm" rel="noopener">GitHub ↗</a>
+      <a href="https://github.com/sonoxo" rel="noopener">Repository Fleet ↗</a>
     </nav>`;
 
   document.body.prepend(bar);
