@@ -11,6 +11,9 @@ from zyra import Zyra
 from golden_shield import GoldenShield
 from golden_shield import ZyraSentinel
 from foundry_guard import FoundrySecuritySink
+from palantir_bridge import DougPalantirBridge
+from palantir_foundry import FoundryError
+from palantir_terminal import handle_palantir_command
 from compliance import ComplianceGate, UserContext
 from auth_gate import ThreeFactorGate, VerifiedIdentity
 from dev_terminal import DevTerminal
@@ -98,6 +101,10 @@ def main():
         foundry_sink = FoundrySecuritySink.from_environment()
     except ValueError as error:
         raise SystemExit(f"Zyra Foundry configuration rejected: {error}")
+    try:
+        palantir_bridge = DougPalantirBridge.from_environment()
+    except FoundryError as error:
+        raise SystemExit(f"Palantir Foundry configuration rejected: {error}")
     zyra = Zyra(event_sink=foundry_sink, audit_key=astral_config.audit_hmac_key)
     shield = GoldenShield(audit_key=astral_config.audit_hmac_key)
     sentinel = ZyraSentinel()
@@ -109,6 +116,11 @@ def main():
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
     print(CYAN + ("FOUNDRY // GOVERNANCE BRIDGE ACTIVE" if foundry_sink else "FOUNDRY // BRIDGE DISABLED") + RESET)
+    if palantir_bridge:
+        status = palantir_bridge.status()["foundry"]
+        print(CYAN + f"PALANTIR // CONNECTED // {status['host']} // {'WRITE ENABLED' if status['writes_enabled'] else 'READ ONLY'}" + RESET)
+    else:
+        print(CYAN + "PALANTIR // NOT CONFIGURED" + RESET)
     print(CYAN + "COMPLIANCE // " + compliance.status() + RESET)
     print(CYAN + "ONTOLOGY // " + Ontology.display().split("\n")[0] + " // " + str(len(Ontology.knowledge())) + " knowledge entries" + RESET)
     print(CYAN + "3FA // " + auth.summary() + RESET)
@@ -134,7 +146,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -207,6 +219,17 @@ def main():
                     except Exception as e:
                         print(f"Submit failed: {e}")
             continue
+        if prompt.startswith("/palantir"):
+            palantir_result = handle_palantir_command(
+                prompt,
+                palantir_bridge,
+                approve_write=lambda message: input(f"{message} [y/N] ").strip().lower() in {"y", "yes"},
+            )
+            if palantir_result.grounded_prompt:
+                prompt = palantir_result.grounded_prompt
+            elif palantir_result.handled:
+                print(palantir_result.output)
+                continue
         if prompt.lower() in {"eureka 369", "/eureka 369"}:
             zyra.inspect("EUREKA 369 developer elevation request", "control")
             fresh_code = getpass.getpass("Developer Google Authenticator code: ").strip()
