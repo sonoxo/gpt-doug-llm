@@ -1,0 +1,20 @@
+{
+  "bindingId": "va3lllm-gpt-doug-fcc-part100-v1",
+  "ontologyRef": "./fcc-space-modernization-part100.v1.json",
+  "project": "VA3LLLM_GPT_DOUG",
+  "mode": "REGULATORY_REASONING_ORCHESTRATOR",
+  "inputs": ["mission description", "system/orbit profile", "frequency/service facts", "ownership facts", "filing dates", "authoritative FCC evidence"],
+  "outputs": ["candidate license class", "required application modules", "targeted review triggers", "missing-evidence list", "deadline graph", "human-review queue"],
+  "reasoningOrder": [
+    "resolve authoritative rule state",
+    "classify GSO/NGSO/VTSS/MOSS/earth-station/market-access scope",
+    "map required forms and evidence",
+    "detect targeted-review triggers",
+    "compute only deadlines with verified trigger dates",
+    "separate adopted rules from FNPRM proposals",
+    "route filing/certification decisions to a human"
+  ],
+  "forbidden": ["invent license status", "invent certification", "treat proposed FNPRM text as adopted", "submit or attest for user", "infer an effective date without primary-source evidence"],
+  "sourcePriority": ["FCC order/rule/public notice", "Federal Register", "other federal primary source", "secondary legal analysis"],
+  "orchestrationLabel": "VA3LLLM"
+}
