@@ -6,6 +6,7 @@ export type Role = 'viewer' | 'editor' | 'operator' | 'admin';
 export type Principal = { subject: string; role: Role; authenticated: boolean; realm: string };
 
 type KeyEntry = { token: string; role: Role; subject: string; realm?: string };
+type SecurityHeaderOptions = { camera?: boolean; visionAssets?: boolean };
 const ROLE_ORDER: Role[] = ['viewer', 'editor', 'operator', 'admin'];
 
 function validRole(value: unknown): value is Role {
@@ -107,15 +108,28 @@ export class AuthPolicy {
   }
 }
 
-export function securityHeaders(res: ServerResponse, requestId: string, corsOrigin = '') {
+export function securityHeaders(
+  res: ServerResponse,
+  requestId: string,
+  corsOrigin = '',
+  options: SecurityHeaderOptions = {}
+) {
   res.setHeader('x-request-id', requestId);
   res.setHeader('x-xunia-realm', sovereignty.realm);
   res.setHeader('x-xunia-region', sovereignty.region);
   res.setHeader('x-content-type-options', 'nosniff');
   res.setHeader('x-frame-options', 'DENY');
   res.setHeader('referrer-policy', 'no-referrer');
-  res.setHeader('permissions-policy', 'camera=(), microphone=(), geolocation=()');
-  res.setHeader('content-security-policy', "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'");
+  res.setHeader(
+    'permissions-policy',
+    options.camera ? 'camera=(self), microphone=(), geolocation=()' : 'camera=(), microphone=(), geolocation=()'
+  );
+
+  const contentSecurityPolicy = options.visionAssets
+    ? "default-src 'self'; style-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net https://storage.googleapis.com; media-src 'self' blob:; img-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+    : "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'";
+  res.setHeader('content-security-policy', contentSecurityPolicy);
+
   if (corsOrigin) {
     res.setHeader('access-control-allow-origin', corsOrigin);
     res.setHeader('access-control-allow-headers', 'authorization, content-type, x-api-key, x-request-id, x-xunia-realm, x-xunia-region');
