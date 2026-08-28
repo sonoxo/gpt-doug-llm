@@ -9,6 +9,13 @@ on:
       - 'xunia-platform/public/eye-mouse.css'
       - 'docs/**'
       - '.github/workflows/pages-eye-mouse.yml'
+  pull_request:
+    paths:
+      - 'xunia-platform/public/eye-mouse.html'
+      - 'xunia-platform/public/eye-mouse.js'
+      - 'xunia-platform/public/eye-mouse.css'
+      - 'docs/**'
+      - '.github/workflows/pages-eye-mouse.yml'
   workflow_dispatch:
 
 permissions:
@@ -17,11 +24,72 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Assemble static site
+        run: |
+          rm -rf _site
+          mkdir -p _site/eye-mouse
+          cp -R docs/. _site/
+          cp xunia-platform/public/eye-mouse.html _site/eye-mouse/index.html
+          cp xunia-platform/public/eye-mouse.js _site/eye-mouse/eye-mouse.js
+          cp xunia-platform/public/eye-mouse.css _site/eye-mouse/eye-mouse.css
+          sed -i 's|href="/eye-mouse.css"|href="./eye-mouse.css"|g' _site/eye-mouse/index.html
+          sed -i 's|src="/eye-mouse.js"|src="./eye-mouse.js"|g' _site/eye-mouse/index.html
+          sed -i 's|href="/"|href="../"|g' _site/eye-mouse/index.html
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/status.html
+          test -f _site/metrics.html
+          test -f _site/pipeline.html
+          test -f _site/zyra-theme.css
+          test -f _site/zyra-shell.js
+          test -f _site/eye-mouse/index.html
+          test -f _site/eye-mouse/eye-mouse.js
+          test -f _site/eye-mouse/eye-mouse.css
+
+      - name: JavaScript syntax
+        run: |
+          node --check docs/zyra-shell.js
+          node --check xunia-platform/public/eye-mouse.js
+
+      - name: Zyra theme and motion contract
+        run: |
+          grep -q '#46f3ff' docs/zyra-theme.css
+          grep -q '#9d5cff' docs/zyra-theme.css
+          grep -q 'prefers-reduced-motion' docs/zyra-theme.css
+          grep -q 'motion-diagram' docs/index.html
+          grep -q 'flow-normal' docs/pipeline.html
+          grep -q '#46f3ff' xunia-platform/public/eye-mouse.css
+          grep -q '#9d5cff' xunia-platform/public/eye-mouse.css
+
+      - name: Static HTTP smoke test
+        run: |
+          python3 -m http.server 8080 --directory _site >/tmp/xunia-pages-http.log 2>&1 &
+          PID=$!
+          cleanup() { kill "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8080/ >/tmp/xunia-home.html; then break; fi
+            sleep 0.2
+          done
+          grep -q 'XUNIAverse Control Surface' /tmp/xunia-home.html
+          curl -fsS http://127.0.0.1:8080/status.html | grep -q 'XUNIAverse build status'
+          curl -fsS http://127.0.0.1:8080/metrics.html | grep -q 'XUNIAverse metrics'
+          curl -fsS http://127.0.0.1:8080/pipeline.html | grep -q 'agent pipeline'
+          curl -fsS http://127.0.0.1:8080/eye-mouse/ | grep -q 'Eye Mouse'
+
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: validate
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -45,9 +113,6 @@ jobs:
           sed -i 's|src="/eye-mouse.js"|src="./eye-mouse.js"|g' _site/eye-mouse/index.html
           sed -i 's|href="/"|href="../"|g' _site/eye-mouse/index.html
           touch _site/.nojekyll
-          test -f _site/index.html
-          test -f _site/eye-mouse/index.html
-          test -f _site/eye-mouse/eye-mouse.js
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
