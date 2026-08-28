@@ -11,6 +11,7 @@ const HOST = process.env.XUNIA_PLATFORM_HOST ?? '127.0.0.1';
 const PUBLIC = path.resolve(process.cwd(), 'public');
 const DATA_DIR = process.env.XUNIA_DATA_DIR?.trim();
 const MAX_BODY = Math.max(1_024, Number(process.env.XUNIA_MAX_BODY_BYTES ?? 1_000_000));
+const EYE_MOUSE_PATHS = new Set(['/eye-mouse', '/eye-mouse.js', '/eye-mouse.css']);
 
 export const ontology = new OntologyStore(DATA_DIR ? path.join(DATA_DIR, 'ontology.json') : undefined);
 ontology.seed();
@@ -87,7 +88,10 @@ const requireRole = (res: ServerResponse, principal: Principal | null, policy: A
   return true;
 };
 
-const isPublicPath = (pathname: string) => ['/', '/app.js', '/styles.css', '/auth.css', '/health', '/ready', '/api/session'].includes(pathname);
+const isPublicPath = (pathname: string) => [
+  '/', '/app.js', '/styles.css', '/auth.css', '/health', '/ready', '/api/session',
+  ...EYE_MOUSE_PATHS
+].includes(pathname);
 
 function metricsText() {
   const uptime = Math.floor((Date.now() - metrics.startedAt) / 1000);
@@ -122,11 +126,15 @@ export function createPlatformHandler(
     const requestId = typeof req.headers['x-request-id'] === 'string' && req.headers['x-request-id'].length <= 100
       ? req.headers['x-request-id']
       : randomUUID();
-    securityHeaders(res, requestId, policy.corsOrigin);
     metrics.requests += 1;
 
     try {
       const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
+      const eyeMouseRequest = EYE_MOUSE_PATHS.has(url.pathname);
+      securityHeaders(res, requestId, policy.corsOrigin, {
+        camera: eyeMouseRequest,
+        visionAssets: eyeMouseRequest
+      });
 
       if (req.method === 'OPTIONS') {
         res.statusCode = 204;
@@ -320,6 +328,9 @@ export function createPlatformHandler(
       if (req.method === 'GET' && url.pathname === '/app.js') return serve(res, 'app.js', 'text/javascript; charset=utf-8');
       if (req.method === 'GET' && url.pathname === '/styles.css') return serve(res, 'styles.css', 'text/css; charset=utf-8');
       if (req.method === 'GET' && url.pathname === '/auth.css') return serve(res, 'auth.css', 'text/css; charset=utf-8');
+      if (req.method === 'GET' && url.pathname === '/eye-mouse') return serve(res, 'eye-mouse.html', 'text/html; charset=utf-8');
+      if (req.method === 'GET' && url.pathname === '/eye-mouse.js') return serve(res, 'eye-mouse.js', 'text/javascript; charset=utf-8');
+      if (req.method === 'GET' && url.pathname === '/eye-mouse.css') return serve(res, 'eye-mouse.css', 'text/css; charset=utf-8');
 
       return json(res, 404, { ok: false, error: 'not_found' });
     } catch (error) {
