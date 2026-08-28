@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional
 
 from palantir_bridge import DougPalantirBridge
 from palantir_foundry import FoundryError
@@ -23,8 +23,8 @@ def _dump(value) -> str:
 
 def handle_palantir_command(
     prompt: str,
-    bridge: DougPalantirBridge | None,
-    approve_write: Callable[[str], bool] | None = None,
+    bridge: Optional[DougPalantirBridge],
+    approve_write: Optional[Callable[[str], bool]] = None,
 ) -> PalantirCommandResult:
     if not prompt.startswith("/palantir"):
         return PalantirCommandResult(handled=False)
@@ -102,5 +102,5 @@ def handle_palantir_command(
         raise FoundryError(
             "commands: status | ontologies | object-types | objects | get | search | ask | action"
         )
-    except (FoundryError, ValueError, json.JSONDecodeError) as error:
+    except (FoundryError, ValueError) as error:
         return PalantirCommandResult(True, f"PALANTIR ERROR // {error}")
