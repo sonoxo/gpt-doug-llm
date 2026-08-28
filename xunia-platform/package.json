@@ -6,7 +6,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test dist/test/*.test.js",
+    "test": "npm run build && node --check public/eye-mouse.js && node --test dist/test/*.test.js",
     "check": "npm run test",
     "start": "node dist/src/server.js"
   },

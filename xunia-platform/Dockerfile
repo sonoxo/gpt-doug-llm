@@ -4,6 +4,7 @@ COPY package.json tsconfig.json ./
 RUN npm install --ignore-scripts
 COPY src ./src
 COPY test ./test
+COPY public ./public
 RUN npm run test
 
 FROM node:22-alpine AS runtime
