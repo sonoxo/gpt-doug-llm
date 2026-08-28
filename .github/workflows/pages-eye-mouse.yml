@@ -1,0 +1,59 @@
+name: XUNIA Eye Mouse Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'xunia-platform/public/eye-mouse.html'
+      - 'xunia-platform/public/eye-mouse.js'
+      - 'xunia-platform/public/eye-mouse.css'
+      - 'docs/**'
+      - '.github/workflows/pages-eye-mouse.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Assemble static site
+        run: |
+          rm -rf _site
+          mkdir -p _site/eye-mouse
+          cp -R docs/. _site/
+          cp xunia-platform/public/eye-mouse.html _site/eye-mouse/index.html
+          cp xunia-platform/public/eye-mouse.js _site/eye-mouse/eye-mouse.js
+          cp xunia-platform/public/eye-mouse.css _site/eye-mouse/eye-mouse.css
+          sed -i 's|href="/eye-mouse.css"|href="./eye-mouse.css"|g' _site/eye-mouse/index.html
+          sed -i 's|src="/eye-mouse.js"|src="./eye-mouse.js"|g' _site/eye-mouse/index.html
+          sed -i 's|href="/"|href="../"|g' _site/eye-mouse/index.html
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/eye-mouse/index.html
+          test -f _site/eye-mouse/eye-mouse.js
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
