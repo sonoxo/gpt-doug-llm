@@ -11,9 +11,12 @@ import sys
 import time
 from pathlib import Path
 
-from agents import llm_backend
+from agents import llm_backend, qwen_gateway
 
-MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", llm_backend.DEFAULT_MODEL)
+PROVIDER = os.getenv("GPT_DOUG_PROVIDER", "").strip().lower()
+MODEL = os.getenv("GPT_DOUG_AGENT_MODEL", "").strip() or (
+    qwen_gateway.DEFAULT_MODEL if PROVIDER == "qwen" else llm_backend.DEFAULT_MODEL
+)
 MAX_STEPS = max(4, int(os.getenv("GPT_DOUG_AGENT_MAX_STEPS", "40")))
 MAX_CONTEXT_CHARS = max(12000, int(os.getenv("GPT_DOUG_AGENT_CONTEXT_CHARS", "48000")))
 COMMAND_TIMEOUT = max(30, int(os.getenv("GPT_DOUG_AGENT_COMMAND_TIMEOUT", "300")))
@@ -137,16 +140,16 @@ def compact_messages(messages: list[dict[str, str]]) -> list[dict[str, str]]:
 
 def ask(messages: list[dict[str, str]]) -> str:
     prepared = compact_messages(messages)
-    result = llm_backend.chat_once(
-        prepared,
-        MODEL,
-        {
-            "temperature": 0,
-            "num_ctx": 16384,
-            "max_tokens": 4096,
-            "format": ACTION_SCHEMA,
-        },
-    )
+    options = {
+        "temperature": 0,
+        "num_ctx": 16384,
+        "max_tokens": 4096,
+        "format": ACTION_SCHEMA,
+    }
+    if PROVIDER == "qwen":
+        result = qwen_gateway.chat_once(prepared, MODEL, options)
+    else:
+        result = llm_backend.chat_once(prepared, MODEL, options)
     return result["message"]["content"].strip()
 
 
@@ -194,6 +197,7 @@ def record_verification(*, objective: str, command: str, code: int, stdout: str,
     entry = {
         "timestamp": int(time.time()),
         "objective": objective,
+        "provider": PROVIDER or "default",
         "model": MODEL,
         "workspace": str(workspace),
         "verify_command": command,
@@ -250,6 +254,7 @@ def main() -> None:
     print("╔══════════════════════════════════════╗")
     print("║ GPT-DOUG TERMINAL AGENT // ONLINE    ║")
     print("╚══════════════════════════════════════╝")
+    print(f"PROVIDER  : {PROVIDER or 'default'}")
     print(f"MODEL     : {MODEL}")
     print(f"WORKSPACE : {workspace}")
     print(f"OBJECTIVE : {objective}")
