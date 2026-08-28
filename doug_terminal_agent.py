@@ -181,13 +181,12 @@ def run(command: str) -> tuple[int, str, str]:
         return 126, "", f"BLOCKED unsafe command: {bad}"
 
     proc = subprocess.run(
-        command,
-        shell=True,
+        ["/bin/zsh", "-lc", command],
         cwd=str(workspace),
         text=True,
         capture_output=True,
         timeout=COMMAND_TIMEOUT,
-        executable="/bin/zsh",
+        check=False,
     )
 
     return proc.returncode, proc.stdout[-12000:], proc.stderr[-12000:]
