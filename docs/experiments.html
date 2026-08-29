@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="XUNIA experimental projects: research prototypes and emerging interfaces that are not yet production-ready.">
+  <title>Experiments // XUNIA Museum + HQ</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <link rel="stylesheet" href="./museum.css">
+  <script src="./zyra-shell.js" defer></script>
+  <style>
+    .experiment-hero h1{font-size:clamp(38px,7vw,72px);margin:10px 0 14px;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}.experiment-hero p{max-width:850px;line-height:1.7}.experiment-card{margin-top:24px;padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.experiment-card:before{content:"";position:absolute;inset:-35% 42% auto -15%;height:260px;background:radial-gradient(circle,rgba(70,243,255,.14),transparent 68%);pointer-events:none}.experiment-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}.experiment-name{font-size:clamp(30px,5vw,52px);margin:5px 0 8px}.experiment-status{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,92,255,.45);background:rgba(157,92,255,.09);color:#d8c4ff;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:900;letter-spacing:.12em}.experiment-status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--violet);box-shadow:0 0 16px var(--violet)}.experiment-copy{max-width:850px;line-height:1.7;color:var(--dim)}.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}.goal{padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(11,13,29,.74)}.goal strong{display:block;color:#eaf6ff;font-size:12px;margin-bottom:7px}.goal span{color:var(--dim);font-size:11px;line-height:1.5}.release{margin-top:28px}.release h2{margin-bottom:12px}.release-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.release-step{position:relative;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(11,13,29,.72)}.release-step:not(:last-child):after{content:"→";position:absolute;right:-10px;top:50%;transform:translate(50%,-50%);color:var(--cyan);font-weight:900;z-index:2}.release-step b{display:block;color:var(--cyan);font-size:10px;letter-spacing:.12em;margin-bottom:7px}.release-step span{font-size:11px;color:var(--dim);line-height:1.45}.coming-slot{margin-top:18px;padding:20px;border:1px dashed rgba(70,243,255,.28);border-radius:18px;text-align:center;color:var(--dim)}@media(max-width:760px){.goal-grid,.release-flow{grid-template-columns:1fr}.release-step:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-14px;transform:translate(50%,50%)}}@media(prefers-reduced-motion:reduce){.experiment-status:before{box-shadow:none}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="zyra-hero experiment-hero" aria-labelledby="experiments-title">
+      <div class="zyra-eyebrow">XUNIA // EXPERIMENTAL PROJECTS // COMING SOON</div>
+      <h1 id="experiments-title">The XUNIA Lab</h1>
+      <p>Research prototypes live here before they become public products. A project does not receive a live demo until its core behavior, safety controls, accessibility behavior, privacy boundaries, and release evidence have been validated.</p>
+      <div class="zyra-badges" aria-label="Experiment gallery status">
+        <span class="zyra-badge">RESEARCH + PROTOTYPES</span>
+        <span class="zyra-badge">NO PRODUCTION CLAIMS</span>
+        <span class="zyra-badge">PUBLIC DEMOS AFTER VERIFICATION</span>
+      </div>
+    </section>
+
+    <section class="motion-panel experiment-card" aria-labelledby="sightline-title">
+      <div class="experiment-top">
+        <div>
+          <div class="zyra-eyebrow">ACCESSIBILITY // HUMAN-COMPUTER INTERACTION</div>
+          <h2 class="experiment-name" id="sightline-title">XUNIA Sightline</h2>
+        </div>
+        <span class="experiment-status">COMING SOON · IN DEVELOPMENT</span>
+      </div>
+      <p class="experiment-copy"><strong>XUNIA Sightline</strong> is the research name for XUNIA's gaze-driven, hands-free interface work. The objective is a local-first control layer that can translate intentional gaze into accessible interface navigation while minimizing accidental activation and keeping camera-derived interaction data on the user's device whenever practical.</p>
+
+      <div class="goal-grid" aria-label="XUNIA Sightline research goals">
+        <div class="goal"><strong>GAZE ESTIMATION</strong><span>Camera or compatible eye-tracker input mapped into stable screen coordinates.</span></div>
+        <div class="goal"><strong>PERSONAL CALIBRATION</strong><span>Per-user calibration, smoothing, confidence thresholds, and head-motion compensation.</span></div>
+        <div class="goal"><strong>INTENT CONTROLS</strong><span>Dwell activation, deliberate actions, cooldowns, and false-positive suppression.</span></div>
+        <div class="goal"><strong>ACCESSIBILITY UI</strong><span>Large targets, visible gaze feedback, adjustable timing, contrast, and reduced-motion support.</span></div>
+        <div class="goal"><strong>FAIL-SAFE CONTROL</strong><span>Immediate pause, fallback input, confidence loss handling, and bounded system actions.</span></div>
+        <div class="goal"><strong>LOCAL-FIRST PRIVACY</strong><span>Design target: process interaction signals locally rather than publishing raw camera feeds.</span></div>
+      </div>
+
+      <section class="release" aria-labelledby="release-title">
+        <div class="zyra-eyebrow">RELEASE GATE</div>
+        <h2 id="release-title">How an experiment becomes a public demo</h2>
+        <div class="release-flow">
+          <div class="release-step"><b>01 · PROTOTYPE</b><span>Core interaction works in a controlled development environment.</span></div>
+          <div class="release-step"><b>02 · VALIDATE</b><span>Automated tests and repeatable manual checks cover critical behavior.</span></div>
+          <div class="release-step"><b>03 · REVIEW</b><span>Accessibility, privacy, safety, and failure modes are documented and reviewed.</span></div>
+          <div class="release-step"><b>04 · PUBLISH</b><span>A public demo appears only after the preceding gates have evidence.</span></div>
+        </div>
+      </section>
+    </section>
+
+    <div class="coming-slot">More XUNIA experiments will be added here when they reach a documented research stage.</div>
+
+    <footer class="zyra-footer">
+      <span>XUNIA Lab · experimental work is separated from production-ready capabilities.</span>
+      <span><a href="./">Return to Museum + HQ</a></span>
+    </footer>
+  </main>
+</body>
+</html>
