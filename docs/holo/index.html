@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050510">
-  <meta name="description" content="XUNIA HOLO free browser training simulator.">
-  <title>XUNIA HOLO Simulator</title>
+  <meta name="description" content="XUNIA HOLO free WebGL2 first-person browser training simulator.">
+  <title>XUNIA HOLO WebGL Simulator</title>
   <link rel="stylesheet" href="../zyra-theme.css">
   <link rel="stylesheet" href="./holo.css">
   <script type="module" src="./holo.js"></script>
@@ -14,22 +14,23 @@
   <main class="holo-shell">
     <header class="holo-head">
       <div>
-        <div class="eyebrow">XUNIA // HOLO // FREE GITHUB PAGES RUNTIME</div>
+        <div class="eyebrow">XUNIA // HOLO // REAL WEBGL2 FIRST-PERSON RUNTIME</div>
         <h1>HOLO WORKABLE SIM</h1>
-        <p>Browser-native training simulation. No paid API, server, database, Vercel, or Replit dependency.</p>
+        <p>Free browser-native 3D training simulator. Click the viewport for mouse-look, use WASD to move, Shift to sprint, and E to interact.</p>
       </div>
-      <div class="badges"><span>GITHUB PAGES</span><span>TYPESCRIPT</span><span>CANVAS 2D</span><span>FREE</span></div>
+      <div class="badges"><span>GITHUB PAGES</span><span>TYPESCRIPT</span><span>WEBGL2 3D</span><span>POINTER LOCK</span><span>FREE</span></div>
     </header>
 
     <section class="sim-grid">
       <div class="viewport-card">
         <div class="viewport-topbar">
-          <div><strong id="simStatus">READY</strong><span id="simTimer">00:00</span></div>
+          <div><strong id="simStatus">READY</strong><span id="simTimer">00:00</span><span id="fpsState">FPS --</span></div>
           <div><span id="simScore">SCORE 100</span><span id="simErrors">ERRORS 0</span></div>
         </div>
-        <canvas id="simCanvas" width="1280" height="720" aria-label="HOLO simulator viewport"></canvas>
+        <canvas id="simCanvas" width="1280" height="720" aria-label="HOLO WebGL2 first-person simulator viewport"></canvas>
         <div class="crosshair" aria-hidden="true">+</div>
-        <div id="simMessage" class="message">Press START, then use WASD to move and E to interact.</div>
+        <div class="look-hint" id="lookHint">CLICK VIEWPORT TO CAPTURE MOUSE</div>
+        <div id="simMessage" class="message">Press START, click the viewport, then use WASD + mouse. E interacts with the highlighted component.</div>
       </div>
 
       <aside class="control-card">
@@ -38,7 +39,7 @@
         <p id="stepInstruction"></p>
         <div class="target">TARGET <strong id="stepTarget"></strong></div>
         <div class="controls">
-          <button id="startBtn">START</button>
+          <button id="startBtn">START / RESUME</button>
           <button id="pauseBtn">PAUSE</button>
           <button id="confirmBtn">CONFIRM STEP</button>
           <button id="errorBtn">RECORD ERROR</button>
@@ -51,6 +52,10 @@
           <div class="eyebrow">ACTIVE FAULT</div>
           <div id="faultState">NONE</div>
         </div>
+        <div class="runtime-panel">
+          <div class="eyebrow">RUNTIME</div>
+          <div id="runtimeState">WEBGL2 INITIALIZING</div>
+        </div>
       </aside>
     </section>
 
@@ -59,7 +64,7 @@
       <article class="panel"><div class="eyebrow">EVENT STREAM</div><div id="eventLog"></div></article>
     </section>
 
-    <footer class="foot">Representative training simulator only. No engineering fidelity, operational authority, or government validation is claimed.</footer>
+    <footer class="foot">Representative training simulator only. No engineering fidelity, operational authority, named-device certification, or government validation is claimed.</footer>
   </main>
 </body>
 </html>
