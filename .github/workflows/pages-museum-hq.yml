@@ -50,13 +50,15 @@ jobs:
 
       - name: Compile HOLO TypeScript
         run: |
+          rm -f _site/holo/holo.js
           npx --yes -p typescript@5.6.3 tsc docs/holo/holo.ts \
             --target ES2020 \
             --lib DOM,ES2020 \
-            --module none \
+            --module ES2020 \
+            --moduleDetection force \
             --strict \
             --skipLibCheck \
-            --outFile _site/holo/holo.js
+            --outDir _site/holo
           test -s _site/holo/holo.js
 
       - name: JavaScript syntax
@@ -97,6 +99,7 @@ jobs:
       - name: HOLO workable simulator contract
         run: |
           grep -q 'HOLO WORKABLE SIM' docs/holo/index.html
+          grep -q 'type="module"' docs/holo/index.html
           grep -q 'XUNIA_HOLO_AAR_V1' docs/holo/holo.ts
           grep -q 'INJECT FAULT' docs/holo/index.html
           grep -q 'EXPORT AAR' docs/holo/index.html
@@ -156,13 +159,15 @@ jobs:
           mkdir -p _site
           cp -R docs/. _site/
           touch _site/.nojekyll
+          rm -f _site/holo/holo.js
           npx --yes -p typescript@5.6.3 tsc docs/holo/holo.ts \
             --target ES2020 \
             --lib DOM,ES2020 \
-            --module none \
+            --module ES2020 \
+            --moduleDetection force \
             --strict \
             --skipLibCheck \
-            --outFile _site/holo/holo.js
+            --outDir _site/holo
           test -s _site/holo/holo.js
           test ! -e _site/eye-mouse
 
