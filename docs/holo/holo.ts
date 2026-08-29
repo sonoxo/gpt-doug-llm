@@ -259,7 +259,15 @@ function render(now: number) {
   requestAnimationFrame(render);
 }
 
-buttons.start.addEventListener("click", () => { if (status === "READY" || status === "PAUSED") { status = "RUNNING"; event("SESSION", status === "PAUSED" ? "Simulation resumed." : "Simulation started."); messageEl.textContent = "WASD move · E interact · Shift sprint."; updateHud(); } });
+buttons.start.addEventListener("click", () => {
+  if (status === "READY" || status === "PAUSED") {
+    const wasPaused = status === "PAUSED";
+    status = "RUNNING";
+    event("SESSION", wasPaused ? "Simulation resumed." : "Simulation started.");
+    messageEl.textContent = "WASD move · E interact · Shift sprint.";
+    updateHud();
+  }
+});
 buttons.pause.addEventListener("click", () => { if (status === "RUNNING") { status = "PAUSED"; event("SESSION", "Simulation paused."); updateHud(); } });
 buttons.confirm.addEventListener("click", confirmStep);
 buttons.error.addEventListener("click", () => { if (status === "RUNNING") { errors += 1; score = Math.max(0, score - 12); event("ERROR", `Instructor-recorded error on step ${stepIndex + 1}.`); updateHud(); } });
