@@ -3,7 +3,7 @@
   const base = path.includes('/gpt-doug-llm') ? '/gpt-doug-llm/' : '/';
   const links = [
     ['Museum + HQ', base],
-    ['Eye Mouse', `${base}eye-mouse/`],
+    ['Experiments', `${base}experiments.html`],
     ['Status', `${base}status.html`],
     ['Metrics', `${base}metrics.html`],
     ['Pipeline', `${base}pipeline.html`],
@@ -12,7 +12,7 @@
   const current = (href) => {
     const normalized = href.replace(/\/+$/, '') || '/';
     const here = location.pathname.replace(/\/+$/, '') || '/';
-    return here === normalized || (href.endsWith('/eye-mouse/') && here.endsWith('/eye-mouse'));
+    return here === normalized;
   };
 
   const bar = document.createElement('div');
