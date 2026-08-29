@@ -1,21 +1,15 @@
-name: XUNIA Eye Mouse Pages
+name: XUNIA Museum + HQ Pages
 
 on:
   push:
     branches: [main]
     paths:
-      - 'xunia-platform/public/eye-mouse.html'
-      - 'xunia-platform/public/eye-mouse.js'
-      - 'xunia-platform/public/eye-mouse.css'
       - 'docs/**'
-      - '.github/workflows/pages-eye-mouse.yml'
+      - '.github/workflows/pages-museum-hq.yml'
   pull_request:
     paths:
-      - 'xunia-platform/public/eye-mouse.html'
-      - 'xunia-platform/public/eye-mouse.js'
-      - 'xunia-platform/public/eye-mouse.css'
       - 'docs/**'
-      - '.github/workflows/pages-eye-mouse.yml'
+      - '.github/workflows/pages-museum-hq.yml'
   workflow_dispatch:
 
 permissions:
@@ -37,16 +31,11 @@ jobs:
       - name: Assemble static site
         run: |
           rm -rf _site
-          mkdir -p _site/eye-mouse
+          mkdir -p _site
           cp -R docs/. _site/
-          cp xunia-platform/public/eye-mouse.html _site/eye-mouse/index.html
-          cp xunia-platform/public/eye-mouse.js _site/eye-mouse/eye-mouse.js
-          cp xunia-platform/public/eye-mouse.css _site/eye-mouse/eye-mouse.css
-          sed -i 's|href="/eye-mouse.css"|href="./eye-mouse.css"|g' _site/eye-mouse/index.html
-          sed -i 's|src="/eye-mouse.js"|src="./eye-mouse.js"|g' _site/eye-mouse/index.html
-          sed -i 's|href="/"|href="../"|g' _site/eye-mouse/index.html
           touch _site/.nojekyll
           test -f _site/index.html
+          test -f _site/experiments.html
           test -f _site/status.html
           test -f _site/metrics.html
           test -f _site/pipeline.html
@@ -54,15 +43,12 @@ jobs:
           test -f _site/zyra-shell.js
           test -f _site/museum.css
           test -f _site/museum.js
-          test -f _site/eye-mouse/index.html
-          test -f _site/eye-mouse/eye-mouse.js
-          test -f _site/eye-mouse/eye-mouse.css
+          test ! -e _site/eye-mouse
 
       - name: JavaScript syntax
         run: |
           node --check docs/zyra-shell.js
           node --check docs/museum.js
-          node --check xunia-platform/public/eye-mouse.js
 
       - name: Museum inventory contract
         run: |
@@ -82,6 +68,17 @@ jobs:
           assert len(names) == len(set(names)), 'duplicate public exhibits'
           PY
 
+      - name: Experimental project publication contract
+        run: |
+          grep -q 'XUNIA Sightline' docs/experiments.html
+          grep -q 'COMING SOON' docs/experiments.html
+          grep -q 'experiments.html' docs/index.html
+          grep -q "\['Experiments'" docs/zyra-shell.js
+          if grep -R -n -E 'Eye Mouse|eye-mouse' docs; then
+            echo 'Unfinished prototype must not be exposed by the public site.' >&2
+            exit 1
+          fi
+
       - name: Zyra theme and motion contract
         run: |
           grep -q '#46f3ff' docs/zyra-theme.css
@@ -89,8 +86,6 @@ jobs:
           grep -q 'prefers-reduced-motion' docs/zyra-theme.css
           grep -q 'motion-diagram' docs/index.html
           grep -q 'flow-normal' docs/pipeline.html
-          grep -q '#46f3ff' xunia-platform/public/eye-mouse.css
-          grep -q '#9d5cff' xunia-platform/public/eye-mouse.css
 
       - name: Static HTTP smoke test
         run: |
@@ -105,10 +100,14 @@ jobs:
           grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home.html
           grep -q 'museum.js' /tmp/xunia-home.html
           curl -fsS http://127.0.0.1:8080/museum.js | grep -q 'STATIC_REPOS'
+          curl -fsS http://127.0.0.1:8080/experiments.html | grep -q 'XUNIA Sightline'
           curl -fsS http://127.0.0.1:8080/status.html | grep -q 'XUNIAverse build status'
           curl -fsS http://127.0.0.1:8080/metrics.html | grep -q 'XUNIAverse metrics'
           curl -fsS http://127.0.0.1:8080/pipeline.html | grep -q 'agent pipeline'
-          curl -fsS http://127.0.0.1:8080/eye-mouse/ | grep -q 'Eye Mouse'
+          if curl -fsS http://127.0.0.1:8080/eye-mouse/ >/dev/null 2>&1; then
+            echo 'Unfinished prototype unexpectedly published.' >&2
+            exit 1
+          fi
 
   deploy:
     if: github.event_name != 'pull_request'
@@ -127,15 +126,10 @@ jobs:
       - name: Assemble static site
         run: |
           rm -rf _site
-          mkdir -p _site/eye-mouse
+          mkdir -p _site
           cp -R docs/. _site/
-          cp xunia-platform/public/eye-mouse.html _site/eye-mouse/index.html
-          cp xunia-platform/public/eye-mouse.js _site/eye-mouse/eye-mouse.js
-          cp xunia-platform/public/eye-mouse.css _site/eye-mouse/eye-mouse.css
-          sed -i 's|href="/eye-mouse.css"|href="./eye-mouse.css"|g' _site/eye-mouse/index.html
-          sed -i 's|src="/eye-mouse.js"|src="./eye-mouse.js"|g' _site/eye-mouse/index.html
-          sed -i 's|href="/"|href="../"|g' _site/eye-mouse/index.html
           touch _site/.nojekyll
+          test ! -e _site/eye-mouse
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
