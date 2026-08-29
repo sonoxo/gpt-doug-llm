@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="XUNIA HOLO free browser training simulator.">
+  <title>XUNIA HOLO Simulator</title>
+  <link rel="stylesheet" href="../zyra-theme.css">
+  <link rel="stylesheet" href="./holo.css">
+  <script src="./holo.js" defer></script>
+</head>
+<body>
+  <main class="holo-shell">
+    <header class="holo-head">
+      <div>
+        <div class="eyebrow">XUNIA // HOLO // FREE GITHUB PAGES RUNTIME</div>
+        <h1>HOLO WORKABLE SIM</h1>
+        <p>Browser-native training simulation. No paid API, server, database, Vercel, or Replit dependency.</p>
+      </div>
+      <div class="badges"><span>GITHUB PAGES</span><span>TYPESCRIPT</span><span>CANVAS 2D</span><span>FREE</span></div>
+    </header>
+
+    <section class="sim-grid">
+      <div class="viewport-card">
+        <div class="viewport-topbar">
+          <div><strong id="simStatus">READY</strong><span id="simTimer">00:00</span></div>
+          <div><span id="simScore">SCORE 100</span><span id="simErrors">ERRORS 0</span></div>
+        </div>
+        <canvas id="simCanvas" width="1280" height="720" aria-label="HOLO simulator viewport"></canvas>
+        <div class="crosshair" aria-hidden="true">+</div>
+        <div id="simMessage" class="message">Press START, then use WASD to move and E to interact.</div>
+      </div>
+
+      <aside class="control-card">
+        <div class="eyebrow">MISSION CONTROL</div>
+        <h2 id="stepTitle">STEP 1</h2>
+        <p id="stepInstruction"></p>
+        <div class="target">TARGET <strong id="stepTarget"></strong></div>
+        <div class="controls">
+          <button id="startBtn">START</button>
+          <button id="pauseBtn">PAUSE</button>
+          <button id="confirmBtn">CONFIRM STEP</button>
+          <button id="errorBtn">RECORD ERROR</button>
+          <button id="faultBtn">INJECT FAULT</button>
+          <button id="clearFaultBtn">CLEAR FAULT</button>
+          <button id="resetBtn">RESET</button>
+          <button id="exportBtn">EXPORT AAR</button>
+        </div>
+        <div class="fault-panel">
+          <div class="eyebrow">ACTIVE FAULT</div>
+          <div id="faultState">NONE</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel"><div class="eyebrow">PROCEDURE</div><div id="procedureList"></div></article>
+      <article class="panel"><div class="eyebrow">EVENT STREAM</div><div id="eventLog"></div></article>
+    </section>
+
+    <footer class="foot">Representative training simulator only. No engineering fidelity, operational authority, or government validation is claimed.</footer>
+  </main>
+</body>
+</html>
