@@ -4,31 +4,58 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#050510">
-  <meta name="description" content="XUNIA experimental projects: research prototypes and emerging interfaces that are not yet production-ready.">
+  <meta name="description" content="XUNIA experimental projects: live public experiments and research-stage prototypes.">
   <title>Experiments // XUNIA Museum + HQ</title>
   <link rel="stylesheet" href="./zyra-theme.css">
   <link rel="stylesheet" href="./museum.css">
   <script src="./zyra-shell-v2.js" defer></script>
   <style>
-    .experiment-hero h1{font-size:clamp(38px,7vw,72px);margin:10px 0 14px;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}.experiment-hero p{max-width:850px;line-height:1.7}.experiment-card{margin-top:24px;padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.experiment-card:before{content:"";position:absolute;inset:-35% 42% auto -15%;height:260px;background:radial-gradient(circle,rgba(70,243,255,.14),transparent 68%);pointer-events:none}.experiment-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}.experiment-name{font-size:clamp(30px,5vw,52px);margin:5px 0 8px}.experiment-status{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,92,255,.45);background:rgba(157,92,255,.09);color:#d8c4ff;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:900;letter-spacing:.12em}.experiment-status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--violet);box-shadow:0 0 16px var(--violet)}.experiment-copy{max-width:850px;line-height:1.7;color:var(--dim)}.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}.goal{padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(11,13,29,.74)}.goal strong{display:block;color:#eaf6ff;font-size:12px;margin-bottom:7px}.goal span{color:var(--dim);font-size:11px;line-height:1.5}.release{margin-top:28px}.release h2{margin-bottom:12px}.release-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.release-step{position:relative;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(11,13,29,.72)}.release-step:not(:last-child):after{content:"→";position:absolute;right:-10px;top:50%;transform:translate(50%,-50%);color:var(--cyan);font-weight:900;z-index:2}.release-step b{display:block;color:var(--cyan);font-size:10px;letter-spacing:.12em;margin-bottom:7px}.release-step span{font-size:11px;color:var(--dim);line-height:1.45}.coming-slot{margin-top:18px;padding:20px;border:1px dashed rgba(70,243,255,.28);border-radius:18px;text-align:center;color:var(--dim)}@media(max-width:760px){.goal-grid,.release-flow{grid-template-columns:1fr}.release-step:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-14px;transform:translate(50%,50%)}}@media(prefers-reduced-motion:reduce){.experiment-status:before{box-shadow:none}}
+    .experiment-hero h1{font-size:clamp(38px,7vw,72px);margin:10px 0 14px;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}.experiment-hero p{max-width:900px;line-height:1.7}.experiment-card{margin-top:24px;padding:clamp(22px,4vw,38px);position:relative;overflow:hidden}.experiment-card:before{content:"";position:absolute;inset:-35% 42% auto -15%;height:260px;background:radial-gradient(circle,rgba(70,243,255,.14),transparent 68%);pointer-events:none}.experiment-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}.experiment-name{font-size:clamp(30px,5vw,52px);margin:5px 0 8px}.experiment-status{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(157,92,255,.45);background:rgba(157,92,255,.09);color:#d8c4ff;border-radius:999px;padding:8px 12px;font-size:10px;font-weight:900;letter-spacing:.12em}.experiment-status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--violet);box-shadow:0 0 16px var(--violet)}.experiment-status.live{border-color:rgba(168,255,96,.48);background:rgba(168,255,96,.08);color:#dfffc5}.experiment-status.live:before{background:var(--lime,#a8ff60);box-shadow:0 0 16px var(--lime,#a8ff60)}.experiment-copy{max-width:900px;line-height:1.7;color:var(--dim)}.goal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:24px}.goal{padding:16px;border:1px solid var(--line);border-radius:16px;background:rgba(11,13,29,.74)}.goal strong{display:block;color:#eaf6ff;font-size:12px;margin-bottom:7px}.goal span{color:var(--dim);font-size:11px;line-height:1.5}.launch-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.launch-link{display:inline-flex;align-items:center;gap:9px;padding:11px 15px;border:1px solid rgba(70,243,255,.4);border-radius:999px;color:var(--cyan);text-decoration:none;font-size:11px;font-weight:900;letter-spacing:.08em;background:rgba(70,243,255,.06)}.launch-link:hover{background:rgba(70,243,255,.12)}.experiment-number{font-size:10px;font-weight:900;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}.release{margin-top:28px}.release h2{margin-bottom:12px}.release-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.release-step{position:relative;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(11,13,29,.72)}.release-step:not(:last-child):after{content:"→";position:absolute;right:-10px;top:50%;transform:translate(50%,-50%);color:var(--cyan);font-weight:900;z-index:2}.release-step b{display:block;color:var(--cyan);font-size:10px;letter-spacing:.12em;margin-bottom:7px}.release-step span{font-size:11px;color:var(--dim);line-height:1.45}.coming-slot{margin-top:18px;padding:20px;border:1px dashed rgba(70,243,255,.28);border-radius:18px;text-align:center;color:var(--dim)}@media(max-width:760px){.goal-grid,.release-flow{grid-template-columns:1fr}.release-step:not(:last-child):after{content:"↓";right:50%;top:auto;bottom:-14px;transform:translate(50%,50%)}}@media(prefers-reduced-motion:reduce){.experiment-status:before{box-shadow:none}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="zyra-hero experiment-hero" aria-labelledby="experiments-title">
-      <div class="zyra-eyebrow">XUNIA // EXPERIMENTAL PROJECTS // COMING SOON</div>
+      <div class="zyra-eyebrow">XUNIA // EXPERIMENTAL PROJECTS // PUBLIC LAB</div>
       <h1 id="experiments-title">The XUNIA Lab</h1>
-      <p>Research prototypes live here before they become public products. A project does not receive a live demo until its core behavior, safety controls, accessibility behavior, privacy boundaries, and release evidence have been validated.</p>
+      <p>The lab separates experiments that are already live on the public web from research prototypes that are still behind release gates. A live experiment is observable and usable today; an in-development experiment stays labeled as such until its core behavior and release evidence are ready.</p>
       <div class="zyra-badges" aria-label="Experiment gallery status">
-        <span class="zyra-badge">RESEARCH + PROTOTYPES</span>
-        <span class="zyra-badge">NO PRODUCTION CLAIMS</span>
-        <span class="zyra-badge">PUBLIC DEMOS AFTER VERIFICATION</span>
+        <span class="zyra-badge live">● EXPERIMENT 001 LIVE</span>
+        <span class="zyra-badge">PUBLIC + RESEARCH TRACKS</span>
+        <span class="zyra-badge">PROVENANCE PRESERVED</span>
+      </div>
+    </section>
+
+    <section class="motion-panel experiment-card" aria-labelledby="mediaos-title">
+      <div class="experiment-top">
+        <div>
+          <div class="experiment-number">Experiment 001 · Live public system</div>
+          <div class="zyra-eyebrow">CREATIVE OPERATING SYSTEM // CONNECTED MEDIA</div>
+          <h2 class="experiment-name" id="mediaos-title">24K Media OS</h2>
+        </div>
+        <span class="experiment-status live">LIVE · PUBLIC EXPERIMENT</span>
+      </div>
+      <p class="experiment-copy"><strong>24K Media OS</strong> uses <strong>24kmediaproductions.com</strong> as XUNIA Lab's first live experiment: a public creative operating-system interface that connects media, music, broadcasting, credentials, commerce, Xuniaverse software surfaces, and external destinations through one navigable experience.</p>
+      <p class="experiment-copy">The experiment is not a claim that every connected service shares one backend. The test is whether one public interface can make a distributed creative ecosystem understandable, navigable, attributable, and useful while preserving the identity and source of each connected destination.</p>
+
+      <div class="goal-grid" aria-label="24K Media OS experiment goals">
+        <div class="goal"><strong>CONNECTED NAVIGATION</strong><span>Test whether multiple creative and software surfaces can operate as one understandable launchpad.</span></div>
+        <div class="goal"><strong>MEDIA MOUNTING</strong><span>Observe how external music, broadcast, archive, merch, and contact destinations behave inside a unified experience.</span></div>
+        <div class="goal"><strong>XUNIAVERSE BRIDGE</strong><span>Use the site as a public bridge between 24K creative operations and XUNIA/Xuniaverse software projects.</span></div>
+        <div class="goal"><strong>IDENTITY SYSTEM</strong><span>Evaluate whether one consistent visual and information architecture can carry brand, product, and research surfaces.</span></div>
+        <div class="goal"><strong>PUBLIC OBSERVABILITY</strong><span>Keep the experiment inspectable on the open web instead of describing an implementation that visitors cannot access.</span></div>
+        <div class="goal"><strong>ITERATIVE EVIDENCE</strong><span>Use link integrity, usability, accessibility, responsiveness, and future telemetry as measurable improvement targets.</span></div>
+      </div>
+
+      <div class="launch-row">
+        <a class="launch-link" href="https://24kmediaproductions.com/" target="_blank" rel="noopener">Launch Experiment 001 ↗</a>
       </div>
     </section>
 
     <section class="motion-panel experiment-card" aria-labelledby="sightline-title">
       <div class="experiment-top">
         <div>
+          <div class="experiment-number">Experiment 002 · Research stage</div>
           <div class="zyra-eyebrow">ACCESSIBILITY // HUMAN-COMPUTER INTERACTION</div>
           <h2 class="experiment-name" id="sightline-title">XUNIA Sightline</h2>
         </div>
@@ -47,7 +74,7 @@
 
       <section class="release" aria-labelledby="release-title">
         <div class="zyra-eyebrow">RELEASE GATE</div>
-        <h2 id="release-title">How an experiment becomes a public demo</h2>
+        <h2 id="release-title">How a research experiment becomes a public demo</h2>
         <div class="release-flow">
           <div class="release-step"><b>01 · PROTOTYPE</b><span>Core interaction works in a controlled development environment.</span></div>
           <div class="release-step"><b>02 · VALIDATE</b><span>Automated tests and repeatable manual checks cover critical behavior.</span></div>
@@ -57,10 +84,10 @@
       </section>
     </section>
 
-    <div class="coming-slot">More XUNIA experiments will be added here when they reach a documented research stage.</div>
+    <div class="coming-slot">Future XUNIA experiments will be numbered and added here with an explicit live, research, or archived state.</div>
 
     <footer class="zyra-footer">
-      <span>XUNIA Lab · experimental work is separated from production-ready capabilities.</span>
+      <span>XUNIA Lab · live experiments are separated from research-stage prototypes.</span>
       <span><a href="./">Return to Museum + HQ</a></span>
     </footer>
   </main>
