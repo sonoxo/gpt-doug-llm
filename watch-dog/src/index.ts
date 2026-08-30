@@ -38,6 +38,7 @@ let lastHeldMs = 0;
 let frames = 0;
 let sourceError: string | null = null;
 let lastZyraDelivery: { delivered: boolean; status?: number; error?: string } | null = null;
+let camera: FrameSource | undefined;
 
 async function sendAlarm(event: AlarmEvent): Promise<boolean> {
   const now = Date.now();
@@ -90,24 +91,22 @@ async function processFrame(jpeg: Buffer, capturedAt: number): Promise<void> {
   }
 }
 
-let camera: FrameSource;
-if (config.cameraSource === 'osaio') {
-  camera = new OsaioEventCamera(config.osaio);
-} else {
-  camera = new FfmpegCamera(
-    config.ffmpegPath,
-    config.cameraUrl,
-    config.frameFps,
-    config.frameWidth,
-  );
-}
-
 try {
+  camera = config.cameraSource === 'osaio'
+    ? new OsaioEventCamera(config.osaio)
+    : new FfmpegCamera(
+        config.ffmpegPath,
+        config.cameraUrl,
+        config.frameFps,
+        config.frameWidth,
+      );
+
   await camera.start(processFrame);
   sourceError = null;
 } catch (error) {
   sourceError = error instanceof Error ? error.message : String(error);
   console.error(`[watch-dog] source startup failed: ${sourceError}`);
+  camera = undefined;
 }
 
 const app = Fastify({ logger: false, bodyLimit: 12 * 1024 * 1024 });
@@ -172,10 +171,10 @@ app.post('/alarm/test', async () => {
 await app.listen({ host: config.host, port: config.port });
 console.log(`[watch-dog] API http://${config.host}:${config.port}`);
 console.log(`[watch-dog] source=${config.cameraSource} camera=${config.cameraName} alert=${config.alertMode}`);
-console.log(`[watch-dog] privacy public-cctv=BLOCKED identity-recognition=DISABLED`);
+console.log('[watch-dog] privacy public-cctv=BLOCKED identity-recognition=DISABLED');
 console.log(`[watch-dog] zyra=${config.zyraPipelineUrl ?? 'disabled'}`);
 if (sourceError) {
-  console.log('[watch-dog] API is up; fix source configuration, then restart to begin automatic detection.');
+  console.log('[watch-dog] API is up in degraded mode; configure the authorized camera source, then restart for automatic detection.');
 }
 
 let shuttingDown = false;
@@ -183,7 +182,7 @@ async function shutdown(signal: string) {
   if (shuttingDown) return;
   shuttingDown = true;
   console.log(`[watch-dog] ${signal}: shutting down`);
-  await camera.stop();
+  await camera?.stop();
   await app.close().catch(() => undefined);
   await alerter.close().catch(() => undefined);
   process.exit(0);
