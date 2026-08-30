@@ -24,6 +24,8 @@ const schema = z.object({
   MQTT_TOPIC: z.string().default('home/living-room/dog-poop-alarm'),
   MQTT_USERNAME: z.string().optional(),
   MQTT_PASSWORD: z.string().optional(),
+  ZYRA_PIPELINE_URL: optionalUrl.default('http://127.0.0.1:5050/api/va3lm/geovision/watch-dog/events'),
+  ZYRA_PIPELINE_TOKEN: z.string().optional(),
   OSAIO_EMAIL: optionalEmail,
   OSAIO_PASSWORD: z.string().optional(),
   OSAIO_SECRET: z.string().optional().default(''),
@@ -76,6 +78,8 @@ export const config = {
   mqttTopic: raw.MQTT_TOPIC,
   mqttUsername: blankToUndefined(raw.MQTT_USERNAME),
   mqttPassword: blankToUndefined(raw.MQTT_PASSWORD),
+  zyraPipelineUrl: blankToUndefined(raw.ZYRA_PIPELINE_URL),
+  zyraPipelineToken: blankToUndefined(raw.ZYRA_PIPELINE_TOKEN),
   osaio: {
     email: blankToUndefined(raw.OSAIO_EMAIL),
     password: blankToUndefined(raw.OSAIO_PASSWORD),
