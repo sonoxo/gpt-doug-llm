@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import { config } from './config.js';
 import { FfmpegCamera } from './camera/ffmpeg.js';
 import { OsaioEventCamera } from './camera/osaio.js';
+import { MacScreenCamera } from './camera/macosScreen.js';
 import type { FrameSource } from './camera/types.js';
 import { CocoDogDetector } from './vision/coco.js';
 import { BathroomEventScorer } from './logic/poopScore.js';
@@ -92,14 +93,21 @@ async function processFrame(jpeg: Buffer, capturedAt: number): Promise<void> {
 }
 
 try {
-  camera = config.cameraSource === 'osaio'
-    ? new OsaioEventCamera(config.osaio)
-    : new FfmpegCamera(
-        config.ffmpegPath,
-        config.cameraUrl,
-        config.frameFps,
-        config.frameWidth,
-      );
+  if (config.cameraSource === 'osaio') {
+    camera = new OsaioEventCamera(config.osaio);
+  } else if (config.cameraSource === 'macos-screen') {
+    camera = new MacScreenCamera({
+      pollMs: config.screenPollMs,
+      region: config.screenRegion,
+    });
+  } else {
+    camera = new FfmpegCamera(
+      config.ffmpegPath,
+      config.cameraUrl,
+      config.frameFps,
+      config.frameWidth,
+    );
+  }
 
   await camera.start(processFrame);
   sourceError = null;
