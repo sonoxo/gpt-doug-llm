@@ -1,8 +1,30 @@
 # NXYZ Mouse Mic
 
+![NXYZ Mouse Mic icon](./icons/icon128.png)
+
 Free browser click-guidance for Palantir Foundry.
 
 NXYZ Mouse Mic scans the currently visible page for clickable controls, labels them, highlights the best match for a spoken or typed request, describes where the control is on screen, and can click it when requested.
+
+## Release
+
+**Current shipping version: 1.0.2 — Manifest V3**
+
+- Chrome / Chromium extension.
+- Category target: Accessibility.
+- Runtime scope: `https://*.palantirfoundry.com/*` only.
+- Permissions: `activeTab`, `scripting`.
+- No `<all_urls>` permission.
+- No Chrome `storage` permission.
+- No paid API key or developer-operated backend required.
+- Production icons: 16×16, 48×48, and 128×128 PNG.
+- High-impact actions require explicit confirmation before click.
+
+Full release contract: **[`SPECS.md`](./SPECS.md)**  
+Icon inventory: **[`icons/README.md`](./icons/README.md)**  
+Chrome Web Store copy: **[`STORE-LISTING.md`](./STORE-LISTING.md)**  
+Privacy policy: **[`PRIVACY.md`](./PRIVACY.md)**  
+Publish gate: **[`PUBLISH-CHECKLIST.md`](./PUBLISH-CHECKLIST.md)**
 
 ## Cost
 
@@ -58,10 +80,17 @@ On the Foundry **Developer Tools → Code Templates** page:
 
 ## Files
 
-- `manifest.json` — Chrome extension manifest.
+- `manifest.json` — Chrome extension Manifest V3 definition.
 - `content.js` — target discovery, fuzzy matching, voice commands, safety confirmation.
 - `overlay.css` — microphone, status panel, target numbers, highlights.
 - `popup.html` / `popup.js` — typed-command fallback and microphone trigger.
+- `icons/icon16.png` — 16×16 production icon.
+- `icons/icon48.png` — 48×48 production icon.
+- `icons/icon128.png` — 128×128 production/store icon.
+- `SPECS.md` — shipping requirements, permissions, privacy behavior, and acceptance criteria.
+- `STORE-LISTING.md` — Chrome Web Store listing and reviewer copy.
+- `PRIVACY.md` — public privacy policy.
+- `PUBLISH-CHECKLIST.md` — final submission checklist.
 
 ## Scope
 
@@ -70,6 +99,10 @@ The manifest currently activates only on:
 `https://*.palantirfoundry.com/*`
 
 No generic `<all_urls>` permission is requested.
+
+## Shipping
+
+The repository-side extension package is prepared for Chrome Web Store submission. Final publication still requires the publisher-side Chrome Web Store Developer Dashboard upload, declarations, review, and approval.
 
 ## License
 
