@@ -29,6 +29,15 @@ function isSupported(url = '') {
   }
 }
 
+async function injectMouseMic(tabId) {
+  await chrome.scripting.insertCSS({ target: { tabId }, files: ['overlay.css'] });
+  await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+}
+
+async function deliver(tabId, type, command) {
+  return chrome.tabs.sendMessage(tabId, { type, command });
+}
+
 async function send(type, command = '') {
   const tab = await activeTab();
   if (!tab?.id) {
@@ -37,16 +46,23 @@ async function send(type, command = '') {
   }
 
   if (!isSupported(tab.url || '')) {
-    setStatus('Open your Palantir Foundry tab first. Mouse Mic cannot run on chrome://extensions or other Chrome internal pages.');
+    setStatus('Switch to your Palantir Foundry tab first. Mouse Mic cannot control chrome:// pages or GitHub.');
     return;
   }
 
   try {
-    const response = await chrome.tabs.sendMessage(tab.id, { type, command });
-    if (response?.ok) setStatus('Command sent to Foundry.', true);
+    let response;
+    try {
+      response = await deliver(tab.id, type, command);
+    } catch (_) {
+      setStatus('Connecting Mouse Mic to this Foundry page…');
+      await injectMouseMic(tab.id);
+      response = await deliver(tab.id, type, command);
+    }
+    if (response?.ok) setStatus('Connected — command sent to Foundry.', true);
   } catch (error) {
     console.error('NXYZ Mouse Mic:', error);
-    setStatus('Foundry page is not connected yet. Refresh the Palantir tab once, then try again.');
+    setStatus(`Could not connect to this Foundry page: ${error?.message || error}`);
   }
 }
 
@@ -66,8 +82,8 @@ document.getElementById('command').addEventListener('keydown', (event) => {
 
 activeTab().then((tab) => {
   if (isSupported(tab?.url || '')) {
-    setStatus('Ready on Palantir Foundry.', true);
+    setStatus('Ready — commands will auto-connect to this Foundry page.', true);
   } else {
-    setStatus('Open your Palantir Foundry tab to use Mouse Mic.');
+    setStatus('Switch to your Palantir Foundry tab to use Mouse Mic.');
   }
 });
