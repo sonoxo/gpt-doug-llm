@@ -6,6 +6,7 @@ import type { FrameSource } from './camera/types.js';
 import { CocoDogDetector } from './vision/coco.js';
 import { BathroomEventScorer } from './logic/poopScore.js';
 import { createAlerter, type AlarmEvent } from './alerts/index.js';
+import { sendEventToZyra } from './pipeline/zyra.js';
 
 const detector = new CocoDogDetector();
 console.log('[watch-dog] loading local dog detector...');
@@ -36,12 +37,27 @@ let lastReasons: string[] = [];
 let lastHeldMs = 0;
 let frames = 0;
 let sourceError: string | null = null;
+let lastZyraDelivery: { delivered: boolean; status?: number; error?: string } | null = null;
 
 async function sendAlarm(event: AlarmEvent): Promise<boolean> {
   const now = Date.now();
   if (event.type !== 'manual-test' && now - lastAlertAt < config.alertCooldownMs) return false;
+
   await alerter.fire(event);
   lastAlertAt = now;
+
+  lastZyraDelivery = await sendEventToZyra(
+    config.zyraPipelineUrl,
+    config.zyraPipelineToken,
+    event,
+  );
+
+  if (lastZyraDelivery.delivered) {
+    console.log(`[zyra] event delivered status=${lastZyraDelivery.status ?? 200}`);
+  } else {
+    console.warn(`[zyra] event not delivered: ${lastZyraDelivery.error ?? 'unknown error'}`);
+  }
+
   return true;
 }
 
@@ -122,6 +138,14 @@ app.get('/status', async () => ({
   reasons: lastReasons,
   lastAlertAt: lastAlertAt ? new Date(lastAlertAt).toISOString() : null,
   cooldownRemainingMs: Math.max(0, config.alertCooldownMs - (Date.now() - lastAlertAt)),
+  zyraPipeline: {
+    url: config.zyraPipelineUrl ?? null,
+    lastDelivery: lastZyraDelivery,
+  },
+  privacy: {
+    publicCctv: 'BLOCKED',
+    identityRecognition: 'DISABLED',
+  },
 }));
 
 app.post('/frame', async (request, reply) => {
@@ -142,12 +166,14 @@ app.post('/alarm/test', async () => {
     reasons: ['manual-test'],
     timestamp: new Date().toISOString(),
   });
-  return { ok: true };
+  return { ok: true, zyraPipeline: lastZyraDelivery };
 });
 
 await app.listen({ host: config.host, port: config.port });
 console.log(`[watch-dog] API http://${config.host}:${config.port}`);
 console.log(`[watch-dog] source=${config.cameraSource} camera=${config.cameraName} alert=${config.alertMode}`);
+console.log(`[watch-dog] privacy public-cctv=BLOCKED identity-recognition=DISABLED`);
+console.log(`[watch-dog] zyra=${config.zyraPipelineUrl ?? 'disabled'}`);
 if (sourceError) {
   console.log('[watch-dog] API is up; fix source configuration, then restart to begin automatic detection.');
 }
