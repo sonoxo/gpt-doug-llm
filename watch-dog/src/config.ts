@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { z } from 'zod';
 
 const boolish = z.string().optional();
+const optionalEmail = z.union([z.string().email(), z.literal('')]).optional();
+const optionalUrl = z.union([z.string().url(), z.literal('')]).optional();
 
 const schema = z.object({
   CAMERA_SOURCE: z.enum(['rtsp', 'osaio']).default('osaio'),
@@ -16,18 +18,18 @@ const schema = z.object({
   ALERT_COOLDOWN_MS: z.coerce.number().int().min(1000).default(60000),
   FLOOR_ZONE: z.string().default('0.18,0.40,0.98,1'),
   ALERT_MODE: z.enum(['console', 'webhook', 'mqtt', 'macos']).default('macos'),
-  ALERT_WEBHOOK_URL: z.string().url().optional().or(z.literal('')),
+  ALERT_WEBHOOK_URL: optionalUrl,
   ALERT_WEBHOOK_TOKEN: z.string().optional(),
   MQTT_URL: z.string().default('mqtt://127.0.0.1:1883'),
   MQTT_TOPIC: z.string().default('home/living-room/dog-poop-alarm'),
   MQTT_USERNAME: z.string().optional(),
   MQTT_PASSWORD: z.string().optional(),
-  OSAIO_EMAIL: z.string().email().optional(),
+  OSAIO_EMAIL: optionalEmail,
   OSAIO_PASSWORD: z.string().optional(),
   OSAIO_SECRET: z.string().optional().default(''),
   OSAIO_DEVICE_NAME: z.string().default('Living Room'),
   OSAIO_UUID: z.string().optional(),
-  OSAIO_BASE_URL: z.string().url().optional(),
+  OSAIO_BASE_URL: optionalUrl,
   OSAIO_UID: z.string().optional(),
   OSAIO_API_TOKEN: z.string().optional(),
   OSAIO_PHONE_CODE: z.string().optional(),
@@ -51,6 +53,10 @@ function parseZone(value: string): [number, number, number, number] {
   return [x1, y1, x2, y2];
 }
 
+function blankToUndefined(value?: string): string | undefined {
+  return value && value.trim() ? value.trim() : undefined;
+}
+
 export const config = {
   cameraSource: raw.CAMERA_SOURCE,
   cameraUrl: raw.CAMERA_URL,
@@ -64,22 +70,22 @@ export const config = {
   alertCooldownMs: raw.ALERT_COOLDOWN_MS,
   floorZone: parseZone(raw.FLOOR_ZONE),
   alertMode: raw.ALERT_MODE,
-  alertWebhookUrl: raw.ALERT_WEBHOOK_URL || undefined,
-  alertWebhookToken: raw.ALERT_WEBHOOK_TOKEN,
+  alertWebhookUrl: blankToUndefined(raw.ALERT_WEBHOOK_URL),
+  alertWebhookToken: blankToUndefined(raw.ALERT_WEBHOOK_TOKEN),
   mqttUrl: raw.MQTT_URL,
   mqttTopic: raw.MQTT_TOPIC,
-  mqttUsername: raw.MQTT_USERNAME,
-  mqttPassword: raw.MQTT_PASSWORD,
+  mqttUsername: blankToUndefined(raw.MQTT_USERNAME),
+  mqttPassword: blankToUndefined(raw.MQTT_PASSWORD),
   osaio: {
-    email: raw.OSAIO_EMAIL,
-    password: raw.OSAIO_PASSWORD,
+    email: blankToUndefined(raw.OSAIO_EMAIL),
+    password: blankToUndefined(raw.OSAIO_PASSWORD),
     secret: raw.OSAIO_SECRET,
     deviceName: raw.OSAIO_DEVICE_NAME,
-    uuid: raw.OSAIO_UUID,
-    baseUrl: raw.OSAIO_BASE_URL,
-    uid: raw.OSAIO_UID,
-    apiToken: raw.OSAIO_API_TOKEN,
-    phoneCode: raw.OSAIO_PHONE_CODE,
+    uuid: blankToUndefined(raw.OSAIO_UUID),
+    baseUrl: blankToUndefined(raw.OSAIO_BASE_URL),
+    uid: blankToUndefined(raw.OSAIO_UID),
+    apiToken: blankToUndefined(raw.OSAIO_API_TOKEN),
+    phoneCode: blankToUndefined(raw.OSAIO_PHONE_CODE),
     pollMs: raw.OSAIO_POLL_MS,
     timeZone: raw.OSAIO_TIMEZONE,
     zone: raw.OSAIO_ZONE,
