@@ -6,12 +6,14 @@ const optionalEmail = z.union([z.string().email(), z.literal('')]).optional();
 const optionalUrl = z.union([z.string().url(), z.literal('')]).optional();
 
 const schema = z.object({
-  CAMERA_SOURCE: z.enum(['rtsp', 'osaio']).default('osaio'),
+  CAMERA_SOURCE: z.enum(['rtsp', 'osaio', 'macos-screen']).default('osaio'),
   CAMERA_URL: z.string().optional().default(''),
   CAMERA_NAME: z.string().default('Living Room'),
   FFMPEG_PATH: z.string().default('ffmpeg'),
   FRAME_FPS: z.coerce.number().min(0.2).max(10).default(2),
   FRAME_WIDTH: z.coerce.number().int().min(320).max(1920).default(640),
+  SCREEN_REGION: z.string().optional().default(''),
+  SCREEN_POLL_MS: z.coerce.number().int().min(500).max(10000).default(1000),
   DOG_CONFIDENCE: z.coerce.number().min(0).max(1).default(0.55),
   EVENT_THRESHOLD: z.coerce.number().min(0).max(1).default(0.72),
   EVENT_HOLD_MS: z.coerce.number().int().min(500).max(30000).default(3000),
@@ -66,6 +68,8 @@ export const config = {
   ffmpegPath: raw.FFMPEG_PATH,
   frameFps: raw.FRAME_FPS,
   frameWidth: raw.FRAME_WIDTH,
+  screenRegion: blankToUndefined(raw.SCREEN_REGION),
+  screenPollMs: raw.SCREEN_POLL_MS,
   dogConfidence: raw.DOG_CONFIDENCE,
   eventThreshold: raw.EVENT_THRESHOLD,
   eventHoldMs: raw.EVENT_HOLD_MS,
