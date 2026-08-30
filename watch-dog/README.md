@@ -4,6 +4,12 @@
 
 ### ZYRA-INFLUENCED LOCAL VISION + EVENT INTELLIGENCE PIPELINE
 
+<a href="https://github.com/sonoxo/zyra/blob/main/ZYRA.README.md">
+  <img src="https://raw.githubusercontent.com/sonoxo/zyra/main/docs/assets/zyra-credential-pathway.svg" width="280" alt="ZYRA Application Credential — Verified Credential Pathway" />
+</a>
+
+**ZYRA APPLICATION CREDENTIAL · VERIFIED CREDENTIAL PATHWAY**
+
 **PRIVATE CAMERA → LOCAL AI → ALARM → ZYRA GEOVISION → PALANTIR CONTAINER**
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Local_AI-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
