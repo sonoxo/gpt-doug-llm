@@ -1,401 +1,258 @@
 <div align="center">
 
-<img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA CORE animated ecosystem flow" />
+<img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA product ecosystem" />
 
-# ZYRA CORE
+# ZYRA // NXYZ PRODUCT PLATFORM
 
-### Give ZYRA a goal. Its policy layer bounds the mission, the agent works through approved repository tools, and validation decides whether the result is kept.
+### Governed agentic infrastructure for software engineering, enterprise AI workflows, browser-guided operations, and local automation.
 
-[Start here](#start-here) · [Original project documentation](#original-project-documentation)
-
-</div>
-
-## Start here
-
-You do not need to understand the whole codebase first. Follow the illuminated path in the graphic:
-
-**01 — Type a command** →  **02 — Check policy** →  **03 — Plan and edit** →  **04 — Use the configured local model** →  **05 — Test, keep, or roll back**
-
-| What you are looking at | Plain-English meaning |
-|---|---|
-| **Input** | What the user or system supplies |
-| **Core** | The repository’s main processing loop |
-| **Guardrails** | Configuration, policy, filters, or approval boundaries |
-| **Output** | The result the system returns or deploys |
-| **Proof** | Tests, reports, previews, logs, or other visible evidence |
-
-> **Status, stated plainly:** Implemented repository runtime; exact availability depends on local provider and environment configuration.
-
-<details>
-<summary><strong>Accessibility and motion</strong></summary>
-
-The hero is a native SVG with descriptive text. Animation automatically stops when your device enables **Reduce Motion**. No JavaScript, tracking code, video autoplay, or external image host is required.
-
-</details>
-
----
-
-## Original project documentation
-
-<div align="center">
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0B1021,45:4C1D95,100:06B6D4&height=220&section=header&text=ZYRA&fontSize=76&fontColor=FFFFFF&fontAlignY=34&desc=Agentic%20GPT%20Runtime%20for%20GPT-DOUG-LLM&descAlignY=58&descSize=20&animation=fadeIn" alt="ZYRA header" />
-
-# 🟣 ZYRA // AGENTIC GPT-DOUG-LLM
-
-**Local-first autonomous coding runtime · deterministic guardrails · checkpointed self-improvement**
-
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=18&pause=900&color=A78BFA&center=true&vCenter=true&width=850&lines=Plan+%E2%86%92+Build+%E2%86%92+Test+%E2%86%92+Review+%E2%86%92+Rollback+or+Keep;Repository-scoped+autonomy+with+hard+mission+budgets;Native+LASER+circuit+breaker+%2B+runtime+self-heal;Ollama-first+local+AI+with+provider-neutral+architecture;Human+control+at+the+boundary" alt="ZYRA runtime loop" />
+**Build with AI. Keep execution visible. Keep authority explicit.**
 
 [![Security Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/security-gate.yml?branch=main&style=for-the-badge&label=Security%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/security-gate.yml)
 [![Unified Tests](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/unified-tests.yml?branch=main&style=for-the-badge&label=Unified%20Tests)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/unified-tests.yml)
 [![MIT](https://img.shields.io/github/license/sonoxo/gpt-doug-llm?style=for-the-badge)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/stargazers)
-[![Issues](https://img.shields.io/github/issues/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/issues)
-[![Last Commit](https://img.shields.io/github/last-commit/sonoxo/gpt-doug-llm?style=for-the-badge)](https://github.com/sonoxo/gpt-doug-llm/commits/main)
+![Mouse Mic](https://img.shields.io/badge/NXYZ%20Mouse%20Mic-v1.0.2-6f4cff?style=for-the-badge)
 
-**EUREKA // Build anything useful. Keep humans in command.**
+[Products](#products) · [Why ZYRA](#why-zyra) · [Architecture](#architecture) · [Foundry](#palantir-foundry-integration) · [Quick Start](#quick-start) · [Trust](#trust-and-control) · [Docs](#documentation)
 
 </div>
 
 ---
 
-<div align="center">
+## The product in one minute
 
-### 🧭 Navigation
+ZYRA is the product layer around **GPT-DOUG-LLM / NXYZ**: a set of bounded agentic tools that can reason, navigate, edit, validate, and integrate with authorized systems without treating model output as automatic authority.
 
-[Why ZYRA](#-why-zyra) · [Architecture](#-architecture) · [Quick Start](#-quick-start) · [Agent Mode](#-agent-mode) · [LASER](#-native-laser) · [Commands](#-terminal-command-center) · [Security](#-autonomy-contract) · [Roadmap](#-roadmap) · [Docs](#-documentation)
+The platform is designed around a simple execution contract:
 
-</div>
+> **AI proposes → policy bounds → approved tools execute → validation produces proof → humans retain control of material actions.**
+
+That makes the repository useful as more than a model experiment. It is a product platform for teams that want AI-assisted execution with explicit capability boundaries, auditability, and deployment discipline.
+
+## Products
+
+| Product | What it does | Best fit | Readiness |
+| --- | --- | --- | --- |
+| **ZYRA Core** | Bounded agentic software-engineering runtime with planning, repository edits, checkpoints, validation, rollback, self-heal, and defensive policy controls | Developers and technical teams building agentic workflows | **Implemented runtime** |
+| **NXYZ Mouse Mic** | Voice/keyboard browser guidance that finds, highlights, and activates visible Foundry controls with high-impact confirmation | Accessibility, operator assistance, dense enterprise UI navigation | **v1.0.2 shipping candidate** |
+| **GPT-DOUG ↔ Palantir Foundry Bridge** | Grounds GPT-DOUG in authorized Ontology objects and gates Foundry Actions behind explicit write enablement and user confirmation | Authorized Palantir Foundry deployments | **Integration-ready** |
+| **Watch Dog** | Local dog detection + temporal scoring + alerting for suspected bathroom events | Edge-AI / smart-camera experimentation | **Experimental prototype** |
+
+**Full portfolio:** [docs/PRODUCTS.md](docs/PRODUCTS.md)
+
+### NXYZ Mouse Mic — first shippable utility
+
+[`tools/nxyz-mouse-mic`](tools/nxyz-mouse-mic/README.md) is packaged as a Chrome Manifest V3 extension for supported Palantir Foundry pages.
+
+- No paid API key required by the extension.
+- No generic `<all_urls>` permission.
+- Typed-command mode runs locally in the extension.
+- Optional voice recognition uses the browser Web Speech implementation when available.
+- `show targets`, `where is <label>`, `click <label>`, and numbered targeting.
+- High-impact controls such as deploy/publish/approve/delete require explicit confirmation.
+- Store specifications, privacy language, icons, and publishing checklist are maintained in the product folder.
+
+[Mouse Mic source](tools/nxyz-mouse-mic/) · [Shipping specs](tools/nxyz-mouse-mic/SPECS.md) · [Privacy](tools/nxyz-mouse-mic/PRIVACY.md)
 
 ---
 
-## ⚡ Why ZYRA
+## Why ZYRA
 
-ZYRA turns GPT-DOUG-LLM into a **local agentic engineering environment** instead of a single chat loop. The runtime separates model reasoning from deterministic controls so planning can be flexible while execution stays inspectable and bounded.
+Most AI tooling optimizes for generating an answer. ZYRA focuses on the harder step: **turning a model recommendation into a controlled operation**.
 
-| System | Role | Boundary |
-|---|---|---|
-| 🤖 **Agent Core** | Plans and executes repository coding missions | Repo-scoped tools, checkpoints, rollback, hard budgets |
-| 🔴 **Native LASER** | Defensive circuit breaker | Intercept → isolate → recover; no retaliation |
-| 🩺 **Self-Heal** | Repairs local provider/model runtime configuration | One bounded pass; no recursive repair loop |
-| 🧠 **Agent Chain** | Planner → Executor → Reviewer orchestration | Depth and spawn budgets |
-| 🧬 **Evolve Mode** | Improves ZYRA-owned agent/runtime/test code | Same checkpoint + validation gates |
-| 🌐 **Web Runtime** | Local interface and streaming services | Explicitly configured execution |
-| ⚙️ **Worker Fleet** | Queue-based background task processing | Repository-defined workers |
-| 🛡️ **Security Gate** | CI tests, static analysis, dependency audit, SBOM | Runs on GitHub Actions |
+| Value | ZYRA approach |
+| --- | --- |
+| **Execution control** | Deterministic policy and allowlisted tools sit between model output and mutation |
+| **Recoverability** | Checkpoint before mission-owned writes; rollback when final validation fails |
+| **Operational evidence** | Tests, logs, previews, reports, and runtime state are treated as proof rather than decoration |
+| **Enterprise context** | Foundry integration retrieves only context exposed to the configured authorized identity |
+| **Local-first options** | Local/provider-neutral runtime paths reduce dependence on a single hosted model vendor |
+| **Human authority** | Material external writes remain gated rather than silently delegated to the model |
 
-### What makes it different
+### Where it can create value
 
-- **Local-first inference** through Ollama with provider-neutral backend code.
-- **Autonomy with an audit trail**, not hidden background mutation.
-- **Checkpoint-before-write** behavior for autonomous missions.
-- **Automatic rollback** when a mission fails its final validation gate.
-- **Native defensive isolation** when policy events reach LASER thresholds.
-- **Human-controlled external boundaries**: the local agent does not gain arbitrary shell, push/deploy/send, or external-targeting tools.
+- **Engineering teams:** turn natural-language goals into bounded repository missions.
+- **Enterprise AI teams:** connect reasoning to governed Ontology context instead of copy/pasted data.
+- **Operators and accessibility users:** navigate complex Foundry interfaces with spoken or typed guidance.
+- **R&D teams:** prototype local edge/automation workflows without pretending experiments are production systems.
 
 ---
 
-## 🧠 Architecture
+## Architecture
 
 ```mermaid
-flowchart TD
-    U[User / ZYRA Terminal] --> P[Deterministic Policy Layer]
-    P -->|allowed| R[Agentic Runtime]
-    P -->|blocked| L[Native LASER]
-    L --> I[Local Model-Path Isolation]
+flowchart LR
+    U[User / Operator] --> Z[ZYRA / GPT-DOUG]
+    Z --> P[Policy + Capability Boundary]
+    P -->|approved read/reason| R[Agent Runtime]
+    P -->|material action| A[Approval Gate]
 
-    R --> PL[Planner]
-    PL --> AC[Agent Core]
-    AC --> T1[Read / Search]
-    AC --> T2[Exact Repository Edits]
-    AC --> T3[Validation Gates]
-    T3 --> RV[Reviewer]
-    RV -->|pass| K[Keep Checkpointed Changes]
-    RV -->|fail| RB[Automatic Rollback]
+    R --> T[Allowlisted Tools]
+    T --> V[Validation / Evidence]
+    V -->|pass| K[Keep Result]
+    V -->|fail| RB[Rollback / Reject]
 
-    R --> O[Ollama / Provider Backend]
-    H[Self-Heal] --> O
-    CI[GitHub Security Gate] --> T3
+    R --> F[Authorized Foundry Context]
+    R --> L[Local / Configured Model Provider]
+    A --> T
 ```
 
-The guiding rule is simple: **models may propose; deterministic code decides what can execute.**
+**Design rule:** model reasoning is flexible; execution authority is explicit.
 
-Deep dive: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Deep dive: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/AGENTIC_RUNTIME.md](docs/AGENTIC_RUNTIME.md)
 
 ---
 
-## 🚀 Quick Start
+## Palantir Foundry integration
 
-### 1. Clone
+The repository includes an implemented Foundry bridge for an **authorized Palantir enrollment**.
+
+Implemented capabilities:
+
+- OAuth client credentials or explicitly issued bearer-token configuration;
+- list Ontologies and object types;
+- read/search Ontology objects;
+- inject authorized Ontology data into GPT-DOUG reasoning context;
+- call Ontology Actions only when local writes are enabled **and** the user confirms;
+- host pinning and explicit Foundry configuration boundaries.
+
+```bash
+python palantir_bridge.py status
+python palantir_bridge.py ontologies
+python palantir_bridge.py object-types <ontology>
+python palantir_bridge.py analyze <ontology> <object_type> "your question"
+```
+
+The bridge does **not** manufacture credentials or grant tenant permissions. The connected Palantir identity and tenant policy remain authoritative.
+
+Integration guide: [docs/PALANTIR_FOUNDRY.md](docs/PALANTIR_FOUNDRY.md)
+
+---
+
+## Quick Start
 
 ```bash
 git clone https://github.com/sonoxo/gpt-doug-llm.git
 cd gpt-doug-llm
-```
-
-### 2. Heal the local runtime
-
-```bash
 python3 dougctl.py heal
-```
-
-### 3. Launch ZYRA
-
-```bash
 python3 zyra_chat.py
 ```
 
-A healthy launch should identify the local model, branch, self-heal status, LASER state, and Agent Core state before presenting:
+Then verify the native runtime:
 
 ```text
-ZYRA >
-```
-
-### 4. Verify native systems
-
-Inside ZYRA:
-
-```text
-/laser-test
-/agent-test
 /status
+/agent-test
+/laser-test
 ```
 
----
-
-## 🤖 Agent Mode
-
-ZYRA's Agent Core is designed for **bounded autonomous repository work**.
-
-Default mission envelope:
+Typical agent mission:
 
 ```text
-8 steps
-240 seconds
-12 model calls
-repository scope only
-checkpoint before write
-auto-rollback on failed final gate
+/plan add structured mission telemetry
+/do add structured mission telemetry
+/mission-status
 ```
 
-### Mission flow
+Mission lifecycle:
 
 ```text
 OBSERVE → PLAN → EDIT → TEST → REVIEW → KEEP / ROLLBACK
 ```
 
-### Natural vibe-code commands
-
-```text
-/plan build a better fleet dashboard
-/do add structured mission telemetry to the agent runtime
-/evolve improve your own mission planning and error recovery
-/mission-status
-/undo
-```
-
-`/evolve` is not an unrestricted self-modification switch. It operates through the same bounded repository tools and validation path used by ordinary missions.
-
-Deep dive: [docs/AGENTIC_RUNTIME.md](docs/AGENTIC_RUNTIME.md)
-
----
-
-## 🔴 Native LASER
-
-LASER is ZYRA's local defensive circuit breaker.
-
-```text
-normal request        → ALLOW
-blocked input         → INTERCEPT
-repeated violations   → ISOLATE
-blocked model output  → ISOLATE immediately
-recovery              → reset / timeout
-```
-
-The native self-test is deterministic and intentionally does **not** execute attack payloads or target external systems.
-
-```text
-/laser-test
-/laser-status
-/laser-reset
-```
-
----
-
-## 🩺 Runtime Self-Heal
-
-Self-Heal repairs ZYRA's own local runtime wiring when the model/provider configuration drifts.
-
-It can:
-
-- reload persisted runtime environment settings;
-- normalize provider selection;
-- detect the local Ollama endpoint;
-- start Ollama once when needed;
-- select an installed compatible model;
-- persist non-secret runtime settings.
-
-It intentionally does not run recursive healing loops or silently download large models.
-
-```bash
-python3 dougctl.py heal
-```
-
----
-
-## ⌨️ Terminal Command Center
-
-| Command | Purpose |
-|---|---|
-| `/status` | Full ZYRA runtime dashboard |
-| `/fleet` | Agent + worker inventory |
-| `/heal` | Run one bounded runtime repair pass |
-| `/heal-status` | Show last self-heal report |
-| `/laser-test` | Native LASER deterministic self-test |
-| `/laser-status` | Circuit-breaker state |
-| `/laser-reset` | Clear LASER lock/strike state |
-| `/agent-test` | Native Agent Core safety/self-test |
-| `/agent-status` | Mission envelope + last mission |
-| `/plan <goal>` | Generate a bounded mission plan |
-| `/do <goal>` | Execute a bounded repository mission |
-| `/evolve <goal>` | Improve ZYRA-owned runtime/agent/test code |
-| `/mission-status` | Show latest autonomous mission result |
-| `/undo` | Restore the latest agent checkpoint |
-| `/fast` | Lower-latency local chat mode |
-| `/balanced` | Larger-context local chat mode |
-| `/default-on` | Auto-open ZYRA in new interactive terminal windows |
-| `/clear` | Clear conversation memory |
-| `/quit` | Exit cleanly |
-
 Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
 
 ---
 
-## 🛡️ Autonomy Contract
+## Trust and control
 
-ZYRA is built around **capability boundaries**, not claims of unlimited autonomy.
+ZYRA is intentionally marketed around what the software can demonstrate, not unlimited-autonomy language.
 
-### Agent Core can
+### Built-in boundaries
 
-- inspect text files inside the repository;
-- search repository content;
-- create and edit allowlisted text/code files;
-- create checkpoints before mission-owned writes;
-- run allowlisted validation gates;
-- keep successful mission changes;
-- roll back failed mission changes.
+- repository-scoped agent tools;
+- mission step/time/model-call budgets;
+- checkpoint-before-write behavior;
+- validation gates and rollback;
+- defensive LASER circuit-breaker behavior;
+- explicit Foundry write enablement;
+- confirmation before configured material actions;
+- no autonomous credential harvesting;
+- no unrestricted external offensive scanning or exploitation;
+- no claim that a local capability switch overrides an external platform's permissions.
 
-### Agent Core does not receive
-
-- unrestricted arbitrary shell execution;
-- arbitrary filesystem access outside the repository;
-- autonomous credential harvesting;
-- external offensive scanning or exploitation;
-- automatic push/deploy/send tools;
-- unbounded recursive sub-agent spawning.
-
-For security policy and limitations, read [SECURITY.md](SECURITY.md) and [docs/SECURITY_BASELINE.md](docs/SECURITY_BASELINE.md).
+Read [SECURITY.md](SECURITY.md) and [docs/SECURE_DEVELOPMENT_BASELINE.md](docs/SECURE_DEVELOPMENT_BASELINE.md).
 
 ---
 
-## 🧩 Repository Map
+## Product readiness
+
+ZYRA uses explicit readiness labels so buyers, collaborators, and reviewers can distinguish working code from future architecture.
+
+| Label | Meaning |
+| --- | --- |
+| **Implemented runtime** | Code exists in the repository and is intended to run with required local configuration |
+| **Shipping candidate** | Product package/specs exist and are being prepared for external distribution |
+| **Integration-ready** | Connector/runtime exists but requires customer/tenant authorization and configuration |
+| **Experimental prototype** | Useful R&D code; not represented as production-grade detection or assurance |
+| **Planned** | Architecture or roadmap item; do not treat as a currently deployed capability |
+
+This status discipline is part of the product: **claims should be traceable to code, configuration, or evidence.**
+
+---
+
+## Repository map
 
 ```text
 gpt-doug-llm/
-├── zyra_chat.py             # Interactive ZYRA terminal
-├── zyra_agent.py            # Bounded autonomous Agent Core
-├── zyra_laser.py            # Native defensive circuit breaker
-├── zyra_self_heal.py        # Local runtime repair
-├── zyra.py                  # Deterministic watchdog/policy layer
-├── dougctl.py               # Runtime control CLI
-├── agents/                  # Planner, executor, reviewer, provider backend
-├── workers/                 # Queue workers and orchestration services
-├── web/                     # Local web platform
-├── docs/                    # Architecture, security, APIs, roadmap
-├── tests/                   # Core regression tests
-└── .github/workflows/       # CI, security, releases, fleet automation
+├── zyra_chat.py                 # Interactive ZYRA runtime
+├── zyra_agent.py                # Bounded repository Agent Core
+├── zyra_laser.py                # Defensive circuit breaker
+├── zyra_self_heal.py            # Local runtime repair
+├── palantir_foundry.py          # Foundry REST client
+├── palantir_bridge.py           # GPT-DOUG ↔ Foundry bridge
+├── agents/                      # Planner / executor / reviewer components
+├── workers/                     # Worker and orchestration services
+├── tools/nxyz-mouse-mic/        # Chrome browser-guidance product
+├── watch-dog/                   # Experimental local camera product
+├── docs/                        # Product, architecture, integration, security docs
+├── tests/                       # Regression tests
+└── .github/workflows/           # CI / security / release automation
 ```
 
 ---
 
-## ✅ CI / Engineering Gates
+## Documentation
 
-The repository includes dedicated workflows for:
-
-- unified tests;
-- Agent Core native self-test;
-- LASER native self-test;
-- Ruff linting;
-- Bandit security analysis;
-- dependency auditing;
-- CycloneDX SBOM generation;
-- Docker publishing;
-- release automation;
-- automated agent-fleet workflows.
-
-The goal is not "AI generated = accepted." The goal is **generated → inspected → validated → accepted**.
+| Start here | Purpose |
+| --- | --- |
+| [Product Portfolio](docs/PRODUCTS.md) | What ZYRA products exist, buyer value, and readiness |
+| [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
+| [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
+| [Palantir Foundry](docs/PALANTIR_FOUNDRY.md) | Authorized Foundry integration |
+| [Commands](docs/COMMANDS.md) | Terminal command reference |
+| [Roadmap](docs/ROADMAP.md) | Engineering direction |
+| [Security](SECURITY.md) | Security limitations and vulnerability reporting |
+| [Contributing](CONTRIBUTING.md) | Development workflow |
 
 ---
 
-## 🗺️ Roadmap
+## Market-facing independence statement
 
-Current direction:
+**ZYRA, GPT-DOUG-LLM, NXYZ, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, government systems, intelligence/security disciplines, or external organizations describe integrations, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, or affiliation.
 
-- [x] Local ZYRA conversational runtime
-- [x] Runtime self-heal
-- [x] Native LASER circuit breaker
-- [x] Bounded Agent Core
-- [x] Checkpoint + rollback missions
-- [x] Agent/LASER CI gates
-- [ ] Structured mission event journal
-- [ ] DAG mission scheduler with dependency-aware execution
-- [ ] Capability manifest per tool/agent
-- [ ] Reproducible sandbox runner for generated apps
-- [ ] Web mission console with live event streaming
-- [ ] Signed autonomous-change attestations
-- [ ] Release-grade benchmark suite for agent reliability
-
-See [docs/ROADMAP.md](docs/ROADMAP.md).
+That distinction matters commercially: customers should know exactly which capabilities come from this repository and which permissions or assurances belong to the external platforms they operate.
 
 ---
 
-## 📚 Documentation
-
-| Document | Purpose |
-|---|---|
-| [Architecture](docs/ARCHITECTURE.md) | Runtime layers, trust boundaries, mission flow |
-| [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Agent Core budgets, tools, checkpoints, rollback |
-| [Commands](docs/COMMANDS.md) | ZYRA terminal command reference |
-| [Roadmap](docs/ROADMAP.md) | Engineering milestones |
-| [Security](SECURITY.md) | Vulnerability reporting + limitations |
-| [Secure Development Baseline](docs/SECURE_DEVELOPMENT_BASELINE.md) | Engineering controls |
-| [Contributing](CONTRIBUTING.md) | Development and pull-request process |
-
----
-
-## 🤝 Contributing
-
-PRs are welcome when they keep the runtime testable, deterministic at security boundaries, and understandable to another developer.
-
-Start with [CONTRIBUTING.md](CONTRIBUTING.md), use the issue templates for bugs/features, and run the native Agent/LASER tests before opening a PR.
-
----
-
-## 📄 License
+## License
 
 MIT — see [LICENSE](LICENSE).
 
-## ⚠️ Project Scope
-
-GPT-DOUG-LLM and ZYRA are independent open-source software. References to external products, organizations, or engineering patterns do not imply endorsement, affiliation, authorization, or certification. ZYRA's policy and safety layers complement rather than replace OS sandboxing, least privilege, dependency review, and professional security assessment.
-
 <div align="center">
 
-### 🟣 ZYRA
+### ZYRA
 
-**Build fast. Validate everything. Keep autonomy bounded by capability.**
-
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:06B6D4,55:4C1D95,100:0B1021&height=120&section=footer" alt="footer" />
+**AI-assisted execution with visible boundaries, verifiable outcomes, and human authority where it matters.**
 
 </div>
