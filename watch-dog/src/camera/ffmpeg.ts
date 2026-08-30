@@ -1,9 +1,8 @@
-import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
+import type { FrameHandler, FrameSource } from './types.js';
 
-export type FrameHandler = (jpeg: Buffer, capturedAt: number) => Promise<void> | void;
-
-export class FfmpegCamera {
-  private process?: ChildProcessWithoutNullStreams;
+export class FfmpegCamera implements FrameSource {
+  private process?: ChildProcess;
   private stopped = false;
 
   constructor(
@@ -15,6 +14,8 @@ export class FfmpegCamera {
 
   start(onFrame: FrameHandler): void {
     if (this.process) throw new Error('Camera already started');
+    if (!this.cameraUrl) throw new Error('CAMERA_URL is required for rtsp source');
+    this.stopped = false;
 
     const args = [
       '-hide_banner',
@@ -55,7 +56,7 @@ export class FfmpegCamera {
       }
     };
 
-    child.stdout.on('data', (chunk: Buffer) => {
+    child.stdout?.on('data', (chunk: Buffer) => {
       buffer = Buffer.concat([buffer, chunk]);
       while (true) {
         const start = buffer.indexOf(Buffer.from([0xff, 0xd8]));
@@ -74,7 +75,7 @@ export class FfmpegCamera {
       }
     });
 
-    child.stderr.on('data', (chunk: Buffer) => {
+    child.stderr?.on('data', (chunk: Buffer) => {
       const msg = chunk.toString().trim();
       if (msg) console.warn('[ffmpeg]', msg);
     });

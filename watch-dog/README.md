@@ -1,52 +1,63 @@
 # GPT-DOUG-LLLM Watch Dog
 
-Local-first TypeScript IoT watchdog for a living-room camera.
+> **Living Room AI Watchdog** — Osaio camera events → local dog detection → temporal bathroom-event scoring → audible / IoT alarm.
 
-Pipeline:
+```mermaid
+flowchart LR
+    C["📷 Living Room C360"] --> O["☁️ Osaio event"]
+    O --> D["🐕 Local dog detector"]
+    D --> Z["⌗ Floor-zone filter"]
+    Z --> P["⏱ Posture + hold score"]
+    P -->|suspected event| A["🚨 WATCH DOG ALARM"]
+    A --> M["🔊 Mac"]
+    A --> Q["📡 MQTT / Webhook"]
+```
 
-`RTSP camera -> FFmpeg frames -> local dog detector -> temporal bathroom-event scorer -> cooldown -> console/webhook/MQTT alarm`
+**Full GitHub-rendered visual architecture:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
-The design is inspired by the real-time/open-vocabulary direction shown in the DART reference supplied for this project:
+## Current architecture
 
-https://x.com/rsasaki0109/status/2093678821656646043?s=20
+The original RTSP-only prototype has been upgraded for the camera ecosystem shown in the supplied screenshots. `CAMERA_SOURCE=osaio` polls new Osaio motion-event snapshots and runs inference locally. RTSP remains available as a fallback for cameras that expose it.
 
-This repository does **not** copy or depend on DART. Version 0.1 uses a local COCO-SSD dog detector and exposes a detector boundary that can later be replaced by an open-vocabulary/SAM-style model.
+The implementation direction is informed by the real-time/open-vocabulary references supplied for this project:
 
-## Important accuracy note
+- https://x.com/rsasaki0109/status/2093677539705409827
+- https://x.com/rsasaki0109/status/2093678821656646043
 
-A generic object detector can detect a dog, but it cannot reliably label defecation by itself. This v0.1 therefore combines:
+This project does **not** copy or depend on those projects. The current detector is COCO-SSD with a replaceable detector boundary so a stronger open-vocabulary / SAM-style model can be introduced later.
+
+## What Watch Dog considers a suspected bathroom event
+
+A generic dog detector does not understand defecation. Watch Dog therefore combines multiple signals instead of triggering from one frame:
 
 - dog confidence
-- user-defined floor zone
-- low motion / lingering
+- living-room floor ROI
+- low movement / lingering
 - compact posture evidence
-- minimum hold time
-- confidence threshold
+- minimum hold duration
+- total confidence threshold
 - alert cooldown
 
-Treat the result as a **suspected bathroom event** until the camera angle is calibrated. The next accuracy upgrade is a small posture classifier trained on clips from this exact living-room view.
+```mermaid
+stateDiagram-v2
+    [*] --> Watching
+    Watching --> DogSeen: dog detected
+    DogSeen --> Watching: dog disappears
+    DogSeen --> Candidate: floor zone + low motion
+    Candidate --> DogSeen: movement resumes
+    Candidate --> Alarm: hold >= 3 sec and score passes
+    Alarm --> Cooldown
+    Cooldown --> Watching: 60 sec expires
+```
 
-## C360 camera status
-
-The camera photos supplied for this project identify a C360-style battery/solar camera with a built-in siren. The missing integration detail is whether its app exposes RTSP/ONVIF or only a proprietary cloud/P2P stream.
-
-Do not invent a siren endpoint. Until the actual camera API is identified, use one of these alert paths:
-
-1. `console` for testing
-2. `webhook` to Home Assistant / a local bridge / the camera API once known
-3. `mqtt` to a local siren or automation broker
+Treat the result as a **suspected bathroom event** until the camera angle is calibrated and posture-specific training clips are collected.
 
 ## Requirements
 
 - Node.js 20+
-- FFmpeg installed and available as `ffmpeg`
-- An RTSP stream URL or an RTSP bridge for the camera
-
-### macOS
-
-```bash
-brew install ffmpeg
-```
+- macOS, Linux, or Windows for inference
+- Osaio credentials/session for `CAMERA_SOURCE=osaio`, **or** an RTSP URL for `CAMERA_SOURCE=rtsp`
+- FFmpeg only when using RTSP mode
 
 ## Install
 
@@ -54,47 +65,54 @@ brew install ffmpeg
 cd watch-dog
 npm install
 cp .env.example .env
-```
-
-Edit `.env` and set `CAMERA_URL`.
-
-## Run
-
-```bash
+npm run typecheck
 npm start
 ```
 
-Optional verbose scoring:
+Do not commit `.env`.
 
-```bash
-LOG_FRAMES=true npm start
+## Osaio mode
+
+Default configuration:
+
+```env
+CAMERA_SOURCE=osaio
+CAMERA_NAME=Living Room
+OSAIO_DEVICE_NAME=Living Room
+OSAIO_POLL_MS=2000
+ALERT_MODE=macos
 ```
 
-## Local API
+Watch Dog can use either an authenticated Osaio session or account login configuration. Keep all authentication material local.
 
-The control API binds to `127.0.0.1` by default.
+A separate shared Osaio account is preferable to putting the primary mobile-app account into an unattended service.
 
-```bash
-curl http://127.0.0.1:8787/health
-curl http://127.0.0.1:8787/status
-curl -X POST http://127.0.0.1:8787/alarm/test
+## RTSP fallback
+
+```env
+CAMERA_SOURCE=rtsp
+CAMERA_URL=rtsp://user:password@camera.local:554/stream1
 ```
 
-Keep it on loopback unless you intentionally add authentication and expose it to the LAN.
+## Living-room floor region
 
-## Floor-zone calibration
+Starting ROI derived from the supplied living-room framing:
 
-`FLOOR_ZONE=x1,y1,x2,y2` uses normalized frame coordinates from `0` to `1`.
-
-Default:
-
-```text
-0,0.30,1,1
+```env
+FLOOR_ZONE=0.18,0.40,0.98,1
 ```
 
-That means the entire width and the lower 70% of the image. Once a screenshot from the mounted living-room camera is available, replace it with a tighter polygon/zone around the floor where accidents actually happen.
+Values are normalized `x1,y1,x2,y2` coordinates. Tune this after mounting the camera permanently.
 
-## Alert modes
+## Alarm modes
+
+### Mac audible alarm
+
+```env
+ALERT_MODE=macos
+```
+
+The runtime emits a terminal bell and uses macOS `say` for an audible warning.
 
 ### Console
 
@@ -107,7 +125,6 @@ ALERT_MODE=console
 ```env
 ALERT_MODE=webhook
 ALERT_WEBHOOK_URL=http://127.0.0.1:8123/api/webhook/dog_alarm
-ALERT_WEBHOOK_TOKEN=
 ```
 
 ### MQTT
@@ -118,12 +135,33 @@ MQTT_URL=mqtt://127.0.0.1:1883
 MQTT_TOPIC=home/living-room/dog-poop-alarm
 ```
 
-Example event:
+The exact proprietary C360 built-in siren command is **not claimed as working until it is proven against the real device**. MQTT/webhook remain the safe integration boundary for that final adapter.
+
+## Local API
+
+The API binds to loopback by default.
+
+```bash
+curl http://127.0.0.1:8787/health
+curl http://127.0.0.1:8787/status
+curl -X POST http://127.0.0.1:8787/alarm/test
+```
+
+You can also inject a JPEG into the exact inference path for calibration/testing:
+
+```bash
+curl -X POST \
+  -H 'Content-Type: image/jpeg' \
+  --data-binary @frame.jpg \
+  http://127.0.0.1:8787/frame
+```
+
+## Runtime event
 
 ```json
 {
   "type": "suspected-dog-bathroom-event",
-  "camera": "living-room",
+  "camera": "Living Room",
   "score": 0.84,
   "heldMs": 4200,
   "reasons": ["floor-zone", "low-motion", "held-posture", "compact-posture"],
@@ -131,16 +169,24 @@ Example event:
 }
 ```
 
-## Recommended next upgrades
+## Roadmap
 
-- identify the exact C360 app and stream protocol
-- connect the real built-in siren endpoint if locally controllable
-- draw an exact living-room floor ROI from a camera screenshot
-- save event clips for false-positive review
-- train `dog-squat / dog-sit / dog-lie / dog-walk` posture classes
-- add an open-vocabulary detector adapter following the DART-style real-time architecture direction
-- optionally run inference on an Apple Silicon Mac, NVIDIA edge box, or dedicated local server
+```mermaid
+flowchart LR
+    A["v0.2 COCO dog"] --> B["posture classifier"]
+    B --> C["temporal clip model"]
+    C --> D["open-vocabulary adapter"]
+    D --> E["real-time DART/SAM-style direction"]
+```
 
-## Privacy
+Next accuracy upgrades:
 
-Keep camera inference local. Do not commit `.env`, camera passwords, tokens, or public-facing stream URLs to GitHub.
+- calibrate the exact floor ROI
+- collect false-positive and true-event clips locally
+- train `stand / sit / squat / lie / walk` posture classes
+- add temporal 2–5 second clip inference
+- connect and verify the exact C360 siren command, if the device exposes one
+
+## Privacy and security
+
+Camera inference is intended to remain local after the Osaio event image is obtained. Never commit camera credentials, Osaio tokens, `.env`, snapshots from inside the home, or private stream URLs to GitHub.
