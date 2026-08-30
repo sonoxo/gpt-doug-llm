@@ -1,0 +1,63 @@
+name: NXYZ Mouse Mic Store Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/nxyz-mouse-mic/**'
+      - '.github/workflows/nxyz-mouse-mic-store-package.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate manifest and JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd tools/nxyz-mouse-mic
+          python -m json.tool manifest.json >/dev/null
+          node --check content.js
+          node --check popup.js
+          test -f icons/icon16.png
+          test -f icons/icon48.png
+          test -f icons/icon128.png
+
+      - name: Build Chrome Web Store ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(python -c 'import json; print(json.load(open("tools/nxyz-mouse-mic/manifest.json"))["version"])')
+          mkdir -p dist/package/icons
+          cp tools/nxyz-mouse-mic/manifest.json dist/package/
+          cp tools/nxyz-mouse-mic/content.js dist/package/
+          cp tools/nxyz-mouse-mic/overlay.css dist/package/
+          cp tools/nxyz-mouse-mic/popup.html dist/package/
+          cp tools/nxyz-mouse-mic/popup.js dist/package/
+          cp tools/nxyz-mouse-mic/icons/icon16.png dist/package/icons/
+          cp tools/nxyz-mouse-mic/icons/icon48.png dist/package/icons/
+          cp tools/nxyz-mouse-mic/icons/icon128.png dist/package/icons/
+          cd dist/package
+          zip -r "../nxyz-mouse-mic-store-v${VERSION}.zip" .
+
+      - name: Verify ZIP root
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(python -c 'import json; print(json.load(open("tools/nxyz-mouse-mic/manifest.json"))["version"])')
+          unzip -l "dist/nxyz-mouse-mic-store-v${VERSION}.zip"
+          unzip -p "dist/nxyz-mouse-mic-store-v${VERSION}.zip" manifest.json | python -m json.tool >/dev/null
+
+      - name: Upload store package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nxyz-mouse-mic-chrome-store
+          path: dist/nxyz-mouse-mic-store-v*.zip
+          if-no-files-found: error
