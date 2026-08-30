@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import mqtt from 'mqtt';
 
 export type AlarmEvent = {
@@ -10,7 +11,7 @@ export type AlarmEvent = {
 };
 
 export type AlertConfig = {
-  mode: 'console' | 'webhook' | 'mqtt';
+  mode: 'console' | 'webhook' | 'mqtt' | 'macos';
   webhookUrl?: string;
   webhookToken?: string;
   mqttUrl: string;
@@ -24,11 +25,52 @@ export interface Alerter {
   close(): Promise<void>;
 }
 
+function consoleAlarm(event: AlarmEvent): void {
+  process.stderr.write('\u0007');
+  console.error('\n🚨 WATCH DOG ALARM 🚨', JSON.stringify(event, null, 2));
+}
+
+async function sayOnMac(message: string): Promise<void> {
+  if (process.platform !== 'darwin') return;
+  await new Promise<void>((resolve) => {
+    const child = spawn('/usr/bin/say', ['-r', '235', message], {
+      stdio: 'ignore',
+      detached: false,
+    });
+    const timer = setTimeout(() => {
+      child.kill('SIGTERM');
+      resolve();
+    }, 8000);
+    child.once('exit', () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    child.once('error', () => {
+      clearTimeout(timer);
+      resolve();
+    });
+  });
+}
+
 export async function createAlerter(config: AlertConfig): Promise<Alerter> {
   if (config.mode === 'console') {
     return {
       async fire(event) {
-        console.error('\n🚨 WATCH DOG ALARM 🚨', JSON.stringify(event, null, 2));
+        consoleAlarm(event);
+      },
+      async close() {},
+    };
+  }
+
+  if (config.mode === 'macos') {
+    return {
+      async fire(event) {
+        consoleAlarm(event);
+        await sayOnMac(
+          event.type === 'manual-test'
+            ? 'Watch Dog alarm test.'
+            : 'Watch Dog alarm. Dog bathroom behavior detected in the living room.',
+        );
       },
       async close() {},
     };
