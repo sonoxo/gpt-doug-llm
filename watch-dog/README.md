@@ -15,6 +15,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-Local_AI-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![ZYRA](https://img.shields.io/badge/ZYRA-GeoVision-7B2CFF?style=for-the-badge)
 ![GSPO](https://img.shields.io/badge/GSPO-One_Command-00C2FF?style=for-the-badge)
+![AIP](https://img.shields.io/badge/Foundry_AIP-14_Reference_Instances-9cff57?style=for-the-badge)
 ![Privacy](https://img.shields.io/badge/Public_CCTV-BLOCKED-111111?style=for-the-badge)
 ![Identity](https://img.shields.io/badge/Identity_Recognition-DISABLED-111111?style=for-the-badge)
 
@@ -50,7 +51,8 @@ flowchart LR
         ONTOLOGY["🧬 Ontology Envelope"]
         APPROVAL["🛡 Human Approval Gate"]
         FOUNDRY["🏛 Foundry / Action Interface"]
-        QUEUE --> ONTOLOGY --> APPROVAL --> FOUNDRY
+        AIP["🧠 AIP Instance Fabric"]
+        QUEUE --> ONTOLOGY --> APPROVAL --> FOUNDRY --> AIP
     end
 
     ZYRA --> QUEUE
@@ -70,6 +72,7 @@ flowchart LR
 | **Watch Dog** | `127.0.0.1:8787` | Local vision + bathroom scoring | `LOCAL` |
 | **ZYRA GeoVision** | `127.0.0.1:5050` | Structured event ingestion + queue | `AUTO-BOOT BY GSPO` |
 | **Palantir Container** | Governed downstream boundary | Ontology/action envelope | `PENDING_HUMAN_APPROVAL` |
+| **Foundry / AIP Fabric** | ZYRA ontology references | 14 declared community reference instances | `REFERENCE_ONLY` |
 | **Public CCTV** | Any public/internet camera source | Not permitted by this profile | `BLOCKED` |
 | **Identity Recognition** | Face/identity inference | Not part of Watch Dog | `DISABLED` |
 
@@ -220,9 +223,10 @@ flowchart TB
         O --> H{"Human approval?"}
         H -->|NO| HOLD["Hold / Review"]
         H -->|YES| F["Foundry action interface"]
+        F --> AIP["AIP Instance Fabric"]
     end
 
-    F --> AUDIT["Immutable audit context"]
+    AIP --> AUDIT["Immutable audit context"]
 ```
 
 ### Container contract
@@ -233,6 +237,81 @@ flowchart TB
 - maps events to a reviewable ontology/action envelope
 - holds state at `PENDING_HUMAN_APPROVAL` until explicitly approved
 - does not invent Foundry credentials, ontology names, or action endpoints
+
+---
+
+## ◈ FOUNDRY / AIP INSTANCE FABRIC
+
+ZYRA currently declares **11 AIP integration patterns covering 14 named Foundry/AIP community reference instances**. These are embedded here as the complete reference fabric known to the current ZYRA ontology.
+
+> **Important:** these entries are public implementation references from the Palantir AIP Community Registry. They are **not claims that 14 private Foundry deployments are running or credentialed**. Runtime access and write authorization must be checked independently.
+
+```mermaid
+flowchart TB
+    Z["🟣 ZYRA Ontology\nzyra:palantir-aip-community"] --> F["⬡ FOUNDRY / AIP INSTANCE FABRIC"]
+
+    subgraph F["⬡ FOUNDRY / AIP INSTANCE FABRIC"]
+        AG["Conversational Agent\nElevenLabs Conversational Agent in Workshop Widget"]
+        OSDK["OSDK Local Ontology\nOSDK Hello World Project"]
+        CM1["Compute Module\nCompute Module Hello World Project"]
+        CM2["Compute Module\nIntegrating a Server with Compute Modules"]
+        WW["Workshop Widget\nOSDK Widget in Foundry"]
+        GEO1["Geospatial\nGeocoding with Nominatim and Compute Modules"]
+        GEO2["Geospatial\nPeak Explorer"]
+        EVT["Push Events\nPush-Based Events"]
+        GOV["Platform Governance\nPlatform Governance App with Platform SDK"]
+        EVAL["AIP Evals\nFeedback Loop with AIP Evals"]
+        CON1["Connector\nPersonal Gmail and Calendar Connector"]
+        CON2["Connector\nSmall Business Connector"]
+        MEDIA["Media\nMedia and Derived Properties"]
+        DEV["DevOps\nDevOps for AI Products"]
+    end
+
+    F --> GATE{"Runtime authorization"}
+    GATE -->|approved| ACTION["Ontology / Action boundary"]
+    GATE -->|not approved| HOLD["Reference / Review only"]
+```
+
+| # | AIP pattern | Embedded reference instance | ZYRA state |
+|---:|---|---|---|
+| 1 | Conversational agent | ElevenLabs Conversational Agent in Workshop Widget | `COMMUNITY_REFERENCE` |
+| 2 | OSDK local ontology access | OSDK Hello World Project | `COMMUNITY_REFERENCE` |
+| 3 | Foundry Compute Module | Compute Module Hello World Project | `COMMUNITY_REFERENCE` |
+| 4 | Foundry Compute Module | Integrating a Server with Compute Modules | `COMMUNITY_REFERENCE` |
+| 5 | Workshop custom widget | OSDK Widget in Foundry | `COMMUNITY_REFERENCE` |
+| 6 | Geospatial / geocoding | Geocoding with Nominatim and Compute Modules | `COMMUNITY_REFERENCE` |
+| 7 | Geospatial / geocoding | Peak Explorer | `COMMUNITY_REFERENCE` |
+| 8 | Push-based events | Push-Based Events | `COMMUNITY_REFERENCE` |
+| 9 | Platform governance | Platform Governance App with Platform SDK | `COMMUNITY_REFERENCE` |
+| 10 | AIP evaluation feedback loop | Feedback Loop with AIP Evals | `COMMUNITY_REFERENCE` |
+| 11 | External data connector | Personal Gmail and Calendar Connector | `COMMUNITY_REFERENCE` |
+| 12 | External data connector | Small Business Connector | `COMMUNITY_REFERENCE` |
+| 13 | Media and derived properties | Media and Derived Properties | `COMMUNITY_REFERENCE` |
+| 14 | DevOps for AI products | DevOps for AI Products | `COMMUNITY_REFERENCE` |
+
+**ZYRA ontology source:** `sonoxo/zyra/shared/ontology/palantir-aip-community.yaml`
+
+**Typed AIP contract:** `sonoxo/zyra/shared/types/palantir-aip.ts`
+
+**Public upstream registry:** https://github.com/palantir/aip-community-registry
+
+### ZYRA AIP integration pattern contract
+
+```text
+CONVERSATIONAL_AGENT
+OSDK_LOCAL_ONTOLOGY_ACCESS
+COMPUTE_MODULE
+WORKSHOP_WIDGET
+GEOSPATIAL
+PUSH_BASED_EVENTS
+PLATFORM_GOVERNANCE
+AIP_EVAL_FEEDBACK_LOOP
+EXTERNAL_CONNECTOR
+MEDIA_DERIVED_PROPERTIES
+DEVOPS_AI_PRODUCTS
+```
+
+The fabric is intentionally governed: a community example can inform architecture, ontology mapping, evaluation, and packaging without being treated as proof of a deployed or authorized Foundry instance.
 
 ---
 
