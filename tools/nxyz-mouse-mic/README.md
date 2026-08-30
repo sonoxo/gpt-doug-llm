@@ -1,109 +1,292 @@
+<div align="center">
+
+<img width="100%" src="./assets/nxyz-mouse-mic-accessibility-hero.svg" alt="NXYZ Mouse Mic accessibility support layer showing speak or type, discover controls, highlight and describe, then confirm and click" />
+
 # NXYZ Mouse Mic
 
-![NXYZ Mouse Mic icon](./icons/icon128.png)
+### Voice + keyboard click guidance for complex Palantir Foundry interfaces
 
-Free browser click-guidance for Palantir Foundry.
+**Reduce pointer precision. Reduce visual search. Keep the user in control.**
 
-NXYZ Mouse Mic scans the currently visible page for clickable controls, labels them, highlights the best match for a spoken or typed request, describes where the control is on screen, and can click it when requested.
+[How it works](#how-it-works) · [Accessibility](#accessibility-first-interaction) · [Install](#install) · [Commands](#commands) · [Safety](#human-confirmed-safety) · [Specs](./SPECS.md) · [Accessibility notes](./ACCESSIBILITY.md)
 
-## Release
+</div>
 
-**Current shipping version: 1.0.2 — Manifest V3**
+---
 
-- Chrome / Chromium extension.
-- Category target: Accessibility.
-- Runtime scope: `https://*.palantirfoundry.com/*` only.
-- Permissions: `activeTab`, `scripting`.
-- No `<all_urls>` permission.
-- No Chrome `storage` permission.
-- No paid API key or developer-operated backend required.
-- Production icons: 16×16, 48×48, and 128×128 PNG.
-- High-impact actions require explicit confirmation before click.
+## The product
 
-Full release contract: **[`SPECS.md`](./SPECS.md)**  
-Icon inventory: **[`icons/README.md`](./icons/README.md)**  
-Chrome Web Store copy: **[`STORE-LISTING.md`](./STORE-LISTING.md)**  
-Privacy policy: **[`PRIVACY.md`](./PRIVACY.md)**  
-Publish gate: **[`PUBLISH-CHECKLIST.md`](./PUBLISH-CHECKLIST.md)**
+NXYZ Mouse Mic is a free Chrome/Chromium accessibility-supporting extension for authorized Palantir Foundry pages.
 
-## Cost
+Instead of requiring a user to visually hunt for a small control and precisely move a pointer to it, Mouse Mic lets the user **speak or type what they are trying to reach**.
 
-**No paid API is required. No API key is required. No subscription is required by this extension.**
+Mouse Mic then:
 
-- DOM scanning, fuzzy target matching, highlighting, click selection, safety checks, and typed commands run inside the browser extension.
-- Speech synthesis uses the browser's built-in speech support.
-- Voice recognition uses the browser Web Speech implementation when available. Chrome may implement recognition with a browser/cloud speech service; the extension does not call a paid API itself.
-- If you do not want voice recognition, use the popup text box. Typed mode does not need speech recognition.
+1. discovers visible interactive controls;
+2. reads available accessible labels and visible text;
+3. finds the strongest target match;
+4. highlights the target and describes its screen location;
+5. optionally activates the control;
+6. pauses for explicit confirmation before potentially high-impact actions.
 
-## Install in Chrome
+> **Accessibility position:** NXYZ Mouse Mic is designed to support accessible interaction. It is not represented as an ADA certification, WCAG conformance certification, or a guarantee that a third-party application is legally compliant. See [`ACCESSIBILITY.md`](./ACCESSIBILITY.md).
 
-1. Clone or download `sonoxo/gpt-doug-llm`.
+---
+
+## How it works
+
+<img width="100%" src="./assets/nxyz-mouse-mic-flow.svg" alt="Flow diagram: voice or keyboard input moves through DOM discovery, target matching, highlight and spoken guidance, safety policy, then click or explicit confirmation" />
+
+### Example
+
+On **Foundry → Developer Tools → Code Templates**:
+
+```text
+where is Python Compute module
+```
+
+Mouse Mic scans the visible controls, finds the closest label match, scrolls the control into view, highlights it, and tells the user where it is.
+
+Then:
+
+```text
+click Python Compute module
+```
+
+For a normal navigation control, Mouse Mic activates it. For a potentially consequential control such as `deploy`, `publish`, `approve`, `submit`, or `delete`, Mouse Mic stops and requires:
+
+```text
+confirm click
+```
+
+---
+
+## Accessibility-first interaction
+
+<img width="100%" src="./assets/nxyz-mouse-mic-accessibility-matrix.svg" alt="Accessibility support matrix showing support for reduced pointer precision, reduced visual search, keyboard fallback, spoken guidance, reduced motion and high-impact action confirmation" />
+
+Mouse Mic is designed around **multimodal access** rather than a voice-only interface.
+
+| User need | Product behavior |
+| --- | --- |
+| Reduced pointer precision | Find and activate visible controls by name or number |
+| Reduced visual-search demand | High-contrast target highlighting and numbered overlays |
+| Speech unavailable or unwanted | Full typed-command fallback in the extension popup |
+| Audible guidance useful | Browser speech synthesis announces target and screen location |
+| Visible confirmation useful | Persistent status panel reports what Mouse Mic heard and did |
+| Motion sensitivity | NXYZ documentation visuals honor `prefers-reduced-motion` |
+| Accidental activation risk | Significant actions pause for explicit confirmation |
+| Existing enterprise controls | Foundry authentication, authorization, and approvals remain authoritative |
+
+### Three interaction paths
+
+```mermaid
+flowchart LR
+    V[Voice request] --> D[Discover visible controls]
+    K[Keyboard request] --> D
+    N[Show targets / number] --> D
+    D --> M[Match intended target]
+    M --> H[Highlight + describe]
+    H --> P{High impact?}
+    P -->|No| C[Click]
+    P -->|Yes| A[Ask for confirmation]
+    A -->|Confirm| C
+    A -->|Cancel| X[Stop]
+```
+
+The design principle is simple:
+
+> **Reduce interaction friction without reducing user control.**
+
+---
+
+## Human-confirmed safety
+
+<img width="100%" src="./assets/nxyz-mouse-mic-safety-loop.svg" alt="Safety flow showing normal actions executing and high-impact actions pausing until the user explicitly confirms or cancels" />
+
+Mouse Mic treats controls containing terms such as these as potentially significant:
+
+`delete` · `remove` · `destroy` · `terminate` · `revoke` · `grant` · `permission` · `submit` · `purchase` · `pay` · `deploy` · `publish` · `approve` · `merge` · `send` · `invite` · `create account` · `reset`
+
+Those controls are **highlighted but not immediately clicked**.
+
+This is a local interaction safeguard. It does not replace Foundry authorization, tenant policy, approval workflows, or organizational controls.
+
+---
+
+## NXYZ / ZYRA ecosystem fit
+
+Mouse Mic is the **human-interface accessibility layer** for the broader NXYZ/ZYRA ecosystem.
+
+```mermaid
+flowchart TD
+    U[User] --> MM[NXYZ Mouse Mic]
+    MM --> UI[Authorized Foundry UI]
+    UI --> F[Palantir Foundry / AIP]
+
+    U --> Z[ZYRA / GPT-DOUG-LLM]
+    Z --> B[Authorized Foundry Bridge]
+    B --> F
+
+    MM -. accessible browser guidance .-> U
+    Z -. governed reasoning / tooling .-> U
+```
+
+Mouse Mic and the GPT-DOUG Foundry bridge solve different problems:
+
+- **Mouse Mic:** helps a person navigate and activate visible browser controls.
+- **GPT-DOUG Foundry bridge:** provides code-level access to authorized Ontology data/actions when separately configured.
+
+Mouse Mic does **not** inherit GPT-DOUG privileges, Foundry API credentials, or additional permissions.
+
+---
+
+## Accessibility / ADA posture
+
+NXYZ is treating accessibility as an engineering requirement, not a marketing badge.
+
+Current implemented accessibility-supporting features include:
+
+- voice and keyboard command paths;
+- accessible-name-aware target discovery;
+- visible target highlighting;
+- numbered clickable-target overlays;
+- spoken target/location feedback;
+- typed fallback when speech recognition is unavailable;
+- explicit confirmation for significant actions;
+- reduced-motion support in repository visuals;
+- no generic `<all_urls>` access;
+- no developer-operated backend required for normal operation.
+
+Formal ADA/WCAG claims require contextual testing and an accessibility audit. Areas explicitly marked for further testing include screen-reader interoperability, complete keyboard-only workflows, contrast measurement, zoom/reflow, and assistive-technology testing.
+
+Read the full engineering posture and audit checklist: **[`ACCESSIBILITY.md`](./ACCESSIBILITY.md)**.
+
+---
+
+## Install
+
+### Chrome Web Store
+
+The repository package is prepared for Chrome Web Store submission. Until the Store listing is approved, install the development build:
+
+1. Download or clone `sonoxo/gpt-doug-llm`.
 2. Open `chrome://extensions`.
-3. Turn on **Developer mode**.
+3. Enable **Developer mode**.
 4. Click **Load unpacked**.
-5. Select this folder:
+5. Select:
 
-   `tools/nxyz-mouse-mic`
+```text
+tools/nxyz-mouse-mic
+```
 
-6. Open your authorized Palantir Foundry enrollment.
-7. A purple microphone button appears in the bottom-right corner.
-8. Click it and allow microphone access if Chrome asks.
+6. Open an authorized Palantir Foundry page.
+7. The purple microphone control appears in the lower-right corner.
+
+No paid API key is required.
+
+---
 
 ## Commands
 
-- `show targets` — number all visible clickable controls.
-- `where is Python Compute module` — highlight it and speak its screen location.
-- `click Python Compute module` — click the best matching control.
-- `click number 12` — click a numbered target after `show targets`.
-- `scroll down`
-- `scroll up`
-- `clear labels`
-- `help`
-- `cancel`
+| Command | Result |
+| --- | --- |
+| `show targets` | Numbers visible interactive controls |
+| `where is Open in VS Code` | Highlights and describes the best target |
+| `click Open in VS Code` | Activates the best matching normal control |
+| `click number 12` | Activates numbered target 12 |
+| `scroll down` | Scrolls down approximately one viewport |
+| `scroll up` | Scrolls up approximately one viewport |
+| `clear labels` | Removes numbered overlays/highlights |
+| `confirm click` | Confirms a pending significant action |
+| `cancel` | Cancels pending action and clears guidance |
+| `help` | Speaks available command examples |
 
-Plain speech defaults to **guidance**, not automatic clicking. Example: saying `Python Compute module` highlights and describes the target instead of clicking it.
+Plain speech defaults to **guidance**, not automatic clicking.
 
-## High-impact click protection
+---
 
-Controls containing words such as `delete`, `deploy`, `publish`, `approve`, `submit`, `permission`, `pay`, or `revoke` are never immediately clicked. NXYZ highlights the target and asks for `confirm click` first.
+## What runs locally
 
-This does not replace Palantir authorization or approval controls.
+- DOM scanning
+- visible-control discovery
+- fuzzy target matching
+- target numbering
+- highlighting
+- safety-word checks
+- typed commands
 
-## Foundry workflow example
+Speech synthesis uses browser-provided speech support. Voice recognition uses the browser Web Speech implementation when available; browser/vendor behavior may involve its own speech service.
 
-On the Foundry **Developer Tools → Code Templates** page:
+NXYZ Mouse Mic itself does not require a paid AI API or developer-operated inference backend.
 
-1. Say `where is Python Compute module`.
-2. NXYZ highlights the Python Compute module template and tells you where it is.
-3. Say `click Python Compute module`.
-4. Continue with the Foundry setup wizard.
+---
 
-## Files
+## Release
 
-- `manifest.json` — Chrome extension Manifest V3 definition.
-- `content.js` — target discovery, fuzzy matching, voice commands, safety confirmation.
-- `overlay.css` — microphone, status panel, target numbers, highlights.
-- `popup.html` / `popup.js` — typed-command fallback and microphone trigger.
-- `icons/icon16.png` — 16×16 production icon.
-- `icons/icon48.png` — 48×48 production icon.
-- `icons/icon128.png` — 128×128 production/store icon.
-- `SPECS.md` — shipping requirements, permissions, privacy behavior, and acceptance criteria.
-- `STORE-LISTING.md` — Chrome Web Store listing and reviewer copy.
-- `PRIVACY.md` — public privacy policy.
-- `PUBLISH-CHECKLIST.md` — final submission checklist.
+**Current shipping candidate: `1.0.2` · Manifest V3**
 
-## Scope
+| Property | Shipping value |
+| --- | --- |
+| Browser | Chrome / Chromium |
+| Category target | Accessibility |
+| Host scope | `https://*.palantirfoundry.com/*` |
+| Permissions | `activeTab`, `scripting` |
+| `<all_urls>` | Not requested |
+| Chrome `storage` | Not requested |
+| Paid API | Not required |
+| External backend | Not required |
+| High-impact confirmation | Enabled |
+| Icons | 16×16, 48×48, 128×128 PNG |
 
-The manifest currently activates only on:
+Full release contract: **[`SPECS.md`](./SPECS.md)**.
 
-`https://*.palantirfoundry.com/*`
+---
 
-No generic `<all_urls>` permission is requested.
+## Product files
 
-## Shipping
+```text
+nxyz-mouse-mic/
+├── assets/
+│   ├── nxyz-mouse-mic-accessibility-hero.svg
+│   ├── nxyz-mouse-mic-flow.svg
+│   ├── nxyz-mouse-mic-accessibility-matrix.svg
+│   └── nxyz-mouse-mic-safety-loop.svg
+├── icons/
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── manifest.json
+├── content.js
+├── overlay.css
+├── popup.html
+├── popup.js
+├── ACCESSIBILITY.md
+├── SPECS.md
+├── STORE-LISTING.md
+├── PRIVACY.md
+└── PUBLISH-CHECKLIST.md
+```
 
-The repository-side extension package is prepared for Chrome Web Store submission. Final publication still requires the publisher-side Chrome Web Store Developer Dashboard upload, declarations, review, and approval.
+---
+
+## Shipping documents
+
+- **[Accessibility engineering notes](./ACCESSIBILITY.md)** — design posture, limitations, audit checklist.
+- **[Shipping specification](./SPECS.md)** — runtime scope, permissions, acceptance criteria.
+- **[Chrome Web Store listing](./STORE-LISTING.md)** — product/reviewer copy.
+- **[Privacy policy](./PRIVACY.md)** — public privacy statement.
+- **[Publish checklist](./PUBLISH-CHECKLIST.md)** — release gate.
+- **[Icon inventory](./icons/README.md)** — production icon specifications.
+
+---
+
+## Scope and independence
+
+NXYZ Mouse Mic is independent software. It is not a Palantir product and does not imply Palantir endorsement, certification, or affiliation.
+
+The extension is intentionally restricted to authorized Palantir Foundry tenant pages and does not bypass authentication, permissions, approvals, or application security controls.
 
 ## License
 
-This project is part of `gpt-doug-llm` and follows the repository license.
+Part of [`sonoxo/gpt-doug-llm`](https://github.com/sonoxo/gpt-doug-llm) and distributed under the repository license.
