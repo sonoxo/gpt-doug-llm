@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "NXYZ Mouse Mic",
+  "version": "1.0.0",
+  "description": "Local voice-guided click assistant for Palantir Foundry and other web apps.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://*.palantirfoundry.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.palantirfoundry.com/*"],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "NXYZ Mouse Mic",
+    "default_popup": "popup.html"
+  }
+}
