@@ -1,4 +1,5 @@
 import { spawn, type ChildProcess } from 'node:child_process';
+import { assertAuthorizedLocalCameraUrl } from '../security/cameraSourcePolicy.js';
 import type { FrameHandler, FrameSource } from './types.js';
 
 export class FfmpegCamera implements FrameSource {
@@ -15,6 +16,9 @@ export class FfmpegCamera implements FrameSource {
   start(onFrame: FrameHandler): void {
     if (this.process) throw new Error('Camera already started');
     if (!this.cameraUrl) throw new Error('CAMERA_URL is required for rtsp source');
+
+    // Privacy boundary: reject public CCTV / arbitrary internet camera URLs.
+    assertAuthorizedLocalCameraUrl(this.cameraUrl);
     this.stopped = false;
 
     const args = [
