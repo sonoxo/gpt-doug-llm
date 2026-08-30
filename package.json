@@ -8,7 +8,10 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "python3 -m pytest tests/ agents/tests google/tests hackathon/tests -q --tb=short",
+    "test:verbose": "python3 -m pytest tests/ agents/tests google/tests hackathon/tests -v",
+    "lint": "ruff check .",
+    "security": "bandit -ll -r . -x tests agents/tests"
   },
   "repository": {
     "type": "git",
