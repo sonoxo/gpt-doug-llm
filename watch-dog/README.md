@@ -1,145 +1,238 @@
-# GPT-DOUG-LLLM Watch Dog
+<div align="center">
 
-> **Living Room AI Watchdog** — Osaio camera events → local dog detection → temporal bathroom-event scoring → audible / IoT alarm.
+# ◈ GSPO // GPT-DOUG-LLLM WATCH DOG
+
+### ZYRA-INFLUENCED LOCAL VISION + EVENT INTELLIGENCE PIPELINE
+
+**PRIVATE CAMERA → LOCAL AI → ALARM → ZYRA GEOVISION → PALANTIR CONTAINER**
+
+![TypeScript](https://img.shields.io/badge/TypeScript-Local_AI-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![ZYRA](https://img.shields.io/badge/ZYRA-GeoVision-7B2CFF?style=for-the-badge)
+![GSPO](https://img.shields.io/badge/GSPO-One_Command-00C2FF?style=for-the-badge)
+![Privacy](https://img.shields.io/badge/Public_CCTV-BLOCKED-111111?style=for-the-badge)
+![Identity](https://img.shields.io/badge/Identity_Recognition-DISABLED-111111?style=for-the-badge)
+
+`LOCAL-FIRST` · `PRIVATE CAMERA ONLY` · `HUMAN-GOVERNED PALANTIR HANDOFF`
+
+</div>
+
+---
+
+## ◈ SYSTEM OVERVIEW
+
+GSPO is the one-command runtime for the GPT-DOUG Watch Dog stack. It watches an explicitly authorized Living Room camera view, performs local dog detection and temporal bathroom-event scoring, triggers an alarm, forwards the structured event into ZYRA GeoVision, and prepares the event for a governed Palantir/Foundry handoff.
 
 ```mermaid
 flowchart LR
-    C["📷 Living Room C360"] --> O["☁️ Osaio event"]
-    O --> D["🐕 Local dog detector"]
-    D --> Z["⌗ Floor-zone filter"]
-    Z --> P["⏱ Posture + hold score"]
-    P -->|suspected event| A["🚨 WATCH DOG ALARM"]
-    A --> M["🔊 Mac"]
-    A --> Q["📡 MQTT / Webhook"]
+    PHONE["📱 iPhone\nOsaio / Living Room"] --> MIRROR["🪞 Apple iPhone Mirroring"]
+    MIRROR --> CAPTURE["🎯 Private Screen ROI\nmacOS capture"]
+
+    subgraph WATCHDOG["◈ GSPO WATCH DOG // LOCAL CONTAINER"]
+        direction LR
+        DETECT["🐕 Dog Detector\nCOCO-SSD"] --> FLOOR["⌗ Floor-Zone Filter"]
+        FLOOR --> TEMP["⏱ Temporal Posture\n+ Hold Scoring"]
+        TEMP --> EVENT["⚡ Suspected Bathroom Event"]
+    end
+
+    CAPTURE --> DETECT
+    EVENT --> ALARM["🚨 macOS Alarm"]
+    EVENT --> ZYRA["🟣 ZYRA GeoVision\n:5050"]
+
+    subgraph PALANTIR["⬡ PALANTIR CONTAINER // GOVERNED DOWNSTREAM"]
+        direction TB
+        QUEUE["📥 Pending Event Queue"]
+        ONTOLOGY["🧬 Ontology Envelope"]
+        APPROVAL["🛡 Human Approval Gate"]
+        FOUNDRY["🏛 Foundry / Action Interface"]
+        QUEUE --> ONTOLOGY --> APPROVAL --> FOUNDRY
+    end
+
+    ZYRA --> QUEUE
+
+    PUBLIC["🌐 Public CCTV"] -. HARD BLOCK .-> CAPTURE
 ```
 
-**Full GitHub-rendered visual architecture:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+> **Palantir container status:** Watch Dog and ZYRA currently prepare the event for the Palantir/Foundry boundary. Foundry writes remain approval-gated; the README does not claim autonomous Palantir mutation when credentials/actions have not been explicitly configured and approved.
 
-## Current architecture
+---
 
-The original RTSP-only prototype has been upgraded for the camera ecosystem shown in the supplied screenshots. `CAMERA_SOURCE=osaio` polls new Osaio motion-event snapshots and runs inference locally. RTSP remains available as a fallback for cameras that expose it.
+## ◈ LIVE STACK
 
-The implementation direction is informed by the real-time/open-vocabulary references supplied for this project:
+| Layer | Runtime | Role | Default State |
+|---|---|---|---|
+| **GSPO** | Terminal command | Boots the monitoring stack | `READY` |
+| **Watch Dog** | `127.0.0.1:8787` | Local vision + bathroom scoring | `LOCAL` |
+| **ZYRA GeoVision** | `127.0.0.1:5050` | Structured event ingestion + queue | `AUTO-BOOT BY GSPO` |
+| **Palantir Container** | Governed downstream boundary | Ontology/action envelope | `PENDING_HUMAN_APPROVAL` |
+| **Public CCTV** | Any public/internet camera source | Not permitted by this profile | `BLOCKED` |
+| **Identity Recognition** | Face/identity inference | Not part of Watch Dog | `DISABLED` |
 
-- https://x.com/rsasaki0109/status/2093677539705409827
-- https://x.com/rsasaki0109/status/2093678821656646043
+---
 
-This project does **not** copy or depend on those projects. The current detector is COCO-SSD with a replaceable detector boundary so a stronger open-vocabulary / SAM-style model can be introduced later.
+## ◈ ONE COMMAND: `GSPO`
 
-## What Watch Dog considers a suspected bathroom event
+Install/update the launcher once:
 
-A generic dog detector does not understand defecation. Watch Dog therefore combines multiple signals instead of triggering from one frame:
+```bash
+cd ~/gpt-doug-llm/gpt-doug-llm/watch-dog
+git pull --ff-only origin gpt-doug-lllm-watch-dog
+npm install
+npm link --force
+```
 
-- dog confidence
-- living-room floor ROI
-- low movement / lingering
-- compact posture evidence
-- minimum hold duration
-- total confidence threshold
-- alert cooldown
+Then run the full stack from anywhere:
+
+```bash
+GSPO
+```
+
+GSPO checks ZYRA first. If `:5050` is offline, it starts ZYRA, waits for it to become available, and then launches Watch Dog.
+
+```text
+GSPO          → start ZYRA if needed + start Watch Dog
+GSPO status   → show current Watch Dog state
+GSPO test     → trigger alarm + ZYRA pipeline test
+GSPO stop     → stop Watch Dog; stop ZYRA only if GSPO started it
+```
+
+---
+
+## ◈ EVENT INTELLIGENCE
+
+Watch Dog deliberately does **not** treat one dog detection as a bathroom event. The event scorer combines multiple signals over time.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Watching
-    Watching --> DogSeen: dog detected
-    DogSeen --> Watching: dog disappears
-    DogSeen --> Candidate: floor zone + low motion
-    Candidate --> DogSeen: movement resumes
-    Candidate --> Alarm: hold >= 3 sec and score passes
-    Alarm --> Cooldown
-    Cooldown --> Watching: 60 sec expires
+    [*] --> WATCHING
+    WATCHING --> DOG_SEEN: dog confidence passes
+    DOG_SEEN --> WATCHING: dog disappears
+    DOG_SEEN --> FLOOR_CANDIDATE: inside floor ROI
+    FLOOR_CANDIDATE --> POSTURE_HOLD: low motion / compact posture
+    POSTURE_HOLD --> FLOOR_CANDIDATE: movement resumes
+    POSTURE_HOLD --> ALARM: hold + total score pass
+    ALARM --> COOLDOWN
+    COOLDOWN --> WATCHING: cooldown expires
 ```
 
-Treat the result as a **suspected bathroom event** until the camera angle is calibrated and posture-specific training clips are collected.
+### Signal fusion
 
-## Requirements
-
-- Node.js 20+
-- macOS, Linux, or Windows for inference
-- Osaio credentials/session for `CAMERA_SOURCE=osaio`, **or** an RTSP URL for `CAMERA_SOURCE=rtsp`
-- FFmpeg only when using RTSP mode
-
-## Install
-
-```bash
-cd watch-dog
-npm install
-cp .env.example .env
-npm run typecheck
-npm start
+```mermaid
+flowchart TD
+    A["Dog confidence"] --> S["Bathroom-event score"]
+    B["Floor ROI"] --> S
+    C["Low motion"] --> S
+    D["Posture evidence"] --> S
+    E["Hold duration"] --> S
+    S -->|threshold passed| X["🚨 Alarm + ZYRA event"]
 ```
 
-Do not commit `.env`.
+The current result should be interpreted as a **suspected bathroom event** until real camera examples have been collected and posture-specific training has been validated.
 
-## Osaio mode
+---
 
-Default configuration:
+## ◈ CURRENT PRIVATE CAMERA PATH
+
+The working Mac/iPhone route avoids depending on nonexistent Osaio macOS software:
+
+```text
+C360 CAMERA
+    ↓
+OSAIO ON iPHONE
+    ↓
+APPLE iPHONE MIRRORING
+    ↓
+PRIVATE SCREEN REGION ON MAC
+    ↓
+WATCH DOG LOCAL AI
+    ↓
+ALARM + ZYRA GEOVISION
+    ↓
+PALANTIR CONTAINER / APPROVAL QUEUE
+```
+
+Current calibrated profile:
 
 ```env
-CAMERA_SOURCE=osaio
+CAMERA_SOURCE=macos-screen
 CAMERA_NAME=Living Room
-OSAIO_DEVICE_NAME=Living Room
-OSAIO_POLL_MS=2000
-ALERT_MODE=macos
+SCREEN_REGION=1164,134,352,226
+SCREEN_POLL_MS=750
+DOG_CONFIDENCE=0.30
+LOG_FRAMES=true
 ```
 
-Watch Dog can use either an authenticated Osaio session or account login configuration. Keep all authentication material local.
+Do not move the mirrored camera window after calibrating `SCREEN_REGION` unless you recalibrate the region.
 
-A separate shared Osaio account is preferable to putting the primary mobile-app account into an unattended service.
+---
 
-## RTSP fallback
+## ◈ ZYRA GEOVISION BRIDGE
 
-```env
-CAMERA_SOURCE=rtsp
-CAMERA_URL=rtsp://user:password@camera.local:554/stream1
+Watch Dog forwards alarm events to:
+
+```text
+POST http://127.0.0.1:5050/api/va3lm/geovision/watch-dog/events
 ```
 
-## Living-room floor region
+ZYRA exposes the Watch Dog stream and the Palantir-pending view through its GeoVision interface.
 
-Starting ROI derived from the supplied living-room framing:
-
-```env
-FLOOR_ZONE=0.18,0.40,0.98,1
+```text
+GET /api/va3lm/geovision/watch-dog/events
+GET /api/va3lm/geovision/watch-dog/palantir-pending
 ```
 
-Values are normalized `x1,y1,x2,y2` coordinates. Tune this after mounting the camera permanently.
+### Event envelope
 
-## Alarm modes
-
-### Mac audible alarm
-
-```env
-ALERT_MODE=macos
+```json
+{
+  "type": "suspected-dog-bathroom-event",
+  "camera": "Living Room",
+  "score": 0.84,
+  "heldMs": 4200,
+  "reasons": [
+    "floor-zone",
+    "low-motion",
+    "held-posture",
+    "compact-posture"
+  ],
+  "timestamp": "2026-08-30T09:30:00.000Z"
+}
 ```
 
-The runtime emits a terminal bell and uses macOS `say` for an audible warning.
+---
 
-### Console
+## ◈ PALANTIR CONTAINER
 
-```env
-ALERT_MODE=console
+The Palantir block is modeled as a **governed integration container**, not as an unrestricted actuator.
+
+```mermaid
+flowchart TB
+    IN["ZYRA GeoVision Event"] --> Q["Palantir Pending Queue"]
+
+    subgraph C["⬡ PALANTIR CONTAINER"]
+        Q --> V["Validate schema + provenance"]
+        V --> O["Map to ontology object/action"]
+        O --> H{"Human approval?"}
+        H -->|NO| HOLD["Hold / Review"]
+        H -->|YES| F["Foundry action interface"]
+    end
+
+    F --> AUDIT["Immutable audit context"]
 ```
 
-### Webhook
+### Container contract
 
-```env
-ALERT_MODE=webhook
-ALERT_WEBHOOK_URL=http://127.0.0.1:8123/api/webhook/dog_alarm
-```
+- receives only structured Watch Dog / ZYRA events
+- rejects public-CCTV provenance
+- identity recognition remains disabled
+- maps events to a reviewable ontology/action envelope
+- holds state at `PENDING_HUMAN_APPROVAL` until explicitly approved
+- does not invent Foundry credentials, ontology names, or action endpoints
 
-### MQTT
+---
 
-```env
-ALERT_MODE=mqtt
-MQTT_URL=mqtt://127.0.0.1:1883
-MQTT_TOPIC=home/living-room/dog-poop-alarm
-```
+## ◈ LOCAL CONTROL API
 
-The exact proprietary C360 built-in siren command is **not claimed as working until it is proven against the real device**. MQTT/webhook remain the safe integration boundary for that final adapter.
-
-## Local API
-
-The API binds to loopback by default.
+Watch Dog binds to loopback by default.
 
 ```bash
 curl http://127.0.0.1:8787/health
@@ -147,7 +240,7 @@ curl http://127.0.0.1:8787/status
 curl -X POST http://127.0.0.1:8787/alarm/test
 ```
 
-You can also inject a JPEG into the exact inference path for calibration/testing:
+Inject a local JPEG through the same inference path:
 
 ```bash
 curl -X POST \
@@ -156,37 +249,95 @@ curl -X POST \
   http://127.0.0.1:8787/frame
 ```
 
-## Runtime event
+---
 
-```json
-{
-  "type": "suspected-dog-bathroom-event",
-  "camera": "Living Room",
-  "score": 0.84,
-  "heldMs": 4200,
-  "reasons": ["floor-zone", "low-motion", "held-posture", "compact-posture"],
-  "timestamp": "2026-08-30T09:30:00.000Z"
-}
+## ◈ OPTIONAL CAMERA SOURCES
+
+### macOS screen / iPhone Mirroring
+
+```env
+CAMERA_SOURCE=macos-screen
+SCREEN_REGION=1164,134,352,226
 ```
 
-## Roadmap
+### Osaio event bridge
+
+The repository also contains an Osaio event adapter. It requires valid private request-signing/session material and is not needed for the current phone + Mac mirrored workflow.
+
+```env
+CAMERA_SOURCE=osaio
+OSAIO_DEVICE_NAME=Living Room
+```
+
+### Private RTSP fallback
+
+```env
+CAMERA_SOURCE=rtsp
+CAMERA_URL=rtsp://user:password@192.168.1.50:554/stream1
+```
+
+Only explicit private/local RTSP addresses are accepted by the Watch Dog privacy gate. Public CCTV and arbitrary internet camera feeds are blocked.
+
+---
+
+## ◈ ALERT MATRIX
+
+| Mode | Configuration | Result |
+|---|---|---|
+| **macOS** | `ALERT_MODE=macos` | System sound + spoken warning |
+| **console** | `ALERT_MODE=console` | Terminal event |
+| **webhook** | `ALERT_MODE=webhook` | POST structured event |
+| **MQTT** | `ALERT_MODE=mqtt` | QoS event on configured topic |
+
+The proprietary C360 built-in siren endpoint is **not claimed as working** until it is proven against the actual device protocol.
+
+---
+
+## ◈ MODEL ROADMAP
 
 ```mermaid
 flowchart LR
-    A["v0.2 COCO dog"] --> B["posture classifier"]
-    B --> C["temporal clip model"]
-    C --> D["open-vocabulary adapter"]
-    D --> E["real-time DART/SAM-style direction"]
+    V1["COCO dog detector"] --> V2["Posture classifier"]
+    V2 --> V3["2–5 sec temporal model"]
+    V3 --> V4["Open-vocabulary adapter"]
+    V4 --> V5["DART / SAM-style real-time direction"]
+    V5 --> V6["Validated bathroom-event classifier"]
 ```
 
-Next accuracy upgrades:
+Reference direction supplied for this project:
 
-- calibrate the exact floor ROI
-- collect false-positive and true-event clips locally
-- train `stand / sit / squat / lie / walk` posture classes
-- add temporal 2–5 second clip inference
-- connect and verify the exact C360 siren command, if the device exposes one
+- https://x.com/rsasaki0109/status/2093677539705409827
+- https://x.com/rsasaki0109/status/2093678821656646043
 
-## Privacy and security
+These references are architectural inspiration only; Watch Dog does not claim to copy or depend on those projects.
 
-Camera inference is intended to remain local after the Osaio event image is obtained. Never commit camera credentials, Osaio tokens, `.env`, snapshots from inside the home, or private stream URLs to GitHub.
+---
+
+## ◈ PRIVACY / SECURITY BOUNDARY
+
+```mermaid
+flowchart LR
+    HOME["🏠 Authorized Home Camera"] --> LOCAL["💻 Local Watch Dog Inference"]
+    LOCAL --> META["Structured Event Metadata"]
+    META --> Z["🟣 ZYRA"]
+    Z --> P["⬡ Palantir Approval Container"]
+
+    RAW["Raw Home Frames"] -. not committed .-> GIT["GitHub"]
+    CREDS["Passwords / Tokens"] -. never committed .-> GIT
+    CCTV["Public CCTV"] -. blocked .-> LOCAL
+    ID["Identity Recognition"] -. disabled .-> LOCAL
+```
+
+Never commit `.env`, camera passwords, Osaio tokens, private snapshots, private stream URLs, or Foundry credentials.
+
+---
+
+<div align="center">
+
+### ◈ GSPO STATUS PHILOSOPHY
+
+`SEE LOCALLY` → `SCORE TEMPORALLY` → `ALERT IMMEDIATELY` → `STRUCTURE IN ZYRA` → `GOVERN IN PALANTIR`
+
+**GPT-DOUG-LLLM // ZYRA GEOVISION // GSPO WATCH DOG**
+
+</div>
