@@ -30,26 +30,66 @@ function consoleAlarm(event: AlarmEvent): void {
   console.error('\n🚨 WATCH DOG ALARM 🚨', JSON.stringify(event, null, 2));
 }
 
-async function sayOnMac(message: string): Promise<void> {
-  if (process.platform !== 'darwin') return;
-  await new Promise<void>((resolve) => {
-    const child = spawn('/usr/bin/say', ['-r', '235', message], {
-      stdio: 'ignore',
-      detached: false,
+async function runMacCommand(command: string, args: string[], label: string): Promise<boolean> {
+  if (process.platform !== 'darwin') return false;
+
+  return await new Promise<boolean>((resolve) => {
+    const child = spawn(command, args, { stdio: ['ignore', 'ignore', 'pipe'] });
+    let stderr = '';
+
+    child.stderr.on('data', (chunk: Buffer) => {
+      stderr += chunk.toString();
     });
+
     const timer = setTimeout(() => {
       child.kill('SIGTERM');
-      resolve();
-    }, 8000);
-    child.once('exit', () => {
+      console.error(`[alarm] ${label} timed out`);
+      resolve(false);
+    }, 10_000);
+
+    child.once('error', (error) => {
       clearTimeout(timer);
-      resolve();
+      console.error(`[alarm] ${label} failed: ${error.message}`);
+      resolve(false);
     });
-    child.once('error', () => {
+
+    child.once('exit', (code) => {
       clearTimeout(timer);
-      resolve();
+      if (code === 0) {
+        resolve(true);
+      } else {
+        console.error(`[alarm] ${label} exited ${code ?? 'null'}${stderr.trim() ? `: ${stderr.trim()}` : ''}`);
+        resolve(false);
+      }
     });
   });
+}
+
+async function audibleAlarmOnMac(message: string): Promise<void> {
+  if (process.platform !== 'darwin') {
+    console.error('[alarm] macOS audible mode requested on a non-macOS host');
+    return;
+  }
+
+  const soundPaths = [
+    '/System/Library/Sounds/Sosumi.aiff',
+    '/System/Library/Sounds/Glass.aiff',
+    '/System/Library/Sounds/Ping.aiff',
+  ];
+
+  let soundPlayed = false;
+  for (const path of soundPaths) {
+    soundPlayed = await runMacCommand('/usr/bin/afplay', [path], `afplay ${path}`);
+    if (soundPlayed) break;
+  }
+
+  const spoke = await runMacCommand('/usr/bin/say', ['-r', '235', message], 'say');
+
+  if (!soundPlayed && !spoke) {
+    console.error('[alarm] WARNING: macOS audible alarm could not produce sound; check output device and mute/volume settings');
+  } else {
+    console.error(`[alarm] macOS audible result sound=${soundPlayed ? 'ok' : 'failed'} speech=${spoke ? 'ok' : 'failed'}`);
+  }
 }
 
 export async function createAlerter(config: AlertConfig): Promise<Alerter> {
@@ -66,9 +106,9 @@ export async function createAlerter(config: AlertConfig): Promise<Alerter> {
     return {
       async fire(event) {
         consoleAlarm(event);
-        await sayOnMac(
+        await audibleAlarmOnMac(
           event.type === 'manual-test'
-            ? 'Watch Dog alarm test.'
+            ? 'Watch Dog alarm test. Audio alarm is working.'
             : 'Watch Dog alarm. Dog bathroom behavior detected in the living room.',
         );
       },
