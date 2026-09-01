@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 from xunia_findings import normalize_evidence
 from xunia_security_executor import ExecutionEvidence
 
-
 NOW = datetime.now(timezone.utc).isoformat()
 
 
@@ -44,16 +43,20 @@ class XuniaFindingNormalizerTests(unittest.TestCase):
 
     def test_trivy_vulnerability_becomes_remediation_item(self):
         payload = {
-            "Results": [{
-                "Target": "app",
-                "Vulnerabilities": [{
-                    "VulnerabilityID": "CVE-TEST-1",
-                    "PkgName": "demo",
-                    "InstalledVersion": "1.0",
-                    "Severity": "CRITICAL",
-                    "Title": "Demo package issue",
-                }],
-            }]
+            "Results": [
+                {
+                    "Target": "app",
+                    "Vulnerabilities": [
+                        {
+                            "VulnerabilityID": "CVE-TEST-1",
+                            "PkgName": "demo",
+                            "InstalledVersion": "1.0",
+                            "Severity": "CRITICAL",
+                            "Title": "Demo package issue",
+                        }
+                    ],
+                }
+            ]
         }
         result = normalize_evidence(evidence("trivy", payload))
         self.assertEqual(len(result), 1)
@@ -61,7 +64,15 @@ class XuniaFindingNormalizerTests(unittest.TestCase):
         self.assertIn("Upgrade", result[0].remediation)
 
     def test_gitleaks_is_high_severity_and_does_not_copy_secret_value(self):
-        payload = [{"RuleID": "generic-api-key", "Description": "Potential API key", "File": "config.py", "StartLine": 4, "Secret": "do-not-copy"}]
+        payload = [
+            {
+                "RuleID": "generic-api-key",
+                "Description": "Potential API key",
+                "File": "config.py",
+                "StartLine": 4,
+                "Secret": "do-not-copy",
+            }
+        ]
         result = normalize_evidence(evidence("gitleaks", payload))
         self.assertEqual(result[0].severity, "high")
         self.assertNotIn("do-not-copy", result[0].description)
