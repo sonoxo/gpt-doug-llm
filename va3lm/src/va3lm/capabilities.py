@@ -4,7 +4,7 @@ from copy import deepcopy
 
 PACK_SOURCE = "sonoxo/pack"
 PACK_SOURCE_STATE = "ALPHA_REFERENCE"
-VA3LM_CAPABILITY_VERSION = "0.3.0"
+VA3LM_CAPABILITY_VERSION = "0.4.0"
 
 _CAPABILITIES = [
     {
@@ -71,6 +71,12 @@ _CAPABILITIES = [
         "id": "geospatial-tracking",
         "sourcePattern": "Google Maps Platform + NSA public SIGINT workflow reference",
         "va3lmArea": "authorized non-identifying asset/event observations, provenance, confidence, GeoJSON and map review",
+        "status": "ADAPTED_BOUNDARY",
+    },
+    {
+        "id": "federal-intel-osint",
+        "sourcePattern": "official U.S. government public sources + verified official GitHub organizations",
+        "va3lmArea": "CIA/NSA/NRO/NGA-NGP/DIA-GDIP public-source registry, provenance and official-source verification",
         "status": "ADAPTED_BOUNDARY",
     },
 ]
