@@ -5,9 +5,12 @@ on:
     paths:
       - "xunia_security.py"
       - "xunia_security_executor.py"
+      - "xunia_findings.py"
       - "xunia_realtime_runtime.py"
+      - "xunia_realtime_watch.py"
       - "tests/test_xunia_security.py"
       - "tests/test_xunia_security_executor.py"
+      - "tests/test_xunia_findings.py"
       - "tests/test_xunia_realtime_runtime.py"
       - ".github/workflows/xunia-security-platform.yml"
   push:
@@ -15,9 +18,12 @@ on:
     paths:
       - "xunia_security.py"
       - "xunia_security_executor.py"
+      - "xunia_findings.py"
       - "xunia_realtime_runtime.py"
+      - "xunia_realtime_watch.py"
       - "tests/test_xunia_security.py"
       - "tests/test_xunia_security_executor.py"
+      - "tests/test_xunia_findings.py"
       - "tests/test_xunia_realtime_runtime.py"
 
 permissions:
@@ -38,5 +44,6 @@ jobs:
           python -m unittest
           tests.test_xunia_security
           tests.test_xunia_security_executor
+          tests.test_xunia_findings
           tests.test_xunia_realtime_runtime
           -v
