@@ -3,7 +3,13 @@ from datetime import datetime, timezone
 import pytest
 from pydantic import ValidationError
 
-from va3lm.tracking import TrackingObservation, normalize_track, sample_track, to_geojson, tracking_manifest
+from va3lm.tracking import (
+    TrackingObservation,
+    normalize_track,
+    sample_track,
+    to_geojson,
+    tracking_manifest,
+)
 
 
 def test_tracking_manifest_is_authorized_and_non_identifying():
