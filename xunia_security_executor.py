@@ -7,15 +7,14 @@ never accepted, subprocesses are launched with shell=False, and evidence output 
 
 from __future__ import annotations
 
+import shutil
+import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from hashlib import sha256
-import shutil
-import subprocess
-from typing import Callable, Optional, Sequence
+from typing import Callable, Optional
 
 from xunia_security import Engagement, PlannedStep, XuniaSecurityPlatform
-
 
 BLOCKED_BINARIES = {"sh", "bash", "zsh", "fish", "cmd", "cmd.exe", "powershell", "pwsh", "sudo", "su", "doas"}
 ALLOWED_BINARIES = {
