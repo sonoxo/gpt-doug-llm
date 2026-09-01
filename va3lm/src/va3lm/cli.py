@@ -7,6 +7,11 @@ from va3lm.agents import roster
 from va3lm.brain import ask
 from va3lm.capabilities import capability_manifest
 from va3lm.explainer import explain
+from va3lm.federal_intel import (
+    federal_intel_entity,
+    federal_intel_manifest,
+    verified_github_sources,
+)
 from va3lm.ontology import schema
 from va3lm.planner import build_plan
 from va3lm.tracking import sample_track, to_geojson, tracking_manifest
@@ -25,6 +30,11 @@ def main() -> int:
 
     tracking = sub.add_parser("tracking")
     tracking.add_argument("--sample", action="store_true", help="emit deterministic Virginia demo GeoJSON")
+
+    federal_intel = sub.add_parser("federal-intel")
+    federal_filter = federal_intel.add_mutually_exclusive_group()
+    federal_filter.add_argument("--entity", choices=["cia", "nsa", "nro", "ngp", "gdip"])
+    federal_filter.add_argument("--github-only", action="store_true", help="emit verified official GitHub sources only")
 
     plan = sub.add_parser("plan")
     plan.add_argument("goal")
@@ -48,6 +58,13 @@ def main() -> int:
         _dump(capability_manifest())
     elif args.command == "tracking":
         _dump(to_geojson(sample_track()) if args.sample else tracking_manifest())
+    elif args.command == "federal-intel":
+        if args.github_only:
+            _dump({"mode": "VERIFIED_OFFICIAL_GITHUB_ONLY", "sources": verified_github_sources()})
+        elif args.entity:
+            _dump(federal_intel_entity(args.entity))
+        else:
+            _dump(federal_intel_manifest())
     elif args.command == "plan":
         _dump(build_plan(args.goal))
     elif args.command == "brain":

@@ -39,8 +39,22 @@ def test_explainer_has_required_beats():
     ]
 
 
-def test_api_8088_identity():
+def test_api_8088_identity_and_federal_intel_routes():
     client = TestClient(app)
     assert client.get("/healthz").json()["port"] == 8088
-    assert client.get("/api/status").json()["brain"] == "gpt-doug-llm"
+    status = client.get("/api/status").json()
+    assert status["brain"] == "gpt-doug-llm"
+    assert status["federalIntel"]["mode"] == "PUBLIC_OSINT_ONLY"
+    assert status["federalIntel"]["entities"] == 5
     assert client.post("/api/explain", json={"text": "ontology"}).status_code == 200
+
+    catalog = client.get("/api/federal-intel")
+    assert catalog.status_code == 200
+    assert [item["id"] for item in catalog.json()["entities"]] == ["cia", "nsa", "nro", "ngp", "gdip"]
+
+    github = client.get("/api/federal-intel/github")
+    assert github.status_code == 200
+    assert {item["id"] for item in github.json()["sources"]} == {"nsa", "ngp"}
+
+    assert client.get("/api/federal-intel/nsa").status_code == 200
+    assert client.get("/api/federal-intel/unknown").status_code == 404
