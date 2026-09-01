@@ -2,7 +2,6 @@ from datetime import datetime, timezone
 
 import pytest
 from pydantic import ValidationError
-
 from va3lm.tracking import (
     TrackingObservation,
     normalize_track,
