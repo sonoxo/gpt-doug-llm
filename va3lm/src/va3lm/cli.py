@@ -32,8 +32,9 @@ def main() -> int:
     tracking.add_argument("--sample", action="store_true", help="emit deterministic Virginia demo GeoJSON")
 
     federal_intel = sub.add_parser("federal-intel")
-    federal_intel.add_argument("--entity", choices=["cia", "nsa", "nro", "ngp", "gdip"])
-    federal_intel.add_argument("--github-only", action="store_true", help="emit verified official GitHub sources only")
+    federal_filter = federal_intel.add_mutually_exclusive_group()
+    federal_filter.add_argument("--entity", choices=["cia", "nsa", "nro", "ngp", "gdip"])
+    federal_filter.add_argument("--github-only", action="store_true", help="emit verified official GitHub sources only")
 
     plan = sub.add_parser("plan")
     plan.add_argument("goal")
