@@ -1,7 +1,7 @@
 """XUNIA authorized security assessment and penetration-test planner.
 
-This module intentionally separates planning/authorization from execution. Commands are
-represented as argv arrays, never shell strings. Destructive actions are not supported.
+Planning and authorization are separated from execution. Commands are represented as
+argv arrays, never shell strings. Destructive actions are not supported.
 """
 
 from __future__ import annotations
@@ -10,11 +10,11 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from hashlib import sha256
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import List, Optional, Sequence, Tuple
 from urllib.parse import urlparse
 
-
 SCHEMA_VERSION = "xunia.security.engagement/v1"
+TARGET_TYPES = {"url", "host", "cidr", "path", "image", "cloud"}
 
 
 class SecurityMode(str, Enum):
@@ -36,14 +36,20 @@ class Target:
     value: str
 
     def normalized(self) -> str:
-        value = self.value.strip().lower().rstrip("/")
+        raw = self.value.strip()
+        if not raw:
+            raise ValueError("EMPTY_TARGET")
+        if self.type not in TARGET_TYPES:
+            raise ValueError("INVALID_TARGET_TYPE")
         if self.type == "url":
-            parsed = urlparse(value)
+            parsed = urlparse(raw)
             if not parsed.scheme or not parsed.netloc:
                 raise ValueError("INVALID_URL_TARGET")
-        if self.type not in {"url", "host", "cidr"}:
-            raise ValueError("INVALID_TARGET_TYPE")
-        return value
+            path = parsed.path.rstrip("/")
+            return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}{path}"
+        if self.type in {"host", "cidr", "cloud"}:
+            return raw.lower()
+        return raw
 
 
 @dataclass(frozen=True)
@@ -80,6 +86,8 @@ class Engagement:
             raise ValueError("ENGAGEMENT_WINDOW_INVALID")
         if now < self.starts_at or now > self.ends_at:
             raise PermissionError("ENGAGEMENT_OUTSIDE_AUTHORIZED_WINDOW")
+        for target in (*self.targets, *self.exclusions):
+            target.normalized()
 
 
 @dataclass(frozen=True)
@@ -87,9 +95,15 @@ class ToolAdapter:
     id: str
     check: str
     risk: ToolRisk
+    target_types: Tuple[str, ...]
     phases: Tuple[str, ...]
 
+    def supports(self, target: Target) -> bool:
+        return target.type in self.target_types
+
     def command(self, target: Target) -> List[str]:
+        if not self.supports(target):
+            raise ValueError("TOOL_TARGET_TYPE_NOT_SUPPORTED")
         value = target.normalized()
         if self.id == "nmap":
             host = urlparse(value).hostname if target.type == "url" else value
@@ -101,7 +115,8 @@ class ToolAdapter:
         if self.id == "zap-baseline":
             return ["zap-baseline.py", "-t", value, "-J", "zap-report.json"]
         if self.id == "trivy":
-            return ["trivy", "fs", "--scanners", "vuln,secret,misconfig", value]
+            subcommand = "image" if target.type == "image" else "fs"
+            return ["trivy", subcommand, "--scanners", "vuln,secret,misconfig", value]
         if self.id == "syft":
             return ["syft", value, "-o", "cyclonedx-json"]
         if self.id == "grype":
@@ -115,23 +130,22 @@ class ToolAdapter:
         if self.id == "checkov":
             return ["checkov", "-d", value, "-o", "json"]
         if self.id == "prowler":
-            # Prowler uses authenticated cloud context, not an arbitrary remote target.
             return ["prowler", "--output-formats", "json"]
         raise ValueError("UNKNOWN_TOOL_ADAPTER")
 
 
 TOOL_CATALOG: Tuple[ToolAdapter, ...] = (
-    ToolAdapter("nmap", "service.discovery", ToolRisk.DISCOVERY, ("recon", "assessment")),
-    ToolAdapter("nuclei", "web.templates", ToolRisk.SAFE_ACTIVE, ("assessment", "validation")),
-    ToolAdapter("zap-baseline", "web.baseline", ToolRisk.PASSIVE, ("assessment",)),
-    ToolAdapter("trivy", "supply-chain.vulnerability", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("syft", "supply-chain.sbom", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("grype", "supply-chain.cve", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("gitleaks", "source.secrets", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("semgrep", "source.sast", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("osv-scanner", "dependency.osv", ToolRisk.PASSIVE, ("supply-chain",)),
-    ToolAdapter("checkov", "iac.misconfiguration", ToolRisk.PASSIVE, ("cloud", "supply-chain")),
-    ToolAdapter("prowler", "cloud.posture", ToolRisk.PASSIVE, ("cloud", "assessment")),
+    ToolAdapter("nmap", "service.discovery", ToolRisk.DISCOVERY, ("url", "host", "cidr"), ("recon", "assessment")),
+    ToolAdapter("nuclei", "web.templates", ToolRisk.SAFE_ACTIVE, ("url",), ("assessment", "validation")),
+    ToolAdapter("zap-baseline", "web.baseline", ToolRisk.PASSIVE, ("url",), ("assessment",)),
+    ToolAdapter("trivy", "supply-chain.vulnerability", ToolRisk.PASSIVE, ("path", "image"), ("supply-chain",)),
+    ToolAdapter("syft", "supply-chain.sbom", ToolRisk.PASSIVE, ("path", "image"), ("supply-chain",)),
+    ToolAdapter("grype", "supply-chain.cve", ToolRisk.PASSIVE, ("path", "image"), ("supply-chain",)),
+    ToolAdapter("gitleaks", "source.secrets", ToolRisk.PASSIVE, ("path",), ("supply-chain",)),
+    ToolAdapter("semgrep", "source.sast", ToolRisk.PASSIVE, ("path",), ("supply-chain",)),
+    ToolAdapter("osv-scanner", "dependency.osv", ToolRisk.PASSIVE, ("path",), ("supply-chain",)),
+    ToolAdapter("checkov", "iac.misconfiguration", ToolRisk.PASSIVE, ("path",), ("cloud", "supply-chain")),
+    ToolAdapter("prowler", "cloud.posture", ToolRisk.PASSIVE, ("cloud",), ("cloud", "assessment")),
 )
 
 
@@ -204,6 +218,8 @@ class XuniaSecurityPlatform:
             if not target_authorized(engagement, target):
                 continue
             for tool in self.catalog:
+                if not tool.supports(target):
+                    continue
                 if tool.check not in engagement.allowed_checks:
                     continue
                 if not _risk_allowed(engagement.mode, tool.risk):
@@ -217,6 +233,8 @@ class XuniaSecurityPlatform:
         engagement.validate(now)
         if not target_authorized(engagement, step.target):
             raise PermissionError("TARGET_OUT_OF_SCOPE")
+        if not step.tool.supports(step.target):
+            raise PermissionError("TOOL_TARGET_TYPE_NOT_AUTHORIZED")
         if step.tool.check not in engagement.allowed_checks:
             raise PermissionError("CHECK_NOT_AUTHORIZED")
         if not _risk_allowed(engagement.mode, step.tool.risk):
