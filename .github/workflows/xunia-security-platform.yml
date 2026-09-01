@@ -4,19 +4,23 @@ on:
   pull_request:
     paths:
       - "xunia_security.py"
+      - "xunia_security_executor.py"
       - "tests/test_xunia_security.py"
+      - "tests/test_xunia_security_executor.py"
       - ".github/workflows/xunia-security-platform.yml"
   push:
     branches: [main]
     paths:
       - "xunia_security.py"
+      - "xunia_security_executor.py"
       - "tests/test_xunia_security.py"
+      - "tests/test_xunia_security_executor.py"
 
 permissions:
   contents: read
 
 jobs:
-  authorized-security-planner:
+  authorized-security-platform:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,4 +30,4 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m unittest tests.test_xunia_security -v
+      - run: python -m unittest tests.test_xunia_security tests.test_xunia_security_executor -v
