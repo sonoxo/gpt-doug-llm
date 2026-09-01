@@ -1,3 +1,5 @@
+import json
+import queue
 import tempfile
 import time
 import unittest
@@ -6,7 +8,6 @@ from pathlib import Path
 
 from xunia_realtime_runtime import RealtimeOrchestrator, RuntimeStore
 from xunia_security_executor import ExecutionEvidence
-
 
 NOW = datetime.now(timezone.utc)
 
@@ -54,9 +55,31 @@ class FakeExecutor:
         )
 
 
+class FindingExecutor(FakeExecutor):
+    emit_finding = True
+
+    def execute(self, engagement, step):
+        evidence = super().execute(engagement, step)
+        if step.tool.id != "nuclei" or not type(self).emit_finding:
+            return evidence
+        payload = {
+            "template-id": "runtime-example",
+            "matched-at": step.target.normalized(),
+            "info": {"name": "Runtime example finding", "severity": "high"},
+        }
+        return ExecutionEvidence(
+            **{
+                **evidence.__dict__,
+                "stdout_preview": json.dumps(payload),
+            }
+        )
+
+
 class XuniaRealtimeRuntimeTests(unittest.TestCase):
     def setUp(self):
         FakeExecutor.calls = []
+        FindingExecutor.calls = []
+        FindingExecutor.emit_finding = True
         self.tempdir = tempfile.TemporaryDirectory()
         self.store = RuntimeStore(str(Path(self.tempdir.name) / "runtime.db"))
         self.runtime = RealtimeOrchestrator(
@@ -123,7 +146,7 @@ class XuniaRealtimeRuntimeTests(unittest.TestCase):
             while time.time() < deadline and "job.finished" not in observed:
                 try:
                     event = channel.get(timeout=0.2)
-                except Exception:
+                except queue.Empty:
                     continue
                 if event.get("jobId") == job_id:
                     observed.append(event["type"])
@@ -133,6 +156,43 @@ class XuniaRealtimeRuntimeTests(unittest.TestCase):
             self.assertIn("job.finished", observed)
         finally:
             self.runtime.events.unsubscribe(channel)
+
+    def test_high_finding_creates_remediation_and_notification(self):
+        self.runtime.close()
+        self.runtime = RealtimeOrchestrator(
+            store=self.store,
+            executor_factory=FindingExecutor,
+            global_workers=4,
+        )
+        job_id = self.runtime.submit(manifest())
+        self.wait_for_terminal(job_id)
+        findings = self.store.list_findings()
+        remediations = self.store.list_remediations()
+        notifications = self.store.list_notifications()
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0]["severity"], "high")
+        self.assertEqual(findings[0]["status"], "OPEN")
+        self.assertEqual(len(remediations), 1)
+        self.assertEqual(remediations[0]["status"], "QUEUED")
+        self.assertEqual(len(notifications), 1)
+
+    def test_retest_without_repeat_finding_verifies_original(self):
+        self.runtime.close()
+        self.runtime = RealtimeOrchestrator(
+            store=self.store,
+            executor_factory=FindingExecutor,
+            global_workers=4,
+        )
+        first = self.runtime.submit(manifest())
+        self.wait_for_terminal(first)
+        finding = self.store.list_findings()[0]
+        self.store.set_finding_status(finding["id"], "RESOLVED_PENDING_RETEST")
+        FindingExecutor.emit_finding = False
+        retest = self.runtime.retest(first)
+        self.wait_for_terminal(retest)
+        updated = next(item for item in self.store.list_findings() if item["id"] == finding["id"])
+        self.assertEqual(updated["status"], "VERIFIED")
+        self.assertEqual(self.store.list_remediations()[0]["status"], "DONE")
 
 
 if __name__ == "__main__":
