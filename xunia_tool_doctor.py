@@ -37,10 +37,24 @@ def inspect_tools() -> list[ToolReadiness]:
 
 def main() -> None:
     results = inspect_tools()
-    print(json.dumps({"tools": [asdict(item) for item in results]}, indent=2))
-    missing = [item.tool_id for item in results if not item.installed]
+    installed = [item for item in results if item.installed]
+    missing = [item for item in results if not item.installed]
+    print(
+        json.dumps(
+            {
+                "summary": {
+                    "registered": len(results),
+                    "installed": len(installed),
+                    "missing": len(missing),
+                    "readyPercent": round((len(installed) / len(results)) * 100, 1) if results else 100.0,
+                },
+                "tools": [asdict(item) for item in results],
+            },
+            indent=2,
+        )
+    )
     if missing:
-        print("\nMissing optional OSS tools: " + ", ".join(missing))
+        print("\nMissing optional OSS tools: " + ", ".join(item.tool_id for item in missing))
         print("The runtime remains usable; only checks backed by installed binaries can execute.")
     else:
         print("\nAll registered XUNIA OSS security tools are available.")
