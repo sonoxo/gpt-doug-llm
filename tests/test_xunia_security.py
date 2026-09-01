@@ -2,8 +2,13 @@ import unittest
 from dataclasses import replace
 from datetime import datetime, timezone
 
-from xunia_security import Engagement, SecurityMode, Target, XuniaSecurityPlatform, target_authorized
-
+from xunia_security import (
+    Engagement,
+    SecurityMode,
+    Target,
+    XuniaSecurityPlatform,
+    target_authorized,
+)
 
 NOW = datetime(2026, 9, 1, 16, 0, tzinfo=timezone.utc)
 
