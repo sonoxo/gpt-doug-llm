@@ -4,7 +4,7 @@ from copy import deepcopy
 
 PACK_SOURCE = "sonoxo/pack"
 PACK_SOURCE_STATE = "ALPHA_REFERENCE"
-VA3LM_CAPABILITY_VERSION = "0.2.0"
+VA3LM_CAPABILITY_VERSION = "0.3.0"
 
 _CAPABILITIES = [
     {
@@ -66,6 +66,12 @@ _CAPABILITIES = [
         "sourcePattern": "packages/monorepo",
         "va3lmArea": "repository consistency, CI and release discipline",
         "status": "ADAPTED",
+    },
+    {
+        "id": "geospatial-tracking",
+        "sourcePattern": "Google Maps Platform + NSA public SIGINT workflow reference",
+        "va3lmArea": "authorized non-identifying asset/event observations, provenance, confidence, GeoJSON and map review",
+        "status": "ADAPTED_BOUNDARY",
     },
 ]
 
