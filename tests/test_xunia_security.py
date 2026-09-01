@@ -23,12 +23,44 @@ def engagement(mode=SecurityMode.PENTEST):
 
 
 class XuniaSecurityPlatformTests(unittest.TestCase):
-    def test_pentest_plans_safe_active_without_destructive_actions(self):
+    def test_pentest_url_plans_only_compatible_tools(self):
         plan = XuniaSecurityPlatform().plan(engagement(), NOW)
         self.assertEqual(plan.destructive_actions, "DENIED")
-        self.assertEqual([step.tool.id for step in plan.steps], ["nmap", "nuclei", "zap-baseline", "syft"])
+        self.assertEqual([step.tool.id for step in plan.steps], ["nmap", "nuclei", "zap-baseline"])
         self.assertEqual(plan.steps[0].argv[0], "nmap")
         self.assertTrue(plan.steps[0].evidence_id)
+
+    def test_source_path_plans_supply_chain_tools(self):
+        e = replace(
+            engagement(SecurityMode.ASSESS),
+            targets=(Target("path", "/workspace/repository"),),
+            exclusions=(),
+            allowed_checks=(
+                "supply-chain.vulnerability",
+                "supply-chain.sbom",
+                "supply-chain.cve",
+                "source.secrets",
+                "source.sast",
+                "dependency.osv",
+                "iac.misconfiguration",
+            ),
+        )
+        plan = XuniaSecurityPlatform().plan(e, NOW)
+        self.assertEqual(
+            [step.tool.id for step in plan.steps],
+            ["trivy", "syft", "grype", "gitleaks", "semgrep", "osv-scanner", "checkov"],
+        )
+
+    def test_container_image_uses_trivy_image_mode(self):
+        e = replace(
+            engagement(SecurityMode.ASSESS),
+            targets=(Target("image", "registry.example.com/App:Staging"),),
+            exclusions=(),
+            allowed_checks=("supply-chain.vulnerability",),
+        )
+        step = XuniaSecurityPlatform().plan(e, NOW).steps[0]
+        self.assertEqual(step.argv[:2], ("trivy", "image"))
+        self.assertIn("registry.example.com/App:Staging", step.argv)
 
     def test_assess_drops_safe_active_tool(self):
         plan = XuniaSecurityPlatform().plan(engagement(SecurityMode.ASSESS), NOW)
@@ -42,7 +74,7 @@ class XuniaSecurityPlatformTests(unittest.TestCase):
 
     def test_expired_authorization_cannot_plan(self):
         with self.assertRaises(PermissionError):
-            XuniaSecurityPlatform().plan(e := engagement(), datetime(2026, 9, 3, tzinfo=timezone.utc))
+            XuniaSecurityPlatform().plan(engagement(), datetime(2026, 9, 3, tzinfo=timezone.utc))
 
     def test_destructive_engagement_is_rejected(self):
         e = replace(engagement(), destructive_allowed=True)
