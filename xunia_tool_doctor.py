@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import shutil
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 
 from xunia_security import TOOL_CATALOG
 
