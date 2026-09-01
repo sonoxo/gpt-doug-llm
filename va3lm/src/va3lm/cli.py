@@ -9,6 +9,7 @@ from va3lm.capabilities import capability_manifest
 from va3lm.explainer import explain
 from va3lm.ontology import schema
 from va3lm.planner import build_plan
+from va3lm.tracking import sample_track, to_geojson, tracking_manifest
 
 
 def _dump(value: object) -> None:
@@ -21,6 +22,9 @@ def main() -> int:
     sub.add_parser("agents")
     sub.add_parser("ontology")
     sub.add_parser("capabilities")
+
+    tracking = sub.add_parser("tracking")
+    tracking.add_argument("--sample", action="store_true", help="emit deterministic Virginia demo GeoJSON")
 
     plan = sub.add_parser("plan")
     plan.add_argument("goal")
@@ -42,6 +46,8 @@ def main() -> int:
         _dump(schema())
     elif args.command == "capabilities":
         _dump(capability_manifest())
+    elif args.command == "tracking":
+        _dump(to_geojson(sample_track()) if args.sample else tracking_manifest())
     elif args.command == "plan":
         _dump(build_plan(args.goal))
     elif args.command == "brain":
