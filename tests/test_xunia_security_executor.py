@@ -7,7 +7,6 @@ from unittest.mock import Mock
 from xunia_security import Engagement, SecurityMode, Target, XuniaSecurityPlatform
 from xunia_security_executor import AuthorizedToolExecutor, ExecutionPolicy
 
-
 NOW = datetime(2026, 9, 1, 16, 0, tzinfo=timezone.utc)
 
 
@@ -28,7 +27,8 @@ class AuthorizedToolExecutorTests(unittest.TestCase):
     def executor(self, runner=None, resolver=None):
         return AuthorizedToolExecutor(
             policy=ExecutionPolicy(timeout_seconds=30, max_output_bytes=32),
-            runner=runner or Mock(return_value=subprocess.CompletedProcess(["nmap"], 0, stdout=b"ok", stderr=b"")),
+            runner=runner
+            or Mock(return_value=subprocess.CompletedProcess(["nmap"], 0, stdout=b"ok", stderr=b"")),
             binary_resolver=resolver or (lambda binary: f"/usr/bin/{binary}"),
             clock=lambda: NOW,
         )
@@ -37,7 +37,9 @@ class AuthorizedToolExecutorTests(unittest.TestCase):
         platform = XuniaSecurityPlatform()
         e = engagement()
         step = platform.plan(e, NOW).steps[0]
-        runner = Mock(return_value=subprocess.CompletedProcess(list(step.argv), 0, stdout=b"service open", stderr=b""))
+        runner = Mock(
+            return_value=subprocess.CompletedProcess(list(step.argv), 0, stdout=b"service open", stderr=b"")
+        )
         evidence = self.executor(runner=runner).execute(e, step)
         runner.assert_called_once_with(
             list(step.argv),
@@ -81,7 +83,11 @@ class AuthorizedToolExecutorTests(unittest.TestCase):
     def test_evidence_preview_is_bounded_but_hashes_full_output(self):
         e = engagement()
         step = XuniaSecurityPlatform().plan(e, NOW).steps[0]
-        runner = Mock(return_value=subprocess.CompletedProcess(list(step.argv), 0, stdout=b"A" * 100, stderr=b"B" * 100))
+        runner = Mock(
+            return_value=subprocess.CompletedProcess(
+                list(step.argv), 0, stdout=b"A" * 100, stderr=b"B" * 100
+            )
+        )
         evidence = self.executor(runner=runner).execute(e, step)
         self.assertTrue(evidence.output_truncated)
         self.assertLessEqual(len(evidence.stdout_preview.encode()), 16)
@@ -92,7 +98,11 @@ class AuthorizedToolExecutorTests(unittest.TestCase):
     def test_timeout_returns_timeout_evidence(self):
         e = engagement()
         step = XuniaSecurityPlatform().plan(e, NOW).steps[0]
-        runner = Mock(side_effect=subprocess.TimeoutExpired(list(step.argv), 30, output=b"partial", stderr=b"slow"))
+        runner = Mock(
+            side_effect=subprocess.TimeoutExpired(
+                list(step.argv), 30, output=b"partial", stderr=b"slow"
+            )
+        )
         evidence = self.executor(runner=runner).execute(e, step)
         self.assertEqual(evidence.status, "TIMEOUT")
         self.assertEqual(evidence.returncode, 124)
