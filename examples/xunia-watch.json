@@ -1,0 +1,13 @@
+{
+  "runtimeUrl": "http://127.0.0.1:8765",
+  "pollSeconds": 2,
+  "debounceSeconds": 3,
+  "watches": [
+    {
+      "name": "repo-security",
+      "type": "git",
+      "path": ".",
+      "manifestFile": "xunia-local-engagement.json"
+    }
+  ]
+}
