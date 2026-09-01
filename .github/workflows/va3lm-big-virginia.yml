@@ -1,0 +1,31 @@
+name: VA3LM Big Virginia
+
+on:
+  push:
+    paths:
+      - 'va3lm/**'
+      - '.github/workflows/va3lm-big-virginia.yml'
+  pull_request:
+    paths:
+      - 'va3lm/**'
+      - '.github/workflows/va3lm-big-virginia.yml'
+
+jobs:
+  capability-gate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: va3lm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e '.[dev]'
+      - run: pytest -q
+      - run: ruff check src tests
+      - run: bandit -q -ll -r src
+      - run: python -m compileall -q src
+      - run: va3lm capabilities > /tmp/va3lm-capabilities.json
+      - run: python -c "import json; d=json.load(open('/tmp/va3lm-capabilities.json')); assert d['sourceState']=='ALPHA_REFERENCE'; assert len(d['capabilities']) >= 10"
