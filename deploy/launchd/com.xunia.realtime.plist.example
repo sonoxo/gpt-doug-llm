@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.xunia.realtime</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/ABSOLUTE/PATH/TO/gpt-doug-llm/xunia_realtime_all.py</string>
+    <string>--watch-config</string>
+    <string>/ABSOLUTE/PATH/TO/gpt-doug-llm/examples/xunia-watch.json</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/ABSOLUTE/PATH/TO/gpt-doug-llm</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>XUNIA_RUNTIME_HOST</key><string>127.0.0.1</string>
+    <key>XUNIA_RUNTIME_PORT</key><string>8765</string>
+    <key>XUNIA_RUNTIME_WORKERS</key><string>8</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <dict><key>SuccessfulExit</key><false/></dict>
+  <key>StandardOutPath</key>
+  <string>/tmp/xunia-realtime.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/xunia-realtime.err</string>
+</dict>
+</plist>
