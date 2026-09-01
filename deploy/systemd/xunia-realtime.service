@@ -1,0 +1,28 @@
+[Unit]
+Description=XUNIA Free Realtime Security Runtime
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=xunia
+Group=xunia
+WorkingDirectory=/opt/xunia/gpt-doug-llm
+Environment=XUNIA_RUNTIME_HOST=127.0.0.1
+Environment=XUNIA_RUNTIME_PORT=8765
+Environment=XUNIA_RUNTIME_WORKERS=8
+Environment=XUNIA_RUNTIME_DB=/var/lib/xunia/realtime.db
+Environment=XUNIA_WATCH_CONFIG=/opt/xunia/gpt-doug-llm/examples/xunia-watch.json
+ExecStart=/usr/bin/python3 /opt/xunia/gpt-doug-llm/xunia_realtime_all.py
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/xunia /opt/xunia/gpt-doug-llm
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+[Install]
+WantedBy=multi-user.target
