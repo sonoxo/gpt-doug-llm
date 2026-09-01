@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from va3lm.agents import roster
 from va3lm.app import app
 from va3lm.brain import ask
