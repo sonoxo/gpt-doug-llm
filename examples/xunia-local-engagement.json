@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "xunia.security.engagement/v1",
+  "engagementId": "local-assess-001",
+  "owner": "local-operator",
+  "mode": "ASSESS",
+  "startsAt": "2026-09-01T00:00:00Z",
+  "endsAt": "2026-09-02T00:00:00Z",
+  "targets": [
+    { "type": "path", "value": "." }
+  ],
+  "exclusions": [],
+  "allowedChecks": [
+    "supply-chain.vulnerability",
+    "supply-chain.sbom",
+    "supply-chain.cve",
+    "source.secrets",
+    "source.sast",
+    "dependency.osv",
+    "iac.misconfiguration"
+  ],
+  "maxRequestsPerSecond": 10,
+  "maxConcurrency": 4,
+  "destructiveAllowed": false,
+  "authorizationReference": "LOCAL-OWNER-AUTHORIZATION"
+}
