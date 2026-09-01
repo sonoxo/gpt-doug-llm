@@ -1,16 +1,36 @@
-# VA3LM
+# BIG VIRGINIA // VA3LM
 
-**Virginia Agentic Large Learning Language Model**
+**Virginia Agentic Large Learning Language Model — v0.2.0**
 
-Coding and programming AI command center for **GPT-DOUG-LLM** and **ZYRA**.
+Coding, orchestration, ontology, capability, and evidence command center for **GPT-DOUG-LLM**, **ZYRA**, and the wider RVIA/VA stack.
 
 - Port: **8088**
 - Agent swarm
+- PACK-inspired capability plane
 - Coding workflows
 - Palantir-style ontology blueprint
 - Test + security gates
 - Human approval before write/publish actions
 - Commercial/explainer agent for plain-language demos
+
+## BIG VIRGINIA capability plane
+
+VA3LM now adapts architecture patterns from `sonoxo/pack` across ten capability areas:
+
+`CORE → AUTH → SCHEMA → DOCUMENTS → STATE → CODEGEN → SDK → APP → APP SCAFFOLD → MONOREPO/CI`
+
+PACK itself is marked **ALPHA / not intended for production use**, so VA3LM treats it as an architectural reference rather than blindly importing it as a production dependency. VA3LM-owned tests, security gates, approval gates, and deployment validation remain authoritative.
+
+```bash
+va3lm capabilities
+```
+
+```text
+GET /api/capabilities
+GET /api/status
+```
+
+Full mapping: [`docs/PACK_CAPABILITY_PLANE.md`](docs/PACK_CAPABILITY_PLANE.md)
 
 ## Run
 
@@ -26,63 +46,40 @@ Open `http://127.0.0.1:8088`.
 
 ## Interactive command deck
 
-<details open>
-<summary><strong>Summon agents</strong></summary>
-
 ```bash
 va3lm agents
-```
-</details>
-
-<details>
-<summary><strong>Build a coding workflow</strong></summary>
-
-```bash
+va3lm capabilities
+va3lm ontology
 va3lm plan "Build a FastAPI endpoint with tests"
-```
-</details>
-
-<details>
-<summary><strong>Explain VA3LM like a commercial</strong></summary>
-
-```bash
 va3lm explain "VA3LM ontology workflow"
 ```
 
-Output follows: **problem → what it is → how it works → proof → benefit → CTA**.
-</details>
-
-<details>
-<summary><strong>Inspect ontology</strong></summary>
-
-```bash
-va3lm ontology
-```
-</details>
-
-<details>
-<summary><strong>Activate GPT-DOUG-LLM brain</strong></summary>
+Activate the configured GPT-DOUG-LLM brain:
 
 ```bash
 export VA3LM_MODEL_URL=http://127.0.0.1:11434/v1
 export VA3LM_MODEL_NAME=gpt-doug-llm
 va3lm brain "Refactor this service safely"
 ```
-</details>
 
-<details>
-<summary><strong>Start the 8088 command center</strong></summary>
+Start the 8088 command center:
 
 ```bash
 va3lm serve --host 127.0.0.1 --port 8088
 ```
-</details>
 
 ## Ecosystem
 
 ```mermaid
 flowchart TD
-    U[Operator] --> C[VA3LM Commander :8088]
+    U[Operator] --> C[BIG VIRGINIA / VA3LM :8088]
+    C --> P[Capability Plane]
+    P --> PC[Core]
+    P --> PA[Auth]
+    P --> PS[Schema + Documents]
+    P --> PST[State]
+    P --> PG[Codegen + SDK]
+    P --> APP[App Surface]
     C --> B[GPT-DOUG-LLM Brain]
     C --> A[Architect]
     A --> D[Coder]
@@ -94,33 +91,17 @@ flowchart TD
     G -->|approve| E[Evidence + Build]
     G -->|hold| D
     E --> O
-    C --> X[Explainer Agent]
-    X --> M[Commercial / Demo Script]
 ```
-
-## Commercial explainer pattern
-
-```text
-HOOK:      What problem are we fixing?
-SIMPLE:    What is VA3LM in one sentence?
-SHOW:      What happens when you give it a task?
-PROOF:     What tests, evidence, or locks verify the work?
-BENEFIT:   Why does this save time or reduce risk?
-CTA:       What should the viewer do next?
-```
-
-Example:
-
-> Software teams lose time jumping between planning, coding, testing, security, and documentation. VA3LM puts those steps into one agentic workflow. Give it a coding goal, and the architect, coder, ontology, test, security, review, and evidence agents build a traceable plan around it. Nothing gets published automatically: approval gates stay in control. Open the command center on port 8088 and watch the workflow move from idea to verified build.
 
 ## API
 
 | Method | Route | Purpose |
 |---|---|---|
 | GET | `/healthz` | health |
-| GET | `/api/status` | runtime status |
+| GET | `/api/status` | runtime + capability status |
 | GET | `/api/agents` | agent roster |
 | GET | `/api/ontology` | ontology |
+| GET | `/api/capabilities` | Big Virginia capability manifest |
 | POST | `/api/plan` | build workflow |
 | POST | `/api/brain` | ask configured model |
 | POST | `/api/explain` | generate commercial-style explainer |
@@ -131,6 +112,9 @@ Example:
 pytest -q
 ruff check src tests
 bandit -q -ll -r src
+python -m compileall -q src
 ```
+
+The dedicated `VA3LM Big Virginia` GitHub Actions gate also verifies the capability manifest can be produced by the installed CLI.
 
 Private software project. Not a government agency.
