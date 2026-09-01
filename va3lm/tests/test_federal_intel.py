@@ -1,5 +1,4 @@
 import pytest
-
 from va3lm.federal_intel import (
     federal_intel_entity,
     federal_intel_manifest,
