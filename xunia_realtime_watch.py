@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import URLError
@@ -55,8 +56,7 @@ def _git_state(path: Path) -> str:
         commit = ref.read_text(encoding="utf-8").strip() if ref.exists() else head
     else:
         commit = head
-    index = git / "index"
-    index_state = _digest_path(index)
+    index_state = _digest_path(git / "index")
     return hashlib.sha256(f"{commit}:{index_state}".encode()).hexdigest()
 
 
@@ -70,13 +70,19 @@ def _load_manifest(entry: dict[str, Any], config_dir: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _runtime_allowed(runtime_url: str) -> bool:
+    return runtime_url.startswith(("http://127.0.0.1", "http://localhost", "http://[::1]"))
+
+
 def _submit(runtime_url: str, manifest: dict[str, Any], token: str | None) -> str:
+    if not _runtime_allowed(runtime_url) and os.getenv("XUNIA_WATCH_ALLOW_REMOTE") != "1":
+        raise PermissionError("WATCH_REMOTE_RUNTIME_DENIED")
     payload = json.dumps({"manifest": manifest}).encode("utf-8")
     headers = {"Content-Type": "application/json"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
     request = Request(f"{runtime_url.rstrip('/')}/v1/jobs", data=payload, headers=headers, method="POST")
-    with urlopen(request, timeout=10) as response:  # noqa: S310 - URL is operator-controlled local runtime config
+    with urlopen(request, timeout=10) as response:  # nosec B310 -- runtime URL is restricted above
         data = json.loads(response.read().decode("utf-8"))
     return str(data["jobId"])
 
@@ -85,7 +91,7 @@ def run(config_path: str) -> None:
     source = Path(config_path).resolve()
     config = json.loads(source.read_text(encoding="utf-8"))
     runtime_url = str(config.get("runtimeUrl", "http://127.0.0.1:8765"))
-    if not runtime_url.startswith(("http://127.0.0.1", "http://localhost", "http://[::1]")) and os.getenv("XUNIA_WATCH_ALLOW_REMOTE") != "1":
+    if not _runtime_allowed(runtime_url) and os.getenv("XUNIA_WATCH_ALLOW_REMOTE") != "1":
         raise PermissionError("WATCH_REMOTE_RUNTIME_DENIED")
     interval = max(1.0, float(config.get("pollSeconds", 2)))
     debounce = max(1.0, float(config.get("debounceSeconds", 3)))
@@ -113,8 +119,6 @@ def run(config_path: str) -> None:
             manifest = _load_manifest(entry, source.parent)
             timestamp = int(time.time())
             manifest["engagementId"] = f"{manifest['engagementId']}-watch-{timestamp}"
-            from datetime import datetime, timedelta, timezone
-
             start = datetime.now(timezone.utc)
             manifest["startsAt"] = start.isoformat()
             manifest["endsAt"] = (start + timedelta(hours=1)).isoformat()
