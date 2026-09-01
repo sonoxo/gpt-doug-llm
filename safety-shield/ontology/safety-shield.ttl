@@ -1,0 +1,30 @@
+@prefix vllm: <https://sonoxo.dev/ontology/virginia-llm#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+vllm:SafetyShield a vllm:ControlPlane ;
+  vllm:defaultPolicy vllm:DenyByDefault ;
+  vllm:contains vllm:GlassOnion, vllm:HumanOversightGate, vllm:AuditLedger .
+
+vllm:GlassOnion a vllm:ObservabilityModel ;
+  vllm:layer vllm:IntentLayer, vllm:IdentityLayer, vllm:ContextLayer,
+             vllm:PolicyLayer, vllm:ToolLayer, vllm:ExecutionLayer,
+             vllm:EvidenceLayer, vllm:OutcomeLayer .
+
+vllm:HighImpactAI a vllm:RiskClass ;
+  vllm:requires vllm:RiskManagementPlan, vllm:HumanOversight,
+                vllm:UserProtection, vllm:RetainedDocumentation .
+
+vllm:GenerativeAIOutput a vllm:Artifact ;
+  vllm:requires vllm:TransparencyDisclosure .
+
+vllm:PrivilegedAction a vllm:ActionClass ;
+  vllm:requires vllm:LeastPrivilegeToken, vllm:PolicyDecision, vllm:AuditEvent .
+
+vllm:IrreversibleAction a vllm:ActionClass ;
+  vllm:requires vllm:HumanApproval .
+
+vllm:UntrustedContext a vllm:TrustClass ;
+  vllm:cannotGrant vllm:Privilege .
+
+vllm:NSAPublicGuidance a vllm:ReferenceFramework ;
+  vllm:usage "Defensive public guidance mapping only; no affiliation or access implied." .
