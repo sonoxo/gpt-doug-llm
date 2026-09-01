@@ -5,16 +5,20 @@ on:
     paths:
       - "xunia_security.py"
       - "xunia_security_executor.py"
+      - "xunia_realtime_runtime.py"
       - "tests/test_xunia_security.py"
       - "tests/test_xunia_security_executor.py"
+      - "tests/test_xunia_realtime_runtime.py"
       - ".github/workflows/xunia-security-platform.yml"
   push:
     branches: [main]
     paths:
       - "xunia_security.py"
       - "xunia_security_executor.py"
+      - "xunia_realtime_runtime.py"
       - "tests/test_xunia_security.py"
       - "tests/test_xunia_security_executor.py"
+      - "tests/test_xunia_realtime_runtime.py"
 
 permissions:
   contents: read
@@ -30,4 +34,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: python -m unittest tests.test_xunia_security tests.test_xunia_security_executor -v
+      - run: >-
+          python -m unittest
+          tests.test_xunia_security
+          tests.test_xunia_security_executor
+          tests.test_xunia_realtime_runtime
+          -v
