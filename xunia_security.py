@@ -13,7 +13,6 @@ from hashlib import sha256
 from typing import List, Optional, Sequence, Tuple
 from urllib.parse import urlparse
 
-
 SCHEMA_VERSION = "xunia.security.engagement/v1"
 TARGET_TYPES = {"url", "host", "cidr", "path", "image", "cloud"}
 
