@@ -5,10 +5,8 @@ AI FDE documentation and demonstrations. It does not include or emulate
 Palantir proprietary source code, model weights, private APIs, or tenant state.
 """
 
-from __future__ import annotations
-
-from dataclasses import asdict, dataclass
-
+from dataclasses import dataclass
+from typing import Sequence
 
 PUBLIC_SOURCES = (
     "https://www.youtube.com/watch?v=e90qUUh8_us",
@@ -46,9 +44,11 @@ class MigrationRole:
     capabilities: tuple[str, ...]
 
     def to_dict(self) -> dict[str, object]:
-        data = asdict(self)
-        data["capabilities"] = list(self.capabilities)
-        return data
+        return {
+            "name": self.name,
+            "authority": self.authority,
+            "capabilities": list(self.capabilities),
+        }
 
 
 MIGRATION_FLEET = (
@@ -135,7 +135,7 @@ class MigrationMissionPlan:
 
 def build_migration_plan(
     objective: str,
-    source_types: tuple[str, ...] | list[str] = (),
+    source_types: Sequence[str] = (),
     *,
     max_repair_cycles: int = DEFAULT_MAX_REPAIR_CYCLES,
 ) -> MigrationMissionPlan:
@@ -151,7 +151,9 @@ def build_migration_plan(
     if max_repair_cycles < 1 or max_repair_cycles > 10:
         raise ValueError("max_repair_cycles must be between 1 and 10")
 
-    normalized_sources = tuple(dict.fromkeys(str(item).strip() for item in source_types if str(item).strip()))
+    normalized_sources = tuple(
+        dict.fromkeys(str(item).strip() for item in source_types if str(item).strip())
+    )
 
     return MigrationMissionPlan(
         objective=clean_objective,
