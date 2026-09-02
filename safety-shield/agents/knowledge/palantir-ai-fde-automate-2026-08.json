@@ -1,0 +1,48 @@
+{
+  "knowledge_id": "palantir-ai-fde-automate-2026-08",
+  "version": "1.0.0",
+  "source_tier": "T1_OFFICIAL_VENDOR_DOCUMENTATION",
+  "source": {
+    "publisher": "Palantir Technologies",
+    "title": "Configure business automation with Automate in AI FDE",
+    "published": "2026-08-27",
+    "url": "https://www.palantir.com/docs/foundry/announcements#configure-business-automation-with-automate-in-ai-fde"
+  },
+  "verified_capabilities": [
+    "configure time schedules and object-set conditions",
+    "use live, scheduled, or automation-dependent evaluation where supported",
+    "use Foundry actions, AIP Logic, and platform/email notification effects",
+    "configure sequential or parallel effects, retries, and fallback actions",
+    "create user- or project-scoped automations",
+    "validate project dependencies",
+    "pause, resume, expire, mute, and administratively notify for automations",
+    "wait for downstream automation and report trigger, failure, or timeout during workflow testing"
+  ],
+  "agentic_pattern": {
+    "name": "condition-to-governed-effect",
+    "steps": [
+      "define condition",
+      "evaluate scope",
+      "resolve permitted effect",
+      "execute bounded action or logic",
+      "retry or fallback when configured",
+      "validate downstream outcome",
+      "record evidence"
+    ]
+  },
+  "rvia_mapping": {
+    "white_house_daily": {
+      "condition": "daily schedule plus newly discovered whitehouse.gov canonical URLs",
+      "effects": ["write source records", "write daily brief", "commit and push repository changes"],
+      "scope": "sonoxo/gpt-doug-llm",
+      "guardrails": [
+        "first-party public sources only",
+        "source statement is not independent verification",
+        "no demographic political persuasion",
+        "preserve provenance and content hash",
+        "record collection errors"
+      ]
+    }
+  },
+  "limitations": "This is a documented architectural pattern and an independent GitHub implementation. It does not claim access to a Palantir enrollment or use of proprietary Automate APIs."
+}
