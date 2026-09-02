@@ -12,6 +12,7 @@ from va3lm.federal_intel import (
     federal_intel_manifest,
     verified_github_sources,
 )
+from va3lm.max_memory import memory_manager
 from va3lm.ontology import schema
 from va3lm.planner import build_plan
 from va3lm.tracking import sample_track, to_geojson, tracking_manifest
@@ -41,6 +42,12 @@ def main() -> int:
 
     brain = sub.add_parser("brain")
     brain.add_argument("prompt")
+    brain.add_argument("--session", default="terminal", help="bounded MAX memory session id")
+
+    memory = sub.add_parser("memory")
+    memory.add_argument("--session", default="terminal", help="bounded MAX memory session id")
+    memory.add_argument("--query", default="", help="rank compact memory around this query")
+    memory.add_argument("--clear", action="store_true", help="clear the selected in-process memory session")
 
     exp = sub.add_parser("explain")
     exp.add_argument("subject")
@@ -68,7 +75,12 @@ def main() -> int:
     elif args.command == "plan":
         _dump(build_plan(args.goal))
     elif args.command == "brain":
-        _dump(ask(args.prompt))
+        _dump(ask(args.prompt, args.session))
+    elif args.command == "memory":
+        if args.clear:
+            _dump({"sessionId": args.session, "cleared": memory_manager.clear(args.session)})
+        else:
+            _dump(memory_manager.get(args.session).snapshot(args.query))
     elif args.command == "explain":
         _dump(explain(args.subject))
     elif args.command == "serve":
