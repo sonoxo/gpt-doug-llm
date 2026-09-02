@@ -13,7 +13,7 @@
 [![MIT](https://img.shields.io/github/license/sonoxo/gpt-doug-llm?style=for-the-badge)](LICENSE)
 ![Mouse Mic](https://img.shields.io/badge/NXYZ%20Mouse%20Mic-v1.0.2-6f4cff?style=for-the-badge)
 
-[Products](#products) · [Why ZYRA](#why-zyra) · [Architecture](#architecture) · [Foundry](#palantir-foundry-integration) · [Quick Start](#quick-start) · [Trust](#trust-and-control) · [Docs](#documentation)
+[Products](#products) · [Shadow Glass](#️-shadow-glass--federal-mission-nexus) · [Why ZYRA](#why-zyra) · [Architecture](#architecture) · [Foundry](#palantir-foundry-integration) · [Quick Start](#quick-start) · [Trust](#trust-and-control) · [Docs](#documentation)
 
 </div>
 
@@ -28,6 +28,50 @@ The platform is designed around a simple execution contract:
 > **AI proposes → policy bounds → approved tools execute → validation produces proof → humans retain control of material actions.**
 
 That makes the repository useful as more than a model experiment. It is a product platform for teams that want AI-assisted execution with explicit capability boundaries, auditability, and deployment discipline.
+
+---
+
+## ◼️ SHADOW GLASS // Federal Mission Nexus
+
+<div align="center">
+
+<img width="100%" src="safety-shield/assets/shadow-glass-federal-nexus.svg" alt="SHADOW GLASS Federal Mission Nexus" />
+
+[![SHADOW GLASS](https://img.shields.io/badge/SHADOW%20GLASS-ONLINE-111111?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
+[![GLASS ONION](https://img.shields.io/badge/GLASS%20ONION-PROTECTED-7c3aed?style=for-the-badge)](safety-shield/ontology/safety-shield.ttl)
+[![USSF](https://img.shields.io/badge/SPACE%20FORCE-MISSION%20MAPPED-0284c7?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
+[![NSA](https://img.shields.io/badge/NSA-DEFENSIVE%20CYBER-6d28d9?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
+[![NASA](https://img.shields.io/badge/NASA-OPEN%20MISSION%20DATA-f97316?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
+
+**SHADOW GLASS shields GLASS ONION. GLASS ONION makes authority observable.**
+
+</div>
+
+```text
+PUBLIC / AUTHORIZED SOURCES
+            ↓
+      SHADOW GLASS
+ identity • provenance • confidence • policy
+            ↓
+       GLASS ONION
+ intent • context • execution • evidence
+            ↓
+  PALANTIR-STYLE ONTOLOGY
+       ↙       ↓       ↘
+SPACE FORCE   NSA     NASA
+ mission    defensive  open data /
+ systems      cyber     software
+            ↓
+     THE BLACK HOUSE
+            ↓
+ZYRA • XUNIA • GPT-DOUG-LLM • VIRGINIA-LLM
+```
+
+The mission nexus maps public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, and NASA public mission data/software into a provenance-first operational ontology. **These are independent project mappings, not agency credentials or endorsements.**
+
+[Open SHADOW GLASS control plane →](safety-shield/SHADOW_GLASS.md) · [Machine-readable ontology →](safety-shield/ontology/shadow-glass-palantir.json)
+
+---
 
 ## Products
 
@@ -215,6 +259,7 @@ gpt-doug-llm/
 ├── workers/                     # Worker and orchestration services
 ├── tools/nxyz-mouse-mic/        # Chrome browser-guidance product
 ├── watch-dog/                   # Experimental local camera product
+├── safety-shield/               # SHADOW GLASS + GLASS ONION defensive control plane
 ├── docs/                        # Product, architecture, integration, security docs
 ├── tests/                       # Regression tests
 └── .github/workflows/           # CI / security / release automation
@@ -226,6 +271,7 @@ gpt-doug-llm/
 
 | Start here | Purpose |
 | --- | --- |
+| [SHADOW GLASS](safety-shield/SHADOW_GLASS.md) | Federal mission nexus, Glass Onion shield, ontology and control states |
 | [Product Portfolio](docs/PRODUCTS.md) | What ZYRA products exist, buyer value, and readiness |
 | [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
 | [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
@@ -239,7 +285,7 @@ gpt-doug-llm/
 
 ## Market-facing independence statement
 
-**ZYRA, GPT-DOUG-LLM, NXYZ, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, government systems, intelligence/security disciplines, or external organizations describe integrations, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, or affiliation.
+**ZYRA, GPT-DOUG-LLM, NXYZ, SHADOW GLASS, GLASS ONION, TheBlackHouse, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
 
 That distinction matters commercially: customers should know exactly which capabilities come from this repository and which permissions or assurances belong to the external platforms they operate.
 
