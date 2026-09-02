@@ -1,0 +1,75 @@
+{
+  "mission": {
+    "owner": "RVIA mission owner",
+    "technical_owner": "ZYRA engineering",
+    "use_case": "maintenance and readiness decision-support dashboard",
+    "intended_users": ["authorized operator"],
+    "material_external_action": false,
+    "human_approval_required": false,
+    "autonomous_weapon_release": false,
+    "autonomous_target_selection": false,
+    "unrestricted_offensive_cyber": false
+  },
+  "data": {
+    "classification": "PUBLIC",
+    "cui_category": "",
+    "limited_dissemination_controls": [],
+    "contains_personal_data": false,
+    "contains_secret_credentials": false,
+    "source_inventory": ["public test fixture"]
+  },
+  "contract": {
+    "authority_reference": "prototype / no government contract data",
+    "cui_required": false,
+    "required_cmmc_status": "NOT_APPLICABLE",
+    "dd254_reference": "",
+    "customer_security_guidance": ""
+  },
+  "export": {
+    "jurisdiction_status": "NOT_APPLICABLE",
+    "ddtc_registration_status": "NOT_APPLICABLE",
+    "license_or_approval_reference": "",
+    "recipient_authorized": true,
+    "foreign_person_access": false
+  },
+  "environment": {
+    "name": "public-data development environment",
+    "authorized": true,
+    "required_impact_level": "",
+    "actual_impact_level": "",
+    "classified_accredited": false,
+    "region": "US",
+    "air_gapped": false
+  },
+  "model": {
+    "provider": "approved-or-local-model",
+    "model_id": "example",
+    "external_egress": false,
+    "authorized_for_data_class": true,
+    "authorized_for_export_controlled": false,
+    "retention_policy_recorded": true,
+    "training_use_recorded": true,
+    "prompt_includes_secret_credentials": false
+  },
+  "security": {
+    "threat_model_complete": true,
+    "rollback_defined": true,
+    "kill_switch_defined": true,
+    "audit_enabled": true,
+    "program_authorization_verified": false,
+    "fcl_status": "NOT_APPLICABLE",
+    "personnel_access_verified": false
+  },
+  "release": {
+    "tests_passed": false,
+    "evals_passed": false,
+    "owner_approved": false,
+    "version": "0.1.0-prototype",
+    "audit_receipt": "",
+    "human_approval_record": ""
+  },
+  "incident": {
+    "controlled_data_spill": false,
+    "incident_reference": ""
+  }
+}
