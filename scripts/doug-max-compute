@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT/va3lm"
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "GPT-DOUG-MAX: python3 is required" >&2
+  exit 1
+fi
+
+if [[ ! -d .venv ]]; then
+  echo "GPT-DOUG-MAX: creating local runtime .venv"
+  python3 -m venv .venv
+fi
+
+source .venv/bin/activate
+python -m pip install --disable-pip-version-check -q -e .
+
+export VA3LM_MODEL_NAME="${VA3LM_MODEL_NAME:-gpt-doug-llm-max}"
+
+echo "GPT-DOUG-LLM-MAX // COMPUTE ONLINE"
+echo "VA3LM control room: http://127.0.0.1:8088"
+echo "Brain: ${VA3LM_MODEL_NAME}"
+if [[ -n "${VA3LM_MODEL_URL:-}" ]]; then
+  echo "Local model endpoint: ${VA3LM_MODEL_URL}"
+else
+  echo "Local model endpoint: not configured; deterministic planner + MAX bounded memory active"
+fi
+
+echo "Press Ctrl+C to stop."
+exec va3lm serve --host 127.0.0.1 --port 8088
