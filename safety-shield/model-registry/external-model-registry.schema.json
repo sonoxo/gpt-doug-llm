@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sonoxo.dev/schemas/shadow-glass-external-model-registry.schema.json",
+  "title": "SHADOW GLASS External Model Registry",
+  "description": "Provider-agnostic governance record for every model or agent boundary that may receive RVIA or The Black House context.",
+  "type": "object",
+  "required": ["version", "providers"],
+  "properties": {
+    "version": {"type": "string"},
+    "providers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["providerId", "boundaryClass", "approved", "dataPolicy", "models"],
+        "properties": {
+          "providerId": {"type": "string"},
+          "displayName": {"type": "string"},
+          "boundaryClass": {"enum": ["AIP_MANAGED_THIRD_PARTY", "BYOM_REST", "EXTERNAL_MCP", "LOCAL_PRIVATE", "UNKNOWN_EXTERNAL"]},
+          "approved": {"type": "boolean"},
+          "endpointDomains": {"type": "array", "items": {"type": "string"}},
+          "allowedRegions": {"type": "array", "items": {"type": "string"}},
+          "noTrainingOnSubmittedData": {"type": "boolean"},
+          "retentionPolicyDocumented": {"type": "boolean"},
+          "retentionAcceptable": {"type": "boolean"},
+          "securityReviewReference": {"type": "string"},
+          "dataPolicy": {
+            "type": "object",
+            "required": ["allowedClassifications", "prohibitedFields"],
+            "properties": {
+              "allowedClassifications": {"type": "array", "items": {"enum": ["PUBLIC", "INTERNAL", "CONTROLLED", "RESTRICTED"]}},
+              "prohibitedFields": {"type": "array", "items": {"type": "string"}},
+              "requiresRedaction": {"type": "boolean"},
+              "requiresHumanApproval": {"type": "boolean"}
+            },
+            "additionalProperties": false
+          },
+          "models": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["modelId", "approved", "capabilities"],
+              "properties": {
+                "modelId": {"type": "string"},
+                "approved": {"type": "boolean"},
+                "capabilities": {"type": "array", "items": {"enum": ["TEXT", "VISION", "AUDIO", "EMBEDDING", "TOOL_CALLING", "STRUCTURED_OUTPUT"]}},
+                "allowedPurposes": {"type": "array", "items": {"type": "string"}},
+                "toolCallingAllowed": {"type": "boolean"},
+                "actionCallingAllowed": {"type": "boolean"},
+                "evalSuite": {"type": "string"}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
