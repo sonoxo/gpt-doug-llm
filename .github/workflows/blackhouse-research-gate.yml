@@ -1,0 +1,49 @@
+name: Black House Research Gate
+
+on:
+  pull_request:
+    paths:
+      - 'intel/**'
+      - '.github/workflows/blackhouse-research-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'intel/**'
+      - '.github/workflows/blackhouse-research-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  research-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate machine-readable Palantir source record
+        run: python -m json.tool intel/sources/youtube-egr-UDWLZPI.json >/dev/null
+
+      - name: Verify required research artifacts
+        run: |
+          test -f intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          test -f intel/PALANTIR_RESEARCH_CREDITS.md
+          test -f intel/PR_COLLABORATION.md
+          test -f intel/assets/palantir-sovereignty-research-map.svg
+
+      - name: Verify provenance and independence language
+        run: |
+          grep -q 'Assessment.*HIGH CONFIDENCE' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'Exact timestamp transcript confidence' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'Independence statement' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'palantir.com/docs/foundry/ontology/overview' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'palantir.com/docs/foundry/aip-evolve/overview' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'palantir.com/docs/foundry/aip/aip-security' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+
+      - name: Gate statement
+        run: |
+          echo 'Black House research provenance verified.'
+          echo 'This validates repository evidence structure; it does not imply Palantir endorsement, affiliation, certification, or proprietary access.'
