@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="620" viewBox="0 0 1600 620" role="img" aria-labelledby="title desc">
+  <title id="title">AIP Agentic Workflow and External Model Governance Map</title>
+  <desc id="desc">Animated architecture diagram for SHADOW GLASS, AIP workflows, external model governance, Glass Onion, Ontology, and The Black House.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#050508"/>
+      <stop offset="0.5" stop-color="#111126"/>
+      <stop offset="1" stop-color="#050508"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" x2="1">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="0.5" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <style>
+      text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#f8fafc}
+      .box{fill:#0b0b15;stroke:#475569;stroke-width:2;rx:18}
+      .core{stroke:url(#line);stroke-width:3;filter:url(#glow)}
+      .small{font-size:20px;fill:#cbd5e1}
+      .title{font-size:40px;font-weight:800;letter-spacing:2px}
+      .label{font-size:24px;font-weight:700}
+      .pulse{animation:pulse 2.8s ease-in-out infinite;transform-origin:center}
+      .dash{stroke-dasharray:12 14;animation:dash 6s linear infinite}
+      @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
+      @keyframes dash{to{stroke-dashoffset:-220}}
+    </style>
+  </defs>
+  <rect width="1600" height="620" fill="url(#bg)"/>
+  <g opacity=".12"><path d="M0 80H1600M0 160H1600M0 240H1600M0 320H1600M0 400H1600M0 480H1600M0 560H1600" stroke="#64748b"/><path d="M160 0V620M320 0V620M480 0V620M640 0V620M800 0V620M960 0V620M1120 0V620M1280 0V620M1440 0V620" stroke="#64748b"/></g>
+  <text x="800" y="62" text-anchor="middle" class="title">SHADOW GLASS // AIP AGENTIC INTEL CONTROL PLANE</text>
+  <text x="800" y="94" text-anchor="middle" class="small">DATA GOVERNANCE • AGENTS • TOOLS • ACTIONS • EVALS • EXTERNAL MODELS • AUDIT</text>
+
+  <g class="pulse"><rect x="70" y="170" width="245" height="120" class="box core"/><text x="192" y="215" text-anchor="middle" class="label">INTEL SOURCES</text><text x="192" y="250" text-anchor="middle" class="small">public / authorized</text></g>
+  <rect x="390" y="145" width="290" height="170" class="box core"/><text x="535" y="195" text-anchor="middle" class="label">SHADOW GLASS</text><text x="535" y="232" text-anchor="middle" class="small">classify • minimize</text><text x="535" y="262" text-anchor="middle" class="small">egress • policy • trust</text><text x="535" y="292" text-anchor="middle" class="small">default deny</text>
+  <rect x="750" y="145" width="270" height="170" class="box core"/><text x="885" y="193" text-anchor="middle" class="label">AIP WORKFLOWS</text><text x="885" y="230" text-anchor="middle" class="small">Logic • Agents</text><text x="885" y="260" text-anchor="middle" class="small">Automate • Evals</text><text x="885" y="290" text-anchor="middle" class="small">MCP • Actions</text>
+  <rect x="1090" y="145" width="250" height="170" class="box core"/><text x="1215" y="190" text-anchor="middle" class="label">GLASS ONION</text><text x="1215" y="228" text-anchor="middle" class="small">intent • context</text><text x="1215" y="258" text-anchor="middle" class="small">tools • execution</text><text x="1215" y="288" text-anchor="middle" class="small">evidence • outcome</text>
+  <g class="pulse"><rect x="1390" y="170" width="150" height="120" class="box core"/><text x="1465" y="216" text-anchor="middle" class="label">BLACK</text><text x="1465" y="247" text-anchor="middle" class="label">HOUSE</text></g>
+
+  <path d="M315 230H390M680 230H750M1020 230H1090M1340 230H1390" stroke="url(#line)" stroke-width="5" fill="none" class="dash"/>
+
+  <rect x="245" y="395" width="300" height="135" class="box"/><text x="395" y="435" text-anchor="middle" class="label">EXTERNAL MODELS</text><text x="395" y="470" text-anchor="middle" class="small">GPT • Gemini • Claude</text><text x="395" y="500" text-anchor="middle" class="small">Grok • Llama • BYOM</text>
+  <rect x="650" y="395" width="300" height="135" class="box"/><text x="800" y="435" text-anchor="middle" class="label">ONTOLOGY</text><text x="800" y="470" text-anchor="middle" class="small">objects • links • actions</text><text x="800" y="500" text-anchor="middle" class="small">permissions • lineage</text>
+  <rect x="1055" y="395" width="300" height="135" class="box"/><text x="1205" y="435" text-anchor="middle" class="label">AGENT FLEET</text><text x="1205" y="470" text-anchor="middle" class="small">plan • handoff • validate</text><text x="1205" y="500" text-anchor="middle" class="small">approve • rollback • audit</text>
+
+  <path d="M535 315V360H395V395M885 315V395M1215 315V395" stroke="#22d3ee" stroke-width="3" fill="none" class="dash"/>
+  <text x="800" y="585" text-anchor="middle" class="small">MODEL OUTPUT ≠ AUTHORITY  •  EVERY HANDOFF RE-AUTHORIZES  •  EVERY EGRESS DECISION IS AUDITED</text>
+</svg>
