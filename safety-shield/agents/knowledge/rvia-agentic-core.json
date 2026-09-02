@@ -1,0 +1,149 @@
+{
+  "profile": "rvia-agentic-core-v1",
+  "version": "1.0.0",
+  "updated": "2026-09-02",
+  "purpose": "Shared runtime knowledge contract for GPT-LLM, Virginia-LLM, RVIA, ZYRA, XUNIA, TheBlackHouse and associated bounded agents.",
+  "learning_mode": "runtime-context-and-versioned-knowledge; no claim of model-weight retraining",
+  "inherits": {
+    "all_fleet_agents": true,
+    "default_authority": "none",
+    "execution": "least-privilege",
+    "high_impact_actions": "human-approval-required",
+    "audit": "append-only"
+  },
+  "agentic_loop": [
+    "intake",
+    "classify",
+    "retrieve-minimum-context",
+    "plan-bounded-steps",
+    "reason",
+    "request-tool",
+    "policy-decision",
+    "execute-bounded-action",
+    "validate-result",
+    "evaluate-quality",
+    "record-memory-if-approved",
+    "handoff-with-reauthorization",
+    "audit",
+    "rollback-or-release"
+  ],
+  "design_principles": [
+    "LLMs propose; deterministic policy decides authority.",
+    "Tools are explicit capabilities, never ambient power.",
+    "Query only the Ontology objects/properties required for the mission.",
+    "Prefer deterministic actions/functions when an LLM is not needed.",
+    "Separate retrieval, reasoning, action, validation and audit stages.",
+    "Stage material writes for review when impact or uncertainty is elevated.",
+    "Re-authorize every multi-agent handoff; do not inherit hidden credentials or unrestricted context.",
+    "Treat memory as governed data with purpose, classification, retention and deletion rules.",
+    "Evaluate prompts, models and workflows against fixed test cases before release.",
+    "Preserve provenance and confidence for intelligence-derived claims.",
+    "Fail closed when identity, source, scope, environment or model-boundary authorization is unknown.",
+    "Keep human command authority for consequential, irreversible or high-impact operations."
+  ],
+  "aip_alignment": {
+    "logic_blocks": [
+      "use-llm",
+      "query-objects",
+      "apply-action",
+      "execute-function",
+      "conditions",
+      "loops"
+    ],
+    "tool_semantics": "The LLM requests tool use; the runtime executes within the invoking identity's permissions.",
+    "automate": "Use event/time conditions with bounded effects; stage writes for human review where policy requires.",
+    "evals": "Use test cases, evaluation functions, metrics, model comparisons and repeated runs to manage nondeterminism.",
+    "chatbot_agents": "Equip assistants only with mission-specific Ontology context, documents and tools.",
+    "ontology": "Represent operational nouns as objects/links and governed verbs as actions/functions."
+  },
+  "new_agent_contract": {
+    "required": [
+      "name",
+      "mission",
+      "owner",
+      "inputs",
+      "outputs",
+      "allowed_tools",
+      "data_classes",
+      "side_effects",
+      "human_gate",
+      "evals",
+      "rollback",
+      "audit_fields"
+    ],
+    "must_define_success": true,
+    "must_define_failure": true,
+    "must_define_stop_conditions": true,
+    "must_define_context_budget": true,
+    "must_define_tool_budget": true
+  },
+  "memory_contract": {
+    "default": "ephemeral",
+    "persistent_memory_requires": [
+      "purpose",
+      "classification",
+      "owner",
+      "retention",
+      "source_lineage"
+    ],
+    "never_persist_by_default": [
+      "credentials",
+      "secret_tokens",
+      "raw_biometric_identifiers",
+      "unverified-sensitive-allegations"
+    ]
+  },
+  "handoff_contract": {
+    "fields": [
+      "mission_id",
+      "from_agent",
+      "to_agent",
+      "purpose",
+      "minimum_context",
+      "source_refs",
+      "data_classification",
+      "allowed_tools",
+      "expiry"
+    ],
+    "reauthorization_required": true
+  },
+  "release_gate": [
+    "identity-and-permission-check",
+    "source-provenance-check",
+    "tool-scope-check",
+    "negative-security-tests",
+    "grounding-evals",
+    "rollback-test",
+    "human-review-if-required",
+    "audit-receipt"
+  ],
+  "knowledge_sources": [
+    {
+      "type": "official-documentation",
+      "name": "Palantir AIP Logic Blocks",
+      "url": "https://www.palantir.com/docs/foundry/logic/blocks"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir AIP Chatbot Studio Tools",
+      "url": "https://www.palantir.com/docs/foundry/chatbot-studio/tools"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir AIP Logic + Automate",
+      "url": "https://www.palantir.com/docs/foundry/logic/aip-logic-integration-automate"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir AIP Evals",
+      "url": "https://www.palantir.com/docs/foundry/aip-evals/overview"
+    },
+    {
+      "type": "user-supplied-video-source",
+      "name": "YouTube vgwql8Mv1CE",
+      "url": "https://www.youtube.com/watch?v=vgwql8Mv1CE",
+      "status": "registered-pending-reliable-transcript-review",
+      "rule": "Do not treat unseen or unrecovered audio as verified knowledge."
+    }
+  ]
+}
