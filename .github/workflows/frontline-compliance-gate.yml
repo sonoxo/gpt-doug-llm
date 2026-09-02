@@ -1,0 +1,44 @@
+name: Frontline Compliance Gate
+
+on:
+  pull_request:
+    paths:
+      - 'safety-shield/**'
+      - 'scripts/frontline_compliance_check.py'
+      - '.github/workflows/frontline-compliance-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'safety-shield/**'
+      - 'scripts/frontline_compliance_check.py'
+      - '.github/workflows/frontline-compliance-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate policy and manifest JSON syntax
+        run: |
+          python -m json.tool safety-shield/schemas/frontline-build-manifest.schema.json >/dev/null
+          python -m json.tool safety-shield/manifests/frontline-tool.example.json >/dev/null
+
+      - name: Run deterministic frontline compliance preflight
+        run: |
+          python scripts/frontline_compliance_check.py safety-shield/manifests/frontline-tool.example.json
+
+      - name: Explain gate
+        if: always()
+        run: |
+          echo 'This CI gate is an engineering preflight, not a legal authorization, clearance, ATO, export license, or CMMC certification.'
