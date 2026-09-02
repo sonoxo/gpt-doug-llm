@@ -1,0 +1,193 @@
+{
+  "ontology": {
+    "name": "SHADOW GLASS Federal Mission Ontology",
+    "namespace": "rvia.shadow_glass",
+    "version": "1.0.0",
+    "purpose": "Defensive, provenance-first operational ontology for RVIA / Virginia-LLM intelligence briefing workflows.",
+    "independence": "Independent SONOXO project. Agency names represent public-reference alignment only; no affiliation, authorization, endorsement, clearance, contract, or certification is implied."
+  },
+  "interfaces": [
+    {
+      "id": "Provenanced",
+      "properties": ["source_uri", "source_authority", "collected_at", "content_hash", "provenance_status"]
+    },
+    {
+      "id": "ConfidenceRated",
+      "properties": ["confidence_score", "confidence_label", "analytic_basis"]
+    },
+    {
+      "id": "PolicyGuarded",
+      "properties": ["handling", "risk_score", "shadow_glass_state", "policy_decision_id"]
+    }
+  ],
+  "objectTypes": [
+    {
+      "id": "AgencyReference",
+      "title": "Agency Reference",
+      "implements": ["Provenanced"],
+      "properties": ["agency_id", "name", "mission_basis", "official_domain", "reference_only"]
+    },
+    {
+      "id": "MissionDomain",
+      "title": "Mission Domain",
+      "properties": ["domain_id", "name", "description", "lane"]
+    },
+    {
+      "id": "SpaceAsset",
+      "title": "Space Asset",
+      "implements": ["Provenanced", "PolicyGuarded"],
+      "properties": ["asset_id", "asset_class", "orbit_regime", "mission_role", "public_status"]
+    },
+    {
+      "id": "TelemetryEvent",
+      "title": "Telemetry Event",
+      "implements": ["Provenanced", "ConfidenceRated", "PolicyGuarded"],
+      "properties": ["event_id", "observed_at", "event_type", "value", "unit", "quality"]
+    },
+    {
+      "id": "CyberFinding",
+      "title": "Cyber Finding",
+      "implements": ["Provenanced", "ConfidenceRated", "PolicyGuarded"],
+      "properties": ["finding_id", "severity", "category", "affected_scope", "defensive_only", "status"]
+    },
+    {
+      "id": "ThreatIndicator",
+      "title": "Threat Indicator",
+      "implements": ["Provenanced", "ConfidenceRated", "PolicyGuarded"],
+      "properties": ["indicator_id", "indicator_type", "indicator_value", "first_seen", "last_seen", "defensive_context"]
+    },
+    {
+      "id": "Dataset",
+      "title": "Public Dataset",
+      "implements": ["Provenanced", "PolicyGuarded"],
+      "properties": ["dataset_id", "name", "license", "release_scope", "schema_version"]
+    },
+    {
+      "id": "SoftwareArtifact",
+      "title": "Released Software Artifact",
+      "implements": ["Provenanced", "PolicyGuarded"],
+      "properties": ["software_id", "name", "version", "release_type", "license", "repository_uri"]
+    },
+    {
+      "id": "EvidenceArtifact",
+      "title": "Evidence Artifact",
+      "implements": ["Provenanced", "ConfidenceRated", "PolicyGuarded"],
+      "properties": ["evidence_id", "evidence_type", "summary", "verification_state", "retention_class"]
+    },
+    {
+      "id": "IntelligenceBrief",
+      "title": "TheBlackHouse Intelligence Brief",
+      "implements": ["ConfidenceRated", "PolicyGuarded"],
+      "properties": ["brief_id", "title", "executive_summary", "key_judgments", "gaps", "published_at", "audience"]
+    },
+    {
+      "id": "AgentAction",
+      "title": "Bounded Agent Action",
+      "implements": ["PolicyGuarded"],
+      "properties": ["action_id", "actor", "capability", "requested_scope", "reversible", "human_approval_required", "status"]
+    },
+    {
+      "id": "ControlDecision",
+      "title": "SHADOW GLASS Control Decision",
+      "implements": ["Provenanced"],
+      "properties": ["decision_id", "state", "allow", "reasons", "policy_version", "decided_at", "audit_hash"]
+    }
+  ],
+  "linkTypes": [
+    {"id": "ALIGNS_WITH", "from": "MissionDomain", "to": "AgencyReference", "cardinality": "many-to-many"},
+    {"id": "PRODUCES", "from": "SpaceAsset", "to": "TelemetryEvent", "cardinality": "one-to-many"},
+    {"id": "SUPPORTED_BY", "from": "CyberFinding", "to": "EvidenceArtifact", "cardinality": "many-to-many"},
+    {"id": "PUBLISHED_BY", "from": "Dataset", "to": "AgencyReference", "cardinality": "many-to-one"},
+    {"id": "RELEASED_BY", "from": "SoftwareArtifact", "to": "AgencyReference", "cardinality": "many-to-one"},
+    {"id": "DERIVED_FROM", "from": "IntelligenceBrief", "to": "EvidenceArtifact", "cardinality": "many-to-many"},
+    {"id": "INFORMS", "from": "ThreatIndicator", "to": "CyberFinding", "cardinality": "many-to-many"},
+    {"id": "GUARDS", "from": "ControlDecision", "to": "AgentAction", "cardinality": "one-to-many"}
+  ],
+  "actionTypes": [
+    {
+      "id": "ingestPublicSource",
+      "description": "Register a public or explicitly authorized source without granting trust by ingestion alone.",
+      "requires": ["source_uri", "source_authority", "content_hash"],
+      "sideEffects": ["create EvidenceArtifact", "set provenance_status=pending"]
+    },
+    {
+      "id": "validateProvenance",
+      "description": "Validate source authority, integrity, collection time, and traceability.",
+      "requires": ["EvidenceArtifact"],
+      "sideEffects": ["update provenance_status", "append audit event"]
+    },
+    {
+      "id": "scoreConfidence",
+      "description": "Assign confidence from evidence quality, corroboration, recency, and analytic gaps.",
+      "requires": ["provenance_status=verified"],
+      "sideEffects": ["update confidence_score", "update confidence_label"]
+    },
+    {
+      "id": "publishBrief",
+      "description": "Publish a TheBlackHouse brief only from traceable evidence and explicit analytic judgments.",
+      "requires": ["verified provenance", "confidence assessment", "policy allow"],
+      "sideEffects": ["create IntelligenceBrief", "append audit event"]
+    },
+    {
+      "id": "approveBoundedAction",
+      "description": "Authorize a least-privileged, scoped, auditable agent action.",
+      "requires": ["verified identity", "scope match", "policy allow"],
+      "sideEffects": ["create ControlDecision"]
+    },
+    {
+      "id": "quarantineArtifact",
+      "description": "Isolate an artifact when provenance, integrity, policy, or confidence fails threshold.",
+      "requires": ["EvidenceArtifact"],
+      "sideEffects": ["set shadow_glass_state=BLACK", "deny downstream use", "append audit event"]
+    },
+    {
+      "id": "revokeTrust",
+      "description": "Invalidate a previously trusted route when evidence changes or integrity is compromised.",
+      "requires": ["ControlDecision"],
+      "sideEffects": ["set allow=false", "propagate quarantine", "append audit event"]
+    }
+  ],
+  "missionLanes": [
+    {
+      "id": "ussf-space-mission",
+      "agency": "U.S. Space Force",
+      "official_reference": "https://www.spaceforce.mil/About-Us/About/",
+      "focus": ["space domain awareness", "resilient mission systems", "telemetry", "PNT", "satellite communications", "missile warning"],
+      "handling": "public or explicitly authorized information only"
+    },
+    {
+      "id": "nsa-defensive-cyber",
+      "agency": "National Security Agency",
+      "official_reference": "https://www.nsa.gov/Cybersecurity/NSA/",
+      "focus": ["defensive cybersecurity", "AI security", "zero trust", "software supply-chain security", "DIB defensive guidance"],
+      "handling": "public defensive guidance and authorized defensive data only"
+    },
+    {
+      "id": "nasa-open-mission-engineering",
+      "agency": "NASA",
+      "official_reference": "https://data.nasa.gov/",
+      "focus": ["open mission data", "science data", "released software", "mission analysis", "simulation", "engineering evidence"],
+      "handling": "public datasets and software consistent with stated release restrictions"
+    }
+  ],
+  "security": {
+    "outer_boundary": "SHADOW GLASS",
+    "inner_observability_model": "GLASS ONION",
+    "default": "deny",
+    "states": {
+      "GREEN": "verified + scoped + low risk",
+      "AMBER": "human review required",
+      "RED": "denied and audited",
+      "BLACK": "quarantined"
+    },
+    "mandatory_controls": [
+      "identity verification",
+      "source provenance",
+      "confidence assessment",
+      "least privilege",
+      "policy decision",
+      "human oversight for high-impact or irreversible actions",
+      "append-only audit evidence"
+    ]
+  }
+}
