@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">SHADOW GLASS novice learning map</title>
+  <desc id="desc">Animated system map showing public and authorized sources entering Shadow Glass, then Glass Onion, the Palantir-style ontology, The Black House, and ZYRA XUNIA GPT-DOUG-LLM Virginia-LLM.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#030712"/><stop offset=".55" stop-color="#111827"/><stop offset="1" stop-color="#160b2b"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#22d3ee"/><stop offset=".48" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f97316"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="neon"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#67e8f9"/></marker>
+    <style>
+      .title{font:700 54px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:4px;fill:#f8fafc}.sub{font:500 20px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#cbd5e1}.box{fill:#0b1220;stroke-width:2}.h{font:700 24px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#fff}.p{font:500 17px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#cbd5e1}.tiny{font:600 14px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#94a3b8}.line{stroke:#67e8f9;stroke-width:4;stroke-linecap:round;stroke-dasharray:14 12;marker-end:url(#arrow);animation:dash 2s linear infinite}.pulse{animation:pulse 2.4s ease-in-out infinite}.scan{animation:scan 5s linear infinite}@keyframes dash{to{stroke-dashoffset:-52}}@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}@keyframes scan{0%{transform:translateX(-220px)}100%{transform:translateX(1750px)}}
+    </style>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="url(#bg)"/>
+  <circle cx="190" cy="120" r="180" fill="#0891b2" opacity=".12" filter="url(#soft)"/><circle cx="1390" cy="640" r="220" fill="#7c3aed" opacity=".16" filter="url(#soft)"/>
+  <rect class="scan" x="-180" y="0" width="140" height="760" fill="url(#glow)" opacity=".055" transform="skewX(-12)"/>
+  <text x="800" y="78" text-anchor="middle" class="title">SHADOW GLASS // SYSTEM MAP</text>
+  <text x="800" y="115" text-anchor="middle" class="sub">A beginner-friendly view: source → verify → observe → model → brief → use</text>
+
+  <g transform="translate(55 205)"><rect width="250" height="190" rx="22" class="box" stroke="#22d3ee"/><text x="125" y="48" text-anchor="middle" class="h">1. INPUT</text><text x="24" y="86" class="p">Public sources</text><text x="24" y="116" class="p">Authorized data</text><text x="24" y="146" class="p">Telemetry / files</text><text x="24" y="174" class="tiny">Nothing is trusted by default.</text></g>
+  <path class="line" d="M315 300 H385"/>
+  <g transform="translate(395 175)" class="pulse"><rect width="285" height="250" rx="26" class="box" stroke="#a78bfa"/><text x="142" y="48" text-anchor="middle" class="h">2. SHADOW GLASS</text><text x="24" y="92" class="p">Identity</text><text x="24" y="124" class="p">Provenance</text><text x="24" y="156" class="p">Confidence</text><text x="24" y="188" class="p">Policy / risk</text><text x="24" y="220" class="tiny">Outer shield: decide if data/action may pass.</text></g>
+  <path class="line" d="M690 300 H760"/>
+  <g transform="translate(770 205)"><rect width="250" height="190" rx="22" class="box" stroke="#c084fc"/><text x="125" y="48" text-anchor="middle" class="h">3. GLASS ONION</text><text x="24" y="86" class="p">Intent</text><text x="24" y="116" class="p">Context / tool</text><text x="24" y="146" class="p">Execution / evidence</text><text x="24" y="174" class="tiny">Inner observability: show what happened.</text></g>
+  <path class="line" d="M1030 300 H1100"/>
+  <g transform="translate(1110 175)"><rect width="430" height="250" rx="26" class="box" stroke="#f97316"/><text x="215" y="48" text-anchor="middle" class="h">4. OPERATIONAL ONTOLOGY</text><text x="24" y="92" class="p">Objects = things/events</text><text x="24" y="124" class="p">Properties = facts about them</text><text x="24" y="156" class="p">Links = relationships</text><text x="24" y="188" class="p">Actions = controlled changes</text><text x="24" y="220" class="tiny">Palantir-style model for decision workflows.</text></g>
+
+  <path class="line" d="M1325 435 V505"/>
+  <g transform="translate(1040 515)"><rect width="570" height="165" rx="24" class="box" stroke="#22d3ee"/><text x="285" y="45" text-anchor="middle" class="h">5. THE BLACK HOUSE</text><text x="28" y="82" class="p">Turns verified evidence into readable intelligence briefs.</text><text x="28" y="116" class="p">Feeds: ZYRA • XUNIA • GPT-DOUG-LLM • VIRGINIA-LLM</text><text x="28" y="147" class="tiny">Briefs preserve source, confidence, gaps, and audit trail.</text></g>
+
+  <g transform="translate(55 500)"><rect width="900" height="180" rx="24" fill="#07111d" stroke="#334155"/><text x="28" y="42" class="h">PUBLIC MISSION-ALIGNMENT LANES</text><text x="28" y="82" class="p" fill="#38bdf8">SPACE FORCE → space-domain mission concepts and resilient mission context</text><text x="28" y="116" class="p" fill="#a78bfa">NSA → defensive cybersecurity and AI/software security guidance</text><text x="28" y="150" class="p" fill="#fb923c">NASA → public datasets, APIs, software, science and engineering resources</text></g>
+  <text x="800" y="730" text-anchor="middle" class="tiny">Independent SONOXO architecture • Public-reference alignment only • No agency affiliation, endorsement, clearance, or contract implied</text>
+</svg>
