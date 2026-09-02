@@ -1,14 +1,46 @@
 @prefix vllm: <https://sonoxo.dev/ontology/virginia-llm#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+# SHADOW GLASS is the outer defensive trust and policy boundary.
+# GLASS ONION is the inner observable authority / evidence model.
 vllm:SafetyShield a vllm:ControlPlane ;
   vllm:defaultPolicy vllm:DenyByDefault ;
-  vllm:contains vllm:GlassOnion, vllm:HumanOversightGate, vllm:AuditLedger .
+  vllm:contains vllm:ShadowGlass, vllm:GlassOnion, vllm:HumanOversightGate, vllm:AuditLedger .
+
+vllm:ShadowGlass a vllm:DefensiveShield,
+                   vllm:TrustBoundary,
+                   vllm:PolicyEnforcementLayer ;
+  vllm:protects vllm:GlassOnion ;
+  vllm:guards vllm:OntologyObject,
+              vllm:IntelligenceBrief,
+              vllm:EvidenceArtifact,
+              vllm:AgentAction,
+              vllm:ToolInvocation ;
+  vllm:requires vllm:IdentityVerification,
+                vllm:SourceProvenance,
+                vllm:ConfidenceAssessment,
+                vllm:PolicyDecision,
+                vllm:LeastPrivilege,
+                vllm:AuditEvent ;
+  vllm:defaultPolicy vllm:DenyByDefault .
 
 vllm:GlassOnion a vllm:ObservabilityModel ;
+  vllm:protectedBy vllm:ShadowGlass ;
   vllm:layer vllm:IntentLayer, vllm:IdentityLayer, vllm:ContextLayer,
              vllm:PolicyLayer, vllm:ToolLayer, vllm:ExecutionLayer,
              vllm:EvidenceLayer, vllm:OutcomeLayer .
+
+vllm:ShadowGlassGreen a vllm:ShieldState ;
+  vllm:permits "verified, scoped, low-risk, reversible operations" .
+
+vllm:ShadowGlassAmber a vllm:ShieldState ;
+  vllm:requires vllm:HumanOversight .
+
+vllm:ShadowGlassRed a vllm:ShieldState ;
+  vllm:denies "scope violation, failed identity, unsafe or prohibited operation" .
+
+vllm:ShadowGlassBlack a vllm:ShieldState ;
+  vllm:requires vllm:Quarantine .
 
 vllm:HighImpactAI a vllm:RiskClass ;
   vllm:requires vllm:RiskManagementPlan, vllm:HumanOversight,
