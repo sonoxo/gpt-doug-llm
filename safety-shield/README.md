@@ -4,43 +4,67 @@
 
 # VIRGINIA-LLM // SAFETY SHIELD
 
-### `GLASS ONION CONTROL PLANE` · `GPT-DOUG-LLM` · `24-AGENT GOVERNANCE FLEET`
+### `SHADOW GLASS` → `GLASS ONION` → `ONTOLOGY` → `THE BLACK HOUSE`
 
-**AI proposes → Shield evaluates → scoped authority executes → evidence proves what happened.**
+**AI proposes → SHADOW GLASS evaluates trust → GLASS ONION exposes execution → evidence proves the result → humans retain authority.**
 
 [![Shield](https://img.shields.io/badge/SAFETY%20SHIELD-ONLINE-7c3aed?style=for-the-badge)](./policies/shield.rego)
+[![Shadow Glass](https://img.shields.io/badge/SHADOW%20GLASS-ONLINE-111111?style=for-the-badge)](./SHADOW_GLASS.md)
 [![Fleet](https://img.shields.io/badge/FLEET-24%20AGENTS-f97316?style=for-the-badge)](./agents/fleet-24.json)
 [![Policy](https://img.shields.io/badge/POLICY-DENY%20BY%20DEFAULT-18181b?style=for-the-badge)](./policies/shield.rego)
-[![Audit](https://img.shields.io/badge/AUDIT-APPEND%20ONLY-27272a?style=for-the-badge)](./agents/fleet-24.json)
+[![Audit](https://img.shields.io/badge/AUDIT-EVIDENCE%20FIRST-27272a?style=for-the-badge)](./agents/fleet-24.json)
 
-[![Korea AI Basic Act](https://img.shields.io/badge/KOREA%20AI%20BASIC%20ACT-CONTROL%20MAPPED-0f766e?style=flat-square)](https://www.law.go.kr/LSW/lsInfoP.do?chrClsCd=010203&lsiSeq=268543&urlMode=engLsInfoR&viewCls=engLsInfoR)
-[![NIST AI RMF](https://img.shields.io/badge/NIST%20AI%20RMF-PROFILE%20MAPPED-1d4ed8?style=flat-square)](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/)
-[![NSA Public Guidance](https://img.shields.io/badge/NSA%20PUBLIC%20GUIDANCE-REFERENCE%20MAPPED-374151?style=flat-square)](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/4475134/nsa-joins-the-asds-acsc-and-others-to-release-guidance-on-agentic-artificial-in/)
-[![OPA / Rego](https://img.shields.io/badge/OPA%20%2F%20REGO-POLICY%20AS%20CODE-7c3aed?style=flat-square)](./policies/shield.rego)
+### 👋 First time here?
+
+**Read the [Beginner Guide](./THE_BLACK_HOUSE_BEGINNER_GUIDE.md) first.** It explains the stack with plain-English analogies and examples. Keep the [Glossary](./GLOSSARY.md) open for unfamiliar terms.
 
 </div>
 
 ---
 
-## ⚡ Mission
+## 👁️ The whole system at a glance
 
-**Virginia-LLM Safety Shield** is the defensive governance plane for `gpt-doug-llm`.
-
-The Shield does not treat model output as authority. Every side-effecting action must cross an explicit chain of identity, context, risk, policy, capability, oversight, execution, and evidence controls.
-
-> **Core invariant:** no agent receives ambient authority.
+<img width="100%" src="./assets/shadow-glass-learning-map.svg" alt="Animated beginner map of SHADOW GLASS and The Black House stack" />
 
 ```text
-INTENT → IDENTITY → CONTEXT → POLICY → TOOL → EXECUTION → EVIDENCE → OUTCOME
+SOURCE
+  ↓
+SHADOW GLASS       = Should we trust/allow it?
+  ↓
+GLASS ONION        = Can we see exactly what happened?
+  ↓
+ONTOLOGY           = How does it relate to the real world?
+  ↓
+THE BLACK HOUSE    = What does a human need to know?
+  ↓
+ZYRA / XUNIA / GPT-DOUG-LLM / VIRGINIA-LLM
 ```
 
-A later layer cannot silently override an earlier denial.
+### The one rule that matters most
+
+> **Model output is not authority.**
+
+A model may suggest an action. The control plane decides whether that action is in scope, permitted, observable, reversible, validated, and auditable.
 
 ---
 
-## 🧅 GLASS ONION // observable authority
+## 🧩 What each component means
 
-`Glass Onion` is the visibility model behind the Shield: every consequential operation should be inspectable layer-by-layer instead of disappearing inside an opaque autonomous loop.
+| Component | Beginner analogy | Job |
+| --- | --- | --- |
+| **SHADOW GLASS** | Security checkpoint | Identity, provenance, confidence, scope, risk, policy |
+| **GLASS ONION** | Glass-walled control room | Intent, context, tool use, execution, evidence, outcome |
+| **Ontology** | Smart operational map | Objects, properties, links, actions, permissions |
+| **The Black House** | Intelligence briefing desk | Converts validated evidence into readable assessments |
+| **24-agent fleet** | Specialist review team | Declared bounded roles for identity, provenance, risk, policy, validation, audit, and release |
+
+Detailed SHADOW GLASS page: [`SHADOW_GLASS.md`](./SHADOW_GLASS.md)
+
+---
+
+## 🧅 GLASS ONION: observable authority
+
+GLASS ONION prevents consequential operations from disappearing inside an opaque agent loop.
 
 ```mermaid
 flowchart LR
@@ -55,103 +79,143 @@ flowchart LR
     G --> H
     H --> I[EVIDENCE]
     I --> J[OUTCOME]
-    J --> K[AUDIT LEDGER]
+    J --> K[AUDIT]
 ```
 
-### Eight observable layers
-
-| Layer | Question the Shield must answer | Evidence |
+| Layer | Question | Evidence |
 | --- | --- | --- |
-| `01 INTENT` | What outcome was requested? | normalized mission / request ID |
-| `02 IDENTITY` | Who or what is asking? | verified workload / agent identity |
-| `03 CONTEXT` | Is the supplied context trusted? | provenance + injection findings |
-| `04 POLICY` | Is this operation permitted? | Rego decision + deny reasons |
-| `05 TOOL` | Which exact capability is requested? | allowlisted tool + scope |
-| `06 EXECUTION` | What mutation actually occurred? | execution receipt / diff |
+| `01 INTENT` | What outcome was requested? | request / mission ID |
+| `02 IDENTITY` | Who or what is asking? | verified identity |
+| `03 CONTEXT` | Is the supplied context trusted? | provenance / injection findings |
+| `04 POLICY` | Is this permitted? | deterministic policy decision |
+| `05 TOOL` | Which capability is requested? | allowlisted capability + scope |
+| `06 EXECUTION` | What changed? | receipt / diff / state change |
 | `07 EVIDENCE` | Did validation prove the result? | tests / checks / attestations |
-| `08 OUTCOME` | What survives after validation? | keep / reject / quarantine |
+| `08 OUTCOME` | What survives? | keep / reject / quarantine |
 
 ---
 
-## 🪪 Credential ledger
+## ◼️ SHADOW GLASS: outer defensive shield
 
-This table is deliberately precise: **mapping is not certification** and public guidance is not affiliation.
+SHADOW GLASS sits **outside** GLASS ONION.
 
-| Credential / control | Repository evidence | Status | Meaning |
-| --- | --- | --- | --- |
-| **24-Agent Safety Fleet** | [`agents/fleet-24.json`](./agents/fleet-24.json) | `IMPLEMENTED MANIFEST` | Twenty-four bounded governance roles are declared |
-| **Fleet Summon Runtime** | [`agents/summon.py`](./agents/summon.py) | `IMPLEMENTED` | Loads and enumerates the declared fleet |
-| **OPA / Rego Safety Gate** | [`policies/shield.rego`](./policies/shield.rego) | `IMPLEMENTED POLICY` | Default-deny policy-as-code baseline |
-| **Glass Onion Ontology** | [`ontology/safety-shield.ttl`](./ontology/safety-shield.ttl) | `IMPLEMENTED ONTOLOGY` | Machine-readable authority / evidence model |
-| **Korea AI Basic Act** | [`policies/control-matrix.json`](./policies/control-matrix.json) | `CONTROL MAPPING` | Internal mapping to selected statutory obligations; **not legal certification** |
-| **NIST AI RMF** | [`policies/control-matrix.json`](./policies/control-matrix.json) | `PROFILE MAPPING` | Internal crosswalk to `GOVERN / MAP / MEASURE / MANAGE`; **not NIST certification** |
-| **NSA public defensive guidance** | [`policies/control-matrix.json`](./policies/control-matrix.json) | `REFERENCE MAPPING` | Uses public defensive guidance only; **no NSA affiliation, access, authorization, or endorsement** |
-| **Human Oversight Gate** | [`agents/fleet-24.json`](./agents/fleet-24.json) | `DECLARED CONTROL` | High-impact / destructive / irreversible actions require approval |
-| **Append-only Audit Model** | [`agents/fleet-24.json`](./agents/fleet-24.json) | `DECLARED CONTROL` | Decisions and execution evidence are intended to survive later agent actions |
+```text
+UNTRUSTED OR UNKNOWN INPUT
+          ↓
+    SHADOW GLASS
+ identity • provenance • confidence • policy
+       ↙             ↘
+    DENY             ALLOW
+     ↓                 ↓
+QUARANTINE        GLASS ONION
+```
 
-### Official references
+States:
 
-- **Republic of Korea AI Basic Act:** enacted as Act No. 20676 and effective **January 22, 2026** — [Korea Law Information Center](https://www.law.go.kr/LSW/lsInfoP.do?chrClsCd=010203&lsiSeq=268543&urlMode=engLsInfoR&viewCls=engLsInfoR)
-- **NIST AI RMF:** the core functions are **GOVERN, MAP, MEASURE, MANAGE** — [NIST AIRC](https://airc.nist.gov/airmf-resources/airmf/5-sec-core/)
-- **NSA / international partners, agentic AI:** public guidance on careful adoption and agentic-AI attack-surface / autonomy risks, released **April 30, 2026** — [NSA](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/4475134/nsa-joins-the-asds-acsc-and-others-to-release-guidance-on-agentic-artificial-in/)
+| State | Meaning | Result |
+| --- | --- | --- |
+| 🟢 `GREEN` | verified + scoped + acceptable risk | proceed |
+| 🟠 `AMBER` | meaningful uncertainty / elevated impact | human review |
+| 🔴 `RED` | failed identity, scope, provenance, or policy | deny + audit |
+| ⚫ `BLACK` | compromised route / integrity incident | quarantine |
+
+---
+
+## 🏛️ The Black House: briefing layer
+
+A Black House brief is designed for both a novice reader and a fluent analyst.
+
+```text
+MISSION QUESTION
+EXECUTIVE SUMMARY
+KEY JUDGMENTS + CONFIDENCE
+WHAT CHANGED
+WHY IT MATTERS
+EVIDENCE / SOURCES
+GAPS + ALTERNATIVE EXPLANATIONS
+RECOMMENDED NEXT STEP
+AUDIT / VALIDATION RECORD
+```
+
+Start here: [`THE_BLACK_HOUSE_BEGINNER_GUIDE.md`](./THE_BLACK_HOUSE_BEGINNER_GUIDE.md)
+
+---
+
+## 🧠 Operational ontology
+
+The project ontology uses the conceptual primitives common to Palantir Foundry's Ontology model: **object types, properties, links, actions/functions, interfaces, and granular security/governance**.
+
+Beginner translation:
+
+```text
+OBJECT    = thing/event
+PROPERTY  = fact about it
+LINK      = relationship
+ACTION    = controlled change
+SECURITY  = who may see/change it
+```
+
+Machine-readable models:
+
+- [`ontology/shadow-glass-palantir.json`](./ontology/shadow-glass-palantir.json)
+- [`ontology/safety-shield.ttl`](./ontology/safety-shield.ttl)
+
+---
+
+## 🇺🇸 Public federal reference lanes
+
+These are **public-source mission and engineering mappings only**.
+
+| Lane | Public basis | Project use |
+| --- | --- | --- |
+| **U.S. Space Force** | Space-domain mission, space superiority, global mission operations, assured space access | Model mission domains, space assets, dependencies, telemetry/evidence, resiliency context |
+| **NSA** | Public defensive cybersecurity and AI/software security guidance | Zero-trust, provenance, software/AI security, defensive threat intelligence, audit controls |
+| **NASA** | Public datasets, APIs, science/engineering resources, released software | Dataset/software provenance, mission analysis, simulation and evidence objects |
+
+References:
+- https://www.spaceforce.mil/About-Us/About/
+- https://www.nsa.gov/Cybersecurity/NSA/
+- https://data.nasa.gov/
+- https://www.nasa.gov/software/
+
+**No public-reference mapping grants agency access, status, affiliation, endorsement, clearance, contract status, or authority.**
 
 ---
 
 ## 🛰️ 24-agent defensive fleet
 
-| # | Agent | Control domain |
+| # | Agent | Domain |
 | ---: | --- | --- |
 | 01 | `shield-orchestrator` | governance |
-| 02 | `identity-warden` | zero trust |
-| 03 | `least-privilege-broker` | zero trust |
+| 02 | `identity-warden` | identity |
+| 03 | `least-privilege-broker` | authorization |
 | 04 | `prompt-injection-sentinel` | AI security |
 | 05 | `tool-firewall` | execution security |
-| 06 | `data-provenance-keeper` | data lineage |
+| 06 | `data-provenance-keeper` | lineage |
 | 07 | `privacy-guardian` | privacy |
 | 08 | `secret-scanner` | secret hygiene |
-| 09 | `supply-chain-auditor` | software / model supply chain |
-| 10 | `model-risk-assessor` | AI risk measurement |
-| 11 | `high-impact-classifier` | regulatory classification |
+| 09 | `supply-chain-auditor` | software/model supply chain |
+| 10 | `model-risk-assessor` | risk |
+| 11 | `high-impact-classifier` | impact classification |
 | 12 | `korea-ai-basic-act` | statutory mapping |
-| 13 | `nist-rmf-governor` | AI RMF mapping |
+| 13 | `nist-rmf-governor` | NIST AI RMF mapping |
 | 14 | `nsa-guidance-mapper` | public defensive guidance mapping |
 | 15 | `human-oversight-gate` | human authority |
 | 16 | `explainability-recorder` | decision evidence |
 | 17 | `transparency-labeler` | disclosure |
-| 18 | `output-integrity-checker` | quality / integrity |
+| 18 | `output-integrity-checker` | quality/integrity |
 | 19 | `red-team-agent` | authorized sandbox testing |
-| 20 | `incident-sentinel` | detection / response |
+| 20 | `incident-sentinel` | response |
 | 21 | `kill-switch-custodian` | containment |
 | 22 | `audit-ledger` | evidence |
 | 23 | `glass-onion-observer` | observability |
-| 24 | `release-certifier` | release gating |
+| 24 | `release-certifier` | release gate |
 
-### Fleet authority model
-
-```mermaid
-flowchart TD
-    O[shield-orchestrator] --> I[identity-warden]
-    I --> P[prompt-injection-sentinel]
-    P --> H[high-impact-classifier]
-    H --> R[model-risk-assessor]
-    R --> T{tool-firewall}
-    T -->|blocked| A[audit-ledger]
-    T -->|permitted| G{human-oversight-gate}
-    G -->|approval needed| U[human operator]
-    U --> L[least-privilege-broker]
-    G -->|not needed| L
-    L --> E[bounded execution]
-    E --> Q[output-integrity-checker]
-    Q --> X[transparency-labeler]
-    X --> A
-    A --> C[release-certifier]
-```
+Manifest: [`agents/fleet-24.json`](./agents/fleet-24.json)
 
 ---
 
-## 🔐 Default-deny execution contract
-
-The current Rego baseline permits only bounded operations that meet explicit conditions.
+## 🔐 Default-deny policy
 
 ```rego
 package virginia_llm.safety
@@ -167,114 +231,66 @@ allow if {
 }
 ```
 
-High-impact operations should instead require valid human approval plus a pre-commit audit event.
+High-impact or irreversible actions should cross a human-approval gate.
 
-**Policy source:** [`policies/shield.rego`](./policies/shield.rego)
-
----
-
-## 🧠 Regulatory control plane
-
-```mermaid
-flowchart TB
-    S[VIRGINIA-LLM SAFETY SHIELD]
-
-    S --> K[KOREA AI BASIC ACT]
-    S --> N[NIST AI RMF]
-    S --> NSA[NSA PUBLIC DEFENSIVE GUIDANCE]
-
-    K --> K1[Transparency]
-    K --> K2[Safety / Risk]
-    K --> K3[High-impact classification]
-    K --> K4[Human oversight]
-    K --> K5[Impact assessment]
-
-    N --> N1[GOVERN]
-    N --> N2[MAP]
-    N --> N3[MEASURE]
-    N --> N4[MANAGE]
-
-    NSA --> S1[Zero Trust]
-    NSA --> S2[Agentic AI security]
-    NSA --> S3[AI data security]
-    NSA --> S4[Least privilege]
-```
-
-Crosswalk source: [`policies/control-matrix.json`](./policies/control-matrix.json)
+Policy source: [`policies/shield.rego`](./policies/shield.rego)
 
 ---
 
-## 🚦 Shield states
+## 🪪 Evidence ledger: what is implemented vs. mapped
 
-| State | Meaning | Execution |
+| Control | Evidence | Status |
 | --- | --- | --- |
-| 🟢 `GREEN` | verified + scoped + low-risk + reversible | permitted |
-| 🟠 `AMBER` | elevated uncertainty / high-impact classification | human gate |
-| 🔴 `RED` | injection, scope violation, failed identity, prohibited operation | denied |
-| ⚫ `BLACK` | active incident / compromised route | quarantined |
+| 24-Agent Safety Fleet | [`agents/fleet-24.json`](./agents/fleet-24.json) | `IMPLEMENTED MANIFEST` |
+| Fleet loader | [`agents/summon.py`](./agents/summon.py) | `IMPLEMENTED` |
+| OPA/Rego baseline | [`policies/shield.rego`](./policies/shield.rego) | `IMPLEMENTED POLICY` |
+| Safety ontology | [`ontology/safety-shield.ttl`](./ontology/safety-shield.ttl) | `IMPLEMENTED ONTOLOGY` |
+| SHADOW GLASS ontology | [`ontology/shadow-glass-palantir.json`](./ontology/shadow-glass-palantir.json) | `IMPLEMENTED PROJECT SCHEMA` |
+| NIST AI RMF | [`policies/control-matrix.json`](./policies/control-matrix.json) | `INTERNAL MAPPING — NOT CERTIFICATION` |
+| NSA public defensive guidance | [`policies/control-matrix.json`](./policies/control-matrix.json) | `REFERENCE MAPPING — NO AFFILIATION` |
+| Korea AI Basic Act | [`policies/control-matrix.json`](./policies/control-matrix.json) | `INTERNAL CONTROL MAPPING — NOT LEGAL CERTIFICATION` |
 
 ---
 
-## ⚙️ Summon the fleet
+## ⚙️ Run the declared fleet
 
 ```bash
 python3 safety-shield/agents/summon.py
 ```
 
-Expected control-plane declaration:
-
-```text
-SUMMONING 24 SAFETY-SHIELD AGENTS
-[01] shield-orchestrator
-[02] identity-warden
-...
-[24] release-certifier
-
-Fleet declared. Execution remains policy-gated and least-privileged.
-```
-
-**Summon ≠ unrestricted autonomy.** Instantiation never grants an agent authority beyond its scoped capabilities and policy decision.
+This loads/enumerates the declared roles. **Summoning a role does not grant unrestricted authority.** Actual operations remain bounded by capability scope, policy, oversight, and evidence.
 
 ---
 
-## 📡 Evidence over claims
+## 📚 Learning path
 
-A Safety Shield operation is considered complete only when there is evidence for the control decision and the resulting state.
+**Novice**
+1. [`THE_BLACK_HOUSE_BEGINNER_GUIDE.md`](./THE_BLACK_HOUSE_BEGINNER_GUIDE.md)
+2. [`GLOSSARY.md`](./GLOSSARY.md)
+3. [`SHADOW_GLASS.md`](./SHADOW_GLASS.md)
 
-```text
-REQUEST
-  │
-  ├── identity evidence
-  ├── context provenance
-  ├── risk classification
-  ├── policy decision
-  ├── approval evidence        ← when required
-  ├── scoped capability
-  ├── execution receipt
-  ├── validation evidence
-  └── append-only audit event
-```
-
-### Design doctrine
-
-> **Flexible reasoning. Deterministic authority. Observable execution. Retained evidence.**
+**Technical**
+1. [`ontology/shadow-glass-palantir.json`](./ontology/shadow-glass-palantir.json)
+2. [`ontology/safety-shield.ttl`](./ontology/safety-shield.ttl)
+3. [`policies/shield.rego`](./policies/shield.rego)
+4. [`policies/control-matrix.json`](./policies/control-matrix.json)
 
 ---
 
-## ⚠️ Independence / credential statement
+## ⚠️ Independence / credibility statement
 
-**Virginia-LLM, GPT-DOUG-LLM, ZYRA, NXYZ, Safety Shield, and Glass Onion are independent project artifacts.** References to NSA, NIST, the Republic of Korea, government frameworks, statutes, or cybersecurity publications identify public sources, internal control mappings, or interoperability goals only.
+**Virginia-LLM, GPT-DOUG-LLM, ZYRA, XUNIA, RVIA, The Black House, Safety Shield, SHADOW GLASS, and GLASS ONION are independent SONOXO project artifacts.** References to U.S. government agencies, Palantir, NIST, statutes, or public cybersecurity resources describe public sources, internal mappings, architecture concepts, or interoperability goals only.
 
-They do **not** represent government status, security clearance, legal certification, agency authorization, agency endorsement, or affiliation unless a separate verifiable credential explicitly establishes one.
+They do **not** represent federal status, military/intelligence affiliation, security clearance, contract award, procurement status, certification, agency authorization, endorsement, or access to non-public systems unless separate verifiable credentials establish that relationship.
 
 ---
 
 <div align="center">
 
-### `VIRGINIA-LLM // GLASS ONION`
+### `SHADOW GLASS → GLASS ONION → ONTOLOGY → THE BLACK HOUSE`
 
-**24 agents. One authority boundary. Every consequential action leaves evidence.**
+**Trust carefully. Observe execution. Preserve evidence. Explain clearly.**
 
-[`ONTOLOGY`](./ontology/safety-shield.ttl) · [`FLEET`](./agents/fleet-24.json) · [`POLICY`](./policies/shield.rego) · [`CONTROL MATRIX`](./policies/control-matrix.json)
+[BEGINNER GUIDE](./THE_BLACK_HOUSE_BEGINNER_GUIDE.md) · [SHADOW GLASS](./SHADOW_GLASS.md) · [GLOSSARY](./GLOSSARY.md) · [ONTOLOGY](./ontology/shadow-glass-palantir.json)
 
 </div>
