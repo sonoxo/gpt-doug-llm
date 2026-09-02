@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sonoxo.dev/schemas/frontline-build-manifest.schema.json",
+  "title": "Frontline Tool Build Manifest",
+  "type": "object",
+  "required": ["mission", "data", "contract", "export", "environment", "model", "security", "release", "incident"],
+  "properties": {
+    "mission": {
+      "type": "object",
+      "required": ["owner", "use_case", "material_external_action", "human_approval_required"],
+      "properties": {
+        "owner": {"type": "string", "minLength": 1},
+        "use_case": {"type": "string", "minLength": 1},
+        "technical_owner": {"type": "string"},
+        "intended_users": {"type": "array", "items": {"type": "string"}},
+        "material_external_action": {"type": "boolean"},
+        "human_approval_required": {"type": "boolean"},
+        "autonomous_weapon_release": {"type": "boolean", "default": false},
+        "autonomous_target_selection": {"type": "boolean", "default": false},
+        "unrestricted_offensive_cyber": {"type": "boolean", "default": false}
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["classification", "contains_secret_credentials"],
+      "properties": {
+        "classification": {
+          "enum": ["PUBLIC", "INTERNAL", "FCI", "CUI", "CUI_CTI", "EXPORT_CONTROLLED", "CLASSIFIED", "UNKNOWN"]
+        },
+        "cui_category": {"type": "string"},
+        "limited_dissemination_controls": {"type": "array", "items": {"type": "string"}},
+        "contains_personal_data": {"type": "boolean"},
+        "contains_secret_credentials": {"type": "boolean"},
+        "source_inventory": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "contract": {
+      "type": "object",
+      "required": ["cui_required", "required_cmmc_status"],
+      "properties": {
+        "authority_reference": {"type": "string"},
+        "cui_required": {"type": "boolean"},
+        "required_cmmc_status": {"type": "string"},
+        "dd254_reference": {"type": "string"},
+        "customer_security_guidance": {"type": "string"}
+      }
+    },
+    "export": {
+      "type": "object",
+      "required": ["jurisdiction_status", "recipient_authorized"],
+      "properties": {
+        "jurisdiction_status": {"enum": ["NOT_APPLICABLE", "ITAR", "EAR", "PUBLIC_DOMAIN_OR_EXCLUDED", "UNRESOLVED"]},
+        "ddtc_registration_status": {"type": "string"},
+        "license_or_approval_reference": {"type": "string"},
+        "recipient_authorized": {"type": "boolean"},
+        "foreign_person_access": {"type": "boolean"}
+      }
+    },
+    "environment": {
+      "type": "object",
+      "required": ["authorized", "classified_accredited"],
+      "properties": {
+        "name": {"type": "string"},
+        "authorized": {"type": "boolean"},
+        "required_impact_level": {"type": "string"},
+        "actual_impact_level": {"type": "string"},
+        "classified_accredited": {"type": "boolean"},
+        "region": {"type": "string"},
+        "air_gapped": {"type": "boolean"}
+      }
+    },
+    "model": {
+      "type": "object",
+      "required": ["provider", "model_id", "external_egress", "authorized_for_data_class", "prompt_includes_secret_credentials"],
+      "properties": {
+        "provider": {"type": "string"},
+        "model_id": {"type": "string"},
+        "external_egress": {"type": "boolean"},
+        "authorized_for_data_class": {"type": "boolean"},
+        "authorized_for_export_controlled": {"type": "boolean"},
+        "retention_policy_recorded": {"type": "boolean"},
+        "training_use_recorded": {"type": "boolean"},
+        "prompt_includes_secret_credentials": {"type": "boolean"}
+      }
+    },
+    "security": {
+      "type": "object",
+      "required": ["threat_model_complete", "rollback_defined", "audit_enabled", "program_authorization_verified"],
+      "properties": {
+        "threat_model_complete": {"type": "boolean"},
+        "rollback_defined": {"type": "boolean"},
+        "kill_switch_defined": {"type": "boolean"},
+        "audit_enabled": {"type": "boolean"},
+        "program_authorization_verified": {"type": "boolean"},
+        "fcl_status": {"type": "string"},
+        "personnel_access_verified": {"type": "boolean"}
+      }
+    },
+    "release": {
+      "type": "object",
+      "required": ["tests_passed", "evals_passed", "owner_approved", "version", "audit_receipt", "human_approval_record"],
+      "properties": {
+        "tests_passed": {"type": "boolean"},
+        "evals_passed": {"type": "boolean"},
+        "owner_approved": {"type": "boolean"},
+        "version": {"type": "string"},
+        "audit_receipt": {"type": "string"},
+        "human_approval_record": {"type": "string"}
+      }
+    },
+    "incident": {
+      "type": "object",
+      "required": ["controlled_data_spill"],
+      "properties": {
+        "controlled_data_spill": {"type": "boolean"},
+        "incident_reference": {"type": "string"}
+      }
+    }
+  }
+}
