@@ -1,0 +1,54 @@
+name: Agentic Knowledge Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'safety-shield/agents/**'
+      - 'intel/AGENTIC_INTELLIGENCE_LOOP.md'
+      - 'intel/sources/youtube-vgwql8Mv1CE.json'
+      - '.github/workflows/agentic-knowledge-gate.yml'
+  pull_request:
+    paths:
+      - 'safety-shield/agents/**'
+      - 'intel/**'
+      - '.github/workflows/agentic-knowledge-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-agentic-knowledge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate JSON knowledge artifacts
+        run: |
+          python -m json.tool safety-shield/agents/knowledge/rvia-agentic-core.json >/dev/null
+          python -m json.tool safety-shield/agents/fleet-24.json >/dev/null
+          python -m json.tool intel/sources/youtube-vgwql8Mv1CE.json >/dev/null
+
+      - name: Verify every fleet agent inherits the current profile
+        run: python safety-shield/agents/summon.py
+
+      - name: Smoke-test new agent blueprint generation
+        run: |
+          python safety-shield/agents/agentic_builder.py \
+            --name example-briefing-agent \
+            --mission 'Turn authorized public sources into a source-linked briefing draft' \
+            --owner rvIa \
+            --input source-record \
+            --output briefing-draft \
+            --tool query-ontology \
+            --tool validate-provenance \
+            --data-class PUBLIC > /tmp/agent-blueprint.json
+          python -m json.tool /tmp/agent-blueprint.json >/dev/null
+
+      - name: Gate statement
+        run: |
+          echo 'Knowledge inheritance verified. This gate validates repository runtime context and agent contracts; it does not claim model-weight retraining.'
