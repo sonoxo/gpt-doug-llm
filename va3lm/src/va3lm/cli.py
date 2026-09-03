@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 
+from va3lm.agent_runtime import run_coding_agent
 from va3lm.agents import roster
 from va3lm.brain import ask
 from va3lm.capabilities import capability_manifest
@@ -16,6 +17,7 @@ from va3lm.max_memory import memory_manager
 from va3lm.ontology import schema
 from va3lm.planner import build_plan
 from va3lm.tracking import sample_track, to_geojson, tracking_manifest
+from va3lm.workspace import WorkspaceRuntime
 
 
 def _dump(value: object) -> None:
@@ -52,6 +54,15 @@ def main() -> int:
     exp = sub.add_parser("explain")
     exp.add_argument("subject")
 
+    workspace = sub.add_parser("workspace")
+    workspace.add_argument("--root", default=None, help="workspace root; defaults to VA3LM_WORKSPACE_ROOT or current directory")
+
+    execute = sub.add_parser("execute")
+    execute.add_argument("goal")
+    execute.add_argument("--workspace", default=None, help="workspace root; defaults to VA3LM_WORKSPACE_ROOT or current directory")
+    execute.add_argument("--approve", action="store_true", help="explicitly approve workspace mutations and allow-listed commands")
+    execute.add_argument("--max-rounds", type=int, default=4, help="bounded model/tool rounds (1-8)")
+
     serve = sub.add_parser("serve")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8088)
@@ -83,6 +94,18 @@ def main() -> int:
             _dump(memory_manager.get(args.session).snapshot(args.query))
     elif args.command == "explain":
         _dump(explain(args.subject))
+    elif args.command == "workspace":
+        runtime = WorkspaceRuntime(args.root)
+        _dump({"runtime": runtime.status(), "project": runtime.inspect_project()})
+    elif args.command == "execute":
+        _dump(
+            run_coding_agent(
+                args.goal,
+                workspace=args.workspace,
+                approved=args.approve,
+                max_rounds=args.max_rounds,
+            )
+        )
     elif args.command == "serve":
         import uvicorn
 
