@@ -1,15 +1,25 @@
-name: Green House Ontology Gate
+name: Green House Runtime Gate
 
 on:
   push:
     paths:
       - 'the-green-house/**'
+      - 'the-black-house/layers/green-house/**'
+      - 'va3lm/src/va3lm/green_house.py'
+      - 'va3lm/src/va3lm/green_house_api.py'
+      - 'va3lm/src/va3lm/black_house_api.py'
       - 'tests/test_green_house_ontology.py'
+      - 'tests/test_green_house_runtime.py'
       - '.github/workflows/green-house-ontology.yml'
   pull_request:
     paths:
       - 'the-green-house/**'
+      - 'the-black-house/layers/green-house/**'
+      - 'va3lm/src/va3lm/green_house.py'
+      - 'va3lm/src/va3lm/green_house_api.py'
+      - 'va3lm/src/va3lm/black_house_api.py'
       - 'tests/test_green_house_ontology.py'
+      - 'tests/test_green_house_runtime.py'
       - '.github/workflows/green-house-ontology.yml'
   workflow_dispatch:
 
@@ -27,7 +37,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install VA3LM runtime
+        run: python -m pip install -e './va3lm[dev]'
       - name: Validate JSON syntax
-        run: python -m json.tool the-green-house/ontology/green-house-ontology.json >/dev/null
-      - name: Run Green House ontology tests
-        run: python -m pytest -q tests/test_green_house_ontology.py
+        run: |
+          python -m json.tool the-green-house/ontology/green-house-ontology.json >/dev/null
+          python -m json.tool the-black-house/layers/green-house/layer.manifest.json >/dev/null
+      - name: Verify Green House ontology and runtime mount
+        run: python -m pytest -q tests/test_green_house_ontology.py tests/test_green_house_runtime.py
+      - name: Compile runtime layer
+        run: python -m py_compile va3lm/src/va3lm/green_house.py va3lm/src/va3lm/black_house_api.py
