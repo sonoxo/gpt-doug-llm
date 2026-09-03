@@ -1,0 +1,170 @@
+name: GPT-DOUG-LLM-MAX Full Completion
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "the-black-house/**"
+      - "va3lm/**"
+      - "scripts/validate_black_house.py"
+      - ".github/workflows/gpt-doug-max-full-completion.yml"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: gpt-doug-max-full-completion-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  black-house-core:
+    name: Black House + VA3LM
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate canonical Black House contracts
+        run: python scripts/validate_black_house.py
+      - name: Install VA3LM
+        working-directory: va3lm
+        run: python -m pip install -e '.[dev]' httpx
+      - name: Unit tests
+        working-directory: va3lm
+        run: pytest -q
+      - name: Ruff
+        working-directory: va3lm
+        run: ruff check src tests
+      - name: Bandit
+        working-directory: va3lm
+        run: bandit -q -ll -r src
+      - name: Compile
+        working-directory: va3lm
+        run: python -m compileall -q src
+      - name: Runtime proof 8088
+        working-directory: va3lm
+        run: |
+          va3lm serve --host 127.0.0.1 --port 8088 >/tmp/va3lm.log 2>&1 &
+          PID=$!
+          trap 'kill $PID 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import json, time, urllib.request
+          last = None
+          for _ in range(40):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8088/healthz', timeout=1) as r:
+                      h = json.load(r)
+                  with urllib.request.urlopen('http://127.0.0.1:8088/api/status', timeout=1) as r:
+                      s = json.load(r)
+                  assert h == {'status':'ok','service':'va3lm','port':8088,'version':'0.6.0'}
+                  assert s['port'] == 8088
+                  assert s['approvalGate'] is True
+                  print('VA3LM LIVE RUNTIME: GREEN')
+                  break
+              except Exception as exc:
+                  last = exc
+                  time.sleep(.25)
+          else:
+              print(open('/tmp/va3lm.log', encoding='utf-8').read())
+              raise SystemExit(f'VA3LM runtime failed: {last}')
+          PY
+
+  xunia:
+    name: XUNIA Full Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/xuniadao
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build:main
+      - run: yarn test:unit
+      - run: node --test apps/resilience-atlas/tests/*.test.mjs
+      - name: Black House contract
+        run: |
+          node - <<'NODE'
+          const r=require('./.black-house/runtime.json');
+          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='XUNIA') process.exit(1);
+          console.log('XUNIA BLACK HOUSE CONTRACT: GREEN');
+          NODE
+
+  zyra:
+    name: Zyra + Zyra Cloud Full Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/zyra
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: Black House contract
+        run: |
+          node - <<'NODE'
+          const r=require('./.black-house/runtime.json');
+          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='ZYRA'||r.cloudLayer!=='Zyra Cloud') process.exit(1);
+          console.log('ZYRA BLACK HOUSE CONTRACT: GREEN');
+          NODE
+      - run: npm test
+      - run: npm run check
+      - run: npm audit --audit-level=high
+      - run: npm run build
+
+  aip-quality-plane:
+    name: AIP Shared Quality Plane
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/aip-community-registry-zyra
+          ref: develop
+      - name: Validate Black House registration
+        run: |
+          node - <<'NODE'
+          const r=require('./.black-house/runtime.json');
+          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='AIP_REGISTRY') process.exit(1);
+          const required=['tests','typecheck','dependency-audit','production-build'];
+          for(const c of required) if(!r.requiredCapabilities.includes(c)) process.exit(1);
+          console.log('AIP SHARED QUALITY PLANE: GREEN');
+          NODE
+      - name: Validate reusable gate capabilities
+        run: |
+          grep -q "name: Node Quality Gate" .github/workflows/node-quality-gate.yml
+          grep -q "npm ci" .github/workflows/node-quality-gate.yml
+          grep -q "Dependency audit" .github/workflows/node-quality-gate.yml
+          grep -q "Production build" .github/workflows/node-quality-gate.yml
+
+  completion:
+    name: GPT-DOUG-MAX Completion Verdict
+    if: ${{ always() }}
+    needs: [black-house-core, xunia, zyra, aip-quality-plane]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail closed unless every critical plane is green
+        env:
+          CORE: ${{ needs.black-house-core.result }}
+          XUNIA: ${{ needs.xunia.result }}
+          ZYRA: ${{ needs.zyra.result }}
+          AIP: ${{ needs.aip-quality-plane.result }}
+        run: |
+          printf 'BLACK_HOUSE=%s\nXUNIA=%s\nZYRA=%s\nAIP=%s\n' "$CORE" "$XUNIA" "$ZYRA" "$AIP"
+          test "$CORE" = success
+          test "$XUNIA" = success
+          test "$ZYRA" = success
+          test "$AIP" = success
+          echo "GPT-DOUG-LLM-MAX FULL COMPLETION: GREEN"
