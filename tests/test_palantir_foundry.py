@@ -7,6 +7,7 @@ from palantir_foundry import (
     FoundryClient,
     FoundryConfigurationError,
     FoundryWriteDisabled,
+    _PinnedRedirectHandler,
 )
 
 
@@ -46,19 +47,29 @@ class PalantirFoundryTests(unittest.TestCase):
                 allowed_host="other.example",
             )
 
-    @patch("urllib.request.urlopen")
-    def test_static_token_lists_objects(self, urlopen):
-        urlopen.return_value = FakeResponse({"data": [{"id": "1"}]})
+    def test_redirect_handler_rejects_cross_host(self):
+        handler = _PinnedRedirectHandler("foundry.example")
+        with self.assertRaises(FoundryConfigurationError):
+            handler.redirect_request(None, None, 302, "Found", {}, "https://evil.example/steal")
+
+    def test_redirect_handler_rejects_http(self):
+        handler = _PinnedRedirectHandler("foundry.example")
+        with self.assertRaises(FoundryConfigurationError):
+            handler.redirect_request(None, None, 302, "Found", {}, "http://foundry.example/insecure")
+
+    @patch.object(FoundryClient, "_open")
+    def test_static_token_lists_objects(self, open_response):
+        open_response.return_value = FakeResponse({"data": [{"id": "1"}]})
         client = FoundryClient(base_url="https://foundry.example", static_token="secret")
         payload = client.list_objects("main", "Aircraft", page_size=10)
         self.assertEqual(payload["data"][0]["id"], "1")
-        request = urlopen.call_args.args[0]
+        request = open_response.call_args.args[0]
         self.assertEqual(request.get_header("Authorization"), "Bearer secret")
         self.assertIn("/api/v2/ontologies/main/objects/Aircraft", request.full_url)
 
-    @patch("urllib.request.urlopen")
-    def test_oauth_client_credentials_then_api_call(self, urlopen):
-        urlopen.side_effect = [
+    @patch.object(FoundryClient, "_open")
+    def test_oauth_client_credentials_then_api_call(self, open_response):
+        open_response.side_effect = [
             FakeResponse({"access_token": "oauth-token", "expires_in": 3600}),
             FakeResponse({"data": []}),
         ]
@@ -68,11 +79,11 @@ class PalantirFoundryTests(unittest.TestCase):
             client_secret="client-secret",
         )
         client.list_ontologies()
-        token_request = urlopen.call_args_list[0].args[0]
+        token_request = open_response.call_args_list[0].args[0]
         token_body = token_request.data.decode("utf-8")
         self.assertIn("grant_type=client_credentials", token_body)
         self.assertIn("client_id=client-id", token_body)
-        api_request = urlopen.call_args_list[1].args[0]
+        api_request = open_response.call_args_list[1].args[0]
         self.assertEqual(api_request.get_header("Authorization"), "Bearer oauth-token")
 
     def test_actions_are_blocked_by_default(self):
@@ -80,9 +91,9 @@ class PalantirFoundryTests(unittest.TestCase):
         with self.assertRaises(FoundryWriteDisabled):
             client.apply_action("main", "UpdateThing", {"id": "1"})
 
-    @patch("urllib.request.urlopen")
-    def test_action_requires_explicit_write_enable(self, urlopen):
-        urlopen.return_value = FakeResponse({"validation": {"result": "VALID"}})
+    @patch.object(FoundryClient, "_open")
+    def test_action_requires_explicit_write_enable(self, open_response):
+        open_response.return_value = FakeResponse({"validation": {"result": "VALID"}})
         client = FoundryClient(
             base_url="https://foundry.example",
             static_token="secret",
@@ -90,9 +101,16 @@ class PalantirFoundryTests(unittest.TestCase):
         )
         payload = client.apply_action("main", "UpdateThing", {"id": "1"})
         self.assertIn("validation", payload)
-        request = urlopen.call_args.args[0]
+        request = open_response.call_args.args[0]
         self.assertIn("/actions/UpdateThing/apply", request.full_url)
         self.assertEqual(request.get_method(), "POST")
+
+    def test_status_exposes_transport_policy_without_secrets(self):
+        client = FoundryClient(base_url="https://foundry.example", static_token="secret")
+        status = client.status()
+        self.assertEqual(status["transport"], "https-only")
+        self.assertEqual(status["redirect_policy"], "same-host-https-only")
+        self.assertNotIn("secret", json.dumps(status))
 
 
 if __name__ == "__main__":
