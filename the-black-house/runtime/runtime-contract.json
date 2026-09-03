@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "contract": "BLACK_HOUSE_RUNTIME_V1",
+  "requiredComponents": [
+    "GPT_DOUG_LLM_MAX",
+    "VA3LM",
+    "ZYRA",
+    "ZYRA_CLOUD",
+    "XUNIA",
+    "NXYZ",
+    "SHADOW_GLASS",
+    "GLASS_ONION"
+  ],
+  "localRuntime": {
+    "service": "VA3LM",
+    "host": "127.0.0.1",
+    "port": 8088,
+    "healthPath": "/healthz",
+    "expected": {"status":"ok","service":"va3lm","port":8088}
+  },
+  "repositoryGates": [
+    {"repo":"sonoxo/gpt-doug-llm","gate":"VA3LM 8088 Speed Run","required":true},
+    {"repo":"sonoxo/gpt-doug-llm","gate":"VA3LM Big Virginia","required":true},
+    {"repo":"sonoxo/xuniadao","gate":"Full Ecosystem Validation","required":true},
+    {"repo":"sonoxo/xuniadao","gate":"XUNIA Resilience Atlas JUPITER Gate","required":true},
+    {"repo":"sonoxo/zyra","gate":"CI","required":true}
+  ],
+  "failurePolicy": {
+    "failedRequiredGate":"RED",
+    "runtimeUnavailable":"RED",
+    "externalTenantUnverified":"AMBER",
+    "allRequiredGatesGreen":"GREEN"
+  }
+}
