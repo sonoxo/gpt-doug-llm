@@ -7,6 +7,7 @@ on:
       - "the-black-house/**"
       - "va3lm/**"
       - "wakeup3lm/**"
+      - "palantir_*.py"
       - "scripts/black_house_kernel.py"
       - "scripts/validate_black_house.py"
       - ".github/workflows/gpt-doug-max-full-completion.yml"
@@ -19,12 +20,13 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   black-house-core:
-    name: Black House Kernel + VA3LM + Wakeup3lm
+    name: Black House + RVIA + Mission History + Command Center
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -41,16 +43,18 @@ jobs:
           graph = OntologyGraph()
           assert graph.kernel['version'] == '3.0.0'
           assert graph.kernel['controlPlane'] == 'THE_BLACK_HOUSE_V1'
-          graph.upsert('Mission', 'phase-3', state='validation')
-          graph.upsert('Evidence', 'phase-3-proof', provenance='ci')
-          graph.canonical_link('Mission', 'phase-3', 'PRODUCES', 'Evidence', 'phase-3-proof')
+          graph.upsert('Mission', 'phase-4-8', state='validation')
+          graph.upsert('Evidence', 'phase-4-8-proof', provenance='ci')
+          graph.canonical_link(
+              'Mission', 'phase-4-8', 'PRODUCES', 'Evidence', 'phase-4-8-proof'
+          )
           assert graph.snapshot()['kernel']['failClosed'] is True
           print('WAKEUP3LM KERNEL V3: GREEN')
           PY
       - name: Install VA3LM
         working-directory: va3lm
         run: python -m pip install -e '.[dev]' httpx
-      - name: Unit tests
+      - name: Unit tests including phases 4-8
         working-directory: va3lm
         run: pytest -q
       - name: Ruff
@@ -62,40 +66,90 @@ jobs:
       - name: Compile
         working-directory: va3lm
         run: python -m compileall -q src
-      - name: Runtime proof 8088
+      - name: Runtime proof 8088 + Black House Command Center
         working-directory: va3lm
         run: |
+          export BLACK_HOUSE_LEDGER_PATH=/tmp/black-house-mission-history.db
           va3lm serve --host 127.0.0.1 --port 8088 >/tmp/va3lm.log 2>&1 &
           PID=$!
           trap 'kill $PID 2>/dev/null || true' EXIT
           python - <<'PY'
-          import json, time, urllib.request
+          import json
+          import time
+          import urllib.request
+
+          base = 'http://127.0.0.1:8088'
+
+          def get_json(path):
+              with urllib.request.urlopen(base + path, timeout=2) as response:
+                  return json.load(response)
+
+          def post_json(path, payload):
+              request = urllib.request.Request(
+                  base + path,
+                  data=json.dumps(payload).encode('utf-8'),
+                  headers={'content-type': 'application/json'},
+                  method='POST',
+              )
+              with urllib.request.urlopen(request, timeout=2) as response:
+                  return json.load(response)
+
           last = None
-          for _ in range(40):
+          for _ in range(50):
               try:
-                  with urllib.request.urlopen('http://127.0.0.1:8088/healthz', timeout=1) as r:
-                      h = json.load(r)
-                  with urllib.request.urlopen('http://127.0.0.1:8088/api/status', timeout=1) as r:
-                      s = json.load(r)
-                  with urllib.request.urlopen('http://127.0.0.1:8088/api/ontology', timeout=1) as r:
-                      o = json.load(r)
-                  assert h == {'status':'ok','service':'va3lm','port':8088,'version':'0.6.0'}
-                  assert s['port'] == 8088
-                  assert s['approvalGate'] is True
-                  assert o['kernel']['version'] == '3.0.0'
-                  assert o['kernel']['controlPlane'] == 'THE_BLACK_HOUSE_V1'
-                  print('VA3LM LIVE RUNTIME + KERNEL V3: GREEN')
+                  health = get_json('/healthz')
+                  status = get_json('/api/status')
+                  ontology = get_json('/api/ontology')
+                  black_house = get_json('/api/black-house/status')
+                  router = get_json('/api/black-house/router')
+                  with urllib.request.urlopen(base + '/black-house', timeout=2) as response:
+                      command_center = response.read().decode('utf-8')
+                  assert health == {
+                      'status': 'ok', 'service': 'va3lm', 'port': 8088, 'version': '0.6.0'
+                  }
+                  assert status['port'] == 8088
+                  assert status['approvalGate'] is True
+                  assert ontology['kernel']['version'] == '3.0.0'
+                  assert ontology['kernel']['controlPlane'] == 'THE_BLACK_HOUSE_V1'
+                  assert router['protocol'] == 'black-house-mission-v1'
+                  assert router['failClosed'] is True
+                  assert black_house['phases']['4'] == 'COMPLETE'
+                  assert black_house['phases']['5'] == 'COMPLETE'
+                  assert black_house['phases']['6'] == 'COMPLETE'
+                  assert black_house['phases']['8'] == 'COMPLETE'
+                  assert black_house['phases']['7'] in {
+                      'LIVE_TENANT_VERIFIED',
+                      'CODE_COMPLETE_LIVE_TENANT_UNVERIFIED',
+                  }
+                  assert 'THE BLACK HOUSE' in command_center
+                  mission = post_json(
+                      '/api/black-house/missions',
+                      {
+                          'requestedBy': 'full-completion-ci',
+                          'intent': 'Prove RVIA to XUNIA contract routing with evidence',
+                          'target': 'XUNIA',
+                          'classification': 'internal',
+                          'approvalState': 'PENDING_POLICY',
+                      },
+                  )
+                  assert mission['status'] == 'COMPLETED'
+                  assert mission['mission']['result']['executionState'] == (
+                      'MISSION_CONTRACT_ACCEPTED'
+                  )
+                  history = get_json('/api/black-house/missions?limit=10')
+                  assert history['summary']['missions'] >= 1
+                  print('BLACK HOUSE PHASES 4, 5, 8 LIVE ON VA3LM: GREEN')
                   break
               except Exception as exc:
                   last = exc
                   time.sleep(.25)
           else:
               print(open('/tmp/va3lm.log', encoding='utf-8').read())
-              raise SystemExit(f'VA3LM runtime failed: {last}')
+              raise SystemExit(f'Black House runtime failed: {last}')
           PY
 
   xunia:
-    name: XUNIA Kernel + Full Gate
+    name: XUNIA Kernel + RVIA Contract + Full Gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -111,19 +165,22 @@ jobs:
       - run: yarn build:main
       - run: yarn test:unit
       - run: node --test apps/resilience-atlas/tests/*.test.mjs
-      - name: Black House kernel contract
+      - name: Black House kernel and RVIA mission contract
         run: |
           node - <<'NODE'
           const runtime=require('./.black-house/runtime.json');
           const kernel=require('./.black-house/kernel.json');
+          const mission=require('./.black-house/mission-router.json');
           if(runtime.controlPlane!=='THE_BLACK_HOUSE_V1'||runtime.component!=='XUNIA') process.exit(1);
           if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
           if(kernel.controlPlaneRoot!==false||kernel.domainRoot!=='XUNIAverse') process.exit(1);
-          console.log('XUNIA BLACK HOUSE KERNEL V3: GREEN');
+          if(mission.missionProtocol!=='black-house-mission-v1'||!mission.failClosed) process.exit(1);
+          if(!mission.acceptedTargets.includes('XUNIA')||mission.mutationAuthority!==false) process.exit(1);
+          console.log('XUNIA BLACK HOUSE + RVIA CONTRACT: GREEN');
           NODE
 
   zyra:
-    name: Zyra + Zyra Cloud Kernel Full Gate
+    name: Zyra + NXYZ + Zyra Cloud RVIA Full Gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -136,15 +193,18 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
-      - name: Black House kernel contract
+      - name: Black House kernel and RVIA mission contract
         run: |
           node - <<'NODE'
           const runtime=require('./.black-house/runtime.json');
           const kernel=require('./.black-house/kernel.json');
+          const mission=require('./.black-house/mission-router.json');
           if(runtime.controlPlane!=='THE_BLACK_HOUSE_V1'||runtime.component!=='ZYRA'||runtime.cloudLayer!=='Zyra Cloud') process.exit(1);
           if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
-          if(kernel.approvalAuthority!==true) process.exit(1);
-          console.log('ZYRA BLACK HOUSE KERNEL V3: GREEN');
+          if(kernel.approvalAuthority!==true||mission.approvalAuthority!==true) process.exit(1);
+          if(mission.missionProtocol!=='black-house-mission-v1'||!mission.failClosed) process.exit(1);
+          for(const target of ['ZYRA','NXYZ','ZYRA_CLOUD']) if(!mission.acceptedTargets.includes(target)) process.exit(1);
+          console.log('ZYRA / NXYZ / ZYRA CLOUD RVIA CONTRACT: GREEN');
           NODE
       - run: npm test
       - run: npx tsx --test server/black-house-kernel.test.ts
@@ -153,7 +213,7 @@ jobs:
       - run: npm run build
 
   aip-quality-plane:
-    name: AIP Shared Quality Plane
+    name: AIP Shared Quality + RVIA Contract Plane
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -161,14 +221,17 @@ jobs:
         with:
           repository: sonoxo/aip-community-registry-zyra
           ref: develop
-      - name: Validate Black House registration
+      - name: Validate Black House registration and mission contract
         run: |
           node - <<'NODE'
           const r=require('./.black-house/runtime.json');
+          const mission=require('./.black-house/mission-router.json');
           if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='AIP_REGISTRY'||r.kernelVersion!=='3.0.0') process.exit(1);
           const required=['tests','typecheck','dependency-audit','production-build'];
           for(const c of required) if(!r.requiredCapabilities.includes(c)) process.exit(1);
-          console.log('AIP SHARED QUALITY PLANE KERNEL V3: GREEN');
+          if(mission.missionProtocol!=='black-house-mission-v1'||!mission.acceptedTargets.includes('AIP_REGISTRY')) process.exit(1);
+          if(mission.mutationAuthority!==false||!mission.failClosed) process.exit(1);
+          console.log('AIP SHARED QUALITY + RVIA CONTRACT: GREEN');
           NODE
       - name: Validate reusable gate capabilities
         run: |
@@ -177,8 +240,8 @@ jobs:
           grep -q "Dependency audit" .github/workflows/node-quality-gate.yml
           grep -q "Production build" .github/workflows/node-quality-gate.yml
 
-  ontology-coherence:
-    name: Cross-Repo Kernel Coherence
+  cross-repo-coherence:
+    name: Cross-Repo Kernel + Mission Protocol Coherence
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -200,13 +263,17 @@ jobs:
           repository: sonoxo/aip-community-registry-zyra
           ref: develop
           path: aip
-      - name: Fail closed on kernel drift
+      - name: Fail closed on kernel or mission protocol drift
         run: |
           node - <<'NODE'
           const canonical=require('./black-house/the-black-house/kernel/kernel.manifest.json');
+          const canonicalRouter=require('./black-house/the-black-house/missions/router.manifest.json');
           const xunia=require('./xunia/.black-house/kernel.json');
           const zyra=require('./zyra/.black-house/kernel.json');
           const aip=require('./aip/.black-house/runtime.json');
+          const xuniaMission=require('./xunia/.black-house/mission-router.json');
+          const zyraMission=require('./zyra/.black-house/mission-router.json');
+          const aipMission=require('./aip/.black-house/mission-router.json');
           const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
           for(const [name,binding] of [['XUNIA',xunia],['ZYRA',zyra]]) {
             if(binding.kernelVersion!==canonical.kernelVersion) throw new Error(`${name} kernel version drift`);
@@ -215,27 +282,129 @@ jobs:
             if(!same(binding.relationshipTypes,canonical.relationshipTypes)) throw new Error(`${name} relationship vocabulary drift`);
           }
           if(aip.kernelVersion!==canonical.kernelVersion||aip.controlPlane!==canonical.controlPlane) throw new Error('AIP kernel drift');
-          console.log(`BLACK HOUSE KERNEL ${canonical.kernelVersion}: CROSS-REPO COHERENCE GREEN`);
+          for(const [name,binding] of [['XUNIA',xuniaMission],['ZYRA',zyraMission],['AIP',aipMission]]) {
+            if(binding.controlPlane!==canonical.controlPlane) throw new Error(`${name} mission control-plane drift`);
+            if(binding.kernelVersion!==canonical.kernelVersion) throw new Error(`${name} mission kernel drift`);
+            if(binding.missionProtocol!==canonicalRouter.protocol) throw new Error(`${name} mission protocol drift`);
+            if(binding.failClosed!==true) throw new Error(`${name} mission router is not fail closed`);
+          }
+          console.log(`BLACK HOUSE KERNEL ${canonical.kernelVersion} + ${canonicalRouter.protocol}: COHERENCE GREEN`);
           NODE
 
+  telemetry:
+    name: Phase 6 Live GitHub Fleet Telemetry
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Probe live core repositories and workflow state
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PYTHONPATH=va3lm/src python - <<'PY'
+          import json
+          from va3lm.ecosystem_telemetry import collect_fleet
+          snapshot = collect_fleet(live=True)
+          print(json.dumps(snapshot, indent=2))
+          assert snapshot['live'] is True
+          assert snapshot['counts']['repositories'] == 4
+          assert all(item['reachable'] is True for item in snapshot['repositories'])
+          assert {item['repository'] for item in snapshot['repositories']} == {
+              'sonoxo/gpt-doug-llm',
+              'sonoxo/xuniadao',
+              'sonoxo/zyra',
+              'sonoxo/aip-community-registry-zyra',
+          }
+          print('BLACK HOUSE LIVE FLEET TELEMETRY: GREEN')
+          PY
+
+  palantir-verification:
+    name: Phase 7 Palantir Adapter + Tenant Verification Truth Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      FOUNDRY_BASE_URL: ${{ secrets.FOUNDRY_BASE_URL }}
+      FOUNDRY_TOKEN: ${{ secrets.FOUNDRY_TOKEN }}
+      FOUNDRY_CLIENT_ID: ${{ secrets.FOUNDRY_CLIENT_ID }}
+      FOUNDRY_CLIENT_SECRET: ${{ secrets.FOUNDRY_CLIENT_SECRET }}
+      PALANTIR_AIP_ONTOLOGY: ${{ secrets.PALANTIR_AIP_ONTOLOGY }}
+      PALANTIR_AIP_LOGIC_QUERY: ${{ secrets.PALANTIR_AIP_LOGIC_QUERY }}
+      PALANTIR_AIP_MODEL: ${{ secrets.PALANTIR_AIP_MODEL }}
+      GOTHAM_BASE_URL: ${{ secrets.GOTHAM_BASE_URL }}
+      GOTHAM_TOKEN: ${{ secrets.GOTHAM_TOKEN }}
+      GOTHAM_CLIENT_ID: ${{ secrets.GOTHAM_CLIENT_ID }}
+      GOTHAM_CLIENT_SECRET: ${{ secrets.GOTHAM_CLIENT_SECRET }}
+      APOLLO_URL: ${{ secrets.APOLLO_URL }}
+      APOLLO_TOKEN: ${{ secrets.APOLLO_TOKEN }}
+      APOLLO_CLIENT_ID: ${{ secrets.APOLLO_CLIENT_ID }}
+      APOLLO_CLIENT_SECRET: ${{ secrets.APOLLO_CLIENT_SECRET }}
+      APOLLO_GRAPHQL_URL: ${{ secrets.APOLLO_GRAPHQL_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest
+      - name: Compile Palantir adapter stack
+        run: |
+          python -m compileall -q palantir_aip.py palantir_automate.py palantir_gotham.py palantir_apollo.py palantir_tenant_probe.py wakeup3lm/palantir.py
+      - name: Run Palantir full-stack contract tests
+        run: python -m pytest tests/test_palantir_full_stack.py -q
+      - name: Produce tenant verification truth state
+        run: |
+          PYTHONPATH=va3lm/src:. python - <<'PY'
+          import json
+          from va3lm.palantir_status import palantir_verification_status
+          status = palantir_verification_status(execute_aip_model=False)
+          print(json.dumps(status, indent=2))
+          assert status['implementationState'] == 'CODE_COMPLETE'
+          assert isinstance(status['liveTenantVerified'], bool)
+          assert status['verificationState'] in {
+              'LIVE_TENANT_UNVERIFIED',
+              'CONFIGURED_BUT_NOT_FULLY_VERIFIED',
+              'LIVE_TENANT_VERIFIED',
+          }
+          if status['liveTenantVerified']:
+              assert status['verificationState'] == 'LIVE_TENANT_VERIFIED'
+              print('PALANTIR LIVE TENANT: VERIFIED')
+          else:
+              print('PALANTIR ADAPTER STACK: GREEN; LIVE TENANT NOT CLAIMED')
+          PY
+
   completion:
-    name: GPT-DOUG-MAX Phase 3 Completion Verdict
+    name: GPT-DOUG-MAX Phases 4-8 Completion Verdict
     if: ${{ always() }}
-    needs: [black-house-core, xunia, zyra, aip-quality-plane, ontology-coherence]
+    needs:
+      - black-house-core
+      - xunia
+      - zyra
+      - aip-quality-plane
+      - cross-repo-coherence
+      - telemetry
+      - palantir-verification
     runs-on: ubuntu-latest
     steps:
-      - name: Fail closed unless every critical plane is green
+      - name: Fail closed unless every repository-controlled plane is green
         env:
           CORE: ${{ needs.black-house-core.result }}
           XUNIA: ${{ needs.xunia.result }}
           ZYRA: ${{ needs.zyra.result }}
           AIP: ${{ needs.aip-quality-plane.result }}
-          ONTOLOGY: ${{ needs.ontology-coherence.result }}
+          COHERENCE: ${{ needs.cross-repo-coherence.result }}
+          TELEMETRY: ${{ needs.telemetry.result }}
+          PALANTIR: ${{ needs.palantir-verification.result }}
         run: |
-          printf 'BLACK_HOUSE=%s\nXUNIA=%s\nZYRA=%s\nAIP=%s\nONTOLOGY=%s\n' "$CORE" "$XUNIA" "$ZYRA" "$AIP" "$ONTOLOGY"
+          printf 'BLACK_HOUSE=%s\nXUNIA=%s\nZYRA=%s\nAIP=%s\nCOHERENCE=%s\nTELEMETRY=%s\nPALANTIR=%s\n' \
+            "$CORE" "$XUNIA" "$ZYRA" "$AIP" "$COHERENCE" "$TELEMETRY" "$PALANTIR"
           test "$CORE" = success
           test "$XUNIA" = success
           test "$ZYRA" = success
           test "$AIP" = success
-          test "$ONTOLOGY" = success
-          echo "GPT-DOUG-LLM-MAX PHASE 3 KERNEL COMPLETION: GREEN"
+          test "$COHERENCE" = success
+          test "$TELEMETRY" = success
+          test "$PALANTIR" = success
+          echo "GPT-DOUG-LLM-MAX PHASES 4-8 REPOSITORY COMPLETION: GREEN"
+          echo "Phase 7 external tenant entitlement remains probe-derived and is never inferred."
