@@ -1,0 +1,88 @@
+name: SoundCloud Heartbeat
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/soundcloud-heartbeat.yml"
+      - "scripts/soundcloud_heartbeat.py"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: soundcloud-heartbeat
+  cancel-in-progress: true
+
+jobs:
+  heartbeat:
+    name: GPT-DOUG SoundCloud Heartbeat
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Probe SoundCloud
+        id: probe
+        continue-on-error: true
+        env:
+          SOUNDCLOUD_ACCESS_TOKEN: ${{ secrets.SOUNDCLOUD_ACCESS_TOKEN }}
+        run: |
+          python3 scripts/soundcloud_heartbeat.py | tee soundcloud-heartbeat.json
+
+      - name: Publish heartbeat summary
+        if: always()
+        run: |
+          echo "## SoundCloud heartbeat" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '\`\`\`json' >> "$GITHUB_STEP_SUMMARY"
+          cat soundcloud-heartbeat.json >> "$GITHUB_STEP_SUMMARY"
+          echo '\`\`\`' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload heartbeat report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soundcloud-heartbeat-${{ github.run_id }}
+          path: soundcloud-heartbeat.json
+          retention-days: 7
+
+      - name: Open degraded-service issue
+        if: steps.probe.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing="$(gh issue list --state open --search 'SoundCloud Heartbeat degraded in:title' --json number --jq '.[0].number // empty')"
+          if [ -z "$existing" ]; then
+            {
+              echo 'GPT-DOUG-LLM heartbeat detected a SoundCloud availability or account-API-auth failure.'
+              echo
+              echo 'Run:' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+              echo
+              echo 'The workflow never stores browser cookies or passwords. Account API auth is tested only when the optional `SOUNDCLOUD_ACCESS_TOKEN` repository secret exists.'
+            } > /tmp/soundcloud-heartbeat-issue.md
+            gh issue create \
+              --title 'SoundCloud Heartbeat degraded' \
+              --body-file /tmp/soundcloud-heartbeat-issue.md
+          fi
+
+      - name: Close recovered-service issue
+        if: steps.probe.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing="$(gh issue list --state open --search 'SoundCloud Heartbeat degraded in:title' --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Heartbeat recovered on run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          fi
+
+      - name: Enforce heartbeat result
+        if: steps.probe.outcome == 'failure'
+        run: exit 1
