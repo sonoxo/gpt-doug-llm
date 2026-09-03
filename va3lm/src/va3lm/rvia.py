@@ -11,8 +11,15 @@ from va3lm.ontology import CONTROL_PLANE, KERNEL_VERSION
 from va3lm.planner import build_plan
 
 MISSION_PROTOCOL = "black-house-mission-v1"
-ALLOWED_CLASSIFICATIONS = {"PUBLIC", "INTERNAL", "RESTRICTED"}
-ALLOWED_APPROVAL_STATES = {"PENDING", "APPROVED", "DENIED"}
+ALLOWED_CLASSIFICATIONS = {"public", "internal", "restricted"}
+ALLOWED_APPROVAL_STATES = {
+    "PENDING_POLICY",
+    "PENDING_HUMAN_REVIEW",
+    "APPROVED",
+    "DENIED",
+    "COMPLETED",
+    "FAILED",
+}
 
 CORE_TARGETS: dict[str, dict[str, Any]] = {
     "GPT_DOUG_MAX": {
@@ -59,10 +66,10 @@ class MissionEnvelope(BaseModel):
     requestedBy: str = Field(min_length=1)
     intent: str = Field(min_length=1)
     target: str = Field(min_length=1)
-    classification: str = "INTERNAL"
+    classification: str = "internal"
     requiredCapabilities: list[str] = Field(default_factory=list)
     allowedTools: list[str] = Field(default_factory=list)
-    approvalState: str = "PENDING"
+    approvalState: str = "PENDING_POLICY"
     mutation: bool = False
     evidence: list[dict[str, Any]] = Field(default_factory=list)
     result: dict[str, Any] = Field(default_factory=dict)
