@@ -6,6 +6,7 @@ import json
 from dataclasses import dataclass
 from typing import Callable, Optional
 
+from federal_compliance import FederalComplianceProfile
 from palantir_bridge import DougPalantirBridge
 from palantir_foundry import FoundryError
 from palantir_stack import PalantirStack
@@ -32,12 +33,16 @@ def handle_palantir_command(
 
     raw = prompt[len("/palantir") :].strip()
 
-    # The stack registry is useful even before credentials are configured. It
-    # reports intended/configured planes without claiming Palantir entitlement.
+    # Stack/compliance inspection remains available before credentials are set.
     if raw in {"stack", "platform"}:
         return PalantirCommandResult(
             True,
             _dump(PalantirStack(bridge.foundry if bridge else None).status()),
+        )
+    if raw in {"compliance", "federal", "rmf"}:
+        return PalantirCommandResult(
+            True,
+            _dump(FederalComplianceProfile(bridge.foundry if bridge else None).status()),
         )
 
     if bridge is None:
@@ -45,7 +50,7 @@ def handle_palantir_command(
             handled=True,
             output=(
                 "PALANTIR // NOT CONFIGURED // set FOUNDRY_BASE_URL and authorized credentials // "
-                "use /palantir stack to inspect platform integration state"
+                "use /palantir stack or /palantir compliance to inspect local readiness"
             ),
         )
 
@@ -116,7 +121,7 @@ def handle_palantir_command(
             )
 
         raise FoundryError(
-            "commands: status | stack | platform | ontologies | object-types | objects | get | search | ask | action"
+            "commands: status | stack | platform | compliance | federal | rmf | ontologies | object-types | objects | get | search | ask | action"
         )
     except (FoundryError, ValueError) as error:
         return PalantirCommandResult(True, f"PALANTIR ERROR // {error}")
