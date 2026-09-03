@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from black_house_kernel import validate_kernel
+
 ROOT = Path(__file__).resolve().parents[1]
 BH = ROOT / "the-black-house"
 
@@ -15,6 +17,8 @@ REQUIRED_FILES = [
     BH / "registry" / "agents.json",
     BH / "missions" / "mission.schema.json",
     BH / "ontology" / "ontology.schema.json",
+    BH / "kernel" / "kernel.manifest.json",
+    BH / "kernel" / "kernel.schema.json",
     BH / "runtime" / "runtime-contract.json",
     BH / "governance" / "CONTROL-PLANE.md",
 ]
@@ -63,9 +67,19 @@ def main() -> None:
         "mission envelope required fields are incomplete",
     )
 
+    kernel = validate_kernel()
+    require(kernel["kernelVersion"] == "3.0.0", "phase 3 kernel version mismatch")
+    binding_ids = {item["component"] for item in kernel["bindings"]}
+    require(
+        {"VA3LM", "WAKEUP3LM", "XUNIA", "ZYRA", "AIP_REGISTRY"}.issubset(binding_ids),
+        "kernel consumer bindings are incomplete",
+    )
+
     ontology = load_json(BH / "ontology" / "ontology.schema.json")
     object_types = set(ontology["properties"]["objects"]["items"]["enum"])
     relationship_types = set(ontology["properties"]["relationships"]["items"]["enum"])
+    require(set(kernel["objectTypes"]) == object_types, "ontology object vocabulary drifted from kernel")
+    require(set(kernel["relationshipTypes"]) == relationship_types, "ontology relationship vocabulary drifted from kernel")
     require({"Mission", "Agent", "Repository", "Service", "Evidence", "Policy"}.issubset(object_types), "ontology object vocabulary is incomplete")
     require({"EXECUTES", "PRODUCES", "GOVERNS", "IMPLEMENTS", "AUDITS"}.issubset(relationship_types), "ontology relationship vocabulary is incomplete")
 
@@ -75,7 +89,8 @@ def main() -> None:
     require(runtime["localRuntime"]["healthPath"] == "/healthz", "VA3LM health contract mismatch")
 
     print("BLACK HOUSE CONTROL PLANE: GREEN")
-    print(f"repositories={len(repo_ids)} services={len(service_ids)} agents={len(agent_ids)}")
+    print(f"kernel=3.0.0 repositories={len(repo_ids)} services={len(service_ids)} agents={len(agent_ids)}")
+    print(f"ontology_objects={len(object_types)} ontology_relationships={len(relationship_types)}")
     print("runtime_contract=BLACK_HOUSE_RUNTIME_V1 port=8088")
 
 
