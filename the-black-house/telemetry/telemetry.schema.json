@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://black-house.local/schemas/telemetry-v1.json",
+  "title": "Black House Fleet Telemetry Snapshot",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["provider", "generatedAt", "live", "overall", "repositories"],
+  "properties": {
+    "provider": {"const": "github"},
+    "generatedAt": {"type": "string", "minLength": 1},
+    "live": {"type": "boolean"},
+    "overall": {"type": "string"},
+    "counts": {"type": "object"},
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["repository", "state"],
+        "properties": {
+          "repository": {"type": "string", "minLength": 1},
+          "reachable": {"type": ["boolean", "null"]},
+          "state": {"type": "string"},
+          "defaultBranch": {"type": ["string", "null"]},
+          "pushedAt": {"type": ["string", "null"]},
+          "latestWorkflow": {"type": ["object", "null"]}
+        }
+      }
+    }
+  }
+}
