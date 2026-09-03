@@ -6,6 +6,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from va3lm.planner import build_plan
@@ -39,6 +40,7 @@ _ALLOWED_ACTIONS = {
     "restore_backup",
 }
 _MUTATING_ACTIONS = {"write_file", "delete_file", "run_command", "restore_backup"}
+_FILE_MUTATIONS = {"write_file", "delete_file", "restore_backup"}
 _MAX_ACTIONS_PER_ROUND = 12
 
 
@@ -214,6 +216,14 @@ def _execute_action(runtime: WorkspaceRuntime, action: AgentAction, *, approved:
         if not isinstance(command, (str, list)):
             raise WorkspaceError("run_command requires command")
         result = runtime.run_command(command, timeout=int(args.get("timeout", 60)), approved=approved)
+        if result.get("timedOut") or result.get("exitCode") != 0:
+            return {
+                "type": action.kind,
+                "ok": False,
+                "state": "FAILED",
+                "error": "command did not exit successfully",
+                "result": result,
+            }
     elif action.kind == "restore_backup":
         backup_id = args.get("backup_id")
         if not isinstance(backup_id, str) or not backup_id:
@@ -249,12 +259,77 @@ def execute_decision(
             item = _execute_action(runtime, action, approved=approved)
         except (WorkspaceError, OSError, ValueError, json.JSONDecodeError) as exc:
             item = {"type": action.kind, "ok": False, "state": "FAILED", "error": str(exc)}
-            failed = True
         evidence.append(item)
-        if failed:
+        if not item.get("ok"):
+            failed = True
             break
     state = "BLOCKED_PENDING_APPROVAL" if blocked else "FAILED" if failed else "PASSED"
     return {"state": state, "summary": decision.summary, "doneRequested": decision.done, "evidence": evidence}
+
+
+def _validation_category(command: list[str]) -> str | None:
+    if not command:
+        return None
+    executable = Path(command[0]).name.lower()
+    args = [item.lower() for item in command[1:]]
+    if executable == "pytest":
+        return "test"
+    if executable in {"python", "python3"}:
+        if len(args) >= 2 and args[0] == "-m" and args[1] == "pytest":
+            return "test"
+        if len(args) >= 2 and args[0] == "-m" and args[1] == "compileall":
+            return "compile"
+    if executable == "ruff":
+        return "lint"
+    if executable == "bandit":
+        return "security"
+    if executable in {"npm", "pnpm", "yarn"}:
+        meaningful = [item for item in args if not item.startswith("-")]
+        if not meaningful:
+            return None
+        if meaningful[0] in {"test", "lint", "build", "typecheck", "check"}:
+            return "test" if meaningful[0] == "test" else meaningful[0]
+        if meaningful[0] == "run" and len(meaningful) > 1:
+            script = meaningful[1]
+            if script in {"test", "lint", "build", "typecheck", "check"}:
+                return "test" if script == "test" else script
+    return None
+
+
+def _verification_summary(history: list[dict[str, Any]]) -> dict[str, Any]:
+    successful_commands: list[dict[str, Any]] = []
+    validations: list[dict[str, Any]] = []
+    latest_file_mutation = -1
+    for index, item in enumerate(history):
+        if item.get("type") in _FILE_MUTATIONS and item.get("ok"):
+            latest_file_mutation = index
+        if item.get("type") != "run_command" or not item.get("ok"):
+            continue
+        result = item.get("result", {})
+        if result.get("exitCode") != 0 or result.get("timedOut"):
+            continue
+        command = result.get("command", [])
+        if not isinstance(command, list) or not all(isinstance(part, str) for part in command):
+            continue
+        successful_commands.append(item)
+        category = _validation_category(command)
+        if category:
+            validations.append({"historyIndex": index, "category": category, "command": command})
+
+    post_mutation_validations = [item for item in validations if item["historyIndex"] > latest_file_mutation]
+    test_validations = [item for item in validations if item["category"] == "test"]
+    build_validations = [item for item in validations if item["category"] == "build"]
+    mutation_verified = latest_file_mutation < 0 or bool(post_mutation_validations)
+    return {
+        "successfulCommands": len(successful_commands),
+        "successfulValidationCommands": len(validations),
+        "validationCategories": sorted({item["category"] for item in validations}),
+        "testsProven": bool(test_validations),
+        "buildProven": bool(build_validations),
+        "fileMutationOccurred": latest_file_mutation >= 0,
+        "postMutationValidationProven": mutation_verified,
+        "deploymentProven": False,
+    }
 
 
 def run_coding_agent(
@@ -316,25 +391,38 @@ def run_coding_agent(
         if outcome["state"] == "FAILED":
             continue
         if decision.done:
-            successful_commands = [
-                item
-                for item in history
-                if item.get("type") == "run_command"
-                and item.get("ok")
-                and item.get("result", {}).get("exitCode") == 0
-            ]
+            verification = _verification_summary(history)
+            if verification["fileMutationOccurred"] and not verification["postMutationValidationProven"]:
+                history.append(
+                    {
+                        "type": "verification_gate",
+                        "ok": False,
+                        "state": "VALIDATION_REQUIRED",
+                        "error": "file mutation occurred without a successful recognized validation command afterward",
+                    }
+                )
+                continue
+            if not history:
+                return {
+                    "state": "COMPLETED_NO_RUNTIME_ACTIONS",
+                    "executed": False,
+                    "rounds": round_number,
+                    "workspace": runtime.status(),
+                    "evidence": [],
+                    "verification": verification,
+                    "truth": "The model declared the task done, but VA3LM executed no runtime action.",
+                }
             return {
                 "state": "COMPLETED_WITH_RUNTIME_EVIDENCE",
                 "executed": True,
                 "rounds": round_number,
                 "workspace": runtime.status(),
                 "evidence": history,
-                "verification": {
-                    "successfulCommands": len(successful_commands),
-                    "testsProven": bool(successful_commands),
-                    "deploymentProven": False,
-                },
-                "truth": "Local workspace actions were executed and recorded. Deployment is not claimed.",
+                "verification": verification,
+                "truth": (
+                    "The listed local runtime actions were observed. Tests/build are only marked proven when a "
+                    "recognized validation command exited successfully. Deployment is not claimed."
+                ),
             }
 
     return {
@@ -343,5 +431,6 @@ def run_coding_agent(
         "rounds": rounds,
         "workspace": runtime.status(),
         "evidence": history,
+        "verification": _verification_summary(history),
         "truth": "VA3LM stopped at the configured round budget instead of looping indefinitely.",
     }
