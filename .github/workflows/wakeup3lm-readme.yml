@@ -7,9 +7,8 @@ on:
       - "wakeup3lm/**"
       - "tests/**"
       - ".github/workflows/**"
-    paths-ignore:
-      - "wakeup3lm/README.md"
-      - "wakeup3lm/assets/ecosystem.svg"
+      - "!wakeup3lm/README.md"
+      - "!wakeup3lm/assets/ecosystem.svg"
   workflow_dispatch:
 
 permissions:
