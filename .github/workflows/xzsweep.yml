@@ -1,0 +1,70 @@
+name: XZSWEEP 24h Maintainer
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - ".xzsweep/**"
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xzsweep-main
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    if: ${{ !(github.event_name == 'push' && contains(github.event.head_commit.message, '[xzsweep]')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run XZSWEEP
+        run: python scripts/xzsweep.py --hours 24 --apply --report .xzsweep/freshness.json
+
+      - name: Reject whitespace errors
+        run: git diff --check
+
+      - name: Publish sweep summary
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          p = json.loads(Path('.xzsweep/freshness.json').read_text())
+          print('## XZSWEEP 24h Maintainer')
+          print()
+          print(f"- Tracked paths reviewed: **{p['tracked_files_reviewed']}**")
+          print(f"- Paths due this run: **{p['due_files_reviewed']}**")
+          print(f"- Safe content repairs: **{p['content_repairs']}**")
+          print(f"- Validation finding files: **{p['validation_issue_files']}**")
+          print(f"- Cutoff: `{p['cutoff_at']}`")
+          PY
+
+      - name: Commit maintenance delta
+        shell: bash
+        run: |
+          git config user.name "xzsweep-maintainer[bot]"
+          git config user.email "xzsweep-maintainer[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "XZSWEEP: no repository delta to commit."
+            exit 0
+          fi
+          git commit -m "chore(xzsweep): review files beyond 24h freshness window [skip ci]"
+          git push origin HEAD:main
