@@ -39,14 +39,27 @@ def test_explainer_has_required_beats():
     ]
 
 
-def test_api_8088_identity_and_federal_intel_routes():
+def test_api_8088_identity_and_federal_intel_routes(monkeypatch, tmp_path):
+    monkeypatch.setenv("VA3LM_WORKSPACE_ROOT", str(tmp_path))
+    monkeypatch.delenv("VA3LM_MODEL_NAME", raising=False)
     client = TestClient(app)
-    assert client.get("/healthz").json()["port"] == 8088
+    health = client.get("/healthz").json()
+    assert health["port"] == 8088
+    assert health["version"] == "0.6.0"
+
     status = client.get("/api/status").json()
-    assert status["brain"] == "gpt-doug-llm"
+    assert status["brain"] == "gpt-doug-llm-max"
+    assert status["architecture"] == "agentic-runtime-control-plane"
+    assert status["claims"]["foundationModelTrainedHere"] is False
+    assert status["claims"]["liveFoundryOntology"] is False
+    assert status["claims"]["deploymentPlane"] is False
     assert status["federalIntel"]["mode"] == "PUBLIC_OSINT_ONLY"
     assert status["federalIntel"]["entities"] == 5
     assert client.post("/api/explain", json={"text": "ontology"}).status_code == 200
+
+    workspace = client.get("/api/workspace")
+    assert workspace.status_code == 200
+    assert workspace.json()["runtime"]["writesRequireApproval"] is True
 
     catalog = client.get("/api/federal-intel")
     assert catalog.status_code == 200
