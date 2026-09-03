@@ -29,10 +29,14 @@ jobs:
       - name: ZYRA LASER native self-test
         run: python zyra_laser.py
 
-      - name: Install security tooling
+      - name: Install security tooling and runtime test dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install pytest ruff pip-audit bandit cyclonedx-bom cryptography
+          python -m pip install -e "./va3lm[dev]"
+          python -m pip install ruff pip-audit bandit cyclonedx-bom cryptography
+
+      - name: Verify Black House runtime dependency contract
+        run: python -c "import fastapi, httpx, pydantic, va3lm; print('VA3LM runtime dependencies: OK')"
 
       - name: Tests
         run: python -m pytest tests agents/tests google/tests hackathon/tests -q
