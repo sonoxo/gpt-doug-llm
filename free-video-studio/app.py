@@ -11,10 +11,10 @@ DEFAULT_STYLE = (
 
 
 def build_app() -> gr.Blocks:
-    with gr.Blocks(title="FREE VIDEO STUDIO") as demo:
+    with gr.Blocks(title="gpt-doug-llm-max-AsTra") as demo:
         gr.Markdown(
-            "# 🎬 FREE VIDEO STUDIO\n"
-            "**Seedance-style creation workflow with zero paid inference APIs.** "
+            "# 🎬 gpt-doug-llm-max-AsTra\n"
+            "**Free ultra-realistic AI video studio — Seedance-style workflow with zero paid inference APIs.** "
             "Wan2.2 TI2V-5B handles text/image video; FFmpeg chains shots; optional MMAudio adds synchronized sound."
         )
 
