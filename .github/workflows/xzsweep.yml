@@ -66,5 +66,24 @@ jobs:
             echo "XZSWEEP: no repository delta to commit."
             exit 0
           fi
+
           git commit -m "chore(xzsweep): review files beyond 24h freshness window [skip ci]"
-          git push origin HEAD:main
+
+          # main is intentionally high-churn. Rebase the maintenance commit over
+          # concurrent pushes rather than force-pushing or overwriting newer work.
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            if ! git rebase origin/main; then
+              git rebase --abort || true
+              echo "XZSWEEP: upstream changed an overlapping path; newer main push will trigger a fresh sweep."
+              exit 0
+            fi
+            if git push origin HEAD:main; then
+              echo "XZSWEEP: maintenance delta pushed on attempt ${attempt}."
+              exit 0
+            fi
+            sleep $((attempt * 2))
+          done
+
+          echo "XZSWEEP: main kept moving after five safe retries; refusing force-push."
+          exit 1
