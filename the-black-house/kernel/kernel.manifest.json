@@ -20,8 +20,17 @@
     "consequentialMutationRequiresHumanApproval": true,
     "runtimeHealthRequiredBeforeGreen": true,
     "unknownActionsFailClosed": true,
-    "externalAuthorizationNeverImplied": true
+    "externalAuthorizationNeverImplied": true,
+    "aipFoundryProtectionRequired": true
   },
+  "qualityPlanes": [
+    {
+      "id": "AIP_FOUNDRY_PROTECTION_V1",
+      "manifest": "the-black-house/aip/foundry-protection-plane.json",
+      "role": "PROTECTION_AND_QUALITY_GATE",
+      "requiredForGreen": true
+    }
+  ],
   "layers": [
     {
       "id": "THE_GREEN_HOUSE_V1",
@@ -37,7 +46,7 @@
       "id": "WARP_PROGRAMMER_WORKFLOW",
       "manifest": "skills/warp-programmer-workflow.json",
       "role": "DEVELOPER_EXECUTION",
-      "qualityGate": "AIP",
+      "qualityGate": "AIP_FOUNDRY_PROTECTION_V1",
       "evidenceRequiredForGreen": true
     }
   ],
@@ -48,6 +57,7 @@
     {"component":"ZYRA","repository":"sonoxo/zyra","contract":".black-house/kernel.json"},
     {"component":"AIP_REGISTRY","repository":"sonoxo/aip-community-registry-zyra","contract":".black-house/runtime.json"},
     {"component":"GREEN_HOUSE","repository":"sonoxo/gpt-doug-llm","contract":"the-black-house/layers/green-house/layer.manifest.json"},
-    {"component":"WARP_PROGRAMMER_WORKFLOW","repository":"sonoxo/gpt-doug-llm","contract":"skills/warp-programmer-workflow.json"}
+    {"component":"WARP_PROGRAMMER_WORKFLOW","repository":"sonoxo/gpt-doug-llm","contract":"skills/warp-programmer-workflow.json"},
+    {"component":"AIP_FOUNDRY_PROTECTION","repository":"sonoxo/gpt-doug-llm","contract":"the-black-house/aip/foundry-protection-plane.json"}
   ]
 }
