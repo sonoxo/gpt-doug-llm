@@ -14,6 +14,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: wakeup3lm-readme-main
+  cancel-in-progress: true
+
 jobs:
   refresh-readme:
     runs-on: ubuntu-latest
@@ -24,16 +28,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Generate adaptive README and infographic
-        run: python wakeup3lm/docs/generate_ecosystem_readme.py
-      - name: Commit generated documentation when repository state changed
+      - name: Refresh and publish adaptive README and infographic
+        shell: bash
         run: |
-          if git diff --quiet -- wakeup3lm/README.md wakeup3lm/assets/ecosystem.svg; then
-            echo "README already current"
-            exit 0
-          fi
+          set -euo pipefail
           git config user.name "wakeup3lm-doc-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add wakeup3lm/README.md wakeup3lm/assets/ecosystem.svg
-          git commit -m "docs(wakeup3lm): refresh adaptive ecosystem view [skip ci]"
-          git push
+
+          for attempt in 1 2 3; do
+            echo "Refresh attempt ${attempt}/3"
+            git fetch origin main
+            git reset --hard origin/main
+
+            python wakeup3lm/docs/generate_ecosystem_readme.py
+
+            if git diff --quiet -- wakeup3lm/README.md wakeup3lm/assets/ecosystem.svg; then
+              echo "README already current"
+              exit 0
+            fi
+
+            git add wakeup3lm/README.md wakeup3lm/assets/ecosystem.svg
+            git commit -m "docs(wakeup3lm): refresh adaptive ecosystem view [skip ci]"
+
+            if git push origin HEAD:main; then
+              echo "Wakeup3lm adaptive documentation published."
+              exit 0
+            fi
+
+            echo "main advanced during refresh; regenerating from latest main."
+            sleep 2
+          done
+
+          echo "Unable to publish Wakeup3lm documentation after 3 race-safe attempts."
+          exit 1
