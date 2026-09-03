@@ -6,6 +6,8 @@ on:
     paths:
       - "the-black-house/**"
       - "va3lm/**"
+      - "wakeup3lm/**"
+      - "scripts/black_house_kernel.py"
       - "scripts/validate_black_house.py"
       - ".github/workflows/gpt-doug-max-full-completion.yml"
   pull_request:
@@ -20,7 +22,7 @@ permissions:
 
 jobs:
   black-house-core:
-    name: Black House + VA3LM
+    name: Black House Kernel + VA3LM + Wakeup3lm
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -30,6 +32,21 @@ jobs:
           python-version: "3.12"
       - name: Validate canonical Black House contracts
         run: python scripts/validate_black_house.py
+      - name: Execute kernel self-check
+        run: python scripts/black_house_kernel.py
+      - name: Prove Wakeup3lm kernel binding
+        run: |
+          python - <<'PY'
+          from wakeup3lm.ontology import OntologyGraph
+          graph = OntologyGraph()
+          assert graph.kernel['version'] == '3.0.0'
+          assert graph.kernel['controlPlane'] == 'THE_BLACK_HOUSE_V1'
+          graph.upsert('Mission', 'phase-3', state='validation')
+          graph.upsert('Evidence', 'phase-3-proof', provenance='ci')
+          graph.canonical_link('Mission', 'phase-3', 'PRODUCES', 'Evidence', 'phase-3-proof')
+          assert graph.snapshot()['kernel']['failClosed'] is True
+          print('WAKEUP3LM KERNEL V3: GREEN')
+          PY
       - name: Install VA3LM
         working-directory: va3lm
         run: python -m pip install -e '.[dev]' httpx
@@ -60,10 +77,14 @@ jobs:
                       h = json.load(r)
                   with urllib.request.urlopen('http://127.0.0.1:8088/api/status', timeout=1) as r:
                       s = json.load(r)
+                  with urllib.request.urlopen('http://127.0.0.1:8088/api/ontology', timeout=1) as r:
+                      o = json.load(r)
                   assert h == {'status':'ok','service':'va3lm','port':8088,'version':'0.6.0'}
                   assert s['port'] == 8088
                   assert s['approvalGate'] is True
-                  print('VA3LM LIVE RUNTIME: GREEN')
+                  assert o['kernel']['version'] == '3.0.0'
+                  assert o['kernel']['controlPlane'] == 'THE_BLACK_HOUSE_V1'
+                  print('VA3LM LIVE RUNTIME + KERNEL V3: GREEN')
                   break
               except Exception as exc:
                   last = exc
@@ -74,7 +95,7 @@ jobs:
           PY
 
   xunia:
-    name: XUNIA Full Gate
+    name: XUNIA Kernel + Full Gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -90,16 +111,19 @@ jobs:
       - run: yarn build:main
       - run: yarn test:unit
       - run: node --test apps/resilience-atlas/tests/*.test.mjs
-      - name: Black House contract
+      - name: Black House kernel contract
         run: |
           node - <<'NODE'
-          const r=require('./.black-house/runtime.json');
-          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='XUNIA') process.exit(1);
-          console.log('XUNIA BLACK HOUSE CONTRACT: GREEN');
+          const runtime=require('./.black-house/runtime.json');
+          const kernel=require('./.black-house/kernel.json');
+          if(runtime.controlPlane!=='THE_BLACK_HOUSE_V1'||runtime.component!=='XUNIA') process.exit(1);
+          if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
+          if(kernel.controlPlaneRoot!==false||kernel.domainRoot!=='XUNIAverse') process.exit(1);
+          console.log('XUNIA BLACK HOUSE KERNEL V3: GREEN');
           NODE
 
   zyra:
-    name: Zyra + Zyra Cloud Full Gate
+    name: Zyra + Zyra Cloud Kernel Full Gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -112,14 +136,18 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
-      - name: Black House contract
+      - name: Black House kernel contract
         run: |
           node - <<'NODE'
-          const r=require('./.black-house/runtime.json');
-          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='ZYRA'||r.cloudLayer!=='Zyra Cloud') process.exit(1);
-          console.log('ZYRA BLACK HOUSE CONTRACT: GREEN');
+          const runtime=require('./.black-house/runtime.json');
+          const kernel=require('./.black-house/kernel.json');
+          if(runtime.controlPlane!=='THE_BLACK_HOUSE_V1'||runtime.component!=='ZYRA'||runtime.cloudLayer!=='Zyra Cloud') process.exit(1);
+          if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
+          if(kernel.approvalAuthority!==true) process.exit(1);
+          console.log('ZYRA BLACK HOUSE KERNEL V3: GREEN');
           NODE
       - run: npm test
+      - run: npx tsx --test server/black-house-kernel.test.ts
       - run: npm run check
       - run: npm audit --audit-level=high
       - run: npm run build
@@ -137,10 +165,10 @@ jobs:
         run: |
           node - <<'NODE'
           const r=require('./.black-house/runtime.json');
-          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='AIP_REGISTRY') process.exit(1);
+          if(r.controlPlane!=='THE_BLACK_HOUSE_V1'||r.component!=='AIP_REGISTRY'||r.kernelVersion!=='3.0.0') process.exit(1);
           const required=['tests','typecheck','dependency-audit','production-build'];
           for(const c of required) if(!r.requiredCapabilities.includes(c)) process.exit(1);
-          console.log('AIP SHARED QUALITY PLANE: GREEN');
+          console.log('AIP SHARED QUALITY PLANE KERNEL V3: GREEN');
           NODE
       - name: Validate reusable gate capabilities
         run: |
@@ -149,10 +177,51 @@ jobs:
           grep -q "Dependency audit" .github/workflows/node-quality-gate.yml
           grep -q "Production build" .github/workflows/node-quality-gate.yml
 
+  ontology-coherence:
+    name: Cross-Repo Kernel Coherence
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: black-house
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/xuniadao
+          ref: main
+          path: xunia
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/zyra
+          ref: main
+          path: zyra
+      - uses: actions/checkout@v4
+        with:
+          repository: sonoxo/aip-community-registry-zyra
+          ref: develop
+          path: aip
+      - name: Fail closed on kernel drift
+        run: |
+          node - <<'NODE'
+          const canonical=require('./black-house/the-black-house/kernel/kernel.manifest.json');
+          const xunia=require('./xunia/.black-house/kernel.json');
+          const zyra=require('./zyra/.black-house/kernel.json');
+          const aip=require('./aip/.black-house/runtime.json');
+          const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+          for(const [name,binding] of [['XUNIA',xunia],['ZYRA',zyra]]) {
+            if(binding.kernelVersion!==canonical.kernelVersion) throw new Error(`${name} kernel version drift`);
+            if(binding.controlPlane!==canonical.controlPlane) throw new Error(`${name} control-plane drift`);
+            if(!same(binding.objectTypes,canonical.objectTypes)) throw new Error(`${name} object vocabulary drift`);
+            if(!same(binding.relationshipTypes,canonical.relationshipTypes)) throw new Error(`${name} relationship vocabulary drift`);
+          }
+          if(aip.kernelVersion!==canonical.kernelVersion||aip.controlPlane!==canonical.controlPlane) throw new Error('AIP kernel drift');
+          console.log(`BLACK HOUSE KERNEL ${canonical.kernelVersion}: CROSS-REPO COHERENCE GREEN`);
+          NODE
+
   completion:
-    name: GPT-DOUG-MAX Completion Verdict
+    name: GPT-DOUG-MAX Phase 3 Completion Verdict
     if: ${{ always() }}
-    needs: [black-house-core, xunia, zyra, aip-quality-plane]
+    needs: [black-house-core, xunia, zyra, aip-quality-plane, ontology-coherence]
     runs-on: ubuntu-latest
     steps:
       - name: Fail closed unless every critical plane is green
@@ -161,10 +230,12 @@ jobs:
           XUNIA: ${{ needs.xunia.result }}
           ZYRA: ${{ needs.zyra.result }}
           AIP: ${{ needs.aip-quality-plane.result }}
+          ONTOLOGY: ${{ needs.ontology-coherence.result }}
         run: |
-          printf 'BLACK_HOUSE=%s\nXUNIA=%s\nZYRA=%s\nAIP=%s\n' "$CORE" "$XUNIA" "$ZYRA" "$AIP"
+          printf 'BLACK_HOUSE=%s\nXUNIA=%s\nZYRA=%s\nAIP=%s\nONTOLOGY=%s\n' "$CORE" "$XUNIA" "$ZYRA" "$AIP" "$ONTOLOGY"
           test "$CORE" = success
           test "$XUNIA" = success
           test "$ZYRA" = success
           test "$AIP" = success
-          echo "GPT-DOUG-LLM-MAX FULL COMPLETION: GREEN"
+          test "$ONTOLOGY" = success
+          echo "GPT-DOUG-LLM-MAX PHASE 3 KERNEL COMPLETION: GREEN"
