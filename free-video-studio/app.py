@@ -70,7 +70,7 @@ def build_app() -> gr.Blocks:
             seed = gr.Number(value=42, precision=0, label="Seed (-1 = random)")
 
         chain = gr.Checkbox(value=True, label="Chain storyboard shots using the previous shot's final frame")
-        add_audio = gr.Checkbox(value=False, label="Add synchronized audio with optional free MMAudio")
+        add_audio = gr.Checkbox(value=False, label="Add synchronized audio with optional free MMAudio (Linux backend)")
         audio_prompt = gr.Textbox(
             label="Audio direction",
             placeholder="Rain on pavement, distant traffic, jacket movement, footsteps, low city ambience; no music.",
@@ -105,7 +105,7 @@ def build_app() -> gr.Blocks:
         gr.Markdown(
             "### $0 software path\n"
             "No Seedance subscription, no paid LLM, and no paid generation API is required. "
-            "The default video model is downloaded locally. Compute still requires compatible hardware; the official Wan2.2 TI2V-5B path targets NVIDIA/CUDA with about 24 GB VRAM."
+            "The video model is downloaded locally. Apple Silicon automatically uses MLX-Gen; Linux/NVIDIA uses the official Wan2.2 CUDA path. Video diffusion is still compute- and memory-intensive."
         )
     return demo
 

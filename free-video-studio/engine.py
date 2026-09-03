@@ -16,24 +16,53 @@ from typing import Optional
 
 ROOT = Path(__file__).resolve().parent
 OUTPUTS = ROOT / "outputs"
+DEFAULT_MLX_MODEL = "AbstractFramework/wan2.2-ti2v-5b-diffusers-8bit"
+
+
+def _default_ffmpeg() -> str:
+    configured = os.getenv("FFMPEG_BIN")
+    if configured:
+        return configured
+    system = shutil.which("ffmpeg")
+    if system:
+        return system
+    try:
+        import imageio_ffmpeg
+
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
 
 
 @dataclass(frozen=True)
 class StudioConfig:
+    backend: str
     wan_repo: Path
     wan_model: Path
+    mlx_model: str
+    mlxgen_bin: str
     mmaudio_repo: Path
     python_bin: str
     ffmpeg_bin: str
 
     @classmethod
     def from_env(cls) -> "StudioConfig":
+        requested = os.getenv("STUDIO_BACKEND", "auto").strip().lower()
+        if requested == "auto":
+            backend = "mlx" if sys.platform == "darwin" else "cuda"
+        elif requested in {"mlx", "cuda"}:
+            backend = requested
+        else:
+            raise ValueError("STUDIO_BACKEND must be auto, mlx, or cuda")
         return cls(
+            backend=backend,
             wan_repo=Path(os.getenv("WAN_REPO", ROOT / "vendor" / "Wan2.2")).expanduser().resolve(),
             wan_model=Path(os.getenv("WAN_MODEL", ROOT / "models" / "Wan2.2-TI2V-5B")).expanduser().resolve(),
+            mlx_model=os.getenv("STUDIO_MLX_MODEL", DEFAULT_MLX_MODEL),
+            mlxgen_bin=os.getenv("MLXGEN_BIN", "mlxgen"),
             mmaudio_repo=Path(os.getenv("MMAUDIO_REPO", ROOT / "vendor" / "MMAudio")).expanduser().resolve(),
             python_bin=os.getenv("STUDIO_PYTHON", sys.executable),
-            ffmpeg_bin=os.getenv("FFMPEG_BIN", "ffmpeg"),
+            ffmpeg_bin=_default_ffmpeg(),
         )
 
 
@@ -48,7 +77,7 @@ def _run(cmd: list[str], cwd: Optional[Path] = None) -> str:
     )
     output = proc.stdout or ""
     if proc.returncode != 0:
-        raise RuntimeError(f"Command failed ({proc.returncode}): {' '.join(cmd[:4])}\n\n{output[-6000:]}")
+        raise RuntimeError(f"Command failed ({proc.returncode}): {' '.join(cmd[:5])}\n\n{output[-6000:]}")
     return output
 
 
@@ -99,32 +128,43 @@ def parse_storyboard(text: str) -> list[str]:
 
 def check_environment() -> str:
     cfg = StudioConfig.from_env()
-    checks = {
-        "Wan2.2 repo": (cfg.wan_repo / "generate.py").exists(),
-        "Wan2.2 TI2V-5B model": cfg.wan_model.exists() and any(cfg.wan_model.iterdir()) if cfg.wan_model.exists() else False,
-        "FFmpeg": shutil.which(cfg.ffmpeg_bin) is not None,
-        "MMAudio (optional)": (cfg.mmaudio_repo / "demo.py").exists(),
-    }
-    lines = ["FREE VIDEO STUDIO // environment"]
-    lines += [f"{'✅' if ok else '❌'} {name}" for name, ok in checks.items()]
-    lines.append(f"Python: {cfg.python_bin}")
+    if cfg.backend == "mlx":
+        engine_ok = shutil.which(cfg.mlxgen_bin) is not None
+        engine_name = "MLX-Gen (Apple Silicon)"
+        model_line = f"Model: {cfg.mlx_model} (downloaded/cached by mlxgen)"
+    else:
+        engine_ok = (cfg.wan_repo / "generate.py").exists()
+        engine_name = "Wan2.2 CUDA checkout"
+        model_ok = cfg.wan_model.exists() and any(cfg.wan_model.iterdir()) if cfg.wan_model.exists() else False
+        model_line = f"{'✅' if model_ok else '❌'} Wan2.2 TI2V-5B weights"
+
+    ffmpeg_ok = Path(cfg.ffmpeg_bin).exists() or shutil.which(cfg.ffmpeg_bin) is not None
+    lines = [f"FREE VIDEO STUDIO // backend={cfg.backend}"]
+    lines.append(f"{'✅' if engine_ok else '❌'} {engine_name}")
+    lines.append(model_line)
+    lines.append(f"{'✅' if ffmpeg_ok else '❌'} FFmpeg")
+    lines.append(f"{'✅' if (cfg.mmaudio_repo / 'demo.py').exists() else '➖'} MMAudio (optional; Linux-oriented)")
     lines.append("No paid API keys are used by this studio.")
     return "\n".join(lines)
 
 
 def _validate_core(cfg: StudioConfig) -> None:
     missing: list[str] = []
-    if not (cfg.wan_repo / "generate.py").exists():
-        missing.append(f"Wan2.2 checkout: {cfg.wan_repo}")
-    if not cfg.wan_model.exists():
-        missing.append(f"Wan2.2 TI2V-5B weights: {cfg.wan_model}")
-    if shutil.which(cfg.ffmpeg_bin) is None:
+    if cfg.backend == "mlx":
+        if shutil.which(cfg.mlxgen_bin) is None:
+            missing.append("MLX-Gen executable (mlxgen)")
+    else:
+        if not (cfg.wan_repo / "generate.py").exists():
+            missing.append(f"Wan2.2 checkout: {cfg.wan_repo}")
+        if not cfg.wan_model.exists():
+            missing.append(f"Wan2.2 TI2V-5B weights: {cfg.wan_model}")
+    if not (Path(cfg.ffmpeg_bin).exists() or shutil.which(cfg.ffmpeg_bin)):
         missing.append(f"FFmpeg executable: {cfg.ffmpeg_bin}")
     if missing:
-        raise RuntimeError("Missing required free runtime components:\n- " + "\n- ".join(missing) + "\nRun ./install_free.sh on a compatible Linux/NVIDIA machine.")
+        raise RuntimeError("Missing required free runtime components:\n- " + "\n- ".join(missing) + "\nRun: bash install_free.sh")
 
 
-def run_wan(
+def _run_wan_cuda(
     cfg: StudioConfig,
     *,
     prompt: str,
@@ -132,9 +172,8 @@ def run_wan(
     size: str,
     seconds: int,
     seed: int,
-    reference_image: Optional[Path] = None,
+    reference_image: Optional[Path],
 ) -> str:
-    output_file.parent.mkdir(parents=True, exist_ok=True)
     cmd = [
         cfg.python_bin,
         str(cfg.wan_repo / "generate.py"),
@@ -149,7 +188,7 @@ def run_wan(
         "--convert_model_dtype",
         "--t5_cpu",
         "--frame_num",
-        str(seconds_to_frames(seconds)),
+        str(seconds_to_frames(seconds, 24)),
         "--base_seed",
         str(seed),
         "--save_file",
@@ -160,6 +199,81 @@ def run_wan(
     if reference_image:
         cmd.extend(["--image", str(reference_image.resolve())])
     return _run(cmd, cwd=cfg.wan_repo)
+
+
+def _run_wan_mlx(
+    cfg: StudioConfig,
+    *,
+    prompt: str,
+    output_file: Path,
+    size: str,
+    seconds: int,
+    seed: int,
+    reference_image: Optional[Path],
+) -> str:
+    width, height = [int(x) for x in size.split("*")]
+    fps = 20
+    cmd = [
+        cfg.mlxgen_bin,
+        "generate",
+        "--model",
+        cfg.mlx_model,
+        "--prompt",
+        prompt,
+        "--width",
+        str(width),
+        "--height",
+        str(height),
+        "--frames",
+        str(seconds_to_frames(seconds, fps)),
+        "--steps",
+        os.getenv("STUDIO_MLX_STEPS", "25"),
+        "--guidance",
+        os.getenv("STUDIO_MLX_GUIDANCE", "5"),
+        "--fps",
+        str(fps),
+        "--seed",
+        str(seed),
+        "--low-ram",
+        "--metadata",
+        "--output",
+        str(output_file.resolve()),
+    ]
+    if reference_image:
+        cmd.extend(["--image", str(reference_image.resolve())])
+    return _run(cmd, cwd=ROOT)
+
+
+def run_wan(
+    cfg: StudioConfig,
+    *,
+    prompt: str,
+    output_file: Path,
+    size: str,
+    seconds: int,
+    seed: int,
+    reference_image: Optional[Path] = None,
+) -> str:
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    if cfg.backend == "mlx":
+        return _run_wan_mlx(
+            cfg,
+            prompt=prompt,
+            output_file=output_file,
+            size=size,
+            seconds=seconds,
+            seed=seed,
+            reference_image=reference_image,
+        )
+    return _run_wan_cuda(
+        cfg,
+        prompt=prompt,
+        output_file=output_file,
+        size=size,
+        seconds=seconds,
+        seed=seed,
+        reference_image=reference_image,
+    )
 
 
 def extract_last_frame(cfg: StudioConfig, video: Path, image_out: Path) -> None:
@@ -218,7 +332,7 @@ def concat_videos(cfg: StudioConfig, videos: list[Path], output: Path) -> None:
 def add_mmaudio(cfg: StudioConfig, video: Path, prompt: str, duration: int, output: Path) -> str:
     demo = cfg.mmaudio_repo / "demo.py"
     if not demo.exists():
-        raise RuntimeError("MMAudio is not installed. Re-run install with INSTALL_MMAUDIO=1 ./install_free.sh")
+        raise RuntimeError("MMAudio is not installed. On Linux re-run: INSTALL_MMAUDIO=1 bash install_free.sh")
     mmaudio_output = cfg.mmaudio_repo / "output"
     mmaudio_output.mkdir(exist_ok=True)
     started = time.time()
@@ -281,7 +395,7 @@ def generate_project(
     if mode == "Image → Video" and ref is None:
         raise ValueError("Image → Video mode requires a reference image.")
 
-    logs: list[str] = []
+    logs: list[str] = [f"BACKEND: {cfg.backend}"]
     shot_files: list[Path] = []
     prompts: list[str] = []
     current_ref = ref if mode in {"Image → Video", "Storyboard"} else None
@@ -331,7 +445,9 @@ def generate_project(
         "project_id": project_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "mode": mode,
+        "backend": cfg.backend,
         "engine": "Wan2.2-TI2V-5B",
+        "model": cfg.mlx_model if cfg.backend == "mlx" else str(cfg.wan_model),
         "paid_api_keys": False,
         "size": size,
         "seconds_per_shot": int(seconds_per_shot),

@@ -1,12 +1,20 @@
 # FREE VIDEO STUDIO
 
-A **zero-paid-inference-API** workflow for cinematic AI video generation. It reproduces the practical creation loop demonstrated in modern Seedance tutorials—prompt direction, image/reference starts, storyboarded shots, camera/lighting control, continuity chaining, synchronized sound, refinement, and export—using open/free local components instead of a Seedance subscription.
+A **zero-paid-inference-API** cinematic AI-video studio. It reproduces the practical creation loop demonstrated in modern Seedance 2.5 tutorials—prompt direction, image/reference starts, storyboarded shots, camera/lighting control, continuity chaining, synchronized sound, refinement, and export—using local/free components instead of a Seedance subscription.
 
-## Stack
+## Backends: automatic and free
 
-- **Wan2.2 TI2V-5B** — text-to-video + image-to-video at 720p/24 FPS.
-- **FFmpeg** — frame extraction, connected-shot chaining, and final assembly.
-- **MMAudio** *(optional)* — synchronized video-to-audio generation.
+| Machine | Backend | Video model |
+|---|---|---|
+| Apple Silicon macOS | **MLX-Gen** | Wan2.2 TI2V-5B 8-bit package |
+| Linux + NVIDIA CUDA | **Official Wan2.2** | Wan2.2 TI2V-5B |
+
+`STUDIO_BACKEND=auto` is the default. The app selects MLX on macOS and CUDA elsewhere.
+
+- **Wan2.2 TI2V-5B** — text-to-video + image-to-video.
+- **MLX-Gen** — Apple-Silicon-native local Wan runtime.
+- **FFmpeg / imageio-ffmpeg** — frame extraction, connected-shot chaining, and final assembly.
+- **MMAudio** *(optional, Linux-oriented)* — synchronized video-to-audio generation.
 - **Gradio** — local browser UI.
 
 No paid API keys are wired into this module.
@@ -18,21 +26,13 @@ No paid API keys are wired into this module.
 | Text → video | Wan2.2 TI2V-5B |
 | Image → video | Wan2.2 TI2V-5B with reference frame |
 | Shot-by-shot prompting | Storyboard mode, one shot per line |
-| Camera / lighting / look control | Structured director fields compiled into each shot prompt |
-| Visual continuity | Shared continuity lock + optional previous-shot final-frame chaining |
-| Synchronized ambience / Foley | Optional MMAudio pass |
+| Camera / lighting / look control | Structured director fields compiled into every prompt |
+| Visual continuity | Shared identity/wardrobe/location lock + previous-shot final-frame chaining |
+| Synchronized ambience / Foley | Optional MMAudio pass on supported Linux setup |
 | Connected sequence export | FFmpeg concat + per-project manifest |
 | Reproducibility | Explicit seed + saved prompt manifest |
 
-## Reality check
-
-This matches the **workflow and tool behavior**, not ByteDance's proprietary Seedance model weights. There is no honest way to promise identical Seedance 2.5 output from a different open model.
-
-The software path is free, but video diffusion is compute-heavy. The official Wan2.2 TI2V-5B single-GPU path is designed around an NVIDIA/CUDA GPU with about **24 GB VRAM**. A Mac can host/view the UI, but the default Wan backend is not an Apple-Silicon-native inference path.
-
 ## Install
-
-Prerequisites: Linux, Python 3, Git, FFmpeg, and a compatible NVIDIA GPU/CUDA stack.
 
 ```bash
 cd free-video-studio
@@ -42,7 +42,9 @@ bash run.sh
 
 Open `http://127.0.0.1:7860`.
 
-### Add free synchronized audio
+The installer downloads the free local model required for your platform. On Apple Silicon it installs MLX-Gen and downloads `AbstractFramework/wan2.2-ti2v-5b-diffusers-8bit`. On CUDA Linux it installs the official Wan2.2 implementation and `Wan-AI/Wan2.2-TI2V-5B`.
+
+### Linux: add synchronized audio
 
 ```bash
 INSTALL_MMAUDIO=1 bash install_free.sh
@@ -51,32 +53,42 @@ bash run.sh
 
 MMAudio downloads its pretrained weights on first audio generation.
 
-## Best workflow for realism
+## Best workflow for ultra-realistic output
 
 1. Start with a strong reference image when identity matters.
-2. Write one objective per shot instead of asking for an entire film in one prompt.
+2. Write one objective per shot rather than an entire film in one generation.
 3. Describe physical action, camera motion, lens behavior, motivated lighting, and material/skin texture.
-4. Put immutable identity/clothing/environment details in **Continuity lock**.
-5. In Storyboard mode, keep **Chain shots** enabled so the next shot can start from the previous shot's final frame.
-6. Generate video first; add audio as a separate final pass.
-7. Re-run weak shots instead of changing every variable at once; keep the seed and continuity text stable.
+4. Put immutable face/wardrobe/location details in **Continuity lock**.
+5. In Storyboard mode, keep **Chain shots** enabled. The studio extracts the prior shot's last frame and sends it into the next image-to-video generation.
+6. Generate the visuals first and add sound as a final pass.
+7. Re-run weak shots while keeping the seed and continuity lock stable instead of changing every variable.
+
+## Compute reality
+
+This matches the **workflow and tool behavior**, not ByteDance's proprietary Seedance weights, so identical output cannot be guaranteed.
+
+The code and model-access path are free, but diffusion still consumes your hardware. Official Wan2.2 documents its CUDA TI2V-5B route around a 24 GB VRAM GPU. On Apple Silicon, MLX-Gen provides a native Wan2.2 TI2V-5B path; its published 8-bit package is about 16.9 GiB on disk, and current MLX-Gen documentation notes that this q8 package primarily reduces storage/download size rather than runtime memory. Higher unified memory is therefore strongly preferred for full-resolution renders.
 
 ## Environment variables
 
 | Variable | Default |
 |---|---|
+| `STUDIO_BACKEND` | `auto` (`mlx` on macOS, `cuda` otherwise) |
+| `STUDIO_MLX_MODEL` | `AbstractFramework/wan2.2-ti2v-5b-diffusers-8bit` |
+| `STUDIO_MLX_STEPS` | `25` |
+| `STUDIO_MLX_GUIDANCE` | `5` |
 | `WAN_REPO` | `./vendor/Wan2.2` |
 | `WAN_MODEL` | `./models/Wan2.2-TI2V-5B` |
 | `MMAUDIO_REPO` | `./vendor/MMAudio` |
 | `STUDIO_PYTHON` | current Python |
-| `FFMPEG_BIN` | `ffmpeg` |
+| `FFMPEG_BIN` | system FFmpeg or bundled imageio-ffmpeg binary |
 | `STUDIO_HOST` | `127.0.0.1` |
 | `STUDIO_PORT` | `7860` |
 
 ## Output
 
-Every run creates `outputs/<project-id>/` with generated shots, continuity frames, `final.mp4`, and `manifest.json`. The manifest records prompts, seed, dimensions, engine, and whether audio was used.
+Every run creates `outputs/<project-id>/` with generated shots, continuity frames, `final.mp4`, and `manifest.json`. The manifest records the backend, model, prompts, seed, dimensions, and audio state.
 
 ## Licensing note
 
-The studio code itself introduces no paid service dependency. Wan2.2's upstream repository is Apache-2.0. MMAudio's code is MIT; its upstream documentation separately cautions that pretrained-model/data licensing should be reviewed for your intended commercial use. Always keep upstream license files and follow the model card terms for the weights you download.
+The studio introduces no paid-service dependency. Wan2.2's upstream repository is Apache-2.0. MLX-Gen is MIT. MMAudio code is MIT; its upstream documentation separately cautions that pretrained-model/data licensing should be reviewed for the intended commercial use. Model weights remain subject to their upstream model-card/license terms.
