@@ -97,7 +97,7 @@ def test_command_center_runtime_surface(tmp_path, monkeypatch):
             "requestedBy": "pytest-api",
             "intent": "Route a mission through the Black House",
             "target": "XUNIA",
-            "classification": "INTERNAL",
+            "classification": "internal",
         },
     )
     assert routed.status_code == 200
