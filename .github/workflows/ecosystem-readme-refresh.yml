@@ -1,0 +1,38 @@
+name: Ecosystem README Refresh
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ecosystem-readme-refresh-main
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generate adaptive ecosystem diagrams
+        run: python scripts/generate_ecosystem_diagrams.py
+      - name: Commit generated diagrams when repository state changed
+        shell: bash
+        run: |
+          if [[ -z "$(git status --porcelain docs/assets/)" ]]; then
+            echo "Ecosystem diagrams already match repository state."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/ecosystem-flow.svg docs/assets/wakeup3lm-agent-loop.svg docs/assets/security-gates.svg
+          git commit -m "docs: refresh adaptive ecosystem diagrams"
+          git push
