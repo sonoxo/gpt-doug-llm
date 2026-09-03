@@ -1,0 +1,99 @@
+name: Black House Runtime Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "the-black-house/**"
+      - "scripts/validate_black_house.py"
+      - "va3lm/**"
+      - ".github/workflows/black-house-runtime.yml"
+  pull_request:
+    paths:
+      - "the-black-house/**"
+      - "scripts/validate_black_house.py"
+      - "va3lm/**"
+      - ".github/workflows/black-house-runtime.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  control-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate canonical Black House contracts
+        run: python scripts/validate_black_house.py
+      - name: Install VA3LM runtime
+        working-directory: va3lm
+        run: python -m pip install -e '.[dev]' httpx
+      - name: VA3LM unit gate
+        working-directory: va3lm
+        run: pytest -q
+      - name: VA3LM lint gate
+        working-directory: va3lm
+        run: ruff check src tests
+      - name: VA3LM security gate
+        working-directory: va3lm
+        run: bandit -q -ll -r src
+      - name: VA3LM compile gate
+        working-directory: va3lm
+        run: python -m compileall -q src
+      - name: Prove VA3LM runtime on port 8088
+        working-directory: va3lm
+        run: |
+          va3lm serve --host 127.0.0.1 --port 8088 > /tmp/black-house-va3lm.log 2>&1 &
+          PID=$!
+          trap 'kill $PID 2>/dev/null || true' EXIT
+          python - <<'PY'
+          import json
+          import time
+          import urllib.request
+
+          health_url = 'http://127.0.0.1:8088/healthz'
+          status_url = 'http://127.0.0.1:8088/api/status'
+          last_error = None
+          for _ in range(40):
+              try:
+                  with urllib.request.urlopen(health_url, timeout=1) as response:
+                      health = json.load(response)
+                  with urllib.request.urlopen(status_url, timeout=1) as response:
+                      status = json.load(response)
+                  assert health['status'] == 'ok'
+                  assert health['service'] == 'va3lm'
+                  assert health['port'] == 8088
+                  assert status['port'] == 8088
+                  assert status['approvalGate'] is True
+                  print('BLACK HOUSE VA3LM RUNTIME: GREEN')
+                  break
+              except Exception as exc:
+                  last_error = exc
+                  time.sleep(.25)
+          else:
+              print(open('/tmp/black-house-va3lm.log', encoding='utf-8').read())
+              raise SystemExit(f'VA3LM runtime failed health contract: {last_error}')
+          PY
+      - name: Validate cross-repo runtime declarations
+        run: |
+          python - <<'PY'
+          import json
+          import urllib.request
+
+          manifests = {
+              'ZYRA': 'https://raw.githubusercontent.com/sonoxo/zyra/main/.black-house/runtime.json',
+              'XUNIA': 'https://raw.githubusercontent.com/sonoxo/xuniadao/main/.black-house/runtime.json',
+              'AIP_REGISTRY': 'https://raw.githubusercontent.com/sonoxo/aip-community-registry-zyra/develop/.black-house/runtime.json',
+          }
+          for expected, url in manifests.items():
+              with urllib.request.urlopen(url, timeout=10) as response:
+                  data = json.load(response)
+              assert data['controlPlane'] == 'THE_BLACK_HOUSE_V1'
+              assert data['component'] == expected
+              print(f'{expected} RUNTIME CONTRACT: LINKED')
+          PY
