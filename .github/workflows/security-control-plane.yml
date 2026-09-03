@@ -1,0 +1,142 @@
+name: Security Control Plane Sweep
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.py'
+      - 'agents/**'
+      - 'intel/**'
+      - 'safety-shield/**'
+      - 'foundry/**'
+      - 'wakeup3lm/**'
+      - '.github/workflows/**'
+      - 'docs/**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  all-security-gates:
+    name: All 11 security/control gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install gate dependencies
+        run: python -m pip install --disable-pip-version-check pytest ruff pip-audit bandit cyclonedx-bom cryptography
+
+      - name: 01 Agentic Knowledge Gate
+        run: |
+          python -m json.tool safety-shield/agents/knowledge/rvia-agentic-core.json >/dev/null
+          python -m json.tool safety-shield/agents/fleet-24.json >/dev/null
+          python -m json.tool intel/sources/youtube-vgwql8Mv1CE.json >/dev/null
+          python safety-shield/agents/summon.py
+          python safety-shield/agents/agentic_builder.py --name example-briefing-agent --mission 'Turn authorized public sources into a source-linked briefing draft' --owner rvIa --input source-record --output briefing-draft --tool query-ontology --tool validate-provenance --data-class PUBLIC > /tmp/agent-blueprint.json
+          python -m json.tool /tmp/agent-blueprint.json >/dev/null
+
+      - name: 02 Black House Research Gate
+        run: |
+          python -m json.tool intel/sources/youtube-egr-UDWLZPI.json >/dev/null
+          test -f intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          test -f intel/PALANTIR_RESEARCH_CREDITS.md
+          test -f intel/PR_COLLABORATION.md
+          test -f intel/assets/palantir-sovereignty-research-map.svg
+          grep -q 'Assessment.*HIGH CONFIDENCE' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'Exact timestamp transcript confidence' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+          grep -q 'Independence statement' intel/briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md
+
+      - name: 03 Frontline Compliance Gate
+        run: |
+          python -m json.tool safety-shield/schemas/frontline-build-manifest.schema.json >/dev/null
+          python -m json.tool safety-shield/manifests/frontline-tool.example.json >/dev/null
+          python scripts/frontline_compliance_check.py safety-shield/manifests/frontline-tool.example.json
+
+      - name: 04 Ghidra Defensive Stack
+        run: |
+          python -m json.tool foundry/ontology/ghidra-defense-ontology.json >/dev/null
+          python -m pytest -q tests/test_ghidra_defensive_analysis.py
+
+      - name: 05 Glass Onion MASTER LOCK
+        run: |
+          python -m agents.ontology_master_lock --root .
+          python -m agents.glassonion_layer lock --root .
+          python -m pytest agents/tests/test_glassonion_layer.py agents/tests/test_glassonion_media.py -q
+          python - <<'PY'
+          from agents.glassonion_layer import verify_glassonion_lock
+          manifest, overlay = verify_glassonion_lock('.')
+          assert manifest['locked'] is True
+          assert manifest['publicationState'] == 'LOCKED_DEFENSIVE_OVERLAY'
+          assert overlay['guardrails']['baseOntologyImmutable'] is True
+          assert overlay['guardrails']['externalThirdPartyAction'] is False
+          assert overlay['guardrails']['offensiveReplication'] is False
+          PY
+
+      - name: 06 Government Intelligence Readiness
+        run: |
+          python -m agents.virginia_intel_gate status
+          python -m agents.gov_intel_compliance_fleet strict-source
+          python -m pytest agents/tests/test_gov_intel_compliance_fleet.py -q
+          python - <<'PY'
+          from agents.gov_intel_compliance_fleet import audit
+          report = audit('.')
+          assert report['selfCertification'] is False
+          assert report['commandState'] == 'SOURCE_READY_WITH_EXTERNAL_GATES'
+          assert report['counts']['sourceGaps'] == 0
+          PY
+
+      - name: 07 Ontology MASTER LOCK
+        run: |
+          python -m agents.ontology_master_lock --root .
+          python -m pytest agents/tests/test_ontology_master_lock.py agents/tests/test_ontology_query.py agents/tests/test_qtfy_ontology.py -q
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          lock = json.loads(Path('intel/qtfy/master-lock.json').read_text())
+          assert lock['locked'] is True
+          assert lock['publicationState'] == 'LOCKED_AND_PUBLISHABLE'
+          assert all(stage['status'] == 'PASS' for stage in lock['subagents'])
+          PY
+
+      - name: 08 Palantir Federal + IC Security Gate
+        run: |
+          python -m py_compile palantir_foundry.py palantir_stack.py palantir_terminal.py federal_compliance.py
+          python -m unittest tests.test_palantir_foundry tests.test_palantir_federal_compliance -v
+          GOV_ALLOW_CLASSIFIED=true GOV_CLASSIFIED_ENVIRONMENT_AUTHORIZED=false python - <<'PY'
+          from federal_compliance import FederalComplianceProfile
+          state = FederalComplianceProfile().status()
+          assert state['assessment_state'] == 'control-gap'
+          assert not state['controls']['DATA_no_unapproved_classified_processing']
+          assert state['certification']['certified'] is False
+          assert state['certification']['ato'] is False
+          assert state['certification']['cia_approved'] is False
+          PY
+
+      - name: 09 Palantir Full Stack Gate
+        run: |
+          python -m compileall palantir_aip.py palantir_automate.py palantir_gotham.py palantir_apollo.py palantir_tenant_probe.py wakeup3lm/palantir.py
+          python -m pytest tests/test_palantir_full_stack.py -q
+
+      - name: 10 Core Security Gate
+        run: |
+          python zyra_agent.py --self-test
+          python zyra_laser.py
+          python -m pytest tests agents/tests google/tests hackathon/tests -q
+          pip-audit
+          cyclonedx-py environment --output-file /tmp/sbom.cdx.json
+          test -s /tmp/sbom.cdx.json
+
+      - name: 11 XUNIA Security Platform
+        run: python -m unittest tests.test_xunia_security tests.test_xunia_security_executor -v
+
+      - name: Control plane verdict
+        run: |
+          echo 'ALL 11 REPOSITORY SECURITY/CONTROL GATE CONTRACTS: PASS'
+          echo 'This is repository engineering evidence, not external certification, authorization, clearance, or tenant entitlement.'
