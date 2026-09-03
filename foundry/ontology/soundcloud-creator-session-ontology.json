@@ -1,0 +1,80 @@
+{
+  "name": "GPT-DOUG SoundCloud Creator Session Ontology",
+  "version": "1.0.0",
+  "mode": "ACCOUNT_RECOVERY_AND_SERVICE_OBSERVABILITY",
+  "purpose": "Separate SoundCloud consumer playback health from creator authentication, Artist Studio, and upload/write access so GPT-DOUG does not misclassify a creator-session failure as a full SoundCloud outage or an audio-file problem.",
+  "objectTypes": [
+    {"apiName":"SoundCloudAccount","primaryKey":"accountId","properties":{"accountId":"string","displayName":"string","primaryEmailState":"string","consumerPlaybackState":"string","creatorAccessState":"string","uploadWriteState":"string","lastIdentityChangeAt":"timestamp"}},
+    {"apiName":"ServiceSurface","primaryKey":"surfaceId","properties":{"surfaceId":"string","surfaceClass":"string","url":"string","reachable":"boolean","httpStatus":"integer","authState":"string","renderState":"string","observedAt":"timestamp"}},
+    {"apiName":"BrowserSession","primaryKey":"sessionId","properties":{"sessionId":"string","browser":"string","loginState":"string","cookieState":"string","identityBindingState":"string","observedAt":"timestamp"}},
+    {"apiName":"CreatorEntitlement","primaryKey":"entitlementId","properties":{"entitlementId":"string","artistStudioAccess":"string","uploadAccess":"string","writePermission":"string","provisioningState":"string","lastVerifiedAt":"timestamp"}},
+    {"apiName":"Incident","primaryKey":"incidentId","properties":{"incidentId":"string","classification":"string","severity":"string","suspectedLayer":"string","status":"string","openedAt":"timestamp","recoveryState":"string"}},
+    {"apiName":"Evidence","primaryKey":"evidenceId","properties":{"evidenceId":"string","kind":"string","source":"string","observedAt":"timestamp","summary":"string","confidence":"double"}},
+    {"apiName":"RecoveryAction","primaryKey":"actionId","properties":{"actionId":"string","actionType":"string","owner":"string","state":"string","requiresThirdParty":"boolean","requestedAt":"timestamp","completedAt":"timestamp"}}
+  ],
+  "linkTypes": [
+    {"apiName":"AccountHasSession","from":"SoundCloudAccount","to":"BrowserSession"},
+    {"apiName":"AccountHasEntitlement","from":"SoundCloudAccount","to":"CreatorEntitlement"},
+    {"apiName":"SessionObservesSurface","from":"BrowserSession","to":"ServiceSurface"},
+    {"apiName":"IncidentAffectsAccount","from":"Incident","to":"SoundCloudAccount"},
+    {"apiName":"IncidentAffectsSurface","from":"Incident","to":"ServiceSurface"},
+    {"apiName":"IncidentHasEvidence","from":"Incident","to":"Evidence"},
+    {"apiName":"IncidentHasAction","from":"Incident","to":"RecoveryAction"}
+  ],
+  "diagnosticRules": [
+    {
+      "ruleId":"SC-CREATOR-001",
+      "when":"consumerPlaybackState=WORKING AND ArtistStudio.renderState in [ERROR,UNAVAILABLE] AND Upload.authState=UNAUTHENTICATED",
+      "classifyAs":"CREATOR_AUTH_SPLIT_BRAIN",
+      "severity":"HIGH",
+      "suspectedLayer":"SoundCloud creator identity/session propagation"
+    },
+    {
+      "ruleId":"SC-CREATOR-002",
+      "when":"lastIdentityChangeAt is recent AND creator surfaces fail while playback remains working",
+      "classifyAs":"IDENTITY_PROPAGATION_RISK",
+      "severity":"HIGH",
+      "suspectedLayer":"account identity mapping / creator entitlement cache"
+    },
+    {
+      "ruleId":"SC-CREATOR-003",
+      "when":"Upload.authState=UNAUTHENTICATED before file selection",
+      "classifyAs":"NOT_AUDIO_FILE_FAILURE",
+      "severity":"INFO",
+      "suspectedLayer":"authentication / authorization before ingestion"
+    },
+    {
+      "ruleId":"SC-CREATOR-004",
+      "when":"public SoundCloud status is healthy BUT account creator surfaces fail",
+      "classifyAs":"ACCOUNT_SCOPED_OR_PARTIAL_CREATOR_INCIDENT",
+      "severity":"HIGH",
+      "suspectedLayer":"creator/auth service or account provisioning"
+    }
+  ],
+  "actions": [
+    {"apiName":"refreshPublicHeartbeat","objectType":"Incident","effect":"probe consumer, auth, artist studio, and upload surfaces; attach Evidence","requiresThirdParty":false},
+    {"apiName":"rebindBrowserSession","objectType":"BrowserSession","effect":"user signs out, clears SoundCloud site data, and signs in with current primary identity","requiresThirdParty":false},
+    {"apiName":"requestCreatorEntitlementReprovision","objectType":"CreatorEntitlement","effect":"escalate to SoundCloud support asking them to refresh/re-provision Artist Studio and upload/write entitlement","requiresThirdParty":true},
+    {"apiName":"verifyRecovery","objectType":"Incident","effect":"set recoveryState=VERIFIED only when playback works, Artist Studio loads, and upload surface recognizes authenticated account","requiresThirdParty":false}
+  ],
+  "currentIncidentTemplate": {
+    "classification":"CREATOR_AUTH_SPLIT_BRAIN",
+    "observedFacts":[
+      "Consumer playback works",
+      "Artist Studio fails to load correctly",
+      "Upload surface reports unauthenticated/not logged in",
+      "Failure occurs before audio-file ingestion",
+      "Account identity/email changed immediately before incident"
+    ],
+    "nextCourseOfAction":"Treat as SoundCloud creator identity/session or entitlement failure. Preserve the account, stop changing audio files, monitor creator/auth surfaces, and request SoundCloud to refresh/re-provision Artist Studio plus upload/write access. Recovery is not complete until Artist Studio and /upload both recognize the authenticated account."
+  },
+  "guardrails": {
+    "storePasswords": false,
+    "storeBrowserCookies": false,
+    "storeOtpCodes": false,
+    "attemptUnauthorizedAccess": false,
+    "modifyThirdPartyBackend": false,
+    "publicStatusDoesNotOverrideAccountEvidence": true,
+    "doNotBlameAudioFileBeforeUploaderAuth": true
+  }
+}
