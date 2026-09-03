@@ -1,86 +1,63 @@
 # BIG VIRGINIA // VA3LM
 
-**Virginia Agentic Large Learning Language Model — v0.4.0**
+**Virginia Agentic Large Learning Language Model — v0.6.0**
 
-Coding, orchestration, ontology, capability, geospatial, public-source intelligence, and evidence command center for **GPT-DOUG-LLM**, **ZYRA**, **XUNIAHUB**, and the wider RVIA/VA stack.
+VA3LM is the Virginia/RVIA **agentic coding runtime and control plane** for the GPT-DOUG-LLM ecosystem. The brand name remains VA3LM, but the implementation does **not** claim that this repository trained a separate foundation model. A configured local OpenAI-compatible model supplies model reasoning; VA3LM supplies bounded memory, structured decisions, workspace tools, approval gates, evidence, ontology, geospatial/public-source modules, tests, and the 8088 command center.
 
-- Port: **8088**
-- Agent swarm
-- PACK-inspired capability plane
-- Authorized non-identifying geospatial tracking
-- Google Maps visualization surface
-- RVIA Federal Intel public-source catalog
-- Coding workflows
-- Palantir-style ontology blueprint
-- Test + security gates
-- Human approval before write/publish actions
-- Commercial/explainer agent for plain-language demos
+## What is real now
 
-## BIG VIRGINIA capability plane
+- Port **8088** FastAPI command center.
+- Local-model adapter through `VA3LM_MODEL_URL`.
+- Structured coding-agent decision schema with validation and one structural repair attempt.
+- Bounded tool loop with a maximum round budget instead of infinite autonomous loops.
+- Workspace inspection and project detection.
+- UTF-8 file reads/writes/deletes confined to a configured workspace.
+- Automatic bounded backup before overwrite/delete and explicit restore support.
+- Allow-listed development commands executed with `shell=False`.
+- Command stdout/stderr/exit-code evidence.
+- Human approval before workspace mutation or command execution.
+- Model-token/secret filtering before child development processes.
+- PACK-inspired capability plane.
+- Palantir-style local ontology blueprint.
+- Authorized non-identifying geospatial tracking and Google Maps visualization.
+- RVIA Federal Intel public-source catalog.
+- Test, security, evidence, and CI gates.
 
-VA3LM adapts architecture patterns from `sonoxo/pack` and extends the plane with authorization-bounded geospatial and public-source intelligence capabilities:
+## What VA3LM does **not** claim
 
-`CORE → AUTH → SCHEMA → DOCUMENTS → STATE → CODEGEN → SDK → APP → GEOSPATIAL → FEDERAL-INTEL-OSINT → MONOREPO/CI`
+- It is **not** a separately trained foundation model in this repository.
+- The VA3LM ontology remains a local blueprint; it is **not** proof of a live Palantir Foundry Ontology deployment.
+- It does **not** claim that an app was deployed or shipped unless a deployment provider actually returns evidence. v0.6.0 currently provides local coding/build/test execution, not a production cloud deployment plane.
+- It does not grant itself Palantir, government, cloud, filesystem, shell, credential, or network permissions.
+- It is a private software project, not a U.S. government agency.
 
-PACK itself is marked **ALPHA / not intended for production use**, so VA3LM treats it as an architectural reference rather than blindly importing it as a production dependency. VA3LM-owned tests, security gates, approval gates, and deployment validation remain authoritative.
-
-```bash
-va3lm capabilities
-```
-
-Full PACK mapping: [`docs/PACK_CAPABILITY_PLANE.md`](docs/PACK_CAPABILITY_PLANE.md)
-
-## RVIA Federal Intel public-source catalog
-
-The public-source layer implements the five intelligence blocks represented in the operator reference:
-
-- **CIA** — Central Intelligence Agency
-- **NSA** — National Security Agency
-- **NRO** — National Reconnaissance Office
-- **NGP** — National Geospatial-Intelligence Program, mapped to NGA public sources
-- **GDIP** — General Defense Intelligence Program, mapped to DIA public sources
-
-The catalog promotes only verified official GitHub organizations. As verified for this catalog date, NSA exposes `NationalSecurityAgency` and `nsacyber`; NGA exposes `ngageoint`. CIA, NRO, and DIA/GDIP are sourced from their official government public sites rather than third-party GitHub repositories.
-
-```bash
-va3lm federal-intel
-va3lm federal-intel --github-only
-va3lm federal-intel --entity cia
-va3lm federal-intel --entity nsa
-va3lm federal-intel --entity nro
-va3lm federal-intel --entity ngp
-va3lm federal-intel --entity gdip
-```
-
-Full guide: [`docs/RVIA_FEDERAL_INTEL.md`](docs/RVIA_FEDERAL_INTEL.md)
-
-## Geospatial tracking + Google Maps
-
-The requested public reference is NSA's **How We Found Bin Laden: The Basics of Foreign Signals Intelligence**. VA3LM adapts only high-level workflow concepts such as provenance, timestamps, correlation, confidence/uncertainty, map context, and human review. It does not implement communications interception, biometrics, or covert person tracking.
-
-```bash
-va3lm tracking
-va3lm tracking --sample
-```
-
-The deterministic sample emits Google Maps-compatible GeoJSON for an imaginary authorized Virginia asset.
-
-To enable the browser map:
-
-```bash
-export GOOGLE_MAPS_BROWSER_KEY='YOUR_BROWSER_RESTRICTED_KEY'
-va3lm serve
-```
-
-Then open:
+## Truthful coding loop
 
 ```text
-http://127.0.0.1:8088/tracking-map
+GOAL
+  ↓
+PROJECT INSPECTION
+  ↓
+LOCAL MODEL DECISION
+  ↓
+JSON DECISION VALIDATOR
+  ↓
+READ / LIST / INSPECT
+  ↓
+APPROVAL GATE
+  ↓
+WRITE / DELETE / RUN COMMAND
+  ↓
+RUNTIME EVIDENCE
+  ↓
+MODEL REPAIR / NEXT ROUND
+  ↓
+VALIDATION
+  ↓
+COMPLETE WITH EVIDENCE OR STOP
 ```
 
-Never commit a Google Maps API key. Enable the Maps JavaScript API in the associated Google Cloud project and restrict the browser key by HTTP referrer.
-
-Full guide: [`docs/GOOGLE_MAPS_TRACKING.md`](docs/GOOGLE_MAPS_TRACKING.md)
+Malformed model output no longer becomes a fake success state. VA3LM rejects unsupported actions and invalid decisions. It performs one structure-repair request; if the result is still invalid, execution stops with `INVALID_MODEL_DECISION`.
 
 ## Run
 
@@ -94,95 +71,158 @@ va3lm serve
 
 Open `http://127.0.0.1:8088`.
 
-## Interactive command deck
+## Configure the local brain
+
+VA3LM only accepts the model endpoint on localhost.
+
+```bash
+export VA3LM_MODEL_URL=http://127.0.0.1:11434/v1
+export VA3LM_MODEL_NAME=gpt-doug-llm-max
+```
+
+If no model URL is configured, `va3lm execute` returns `MODEL_NOT_CONFIGURED` plus a deterministic plan and explicitly reports that no workspace mutation happened.
+
+## Vibe-code a local workspace
+
+Point VA3LM at a project:
+
+```bash
+export VA3LM_WORKSPACE_ROOT=/absolute/path/to/project
+va3lm workspace
+```
+
+Run the coding agent read-only first:
+
+```bash
+va3lm execute "Inspect this app and tell me what must change to make the build pass"
+```
+
+Allow actual edits and allow-listed development commands:
+
+```bash
+va3lm execute "Fix the build, run tests, and stop when the local evidence is green" --approve
+```
+
+You can also set the workspace explicitly from the CLI:
+
+```bash
+va3lm execute "Make this landing page mobile responsive and run its build" \
+  --workspace /absolute/path/to/project \
+  --approve \
+  --max-rounds 6
+```
+
+Default executable allow-list:
+
+```text
+python python3 pytest ruff bandit node npm npx pnpm yarn git
+```
+
+Override it with `VA3LM_ALLOWED_COMMANDS`. Commands are executed as an argument vector with `shell=False`; arbitrary shell programs are not enabled by default.
+
+## HTTP coding executor
+
+The API can inspect the configured `VA3LM_WORKSPACE_ROOT` and run the agent loop:
+
+```text
+GET  /api/workspace
+POST /api/agent/execute
+```
+
+Example body:
+
+```json
+{
+  "text": "Fix the tests and verify them",
+  "approved": false,
+  "max_rounds": 4
+}
+```
+
+HTTP mutation requires **both** `approved: true` and:
+
+```bash
+export VA3LM_HTTP_MUTATIONS_ENABLED=true
+```
+
+This double gate prevents a browser/API caller from silently turning the 8088 service into an ambient write shell.
+
+## Evidence states
+
+The coding executor returns explicit states instead of optimistic prose:
+
+- `MODEL_NOT_CONFIGURED`
+- `INVALID_MODEL_DECISION`
+- `BLOCKED_PENDING_APPROVAL`
+- `COMPLETED_WITH_RUNTIME_EVIDENCE`
+- `ACTION_BUDGET_EXHAUSTED`
+
+A successful command records command arguments, exit code, duration, stdout, stderr, and timeout state. `COMPLETED_WITH_RUNTIME_EVIDENCE` proves that the recorded local actions happened; it does not imply production deployment.
+
+## Capability plane
+
+`va3lm capabilities` currently exposes 14 capability domains. Thirteen are adapted/runtime-backed and one (`create-app`) remains a blueprint. The execution-specific domains are:
+
+- `workspace-execution`
+- `structured-agent-loop`
+
+PACK remains an **ALPHA reference**; VA3LM-owned runtime evidence and CI are authoritative for VA3LM claims.
+
+## Existing command deck
 
 ```bash
 va3lm agents
 va3lm capabilities
+va3lm ontology
+va3lm plan "Build a FastAPI endpoint with tests"
+va3lm brain "Refactor this service safely"
+va3lm workspace
+va3lm execute "Fix the build and run tests" --approve
 va3lm federal-intel
 va3lm federal-intel --github-only
 va3lm tracking
 va3lm tracking --sample
-va3lm ontology
-va3lm plan "Build a FastAPI endpoint with tests"
 va3lm explain "VA3LM ontology workflow"
 ```
 
-Activate the configured GPT-DOUG-LLM brain:
+## Ontology status
 
-```bash
-export VA3LM_MODEL_URL=http://127.0.0.1:11434/v1
-export VA3LM_MODEL_NAME=gpt-doug-llm
-va3lm brain "Refactor this service safely"
+The coding ontology models `CodingTask`, `AgentRun`, `FileArtifact`, `CodeChange`, `TestRun`, `SecurityFinding`, `Approval`, `Evidence`, `BuildArtifact`, and `ExplainerArtifact`. It deliberately reports:
+
+```text
+BLUEPRINT_NOT_LIVE_FOUNDRY
 ```
 
-Start the 8088 command center:
+That status remains until a real Foundry deployment is configured and verified.
 
-```bash
-va3lm serve --host 127.0.0.1 --port 8088
-```
+## Geospatial + public-source boundaries
 
-## Ecosystem
+The geospatial layer supports authorized non-identifying asset/event observations, provenance, timestamps, confidence/uncertainty, GeoJSON, and map review. It does not implement covert person tracking, biometric identification, or communications interception.
 
-```mermaid
-flowchart TD
-    U[Operator] --> C[BIG VIRGINIA / VA3LM :8088]
-    C --> P[Capability Plane]
-    P --> PC[Core]
-    P --> PA[Auth]
-    P --> PS[Schema + Documents]
-    P --> PST[State]
-    P --> PG[Codegen + SDK]
-    P --> APP[App Surface]
-    P --> GEO[Authorized Geospatial Tracking]
-    GEO --> GJ[GeoJSON]
-    GJ --> GM[Google Maps]
-    GM --> HR[Human Review]
-    P --> FI[RVIA Federal Intel OSINT]
-    FI --> CIA[CIA public sources]
-    FI --> NSA[NSA official GitHub + public sources]
-    FI --> NRO[NRO public sources]
-    FI --> NGA[NGA / NGP official GitHub + public sources]
-    FI --> DIA[DIA / GDIP public sources]
-    FI --> HR
-    C --> B[GPT-DOUG-LLM Brain]
-    C --> A[Architect]
-    A --> D[Coder]
-    D --> O[Ontology]
-    O --> T[Test]
-    T --> S[Security]
-    S --> R[Reviewer]
-    R --> G{Human approval}
-    G -->|approve| E[Evidence + Build]
-    G -->|hold| D
-    E --> O
-```
+The RVIA Federal Intel layer is limited to publicly released, lawfully accessible sources for CIA, NSA, NRO, NGA/NGP, and DIA/GDIP references. It does not authorize classified/leaked collection, credential bypass, operational targeting, or evasion of security controls.
 
 ## API
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET | `/healthz` | health |
-| GET | `/api/status` | runtime + capability status |
+| GET | `/healthz` | health/version |
+| GET | `/api/status` | runtime status + explicit claim boundaries |
+| GET | `/api/workspace` | configured workspace/runtime status |
+| POST | `/api/agent/execute` | bounded coding-agent execution |
 | GET | `/api/agents` | agent roster |
-| GET | `/api/ontology` | ontology |
-| GET | `/api/capabilities` | Big Virginia capability manifest |
-| GET | `/api/federal-intel` | CIA/NSA/NRO/NGP/GDIP public-source catalog |
-| GET | `/api/federal-intel/github` | verified official GitHub organizations/repositories only |
-| GET | `/api/federal-intel/{entity_id}` | one agency/program public-source manifest |
-| GET | `/api/tracking` | tracking source/boundary manifest |
-| GET | `/api/tracking/sample` | deterministic Virginia demo GeoJSON |
+| GET | `/api/ontology` | local ontology blueprint |
+| GET | `/api/capabilities` | capability manifest |
+| POST | `/api/plan` | deterministic workflow plan |
+| POST | `/api/brain` | ask configured local model |
+| POST | `/api/explain` | explainer output |
+| GET | `/api/federal-intel` | public-source catalog |
+| GET | `/api/federal-intel/github` | verified official GitHub sources |
+| GET | `/api/tracking` | tracking boundary manifest |
+| GET | `/api/tracking/sample` | deterministic demo GeoJSON |
 | POST | `/api/tracking/geojson` | validate/normalize authorized observations |
-| GET | `/tracking-map` | Google Maps visualization |
-| POST | `/api/plan` | build workflow |
-| POST | `/api/brain` | ask configured model |
-| POST | `/api/explain` | generate commercial-style explainer |
+| GET | `/tracking-map` | Google Maps demo surface |
 
-## Public-source security boundary
-
-RVIA Federal Intel is limited to publicly released, lawfully accessible sources. It does not authorize classified/leaked collection, credential bypass, communications interception, covert person tracking, biometric identification, operational targeting, or evasion of government/security controls.
-
-## Development
+## Development and verification
 
 ```bash
 pytest -q
@@ -191,6 +231,4 @@ bandit -q -ll -r src
 python -m compileall -q src
 ```
 
-The dedicated `VA3LM Big Virginia` GitHub Actions gate verifies the installed CLI and capability manifest. Tracking regression tests verify GeoJSON generation and identity-field rejection; federal-intel tests verify official-source labeling and program/agency classification.
-
-Private software project. Not a government agency.
+The `VA3LM Big Virginia` GitHub Actions workflow installs the package, runs the full test suite, lint, Bandit, compilation, and capability-manifest checks.
