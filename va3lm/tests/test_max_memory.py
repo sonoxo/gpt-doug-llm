@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from va3lm.app import app
 from va3lm.max_memory import CompactMemory, memory_manager
 
