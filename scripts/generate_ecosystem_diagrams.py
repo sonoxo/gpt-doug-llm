@@ -131,7 +131,6 @@ def write_agent_loop() -> None:
         col=i%4; row=i//4; x=x0+col*320; y=y0+row*180
         accent=("#3DE1FF","#A970FF","#7CFF6B","#FFB454","#FFD166","#FF5D73","#FF6BD6","#2DD4BF")[i]
         out.append(f'''<g transform="translate({x} {y})"><rect width="270" height="118" rx="20" fill="#111821" stroke="{accent}" stroke-width="2"/><circle cx="36" cy="36" r="18" fill="{accent}" opacity=".18"/><text x="36" y="42" text-anchor="middle" class="title" fill="{accent}">{num}</text><text x="66" y="39" class="title">{title}</text><text x="24" y="78" class="sub">{html.escape(sub)}</text></g>''')
-    # arrows top row and return loop
     for x in (340,660,980): out.append(arrow(x,209,x+50,209))
     for x in (980,660,340): out.append(arrow(x+50,389,x,389))
     out.append(arrow(1200,268,1200,330))
@@ -142,12 +141,14 @@ def write_agent_loop() -> None:
 def write_security() -> None:
     gates = security_workflows()
     shown = gates[:12]
-    out=[f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700" width="1400" height="700" role="img" aria-labelledby="t3 d3"><title id="t3">Security gate map</title><desc id="d3">Repository security and control gates discovered from GitHub Actions workflow files.</desc><rect width="1400" height="700" rx="28" fill="#080D12"/>{STYLE}<text x="70" y="70" class="h1">SECURITY CONTROL PLANE // DISCOVERED FROM THE REPO</text><text x="70" y="103" class="h2">{len(gates)} security / compliance / lock / readiness workflows detected • generated from .github/workflows</text>''']
+    rows = (len(shown) + 1) // 2
+    bottom = 150 + rows * 72 + 35
+    canvas_height = max(760, bottom + 123)
+    out=[f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 {canvas_height}" width="1400" height="{canvas_height}" role="img" aria-labelledby="t3 d3"><title id="t3">Security gate map</title><desc id="d3">Repository security and control gates discovered from GitHub Actions workflow files.</desc><rect width="1400" height="{canvas_height}" rx="28" fill="#080D12"/>{STYLE}<text x="70" y="70" class="h1">SECURITY CONTROL PLANE // DISCOVERED FROM THE REPO</text><text x="70" y="103" class="h2">{len(gates)} security / compliance / lock / readiness workflows detected • generated from .github/workflows</text>''']
     y=150
     for i,name in enumerate(shown):
         col=i%2; row=i//2; x=70+col*650; yy=y+row*72
         out.append(f'''<g transform="translate({x} {yy})"><rect width="600" height="54" rx="14" fill="#111821" stroke="#263746"/><circle cx="28" cy="27" r="7" fill="#7CFF6B"><animate attributeName="opacity" values=".4;1;.4" dur="2.3s" repeatCount="indefinite"/></circle><text x="48" y="33" class="title">{html.escape(name)}</text><text x="545" y="33" class="state" fill="#9FB2C8">CONFIGURED</text></g>''')
-    bottom=150+((len(shown)+1)//2)*72+35
     out.append(f'''<g transform="translate(70 {bottom})"><rect width="1250" height="98" rx="20" fill="#0D141C" stroke="#FF5D73"/><text x="28" y="37" class="title">READ THIS CORRECTLY</text><text x="28" y="68" class="sub">This diagram proves the gates are configured in the repository. The README badges / GitHub Actions runs prove whether the latest execution passed.</text></g></svg>''')
     (ASSETS / "security-gates.svg").write_text("".join(out), encoding="utf-8")
 
