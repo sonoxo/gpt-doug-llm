@@ -17,11 +17,20 @@ VA3LM is the Virginia/RVIA **agentic coding runtime and control plane** for the 
 - Command stdout/stderr/exit-code evidence.
 - Human approval before workspace mutation or command execution.
 - Model-token/secret filtering before child development processes.
+- Recognized test/build/lint/security validation evidence instead of treating every exit-0 command as proof.
 - PACK-inspired capability plane.
 - Palantir-style local ontology blueprint.
 - Authorized non-identifying geospatial tracking and Google Maps visualization.
 - RVIA Federal Intel public-source catalog.
 - Test, security, evidence, and CI gates.
+
+## Exact execution boundary
+
+VA3LM's **file tools** are workspace-confined: they reject absolute paths, path traversal outside the configured root, direct `.git` file access, and selected sensitive filenames. Development **subprocesses are different**: they start in the configured workspace, require explicit approval, use an executable allow-list, and run with `shell=False`, but they are **not an OS/container filesystem sandbox or a network sandbox**. Trusted project code can still access resources the local operating-system user can access.
+
+That means local command execution is appropriate for trusted development work. A production multi-tenant coding cloud still needs a container/VM runner with explicit filesystem, process, resource, and network isolation.
+
+Git commands are restricted to read-only subcommands in this runtime. Known package-manager `publish`, `deploy`, and `release` actions are blocked, but VA3LM does not claim that these checks constitute a complete network sandbox or universal deployment blocker.
 
 ## What VA3LM does **not** claim
 
@@ -29,6 +38,7 @@ VA3LM is the Virginia/RVIA **agentic coding runtime and control plane** for the 
 - The VA3LM ontology remains a local blueprint; it is **not** proof of a live Palantir Foundry Ontology deployment.
 - It does **not** claim that an app was deployed or shipped unless a deployment provider actually returns evidence. v0.6.0 currently provides local coding/build/test execution, not a production cloud deployment plane.
 - It does not grant itself Palantir, government, cloud, filesystem, shell, credential, or network permissions.
+- Its local subprocess runner is **not** a container/VM security boundary.
 - It is a private software project, not a U.S. government agency.
 
 ## Truthful coding loop
@@ -58,6 +68,8 @@ COMPLETE WITH EVIDENCE OR STOP
 ```
 
 Malformed model output no longer becomes a fake success state. VA3LM rejects unsupported actions and invalid decisions. It performs one structure-repair request; if the result is still invalid, execution stops with `INVALID_MODEL_DECISION`.
+
+After a file mutation, the runtime requires a recognized successful validation command before it will accept the model's completion request. A random command that exits `0` is recorded as a successful command, but it is **not** reported as `testsProven` or `buildProven` unless it matches a recognized validation path.
 
 ## Run
 
@@ -118,7 +130,7 @@ Default executable allow-list:
 python python3 pytest ruff bandit node npm npx pnpm yarn git
 ```
 
-Override it with `VA3LM_ALLOWED_COMMANDS`. Commands are executed as an argument vector with `shell=False`; arbitrary shell programs are not enabled by default.
+Override it with `VA3LM_ALLOWED_COMMANDS`. Commands are executed as an argument vector with `shell=False`; arbitrary shell programs are not enabled by default. This allow-list reduces the command surface but is not equivalent to process/network/container isolation.
 
 ## HTTP coding executor
 
@@ -145,7 +157,7 @@ HTTP mutation requires **both** `approved: true` and:
 export VA3LM_HTTP_MUTATIONS_ENABLED=true
 ```
 
-This double gate prevents a browser/API caller from silently turning the 8088 service into an ambient write shell.
+This double gate prevents a browser/API caller from silently receiving VA3LM mutation approval. It does not replace operating-system/container isolation for the process that ultimately runs an approved command.
 
 ## Evidence states
 
@@ -154,10 +166,11 @@ The coding executor returns explicit states instead of optimistic prose:
 - `MODEL_NOT_CONFIGURED`
 - `INVALID_MODEL_DECISION`
 - `BLOCKED_PENDING_APPROVAL`
+- `COMPLETED_NO_RUNTIME_ACTIONS`
 - `COMPLETED_WITH_RUNTIME_EVIDENCE`
 - `ACTION_BUDGET_EXHAUSTED`
 
-A successful command records command arguments, exit code, duration, stdout, stderr, and timeout state. `COMPLETED_WITH_RUNTIME_EVIDENCE` proves that the recorded local actions happened; it does not imply production deployment.
+A successful command records command arguments, exit code, duration, stdout, stderr, and timeout state. Failed/nonzero commands become failed evidence. `COMPLETED_WITH_RUNTIME_EVIDENCE` proves that the listed local runtime actions were observed; it does not imply production deployment.
 
 ## Capability plane
 
