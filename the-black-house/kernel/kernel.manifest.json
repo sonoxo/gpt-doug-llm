@@ -5,39 +5,13 @@
   "missionProtocol": "black-house-mission-v1",
   "authority": "sonoxo/gpt-doug-llm/the-black-house",
   "objectTypes": [
-    "Mission",
-    "Agent",
-    "Model",
-    "User",
-    "Repository",
-    "Service",
-    "Tool",
-    "Resource",
-    "Evidence",
-    "Source",
-    "Decision",
-    "Approval",
-    "Action",
-    "Deployment",
-    "Incident",
-    "Policy",
-    "CredentialReference",
-    "Artifact",
-    "IntelligenceBrief"
+    "Mission", "Agent", "Model", "User", "Repository", "Service", "Tool", "Resource",
+    "Evidence", "Source", "Decision", "Approval", "Action", "Deployment", "Incident",
+    "Policy", "CredentialReference", "Artifact", "IntelligenceBrief"
   ],
   "relationshipTypes": [
-    "EXECUTES",
-    "USES",
-    "PRODUCES",
-    "DERIVED_FROM",
-    "AUTHORIZES",
-    "GOVERNS",
-    "DEPLOYED_TO",
-    "IMPLEMENTS",
-    "RUNS_ON",
-    "ROUTES_TO",
-    "AUDITS",
-    "EVIDENCES"
+    "EXECUTES", "USES", "PRODUCES", "DERIVED_FROM", "AUTHORIZES", "GOVERNS",
+    "DEPLOYED_TO", "IMPLEMENTS", "RUNS_ON", "ROUTES_TO", "AUDITS", "EVIDENCES"
   ],
   "invariants": {
     "typedObjectsRequired": true,
@@ -48,31 +22,22 @@
     "unknownActionsFailClosed": true,
     "externalAuthorizationNeverImplied": true
   },
-  "bindings": [
+  "layers": [
     {
-      "component": "VA3LM",
-      "repository": "sonoxo/gpt-doug-llm",
-      "contract": "va3lm/src/va3lm/ontology.py"
-    },
-    {
-      "component": "WAKEUP3LM",
-      "repository": "sonoxo/gpt-doug-llm",
-      "contract": "wakeup3lm/ontology.py"
-    },
-    {
-      "component": "XUNIA",
-      "repository": "sonoxo/xuniadao",
-      "contract": ".black-house/kernel.json"
-    },
-    {
-      "component": "ZYRA",
-      "repository": "sonoxo/zyra",
-      "contract": ".black-house/kernel.json"
-    },
-    {
-      "component": "AIP_REGISTRY",
-      "repository": "sonoxo/aip-community-registry-zyra",
-      "contract": ".black-house/runtime.json"
+      "id": "THE_GREEN_HOUSE_V1",
+      "name": "The Green House",
+      "role": "ECO_BIO_PHARMA_REGULATORY_DOMAIN_LAYER",
+      "manifest": "the-black-house/layers/green-house/layer.manifest.json",
+      "ontology": "the-green-house/ontology/green-house-ontology.json",
+      "governedBy": "THE_BLACK_HOUSE_V1"
     }
+  ],
+  "bindings": [
+    {"component":"VA3LM","repository":"sonoxo/gpt-doug-llm","contract":"va3lm/src/va3lm/ontology.py"},
+    {"component":"WAKEUP3LM","repository":"sonoxo/gpt-doug-llm","contract":"wakeup3lm/ontology.py"},
+    {"component":"XUNIA","repository":"sonoxo/xuniadao","contract":".black-house/kernel.json"},
+    {"component":"ZYRA","repository":"sonoxo/zyra","contract":".black-house/kernel.json"},
+    {"component":"AIP_REGISTRY","repository":"sonoxo/aip-community-registry-zyra","contract":".black-house/runtime.json"},
+    {"component":"GREEN_HOUSE","repository":"sonoxo/gpt-doug-llm","contract":"the-black-house/layers/green-house/layer.manifest.json"}
   ]
 }
