@@ -1,0 +1,53 @@
+{
+  "name": "The Green House Eco-Bio-Pharma Regulatory Ontology",
+  "version": "0.1.0",
+  "mode": "EVIDENCE_FIRST_REGULATORY_RND",
+  "scope": ["eco", "bio", "pharma", "fda"],
+  "deploymentState": "REPOSITORY_IMPLEMENTED",
+  "connectionState": "NO_EXTERNAL_REGULATOR_CONNECTION_CLAIMED",
+  "authorizationState": "EXTERNAL_AUTHORIZATION_REQUIRED_PER_SOURCE",
+  "objectTypes": [
+    {"id":"greenhouse.Ecosystem","properties":["id","name","region","habitat","riskLevel","sourceRefs"]},
+    {"id":"greenhouse.Organism","properties":["id","scientificName","commonName","taxonomy","biosafetyLevel","sourceRefs"]},
+    {"id":"greenhouse.Biomaterial","properties":["id","name","origin","composition","storageClass","chainOfCustody","sourceRefs"]},
+    {"id":"greenhouse.Compound","properties":["id","name","identifiers","formula","mechanism","hazardClass","sourceRefs"]},
+    {"id":"greenhouse.DrugCandidate","properties":["id","name","sponsor","indication","developmentPhase","status","sourceRefs"]},
+    {"id":"greenhouse.Study","properties":["id","studyType","protocolId","status","population","endpoints","sourceRefs"]},
+    {"id":"greenhouse.RegulatorySubmission","properties":["id","submissionType","agency","trackingId","status","submittedAt","sourceRefs"]},
+    {"id":"greenhouse.RegulatoryDecision","properties":["id","agency","decisionType","status","effectiveAt","conditions","sourceRefs"]},
+    {"id":"greenhouse.ManufacturingLot","properties":["id","productId","lotNumber","site","gmpStatus","releaseStatus","sourceRefs"]},
+    {"id":"greenhouse.AdverseEvent","properties":["id","productId","seriousness","outcome","reportedAt","reportingSystem","sourceRefs"]},
+    {"id":"greenhouse.EnvironmentalImpact","properties":["id","subjectId","impactType","severity","mitigation","sourceRefs"]},
+    {"id":"greenhouse.SourceEvidence","properties":["id","sourceType","uri","retrievedAt","sha256","authority","license","verificationState"]}
+  ],
+  "linkTypes": [
+    {"id":"greenhouse.ORIGINATES_FROM","from":["greenhouse.Biomaterial","greenhouse.Compound"],"to":["greenhouse.Organism","greenhouse.Ecosystem"]},
+    {"id":"greenhouse.DERIVED_INTO","from":["greenhouse.Biomaterial","greenhouse.Compound"],"to":["greenhouse.Compound","greenhouse.DrugCandidate"]},
+    {"id":"greenhouse.EVALUATED_BY","from":["greenhouse.DrugCandidate","greenhouse.Compound"],"to":["greenhouse.Study"]},
+    {"id":"greenhouse.SUPPORTS_SUBMISSION","from":["greenhouse.Study","greenhouse.SourceEvidence"],"to":["greenhouse.RegulatorySubmission"]},
+    {"id":"greenhouse.RECEIVES_DECISION","from":["greenhouse.RegulatorySubmission"],"to":["greenhouse.RegulatoryDecision"]},
+    {"id":"greenhouse.MANUFACTURED_AS","from":["greenhouse.DrugCandidate"],"to":["greenhouse.ManufacturingLot"]},
+    {"id":"greenhouse.HAS_ADVERSE_EVENT","from":["greenhouse.DrugCandidate","greenhouse.ManufacturingLot"],"to":["greenhouse.AdverseEvent"]},
+    {"id":"greenhouse.HAS_ENVIRONMENTAL_IMPACT","from":["greenhouse.Ecosystem","greenhouse.Organism","greenhouse.Compound","greenhouse.DrugCandidate"],"to":["greenhouse.EnvironmentalImpact"]},
+    {"id":"greenhouse.EVIDENCED_BY","from":["greenhouse.Ecosystem","greenhouse.Organism","greenhouse.Biomaterial","greenhouse.Compound","greenhouse.DrugCandidate","greenhouse.Study","greenhouse.RegulatorySubmission","greenhouse.RegulatoryDecision","greenhouse.ManufacturingLot","greenhouse.AdverseEvent","greenhouse.EnvironmentalImpact"],"to":["greenhouse.SourceEvidence"]}
+  ],
+  "actionTypes": [
+    {"id":"greenhouse.INGEST_EVIDENCE","requires":["source_uri"],"produces":["SourceEvidence"],"guardrails":["preserve_provenance","hash_content","no_unverified_regulatory_claims"]},
+    {"id":"greenhouse.CLASSIFY_BIOENTITY","requires":["SourceEvidence"],"produces":["Organism","Biomaterial","Compound"],"guardrails":["biosafety_metadata_required_when_known"]},
+    {"id":"greenhouse.ASSESS_CANDIDATE","requires":["DrugCandidate","Study"],"produces":["evidence_summary"],"guardrails":["no_medical_advice","no_claim_of_approval_without_decision_object"]},
+    {"id":"greenhouse.MAP_REGULATORY_PATH","requires":["DrugCandidate"],"produces":["regulatory_path"],"guardrails":["agency_specific","jurisdiction_explicit","status_not_inferred"]},
+    {"id":"greenhouse.VERIFY_FDA_STATUS","requires":["RegulatorySubmission"],"produces":["verification_result"],"guardrails":["authoritative_source_required","approved_only_if_authoritative_decision_evidence"]},
+    {"id":"greenhouse.TRACK_SAFETY_SIGNAL","requires":["AdverseEvent"],"produces":["signal_summary"],"guardrails":["aggregate_only","preserve_report_provenance"]},
+    {"id":"greenhouse.ASSESS_ECO_IMPACT","requires":["EnvironmentalImpact"],"produces":["mitigation_plan"],"guardrails":["evidence_based","uncertainty_explicit"]}
+  ],
+  "regulatoryStatusVocabulary": [
+    "DISCOVERY","PRECLINICAL","IND_PREPARATION","IND_SUBMITTED","CLINICAL_PHASE_1","CLINICAL_PHASE_2","CLINICAL_PHASE_3","NDA_BLA_PREPARATION","NDA_BLA_SUBMITTED","UNDER_REVIEW","APPROVED","COMPLETE_RESPONSE","WITHDRAWN","POSTMARKET","UNKNOWN_UNVERIFIED"
+  ],
+  "truthStateRules": {
+    "implemented": "Ontology artifacts exist and pass repository validation.",
+    "deployed": "A runtime service loads and exposes the ontology successfully.",
+    "connected": "An external source responds to a live probe.",
+    "authorized": "Credentials or delegated authorization are valid for that source.",
+    "fdaApproved": "Only true when authoritative regulatory decision evidence explicitly supports approval."
+  }
+}
