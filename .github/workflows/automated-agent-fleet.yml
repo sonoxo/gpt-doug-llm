@@ -47,8 +47,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install test dependencies
-        run: python -m pip install pytest pytest-cov ruff cryptography
+      - name: Install test and VA3LM runtime dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest pytest-cov ruff cryptography
+          python -m pip install -e './va3lm[dev]'
       - name: Run core tests
         run: python3 -m pytest tests/ -v --tb=short --cov=. --cov-report=xml
       - name: Run hackathon agent tests
