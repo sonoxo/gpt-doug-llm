@@ -1,9 +1,10 @@
-"""Provider-neutral chat facade for GPT Doug / GPT XUNIA.
+"""Provider-neutral chat facade for GPT Doug / GPT XUNIA / GPT-DOUG-ASTRA.
 
 Supported providers: none, openai, claude/anthropic, gemini, ollama, auto,
-and xunia. ``auto`` routes to the first ready provider. ``xunia`` fans out
-to all ready providers, then uses one ready provider as an arbiter to stream a
-single consensus answer.
+astra, and xunia. ``auto`` routes to the first ready provider. ``astra`` ranks
+ready providers against the request task profile and fails over by score.
+``xunia`` fans out to all ready providers, then uses one ready provider as an
+arbiter to stream a single consensus answer.
 """
 
 from __future__ import annotations
@@ -336,7 +337,7 @@ class AutoProvider(Provider):
         self.providers = [
             _make_provider(name)
             for name in self.order
-            if name not in {"none", "auto", "xunia"}
+            if name not in {"none", "auto", "astra", "xunia"}
         ]
         self.config = ProviderConfig("auto", "router", True, None)
 
@@ -385,6 +386,50 @@ class AutoProvider(Provider):
                 "content": "All configured AI providers failed readiness or request checks.",
             },
             "done": True,
+            "error": "all_providers_failed",
+            "provider_errors": errors,
+        }
+
+
+class AstraProvider(AutoProvider):
+    """Capability-aware router for the GPT-DOUG-ASTRA command layer."""
+
+    def __init__(self):
+        super().__init__()
+        self.config = ProviderConfig("astra", "gpt-doug-astra", True, None)
+
+    def health(self):
+        from agents.astra_router import astra_health
+
+        return astra_health(self.providers)
+
+    def ranked(self, messages, options):
+        from agents.astra_router import rank_ready_providers
+
+        return rank_ready_providers(self.providers, messages, options)
+
+    def chat_once(self, messages, model, options):
+        errors = []
+        ranked = self.ranked(messages, options)
+        for candidate in ranked:
+            provider = candidate.provider
+            try:
+                result = provider.chat_once(messages, None, options)
+                if not result.get("error"):
+                    result["routed_by"] = "astra"
+                    result["astra_score"] = round(candidate.score, 4)
+                    result["astra_model"] = provider.config.model
+                    return result
+                errors.append(f"{provider.config.name}: {result.get('error')}")
+            except Exception as exc:
+                errors.append(_safe_provider_error(provider.config.name, exc))
+        return {
+            "message": {
+                "role": "assistant",
+                "content": "GPT-DOUG-ASTRA found no authorized ready model that completed the request.",
+            },
+            "done": True,
+            "provider": "astra",
             "error": "all_providers_failed",
             "provider_errors": errors,
         }
@@ -456,6 +501,8 @@ def _load_provider() -> Provider:
     name = os.environ.get("GPT_DOUG_PROVIDER", "none").strip().lower() or "none"
     if name == "xunia":
         return XuniaProvider()
+    if name == "astra":
+        return AstraProvider()
     if name == "auto":
         return AutoProvider()
     return _make_provider(name)
@@ -491,6 +538,49 @@ def chat_stream(
     if isinstance(_provider, XuniaProvider):
         yield from xunia_stream(_provider, prepared, opts)
         return
+    if isinstance(_provider, AstraProvider):
+        ranked = _provider.ranked(prepared, opts)
+        errors = []
+        for candidate in ranked:
+            provider = candidate.provider
+            yield {
+                "message": {"role": "assistant", "content": ""},
+                "done": False,
+                "provider": "astra",
+                "source_provider": provider.config.name,
+                "layer": "router",
+                "status": "selected",
+                "astra_score": round(candidate.score, 4),
+            }
+            try:
+                for event in stream_provider(provider, prepared, None, opts):
+                    event["source_provider"] = event.get("provider", provider.config.name)
+                    event["provider"] = "astra"
+                    event["routed_by"] = "astra"
+                    event["astra_score"] = round(candidate.score, 4)
+                    yield event
+                return
+            except Exception as exc:
+                errors.append(_safe_provider_error(provider.config.name, exc))
+                yield {
+                    "message": {"role": "assistant", "content": ""},
+                    "done": False,
+                    "provider": "astra",
+                    "source_provider": provider.config.name,
+                    "layer": "router",
+                    "status": "fallback",
+                }
+        yield {
+            "message": {
+                "role": "assistant",
+                "content": "GPT-DOUG-ASTRA found no authorized ready model that completed the request.",
+            },
+            "done": True,
+            "provider": "astra",
+            "error": "all_providers_failed",
+            "provider_errors": errors,
+        }
+        return
     if isinstance(_provider, AutoProvider):
         yield from stream_auto(_provider, prepared, model, opts)
         return
@@ -503,6 +593,7 @@ def available_providers() -> list[dict]:
     return [
         {"id": "none", "label": "Offline workspace", "configured": True},
         {"id": "auto", "label": "Auto router", "configured": ready},
+        {"id": "astra", "label": "GPT-DOUG-ASTRA adaptive router", "configured": ready},
         {"id": "xunia", "label": "GPT XUNIA consensus", "configured": ready},
         {"id": "claude", "label": "Anthropic Claude", "configured": providers[0].ready()},
         {"id": "openai", "label": "OpenAI", "configured": providers[1].ready()},
