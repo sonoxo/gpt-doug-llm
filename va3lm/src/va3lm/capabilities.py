@@ -4,7 +4,7 @@ from copy import deepcopy
 
 PACK_SOURCE = "sonoxo/pack"
 PACK_SOURCE_STATE = "ALPHA_REFERENCE"
-VA3LM_CAPABILITY_VERSION = "0.4.0"
+VA3LM_CAPABILITY_VERSION = "0.6.0"
 
 _CAPABILITIES = [
     {
@@ -56,6 +56,18 @@ _CAPABILITIES = [
         "status": "ADAPTED",
     },
     {
+        "id": "workspace-execution",
+        "sourcePattern": "VA3LM native bounded runtime",
+        "va3lmArea": "workspace inspection, UTF-8 file edits, rollback backups, allow-listed command execution and evidence capture",
+        "status": "ADAPTED",
+    },
+    {
+        "id": "structured-agent-loop",
+        "sourcePattern": "VA3LM native validated decision protocol",
+        "va3lmArea": "localhost model decision validation, one-shot structural repair, bounded tool rounds, approval holds and non-fabricated completion states",
+        "status": "ADAPTED",
+    },
+    {
         "id": "create-app",
         "sourcePattern": "packages/create-app",
         "va3lmArea": "future VA/RVIA application scaffolding",
@@ -95,7 +107,7 @@ def capability_manifest() -> dict:
         "version": VA3LM_CAPABILITY_VERSION,
         "source": PACK_SOURCE,
         "sourceState": PACK_SOURCE_STATE,
-        "productionBoundary": "VA3LM-owned tests, security gates, approval gates, and deployment validation remain authoritative",
+        "productionBoundary": "VA3LM-owned tests, security gates, approval gates, deployment validation and observed runtime evidence remain authoritative",
         "capabilities": deepcopy(_CAPABILITIES),
     }
 
