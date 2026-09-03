@@ -81,8 +81,9 @@ class WorkspaceRuntime:
     VA3LM file operations are confined to the configured workspace. Development
     commands start with that workspace as their current directory, use shell=False,
     and require explicit approval, but they are not an operating-system filesystem
-    sandbox. Trusted project code can still access resources granted to the local OS
-    user. Production isolation therefore requires a separate container/VM runner.
+    or network sandbox. Trusted project code can still access resources granted to
+    the local OS user. Production isolation therefore requires a separate
+    container/VM runner with explicit network and filesystem policy.
     """
 
     def __init__(self, root: str | Path | None = None) -> None:
@@ -101,10 +102,11 @@ class WorkspaceRuntime:
             "commandsRequireApproval": True,
             "shell": False,
             "commandFilesystemSandboxed": False,
+            "commandNetworkSandboxed": False,
             "commandWorkingDirectory": str(self.root),
             "allowedCommands": sorted(_allowed_commands()),
             "gitPolicy": "read-only-subcommands",
-            "publishDeployCommandsBlocked": True,
+            "knownPackagePublishDeployActionsBlocked": True,
             "maxTextBytes": _MAX_TEXT_BYTES,
             "modelSecretsPassedToCommandsByDefault": False,
         }
@@ -238,6 +240,8 @@ class WorkspaceRuntime:
         argv = shlex.split(command) if isinstance(command, str) else list(command)
         if not argv:
             raise WorkspaceError("command is required")
+        if not all(isinstance(part, str) and part for part in argv):
+            raise WorkspaceError("command arguments must be non-empty strings")
         executable = Path(argv[0]).name
         if executable not in _allowed_commands():
             raise WorkspaceError(f"command is not allow-listed: {executable}")
@@ -304,4 +308,5 @@ class WorkspaceRuntime:
             "suggestedCommands": suggested,
             "automaticApprovalSupported": False,
             "commandFilesystemSandboxed": False,
+            "commandNetworkSandboxed": False,
         }
