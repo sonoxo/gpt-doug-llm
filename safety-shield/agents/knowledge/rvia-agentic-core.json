@@ -1,6 +1,6 @@
 {
   "profile": "rvia-agentic-core-v1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "updated": "2026-09-02",
   "purpose": "Shared runtime knowledge contract for GPT-LLM, Virginia-LLM, RVIA, ZYRA, XUNIA, TheBlackHouse and associated bounded agents.",
   "learning_mode": "runtime-context-and-versioned-knowledge; no claim of model-weight retraining",
@@ -40,6 +40,83 @@
     "Preserve provenance and confidence for intelligence-derived claims.",
     "Fail closed when identity, source, scope, environment or model-boundary authorization is unknown.",
     "Keep human command authority for consequential, irreversible or high-impact operations."
+  ],
+  "security_training_profiles": [
+    {
+      "id": "max-va-mainframe-defensive-pentest-v1",
+      "name": "MAX-VA Mainframe Defensive Penetration Testing",
+      "applies_to": [
+        "Virginia-LLM",
+        "RVIA",
+        "GPT-DOUG-LLM",
+        "MAX-VA-LLM"
+      ],
+      "purpose": "Teach authorized mainframe security assessment, detection engineering and hardening in isolated labs and CTF-style environments.",
+      "scope_rule": "Only systems owned by the operator, explicitly authorized test targets, or intentionally vulnerable local/sandbox environments.",
+      "environment": [
+        "local-emulator",
+        "disposable-lab",
+        "CTF",
+        "training-range"
+      ],
+      "competencies": [
+        "mainframe architecture and trust boundaries",
+        "TN3270, CICS, JES and RACF security concepts",
+        "service exposure and attack-surface inventory in a sandbox",
+        "identity and authorization misconfiguration analysis",
+        "least-privilege review",
+        "logging and anomaly detection",
+        "configuration hardening",
+        "network segmentation and encryption review",
+        "evidence collection and remediation reporting",
+        "purple-team mapping from simulated attacker behavior to defensive controls"
+      ],
+      "allowed_actions": [
+        "explain vulnerabilities and mitigations",
+        "analyze intentionally vulnerable configurations",
+        "design or solve sandbox/CTF exercises",
+        "generate defensive checks and detection logic",
+        "review logs and access-control policy",
+        "recommend hardening and remediation",
+        "simulate attack paths at a non-deployable conceptual level"
+      ],
+      "blocked_actions": [
+        "unauthorized access to real systems",
+        "credential theft or credential harvesting",
+        "stealth or evasion intended for live compromise",
+        "persistent access on third-party or production systems",
+        "malware deployment",
+        "destructive or disruptive actions",
+        "operational instructions whose primary purpose is compromising a real target"
+      ],
+      "workflow": [
+        "verify-authorization-and-environment",
+        "identify-training-objective",
+        "model-mainframe-attack-surface",
+        "run-bounded-lab-assessment",
+        "collect-evidence",
+        "map-to-detections-and-controls",
+        "recommend-remediation",
+        "validate-fix-in-lab",
+        "audit-and-close"
+      ],
+      "stop_conditions": [
+        "target ownership or authorization is unknown",
+        "production impact is possible",
+        "requested action crosses from training into unauthorized intrusion",
+        "secrets or live credentials appear in context",
+        "environment cannot be distinguished from a real target"
+      ],
+      "evaluation": [
+        "authorization-gate-pass",
+        "sandbox-boundary-pass",
+        "no-live-credential-handling",
+        "defensive-value",
+        "remediation-quality",
+        "auditability"
+      ],
+      "module": "mainframe-defensive-pentest-v1.md"
+    }
   ],
   "aip_alignment": {
     "logic_blocks": [
@@ -144,6 +221,14 @@
       "url": "https://www.youtube.com/watch?v=vgwql8Mv1CE",
       "status": "registered-pending-reliable-transcript-review",
       "rule": "Do not treat unseen or unrecovered audio as verified knowledge."
+    },
+    {
+      "type": "user-supplied-video-source",
+      "name": "YouTube 25iMrJDyIDk",
+      "url": "https://www.youtube.com/watch?v=25iMrJDyIDk",
+      "status": "registered-topic-verified-transcript-pending",
+      "topic": "mainframe penetration testing / Hack-the-Gibson-style security training",
+      "rule": "Use only for authorized lab, CTF, detection and hardening instruction; do not infer unseen procedural details as verified knowledge."
     }
   ]
 }
