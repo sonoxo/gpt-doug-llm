@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0.0",
+  "kernelVersion": "3.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "missionProtocol": "black-house-mission-v1",
+  "authority": "sonoxo/gpt-doug-llm/the-black-house",
+  "objectTypes": [
+    "Mission",
+    "Agent",
+    "Model",
+    "User",
+    "Repository",
+    "Service",
+    "Tool",
+    "Resource",
+    "Evidence",
+    "Source",
+    "Decision",
+    "Approval",
+    "Action",
+    "Deployment",
+    "Incident",
+    "Policy",
+    "CredentialReference",
+    "Artifact",
+    "IntelligenceBrief"
+  ],
+  "relationshipTypes": [
+    "EXECUTES",
+    "USES",
+    "PRODUCES",
+    "DERIVED_FROM",
+    "AUTHORIZES",
+    "GOVERNS",
+    "DEPLOYED_TO",
+    "IMPLEMENTS",
+    "RUNS_ON",
+    "ROUTES_TO",
+    "AUDITS",
+    "EVIDENCES"
+  ],
+  "invariants": {
+    "typedObjectsRequired": true,
+    "registeredRelationshipsOnly": true,
+    "evidenceRequiresProvenance": true,
+    "consequentialMutationRequiresHumanApproval": true,
+    "runtimeHealthRequiredBeforeGreen": true,
+    "unknownActionsFailClosed": true,
+    "externalAuthorizationNeverImplied": true
+  },
+  "bindings": [
+    {
+      "component": "VA3LM",
+      "repository": "sonoxo/gpt-doug-llm",
+      "contract": "va3lm/src/va3lm/ontology.py"
+    },
+    {
+      "component": "WAKEUP3LM",
+      "repository": "sonoxo/gpt-doug-llm",
+      "contract": "wakeup3lm/ontology.py"
+    },
+    {
+      "component": "XUNIA",
+      "repository": "sonoxo/xuniadao",
+      "contract": ".black-house/kernel.json"
+    },
+    {
+      "component": "ZYRA",
+      "repository": "sonoxo/zyra",
+      "contract": ".black-house/kernel.json"
+    },
+    {
+      "component": "AIP_REGISTRY",
+      "repository": "sonoxo/aip-community-registry-zyra",
+      "contract": ".black-house/runtime.json"
+    }
+  ]
+}
