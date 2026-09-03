@@ -26,6 +26,30 @@ CHECKPOINT
 DEPLOY
 ```
 
+<!-- WAKEUP3LM:AUTO:START -->
+## Live ecosystem pulse
+
+> Generated automatically from the repository. Last refresh: **2026-09-03 09:24 UTC**
+
+<p align="center"><img src="./assets/ecosystem.svg" alt="Wakeup3lm animated ecosystem architecture" width="100%" /></p>
+
+| State | Capability | Meaning |
+| --- | --- | --- |
+| ✅ | Ontology kernel | Implemented |
+| ✅ | Structured agent decisions | Implemented |
+| ✅ | Secure workspace filesystem | Implemented |
+| ✅ | Kernel regression CI | Implemented |
+| 🧭 | Browser IDE shell | Next layer |
+| 🧭 | Monaco editor | Next layer |
+| 🧭 | xterm terminal | Next layer |
+| 🧭 | Preview gateway | Next layer |
+| 🧭 | Deployment adapter | Next layer |
+
+**Repo telemetry:** `5` Wakeup3lm Python modules · `44` test files · `31` workflows · `13` ontology object types.
+
+**Current ontology:** `AgentDecision`, `AgentRun`, `Build`, `Checkpoint`, `Deployment`, `File`, `Model`, `PolicyDecision`, `Preview`, `Process`, `Project`, `ToolCall`, `Workspace`.
+<!-- WAKEUP3LM:AUTO:END -->
+
 ## Identity
 
 - **System:** Wakeup3lm
