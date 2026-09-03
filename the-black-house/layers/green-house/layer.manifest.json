@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "layerId": "THE_GREEN_HOUSE_V1",
+  "name": "The Green House",
+  "parentControlPlane": "THE_BLACK_HOUSE_V1",
+  "parentKernelVersion": "3.0.0",
+  "authority": "sonoxo/gpt-doug-llm/the-black-house",
+  "domain": ["eco", "bio", "pharma", "fda"],
+  "sourceOntology": "the-green-house/ontology/green-house-ontology.json",
+  "mountPoint": "the-black-house/layers/green-house",
+  "governance": {
+    "inheritsBlackHouseInvariants": true,
+    "evidenceProvenanceRequired": true,
+    "consequentialMutationRequiresHumanApproval": true,
+    "externalAuthorizationNeverImplied": true,
+    "regulatoryStatusMustBeEvidenceVerified": true
+  },
+  "routing": {
+    "missionProtocol": "black-house-mission-v1",
+    "direction": "BLACK_HOUSE_TO_GREEN_HOUSE",
+    "allowedDomains": ["eco", "bio", "pharma", "fda"],
+    "returnEvidenceToParent": true
+  },
+  "truthState": {
+    "repositoryLayer": "IMPLEMENTED",
+    "runtimeMounted": "NOT_YET_RUNTIME_VERIFIED",
+    "externalRegulatorConnection": "NOT_CLAIMED"
+  }
+}
