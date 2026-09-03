@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 
 from va3lm.ecosystem_telemetry import collect_fleet
-from va3lm.mission_ledger import MissionLedger
 from va3lm.palantir_status import palantir_verification_status
 from va3lm.rvia import MissionEnvelope, RVIARouter
 
@@ -142,8 +141,8 @@ async function load(){
 }
 async function sendMission(){
  const body={requestedBy:'command-center',intent:intent.value,target:target.value,
- classification:'INTERNAL',requiredCapabilities:[],allowedTools:[],
- approvalState:approved.checked?'APPROVED':'PENDING',mutation:mutation.checked};
+ classification:'internal',requiredCapabilities:[],allowedTools:[],
+ approvalState:approved.checked?'APPROVED':'PENDING_POLICY',mutation:mutation.checked};
  const response=await fetch('/api/black-house/missions',{method:'POST',headers:{'content-type':'application/json'},
  body:JSON.stringify(body)});missionOut.textContent=pretty(await response.json());await load();
 }
