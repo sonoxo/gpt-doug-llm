@@ -48,7 +48,8 @@ jobs:
           python -m pip install pytest-cov cryptography
 
       - name: Verify Black House runtime dependency contract
-        run: python -c "import fastapi, httpx, pydantic, va3lm; print('VA3LM runtime dependencies: OK')"
+        run: |
+          python -c "import fastapi, httpx, pydantic, va3lm; print('VA3LM runtime dependencies OK')"
 
       - name: Run unified pytest suite
         run: python3 -m pytest tests/ -v --tb=short --cov=. --cov-report=xml
