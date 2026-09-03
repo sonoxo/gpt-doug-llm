@@ -3,6 +3,17 @@ name: Ecosystem README Refresh
 on:
   push:
     branches: [main]
+    paths:
+      - "scripts/generate_ecosystem_diagrams.py"
+      - "wakeup3lm/**"
+      - "agents/**"
+      - "tests/**"
+      - "safety-shield/**"
+      - "foundry/**"
+      - ".github/workflows/**"
+      - "palantir*.py"
+      - "zyra*.py"
+      - "!docs/assets/**"
   workflow_dispatch:
 
 permissions:
@@ -22,17 +33,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Generate adaptive ecosystem diagrams
-        run: python scripts/generate_ecosystem_diagrams.py
-      - name: Commit generated diagrams when repository state changed
+      - name: Refresh and publish adaptive ecosystem diagrams
         shell: bash
         run: |
-          if [[ -z "$(git status --porcelain docs/assets/)" ]]; then
-            echo "Ecosystem diagrams already match repository state."
-            exit 0
-          fi
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/ecosystem-flow.svg docs/assets/wakeup3lm-agent-loop.svg docs/assets/security-gates.svg
-          git commit -m "docs: refresh adaptive ecosystem diagrams"
-          git push
+
+          for attempt in 1 2 3; do
+            echo "Refresh attempt ${attempt}/3"
+            git fetch origin main
+            git reset --hard origin/main
+
+            GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_ecosystem_diagrams.py
+
+            if [[ -z "$(git status --porcelain docs/assets/)" ]]; then
+              echo "Ecosystem diagrams already match repository state."
+              exit 0
+            fi
+
+            git add docs/assets/ecosystem-flow.svg docs/assets/wakeup3lm-agent-loop.svg docs/assets/security-gates.svg
+            git commit -m "docs: refresh adaptive ecosystem diagrams [skip ci]"
+
+            if git push origin HEAD:main; then
+              echo "Ecosystem diagrams published."
+              exit 0
+            fi
+
+            echo "main advanced during refresh; regenerating from latest main."
+            sleep 2
+          done
+
+          echo "Unable to publish diagrams after 3 race-safe attempts."
+          exit 1
