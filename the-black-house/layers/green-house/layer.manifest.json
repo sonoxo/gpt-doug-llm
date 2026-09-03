@@ -21,9 +21,17 @@
     "allowedDomains": ["eco", "bio", "pharma", "fda"],
     "returnEvidenceToParent": true
   },
+  "runtime": {
+    "module": "va3lm.green_house",
+    "apiRoute": "/api/black-house/green-house",
+    "statusEmbedding": "/api/black-house/status#layers.greenHouse",
+    "commandCenter": "/black-house"
+  },
   "truthState": {
     "repositoryLayer": "IMPLEMENTED",
-    "runtimeMounted": "NOT_YET_RUNTIME_VERIFIED",
+    "runtimeMounted": "CI_VERIFIED_RUNTIME_MOUNT",
+    "runtimeVerificationWorkflow": "Green House Runtime Gate",
+    "runtimeVerificationRunId": 33801736869,
     "externalRegulatorConnection": "NOT_CLAIMED"
   }
 }
