@@ -1,15 +1,38 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://black-house.local/schemas/ontology-v1.json",
+  "$id": "https://black-house.local/schemas/ontology-v3.json",
   "title": "Black House Canonical Ontology",
   "type": "object",
-  "required": ["objects","relationships"],
+  "additionalProperties": false,
+  "required": ["kernelVersion", "controlPlane", "objects", "relationships"],
   "properties": {
+    "kernelVersion": {"const": "3.0.0"},
+    "controlPlane": {"const": "THE_BLACK_HOUSE_V1"},
     "objects": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["Mission","Agent","Model","User","Repository","Service","Tool","Resource","Evidence","Source","Decision","Approval","Action","Deployment","Incident","Policy","CredentialReference","Artifact","IntelligenceBrief"]
+        "enum": [
+          "Mission",
+          "Agent",
+          "Model",
+          "User",
+          "Repository",
+          "Service",
+          "Tool",
+          "Resource",
+          "Evidence",
+          "Source",
+          "Decision",
+          "Approval",
+          "Action",
+          "Deployment",
+          "Incident",
+          "Policy",
+          "CredentialReference",
+          "Artifact",
+          "IntelligenceBrief"
+        ]
       },
       "uniqueItems": true
     },
@@ -17,7 +40,20 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["EXECUTES","USES","PRODUCES","DERIVED_FROM","AUTHORIZES","GOVERNS","DEPLOYED_TO","IMPLEMENTS","RUNS_ON","ROUTES_TO","AUDITS","EVIDENCES"]
+        "enum": [
+          "EXECUTES",
+          "USES",
+          "PRODUCES",
+          "DERIVED_FROM",
+          "AUTHORIZES",
+          "GOVERNS",
+          "DEPLOYED_TO",
+          "IMPLEMENTS",
+          "RUNS_ON",
+          "ROUTES_TO",
+          "AUDITS",
+          "EVIDENCES"
+        ]
       },
       "uniqueItems": true
     }
