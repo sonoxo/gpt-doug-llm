@@ -1,0 +1,39 @@
+name: Authorized Web Content Discovery Gate
+
+on:
+  push:
+    paths:
+      - 'agents/authorized_web_content_discovery.py'
+      - 'skills/authorized-web-content-discovery.json'
+      - 'tests/test_authorized_web_content_discovery.py'
+      - '.github/workflows/authorized-web-content-discovery.yml'
+  pull_request:
+    paths:
+      - 'agents/authorized_web_content_discovery.py'
+      - 'skills/authorized-web-content-discovery.json'
+      - 'tests/test_authorized_web_content_discovery.py'
+      - '.github/workflows/authorized-web-content-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-skill:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install tests
+        run: python -m pip install pytest
+      - name: Validate skill manifest
+        run: python -m json.tool skills/authorized-web-content-discovery.json >/dev/null
+      - name: Run bounded skill tests
+        run: python -m pytest -q tests/test_authorized_web_content_discovery.py
+      - name: Compile skill runtime
+        run: python -m py_compile agents/authorized_web_content_discovery.py
