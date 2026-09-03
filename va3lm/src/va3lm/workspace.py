@@ -28,18 +28,12 @@ _DEFAULT_COMMANDS = {
     "yarn",
     "git",
 }
-
+_GIT_READ_ONLY = {"status", "diff", "log", "show", "rev-parse", "ls-files"}
+_BLOCKED_PACKAGE_ACTIONS = {"publish", "deploy", "release"}
 _IGNORED_PARTS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".va3lm"}
 _BLOCKED_FILES = {".env", ".env.local", ".env.production", ".env.development", "id_rsa", "id_ed25519"}
 _MAX_TEXT_BYTES = 1_000_000
 _MAX_COMMAND_OUTPUT = 100_000
-
-
-def _truthy(name: str, default: bool = False) -> bool:
-    value = os.getenv(name)
-    if value is None:
-        return default
-    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _allowed_commands() -> set[str]:
@@ -63,12 +57,32 @@ def _safe_environment() -> dict[str, str]:
     return result
 
 
-class WorkspaceRuntime:
-    """A local, workspace-bounded execution surface for VA3LM.
+def _command_policy(argv: list[str]) -> None:
+    executable = Path(argv[0]).name
+    if executable == "git":
+        if len(argv) < 2 or argv[1] not in _GIT_READ_ONLY:
+            allowed = ", ".join(sorted(_GIT_READ_ONLY))
+            raise WorkspaceError(f"git is read-only in VA3LM command mode; allowed subcommands: {allowed}")
+        return
 
-    The runtime intentionally has no ambient remote shell. File paths must resolve
-    inside the configured workspace. Mutating operations require explicit approval.
-    Commands are executed without a shell and must use an allow-listed executable.
+    if executable in {"npm", "pnpm", "yarn"}:
+        lowered = [item.lower() for item in argv[1:]]
+        if lowered and lowered[0] in _BLOCKED_PACKAGE_ACTIONS:
+            raise WorkspaceError(f"package-manager {lowered[0]} is blocked by the local coding runtime")
+        if "run" in lowered:
+            run_index = lowered.index("run")
+            if run_index + 1 < len(lowered) and lowered[run_index + 1] in _BLOCKED_PACKAGE_ACTIONS:
+                raise WorkspaceError(f"package-manager script {lowered[run_index + 1]} is blocked by the local coding runtime")
+
+
+class WorkspaceRuntime:
+    """Local coding tools with strict file-tool boundaries and explicit command approval.
+
+    VA3LM file operations are confined to the configured workspace. Development
+    commands start with that workspace as their current directory, use shell=False,
+    and require explicit approval, but they are not an operating-system filesystem
+    sandbox. Trusted project code can still access resources granted to the local OS
+    user. Production isolation therefore requires a separate container/VM runner.
     """
 
     def __init__(self, root: str | Path | None = None) -> None:
@@ -84,10 +98,15 @@ class WorkspaceRuntime:
             "root": str(self.root),
             "exists": self.root.exists(),
             "writesRequireApproval": True,
+            "commandsRequireApproval": True,
             "shell": False,
+            "commandFilesystemSandboxed": False,
+            "commandWorkingDirectory": str(self.root),
             "allowedCommands": sorted(_allowed_commands()),
+            "gitPolicy": "read-only-subcommands",
+            "publishDeployCommandsBlocked": True,
             "maxTextBytes": _MAX_TEXT_BYTES,
-            "modelSecretsPassedToCommands": False,
+            "modelSecretsPassedToCommandsByDefault": False,
         }
 
     def _resolve(self, relative: str | Path, *, allow_meta: bool = False) -> Path:
@@ -113,7 +132,8 @@ class WorkspaceRuntime:
         if not base.exists():
             raise WorkspaceError(f"path does not exist: {relative}")
         if base.is_file():
-            return {"path": str(base.relative_to(self.root)), "files": [str(base.relative_to(self.root))], "truncated": False}
+            rel = str(base.relative_to(self.root))
+            return {"path": rel, "files": [rel], "truncated": False}
 
         files: list[str] = []
         for path in sorted(base.rglob("*")):
@@ -195,7 +215,8 @@ class WorkspaceRuntime:
 
     def restore_backup(self, backup_id: str, *, approved: bool = False) -> dict[str, Any]:
         self._require_approval(approved)
-        if not backup_id or any(ch not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for ch in backup_id):
+        valid_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"
+        if not backup_id or any(ch not in valid_chars for ch in backup_id):
             raise WorkspaceError("invalid backup id")
         backup_path = self.backup_dir / f"{backup_id}.json"
         if not backup_path.exists():
@@ -220,10 +241,11 @@ class WorkspaceRuntime:
         executable = Path(argv[0]).name
         if executable not in _allowed_commands():
             raise WorkspaceError(f"command is not allow-listed: {executable}")
+        _command_policy(argv)
         timeout = max(1, min(int(timeout), 300))
         started = time.monotonic()
         try:
-            process = subprocess.run(  # noqa: S603 - argv + allow-list; shell is intentionally disabled
+            process = subprocess.run(  # noqa: S603 - allow-list, policy, shell=False
                 argv,
                 cwd=self.root,
                 env=_safe_environment(),
@@ -233,7 +255,6 @@ class WorkspaceRuntime:
                 check=False,
                 shell=False,
             )
-            timed_out = False
         except subprocess.TimeoutExpired as exc:
             return {
                 "command": argv,
@@ -246,7 +267,7 @@ class WorkspaceRuntime:
         return {
             "command": argv,
             "exitCode": process.returncode,
-            "timedOut": timed_out,
+            "timedOut": False,
             "durationMs": int((time.monotonic() - started) * 1000),
             "stdout": process.stdout[-_MAX_COMMAND_OUTPUT:],
             "stderr": process.stderr[-_MAX_COMMAND_OUTPUT:],
@@ -281,5 +302,6 @@ class WorkspaceRuntime:
             "root": str(self.root),
             "markers": found,
             "suggestedCommands": suggested,
-            "writesEnabledByDefault": _truthy("VA3LM_AUTO_APPROVE", False),
+            "automaticApprovalSupported": False,
+            "commandFilesystemSandboxed": False,
         }
