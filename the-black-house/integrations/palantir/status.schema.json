@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://black-house.local/schemas/palantir-status-v1.json",
+  "title": "Black House Palantir Verification Status",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "implementationState",
+    "verificationState",
+    "liveTenantVerified",
+    "configuredComponents",
+    "verifiedComponents",
+    "items"
+  ],
+  "properties": {
+    "implementationState": {"const": "CODE_COMPLETE"},
+    "verificationState": {
+      "type": "string",
+      "enum": [
+        "PROBE_UNAVAILABLE_IN_STANDALONE_RUNTIME",
+        "LIVE_TENANT_UNVERIFIED",
+        "CONFIGURED_BUT_NOT_FULLY_VERIFIED",
+        "LIVE_TENANT_VERIFIED"
+      ]
+    },
+    "liveTenantVerified": {"type": "boolean"},
+    "configuredComponents": {"type": "integer", "minimum": 0},
+    "verifiedComponents": {"type": "integer", "minimum": 0},
+    "allCodeImplemented": {"type": "boolean"},
+    "items": {"type": "array", "items": {"type": "object"}}
+  }
+}
