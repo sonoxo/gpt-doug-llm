@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-
 from va3lm.app import app
 from va3lm.ontology import CANONICAL_OBJECT_TYPES, CANONICAL_RELATIONSHIPS, kernel_status
 
