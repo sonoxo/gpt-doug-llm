@@ -1,0 +1,36 @@
+name: Wakeup3lm IDE-LLM Kernel
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "wakeup3lm/**"
+      - "tests/test_wakeup3lm.py"
+      - ".github/workflows/wakeup3lm.yml"
+  pull_request:
+    paths:
+      - "wakeup3lm/**"
+      - "tests/test_wakeup3lm.py"
+      - ".github/workflows/wakeup3lm.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test dependency
+        run: python -m pip install pytest
+      - name: Compile Wakeup3lm kernel
+        run: python -m compileall wakeup3lm
+      - name: Run Wakeup3lm regression suite
+        run: python -m pytest tests/test_wakeup3lm.py -q
