@@ -43,6 +43,24 @@ ROLLBACK OR RELEASE
 9. **Evidence over confidence theater.** Intel claims retain provenance, confidence and gaps.
 10. **Fail closed.** Unknown identity, source, permission, environment or model boundary is not an implicit allow.
 
+## MAX-VA defensive cyber skill
+
+`max-va-mainframe-defensive-pentest-v1` extends the shared profile with authorized mainframe security training for Virginia-LLM / RVIA / GPT-DOUG-LLM / MAX-VA-LLM.
+
+The module teaches:
+
+- mainframe architecture and trust-boundary analysis;
+- TN3270, CICS, JES and RACF security concepts;
+- sandbox attack-surface inventory;
+- authorization and least-privilege review;
+- detection engineering and incident reconstruction;
+- hardening, segmentation and encryption review;
+- purple-team validation where every simulated weakness is paired with prevention, detection and retesting.
+
+The authorization gate limits offensive simulation to operator-owned systems, explicitly authorized targets, CTFs, training ranges and disposable labs. Unknown or real-world third-party targets are redirected to defensive analysis or sandbox exercises.
+
+See [`mainframe-defensive-pentest-v1.md`](./mainframe-defensive-pentest-v1.md).
+
 ## AIP alignment
 
 The profile follows current public Palantir AIP concepts:
@@ -53,15 +71,19 @@ The profile follows current public Palantir AIP concepts:
 - Automate can execute Logic or stage Ontology edits for human review.
 - AIP Evals uses test cases, evaluators, metrics, comparisons and repeated runs to manage LLM nondeterminism.
 
-## Video source
+## Video sources
 
-User-supplied reference: `https://www.youtube.com/watch?v=vgwql8Mv1CE`
+Registered user-supplied references include:
 
-The source is registered in the knowledge graph, but a reliable transcript was not recoverable during this update. The fleet therefore does not invent lessons from unseen audio. When a reliable transcript becomes available, it can be converted into claim-level knowledge with provenance and confidence.
+- `https://www.youtube.com/watch?v=vgwql8Mv1CE`
+- `https://www.youtube.com/watch?v=25iMrJDyIDk`
+
+A reliable transcript was not recoverable for these sources during their respective updates. The fleet therefore does not invent lessons from unseen audio. Publicly verifiable topic-level context may be registered with provenance, while detailed source claims remain pending transcript review.
 
 ## Canonical files
 
 - [`rvia-agentic-core.json`](./rvia-agentic-core.json) — machine-readable knowledge profile.
+- [`mainframe-defensive-pentest-v1.md`](./mainframe-defensive-pentest-v1.md) — MAX-VA authorized mainframe security training module.
 - [`../fleet-24.json`](../fleet-24.json) — fleet inheritance declaration.
 - [`../agentic_builder.py`](../agentic_builder.py) — blueprint generator for new agents.
 - [`../summon.py`](../summon.py) — verifies the fleet knowledge profile at startup.
