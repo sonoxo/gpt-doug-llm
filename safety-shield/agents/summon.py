@@ -2,10 +2,12 @@
 import json
 from pathlib import Path
 
+from knowledge_loader import load_knowledge_bundle
+
 ROOT = Path(__file__).parent
 manifest = json.loads((ROOT / "fleet-24.json").read_text())
-knowledge_path = ROOT / manifest["operating_model"]["knowledge_path"]
-knowledge = json.loads(knowledge_path.read_text())
+bundle = load_knowledge_bundle()
+knowledge = bundle["core"]
 expected_profile = manifest["operating_model"]["knowledge_profile"]
 
 if knowledge.get("profile") != expected_profile:
@@ -23,6 +25,10 @@ if mismatched:
 
 print(f"SUMMONING {len(manifest['agents'])} SAFETY-SHIELD AGENTS")
 print(f"KNOWLEDGE PROFILE: {expected_profile} v{knowledge['version']}")
+print(
+    "KNOWLEDGE MODULES: "
+    + ", ".join(f"{item['id']}@{item['version']}" for item in bundle["modules"])
+)
 print("AGENTIC LOOP: " + " -> ".join(knowledge["agentic_loop"]))
 print()
 
@@ -32,4 +38,4 @@ for agent in manifest["agents"]:
         f"[knowledge={agent['knowledge_profile']}]"
     )
 
-print("\nFleet knowledge verified. Execution remains policy-gated and least-privileged.")
+print("\nFleet knowledge and modules verified. Execution remains policy-gated and least-privileged.")
