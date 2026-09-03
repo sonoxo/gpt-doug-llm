@@ -1,4 +1,4 @@
-# FREE VIDEO STUDIO
+# gpt-doug-llm-max-AsTra
 
 A **zero-paid-inference-API** cinematic AI-video studio. It reproduces the practical creation loop demonstrated in modern Seedance 2.5 tutorials—prompt direction, image/reference starts, storyboarded shots, camera/lighting control, continuity chaining, synchronized sound, refinement, and export—using local/free components instead of a Seedance subscription.
 
