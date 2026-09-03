@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "planeId": "AIP_FOUNDRY_PROTECTION_V1",
+  "name": "AIP Foundry Protection Plane",
+  "parentControlPlane": "THE_BLACK_HOUSE_V1",
+  "purpose": "Evidence-gated protection and quality controls for Black House missions, tools, models, services and governed layers.",
+  "toolClasses": [
+    "ontology_policy_gate",
+    "mission_authorization_gate",
+    "evidence_provenance_gate",
+    "runtime_health_gate",
+    "deployment_truth_gate",
+    "connection_truth_gate",
+    "authorization_truth_gate",
+    "audit_lineage_gate",
+    "quality_regression_gate"
+  ],
+  "protectedPlanes": [
+    "THE_BLACK_HOUSE_V1",
+    "THE_GREEN_HOUSE_V1",
+    "RVIA",
+    "VA3LM",
+    "WAKEUP3LM",
+    "ZYRA",
+    "ZYRA_CLOUD",
+    "XUNIA",
+    "NXYZ",
+    "GPT_DOUG_ASTRA_LLM",
+    "GPT_DOUG_LLM"
+  ],
+  "greenPolicy": {
+    "required": [
+      "implementation_evidence",
+      "test_evidence",
+      "runtime_health_evidence"
+    ],
+    "externalDeploymentRequiresProbe": true,
+    "externalConnectionRequiresProbe": true,
+    "externalAuthorizationRequiresProbe": true,
+    "palantirLiveTenantConnectedRequiresAuthorizedTenantProbe": true,
+    "unknownOrMissingEvidence": "NOT_GREEN",
+    "failedGate": "RED"
+  },
+  "foundrySemantics": {
+    "ontology": "typed_objects_and_registered_relationships",
+    "actions": "policy_gated_mutations",
+    "lineage": "evidence_and_provenance_required",
+    "quality": "regression_and_runtime_health_required"
+  },
+  "truthState": {
+    "repositoryProtectionPlane": "IMPLEMENTED",
+    "liveFoundryTenantConnection": "NOT_CLAIMED",
+    "liveAIPTenantAuthorization": "NOT_CLAIMED"
+  }
+}
