@@ -1,0 +1,68 @@
+name: Palantir Federal + IC Security Gate
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "palantir_*.py"
+      - "federal_compliance.py"
+      - "tests/test_palantir_*.py"
+      - "docs/FEDERAL_IC_ALIGNMENT.md"
+      - ".github/workflows/palantir-federal-compliance.yml"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "palantir_*.py"
+      - "federal_compliance.py"
+      - "tests/test_palantir_*.py"
+      - "docs/FEDERAL_IC_ALIGNMENT.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  palantir-federal-gate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile security modules
+        run: |
+          python -m py_compile palantir_foundry.py palantir_stack.py palantir_terminal.py federal_compliance.py
+
+      - name: Run Foundry transport tests
+        run: python -m unittest tests.test_palantir_foundry -v
+
+      - name: Run federal and IC control tests
+        run: python -m unittest tests.test_palantir_federal_compliance -v
+
+      - name: Fail closed on accidental classified mode
+        env:
+          GOV_ALLOW_CLASSIFIED: "true"
+          GOV_CLASSIFIED_ENVIRONMENT_AUTHORIZED: "false"
+        run: |
+          python - <<'PY'
+          from federal_compliance import FederalComplianceProfile
+          state = FederalComplianceProfile().status()
+          assert state["assessment_state"] == "control-gap", state
+          assert not state["controls"]["DATA_no_unapproved_classified_processing"], state
+          print("classified-mode fail-closed gate: PASS")
+          PY
+
+      - name: Verify no certification theater
+        run: |
+          python - <<'PY'
+          from federal_compliance import FederalComplianceProfile
+          state = FederalComplianceProfile().status()
+          assert state["certification"]["certified"] is False
+          assert state["certification"]["ato"] is False
+          assert state["certification"]["cia_approved"] is False
+          print("authorization claims gate: PASS")
+          PY
