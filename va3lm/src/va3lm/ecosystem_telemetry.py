@@ -35,6 +35,25 @@ def _request_json(url: str, token: str = "", timeout: float = 5.0) -> dict[str, 
     return payload
 
 
+def _repository_payloads(
+    base: str,
+    auth: str,
+    timeout: float,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    try:
+        return (
+            _request_json(base, auth, timeout),
+            _request_json(f"{base}/actions/runs?per_page=1", auth, timeout),
+        )
+    except HTTPError as exc:
+        if auth and exc.code in {401, 403, 404}:
+            return (
+                _request_json(base, "", timeout),
+                _request_json(f"{base}/actions/runs?per_page=1", "", timeout),
+            )
+        raise
+
+
 def _workflow_state(run: dict[str, Any] | None) -> str:
     if run is None:
         return "AMBER"
@@ -58,8 +77,7 @@ def probe_repository(
     auth = token if token is not None else os.getenv("GITHUB_TOKEN", "")
     base = f"https://api.github.com/repos/{repository}"
     try:
-        repo = _request_json(base, auth, timeout)
-        runs = _request_json(f"{base}/actions/runs?per_page=1", auth, timeout)
+        repo, runs = _repository_payloads(base, auth, timeout)
         workflow_runs = runs.get("workflow_runs", [])
         latest = workflow_runs[0] if workflow_runs else None
         return {
