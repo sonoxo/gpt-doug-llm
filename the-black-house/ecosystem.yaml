@@ -1,0 +1,42 @@
+schemaVersion: 1.0.0
+controlPlane: THE_BLACK_HOUSE_V1
+status: implemented
+canonicalRoot: sonoxo/gpt-doug-llm/the-black-house
+missionProtocol: black-house-mission-v1
+governance:
+  ingressGate: SHADOW_GLASS
+  observabilityLayer: GLASS_ONION
+  approvalAuthority: ZYRA
+  missionRouter: RVIA
+  ontology: BLACK_HOUSE_ONTOLOGY_V1
+systems:
+  - id: GPT_DOUG_LLM_MAX
+    repository: https://github.com/sonoxo/gpt-doug-llm
+    role: reasoning_planning_agent_runtime
+  - id: ZYRA
+    repository: https://github.com/sonoxo/zyra
+    role: policy_security_approval_execution_audit
+  - id: XUNIA
+    repository: https://github.com/sonoxo/xuniadao
+    role: applications_agents_orchestration
+  - id: NXYZ
+    repository: https://github.com/sonoxo/zyra
+    role: ontology_evidence_intelligence_integration
+  - id: WAKEUP3LM
+    repository: https://github.com/sonoxo/gpt-doug-llm
+    role: governed_ide_llm
+  - id: VA3LM
+    repository: https://github.com/sonoxo/gpt-doug-llm
+    role: bounded_coding_runtime
+  - id: ZYRA_CLOUD
+    repository: https://github.com/sonoxo/zyra
+    role: github_compute_registry_evidence_audit
+externalPlanes:
+  - id: PALANTIR
+    codeState: implemented
+    liveState: tenant_unverified
+rules:
+  - implementation_does_not_imply_deployment
+  - credentials_do_not_imply_authorization
+  - platform_access_does_not_imply_action_permission
+  - consequential_actions_require_policy_and_approval
