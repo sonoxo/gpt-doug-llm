@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://black-house.local/schemas/mission-v1.json",
+  "title": "Black House Mission Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["missionId","requestedBy","intent","target","classification","approvalState","evidence","audit"],
+  "properties": {
+    "missionId": {"type":"string","minLength":1},
+    "requestedBy": {"type":"string","minLength":1},
+    "intent": {"type":"string","minLength":1},
+    "target": {"type":"string","minLength":1},
+    "classification": {"type":"string","enum":["public","internal","restricted"]},
+    "requiredCapabilities": {"type":"array","items":{"type":"string"},"default":[]},
+    "allowedTools": {"type":"array","items":{"type":"string"},"default":[]},
+    "approvalState": {"type":"string","enum":["PENDING_POLICY","PENDING_HUMAN_REVIEW","APPROVED","DENIED","COMPLETED","FAILED"]},
+    "plan": {"type":["object","null"]},
+    "evidence": {"type":"array","items":{"type":"object"}},
+    "result": {"type":["object","null"]},
+    "audit": {"type":"array","items":{"type":"object"}}
+  }
+}
