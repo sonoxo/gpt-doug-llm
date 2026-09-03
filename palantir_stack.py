@@ -11,6 +11,7 @@ import os
 from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
+from federal_compliance import FederalComplianceProfile
 from palantir_foundry import FoundryClient
 
 
@@ -89,6 +90,7 @@ class PalantirStack:
 
     def status(self) -> dict[str, Any]:
         planes = self.planes()
+        compliance = FederalComplianceProfile(self.foundry).status()
         return {
             "stack": "palantir-enterprise-operating-system",
             "configured_planes": [plane.name for plane in planes if plane.configured],
@@ -100,6 +102,7 @@ class PalantirStack:
                 "deploy": "Apollo",
                 "develop_and_analyze": "JupyterLab",
             },
+            "compliance": compliance,
             "guardrails": [
                 "no ambient authority",
                 "no fabricated Palantir entitlement",
@@ -107,5 +110,7 @@ class PalantirStack:
                 "Foundry writes disabled by default",
                 "human approval for consequential actions",
                 "preserve Palantir markings, provenance and auditability",
+                "no classified processing without an explicitly authorized environment",
+                "no claim of Space Force, NSA, NASA, CIA or IC certification without formal agency authorization",
             ],
         }
