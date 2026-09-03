@@ -5,6 +5,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 DEFAULT_REPOSITORIES = [
@@ -13,13 +14,27 @@ DEFAULT_REPOSITORIES = [
     "sonoxo/zyra",
     "sonoxo/aip-community-registry-zyra",
 ]
+TRUSTED_GITHUB_API_HOST = "api.github.com"
 
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _validate_github_api_url(url: str) -> None:
+    parsed = urlsplit(url)
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != TRUSTED_GITHUB_API_HOST
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.port not in {None, 443}
+    ):
+        raise ValueError("Telemetry URL must use the pinned GitHub HTTPS API host")
+
+
 def _request_json(url: str, token: str = "", timeout: float = 5.0) -> dict[str, Any]:
+    _validate_github_api_url(url)
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": "black-house-telemetry/1.0",
@@ -28,7 +43,8 @@ def _request_json(url: str, token: str = "", timeout: float = 5.0) -> dict[str, 
     if token:
         headers["Authorization"] = f"Bearer {token}"
     request = Request(url, headers=headers)
-    with urlopen(request, timeout=timeout) as response:
+    # B310 is safe here because scheme/host/credentials/port are pinned above.
+    with urlopen(request, timeout=timeout) as response:  # nosec B310
         payload = json.load(response)
     if not isinstance(payload, dict):
         raise ValueError("GitHub telemetry response was not a JSON object")
@@ -87,7 +103,8 @@ def probe_repository(
             "defaultBranch": repo.get("default_branch"),
             "pushedAt": repo.get("pushed_at"),
             "archived": bool(repo.get("archived")),
-            "visibility": repo.get("visibility") or ("private" if repo.get("private") else "public"),
+            "visibility": repo.get("visibility")
+            or ("private" if repo.get("private") else "public"),
             "latestWorkflow": (
                 {
                     "name": latest.get("name"),
