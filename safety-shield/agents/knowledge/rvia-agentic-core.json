@@ -1,6 +1,6 @@
 {
   "profile": "rvia-agentic-core-v1",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "updated": "2026-09-02",
   "purpose": "Shared runtime knowledge contract for GPT-LLM, Virginia-LLM, RVIA, ZYRA, XUNIA, TheBlackHouse and associated bounded agents.",
   "learning_mode": "runtime-context-and-versioned-knowledge; no claim of model-weight retraining",
@@ -133,6 +133,31 @@
     "chatbot_agents": "Equip assistants only with mission-specific Ontology context, documents and tools.",
     "ontology": "Represent operational nouns as objects/links and governed verbs as actions/functions."
   },
+  "palantir_platform_profile": {
+    "id": "palantir-stack-v1",
+    "module": "palantir-stack-v1.json",
+    "architecture": "AIP + Foundry/Ontology + Gotham + Apollo + JupyterLab Code Workspaces",
+    "routing": {
+      "AIP": "agent reasoning, LLM workflows, automations and evals",
+      "Ontology": "governed operational objects, links, properties, actions and state",
+      "Gotham": "authorized mission/intelligence operational view over supported ontology data",
+      "Apollo": "continuous delivery, release orchestration and deployment control",
+      "JupyterLab": "Foundry Code Workspace for analysis, model development and Ontology interaction"
+    },
+    "execution_contract": [
+      "Use the existing Foundry REST bridge for authorized Ontology reads and explicitly approved Actions.",
+      "Treat AIP as the governed reasoning/orchestration layer rather than a source of ambient authority.",
+      "Treat Gotham availability as enrollment-dependent and preserve Palantir markings and permissions.",
+      "Treat Apollo as the governed deployment plane; do not infer remote execution authority from configuration alone.",
+      "Use JupyterLab Code Workspaces for notebook/model workflows when provisioned in Foundry.",
+      "Re-authorize every cross-plane operation and preserve provenance, identity and auditability.",
+      "Never claim Palantir licensing, entitlement, access, partnership, government affiliation or deployment unless independently verified."
+    ],
+    "terminology": {
+      "jupiter": "Normalize to JupyterLab for this integration because current Palantir documentation exposes JupyterLab via Code Workspaces and no Palantir product named Jupiter was verified."
+    },
+    "terminal_command": "/palantir stack"
+  },
   "new_agent_contract": {
     "required": [
       "name",
@@ -214,6 +239,36 @@
       "type": "official-documentation",
       "name": "Palantir AIP Evals",
       "url": "https://www.palantir.com/docs/foundry/aip-evals/overview"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir Integrated Platforms: AIP, Foundry and Apollo",
+      "url": "https://www.palantir.com/docs/foundry/architecture-center/platforms"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir AIP Architecture",
+      "url": "https://www.palantir.com/docs/foundry/architecture-center/aip-architecture"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir Gotham API",
+      "url": "https://www.palantir.com/docs/gotham/api"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir Foundry-Gotham Ontology Integration",
+      "url": "https://www.palantir.com/docs/foundry/object-link-types/enable-gotham-integration"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir Code Workspaces",
+      "url": "https://www.palantir.com/docs/foundry/code-workspaces"
+    },
+    {
+      "type": "official-documentation",
+      "name": "Palantir JupyterLab Code Workspaces",
+      "url": "https://www.palantir.com/docs/foundry/code-workspaces/jupyterlab"
     },
     {
       "type": "user-supplied-video-source",
