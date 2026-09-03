@@ -4,11 +4,9 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 import argparse
 import json
-from pathlib import Path
 from typing import Iterable
 
-ROOT = Path(__file__).resolve().parent
-KNOWLEDGE_PATH = ROOT / "knowledge" / "rvia-agentic-core.json"
+from knowledge_loader import load_knowledge_bundle
 
 
 @dataclass(frozen=True)
@@ -17,6 +15,7 @@ class AgentBlueprint:
     mission: str
     owner: str
     knowledge_profile: str
+    knowledge_modules: tuple[str, ...]
     inputs: tuple[str, ...]
     outputs: tuple[str, ...]
     allowed_tools: tuple[str, ...]
@@ -32,10 +31,8 @@ class AgentBlueprint:
 
 
 def load_knowledge() -> dict:
-    data = json.loads(KNOWLEDGE_PATH.read_text())
-    if data.get("profile") != "rvia-agentic-core-v1":
-        raise RuntimeError("Unexpected or unsupported knowledge profile")
-    return data
+    """Compatibility helper returning the canonical core knowledge profile."""
+    return load_knowledge_bundle()["core"]
 
 
 def _clean(values: Iterable[str]) -> tuple[str, ...]:
@@ -56,7 +53,8 @@ def build_blueprint(
     context_budget: str = "minimum-necessary",
     tool_budget: str = "explicit-allowlist-only",
 ) -> AgentBlueprint:
-    knowledge = load_knowledge()
+    bundle = load_knowledge_bundle()
+    knowledge = bundle["core"]
     if not name.strip() or not mission.strip() or not owner.strip():
         raise ValueError("name, mission and owner are required")
 
@@ -71,6 +69,7 @@ def build_blueprint(
         mission=mission.strip(),
         owner=owner.strip(),
         knowledge_profile=knowledge["profile"],
+        knowledge_modules=tuple(item["id"] for item in bundle["modules"]),
         inputs=_clean(inputs),
         outputs=_clean(outputs),
         allowed_tools=_clean(tools),
@@ -93,6 +92,7 @@ def build_blueprint(
             "mission_id",
             "agent",
             "knowledge_profile",
+            "knowledge_modules",
             "identity",
             "source_refs",
             "data_classification",
