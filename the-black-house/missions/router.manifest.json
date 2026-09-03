@@ -1,0 +1,37 @@
+{
+  "protocol": "black-house-mission-v1",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "kernelVersion": "3.0.0",
+  "failClosed": true,
+  "stages": [
+    "RVIA",
+    "IDENTITY",
+    "SHADOW_GLASS",
+    "ONTOLOGY_CONTEXT",
+    "PLANNER",
+    "ZYRA_AUTHORIZATION",
+    "DISPATCH",
+    "GLASS_ONION",
+    "EVIDENCE",
+    "AUDIT"
+  ],
+  "targets": {
+    "GPT_DOUG_MAX": {"mode": "local-planner"},
+    "VIRGINIA": {"mode": "local-runtime"},
+    "WAKEUP3LM": {"mode": "local-ontology-runtime"},
+    "ZYRA": {"mode": "contract-adapter"},
+    "XUNIA": {"mode": "contract-adapter"},
+    "NXYZ": {"mode": "contract-adapter"},
+    "ZYRA_CLOUD": {"mode": "contract-adapter"},
+    "AIP_REGISTRY": {"mode": "contract-adapter"},
+    "PALANTIR": {"mode": "authorized-external-adapter"}
+  },
+  "mutationPolicy": {
+    "requiresZyraApproval": true,
+    "approvedState": "APPROVED"
+  },
+  "externalVerificationPolicy": {
+    "palantirRequiresAuthorizedLiveProbe": true,
+    "neverInferEntitlementFromCode": true
+  }
+}
