@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
 import math
 import re
 import threading
 import time
 from collections import Counter
+from dataclasses import asdict, dataclass
 
 TOKEN_RE = re.compile(r"[A-Za-z0-9_./:-]+")
 SESSION_RE = re.compile(r"[^A-Za-z0-9_.:-]+")
