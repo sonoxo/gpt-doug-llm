@@ -6,6 +6,23 @@ import json
 from pathlib import Path
 from typing import Any
 
+KERNEL_VERSION = "3.0.0"
+CONTROL_PLANE = "THE_BLACK_HOUSE_V1"
+CANONICAL_RELATIONSHIPS = {
+    "EXECUTES",
+    "USES",
+    "PRODUCES",
+    "DERIVED_FROM",
+    "AUTHORIZES",
+    "GOVERNS",
+    "DEPLOYED_TO",
+    "IMPLEMENTS",
+    "RUNS_ON",
+    "ROUTES_TO",
+    "AUDITS",
+    "EVIDENCES",
+}
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -31,11 +48,12 @@ class OntologyLink:
 
 
 class OntologyGraph:
-    """Small durable ontology for Wakeup3lm runtime state.
+    """Durable Wakeup3lm state bound to the Black House kernel.
 
-    It mirrors Palantir-style object/link/action thinking without claiming a
-    Palantir deployment. All agent-visible operational state is represented as
-    typed objects and links before tools act on it.
+    Local IDE object types remain available for high-resolution execution state,
+    while the canonical Black House object vocabulary is accepted directly.
+    The graph mirrors object/link/action thinking without claiming a live
+    external ontology deployment.
     """
 
     CORE_TYPES = {
@@ -52,6 +70,23 @@ class OntologyGraph:
         "Checkpoint",
         "Deployment",
         "PolicyDecision",
+        "Mission",
+        "Agent",
+        "User",
+        "Repository",
+        "Service",
+        "Tool",
+        "Resource",
+        "Evidence",
+        "Source",
+        "Decision",
+        "Approval",
+        "Action",
+        "Incident",
+        "Policy",
+        "CredentialReference",
+        "Artifact",
+        "IntelligenceBrief",
     }
 
     def __init__(self, persistence_path: str | Path | None = None) -> None:
@@ -60,6 +95,16 @@ class OntologyGraph:
         self.links: list[OntologyLink] = []
         if self.persistence_path and self.persistence_path.exists():
             self._load()
+
+    @property
+    def kernel(self) -> dict[str, Any]:
+        return {
+            "version": KERNEL_VERSION,
+            "controlPlane": CONTROL_PLANE,
+            "authority": "sonoxo/gpt-doug-llm/the-black-house",
+            "relationshipTypes": sorted(CANONICAL_RELATIONSHIPS),
+            "failClosed": True,
+        }
 
     def upsert(self, object_type: str, object_id: str, **properties: Any) -> OntologyObject:
         if object_type not in self.CORE_TYPES:
@@ -101,8 +146,21 @@ class OntologyGraph:
         self._persist()
         return link
 
+    def canonical_link(
+        self,
+        source_type: str,
+        source_id: str,
+        relation: str,
+        target_type: str,
+        target_id: str,
+    ) -> OntologyLink:
+        if relation not in CANONICAL_RELATIONSHIPS:
+            raise ValueError(f"Unsupported Black House relationship: {relation}")
+        return self.link(source_type, source_id, relation, target_type, target_id)
+
     def snapshot(self) -> dict[str, Any]:
         return {
+            "kernel": self.kernel,
             "objects": [asdict(obj) for obj in self.objects.values()],
             "links": [asdict(link) for link in self.links],
         }
