@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "repositories": [
+    {"id":"GPT_DOUG_LLM","repo":"sonoxo/gpt-doug-llm","role":"reasoning_runtime_governance","required":true},
+    {"id":"ZYRA","repo":"sonoxo/zyra","role":"security_approval_cloud_control","required":true},
+    {"id":"XUNIA","repo":"sonoxo/xuniadao","role":"applications_agents_orchestration","required":true},
+    {"id":"AIP_REGISTRY","repo":"sonoxo/aip-community-registry-zyra","role":"shared_ci_and_aip_registry","required":true},
+    {"id":"EYERIS","repo":"sonoxo/eyeris","role":"perception_interface","required":false},
+    {"id":"GODS_EYE","repo":"sonoxo/gods-eye-viewXUNIA","role":"geospatial_visualization","required":false}
+  ]
+}
