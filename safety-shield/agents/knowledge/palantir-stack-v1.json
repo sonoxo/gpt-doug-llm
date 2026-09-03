@@ -1,0 +1,61 @@
+{
+  "knowledge_id": "palantir-stack-v1",
+  "version": "1.0.0",
+  "updated": "2026-09-02",
+  "applies_to": ["GPT-DOUG-LLM", "Virginia-LLM", "RVIA", "ZYRA", "XUNIA", "MAX-VA-LLM"],
+  "purpose": "Provider-aligned routing contract for Palantir AIP, Ontology, Gotham, Apollo and JupyterLab Code Workspaces.",
+  "platform_model": {
+    "AIP": {
+      "role": "agent reasoning, LLM workflows, automations and evals",
+      "route": "reason-and-orchestrate",
+      "requires": ["authorized Foundry enrollment", "AIP enabled", "governed context/tools"]
+    },
+    "Ontology": {
+      "role": "objects, links, properties, actions, functions and operational state",
+      "route": "read-or-change-governed-state",
+      "requires": ["authorized Ontology", "object/action permissions", "write gate for mutations"]
+    },
+    "Gotham": {
+      "role": "authorized defense/intelligence operational workflows over dynamic ontology data",
+      "route": "mission-operational-view",
+      "requires": ["Gotham enrollment", "supported Foundry/Gotham integration", "markings and permissions"]
+    },
+    "Apollo": {
+      "role": "continuous delivery and deployment orchestration",
+      "route": "release-and-deploy",
+      "requires": ["authorized Apollo environment", "deployment policy", "release approval"]
+    },
+    "JupyterLab": {
+      "role": "Foundry Code Workspace for analysis, models, notebooks and Ontology interaction",
+      "route": "develop-analyze-experiment",
+      "requires": ["Foundry Code Workspace", "workspace data permissions", "AIP enabled for AIP coding agent"]
+    }
+  },
+  "routing_policy": [
+    "Use AIP for model-assisted reasoning and agent workflows.",
+    "Use the Ontology as the governed operational source of truth rather than unmanaged agent memory.",
+    "Use Gotham only for data and workflows exposed to the authorized Gotham enrollment.",
+    "Use Apollo for governed software delivery, never as ambient remote execution authority.",
+    "Use JupyterLab Code Workspaces for exploratory analysis, model development and notebook-based Ontology work.",
+    "Re-authorize every cross-plane action and preserve identity, markings, provenance and audit logs."
+  ],
+  "local_implementation": {
+    "foundry_client": "palantir_foundry.py",
+    "terminal_bridge": "palantir_terminal.py",
+    "capability_registry": "palantir_stack.py",
+    "command": "/palantir stack"
+  },
+  "truthfulness_rule": "Configuration flags describe intended integration only. They never imply Palantir licensing, enrollment, entitlement, credentials, connectivity or government affiliation.",
+  "terminology": {
+    "jupiter": "Normalized to JupyterLab because current Palantir documentation exposes JupyterLab through Code Workspaces; no Palantir product named Jupiter was verified."
+  },
+  "official_sources": [
+    "https://www.palantir.com/docs/foundry/architecture-center/platforms",
+    "https://www.palantir.com/docs/foundry/aip",
+    "https://www.palantir.com/docs/foundry/architecture-center/aip-architecture",
+    "https://www.palantir.com/docs/foundry/object-link-types/enable-gotham-integration",
+    "https://www.palantir.com/docs/gotham/api",
+    "https://www.palantir.com/docs/foundry/code-workspaces",
+    "https://www.palantir.com/docs/foundry/code-workspaces/jupyterlab"
+  ]
+}
