@@ -45,7 +45,7 @@ DEPLOY
 | 🧭 | Preview gateway | Next layer |
 | 🧭 | Deployment adapter | Next layer |
 
-**Repo telemetry:** `6` Wakeup3lm Python modules · `45` test files · `31` workflows · `13` ontology object types.
+**Repo telemetry:** `6` Wakeup3lm Python modules · `45` test files · `32` workflows · `13` ontology object types.
 
 **Current ontology:** `AgentDecision`, `AgentRun`, `Build`, `Checkpoint`, `Deployment`, `File`, `Model`, `PolicyDecision`, `Preview`, `Process`, `Project`, `ToolCall`, `Workspace`.
 <!-- WAKEUP3LM:AUTO:END -->
