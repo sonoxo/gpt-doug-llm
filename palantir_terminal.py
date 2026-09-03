@@ -1,4 +1,4 @@
-"""Terminal commands that expose the GPT-DOUG <-> Palantir Foundry bridge."""
+"""Terminal commands that expose the GPT-DOUG <-> Palantir platform bridge."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from typing import Callable, Optional
 
 from palantir_bridge import DougPalantirBridge
 from palantir_foundry import FoundryError
+from palantir_stack import PalantirStack
 
 
 @dataclass
@@ -28,15 +29,30 @@ def handle_palantir_command(
 ) -> PalantirCommandResult:
     if not prompt.startswith("/palantir"):
         return PalantirCommandResult(handled=False)
+
+    raw = prompt[len("/palantir") :].strip()
+
+    # The stack registry is useful even before credentials are configured. It
+    # reports intended/configured planes without claiming Palantir entitlement.
+    if raw in {"stack", "platform"}:
+        return PalantirCommandResult(
+            True,
+            _dump(PalantirStack(bridge.foundry if bridge else None).status()),
+        )
+
     if bridge is None:
         return PalantirCommandResult(
             handled=True,
-            output="PALANTIR // NOT CONFIGURED // set FOUNDRY_BASE_URL and authorized credentials",
+            output=(
+                "PALANTIR // NOT CONFIGURED // set FOUNDRY_BASE_URL and authorized credentials // "
+                "use /palantir stack to inspect platform integration state"
+            ),
         )
 
-    raw = prompt[len("/palantir") :].strip()
     if not raw or raw == "status":
-        return PalantirCommandResult(True, _dump(bridge.status()))
+        status = bridge.status()
+        status["platform"] = PalantirStack(bridge.foundry).status()
+        return PalantirCommandResult(True, _dump(status))
 
     try:
         if raw == "ontologies":
@@ -100,7 +116,7 @@ def handle_palantir_command(
             )
 
         raise FoundryError(
-            "commands: status | ontologies | object-types | objects | get | search | ask | action"
+            "commands: status | stack | platform | ontologies | object-types | objects | get | search | ask | action"
         )
     except (FoundryError, ValueError) as error:
         return PalantirCommandResult(True, f"PALANTIR ERROR // {error}")
