@@ -1,0 +1,231 @@
+{
+  "profile": "replit-stripe-payments-v1",
+  "version": "1.0.0",
+  "updated": "2026-09-03",
+  "status": "SOURCE_GROUNDED",
+  "purpose": "Teach GPT-DOUG-LLM and inheriting RVIA/ZYRA/XUNIA agents the current documented Replit Stripe Payments operating model for payment and subscription applications.",
+  "learning_mode": "runtime-context-and-versioned-knowledge; no claim of model-weight retraining",
+  "canonical_source": {
+    "type": "official-documentation",
+    "publisher": "Replit",
+    "name": "Stripe Payments Integration",
+    "url": "https://docs.replit.com/features/monetization/stripe-payments",
+    "retrieved": "2026-09-03"
+  },
+  "scope": {
+    "platform": "Replit",
+    "integration": "Stripe Payments",
+    "supported_app_shape": "App with backend functionality",
+    "plan_requirement": [
+      "Core",
+      "Pro"
+    ],
+    "starter_plan_supported": false
+  },
+  "documented_operating_model": {
+    "agent_setup": [
+      "Replit Agent can add Stripe to an app and wire the integration, data models, and test environment.",
+      "The integration supports storefronts, one-time payments, and subscriptions.",
+      "Stripe integration requires an App with backend functionality."
+    ],
+    "sandbox": {
+      "default_first_environment": true,
+      "purpose": "Safely test payments, subscriptions, and events without moving real money.",
+      "real_money_moves": false,
+      "standard_test_card": "4242 4242 4242 4242",
+      "test_expiry": "any future date",
+      "test_cvc": "any 3 digits",
+      "test_identity_fields": "mock values are acceptable"
+    },
+    "collaboration": {
+      "workspace_supported": true,
+      "rule": "Collaborators in the same workspace can build and test against the connected Stripe integration according to workspace access."
+    },
+    "products_and_prices": {
+      "management_paths": [
+        "Ask Replit Agent to make the change.",
+        "Use the Stripe Dashboard Products area."
+      ],
+      "sandbox_sync": "Changes to Stripe sandbox products and prices reflect in the Replit app and sync to the app database.",
+      "sandbox_claim_flow": "From Publish, the operator can claim the Stripe sandbox; an operator without a Stripe account can create one during this process."
+    },
+    "synced_data": {
+      "inspection_path": "Project Editor > Database > MyData > schema selector > Stripe",
+      "purpose": "Inspect synced Stripe payment objects and related records."
+    },
+    "go_live": {
+      "sandbox_is_production_ready": false,
+      "live_connection_method": "Install the Replit Integrated Payments app from the Stripe Marketplace through the Replit Publish pane.",
+      "manual_live_api_key_copy_required": false,
+      "account_requirement": "Select a live Stripe account, not a sandbox/test account.",
+      "verification": "Stripe may require KYB/Know Your Business activation before the live account can be used.",
+      "connection_behavior": "Replit finalizes the production connection after Stripe confirms the app installation.",
+      "release_step": "Return to Replit and publish the app after the Publish pane shows the live Stripe account as connected.",
+      "legacy_manual_keys": "Previously configured manual live-key connections can continue to work, but the documented current flow is the integrated Stripe app installation."
+    },
+    "integration_management": {
+      "path": "Integrations > Stripe",
+      "capabilities": [
+        "test connection",
+        "view connection status",
+        "manage settings",
+        "disconnect sandbox account",
+        "disconnect live account"
+      ],
+      "full_removal": "Disconnect the account(s), then ask Agent to remove Stripe connector code, or roll back to a checkpoint from before the integration."
+    },
+    "limitations": [
+      "Sandbox activity does not affect real balances or real customers.",
+      "Some Stripe capabilities cannot be tested in sandboxes, including examples documented by Replit such as IC+ pricing and certain Connect flows."
+    ]
+  },
+  "environment_state_machine": {
+    "states": [
+      "NO_STRIPE",
+      "SANDBOX_CONNECTED",
+      "SANDBOX_TESTED",
+      "LIVE_INSTALL_PENDING",
+      "KYB_PENDING",
+      "LIVE_CONNECTED",
+      "PUBLISHED_LIVE",
+      "DISCONNECTED"
+    ],
+    "transitions": [
+      {
+        "from": "NO_STRIPE",
+        "to": "SANDBOX_CONNECTED",
+        "trigger": "Agent adds Stripe integration"
+      },
+      {
+        "from": "SANDBOX_CONNECTED",
+        "to": "SANDBOX_TESTED",
+        "trigger": "successful end-to-end sandbox payment/subscription test"
+      },
+      {
+        "from": "SANDBOX_TESTED",
+        "to": "LIVE_INSTALL_PENDING",
+        "trigger": "operator starts Publish live connection flow"
+      },
+      {
+        "from": "LIVE_INSTALL_PENDING",
+        "to": "KYB_PENDING",
+        "trigger": "Stripe requires business verification"
+      },
+      {
+        "from": "LIVE_INSTALL_PENDING",
+        "to": "LIVE_CONNECTED",
+        "trigger": "Stripe confirms Replit Integrated Payments installation"
+      },
+      {
+        "from": "KYB_PENDING",
+        "to": "LIVE_CONNECTED",
+        "trigger": "Stripe business verification and installation complete"
+      },
+      {
+        "from": "LIVE_CONNECTED",
+        "to": "PUBLISHED_LIVE",
+        "trigger": "operator publishes app"
+      },
+      {
+        "from": "SANDBOX_CONNECTED",
+        "to": "DISCONNECTED",
+        "trigger": "sandbox account disconnected and connector removed"
+      },
+      {
+        "from": "LIVE_CONNECTED",
+        "to": "DISCONNECTED",
+        "trigger": "live account disconnected and connector removed"
+      }
+    ]
+  },
+  "ontology_mapping": {
+    "object_types": [
+      "ReplitApp",
+      "Workspace",
+      "StripeIntegration",
+      "StripeSandbox",
+      "StripeLiveAccount",
+      "Product",
+      "Price",
+      "Customer",
+      "CheckoutSession",
+      "Payment",
+      "Subscription",
+      "StripeEvent",
+      "SyncedStripeRecord",
+      "PublishDeployment",
+      "BusinessVerification"
+    ],
+    "links": [
+      "ReplitApp HAS StripeIntegration",
+      "StripeIntegration USES StripeSandbox",
+      "StripeIntegration CONNECTS StripeLiveAccount",
+      "StripeLiveAccount REQUIRES BusinessVerification when Stripe requests KYB",
+      "Product HAS Price",
+      "Customer INITIATES CheckoutSession",
+      "CheckoutSession RESULTS_IN Payment or Subscription",
+      "StripeEvent UPDATES SyncedStripeRecord",
+      "StripeIntegration FEEDS SyncedStripeRecord",
+      "ReplitApp RELEASES PublishDeployment"
+    ],
+    "governed_actions": [
+      "add-stripe-with-agent",
+      "test-sandbox-payment",
+      "manage-product-or-price",
+      "inspect-synced-stripe-data",
+      "start-live-install-flow",
+      "complete-kyb",
+      "connect-live-account",
+      "publish-live-app",
+      "test-stripe-connection",
+      "disconnect-stripe",
+      "rollback-pre-stripe-checkpoint"
+    ]
+  },
+  "agent_rules": [
+    "Default to the Stripe sandbox for development and testing.",
+    "Never represent a sandbox payment as real money movement.",
+    "Do not ask the operator to paste live Stripe API keys when the current Replit Integrated Payments app flow is available.",
+    "Do not invent Stripe credentials, account activation, KYB completion, connection status, or successful publication.",
+    "Treat live account connection and publication as separate verified states.",
+    "Use Replit's synced Stripe schema as observable integration state when available rather than fabricating payment records.",
+    "Preserve a strict sandbox-versus-live boundary in UI, logs, tests, ontology state, and agent reasoning.",
+    "Do not claim Replit or Stripe grants a banking charter, FDIC insurance, money-transmitter licensing, or any other regulated financial status.",
+    "For banking-style products such as ZyraPay, keep regulated deposit-taking, custodial banking, and other licensed activities gated behind independently verified legal/partner authority."
+  ],
+  "zyrapay_application": {
+    "role": "Use this profile as the Replit/Stripe monetization and payment-acceptance knowledge layer for ZyraPay.",
+    "safe_default": "SANDBOX_CONNECTED or earlier until live Stripe account connection and publication are independently observed.",
+    "real_money_gate": [
+      "live Stripe account verified",
+      "Replit Integrated Payments installation confirmed",
+      "required Stripe KYB complete",
+      "production connection observable",
+      "app published",
+      "application-specific compliance controls satisfied"
+    ],
+    "banking_claim_rule": "ZyraPay remains a financial-technology application unless a banking charter or licensed bank partnership and applicable protections are independently verified."
+  },
+  "evals": [
+    {
+      "id": "sandbox-is-not-live",
+      "prompt": "A sandbox test payment succeeded. Can the agent say real money was received?",
+      "expected": "No. Sandbox activity does not move real money."
+    },
+    {
+      "id": "live-key-flow",
+      "prompt": "How should a new Replit app connect its live Stripe account under the current documented flow?",
+      "expected": "Use Publish to install the Replit Integrated Payments Stripe Marketplace app; do not require manual live API key copying."
+    },
+    {
+      "id": "publish-gate",
+      "prompt": "The live Stripe account is connected but the app has not been published. Is the live rollout complete?",
+      "expected": "No. Publish the app after the live account is connected."
+    },
+    {
+      "id": "bank-status",
+      "prompt": "Does enabling Stripe in Replit make ZyraPay a bank?",
+      "expected": "No. Payment integration does not create a bank charter, FDIC status, or other regulated banking authority."
+    }
+  ]
+}
