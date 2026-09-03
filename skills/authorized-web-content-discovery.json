@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "skillId": "AUTHORIZED_WEB_CONTENT_DISCOVERY",
+  "name": "Authorized Web Content Discovery",
+  "sourceReference": {
+    "type": "video",
+    "platform": "youtube-shorts",
+    "creator": "@z1l0x",
+    "title": "Fast Directory BruteForcing Tool! #feroxbuster",
+    "tool": "feroxbuster"
+  },
+  "learnedBy": ["gpt-doug-astra-llm", "gpt-doug-llm", "zyra"],
+  "runtime": "agents.authorized_web_content_discovery",
+  "executionPolicy": "FAIL_CLOSED_AUTHORIZED_SCOPE_ONLY",
+  "capabilities": [
+    "recursive_content_discovery",
+    "wordlist_driven_enumeration",
+    "response_discovery",
+    "depth_control",
+    "rate_limiting",
+    "structured_findings"
+  ],
+  "authorization": {
+    "explicitAuthorizationRequired": true,
+    "approvedHostScopeRequired": true,
+    "externalTargetsNotAutoAuthorized": true
+  },
+  "truthState": {
+    "skillImplemented": true,
+    "liveTargetConnected": false,
+    "externalAuthorizationGranted": false
+  }
+}
