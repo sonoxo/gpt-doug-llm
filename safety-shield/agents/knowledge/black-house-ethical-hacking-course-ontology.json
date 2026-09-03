@@ -1,0 +1,61 @@
+{
+  "ontology": "BLACK_HOUSE_ETHICAL_HACKING_LEARNING_V1",
+  "source_id": "youtube-ug8W0sFiVJo",
+  "mission": "Convert public cybersecurity instruction into bounded defensive knowledge, authorized-lab skills, evidence requirements, and eval-ready agent competencies.",
+  "entities": {
+    "learning_module": [
+      "linux_fundamentals",
+      "privilege_and_administration",
+      "network_fundamentals",
+      "service_discovery",
+      "wireless_security",
+      "wireless_threat_detection",
+      "packet_analysis"
+    ],
+    "tools": [
+      "kali_linux",
+      "nmap",
+      "wireshark",
+      "aircrack_ng_concepts"
+    ],
+    "evidence": [
+      "command_output",
+      "pcap",
+      "lab_scope_record",
+      "finding",
+      "mitigation",
+      "eval_result"
+    ]
+  },
+  "relations": [
+    {"from":"linux_fundamentals","to":"network_fundamentals","type":"PREREQUISITE_FOR"},
+    {"from":"network_fundamentals","to":"service_discovery","type":"PREREQUISITE_FOR"},
+    {"from":"wireless_security","to":"wireless_threat_detection","type":"INFORMS"},
+    {"from":"packet_analysis","to":"wireless_threat_detection","type":"SUPPORTS"},
+    {"from":"service_discovery","to":"finding","type":"PRODUCES_EVIDENCE_FOR"},
+    {"from":"finding","to":"mitigation","type":"REQUIRES"}
+  ],
+  "action_classes": {
+    "ALLOW": [
+      "inspect_local_files",
+      "inspect_owned_lab_hosts",
+      "analyze_supplied_pcaps",
+      "enumerate_services_in_declared_lab_scope",
+      "detect_wireless_deauthentication_patterns",
+      "document_mitigations"
+    ],
+    "REVIEW": [
+      "active_wireless_testing_in_isolated_lab",
+      "credential_recovery_against_user-owned_training_artifacts",
+      "packet_capture_on_shared_networks_with_explicit_authorization"
+    ],
+    "BLOCK": [
+      "third_party_targeting",
+      "uncontrolled_wireless_deauthentication",
+      "credential_theft",
+      "persistence_on_external_systems",
+      "stealth_or_evasion_against_non_lab_systems"
+    ]
+  },
+  "graduation_rule": "A module is learned only when the learner can explain the concept, produce authorized-lab evidence, identify risk, and provide a defensive mitigation."
+}
