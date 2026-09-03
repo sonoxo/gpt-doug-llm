@@ -29,7 +29,7 @@ DEPLOY
 <!-- WAKEUP3LM:AUTO:START -->
 ## Live ecosystem pulse
 
-> Generated automatically from the repository. Last refresh: **2026-09-03 09:24 UTC**
+> Generated automatically from the repository. Last refresh: **2026-09-03 09:29 UTC**
 
 <p align="center"><img src="./assets/ecosystem.svg" alt="Wakeup3lm animated ecosystem architecture" width="100%" /></p>
 
@@ -45,7 +45,7 @@ DEPLOY
 | 🧭 | Preview gateway | Next layer |
 | 🧭 | Deployment adapter | Next layer |
 
-**Repo telemetry:** `5` Wakeup3lm Python modules · `44` test files · `31` workflows · `13` ontology object types.
+**Repo telemetry:** `6` Wakeup3lm Python modules · `44` test files · `31` workflows · `13` ontology object types.
 
 **Current ontology:** `AgentDecision`, `AgentRun`, `Build`, `Checkpoint`, `Deployment`, `File`, `Model`, `PolicyDecision`, `Preview`, `Process`, `Project`, `ToolCall`, `Workspace`.
 <!-- WAKEUP3LM:AUTO:END -->
