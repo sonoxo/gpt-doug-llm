@@ -32,12 +32,22 @@
       "governedBy": "THE_BLACK_HOUSE_V1"
     }
   ],
+  "skills": [
+    {
+      "id": "WARP_PROGRAMMER_WORKFLOW",
+      "manifest": "skills/warp-programmer-workflow.json",
+      "role": "DEVELOPER_EXECUTION",
+      "qualityGate": "AIP",
+      "evidenceRequiredForGreen": true
+    }
+  ],
   "bindings": [
     {"component":"VA3LM","repository":"sonoxo/gpt-doug-llm","contract":"va3lm/src/va3lm/ontology.py"},
     {"component":"WAKEUP3LM","repository":"sonoxo/gpt-doug-llm","contract":"wakeup3lm/ontology.py"},
     {"component":"XUNIA","repository":"sonoxo/xuniadao","contract":".black-house/kernel.json"},
     {"component":"ZYRA","repository":"sonoxo/zyra","contract":".black-house/kernel.json"},
     {"component":"AIP_REGISTRY","repository":"sonoxo/aip-community-registry-zyra","contract":".black-house/runtime.json"},
-    {"component":"GREEN_HOUSE","repository":"sonoxo/gpt-doug-llm","contract":"the-black-house/layers/green-house/layer.manifest.json"}
+    {"component":"GREEN_HOUSE","repository":"sonoxo/gpt-doug-llm","contract":"the-black-house/layers/green-house/layer.manifest.json"},
+    {"component":"WARP_PROGRAMMER_WORKFLOW","repository":"sonoxo/gpt-doug-llm","contract":"skills/warp-programmer-workflow.json"}
   ]
 }
