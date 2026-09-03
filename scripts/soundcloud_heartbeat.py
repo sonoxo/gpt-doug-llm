@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""SoundCloud availability/auth heartbeat for GPT-DOUG-LLM.
+"""SoundCloud creator-session heartbeat for GPT-DOUG-LLM.
 
-Public probes never use private browser cookies. If SOUNDCLOUD_ACCESS_TOKEN is
-configured as a GitHub Actions secret, /me is also checked to verify that the
-account-scoped API token remains valid. The token is never printed.
+This monitor deliberately separates consumer playback reachability from creator
+surfaces. Public probes never use private browser cookies. If
+SOUNDCLOUD_ACCESS_TOKEN is configured as a GitHub Actions secret, /me is also
+checked. The token is never printed.
 """
 
 from __future__ import annotations
@@ -17,7 +18,26 @@ import urllib.request
 from datetime import datetime, timezone
 
 TIMEOUT_SECONDS = 20
-USER_AGENT = "gpt-doug-llm-soundcloud-heartbeat/1.0"
+USER_AGENT = "gpt-doug-llm-soundcloud-heartbeat/1.1"
+CREATOR_FAILURE_HINTS = {
+    "unauthenticated-session-page",
+    "soundcloud-error-page",
+}
+
+
+def classify_body(body: str) -> str:
+    text = body.lower()
+    if "you are not logged in" in text or "sign in to upload" in text:
+        return "unauthenticated-session-page"
+    if (
+        "sorry! something went wrong" in text
+        or "thanks for your patience. try again" in text
+        or "something went wrong" in text
+    ):
+        return "soundcloud-error-page"
+    if "javascript is disabled" in text:
+        return "javascript-shell"
+    return "normal-or-unclassified"
 
 
 def request(url: str, *, token: str | None = None) -> dict:
@@ -65,41 +85,34 @@ def request(url: str, *, token: str | None = None) -> dict:
         }
 
 
-def classify_body(body: str) -> str:
-    text = body.lower()
-    if "you are not logged in" in text or "sign in to upload" in text:
-        return "unauthenticated-session-page"
-    if "sorry! something went wrong" in text:
-        return "soundcloud-error-page"
-    if "javascript is disabled" in text:
-        return "javascript-shell"
-    return "normal-or-unclassified"
-
-
 def main() -> int:
     token = os.getenv("SOUNDCLOUD_ACCESS_TOKEN", "").strip()
     report = {
         "service": "soundcloud",
         "observer": "gpt-doug-llm-max-heartbeat",
+        "ontology": "foundry/ontology/soundcloud-creator-session-ontology.json",
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "probes": {},
     }
 
     public_targets = {
-        "web": "https://soundcloud.com/",
+        "consumer_web": "https://soundcloud.com/",
+        "artist_studio": "https://soundcloud.com/artists",
         "upload_surface": "https://soundcloud.com/upload",
         "auth_surface": "https://secure.soundcloud.com/",
         "developers": "https://developers.soundcloud.com/",
     }
 
     hard_failure = False
+    creator_degraded = False
+
     for name, url in public_targets.items():
         result = request(url)
         report["probes"][name] = result
-        # 4xx can be a WAF/bot response from a GitHub runner while the service is
-        # still reachable. Network errors and 5xx are treated as outages.
         if not result.get("reachable", False):
             hard_failure = True
+        if name in {"artist_studio", "upload_surface"} and result.get("body_hint") in CREATOR_FAILURE_HINTS:
+            creator_degraded = True
 
     if token:
         auth_result = request("https://api.soundcloud.com/me", token=token)
@@ -107,13 +120,26 @@ def main() -> int:
         auth_result["valid"] = auth_result.get("status") == 200
         report["probes"]["account_api_auth"] = auth_result
         if not auth_result["valid"]:
-            hard_failure = True
+            creator_degraded = True
     else:
         report["probes"]["account_api_auth"] = {
             "configured": False,
             "valid": None,
-            "note": "Optional: add SOUNDCLOUD_ACCESS_TOKEN as a repository Actions secret to verify /me without exposing credentials.",
+            "note": "Optional account-scoped check. Do not store browser cookies, passwords, or OTPs in GitHub.",
         }
+
+    consumer_ok = report["probes"]["consumer_web"].get("reachable", False)
+    if consumer_ok and creator_degraded:
+        report["incident_classification"] = "CREATOR_AUTH_SPLIT_BRAIN"
+        report["suspected_layer"] = "creator identity/session propagation or creator entitlement"
+        hard_failure = True
+    elif creator_degraded:
+        report["incident_classification"] = "CREATOR_SURFACE_DEGRADED"
+        hard_failure = True
+    elif hard_failure:
+        report["incident_classification"] = "SOUNDCLOUD_SURFACE_OUTAGE"
+    else:
+        report["incident_classification"] = "NO_DETECTED_PUBLIC_CREATOR_FAILURE"
 
     report["healthy"] = not hard_failure
     print(json.dumps(report, indent=2, sort_keys=True))
