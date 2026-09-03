@@ -30,8 +30,13 @@ jobs:
       - name: Validate JSON knowledge artifacts
         run: |
           python -m json.tool safety-shield/agents/knowledge/rvia-agentic-core.json >/dev/null
+          python -m json.tool safety-shield/agents/knowledge/palantir-stack-v1.json >/dev/null
+          python -m json.tool safety-shield/agents/knowledge/replit-stripe-payments-v1.json >/dev/null
           python -m json.tool safety-shield/agents/fleet-24.json >/dev/null
           python -m json.tool intel/sources/youtube-vgwql8Mv1CE.json >/dev/null
+
+      - name: Verify runtime knowledge bundle
+        run: python safety-shield/agents/knowledge_loader.py
 
       - name: Verify every fleet agent inherits the current profile
         run: python safety-shield/agents/summon.py
@@ -48,7 +53,8 @@ jobs:
             --tool validate-provenance \
             --data-class PUBLIC > /tmp/agent-blueprint.json
           python -m json.tool /tmp/agent-blueprint.json >/dev/null
+          grep -q 'replit-stripe-payments-v1' /tmp/agent-blueprint.json
 
       - name: Gate statement
         run: |
-          echo 'Knowledge inheritance verified. This gate validates repository runtime context and agent contracts; it does not claim model-weight retraining.'
+          echo 'Knowledge inheritance verified, including the Replit Stripe Payments module. This gate validates repository runtime context and agent contracts; it does not claim model-weight retraining.'
