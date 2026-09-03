@@ -1,0 +1,87 @@
+name: GPT-DOUG-ASTRA Functional Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agents/astra_router.py'
+      - 'agents/llm_backend.py'
+      - 'tests/test_astra_router.py'
+      - '.github/workflows/gpt-doug-astra.yml'
+  pull_request:
+    paths:
+      - 'agents/astra_router.py'
+      - 'agents/llm_backend.py'
+      - 'tests/test_astra_router.py'
+      - '.github/workflows/gpt-doug-astra.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  astra-functional-gate:
+    name: ASTRA functional gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test runtime
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Compile ASTRA runtime
+        run: python -m py_compile agents/astra_router.py agents/llm_backend.py agents/xunia_stream.py
+
+      - name: Run ASTRA routing tests
+        run: python -m pytest -q tests/test_astra_router.py
+
+      - name: Run offline ASTRA smoke test
+        env:
+          GPT_DOUG_PROVIDER: astra
+          GPT_DOUG_PROVIDER_ORDER: openai,claude,gemini,ollama
+          OPENAI_API_KEY: ''
+          ANTHROPIC_API_KEY: ''
+          GEMINI_API_KEY: ''
+          OLLAMA_BASE_URL: http://127.0.0.1:11434
+        run: |
+          python - <<'PY'
+          import importlib
+          import os
+
+          os.environ['GPT_DOUG_PROVIDER'] = 'astra'
+          backend = importlib.import_module('agents.llm_backend')
+          state = backend.health()
+
+          assert state['backend'] == 'astra', state
+          assert state['model'] == 'gpt-doug-astra', state
+          assert state['authorization_policy'] == 'route-ready-providers-only', state
+          assert state['upgrade_policy'] == 'model-version-agnostic', state
+          assert state['configured'] is False, state
+          assert state['model_available'] is False, state
+
+          result = backend.chat_once([
+              {'role': 'user', 'content': 'Fix this Python repository bug.'}
+          ])
+          assert result['provider'] == 'astra', result
+          assert result['error'] == 'all_providers_failed', result
+          print('ASTRA offline truth-state smoke test: PASS')
+          PY
+
+      - name: Functional gate summary
+        run: |
+          echo '✅ GPT-DOUG-ASTRA imports successfully'
+          echo '✅ Routing tests pass'
+          echo '✅ Offline readiness truth-state passes'
+          echo '✅ Runtime backend loads as astra'
