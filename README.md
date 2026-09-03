@@ -2,18 +2,21 @@
 
 <img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA product ecosystem" />
 
-# ZYRA // NXYZ PRODUCT PLATFORM
+# THE BLACK HOUSE // GPT-DOUG-LLM MAX
 
-### Governed agentic infrastructure for software engineering, enterprise AI workflows, browser-guided operations, and local automation.
+### ZYRA · Wakeup3lm · Ontology · Palantir AIP/Foundry · governed agentic infrastructure
 
 **Build with AI. Keep execution visible. Keep authority explicit.**
 
 [![Security Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/security-gate.yml?branch=main&style=for-the-badge&label=Security%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/security-gate.yml)
+[![Palantir Full Stack](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/palantir-full-stack.yml?branch=main&style=for-the-badge&label=Palantir%20Full%20Stack)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/palantir-full-stack.yml)
+[![Federal IC Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/palantir-federal-compliance.yml?branch=main&style=for-the-badge&label=Federal%20IC%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/palantir-federal-compliance.yml)
+[![Wakeup3lm](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/wakeup3lm.yml?branch=main&style=for-the-badge&label=Wakeup3lm)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/wakeup3lm.yml)
+[![Ecosystem Docs](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/ecosystem-readme-refresh.yml?branch=main&style=for-the-badge&label=Adaptive%20Docs)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/ecosystem-readme-refresh.yml)
 [![Unified Tests](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/unified-tests.yml?branch=main&style=for-the-badge&label=Unified%20Tests)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/unified-tests.yml)
 [![MIT](https://img.shields.io/github/license/sonoxo/gpt-doug-llm?style=for-the-badge)](LICENSE)
-![Mouse Mic](https://img.shields.io/badge/NXYZ%20Mouse%20Mic-v1.0.2-6f4cff?style=for-the-badge)
 
-[Products](#products) · [Shadow Glass](#️-shadow-glass--federal-mission-nexus) · [Why ZYRA](#why-zyra) · [Architecture](#architecture) · [Foundry](#palantir-foundry-integration) · [Quick Start](#quick-start) · [Trust](#trust-and-control) · [Docs](#documentation)
+[Ecosystem](#ecosystem-at-a-glance) · [Vibe-code loop](#how-wakeup3lm-builds-an-app) · [Security](#security-control-plane) · [Products](#products) · [Architecture](#architecture) · [Palantir](#palantir-foundry--aip-integration) · [Quick Start](#quick-start) · [Docs](#documentation)
 
 </div>
 
@@ -21,13 +24,97 @@
 
 ## The product in one minute
 
-ZYRA is the product layer around **GPT-DOUG-LLM / NXYZ**: a set of bounded agentic tools that can reason, navigate, edit, validate, and integrate with authorized systems without treating model output as automatic authority.
+**GPT-DOUG-LLM MAX** is the orchestration layer. **Wakeup3lm** is the IDE-native LLM execution kernel. **The Ontology** gives the system typed operational context. **ZYRA** provides bounded agentic execution. **SHADOW GLASS / GLASS ONION** provide policy, provenance, and defensive controls. Authorized **Palantir AIP / Foundry** connections can supply model, Logic, and Ontology context while the external tenant remains authoritative.
 
-The platform is designed around a simple execution contract:
+The execution contract is deliberately simple:
 
-> **AI proposes → policy bounds → approved tools execute → validation produces proof → humans retain control of material actions.**
+> **AI proposes → Ontology grounds → policy bounds → approved tools execute → tests and probes produce proof → humans retain control of material actions.**
 
-That makes the repository useful as more than a model experiment. It is a product platform for teams that want AI-assisted execution with explicit capability boundaries, auditability, and deployment discipline.
+This repository is designed to make that entire path visible instead of hiding execution behind a chat response.
+
+---
+
+## Ecosystem at a glance
+
+<div align="center">
+
+<img width="100%" src="docs/assets/ecosystem-flow.svg" alt="The Black House ecosystem flow from GPT-DOUG-LLM MAX through Wakeup3lm, Ontology, Palantir, tools, security, evidence, and deployment" />
+
+</div>
+
+### Read the diagram left-to-right, then down
+
+| Layer | Beginner translation | What it owns |
+| --- | --- | --- |
+| **GPT-DOUG-LLM MAX** | The coordinator | Breaks the goal into a governed engineering mission |
+| **Wakeup3lm** | The coding brain inside the IDE | Structured decisions, file/tool operations, repair loops, audit state |
+| **Ontology** | The system's shared map of reality | Projects, files, decisions, tool calls, builds, previews, checkpoints, deployments |
+| **Palantir AIP / Foundry** | Optional authorized enterprise intelligence plane | Model proxy, published Logic/functions, Foundry Ontology objects/actions |
+| **Agent + tools** | The hands | Read/edit files, run commands, build, test, inspect, validate |
+| **Security gates** | The guard rails around execution | Least privilege, approval gates, fail-closed checks, CI, compliance mappings |
+| **Evidence** | Proof that the change works | Tests, logs, previews, probes, audit records |
+| **Ship** | Controlled release | Checkpoint, deployment adapter, rollback path |
+
+**The important idea:** the model never becomes authority simply because it generated an answer. State is grounded, actions are explicit, and results have to survive verification.
+
+---
+
+## How Wakeup3lm builds an app
+
+<div align="center">
+
+<img width="100%" src="docs/assets/wakeup3lm-agent-loop.svg" alt="Wakeup3lm vibe coding loop showing ask, plan, ground, act, verify, repair, checkpoint, and ship" />
+
+</div>
+
+For a beginner, one prompt such as **“build me a responsive mobile web app”** becomes this engineering loop:
+
+```text
+ASK
+ ↓
+PLAN
+ ↓
+GROUND IN ONTOLOGY / AUTHORIZED CONTEXT
+ ↓
+EDIT + RUN + BUILD
+ ↓
+TEST + SECURITY + PREVIEW
+ ↓
+PASS? ── yes ──→ CHECKPOINT → SHIP
+  │
+  no
+  ↓
+DIAGNOSE → REPAIR → VERIFY AGAIN
+```
+
+Wakeup3lm records structured `AgentDecision` and `ToolCall` state so malformed model output becomes a governed failure that can be repaired instead of crashing the IDE.
+
+Deep dive: [Wakeup3lm README](wakeup3lm/README.md) · [Wakeup3lm Ontology](wakeup3lm/ontology.py) · [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md)
+
+---
+
+## Security control plane
+
+<div align="center">
+
+<img width="100%" src="docs/assets/security-gates.svg" alt="Repository-derived security and compliance gate map" />
+
+</div>
+
+The infographic is **generated from the repository itself**. `scripts/generate_ecosystem_diagrams.py` scans the live codebase, Ontology, tests, and `.github/workflows/` definitions. The `Ecosystem README Refresh` workflow regenerates the SVGs after repository changes, so the diagrams are not intended to become a manually maintained architecture snapshot.
+
+A green GitHub badge means the corresponding workflow passed its latest applicable run. The diagram itself means the gate is configured; it does not fabricate a passing result.
+
+Security design rules:
+
+- least privilege and explicit capability boundaries;
+- path and host boundary enforcement;
+- writes disabled or human-gated where consequences are material;
+- malformed or unknown agent actions fail closed;
+- tests, audits, and probes are evidence, not decoration;
+- no repository setting can manufacture external Palantir entitlement or government authorization.
+
+Read [SECURITY.md](SECURITY.md), [Federal / IC alignment](docs/FEDERAL_IC_ALIGNMENT.md), and [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md).
 
 ---
 
@@ -57,19 +144,15 @@ PUBLIC / AUTHORIZED SOURCES
  intent • context • execution • evidence
             ↓
   PALANTIR-STYLE ONTOLOGY
-       ↙       ↓       ↘
-SPACE FORCE   NSA     NASA
- mission    defensive  open data /
- systems      cyber     software
             ↓
      THE BLACK HOUSE
             ↓
-ZYRA • XUNIA • GPT-DOUG-LLM • VIRGINIA-LLM
+GPT-DOUG-MAX → WAKEUP3LM → ZYRA / XUNIA
 ```
 
-The mission nexus maps public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, and NASA public mission data/software into a provenance-first operational ontology. **These are independent project mappings, not agency credentials or endorsements.**
+Public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, NASA public mission data/software, NIST controls, and public IC directives can be mapped into the project's provenance-first control model. **These are independent software mappings, not agency credentials or endorsements.**
 
-[Open SHADOW GLASS control plane →](safety-shield/SHADOW_GLASS.md) · [Machine-readable ontology →](safety-shield/ontology/shadow-glass-palantir.json)
+[Open SHADOW GLASS →](safety-shield/SHADOW_GLASS.md) · [Machine-readable ontology →](safety-shield/ontology/shadow-glass-palantir.json)
 
 ---
 
@@ -77,99 +160,85 @@ The mission nexus maps public U.S. Space Force mission concepts, NSA defensive c
 
 | Product | What it does | Best fit | Readiness |
 | --- | --- | --- | --- |
+| **Wakeup3lm** | Ontology-first IDE LLM kernel with structured agent decisions, secure workspace tools, persistence, and audit state | AI-native browser IDE / vibe coding | **Implemented kernel** |
 | **ZYRA Core** | Bounded agentic software-engineering runtime with planning, repository edits, checkpoints, validation, rollback, self-heal, and defensive policy controls | Developers and technical teams building agentic workflows | **Implemented runtime** |
+| **GPT-DOUG ↔ Palantir Full Stack** | Foundry Ontology, AIP proxy/Logic, eval runner, Automate effects, Gotham adapter, Apollo adapter, and tenant probes | Authorized Palantir deployments | **Integration-ready** |
 | **NXYZ Mouse Mic** | Voice/keyboard browser guidance that finds, highlights, and activates visible Foundry controls with high-impact confirmation | Accessibility, operator assistance, dense enterprise UI navigation | **v1.0.2 shipping candidate** |
-| **GPT-DOUG ↔ Palantir Foundry Bridge** | Grounds GPT-DOUG in authorized Ontology objects and gates Foundry Actions behind explicit write enablement and user confirmation | Authorized Palantir Foundry deployments | **Integration-ready** |
 | **Watch Dog** | Local dog detection + temporal scoring + alerting for suspected bathroom events | Edge-AI / smart-camera experimentation | **Experimental prototype** |
 
 **Full portfolio:** [docs/PRODUCTS.md](docs/PRODUCTS.md)
 
-### NXYZ Mouse Mic — first shippable utility
-
-[`tools/nxyz-mouse-mic`](tools/nxyz-mouse-mic/README.md) is packaged as a Chrome Manifest V3 extension for supported Palantir Foundry pages.
-
-- No paid API key required by the extension.
-- No generic `<all_urls>` permission.
-- Typed-command mode runs locally in the extension.
-- Optional voice recognition uses the browser Web Speech implementation when available.
-- `show targets`, `where is <label>`, `click <label>`, and numbered targeting.
-- High-impact controls such as deploy/publish/approve/delete require explicit confirmation.
-- Store specifications, privacy language, icons, and publishing checklist are maintained in the product folder.
-
-[Mouse Mic source](tools/nxyz-mouse-mic/) · [Shipping specs](tools/nxyz-mouse-mic/SPECS.md) · [Privacy](tools/nxyz-mouse-mic/PRIVACY.md)
-
 ---
 
-## Why ZYRA
+## Why this architecture
 
-Most AI tooling optimizes for generating an answer. ZYRA focuses on the harder step: **turning a model recommendation into a controlled operation**.
+Most AI tooling optimizes for generating an answer. This ecosystem focuses on the harder step: **turning a model recommendation into a controlled operation with evidence.**
 
-| Value | ZYRA approach |
+| Value | Approach |
 | --- | --- |
 | **Execution control** | Deterministic policy and allowlisted tools sit between model output and mutation |
 | **Recoverability** | Checkpoint before mission-owned writes; rollback when final validation fails |
-| **Operational evidence** | Tests, logs, previews, reports, and runtime state are treated as proof rather than decoration |
+| **Operational evidence** | Tests, logs, previews, reports, and runtime state are treated as proof |
+| **Ontology grounding** | Operational nouns become typed objects and governed verbs become explicit actions/tool calls |
 | **Enterprise context** | Foundry integration retrieves only context exposed to the configured authorized identity |
-| **Local-first options** | Local/provider-neutral runtime paths reduce dependence on a single hosted model vendor |
+| **Local-first options** | Provider-neutral runtime paths reduce dependence on one hosted model vendor |
 | **Human authority** | Material external writes remain gated rather than silently delegated to the model |
-
-### Where it can create value
-
-- **Engineering teams:** turn natural-language goals into bounded repository missions.
-- **Enterprise AI teams:** connect reasoning to governed Ontology context instead of copy/pasted data.
-- **Operators and accessibility users:** navigate complex Foundry interfaces with spoken or typed guidance.
-- **R&D teams:** prototype local edge/automation workflows without pretending experiments are production systems.
 
 ---
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-    U[User / Operator] --> Z[ZYRA / GPT-DOUG]
-    Z --> P[Policy + Capability Boundary]
-    P -->|approved read/reason| R[Agent Runtime]
-    P -->|material action| A[Approval Gate]
-
-    R --> T[Allowlisted Tools]
-    T --> V[Validation / Evidence]
-    V -->|pass| K[Keep Result]
-    V -->|fail| RB[Rollback / Reject]
-
-    R --> F[Authorized Foundry Context]
-    R --> L[Local / Configured Model Provider]
-    A --> T
+flowchart TD
+    U[User / Developer] --> D[GPT-DOUG-LLM MAX]
+    D --> W[Wakeup3lm IDE LLM]
+    W --> O[Ontology Control Plane]
+    O --> P[Policy + Capability Boundary]
+    O --> AIP[Authorized Palantir AIP / Foundry]
+    P --> R[Agent Runtime + Allowlisted Tools]
+    R --> F[Files / Terminal / Build / Preview]
+    F --> V[Tests + Security Gates + Evidence]
+    V -->|pass| C[Checkpoint]
+    V -->|fail| W
+    C --> DEP[Approved Deployment]
+    AIP --> O
 ```
 
-**Design rule:** model reasoning is flexible; execution authority is explicit.
+**Design rule:** reasoning is flexible; execution authority is explicit; evidence determines whether the result survives.
 
 Deep dive: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/AGENTIC_RUNTIME.md](docs/AGENTIC_RUNTIME.md)
 
 ---
 
-## Palantir Foundry integration
+## Palantir Foundry + AIP integration
 
-The repository includes an implemented Foundry bridge for an **authorized Palantir enrollment**.
+The repository contains software adapters for an **authorized Palantir enrollment**.
 
-Implemented capabilities:
+Implemented code planes include:
 
-- OAuth client credentials or explicitly issued bearer-token configuration;
-- list Ontologies and object types;
-- read/search Ontology objects;
-- inject authorized Ontology data into GPT-DOUG reasoning context;
-- call Ontology Actions only when local writes are enabled **and** the user confirms;
-- host pinning and explicit Foundry configuration boundaries.
+- Foundry OAuth/bearer configuration and exact-host HTTPS transport boundaries;
+- Ontology listing, object types, object reads/searches, Query/Logic execution, and gated Actions;
+- AIP provider-compatible model proxy invocation;
+- published AIP Logic/function invocation;
+- external regression eval runner against published Logic targets;
+- Automate-compatible Action / Logic effect bridge;
+- Gotham REST adapter;
+- Apollo GraphQL adapter and explicitly approved Product Release publishing path;
+- live tenant/resource probes;
+- Wakeup3lm audit recording around external AIP/Logic operations.
 
-```bash
-python palantir_bridge.py status
-python palantir_bridge.py ontologies
-python palantir_bridge.py object-types <ontology>
-python palantir_bridge.py analyze <ontology> <object_type> "your question"
+```text
+/palantir stack
+/palantir probe
+/palantir probe-model
+/palantir query-types <ontology>
+/palantir aip-logic <ontology> <query_api_name> <parameters_json>
+/palantir aip-chat <model_rid> <prompt>
 ```
 
-The bridge does **not** manufacture credentials or grant tenant permissions. The connected Palantir identity and tenant policy remain authoritative.
+The repository does **not** manufacture credentials, licenses, tenant permissions, ATOs, clearances, or agency affiliation. External authorization remains authoritative.
 
-Integration guide: [docs/PALANTIR_FOUNDRY.md](docs/PALANTIR_FOUNDRY.md)
+Integration guides: [Palantir Foundry](docs/PALANTIR_FOUNDRY.md) · [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md)
 
 ---
 
@@ -182,7 +251,7 @@ python3 dougctl.py heal
 python3 zyra_chat.py
 ```
 
-Then verify the native runtime:
+Verify the native runtime:
 
 ```text
 /status
@@ -190,7 +259,7 @@ Then verify the native runtime:
 /laser-test
 ```
 
-Typical agent mission:
+Typical mission:
 
 ```text
 /plan add structured mission telemetry
@@ -201,7 +270,7 @@ Typical agent mission:
 Mission lifecycle:
 
 ```text
-OBSERVE → PLAN → EDIT → TEST → REVIEW → KEEP / ROLLBACK
+OBSERVE → PLAN → GROUND → EDIT → TEST → REVIEW → KEEP / REPAIR / ROLLBACK
 ```
 
 Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
@@ -210,20 +279,7 @@ Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
 
 ## Trust and control
 
-ZYRA is intentionally marketed around what the software can demonstrate, not unlimited-autonomy language.
-
-### Built-in boundaries
-
-- repository-scoped agent tools;
-- mission step/time/model-call budgets;
-- checkpoint-before-write behavior;
-- validation gates and rollback;
-- defensive LASER circuit-breaker behavior;
-- explicit Foundry write enablement;
-- confirmation before configured material actions;
-- no autonomous credential harvesting;
-- no unrestricted external offensive scanning or exploitation;
-- no claim that a local capability switch overrides an external platform's permissions.
+Built-in boundaries include repository-scoped agent tools, mission budgets, checkpoint-before-write behavior, validation gates, rollback, defensive circuit breakers, explicit Foundry write enablement, human confirmation for configured material actions, secret-aware configuration, and rejection of unrestricted external offensive behavior.
 
 Read [SECURITY.md](SECURITY.md) and [docs/SECURE_DEVELOPMENT_BASELINE.md](docs/SECURE_DEVELOPMENT_BASELINE.md).
 
@@ -231,17 +287,15 @@ Read [SECURITY.md](SECURITY.md) and [docs/SECURE_DEVELOPMENT_BASELINE.md](docs/S
 
 ## Product readiness
 
-ZYRA uses explicit readiness labels so buyers, collaborators, and reviewers can distinguish working code from future architecture.
-
 | Label | Meaning |
 | --- | --- |
-| **Implemented runtime** | Code exists in the repository and is intended to run with required local configuration |
+| **Implemented kernel/runtime** | Code exists and is covered by its repository test/CI contract |
 | **Shipping candidate** | Product package/specs exist and are being prepared for external distribution |
-| **Integration-ready** | Connector/runtime exists but requires customer/tenant authorization and configuration |
-| **Experimental prototype** | Useful R&D code; not represented as production-grade detection or assurance |
-| **Planned** | Architecture or roadmap item; do not treat as a currently deployed capability |
+| **Integration-ready** | Connector/runtime exists but requires external tenant authorization/configuration |
+| **Experimental prototype** | R&D code; not represented as production-grade assurance |
+| **Planned** | Architecture or roadmap item; do not treat it as currently deployed |
 
-This status discipline is part of the product: **claims should be traceable to code, configuration, or evidence.**
+A code-side ✅ and a live-tenant ✅ are deliberately different concepts.
 
 ---
 
@@ -249,20 +303,21 @@ This status discipline is part of the product: **claims should be traceable to c
 
 ```text
 gpt-doug-llm/
+├── wakeup3lm/                   # IDE LLM + local Ontology kernel
 ├── zyra_chat.py                 # Interactive ZYRA runtime
 ├── zyra_agent.py                # Bounded repository Agent Core
 ├── zyra_laser.py                # Defensive circuit breaker
-├── zyra_self_heal.py            # Local runtime repair
-├── palantir_foundry.py          # Foundry REST client
-├── palantir_bridge.py           # GPT-DOUG ↔ Foundry bridge
+├── palantir_foundry.py          # Hardened Foundry REST client
+├── palantir_stack.py            # Palantir capability/control registry
+├── federal_compliance.py        # Public federal/IC alignment gate
 ├── agents/                      # Planner / executor / reviewer components
 ├── workers/                     # Worker and orchestration services
-├── tools/nxyz-mouse-mic/        # Chrome browser-guidance product
-├── watch-dog/                   # Experimental local camera product
-├── safety-shield/               # SHADOW GLASS + GLASS ONION defensive control plane
-├── docs/                        # Product, architecture, integration, security docs
+├── tools/nxyz-mouse-mic/        # Browser-guidance product
+├── safety-shield/               # SHADOW GLASS + GLASS ONION control plane
+├── scripts/generate_ecosystem_diagrams.py
+├── docs/assets/                 # Auto-generated responsive SVG infographics
 ├── tests/                       # Regression tests
-└── .github/workflows/           # CI / security / release automation
+└── .github/workflows/           # CI / security / release / adaptive-doc automation
 ```
 
 ---
@@ -271,23 +326,22 @@ gpt-doug-llm/
 
 | Start here | Purpose |
 | --- | --- |
-| [SHADOW GLASS](safety-shield/SHADOW_GLASS.md) | Federal mission nexus, Glass Onion shield, ontology and control states |
-| [Product Portfolio](docs/PRODUCTS.md) | What ZYRA products exist, buyer value, and readiness |
+| [Wakeup3lm](wakeup3lm/README.md) | IDE-LLM kernel and Ontology-first execution model |
+| [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md) | AIP, Logic, Foundry, Gotham, Apollo and tenant verification |
+| [Federal / IC Alignment](docs/FEDERAL_IC_ALIGNMENT.md) | Public control alignment and explicit authorization boundaries |
+| [SHADOW GLASS](safety-shield/SHADOW_GLASS.md) | Defensive mission nexus and Glass Onion shield |
+| [Product Portfolio](docs/PRODUCTS.md) | Products, buyer value, and readiness |
 | [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
 | [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
-| [Palantir Foundry](docs/PALANTIR_FOUNDRY.md) | Authorized Foundry integration |
 | [Commands](docs/COMMANDS.md) | Terminal command reference |
-| [Roadmap](docs/ROADMAP.md) | Engineering direction |
 | [Security](SECURITY.md) | Security limitations and vulnerability reporting |
 | [Contributing](CONTRIBUTING.md) | Development workflow |
 
 ---
 
-## Market-facing independence statement
+## Independence statement
 
-**ZYRA, GPT-DOUG-LLM, NXYZ, SHADOW GLASS, GLASS ONION, TheBlackHouse, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
-
-That distinction matters commercially: customers should know exactly which capabilities come from this repository and which permissions or assurances belong to the external platforms they operate.
+**ZYRA, GPT-DOUG-LLM, Wakeup3lm, NXYZ, SHADOW GLASS, GLASS ONION, The Black House, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
 
 ---
 
@@ -297,8 +351,8 @@ MIT — see [LICENSE](LICENSE).
 
 <div align="center">
 
-### ZYRA
+### THE BLACK HOUSE // GPT-DOUG-LLM MAX
 
-**AI-assisted execution with visible boundaries, verifiable outcomes, and human authority where it matters.**
+**Prompt → Ontology → governed action → evidence → ship.**
 
 </div>
