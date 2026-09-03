@@ -1,8 +1,9 @@
-"""Capability map for the GPT-DOUG / Virginia-LLM Palantir integration.
+"""Capability map for the GPT-DOUG / Virginia-LLM / Wakeup3lm Palantir integration.
 
-This module does not manufacture Palantir access. It reports the Palantir
-planes that the operator has explicitly configured and maps each plane to its
-role in the local agent architecture.
+This module distinguishes repository implementation from live enrollment
+configuration. Every supported plane has a concrete adapter; live verification
+still depends on credentials, permissions, licensed products and tenant-side
+resources owned by the operator.
 """
 
 from __future__ import annotations
@@ -12,7 +13,9 @@ from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
 from federal_compliance import FederalComplianceProfile
+from palantir_apollo import ApolloClient
 from palantir_foundry import FoundryClient
+from palantir_gotham import PalantirGothamClient
 
 
 def _flag(name: str, default: bool = False) -> bool:
@@ -26,7 +29,9 @@ def _flag(name: str, default: bool = False) -> bool:
 class PalantirPlane:
     name: str
     role: str
+    implemented: bool
     configured: bool
+    adapter: str
     integration: str
     authority: str
     notes: str
@@ -40,51 +45,71 @@ class PalantirStack:
 
     def planes(self) -> list[PalantirPlane]:
         foundry_ready = self.foundry is not None
-        aip_enabled = foundry_ready and _flag("PALANTIR_AIP_ENABLED")
-        gotham_enabled = _flag("PALANTIR_GOTHAM_ENABLED")
-        apollo_enabled = _flag("PALANTIR_APOLLO_ENABLED")
-        jupyter_enabled = foundry_ready and _flag("PALANTIR_JUPYTER_ENABLED")
+        aip_configured = foundry_ready and _flag("PALANTIR_AIP_ENABLED")
+        gotham_configured = bool(os.getenv("GOTHAM_BASE_URL", "").strip())
+        apollo_configured = bool(os.getenv("APOLLO_URL", "").strip())
+        jupyter_configured = foundry_ready and _flag("PALANTIR_JUPYTER_ENABLED")
 
         return [
             PalantirPlane(
                 name="AIP",
-                role="agent reasoning, LLM workflows, automations and evals",
-                configured=aip_enabled,
-                integration="Foundry enrollment + explicit PALANTIR_AIP_ENABLED flag",
-                authority="inherits Foundry identity, Ontology permissions and local policy gates",
-                notes="AIP is modeled as the governed agent layer; this flag does not grant AIP entitlement.",
+                role="agent reasoning, provider-compatible LLM calls, published Logic/function execution, eval regression and Automate effects",
+                implemented=True,
+                configured=aip_configured,
+                adapter="palantir_aip.PalantirAIPClient + wakeup3lm.palantir.Wakeup3LMPalantirBridge",
+                integration="AIP model proxy + Ontology Query execution + external eval harness + Automate effect bridge",
+                authority="inherits Foundry identity, AIP entitlement, model availability, Ontology permissions and local policy gates",
+                notes="Code path is complete; live AIP use still requires AIP enabled on the enrollment and permission to use the selected model/function.",
             ),
             PalantirPlane(
                 name="Ontology",
                 role="operational objects, links, properties, actions and governed state",
+                implemented=True,
                 configured=foundry_ready,
-                integration="existing Foundry Ontology REST bridge",
+                adapter="palantir_foundry.FoundryClient",
+                integration="Foundry Ontology REST reads, searches, query execution and human-gated Actions",
                 authority="Foundry OAuth/token scopes plus object/action permissions",
-                notes="Reads are enabled by configured scopes; writes remain locally gated and disabled by default.",
+                notes="Reads use the authorized token; writes remain locally gated and disabled by default.",
             ),
             PalantirPlane(
                 name="Gotham",
-                role="defense/intelligence operational view over authorized ontology data",
-                configured=gotham_enabled,
-                integration="explicit enrollment-side Gotham integration / type mapping",
-                authority="Palantir enrollment permissions and markings",
-                notes="The repo records Gotham capability only; it does not invent a Gotham credential or bypass enrollment configuration.",
+                role="defense/intelligence operational data over authorized Gotham objects",
+                implemented=True,
+                configured=gotham_configured,
+                adapter="palantir_gotham.PalantirGothamClient",
+                integration="Gotham OAuth/Bearer REST API under /api/gotham/v1",
+                authority="Gotham enrollment permissions, markings and token scopes",
+                notes="Read and explicitly enabled write paths are implemented; configuration does not manufacture Gotham entitlement.",
             ),
             PalantirPlane(
                 name="Apollo",
                 role="continuous delivery, release orchestration and software deployment plane",
-                configured=apollo_enabled,
-                integration="explicit operator-managed Apollo enrollment/deployment workflow",
-                authority="Apollo deployment policy and operator authorization",
-                notes="Apollo is treated as deployment control, not as an unrestricted execution channel.",
+                implemented=True,
+                configured=apollo_configured,
+                adapter="palantir_apollo.ApolloClient",
+                integration="Apollo Hub GraphQL inspection + documented apollo-cli Product Release publishing",
+                authority="Apollo Hub token/service account, product/team permissions and explicit publish approval",
+                notes="Publishing is blocked unless the caller explicitly approves and apollo-cli is installed.",
             ),
             PalantirPlane(
                 name="JupyterLab",
                 role="Foundry Code Workspace for analysis, model development and Ontology interaction",
-                configured=jupyter_enabled,
-                integration="Foundry Code Workspaces / JupyterLab",
+                implemented=True,
+                configured=jupyter_configured,
+                adapter="Foundry Code Workspaces integration contract",
+                integration="Foundry-managed JupyterLab workspace; Wakeup3lm uses the same Ontology/AIP APIs from external IDE workflows",
                 authority="workspace lineage, data permissions and Foundry governance",
-                notes="Normalized from the requested 'jupiter' label to Palantir-documented JupyterLab Code Workspaces.",
+                notes="Provisioning JupyterLab itself is tenant-side; repository integration and routing are defined.",
+            ),
+            PalantirPlane(
+                name="Automate",
+                role="condition-driven effects using Ontology Actions and AIP Logic",
+                implemented=True,
+                configured=foundry_ready and _flag("PALANTIR_AUTOMATE_ENABLED"),
+                adapter="palantir_automate.PalantirAutomateBridge",
+                integration="Action and AIP Logic effect execution contract plus machine-readable manifests",
+                authority="Foundry permissions, Automate resource permissions and local human gates for writes",
+                notes="Palantir public docs expose Automate primarily as an in-platform application; this adapter does not invent undocumented CRUD endpoints.",
             ),
         ]
 
@@ -93,6 +118,8 @@ class PalantirStack:
         compliance = FederalComplianceProfile(self.foundry).status()
         return {
             "stack": "palantir-enterprise-operating-system",
+            "all_code_planes_implemented": all(plane.implemented for plane in planes),
+            "implemented_planes": [plane.name for plane in planes if plane.implemented],
             "configured_planes": [plane.name for plane in planes if plane.configured],
             "planes": [asdict(plane) for plane in planes],
             "routing": {
@@ -101,6 +128,11 @@ class PalantirStack:
                 "mission_view": "Gotham",
                 "deploy": "Apollo",
                 "develop_and_analyze": "JupyterLab",
+                "event_automation": "Automate",
+            },
+            "runtime_verification": {
+                "command": "/palantir probe",
+                "note": "Live green status requires authorized tenant credentials/resources; repository code cannot create licensing or entitlement.",
             },
             "compliance": compliance,
             "guardrails": [
