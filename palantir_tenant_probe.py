@@ -76,7 +76,20 @@ class PalantirTenantProbe:
             if gotham is None:
                 items.append(ProbeItem("Gotham", True, False, False, "GOTHAM_BASE_URL not configured"))
             else:
-                items.append(ProbeItem("Gotham", True, True, True, f"Client configured for {gotham.status()['host']}"))
+                try:
+                    payload = gotham.openapi()
+                    keys = sorted(payload.keys()) if isinstance(payload, dict) else []
+                    items.append(
+                        ProbeItem(
+                            "Gotham",
+                            True,
+                            True,
+                            True,
+                            f"Gotham API reachable at {gotham.status()['host']}; OpenAPI keys={keys[:10]}",
+                        )
+                    )
+                except Exception as error:
+                    items.append(ProbeItem("Gotham", True, True, False, str(error)))
         except Exception as error:
             items.append(ProbeItem("Gotham", True, True, False, str(error)))
 
