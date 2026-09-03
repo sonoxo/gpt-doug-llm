@@ -2,7 +2,8 @@
 
 The client uses Foundry's documented OAuth2 client-credentials flow or an
 explicit pre-issued bearer token. It only calls the configured Foundry host,
-keeps writes disabled by default, and never stores credentials in the repo.
+keeps writes disabled by default, rejects redirects outside that exact HTTPS
+host, and never stores credentials in the repo.
 """
 
 from __future__ import annotations
@@ -28,6 +29,24 @@ class FoundryConfigurationError(FoundryError):
 
 class FoundryWriteDisabled(FoundryError):
     """Raised when a write is attempted while writes are disabled."""
+
+
+class _PinnedRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Permit redirects only when they remain on the exact pinned HTTPS host."""
+
+    def __init__(self, allowed_host: str) -> None:
+        super().__init__()
+        self.allowed_host = allowed_host.lower()
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001
+        parsed = urllib.parse.urlparse(newurl)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise FoundryConfigurationError("Refusing non-HTTPS Foundry redirect")
+        if parsed.hostname.lower() != self.allowed_host:
+            raise FoundryConfigurationError("Refusing Foundry redirect outside the configured host")
+        if parsed.username or parsed.password or parsed.fragment:
+            raise FoundryConfigurationError("Refusing malformed Foundry redirect URL")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 @dataclass
@@ -101,6 +120,10 @@ class FoundryClient:
     def host(self) -> str:
         return self.allowed_host
 
+    @property
+    def redirect_policy(self) -> str:
+        return "same-host-https-only"
+
     def _validated_request(self, request: urllib.request.Request) -> urllib.request.Request:
         parsed = urllib.parse.urlparse(request.full_url)
         if parsed.scheme != "https" or not parsed.hostname:
@@ -110,6 +133,21 @@ class FoundryClient:
         if parsed.username or parsed.password or parsed.fragment:
             raise FoundryConfigurationError("Refusing malformed Foundry request URL")
         return request
+
+    def _redact(self, text: str) -> str:
+        redacted = text
+        for secret in (self.static_token, self.client_secret, self._access_token):
+            if secret:
+                redacted = redacted.replace(secret, "[REDACTED]")
+        return redacted
+
+    def _open(self, request: urllib.request.Request):
+        request = self._validated_request(request)
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=ssl.create_default_context()),
+            _PinnedRedirectHandler(self.allowed_host),
+        )
+        return opener.open(request, timeout=self.timeout)
 
     def _token(self) -> str:
         if self.static_token:
@@ -146,15 +184,7 @@ class FoundryClient:
     def _open_json(self, request: urllib.request.Request) -> dict[str, Any]:
         request = self._validated_request(request)
         try:
-            # B310 is suppressed only after _validated_request has enforced HTTPS
-            # and exact-host pinning. Redirected requests are also revalidated by
-            # urllib against the original HTTPS handler; credentials never appear
-            # in the URL itself.
-            with urllib.request.urlopen(  # nosec B310
-                request,
-                timeout=self.timeout,
-                context=ssl.create_default_context(),
-            ) as response:
+            with self._open(request) as response:
                 body = response.read()
                 if not 200 <= response.status < 300:
                     raise FoundryError(f"Foundry returned HTTP {response.status}")
@@ -164,16 +194,18 @@ class FoundryClient:
                 if not isinstance(decoded, dict):
                     raise FoundryError("Foundry response was not a JSON object")
                 return decoded
+        except FoundryConfigurationError:
+            raise
         except urllib.error.HTTPError as error:
             detail = ""
             try:
-                detail = error.read().decode("utf-8")[:1000]
+                detail = self._redact(error.read().decode("utf-8")[:1000])
             except Exception:
                 detail = ""
             suffix = f": {detail}" if detail else ""
             raise FoundryError(f"Foundry returned HTTP {error.code}{suffix}") from error
         except urllib.error.URLError as error:
-            raise FoundryError(f"Unable to reach Foundry: {error.reason}") from error
+            raise FoundryError(f"Unable to reach Foundry: {self._redact(str(error.reason))}") from error
         except ValueError as error:
             raise FoundryError(f"Invalid Foundry response: {error}") from error
 
@@ -187,6 +219,8 @@ class FoundryClient:
         write: bool = False,
     ) -> dict[str, Any]:
         method = method.upper().strip()
+        if method not in {"GET", "POST"}:
+            raise FoundryConfigurationError("Foundry client permits only GET and POST operations")
         if not path.startswith("/") or "://" in path:
             raise FoundryConfigurationError("Foundry request path must be relative to the configured host")
         if write and not self.writes_enabled:
@@ -217,6 +251,8 @@ class FoundryClient:
             "auth": "static-token" if self.static_token else "oauth-client-credentials",
             "scopes": self.scopes.split(),
             "writes_enabled": self.writes_enabled,
+            "transport": "https-only",
+            "redirect_policy": self.redirect_policy,
         }
 
     def list_ontologies(self, page_size: int = 100, page_token: Optional[str] = None) -> dict[str, Any]:
