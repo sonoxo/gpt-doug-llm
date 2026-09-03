@@ -43,6 +43,24 @@ ROLLBACK OR RELEASE
 9. **Evidence over confidence theater.** Intel claims retain provenance, confidence and gaps.
 10. **Fail closed.** Unknown identity, source, permission, environment or model boundary is not an implicit allow.
 
+## Palantir platform routing
+
+`palantir-stack-v1` gives the fleet one provider-aligned routing model for the requested Palantir stack:
+
+```text
+AIP          → agent reasoning / workflows / automations / evals
+Ontology     → governed objects / links / properties / actions / state
+Gotham       → authorized mission + intelligence operational view
+Apollo       → governed release + software deployment plane
+JupyterLab   → Foundry Code Workspace for notebooks, analysis and models
+```
+
+The existing live adapter is the Foundry/Ontology REST bridge. AIP, Gotham, Apollo and JupyterLab are capability-gated and are never treated as provisioned merely because a local flag is enabled. The operator's Palantir enrollment, permissions and deployment configuration remain authoritative.
+
+The requested `jupiter` label is normalized to **JupyterLab**, matching current Palantir Code Workspaces documentation.
+
+See [`palantir-stack-v1.json`](./palantir-stack-v1.json) and [`../../../docs/PALANTIR_FOUNDRY.md`](../../../docs/PALANTIR_FOUNDRY.md).
+
 ## MAX-VA defensive cyber skill
 
 `max-va-mainframe-defensive-pentest-v1` extends the shared profile with authorized mainframe security training for Virginia-LLM / RVIA / GPT-DOUG-LLM / MAX-VA-LLM.
@@ -83,6 +101,7 @@ A reliable transcript was not recoverable for these sources during their respect
 ## Canonical files
 
 - [`rvia-agentic-core.json`](./rvia-agentic-core.json) — machine-readable knowledge profile.
+- [`palantir-stack-v1.json`](./palantir-stack-v1.json) — Palantir AIP/Ontology/Gotham/Apollo/Jupyter routing contract.
 - [`mainframe-defensive-pentest-v1.md`](./mainframe-defensive-pentest-v1.md) — MAX-VA authorized mainframe security training module.
 - [`../fleet-24.json`](../fleet-24.json) — fleet inheritance declaration.
 - [`../agentic_builder.py`](../agentic_builder.py) — blueprint generator for new agents.
