@@ -1,0 +1,33 @@
+name: Green House Ontology Gate
+
+on:
+  push:
+    paths:
+      - 'the-green-house/**'
+      - 'tests/test_green_house_ontology.py'
+      - '.github/workflows/green-house-ontology.yml'
+  pull_request:
+    paths:
+      - 'the-green-house/**'
+      - 'tests/test_green_house_ontology.py'
+      - '.github/workflows/green-house-ontology.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-green-house:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate JSON syntax
+        run: python -m json.tool the-green-house/ontology/green-house-ontology.json >/dev/null
+      - name: Run Green House ontology tests
+        run: python -m pytest -q tests/test_green_house_ontology.py
