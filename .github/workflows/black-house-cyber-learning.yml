@@ -1,0 +1,33 @@
+name: Black House Cyber Learning
+
+on:
+  push:
+    paths:
+      - "training/black-house-cyber/**"
+      - "intel/sources/youtube-ug8W0sFiVJo.json"
+      - "safety-shield/agents/knowledge/black-house-ethical-hacking-course-ontology.json"
+      - "scripts/validate_black_house_cyber_learning.py"
+      - ".github/workflows/black-house-cyber-learning.yml"
+  pull_request:
+    paths:
+      - "training/black-house-cyber/**"
+      - "intel/sources/youtube-ug8W0sFiVJo.json"
+      - "safety-shield/agents/knowledge/black-house-ethical-hacking-course-ontology.json"
+      - "scripts/validate_black_house_cyber_learning.py"
+      - ".github/workflows/black-house-cyber-learning.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-learning-layer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate Black House cyber learning layer
+        run: python scripts/validate_black_house_cyber_learning.py

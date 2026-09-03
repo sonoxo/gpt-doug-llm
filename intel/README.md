@@ -42,13 +42,28 @@ Collector: [`scripts/white_house_daily.py`](../scripts/white_house_daily.py)
 
 | Date | Source | Topic | State | Brief |
 | --- | --- | --- | --- | --- |
+| 2026-09-03 | freeCodeCamp.org `ug8W0sFiVJo` | Kali/Linux, scoped Nmap, wireless-security defense, Wireshark | `HIGH / AUTHORIZED-LAB` | [`Open brief`](./briefings/2026-09-03-freecodecamp-ethical-hacking-course.md) |
 | 2026-09-02 | Basis Points / Chad Wahlquist `egr-UDWLZPI` | Institutional sovereignty, Ontology, model portability, FDE, agentic AI | `HIGH CONFIDENCE / PR-READY` | [`Open dossier`](./briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md) |
 | 2026-09-02 | YouTube Short `uFFFRTrSosc` | What Palantir does / AIP architecture | `AMBER` | [`Open brief`](./briefings/2026-09-02-youtube-uFFFRTrSosc-palantir.md) |
 
 ## Machine-readable sources
 
+- [`youtube-ug8W0sFiVJo.json`](./sources/youtube-ug8W0sFiVJo.json)
 - [`youtube-egr-UDWLZPI.json`](./sources/youtube-egr-UDWLZPI.json)
 - [`youtube-uFFFRTrSosc.json`](./sources/youtube-uFFFRTrSosc.json)
+
+## Cyber learning layer
+
+The Black House cyber-learning subsystem converts public cybersecurity material into bounded agent competencies rather than unrestricted attack automation.
+
+- [`Training index`](../training/black-house-cyber/README.md)
+- [`Authorized lab policy`](../training/black-house-cyber/AUTHORIZED_LAB_POLICY.md)
+- [`Curriculum`](../training/black-house-cyber/CURRICULUM.md)
+- [`Wireless defense`](../training/black-house-cyber/WIFI_DEFENSE.md)
+- [`Packet analysis`](../training/black-house-cyber/PACKET_ANALYSIS.md)
+- [`Evals`](../training/black-house-cyber/EVALS.md)
+- [`Learning ontology`](../safety-shield/agents/knowledge/black-house-ethical-hacking-course-ontology.json)
+- [`Learning validator`](../scripts/validate_black_house_cyber_learning.py)
 
 ## Palantir-associated research standard
 
