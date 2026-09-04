@@ -41,6 +41,13 @@ if [ ! -d "$ROOT/.git" ]; then
   exit 2
 fi
 
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  printf '❌ Node.js and npm are required to run WorldMonitor.\n' >&2
+  exit 5
+fi
+
+printf '🧩 Node: %s | npm: %s\n' "$(node --version)" "$(npm --version)"
+
 # Ensure the complete pinned upstream source exists locally.
 git -C "$ROOT" submodule sync --recursive
 git -C "$ROOT" submodule update --init --recursive the-green-house/apps/worldmonitor
@@ -55,6 +62,8 @@ cd "$APP"
 export DEV_PORT
 export VITE_VARIANT="${VITE_VARIANT:-full}"
 export VITE_MAP_INTERACTION_MODE="${VITE_MAP_INTERACTION_MODE:-3d}"
+export npm_config_audit=false
+export npm_config_fund=false
 
 # Keep a user-supplied WorldMonitor key if one already exists. The baseline
 # Green House surface does not require it, but explicitly supplied credentials
@@ -81,8 +90,16 @@ if tag not in text:
 PY
 
 if [ ! -d node_modules ]; then
-  printf '📦 Installing WorldMonitor dependencies...\n'
-  npm install
+  printf '\n📦 FIRST BOOT: installing WorldMonitor dependencies.\n'
+  printf '   This is the heavy one-time step. Live npm output follows.\n\n'
+  if [ -f package-lock.json ]; then
+    npm ci --prefer-offline --no-audit --no-fund
+  else
+    npm install --prefer-offline --no-audit --no-fund
+  fi
+  printf '\n✅ Dependencies installed. Future boots skip this step.\n'
+else
+  printf '✅ Dependencies already present; skipping install.\n'
 fi
 
 printf '\n🌎 Starting The Green House intelligence surface...\n'
