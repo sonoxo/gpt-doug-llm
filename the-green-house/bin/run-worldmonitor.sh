@@ -9,9 +9,25 @@ ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
 APP="$ROOT/the-green-house/apps/worldmonitor"
 PROFILE="$ROOT/the-green-house/config/worldmonitor-free-profile.json"
 OVERLAY="$ROOT/the-green-house/branding/green-house-overlay.js"
-
-DEV_PORT="${DEV_PORT:-3000}"
 HOST="${GREEN_HOUSE_HOST:-127.0.0.1}"
+
+# If the caller did not request a specific port, select the first free local
+# port in a small predictable range so an existing dev server cannot block boot.
+if [ -z "${DEV_PORT:-}" ]; then
+  DEV_PORT="$(python3 - <<'PY'
+import socket
+for port in range(3000, 3021):
+    with socket.socket() as s:
+        try:
+            s.bind(('127.0.0.1', port))
+        except OSError:
+            continue
+        print(port)
+        raise SystemExit(0)
+raise SystemExit('No free Green House port found in 3000-3020')
+PY
+)"
+fi
 URL="http://${HOST}:${DEV_PORT}"
 
 printf '\n🌿 THE GREEN HOUSE — WorldMonitor\n'
@@ -87,7 +103,7 @@ cleanup() {
 trap cleanup INT TERM EXIT
 
 READY=0
-for _ in $(seq 1 120); do
+for ((i=0; i<120; i++)); do
   if ! kill -0 "$SERVER_PID" 2>/dev/null; then
     printf '\n❌ WorldMonitor dev server exited before becoming ready.\n' >&2
     wait "$SERVER_PID"
