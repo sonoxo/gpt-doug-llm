@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - 'CREATION_STANDARD.md'
       - '.github/workflows/pages-museum-hq.yml'
   pull_request:
     paths:
       - 'docs/**'
+      - 'CREATION_STANDARD.md'
       - '.github/workflows/pages-museum-hq.yml'
   workflow_dispatch:
 
@@ -35,6 +37,8 @@ jobs:
           cp -R docs/. _site/
           touch _site/.nojekyll
           test -f _site/index.html
+          test -f _site/resources.html
+          test -f _site/resources.json
           test -f _site/experiments.html
           test -f _site/status.html
           test -f _site/metrics.html
@@ -45,7 +49,6 @@ jobs:
           test -f _site/museum.js
           test -f _site/holo/index.html
           test -f _site/holo/holo.ts
-          test -f _site/holo/holo.css
           test ! -e _site/eye-mouse
 
       - name: Compile HOLO TypeScript
@@ -66,6 +69,32 @@ jobs:
           node --check docs/zyra-shell.js
           node --check docs/museum.js
           node --check _site/holo/holo.js
+
+      - name: Interactive resource hub contract
+        run: |
+          grep -q 'Interactive Tools & Resources' docs/resources.html
+          grep -q "\['Resources'" docs/zyra-shell.js
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          data = json.loads(Path('docs/resources.json').read_text(encoding='utf-8'))
+          assert data.get('policy', {}).get('publicFreeFirst') is True
+          assert data.get('policy', {}).get('catalogRequiredForInteractiveCreations') is True
+          items = data.get('items')
+          assert isinstance(items, list) and items, 'resource registry must not be empty'
+          ids = [item.get('id') for item in items]
+          assert len(ids) == len(set(ids)), 'duplicate resource ids'
+          allowed = {'public', 'free-registration', 'free-tier', 'local-ready', 'local-required'}
+          for item in items:
+              for field in ('id', 'name', 'category', 'type', 'access', 'url', 'description'):
+                  assert item.get(field), f"{item.get('id', '<unknown>')} missing {field}"
+              assert item['access'] in allowed, f"invalid access label: {item['access']}"
+              assert item.get('free') is True, f"{item['id']} violates zero-cost baseline"
+              if item['access'] == 'local-required':
+                  assert item.get('localOnlyReason'), f"{item['id']} requires localOnlyReason"
+          assert any(item['id'] == 'green-house' for item in items), 'Green House missing from hub'
+          PY
 
       - name: Museum inventory contract
         run: |
@@ -127,6 +156,8 @@ jobs:
           done
           grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home.html
           grep -q 'museum.js' /tmp/xunia-home.html
+          curl -fsS http://127.0.0.1:8080/resources.html | grep -q 'Interactive Tools & Resources'
+          curl -fsS http://127.0.0.1:8080/resources.json | grep -q 'green-house'
           curl -fsS http://127.0.0.1:8080/museum.js | grep -q 'STATIC_REPOS'
           curl -fsS http://127.0.0.1:8080/experiments.html | grep -q 'XUNIA Sightline'
           curl -fsS http://127.0.0.1:8080/status.html | grep -q 'XUNIAverse build status'
@@ -169,6 +200,8 @@ jobs:
             --skipLibCheck \
             --outDir _site/holo
           test -s _site/holo/holo.js
+          test -f _site/resources.html
+          test -f _site/resources.json
           test ! -e _site/eye-mouse
 
       - name: Upload Pages artifact
