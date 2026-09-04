@@ -1,1 +1,66 @@
-placeholder
+{
+  "schemaVersion": "1.0.0",
+  "id": "vendetta.source.cybernews-hacking-documentaries-2025",
+  "name": "VENDETTA Cyber History Learning Pack",
+  "ontologyTarget": "foundry/ontology/vendetta-cyber-intelligence-ontology.json",
+  "mode": "DEFENSIVE_INTELLIGENCE_LEARNING",
+  "source": {
+    "type": "youtube_video",
+    "title": "Hacking Documentaries To Fall Asleep To",
+    "publisher": "Cybernews",
+    "videoId": "Od9OG4MGDWA",
+    "url": "https://www.youtube.com/watch?v=Od9OG4MGDWA",
+    "published": "2025-04-01",
+    "descriptionClaim": "A three-and-a-half hour compilation of 13 original hacking documentaries covering state-sponsored hacking, cybercrime, and criminal hacker groups.",
+    "sourceScope": "The available source snapshot exposes video metadata and the chapter index, not a complete verbatim transcript. Chapter-derived facts are stored as topics unless independently corroborated."
+  },
+  "chapters": [
+    {"offset": "00:14", "topic": "The Man Who Sabotaged Iran's Nuclear Program", "caseClass": "CYBER_PHYSICAL_SABOTAGE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "12:03", "topic": "The Hack That Made China a Superpower: Operation Shady Rat", "caseClass": "CYBER_ESPIONAGE_CAMPAIGN", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "25:49", "topic": "How Governments Use Hacking For Power", "caseClass": "STATE_CYBER_POWER", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "36:35", "topic": "Devastating Power of Hacking: Mutually Assured Destruction", "caseClass": "STRATEGIC_CYBER_RISK", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "54:16", "topic": "How Soviets Hacked the US: Project Gunman", "caseClass": "TECHNICAL_SURVEILLANCE_COUNTERINTELLIGENCE", "verificationState": "INDEPENDENTLY_CORROBORATED"},
+    {"offset": "1:06:04", "topic": "How Hackers Stole US Military Secrets", "caseClass": "DEFENSE_ESPIONAGE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "1:29:29", "topic": "How North Korea Makes Elite Hackers", "caseClass": "STATE_CYBER_WORKFORCE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "1:55:41", "topic": "Where People Go When They Want To Hack You", "caseClass": "CYBERCRIME_ECOSYSTEM", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "2:30:06", "topic": "Inside the World of Russian Hackers", "caseClass": "CYBERCRIME_AND_STATE_OVERLAP", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "2:56:54", "topic": "World's Most Famous Hacker: Kevin Mitnick", "caseClass": "SOCIAL_ENGINEERING_HISTORY", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "3:05:19", "topic": "How Ransomware Gangs Steal Money and Get Away With It", "caseClass": "RANSOMWARE_ECONOMICS", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "3:14:30", "topic": "Who ACTUALLY Is Anonymous Sudan?", "caseClass": "HACKTIVISM_ATTRIBUTION", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"offset": "3:26:24", "topic": "Lockbit, World's Number 1 Hacking Group", "caseClass": "RANSOMWARE_AS_A_SERVICE", "verificationState": "INDEPENDENTLY_CORROBORATED_HISTORICAL_PERIOD"}
+  ],
+  "independentEvidence": [
+    {
+      "id": "nsa-project-gunman",
+      "source": "National Security Agency",
+      "url": "https://www.nsa.gov/portals/75/documents/about/cryptologic-heritage/historical-figures-publications/publications/coldwar/LearningfromtheEnemyGUNMAN.pdf",
+      "supports": ["Project GUNMAN involved replacement and examination of U.S. Embassy Moscow equipment", "Soviet electromechanical typewriter implants were discovered and analyzed"],
+      "evidenceClass": "PRIMARY_GOVERNMENT_HISTORY"
+    },
+    {
+      "id": "cisa-lockbit-aa23-165a",
+      "source": "CISA/FBI/MS-ISAC and international partners",
+      "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-165a",
+      "supports": ["LockBit operated as ransomware-as-a-service", "LockBit was highly prolific in 2022-2023", "affiliate TTPs varied significantly"],
+      "evidenceClass": "JOINT_GOVERNMENT_ADVISORY"
+    }
+  ],
+  "learnedPatterns": [
+    "Cyber operations can be strategic instruments for espionage, coercion, disruption, sabotage, influence, and criminal profit.",
+    "Attribution is an evidence problem: actor labels, state links, motives, infrastructure, malware, victimology, and timing must remain separable claims until corroborated.",
+    "Cyber-physical incidents require modeling both digital effects and real-world operational consequences.",
+    "Counterintelligence includes hardware, supply-chain, emissions, and physical inspection concerns in addition to software telemetry.",
+    "Ransomware ecosystems separate operators, affiliates, infrastructure, access brokers, victims, monetization, and public leak/extortion surfaces.",
+    "Historical cases are useful as defensive pattern libraries, not as authorization to reproduce intrusion methods.",
+    "Third-party documentary claims must retain provenance and confidence instead of being promoted automatically to fact."
+  ],
+  "truthRules": {
+    "videoIsPrimaryForChapterIndexOnly": true,
+    "chapterTitleIsNotFullEvidence": true,
+    "independentCorroborationRequiredForHighConfidence": true,
+    "sourceClaimsRemainSourceClaims": true,
+    "noAutomaticAttribution": true,
+    "noOperationalExploitInstructions": true,
+    "externalActionsAllowed": false
+  }
+}
