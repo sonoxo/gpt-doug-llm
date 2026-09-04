@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "profileId": "GREEN_HOUSE_WORLD_MONITOR_FREE_V1",
   "name": "The Green House — WorldMonitor Free/Public Data Profile",
   "mode": "ZERO_COST_FIRST",
@@ -51,6 +51,18 @@
   ],
   "localComputePreferred": [
     {"provider": "Transformers.js", "domain": "browser-ai", "authenticationRequired": false}
+  ],
+  "optionalIntegrations": [
+    {
+      "provider": "WorldMonitor hosted MCP",
+      "env": "WORLDMONITOR_API_KEY",
+      "authHeader": "X-WorldMonitor-Key",
+      "tool": "get_signal_convergence",
+      "domain": "geographic-convergence",
+      "localAdapter": "the-green-house/bin/worldmonitor-convergence.py",
+      "enabledByDefault": false,
+      "notes": "Upstream convergence is MCP-only and uses a fixed 24h analysis window."
+    }
   ],
   "disabledByDefault": [
     {
