@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "xunidirect-youtube-cleaner",
+  "name": "XuniDirect YouTube Cleaner",
+  "authority": "THE_BLACK_HOUSE_V1",
+  "registeredComponent": "ZYRA",
+  "kind": "HUMAN_CONFIRMED_BROWSER_ACTION_TOOL",
+  "platform": "CHROME_MANIFEST_V3",
+  "runtimeStatus": "LOCAL_FUNCTIONALITY_VERIFIED",
+  "publicationStatus": "NOT_YET_PUBLISHED",
+  "missionPurpose": "Manage the authenticated owner's own YouTube subscriptions through official Google APIs with explicit preview and human confirmation before destructive actions.",
+  "policy": {
+    "ownerScopedOnly": true,
+    "previewRequired": true,
+    "humanApprovalRequired": true,
+    "autonomousBulkMutation": false,
+    "backgroundSurveillance": false,
+    "browserHistoryCollection": false,
+    "remoteCodeExecution": false,
+    "failClosed": true
+  },
+  "execution": {
+    "provider": "Google",
+    "api": "YouTube Data API v3",
+    "oauthScope": "https://www.googleapis.com/auth/youtube.force-ssl",
+    "mutation": "subscriptions.delete"
+  },
+  "evidenceContract": [
+    "filter_criteria",
+    "matched_count",
+    "selected_count",
+    "human_confirmation",
+    "deleted_count",
+    "failed_count",
+    "quota_state",
+    "timestamp"
+  ],
+  "missionFlow": [
+    "MISSION",
+    "POLICY",
+    "OWNER_AUTH",
+    "SELECTION_PREVIEW",
+    "HUMAN_APPROVAL",
+    "EXECUTION",
+    "RESULT",
+    "AUDIT_EVIDENCE"
+  ]
+}
