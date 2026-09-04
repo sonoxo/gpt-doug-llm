@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
-KERNEL_VERSION = "3.0.0"
+KERNEL_VERSION = "3.1.0"
 CONTROL_PLANE = "THE_BLACK_HOUSE_V1"
 CANONICAL_RELATIONSHIPS = {
     "EXECUTES",
@@ -54,6 +55,10 @@ class OntologyGraph:
     while the canonical Black House object vocabulary is accepted directly.
     The graph mirrors object/link/action thinking without claiming a live
     external ontology deployment.
+
+    Persistence is write-coalesced inside ``batch()`` blocks. This keeps the
+    fail-closed/auditable state model while avoiding a complete JSON snapshot
+    rewrite for every object or relationship mutation in one logical phase.
     """
 
     CORE_TYPES = {
@@ -93,6 +98,8 @@ class OntologyGraph:
         self.persistence_path = Path(persistence_path) if persistence_path else None
         self.objects: dict[tuple[str, str], OntologyObject] = {}
         self.links: list[OntologyLink] = []
+        self._batch_depth = 0
+        self._dirty = False
         if self.persistence_path and self.persistence_path.exists():
             self._load()
 
@@ -104,7 +111,24 @@ class OntologyGraph:
             "authority": "sonoxo/gpt-doug-llm/the-black-house",
             "relationshipTypes": sorted(CANONICAL_RELATIONSHIPS),
             "failClosed": True,
+            "persistence": "atomic-write-coalesced",
         }
+
+    @contextmanager
+    def batch(self) -> Iterator["OntologyGraph"]:
+        """Coalesce related mutations into one durable snapshot write.
+
+        Nested batches are supported. The outermost batch flushes once even if
+        an exception occurs, preserving the prior behavior that completed state
+        mutations are durable rather than silently discarded.
+        """
+        self._batch_depth += 1
+        try:
+            yield self
+        finally:
+            self._batch_depth -= 1
+            if self._batch_depth == 0 and self._dirty:
+                self._persist_now()
 
     def upsert(self, object_type: str, object_id: str, **properties: Any) -> OntologyObject:
         if object_type not in self.CORE_TYPES:
@@ -168,8 +192,21 @@ class OntologyGraph:
     def _persist(self) -> None:
         if not self.persistence_path:
             return
+        if self._batch_depth > 0:
+            self._dirty = True
+            return
+        self._persist_now()
+
+    def _persist_now(self) -> None:
+        if not self.persistence_path:
+            self._dirty = False
+            return
         self.persistence_path.parent.mkdir(parents=True, exist_ok=True)
-        self.persistence_path.write_text(json.dumps(self.snapshot(), indent=2), encoding="utf-8")
+        payload = json.dumps(self.snapshot(), indent=2)
+        temporary = self.persistence_path.with_name(f".{self.persistence_path.name}.tmp")
+        temporary.write_text(payload, encoding="utf-8")
+        temporary.replace(self.persistence_path)
+        self._dirty = False
 
     def _load(self) -> None:
         payload = json.loads(self.persistence_path.read_text(encoding="utf-8"))
