@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from enum import Enum
 import json
 from pathlib import Path
@@ -64,6 +64,11 @@ class Wakeup3LM:
     decision, records it in the ontology, and only then dispatches a registered
     IDE tool. Invalid model output becomes a governed FAILED decision instead of
     crashing the IDE.
+
+    Related ontology mutations are committed in bounded phases: one durable
+    pre-dispatch write and one terminal-result write. This preserves audit
+    visibility before tool execution while removing per-object write
+    amplification.
     """
 
     def __init__(self, workspace_root: str | Path, state_path: str | Path | None = None) -> None:
@@ -76,9 +81,10 @@ class Wakeup3LM:
             "list_directory": self.workspace.list_directory,
             "search_files": self.workspace.search_files,
         }
-        self.ontology.upsert("Workspace", "default", root=str(self.workspace.root), runtime="Wakeup3lm")
-        self.ontology.upsert("Model", "wakeup3lm", role="IDE LLM", architecture="ontology-first")
-        self.ontology.link("Model", "wakeup3lm", "OPERATES_IN", "Workspace", "default")
+        with self.ontology.batch():
+            self.ontology.upsert("Workspace", "default", root=str(self.workspace.root), runtime="Wakeup3lm")
+            self.ontology.upsert("Model", "wakeup3lm", role="IDE LLM", architecture="ontology-first")
+            self.ontology.link("Model", "wakeup3lm", "OPERATES_IN", "Workspace", "default")
 
     @property
     def tool_schema(self) -> dict[str, Any]:
@@ -112,35 +118,37 @@ class Wakeup3LM:
             )
             return ToolResult("decision_validation", DecisionStatus.FAILED, error=str(error))
 
-        self.ontology.upsert(
-            "AgentDecision",
-            decision.decision_id,
-            action=decision.action,
-            arguments=decision.arguments,
-            rationale=decision.rationale,
-            status=DecisionStatus.RUNNING.value,
-        )
-        self.ontology.link("Model", "wakeup3lm", "PROPOSED", "AgentDecision", decision.decision_id)
-
         call_id = uuid4().hex
-        self.ontology.upsert(
-            "ToolCall",
-            call_id,
-            tool=decision.action,
-            arguments=decision.arguments,
-            status=DecisionStatus.RUNNING.value,
-        )
-        self.ontology.link("AgentDecision", decision.decision_id, "REQUESTED", "ToolCall", call_id)
+        with self.ontology.batch():
+            self.ontology.upsert(
+                "AgentDecision",
+                decision.decision_id,
+                action=decision.action,
+                arguments=decision.arguments,
+                rationale=decision.rationale,
+                status=DecisionStatus.RUNNING.value,
+            )
+            self.ontology.link("Model", "wakeup3lm", "PROPOSED", "AgentDecision", decision.decision_id)
+            self.ontology.upsert(
+                "ToolCall",
+                call_id,
+                tool=decision.action,
+                arguments=decision.arguments,
+                status=DecisionStatus.RUNNING.value,
+            )
+            self.ontology.link("AgentDecision", decision.decision_id, "REQUESTED", "ToolCall", call_id)
 
         try:
             output = self.tools[decision.action](**decision.arguments)
         except Exception as error:
-            self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.FAILED.value, error=str(error))
-            self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.FAILED.value)
+            with self.ontology.batch():
+                self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.FAILED.value, error=str(error))
+                self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.FAILED.value)
             return ToolResult(decision.action, DecisionStatus.FAILED, error=str(error))
 
-        self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.PASSED.value, output=output)
-        self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.PASSED.value)
+        with self.ontology.batch():
+            self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.PASSED.value, output=output)
+            self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.PASSED.value)
         return ToolResult(decision.action, DecisionStatus.PASSED, output=output)
 
     def state(self) -> dict[str, Any]:
