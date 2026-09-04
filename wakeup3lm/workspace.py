@@ -1,6 +1,25 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
+
+
+SEARCH_SKIP_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "dist",
+    "build",
+    "node_modules",
+    "venv",
+}
+MAX_SEARCH_FILE_BYTES = 2_000_000
+MAX_SEARCH_RESULTS = 200
 
 
 class WorkspaceSecurityError(RuntimeError):
@@ -47,18 +66,38 @@ class WorkspaceFS:
         ]
 
     def search_files(self, query: str) -> list[str]:
+        """Search bounded workspace text while pruning generated dependency trees.
+
+        The previous recursive walk descended into every directory and could read
+        arbitrarily large files. This implementation preserves repository-scoped
+        search while pruning known generated trees, skipping oversized content,
+        and returning immediately once the result contract is full.
+        """
         query_lower = query.lower()
         matches: list[str] = []
-        for item in self.root.rglob("*"):
-            if not item.is_file():
-                continue
-            rel = str(item.relative_to(self.root))
-            if query_lower in rel.lower():
-                matches.append(rel)
-                continue
-            try:
-                if query_lower in item.read_text(encoding="utf-8", errors="ignore").lower():
+
+        for current_root, directories, filenames in os.walk(self.root):
+            directories[:] = [name for name in directories if name not in SEARCH_SKIP_DIRS]
+            base = Path(current_root)
+            for name in filenames:
+                item = base / name
+                try:
+                    rel = str(item.relative_to(self.root))
+                except ValueError:
+                    continue
+
+                if query_lower in rel.lower():
                     matches.append(rel)
-            except OSError:
-                continue
-        return matches[:200]
+                else:
+                    try:
+                        if item.stat().st_size > MAX_SEARCH_FILE_BYTES:
+                            continue
+                        if query_lower in item.read_text(encoding="utf-8", errors="ignore").lower():
+                            matches.append(rel)
+                    except OSError:
+                        continue
+
+                if len(matches) >= MAX_SEARCH_RESULTS:
+                    return matches
+
+        return matches
