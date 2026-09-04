@@ -19,7 +19,7 @@ This repository treats public accessibility as a build requirement for interacti
 
 - Human interface: `docs/resources.html`
 - Machine-readable registry: `docs/resources.json`
-- Public URL: `https://sonoxo.github.io/gpt-doug-llm/resources.html`
+- Public URL: `https://xunia.org/resources.html`
 
 ## Access labels
 
