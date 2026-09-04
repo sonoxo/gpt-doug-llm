@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.0.1",
   "id": "xunidirect-youtube-cleaner",
   "name": "XuniDirect YouTube Cleaner",
   "authority": "THE_BLACK_HOUSE_V1",
@@ -7,7 +7,13 @@
   "kind": "HUMAN_CONFIRMED_BROWSER_ACTION_TOOL",
   "platform": "CHROME_MANIFEST_V3",
   "runtimeStatus": "LOCAL_FUNCTIONALITY_VERIFIED",
-  "publicationStatus": "NOT_YET_PUBLISHED",
+  "publicationStatus": "CHROME_WEB_STORE_DRAFT_CREATED",
+  "chromeWebStore": {
+    "itemId": "afmhdjmneddlnmfeimikfombdbmjmnjk",
+    "state": "DRAFT",
+    "reviewSubmitted": false,
+    "approved": false
+  },
   "missionPurpose": "Manage the authenticated owner's own YouTube subscriptions through official Google APIs with explicit preview and human confirmation before destructive actions.",
   "policy": {
     "ownerScopedOnly": true,
@@ -24,6 +30,14 @@
     "api": "YouTube Data API v3",
     "oauthScope": "https://www.googleapis.com/auth/youtube.force-ssl",
     "mutation": "subscriptions.delete"
+  },
+  "publicationEvidence": {
+    "privacyPolicy": "sonoxo/zyra/integrations/xunidirect-youtube-cleaner/PRIVACY.md",
+    "support": "sonoxo/zyra/integrations/xunidirect-youtube-cleaner/SUPPORT.md",
+    "oauthClientBound": false,
+    "storeListingComplete": false,
+    "privacyTabComplete": false,
+    "distributionComplete": false
   },
   "evidenceContract": [
     "filter_criteria",
