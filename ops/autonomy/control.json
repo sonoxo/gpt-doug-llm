@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "task_id": "worldmonitor-bootstrap-20260904-001",
+  "actions": [
+    {
+      "type": "git_sync",
+      "branch": "feature/worldmonitor-convergence-adapter-20260904"
+    },
+    {
+      "type": "pytest",
+      "target": "tests/test_worldmonitor_convergence_adapter.py"
+    },
+    {
+      "type": "start_worldmonitor",
+      "host": "127.0.0.1",
+      "port": 8787
+    }
+  ]
+}
