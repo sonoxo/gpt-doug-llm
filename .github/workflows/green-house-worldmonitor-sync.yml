@@ -40,11 +40,23 @@ jobs:
           set -euo pipefail
           TARGET='the-green-house/apps/worldmonitor'
           mkdir -p "$TARGET"
-          rsync -a --delete \
+          rm -rf "$TARGET"
+          mkdir -p "$TARGET"
+
+          # Preserve the entire upstream source tree while preventing vendored
+          # workflows from becoming executable workflows in this host repo.
+          rsync -a \
             --exclude '.git' \
             --exclude 'node_modules' \
             --exclude '.env.local' \
+            --exclude '.github/workflows' \
             /tmp/worldmonitor/ "$TARGET"/
+
+          if [ -d /tmp/worldmonitor/.github/workflows ]; then
+            mkdir -p "$TARGET/upstream-ci/github-workflows"
+            rsync -a /tmp/worldmonitor/.github/workflows/ "$TARGET/upstream-ci/github-workflows"/
+          fi
+
           cp /tmp/worldmonitor.sha "$TARGET/.green-house-upstream-sha"
 
       - name: Install Green House overlay metadata
@@ -65,6 +77,9 @@ jobs:
           Licensing: upstream source remains AGPL-3.0-only. Preserve the upstream
           LICENSE, copyright notices, and source-availability obligations.
 
+          The upstream `.github/workflows` files are preserved verbatim under
+          `upstream-ci/github-workflows/` so they cannot execute in this host repo.
+
           Sync source: https://github.com/koala73/worldmonitor
           Green House control plane: ../../the-black-house/layers/green-house
           EOF
@@ -83,6 +98,7 @@ jobs:
           test -f the-green-house/apps/worldmonitor/package.json
           test -f the-green-house/apps/worldmonitor/LICENSE
           test -f the-green-house/apps/worldmonitor/README.md
+          test -f the-green-house/apps/worldmonitor/.green-house-upstream-sha
           node -e "const p=require('./the-green-house/apps/worldmonitor/package.json'); console.log('WorldMonitor package:', p.name, p.version || 'unversioned')"
 
       - name: Commit synchronized source
@@ -98,4 +114,4 @@ jobs:
           fi
           SHA="$(cat /tmp/worldmonitor.sha)"
           git commit -m "vendor(green-house): sync WorldMonitor ${SHA:0:12}"
-          git push
+          git push origin HEAD:main
