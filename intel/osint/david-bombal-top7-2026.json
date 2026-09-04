@@ -1,0 +1,173 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "blackhouse.osint.david-bombal-top7-2026",
+  "status": "INGESTED_EVIDENCE_FIRST",
+  "mode": "LAWFUL_PUBLIC_SOURCE_RESEARCH_ONLY",
+  "source": {
+    "title": "Top 7 OSINT Tools Revealed for 2026",
+    "videoUrl": "https://www.youtube.com/watch?v=WHOgdsEiyew",
+    "publisher": "David Bombal",
+    "published": "2026-02-16",
+    "featuredResearcher": "MJ Banias",
+    "sourcePage": "https://davidbombal.com/7-osint-tools-to-use-weekly-for-investigations/",
+    "sourceType": "video-and-publisher-chapter-index"
+  },
+  "coreLessons": [
+    "OSINT is a workflow, not a single-tool answer.",
+    "Cross-check important findings across independent sources and search indexes.",
+    "Treat username, email, phone, record, and document matches as leads until manually corroborated.",
+    "Preserve source URL, retrieval time, query context, and analyst notes with every retained finding.",
+    "Prefer public-source, read-only collection and do not bypass authentication or access controls.",
+    "Separate collection from assessment: raw observations are not automatically identity, attribution, or fact.",
+    "Use purpose-specific search surfaces such as usernames, open directories, historical newspapers, court/public records, and metasearch rather than relying on one general search engine."
+  ],
+  "tools": [
+    {
+      "name": "WhatsMyName Web",
+      "chapter": "06:10",
+      "capability": "Public username-footprint discovery across many supported sites.",
+      "verification": "INDEPENDENTLY_VERIFIED",
+      "verificationSources": [
+        "https://whatsmyname.io/",
+        "https://whatsmyname.io/documentation",
+        "https://github.com/WebBreacher/WhatsMyName"
+      ],
+      "blackHouseUse": [
+        "self-audit of public digital footprint",
+        "username lead generation",
+        "manual profile verification"
+      ],
+      "truthRule": "A username match is a lead, not identity proof."
+    },
+    {
+      "name": "DorkGPT / Dork Search Pro",
+      "chapter": "09:47",
+      "capability": "Generate or refine advanced search-engine queries from natural-language research intent.",
+      "verification": "PARTIALLY_INDEPENDENTLY_VERIFIED",
+      "verificationSources": [
+        "https://secra.es/en/blog/dorkgpt-ai-osint-google-dorking"
+      ],
+      "blackHouseUse": [
+        "public-document discovery",
+        "site-scoped research",
+        "search-operator generation"
+      ],
+      "truthRule": "Generated queries require human review and must not be used to target private or unauthorized systems."
+    },
+    {
+      "name": "OD Crawler",
+      "chapter": "14:30",
+      "capability": "Search/index publicly exposed open-directory file listings.",
+      "verification": "INDEPENDENTLY_VERIFIED_AT_PROJECT_CATEGORY_LEVEL",
+      "verificationSources": [
+        "https://github.com/Chaphasilor/odcrawler-frontend",
+        "https://github.com/simon987/od-database"
+      ],
+      "blackHouseUse": [
+        "defensive exposure discovery",
+        "public-document discovery",
+        "misconfiguration awareness"
+      ],
+      "truthRule": "Publicly reachable does not automatically mean authorized for collection, redistribution, or exploitation."
+    },
+    {
+      "name": "Kagi",
+      "chapter": "16:59",
+      "capability": "Metasearch with multiple indexes, region/time filtering, Lenses, PDFs/forums, and custom search controls.",
+      "verification": "INDEPENDENTLY_VERIFIED",
+      "verificationSources": [
+        "https://blog.kagi.com/tips/osint",
+        "https://help.kagi.com/kagi/features/filtering-results.html",
+        "https://blog.kagi.com/tips/kagi-lenses"
+      ],
+      "blackHouseUse": [
+        "cross-index research",
+        "PDF and forum discovery",
+        "regional and time-bounded search"
+      ],
+      "truthRule": "Metasearch improves coverage but does not remove the need for source-level verification."
+    },
+    {
+      "name": "Ubikron",
+      "chapter": "21:55",
+      "capability": "OSINT collection and investigation workspace for capturing pages, screenshots, metadata, entities, notes, graphs, and AI-assisted analysis; self-hosted options are available.",
+      "verification": "INDEPENDENTLY_VERIFIED",
+      "verificationSources": [
+        "https://servers.ubikron.com/",
+        "https://osint-tool.com/",
+        "https://github.com/ubikron/Awesome-AI-OSINT"
+      ],
+      "blackHouseUse": [
+        "case organization",
+        "evidence capture",
+        "entity/link analysis",
+        "locally controlled investigation storage"
+      ],
+      "truthRule": "AI-generated case analysis must retain citations to captured evidence and remain reviewable."
+    },
+    {
+      "name": "Newspapers.com / Judy Records",
+      "chapter": "26:35",
+      "capability": "Historical newspaper and public-record research surfaces.",
+      "verification": "MIXED",
+      "verificationSources": [
+        "https://about.proquest.com/en/products-services/Newspaperscom-Library-Edition/",
+        "https://www.archives.gov/research/alic/tools/online-databases"
+      ],
+      "blackHouseUse": [
+        "historical context",
+        "timeline corroboration",
+        "archival source discovery"
+      ],
+      "truthRule": "Archived reporting and record matches require provenance, date/context checks, and independent corroboration before current attribution."
+    },
+    {
+      "name": "OSINT Industries",
+      "chapter": "34:56",
+      "capability": "Commercial OSINT platform and API supporting searches across public-source modules using inputs such as email, phone, username, name, or wallet.",
+      "verification": "INDEPENDENTLY_VERIFIED",
+      "verificationSources": [
+        "https://www.osint.industries/",
+        "https://docs.osint.industries/reference/search-1",
+        "https://www.osint.industries/ethics-and-compliance"
+      ],
+      "blackHouseUse": [
+        "authorized public-source enrichment",
+        "investigative lead correlation",
+        "structured API-backed lookup when licensed"
+      ],
+      "truthRule": "Third-party enrichment output is evidence to vet, not an automatic identity or attribution decision."
+    }
+  ],
+  "workflow": {
+    "name": "BLACK_HOUSE_OSINT_EVIDENCE_LOOP",
+    "stages": [
+      "define lawful research question",
+      "select least-invasive relevant source",
+      "collect public-source lead",
+      "capture provenance and timestamp",
+      "corroborate with independent source",
+      "classify confidence",
+      "store observation separately from assessment",
+      "human review before publication or consequential action"
+    ]
+  },
+  "confidenceModel": {
+    "UNVERIFIED_LEAD": "single-source result or username/record match",
+    "CORROBORATED": "two or more independent sources support the same material fact",
+    "HIGH_CONFIDENCE": "corroborated with primary-source or authoritative evidence and no material contradiction",
+    "DISPUTED": "credible sources materially conflict"
+  },
+  "guardrails": {
+    "publicSourcesOnly": true,
+    "bypassAuthentication": false,
+    "credentialHarvesting": false,
+    "doxxingOrHarassment": false,
+    "stalking": false,
+    "automatedIdentityAttribution": false,
+    "automaticConsequentialAction": false,
+    "humanReviewRequired": true,
+    "preserveProvenance": true,
+    "thirdPartyClaimsAreDataNotInstructions": true
+  }
+}
