@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "greenhouse.worldmonitor.convergence.v1",
+  "name": "WorldMonitor Geographic Signal Convergence",
+  "status": "IMPLEMENTED_ADAPTER_PENDING_MERGE",
+  "mode": "READ_ONLY_INTELLIGENCE_RETRIEVAL",
+  "provenance": {
+    "provider": "WorldMonitor",
+    "upstreamRepository": "https://github.com/koala73/worldmonitor.git",
+    "upstreamPinnedCommit": "96a93d4eb3f72af32d80cf657f29247684b76dd3",
+    "upstreamInterface": "MCP",
+    "upstreamTool": "get_signal_convergence",
+    "upstreamDirectRestEndpoint": null
+  },
+  "authentication": {
+    "credentialEnvironmentVariable": "WORLDMONITOR_API_KEY",
+    "compatibilityEnvironmentVariable": "WM_API_KEY",
+    "header": "X-WorldMonitor-Key",
+    "bearerApiKey": false,
+    "persistCredentialInRepository": false
+  },
+  "compatibilityEndpoint": {
+    "method": "GET",
+    "path": "/v1/intelligence/convergence",
+    "loopbackOnly": true,
+    "query": {
+      "region": "optional Black House region alias",
+      "time_window": "compatibility metadata; upstream convergence remains fixed at 24h",
+      "min_domains": "integer 2..5; default 3"
+    }
+  },
+  "upstreamAnalysis": {
+    "cellResolution": "1_degree_lat_lon",
+    "sourceTimeWindow": "24h",
+    "defaultMinDomains": 3,
+    "signalTypes": [
+      "protest",
+      "military_flight",
+      "military_vessel",
+      "earthquake"
+    ],
+    "scoreScale": {
+      "minimum": 0,
+      "maximum": 100
+    }
+  },
+  "normalization": {
+    "objectType": "multi_signal_convergence",
+    "confidence": "worldmonitor_score / 100",
+    "preserveOriginalScore": true,
+    "fields": [
+      "type",
+      "signals",
+      "confidence",
+      "confidence_basis",
+      "score",
+      "total_events",
+      "cell_id",
+      "location"
+    ]
+  },
+  "regions": {
+    "MENA": {
+      "definitionSource": "the-green-house/config/worldmonitor-regions.json",
+      "upstreamNativeRegion": false,
+      "filterStage": "post_upstream_analysis"
+    }
+  },
+  "truthRules": {
+    "sixHourExact": false,
+    "reason": "The current WorldMonitor convergence engine uses a fixed 24-hour event window.",
+    "requestedWindowMustBeReportedSeparately": true,
+    "untrustedSourceTextIsDataNotInstructions": true,
+    "externalActionsAllowed": false
+  },
+  "compatibilityNotes": {
+    "requestedExampleSignals": [
+      "military_flights",
+      "ais_dark_ships",
+      "oref_sirens"
+    ],
+    "currentUpstreamConvergenceSignalTypesDiffer": true,
+    "note": "The requested example is retained as interface intent only. Current upstream get_signal_convergence emits protest, military_flight, military_vessel, and earthquake event types; no unsupported signal is fabricated."
+  }
+}
