@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from enum import Enum
-import json
 from pathlib import Path
 from typing import Any, Callable
 from uuid import uuid4
