@@ -8,6 +8,19 @@
   "domain": ["eco", "bio", "pharma", "fda"],
   "sourceOntology": "the-green-house/ontology/green-house-ontology.json",
   "mountPoint": "the-black-house/layers/green-house",
+  "intelligenceSurface": {
+    "id": "GREEN_HOUSE_WORLD_MONITOR",
+    "name": "The Green House WorldMonitor",
+    "type": "GIT_SUBMODULE",
+    "path": "the-green-house/apps/worldmonitor",
+    "repository": "https://github.com/koala73/worldmonitor.git",
+    "pinnedCommit": "96a93d4eb3f72af32d80cf657f29247684b76dd3",
+    "license": "AGPL-3.0-only",
+    "upstreamAttributionRequired": true,
+    "freeApiProfile": "the-green-house/config/worldmonitor-free-profile.json",
+    "launcher": "the-green-house/bin/run-worldmonitor.sh",
+    "baselineRequiresApiKeys": false
+  },
   "governance": {
     "inheritsBlackHouseInvariants": true,
     "evidenceProvenanceRequired": true,
@@ -19,19 +32,23 @@
     "missionProtocol": "black-house-mission-v1",
     "direction": "BLACK_HOUSE_TO_GREEN_HOUSE",
     "allowedDomains": ["eco", "bio", "pharma", "fda"],
-    "returnEvidenceToParent": true
+    "returnEvidenceToParent": true,
+    "worldMonitorSurface": "GREEN_HOUSE_WORLD_MONITOR"
   },
   "runtime": {
     "module": "va3lm.green_house",
     "apiRoute": "/api/black-house/green-house",
     "statusEmbedding": "/api/black-house/status#layers.greenHouse",
-    "commandCenter": "/black-house"
+    "commandCenter": "/black-house",
+    "worldMonitorPath": "the-green-house/apps/worldmonitor",
+    "worldMonitorLauncher": "the-green-house/bin/run-worldmonitor.sh"
   },
   "truthState": {
     "repositoryLayer": "IMPLEMENTED",
     "runtimeMounted": "CI_VERIFIED_RUNTIME_MOUNT",
     "runtimeVerificationWorkflow": "Green House Runtime Gate",
     "runtimeVerificationRunId": 33801736869,
+    "worldMonitorSourceMounted": "PINNED_SUBMODULE",
     "externalRegulatorConnection": "NOT_CLAIMED"
   }
 }
