@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="${BLACKHOUSE_REPO:-$HOME/gpt-doug-llm}"
-BRANCH="feature/worldmonitor-convergence-adapter-20260904"
 STATE_DIR="$HOME/.blackhouse-autonomy"
+REPO="${BLACKHOUSE_AUTONOMY_REPO:-$STATE_DIR/repo}"
+BRANCH="feature/worldmonitor-convergence-adapter-20260904"
 CONFIG_DIR="$HOME/.config/blackhouse"
 SECRETS_FILE="$CONFIG_DIR/secrets.env"
 VENV="$STATE_DIR/venv"
@@ -17,7 +17,7 @@ mkdir -p "$STATE_DIR" "$CONFIG_DIR" "$HOME/Library/LaunchAgents"
 chmod 700 "$STATE_DIR" "$CONFIG_DIR"
 
 if [ ! -d "$REPO/.git" ]; then
-  printf '📦 Cloning GPT-DOUG-LLM...\n'
+  printf '📦 Creating isolated Black House managed clone...\n'
   git clone https://github.com/sonoxo/gpt-doug-llm.git "$REPO"
 fi
 
@@ -76,6 +76,8 @@ cat > "$PLIST" <<PLIST
   <dict>
     <key>BLACKHOUSE_REPO</key>
     <string>$REPO</string>
+    <key>BLACKHOUSE_STATE_DIR</key>
+    <string>$STATE_DIR</string>
     <key>BLACKHOUSE_CONTROL_REF</key>
     <string>origin/$BRANCH</string>
     <key>BLACKHOUSE_CONTROL_PATH</key>
@@ -112,7 +114,8 @@ launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
 
 sleep 2
 printf '\n✅ BLACK HOUSE AUTONOMY IS INSTALLED\n'
-printf 'Repo: %s\n' "$REPO"
+printf 'Managed repo: %s\n' "$REPO"
+printf 'Your normal coding checkout is untouched.\n'
 printf 'Control: origin/%s:ops/autonomy/control.json\n' "$BRANCH"
 printf 'Runner log: %s/runner.log\n' "$STATE_DIR"
 printf 'State: %s/state.json\n' "$STATE_DIR"
