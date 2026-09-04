@@ -67,9 +67,11 @@ exec bash "$LAUNCHER" "$@"
 EOF
 chmod +x "$TARGET"
 
+# Verify without launching the app.
+test -x "$TARGET"
+bash -n "$TARGET"
+test -f "$LAUNCHER"
+
 printf '✅ Installed real command: %s\n' "$TARGET"
 printf '✅ No ~/.zshrc alias required.\n'
 printf '🌿 Launch with: greenhouse\n\n'
-
-# Verify the installed wrapper itself is executable and points to a valid host launcher.
-"$TARGET" --help >/dev/null 2>&1 || true
