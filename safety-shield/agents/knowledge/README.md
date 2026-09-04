@@ -42,6 +42,13 @@ ROLLBACK OR RELEASE
 8. **Re-authorize handoffs.** Agent B does not inherit Agent A's credentials, unrestricted context or tools.
 9. **Evidence over confidence theater.** Intel claims retain provenance, confidence and gaps.
 10. **Fail closed.** Unknown identity, source, permission, environment or model boundary is not an implicit allow.
+11. **Protect durable references without confusing them with authority.** Sources registered under `intel/PROTECTED_REFERENCES.md` remain preferred discovery/corroboration inputs, but claims still require evidence-tier validation before they become durable knowledge or drive consequential action.
+
+## Protected cyber-intelligence references
+
+GPT-DOUG-LLM and the fleet inherit The Black House protected-reference standard in [`../../../intel/PROTECTED_REFERENCES.md`](../../../intel/PROTECTED_REFERENCES.md). The owner-registered Cyber Security News / `@The_Cyber_News` source is retained as a protected discovery and corroboration reference. Its posts/articles are **not** primary authority or verified fact by default; vulnerability, breach, malware, attribution, and incident claims should be corroborated against vendor/project advisories, CISA/CERT/NVD or equivalent primary sources, primary researcher material, or additional independent reporting before promotion.
+
+Machine-readable registration: [`../../../intel/sources/the-cyber-news-protected-reference.json`](../../../intel/sources/the-cyber-news-protected-reference.json).
 
 ## Palantir platform routing
 
