@@ -1,8 +1,14 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-03T08:12:53Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-03T09:10:22Z",
+  "due_files_reviewed": 5,
+  "due_paths": [
+    ".github/workflows/wakeup3lm.yml",
+    "tests/test_wakeup3lm.py",
+    "wakeup3lm/__init__.py",
+    "wakeup3lm/runtime.py",
+    "wakeup3lm/workspace.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -515,11 +521,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T08:59:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T09:10:22Z",
       "sha256": "5250717c664387a89cb93104594e0f5f0a21de5cbd5f414472865830bc3183b5",
       "size": 888,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/watch-dog-typescript.yml": {
       "actions": [],
@@ -2076,10 +2082,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-04T07:59:11Z",
+      "git_touched_at": "2026-09-04T09:10:12Z",
       "reviewed_at": null,
-      "sha256": "d6b771441c6b91819ccba14720f5e47651071c8bf9cdb9d26fdb75af91060d9a",
-      "size": 5190,
+      "sha256": "5a824533d6a2306b9a4b084e81e394fc5d4db2c38b301d824f5a1cb3137873a0",
+      "size": 5186,
       "validation_issues": [],
       "was_due": false
     },
@@ -4728,11 +4734,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T08:59:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T09:10:22Z",
       "sha256": "9ed3a6b553aee73c6856c800b2638f13d54316e80b2ff6983a3577f87eb8fc39",
       "size": 2404,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_xbox_gdk_docs_resolver.py": {
       "actions": [],
@@ -5916,11 +5922,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T08:58:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T09:10:22Z",
       "sha256": "58aad8ebd6e2ce00c3b2945c8bdede6f75d27954df149b03d5bef84516948f37",
       "size": 240,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "wakeup3lm/assets/ecosystem.svg": {
       "actions": [],
@@ -5971,22 +5977,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T08:59:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T09:10:22Z",
       "sha256": "52e590e0901f4648dc303f6a8d904d68675296a33785721c220cfb3f05fb4cf7",
       "size": 6115,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "wakeup3lm/workspace.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T08:58:43Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T09:10:22Z",
       "sha256": "0f170714c9c02b460a43bfe71683e6b05727b40fd156f83f4736cb3379c351b3",
       "size": 2407,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "watch-dog/.env.example": {
       "actions": [],
@@ -7816,7 +7822,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-04T08:12:53Z",
+  "generated_at": "2026-09-04T09:10:22Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
