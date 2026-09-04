@@ -5,8 +5,9 @@ The runner polls a Git-tracked control manifest and executes only a small,
 explicit allowlist of repository-local actions. It never uses shell=True,
 sudo, destructive reset/clean operations, or arbitrary command strings.
 
-This lets GitHub act as a durable command bus while the Mac remains the
-execution boundary. Secrets stay local in ~/.config/blackhouse/secrets.env.
+GitHub acts as a durable command bus while the Mac remains the execution
+boundary. The autonomous worker uses its own managed clone and stores secrets
+only in ~/.config/blackhouse/secrets.env.
 """
 
 from __future__ import annotations
@@ -20,20 +21,22 @@ import time
 from pathlib import Path
 from typing import Any
 
-REPO = Path(os.environ.get("BLACKHOUSE_REPO", "~/gpt-doug-llm")).expanduser().resolve()
+STATE_DIR = Path(os.environ.get("BLACKHOUSE_STATE_DIR", "~/.blackhouse-autonomy")).expanduser()
+REPO = Path(
+    os.environ.get("BLACKHOUSE_REPO", str(STATE_DIR / "repo"))
+).expanduser().resolve()
 CONTROL_REF = os.environ.get(
     "BLACKHOUSE_CONTROL_REF",
     "origin/feature/worldmonitor-convergence-adapter-20260904",
 )
 CONTROL_PATH = os.environ.get("BLACKHOUSE_CONTROL_PATH", "ops/autonomy/control.json")
 POLL_SECONDS = max(15, int(os.environ.get("BLACKHOUSE_POLL_SECONDS", "30")))
-STATE_DIR = Path(os.environ.get("BLACKHOUSE_STATE_DIR", "~/.blackhouse-autonomy")).expanduser()
 STATE_FILE = STATE_DIR / "state.json"
 LOG_FILE = STATE_DIR / "runner.log"
+RUNTIME_DIR = STATE_DIR / "runtime"
 SECRETS_FILE = Path(
     os.environ.get("BLACKHOUSE_SECRETS_FILE", "~/.config/blackhouse/secrets.env")
 ).expanduser()
-RUNTIME_DIR = REPO / ".blackhouse" / "runtime"
 
 ALLOWED_NPM_SCRIPTS = {"test", "check", "build"}
 ALLOWED_PYTHON_SCRIPTS = {
@@ -92,7 +95,7 @@ def git(*args: str, timeout: int = 300) -> subprocess.CompletedProcess[str]:
 
 def ensure_repo() -> None:
     if not (REPO / ".git").exists():
-        raise RuntimeError(f"repository not found at {REPO}")
+        raise RuntimeError(f"managed repository not found at {REPO}")
 
 
 def fetch_control() -> dict[str, Any]:
@@ -125,7 +128,7 @@ def write_state(**updates: Any) -> None:
 def ensure_clean_tree() -> None:
     status = git("status", "--porcelain").stdout.strip()
     if status:
-        raise RuntimeError("working tree has local changes; refusing automatic branch switch/pull")
+        raise RuntimeError("managed autonomy clone has local changes; refusing automatic sync")
 
 
 def action_git_sync(action: dict[str, Any]) -> None:
