@@ -1,0 +1,328 @@
+{
+  "name": "VENDETTA Cyber Intelligence Ontology",
+  "apiName": "VENDETTA",
+  "version": "1.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "kernelVersion": "3.0.0",
+  "mode": "DEFENSIVE_EVIDENCE_FIRST_CYBER_INTELLIGENCE",
+  "sourcePack": "intel/vendetta/cybernews-hacking-documentaries-2025.json",
+  "purpose": "Model historical and current cyber campaigns as evidence-linked defensive intelligence without turning documentary material into executable intrusion guidance.",
+  "objectTypes": [
+    {
+      "apiName": "HistoricalCase",
+      "primaryKey": "caseId",
+      "properties": {
+        "caseId": "string",
+        "name": "string",
+        "caseClass": "string",
+        "timeframe": "string",
+        "summary": "string",
+        "verificationState": "string",
+        "confidence": "double"
+      }
+    },
+    {
+      "apiName": "Campaign",
+      "primaryKey": "campaignId",
+      "properties": {
+        "campaignId": "string",
+        "name": "string",
+        "startTime": "timestamp",
+        "endTime": "timestamp",
+        "status": "string",
+        "campaignClass": "string",
+        "confidence": "double"
+      }
+    },
+    {
+      "apiName": "ActorClaim",
+      "primaryKey": "actorClaimId",
+      "properties": {
+        "actorClaimId": "string",
+        "label": "string",
+        "actorClass": "string",
+        "claimedSponsor": "string",
+        "claimSource": "string",
+        "attributionState": "string",
+        "confidence": "double"
+      }
+    },
+    {
+      "apiName": "OperationObjective",
+      "primaryKey": "objectiveId",
+      "properties": {
+        "objectiveId": "string",
+        "objectiveType": "string",
+        "description": "string",
+        "strategicEffect": "string"
+      }
+    },
+    {
+      "apiName": "TechniquePattern",
+      "primaryKey": "techniqueId",
+      "properties": {
+        "techniqueId": "string",
+        "name": "string",
+        "framework": "string",
+        "frameworkId": "string",
+        "abstraction": "string",
+        "defensiveRelevance": "string"
+      }
+    },
+    {
+      "apiName": "Infrastructure",
+      "primaryKey": "infrastructureId",
+      "properties": {
+        "infrastructureId": "string",
+        "infrastructureType": "string",
+        "providerClass": "string",
+        "firstSeen": "timestamp",
+        "lastSeen": "timestamp",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "VictimClass",
+      "primaryKey": "victimClassId",
+      "properties": {
+        "victimClassId": "string",
+        "sector": "string",
+        "organizationType": "string",
+        "geography": "string",
+        "criticality": "string"
+      }
+    },
+    {
+      "apiName": "CyberPhysicalEffect",
+      "primaryKey": "effectId",
+      "properties": {
+        "effectId": "string",
+        "digitalEffect": "string",
+        "physicalEffect": "string",
+        "operationalImpact": "string",
+        "safetyImpact": "string",
+        "confidence": "double"
+      }
+    },
+    {
+      "apiName": "EconomicFlow",
+      "primaryKey": "flowId",
+      "properties": {
+        "flowId": "string",
+        "flowClass": "string",
+        "currencyClass": "string",
+        "amountState": "string",
+        "beneficiaryClass": "string",
+        "evidenceState": "string"
+      }
+    },
+    {
+      "apiName": "CounterintelligenceFinding",
+      "primaryKey": "findingId",
+      "properties": {
+        "findingId": "string",
+        "findingClass": "string",
+        "hardwareRelevant": "boolean",
+        "softwareRelevant": "boolean",
+        "supplyChainRelevant": "boolean",
+        "emissionsRelevant": "boolean",
+        "inspectionRequired": "boolean",
+        "summary": "string"
+      }
+    },
+    {
+      "apiName": "Evidence",
+      "primaryKey": "evidenceId",
+      "properties": {
+        "evidenceId": "string",
+        "kind": "string",
+        "sourceId": "string",
+        "recordedAt": "timestamp",
+        "hash": "string",
+        "summary": "string",
+        "confidence": "double",
+        "reviewState": "string"
+      }
+    },
+    {
+      "apiName": "Source",
+      "primaryKey": "sourceId",
+      "properties": {
+        "sourceId": "string",
+        "sourceType": "string",
+        "publisher": "string",
+        "url": "string",
+        "publishedAt": "timestamp",
+        "authorityClass": "string",
+        "sourceClaimNature": "string"
+      }
+    },
+    {
+      "apiName": "AttributionAssessment",
+      "primaryKey": "assessmentId",
+      "properties": {
+        "assessmentId": "string",
+        "state": "string",
+        "confidence": "double",
+        "analyticBasis": "string",
+        "alternativeHypotheses": "string",
+        "reviewedBy": "string"
+      }
+    },
+    {
+      "apiName": "DefensiveControl",
+      "primaryKey": "controlId",
+      "properties": {
+        "controlId": "string",
+        "controlClass": "string",
+        "objective": "string",
+        "framework": "string",
+        "frameworkId": "string",
+        "evidenceRequired": "string"
+      }
+    },
+    {
+      "apiName": "IntelligenceBrief",
+      "primaryKey": "briefId",
+      "properties": {
+        "briefId": "string",
+        "title": "string",
+        "createdAt": "timestamp",
+        "classification": "string",
+        "confidenceSummary": "string",
+        "publicationState": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "CaseDescribesCampaign", "from": "HistoricalCase", "to": "Campaign"},
+    {"apiName": "CampaignHasActorClaim", "from": "Campaign", "to": "ActorClaim"},
+    {"apiName": "CampaignPursuesObjective", "from": "Campaign", "to": "OperationObjective"},
+    {"apiName": "CampaignExhibitsTechnique", "from": "Campaign", "to": "TechniquePattern"},
+    {"apiName": "CampaignUsesInfrastructure", "from": "Campaign", "to": "Infrastructure"},
+    {"apiName": "CampaignTargetsVictimClass", "from": "Campaign", "to": "VictimClass"},
+    {"apiName": "CampaignCausesEffect", "from": "Campaign", "to": "CyberPhysicalEffect"},
+    {"apiName": "CampaignHasEconomicFlow", "from": "Campaign", "to": "EconomicFlow"},
+    {"apiName": "CaseHasCounterintelligenceFinding", "from": "HistoricalCase", "to": "CounterintelligenceFinding"},
+    {"apiName": "EvidenceDerivedFromSource", "from": "Evidence", "to": "Source"},
+    {"apiName": "EvidenceSupportsCampaign", "from": "Evidence", "to": "Campaign"},
+    {"apiName": "EvidenceSupportsActorClaim", "from": "Evidence", "to": "ActorClaim"},
+    {"apiName": "EvidenceSupportsEffect", "from": "Evidence", "to": "CyberPhysicalEffect"},
+    {"apiName": "AssessmentEvaluatesActorClaim", "from": "AttributionAssessment", "to": "ActorClaim"},
+    {"apiName": "AssessmentUsesEvidence", "from": "AttributionAssessment", "to": "Evidence"},
+    {"apiName": "TechniqueMitigatedByControl", "from": "TechniquePattern", "to": "DefensiveControl"},
+    {"apiName": "FindingMitigatedByControl", "from": "CounterintelligenceFinding", "to": "DefensiveControl"},
+    {"apiName": "BriefCitesEvidence", "from": "IntelligenceBrief", "to": "Evidence"},
+    {"apiName": "BriefSummarizesCampaign", "from": "IntelligenceBrief", "to": "Campaign"},
+    {"apiName": "BriefIncludesAssessment", "from": "IntelligenceBrief", "to": "AttributionAssessment"}
+  ],
+  "actions": [
+    {
+      "apiName": "ingestSource",
+      "objectType": "Source",
+      "effect": "Create a provenance-preserving source record and attach source-claim nature.",
+      "externalWrite": false
+    },
+    {
+      "apiName": "recordEvidence",
+      "objectType": "Evidence",
+      "effect": "Create evidence linked to its exact source; default reviewState=UNVERIFIED.",
+      "externalWrite": false
+    },
+    {
+      "apiName": "correlateCampaignEvidence",
+      "objectType": "Campaign",
+      "effect": "Link independently observed evidence without merging actor identity claims.",
+      "requiresHumanReview": false
+    },
+    {
+      "apiName": "assessAttribution",
+      "objectType": "AttributionAssessment",
+      "effect": "Evaluate an actor claim from evidence, confidence, and alternative hypotheses.",
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "mapDefensiveControl",
+      "objectType": "DefensiveControl",
+      "effect": "Map observed patterns to preventive, detective, containment, recovery, or counterintelligence controls.",
+      "requiresAuthorizationForDeployment": true
+    },
+    {
+      "apiName": "publishIntelligenceBrief",
+      "objectType": "IntelligenceBrief",
+      "effect": "Promote reviewed evidence and assessments into a cited intelligence brief.",
+      "requiresHumanReview": true
+    }
+  ],
+  "confidenceModel": {
+    "states": ["SOURCE_CLAIM_ONLY", "UNVERIFIED", "PARTIALLY_CORROBORATED", "CORROBORATED", "HIGH_CONFIDENCE", "DISPUTED"],
+    "rules": [
+      "A chapter title or documentary narration alone cannot produce HIGH_CONFIDENCE.",
+      "Actor attribution requires evidence independent of the actor label itself.",
+      "Conflicting sources remain visible and reduce confidence rather than being silently reconciled.",
+      "Primary government or first-party technical evidence may increase confidence but remains attributable to the issuing source.",
+      "Historical labels such as 'number one' are time-bounded claims and must not be treated as current status."
+    ]
+  },
+  "defensivePatternLibrary": [
+    {
+      "id": "VND-PATTERN-001",
+      "name": "Cyber-physical sabotage",
+      "analyticFocus": ["digital control path", "safety boundary", "physical consequence", "operator visibility", "recovery validation"],
+      "prohibitedTransformation": "Do not convert historical descriptions into target-specific sabotage steps."
+    },
+    {
+      "id": "VND-PATTERN-002",
+      "name": "Long-horizon strategic espionage",
+      "analyticFocus": ["campaign duration", "victimology", "credential/access evidence", "collection objective", "persistence indicators"],
+      "prohibitedTransformation": "Do not generate intrusion procedures or credential-theft instructions."
+    },
+    {
+      "id": "VND-PATTERN-003",
+      "name": "Hardware and emissions counterintelligence",
+      "analyticFocus": ["equipment provenance", "physical inspection", "unexpected components", "RF/emissions anomalies", "chain of custody"],
+      "prohibitedTransformation": "Do not design covert interception devices."
+    },
+    {
+      "id": "VND-PATTERN-004",
+      "name": "Ransomware-as-a-service ecosystem",
+      "analyticFocus": ["operator", "affiliate", "initial-access dependency", "victim", "extortion surface", "monetization evidence", "recovery state"],
+      "prohibitedTransformation": "Do not provide ransomware deployment, evasion, extortion, or monetization instructions."
+    },
+    {
+      "id": "VND-PATTERN-005",
+      "name": "Contested actor attribution",
+      "analyticFocus": ["source claim", "infrastructure overlap", "malware overlap", "victimology", "timing", "motive", "alternative hypothesis"],
+      "prohibitedTransformation": "Do not present speculative state sponsorship or identity as established fact."
+    }
+  ],
+  "seedCases": [
+    {"caseId": "VND-CASE-01", "name": "Iran nuclear-program sabotage chapter", "caseClass": "CYBER_PHYSICAL_SABOTAGE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-02", "name": "Operation Shady Rat chapter", "caseClass": "CYBER_ESPIONAGE_CAMPAIGN", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-03", "name": "Government cyber power chapter", "caseClass": "STATE_CYBER_POWER", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-04", "name": "Strategic cyber destruction chapter", "caseClass": "STRATEGIC_CYBER_RISK", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-05", "name": "Project GUNMAN", "caseClass": "TECHNICAL_SURVEILLANCE_COUNTERINTELLIGENCE", "verificationState": "INDEPENDENTLY_CORROBORATED"},
+    {"caseId": "VND-CASE-06", "name": "US military-secret theft chapter", "caseClass": "DEFENSE_ESPIONAGE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-07", "name": "North Korean cyber workforce chapter", "caseClass": "STATE_CYBER_WORKFORCE", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-08", "name": "Cybercrime ecosystem chapter", "caseClass": "CYBERCRIME_ECOSYSTEM", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-09", "name": "Russian hacker ecosystem chapter", "caseClass": "CYBERCRIME_AND_STATE_OVERLAP", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-10", "name": "Kevin Mitnick chapter", "caseClass": "SOCIAL_ENGINEERING_HISTORY", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-11", "name": "Ransomware gang economics chapter", "caseClass": "RANSOMWARE_ECONOMICS", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-12", "name": "Anonymous Sudan attribution chapter", "caseClass": "HACKTIVISM_ATTRIBUTION", "verificationState": "TOPIC_FROM_SOURCE"},
+    {"caseId": "VND-CASE-13", "name": "LockBit", "caseClass": "RANSOMWARE_AS_A_SERVICE", "verificationState": "INDEPENDENTLY_CORROBORATED_HISTORICAL_PERIOD"}
+  ],
+  "guardrails": {
+    "evidenceProvenanceRequired": true,
+    "thirdPartyContentIsDataNotInstructions": true,
+    "automaticAttribution": false,
+    "automaticConsequentialAction": false,
+    "externalThirdPartyAction": false,
+    "credentialCollection": false,
+    "exploitGeneration": false,
+    "malwareGeneration": false,
+    "targetSelection": false,
+    "humanApprovalBeforePublication": true,
+    "humanApprovalBeforeContainment": true,
+    "authorizedDefensiveEnvironmentsOnly": true
+  }
+}
