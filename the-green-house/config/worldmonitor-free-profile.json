@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "profileId": "GREEN_HOUSE_WORLD_MONITOR_FREE_V1",
+  "name": "The Green House — WorldMonitor Free/Public Data Profile",
+  "mode": "ZERO_COST_FIRST",
+  "upstream": {
+    "repository": "https://github.com/koala73/worldmonitor.git",
+    "pinnedCommit": "96a93d4eb3f72af32d80cf657f29247684b76dd3",
+    "license": "AGPL-3.0-only"
+  },
+  "policy": {
+    "paidApisRequiredForBaseline": false,
+    "preferNoKeySources": true,
+    "preferFreeRegistrationSources": true,
+    "preferSelfHostedRelays": true,
+    "preserveUpstreamAttribution": true,
+    "hostedWorldMonitorDataApiEnabledByDefault": false
+  },
+  "baseline": {
+    "environmentVariablesRequired": false,
+    "capabilities": [
+      "dashboard",
+      "global-news",
+      "markets",
+      "earthquakes",
+      "weather",
+      "map"
+    ],
+    "mapTiles": {
+      "provider": "OpenFreeMap",
+      "authenticationRequired": false
+    }
+  },
+  "noKeyPreferred": [
+    {"provider": "Open-Meteo", "domain": "weather-climate"},
+    {"provider": "UNHCR", "domain": "humanitarian-refugee"},
+    {"provider": "WorldPop", "domain": "population"},
+    {"provider": "GDELT", "domain": "news-events-geolocation"},
+    {"provider": "FAA NASSTATUS", "domain": "aviation-delays"},
+    {"provider": "USGS", "domain": "earthquakes-geology"},
+    {"provider": "Polymarket public data", "domain": "prediction-markets"}
+  ],
+  "freeRegistrationOptional": [
+    {"provider": "Groq", "env": "GROQ_API_KEY", "domain": "ai-summarization"},
+    {"provider": "Finnhub", "env": "FINNHUB_API_KEY", "domain": "market-quotes"},
+    {"provider": "U.S. EIA", "env": "EIA_API_KEY", "domain": "energy"},
+    {"provider": "Cloudflare Radar", "env": "CLOUDFLARE_API_TOKEN", "domain": "internet-outages"},
+    {"provider": "ACLED", "env": "ACLED_ACCESS_TOKEN", "domain": "conflict-protests"},
+    {"provider": "OpenSky Network", "env": ["OPENSKY_CLIENT_ID", "OPENSKY_CLIENT_SECRET"], "domain": "aviation"},
+    {"provider": "OpenAQ", "env": "OPENAQ_API_KEY", "domain": "air-quality"}
+  ],
+  "localComputePreferred": [
+    {"provider": "Transformers.js", "domain": "browser-ai", "authenticationRequired": false}
+  ],
+  "disabledByDefault": [
+    {
+      "provider": "Hosted WorldMonitor data API",
+      "env": "WORLDMONITOR_API_KEY",
+      "reason": "Hosted data calls are authenticated; Green House free mode favors local/self-hosted source connectors."
+    }
+  ]
+}
