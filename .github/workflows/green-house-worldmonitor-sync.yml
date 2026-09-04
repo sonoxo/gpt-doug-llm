@@ -1,0 +1,101 @@
+name: Green House WorldMonitor Full Sync
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/green-house-worldmonitor-sync.yml'
+      - 'the-green-house/worldmonitor-sync/**'
+  schedule:
+    - cron: '17 5 * * 1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: green-house-worldmonitor-sync
+  cancel-in-progress: false
+
+jobs:
+  vendor-worldmonitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout Green House host repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Clone canonical WorldMonitor
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/worldmonitor
+          git clone --depth 1 https://github.com/koala73/worldmonitor.git /tmp/worldmonitor
+          git -C /tmp/worldmonitor rev-parse HEAD > /tmp/worldmonitor.sha
+
+      - name: Vendor complete source tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET='the-green-house/apps/worldmonitor'
+          mkdir -p "$TARGET"
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.env.local' \
+            /tmp/worldmonitor/ "$TARGET"/
+          cp /tmp/worldmonitor.sha "$TARGET/.green-house-upstream-sha"
+
+      - name: Install Green House overlay metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARGET='the-green-house/apps/worldmonitor'
+          cat > "$TARGET/GREEN_HOUSE.md" <<'EOF'
+          # THE GREEN HOUSE — WorldMonitor Intelligence Surface
+
+          This directory vendors the complete source tree from the canonical
+          `koala73/worldmonitor` project and mounts it as the geospatial/public-data
+          intelligence surface for The Green House under The Black House.
+
+          Green House domains: eco, bio, pharma, FDA/public-health evidence,
+          climate, disasters, infrastructure, energy, and open-source geospatial signals.
+
+          Licensing: upstream source remains AGPL-3.0-only. Preserve the upstream
+          LICENSE, copyright notices, and source-availability obligations.
+
+          Sync source: https://github.com/koala73/worldmonitor
+          Green House control plane: ../../the-black-house/layers/green-house
+          EOF
+
+          cat > "$TARGET/.env.green-house.example" <<'EOF'
+          # Base WorldMonitor runs without environment variables.
+          # Add optional provider keys only for layers that require them.
+          # Prefer free/public/self-hosted providers whenever supported.
+          DEV_PORT=3000
+          EOF
+
+      - name: Verify vendored application
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f the-green-house/apps/worldmonitor/package.json
+          test -f the-green-house/apps/worldmonitor/LICENSE
+          test -f the-green-house/apps/worldmonitor/README.md
+          node -e "const p=require('./the-green-house/apps/worldmonitor/package.json'); console.log('WorldMonitor package:', p.name, p.version || 'unversioned')"
+
+      - name: Commit synchronized source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'green-house-bot'
+          git config user.email 'green-house-bot@users.noreply.github.com'
+          git add the-green-house/apps/worldmonitor
+          if git diff --cached --quiet; then
+            echo 'Green House WorldMonitor is already synchronized.'
+            exit 0
+          fi
+          SHA="$(cat /tmp/worldmonitor.sha)"
+          git commit -m "vendor(green-house): sync WorldMonitor ${SHA:0:12}"
+          git push
