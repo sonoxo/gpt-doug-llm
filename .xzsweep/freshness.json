@@ -1,21 +1,11 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-03T09:42:01Z",
-  "due_files_reviewed": 13,
+  "cutoff_at": "2026-09-03T10:05:52Z",
+  "due_files_reviewed": 3,
   "due_paths": [
-    ".env.example",
-    ".github/workflows/palantir-full-stack.yml",
-    "docs/PALANTIR_FULL_STACK.md",
-    "palantir_aip.py",
-    "palantir_apollo.py",
-    "palantir_automate.py",
-    "palantir_gotham.py",
-    "palantir_stack.py",
-    "palantir_tenant_probe.py",
-    "palantir_terminal.py",
-    "tests/test_palantir_full_stack.py",
-    "wakeup3lm/docs/generate_ecosystem_readme.py",
-    "wakeup3lm/palantir.py"
+    "README.md",
+    "docs/assets/security-gates.svg",
+    "docs/assets/wakeup3lm-agent-loop.svg"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -65,13 +55,13 @@
     ".env.example": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:31:51Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "510742c65c858be558ba268dcd2d5650f6bd4518665eb05f1cbcad4e779b3340",
       "size": 8516,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/ISSUE_TEMPLATE/bug_report.yml": {
       "actions": [],
@@ -373,13 +363,13 @@
     ".github/workflows/palantir-full-stack.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:31:15Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "e3cc880a87d779cda9fb5aab2f13b2470f67af78cd42626370a30f9ac700f175",
       "size": 1122,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/qtfy-advisory-intel.yml": {
       "actions": [],
@@ -727,11 +717,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T09:50:08Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "69acf15a08cb87bd4c68c1bec6f8e9a84f92b30d8cf5c7443e1f314e71e6c6a2",
       "size": 17148,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "SECURITY.md": {
       "actions": [],
@@ -1679,6 +1669,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/CNAME": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-04T10:05:43Z",
+      "reviewed_at": null,
+      "sha256": "8d372dc42f466406c6e6d18acc5918051d5c750d5ed7d7a0f2d40bf2153f0bd4",
+      "size": 10,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/COGNITIVE_ANALYST_CORE.md": {
       "actions": [],
       "binary": false,
@@ -1825,13 +1826,13 @@
     "docs/PALANTIR_FULL_STACK.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:32:11Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "8dffc79453b2d0b2225eab8a13835bac7eb413d6808a34ee8779dc5863427e1f",
       "size": 3977,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/PRODUCTS.md": {
       "actions": [],
@@ -1937,11 +1938,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T09:58:46Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "38be471f772619775f12068b31ef7ed87eb51761371537957bfb2d7a1ff05d55",
       "size": 6402,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/assets/sonoxo-ecosystem-orbit.svg": {
       "actions": [],
@@ -1959,11 +1960,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T09:50:17Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "c6cbf6c32ce4c2afed9e2554b8c8b59b6c3a635d71af4a680f9c6eec6fb9a5b4",
       "size": 6388,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/deployment.json": {
       "actions": [],
@@ -3684,35 +3685,35 @@
     "palantir_aip.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:27:58Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "7d15545dde53e0e33deb1948e833600af24967eaa770895e3ec24a62a1c3ba12",
       "size": 6945,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_apollo.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:28:52Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "139f98ef90791b3e893d07329cf2861a496a2fd6ff72be013195a96c36dbd7cb",
       "size": 6321,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_automate.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:28:10Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "3235847a057b14849aa90ed5e7e7c5ae8c367fd13ff879d00bd27551a20e03ca",
       "size": 2474,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_bridge.py": {
       "actions": [],
@@ -3739,46 +3740,46 @@
     "palantir_gotham.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:28:29Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "e3fbe1350ed5be410aa2850f45993c5dba79d6360564809cc8ece2a7d42193fa",
       "size": 2470,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:30:15Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "2535d3b42b1dda5dc639bf5e59bc1a12d3eb97238c2890543689eb458a88964f",
       "size": 7449,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_tenant_probe.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:34:46Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "202f1b9d43dfc4a861f1d37ecb7e6e43053eb7acc2c7c4b7d26d776b3f8f6d60",
       "size": 5679,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_terminal.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:30:38Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "036a93fb67e13158d93b7894eaddfe174e8b3756cdd2211323aa938fa357f79c",
       "size": 6651,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "prompt_api.py": {
       "actions": [],
@@ -4641,13 +4642,13 @@
     "tests/test_palantir_full_stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:31:02Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "e851fc76eb6c467f871279616fea3f1e29c9e80b706b81593488eb013cd50d3f",
       "size": 4444,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_palantir_terminal.py": {
       "actions": [],
@@ -5950,13 +5951,13 @@
     "wakeup3lm/docs/generate_ecosystem_readme.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:23:14Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "48852e89d02ae2763411937e7f4d1ce4d035d50e9527df6d550556fafbe1967c",
       "size": 7372,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "wakeup3lm/ontology.py": {
       "actions": [],
@@ -5972,13 +5973,13 @@
     "wakeup3lm/palantir.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:29:34Z",
       "reviewed_at": "2026-09-04T09:42:01Z",
       "sha256": "65ac387c4b896ce73c82f3ff3f2dbe5adc765070b23216d51d9105467cf16c9c",
       "size": 4269,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "wakeup3lm/runtime.py": {
       "actions": [],
@@ -7830,11 +7831,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-04T09:42:01Z",
+  "generated_at": "2026-09-04T10:05:52Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 710,
+  "tracked_files_reviewed": 711,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
