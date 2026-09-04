@@ -1,0 +1,64 @@
+{
+  "id": "protected-reference:the-cyber-news",
+  "version": "1.0.0",
+  "registeredAt": "2026-09-03",
+  "registeredBy": "OWNER",
+  "appliesTo": [
+    "GPT-DOUG-LLM",
+    "THE_BLACK_HOUSE",
+    "RVIA",
+    "ZYRA",
+    "XUNIA"
+  ],
+  "source": {
+    "name": "Cyber Security News / The Cyber News",
+    "handle": "@The_Cyber_News",
+    "url": "https://x.com/The_Cyber_News",
+    "sourceClass": "SECONDARY_CYBER_INTELLIGENCE_REPORTING",
+    "registrationState": "PROTECTED_REFERENCE"
+  },
+  "purpose": [
+    "cybersecurity discovery",
+    "incident awareness",
+    "vulnerability awareness",
+    "malware and threat-campaign lead generation",
+    "candidate defensive intelligence"
+  ],
+  "trustPolicy": {
+    "isPrimaryAuthority": false,
+    "isVerifiedFactByDefault": false,
+    "durableKnowledgeRequiresCorroboration": true,
+    "consequentialActionRequiresIndependentEvidence": true,
+    "preferredCorroboration": [
+      "affected vendor or project security advisory",
+      "CISA/CERT/NVD or other government first-party advisory",
+      "primary researcher disclosure or repository",
+      "additional independent reputable reporting"
+    ]
+  },
+  "handling": {
+    "retainRegistration": true,
+    "silentRemovalForbidden": true,
+    "materialChangeRequiresExplicitCommit": true,
+    "quarantineAllowed": true,
+    "quarantineTriggers": [
+      "source compromise",
+      "persistent material inaccuracy",
+      "unsafe or manipulated content",
+      "identity uncertainty"
+    ],
+    "captureRequirements": [
+      "exact source URL",
+      "retrieval timestamp",
+      "publication timestamp when available",
+      "claim/fact/inference separation",
+      "confidence and gaps",
+      "corroborating references for promoted claims"
+    ]
+  },
+  "copyrightPolicy": {
+    "storeFullArticlesByDefault": false,
+    "preferredUse": "short excerpt or original summary with attribution and source link"
+  },
+  "operationalRule": "Use as a protected discovery/corroboration reference. Never treat a post or article alone as authorization, verified exploitability, confirmed attribution, or permission for operational action."
+}
