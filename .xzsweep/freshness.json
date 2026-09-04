@@ -1,8 +1,22 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-02T23:36:46Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-03T01:27:55Z",
+  "due_files_reviewed": 13,
+  "due_paths": [
+    ".github/workflows/palantir-federal-compliance.yml",
+    "docs/FEDERAL_IC_ALIGNMENT.md",
+    "docs/PALANTIR_FOUNDRY.md",
+    "federal_compliance.py",
+    "palantir_foundry.py",
+    "safety-shield/agents/knowledge/README.md",
+    "safety-shield/agents/knowledge/mainframe-defensive-pentest-v1.md",
+    "safety-shield/agents/knowledge/palantir-stack-v1.json",
+    "safety-shield/agents/knowledge/rvia-agentic-core.json",
+    "scripts/doug-max-compute",
+    "tests/test_palantir_federal_compliance.py",
+    "tests/test_palantir_foundry.py",
+    "va3lm/src/va3lm/brain.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -339,11 +353,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:29:03Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "93b728e70d6841b193d4c6bb12bcc06bc073bd8ac3c86d62f0ac114847a482ca",
       "size": 2202,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/palantir-full-stack.yml": {
       "actions": [],
@@ -1692,11 +1706,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:29:33Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "783a26435743121d6277dc713e69a41b97341adafbca034924726f8e3c4ac66f",
       "size": 5425,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/GOOGLE_HACKATHON_PLAN.md": {
       "actions": [],
@@ -1769,11 +1783,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:14:40Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "35bc3c371685e5297ecbafaa702cac927189c830cbabb94586642b1386f87c13",
       "size": 6884,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/PALANTIR_FULL_STACK.md": {
       "actions": [],
@@ -2385,11 +2399,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:27:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "b46ab9dbc09c3428c7576017024b0988290dffc699fdf9a010f0aa7df2895d32",
       "size": 8951,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "foundry/ontology/ghidra-defense-ontology.json": {
       "actions": [],
@@ -2960,6 +2974,17 @@
       "reviewed_at": "2026-09-03T21:28:50Z",
       "sha256": "cda42254364e01ad9c5c6b0a98a37a15077736867101199a470b19a9b473390a",
       "size": 4095,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/PROTECTED_REFERENCES.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-04T01:27:46Z",
+      "reviewed_at": null,
+      "sha256": "76d4715b103df53c776cff5898c669a0408893f14b59fa5ed96a8da719aa3e23",
+      "size": 2359,
       "validation_issues": [],
       "was_due": false
     },
@@ -3628,11 +3653,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:28:02Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "2e0d390f776b76c5e7846235edb20fad649c4e0263175f78cd3074c8b00bdcca",
       "size": 13446,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "palantir_gotham.py": {
       "actions": [],
@@ -3804,11 +3829,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:15:49Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "0f6e76b8a65a073df1fbf6b2f6fc571b972fe1f17229dc33d66df4a8a251d2e0",
       "size": 5564,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/black-house-ethical-hacking-course-ontology.json": {
       "actions": [],
@@ -3826,11 +3851,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:09:57Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "d863e6e3e6beadf7119141070cc513ebc9f2eb256eed91c8e5151d6e8084c6f0",
       "size": 6562,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/palantir-ai-fde-automate-2026-08.json": {
       "actions": [],
@@ -3848,11 +3873,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:13:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "8347bfbabb229b18f68de90b3c253707e32bb46baa27f9ffb86621dbe04870b8",
       "size": 3291,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/replit-stripe-payments-v1.json": {
       "actions": [],
@@ -3870,11 +3895,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:15:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "4615535bbccda3234ee0fe7f9e2754b49a877936ccf066b9133e675e22874f10",
       "size": 11418,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge_loader.py": {
       "actions": [],
@@ -4068,11 +4093,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-02T23:49:27Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "6d53e3642da0d3c34f4ecbcb0f110ee0b28681c45f3c37c422ec0dd3d6ddf893",
       "size": 872,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/frontline_compliance_check.py": {
       "actions": [],
@@ -4519,22 +4544,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:27:26Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "db2dfd292822eadcaca9b68378d23dc64a8cb3462b1e28c78fb82fb651988d5b",
       "size": 2584,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_palantir_foundry.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-03T00:28:17Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "91b36f4187a4e2ccc20efe10cd4725c0b76b260459513994b5db0e3b8162b4d2",
       "size": 4746,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_palantir_full_stack.py": {
       "actions": [],
@@ -4848,10 +4873,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-03T23:29:11Z",
+      "git_touched_at": "2026-09-03T23:36:46Z",
       "reviewed_at": null,
-      "sha256": "8724462e2d9ba4a54c85a188f8b119a1ad06bf8a64b51a461b6183b661dfc217",
-      "size": 2352,
+      "sha256": "fe8f985546f2e738b3d19c0987172489860be62e76d8d61200995a29438d1285",
+      "size": 2784,
       "validation_issues": [],
       "was_due": false
     },
@@ -5454,11 +5479,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-02T23:47:41Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-04T01:27:55Z",
       "sha256": "33e78c851c6f830c09bb3460fe2f0bac58da10461ff8ccec63fb0b05fb62ca8d",
       "size": 3705,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "va3lm/src/va3lm/capabilities.py": {
       "actions": [],
@@ -7629,11 +7654,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-03T23:36:46Z",
+  "generated_at": "2026-09-04T01:27:55Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 693,
+  "tracked_files_reviewed": 694,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
