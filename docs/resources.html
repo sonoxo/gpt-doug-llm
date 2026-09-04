@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Free browser-accessible tools, plugins, dashboards, simulators and resources used across XUNIA." />
+  <title>XUNIA Interactive Tools & Resources</title>
+  <link rel="stylesheet" href="./zyra-theme.css" />
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;background:#05070b;color:#eef8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    main{max-width:1240px;margin:0 auto;padding:42px 22px 80px}
+    .hero{padding:34px;border:1px solid rgba(70,243,255,.25);border-radius:24px;background:linear-gradient(145deg,rgba(70,243,255,.08),rgba(157,92,255,.07));box-shadow:0 0 50px rgba(70,243,255,.06)}
+    .eyebrow{font:700 12px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;color:#46f3ff}
+    h1{font-size:clamp(2.2rem,6vw,5.8rem);line-height:.94;margin:.35em 0 .22em;letter-spacing:-.055em}
+    .hero p{max-width:780px;color:#a9bac7;font-size:1.05rem;line-height:1.65}
+    .policy{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+    .chip{padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.04);font-size:.82rem;color:#d7e6ef}
+    .toolbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;margin:28px 0 18px}
+    input,select{background:#0c1119;border:1px solid rgba(255,255,255,.13);color:white;border-radius:14px;padding:13px 14px;font:inherit;outline:none}
+    input:focus,select:focus{border-color:#46f3ff;box-shadow:0 0 0 3px rgba(70,243,255,.08)}
+    .stats{color:#7f95a6;font:600 12px ui-monospace,SFMono-Regular,Menlo,monospace;margin:8px 2px 18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+    .card{display:flex;flex-direction:column;min-height:235px;padding:20px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:linear-gradient(180deg,rgba(14,21,31,.96),rgba(7,10,16,.98));transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .card:hover{transform:translateY(-3px);border-color:rgba(70,243,255,.46);box-shadow:0 15px 42px rgba(0,0,0,.25)}
+    .top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .type{font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;color:#9d5cff}
+    .badge{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;border:1px solid rgba(70,243,255,.2);border-radius:999px;padding:5px 8px;color:#46f3ff;white-space:nowrap}
+    .badge.local{color:#ffd36a;border-color:rgba(255,211,106,.25)}
+    .card h2{font-size:1.25rem;margin:14px 0 8px}
+    .card p{color:#98abba;line-height:1.55;font-size:.92rem;flex:1}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:12px;padding:9px 12px;font-weight:750;font-size:.84rem;border:1px solid rgba(255,255,255,.12);color:white;background:rgba(255,255,255,.05)}
+    .btn.primary{background:#46f3ff;color:#041014;border-color:#46f3ff}
+    .empty,.error{padding:28px;border:1px dashed rgba(255,255,255,.14);border-radius:18px;color:#91a5b5;text-align:center}
+    footer{margin-top:42px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);color:#718696;font-size:.84rem}
+    @media(max-width:680px){main{padding:26px 14px 60px}.hero{padding:24px 18px}.toolbar{grid-template-columns:1fr}.card{min-height:0}}
+    @media(prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="eyebrow">XUNIA // Public Access Layer</div>
+      <h1>Interactive Tools & Resources</h1>
+      <p>One free public directory for the dashboards, simulators, plugins, developer resources, public APIs, and interactive creations used across the ecosystem. Browser access is the default whenever the capability can safely run on the web.</p>
+      <div class="policy">
+        <span class="chip">🌐 Browser-first</span>
+        <span class="chip">🆓 Zero-cost baseline</span>
+        <span class="chip">📱 Responsive</span>
+        <span class="chip">🔐 Secrets stay private</span>
+        <span class="chip">⚖️ Attribution preserved</span>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Resource filters">
+      <input id="search" type="search" placeholder="Search tools, APIs, simulators, resources…" autocomplete="off" />
+      <select id="category" aria-label="Filter by category"><option value="all">All categories</option></select>
+    </section>
+    <div id="stats" class="stats">Loading registry…</div>
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <footer>
+      Registry: <a href="./resources.json" style="color:#46f3ff">resources.json</a> · Creation policy: <a href="https://github.com/sonoxo/gpt-doug-llm/blob/main/CREATION_STANDARD.md" style="color:#46f3ff">CREATION_STANDARD.md</a>
+    </footer>
+  </main>
+
+  <script>
+    const grid = document.querySelector('#grid');
+    const stats = document.querySelector('#stats');
+    const search = document.querySelector('#search');
+    const category = document.querySelector('#category');
+    let items = [];
+
+    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    const accessLabel = access => ({public:'OPEN IN BROWSER','free-registration':'FREE REGISTRATION','free-tier':'FREE TIER','local-ready':'LOCAL READY','local-required':'LOCAL REQUIRED'})[access] || String(access).toUpperCase();
+
+    function render(){
+      const q = search.value.trim().toLowerCase();
+      const cat = category.value;
+      const visible = items.filter(item => {
+        const haystack = [item.name,item.category,item.type,item.description,item.access].join(' ').toLowerCase();
+        return (!q || haystack.includes(q)) && (cat === 'all' || item.category === cat);
+      });
+      stats.textContent = `${visible.length} visible / ${items.length} cataloged resources`;
+      if(!visible.length){ grid.innerHTML = '<div class="empty">No resources match this filter.</div>'; return; }
+      grid.innerHTML = visible.map(item => {
+        const local = item.access.startsWith('local');
+        return `<article class="card">
+          <div class="top"><span class="type">${escapeHtml(item.category)} · ${escapeHtml(item.type)}</span><span class="badge ${local?'local':''}">${escapeHtml(accessLabel(item.access))}</span></div>
+          <h2>${escapeHtml(item.name)}</h2>
+          <p>${escapeHtml(item.description)}</p>
+          <div class="actions">
+            <a class="btn primary" href="${escapeHtml(item.url)}" ${item.url.startsWith('http')?'target="_blank" rel="noopener"':''}>${local?'View / Install':'Open'} ↗</a>
+            ${item.source ? `<a class="btn" href="${escapeHtml(item.source)}" target="_blank" rel="noopener">Source</a>` : ''}
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    fetch('./resources.json', {cache:'no-store'})
+      .then(r => { if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(data => {
+        items = Array.isArray(data.items) ? data.items : [];
+        const categories = [...new Set(items.map(x => x.category))].sort();
+        categories.forEach(name => category.insertAdjacentHTML('beforeend', `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`));
+        render();
+      })
+      .catch(err => {
+        stats.textContent = 'Registry unavailable';
+        grid.innerHTML = `<div class="error">Could not load resources.json: ${escapeHtml(err.message)}</div>`;
+      });
+
+    search.addEventListener('input', render);
+    category.addEventListener('change', render);
+  </script>
+  <script src="./zyra-shell.js"></script>
+</body>
+</html>
