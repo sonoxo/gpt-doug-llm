@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "purpose": "Black House compatibility filters applied after WorldMonitor MCP convergence analysis. These are local operational aliases, not WorldMonitor-native region definitions.",
+  "regions": [
+    {
+      "name": "MENA",
+      "aliases": ["MIDDLE_EAST_NORTH_AFRICA"],
+      "description": "Black House operational MENA bounding box: latitude 12..42, longitude -18..65. This is a transparent compatibility filter, not an upstream WorldMonitor region taxonomy.",
+      "bounds": {
+        "minLat": 12.0,
+        "maxLat": 42.0,
+        "minLon": -18.0,
+        "maxLon": 65.0
+      }
+    }
+  ]
+}
