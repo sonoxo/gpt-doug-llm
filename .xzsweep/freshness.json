@@ -1,12 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-03T10:05:52Z",
-  "due_files_reviewed": 3,
-  "due_paths": [
-    "README.md",
-    "docs/assets/security-gates.svg",
-    "docs/assets/wakeup3lm-agent-loop.svg"
-  ],
+  "cutoff_at": "2026-09-03T10:06:21Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -639,10 +635,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-04T07:58:14Z",
+      "git_touched_at": "2026-09-04T10:06:11Z",
       "reviewed_at": null,
-      "sha256": "f4f8d52ce698e203fba118fab25943f25dfa5742c6e2f538649b0a88228f23d2",
-      "size": 2844,
+      "sha256": "03426d0a385b94d8e876328821df40646424a9d38263e80b809772aabbce5775",
+      "size": 2824,
       "validation_issues": [],
       "was_due": false
     },
@@ -715,13 +711,13 @@
     "README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:50:08Z",
       "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "69acf15a08cb87bd4c68c1bec6f8e9a84f92b30d8cf5c7443e1f314e71e6c6a2",
       "size": 17148,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "SECURITY.md": {
       "actions": [],
@@ -1936,13 +1932,13 @@
     "docs/assets/security-gates.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:58:46Z",
       "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "38be471f772619775f12068b31ef7ed87eb51761371537957bfb2d7a1ff05d55",
       "size": 6402,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/assets/sonoxo-ecosystem-orbit.svg": {
       "actions": [],
@@ -1958,13 +1954,13 @@
     "docs/assets/wakeup3lm-agent-loop.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-03T09:50:17Z",
       "reviewed_at": "2026-09-04T10:05:52Z",
       "sha256": "c6cbf6c32ce4c2afed9e2554b8c8b59b6c3a635d71af4a680f9c6eec6fb9a5b4",
       "size": 6388,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/deployment.json": {
       "actions": [],
@@ -7831,7 +7827,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-04T10:05:52Z",
+  "generated_at": "2026-09-04T10:06:21Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
