@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0.0",
+  "title": "XUNIA Interactive Tools & Resources",
+  "policy": {
+    "publicFreeFirst": true,
+    "catalogRequiredForInteractiveCreations": true,
+    "localOnlyRequiresReason": true,
+    "standard": "../CREATION_STANDARD.md"
+  },
+  "items": [
+    {
+      "id": "xunia-museum-hq",
+      "name": "XUNIA Museum + HQ",
+      "category": "XUNIA",
+      "type": "dashboard",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./index.html",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "description": "Public command-center landing surface for the XUNIA ecosystem."
+    },
+    {
+      "id": "green-house",
+      "name": "The Green House",
+      "category": "Intelligence",
+      "type": "world-monitor",
+      "access": "local-ready",
+      "free": true,
+      "interactive": true,
+      "url": "https://github.com/sonoxo/gpt-doug-llm/tree/main/the-green-house",
+      "source": "https://github.com/koala73/worldmonitor",
+      "description": "Environmental, bio, pharma and public-data intelligence surface powered by the WorldMonitor engine. Public hosted access is the deployment target; local runtime is already available."
+    },
+    {
+      "id": "holo",
+      "name": "HOLO Workable Simulator",
+      "category": "Training",
+      "type": "simulator",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./holo/",
+      "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/docs/holo",
+      "description": "Browser-based scenario simulator with fault injection and AAR export."
+    },
+    {
+      "id": "agent-pipeline",
+      "name": "Agent Pipeline",
+      "category": "Infrastructure",
+      "type": "visualizer",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./pipeline.html",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "description": "Interactive view of the XUNIA agent pipeline and execution flow."
+    },
+    {
+      "id": "metrics",
+      "name": "XUNIA Metrics",
+      "category": "Observability",
+      "type": "dashboard",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./metrics.html",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "description": "Browser-accessible ecosystem metrics surface."
+    },
+    {
+      "id": "status",
+      "name": "XUNIA Status",
+      "category": "Observability",
+      "type": "status",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./status.html",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "description": "Public build and runtime status view for the published XUNIA surface."
+    },
+    {
+      "id": "experiments",
+      "name": "XUNIA Experiments",
+      "category": "Research",
+      "type": "lab",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./experiments.html",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "description": "Published experimental interfaces that have cleared the public-site gate."
+    },
+    {
+      "id": "worldmonitor-upstream",
+      "name": "WorldMonitor Engine",
+      "category": "Resource",
+      "type": "open-source-engine",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "https://www.worldmonitor.app/",
+      "source": "https://github.com/koala73/worldmonitor",
+      "description": "AGPL-3.0 upstream intelligence dashboard used as the Green House engine; attribution and license remain intact."
+    },
+    {
+      "id": "open-meteo",
+      "name": "Open-Meteo",
+      "category": "Free API",
+      "type": "data-provider",
+      "access": "public",
+      "free": true,
+      "interactive": false,
+      "url": "https://open-meteo.com/",
+      "source": "https://open-meteo.com/en/docs",
+      "description": "Free weather API used as a zero-cost-first environmental data source."
+    },
+    {
+      "id": "usgs",
+      "name": "USGS Earthquake Data",
+      "category": "Free API",
+      "type": "data-provider",
+      "access": "public",
+      "free": true,
+      "interactive": false,
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/",
+      "source": "https://earthquake.usgs.gov/earthquakes/feed/",
+      "description": "Public earthquake feeds for geospatial and environmental monitoring."
+    },
+    {
+      "id": "gdelt",
+      "name": "GDELT",
+      "category": "Free API",
+      "type": "data-provider",
+      "access": "public",
+      "free": true,
+      "interactive": false,
+      "url": "https://www.gdeltproject.org/",
+      "source": "https://www.gdeltproject.org/",
+      "description": "Open global event and media data resource used for public intelligence enrichment."
+    },
+    {
+      "id": "github",
+      "name": "GitHub",
+      "category": "Platform",
+      "type": "development-platform",
+      "access": "free-tier",
+      "free": true,
+      "interactive": true,
+      "url": "https://github.com/sonoxo",
+      "source": "https://github.com/",
+      "description": "Source, collaboration, automation and free static hosting through GitHub Pages."
+    }
+  ]
+}
