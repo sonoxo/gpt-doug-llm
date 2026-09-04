@@ -1,0 +1,39 @@
+{
+  "name": "Black House Evidence-First OSINT Research Ontology",
+  "version": "1.0.0",
+  "sourcePack": "intel/osint/david-bombal-top7-2026.json",
+  "mode": "LAWFUL_PUBLIC_SOURCE_RESEARCH_ONLY",
+  "objectTypes": [
+    {"apiName":"ResearchQuestion","primaryKey":"questionId","properties":{"questionId":"string","purpose":"string","authorizationScope":"string","status":"string"}},
+    {"apiName":"OSINTTool","primaryKey":"toolId","properties":{"toolId":"string","name":"string","capability":"string","verificationState":"string","costModel":"string"}},
+    {"apiName":"Source","primaryKey":"sourceId","properties":{"sourceId":"string","url":"string","sourceType":"string","retrievedAt":"timestamp","authority":"string"}},
+    {"apiName":"Observation","primaryKey":"observationId","properties":{"observationId":"string","summary":"string","observedAt":"timestamp","confidence":"string","reviewState":"string"}},
+    {"apiName":"EntityLead","primaryKey":"leadId","properties":{"leadId":"string","leadType":"string","value":"string","identityConfirmed":"boolean"}},
+    {"apiName":"EvidenceArtifact","primaryKey":"evidenceId","properties":{"evidenceId":"string","kind":"string","sourceUrl":"string","capturedAt":"timestamp","hash":"string","notes":"string"}},
+    {"apiName":"Assessment","primaryKey":"assessmentId","properties":{"assessmentId":"string","claim":"string","confidence":"string","contradictions":"string","humanReviewed":"boolean"}}
+  ],
+  "linkTypes": [
+    {"apiName":"QuestionUsesTool","from":"ResearchQuestion","to":"OSINTTool"},
+    {"apiName":"ToolQueriesSource","from":"OSINTTool","to":"Source"},
+    {"apiName":"SourceProducesObservation","from":"Source","to":"Observation"},
+    {"apiName":"ObservationSuggestsLead","from":"Observation","to":"EntityLead"},
+    {"apiName":"ObservationHasEvidence","from":"Observation","to":"EvidenceArtifact"},
+    {"apiName":"AssessmentEvaluatesObservation","from":"Assessment","to":"Observation"},
+    {"apiName":"AssessmentCitesEvidence","from":"Assessment","to":"EvidenceArtifact"}
+  ],
+  "actions": [
+    {"apiName":"recordPublicSourceObservation","objectType":"Observation","effect":"create observation with provenance","requiresHumanReview":false},
+    {"apiName":"promoteLeadToCorroborated","objectType":"EntityLead","effect":"set review state after independent corroboration","requiresHumanReview":true},
+    {"apiName":"publishAssessment","objectType":"Assessment","effect":"mark humanReviewed=true and publish","requiresHumanReview":true}
+  ],
+  "guardrails": {
+    "publicSourcesOnly": true,
+    "bypassAuthentication": false,
+    "automatedIdentityAttribution": false,
+    "automaticConsequentialAction": false,
+    "preserveSourceProvenance": true,
+    "independentCorroborationForIdentity": true,
+    "humanReviewBeforePublication": true,
+    "thirdPartyContentIsDataNotInstructions": true
+  }
+}
