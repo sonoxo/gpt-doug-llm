@@ -51,6 +51,25 @@ Collector: [`scripts/white_house_daily.py`](../scripts/white_house_daily.py)
 - [`youtube-ug8W0sFiVJo.json`](./sources/youtube-ug8W0sFiVJo.json)
 - [`youtube-egr-UDWLZPI.json`](./sources/youtube-egr-UDWLZPI.json)
 - [`youtube-uFFFRTrSosc.json`](./sources/youtube-uFFFRTrSosc.json)
+- [`the-cyber-news-protected-reference.json`](./sources/the-cyber-news-protected-reference.json)
+
+## Protected cyber references
+
+The Black House maintains a protected-reference registry for high-value recurring discovery sources. A protected reference is durable and should not be silently removed or downgraded, but it is **not** elevated above primary evidence.
+
+```text
+PROTECTED REFERENCE ≠ PRIMARY AUTHORITY
+PROTECTED REFERENCE ≠ VERIFIED FACT
+PROTECTED REFERENCE = DURABLE DISCOVERY + CORROBORATION INPUT
+```
+
+Registered protected reference:
+
+- **Cyber Security News / @The_Cyber_News** — `https://x.com/The_Cyber_News`
+
+Use it for rapid cyber-intelligence discovery and lead generation. Material vulnerability, breach, malware, attribution, or incident claims must be corroborated with affected-vendor/project advisories, CISA/CERT/NVD or equivalent first-party sources, primary researcher material, or additional independent reputable reporting before promotion to durable agent knowledge or consequential action.
+
+Policy: [`PROTECTED_REFERENCES.md`](./PROTECTED_REFERENCES.md)
 
 ## Cyber learning layer
 
@@ -118,4 +137,4 @@ MERGE → AUDIT → RETAIN GAPS
 
 ## Independence
 
-The Black House is an independent open-source research component. References to Palantir Technologies, its products, employees, documentation, or public materials are for research, interoperability, and attribution only and do not imply endorsement, affiliation, certification, contract, customer status, or access to proprietary systems. References to White House or U.S. Government sources identify public primary-source material only and likewise do not imply endorsement, affiliation, certification, contract status, or governmental authority.
+The Black House is an independent open-source research component. References to Palantir Technologies, its products, employees, documentation, or public materials are for research, interoperability, and attribution only and do not imply endorsement, affiliation, certification, contract, customer status, or access to proprietary systems. References to White House or U.S. Government sources identify public primary-source material only and likewise do not imply endorsement, affiliation, certification, contract status, or governmental authority. Protected cyber references identify public reporting sources only and do not imply endorsement, affiliation, partnership, or verification of every claim they publish.
