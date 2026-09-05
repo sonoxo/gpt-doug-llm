@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-POCKET="${GPT_DOUG_POCKET:-$(cd "$(dirname "$0")/.." && pwd)}"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+POCKET="${GPT_DOUG_POCKET:-$REPO_ROOT}"
+if [[ -d "$POCKET/repo/.git" ]]; then
+  REPO="$POCKET/repo"
+else
+  REPO="$REPO_ROOT"
+fi
 PORT="${ZYRA_PORT:-9931}"
 MODEL="${ZYRA_MODEL:-ggml-org/Qwen3-0.6B-GGUF:Q4_0}"
 LOGS="${GPT_DOUG_LOGS:-$POCKET/logs}"
@@ -15,6 +21,9 @@ export HF_HOME="${HF_HOME:-$POCKET/models/huggingface}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$POCKET/cache}"
 export PYTHONPYCACHEPREFIX="${PYTHONPYCACHEPREFIX:-$POCKET/cache/pycache}"
 export GPT_DOUG_API="http://127.0.0.1:${PORT}/v1"
+export GPT_DOUG_POCKET="$POCKET"
+export GPT_DOUG_MEMORY="${GPT_DOUG_MEMORY:-$POCKET/memory}"
+export GPT_DOUG_WORKSPACE="${GPT_DOUG_WORKSPACE:-$POCKET/workspace}"
 
 say() { printf '%s\n' "$*"; }
 health() { curl -fsS --max-time 3 "http://127.0.0.1:${PORT}/v1/models" >/dev/null 2>&1; }
@@ -88,9 +97,10 @@ stop_server() {
 status() {
   say "=== GPT-DOUG POCKET ==="
   say "Pocket: $POCKET"
+  say "Repo: $REPO"
   say "Models: $LLAMA_CACHE"
-  say "Memory: ${GPT_DOUG_MEMORY:-$POCKET/memory}"
-  say "Workspace: ${GPT_DOUG_WORKSPACE:-$POCKET/workspace}"
+  say "Memory: $GPT_DOUG_MEMORY"
+  say "Workspace: $GPT_DOUG_WORKSPACE"
   if health; then say "✅ AI server healthy :$PORT"; else say "❌ AI server offline :$PORT"; fi
   df -h "$POCKET" | tail -n 1
 }
@@ -98,17 +108,17 @@ status() {
 case "${1:-chat}" in
   chat)
     start_server
-    exec python3 "$POCKET/repo/zyra_pocket.py"
+    exec python3 "$REPO/zyra_pocket.py"
     ;;
   start) start_server ;;
   status) status ;;
   stop) stop_server ;;
   sync)
-    if [[ -n "$(git -C "$POCKET/repo" status --porcelain 2>/dev/null || true)" ]]; then
+    if [[ -n "$(git -C "$REPO" status --porcelain 2>/dev/null || true)" ]]; then
       say "⚠️ Repo has local changes; refusing to overwrite them."
       exit 3
     fi
-    git -C "$POCKET/repo" pull --ff-only
+    git -C "$REPO" pull --ff-only
     ;;
   *)
     say "Usage: gpt-doug {chat|start|status|stop|sync}"
