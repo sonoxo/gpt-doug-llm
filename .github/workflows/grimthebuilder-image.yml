@@ -42,3 +42,37 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Pull published image back from GHCR
+        run: |
+          docker image rm ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest || true
+          docker pull ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest
+          docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest | tee /tmp/grim-image-digest.txt
+
+      - name: Boot published image and verify health
+        run: |
+          docker run -d --name grimthebuilder-verify -p 8787:8787 \
+            -e HOST=0.0.0.0 \
+            -e PORT=8787 \
+            -e GRIM_DATA_DIR=/tmp/grim-data \
+            ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest
+          ok=0
+          for i in $(seq 1 30); do
+            if curl --fail --silent --show-error http://127.0.0.1:8787/api/health | tee /tmp/grim-health.json; then
+              ok=1
+              break
+            fi
+            sleep 1
+          done
+          test "$ok" = "1"
+          grep -q '"schema":"GRIM_RUNTIME_V1"' /tmp/grim-health.json
+          grep -q '"status":"ok"' /tmp/grim-health.json
+          echo
+          echo "VERIFIED_IMAGE=$(cat /tmp/grim-image-digest.txt)"
+          echo "VERIFIED_HEALTH=$(cat /tmp/grim-health.json)"
+
+      - name: Container verification logs
+        if: always()
+        run: |
+          docker logs grimthebuilder-verify || true
+          docker rm -f grimthebuilder-verify || true
