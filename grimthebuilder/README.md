@@ -1,26 +1,41 @@
-# GrimTheBuilder — XUNIA HQ Integration
+# GrimTheBuilder — XUNIA Browser IDE
 
-GrimTheBuilder is the browser IDE/program hosted at the Orbit Code Studio runtime. The files in this repository are integration records and exported workspace artifacts; they are **not** the complete GrimTheBuilder application.
+GrimTheBuilder is now a self-hosted, dependency-free browser IDE deployed through the `gpt-doug-llm` GitHub Pages surface and connected to XUNIA HQ.
 
 ## Canonical links
-- GrimTheBuilder runtime: https://orbit-code-studio.almighty-son-8109.chatgpt.site/
-- Current `hello-world` workspace: https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2
+- GrimTheBuilder runtime: https://sonoxo.github.io/gpt-doug-llm/grimthebuilder/
 - XUNIA HQ: https://xunia.org/
 - XUNIA launcher route: https://xunia.org/grimthebuilder
-- Integration repository: https://github.com/sonoxo/gpt-doug-llm/tree/main/grimthebuilder
+- Repository: https://github.com/sonoxo/gpt-doug-llm/tree/main/grimthebuilder
 
-## What this folder contains
-- exported `hello-world` workspace files
-- XUNIA connection metadata
-- GitHub-hostable launcher/mirror assets
+## Runtime capabilities
+- HTML editor
+- CSS editor
+- JavaScript editor
+- live iframe preview
+- browser console bridge for logs and runtime errors
+- browser-local autosave
+- JSON workspace import/export
+- desktop/mobile preview modes
+- keyboard run shortcut (`Cmd/Ctrl + S`)
+- XUNIA HQ navigation
 
-## What this folder does not contain
-- the complete GrimTheBuilder IDE source
-- the Studio hosting configuration
-- the owner-private runtime state
+## Architecture
 
-## Flow
+`XUNIA HQ → /grimthebuilder → GitHub Pages runtime → local browser workspace → preview/export`
 
-`XUNIA HQ → GrimTheBuilder runtime → workspace → exported GitHub artifacts`
+The working Pages implementation lives in `docs/grimthebuilder/`. The top-level `grimthebuilder/` path remains as an integration/fallback surface so either common GitHub Pages source layout resolves to the functional IDE.
 
-GitHub remains the preferred home for exportable/static artifacts, documentation, and integration metadata. The current GrimTheBuilder IDE itself runs on the Orbit Code Studio deployment above.
+## Persistence
+
+Workspaces persist in browser `localStorage` under `grimthebuilder.workspace.v1`. Exported project snapshots are JSON and can be re-imported later.
+
+## Legacy runtime
+
+The former Orbit Code Studio workspace is retained only as a legacy link inside the IDE. It is no longer the canonical GrimTheBuilder runtime.
+
+## Status
+
+**SELF-HOSTED RUNTIME: IMPLEMENTED**  
+**XUNIA ROUTE: CONNECTED**  
+**PRIMARY DEPLOYMENT: GITHUB PAGES**
