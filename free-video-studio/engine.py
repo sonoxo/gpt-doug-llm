@@ -294,9 +294,46 @@ def extract_last_frame(cfg: StudioConfig, video: Path, image_out: Path) -> None:
     )
 
 
+def make_browser_playable(cfg: StudioConfig, source: Path, output: Path) -> None:
+    """Create an MP4 that Safari, Chrome, Firefox, and Gradio can play reliably."""
+    if not source.exists() or source.stat().st_size == 0:
+        raise RuntimeError(f"Video engine did not create a usable file: {source}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    _run(
+        [
+            cfg.ffmpeg_bin,
+            "-y",
+            "-i",
+            str(source),
+            "-map",
+            "0:v:0",
+            "-map",
+            "0:a?",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "medium",
+            "-crf",
+            "18",
+            "-pix_fmt",
+            "yuv420p",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "192k",
+            "-movflags",
+            "+faststart",
+            str(output),
+        ]
+    )
+    if not output.exists() or output.stat().st_size == 0:
+        raise RuntimeError(f"Browser-compatible export was not created: {output}")
+
+
 def concat_videos(cfg: StudioConfig, videos: list[Path], output: Path) -> None:
+    intermediate = output.with_name(f"{output.stem}.source.mp4")
     if len(videos) == 1:
-        shutil.copy2(videos[0], output)
+        make_browser_playable(cfg, videos[0], output)
         return
     concat_file = output.with_suffix(".concat.txt")
     concat_file.write_text(
@@ -304,7 +341,7 @@ def concat_videos(cfg: StudioConfig, videos: list[Path], output: Path) -> None:
         encoding="utf-8",
     )
     try:
-        _run([cfg.ffmpeg_bin, "-y", "-f", "concat", "-safe", "0", "-i", str(concat_file), "-c", "copy", str(output)])
+        _run([cfg.ffmpeg_bin, "-y", "-f", "concat", "-safe", "0", "-i", str(concat_file), "-c", "copy", str(intermediate)])
     except RuntimeError:
         _run(
             [
@@ -324,9 +361,11 @@ def concat_videos(cfg: StudioConfig, videos: list[Path], output: Path) -> None:
                 "18",
                 "-pix_fmt",
                 "yuv420p",
-                str(output),
+                str(intermediate),
             ]
         )
+    make_browser_playable(cfg, intermediate, output)
+    intermediate.unlink(missing_ok=True)
 
 
 def add_mmaudio(cfg: StudioConfig, video: Path, prompt: str, duration: int, output: Path) -> str:
@@ -429,6 +468,7 @@ def generate_project(
     concat_videos(cfg, shot_files, final)
 
     if add_audio:
+        with_audio_source = project / "final-with-audio.source.mp4"
         with_audio = project / "final-with-audio.mp4"
         logs.append(
             add_mmaudio(
@@ -436,9 +476,11 @@ def generate_project(
                 final,
                 audio_prompt,
                 int(seconds_per_shot) * len(shot_actions),
-                with_audio,
+                with_audio_source,
             )[-2500:]
         )
+        make_browser_playable(cfg, with_audio_source, with_audio)
+        with_audio_source.unlink(missing_ok=True)
         final = with_audio
 
     manifest = {

@@ -89,6 +89,29 @@ The code and model-access path are free, but diffusion still consumes your hardw
 
 Every run creates `outputs/<project-id>/` with generated shots, continuity frames, `final.mp4`, and `manifest.json`. The manifest records the backend, model, prompts, seed, dimensions, and audio state.
 
+The final file is always normalized to browser-safe H.264 video, AAC audio,
+`yuv420p`, and MP4 fast-start metadata. This prevents a successful model render
+from appearing as a blank or unplayable result in Gradio, Safari, or Chrome.
+
+## Other free/open model options
+
+“Unlimited” here means local generation with no per-render API bill; generation
+is still limited by the machine's RAM/VRAM, storage, and run time.
+
+| Need | Free/open option | Practical note |
+|---|---|---|
+| Default text/image → video | **Wan2.2 TI2V-5B** | Already integrated; best fit for a 24 GB NVIDIA GPU or a high-memory Apple Silicon Mac through MLX-Gen. |
+| Faster/lower-VRAM video experiments | **LTX-Video** | Good next backend for speed-focused local workflows; requires a separate adapter. |
+| Alternative video backend | **CogVideoX** | Diffusers-supported family with text/image-to-video variants; requires a separate adapter. |
+| Larger cinematic video experiments | **HunyuanVideo** | Open local stack, but materially heavier than the default 5B route. |
+| Prompt writing / shot planning | **Qwen3 via Ollama** | Local LLM; use smaller parameter sizes when memory is tight. |
+| Coding and pipeline repair | **Qwen3-Coder via Ollama** | Local coding model; choose the quantization that fits the machine. |
+| Lightweight general assistant | **Gemma 3 via Ollama** | Useful local prompt/refinement option with smaller variants. |
+
+The video studio does not silently route footage or prompts to a hosted service.
+Additional backends should be exposed only after their command line and output
+contract are implemented and tested; UI-only model labels are not real engines.
+
 ## Licensing note
 
 The studio introduces no paid-service dependency. Wan2.2's upstream repository is Apache-2.0. MLX-Gen is MIT. MMAudio code is MIT; its upstream documentation separately cautions that pretrained-model/data licensing should be reviewed for the intended commercial use. Model weights remain subject to their upstream model-card/license terms.
