@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T21:12:28Z",
+  "cutoff_at": "2026-09-04T21:13:01Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -628,6 +628,17 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "cc48e27acbf248ad428b3f14ff4ad2af9b32e073336ac48b938739876b126fb9",
       "size": 2796,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/zyra-cpr.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T21:12:25Z",
+      "reviewed_at": null,
+      "sha256": "0452b64f68d7ecbd055bc6074d23994ca94b353b717f2d10fd30e0546e774a24",
+      "size": 731,
       "validation_issues": [],
       "was_due": false
     },
@@ -1999,9 +2010,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T20:22:55Z",
+      "git_touched_at": "2026-09-05T21:12:37Z",
       "reviewed_at": null,
-      "sha256": "84a99f0cd869719a85d91162344933c50a8930296597c51fa889c21bd9c17da1",
+      "sha256": "77ac1ae716312685880539cb27bc8bf41631487d67c1b0b34f516d55363968f9",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -4137,6 +4148,17 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "8de8a4f5301b08ef0678c21d32d029cf3052f2345980932ad455effe0d1d6a3c",
       "size": 7384,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "ontology/zyra-cpr.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T21:12:43Z",
+      "reviewed_at": null,
+      "sha256": "0e7209fccd9079270e47c46193c094cf6395a31168b57aaccb2007158eb7e11e",
+      "size": 929,
       "validation_issues": [],
       "was_due": false
     },
@@ -6443,9 +6465,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T20:22:52Z",
+      "git_touched_at": "2026-09-05T21:12:41Z",
       "reviewed_at": null,
-      "sha256": "febdeb81c3e125b6a255894684b8060ea3eaf3010ee6a0f15a376dc5c727680c",
+      "sha256": "2f003693e94faf236bd35640bcbee92c49a698b15788f66f17cc15a5f0875a8b",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -6465,9 +6487,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T16:44:20Z",
+      "git_touched_at": "2026-09-05T21:12:41Z",
       "reviewed_at": null,
-      "sha256": "7134b871ec304076b46281b7247be19d29cc9a5419c3bc12e1fd6e3b558dec78",
+      "sha256": "01fb0389917a4ee2847bd78827e3e80d45b7b819c67dbb0e4b94ff9a12954ebb",
       "size": 6084,
       "validation_issues": [],
       "was_due": false
@@ -8520,11 +8542,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T21:12:28Z",
+  "generated_at": "2026-09-05T21:13:01Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 774,
+  "tracked_files_reviewed": 776,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
