@@ -28,7 +28,7 @@ Cyber CPR is a local-first defensive DevSecOps utility powered by the GPT-Doug-L
 ```bash
 git clone https://github.com/sonoxo/gpt-doug-llm.git
 cd gpt-doug-llm/cyber-cpr
-./install.sh
+bash install.sh
 ```
 
 Then run:
@@ -90,7 +90,7 @@ The `hello-world` project and GitHub `grimthebuilder` folders are workspace/expo
 ## Uninstall
 
 ```bash
-./uninstall.sh
+bash uninstall.sh
 ```
 
 State can be removed separately with:
