@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T06:52:18Z",
+  "cutoff_at": "2026-09-04T06:52:52Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -298,6 +298,17 @@
       "reviewed_at": "2026-09-05T06:49:22Z",
       "sha256": "e6b0023d2940a2b692f7e353356dd836c5baa968b35aca204d6d91b0898b4e6c",
       "size": 4377,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/grimthebuilder-app.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T06:52:30Z",
+      "reviewed_at": null,
+      "sha256": "280d19cf986583601fc6d425e3cb22e75fb5a844faacc0783e03e0539bc3abe7",
+      "size": 1362,
       "validation_issues": [],
       "was_due": false
     },
@@ -2784,6 +2795,17 @@
       "reviewed_at": null,
       "sha256": "22a9e8bd6b90d67566f3e6a3cb0aa99666b0fa6190656fb04b0417131d2b7257",
       "size": 455,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "grimthebuilder-app/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T06:52:20Z",
+      "reviewed_at": null,
+      "sha256": "e7809f12e81a3bda499bfa3ecba658e818318d0409e06890e40363c6591d2e5d",
+      "size": 1848,
       "validation_issues": [],
       "was_due": false
     },
@@ -8146,11 +8168,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T06:52:18Z",
+  "generated_at": "2026-09-05T06:52:52Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 740,
+  "tracked_files_reviewed": 742,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
