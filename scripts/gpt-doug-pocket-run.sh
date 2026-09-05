@@ -181,6 +181,9 @@ case "${1:-chat}" in
   benchmark)
     exec python3 "$REPO/scripts/pocket-publication-benchmark.py"
     ;;
+  benchmark-suite)
+    exec python3 "$REPO/scripts/pocket-benchmark-suite.py"
+    ;;
   sync)
     if [[ -n "$(git -C "$REPO" status --porcelain 2>/dev/null || true)" ]]; then
       say "⚠️ Repo has local changes; refusing to overwrite them."
@@ -189,7 +192,7 @@ case "${1:-chat}" in
     git -C "$REPO" pull --ff-only
     ;;
   *)
-    say "Usage: gpt-doug {chat|start|takeover|status|stop|benchmark|sync}"
+    say "Usage: gpt-doug {chat|start|takeover|status|stop|benchmark|benchmark-suite|sync}"
     exit 2
     ;;
 esac
