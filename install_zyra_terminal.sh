@@ -10,6 +10,12 @@ exec env ZYRA_ACTIVE=1 python3 "$ROOT/zyra_chat.py" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/zyra"
 
+cat > "$HOME/.local/bin/doug-market" <<EOF
+#!/bin/sh
+exec "$ROOT/doug-market" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/doug-market" "$ROOT/doug-market"
+
 ZSHRC="$HOME/.zshrc"
 BACKUP=""
 if [ -f "$ZSHRC" ]; then
@@ -32,7 +38,7 @@ if start in text and end in text:
     text = before.rstrip() + '\n' + after.lstrip()
 
 # Repair the known zsh alias/function collision without deleting user commands.
-known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'zyra'}
+known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra'}
 aliases = set()
 out = []
 for line in text.splitlines():
@@ -79,4 +85,5 @@ fi
 
 echo 'ZYRA terminal launcher repaired and upgraded.'
 echo 'Launcher: ~/.local/bin/zyra'
+echo 'Market terminal: ~/.local/bin/doug-market'
 echo 'Start now: ~/.local/bin/zyra'
