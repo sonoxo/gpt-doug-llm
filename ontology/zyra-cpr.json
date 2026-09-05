@@ -1,0 +1,26 @@
+{
+  "ontology": "ZYRA_CPR_v1",
+  "system": "Zyra Cloud / NXYZ",
+  "purpose": "Zero-cost recovery and routing for local AI compute",
+  "entities": {
+    "ComputeNode": ["hostname", "architecture", "role", "heartbeat", "capabilities", "cost"],
+    "Worker": ["endpoint", "model", "health", "accelerator"],
+    "ControlPlane": ["routing", "state", "policy"],
+    "RecoveryAction": ["trigger", "fallback", "result"]
+  },
+  "relations": [
+    "ControlPlane ASSIGNS Worker",
+    "Worker RUNS_ON ComputeNode",
+    "ComputeNode PROVIDES Capability",
+    "RecoveryAction RESTORES Worker"
+  ],
+  "policy": {
+    "cost_ceiling_usd": 0,
+    "remote_worker_healthy": "USE_REMOTE",
+    "remote_worker_failed_and_arm64": "START_LOCAL_WORKER",
+    "local_worker_healthy": "USE_LOCAL",
+    "intel_without_worker": "CONTROL_ONLY_DEGRADED",
+    "github_role": "SOURCE_OF_TRUTH_AND_RECOVERY_DISTRIBUTION",
+    "github_not_compute_plane": true
+  }
+}
