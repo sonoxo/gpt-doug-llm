@@ -3,16 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b10">
   <meta name="xunia-hq" content="https://xunia.org/">
-  <meta http-equiv="refresh" content="0;url=https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2">
-  <title>Launch GrimTheBuilder</title>
+  <meta name="description" content="GrimTheBuilder — XUNIA browser IDE with live preview and local workspace persistence.">
+  <title>GrimTheBuilder // XUNIA</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <h1>GrimTheBuilder</h1>
-    <p>This GitHub Pages surface is a launcher, not the GrimTheBuilder IDE itself.</p>
-    <p><a href="https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2">Open the GrimTheBuilder IDE →</a></p>
-    <p><a href="https://xunia.org/">XUNIA HQ →</a></p>
-  </main>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="grim-mark" aria-hidden="true">G</div>
+        <div>
+          <div class="brand">GRIM<span>THEBUILDER</span></div>
+          <div class="subbrand">XUNIA // BROWSER IDE</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <span class="status-pill"><i></i> LOCAL RUNTIME ONLINE</span>
+        <button class="btn ghost" id="new-project" type="button">New</button>
+        <button class="btn ghost" id="import-project" type="button">Import</button>
+        <button class="btn ghost" id="export-project" type="button">Export</button>
+        <button class="btn primary" id="run-preview" type="button">Run ▶</button>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <section>
+          <div class="section-title">EXPLORER</div>
+          <div class="project-name">▾ grim-project</div>
+          <nav id="file-list" class="file-list" aria-label="Project files">
+            <button class="file active" type="button" data-file="index.html"><span class="file-icon html">◇</span> index.html</button>
+            <button class="file" type="button" data-file="style.css"><span class="file-icon css">#</span> style.css</button>
+            <button class="file" type="button" data-file="script.js"><span class="file-icon js">JS</span> script.js</button>
+          </nav>
+        </section>
+
+        <section class="sidebar-bottom">
+          <div class="section-title">XUNIA LINK</div>
+          <a class="hq-link" href="https://xunia.org/" target="_blank" rel="noopener">Open XUNIA HQ ↗</a>
+          <a class="legacy-link" href="https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2" target="_blank" rel="noopener">Legacy Orbit Runtime ↗</a>
+          <p class="save-note">Workspace autosaves in this browser.</p>
+        </section>
+      </aside>
+
+      <section class="editor-pane panel">
+        <div class="panel-head">
+          <div class="tab active" id="active-tab">index.html</div>
+          <div class="panel-tools">
+            <span id="save-state">SAVED</span>
+          </div>
+        </div>
+        <div class="editor-wrap">
+          <div class="line-gutter" id="line-gutter" aria-hidden="true">1</div>
+          <textarea id="editor" aria-label="Code editor" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <section class="preview-pane panel">
+        <div class="panel-head">
+          <div class="preview-title">PREVIEW</div>
+          <div class="panel-tools">
+            <button class="icon-btn active" id="desktop-view" type="button" title="Desktop preview">▱</button>
+            <button class="icon-btn" id="mobile-view" type="button" title="Mobile preview">▯</button>
+            <button class="icon-btn" id="refresh-preview" type="button" title="Refresh preview">↻</button>
+            <button class="icon-btn" id="open-preview" type="button" title="Open preview in new tab">↗</button>
+          </div>
+        </div>
+        <div class="preview-stage" id="preview-stage">
+          <iframe id="preview" title="Live project preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe>
+        </div>
+        <div class="console-wrap">
+          <div class="console-head">
+            <span>CONSOLE</span>
+            <button id="clear-console" type="button">Clear</button>
+          </div>
+          <pre id="console-output"><span class="console-ok">Grim runtime ready.</span></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="statusbar">
+      <span>GrimTheBuilder v1.0</span>
+      <span>HTML · CSS · JS</span>
+      <span>⌘/Ctrl + S = Run</span>
+      <span class="push-right">XUNIA HQ CONNECTED</span>
+    </footer>
+  </div>
+
+  <script src="./script.js"></script>
 </body>
 </html>
