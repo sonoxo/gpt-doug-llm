@@ -1,0 +1,45 @@
+#!/bin/sh
+set -u
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+APP="$ROOT/market-terminal"
+
+if [ ! -f "$APP/index.html" ]; then
+  echo "❌ GPT-DOUG Market Terminal files are missing from: $APP"
+  echo "Run: git -C \"$ROOT\" pull --ff-only"
+  exit 1
+fi
+
+PORT="$(python3 - <<'PY'
+import socket
+for port in range(8080, 8091):
+    with socket.socket() as s:
+        try: s.bind(('127.0.0.1', port))
+        except OSError: continue
+        print(port); break
+else: raise SystemExit('No open port from 8080 through 8090')
+PY
+)" || exit 1
+URL="http://127.0.0.1:$PORT/market-terminal/"
+LOG="${TMPDIR:-/tmp}/gpt-doug-market-$PORT.log"
+python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$ROOT" >"$LOG" 2>&1 &
+SERVER_PID=$!
+python3 "$APP/scripts/collect_market_data.py" >"${TMPDIR:-/tmp}/gpt-doug-market-refresh.log" 2>&1 &
+REFRESH_PID=$!
+trap 'kill "$SERVER_PID" "$REFRESH_PID" 2>/dev/null || true' INT TERM EXIT
+python3 - "$PORT" <<'PY'
+import socket, sys, time
+port=int(sys.argv[1])
+for _ in range(40):
+    try:
+        with socket.create_connection(('127.0.0.1',port),.1): break
+    except OSError: time.sleep(.1)
+else: raise SystemExit('Local server did not become ready')
+PY
+echo "✅ GPT-DOUG Market Terminal ONLINE"
+echo "🌐 $URL"
+echo "📡 Public feeds are refreshing in the background."
+echo "Press Control-C here to stop it."
+if command -v open >/dev/null 2>&1; then open "$URL"
+elif command -v xdg-open >/dev/null 2>&1; then xdg-open "$URL" >/dev/null 2>&1 || true
+fi
+wait "$SERVER_PID"
