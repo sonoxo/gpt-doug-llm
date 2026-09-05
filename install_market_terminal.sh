@@ -19,7 +19,11 @@ else
 fi
 
 chmod +x "$INSTALL_DIR/doug-market"
-ln -sfn "$INSTALL_DIR/doug-market" "$BIN_DIR/doug-market"
+cat > "$BIN_DIR/doug-market" <<EOF
+#!/bin/sh
+exec "$INSTALL_DIR/doug-market" "\$@"
+EOF
+chmod +x "$BIN_DIR/doug-market"
 
 case ":$PATH:" in
   *":$BIN_DIR:"*) ;;
