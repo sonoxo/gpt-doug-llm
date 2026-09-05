@@ -1,0 +1,17 @@
+services:
+  grimthebuilder:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    volumes:
+      - grim-data:/data
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8787
+      GRIM_DATA_DIR: /data
+      GRIM_ALLOWED_COMMANDS: npm,npx,node,pnpm,python,python3,pip,pip3,git,bash,sh
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+volumes:
+  grim-data:
