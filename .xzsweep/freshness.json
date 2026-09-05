@@ -1,8 +1,12 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T07:16:44Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-04T07:37:46Z",
+  "due_files_reviewed": 3,
+  "due_paths": [
+    "the-green-house/bin/install-and-run-worldmonitor.sh",
+    "the-green-house/bin/run-worldmonitor.sh",
+    "the-green-house/bin/worldmonitor-convergence.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1955,9 +1959,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T07:15:10Z",
+      "git_touched_at": "2026-09-05T07:16:44Z",
       "reviewed_at": null,
-      "sha256": "3640c75c91d889cccb13fe6155c515079ccc705c48d094a9428ec2855fd8c081",
+      "sha256": "a12159b1fdecf6e8055eb96ccbd0805abcc46fa7fe4d1fb0dcc524503d5a0766",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -2989,10 +2993,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T06:59:36Z",
+      "git_touched_at": "2026-09-05T07:37:36Z",
       "reviewed_at": null,
-      "sha256": "ac39c5531e369b9bd0c96ef0c9332bb67b233e0b6842103b5e8277d7e42d5ff8",
-      "size": 1355,
+      "sha256": "11a484f07189335ce2819fd292229d44e3802f7a1f272595c8627b2e2e50dc06",
+      "size": 1598,
       "validation_issues": [],
       "was_due": false
     },
@@ -5465,11 +5469,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-04T07:20:57Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-05T07:37:46Z",
       "sha256": "328a04f5a717e568f548a3d9049ec8e8cce44000498ad43dbf5eeb906af23c59",
       "size": 746,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-green-house/bin/install-greenhouse-command.sh": {
       "actions": [],
@@ -5487,22 +5491,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-04T07:34:17Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-05T07:37:46Z",
       "sha256": "903c136ac30328d695f3b3c9efa46b0390a4b7c16e8b492c72bb031f3280dd09",
       "size": 4967,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-green-house/bin/worldmonitor-convergence.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-04T07:21:13Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-05T07:37:46Z",
       "sha256": "6d1d88b2ed32142bed5081e92184386fcd4e62c534497e37188418c07c761d1d",
       "size": 1033,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-green-house/branding/green-house-overlay.js": {
       "actions": [],
@@ -6267,9 +6271,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T07:15:06Z",
+      "git_touched_at": "2026-09-05T07:16:45Z",
       "reviewed_at": null,
-      "sha256": "4bc4f99ad76711bcb6b18ae5980847b2e66a8c77467bfb3a8aa5430cf1ebf8c0",
+      "sha256": "c62c08f4dcb7869835e9f22857c09be620363be8ab470c58b7ac5bd7d3130da8",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -8201,7 +8205,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T07:16:44Z",
+  "generated_at": "2026-09-05T07:37:46Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
