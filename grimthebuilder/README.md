@@ -1,35 +1,36 @@
 # GrimTheBuilder — XUNIA HQ Integration
 
-GrimTheBuilder is the browser IDE/program. Its new full-stack, self-hostable source now lives in [`../grimthebuilder-app/`](../grimthebuilder-app/). This `grimthebuilder/` directory remains the XUNIA connection/export surface and is **not** the application source.
+GrimTheBuilder is the owner-private Orbit browser IDE/program hosted at:
 
-## Current runtime state
-- Current live runtime: https://orbit-code-studio.almighty-son-8109.chatgpt.site/
+- https://orbit-code-studio.almighty-son-8109.chatgpt.site/
 - Current `hello-world` workspace: https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2
-- Full-stack source: https://github.com/sonoxo/gpt-doug-llm/tree/main/grimthebuilder-app
-- CI gate: `.github/workflows/grimthebuilder-app.yml`
-- XUNIA HQ: https://xunia.org/
-- XUNIA launcher: https://xunia.org/grimthebuilder
 
-The Orbit deployment remains the live endpoint only until the new full-stack container is deployed and its health/runtime tests pass. At that point the XUNIA launcher and manifests can cut over to the self-hosted runtime.
+The `grimthebuilder/` directory is only the XUNIA connection/export surface. It is **not** the GrimTheBuilder application source.
 
-## This integration folder contains
-- exported workspace files and experiments
+The separate `grimthebuilder-app/` directory and `ghcr.io/sonoxo/grimthebuilder:latest` image are a noncanonical rebuild/runtime experiment created while testing self-hosting. They must not be presented as the actual GrimTheBuilder program unless the canonical Orbit source is explicitly migrated into that codebase and visually/functionally verified against the owner runtime.
+
+## Canonical UI/runtime identity
+The canonical GrimTheBuilder program is the Orbit IDE with:
+- Workspaces sidebar
+- multi-file editor tabs
+- Run control
+- Console
+- Preview / Agent / Team / Deploy panes
+- browser sandbox / isolated browser execution
+
+## Current source status
+- Canonical application source repository: **not yet recovered/verified**
+- XUNIA HQ launcher: https://xunia.org/grimthebuilder
+- XUNIA launcher must point to the Orbit runtime until the exact canonical source is recovered and migrated.
+
+## Integration artifacts
+This folder may contain:
+- exported workspace files
 - XUNIA connection metadata
-- GitHub Pages launcher/mirror assets
-
-## Application source implements
-- persistent projects and files
-- Monaco editor
-- real shell/process runtime
-- Node/npm/pnpm/Python/Git execution
-- live static and backend preview
-- checkpoints/rollback
-- AI build/fix/plan/explain endpoint
-- Docker runtime
-- regression + container health tests
-
-## Flow
-
-`XUNIA HQ → GrimTheBuilder IDE → project filesystem/runtime → preview → Git/deploy`
+- GitHub Pages launchers/mirrors
 
 `hello-world` remains a workspace inside GrimTheBuilder, never the GrimTheBuilder application itself.
+
+## Correct flow
+
+`XUNIA HQ → canonical Orbit GrimTheBuilder IDE → workspace/project → exported GitHub artifacts`
