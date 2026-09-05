@@ -147,3 +147,9 @@ Wakeup3lm inherits The Black House rules already used by the fleet:
 - provenance and auditable state;
 - fail closed when identity, permissions or environment are unknown;
 - never claim government, intelligence-community or Palantir authorization unless independently verified.
+
+## Optional browser Studio and project memory
+
+[Black House Studio / Orbit](../docs/BLACK_HOUSE_STUDIO.md) connects the browser coding surface, a bounded Ollama-compatible model bridge, and project-scoped shared memory. The deployed Studio currently retains its owner-private audience; this repository does not provision a shared cloud model.
+
+Use `python3 -m wakeup3lm.bridge` to serve an existing Ollama installation to explicitly allowed browser origins. Configure `memory_path` outside the agent workspace when constructing `Wakeup3LM` to enable SQLite memory and the `recall_memory` / `remember_memory` tools. The browser's `black-house.memory.v1` export can be imported with `ProjectMemory.import_payload` into the matching project ID. Memory remains context, with human/model/imported provenance, and does not grant tool authority.

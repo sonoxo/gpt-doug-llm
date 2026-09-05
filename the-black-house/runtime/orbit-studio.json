@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "black-house-studio",
+  "name": "Black House Studio / Orbit",
+  "ecosystem": "THE_BLACK_HOUSE",
+  "repository": "sonoxo/gpt-doug-llm",
+  "role": "browser-development-surface",
+  "required": false,
+  "documentation": "docs/BLACK_HOUSE_STUDIO.md",
+  "catalogId": "black-house-studio",
+  "studio": {
+    "url": "https://orbit-code-studio.almighty-son-8109.chatgpt.site",
+    "access": "owner-private",
+    "publicAccessProvisioned": false,
+    "snapshotAudience": "inherits-studio-access"
+  },
+  "modelBridge": {
+    "entrypoint": "python3 -m wakeup3lm.bridge",
+    "defaultBind": "127.0.0.1:8791",
+    "protocol": "ollama-compatible-non-streaming",
+    "healthPath": "/health",
+    "modelListPath": "/api/tags",
+    "chatPath": "/api/chat",
+    "projectHeader": "X-Doug-Project",
+    "upstream": "operator-configured-ollama",
+    "browserOrigins": "explicit-allowlist",
+    "remoteAuthentication": "bearer-token-required",
+    "sharedHostedModelProvisioned": false,
+    "executesGeneratedCode": false
+  },
+  "projectMemory": {
+    "kernel": "Wakeup3LM",
+    "enabledByDefault": false,
+    "storage": "sqlite-outside-workspace",
+    "exportSchema": "black-house.memory.v1",
+    "scope": "project-id",
+    "kinds": ["data", "logic", "action", "decision", "preference"],
+    "sources": ["human", "model", "imported"],
+    "authority": "untrusted-context-only",
+    "automaticStudioSync": false
+  },
+  "costModel": {
+    "requiredPaidModelApi": false,
+    "compute": "browser-device-or-operator-provided",
+    "providerQuotasApply": true,
+    "unlimitedHostedTokens": false
+  },
+  "externalIntegrations": {
+    "palantirTenantConnected": false,
+    "containerFleetProvisioned": false
+  }
+}

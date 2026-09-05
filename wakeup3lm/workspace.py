@@ -50,14 +50,18 @@ class WorkspaceFS:
         query_lower = query.lower()
         matches: list[str] = []
         for item in self.root.rglob("*"):
-            if not item.is_file():
+            try:
+                target = self.resolve(str(item.relative_to(self.root)))
+            except (WorkspaceSecurityError, OSError, RuntimeError):
+                continue
+            if not target.is_file():
                 continue
             rel = str(item.relative_to(self.root))
             if query_lower in rel.lower():
                 matches.append(rel)
                 continue
             try:
-                if query_lower in item.read_text(encoding="utf-8", errors="ignore").lower():
+                if query_lower in target.read_text(encoding="utf-8", errors="ignore").lower():
                     matches.append(rel)
             except OSError:
                 continue

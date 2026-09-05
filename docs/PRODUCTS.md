@@ -7,6 +7,7 @@ ZYRA is the product layer built on top of GPT-DOUG-LLM / NXYZ runtime components
 | Product | Buyer / user | Value | Current state |
 | --- | --- | --- | --- |
 | **ZYRA Core** | Developers, technical teams, AI builders | Bounded agentic coding with checkpoints, validation, rollback, policy gates, and local-first model support | **Implemented repository runtime** |
+| **Black House Studio / Orbit** | Developers building in a browser | Browser IDE, project collaboration, browser AI, and an Ollama-compatible Black House model bridge | **Owner-private Studio deployed; bridge and project memory available in source** |
 | **NXYZ Mouse Mic** | Foundry users, accessibility workflows, operators navigating dense web UIs | Voice/keyboard guidance that identifies, highlights, and activates visible controls with confirmation on high-impact actions | **v1.0.2 shipping candidate** |
 | **GPT-DOUG ↔ Palantir Foundry Bridge** | Teams with an authorized Foundry tenant | Reads Ontology context, grounds GPT-DOUG analysis in authorized objects, and gates Ontology Actions behind explicit write enablement + confirmation | **Integration-ready; tenant authorization required** |
 | **Watch Dog** | Local smart-camera experimentation | Local dog detection plus temporal scoring for suspected bathroom events and local alerting | **Experimental prototype** |
@@ -29,6 +30,23 @@ Core capabilities include:
 - GitHub security and test workflows.
 
 Technical detail: [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`AGENTIC_RUNTIME.md`](AGENTIC_RUNTIME.md).
+
+## Black House Studio / Orbit
+
+**Problem:** the Black House runtime needs a discoverable browser workspace and durable project context for people and coding agents.
+
+**Product response:** Orbit is the browser development surface for the Black House ecosystem. Its cloud workspace includes file editing, collaborative project state, a console, browser execution, web previews, and static deployment snapshots. Browser AI uses the user's device; the repository's Black House bridge connects an authorized client to an installed Ollama model.
+
+The integration includes:
+
+- an explicit ecosystem manifest and resource-hub entry;
+- an Ollama-compatible bridge with configured model/origin allowlists, health checks, and bounded project-scoped response caching;
+- opt-in SQLite project memory for Wakeup3LM, with data, logic, action, decision, and preference notes;
+- provenance-aware memory import/export and recall that does not grant action approval.
+
+The currently deployed Studio is owner-private. Listing it here does not grant other users access. No shared hosted model or container fleet is provisioned by this integration. Open-source and browser inference avoid a required paid model API; hardware, hosting, model licenses, and provider quotas still apply.
+
+Launch, API contract, memory examples, and capability status: [`BLACK_HOUSE_STUDIO.md`](BLACK_HOUSE_STUDIO.md).
 
 ## NXYZ Mouse Mic
 
