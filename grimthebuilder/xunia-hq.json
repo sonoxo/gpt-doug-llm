@@ -14,11 +14,13 @@
   "hqRoute": "https://xunia.org/grimthebuilder",
   "sourceRepository": "https://github.com/sonoxo/gpt-doug-llm",
   "sourcePath": "grimthebuilder-app",
-  "sourceStatus": "full-stack-source-ci-passed-deployment-pending",
+  "sourceStatus": "full-stack-source-ci-passed-container-published",
+  "containerImage": "ghcr.io/sonoxo/grimthebuilder:latest",
+  "containerStatus": "published-and-ci-verified",
   "integrationRepository": "https://github.com/sonoxo/gpt-doug-llm",
   "integrationPath": "grimthebuilder",
   "hostRepository": "https://github.com/sonoxo/xuniahub",
   "deploymentPolicy": "github-first-source-external-runtime-required",
-  "note": "grimthebuilder-app is the full-stack self-hostable GrimTheBuilder source. The Orbit runtime remains the live endpoint only until the new container runtime is deployed and verified.",
+  "note": "grimthebuilder-app is the full-stack self-hostable GrimTheBuilder source and its deployable container is published. The Orbit runtime remains the live endpoint only until the new external runtime is deployed and verified.",
   "updated": "2026-09-05"
 }
