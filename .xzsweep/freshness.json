@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T16:23:46Z",
+  "cutoff_at": "2026-09-04T16:44:15Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -584,6 +584,17 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "374b4ef909d6e93d6577afcf15679461ba68a14ab14e399961969a9c955d1156",
       "size": 1361,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/xunia-forge.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "01671bdc1a4883079ccd6e7b4c26d4f11dee67580d2d807221ae0504432921d5",
+      "size": 848,
       "validation_issues": [],
       "was_due": false
     },
@@ -3330,10 +3341,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T16:22:35Z",
+      "git_touched_at": "2026-09-05T16:23:38Z",
       "reviewed_at": null,
-      "sha256": "485c3b5eca32f7b13e51d125fd4d9d90c3506de55250cdc0df7c005f71a2c551",
-      "size": 1117,
+      "sha256": "172a2890e669cdb05b79f7f8ba99e565afa89d11844dee4050b363d168be5755",
+      "size": 1178,
       "validation_issues": [],
       "was_due": false
     },
@@ -7528,6 +7539,127 @@
       "validation_issues": [],
       "was_due": false
     },
+    "xunia-forge/.env.example": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "ceb11c3f42c55e3e2398641c19509d9be6fcc4e7b7fd52a6a1250eff85337e6f",
+      "size": 244,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "2346c290005179d166885371118c723a819194fa7150488806f26dae7b18f466",
+      "size": 2292,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/compose.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "caecfe232f45794fd70e436941ac2c41ee4449864e362d271b9fefea69aa6f2f",
+      "size": 1232,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/continue/config.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "ba07f947362209dd994dfe4880187a73220fc27172cc887ad444b522930a54d4",
+      "size": 343,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/control-plane/Dockerfile": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "804b71a6205c5cced6cfc8f0b7865fae8f9bf97e7e602c5b625826790630be8e",
+      "size": 249,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/control-plane/app/main.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "40928d78279288fa3ac8e0af8952b9d5734d415317b3b507488df3b9ab081e68",
+      "size": 2907,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/control-plane/pyproject.toml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "46587337af6b6ce2b330f26e8fe7fc412fdbd4066de5ab0acae7ff5d339b1b24",
+      "size": 230,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/forge": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "7695e687bee7a388f555df39a30e33e3a7a78ad7332c1188da3daf75020409fe",
+      "size": 727,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/litellm/config.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "73934666119ddd91a975ca1f54ce3991dd9e285e69ba7d12f52ce7f3077c3495",
+      "size": 347,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/searxng/settings.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "2e77ecf42daa1405736f12308a91eff62e332fd82cc794d54b29ad2a3ab14cc3",
+      "size": 265,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "xunia-forge/tofu/main.tf": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:44:01Z",
+      "reviewed_at": null,
+      "sha256": "863b56a51cd0379e56b609a6c71b087a886bdec774f8f200283ae00afe95b78f",
+      "size": 634,
+      "validation_issues": [],
+      "was_due": false
+    },
     "xunia-party.sh": {
       "actions": [],
       "binary": false,
@@ -8333,11 +8465,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T16:23:46Z",
+  "generated_at": "2026-09-05T16:44:15Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 757,
+  "tracked_files_reviewed": 769,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
