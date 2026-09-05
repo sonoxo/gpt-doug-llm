@@ -1,9 +1,10 @@
 {
-  "schema": "xunia.hq.connection.v2",
+  "schema": "xunia.hq.connection.v3",
   "application": "GrimTheBuilder",
   "applicationType": "browser-ide",
   "status": "connected",
   "runtimeUrl": "https://orbit-code-studio.almighty-son-8109.chatgpt.site/",
+  "runtimeStatus": "legacy-live-until-self-hosted-cutover",
   "workspace": {
     "name": "hello-world",
     "projectId": "9a63cd65-e102-4241-a46b-14925468bec2",
@@ -11,11 +12,13 @@
   },
   "hq": "https://xunia.org/",
   "hqRoute": "https://xunia.org/grimthebuilder",
+  "sourceRepository": "https://github.com/sonoxo/gpt-doug-llm",
+  "sourcePath": "grimthebuilder-app",
+  "sourceStatus": "full-stack-source-ci-passed-deployment-pending",
   "integrationRepository": "https://github.com/sonoxo/gpt-doug-llm",
   "integrationPath": "grimthebuilder",
   "hostRepository": "https://github.com/sonoxo/xuniahub",
-  "sourceRepository": null,
-  "deploymentPolicy": "github-first-for-exportable-artifacts",
-  "note": "The GitHub folder contains integration metadata and exported workspace artifacts, not the complete GrimTheBuilder IDE source.",
+  "deploymentPolicy": "github-first-source-external-runtime-required",
+  "note": "grimthebuilder-app is the full-stack self-hostable GrimTheBuilder source. The Orbit runtime remains the live endpoint only until the new container runtime is deployed and verified.",
   "updated": "2026-09-05"
 }
