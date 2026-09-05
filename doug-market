@@ -1,6 +1,14 @@
 #!/bin/sh
 set -u
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+SCRIPT="$0"
+while [ -L "$SCRIPT" ]; do
+  LINK="$(readlink "$SCRIPT")"
+  case "$LINK" in
+    /*) SCRIPT="$LINK" ;;
+    *) SCRIPT="$(dirname "$SCRIPT")/$LINK" ;;
+  esac
+done
+ROOT="$(CDPATH= cd -- "$(dirname -- "$SCRIPT")" && pwd)"
 APP="$ROOT/market-terminal"
 
 if [ ! -f "$APP/index.html" ]; then
