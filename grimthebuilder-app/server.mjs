@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { WebSocketServer } from 'ws';
 import { ProjectStore, safeProjectPath } from './lib/store.mjs';
 import { RuntimeManager, parseAllowedCommands } from './lib/runtime.mjs';
+import { buildMusicGeneratorOperations } from './lib/music-generator.mjs';
 
 const HERE=path.dirname(fileURLToPath(import.meta.url));
 const PORT=Number(process.env.PORT||8787); const HOST=process.env.HOST||'0.0.0.0';
@@ -22,6 +23,7 @@ const server=http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://local');
   try{
     if(url.pathname==='/api/health')return json(res,200,{schema:'GRIM_RUNTIME_V1',status:'ok',runtime:'node',projects:(await store.listProjects()).length,processes:runtime.list().length});
+    if(url.pathname==='/api/capabilities')return json(res,200,{schema:'GRIM_CAPABILITIES_V1',projects:true,persistentFiles:true,checkpoints:true,terminal:true,processes:true,preview:true,agent:true,localBlueprints:['music-generator-v1','static-page-v1'],aiProvider:Boolean(process.env.OPENAI_API_KEY&&process.env.OPENAI_MODEL)});
     if(url.pathname==='/api/projects'&&req.method==='GET')return json(res,200,{projects:await store.listProjects()});
     if(url.pathname==='/api/projects'&&req.method==='POST'){const b=await body(req);return json(res,201,{project:await store.createProject(b)});}
     let m;
@@ -63,7 +65,16 @@ async function runAgent(projectId,prompt,mode){
   await applyOperations(projectId,parsed.operations||[]);return {provider:'openai',message:parsed.message||'Complete',operations:parsed.operations||[]};
 }
 async function applyOperations(id,ops){for(const op of ops.slice(0,80)){if(op.op==='write_file')await store.writeFile(id,String(op.path),String(op.content??''));else if(op.op==='delete_file')await store.deleteFile(id,String(op.path));}}
-async function deterministicAgent(id,prompt,mode){if(mode==='plan'||mode==='explain')return{provider:'local',message:`${mode.toUpperCase()}: ${prompt}`,operations:[]};await store.checkpoint(id,`Before local ${mode}`);const lower=prompt.toLowerCase();const ops=[];if(lower.includes('landing')||lower.includes('website')||lower.includes('page')){ops.push({op:'write_file',path:'index.html',content:`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Grim Build</title><link rel="stylesheet" href="style.css"></head><body><main><small>BUILT WITH GRIMTHEBUILDER</small><h1>${escapeHtml(prompt.slice(0,90))}</h1><button id="go">Launch</button><p id="out"></p></main><script src="script.js"></script></body></html>`},{op:'write_file',path:'style.css',content:'body{margin:0;min-height:100vh;display:grid;place-items:center;background:#090b0f;color:#eef2f8;font:16px system-ui}main{width:min(900px,90vw)}h1{font-size:clamp(48px,8vw,96px);line-height:.95}button{padding:12px 18px}'},{op:'write_file',path:'script.js',content:`document.querySelector('#go').onclick=()=>document.querySelector('#out').textContent='Running.';`});}else{ops.push({op:'write_file',path:'README.md',content:`# GrimTheBuilder change\n\nRequest: ${prompt}\n\nConnect an AI provider for arbitrary code generation; the local engine preserves the project and records this request.`});}await applyOperations(id,ops);return{provider:'local',message:'Local zero-cost build applied and checkpointed.',operations:ops};}
+async function deterministicAgent(id,prompt,mode){
+  if(mode==='plan'||mode==='explain')return{provider:'local',message:`${mode.toUpperCase()}: ${prompt}`,operations:[]};
+  await store.checkpoint(id,`Before local ${mode}`);
+  const lower=prompt.toLowerCase();
+  const musicRequest=(/(music|beat|audio|song).*(generator|maker|studio|sequencer)/.test(lower)||/(generator|maker|studio|sequencer).*(music|beat|audio|song)/.test(lower));
+  if(musicRequest){const ops=buildMusicGeneratorOperations(prompt);await applyOperations(id,ops);return{provider:'local',blueprint:'music-generator-v1',message:'Functional music generator built with Web Audio synthesis, prompt-aware sequencing, recording and export.',operations:ops};}
+  const ops=[];
+  if(lower.includes('landing')||lower.includes('website')||lower.includes('page')){ops.push({op:'write_file',path:'index.html',content:`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Grim Build</title><link rel="stylesheet" href="style.css"></head><body><main><small>BUILT WITH GRIMTHEBUILDER</small><h1>${escapeHtml(prompt.slice(0,90))}</h1><button id="go">Launch</button><p id="out"></p></main><script src="script.js"></script></body></html>`},{op:'write_file',path:'style.css',content:'body{margin:0;min-height:100vh;display:grid;place-items:center;background:#090b0f;color:#eef2f8;font:16px system-ui}main{width:min(900px,90vw)}h1{font-size:clamp(48px,8vw,96px);line-height:.95}button{padding:12px 18px}'},{op:'write_file',path:'script.js',content:`document.querySelector('#go').onclick=()=>document.querySelector('#out').textContent='Running.';`});}else{ops.push({op:'write_file',path:'README.md',content:`# GrimTheBuilder change\n\nRequest: ${prompt}\n\nConnect an AI provider for arbitrary code generation; the local engine preserves the project and records this request.`});}
+  await applyOperations(id,ops);return{provider:'local',message:'Local zero-cost build applied and checkpointed.',operations:ops};
+}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
 
 server.listen(PORT,HOST,()=>console.log(`GrimTheBuilder runtime listening on http://${HOST}:${PORT}`));
