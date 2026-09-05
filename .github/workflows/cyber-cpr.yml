@@ -1,0 +1,34 @@
+name: Cyber CPR
+
+on:
+  push:
+    paths:
+      - 'cyber-cpr/**'
+      - '.github/workflows/cyber-cpr.yml'
+  pull_request:
+    paths:
+      - 'cyber-cpr/**'
+      - '.github/workflows/cyber-cpr.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile CLI
+        run: python3 -m py_compile cyber-cpr/cyber_cpr.py
+      - name: Validate example config
+        run: python3 -m json.tool cyber-cpr/config.example.json >/dev/null
+      - name: Validate shell scripts
+        run: |
+          bash -n cyber-cpr/install.sh
+          bash -n cyber-cpr/uninstall.sh
+      - name: Verify help surface
+        run: python3 cyber-cpr/cyber_cpr.py --help >/dev/null
