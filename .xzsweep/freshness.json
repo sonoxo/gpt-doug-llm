@@ -1,8 +1,11 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T15:23:21Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-04T16:08:10Z",
+  "due_files_reviewed": 2,
+  "due_paths": [
+    "intel/white-house/daily/2026-09-04.json",
+    "intel/white-house/daily/2026-09-04.md"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -331,6 +334,17 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "2cbae26033bf2d9303e90fec5de84209eeaf608d0884eef5faf0226a4098d553",
       "size": 2464,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/market-terminal-data.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "402e23880b8a32d956b78f813e842956f14e859bb2cc3d7f6c5c41d7acb3f2f7",
+      "size": 990,
       "validation_issues": [],
       "was_due": false
     },
@@ -3694,22 +3708,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-05T16:08:10Z",
       "sha256": "68df33e71b0a17c66a6a4f353f824d6f0cf95152caa6a698441d8f9b307d52c5",
       "size": 1156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-04.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-05T16:08:10Z",
       "sha256": "c2ed09439aa71d5e2c9a0fbf5a2e888518f201b58e69467c3d0870626d26bce2",
       "size": 909,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-05.json": {
       "actions": [],
@@ -3785,6 +3799,72 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "62fb44dc9400f8718b597041b56cb8238250338171d55bd8b4bac7577fee1e1d",
       "size": 7846,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "79af06272f485cec7fc4950bc8f22b0e95e07cb99bf8fea7e9211715a6001ae3",
+      "size": 1250,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/data/market-snapshot.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "4396c88a42a276eeb0486e176794bda6409f10919ed7dbc93637520517422439",
+      "size": 158,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "de0736d39a8cca3b7422dcf04b47897de8459fac94b95893a81b9e0ae4f748ac",
+      "size": 3370,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/scripts/collect_market_data.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "91263ebdb1bc5ed1d9b4078561ccdefc7c07b131eacd9b66cf695461fbaf3d60",
+      "size": 3573,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/terminal.css": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "7de10fec7beec72a8f3fe42b081cce58e78c4301c78864bd97679e8b7d3a3a63",
+      "size": 4243,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "market-terminal/terminal.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:04:24Z",
+      "reviewed_at": null,
+      "sha256": "eaa5eeb1277d38e8077447f711339773e3a69c4c8cc6685019e980791fe7aa90",
+      "size": 7399,
       "validation_issues": [],
       "was_due": false
     },
@@ -8234,11 +8314,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T15:23:21Z",
+  "generated_at": "2026-09-05T16:08:10Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 748,
+  "tracked_files_reviewed": 755,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
