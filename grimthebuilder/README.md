@@ -1,26 +1,35 @@
 # GrimTheBuilder — XUNIA HQ Integration
 
-GrimTheBuilder is the browser IDE/program hosted at the Orbit Code Studio runtime. The files in this repository are integration records and exported workspace artifacts; they are **not** the complete GrimTheBuilder application.
+GrimTheBuilder is the browser IDE/program. Its new full-stack, self-hostable source now lives in [`../grimthebuilder-app/`](../grimthebuilder-app/). This `grimthebuilder/` directory remains the XUNIA connection/export surface and is **not** the application source.
 
-## Canonical links
-- GrimTheBuilder runtime: https://orbit-code-studio.almighty-son-8109.chatgpt.site/
+## Current runtime state
+- Current live runtime: https://orbit-code-studio.almighty-son-8109.chatgpt.site/
 - Current `hello-world` workspace: https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2
+- Full-stack source: https://github.com/sonoxo/gpt-doug-llm/tree/main/grimthebuilder-app
+- CI gate: `.github/workflows/grimthebuilder-app.yml`
 - XUNIA HQ: https://xunia.org/
-- XUNIA launcher route: https://xunia.org/grimthebuilder
-- Integration repository: https://github.com/sonoxo/gpt-doug-llm/tree/main/grimthebuilder
+- XUNIA launcher: https://xunia.org/grimthebuilder
 
-## What this folder contains
+The Orbit deployment remains the live endpoint only until the new full-stack container is deployed and its health/runtime tests pass. At that point the XUNIA launcher and manifests can cut over to the self-hosted runtime.
+
+## This integration folder contains
 - exported workspace files and experiments
 - XUNIA connection metadata
-- GitHub-hostable launcher/mirror assets
+- GitHub Pages launcher/mirror assets
 
-## What this folder does not contain
-- the complete GrimTheBuilder IDE source
-- the Studio hosting configuration
-- owner-private runtime state
+## Application source implements
+- persistent projects and files
+- Monaco editor
+- real shell/process runtime
+- Node/npm/pnpm/Python/Git execution
+- live static and backend preview
+- checkpoints/rollback
+- AI build/fix/plan/explain endpoint
+- Docker runtime
+- regression + container health tests
 
 ## Flow
 
-`XUNIA HQ → GrimTheBuilder runtime → workspace → exported GitHub artifacts`
+`XUNIA HQ → GrimTheBuilder IDE → project filesystem/runtime → preview → Git/deploy`
 
-GitHub remains the preferred home for exportable/static artifacts, documentation, and integration metadata. The current GrimTheBuilder IDE itself runs on the Orbit Code Studio deployment above.
+`hello-world` remains a workspace inside GrimTheBuilder, never the GrimTheBuilder application itself.
