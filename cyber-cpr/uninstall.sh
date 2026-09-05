@@ -2,6 +2,7 @@
 set -euo pipefail
 
 TARGET="${HOME}/.local/bin/cyber-cpr"
+APP_DIR="${HOME}/.local/share/cyber-cpr"
 
 if [[ -f "${TARGET}" ]]; then
   rm -f "${TARGET}"
@@ -10,4 +11,9 @@ else
   echo "Cyber CPR launcher was not installed at ${TARGET}"
 fi
 
-echo "State remains at ~/.cyber-cpr. Remove it manually if you also want to delete heartbeat history."
+if [[ -d "${APP_DIR}" ]]; then
+  rm -rf "${APP_DIR}"
+  echo "Cyber CPR engine removed from ${APP_DIR}"
+fi
+
+echo "Heartbeat history remains at ~/.cyber-cpr. Remove that directory manually if you also want to delete state."
