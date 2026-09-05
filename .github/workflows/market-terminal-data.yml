@@ -1,6 +1,13 @@
 name: GPT-DOUG Market Terminal Data
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'market-terminal/index.html'
+      - 'market-terminal/terminal.css'
+      - 'market-terminal/terminal.js'
+      - 'market-terminal/scripts/**'
+      - '.github/workflows/market-terminal-data.yml'
   schedule:
     - cron: '7,37 13-21 * * 1-5'
 permissions:
