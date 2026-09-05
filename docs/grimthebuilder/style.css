@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #f5f5ef;
+  color: #222a1e;
+  font-family: 'DM Sans', sans-serif;
+}
+.card { padding: 52px 32px; width: 100%; max-width: 560px; }
+.eyebrow { font-size: 10px; letter-spacing: 1.7px; color: #6c765f; font-weight: 700; }
+.hello { margin: 25px 0 18px; font-size: clamp(35px, 6vw, 58px); font-weight: 600; letter-spacing: -3px; }
+.hello span { display: inline-block; color: #74954b; margin-left: 8px; }
+p { font-size: 16px; line-height: 1.7; color: #75806d; }
+a { color: #405435; font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+button { margin-top: 18px; padding: 15px 20px; border: 0; border-radius: 8px; background: #263323; color: #f6ffef; font: inherit; cursor: pointer; }
+button span { margin-left: 25px; }
+button:hover { background: #405435; }
+.footnote { margin-top: 58px; font-size: 9px; letter-spacing: 1.1px; color: #909784; }
