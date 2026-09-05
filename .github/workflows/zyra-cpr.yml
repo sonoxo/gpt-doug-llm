@@ -1,0 +1,31 @@
+name: ZYRA CPR
+
+on:
+  push:
+    paths:
+      - 'scripts/zyra-cpr.sh'
+      - '.github/workflows/zyra-cpr.yml'
+  pull_request:
+    paths:
+      - 'scripts/zyra-cpr.sh'
+      - '.github/workflows/zyra-cpr.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-cpr:
+    name: Validate CPR bootstrap
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Bash syntax
+        run: bash -n scripts/zyra-cpr.sh
+      - name: Shell smoke test
+        run: |
+          test -s scripts/zyra-cpr.sh
+          grep -q 'CPR RECOVERED' scripts/zyra-cpr.sh
+          grep -q 'ggml-org/Qwen3-4B-GGUF:Q4_K_M' scripts/zyra-cpr.sh
+          echo '✅ CPR bootstrap validated'
