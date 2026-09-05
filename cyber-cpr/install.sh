@@ -2,22 +2,26 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="${HOME}/.local/bin"
-TARGET="${TARGET_DIR}/cyber-cpr"
+BIN_DIR="${HOME}/.local/bin"
+APP_DIR="${HOME}/.local/share/cyber-cpr"
+TARGET="${BIN_DIR}/cyber-cpr"
 
-mkdir -p "${TARGET_DIR}"
+mkdir -p "${BIN_DIR}" "${APP_DIR}"
+install -m 0755 "${ROOT_DIR}/cyber_cpr.py" "${APP_DIR}/cyber_cpr.py"
 
 cat > "${TARGET}" <<EOF
 #!/usr/bin/env bash
-exec python3 "${ROOT_DIR}/cyber_cpr.py" "\$@"
+exec python3 "${APP_DIR}/cyber_cpr.py" "\$@"
 EOF
 
 chmod +x "${TARGET}"
 
-echo "🚑 Cyber CPR installed to ${TARGET}"
+echo "🚑 Cyber CPR installed"
+echo "   CLI: ${TARGET}"
+echo "   Engine: ${APP_DIR}/cyber_cpr.py"
 
 case ":${PATH}:" in
-  *":${TARGET_DIR}:"*) ;;
+  *":${BIN_DIR}:"*) ;;
   *)
     echo "Add this to your shell profile if needed:"
     echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
