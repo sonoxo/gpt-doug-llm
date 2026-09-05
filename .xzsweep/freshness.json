@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T21:59:43Z",
+  "cutoff_at": "2026-09-04T22:00:27Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -188,6 +188,17 @@
       "reviewed_at": "2026-09-05T03:34:13Z",
       "sha256": "742b99e31325d877a89795ef3045d01b76c5993c1fad578335a5d59afed38bb4",
       "size": 2110,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/cyber-cpr.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T22:00:08Z",
+      "reviewed_at": null,
+      "sha256": "856ace786acad649e1a0eb0142e1157aa381f4ea5f4f9b37cde6f051e2eabb5a",
+      "size": 850,
       "validation_issues": [],
       "was_due": false
     },
@@ -1676,6 +1687,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "cyber-cpr/config.example.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T21:59:53Z",
+      "reviewed_at": null,
+      "sha256": "4dba2da3371133e61ecb805b45b5db918584258847ad4ff44053beffb8a0d600",
+      "size": 183,
+      "validation_issues": [],
+      "was_due": false
+    },
     "cyber-cpr/cyber_cpr.py": {
       "actions": [],
       "binary": false,
@@ -1684,6 +1706,28 @@
       "reviewed_at": null,
       "sha256": "094656c06b825d23fb269010f64b41dae613d20e1c7d7660625e477b1ea0580f",
       "size": 8283,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "cyber-cpr/install.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T21:59:43Z",
+      "reviewed_at": null,
+      "sha256": "3ff76bce20c93690c817a313ac3d6448ace5cf20b9d6c46e543e6da53e140e7c",
+      "size": 568,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "cyber-cpr/uninstall.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T22:00:00Z",
+      "reviewed_at": null,
+      "sha256": "809d3f5140c303d193de457f46c01f6747e2369aa5596e3e205ca17c77517844",
+      "size": 355,
       "validation_issues": [],
       "was_due": false
     },
@@ -8663,11 +8707,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T21:59:43Z",
+  "generated_at": "2026-09-05T22:00:27Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 787,
+  "tracked_files_reviewed": 791,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
