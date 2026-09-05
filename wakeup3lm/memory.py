@@ -198,7 +198,6 @@ class ProjectMemory:
             raise ValueError("memory limit must be an integer between 1 and 100")
         if type(char_budget) is not int or not 2 <= char_budget <= 65_536:
             raise ValueError("memory char_budget must be an integer between 2 and 65536")
-        clauses, values = ["project = ?"], [self.project]
         if kinds is not None:
             if not isinstance(kinds, (list, tuple)) or any(
                 not isinstance(kind, str) or kind not in MEMORY_KINDS for kind in kinds
@@ -206,17 +205,24 @@ class ProjectMemory:
                 raise ValueError("memory kinds must be a list of supported memory kinds")
             if not kinds:
                 return []
-            clauses.append(f"kind IN ({','.join('?' for _ in kinds)})")
-            values.extend(kinds)
+        selected_kinds = MEMORY_KINDS if kinds is None else frozenset(kinds)
         terms = query.casefold().split()
         if len(terms) > 32:
             raise ValueError("memory query must contain at most 32 terms")
-        for term in terms:
-            clauses.append("instr(search_text, ?) > 0")
-            values.append(term)
-        sql = f"SELECT * FROM memory_notes WHERE {' AND '.join(clauses)} ORDER BY rowid DESC LIMIT ?"
         with self._connection() as connection:
-            rows = connection.execute(sql, [*values, limit]).fetchall()
+            # Keep the SQL fixed. Bounded, literal matching happens in a local
+            # function, so neither terms nor kind selections construct SQL.
+            connection.create_function(
+                "memory_matches", 2,
+                lambda kind, content: kind in selected_kinds and all(term in content for term in terms),
+                deterministic=True,
+            )
+            rows = connection.execute(
+                """SELECT * FROM memory_notes
+                   WHERE project = ? AND memory_matches(kind, search_text)
+                   ORDER BY rowid DESC LIMIT ?""",
+                (self.project, limit),
+            ).fetchall()
 
         results: list[dict[str, Any]] = []
         for row in rows:
