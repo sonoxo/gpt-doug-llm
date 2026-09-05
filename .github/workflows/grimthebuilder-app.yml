@@ -1,0 +1,52 @@
+name: GrimTheBuilder Full-Stack Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'grimthebuilder-app/**'
+      - '.github/workflows/grimthebuilder-app.yml'
+  pull_request:
+    paths:
+      - 'grimthebuilder-app/**'
+      - '.github/workflows/grimthebuilder-app.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: grimthebuilder-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: grimthebuilder-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: grimthebuilder-app/package.json
+      - run: npm install --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - name: Container build
+        run: docker build -t grimthebuilder-ci .
+      - name: Health smoke test
+        run: |
+          docker run -d --name grim-ci -p 8787:8787 grimthebuilder-ci
+          trap 'docker rm -f grim-ci >/dev/null 2>&1 || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8787/api/health | grep -q 'GRIM_RUNTIME_V1'; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs grim-ci
+          exit 1
