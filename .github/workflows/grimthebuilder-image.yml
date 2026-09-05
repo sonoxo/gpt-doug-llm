@@ -58,16 +58,23 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest
           ok=0
           for i in $(seq 1 30); do
-            if curl --fail --silent --show-error http://127.0.0.1:8787/api/health | tee /tmp/grim-health.json; then
+            if curl --fail --silent --show-error --connect-timeout 1 --max-time 2 \
+              --output /tmp/grim-health.json http://127.0.0.1:8787/api/health; then
+              cat /tmp/grim-health.json
               ok=1
               break
             fi
             sleep 1
           done
-          test "$ok" = "1"
+          if [ "$ok" != "1" ]; then
+            docker inspect grimthebuilder-verify || true
+            docker logs grimthebuilder-verify || true
+            exit 1
+          fi
           grep -q '"schema":"GRIM_RUNTIME_V1"' /tmp/grim-health.json
           grep -q '"status":"ok"' /tmp/grim-health.json
-          curl --fail --silent --show-error http://127.0.0.1:8787/api/capabilities | tee /tmp/grim-capabilities.json
+          curl --fail --silent --show-error --output /tmp/grim-capabilities.json http://127.0.0.1:8787/api/capabilities
+          cat /tmp/grim-capabilities.json
           grep -q '"music-generator-v1"' /tmp/grim-capabilities.json
           echo
           echo "VERIFIED_IMAGE=$(cat /tmp/grim-image-digest.txt)"
