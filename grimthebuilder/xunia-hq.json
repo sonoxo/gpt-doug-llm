@@ -1,12 +1,21 @@
 {
-  "schema": "xunia.hq.connection.v1",
-  "project": "GrimTheBuilder",
+  "schema": "xunia.hq.connection.v2",
+  "application": "GrimTheBuilder",
+  "applicationType": "browser-ide",
   "status": "connected",
+  "runtimeUrl": "https://orbit-code-studio.almighty-son-8109.chatgpt.site/",
+  "workspace": {
+    "name": "hello-world",
+    "projectId": "9a63cd65-e102-4241-a46b-14925468bec2",
+    "url": "https://orbit-code-studio.almighty-son-8109.chatgpt.site/?project=9a63cd65-e102-4241-a46b-14925468bec2"
+  },
   "hq": "https://xunia.org/",
   "hqRoute": "https://xunia.org/grimthebuilder",
-  "sourceRepository": "https://github.com/sonoxo/gpt-doug-llm",
-  "sourcePath": "grimthebuilder",
+  "integrationRepository": "https://github.com/sonoxo/gpt-doug-llm",
+  "integrationPath": "grimthebuilder",
   "hostRepository": "https://github.com/sonoxo/xuniahub",
-  "deploymentPolicy": "github-first",
+  "sourceRepository": null,
+  "deploymentPolicy": "github-first-for-exportable-artifacts",
+  "note": "The GitHub folder contains integration metadata and exported workspace artifacts, not the complete GrimTheBuilder IDE source.",
   "updated": "2026-09-05"
 }
