@@ -1,0 +1,35 @@
+{
+  "ontology_version": "1.0",
+  "system": "GPT-DOUG-LLM",
+  "entity": "PortableAgentNode",
+  "name": "GPT-DOUG POCKET",
+  "cost_policy": "LOCAL_FREE_ONLY",
+  "storage": {
+    "repo": "USB",
+    "model_cache": "USB",
+    "memory": "USB",
+    "workspace": "USB",
+    "logs": "USB",
+    "runtime_state": "USB"
+  },
+  "compute": {
+    "provider": "HOST_DEVICE",
+    "preferred_backend": "llama.cpp",
+    "apple_silicon_acceleration": "Metal",
+    "paid_api_required": false
+  },
+  "relations": [
+    "PortableAgentNode LIVES_ON ExternalStorage",
+    "PortableAgentNode USES HostCompute",
+    "PortableAgentNode SERVES OpenAICompatibleAPI",
+    "PortableAgentNode PERSISTS MemoryOnExternalStorage",
+    "PortableAgentNode SYNCS_FROM GitHubRepository",
+    "PortableAgentNode MUST_NOT_REQUIRE PaidAPI"
+  ],
+  "recovery_policy": {
+    "git_repository": "sonoxo/gpt-doug-llm",
+    "model_fallback": "ggml-org/Qwen3-0.6B-GGUF:Q4_0",
+    "destructive_formatting": false,
+    "personal_file_deletion": false
+  }
+}
