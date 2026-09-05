@@ -8,7 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 import pytest
 
-from wakeup3lm.bridge import BridgeConfig, BridgeServer, MAX_BODY, MAX_INPUT_CHARS, MAX_RESPONSE
+from wakeup3lm.bridge import MAX_BODY, MAX_INPUT_CHARS, MAX_RESPONSE, BridgeConfig, BridgeServer
 
 
 @contextmanager
