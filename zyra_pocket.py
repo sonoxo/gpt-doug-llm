@@ -134,26 +134,34 @@ def main() -> int:
         if cmd in {"/quit", "/exit"}:
             return 0
         if cmd == "/status":
-            status(model); continue
+            status(model)
+            continue
         if cmd == "/fleet":
-            fleet(); continue
+            fleet()
+            continue
         if cmd == "/files":
             files = sorted(str(p.relative_to(WORKSPACE)) for p in WORKSPACE.rglob("*") if p.is_file())
-            print("📁 Workspace files:", ", ".join(files[:50]) if files else "empty"); continue
+            print("📁 Workspace files:", ", ".join(files[:50]) if files else "empty")
+            continue
         if cmd == "/memory":
-            print(f"🧬 Persistent turns: {len(history)} // {HISTORY_FILE}"); continue
+            print(f"🧬 Persistent turns: {len(history)} // {HISTORY_FILE}")
+            continue
         if cmd == "/clear":
             history = []
             save_history(history)
-            print("🧹 Pocket conversation memory cleared."); continue
+            print("🧹 Pocket conversation memory cleared.")
+            continue
         if cmd == "/sync":
             code, dirty = git("status", "--porcelain")
             if code != 0:
-                print("❌ Git unavailable."); continue
+                print("❌ Git unavailable.")
+                continue
             if dirty.strip():
-                print("⚠️ Repo has local changes; sync skipped to avoid overwriting work."); continue
+                print("⚠️ Repo has local changes; sync skipped to avoid overwriting work.")
+                continue
             code, out = git("pull", "--ff-only")
-            print(("✅ " if code == 0 else "❌ ") + (out or "sync complete")); continue
+            print(("✅ " if code == 0 else "❌ ") + (out or "sync complete"))
+            continue
 
         try:
             answer = chat(model, history, prompt)
