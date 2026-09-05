@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#05070a">
+  <title>GPT-DOUG Market Intelligence Terminal</title>
+  <link rel="stylesheet" href="terminal.css">
+</head>
+<body>
+  <header>
+    <div><b class="brand">GPT-DOUG//MARKET</b><span class="tag">FREE PUBLIC-INTELLIGENCE TERMINAL</span></div>
+    <div class="status"><i></i><span id="feedStatus">LOADING FEEDS</span><time id="clock"></time></div>
+  </header>
+  <nav aria-label="Terminal sections">
+    <button class="active" data-view="overview">OVERVIEW</button><button data-view="markets">MARKETS</button>
+    <button data-view="intel">INTEL</button><button data-view="filings">SEC FILINGS</button><button data-view="help">HELP</button>
+  </nav>
+  <main>
+    <section class="command-panel">
+      <label for="command">DOUG COMMAND</label>
+      <div class="command-row"><span>&gt;</span><input id="command" autocomplete="off" placeholder="Try: brief me, quote AAPL, crypto, filings, risks"><button id="run">RUN</button></div>
+      <p id="answer">Initializing the market picture…</p>
+    </section>
+    <section id="overview" class="view active">
+      <div id="tickerTape" class="ticker-tape"></div>
+      <div class="grid">
+        <article class="wide"><div class="title"><h2>MARKET PULSE</h2><span id="marketMood">CALCULATING</span></div><canvas id="chart" width="900" height="290"></canvas></article>
+        <article><div class="title"><h2>RISK RADAR</h2><span>RULE-BASED</span></div><div id="risks"></div></article>
+        <article><div class="title"><h2>CATALYST WIRE</h2><span>PUBLIC RSS</span></div><div id="news"></div></article>
+        <article><div class="title"><h2>WATCHLIST</h2><span>LOCAL DEVICE</span></div><div class="add"><input id="watchSymbol" maxlength="12" placeholder="SYMBOL"><button id="addWatch">ADD</button></div><div id="watchlist"></div></article>
+        <article><div class="title"><h2>SOURCE HEALTH</h2><span>TRANSPARENT</span></div><div id="sources"></div></article>
+      </div>
+    </section>
+    <section id="markets" class="view"><article><div class="title"><h2>ALL INSTRUMENTS</h2><span>DELAYED / END-OF-DAY</span></div><div id="marketTable"></div></article></section>
+    <section id="intel" class="view"><article><div class="title"><h2>INTELLIGENCE BRIEF</h2><span>AUTOMATED SYNTHESIS</span></div><div id="brief"></div></article></section>
+    <section id="filings" class="view"><article><div class="title"><h2>RECENT SEC FILINGS</h2><span>SEC.GOV</span></div><div id="filingList"></div></article></section>
+    <section id="help" class="view"><article><div class="title"><h2>COMMAND GUIDE</h2><span>NO API KEY</span></div><div class="help"><p><kbd>brief me</kbd> Full market summary</p><p><kbd>quote AAPL</kbd> Find a tracked instrument</p><p><kbd>crypto</kbd> Digital-asset view</p><p><kbd>risks</kbd> Current risk flags</p><p><kbd>filings</kbd> Recent SEC submissions</p><p><kbd>news</kbd> Latest catalyst headlines</p></div><p class="notice">Research interface only. Public feeds can be delayed or incomplete. Nothing here is investment advice or an order to trade.</p></article></section>
+  </main>
+  <footer>GPT-DOUG-LLM · XUNIA INTELLIGENCE LAYER · PUBLIC DATA · READ ONLY</footer>
+  <script src="terminal.js"></script>
+</body>
+</html>
