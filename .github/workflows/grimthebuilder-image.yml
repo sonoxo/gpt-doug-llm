@@ -67,9 +67,44 @@ jobs:
           test "$ok" = "1"
           grep -q '"schema":"GRIM_RUNTIME_V1"' /tmp/grim-health.json
           grep -q '"status":"ok"' /tmp/grim-health.json
+          curl --fail --silent --show-error http://127.0.0.1:8787/api/capabilities | tee /tmp/grim-capabilities.json
+          grep -q '"music-generator-v1"' /tmp/grim-capabilities.json
           echo
           echo "VERIFIED_IMAGE=$(cat /tmp/grim-image-digest.txt)"
           echo "VERIFIED_HEALTH=$(cat /tmp/grim-health.json)"
+
+      - name: Prompt published GrimTheBuilder to build music generator
+        run: |
+          CREATE=$(curl --fail --silent --show-error \
+            -X POST http://127.0.0.1:8787/api/projects \
+            -H 'content-type: application/json' \
+            --data '{"name":"Published Image Music Generator","template":"static"}')
+          PROJECT_ID=$(printf '%s' "$CREATE" | python3 -c 'import json,sys; print(json.load(sys.stdin)["project"]["id"])')
+          test -n "$PROJECT_ID"
+
+          export GRIM_TEST_PROMPT='Build a fully functional browser music generator app with prompt-aware original beat generation, trap house ambient and synthwave styles, BPM and key controls, Web Audio synthesis, a sequencer, play and stop controls, browser recording, pattern export, responsive design, and no paid external API.'
+          PAYLOAD=$(python3 -c 'import json,os; print(json.dumps({"prompt":os.environ["GRIM_TEST_PROMPT"],"mode":"build"}))')
+          BUILD=$(curl --fail --silent --show-error \
+            -X POST "http://127.0.0.1:8787/api/projects/$PROJECT_ID/agent" \
+            -H 'content-type: application/json' \
+            --data "$PAYLOAD")
+          printf '%s\n' "$BUILD" | tee /tmp/grim-music-build.json
+          grep -q '"provider":"local"' /tmp/grim-music-build.json
+          grep -q '"blueprint":"music-generator-v1"' /tmp/grim-music-build.json
+
+          curl --fail --silent --show-error "http://127.0.0.1:8787/preview/$PROJECT_ID/" | tee /tmp/grim-music-preview.html
+          grep -q 'GrimBeat Generator' /tmp/grim-music-preview.html
+          grep -q '>Generate<' /tmp/grim-music-preview.html
+          grep -q '>● Record<' /tmp/grim-music-preview.html
+
+          curl --fail --silent --show-error "http://127.0.0.1:8787/api/projects/$PROJECT_ID/file?path=script.js" | tee /tmp/grim-music-script.js
+          node --check /tmp/grim-music-script.js
+          grep -q 'AudioContext' /tmp/grim-music-script.js
+          grep -q 'MediaRecorder' /tmp/grim-music-script.js
+          grep -q 'downloadPattern' /tmp/grim-music-script.js
+
+          echo "MUSIC_PROJECT_ID=$PROJECT_ID"
+          echo 'PUBLISHED_IMAGE_MUSIC_BUILD=PASS'
 
       - name: Container verification logs
         if: always()
