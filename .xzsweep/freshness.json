@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T06:51:44Z",
+  "cutoff_at": "2026-09-04T06:52:18Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -2776,6 +2776,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "grimthebuilder-app/Dockerfile": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T06:51:46Z",
+      "reviewed_at": null,
+      "sha256": "22a9e8bd6b90d67566f3e6a3cb0aa99666b0fa6190656fb04b0417131d2b7257",
+      "size": 455,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "grimthebuilder-app/docker-compose.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T06:51:55Z",
+      "reviewed_at": null,
+      "sha256": "f01beaca5a90dfe42de85f02cc3659ca2a09abe66034777c771fad99200cebeb",
+      "size": 403,
+      "validation_issues": [],
+      "was_due": false
+    },
     "grimthebuilder-app/lib/runtime.mjs": {
       "actions": [],
       "binary": false,
@@ -2850,6 +2872,17 @@
       "reviewed_at": null,
       "sha256": "edcf74dbaf0e6b739bd4d38564eccfd8f9eaef16f16f67b6bb55a3a3222dcd53",
       "size": 11194,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "grimthebuilder-app/tests/runtime.test.mjs": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T06:52:06Z",
+      "reviewed_at": null,
+      "sha256": "2783da27f2bd4e86a4ee174402810ef60f05577ba311e83af8337ff9ab7c4026",
+      "size": 1097,
       "validation_issues": [],
       "was_due": false
     },
@@ -8113,11 +8146,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T06:51:44Z",
+  "generated_at": "2026-09-05T06:52:18Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 737,
+  "tracked_files_reviewed": 740,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
