@@ -1,0 +1,46 @@
+{
+  "ontology_version": "1.0",
+  "system": "GPT-DOUG-LLM",
+  "profile": "SONOXOMUS_RESEARCH",
+  "source_repository": "sonoxo/Sonoxomus",
+  "purpose": "Local model-behavior, refusal-rate, KL-divergence, residual-geometry, and interpretability research.",
+  "execution": {
+    "location": "LOCAL_ONLY",
+    "network_binding": "LOOPBACK_ONLY",
+    "paid_api_required": false,
+    "external_targeting": false,
+    "credential_access": false,
+    "arbitrary_host_shell": false,
+    "automatic_push_or_deploy": false
+  },
+  "allowed_capabilities": [
+    "clone_or_update_research_dependency",
+    "create_isolated_python_environment",
+    "inspect_model_metadata",
+    "run_benchmarks",
+    "measure_refusal_rate",
+    "measure_kl_divergence",
+    "plot_residual_geometry",
+    "compare_local_model_variants",
+    "persist_results_to_local_workspace"
+  ],
+  "excluded_capabilities": [
+    "automatic_removal_of_safety_alignment",
+    "automatic_generation_of_unrestricted_model_weights",
+    "external-system exploitation",
+    "credential_or_secret harvesting",
+    "destructive_host_actions"
+  ],
+  "relations": [
+    "GPT-DOUG-LLM USES Sonoxomus AS ResearchDependency",
+    "ResearchDependency RUNS_IN IsolatedWorkspace",
+    "ResearchDependency PRODUCES ModelBehaviorMetrics",
+    "ModelBehaviorMetrics INFORM LocalModelSelection",
+    "ResearchDependency MUST_NOT_CONTROL HostSecurityPolicy"
+  ],
+  "license_boundary": {
+    "sonoxomus_license": "AGPL-3.0",
+    "integration_mode": "separate_external_dependency",
+    "copy_source_into_gpt_doug": false
+  }
+}
