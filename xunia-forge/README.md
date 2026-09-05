@@ -12,6 +12,12 @@ One local-first workspace that connects five open-source projects without copyin
 
 ## Launch
 
+### No local Docker or disk space: NXYZ Cloud
+
+Open this repository in GitHub Codespaces. The included dev-container installs Docker, OpenTofu and `uv`, starts the stack, forwards private ports and opens the control center. See [NXYZ_CLOUD.md](NXYZ_CLOUD.md).
+
+### Local Docker
+
 Requirements: Docker Desktop and Python 3.11+. `uv` and OpenTofu are optional for the direct Docker route.
 
 ```bash
