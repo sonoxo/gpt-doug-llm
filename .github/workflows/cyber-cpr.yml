@@ -30,5 +30,28 @@ jobs:
         run: |
           bash -n cyber-cpr/install.sh
           bash -n cyber-cpr/uninstall.sh
+          bash -n cyber-cpr/install-service.sh
+          bash -n cyber-cpr/uninstall-service.sh
+          bash -n cyber-cpr/release.sh
       - name: Verify help surface
         run: python3 cyber-cpr/cyber_cpr.py --help >/dev/null
+      - name: Validate release metadata
+        run: |
+          test -s cyber-cpr/VERSION
+          test -s cyber-cpr/CHANGELOG.md
+          test -s cyber-cpr/SECURITY.md
+          test -s cyber-cpr/LICENSE
+      - name: Build release package
+        run: bash cyber-cpr/release.sh
+      - name: Verify checksum
+        run: |
+          cd cyber-cpr/dist
+          sha256sum -c cyber-cpr-*.tar.gz.sha256
+      - name: Upload Cyber CPR package
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyber-cpr-release
+          path: |
+            cyber-cpr/dist/cyber-cpr-*.tar.gz
+            cyber-cpr/dist/cyber-cpr-*.tar.gz.sha256
+          if-no-files-found: error
