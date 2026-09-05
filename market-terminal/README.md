@@ -4,12 +4,14 @@ A free, read-only Bloomberg-style research dashboard built from public market da
 
 ## Run locally
 
+From the repository root, install the command once and then launch it from any directory:
+
 ```bash
-python3 market-terminal/scripts/collect_market_data.py
-python3 -m http.server 8080
+sh install_zyra_terminal.sh
+doug-market
 ```
 
-Open `http://localhost:8080/market-terminal/`.
+The launcher finds the repository automatically, refreshes data, selects an open port and opens the correct browser URL. It prevents the 404 caused by starting `http.server` from the home directory.
 
 ## Data design
 
