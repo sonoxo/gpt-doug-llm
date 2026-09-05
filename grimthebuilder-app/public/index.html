@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GrimTheBuilder — XUNIA</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+</head>
+<body>
+<header><strong>GrimTheBuilder</strong><span id="status">RUNTIME CHECK…</span><div class="grow"></div><button id="newProject">NEW PROJECT</button><button id="checkpoint">CHECKPOINT</button><button id="runProject">RUN</button><a href="https://xunia.org/" target="_blank">XUNIA HQ ↗</a></header>
+<main>
+  <aside class="projects"><h3>PROJECTS</h3><div id="projectList"></div></aside>
+  <aside class="files"><div class="paneHead"><h3>FILES</h3><button id="newFile">＋</button></div><div id="fileList"></div></aside>
+  <section class="work"><nav><button data-tab="code" class="active">CODE</button><button data-tab="preview">PREVIEW</button><button data-tab="terminal">TERM</button></nav><div id="codePane" class="pane active"><div id="editor"></div><textarea id="fallbackEditor" spellcheck="false"></textarea></div><div id="previewPane" class="pane"><iframe id="preview"></iframe></div><div id="terminalPane" class="pane"><pre id="term"></pre><form id="termForm"><span>$</span><input id="termInput" autocomplete="off" spellcheck="false"></form></div></section>
+  <aside class="agent"><h3>GRIM AGENT</h3><div id="agentFeed"><p>Build, fix, plan, or explain this project.</p></div><select id="agentMode"><option>build</option><option>fix</option><option>plan</option><option>explain</option></select><textarea id="agentPrompt" placeholder="Build a responsive dashboard with authentication UI…"></textarea><button id="agentRun">RUN AGENT</button></aside>
+</main>
+<div id="toast"></div>
+<script type="module" src="/app.js"></script>
+</body></html>
