@@ -1,11 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-04T16:08:10Z",
-  "due_files_reviewed": 2,
-  "due_paths": [
-    "intel/white-house/daily/2026-09-04.json",
-    "intel/white-house/daily/2026-09-04.md"
-  ],
+  "cutoff_at": "2026-09-04T16:16:27Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -341,10 +338,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T16:04:24Z",
+      "git_touched_at": "2026-09-05T16:04:57Z",
       "reviewed_at": null,
-      "sha256": "402e23880b8a32d956b78f813e842956f14e859bb2cc3d7f6c5c41d7acb3f2f7",
-      "size": 990,
+      "sha256": "ae13118ebd4e583c48adc23a100620c70c5cbf0204df26a907ef954d6c87ebb2",
+      "size": 1213,
       "validation_issues": [],
       "was_due": false
     },
@@ -3321,11 +3318,11 @@
     "install_zyra_terminal.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-20T22:11:28Z",
-      "reviewed_at": "2026-09-05T03:34:13Z",
-      "sha256": "1023d8d18a3807e9c6e6f4110fd467f2e644df81c37d120e59f0cae7ca209870",
-      "size": 2395,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-05T16:14:57Z",
+      "reviewed_at": null,
+      "sha256": "4542b6ba86979c7414848bf0e21ec9ce61bc04e6901c16243f5251c2d6e36a24",
+      "size": 2608,
       "validation_issues": [],
       "was_due": false
     },
@@ -3706,24 +3703,24 @@
     "intel/white-house/daily/2026-09-04.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
       "reviewed_at": "2026-09-05T16:08:10Z",
       "sha256": "68df33e71b0a17c66a6a4f353f824d6f0cf95152caa6a698441d8f9b307d52c5",
       "size": 1156,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-04.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
       "reviewed_at": "2026-09-05T16:08:10Z",
       "sha256": "c2ed09439aa71d5e2c9a0fbf5a2e888518f201b58e69467c3d0870626d26bce2",
       "size": 909,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-05.json": {
       "actions": [],
@@ -3817,10 +3814,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T16:04:24Z",
+      "git_touched_at": "2026-09-05T16:07:22Z",
       "reviewed_at": null,
-      "sha256": "4396c88a42a276eeb0486e176794bda6409f10919ed7dbc93637520517422439",
-      "size": 158,
+      "sha256": "9e0b455d74d7d9663b34261ad673ac213a44ccd752cb70daa3a6cbaef077c6b5",
+      "size": 11198,
       "validation_issues": [],
       "was_due": false
     },
@@ -6380,9 +6377,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T07:16:45Z",
+      "git_touched_at": "2026-09-05T16:09:14Z",
       "reviewed_at": null,
-      "sha256": "c62c08f4dcb7869835e9f22857c09be620363be8ab470c58b7ac5bd7d3130da8",
+      "sha256": "81c6a11683e57e7610d22f91688b55522dfe147f60a275db3a12e3ecf42d12f7",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -6402,9 +6399,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-05T06:58:24Z",
+      "git_touched_at": "2026-09-05T16:09:14Z",
       "reviewed_at": null,
-      "sha256": "617dea3e8d0820cb6b30d2425179ddb183629a8a7d865ee81e77ec8d82bbc38b",
+      "sha256": "23fb493dbdf25ee5371dc2b48597d6de6a1f74c0a22ab07bf3bc942132bdb2c5",
       "size": 6084,
       "validation_issues": [],
       "was_due": false
@@ -8314,7 +8311,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-05T16:08:10Z",
+  "generated_at": "2026-09-05T16:16:27Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
