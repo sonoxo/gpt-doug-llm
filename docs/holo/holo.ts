@@ -14,12 +14,13 @@ const $ = <T extends HTMLElement>(id: string) => {
 };
 
 const canvas = $("simCanvas") as HTMLCanvasElement;
-const gl = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
+const context = canvas.getContext("webgl2", { antialias: true, alpha: false, powerPreference: "high-performance" });
 const runtimeStateEl = $("runtimeState");
-if (!gl) {
+if (!context) {
   runtimeStateEl.textContent = "WEBGL2 NOT AVAILABLE";
   throw new Error("HOLO requires a WebGL2-capable browser/GPU.");
 }
+const gl: WebGL2RenderingContext = context;
 
 const statusEl = $("simStatus");
 const timerEl = $("simTimer");
