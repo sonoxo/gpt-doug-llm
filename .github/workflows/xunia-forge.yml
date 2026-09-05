@@ -1,0 +1,22 @@
+name: XUNIA Forge validation
+on:
+  push:
+    paths: ['xunia-forge/**', '.github/workflows/xunia-forge.yml']
+  pull_request:
+    paths: ['xunia-forge/**', '.github/workflows/xunia-forge.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: opentofu/setup-opentofu@v1
+      - uses: astral-sh/setup-uv@v6
+      - run: cp xunia-forge/.env.example xunia-forge/.env
+      - run: docker compose -f xunia-forge/compose.yaml config -q
+      - run: python3 -m py_compile xunia-forge/control-plane/app/main.py
+      - run: tofu -chdir=xunia-forge/tofu fmt -check && tofu -chdir=xunia-forge/tofu init -backend=false && tofu -chdir=xunia-forge/tofu validate
+      - run: cd xunia-forge/control-plane && uv lock --check || uv lock

@@ -1,0 +1,46 @@
+name: xunia-forge
+services:
+  gateway:
+    image: ghcr.io/berriai/litellm:main-latest
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    env_file: .env
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+    ports:
+      - "127.0.0.1:4000:4000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4000/health/liveliness')"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+  search:
+    image: docker.io/searxng/searxng:latest
+    env_file: .env
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8088/
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+    ports:
+      - "127.0.0.1:8088:8080"
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+  control:
+    build: ./control-plane
+    environment:
+      LITELLM_URL: http://gateway:4000
+      SEARXNG_URL: http://search:8080
+    ports:
+      - "127.0.0.1:8787:8787"
+    depends_on:
+      - gateway
+      - search
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped

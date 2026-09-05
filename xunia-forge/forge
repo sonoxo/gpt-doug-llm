@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+cd "$ROOT"
+[ -f .env ] || cp .env.example .env
+case "${1:-up}" in
+  up) docker compose up -d --build; printf '\n✅ XUNIA Forge: http://127.0.0.1:8787\n' ;;
+  down) docker compose down ;;
+  status) docker compose ps; curl -fsS http://127.0.0.1:8787/api/health || true; printf '\n' ;;
+  logs) docker compose logs -f --tail=100 ;;
+  test) docker compose config -q; python3 -m py_compile control-plane/app/main.py; curl -fsS http://127.0.0.1:8787/api/health ;;
+  tofu) command -v tofu >/dev/null; tofu -chdir=tofu init; tofu -chdir=tofu apply -auto-approve -var="project_dir=$ROOT" ;;
+  *) echo "Usage: ./forge [up|down|status|logs|test|tofu]"; exit 2 ;;
+esac

@@ -1,0 +1,12 @@
+model_list:
+  - model_name: xunia-free
+    litellm_params:
+      model: openai/os.environ/LOCAL_MODEL_NAME
+      api_base: os.environ/LOCAL_LLM_BASE_URL
+      api_key: os.environ/LOCAL_LLM_API_KEY
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  disable_spend_logs: true
+litellm_settings:
+  drop_params: true
+  request_timeout: 120
