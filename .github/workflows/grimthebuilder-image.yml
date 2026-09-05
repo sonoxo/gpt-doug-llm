@@ -1,4 +1,4 @@
-name: GrimTheBuilder Container Publish
+name: GrimTheBuilder Integration Artifact Container Publish
 
 on:
   push:
@@ -43,13 +43,13 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Pull published image back from GHCR
+      - name: Pull published integration artifact image back from GHCR
         run: |
           docker image rm ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest || true
           docker pull ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest
           docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/${{ github.repository_owner }}/grimthebuilder:latest | tee /tmp/grim-image-digest.txt
 
-      - name: Boot published image and verify health
+      - name: Boot integration artifact image and verify health
         run: |
           docker run -d --name grimthebuilder-verify -p 8787:8787 \
             -e HOST=0.0.0.0 \
@@ -80,7 +80,7 @@ jobs:
           echo "VERIFIED_IMAGE=$(cat /tmp/grim-image-digest.txt)"
           echo "VERIFIED_HEALTH=$(cat /tmp/grim-health.json)"
 
-      - name: Prompt published GrimTheBuilder to build music generator
+      - name: Exercise published integration artifact with music-generator contract
         run: |
           CREATE=$(curl --fail --silent --show-error \
             -X POST http://127.0.0.1:8787/api/projects \
