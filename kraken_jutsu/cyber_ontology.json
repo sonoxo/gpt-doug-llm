@@ -1,0 +1,171 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "kraken-jutsu-cyber-ontology",
+  "name": "Kraken Jutsu Defensive Cyber Ontology",
+  "purpose": "Provenance-first defensive cybersecurity reasoning, evidence mapping, and bounded assessment orchestration for GPT-DOUG-LLM / XUNIA.",
+  "default_posture": "analyze_only",
+  "guardrails": {
+    "authorized_targets_only": true,
+    "network_egress": "deny_by_default",
+    "external_mutation": "human_approval_required",
+    "credential_collection": "prohibited",
+    "destructive_actions": "prohibited",
+    "persistence_actions": "prohibited",
+    "evidence_required_for_state_change": true
+  },
+  "object_types": [
+    "Asset",
+    "SecurityFinding",
+    "Vulnerability",
+    "AttackTechnique",
+    "Detection",
+    "MitigationControl",
+    "Evidence",
+    "KnowledgeSource",
+    "AssessmentCorpus"
+  ],
+  "relation_types": [
+    {"name": "AFFECTS", "from": "SecurityFinding", "to": "Asset"},
+    {"name": "EVIDENCED_BY", "from": "SecurityFinding", "to": "Evidence"},
+    {"name": "MAPS_TO", "from": "SecurityFinding", "to": "AttackTechnique"},
+    {"name": "IDENTIFIES", "from": "Detection", "to": "Vulnerability"},
+    {"name": "DETECTS_TECHNIQUE", "from": "Detection", "to": "AttackTechnique"},
+    {"name": "MITIGATED_BY", "from": "AttackTechnique", "to": "MitigationControl"},
+    {"name": "SOURCED_FROM", "from": "Evidence", "to": "KnowledgeSource"},
+    {"name": "SUPPORTED_BY", "from": "Detection", "to": "AssessmentCorpus"}
+  ],
+  "sources": [
+    {
+      "id": "mitre-attack",
+      "repo": "mitre-attack/attack-stix-data",
+      "kind": "canonical_graph",
+      "trust_tier": "authoritative",
+      "ingest_mode": "structured_data",
+      "execution": "none",
+      "role": "ATT&CK tactics, techniques, mitigations, software, groups, and relationships",
+      "provenance_required": true
+    },
+    {
+      "id": "cisa-kev",
+      "repo": "cisagov/kev-data",
+      "kind": "vulnerability_priority",
+      "trust_tier": "authoritative",
+      "ingest_mode": "structured_data",
+      "execution": "none",
+      "role": "Known Exploited Vulnerabilities prioritization",
+      "provenance_required": true
+    },
+    {
+      "id": "cisa-vulnrichment",
+      "repo": "cisagov/vulnrichment",
+      "kind": "vulnerability_enrichment",
+      "trust_tier": "authoritative",
+      "ingest_mode": "structured_data",
+      "execution": "none",
+      "role": "SSVC, CWE, CVSS, and vulnerability enrichment",
+      "provenance_required": true
+    },
+    {
+      "id": "nuclei-runtime",
+      "repo": "projectdiscovery/nuclei",
+      "kind": "detection_runtime",
+      "trust_tier": "community_verified",
+      "ingest_mode": "adapter_reference",
+      "execution": "authorized_only",
+      "role": "Template-driven defensive detection runtime",
+      "provenance_required": true,
+      "authorization_required": true
+    },
+    {
+      "id": "nuclei-templates",
+      "repo": "projectdiscovery/nuclei-templates",
+      "kind": "detection_corpus",
+      "trust_tier": "community_verified",
+      "ingest_mode": "metadata_first",
+      "execution": "authorized_only",
+      "role": "Detection-template metadata mapped to vulnerabilities and ATT&CK where supported",
+      "provenance_required": true,
+      "authorization_required": true
+    },
+    {
+      "id": "seclists",
+      "repo": "danielmiessler/SecLists",
+      "kind": "assessment_corpus",
+      "trust_tier": "community_reference",
+      "ingest_mode": "index_only",
+      "execution": "authorized_only",
+      "role": "Bounded discovery and validation corpus for authorized defensive assessment",
+      "provenance_required": true,
+      "authorization_required": true
+    },
+    {
+      "id": "secret-knowledge",
+      "repo": "trimstray/the-book-of-secret-knowledge",
+      "kind": "knowledge_reference",
+      "trust_tier": "community_reference",
+      "ingest_mode": "reference_only",
+      "execution": "none",
+      "role": "Curated security and operations reference; non-authoritative knowledge enrichment",
+      "provenance_required": true
+    },
+    {
+      "id": "nist-oscal",
+      "repo": "usnistgov/OSCAL",
+      "kind": "control_schema",
+      "trust_tier": "authoritative",
+      "ingest_mode": "structured_data",
+      "execution": "none",
+      "role": "Machine-readable control and assessment schema",
+      "provenance_required": true
+    },
+    {
+      "id": "nist-oscal-content",
+      "repo": "usnistgov/oscal-content",
+      "kind": "control_catalog",
+      "trust_tier": "authoritative",
+      "ingest_mode": "structured_data",
+      "execution": "none",
+      "role": "NIST control catalogs and baselines",
+      "provenance_required": true
+    }
+  ],
+  "mapping_rules": [
+    {
+      "id": "finding-to-attack",
+      "input": "SecurityFinding",
+      "relation": "MAPS_TO",
+      "output": "AttackTechnique",
+      "rule": "Map only when technique evidence is explicit or confidence is recorded. Do not infer attacker intent from a vulnerability alone."
+    },
+    {
+      "id": "finding-to-asset",
+      "input": "SecurityFinding",
+      "relation": "AFFECTS",
+      "output": "Asset",
+      "rule": "Require an asset identifier and observation evidence before creating the relationship."
+    },
+    {
+      "id": "detection-to-vulnerability",
+      "input": "Detection",
+      "relation": "IDENTIFIES",
+      "output": "Vulnerability",
+      "rule": "Prefer explicit CVE/CWE/CISA identifiers present in signed or provenance-tracked detection metadata."
+    },
+    {
+      "id": "technique-to-control",
+      "input": "AttackTechnique",
+      "relation": "MITIGATED_BY",
+      "output": "MitigationControl",
+      "rule": "Map ATT&CK mitigations to NIST/OSCAL controls as a traceable crosswalk; retain source and confidence."
+    }
+  ],
+  "decision_contract": {
+    "observe": "Collect public, local, or explicitly authorized evidence.",
+    "normalize": "Convert source records into typed ontology objects while preserving provenance.",
+    "correlate": "Join CVE/CWE/ATT&CK/control identifiers without fabricating missing relationships.",
+    "rank": "Prioritize by known exploitation, severity, asset criticality, exposure, and evidence confidence.",
+    "recommend": "Generate bounded defensive actions and validation plans.",
+    "execute": "Only invoke network-capable tools against explicit authorized targets and only through approval-gated adapters.",
+    "verify": "Record tool output, tests, and remediation evidence before marking a finding resolved."
+  }
+}
