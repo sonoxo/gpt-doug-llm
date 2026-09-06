@@ -1,0 +1,41 @@
+name: AI Layer Gate
+
+on:
+  pull_request:
+    paths:
+      - "config/ai-layer-manifest.json"
+      - "scripts/validate_ai_layers.py"
+      - "docs/ARCHITECTURE.md"
+      - "wakeup3lm/**"
+      - "agents/**"
+      - "watch-dog/**"
+      - "free-video-studio/**"
+      - "the-green-house/**"
+  push:
+    branches: [main]
+    paths:
+      - "config/ai-layer-manifest.json"
+      - "scripts/validate_ai_layers.py"
+      - "docs/ARCHITECTURE.md"
+      - "wakeup3lm/**"
+      - "agents/**"
+      - "watch-dog/**"
+      - "free-video-studio/**"
+      - "the-green-house/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-six-layer-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate AI layer manifest
+        run: python scripts/validate_ai_layers.py
