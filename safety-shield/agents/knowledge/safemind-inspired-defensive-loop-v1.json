@@ -1,0 +1,120 @@
+{
+  "profile": "safemind-inspired-defensive-loop-v1",
+  "version": "1.0.0",
+  "updated": "2026-09-06",
+  "purpose": "Translate public SafeMind architecture concepts into a vendor-independent, defense-only Black House agent pattern.",
+  "sourceRecord": "intel/sources/crowdstrike-safemind-2026-09-06.json",
+  "brief": "intel/briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md",
+  "patternType": "PAIRED_AGENT_CLOSED_LOOP_DEFENSE",
+  "vendorRelationship": {
+    "crowdstrikeIntegration": false,
+    "falconAccess": false,
+    "projectQuiltWorksAccess": false,
+    "vendorCodeIncluded": false,
+    "vendorWeightsIncluded": false,
+    "affiliationImplied": false
+  },
+  "roles": [
+    {
+      "id": "ADVERSARY_SIMULATOR",
+      "mission": "Find plausible attack-path hypotheses in owned, explicitly authorized, isolated or synthetic environments and convert them into defensive evidence.",
+      "authority": "NO_AMBIENT_AUTHORITY",
+      "allowed": [
+        "attack-surface modeling",
+        "threat modeling",
+        "authorized lab validation",
+        "CTF and training-range simulation",
+        "control-gap hypothesis generation",
+        "detection-evasion hypothesis at a non-deployable or bounded lab level",
+        "evidence collection for defensive remediation"
+      ],
+      "blocked": [
+        "unauthorized access",
+        "credential theft",
+        "persistence on third-party systems",
+        "malware deployment",
+        "destructive actions",
+        "live-target stealth or evasion intended to facilitate compromise",
+        "unbounded autonomous exploitation"
+      ]
+    },
+    {
+      "id": "DEFENSE_CLOSER",
+      "mission": "Turn validated attack-path evidence into detections, hardening changes, remediation plans and verification tests.",
+      "authority": "LEAST_PRIVILEGE_POLICY_GATED",
+      "allowed": [
+        "detection engineering",
+        "configuration hardening",
+        "patch and mitigation recommendations",
+        "identity and access-control tightening",
+        "segmentation recommendations",
+        "safe automated remediation within pre-approved bounds",
+        "post-remediation verification",
+        "rollback when verification fails"
+      ]
+    }
+  ],
+  "harness": {
+    "controller": "RVIA",
+    "policyPlane": "SHADOW_GLASS",
+    "authorizationPlane": "ZYRA",
+    "statePlane": "BLACK_HOUSE_ONTOLOGY",
+    "evidencePlane": "MISSION_HISTORY_LEDGER",
+    "telemetryPlane": "BLACK_HOUSE_TELEMETRY",
+    "humanGate": "REQUIRED_FOR_HIGH_IMPACT_OR_UNCERTAIN_MUTATION",
+    "modelInterface": "ROLE_BASED_MODEL_AGNOSTIC"
+  },
+  "loop": [
+    "verify-identity-target-ownership-and-environment",
+    "capture-authorized-telemetry-snapshot",
+    "model-attack-surface",
+    "generate-bounded-attack-path-hypotheses",
+    "collect-evidence",
+    "score-confidence-and-impact",
+    "design-detection-and-remediation",
+    "policy-and-authorization-check",
+    "stage-or-execute-bounded-defense",
+    "verify-remediation",
+    "run-regression-and-negative-security-evals",
+    "record-evidence-and-action-receipts",
+    "rollback-on-failure",
+    "repeat-only-within-mission-budget"
+  ],
+  "stopConditions": [
+    "target ownership or authorization is unknown",
+    "environment cannot be distinguished from a real third-party target",
+    "requested action exceeds mission-approved capabilities",
+    "live credentials or secrets appear outside an approved secrets boundary",
+    "proposed action is destructive or irreversible without explicit approval",
+    "evidence confidence is insufficient for consequential remediation",
+    "rollback path is unavailable for a high-impact mutation"
+  ],
+  "requiredEvidence": [
+    "mission_id",
+    "target_scope",
+    "authorization_state",
+    "telemetry_or_test_fixture_lineage",
+    "attack_path_hypothesis",
+    "supporting_evidence",
+    "proposed_defensive_action",
+    "policy_decision",
+    "execution_receipt",
+    "before_state",
+    "after_state",
+    "verification_result",
+    "eval_result",
+    "rollback_result_if_used"
+  ],
+  "evals": [
+    "authorization-gate-pass",
+    "no-third-party-target-pass",
+    "least-privilege-pass",
+    "evidence-grounding-pass",
+    "defensive-value-pass",
+    "remediation-verification-pass",
+    "negative-security-regression-pass",
+    "rollback-pass",
+    "audit-completeness-pass"
+  ],
+  "knowledgeRule": "Public SafeMind material supplies an architectural reference only. Black House implements its own bounded roles, policies, evidence model and runtime controls and does not claim reproduction of CrowdStrike models, data, benchmarks or Falcon capabilities."
+}
