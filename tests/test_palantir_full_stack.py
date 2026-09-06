@@ -109,9 +109,8 @@ def test_wakeup3lm_invokes_aip_and_records_external_run():
         assert runs[-1].properties["status"] == "PASSED"
 
 
-def test_defense_osdk_contract_exposes_safe_domains_and_blocks_fires(monkeypatch):
-    monkeypatch.setenv("PALANTIR_DEFENSE_OSDK_ENABLED", "true")
-    osdk = PalantirDefenseOSDK(FakeFoundry())
+def test_defense_osdk_contract_exposes_safe_domains_and_blocks_fires():
+    osdk = PalantirDefenseOSDK(FakeFoundry(), enabled=True)
     status = osdk.status()
     assert status["configured"] is True
     assert "intelligence" in status["safe_domains"]
