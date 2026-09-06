@@ -1,0 +1,41 @@
+name: Black House Resilience Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'safety-shield/policies/infrastructure-resilience.json'
+      - 'scripts/validate_infrastructure_resilience.py'
+      - '.github/workflows/black-house-resilience-gate.yml'
+  pull_request:
+    paths:
+      - 'safety-shield/policies/infrastructure-resilience.json'
+      - 'scripts/validate_infrastructure_resilience.py'
+      - '.github/workflows/black-house-resilience-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: black-house-resilience-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-resilience-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate infrastructure resilience contract
+        run: python3 scripts/validate_infrastructure_resilience.py
+
+      - name: Compile validator
+        run: python3 -m py_compile scripts/validate_infrastructure_resilience.py
