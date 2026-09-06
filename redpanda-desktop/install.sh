@@ -65,12 +65,14 @@ USB="$(choose_usb)"
 NODE="$USB/GPT-REDPANDA"
 STATE="$USB/.redpanda"
 HOST_SHARE="$HOME/.local/share/gpt-redpanda"
+HOST_STATE="$HOME/.local/state/gpt-redpanda"
 HOST_BIN="$HOME/.local/bin"
 LAUNCH_DIR="$HOME/Library/LaunchAgents"
 PLIST="$LAUNCH_DIR/com.sonoxo.gpt-redpanda.plist"
+LABEL="com.sonoxo.gpt-redpanda"
 
 say "🐼 Installing GPT-REDPANDA to: $USB"
-mkdir -p "$NODE" "$STATE/logs" "$STATE/memory" "$STATE/events" "$HOST_SHARE" "$HOST_BIN" "$LAUNCH_DIR"
+mkdir -p "$NODE" "$STATE/logs" "$STATE/memory" "$STATE/events" "$HOST_SHARE" "$HOST_STATE" "$HOST_BIN" "$LAUNCH_DIR"
 printf 'GPT-REDPANDA USB NODE\n' > "$USB/$MARKER"
 
 fetch() {
@@ -113,14 +115,20 @@ if [[ ! -f "$STATE/cyber-cpr-config.json" ]]; then
 fi
 
 SERVICE_PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+HOST_OUT="$HOST_STATE/launchd.log"
+HOST_ERR="$HOST_STATE/launchd.err.log"
+: > "$HOST_OUT"
+: > "$HOST_ERR"
+
 cat > "$PLIST" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>Label</key><string>com.sonoxo.gpt-redpanda</string>
+  <key>Label</key><string>${LABEL}</string>
   <key>ProgramArguments</key>
   <array>
+    <string>/bin/bash</string>
     <string>$HOST_BIN/redpanda-node</string>
     <string>run</string>
   </array>
@@ -135,8 +143,8 @@ cat > "$PLIST" <<EOF
   <key>KeepAlive</key>
   <dict><key>SuccessfulExit</key><false/></dict>
   <key>ThrottleInterval</key><integer>10</integer>
-  <key>StandardOutPath</key><string>$STATE/logs/launchd.log</string>
-  <key>StandardErrorPath</key><string>$STATE/logs/launchd.err.log</string>
+  <key>StandardOutPath</key><string>$HOST_OUT</string>
+  <key>StandardErrorPath</key><string>$HOST_ERR</string>
 </dict>
 </plist>
 EOF
@@ -144,16 +152,31 @@ EOF
 plutil -lint "$PLIST" >/dev/null
 launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
-launchctl enable "gui/$(id -u)/com.sonoxo.gpt-redpanda"
+launchctl enable "gui/$(id -u)/${LABEL}" >/dev/null 2>&1 || true
+launchctl kickstart -k "gui/$(id -u)/${LABEL}" >/dev/null 2>&1 || true
 
 # Ensure ~/.local/bin is available in future shells without touching broken ~/.zshrc.
 PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
 grep -qxF "$PATH_LINE" "$HOME/.zshenv" || printf '%s\n' "$PATH_LINE" >> "$HOME/.zshenv"
 export PATH="$HOME/.local/bin:$PATH"
 
-sleep 2
+sleep 3
 say ""
-say "✅ GPT-REDPANDA installed"
+if lsof -nP -iTCP:8765 -sTCP:LISTEN >/dev/null 2>&1; then
+  say "✅ GPT-REDPANDA installed and portal is LIVE"
+else
+  say "⚠️ GPT-REDPANDA installed, but the portal is not listening yet."
+  say "   LaunchAgent diagnostics:"
+  launchctl print "gui/$(id -u)/${LABEL}" 2>/dev/null | grep -E 'state =|pid =|last exit code|job state' || true
+  if [[ -s "$HOST_ERR" ]]; then
+    say "   --- launchd stderr ---"
+    tail -n 20 "$HOST_ERR" || true
+  fi
+  if [[ -s "$HOST_OUT" ]]; then
+    say "   --- launchd stdout ---"
+    tail -n 20 "$HOST_OUT" || true
+  fi
+fi
 say "💾 Node: $NODE"
 say "🧬 State: $STATE"
 say "🚑 Cyber CPR: $(command -v cyber-cpr || echo 'install cyber-cpr separately')"
@@ -163,5 +186,6 @@ say "📱 Mobile/LAN: redpanda-node mobile"
 say "↩️ Restore desktop background mode: redpanda-node desktop"
 say "🔎 Status: redpanda-node status"
 say "🚑 Manual CPR: redpanda-node cpr"
+say "🧾 Service logs: $HOST_STATE"
 say ""
 say "Open the portal with: redpanda-node open"
