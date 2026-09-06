@@ -1,0 +1,60 @@
+{
+  "id": "source:crowdstrike-safemind-2026-09-06",
+  "version": "1.0.0",
+  "registeredAt": "2026-09-06",
+  "appliesTo": [
+    "THE_BLACK_HOUSE",
+    "GPT-DOUG-LLM",
+    "RVIA",
+    "ZYRA",
+    "XUNIA"
+  ],
+  "topic": "purpose-built agentic cybersecurity with paired adversary-simulation and defensive-remediation models",
+  "sources": [
+    {
+      "name": "Cyber Security News — CrowdStrike Launches SafeMind",
+      "url": "https://cybersecuritynews.com/crowdstrike-launches-safemind/",
+      "sourceClass": "SECONDARY_REPORTING",
+      "published": "2026-09-06"
+    },
+    {
+      "name": "CrowdStrike — Launches Frontier Models for Cybersecurity, Created with NVIDIA",
+      "url": "https://www.crowdstrike.com/en-us/press-releases/crowdstrike-launches-frontier-models-for-cybersecurity-with-nvidia/",
+      "sourceClass": "FIRST_PARTY_VENDOR_ANNOUNCEMENT",
+      "published": "2026-09-01"
+    },
+    {
+      "name": "CrowdStrike Cyber Superintelligence Lab",
+      "url": "https://www.crowdstrike.com/en-us/about-us/cyber-superintelligence-lab/",
+      "sourceClass": "FIRST_PARTY_VENDOR_DOCUMENTATION"
+    }
+  ],
+  "verifiedArchitectureClaims": [
+    "SafeMind is described by CrowdStrike as a family of purpose-built security models and agentic harnesses.",
+    "CrowdStrike describes an offensive model that finds attack paths and a defensive model that closes them inside one closed-loop harness.",
+    "CrowdStrike names the offensive model Red Tempest and the defensive model Blue Solano.",
+    "CrowdStrike states the harness can also operate with frontier and open-source models.",
+    "CrowdStrike states the system is intended to operate natively in Falcon, with trusted standalone access planned through Project QuiltWorks.",
+    "CrowdStrike states NVIDIA Nemotron open models are used in the program."
+  ],
+  "vendorReportedEvaluationClaims": {
+    "independentlyVerified": false,
+    "claims": [
+      "29% higher detection rate versus CrowdStrike-selected frontier/open-source baselines",
+      "6x faster end-to-end remediation",
+      "99% cost savings on detection and remediation"
+    ],
+    "handlingRule": "Preserve as CrowdStrike-reported evaluation results; do not restate as independently verified Black House benchmarks."
+  },
+  "blackHouseDisposition": "KEEP",
+  "confidence": "VERY_HIGH_FOR_VENDOR_DESCRIBED_ARCHITECTURE",
+  "integrationMode": "REFERENCE_PATTERN_ONLY",
+  "operationalBoundaries": [
+    "No CrowdStrike model weights, Falcon telemetry, customer data, proprietary harness code, credentials, tenant access or licensed service access are included.",
+    "No partnership, endorsement, affiliation, customer status or Project QuiltWorks access is implied.",
+    "Black House adversary-simulation behavior remains restricted to owned, explicitly authorized, isolated or synthetic environments.",
+    "Consequential remediation remains least-privilege, policy-gated, auditable and human-approved where required."
+  ],
+  "mappedKnowledgeModule": "safety-shield/agents/knowledge/safemind-inspired-defensive-loop-v1.json",
+  "brief": "intel/briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md"
+}
