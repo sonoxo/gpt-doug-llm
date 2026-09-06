@@ -1,79 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
-<title id="title">GPT-DOUG-LLM MAX XUNIA Black House ecosystem infographic</title>
-<desc id="desc">Main repository infographic showing Neptune Shield public vendor intelligence flowing through Glass Onion provenance, The Black House governance, XUNIA orchestration, GPT-DOUG-LLM MAX reasoning, and defensive Kraken Jutsu analysis.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="940" viewBox="0 0 1200 940" role="img" aria-labelledby="title desc">
+<title id="title">GPT-DOUG-LLM MAX six layers of AI</title>
+<desc id="desc">GitHub intro infographic showing all six canonical AI layers in GPT-DOUG-LLM MAX: Classical AI, Machine Learning, Neural Networks, Deep Learning, Generative AI, and Agentic AI, with representative capabilities and CI enforcement references.</desc>
 <defs>
-  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030713"/><stop offset=".48" stop-color="#0b1028"/><stop offset="1" stop-color="#12052a"/></linearGradient>
-  <linearGradient id="beam"><stop stop-color="#2df6ff"/><stop offset=".5" stop-color="#a855f7"/><stop offset="1" stop-color="#ff3fd1"/></linearGradient>
-  <linearGradient id="card" x2="1" y2="1"><stop stop-color="#0c1d35" stop-opacity=".96"/><stop offset="1" stop-color="#180d31" stop-opacity=".96"/></linearGradient>
-  <radialGradient id="core"><stop stop-color="#eafcff"/><stop offset=".15" stop-color="#4de8ff"/><stop offset=".48" stop-color="#7c3cff"/><stop offset="1" stop-color="#071023" stop-opacity="0"/></radialGradient>
-  <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="#58dfff" stroke-opacity=".08"/></pattern>
-  <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#50e7ff"/></marker>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030713"/><stop offset=".5" stop-color="#0a1026"/><stop offset="1" stop-color="#16072b"/></linearGradient>
+  <linearGradient id="agent" x2="1"><stop stop-color="#5b52ff"/><stop offset="1" stop-color="#9d5cff"/></linearGradient>
+  <linearGradient id="gen" x2="1"><stop stop-color="#9a4cff"/><stop offset="1" stop-color="#e253d4"/></linearGradient>
+  <linearGradient id="deep" x2="1"><stop stop-color="#e05b9d"/><stop offset="1" stop-color="#ff8d6d"/></linearGradient>
+  <linearGradient id="nn" x2="1"><stop stop-color="#8bc65b"/><stop offset="1" stop-color="#b7da67"/></linearGradient>
+  <linearGradient id="ml" x2="1"><stop stop-color="#22c7bd"/><stop offset="1" stop-color="#58d9d0"/></linearGradient>
+  <linearGradient id="classic" x2="1"><stop stop-color="#4779d9"/><stop offset="1" stop-color="#7899ed"/></linearGradient>
+  <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#63d7ff" stroke-opacity=".055"/></pattern>
+  <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".35"/></filter>
+  <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
 <style>
-  .beam{stroke-dasharray:14 12;animation:flow 2.2s linear infinite}.pulse{animation:pulse 2.8s ease-in-out infinite}@keyframes flow{to{stroke-dashoffset:-52}}@keyframes pulse{50%{opacity:.7}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
-  .h1{font:800 32px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#f4f8ff;letter-spacing:3px}.h2{font:600 15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#8ceeff;letter-spacing:1.3px}
-  .title{font:800 16px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#eef6ff}.sub{font:500 12px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#aab8c8}.mono{font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#91a4c4}.tiny{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#7386a8;letter-spacing:1px}
+  .h1{font:900 38px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#f7fbff;letter-spacing:2px}
+  .h2{font:700 15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#91eaff;letter-spacing:1.6px}
+  .layer{font:900 24px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#fff}
+  .chip{font:700 13px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#0a1020}
+  .repo{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#e9f7ff}
+  .tiny{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#8ea6bf;letter-spacing:.8px}
+  .ok{font:900 13px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#6dffb1;letter-spacing:1px}
 </style>
-<rect width="1200" height="760" rx="30" fill="url(#bg)"/><rect width="1200" height="760" rx="30" fill="url(#grid)"/>
-<text x="600" y="58" class="h1" text-anchor="middle">THE BLACK HOUSE // GPT-DOUG-LLM MAX</text>
-<text x="600" y="88" class="h2" text-anchor="middle">XUNIA • GLASS ONION • PUBLIC ECOSYSTEM INTELLIGENCE • DEFENSIVE ORCHESTRATION</text>
+<rect width="1200" height="940" rx="32" fill="url(#bg)"/>
+<rect width="1200" height="940" rx="32" fill="url(#grid)"/>
 
-<!-- public ecosystem intelligence -->
-<g transform="translate(35 125)">
-  <rect width="330" height="500" rx="24" fill="url(#card)" stroke="#2df6ff" stroke-width="1.5"/>
-  <text x="24" y="38" class="title">NEPTUNE SHIELD // PUBLIC SOURCE</text>
-  <text x="24" y="62" class="sub">Vendor capability graph • source-asserted OSINT</text>
-  <text x="24" y="84" class="mono">CAGE 07L84 • UEI STXJUM7D6FK1</text>
-  <g transform="translate(20 110)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#38e8ff"/><text x="14" y="17" class="title">SecureXperts</text><text x="14" y="33" class="tiny">BIO_CRYPTO • ZERO TRUST • POST-QUANTUM</text>
-  </g>
-  <g transform="translate(20 162)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#55d6ff"/><text x="14" y="17" class="title">Sparkline Cyber</text><text x="14" y="33" class="tiny">CYBER_ENG • RESILIENCE • HARDENING</text>
-  </g>
-  <g transform="translate(20 214)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#9c6cff"/><text x="14" y="17" class="title">Octaris Technologies</text><text x="14" y="33" class="tiny">INTEL_AI • ANALYTICS • MODEL DEVELOPMENT</text>
-  </g>
-  <g transform="translate(20 266)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#bd62ff"/><text x="14" y="17" class="title">Local Sphere</text><text x="14" y="33" class="tiny">IDENTITY_INTEL • B2G • SIGNALS</text>
-  </g>
-  <g transform="translate(20 318)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#e65cff"/><text x="14" y="17" class="title">The Honor Foundation</text><text x="14" y="33" class="tiny">SOF_TRANSITION • LEADERSHIP</text>
-  </g>
-  <g transform="translate(20 370)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#ff8b55"/><text x="14" y="17" class="title">Radian Forge</text><text x="14" y="33" class="tiny">ADV_MFG • WAAM • DIGITAL TRACEABILITY</text>
-  </g>
-  <g transform="translate(20 422)">
-    <rect width="290" height="42" rx="10" fill="#091827" stroke="#ffd166"/><text x="14" y="17" class="title">Community First Project</text><text x="14" y="33" class="tiny">WORKFORCE • VETERANS • REGIONAL RESILIENCE</text>
-  </g>
+<text x="600" y="58" class="h1" text-anchor="middle">GPT-DOUG-LLM MAX // 6 LAYERS OF AI</text>
+<text x="600" y="88" class="h2" text-anchor="middle">CLASSICAL → MACHINE LEARNING → NEURAL NETWORKS → DEEP LEARNING → GENERATIVE → AGENTIC</text>
+<text x="600" y="115" class="ok" text-anchor="middle">● 6/6 ARCHITECTURE LAYERS DECLARED + CI ENFORCED</text>
+
+<!-- AGENTIC AI -->
+<g transform="translate(110 145)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#agent)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">AGENTIC AI</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Memory / State</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Planning</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Tool Use</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Autonomous Execution</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#eef1ff"/><text x="85" y="24" class="chip" text-anchor="middle">Verify + Repair</text></g>
 </g>
 
-<!-- center governed intelligence stack -->
-<path class="beam" d="M365 375 C405 375 410 375 445 375" fill="none" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
-<g transform="translate(445 125)">
-  <rect width="325" height="500" rx="24" fill="url(#card)" stroke="#a855f7" stroke-width="1.5"/>
-  <text x="162" y="40" class="title" text-anchor="middle">GOVERNED INTELLIGENCE STACK</text>
-  <g transform="translate(30 78)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#8d62ff" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">GLASS ONION</text><text x="132" y="51" class="sub" text-anchor="middle">provenance • lineage • evidence state</text></g>
-  <path class="beam" d="M162 150 L162 180" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
-  <g transform="translate(30 185)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#111111" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">THE BLACK HOUSE</text><text x="132" y="51" class="sub" text-anchor="middle">trust • policy • briefing • human authority</text></g>
-  <path class="beam" d="M162 257 L162 287" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
-  <g transform="translate(30 292)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#2df6ff" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">XUNIA</text><text x="132" y="51" class="sub" text-anchor="middle">ontology + ecosystem orchestration</text></g>
-  <path class="beam" d="M162 364 L162 394" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
-  <g transform="translate(30 399)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#ff3fd1" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">GPT-DOUG-LLM MAX</text><text x="132" y="51" class="sub" text-anchor="middle">reason • query • brief • verify</text></g>
+<!-- GENERATIVE AI -->
+<g transform="translate(110 267)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#gen)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">GENERATIVE AI</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">LLMs</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Diffusion Models</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Multimodal Models</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Code / Media Gen</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#fff0fb"/><text x="85" y="24" class="chip" text-anchor="middle">VAEs</text></g>
 </g>
 
-<!-- defensive adaptive orchestration -->
-<path class="beam" d="M770 375 C810 375 815 375 850 375" fill="none" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
-<g transform="translate(850 125)">
-  <rect width="315" height="500" rx="24" fill="url(#card)" stroke="#ff3fd1" stroke-width="1.5"/>
-  <circle class="pulse" cx="157" cy="110" r="70" fill="url(#core)" filter="url(#glow)"/><circle cx="157" cy="110" r="28" fill="#f7ffff"/><text x="157" y="116" fill="#100b29" font-family="ui-monospace,monospace" font-size="15" font-weight="900" text-anchor="middle">KRAKEN</text>
-  <text x="157" y="200" class="title" text-anchor="middle">KRAKEN JUTSU</text>
-  <text x="157" y="224" class="sub" text-anchor="middle">DEFENSIVE_ADAPTIVE_ORCHESTRATION</text>
-  <g transform="translate(25 258)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#2df6ff"/><text x="16" y="27" class="mono">ENTITY RESOLUTION</text></g>
-  <g transform="translate(25 312)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#8d62ff"/><text x="16" y="27" class="mono">CAPABILITY MAPPING</text></g>
-  <g transform="translate(25 366)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#ff3fd1"/><text x="16" y="27" class="mono">DEFENSIVE ARCHITECTURE MATCH</text></g>
-  <g transform="translate(25 420)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#ffd166"/><text x="16" y="27" class="mono">PROCUREMENT FIT + EVIDENCE GAPS</text></g>
+<!-- DEEP LEARNING -->
+<g transform="translate(110 389)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#deep)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">DEEP LEARNING</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">Transformers</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">LSTMs</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">RNNs</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">CNNs</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#fff1ec"/><text x="85" y="24" class="chip" text-anchor="middle">Autoencoders</text></g>
 </g>
 
-<g transform="translate(35 650)"><rect width="1130" height="72" rx="18" fill="#0a111c" stroke="#263746"/><text x="565" y="27" class="mono" text-anchor="middle">PUBLIC SOURCE → PROVENANCE → GOVERNANCE → XUNIA → GPT-DOUG-LLM MAX → DEFENSIVE ANALYSIS</text><text x="565" y="50" class="tiny" text-anchor="middle">SOURCE ASSERTIONS DO NOT IMPLY AFFILIATION, ENDORSEMENT, CONTRACT, CLEARANCE, CREDENTIALS, OR THIRD-PARTY ACCESS</text></g>
+<!-- NEURAL NETWORKS -->
+<g transform="translate(110 511)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#nn)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">NEURAL NETWORKS</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Perceptrons</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Cost Functions</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Backpropagation</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Activation Functions</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#f5ffe8"/><text x="85" y="24" class="chip" text-anchor="middle">Hidden Layers</text></g>
+</g>
+
+<!-- MACHINE LEARNING -->
+<g transform="translate(110 633)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#ml)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">MACHINE LEARNING</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Supervised Learning</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Unsupervised Learning</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Classification</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Reinforcement Learning</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#ebfffd"/><text x="85" y="24" class="chip" text-anchor="middle">Regression</text></g>
+</g>
+
+<!-- CLASSICAL AI -->
+<g transform="translate(110 755)" filter="url(#shadow)">
+  <rect width="980" height="112" rx="30" fill="url(#classic)"/>
+  <text x="490" y="36" class="layer" text-anchor="middle">CLASSICAL AI</text>
+  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Symbolic AI</text></g>
+  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Expert Systems</text></g>
+  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Search + Planning</text></g>
+  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Knowledge Representation</text></g>
+  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#eef5ff"/><text x="85" y="24" class="chip" text-anchor="middle">Logic + Reasoning</text></g>
+</g>
+
+<text x="600" y="902" class="repo" text-anchor="middle">XUNIA • ZYRA • WAKEUP3LM • ONTOLOGY • GPT-DOUG-LLM MAX</text>
+<text x="600" y="925" class="tiny" text-anchor="middle">SOURCE OF TRUTH: config/ai-layer-manifest.json  •  GATE: .github/workflows/ai-layer-gate.yml</text>
 </svg>
