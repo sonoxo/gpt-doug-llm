@@ -5,7 +5,15 @@ import os
 from dataclasses import asdict, dataclass
 from enum import Enum
 from hashlib import sha256
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
+
+
+def _validated_http_url(url: str) -> str:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        raise ValueError("URL must use HTTP(S) and include a hostname")
+    return url
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,8 +53,11 @@ class GovernmentSourceRegistry:
         source = self.sources[source_id]
         if not source.data_url:
             raise ValueError(f"{source_id} has no direct JSON data URL")
-        req = Request(source.data_url, headers={"User-Agent": "krakenXYZ-Kraken-Jutsu/0.2"})
-        with urlopen(req, timeout=timeout) as response:
+        req = Request(
+            _validated_http_url(source.data_url),
+            headers={"User-Agent": "krakenXYZ-Kraken-Jutsu/0.2"},
+        )
+        with urlopen(req, timeout=timeout):  # nosec B310 -- URL scheme and host validated above.
             return json.load(response)
 
     @staticmethod
@@ -81,8 +92,13 @@ class OSINTIndustriesAdapter:
         if not 25 <= timeout <= 80:
             raise ValueError("timeout must be between 25 and 80 seconds")
         body = json.dumps({"type": query_type, "query": query, "timeout": timeout, "exact_match": exact_match, "premium": premium}).encode("utf-8")
-        req = Request(self.endpoint, data=body, method="POST", headers={"api-key": self.api_key, "content-type": "application/json", "user-agent": "krakenXYZ-Kraken-Jutsu/0.2"})
-        with urlopen(req, timeout=timeout + 5) as response:
+        req = Request(
+            _validated_http_url(self.endpoint),
+            data=body,
+            method="POST",
+            headers={"api-key": self.api_key, "content-type": "application/json", "user-agent": "krakenXYZ-Kraken-Jutsu/0.2"},
+        )
+        with urlopen(req, timeout=timeout + 5) as response:  # nosec B310 -- URL scheme and host validated above.
             payload = json.load(response)
         return {"provider": "osint-industries", "query_type": query_type, "query_fingerprint": self.query_fingerprint(query), "policy": policy.value, "premium": premium, "raw": payload}
 
