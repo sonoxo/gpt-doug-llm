@@ -1,9 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
-<title id="title">GPT-DOUG // ZYRA CORE ecosystem interface</title><desc id="desc">Bounded local agentic engineering. Flow: COMMAND to POLICY to AGENT CORE to LOCAL MODEL to VERIFY.</desc>
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030713"/><stop offset=".48" stop-color="#0b1028"/><stop offset="1" stop-color="#12052a"/></linearGradient><linearGradient id="beam"><stop stop-color="#2df6ff"/><stop offset=".5" stop-color="#a855f7"/><stop offset="1" stop-color="#ff3fd1"/></linearGradient><linearGradient id="card" x2="1" y2="1"><stop stop-color="#0c1d35" stop-opacity=".96"/><stop offset="1" stop-color="#180d31" stop-opacity=".96"/></linearGradient><radialGradient id="core"><stop stop-color="#eafcff"/><stop offset=".15" stop-color="#4de8ff"/><stop offset=".48" stop-color="#7c3cff"/><stop offset="1" stop-color="#071023" stop-opacity="0"/></radialGradient><pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="#58dfff" stroke-opacity=".09"/></pattern><filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-<style>.ring{transform-origin:600px 268px;animation:spin 12s linear infinite}.ring2{transform-origin:600px 268px;animation:spin 8s linear reverse infinite}.beam{stroke-dasharray:14 12;animation:flow 2.2s linear infinite}.core{animation:pulse 2.8s ease-in-out infinite}.node{animation:float 4s ease-in-out infinite}.n1,.n3{animation-delay:-1.2s}.n2{animation-delay:-2s}@keyframes spin{to{transform:rotate(360deg)}}@keyframes flow{to{stroke-dashoffset:-52}}@keyframes pulse{50%{opacity:.72;transform:scale(.94)}}@keyframes float{50%{transform:translateY(-7px)}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}</style>
-<rect width="1200" height="560" rx="30" fill="url(#bg)"/><rect width="1200" height="560" rx="30" fill="url(#grid)"/><path d="M0 470 Q300 390 600 470 T1200 470 V560H0Z" fill="#531fb6" opacity=".08"/>
-<text x="600" y="78" fill="#f4f8ff" font-family="Inter,Arial,sans-serif" font-size="34" font-weight="800" text-anchor="middle" letter-spacing="4">GPT-DOUG // ZYRA CORE</text><text x="600" y="112" fill="#8ceeff" font-family="Inter,Arial,sans-serif" font-size="17" text-anchor="middle" letter-spacing="2">Bounded local agentic engineering</text>
-<g opacity=".8"><circle class="ring" cx="600" cy="268" r="108" fill="none" stroke="#55eaff" stroke-width="2" stroke-dasharray="4 16"/><circle class="ring2" cx="600" cy="268" r="83" fill="none" stroke="#c554ff" stroke-width="3" stroke-dasharray="38 9"/></g><circle class="core" cx="600" cy="268" r="67" fill="url(#core)" filter="url(#glow)"/><circle cx="600" cy="268" r="22" fill="#f7ffff"/><text x="600" y="274" fill="#100b29" font-family="ui-monospace,monospace" font-size="15" font-weight="900" text-anchor="middle">CORE</text>
-<path class="beam b0" d="M 190 386 C 250 300, 200 300, 260 386" fill="none" stroke="url(#beam)" stroke-width="3" stroke-linecap="round"/><path class="beam b1" d="M 430 378 C 490 300, 455 300, 515 342" fill="none" stroke="url(#beam)" stroke-width="3" stroke-linecap="round"/><path class="beam b2" d="M 685 386 C 745 300, 710 300, 770 386" fill="none" stroke="url(#beam)" stroke-width="3" stroke-linecap="round"/><path class="beam b3" d="M 940 386 C 1000 300, 950 300, 1010 386" fill="none" stroke="url(#beam)" stroke-width="3" stroke-linecap="round"/><g class="node n0"><rect x="20" y="350" width="170" height="72" rx="18" fill="url(#card)" stroke="#8854ff" stroke-width="1"/><circle cx="50" cy="386" r="7" fill="#5ee7ff" filter="url(#glow)"/><text x="112" y="391" fill="#eef6ff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle">COMMAND</text></g><g class="node n1"><rect x="260" y="350" width="170" height="72" rx="18" fill="url(#card)" stroke="#8854ff" stroke-width="1"/><circle cx="290" cy="386" r="7" fill="#5ee7ff" filter="url(#glow)"/><text x="352" y="391" fill="#eef6ff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle">POLICY</text></g><g class="node n2"><rect x="515" y="320" width="170" height="72" rx="18" fill="url(#card)" stroke="#5ee7ff" stroke-width="2"/><circle cx="545" cy="356" r="7" fill="#f7fbff" filter="url(#glow)"/><text x="607" y="361" fill="#eef6ff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle">AGENT CORE</text></g><g class="node n3"><rect x="770" y="350" width="170" height="72" rx="18" fill="url(#card)" stroke="#8854ff" stroke-width="1"/><circle cx="800" cy="386" r="7" fill="#5ee7ff" filter="url(#glow)"/><text x="862" y="391" fill="#eef6ff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle">LOCAL MODEL</text></g><g class="node n4"><rect x="1010" y="350" width="170" height="72" rx="18" fill="url(#card)" stroke="#8854ff" stroke-width="1"/><circle cx="1040" cy="386" r="7" fill="#5ee7ff" filter="url(#glow)"/><text x="1102" y="391" fill="#eef6ff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle">VERIFY</text></g>
-<text x="600" y="510" fill="#7386a8" font-family="ui-monospace,monospace" font-size="12" text-anchor="middle" letter-spacing="3">SONOXO ECOSYSTEM VIEW  •  HUMAN CONTROL  •  VISIBLE STATE  •  VERIFIED OUTPUT</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+<title id="title">GPT-DOUG-LLM MAX XUNIA Black House ecosystem infographic</title>
+<desc id="desc">Main repository infographic showing Neptune Shield public vendor intelligence flowing through Glass Onion provenance, The Black House governance, XUNIA orchestration, GPT-DOUG-LLM MAX reasoning, and defensive Kraken Jutsu analysis.</desc>
+<defs>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030713"/><stop offset=".48" stop-color="#0b1028"/><stop offset="1" stop-color="#12052a"/></linearGradient>
+  <linearGradient id="beam"><stop stop-color="#2df6ff"/><stop offset=".5" stop-color="#a855f7"/><stop offset="1" stop-color="#ff3fd1"/></linearGradient>
+  <linearGradient id="card" x2="1" y2="1"><stop stop-color="#0c1d35" stop-opacity=".96"/><stop offset="1" stop-color="#180d31" stop-opacity=".96"/></linearGradient>
+  <radialGradient id="core"><stop stop-color="#eafcff"/><stop offset=".15" stop-color="#4de8ff"/><stop offset=".48" stop-color="#7c3cff"/><stop offset="1" stop-color="#071023" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse"><path d="M38 0H0V38" fill="none" stroke="#58dfff" stroke-opacity=".08"/></pattern>
+  <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#50e7ff"/></marker>
+</defs>
+<style>
+  .beam{stroke-dasharray:14 12;animation:flow 2.2s linear infinite}.pulse{animation:pulse 2.8s ease-in-out infinite}@keyframes flow{to{stroke-dashoffset:-52}}@keyframes pulse{50%{opacity:.7}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  .h1{font:800 32px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#f4f8ff;letter-spacing:3px}.h2{font:600 15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#8ceeff;letter-spacing:1.3px}
+  .title{font:800 16px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#eef6ff}.sub{font:500 12px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#aab8c8}.mono{font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#91a4c4}.tiny{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#7386a8;letter-spacing:1px}
+</style>
+<rect width="1200" height="760" rx="30" fill="url(#bg)"/><rect width="1200" height="760" rx="30" fill="url(#grid)"/>
+<text x="600" y="58" class="h1" text-anchor="middle">THE BLACK HOUSE // GPT-DOUG-LLM MAX</text>
+<text x="600" y="88" class="h2" text-anchor="middle">XUNIA • GLASS ONION • PUBLIC ECOSYSTEM INTELLIGENCE • DEFENSIVE ORCHESTRATION</text>
+
+<!-- public ecosystem intelligence -->
+<g transform="translate(35 125)">
+  <rect width="330" height="500" rx="24" fill="url(#card)" stroke="#2df6ff" stroke-width="1.5"/>
+  <text x="24" y="38" class="title">NEPTUNE SHIELD // PUBLIC SOURCE</text>
+  <text x="24" y="62" class="sub">Vendor capability graph • source-asserted OSINT</text>
+  <text x="24" y="84" class="mono">CAGE 07L84 • UEI STXJUM7D6FK1</text>
+  <g transform="translate(20 110)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#38e8ff"/><text x="14" y="17" class="title">SecureXperts</text><text x="14" y="33" class="tiny">BIO_CRYPTO • ZERO TRUST • POST-QUANTUM</text>
+  </g>
+  <g transform="translate(20 162)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#55d6ff"/><text x="14" y="17" class="title">Sparkline Cyber</text><text x="14" y="33" class="tiny">CYBER_ENG • RESILIENCE • HARDENING</text>
+  </g>
+  <g transform="translate(20 214)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#9c6cff"/><text x="14" y="17" class="title">Octaris Technologies</text><text x="14" y="33" class="tiny">INTEL_AI • ANALYTICS • MODEL DEVELOPMENT</text>
+  </g>
+  <g transform="translate(20 266)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#bd62ff"/><text x="14" y="17" class="title">Local Sphere</text><text x="14" y="33" class="tiny">IDENTITY_INTEL • B2G • SIGNALS</text>
+  </g>
+  <g transform="translate(20 318)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#e65cff"/><text x="14" y="17" class="title">The Honor Foundation</text><text x="14" y="33" class="tiny">SOF_TRANSITION • LEADERSHIP</text>
+  </g>
+  <g transform="translate(20 370)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#ff8b55"/><text x="14" y="17" class="title">Radian Forge</text><text x="14" y="33" class="tiny">ADV_MFG • WAAM • DIGITAL TRACEABILITY</text>
+  </g>
+  <g transform="translate(20 422)">
+    <rect width="290" height="42" rx="10" fill="#091827" stroke="#ffd166"/><text x="14" y="17" class="title">Community First Project</text><text x="14" y="33" class="tiny">WORKFORCE • VETERANS • REGIONAL RESILIENCE</text>
+  </g>
+</g>
+
+<!-- center governed intelligence stack -->
+<path class="beam" d="M365 375 C405 375 410 375 445 375" fill="none" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
+<g transform="translate(445 125)">
+  <rect width="325" height="500" rx="24" fill="url(#card)" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="162" y="40" class="title" text-anchor="middle">GOVERNED INTELLIGENCE STACK</text>
+  <g transform="translate(30 78)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#8d62ff" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">GLASS ONION</text><text x="132" y="51" class="sub" text-anchor="middle">provenance • lineage • evidence state</text></g>
+  <path class="beam" d="M162 150 L162 180" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
+  <g transform="translate(30 185)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#111111" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">THE BLACK HOUSE</text><text x="132" y="51" class="sub" text-anchor="middle">trust • policy • briefing • human authority</text></g>
+  <path class="beam" d="M162 257 L162 287" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
+  <g transform="translate(30 292)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#2df6ff" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">XUNIA</text><text x="132" y="51" class="sub" text-anchor="middle">ontology + ecosystem orchestration</text></g>
+  <path class="beam" d="M162 364 L162 394" stroke="#7d5cff" stroke-width="3" marker-end="url(#arrow)"/>
+  <g transform="translate(30 399)"><rect width="265" height="72" rx="16" fill="#111821" stroke="#ff3fd1" stroke-width="2"/><text x="132" y="30" class="title" text-anchor="middle">GPT-DOUG-LLM MAX</text><text x="132" y="51" class="sub" text-anchor="middle">reason • query • brief • verify</text></g>
+</g>
+
+<!-- defensive adaptive orchestration -->
+<path class="beam" d="M770 375 C810 375 815 375 850 375" fill="none" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
+<g transform="translate(850 125)">
+  <rect width="315" height="500" rx="24" fill="url(#card)" stroke="#ff3fd1" stroke-width="1.5"/>
+  <circle class="pulse" cx="157" cy="110" r="70" fill="url(#core)" filter="url(#glow)"/><circle cx="157" cy="110" r="28" fill="#f7ffff"/><text x="157" y="116" fill="#100b29" font-family="ui-monospace,monospace" font-size="15" font-weight="900" text-anchor="middle">KRAKEN</text>
+  <text x="157" y="200" class="title" text-anchor="middle">KRAKEN JUTSU</text>
+  <text x="157" y="224" class="sub" text-anchor="middle">DEFENSIVE_ADAPTIVE_ORCHESTRATION</text>
+  <g transform="translate(25 258)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#2df6ff"/><text x="16" y="27" class="mono">ENTITY RESOLUTION</text></g>
+  <g transform="translate(25 312)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#8d62ff"/><text x="16" y="27" class="mono">CAPABILITY MAPPING</text></g>
+  <g transform="translate(25 366)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#ff3fd1"/><text x="16" y="27" class="mono">DEFENSIVE ARCHITECTURE MATCH</text></g>
+  <g transform="translate(25 420)"><rect width="265" height="44" rx="11" fill="#101a27" stroke="#ffd166"/><text x="16" y="27" class="mono">PROCUREMENT FIT + EVIDENCE GAPS</text></g>
+</g>
+
+<g transform="translate(35 650)"><rect width="1130" height="72" rx="18" fill="#0a111c" stroke="#263746"/><text x="565" y="27" class="mono" text-anchor="middle">PUBLIC SOURCE → PROVENANCE → GOVERNANCE → XUNIA → GPT-DOUG-LLM MAX → DEFENSIVE ANALYSIS</text><text x="565" y="50" class="tiny" text-anchor="middle">SOURCE ASSERTIONS DO NOT IMPLY AFFILIATION, ENDORSEMENT, CONTRACT, CLEARANCE, CREDENTIALS, OR THIRD-PARTY ACCESS</text></g>
+</svg>
