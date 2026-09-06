@@ -1,0 +1,13 @@
+{
+  "kraken_layer": "Kraken Jutsu",
+  "purpose": "provenance-first ontology judgment",
+  "sources": [
+    {"repo": "cisagov/kev-data", "decision": "CONSUME", "role": "known exploited vulnerability priority"},
+    {"repo": "cisagov/vulnrichment", "decision": "CONSUME", "role": "SSVC/CWE/CVSS enrichment"},
+    {"repo": "cisagov/Decider", "decision": "OPTIONAL_FORK", "role": "guided ATT&CK behavior mapping"},
+    {"repo": "usnistgov/OSCAL", "decision": "CONSUME_SCHEMA", "role": "security-control and assessment ontology"},
+    {"repo": "usnistgov/oscal-content", "decision": "CONSUME_CONTENT", "role": "NIST SP 800-53 controls and baselines"},
+    {"repo": "mitre-attack/attack-stix-data", "decision": "CONSUME_DATA", "role": "ATT&CK tactics and techniques graph"},
+    {"repo": "cisagov/Malcolm", "decision": "ADAPTER_LATER", "role": "network defensive telemetry"}
+  ]
+}
