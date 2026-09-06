@@ -17,6 +17,7 @@ from typing import Any
 STATE_DIR = Path.home() / ".cyber-cpr"
 STATE_FILE = STATE_DIR / "state.json"
 DEFAULT_INTERVAL = 180
+DEFAULT_RUN_LIMIT = 100
 STREAK_TARGET = 5
 
 
@@ -63,7 +64,7 @@ def save_state(state: dict[str, Any]) -> None:
     tmp.replace(STATE_FILE)
 
 
-def fetch_recent_runs(repo: str, limit: int = 20) -> list[dict[str, Any]]:
+def fetch_recent_runs(repo: str, limit: int = DEFAULT_RUN_LIMIT) -> list[dict[str, Any]]:
     result = _run(
         [
             "gh",
@@ -79,20 +80,32 @@ def fetch_recent_runs(repo: str, limit: int = 20) -> list[dict[str, Any]]:
     )
     if result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or f"Unable to inspect {repo}")
-    return json.loads(result.stdout or "[]")
+    try:
+        payload = json.loads(result.stdout or "[]")
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"GitHub CLI returned invalid JSON for {repo}: {exc}") from exc
+    if not isinstance(payload, list):
+        raise RuntimeError(f"GitHub CLI returned an unexpected run payload for {repo}")
+    return payload
 
 
 def latest_per_workflow(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     latest: dict[str, dict[str, Any]] = {}
+    # `gh run list` is normally newest-first, but explicitly compare createdAt so
+    # health remains correct if ordering ever changes or fixtures are unsorted.
     for run in runs:
         key = str(run.get("workflowName") or run.get("name") or "unknown")
-        if key not in latest:
+        previous = latest.get(key)
+        if previous is None or str(run.get("createdAt") or "") > str(previous.get("createdAt") or ""):
             latest[key] = run
     return list(latest.values())
 
 
 def pulse_repo(repo: str) -> RepoPulse:
     runs = latest_per_workflow(fetch_recent_runs(repo))
+    if not runs:
+        return RepoPulse(repo, "attention", "no workflow runs returned", [], [])
+
     failed = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") not in {"success", "neutral", "skipped"}]
     pending = [r for r in runs if r.get("status") != "completed"]
 
@@ -137,10 +150,13 @@ def render(pulse: RepoPulse, streak: int, recovered: bool) -> None:
         extras.append(f"🔥 STREAK x{streak}")
 
     suffix = f" | {' | '.join(extras)}" if extras else ""
-    print(f"{marker} {pulse.repo}: {pulse.details}{suffix}")
+    print(f"{marker} {pulse.repo}: {pulse.details}{suffix}", flush=True)
 
     for run in pulse.failed_runs:
-        print(f"   ↳ {run.get('workflowName') or run.get('name')}: {run.get('conclusion')} {run.get('url', '')}")
+        print(
+            f"   ↳ {run.get('workflowName') or run.get('name')}: {run.get('conclusion')} {run.get('url', '')}",
+            flush=True,
+        )
 
 
 def load_config(path: Path) -> dict[str, Any]:
@@ -176,17 +192,17 @@ def bounded_repair(repo: str, pulse: RepoPulse, config_path: Path) -> bool:
 
         cwd = Path(cwd_value).expanduser().resolve() if cwd_value else None
         if cwd is None or not (cwd / ".git").exists():
-            print(f"🛑 Repair rule for {workflow} skipped: cwd must be an explicit local Git repository.")
+            print(f"🛑 Repair rule for {workflow} skipped: cwd must be an explicit local Git repository.", flush=True)
             continue
 
-        print(f"🔧 BOUNDED REPAIR {repo}: {workflow}")
+        print(f"🔧 BOUNDED REPAIR {repo}: {workflow}", flush=True)
         result = _run(command, cwd=cwd)
         sys.stdout.write(result.stdout)
         sys.stderr.write(result.stderr)
         if result.returncode != 0:
-            print(f"❌ Repair command failed with exit {result.returncode}")
+            print(f"❌ Repair command failed with exit {result.returncode}", flush=True)
             return False
-        print("🧪 Repair command completed; Cyber CPR will verify on the next pulse.")
+        print("🧪 Repair command completed; Cyber CPR will verify on the next pulse.", flush=True)
         return True
     return False
 
@@ -197,7 +213,7 @@ def check_repos(repos: list[str], config: Path | None = None, repair: bool = Fal
         try:
             pulse = pulse_repo(repo)
         except Exception as exc:  # noqa: BLE001
-            print(f"❌ ATTENTION {repo}: {exc}")
+            print(f"❌ ATTENTION {repo}: {exc}", flush=True)
             overall = 1
             continue
         streak, recovered = update_streak(repo, pulse)
@@ -231,13 +247,13 @@ def main() -> int:
         return check_repos(args.repos, args.config, args.repair)
 
     interval = max(60, int(args.interval))
-    print(f"🚑 Cyber CPR watch active every {interval}s. Ctrl-C to stop.")
+    print(f"🚑 Cyber CPR watch active every {interval}s. Ctrl-C to stop.", flush=True)
     try:
         while True:
             check_repos(args.repos, args.config, args.repair)
             time.sleep(interval)
     except KeyboardInterrupt:
-        print("\nCyber CPR stopped.")
+        print("\nCyber CPR stopped.", flush=True)
         return 0
 
 
