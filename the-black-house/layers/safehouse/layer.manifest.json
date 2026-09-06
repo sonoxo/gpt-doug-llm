@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "layerId": "THE_BLACK_HOUSE_SAFEHOUSE_V1",
   "name": "The Black House SAFEHOUSE",
   "parentControlPlane": "THE_BLACK_HOUSE_V1",
@@ -11,6 +11,8 @@
     "airspace-awareness",
     "sensor-fusion",
     "alerting",
+    "public-source-intelligence",
+    "commercialization-intelligence",
     "provenance"
   ],
   "sourceOntology": "https://github.com/sonoxo/xuniadao/blob/main/ecosystem/safehouse-airspace-awareness.json",
@@ -21,6 +23,12 @@
     "evidenceProvenanceRequired": true,
     "consequentialMutationRequiresHumanApproval": true,
     "externalAuthorizationNeverImplied": true,
+    "externalAffiliationNeverImplied": true,
+    "externalFederalIdentifiersNeverInherited": true,
+    "externalProcurementEligibilityNeverInherited": true,
+    "externalFundingAccessNeverAssumed": true,
+    "classifiedInferenceFromPublicSourcesBlocked": true,
+    "sourceConflictsMustRemainVisible": true,
     "uncertainClassificationRequiresReview": true,
     "autonomousCountermeasureBlocked": true,
     "jammingBlocked": true,
@@ -42,14 +50,29 @@
       "MONITOR",
       "ALERT",
       "ESCALATE_FOR_REVIEW",
-      "ATTACH_EVIDENCE"
+      "ATTACH_EVIDENCE",
+      "INGEST_PUBLIC_SOURCE",
+      "NORMALIZE_PUBLIC_CLAIM",
+      "VERIFY_EXTERNAL_IDENTIFIER",
+      "MAP_EXTERNAL_ECOSYSTEM",
+      "BENCHMARK_COMMERCIALIZATION",
+      "MAP_PUBLIC_PROCUREMENT_PATHWAY",
+      "MAP_PUBLIC_CAPITAL_PATHWAY",
+      "FLAG_SOURCE_CONFLICT"
     ],
     "blockedActions": [
       "AUTONOMOUS_COUNTERMEASURE",
       "RF_JAMMING",
       "SIGNAL_SPOOFING",
       "AIRCRAFT_TAKEOVER",
-      "KINETIC_ACTION"
+      "KINETIC_ACTION",
+      "CLAIM_EXTERNAL_AFFILIATION",
+      "CLAIM_EXTERNAL_ENDORSEMENT",
+      "INHERIT_EXTERNAL_CAGE_OR_UEI",
+      "CLAIM_EXTERNAL_PROCUREMENT_ELIGIBILITY",
+      "CLAIM_EXTERNAL_FUNDING_ACCESS",
+      "INFER_CLASSIFIED_INFORMATION_FROM_PUBLIC_DATA",
+      "COPY_VENDOR_PROPRIETARY_TECHNOLOGY"
     ],
     "returnEvidenceToParent": true,
     "governanceSurface": "GLASS_ONION"
@@ -60,21 +83,42 @@
     "geospatialSurface": "sonoxo/MMGISxunia-",
     "workflowSurface": "sonoxo/zyra",
     "externalArchitectureReference": "https://github.com/maya-gargoyle-agent/gargoyle_fact_sheet",
-    "externalRelationship": "PUBLIC_REFERENCE_ONLY_NO_AFFILIATION"
+    "externalRelationship": "PUBLIC_REFERENCE_ONLY_NO_AFFILIATION",
+    "publicIntelligence": [
+      {
+        "id": "NEPTUNE_SHIELD_SEAL_TANK",
+        "sourcePacket": "the-black-house/integrations/neptune-shield/seal-tank.public-intel.json",
+        "xuniaOntology": "https://github.com/sonoxo/xuniadao/blob/main/ecosystem/neptune-shield-seal-tank.json",
+        "glassCommand": "/glass intel neptune-shield seal-tank",
+        "scope": [
+          "PUBLIC_ACCELERATOR_MODEL",
+          "COHORT_TECHNOLOGY_SIGNALS",
+          "COMMERCIALIZATION_PIPELINE",
+          "PUBLIC_PROCUREMENT_PATHWAYS",
+          "PUBLIC_CAPITAL_PATHWAYS",
+          "PARTNER_GRAPH",
+          "EVENT_SIGNALS"
+        ]
+      }
+    ]
   },
   "runtime": {
     "module": "va3lm.safehouse",
     "apiRoute": "/api/black-house/safehouse",
     "statusEmbedding": "/api/black-house/status#layers.safehouse",
     "commandCenter": "/black-house",
-    "glassCommand": "/glass safehouse airspace"
+    "glassCommand": "/glass safehouse airspace",
+    "publicIntelCommand": "/glass intel neptune-shield seal-tank"
   },
   "truthState": {
     "repositoryLayer": "IMPLEMENTED",
     "ontologyBinding": "IMPLEMENTED",
     "glassOnionBinding": "IMPLEMENTED",
+    "neptuneShieldPublicIntelBinding": "IMPLEMENTED",
     "runtimeMounted": "NOT_YET_RUNTIME_VERIFIED",
     "liveSensorAdapters": "NOT_YET_RUNTIME_VERIFIED",
-    "externalVendorConnection": "NOT_CLAIMED"
+    "publicIntelAutoRefresh": "NOT_YET_RUNTIME_VERIFIED",
+    "externalVendorConnection": "NOT_CLAIMED",
+    "externalProgramAffiliation": "NOT_CLAIMED"
   }
 }
