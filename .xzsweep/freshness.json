@@ -1,13 +1,11 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T21:39:42Z",
-  "due_files_reviewed": 5,
+  "cutoff_at": "2026-09-05T21:45:21Z",
+  "due_files_reviewed": 3,
   "due_paths": [
-    ".github/workflows/grimthebuilder-image.yml",
-    ".github/workflows/zyra-cpr.yml",
-    "ontology/gpt-doug-pocket.json",
-    "ontology/zyra-cpr.json",
-    "scripts/zyra-cpr.sh"
+    "ontology/sonoxomus-research-profile.json",
+    "scripts/gpt-doug-pocket-install.sh",
+    "scripts/sonoxomus-research-bootstrap.sh"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -263,6 +261,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    ".github/workflows/ecosystem-v4-gate.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T21:45:12Z",
+      "reviewed_at": null,
+      "sha256": "5e7573dc3cbdf192e3950f9eabfada9d57b8ca23ec31e94c7804d6fc61fd6225",
+      "size": 741,
+      "validation_issues": [],
+      "was_due": false
+    },
     ".github/workflows/frontline-compliance-gate.yml": {
       "actions": [],
       "binary": false,
@@ -365,13 +374,13 @@
     ".github/workflows/grimthebuilder-image.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T20:22:44Z",
       "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "b0ca070ae8f796de2a409aaff1414f49cd9e07b31e9227f4c4945b248e30ef38",
       "size": 5278,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/issue-automation.yml": {
       "actions": [],
@@ -706,13 +715,13 @@
     ".github/workflows/zyra-cpr.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:12:25Z",
       "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "0452b64f68d7ecbd055bc6074d23994ca94b353b717f2d10fd30e0546e774a24",
       "size": 731,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".gitignore": {
       "actions": [],
@@ -2258,9 +2267,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T19:32:58Z",
+      "git_touched_at": "2026-09-06T21:39:41Z",
       "reviewed_at": null,
-      "sha256": "d666b77c99f610da28f1f8503a2f20a24debd94d84732b80b584315a2b7d31d1",
+      "sha256": "e9da3e6bdd9ccb8726802bca80b21d3e85a4e9713b8e5bbc2b16e84fc552054c",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -2313,10 +2322,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T16:24:39Z",
+      "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": null,
-      "sha256": "d28b08701636bc4e67c139b2a2c4917b493f934a2aa6358acf00cb0b06658fbd",
-      "size": 9644,
+      "sha256": "5f76c85f27033a091eff397357e7a5bfedca042bd2021a08d21de774fbffa345",
+      "size": 8792,
       "validation_issues": [],
       "was_due": false
     },
@@ -2845,6 +2854,28 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "59fe173863d8cbc3d3e716c83d86620f3674df5c29f32a9c5102749abe8b8295",
       "size": 6002,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "ecosystem/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T21:45:12Z",
+      "reviewed_at": null,
+      "sha256": "3701c0425204ab62b91def2c286afce8f043aba94da0e2f94dbce06baadae9d0",
+      "size": 4219,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "ecosystem/registry.v4.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T21:45:12Z",
+      "reviewed_at": null,
+      "sha256": "b69eb87cf99436ade117e6317083f28193cbe34de6e5bc4bc95b65e30e7b14f2",
+      "size": 5054,
       "validation_issues": [],
       "was_due": false
     },
@@ -4743,13 +4774,13 @@
     "ontology/gpt-doug-pocket.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:39:03Z",
       "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "da8ef2ba595ee91c2e02e783255f7d4f3a386b2025528a980a0496d08d7bbc13",
       "size": 1004,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ontology/regulatory/fcc-part100.binding.json": {
       "actions": [],
@@ -4778,22 +4809,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:41:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:45:21Z",
       "sha256": "c8368093c139ea10ca78e634107f5b7780bb3da797ba853d11ddc4844b6cb312",
       "size": 1558,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "ontology/zyra-cpr.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:12:43Z",
       "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "0e7209fccd9079270e47c46193c094cf6395a31168b57aaccb2007158eb7e11e",
       "size": 929,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "package-lock.json": {
       "actions": [],
@@ -5537,11 +5568,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:43:52Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:45:21Z",
       "sha256": "75e5a44bdf5e505b8866c21cf88a7de5cd9631daef72d37e6f53218aa52c5782",
       "size": 3731,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/gpt-doug-pocket-run.sh": {
       "actions": [],
@@ -5592,11 +5623,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:41:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:45:21Z",
       "sha256": "65e6347da0d5475920f6f46b7680befc2dde823497d31f856fd19aa0272e1bd9",
       "size": 1486,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/soundcloud_heartbeat.py": {
       "actions": [],
@@ -5642,6 +5673,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/validate_ecosystem_v4.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T21:45:12Z",
+      "reviewed_at": null,
+      "sha256": "4a07770b9d915d64e61c8b4f2c3fa33303b436a9b2499beb11ba501dacb0e5fa",
+      "size": 3275,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/validate_infrastructure_resilience.py": {
       "actions": [],
       "binary": false,
@@ -5678,13 +5720,13 @@
     "scripts/zyra-cpr.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:26:09Z",
       "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "1d897d081e434690b8ecb1b73c9bf7f9a90dd2890648779083dda5b9210282c6",
       "size": 7056,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "secret_store.py": {
       "actions": [],
@@ -7450,9 +7492,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T19:32:53Z",
+      "git_touched_at": "2026-09-06T21:39:44Z",
       "reviewed_at": null,
-      "sha256": "666f2b769c2df76d5a7f57fd51b2914f46f9341576bfd32e9152d621b4d73af7",
+      "sha256": "b57d33e1effd0b7150a640cc25980992497a6b2efbb42e2e353e5a2cf202ec4c",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -9538,11 +9580,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T21:39:42Z",
+  "generated_at": "2026-09-06T21:45:21Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 866,
+  "tracked_files_reviewed": 870,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
