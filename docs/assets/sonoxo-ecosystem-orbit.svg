@@ -1,100 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="940" viewBox="0 0 1200 940" role="img" aria-labelledby="title desc">
-<title id="title">GPT-DOUG-LLM MAX six layers of AI</title>
-<desc id="desc">GitHub intro infographic showing all six canonical AI layers in GPT-DOUG-LLM MAX: Classical AI, Machine Learning, Neural Networks, Deep Learning, Generative AI, and Agentic AI, with representative capabilities and CI enforcement references.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1040" viewBox="0 0 1200 1040" role="img" aria-labelledby="title desc">
+<title id="title">XUNIA Ecosystem v4 command map</title>
+<desc id="desc">GPT-DOUG-LLM ecosystem visual showing the six-layer AI stack, Black House governance, XUNIA HQ, ZYRA execution, Red House security, Green House public intelligence, Orange House economic scenarios, and Glass Onion geospatial intelligence.</desc>
 <defs>
-  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#030713"/><stop offset=".5" stop-color="#0a1026"/><stop offset="1" stop-color="#16072b"/></linearGradient>
-  <linearGradient id="agent" x2="1"><stop stop-color="#5b52ff"/><stop offset="1" stop-color="#9d5cff"/></linearGradient>
-  <linearGradient id="gen" x2="1"><stop stop-color="#9a4cff"/><stop offset="1" stop-color="#e253d4"/></linearGradient>
-  <linearGradient id="deep" x2="1"><stop stop-color="#e05b9d"/><stop offset="1" stop-color="#ff8d6d"/></linearGradient>
-  <linearGradient id="nn" x2="1"><stop stop-color="#8bc65b"/><stop offset="1" stop-color="#b7da67"/></linearGradient>
-  <linearGradient id="ml" x2="1"><stop stop-color="#22c7bd"/><stop offset="1" stop-color="#58d9d0"/></linearGradient>
-  <linearGradient id="classic" x2="1"><stop stop-color="#4779d9"/><stop offset="1" stop-color="#7899ed"/></linearGradient>
-  <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#63d7ff" stroke-opacity=".055"/></pattern>
-  <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity=".35"/></filter>
+  <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#020712"/><stop offset=".5" stop-color="#0a1024"/><stop offset="1" stop-color="#170625"/></linearGradient>
+  <linearGradient id="beam" x2="1"><stop stop-color="#33e6ff"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#ff4fc8"/></linearGradient>
+  <linearGradient id="core" x2="1" y2="1"><stop stop-color="#111a31"/><stop offset="1" stop-color="#211039"/></linearGradient>
+  <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#5be7ff" stroke-opacity=".055"/></pattern>
   <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#55eaff"/></marker>
 </defs>
 <style>
-  .h1{font:900 38px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#f7fbff;letter-spacing:2px}
-  .h2{font:700 15px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#91eaff;letter-spacing:1.6px}
-  .layer{font:900 24px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#fff}
-  .chip{font:700 13px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#0a1020}
-  .repo{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#e9f7ff}
-  .tiny{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#8ea6bf;letter-spacing:.8px}
-  .ok{font:900 13px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#6dffb1;letter-spacing:1px}
+  .h1{font:900 36px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#f8fbff;letter-spacing:2px}.h2{font:700 14px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#8ceeff;letter-spacing:1.2px}.title{font:900 18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#fff}.sub{font:600 12px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#b9c9dd}.mono{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#dff7ff}.tiny{font:700 9.5px ui-monospace,SFMono-Regular,Menlo,monospace;fill:#91a7c4;letter-spacing:.7px}.chip{font:800 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#07101c}.flow{stroke-dasharray:12 10;animation:flow 2.2s linear infinite}@keyframes flow{to{stroke-dashoffset:-44}}@media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
-<rect width="1200" height="940" rx="32" fill="url(#bg)"/>
-<rect width="1200" height="940" rx="32" fill="url(#grid)"/>
+<rect width="1200" height="1040" rx="32" fill="url(#bg)"/><rect width="1200" height="1040" rx="32" fill="url(#grid)"/>
+<text x="600" y="54" class="h1" text-anchor="middle">XUNIA ECOSYSTEM v4 // GPT-DOUG-LLM MAX</text>
+<text x="600" y="82" class="h2" text-anchor="middle">ONE CONTROL MAP • SEVEN CORE PLANES • SIX AI LAYERS • EVIDENCE-FIRST EXECUTION</text>
 
-<text x="600" y="58" class="h1" text-anchor="middle">GPT-DOUG-LLM MAX // 6 LAYERS OF AI</text>
-<text x="600" y="88" class="h2" text-anchor="middle">CLASSICAL → MACHINE LEARNING → NEURAL NETWORKS → DEEP LEARNING → GENERATIVE → AGENTIC</text>
-<text x="600" y="115" class="ok" text-anchor="middle">● 6/6 ARCHITECTURE LAYERS DECLARED + CI ENFORCED</text>
-
-<!-- AGENTIC AI -->
-<g transform="translate(110 145)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#agent)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">AGENTIC AI</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Memory / State</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Planning</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Tool Use</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#eef1ff"/><text x="84" y="24" class="chip" text-anchor="middle">Autonomous Execution</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#eef1ff"/><text x="85" y="24" class="chip" text-anchor="middle">Verify + Repair</text></g>
+<!-- six AI layers -->
+<g transform="translate(70 110)">
+  <rect width="1060" height="120" rx="24" fill="#07111f" stroke="#2f4968"/>
+  <text x="24" y="28" class="mono">6/6 AI ARCHITECTURE</text>
+  <g transform="translate(22 46)"><rect width="158" height="48" rx="13" fill="#658ee5"/><text x="79" y="29" class="chip" text-anchor="middle">CLASSICAL AI</text></g>
+  <g transform="translate(193 46)"><rect width="158" height="48" rx="13" fill="#42d1c6"/><text x="79" y="29" class="chip" text-anchor="middle">MACHINE LEARNING</text></g>
+  <g transform="translate(364 46)"><rect width="158" height="48" rx="13" fill="#a8d46c"/><text x="79" y="29" class="chip" text-anchor="middle">NEURAL NETWORKS</text></g>
+  <g transform="translate(535 46)"><rect width="158" height="48" rx="13" fill="#ff8b72"/><text x="79" y="29" class="chip" text-anchor="middle">DEEP LEARNING</text></g>
+  <g transform="translate(706 46)"><rect width="158" height="48" rx="13" fill="#df64d4"/><text x="79" y="29" class="chip" text-anchor="middle">GENERATIVE AI</text></g>
+  <g transform="translate(877 46)"><rect width="158" height="48" rx="13" fill="#8f6dff"/><text x="79" y="29" class="chip" text-anchor="middle">AGENTIC AI</text></g>
 </g>
 
-<!-- GENERATIVE AI -->
-<g transform="translate(110 267)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#gen)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">GENERATIVE AI</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">LLMs</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Diffusion Models</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Multimodal Models</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#fff0fb"/><text x="84" y="24" class="chip" text-anchor="middle">Code / Media Gen</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#fff0fb"/><text x="85" y="24" class="chip" text-anchor="middle">VAEs</text></g>
-</g>
+<!-- human/hub/core -->
+<path class="flow" d="M600 245 V285" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
+<g transform="translate(395 285)" filter="url(#glow)"><rect width="410" height="92" rx="22" fill="#0c1c30" stroke="#35e7ff" stroke-width="2"/><text x="205" y="34" class="title" text-anchor="middle">XUNIA HQ // HOLO FORGE</text><text x="205" y="58" class="sub" text-anchor="middle">operator interface • RVIA • digital twin • learning • mission view</text><text x="205" y="77" class="tiny" text-anchor="middle">sonoxo/xuniahub</text></g>
+<path class="flow" d="M600 377 V417" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
+<g transform="translate(350 417)" filter="url(#glow)"><rect width="500" height="110" rx="24" fill="url(#core)" stroke="#9b6dff" stroke-width="2"/><text x="250" y="36" class="title" text-anchor="middle">THE BLACK HOUSE // GPT-DOUG-LLM MAX</text><text x="250" y="62" class="sub" text-anchor="middle">ontology • orchestration • policy • provenance • evidence • AI-layer contract</text><text x="250" y="84" class="tiny" text-anchor="middle">sonoxo/gpt-doug-llm  •  canonical control root</text></g>
+<path class="flow" d="M600 527 V567" stroke="url(#beam)" stroke-width="4" marker-end="url(#arrow)"/>
+<g transform="translate(395 567)" filter="url(#glow)"><rect width="410" height="92" rx="22" fill="#101a2b" stroke="#ff4fc8" stroke-width="2"/><text x="205" y="34" class="title" text-anchor="middle">ZYRA // GOVERNED EXECUTION</text><text x="205" y="58" class="sub" text-anchor="middle">security gate • approval • bounded tools • audit • CI evidence</text><text x="205" y="77" class="tiny" text-anchor="middle">sonoxo/zyra</text></g>
 
-<!-- DEEP LEARNING -->
-<g transform="translate(110 389)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#deep)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">DEEP LEARNING</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">Transformers</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">LSTMs</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">RNNs</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#fff1ec"/><text x="84" y="24" class="chip" text-anchor="middle">CNNs</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#fff1ec"/><text x="85" y="24" class="chip" text-anchor="middle">Autoencoders</text></g>
-</g>
+<!-- domain planes -->
+<path class="flow" d="M600 659 V700 M600 700 H145 M600 700 H1055" stroke="url(#beam)" stroke-width="3"/>
+<path d="M145 700 V735 M445 700 V735 M755 700 V735 M1055 700 V735" stroke="#55eaff" stroke-width="3" marker-end="url(#arrow)"/>
+<g transform="translate(35 735)"><rect width="220" height="132" rx="20" fill="#25101b" stroke="#ff4b55"/><text x="110" y="31" class="title" text-anchor="middle">RED HOUSE</text><text x="110" y="54" class="sub" text-anchor="middle">authorized security</text><text x="110" y="75" class="tiny" text-anchor="middle">findings • risk • remediation</text><text x="110" y="98" class="tiny" text-anchor="middle">sonoxo/theredhouse</text></g>
+<g transform="translate(335 735)"><rect width="220" height="132" rx="20" fill="#102219" stroke="#55d36f"/><text x="110" y="31" class="title" text-anchor="middle">GREEN HOUSE</text><text x="110" y="54" class="sub" text-anchor="middle">public situational intel</text><text x="110" y="75" class="tiny" text-anchor="middle">eco • bio • regulatory • events</text><text x="110" y="98" class="tiny" text-anchor="middle">sonoxo/thegreenhouse</text></g>
+<g transform="translate(645 735)"><rect width="220" height="132" rx="20" fill="#24190e" stroke="#ff9d3f"/><text x="110" y="31" class="title" text-anchor="middle">ORANGE HOUSE</text><text x="110" y="54" class="sub" text-anchor="middle">economic scenarios</text><text x="110" y="75" class="tiny" text-anchor="middle">projection • stress • planning</text><text x="110" y="98" class="tiny" text-anchor="middle">sonoxo/theorangehouse</text></g>
+<g transform="translate(945 735)"><rect width="220" height="132" rx="20" fill="#101b25" stroke="#45d8ff"/><text x="110" y="31" class="title" text-anchor="middle">GLASS ONION</text><text x="110" y="54" class="sub" text-anchor="middle">geospatial public source</text><text x="110" y="75" class="tiny" text-anchor="middle">3D Earth • provenance • correlation</text><text x="110" y="98" class="tiny" text-anchor="middle">sonoxo/gods-eye-viewXUNIA</text></g>
 
-<!-- NEURAL NETWORKS -->
-<g transform="translate(110 511)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#nn)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">NEURAL NETWORKS</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Perceptrons</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Cost Functions</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Backpropagation</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#f5ffe8"/><text x="84" y="24" class="chip" text-anchor="middle">Activation Functions</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#f5ffe8"/><text x="85" y="24" class="chip" text-anchor="middle">Hidden Layers</text></g>
-</g>
-
-<!-- MACHINE LEARNING -->
-<g transform="translate(110 633)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#ml)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">MACHINE LEARNING</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Supervised Learning</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Unsupervised Learning</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Classification</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#ebfffd"/><text x="84" y="24" class="chip" text-anchor="middle">Reinforcement Learning</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#ebfffd"/><text x="85" y="24" class="chip" text-anchor="middle">Regression</text></g>
-</g>
-
-<!-- CLASSICAL AI -->
-<g transform="translate(110 755)" filter="url(#shadow)">
-  <rect width="980" height="112" rx="30" fill="url(#classic)"/>
-  <text x="490" y="36" class="layer" text-anchor="middle">CLASSICAL AI</text>
-  <g transform="translate(35 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Symbolic AI</text></g>
-  <g transform="translate(220 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Expert Systems</text></g>
-  <g transform="translate(405 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Search + Planning</text></g>
-  <g transform="translate(590 54)"><rect width="168" height="38" rx="13" fill="#eef5ff"/><text x="84" y="24" class="chip" text-anchor="middle">Knowledge Representation</text></g>
-  <g transform="translate(775 54)"><rect width="170" height="38" rx="13" fill="#eef5ff"/><text x="85" y="24" class="chip" text-anchor="middle">Logic + Reasoning</text></g>
-</g>
-
-<text x="600" y="902" class="repo" text-anchor="middle">XUNIA • ZYRA • WAKEUP3LM • ONTOLOGY • GPT-DOUG-LLM MAX</text>
-<text x="600" y="925" class="tiny" text-anchor="middle">SOURCE OF TRUTH: config/ai-layer-manifest.json  •  GATE: .github/workflows/ai-layer-gate.yml</text>
+<!-- evidence return -->
+<path class="flow" d="M145 867 V905 H600 M445 867 V905 M755 867 V905 M1055 867 V905 H600" fill="none" stroke="#8d6bff" stroke-width="3"/>
+<g transform="translate(280 910)"><rect width="640" height="76" rx="18" fill="#08121d" stroke="#2b4258"/><text x="320" y="29" class="mono" text-anchor="middle">EVIDENCE RETURN LOOP</text><text x="320" y="51" class="sub" text-anchor="middle">tests • logs • provenance • artifacts • review • controlled release</text><text x="320" y="68" class="tiny" text-anchor="middle">registry: ecosystem/registry.v4.json  •  gate: ecosystem-v4-gate.yml</text></g>
+<text x="600" y="1016" class="tiny" text-anchor="middle">REPOSITORY MEMBERSHIP ≠ EXTERNAL AUTHORIZATION • UPSTREAM ATTRIBUTION PRESERVED • HUMAN AUTHORITY RETAINED</text>
 </svg>
