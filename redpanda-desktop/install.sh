@@ -72,7 +72,7 @@ PLIST="$LAUNCH_DIR/com.sonoxo.gpt-redpanda.plist"
 LABEL="com.sonoxo.gpt-redpanda"
 
 say "🐼 Installing GPT-REDPANDA to: $USB"
-mkdir -p "$NODE" "$STATE/logs" "$STATE/memory" "$STATE/events" "$HOST_SHARE" "$HOST_STATE" "$HOST_BIN" "$LAUNCH_DIR"
+mkdir -p "$NODE" "$STATE/logs" "$STATE/memory" "$STATE/events" "$STATE/zfi" "$HOST_SHARE" "$HOST_STATE" "$HOST_BIN" "$LAUNCH_DIR"
 printf 'GPT-REDPANDA USB NODE\n' > "$USB/$MARKER"
 
 fetch() {
@@ -81,9 +81,10 @@ fetch() {
 }
 
 fetch redpanda_agent.py
+fetch zfi_agent.py
 fetch redpanda-zsh-hook.zsh
 fetch redpanda-node
-chmod +x "$NODE/redpanda_agent.py" "$NODE/redpanda-node"
+chmod +x "$NODE/redpanda_agent.py" "$NODE/zfi_agent.py" "$NODE/redpanda-node"
 
 # Host bootstrap is intentionally tiny; runtime code/state remain on the USB.
 cp "$NODE/redpanda-node" "$HOST_BIN/redpanda-node"
@@ -182,6 +183,7 @@ say "🧬 State: $STATE"
 say "🚑 Cyber CPR: $(command -v cyber-cpr || echo 'install cyber-cpr separately')"
 say "👁 Terminal watch: metadata only (exit status + cwd; no command text)"
 say "🖥 Desktop: redpanda-node open"
+say "📁 ZFI Files: redpanda-node files"
 say "📱 Mobile/LAN: redpanda-node mobile"
 say "↩️ Restore desktop background mode: redpanda-node desktop"
 say "🔎 Status: redpanda-node status"
@@ -189,3 +191,4 @@ say "🚑 Manual CPR: redpanda-node cpr"
 say "🧾 Service logs: $HOST_STATE"
 say ""
 say "Open the portal with: redpanda-node open"
+say "Open Zyra File Intelligence with: redpanda-node files"
