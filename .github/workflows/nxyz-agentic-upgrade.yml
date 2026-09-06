@@ -1,0 +1,68 @@
+name: GPT-DOUG-LLM-MAX NXYZ Agentic Upgrade
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "nxyz/**"
+      - ".github/dependabot.yml"
+      - ".github/workflows/nxyz-agentic-upgrade.yml"
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: nxyz-agentic-upgrade-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  control-plane-health:
+    if: github.event_name != 'pull_request' || github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      NXYZ_WEBHOOK_URL: ${{ secrets.NXYZ_WEBHOOK_URL }}
+      NXYZ_WEBHOOK_TOKEN: ${{ secrets.NXYZ_WEBHOOK_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate NXYZ policy
+        run: python -m json.tool nxyz/policy.json >/dev/null
+      - name: Compile control-plane adapter
+        run: python -m py_compile nxyz/control_plane.py
+      - name: Emit NXYZ heartbeat
+        run: python nxyz/control_plane.py heartbeat
+      - name: Publish control-plane state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nxyz-control-plane-${{ github.run_id }}
+          path: nxyz/out/status.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  dependabot-auto-merge:
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable guarded auto-merge for patch/minor updates
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --squash "$PR_URL"
+      - name: Hold major upgrades for review
+        if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+        run: echo "Major dependency update detected; policy requires review."

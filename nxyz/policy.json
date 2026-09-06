@@ -1,0 +1,20 @@
+{
+  "schema": "xunia.nxyz.upgrade-policy.v1",
+  "agent": "gpt-doug-llm-max",
+  "mode": "guarded-auto",
+  "source_of_truth": "github",
+  "cloud_control_plane": "nxyz",
+  "rules": {
+    "dependency_patch": "auto-merge-after-required-checks",
+    "dependency_minor": "auto-merge-after-required-checks",
+    "dependency_major": "manual-review",
+    "application_code": "pull-request-only",
+    "security_fix": "pull-request-plus-required-checks",
+    "failed_health_check": "block-merge-and-report",
+    "secrets": "never-commit"
+  },
+  "upgrade_window": {
+    "dependabot": "daily",
+    "agent_health": "every-6-hours"
+  }
+}
