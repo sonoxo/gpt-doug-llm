@@ -48,7 +48,10 @@ class PalantirStack:
         gotham_configured = bool(os.getenv("GOTHAM_BASE_URL", "").strip())
         apollo_configured = bool(os.getenv("APOLLO_URL", "").strip())
         jupyter_configured = foundry_ready and _flag("PALANTIR_JUPYTER_ENABLED")
-        defense_osdk = PalantirDefenseOSDK(self.foundry)
+        defense_osdk = PalantirDefenseOSDK(
+            self.foundry,
+            enabled=_flag("PALANTIR_DEFENSE_OSDK_ENABLED"),
+        )
 
         return [
             PalantirPlane(
