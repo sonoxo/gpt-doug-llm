@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "GPT-DOUG-MAX: python3 is required" >&2
+  exit 1
+fi
+
+if [[ $# -eq 0 ]]; then
+  cd "$ROOT"
+  exec env ZYRA_ACTIVE=1 python3 "$ROOT/zyra_chat.py"
+fi
+
+goal="$*"
+case "${goal,,}" in
+  plan\ *) command="/plan ${goal#* }" ;;
+  build\ *) command="/do ${goal#* }" ;;
+  do\ *) command="/do ${goal#* }" ;;
+  evolve\ *) command="/evolve ${goal#* }" ;;
+  *) command="/do $goal" ;;
+esac
+
+cd "$ROOT"
+printf '%s\n/quit\n' "$command" | env ZYRA_ACTIVE=1 python3 "$ROOT/zyra_chat.py"
