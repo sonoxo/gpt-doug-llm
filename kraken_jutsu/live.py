@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .agents_v031 import AIPDecisionLayer, AppointmentEngine, FriendGate
 from .models_v031 import ActionProposal, AgentCandidate, Appointment, Role, TrustState
-from .runtime_v031 import LiveRuntime, VA3LM_LANES
+from .runtime_v031 import VA3LM_LANES, LiveRuntime
 from .sources_v031 import CISAKEVSource, NVDSource
 from .store_v031 import OntologyStore
 from .usb_v031 import USBLayout, install_usb
