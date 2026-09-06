@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T10:27:53Z",
+  "cutoff_at": "2026-09-05T10:28:14Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -188,6 +188,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "742b99e31325d877a89795ef3045d01b76c5993c1fad578335a5d59afed38bb4",
       "size": 2110,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/cyber-cpr-watch.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T10:28:02Z",
+      "reviewed_at": null,
+      "sha256": "f5335ee45769489551627e8c2b80c89ad13ee96f7dc44d76cba028c0c4916452",
+      "size": 860,
       "validation_issues": [],
       "was_due": false
     },
@@ -8861,11 +8872,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T10:27:53Z",
+  "generated_at": "2026-09-06T10:28:14Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 805,
+  "tracked_files_reviewed": 806,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
