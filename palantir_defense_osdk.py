@@ -7,11 +7,8 @@ application-domain contract to the local runtime and keeps kinetic targeting /
 fires execution outside autonomous local authority.
 """
 
-from __future__ import annotations
-
 import os
 from dataclasses import dataclass
-from typing import Any
 
 
 SAFE_DOMAINS = (
@@ -37,7 +34,7 @@ class DefenseOSDKDomain:
 class PalantirDefenseOSDK:
     """Local capability registry for an enrollment-generated Defense OSDK client."""
 
-    def __init__(self, foundry: Any | None) -> None:
+    def __init__(self, foundry: object | None) -> None:
         self.foundry = foundry
 
     @property
@@ -84,7 +81,7 @@ class PalantirDefenseOSDK:
                 return domain
         raise ValueError(f"Unknown Defense OSDK domain: {name}")
 
-    def status(self) -> dict[str, Any]:
+    def status(self) -> dict[str, object]:
         domains = self.domains()
         return {
             "configured": self.configured,
