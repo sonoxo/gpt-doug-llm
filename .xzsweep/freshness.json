@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T13:52:19Z",
+  "cutoff_at": "2026-09-05T13:55:52Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -95,11 +95,11 @@
     ".github/dependabot.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-15T23:25:27Z",
-      "reviewed_at": "2026-09-06T04:30:15Z",
-      "sha256": "a5222f64febd76024b804f82ff23458055fb25eba4b3605507df2907fcca3387",
-      "size": 543,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T13:55:42Z",
+      "reviewed_at": null,
+      "sha256": "ddd92bb8bf4a10ec218ef0fb8b469d6d8377e084013e3d5566471e9c5a7e9ee2",
+      "size": 930,
       "validation_issues": [],
       "was_due": false
     },
@@ -375,6 +375,17 @@
       "reviewed_at": null,
       "sha256": "ae13118ebd4e583c48adc23a100620c70c5cbf0204df26a907ef954d6c87ebb2",
       "size": 1213,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/nxyz-agentic-upgrade.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T13:55:42Z",
+      "reviewed_at": null,
+      "sha256": "3a533ae27d881b1ef3e17f5159b2f11c3cf8539bb2eaa01e9bc3cdc39707efc0",
+      "size": 2328,
       "validation_issues": [],
       "was_due": false
     },
@@ -4544,6 +4555,28 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "7039bd3c387c65578fd514d4b3e39ff300c3765b35889449112654a933137b22",
       "size": 1055,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "nxyz/control_plane.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T13:55:42Z",
+      "reviewed_at": null,
+      "sha256": "a1b089e4a0f452137e093ae5a984fe081958721e3e6cd3b5ecd6310226ecec3e",
+      "size": 2385,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "nxyz/policy.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T13:55:42Z",
+      "reviewed_at": null,
+      "sha256": "544653533023278794e7aa0219606375cf69da1d389f0cccc382d977d9019f90",
+      "size": 622,
       "validation_issues": [],
       "was_due": false
     },
@@ -9180,11 +9213,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T13:52:19Z",
+  "generated_at": "2026-09-06T13:55:52Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 834,
+  "tracked_files_reviewed": 837,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
