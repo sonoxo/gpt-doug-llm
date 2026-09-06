@@ -1,9 +1,13 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T19:32:52Z",
-  "due_files_reviewed": 1,
+  "cutoff_at": "2026-09-05T21:39:42Z",
+  "due_files_reviewed": 5,
   "due_paths": [
-    "AI-PENTEST.md"
+    ".github/workflows/grimthebuilder-image.yml",
+    ".github/workflows/zyra-cpr.yml",
+    "ontology/gpt-doug-pocket.json",
+    "ontology/zyra-cpr.json",
+    "scripts/zyra-cpr.sh"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -350,11 +354,11 @@
     ".github/workflows/grimthebuilder-app.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T06:52:30Z",
-      "reviewed_at": "2026-09-06T09:27:49Z",
-      "sha256": "280d19cf986583601fc6d425e3cb22e75fb5a844faacc0783e03e0539bc3abe7",
-      "size": 1362,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T21:39:32Z",
+      "reviewed_at": null,
+      "sha256": "ed413a3429c57fdc40478ef111f457afd2124f83e3c83818921cf04d30b50377",
+      "size": 1372,
       "validation_issues": [],
       "was_due": false
     },
@@ -363,11 +367,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T20:22:44Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "b0ca070ae8f796de2a409aaff1414f49cd9e07b31e9227f4c4945b248e30ef38",
       "size": 5278,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/issue-automation.yml": {
       "actions": [],
@@ -704,11 +708,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:12:25Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "0452b64f68d7ecbd055bc6074d23994ca94b353b717f2d10fd30e0546e774a24",
       "size": 731,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".gitignore": {
       "actions": [],
@@ -746,13 +750,13 @@
     "AI-PENTEST.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T18:43:43Z",
       "reviewed_at": "2026-09-06T19:32:52Z",
       "sha256": "01d624740788634738220767073bda61cda422953b7ae0ddddd12f347ea069bf",
       "size": 2587,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "CONTRIBUTING.md": {
       "actions": [],
@@ -2254,9 +2258,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T17:22:27Z",
+      "git_touched_at": "2026-09-06T19:32:58Z",
       "reviewed_at": null,
-      "sha256": "6dfc0778b268d3035042843903e940f9d5426fc9d1c9f11860be92442110d86d",
+      "sha256": "d666b77c99f610da28f1f8503a2f20a24debd94d84732b80b584315a2b7d31d1",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -4741,11 +4745,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:39:03Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "da8ef2ba595ee91c2e02e783255f7d4f3a386b2025528a980a0496d08d7bbc13",
       "size": 1004,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "ontology/regulatory/fcc-part100.binding.json": {
       "actions": [],
@@ -4785,11 +4789,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:12:43Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "0e7209fccd9079270e47c46193c094cf6395a31168b57aaccb2007158eb7e11e",
       "size": 929,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "package-lock.json": {
       "actions": [],
@@ -5676,11 +5680,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T21:26:09Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T21:39:42Z",
       "sha256": "1d897d081e434690b8ecb1b73c9bf7f9a90dd2890648779083dda5b9210282c6",
       "size": 7056,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "secret_store.py": {
       "actions": [],
@@ -7446,9 +7450,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T16:21:46Z",
+      "git_touched_at": "2026-09-06T19:32:53Z",
       "reviewed_at": null,
-      "sha256": "eff7289f5a8da32078028a8567b497aa417cfd67a2572ef569d958ddca8eb93c",
+      "sha256": "666f2b769c2df76d5a7f57fd51b2914f46f9341576bfd32e9152d621b4d73af7",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -7468,9 +7472,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T16:21:46Z",
+      "git_touched_at": "2026-09-06T19:32:53Z",
       "reviewed_at": null,
-      "sha256": "95d0392864ce3bede9d78b4cc6b16144b20569e05bb80ff8e3475ac8dc2b8f62",
+      "sha256": "bef141f048307d758f2c9bbc5dadca2186b65546b95e99e7f996d7915cfea837",
       "size": 6084,
       "validation_issues": [],
       "was_due": false
@@ -9534,7 +9538,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T19:32:52Z",
+  "generated_at": "2026-09-06T21:39:42Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
