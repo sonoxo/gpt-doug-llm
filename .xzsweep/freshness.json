@@ -1,12 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T14:18:09Z",
-  "due_files_reviewed": 3,
-  "due_paths": [
-    "intel/white-house/daily/2026-09-05.json",
-    "intel/white-house/daily/2026-09-05.md",
-    "intel/white-house/state.json"
-  ],
+  "cutoff_at": "2026-09-05T14:18:58Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -2223,9 +2219,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T14:16:10Z",
+      "git_touched_at": "2026-09-06T14:18:12Z",
       "reviewed_at": null,
-      "sha256": "5dc44a6db5aff07d193f86a2af47b1602d7651e65ba05de9cbc6f38a4add7335",
+      "sha256": "030e4b0efec556aa248f4d104728b0fc811f487fc9f575c2ccff0a86b1ef5bf3",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -4070,35 +4066,35 @@
     "intel/white-house/daily/2026-09-05.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:17:05Z",
       "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "85f51eca69162ae0d240a5bb30c74931dbccb611ea882b6b6c846cdd4cc7d686",
       "size": 9939,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-05.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:17:05Z",
       "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "c48a8a90f0f532df8b5f46d5cb0aab1834a87834093544409b41f50569c68046",
       "size": 2141,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:17:05Z",
       "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "589642f2927d4d2fbd28aedecdabb78658a43ed85e8a76d8ffa545d4bee3a02c",
       "size": 11130,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intelligence_compliance.py": {
       "actions": [],
@@ -4900,6 +4896,17 @@
       "reviewed_at": null,
       "sha256": "b8c50a99c7ceb16d1db9648ecad7ff47489846e6b649a8250e34ab98ea50ac97",
       "size": 2016,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "redpanda-desktop/va3lm-cpr": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T14:18:50Z",
+      "reviewed_at": null,
+      "sha256": "5df44f4d2e18e62db6f281cf0838a95f8ed2dc35d88e058f7770ee4c8b61f2d5",
+      "size": 638,
       "validation_issues": [],
       "was_due": false
     },
@@ -9261,11 +9268,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T14:18:09Z",
+  "generated_at": "2026-09-06T14:18:58Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 841,
+  "tracked_files_reviewed": 842,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
