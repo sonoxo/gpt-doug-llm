@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from kraken_jutsu.live import (
-    AIPDecisionLayer,
     AgentCandidate,
+    AIPDecisionLayer,
     AppointmentEngine,
     OntologyStore,
 )
