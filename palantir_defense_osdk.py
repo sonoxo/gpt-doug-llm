@@ -7,9 +7,6 @@ application-domain contract to the local runtime and keeps kinetic targeting /
 fires execution outside autonomous local authority.
 """
 
-from os import getenv
-
-
 SAFE_DOMAINS = (
     "intelligence",
     "mission-planning",
@@ -37,13 +34,13 @@ class DefenseOSDKDomain:
 class PalantirDefenseOSDK:
     """Local capability registry for an enrollment-generated Defense OSDK client."""
 
-    def __init__(self, foundry: object | None) -> None:
+    def __init__(self, foundry: object | None, *, enabled: bool = False) -> None:
         self.foundry = foundry
+        self.enabled = enabled
 
     @property
     def configured(self) -> bool:
-        raw = getenv("PALANTIR_DEFENSE_OSDK_ENABLED", "").strip().lower()
-        return self.foundry is not None and raw in {"1", "true", "yes", "on"}
+        return self.foundry is not None and self.enabled
 
     def domains(self) -> list[DefenseOSDKDomain]:
         safe_enabled = self.configured
