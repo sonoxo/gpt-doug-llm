@@ -1,0 +1,57 @@
+{
+  "schema": "black-house.infrastructure-resilience.v1",
+  "mode": "DEFENSIVE_INFRASTRUCTURE_PROTECTION",
+  "purpose": "Keep GPT-DOUG-LLM / XUNIA infrastructure observable, recoverable, capacity-aware, human-governed, and fail-closed during degraded conditions.",
+  "public_reference": {
+    "title": "Palantir / Gallatin AI public tactical logistics demo",
+    "url": "https://www.youtube.com/watch?v=jK5k9_Gql-I",
+    "use": "Architecture inspiration for common operating picture, forecast windows, configurable thresholds, course-of-action generation, human override, simulation, and approval-gated execution.",
+    "handling": "PUBLIC_REFERENCE_ONLY_NO_AFFILIATION_OR_ENDORSEMENT"
+  },
+  "states": {
+    "GREEN": "healthy, verified, within configured operating thresholds",
+    "AMBER": "degraded or forecast risk; recommend mitigation and require review for material actions",
+    "RED": "critical shortfall or integrity failure; freeze nonessential mutation and prioritize recovery",
+    "BLACK": "trust boundary compromised; quarantine affected route and require explicit recovery authorization"
+  },
+  "required_controls": [
+    "continuous health telemetry for critical services",
+    "capacity and dependency inventory",
+    "short-horizon forecast with confidence and timestamp",
+    "configurable thresholds rather than model-invented thresholds",
+    "human override at every material decision point",
+    "simulation or dry-run before consequential infrastructure mutation",
+    "checkpoint or snapshot before material mutation",
+    "tested rollback path",
+    "idempotent recovery operations where feasible",
+    "least-privileged credentials and scoped service identities",
+    "append-only audit evidence for decisions and execution",
+    "fail-closed behavior when provenance, authorization, or integrity is unknown"
+  ],
+  "decision_contract": {
+    "observe": "allowed read-only when scoped and authenticated",
+    "recommend": "allowed; must include evidence, confidence, affected dependencies, and rollback plan",
+    "simulate": "allowed in isolated or non-mutating mode",
+    "mutate": "requires explicit policy allow; material or external changes require human approval",
+    "dispatch_external_action": "disabled by default",
+    "quarantine": "allowed only for locally governed resources or explicitly authorized targets and must be auditable",
+    "restore": "requires verified recovery point and post-restore validation"
+  },
+  "protected_planes": [
+    "source and provenance data",
+    "ontology and policy artifacts",
+    "agent runtime state",
+    "CI/CD and release workflows",
+    "secrets and service identities",
+    "deployment adapters",
+    "logs, audit evidence, and recovery checkpoints"
+  ],
+  "invariants": [
+    "model predictions are advisory, not authoritative state",
+    "humans retain authority for material or irreversible actions",
+    "no autonomous external dispatch from a forecast alone",
+    "unknown identity, provenance, scope, or integrity fails closed",
+    "a recovery action is not complete until post-change validation passes",
+    "public-reference architecture does not grant external platform access or affiliation"
+  ]
+}
