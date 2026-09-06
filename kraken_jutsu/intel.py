@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
-from enum import Enum
-from hashlib import sha256
 import json
 import os
+from dataclasses import asdict, dataclass
+from enum import Enum
+from hashlib import sha256
 from urllib.request import Request, urlopen
 
 
