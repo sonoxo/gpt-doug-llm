@@ -1,8 +1,11 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T16:23:08Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-05T16:25:25Z",
+  "due_files_reviewed": 2,
+  "due_paths": [
+    "doug-market",
+    "install_market_terminal.sh"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -2307,10 +2310,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T14:24:43Z",
+      "git_touched_at": "2026-09-06T16:24:39Z",
       "reviewed_at": null,
-      "sha256": "8e8b584514e624c63915ba903ec2087f6fe7e710309f5741465ada0fcd9b168d",
-      "size": 8879,
+      "sha256": "d28b08701636bc4e67c139b2a2c4917b493f934a2aa6358acf00cb0b06658fbd",
+      "size": 9644,
       "validation_issues": [],
       "was_due": false
     },
@@ -2605,11 +2608,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:23:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:25:25Z",
       "sha256": "2557ad7bc618a62078a3968a704a5e59aec21c7d4f99bc6e9f0d902e1c56a715",
       "size": 1686,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "doug_core/__init__.py": {
       "actions": [],
@@ -3705,11 +3708,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:23:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:25:25Z",
       "sha256": "172a2890e669cdb05b79f7f8ba99e565afa89d11844dee4050b363d168be5755",
       "size": 1178,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "install_zyra_terminal.sh": {
       "actions": [],
@@ -9422,7 +9425,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T16:23:08Z",
+  "generated_at": "2026-09-06T16:25:25Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
