@@ -1,6 +1,10 @@
 name: Cyber CPR Watch
 
 on:
+  push:
+    paths:
+      - 'cyber-cpr/**'
+      - '.github/workflows/cyber-cpr-watch.yml'
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:
