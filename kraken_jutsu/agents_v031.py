@@ -9,7 +9,6 @@ from pathlib import Path
 
 from .models_v031 import ActionProposal, AgentCandidate, Appointment, Role, TrustState
 
-
 CAPS = {
     Role.OFFICER: {
         "orchestrate": 2.0, "coordinate": 2.0, "policy": 1.5,
