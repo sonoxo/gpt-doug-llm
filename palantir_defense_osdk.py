@@ -13,8 +13,6 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from palantir_foundry import FoundryClient
-
 
 SAFE_DOMAINS = (
     "intelligence",
@@ -39,7 +37,7 @@ class DefenseOSDKDomain:
 class PalantirDefenseOSDK:
     """Local capability registry for an enrollment-generated Defense OSDK client."""
 
-    def __init__(self, foundry: FoundryClient | None) -> None:
+    def __init__(self, foundry: Any | None) -> None:
         self.foundry = foundry
 
     @property
