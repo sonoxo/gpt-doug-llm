@@ -10,6 +10,9 @@ HOST_STATE="$HOME/.local/state/gpt-redpanda"
 FALLBACK_PID="$HOST_STATE/fallback.pid"
 FALLBACK_OUT="$HOST_STATE/fallback.log"
 FALLBACK_ERR="$HOST_STATE/fallback.err.log"
+ZFI_PID="$HOST_STATE/zfi.pid"
+ZFI_OUT="$HOST_STATE/zfi.log"
+ZFI_ERR="$HOST_STATE/zfi.err.log"
 
 find_node() {
   if [[ -n "${REDPANDA_USB_ROOT:-}" && -f "${REDPANDA_USB_ROOT}/${MARKER}" ]]; then
@@ -45,10 +48,21 @@ portal_ready() {
   lsof -nP -iTCP:${REDPANDA_PORT:-8765} -sTCP:LISTEN >/dev/null 2>&1
 }
 
+zfi_ready() {
+  lsof -nP -iTCP:${ZFI_PORT:-8766} -sTCP:LISTEN >/dev/null 2>&1
+}
+
 fallback_running() {
   [[ -f "$FALLBACK_PID" ]] || return 1
   local pid
   pid="$(cat "$FALLBACK_PID" 2>/dev/null || true)"
+  [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
+}
+
+zfi_running() {
+  [[ -f "$ZFI_PID" ]] || return 1
+  local pid
+  pid="$(cat "$ZFI_PID" 2>/dev/null || true)"
   [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
 }
 
@@ -100,6 +114,40 @@ start_fallback_service() {
   return 1
 }
 
+start_zfi_service() {
+  mkdir -p "$HOST_STATE"
+  [[ -f "$NODE/GPT-REDPANDA/zfi_agent.py" ]] || {
+    echo "ZFI runtime missing. Re-run the Red Panda installer to update the USB node." >&2
+    return 2
+  }
+  if zfi_ready; then
+    return 0
+  fi
+  if zfi_running; then
+    return 0
+  fi
+  : >> "$ZFI_OUT"
+  : >> "$ZFI_ERR"
+  REDPANDA_USB_ROOT="$NODE" PYTHONUNBUFFERED=1 \
+    nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/zfi_agent.py" \
+    >>"$ZFI_OUT" 2>>"$ZFI_ERR" </dev/null &
+  local pid=$!
+  printf '%s\n' "$pid" > "$ZFI_PID"
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    zfi_ready && return 0
+    if ! kill -0 "$pid" >/dev/null 2>&1; then
+      rm -f "$ZFI_PID"
+      echo "❌ ZFI exited during startup." >&2
+      [[ -s "$ZFI_ERR" ]] && tail -n 30 "$ZFI_ERR" >&2 || true
+      return 1
+    fi
+    sleep 0.4
+  done
+  echo "❌ ZFI did not bind to port ${ZFI_PORT:-8766}." >&2
+  [[ -s "$ZFI_ERR" ]] && tail -n 30 "$ZFI_ERR" >&2 || true
+  return 1
+}
+
 start_desktop_service() {
   [[ -f "$PLIST" ]] || {
     echo "LaunchAgent plist not found: $PLIST" >&2
@@ -117,8 +165,6 @@ start_desktop_service() {
   launchctl enable "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
   launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
 
-  # launchd can accept the plist yet fail at spawn time with EX_CONFIG (78).
-  # Give it a brief chance to bind, then recover automatically.
   for _ in 1 2 3 4 5 6; do
     portal_ready && return 0
     sleep 0.5
@@ -170,7 +216,6 @@ open_portal() {
     sleep 1
   done
 
-  # Last-resort recovery if launchd registered successfully but never spawned.
   launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
   if start_fallback_service; then
     for i in 1 2 3 4 5 6; do
@@ -185,6 +230,15 @@ open_portal() {
 
   show_service_diag
   return 1
+}
+
+open_zfi() {
+  local port="${ZFI_PORT:-8766}"
+  local token=""
+  [[ -f "$NODE/.redpanda/portal-token" ]] && token="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
+  [[ -n "$token" ]] || { echo "ZFI cannot open: portal token missing." >&2; return 1; }
+  start_zfi_service || return $?
+  open "http://127.0.0.1:${port}/?token=${token}"
 }
 
 case "$MODE" in
@@ -213,6 +267,9 @@ case "$MODE" in
     fi
     open_portal
     ;;
+  files|zfi)
+    open_zfi
+    ;;
   status)
     if [[ -f "$NODE/.redpanda/status.json" ]]; then
       cat "$NODE/.redpanda/status.json"
@@ -223,7 +280,7 @@ case "$MODE" in
     fi
     ;;
   *)
-    echo "Usage: redpanda-node {run|open|status|cpr|mobile|desktop|stop}" >&2
+    echo "Usage: redpanda-node {run|open|files|zfi|status|cpr|mobile|desktop|stop}" >&2
     exit 2
     ;;
 esac
