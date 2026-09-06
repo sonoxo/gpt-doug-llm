@@ -1,4 +1,3 @@
-import os
 import tempfile
 
 from palantir_aip import AIPTestCase, PalantirAIPClient
