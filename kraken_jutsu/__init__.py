@@ -1,5 +1,5 @@
-from .ontology import OntologyJudge, Judgment
 from .intel import GovernmentSourceRegistry, OSINTIndustriesAdapter, OSINTQueryPolicy
+from .ontology import Judgment, OntologyJudge
 
 __all__ = [
     "OntologyJudge",
