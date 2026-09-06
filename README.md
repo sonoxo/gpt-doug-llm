@@ -2,6 +2,16 @@
 
 <img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA product ecosystem" />
 
+<a href="https://neptuneshield.com/index.html#contact"><img width="118" src="https://neptuneshield.com/assets/images/neptuneshield-logo.png" alt="Neptune Shield official insignia" /></a>
+
+<a href="https://www.youtube.com/watch?v=jK5k9_Gql-I"><img width="760" src="https://img.youtube.com/vi/jK5k9_Gql-I/maxresdefault.jpg" alt="Public infrastructure resilience reference video — Palantir / Gallatin AI" /></a>
+
+**▶ PUBLIC RESILIENCE REFERENCE — human-controlled forecasting, course-of-action generation, simulation, and approval-gated execution**
+
+[![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
+
+<sub>Neptune Shield and the linked Palantir/Gallatin AI material are public external references. Their inclusion does not imply affiliation, endorsement, contract status, clearance, authorization, or third-party access.</sub>
+
 # THE BLACK HOUSE // GPT-DOUG-LLM MAX
 
 ### ZYRA · Wakeup3lm · Ontology · Palantir AIP/Foundry · governed agentic infrastructure
@@ -113,6 +123,15 @@ Security design rules:
 - malformed or unknown agent actions fail closed;
 - tests, audits, and probes are evidence, not decoration;
 - no repository setting can manufacture external Palantir entitlement or government authorization.
+
+### Infrastructure resilience gate
+
+The Black House resilience policy turns public logistics/decision-workflow lessons into a defensive software-infrastructure contract: telemetry first, configurable thresholds, forecast confidence, dry-run/simulation before material mutation, snapshots, rollback, least privilege, explicit human override, and default-disabled autonomous external dispatch.
+
+- [Infrastructure resilience policy](safety-shield/policies/infrastructure-resilience.json)
+- [Deterministic validator](scripts/validate_infrastructure_resilience.py)
+- [CI resilience gate](.github/workflows/black-house-resilience-gate.yml)
+- [Public reference video](https://www.youtube.com/watch?v=jK5k9_Gql-I)
 
 Read [SECURITY.md](SECURITY.md), [Federal / IC alignment](docs/FEDERAL_IC_ALIGNMENT.md), and [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md).
 
@@ -315,6 +334,7 @@ gpt-doug-llm/
 ├── tools/nxyz-mouse-mic/        # Browser-guidance product
 ├── safety-shield/               # SHADOW GLASS + GLASS ONION control plane
 ├── scripts/generate_ecosystem_diagrams.py
+├── scripts/validate_infrastructure_resilience.py
 ├── docs/assets/                 # Auto-generated responsive SVG infographics
 ├── tests/                       # Regression tests
 └── .github/workflows/           # CI / security / release / adaptive-doc automation
@@ -330,6 +350,7 @@ gpt-doug-llm/
 | [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md) | AIP, Logic, Foundry, Gotham, Apollo and tenant verification |
 | [Federal / IC Alignment](docs/FEDERAL_IC_ALIGNMENT.md) | Public control alignment and explicit authorization boundaries |
 | [SHADOW GLASS](safety-shield/SHADOW_GLASS.md) | Defensive mission nexus and Glass Onion shield |
+| [Infrastructure Resilience](safety-shield/policies/infrastructure-resilience.json) | Human-governed infrastructure protection contract |
 | [Product Portfolio](docs/PRODUCTS.md) | Products, buyer value, and readiness |
 | [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
 | [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
@@ -341,7 +362,7 @@ gpt-doug-llm/
 
 ## Independence statement
 
-**ZYRA, GPT-DOUG-LLM, Wakeup3lm, NXYZ, SHADOW GLASS, GLASS ONION, The Black House, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
+**ZYRA, GPT-DOUG-LLM, Wakeup3lm, NXYZ, SHADOW GLASS, GLASS ONION, The Black House, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, Neptune Shield, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
 
 ---
 
