@@ -1,0 +1,40 @@
+name: Cyber CPR Watch
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: cyber-cpr-watch
+  cancel-in-progress: true
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile Cyber CPR
+        run: python3 -m py_compile cyber-cpr/cyber_cpr.py
+
+      - name: Verify GitHub CLI authorization
+        run: |
+          gh auth status
+          gh api repos/${{ github.repository }} >/dev/null
+
+      - name: Run repository heartbeat
+        run: python3 cyber-cpr/cyber_cpr.py check "${{ github.repository }}"
