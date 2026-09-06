@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T11:02:22Z",
+  "cutoff_at": "2026-09-05T11:07:24Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -683,6 +683,17 @@
       "reviewed_at": "2026-09-06T09:27:49Z",
       "sha256": "da92d95e6d43c78708a6c2355b4aec52d5f1f88402d9d2ede0142dcaba142d72",
       "size": 156,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".xunia/agentic-cpr-red-panda-bridge.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T11:07:12Z",
+      "reviewed_at": null,
+      "sha256": "fa581e0d239507dd2418b3a989cfb090164ee82b23f7aa6acc313ef860d7a0e2",
+      "size": 374,
       "validation_issues": [],
       "was_due": false
     },
@@ -3579,6 +3590,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "integrations/agentic-cpr-red-panda/activate.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T11:07:12Z",
+      "reviewed_at": null,
+      "sha256": "282c9802471b0d8ce3e444cfa716a9716952b2a0be520d38fca65a4a36795deb",
+      "size": 1349,
+      "validation_issues": [],
+      "was_due": false
+    },
     "intel/AGENTIC_INTELLIGENCE_LOOP.md": {
       "actions": [],
       "binary": false,
@@ -4617,10 +4639,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T10:52:24Z",
+      "git_touched_at": "2026-09-06T11:02:29Z",
       "reviewed_at": null,
-      "sha256": "5220241620255327707d697c7d4e832986613d76120af1e5c530417dab3ee261",
-      "size": 2448,
+      "sha256": "0ce69da15b9681fbcebe1d90af9aaa2983f36c2b8b0e18f1eed14ef6a3e14773",
+      "size": 3299,
       "validation_issues": [],
       "was_due": false
     },
@@ -8949,11 +8971,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T11:02:22Z",
+  "generated_at": "2026-09-06T11:07:24Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 813,
+  "tracked_files_reviewed": 815,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
