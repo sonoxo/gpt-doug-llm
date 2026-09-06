@@ -1,10 +1,9 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T15:06:40Z",
-  "due_files_reviewed": 2,
+  "cutoff_at": "2026-09-05T15:24:36Z",
+  "due_files_reviewed": 1,
   "due_paths": [
-    "free-video-studio/README.md",
-    "free-video-studio/engine.py"
+    "free-video-studio/test_engine.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -2240,6 +2239,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/assets/insignia-kraken-jutsu.svg": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T15:24:26Z",
+      "reviewed_at": null,
+      "sha256": "31e60388fe21313b163069e0e7ed972438fe07bf23b6137f12ec0e3f3fc1f575",
+      "size": 11007,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/assets/security-gates.svg": {
       "actions": [],
       "binary": false,
@@ -2892,13 +2902,13 @@
     "free-video-studio/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:59:11Z",
       "reviewed_at": "2026-09-06T15:06:40Z",
       "sha256": "26925a14987e5ee418d2d8b8bf93122e9e0a2c8797035e0f2fcada84ba4061e3",
       "size": 6376,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "free-video-studio/app.py": {
       "actions": [],
@@ -2914,13 +2924,13 @@
     "free-video-studio/engine.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:59:11Z",
       "reviewed_at": "2026-09-06T15:06:40Z",
       "sha256": "991f3ac60177b0acbc9505ecf5dfc86668ba304effdd749f6c24d535973fb01b",
       "size": 15666,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "free-video-studio/install_free.sh": {
       "actions": [],
@@ -2960,11 +2970,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T15:23:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T15:24:36Z",
       "sha256": "4bcb4575d7db9fa457df57a1e1ee3289c5ad12a2048a0223c249176638ba046d",
       "size": 2682,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "golden_shield.py": {
       "actions": [],
@@ -9348,11 +9358,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T15:06:40Z",
+  "generated_at": "2026-09-06T15:24:36Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 849,
+  "tracked_files_reviewed": 850,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
