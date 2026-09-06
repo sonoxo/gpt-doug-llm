@@ -3,24 +3,41 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "daily"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    groups:
+      python-nonmajor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     labels:
       - "dependencies"
       - "python"
+
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "daily"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    groups:
+      docker-nonmajor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     labels:
       - "dependencies"
       - "docker"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
+      interval: "daily"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    groups:
+      actions-nonmajor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
     labels:
       - "dependencies"
       - "ci"
