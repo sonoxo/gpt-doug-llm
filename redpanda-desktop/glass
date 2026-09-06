@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+GLASS ONION command surface
+
+Usage:
+  glass intel neptune-shield seal-tank
+  glass safehouse airspace
+  glass ontology governance
+EOF
+}
+
+pretty_emit() {
+  local source="$1"
+  if command -v python3 >/dev/null 2>&1; then
+    python3 - "$source" <<'PY'
+import json, pathlib, sys, urllib.request
+src = sys.argv[1]
+if src.startswith("http://") or src.startswith("https://"):
+    with urllib.request.urlopen(src, timeout=20) as r:
+        obj = json.load(r)
+else:
+    obj = json.loads(pathlib.Path(src).read_text())
+print(json.dumps(obj, indent=2, sort_keys=False))
+PY
+  elif [[ "$source" == http://* || "$source" == https://* ]]; then
+    curl -fsSL "$source"
+  else
+    cat "$source"
+  fi
+}
+
+repo_root=""
+if git rev-parse --show-toplevel >/dev/null 2>&1; then
+  candidate="$(git rev-parse --show-toplevel)"
+  if [[ -d "$candidate/the-black-house" ]]; then repo_root="$candidate"; fi
+fi
+if [[ -z "$repo_root" && -d "$HOME/.local/share/gpt-doug-llm/the-black-house" ]]; then
+  repo_root="$HOME/.local/share/gpt-doug-llm"
+fi
+
+cmd="${1:-}"
+case "$cmd" in
+  intel)
+    if [[ "${2:-}" == "neptune-shield" && "${3:-}" == "seal-tank" ]]; then
+      local_file="${repo_root:+$repo_root/the-black-house/integrations/neptune-shield/seal-tank.public-intel.json}"
+      if [[ -n "$local_file" && -f "$local_file" ]]; then
+        pretty_emit "$local_file"
+      else
+        pretty_emit "https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/the-black-house/integrations/neptune-shield/seal-tank.public-intel.json"
+      fi
+    else
+      usage >&2; exit 2
+    fi
+    ;;
+  safehouse)
+    if [[ "${2:-}" == "airspace" ]]; then
+      pretty_emit "https://raw.githubusercontent.com/sonoxo/xuniadao/main/ecosystem/safehouse-airspace-awareness.json"
+    else
+      usage >&2; exit 2
+    fi
+    ;;
+  ontology)
+    if [[ "${2:-}" == "governance" ]]; then
+      pretty_emit "https://raw.githubusercontent.com/sonoxo/xuniadao/main/ecosystem/governance-ontology.json"
+    else
+      usage >&2; exit 2
+    fi
+    ;;
+  -h|--help|help|"")
+    usage
+    ;;
+  *)
+    usage >&2; exit 2
+    ;;
+esac
