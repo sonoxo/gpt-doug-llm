@@ -1,0 +1,162 @@
+{
+  "schema": "glass-onion.external-ecosystem.v1",
+  "captured_at": "2026-09-06",
+  "classification": "PUBLIC_SOURCE_OSINT",
+  "handling": "provenance-first; no affiliation, endorsement, contract, clearance, or authorization implied",
+  "source": {
+    "publisher": "Neptune Shield",
+    "page": "Vendors",
+    "url": "https://neptuneshield.com/vendors.html",
+    "authority": "first-party public website",
+    "evidence_state": "SOURCE_ASSERTED"
+  },
+  "organization": {
+    "id": "neptune-shield",
+    "name": "Neptune Shield",
+    "type": "Maritime Innovation Hub",
+    "cage": "07L84",
+    "uei": "STXJUM7D6FK1",
+    "address": "448 Viking Drive, Virginia Beach, VA 23452",
+    "public_site": "https://neptuneshield.com/index.html"
+  },
+  "vendor_partners": [
+    {
+      "id": "securexperts",
+      "name": "SecureXperts",
+      "status": "ACTIVE",
+      "dossier": "BIO_CRYPTO",
+      "capabilities": [
+        "biometric-controlled cryptographic access networks",
+        "out-of-band connectivity",
+        "hardware-bound zero trust",
+        "post-quantum security",
+        "tactical defense environments",
+        "critical infrastructure"
+      ]
+    },
+    {
+      "id": "sparkline-cyber",
+      "name": "Sparkline Cyber",
+      "status": "ACTIVE",
+      "dossier": "CYBER_ENG",
+      "capabilities": [
+        "cybersecurity engineering",
+        "risk reduction",
+        "operational resilience",
+        "mission-critical environment hardening",
+        "leadership decision advantage"
+      ]
+    },
+    {
+      "id": "octaris-technologies",
+      "name": "Octaris Technologies",
+      "status": "ACTIVE",
+      "dossier": "INTEL_AI",
+      "capabilities": [
+        "data scouting",
+        "analytic tooling",
+        "model development",
+        "decision advantage",
+        "global information environment analysis",
+        "government and commercial mission support"
+      ]
+    },
+    {
+      "id": "local-sphere",
+      "name": "Local Sphere",
+      "status": "ACTIVE",
+      "dossier": "IDENTITY_INTEL",
+      "capabilities": [
+        "identity intelligence",
+        "B2B activation",
+        "B2G activation",
+        "recruitment campaigns",
+        "intent-to-pipeline conversion",
+        "behavioral insight",
+        "omnichannel outreach"
+      ]
+    },
+    {
+      "id": "the-honor-foundation",
+      "name": "The Honor Foundation",
+      "status": "ACTIVE",
+      "dossier": "SOF_TRANSITION",
+      "capabilities": [
+        "executive education",
+        "special operations forces transition programming",
+        "private-sector leadership development",
+        "defense and technology workforce transition"
+      ]
+    },
+    {
+      "id": "radian-forge",
+      "name": "Radian Forge",
+      "status": "ACTIVE",
+      "dossier": "ADV_MFG",
+      "capabilities": [
+        "large-format wire arc additive manufacturing",
+        "qualification-ready metal components",
+        "digital traceability",
+        "shipyard and depot production",
+        "forward-deployed manufacturing",
+        "defense supply-chain resilience"
+      ]
+    },
+    {
+      "id": "community-first-project",
+      "name": "COMMUNITY FIRST PROJECT",
+      "status": "ACTIVE",
+      "dossier": "COMMUNITY",
+      "capabilities": [
+        "workforce development",
+        "veteran advocacy",
+        "regional resilience",
+        "government-industry-nonprofit partnerships"
+      ]
+    }
+  ],
+  "ontology": {
+    "object_types": [
+      "ExternalOrganization",
+      "VendorPartner",
+      "CapabilityDomain",
+      "PartnerTechnology",
+      "OrganizationCredential",
+      "PublicSource",
+      "EvidenceArtifact"
+    ],
+    "link_types": [
+      ["ExternalOrganization", "HAS_VENDOR_PARTNER", "VendorPartner"],
+      ["VendorPartner", "DELIVERS_CAPABILITY", "CapabilityDomain"],
+      ["VendorPartner", "SUPPORTED_BY", "PublicSource"],
+      ["ExternalOrganization", "HAS_CREDENTIAL", "OrganizationCredential"],
+      ["EvidenceArtifact", "DESCRIBES", "ExternalOrganization"]
+    ]
+  },
+  "xunia_mapping": {
+    "glass_onion": "preserve source, claim, timestamp, confidence, and lineage",
+    "black_house": "treat partner descriptions as public claims until independently corroborated",
+    "xunia": "use as ecosystem relationship and capability graph for lawful integration, partnership, market, and procurement analysis",
+    "gpt_doug_llm_max": "reason over the graph without converting source claims into implied credentials or access",
+    "kraken_jutsu": {
+      "mode": "DEFENSIVE_ADAPTIVE_ORCHESTRATION",
+      "allowed": [
+        "public-source enrichment",
+        "entity resolution",
+        "capability mapping",
+        "relationship graphing",
+        "defensive architecture matching",
+        "procurement-fit analysis",
+        "evidence-gap detection"
+      ],
+      "blocked": [
+        "credential theft",
+        "unauthorized access",
+        "persistence",
+        "stealth or evasion",
+        "malware delivery",
+        "exploit weaponization"
+      ]
+    }
+  }
+}
