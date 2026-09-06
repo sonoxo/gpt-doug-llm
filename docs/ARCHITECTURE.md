@@ -41,6 +41,43 @@ ZYRA is a local-first agentic runtime built around a separation between **probab
 └──────────────────────────────────────────────────────────────┘
 ```
 
+## Canonical six-layer AI capability stack
+
+The ecosystem must retain explicit coverage for all six conceptual AI layers below. A layer can be **repo-native** or delivered through a deliberately integrated model/runtime backend. This is an architectural coverage model, not a claim that every named algorithm is reimplemented from scratch in this repository.
+
+| Layer | Required capabilities | Current ecosystem mapping |
+| --- | --- | --- |
+| **Classical AI** | symbolic AI, expert/rule systems, knowledge representation, logic/reasoning | `ontology.py`, `agents/ontology.py`, deterministic policy and ontology workers |
+| **Machine Learning** | supervised/unsupervised learning interfaces, classification, regression/scoring, reinforcement-learning experimentation | local inference/application projects such as Watch Dog plus benchmark/reference hooks |
+| **Neural Networks** | perceptron/MLP concepts, activation functions, hidden layers, backpropagation-trained model consumption | neural-model backends used by local vision and browser/model runtimes |
+| **Deep Learning** | transformers, CNN-style vision, sequence/deep representation models, autoencoder/diffusion families | Transformers.js integration, COCO-SSD vision inference, Wan2.2/MLX diffusion paths |
+| **Generative AI** | LLMs, diffusion generation, multimodal integration, replaceable generative providers | Wakeup3lm / model-provider layer and Free Video Studio generation stack |
+| **Agentic AI** | memory/state, planning, tool use, bounded autonomous execution, verification/repair | planner, Agent Core, executor, reviewer, mission state, tools, checkpoints and repair loops |
+
+The machine-readable source of truth is [`config/ai-layer-manifest.json`](../config/ai-layer-manifest.json). CI runs [`scripts/validate_ai_layers.py`](../scripts/validate_ai_layers.py) to prevent a canonical layer from disappearing or losing all repository evidence.
+
+Conceptually the stack composes upward:
+
+```text
+AGENTIC AI
+  memory · planning · tools · bounded execution
+        ↑
+GENERATIVE AI
+  LLMs · diffusion · multimodal generation
+        ↑
+DEEP LEARNING
+  transformers · CNNs · deep sequence/representation models
+        ↑
+NEURAL NETWORKS
+  activations · hidden layers · learned weights
+        ↑
+MACHINE LEARNING
+  classification · regression · supervised/unsupervised/RL methods
+        ↑
+CLASSICAL AI
+  symbolic reasoning · expert systems · knowledge representation · logic
+```
+
 ## Core components
 
 ### `zyra_chat.py`
@@ -106,6 +143,8 @@ ZYRA is designed to fail closed around autonomous writes:
 ## Evidence and CI
 
 GitHub workflows provide a second engineering boundary independent of the local model session. The security gate includes native Agent Core and LASER tests plus lint, static security analysis, dependency auditing, and SBOM generation.
+
+The **AI Layer Gate** separately verifies that Classical AI, Machine Learning, Neural Networks, Deep Learning, Generative AI, and Agentic AI remain explicitly represented in the architecture manifest and retain repository evidence paths.
 
 ## Architectural principle
 

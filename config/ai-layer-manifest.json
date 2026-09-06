@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "name": "GPT-DOUG-LLM / XUNIA six-layer AI capability stack",
+  "purpose": "Keep the ecosystem aligned to the six conceptual AI layers: Classical AI, Machine Learning, Neural Networks, Deep Learning, Generative AI, and Agentic AI.",
+  "interpretation": "Coverage may be repo-native or supplied through an explicitly integrated model/runtime backend. This manifest does not claim that every example algorithm in each layer is custom-implemented in this repository.",
+  "required_layer_ids": [
+    "classical_ai",
+    "machine_learning",
+    "neural_networks",
+    "deep_learning",
+    "generative_ai",
+    "agentic_ai"
+  ],
+  "layers": [
+    {
+      "id": "classical_ai",
+      "name": "Classical AI",
+      "coverage": "repo-native",
+      "capabilities": [
+        "symbolic reasoning",
+        "expert/rule systems",
+        "knowledge representation",
+        "logic and deterministic reasoning"
+      ],
+      "evidence": [
+        "ontology.py",
+        "agents/ontology.py",
+        "workers/ontology_workers.py"
+      ]
+    },
+    {
+      "id": "machine_learning",
+      "name": "Machine Learning",
+      "coverage": "integrated-inference-and-application",
+      "capabilities": [
+        "supervised-learning inference",
+        "classification",
+        "regression/scoring interfaces",
+        "reinforcement-learning compatible experimentation"
+      ],
+      "evidence": [
+        "watch-dog/README.md",
+        "docs/museum.js"
+      ]
+    },
+    {
+      "id": "neural_networks",
+      "name": "Neural Networks",
+      "coverage": "backend-and-model-integrated",
+      "capabilities": [
+        "perceptron/MLP family concepts",
+        "activation functions",
+        "hidden-layer model execution",
+        "backpropagation-trained model consumption"
+      ],
+      "evidence": [
+        "watch-dog/README.md",
+        "the-green-house/config/worldmonitor-free-profile.json"
+      ]
+    },
+    {
+      "id": "deep_learning",
+      "name": "Deep Learning",
+      "coverage": "integrated-models",
+      "capabilities": [
+        "transformers",
+        "convolutional vision models",
+        "diffusion models",
+        "sequence/deep representation models"
+      ],
+      "evidence": [
+        "free-video-studio/README.md",
+        "the-green-house/config/worldmonitor-free-profile.json",
+        "watch-dog/README.md"
+      ]
+    },
+    {
+      "id": "generative_ai",
+      "name": "Generative AI",
+      "coverage": "repo-native-orchestration-plus-model-backends",
+      "capabilities": [
+        "LLM text/code generation",
+        "diffusion media generation",
+        "multimodal model integration",
+        "replaceable generative model providers"
+      ],
+      "evidence": [
+        "docs/ARCHITECTURE.md",
+        "free-video-studio/README.md",
+        "wakeup3lm/README.md"
+      ]
+    },
+    {
+      "id": "agentic_ai",
+      "name": "Agentic AI",
+      "coverage": "repo-native",
+      "capabilities": [
+        "memory/state",
+        "planning",
+        "tool use",
+        "bounded autonomous execution",
+        "verification and repair loops"
+      ],
+      "evidence": [
+        "zyra_agent.py",
+        "agents/ontology.py",
+        "wakeup3lm/README.md",
+        "docs/ARCHITECTURE.md"
+      ]
+    }
+  ]
+}
