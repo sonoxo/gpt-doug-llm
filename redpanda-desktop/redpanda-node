@@ -7,6 +7,9 @@ shift || true
 PLIST="$HOME/Library/LaunchAgents/com.sonoxo.gpt-redpanda.plist"
 LABEL="com.sonoxo.gpt-redpanda"
 HOST_STATE="$HOME/.local/state/gpt-redpanda"
+FALLBACK_PID="$HOST_STATE/fallback.pid"
+FALLBACK_OUT="$HOST_STATE/fallback.log"
+FALLBACK_ERR="$HOST_STATE/fallback.err.log"
 
 find_node() {
   if [[ -n "${REDPANDA_USB_ROOT:-}" && -f "${REDPANDA_USB_ROOT}/${MARKER}" ]]; then
@@ -38,20 +41,99 @@ if [[ -z "$PYTHON_BIN" ]]; then
   exit 2
 fi
 
+portal_ready() {
+  lsof -nP -iTCP:${REDPANDA_PORT:-8765} -sTCP:LISTEN >/dev/null 2>&1
+}
+
+fallback_running() {
+  [[ -f "$FALLBACK_PID" ]] || return 1
+  local pid
+  pid="$(cat "$FALLBACK_PID" 2>/dev/null || true)"
+  [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
+}
+
+stop_fallback_service() {
+  if fallback_running; then
+    local pid
+    pid="$(cat "$FALLBACK_PID")"
+    kill "$pid" >/dev/null 2>&1 || true
+    for _ in 1 2 3 4 5; do
+      kill -0 "$pid" >/dev/null 2>&1 || break
+      sleep 0.2
+    done
+  fi
+  rm -f "$FALLBACK_PID"
+}
+
+start_fallback_service() {
+  mkdir -p "$HOST_STATE"
+  if portal_ready; then
+    return 0
+  fi
+  if fallback_running; then
+    return 0
+  fi
+
+  echo "🐼 launchd unavailable; starting Red Panda user-session fallback." >&2
+  : >> "$FALLBACK_OUT"
+  : >> "$FALLBACK_ERR"
+  REDPANDA_USB_ROOT="$NODE" \
+  REDPANDA_EVENT_FILE="$REDPANDA_EVENT_FILE" \
+  PYTHONUNBUFFERED=1 \
+  nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" \
+    >>"$FALLBACK_OUT" 2>>"$FALLBACK_ERR" </dev/null &
+  local pid=$!
+  printf '%s\n' "$pid" > "$FALLBACK_PID"
+
+  for _ in 1 2 3 4 5 6 7 8 9 10; do
+    portal_ready && return 0
+    if ! kill -0 "$pid" >/dev/null 2>&1; then
+      rm -f "$FALLBACK_PID"
+      echo "❌ Red Panda fallback process exited during startup." >&2
+      [[ -s "$FALLBACK_ERR" ]] && tail -n 30 "$FALLBACK_ERR" >&2 || true
+      return 1
+    fi
+    sleep 0.5
+  done
+
+  echo "❌ Red Panda fallback started but portal did not bind to port ${REDPANDA_PORT:-8765}." >&2
+  return 1
+}
+
 start_desktop_service() {
-  [[ -f "$PLIST" ]] || { echo "LaunchAgent plist not found: $PLIST" >&2; exit 2; }
+  [[ -f "$PLIST" ]] || {
+    echo "LaunchAgent plist not found: $PLIST" >&2
+    start_fallback_service
+    return $?
+  }
+
+  stop_fallback_service
   launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
-  launchctl bootstrap "gui/$(id -u)" "$PLIST"
+  if ! launchctl bootstrap "gui/$(id -u)" "$PLIST"; then
+    echo "⚠️ launchd bootstrap failed; switching to fallback mode." >&2
+    start_fallback_service
+    return $?
+  fi
   launchctl enable "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
   launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+
+  # launchd can accept the plist yet fail at spawn time with EX_CONFIG (78).
+  # Give it a brief chance to bind, then recover automatically.
+  for _ in 1 2 3 4 5 6; do
+    portal_ready && return 0
+    sleep 0.5
+  done
+
+  if launchctl print "gui/$(id -u)/$LABEL" 2>/dev/null | grep -Eq 'last exit code = 78|job state = spawn failed'; then
+    echo "⚠️ launchd spawn failure detected (EX_CONFIG); switching to fallback mode." >&2
+    launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
+    start_fallback_service
+  fi
 }
 
 stop_desktop_service() {
   launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
-}
-
-portal_ready() {
-  lsof -nP -iTCP:${REDPANDA_PORT:-8765} -sTCP:LISTEN >/dev/null 2>&1
+  stop_fallback_service
 }
 
 show_service_diag() {
@@ -64,6 +146,14 @@ show_service_diag() {
   if [[ -s "$HOST_STATE/launchd.log" ]]; then
     echo "--- launchd stdout ---" >&2
     tail -n 30 "$HOST_STATE/launchd.log" >&2 || true
+  fi
+  if [[ -s "$FALLBACK_ERR" ]]; then
+    echo "--- fallback stderr ---" >&2
+    tail -n 30 "$FALLBACK_ERR" >&2 || true
+  fi
+  if [[ -s "$FALLBACK_OUT" ]]; then
+    echo "--- fallback stdout ---" >&2
+    tail -n 30 "$FALLBACK_OUT" >&2 || true
   fi
 }
 
@@ -79,6 +169,20 @@ open_portal() {
     fi
     sleep 1
   done
+
+  # Last-resort recovery if launchd registered successfully but never spawned.
+  launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
+  if start_fallback_service; then
+    for i in 1 2 3 4 5 6; do
+      [[ -f "$NODE/.redpanda/portal-token" ]] && token="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
+      if [[ -n "$token" ]] && portal_ready; then
+        open "http://127.0.0.1:${port}/?token=${token}"
+        return 0
+      fi
+      sleep 0.5
+    done
+  fi
+
   show_service_diag
   return 1
 }
@@ -98,7 +202,7 @@ case "$MODE" in
     ;;
   stop)
     stop_desktop_service
-    echo "🐼 GPT-REDPANDA desktop service stopped."
+    echo "🐼 GPT-REDPANDA desktop/fallback service stopped."
     ;;
   cpr)
     exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" --cpr-now "$@"
@@ -110,7 +214,13 @@ case "$MODE" in
     open_portal
     ;;
   status)
-    cat "$NODE/.redpanda/status.json" 2>/dev/null || echo '{"state":"unknown"}'
+    if [[ -f "$NODE/.redpanda/status.json" ]]; then
+      cat "$NODE/.redpanda/status.json"
+    elif fallback_running; then
+      echo '{"state":"starting","service":"fallback"}'
+    else
+      echo '{"state":"unknown"}'
+    fi
     ;;
   *)
     echo "Usage: redpanda-node {run|open|status|cpr|mobile|desktop|stop}" >&2
