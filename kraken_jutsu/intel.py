@@ -57,7 +57,7 @@ class GovernmentSourceRegistry:
             _validated_http_url(source.data_url),
             headers={"User-Agent": "krakenXYZ-Kraken-Jutsu/0.2"},
         )
-        with urlopen(req, timeout=timeout):  # nosec B310 -- URL scheme and host validated above.
+        with urlopen(req, timeout=timeout) as response:  # nosec B310 -- URL scheme and host validated above.
             return json.load(response)
 
     @staticmethod
