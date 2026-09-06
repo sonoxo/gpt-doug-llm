@@ -42,12 +42,14 @@ Collector: [`scripts/white_house_daily.py`](../scripts/white_house_daily.py)
 
 | Date | Source | Topic | State | Brief |
 | --- | --- | --- | --- | --- |
+| 2026-09-06 | CrowdStrike + Cyber Security News | SafeMind paired-agent cyber-defense harness; red/blue closed loop; bounded Black House mapping | `VERY HIGH / REFERENCE_PATTERN_ACTIVE` | [`Open brief`](./briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md) |
 | 2026-09-03 | freeCodeCamp.org `ug8W0sFiVJo` | Kali/Linux, scoped Nmap, wireless-security defense, Wireshark | `HIGH / AUTHORIZED-LAB` | [`Open brief`](./briefings/2026-09-03-freecodecamp-ethical-hacking-course.md) |
 | 2026-09-02 | Basis Points / Chad Wahlquist `egr-UDWLZPI` | Institutional sovereignty, Ontology, model portability, FDE, agentic AI | `HIGH CONFIDENCE / PR-READY` | [`Open dossier`](./briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md) |
 | 2026-09-02 | YouTube Short `uFFFRTrSosc` | What Palantir does / AIP architecture | `AMBER` | [`Open brief`](./briefings/2026-09-02-youtube-uFFFRTrSosc-palantir.md) |
 
 ## Machine-readable sources
 
+- [`crowdstrike-safemind-2026-09-06.json`](./sources/crowdstrike-safemind-2026-09-06.json)
 - [`youtube-ug8W0sFiVJo.json`](./sources/youtube-ug8W0sFiVJo.json)
 - [`youtube-egr-UDWLZPI.json`](./sources/youtube-egr-UDWLZPI.json)
 - [`youtube-uFFFRTrSosc.json`](./sources/youtube-uFFFRTrSosc.json)
@@ -101,6 +103,8 @@ The Black House cyber-learning subsystem converts public cybersecurity material 
 
 ## Agentic control plane
 
+- [`SafeMind-inspired defensive loop`](../safety-shield/agents/knowledge/safemind-inspired-defensive-loop-v1.json) — model-agnostic paired adversary-simulation/defensive-remediation loop with authorization, evidence, eval and rollback gates.
+- [`Black House SafeMind reference manifest`](../the-black-house/integrations/crowdstrike-safemind-reference.json) — registers the public architecture reference without claiming CrowdStrike/Falcon integration.
 - [`AIP Agentic Workflows`](../safety-shield/AIP_AGENTIC_WORKFLOWS.md)
 - [`RVIA Agentic Core`](../safety-shield/agents/knowledge/rvia-agentic-core.json)
 - [`Palantir AI FDE Automate knowledge`](../safety-shield/agents/knowledge/palantir-ai-fde-automate-2026-08.json)
@@ -137,4 +141,4 @@ MERGE → AUDIT → RETAIN GAPS
 
 ## Independence
 
-The Black House is an independent open-source research component. References to Palantir Technologies, its products, employees, documentation, or public materials are for research, interoperability, and attribution only and do not imply endorsement, affiliation, certification, contract, customer status, or access to proprietary systems. References to White House or U.S. Government sources identify public primary-source material only and likewise do not imply endorsement, affiliation, certification, contract status, or governmental authority. Protected cyber references identify public reporting sources only and do not imply endorsement, affiliation, partnership, or verification of every claim they publish.
+The Black House is an independent open-source research component. References to Palantir Technologies, its products, employees, documentation, or public materials are for research, interoperability, and attribution only and do not imply endorsement, affiliation, certification, contract, customer status, or access to proprietary systems. References to White House or U.S. Government sources identify public primary-source material only and likewise do not imply endorsement, affiliation, certification, contract status, or governmental authority. Protected cyber references identify public reporting sources only and do not imply endorsement, affiliation, partnership, or verification of every claim they publish. CrowdStrike, Falcon, SafeMind, Red Tempest, Blue Solano, NVIDIA and Nemotron references identify public research sources and architecture concepts only; the Black House does not claim vendor affiliation, proprietary model access, customer telemetry, licensed tenant access or reproduction of vendor benchmarks.
