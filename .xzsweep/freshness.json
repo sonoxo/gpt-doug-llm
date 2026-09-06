@@ -1,8 +1,19 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-09-05T15:34:16Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-09-05T16:21:47Z",
+  "due_files_reviewed": 10,
+  "due_paths": [
+    ".github/workflows/market-terminal-data.yml",
+    "install_zyra_terminal.sh",
+    "intel/white-house/daily/2026-09-04.json",
+    "intel/white-house/daily/2026-09-04.md",
+    "market-terminal/README.md",
+    "market-terminal/data/market-snapshot.json",
+    "market-terminal/index.html",
+    "market-terminal/scripts/collect_market_data.py",
+    "market-terminal/terminal.css",
+    "market-terminal/terminal.js"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -133,6 +144,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "b8c1446940664ae77626f3d8b41786f883c95263a0c8775305212f3382b2210b",
       "size": 2272,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/ai-layer-gate.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T16:21:37Z",
+      "reviewed_at": null,
+      "sha256": "37a35264429acf6f836fca1fb3a462c905dedb3a07b51177aebeb161894a9537",
+      "size": 952,
       "validation_issues": [],
       "was_due": false
     },
@@ -383,11 +405,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:04:57Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "ae13118ebd4e583c48adc23a100620c70c5cbf0204df26a907ef954d6c87ebb2",
       "size": 1213,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/nxyz-agentic-upgrade.yml": {
       "actions": [],
@@ -1720,6 +1742,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "config/ai-layer-manifest.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T16:21:37Z",
+      "reviewed_at": null,
+      "sha256": "61c064febfced0fbf8d431268699d8b16e73da3089a0c381d3d4b7ebcf3c5e03",
+      "size": 3268,
+      "validation_issues": [],
+      "was_due": false
+    },
     "crypto/blockchain_audit.py": {
       "actions": [],
       "binary": false,
@@ -1943,11 +1976,11 @@
     "docs/ARCHITECTURE.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-21T00:40:07Z",
-      "reviewed_at": "2026-09-06T04:30:15Z",
-      "sha256": "73a3234112bc84431686b2efbd40748bc15b1e464364b8343e4279d8a96bb514",
-      "size": 6670,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T16:21:37Z",
+      "reviewed_at": null,
+      "sha256": "e6a10422ab3f131c56aa32bf4581410fc0cc740addda67b394957b918c9989e0",
+      "size": 9380,
       "validation_issues": [],
       "was_due": false
     },
@@ -3694,11 +3727,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:14:57Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "4542b6ba86979c7414848bf0e21ec9ce61bc04e6901c16243f5251c2d6e36a24",
       "size": 2608,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/agentic-cpr-red-panda/activate.sh": {
       "actions": [],
@@ -4090,22 +4123,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": "2026-09-05T16:08:10Z",
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "68df33e71b0a17c66a6a4f353f824d6f0cf95152caa6a698441d8f9b307d52c5",
       "size": 1156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-04.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": "2026-09-05T16:08:10Z",
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "c2ed09439aa71d5e2c9a0fbf5a2e888518f201b58e69467c3d0870626d26bce2",
       "size": 909,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-05.json": {
       "actions": [],
@@ -4387,66 +4420,68 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:15:14Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "570d6e2fa6ce56fd65d53b8e22e9b7966b891eefa4d1163fa4a7d5fe7213aab9",
       "size": 1450,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/data/market-snapshot.json": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:07:22Z",
-      "reviewed_at": null,
-      "sha256": "9e0b455d74d7d9663b34261ad673ac213a44ccd752cb70daa3a6cbaef077c6b5",
-      "size": 11198,
+      "reviewed_at": "2026-09-06T16:21:47Z",
+      "sha256": "dd144172deb633f794f43c095dcc594d396036f54667ec7360bfb70ffdd83951",
+      "size": 11199,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/index.html": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "de0736d39a8cca3b7422dcf04b47897de8459fac94b95893a81b9e0ae4f748ac",
       "size": 3370,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/scripts/collect_market_data.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "91263ebdb1bc5ed1d9b4078561ccdefc7c07b131eacd9b66cf695461fbaf3d60",
       "size": 3573,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/terminal.css": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "7de10fec7beec72a8f3fe42b081cce58e78c4301c78864bd97679e8b7d3a3a63",
       "size": 4243,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/terminal.js": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T16:21:47Z",
       "sha256": "eaa5eeb1277d38e8077447f711339773e3a69c4c8cc6685019e980791fe7aa90",
       "size": 7399,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "marketplace/__init__.py": {
       "actions": [],
@@ -5512,6 +5547,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "154b7721acd9002038e7924d97bc4d391aed6805f7ae3ea3bfab7e624d7ec4da",
       "size": 5217,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/validate_ai_layers.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T16:21:37Z",
+      "reviewed_at": null,
+      "sha256": "7ac5617fbfc05fcf7cae60225fd7ce0503f26e006951f1c73339bf618ad48284",
+      "size": 3041,
       "validation_issues": [],
       "was_due": false
     },
@@ -9378,11 +9424,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T15:34:16Z",
+  "generated_at": "2026-09-06T16:21:47Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "market-terminal/data/market-snapshot.json"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 852,
+  "tracked_files_reviewed": 855,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
