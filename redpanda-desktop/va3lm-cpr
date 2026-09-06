@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Compatibility shim for SAGI / VA3LM CPR callers.
+# The bounded repair implementation lives behind GPT-REDPANDA's CPR route.
+
+if command -v redpanda-node >/dev/null 2>&1; then
+  exec redpanda-node cpr "$@"
+fi
+
+for volume in /Volumes/*; do
+  [[ -x "$volume/GPT-REDPANDA/redpanda-node" ]] || continue
+  exec "$volume/GPT-REDPANDA/redpanda-node" cpr "$@"
+done
+
+echo "❌ va3lm-cpr: GPT-REDPANDA runtime is not installed or the USB node is not mounted." >&2
+echo "Repair with: bash <(curl -fsSL https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/redpanda-desktop/install.sh) auto" >&2
+exit 127
