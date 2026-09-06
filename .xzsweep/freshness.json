@@ -1,8 +1,12 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T14:16:09Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-05T14:18:09Z",
+  "due_files_reviewed": 3,
+  "due_paths": [
+    "intel/white-house/daily/2026-09-05.json",
+    "intel/white-house/daily/2026-09-05.md",
+    "intel/white-house/state.json"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1313,6 +1317,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/neptune_shield_ecosystem.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T14:18:01Z",
+      "reviewed_at": null,
+      "sha256": "d720b6aae9cb5670f030c4ca48ab440824237b6389cd9c5d1e799fd93cf82630",
+      "size": 6172,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agents/ontology.py": {
       "actions": [],
       "binary": false,
@@ -2208,9 +2223,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T13:55:51Z",
+      "git_touched_at": "2026-09-06T14:16:10Z",
       "reviewed_at": null,
-      "sha256": "0f659311a409796ba4d1aa69f5a0b4839c76f7505e121cf1ee43e94aab2bbf74",
+      "sha256": "5dc44a6db5aff07d193f86a2af47b1602d7651e65ba05de9cbc6f38a4add7335",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -4057,33 +4072,33 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T14:17:05Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "85f51eca69162ae0d240a5bb30c74931dbccb611ea882b6b6c846cdd4cc7d686",
       "size": 9939,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-05.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T14:17:05Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "c48a8a90f0f532df8b5f46d5cb0aab1834a87834093544409b41f50569c68046",
       "size": 2141,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-05T14:17:05Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-06T14:18:09Z",
       "sha256": "589642f2927d4d2fbd28aedecdabb78658a43ed85e8a76d8ffa545d4bee3a02c",
       "size": 11130,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intelligence_compliance.py": {
       "actions": [],
@@ -9246,11 +9261,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T14:16:09Z",
+  "generated_at": "2026-09-06T14:18:09Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 840,
+  "tracked_files_reviewed": 841,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
