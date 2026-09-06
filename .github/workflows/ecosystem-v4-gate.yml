@@ -1,0 +1,31 @@
+name: Ecosystem v4 Gate
+
+on:
+  pull_request:
+    paths:
+      - 'ecosystem/**'
+      - 'config/ai-layer-manifest.json'
+      - 'scripts/validate_ecosystem_v4.py'
+      - '.github/workflows/ecosystem-v4-gate.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ecosystem/**'
+      - 'config/ai-layer-manifest.json'
+      - 'scripts/validate_ecosystem_v4.py'
+      - '.github/workflows/ecosystem-v4-gate.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate canonical ecosystem registry
+        run: python scripts/validate_ecosystem_v4.py
