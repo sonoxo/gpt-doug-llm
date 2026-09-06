@@ -15,226 +15,111 @@ ZFI_OUT="$HOST_STATE/zfi.log"
 ZFI_ERR="$HOST_STATE/zfi.err.log"
 
 find_node() {
-  if [[ -n "${REDPANDA_USB_ROOT:-}" && -f "${REDPANDA_USB_ROOT}/${MARKER}" ]]; then
-    printf '%s\n' "${REDPANDA_USB_ROOT}"
-    return 0
-  fi
+  if [[ -n "${REDPANDA_USB_ROOT:-}" && -f "${REDPANDA_USB_ROOT}/${MARKER}" ]]; then printf '%s\n' "${REDPANDA_USB_ROOT}"; return 0; fi
   local p
   for p in /Volumes/*; do
     [[ -d "$p" ]] || continue
-    if [[ -f "$p/${MARKER}" && -f "$p/GPT-REDPANDA/redpanda_agent.py" ]]; then
-      printf '%s\n' "$p"
-      return 0
-    fi
+    if [[ -f "$p/${MARKER}" && -f "$p/GPT-REDPANDA/gpt_redpanda_llm.py" ]]; then printf '%s\n' "$p"; return 0; fi
   done
   return 1
 }
 
 NODE="$(find_node || true)"
-if [[ -z "$NODE" ]]; then
-  echo "🐼 GPT-REDPANDA USB node not mounted." >&2
-  exit 3
-fi
-
+if [[ -z "$NODE" ]]; then echo "🐼 GPT-REDPANDA-LLM USB node not mounted." >&2; exit 3; fi
 export REDPANDA_USB_ROOT="$NODE"
 export REDPANDA_EVENT_FILE="$NODE/.redpanda/events/terminal-events.tsv"
 PYTHON_BIN="$(command -v python3 || true)"
-if [[ -z "$PYTHON_BIN" ]]; then
-  echo "GPT-REDPANDA requires python3." >&2
-  exit 2
-fi
+if [[ -z "$PYTHON_BIN" ]]; then echo "GPT-REDPANDA-LLM requires python3." >&2; exit 2; fi
 
-portal_ready() {
-  lsof -nP -iTCP:${REDPANDA_PORT:-8765} -sTCP:LISTEN >/dev/null 2>&1
-}
+portal_ready(){ lsof -nP -iTCP:${REDPANDA_PORT:-8765} -sTCP:LISTEN >/dev/null 2>&1; }
+zfi_ready(){ lsof -nP -iTCP:${ZFI_PORT:-8766} -sTCP:LISTEN >/dev/null 2>&1; }
+fallback_running(){ [[ -f "$FALLBACK_PID" ]] || return 1; local pid; pid="$(cat "$FALLBACK_PID" 2>/dev/null || true)"; [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1; }
+zfi_running(){ [[ -f "$ZFI_PID" ]] || return 1; local pid; pid="$(cat "$ZFI_PID" 2>/dev/null || true)"; [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1; }
 
-zfi_ready() {
-  lsof -nP -iTCP:${ZFI_PORT:-8766} -sTCP:LISTEN >/dev/null 2>&1
-}
-
-fallback_running() {
-  [[ -f "$FALLBACK_PID" ]] || return 1
-  local pid
-  pid="$(cat "$FALLBACK_PID" 2>/dev/null || true)"
-  [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
-}
-
-zfi_running() {
-  [[ -f "$ZFI_PID" ]] || return 1
-  local pid
-  pid="$(cat "$ZFI_PID" 2>/dev/null || true)"
-  [[ -n "$pid" ]] && kill -0 "$pid" >/dev/null 2>&1
-}
-
-stop_fallback_service() {
-  if fallback_running; then
-    local pid
-    pid="$(cat "$FALLBACK_PID")"
-    kill "$pid" >/dev/null 2>&1 || true
-    for _ in 1 2 3 4 5; do
-      kill -0 "$pid" >/dev/null 2>&1 || break
-      sleep 0.2
-    done
-  fi
+stop_fallback_service(){
+  if fallback_running; then local pid; pid="$(cat "$FALLBACK_PID")"; kill "$pid" >/dev/null 2>&1 || true; for _ in 1 2 3 4 5; do kill -0 "$pid" >/dev/null 2>&1 || break; sleep 0.2; done; fi
   rm -f "$FALLBACK_PID"
 }
 
-start_fallback_service() {
+start_fallback_service(){
   mkdir -p "$HOST_STATE"
-  if portal_ready; then
-    return 0
-  fi
-  if fallback_running; then
-    return 0
-  fi
-
-  echo "🐼 launchd unavailable; starting Red Panda user-session fallback." >&2
-  : >> "$FALLBACK_OUT"
-  : >> "$FALLBACK_ERR"
-  REDPANDA_USB_ROOT="$NODE" \
-  REDPANDA_EVENT_FILE="$REDPANDA_EVENT_FILE" \
-  PYTHONUNBUFFERED=1 \
-  nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" \
+  portal_ready && return 0
+  fallback_running && return 0
+  echo "🐼 launchd unavailable; starting GPT-REDPANDA-LLM user-session fallback." >&2
+  : >> "$FALLBACK_OUT"; : >> "$FALLBACK_ERR"
+  REDPANDA_USB_ROOT="$NODE" REDPANDA_EVENT_FILE="$REDPANDA_EVENT_FILE" PYTHONUNBUFFERED=1 \
+    nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/gpt_redpanda_llm.py" \
     >>"$FALLBACK_OUT" 2>>"$FALLBACK_ERR" </dev/null &
-  local pid=$!
-  printf '%s\n' "$pid" > "$FALLBACK_PID"
-
+  local pid=$!; printf '%s\n' "$pid" > "$FALLBACK_PID"
   for _ in 1 2 3 4 5 6 7 8 9 10; do
     portal_ready && return 0
-    if ! kill -0 "$pid" >/dev/null 2>&1; then
-      rm -f "$FALLBACK_PID"
-      echo "❌ Red Panda fallback process exited during startup." >&2
-      [[ -s "$FALLBACK_ERR" ]] && tail -n 30 "$FALLBACK_ERR" >&2 || true
-      return 1
-    fi
+    if ! kill -0 "$pid" >/dev/null 2>&1; then rm -f "$FALLBACK_PID"; echo "❌ GPT-REDPANDA-LLM fallback exited during startup." >&2; [[ -s "$FALLBACK_ERR" ]] && tail -n 30 "$FALLBACK_ERR" >&2 || true; return 1; fi
     sleep 0.5
   done
-
-  echo "❌ Red Panda fallback started but portal did not bind to port ${REDPANDA_PORT:-8765}." >&2
+  echo "❌ GPT-REDPANDA-LLM fallback started but portal did not bind to ${REDPANDA_PORT:-8765}." >&2
   return 1
 }
 
-start_zfi_service() {
+start_zfi_service(){
   mkdir -p "$HOST_STATE"
-  [[ -f "$NODE/GPT-REDPANDA/zfi_agent.py" ]] || {
-    echo "ZFI runtime missing. Re-run the Red Panda installer to update the USB node." >&2
-    return 2
-  }
-  if zfi_ready; then
-    return 0
-  fi
-  if zfi_running; then
-    return 0
-  fi
-  : >> "$ZFI_OUT"
-  : >> "$ZFI_ERR"
-  REDPANDA_USB_ROOT="$NODE" PYTHONUNBUFFERED=1 \
-    nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/zfi_agent.py" \
-    >>"$ZFI_OUT" 2>>"$ZFI_ERR" </dev/null &
-  local pid=$!
-  printf '%s\n' "$pid" > "$ZFI_PID"
+  [[ -f "$NODE/GPT-REDPANDA/zfi_agent.py" ]] || { echo "ZFI runtime missing. Re-run installer." >&2; return 2; }
+  zfi_ready && return 0
+  zfi_running && return 0
+  : >> "$ZFI_OUT"; : >> "$ZFI_ERR"
+  REDPANDA_USB_ROOT="$NODE" PYTHONUNBUFFERED=1 nohup "$PYTHON_BIN" "$NODE/GPT-REDPANDA/zfi_agent.py" >>"$ZFI_OUT" 2>>"$ZFI_ERR" </dev/null &
+  local pid=$!; printf '%s\n' "$pid" > "$ZFI_PID"
   for _ in 1 2 3 4 5 6 7 8 9 10; do
     zfi_ready && return 0
-    if ! kill -0 "$pid" >/dev/null 2>&1; then
-      rm -f "$ZFI_PID"
-      echo "❌ ZFI exited during startup." >&2
-      [[ -s "$ZFI_ERR" ]] && tail -n 30 "$ZFI_ERR" >&2 || true
-      return 1
-    fi
+    if ! kill -0 "$pid" >/dev/null 2>&1; then rm -f "$ZFI_PID"; echo "❌ ZFI exited during startup." >&2; [[ -s "$ZFI_ERR" ]] && tail -n 30 "$ZFI_ERR" >&2 || true; return 1; fi
     sleep 0.4
   done
-  echo "❌ ZFI did not bind to port ${ZFI_PORT:-8766}." >&2
-  [[ -s "$ZFI_ERR" ]] && tail -n 30 "$ZFI_ERR" >&2 || true
-  return 1
+  echo "❌ ZFI did not bind to ${ZFI_PORT:-8766}." >&2; return 1
 }
 
-start_desktop_service() {
-  [[ -f "$PLIST" ]] || {
-    echo "LaunchAgent plist not found: $PLIST" >&2
-    start_fallback_service
-    return $?
-  }
-
+start_desktop_service(){
+  [[ -f "$PLIST" ]] || { echo "LaunchAgent plist not found: $PLIST" >&2; start_fallback_service; return $?; }
   stop_fallback_service
   launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
-  if ! launchctl bootstrap "gui/$(id -u)" "$PLIST"; then
-    echo "⚠️ launchd bootstrap failed; switching to fallback mode." >&2
-    start_fallback_service
-    return $?
-  fi
+  if ! launchctl bootstrap "gui/$(id -u)" "$PLIST"; then echo "⚠️ launchd bootstrap failed; switching to fallback mode." >&2; start_fallback_service; return $?; fi
   launchctl enable "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
   launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
-
-  for _ in 1 2 3 4 5 6; do
-    portal_ready && return 0
-    sleep 0.5
-  done
-
+  for _ in 1 2 3 4 5 6; do portal_ready && return 0; sleep 0.5; done
   if launchctl print "gui/$(id -u)/$LABEL" 2>/dev/null | grep -Eq 'last exit code = 78|job state = spawn failed'; then
-    echo "⚠️ launchd spawn failure detected (EX_CONFIG); switching to fallback mode." >&2
+    echo "⚠️ launchd spawn failure detected; switching to fallback mode." >&2
     launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
     start_fallback_service
   fi
 }
 
-stop_desktop_service() {
-  launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
-  stop_fallback_service
-}
+stop_desktop_service(){ launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true; stop_fallback_service; }
 
-show_service_diag() {
-  echo "🐼 GPT-REDPANDA service is not listening yet." >&2
+show_service_diag(){
+  echo "🐼 GPT-REDPANDA-LLM service is not listening yet." >&2
   launchctl print "gui/$(id -u)/$LABEL" 2>/dev/null | grep -E 'state =|pid =|last exit code|job state' >&2 || true
-  if [[ -s "$HOST_STATE/launchd.err.log" ]]; then
-    echo "--- launchd stderr ---" >&2
-    tail -n 30 "$HOST_STATE/launchd.err.log" >&2 || true
-  fi
-  if [[ -s "$HOST_STATE/launchd.log" ]]; then
-    echo "--- launchd stdout ---" >&2
-    tail -n 30 "$HOST_STATE/launchd.log" >&2 || true
-  fi
-  if [[ -s "$FALLBACK_ERR" ]]; then
-    echo "--- fallback stderr ---" >&2
-    tail -n 30 "$FALLBACK_ERR" >&2 || true
-  fi
-  if [[ -s "$FALLBACK_OUT" ]]; then
-    echo "--- fallback stdout ---" >&2
-    tail -n 30 "$FALLBACK_OUT" >&2 || true
-  fi
+  [[ -s "$HOST_STATE/launchd.err.log" ]] && { echo "--- launchd stderr ---" >&2; tail -n 30 "$HOST_STATE/launchd.err.log" >&2; }
+  [[ -s "$FALLBACK_ERR" ]] && { echo "--- fallback stderr ---" >&2; tail -n 30 "$FALLBACK_ERR" >&2; }
 }
 
-open_portal() {
-  local port="${REDPANDA_PORT:-8765}"
-  local token=""
-  local i
+open_portal(){
+  local port="${REDPANDA_PORT:-8765}" token="" i
   for i in 1 2 3 4 5 6; do
     [[ -f "$NODE/.redpanda/portal-token" ]] && token="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
-    if [[ -n "$token" ]] && portal_ready; then
-      open "http://127.0.0.1:${port}/?token=${token}"
-      return 0
-    fi
+    if [[ -n "$token" ]] && portal_ready; then open "http://127.0.0.1:${port}/?token=${token}"; return 0; fi
     sleep 1
   done
-
   launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
   if start_fallback_service; then
     for i in 1 2 3 4 5 6; do
       [[ -f "$NODE/.redpanda/portal-token" ]] && token="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
-      if [[ -n "$token" ]] && portal_ready; then
-        open "http://127.0.0.1:${port}/?token=${token}"
-        return 0
-      fi
+      if [[ -n "$token" ]] && portal_ready; then open "http://127.0.0.1:${port}/?token=${token}"; return 0; fi
       sleep 0.5
     done
   fi
-
-  show_service_diag
-  return 1
+  show_service_diag; return 1
 }
 
-open_zfi() {
-  local port="${ZFI_PORT:-8766}"
-  local token=""
+open_zfi(){
+  local port="${ZFI_PORT:-8766}" token=""
   [[ -f "$NODE/.redpanda/portal-token" ]] && token="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
   [[ -n "$token" ]] || { echo "ZFI cannot open: portal token missing." >&2; return 1; }
   start_zfi_service || return $?
@@ -243,44 +128,37 @@ open_zfi() {
 
 case "$MODE" in
   run)
-    exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" "$@"
+    exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/gpt_redpanda_llm.py" "$@"
     ;;
   lan|mobile)
     stop_desktop_service
-    echo "📱 GPT-REDPANDA mobile/LAN mode. Control-C to stop; run 'redpanda-node desktop' to restore the background desktop service."
-    exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" --lan "$@"
+    echo "📱 GPT-REDPANDA-LLM mobile/LAN mode."
+    exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/gpt_redpanda_llm.py" --lan "$@"
     ;;
   desktop)
-    start_desktop_service
-    open_portal
+    start_desktop_service; open_portal
     ;;
   stop)
-    stop_desktop_service
-    echo "🐼 GPT-REDPANDA desktop/fallback service stopped."
+    stop_desktop_service; echo "🐼 GPT-REDPANDA-LLM desktop/fallback service stopped."
     ;;
   cpr)
     exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" --cpr-now "$@"
     ;;
   open)
-    if ! portal_ready; then
-      start_desktop_service
-    fi
+    portal_ready || start_desktop_service
     open_portal
     ;;
   files|zfi)
     open_zfi
     ;;
+  agentic-cpr-status)
+    if [[ -f "$NODE/.redpanda/agentic-cpr-runtime.json" ]]; then cat "$NODE/.redpanda/agentic-cpr-runtime.json"; else echo '{"health":"STARTING","runtime":"GPT-REDPANDA-LLM"}'; fi
+    ;;
   status)
-    if [[ -f "$NODE/.redpanda/status.json" ]]; then
-      cat "$NODE/.redpanda/status.json"
-    elif fallback_running; then
-      echo '{"state":"starting","service":"fallback"}'
-    else
-      echo '{"state":"unknown"}'
-    fi
+    if [[ -f "$NODE/.redpanda/status.json" ]]; then cat "$NODE/.redpanda/status.json"; elif fallback_running; then echo '{"state":"starting","service":"fallback","runtime":"GPT-REDPANDA-LLM","core":"GPT-DOUG-LLM"}'; else echo '{"state":"unknown","runtime":"GPT-REDPANDA-LLM","core":"GPT-DOUG-LLM"}'; fi
     ;;
   *)
-    echo "Usage: redpanda-node {run|open|files|zfi|status|cpr|mobile|desktop|stop}" >&2
+    echo "Usage: redpanda-node {run|open|files|zfi|status|agentic-cpr-status|cpr|mobile|desktop|stop}" >&2
     exit 2
     ;;
 esac
