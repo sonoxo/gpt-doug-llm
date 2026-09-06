@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0.0",
+  "record_type": "public_reasoning_ontology",
+  "extends_ontology": "kraken-jutsu-cyber-ontology",
+  "source_identity": {
+    "name": "Darren Kitchen",
+    "public_role": "Hak5 founder / security-tool designer",
+    "representation": "publicly observable methods only",
+    "not_a_claim_of": [
+      "literal mind copy",
+      "private mental state access",
+      "identity impersonation",
+      "endorsement"
+    ]
+  },
+  "provenance": {
+    "primary_source": "https://www.youtube.com/watch?v=6ckvxEQEBn8",
+    "title": "The Hacking Gadgets You Need to Know",
+    "publisher": "David Bombal",
+    "published_date": "2026-08-23",
+    "supporting_public_source": "https://davidbombal.com/hacking-gadgets-every-cybersecurity-pro-should-know/",
+    "classification": "public",
+    "confidence": 0.94
+  },
+  "neural_graph": {
+    "description": "A weighted concept graph for source-grounded advisory reasoning. Weights encode relevance/confidence, not biological neurons or a trained copy of a person.",
+    "nodes": [
+      {
+        "id": "rp-classify-by-access-mode",
+        "type": "ReasoningPattern",
+        "label": "Classify tools by access mode",
+        "weight": 0.98,
+        "evidence": "The source groups tools into hot-plug, implant, and near-access Wi-Fi categories."
+      },
+      {
+        "id": "rp-tool-to-objective-fit",
+        "type": "ReasoningPattern",
+        "label": "Match the smallest suitable interface to the assessment objective",
+        "weight": 0.84,
+        "evidence": "The interview presents different hardware interfaces as purpose-specific assessment platforms rather than interchangeable gadgets."
+      },
+      {
+        "id": "lp-learn-through-constraints",
+        "type": "LearningPrinciple",
+        "label": "Learn systems through constrained interfaces",
+        "weight": 0.94,
+        "evidence": "The USB Rubber Ducky discussion emphasizes learning operating-system control and keyboard-driven workflows through keystroke injection."
+      },
+      {
+        "id": "lp-fundamentals-before-automation",
+        "type": "LearningPrinciple",
+        "label": "Understand protocol and OS fundamentals before relying on automation",
+        "weight": 0.88,
+        "evidence": "The source repeatedly connects hardware payloads to underlying OS, embedded Linux, networking, and Wi-Fi behavior."
+      },
+      {
+        "id": "rp-visible-field-feedback",
+        "type": "ReasoningPattern",
+        "label": "Prefer immediate field feedback when choosing portable assessment tooling",
+        "weight": 0.82,
+        "evidence": "The Shark Jack Display discussion highlights on-device payload selection and result viewing without a laptop."
+      },
+      {
+        "id": "lp-community-iteration",
+        "type": "LearningPrinciple",
+        "label": "Use open community payloads as an iterative learning corpus",
+        "weight": 0.91,
+        "evidence": "The closing discussion highlights the open ecosystem, community payloads, embedded Linux learning, and educational use."
+      },
+      {
+        "id": "rp-emulate-to-defend",
+        "type": "ReasoningPattern",
+        "label": "Emulate realistic attack paths to expose defensive gaps",
+        "weight": 0.97,
+        "evidence": "The interview frames the devices as penetration-testing/red-team platforms used to understand how organizations could be compromised and what should be fixed."
+      },
+      {
+        "id": "guard-authorized-scope",
+        "type": "SafetyInvariant",
+        "label": "Only apply active assessment patterns to explicitly authorized systems",
+        "weight": 1.0,
+        "evidence": "Source context is ethical hacking / penetration testing; GPT-DOUG-LLM keeps network execution approval-gated."
+      }
+    ],
+    "edges": [
+      {"from": "rp-classify-by-access-mode", "to": "rp-tool-to-objective-fit", "relation": "SUPPORTS", "weight": 0.91},
+      {"from": "lp-learn-through-constraints", "to": "lp-fundamentals-before-automation", "relation": "REINFORCES", "weight": 0.89},
+      {"from": "lp-fundamentals-before-automation", "to": "rp-tool-to-objective-fit", "relation": "INFORMS", "weight": 0.80},
+      {"from": "rp-visible-field-feedback", "to": "rp-tool-to-objective-fit", "relation": "INFORMS", "weight": 0.77},
+      {"from": "lp-community-iteration", "to": "lp-fundamentals-before-automation", "relation": "REINFORCES", "weight": 0.83},
+      {"from": "rp-emulate-to-defend", "to": "rp-tool-to-objective-fit", "relation": "GOVERNS", "weight": 0.93},
+      {"from": "guard-authorized-scope", "to": "rp-emulate-to-defend", "relation": "BOUNDS", "weight": 1.0},
+      {"from": "guard-authorized-scope", "to": "rp-tool-to-objective-fit", "relation": "BOUNDS", "weight": 1.0}
+    ]
+  },
+  "tool_class_ontology": [
+    {
+      "id": "hot-plug",
+      "label": "Hot-plug assessment tool",
+      "examples_from_source": ["USB Rubber Ducky", "Bash Bunny", "Plunder Bug", "Shark Jack"],
+      "defensive_question": "What trust boundary is crossed when an apparently ordinary peripheral or network accessory is connected?"
+    },
+    {
+      "id": "implant",
+      "label": "Pen-test implant",
+      "examples_from_source": ["Packet Squirrel", "Key Croc", "Screen Crab", "LAN Turtle Hub"],
+      "defensive_question": "What monitoring, physical-security, and device-control signals would reveal an unexpected inline or attached device?"
+    },
+    {
+      "id": "near-access-wifi",
+      "label": "Near-access Wi-Fi assessment platform",
+      "examples_from_source": ["WiFi Pineapple", "WiFi Pineapple Pager"],
+      "defensive_question": "How resilient are managed endpoints and users when exposed to untrusted or impersonated wireless environments?"
+    }
+  ],
+  "inference_policy": {
+    "activation": "advisory_only",
+    "method": "weighted_graph_retrieval",
+    "minimum_source_confidence": 0.70,
+    "max_reasoning_hops": 4,
+    "require_provenance_in_output": true,
+    "prefer_defensive_interpretation": true,
+    "active_tool_execution": "approval_gated_authorized_targets_only",
+    "forbid_identity_claims": true
+  },
+  "advisory_sequence": [
+    "classify the requested assessment by access mode",
+    "identify the underlying OS/network/Wi-Fi trust boundary",
+    "select the least invasive observation method that can answer the question",
+    "state the defensive hypothesis before any active test",
+    "require explicit authorization before network-capable execution",
+    "collect evidence and map findings to ATT&CK/CVE/CWE/NIST objects when justified",
+    "recommend remediation and verify the fix"
+  ]
+}
