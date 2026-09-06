@@ -2,6 +2,30 @@
 
 <img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA product ecosystem" />
 
+### ECOSYSTEM INSIGNIA ROUTER
+
+<table>
+<tr>
+<td align="center">
+<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/the-black-house"><img width="210" src="docs/assets/insignia-black-house.svg" alt="The Black House project insignia" /></a><br />
+<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/the-black-house">THE BLACK HOUSE</a></strong><br />
+<sub>Governance · ontology · mission root</sub>
+</td>
+<td align="center">
+<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/kraken_jutsu"><img width="210" src="docs/assets/insignia-kraken-jutsu.svg" alt="Kraken Jutsu project insignia" /></a><br />
+<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/kraken_jutsu">KRAKEN JUTSU</a></strong><br />
+<sub>Provenance-first judgment · defensive orchestration</sub>
+</td>
+<td align="center">
+<a href="https://github.com/sonoxo/zyra"><img width="210" src="docs/assets/insignia-zyra.svg" alt="ZYRA project insignia" /></a><br />
+<strong><a href="https://github.com/sonoxo/zyra">ZYRA</a></strong><br />
+<sub>Bounded agentic execution</sub>
+</td>
+</tr>
+</table>
+
+<sub>Click an insignia to open its canonical code home. These are project insignias, not government credentials or endorsements.</sub>
+
 <a href="https://neptuneshield.com/index.html#contact"><img width="118" src="https://neptuneshield.com/assets/images/neptuneshield-logo.png" alt="Neptune Shield official insignia" /></a>
 
 <a href="https://www.youtube.com/watch?v=jK5k9_Gql-I"><img width="760" src="https://img.youtube.com/vi/jK5k9_Gql-I/maxresdefault.jpg" alt="Public infrastructure resilience reference video — Palantir / Gallatin AI" /></a>
