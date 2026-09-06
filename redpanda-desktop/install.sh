@@ -1,0 +1,166 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_RAW="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/redpanda-desktop"
+MARKER=".gpt-redpanda-node"
+TARGET_ARG="${1:-auto}"
+
+say(){ printf '%s\n' "$*"; }
+
+choose_usb() {
+  if [[ "$TARGET_ARG" != "auto" ]]; then
+    printf '%s\n' "$TARGET_ARG"
+    return 0
+  fi
+
+  if [[ -n "${REDPANDA_USB_ROOT:-}" ]]; then
+    printf '%s\n' "$REDPANDA_USB_ROOT"
+    return 0
+  fi
+
+  local marked=()
+  local writable=()
+  local p
+  for p in /Volumes/*; do
+    [[ -d "$p" ]] || continue
+    [[ -w "$p" ]] || continue
+    [[ "$p" == "/Volumes/Macintosh HD" ]] && continue
+    if [[ -f "$p/$MARKER" ]]; then
+      marked+=("$p")
+    else
+      writable+=("$p")
+    fi
+  done
+
+  if (( ${#marked[@]} == 1 )); then
+    printf '%s\n' "${marked[0]}"
+    return 0
+  fi
+  if (( ${#marked[@]} > 1 )); then
+    say "Multiple GPT-REDPANDA USB nodes found:" >&2
+    printf '  %s\n' "${marked[@]}" >&2
+    exit 2
+  fi
+  if (( ${#writable[@]} == 1 )); then
+    printf '%s\n' "${writable[0]}"
+    return 0
+  fi
+
+  say "Could not safely auto-select one USB volume." >&2
+  say "Run: bash install.sh /Volumes/YOUR_USB_NAME" >&2
+  if (( ${#writable[@]} )); then
+    printf '  candidate: %s\n' "${writable[@]}" >&2
+  fi
+  exit 2
+}
+
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  say "This installer currently targets macOS."
+  exit 2
+fi
+
+USB="$(choose_usb)"
+[[ -d "$USB" && -w "$USB" ]] || { say "USB path is not writable: $USB"; exit 2; }
+
+NODE="$USB/GPT-REDPANDA"
+STATE="$USB/.redpanda"
+HOST_SHARE="$HOME/.local/share/gpt-redpanda"
+HOST_BIN="$HOME/.local/bin"
+LAUNCH_DIR="$HOME/Library/LaunchAgents"
+PLIST="$LAUNCH_DIR/com.sonoxo.gpt-redpanda.plist"
+
+say "🐼 Installing GPT-REDPANDA to: $USB"
+mkdir -p "$NODE" "$STATE/logs" "$STATE/memory" "$STATE/events" "$HOST_SHARE" "$HOST_BIN" "$LAUNCH_DIR"
+printf 'GPT-REDPANDA USB NODE\n' > "$USB/$MARKER"
+
+fetch() {
+  local name="$1"
+  curl -fsSL "$REPO_RAW/$name" -o "$NODE/$name"
+}
+
+fetch redpanda_agent.py
+fetch redpanda-zsh-hook.zsh
+fetch redpanda-node
+chmod +x "$NODE/redpanda_agent.py" "$NODE/redpanda-node"
+
+# Host bootstrap is intentionally tiny; runtime code/state remain on the USB.
+cp "$NODE/redpanda-node" "$HOST_BIN/redpanda-node"
+chmod +x "$HOST_BIN/redpanda-node"
+cp "$NODE/redpanda-zsh-hook.zsh" "$HOST_SHARE/redpanda-zsh-hook.zsh"
+
+EVENT_FILE="$STATE/events/terminal-events.tsv"
+touch "$EVENT_FILE"
+cat > "$HOST_SHARE/env.zsh" <<'EOF'
+unset REDPANDA_USB_ROOT REDPANDA_EVENT_FILE
+for _redpanda_volume in /Volumes/*; do
+  [[ -f "$_redpanda_volume/.gpt-redpanda-node" ]] || continue
+  export REDPANDA_USB_ROOT="$_redpanda_volume"
+  export REDPANDA_EVENT_FILE="$_redpanda_volume/.redpanda/events/terminal-events.tsv"
+  break
+done
+unset _redpanda_volume
+[[ -n "${REDPANDA_EVENT_FILE:-}" && -f "$HOME/.local/share/gpt-redpanda/redpanda-zsh-hook.zsh" ]] && source "$HOME/.local/share/gpt-redpanda/redpanda-zsh-hook.zsh"
+EOF
+
+touch "$HOME/.zshenv"
+HOOK_LINE='[[ -f "$HOME/.local/share/gpt-redpanda/env.zsh" ]] && source "$HOME/.local/share/gpt-redpanda/env.zsh"'
+grep -qxF "$HOOK_LINE" "$HOME/.zshenv" || printf '\n%s\n' "$HOOK_LINE" >> "$HOME/.zshenv"
+
+# Default Cyber CPR policy: automatic checks are enabled; repair rules are empty
+# until the operator explicitly defines allow-listed local repair commands.
+if [[ ! -f "$STATE/cyber-cpr-config.json" ]]; then
+  printf '{\n  "repairs": []\n}\n' > "$STATE/cyber-cpr-config.json"
+fi
+
+SERVICE_PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.sonoxo.gpt-redpanda</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$HOST_BIN/redpanda-node</string>
+    <string>run</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>$SERVICE_PATH</string>
+    <key>REDPANDA_USB_ROOT</key><string>$USB</string>
+    <key>REDPANDA_EVENT_FILE</key><string>$EVENT_FILE</string>
+    <key>PYTHONUNBUFFERED</key><string>1</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key>
+  <dict><key>SuccessfulExit</key><false/></dict>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>$STATE/logs/launchd.log</string>
+  <key>StandardErrorPath</key><string>$STATE/logs/launchd.err.log</string>
+</dict>
+</plist>
+EOF
+
+plutil -lint "$PLIST" >/dev/null
+launchctl bootout "gui/$(id -u)" "$PLIST" >/dev/null 2>&1 || true
+launchctl bootstrap "gui/$(id -u)" "$PLIST"
+launchctl enable "gui/$(id -u)/com.sonoxo.gpt-redpanda"
+
+# Ensure ~/.local/bin is available in future shells without touching broken ~/.zshrc.
+PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
+grep -qxF "$PATH_LINE" "$HOME/.zshenv" || printf '%s\n' "$PATH_LINE" >> "$HOME/.zshenv"
+export PATH="$HOME/.local/bin:$PATH"
+
+sleep 2
+say ""
+say "✅ GPT-REDPANDA installed"
+say "💾 Node: $NODE"
+say "🧬 State: $STATE"
+say "🚑 Cyber CPR: $(command -v cyber-cpr || echo 'install cyber-cpr separately')"
+say "👁 Terminal watch: metadata only (exit status + cwd; no command text)"
+say "🖥 Desktop: redpanda-node open"
+say "📱 Mobile/LAN: stop desktop service, then run: redpanda-node lan"
+say "🔎 Status: redpanda-node status"
+say "🚑 Manual CPR: redpanda-node cpr"
+say ""
+say "Open the portal with: redpanda-node open"
