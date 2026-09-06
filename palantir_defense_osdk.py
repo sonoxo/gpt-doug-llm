@@ -7,8 +7,7 @@ application-domain contract to the local runtime and keeps kinetic targeting /
 fires execution outside autonomous local authority.
 """
 
-import os
-from dataclasses import dataclass
+from os import getenv
 
 
 SAFE_DOMAINS = (
@@ -23,12 +22,16 @@ RESTRICTED_DOMAINS = (
 )
 
 
-@dataclass(frozen=True)
 class DefenseOSDKDomain:
-    name: str
-    enabled: bool
-    execution: str
-    notes: str
+    """Immutable-style value object describing one Defense OSDK domain."""
+
+    __slots__ = ("name", "enabled", "execution", "notes")
+
+    def __init__(self, name: str, enabled: bool, execution: str, notes: str) -> None:
+        self.name = name
+        self.enabled = enabled
+        self.execution = execution
+        self.notes = notes
 
 
 class PalantirDefenseOSDK:
@@ -39,7 +42,7 @@ class PalantirDefenseOSDK:
 
     @property
     def configured(self) -> bool:
-        raw = os.getenv("PALANTIR_DEFENSE_OSDK_ENABLED", "").strip().lower()
+        raw = getenv("PALANTIR_DEFENSE_OSDK_ENABLED", "").strip().lower()
         return self.foundry is not None and raw in {"1", "true", "yes", "on"}
 
     def domains(self) -> list[DefenseOSDKDomain]:
