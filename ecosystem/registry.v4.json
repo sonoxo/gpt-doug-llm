@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "ecosystem_version": "4.0.0",
+  "name": "XUNIA / GPT-DOUG-LLM ecosystem",
+  "purpose": "Define one canonical map for the Sonoxo XUNIA ecosystem so repositories have distinct roles, shared control boundaries, and a single source of truth for navigation and architecture.",
+  "canonical_control_root": "sonoxo/gpt-doug-llm",
+  "canonical_hub": "sonoxo/xuniahub",
+  "domain_registry": "sonoxo/xuniadao",
+  "execution_plane": "sonoxo/zyra",
+  "ai_layer_manifest": "config/ai-layer-manifest.json",
+  "ai_layer_gate": ".github/workflows/ai-layer-gate.yml",
+  "architecture_rules": [
+    "The ecosystem collectively declares all six AI layers; individual repositories do not need to implement all six independently.",
+    "Model output does not create execution authority.",
+    "Consequential actions remain permission-scoped and human-governed where required.",
+    "Public-source evidence remains distinguishable from inference, simulation, and external authorization.",
+    "Upstream-derived repositories retain upstream attribution and are not represented as Sonoxo-authored upstream projects.",
+    "Repository membership does not create authorization to assess, access, modify, transact with, or control third-party systems.",
+    "XuniaDAO is the XUNIAverse domain ontology and registry root; it does not supersede the Black House global control plane."
+  ],
+  "core_planes": [
+    {
+      "id": "black-house",
+      "repo": "sonoxo/gpt-doug-llm",
+      "role": "governance-orchestration",
+      "label": "THE BLACK HOUSE // GPT-DOUG-LLM MAX",
+      "responsibilities": ["ontology", "agent orchestration", "AI-layer contract", "policy", "evidence", "cross-repo architecture"]
+    },
+    {
+      "id": "xunia-hq",
+      "repo": "sonoxo/xuniahub",
+      "role": "mission-interface-hub",
+      "label": "XUNIA HUB // HOLO FORGE",
+      "responsibilities": ["operator UI", "RVIA", "HOLO/digital twin", "learning surfaces", "mission visualization", "hub navigation"]
+    },
+    {
+      "id": "xunia-domain-root",
+      "repo": "sonoxo/xuniadao",
+      "role": "domain-ontology-registry",
+      "label": "XUNIA // XuniaDAO",
+      "responsibilities": ["XUNIAverse domain ontology", "repository registry", "identity graph", "CRM", "compliance", "licensing", "domain governance"]
+    },
+    {
+      "id": "zyra",
+      "repo": "sonoxo/zyra",
+      "role": "governed-execution",
+      "label": "ZYRA",
+      "responsibilities": ["security gate", "approval", "bounded execution", "audit", "cloud CI evidence", "tool integrations"]
+    },
+    {
+      "id": "red-house",
+      "repo": "sonoxo/theredhouse",
+      "role": "authorized-security",
+      "label": "THE RED HOUSE",
+      "responsibilities": ["authorized assessment", "finding normalization", "risk", "security knowledge graph", "remediation", "reviewable fixes"]
+    },
+    {
+      "id": "green-house",
+      "repo": "sonoxo/thegreenhouse",
+      "role": "public-situational-intelligence",
+      "label": "THE GREEN HOUSE",
+      "responsibilities": ["environment", "bio/pharma public context", "regulatory awareness", "global events", "maps", "public-source correlation"]
+    },
+    {
+      "id": "orange-house",
+      "repo": "sonoxo/theorangehouse",
+      "role": "economic-scenario-planning",
+      "label": "THE ORANGE HOUSE",
+      "responsibilities": ["local projections", "stress bands", "scenario analysis", "economic planning interfaces", "deterministic outputs"]
+    },
+    {
+      "id": "glass-onion-spatial",
+      "repo": "sonoxo/gods-eye-viewXUNIA",
+      "role": "geospatial-public-source-visualization",
+      "label": "GLASS ONION // GOD'S EYE VIEW",
+      "responsibilities": ["3D Earth", "public aviation/maritime/orbital context", "provenance", "freshness labels", "spatial correlation", "human review"]
+    }
+  ],
+  "research_satellites": [
+    {
+      "repo": "sonoxo/xuniaxmr",
+      "category": "privacy-and-cryptography-upstream-derived",
+      "boundary": "Research/build reference; not a canonical ecosystem wallet authority and not an automatic transaction plane."
+    },
+    {
+      "repo": "sonoxo/xmRXuniA",
+      "category": "privacy-and-cryptography-upstream-derived",
+      "boundary": "Research/build reference; retain upstream attribution and explicit financial-action boundaries."
+    },
+    {
+      "repo": "sonoxo/AI-Pentest",
+      "category": "authorized-security-reference",
+      "boundary": "Lab/reference use only on systems owned by the operator or explicitly authorized for testing."
+    }
+  ],
+  "canonical_flow": [
+    "human-operator",
+    "xunia-hq",
+    "black-house",
+    "xunia-domain-root",
+    "ontology-and-policy",
+    "zyra",
+    "domain-plane",
+    "approved-tools-or-data",
+    "evidence",
+    "human-review"
+  ],
+  "domain_routing": {
+    "security": "red-house",
+    "environment_bio_regulatory": "green-house",
+    "economic_scenarios": "orange-house",
+    "geospatial_public_source": "glass-onion-spatial",
+    "general_agentic_software": "zyra",
+    "domain_registry_and_governance": "xunia-domain-root"
+  }
+}
