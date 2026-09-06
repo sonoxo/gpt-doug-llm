@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0.0",
+  "layerId": "THE_BLACK_HOUSE_SAFEHOUSE_V1",
+  "name": "The Black House SAFEHOUSE",
+  "parentControlPlane": "THE_BLACK_HOUSE_V1",
+  "parentKernelVersion": "3.0.0",
+  "authority": "sonoxo/gpt-doug-llm/the-black-house",
+  "domain": [
+    "defensive-security",
+    "protected-sites",
+    "airspace-awareness",
+    "sensor-fusion",
+    "alerting",
+    "provenance"
+  ],
+  "sourceOntology": "https://github.com/sonoxo/xuniadao/blob/main/ecosystem/safehouse-airspace-awareness.json",
+  "mountPoint": "the-black-house/layers/safehouse",
+  "governance": {
+    "inheritsBlackHouseInvariants": true,
+    "glassOnionRequired": true,
+    "evidenceProvenanceRequired": true,
+    "consequentialMutationRequiresHumanApproval": true,
+    "externalAuthorizationNeverImplied": true,
+    "uncertainClassificationRequiresReview": true,
+    "autonomousCountermeasureBlocked": true,
+    "jammingBlocked": true,
+    "spoofingBlocked": true,
+    "takeoverBlocked": true,
+    "kineticActionBlocked": true
+  },
+  "routing": {
+    "missionProtocol": "black-house-mission-v1",
+    "direction": "BLACK_HOUSE_TO_SAFEHOUSE_TO_GLASS_ONION_TO_XUNIA",
+    "allowedActions": [
+      "DETECT",
+      "NORMALIZE",
+      "CORRELATE",
+      "FUSE_EVIDENCE",
+      "TRACK",
+      "CLASSIFY",
+      "ASSESS",
+      "MONITOR",
+      "ALERT",
+      "ESCALATE_FOR_REVIEW",
+      "ATTACH_EVIDENCE"
+    ],
+    "blockedActions": [
+      "AUTONOMOUS_COUNTERMEASURE",
+      "RF_JAMMING",
+      "SIGNAL_SPOOFING",
+      "AIRCRAFT_TAKEOVER",
+      "KINETIC_ACTION"
+    ],
+    "returnEvidenceToParent": true,
+    "governanceSurface": "GLASS_ONION"
+  },
+  "integration": {
+    "xuniaOntology": "https://github.com/sonoxo/xuniadao/blob/main/ecosystem/safehouse-airspace-awareness.json",
+    "xuniaDocumentation": "https://github.com/sonoxo/xuniadao/blob/main/docs/SAFEHOUSE_AIRSPACE_AWARENESS.md",
+    "geospatialSurface": "sonoxo/MMGISxunia-",
+    "workflowSurface": "sonoxo/zyra",
+    "externalArchitectureReference": "https://github.com/maya-gargoyle-agent/gargoyle_fact_sheet",
+    "externalRelationship": "PUBLIC_REFERENCE_ONLY_NO_AFFILIATION"
+  },
+  "runtime": {
+    "module": "va3lm.safehouse",
+    "apiRoute": "/api/black-house/safehouse",
+    "statusEmbedding": "/api/black-house/status#layers.safehouse",
+    "commandCenter": "/black-house",
+    "glassCommand": "/glass safehouse airspace"
+  },
+  "truthState": {
+    "repositoryLayer": "IMPLEMENTED",
+    "ontologyBinding": "IMPLEMENTED",
+    "glassOnionBinding": "IMPLEMENTED",
+    "runtimeMounted": "NOT_YET_RUNTIME_VERIFIED",
+    "liveSensorAdapters": "NOT_YET_RUNTIME_VERIFIED",
+    "externalVendorConnection": "NOT_CLAIMED"
+  }
+}
