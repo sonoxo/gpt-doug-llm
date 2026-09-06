@@ -1,9 +1,9 @@
 """Capability map for the GPT-DOUG / Virginia-LLM / Wakeup3lm Palantir integration.
 
 This module distinguishes repository implementation from live enrollment
-configuration. Every supported plane has a concrete adapter; live verification
-still depends on credentials, permissions, licensed products and tenant-side
-resources owned by the operator.
+configuration. Every supported plane has a concrete adapter or governed
+capability contract; live verification still depends on credentials,
+permissions, licensed products and tenant-side resources owned by the operator.
 """
 
 from __future__ import annotations
@@ -13,9 +13,8 @@ from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
 from federal_compliance import FederalComplianceProfile
-from palantir_apollo import ApolloClient
+from palantir_defense_osdk import PalantirDefenseOSDK
 from palantir_foundry import FoundryClient
-from palantir_gotham import PalantirGothamClient
 
 
 def _flag(name: str, default: bool = False) -> bool:
@@ -49,8 +48,22 @@ class PalantirStack:
         gotham_configured = bool(os.getenv("GOTHAM_BASE_URL", "").strip())
         apollo_configured = bool(os.getenv("APOLLO_URL", "").strip())
         jupyter_configured = foundry_ready and _flag("PALANTIR_JUPYTER_ENABLED")
+        defense_osdk = PalantirDefenseOSDK(
+            self.foundry,
+            enabled=_flag("PALANTIR_DEFENSE_OSDK_ENABLED"),
+        )
 
         return [
+            PalantirPlane(
+                name="Foundry",
+                role="governed data integration, transforms, datasets, lineage and application data plane",
+                implemented=True,
+                configured=foundry_ready,
+                adapter="palantir_foundry.FoundryClient",
+                integration="Foundry HTTPS REST transport + OAuth/token identity + same-host redirect pinning",
+                authority="Foundry enrollment scopes, resource permissions and local policy gates",
+                notes="Foundry is the governed data/application substrate; configuration does not imply access to any specific enrollment.",
+            ),
             PalantirPlane(
                 name="AIP",
                 role="agent reasoning, provider-compatible LLM calls, published Logic/function execution, eval regression and Automate effects",
@@ -80,6 +93,19 @@ class PalantirStack:
                 integration="Gotham OAuth/Bearer REST API under /api/gotham/v1",
                 authority="Gotham enrollment permissions, markings and token scopes",
                 notes="Read and explicitly enabled write paths are implemented; configuration does not manufacture Gotham entitlement.",
+            ),
+            PalantirPlane(
+                name="Defense OSDK",
+                role="typed defense-application domain contract for intelligence, mission planning, order of battle and sustainment",
+                implemented=True,
+                configured=defense_osdk.configured,
+                adapter="palantir_defense_osdk.PalantirDefenseOSDK + enrollment-generated OSDK client",
+                integration="local capability gate around tenant-generated Defense OSDK types/clients and authorized Foundry/Gotham resources",
+                authority="OSDK application scopes, Foundry/Gotham identity, Ontology permissions, markings and local human-review policy",
+                notes=(
+                    "Intelligence, mission-planning, order-of-battle and sustainment are routable when an authorized OSDK client is provisioned. "
+                    "Targeting-and-fires may be represented as read-only ontology/simulation context but is blocked from autonomous local execution."
+                ),
             ),
             PalantirPlane(
                 name="Apollo",
@@ -123,12 +149,24 @@ class PalantirStack:
             "configured_planes": [plane.name for plane in planes if plane.configured],
             "planes": [asdict(plane) for plane in planes],
             "routing": {
+                "ingest_and_govern": "Foundry",
                 "reason": "AIP",
                 "operational_state": "Ontology",
                 "mission_view": "Gotham",
+                "typed_defense_apps": "Defense OSDK",
                 "deploy": "Apollo",
                 "develop_and_analyze": "JupyterLab",
                 "event_automation": "Automate",
+            },
+            "ecosystem_layers": {
+                "data_plane": ["Foundry"],
+                "semantic_operational_plane": ["Ontology"],
+                "reasoning_plane": ["AIP"],
+                "mission_operational_picture": ["Gotham"],
+                "application_sdk_plane": ["Defense OSDK"],
+                "workflow_plane": ["Automate"],
+                "engineering_plane": ["JupyterLab"],
+                "delivery_plane": ["Apollo"],
             },
             "runtime_verification": {
                 "command": "/palantir probe",
@@ -142,6 +180,7 @@ class PalantirStack:
                 "Foundry writes disabled by default",
                 "human approval for consequential actions",
                 "preserve Palantir markings, provenance and auditability",
+                "no autonomous local weapon-targeting or fires execution",
                 "no classified processing without an explicitly authorized environment",
                 "no claim of Space Force, NSA, NASA, CIA or IC certification without formal agency authorization",
             ],

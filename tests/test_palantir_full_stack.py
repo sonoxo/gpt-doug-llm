@@ -3,6 +3,7 @@ import tempfile
 from palantir_aip import AIPTestCase, PalantirAIPClient
 from palantir_apollo import validate_apollo_manifest
 from palantir_automate import AutomateEffect, PalantirAutomateBridge
+from palantir_defense_osdk import PalantirDefenseOSDK
 from palantir_gotham import PalantirGothamClient
 from palantir_stack import PalantirStack
 from wakeup3lm import Wakeup3LM
@@ -108,9 +109,32 @@ def test_wakeup3lm_invokes_aip_and_records_external_run():
         assert runs[-1].properties["status"] == "PASSED"
 
 
+def test_defense_osdk_contract_exposes_safe_domains_and_blocks_fires():
+    osdk = PalantirDefenseOSDK(FakeFoundry(), enabled=True)
+    status = osdk.status()
+    assert status["configured"] is True
+    assert "intelligence" in status["safe_domains"]
+    assert "mission-planning" in status["safe_domains"]
+    assert "targeting-and-fires" in status["restricted_domains"]
+    assert osdk.require_domain("sustainment").enabled is True
+    try:
+        osdk.require_domain("targeting-and-fires")
+    except PermissionError:
+        pass
+    else:
+        raise AssertionError("targeting-and-fires must remain blocked from local autonomous execution")
+
+
 def test_every_palantir_code_plane_is_implemented():
     stack = PalantirStack(FakeFoundry()).status()
     assert stack["all_code_planes_implemented"] is True
-    assert {"AIP", "Ontology", "Gotham", "Apollo", "JupyterLab", "Automate"}.issubset(
-        set(stack["implemented_planes"])
-    )
+    assert {
+        "Foundry",
+        "AIP",
+        "Ontology",
+        "Gotham",
+        "Defense OSDK",
+        "Apollo",
+        "JupyterLab",
+        "Automate",
+    }.issubset(set(stack["implemented_planes"]))
