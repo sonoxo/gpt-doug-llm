@@ -13,10 +13,8 @@ from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
 from federal_compliance import FederalComplianceProfile
-from palantir_apollo import ApolloClient
 from palantir_defense_osdk import PalantirDefenseOSDK
 from palantir_foundry import FoundryClient
-from palantir_gotham import PalantirGothamClient
 
 
 def _flag(name: str, default: bool = False) -> bool:
