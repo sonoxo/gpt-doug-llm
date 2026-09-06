@@ -12,6 +12,7 @@ import json
 import os
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -47,6 +48,11 @@ def emit(kind: str) -> int:
         print("NXYZ webhook not configured; local control-plane artifact written.")
         return 0
 
+    scheme = urllib.parse.urlsplit(url).scheme.lower()
+    if scheme not in {"http", "https"}:
+        print("NXYZ delivery blocked: webhook URL must use http or https.", file=sys.stderr)
+        return 1
+
     headers = {"Content-Type": "application/json", "User-Agent": "gpt-doug-llm-max/1"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
@@ -58,7 +64,8 @@ def emit(kind: str) -> int:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=15) as response:
+        # B310 is mitigated by the explicit allow-list above; only HTTP(S) requests reach urlopen.
+        with urllib.request.urlopen(request, timeout=15) as response:  # nosec B310
             if not 200 <= response.status < 300:
                 raise RuntimeError(f"NXYZ webhook returned HTTP {response.status}")
         print("NXYZ control-plane event delivered.")
