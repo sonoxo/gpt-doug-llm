@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - uses: opentofu/setup-opentofu@v1
+      - uses: opentofu/setup-opentofu@v2
       - uses: astral-sh/setup-uv@v6
       - run: cp xunia-forge/.env.example xunia-forge/.env
       - run: docker compose -f xunia-forge/compose.yaml config -q
