@@ -5,6 +5,7 @@
   "purpose": "Define one canonical map for the Sonoxo XUNIA ecosystem so repositories have distinct roles, shared control boundaries, and a single source of truth for navigation and architecture.",
   "canonical_control_root": "sonoxo/gpt-doug-llm",
   "canonical_hub": "sonoxo/xuniahub",
+  "domain_registry": "sonoxo/xuniadao",
   "execution_plane": "sonoxo/zyra",
   "ai_layer_manifest": "config/ai-layer-manifest.json",
   "ai_layer_gate": ".github/workflows/ai-layer-gate.yml",
@@ -14,7 +15,8 @@
     "Consequential actions remain permission-scoped and human-governed where required.",
     "Public-source evidence remains distinguishable from inference, simulation, and external authorization.",
     "Upstream-derived repositories retain upstream attribution and are not represented as Sonoxo-authored upstream projects.",
-    "Repository membership does not create authorization to assess, access, modify, transact with, or control third-party systems."
+    "Repository membership does not create authorization to assess, access, modify, transact with, or control third-party systems.",
+    "XuniaDAO is the XUNIAverse domain ontology and registry root; it does not supersede the Black House global control plane."
   ],
   "core_planes": [
     {
@@ -30,6 +32,13 @@
       "role": "mission-interface-hub",
       "label": "XUNIA HUB // HOLO FORGE",
       "responsibilities": ["operator UI", "RVIA", "HOLO/digital twin", "learning surfaces", "mission visualization", "hub navigation"]
+    },
+    {
+      "id": "xunia-domain-root",
+      "repo": "sonoxo/xuniadao",
+      "role": "domain-ontology-registry",
+      "label": "XUNIA // XuniaDAO",
+      "responsibilities": ["XUNIAverse domain ontology", "repository registry", "identity graph", "CRM", "compliance", "licensing", "domain governance"]
     },
     {
       "id": "zyra",
@@ -88,6 +97,7 @@
     "human-operator",
     "xunia-hq",
     "black-house",
+    "xunia-domain-root",
     "ontology-and-policy",
     "zyra",
     "domain-plane",
@@ -100,6 +110,7 @@
     "environment_bio_regulatory": "green-house",
     "economic_scenarios": "orange-house",
     "geospatial_public_source": "glass-onion-spatial",
-    "general_agentic_software": "zyra"
+    "general_agentic_software": "zyra",
+    "domain_registry_and_governance": "xunia-domain-root"
   }
 }
