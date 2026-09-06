@@ -1,0 +1,37 @@
+{
+  "id": "black-house-integration:crowdstrike-safemind-reference",
+  "version": "1.0.0",
+  "state": "REFERENCE_PATTERN_ACTIVE",
+  "registered": "2026-09-06",
+  "type": "PUBLIC_RESEARCH_ARCHITECTURE_REFERENCE",
+  "sourceRecord": "../../intel/sources/crowdstrike-safemind-2026-09-06.json",
+  "researchBrief": "../../intel/briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md",
+  "knowledgeModule": "../../safety-shield/agents/knowledge/safemind-inspired-defensive-loop-v1.json",
+  "blackHouseMapping": {
+    "adversarySimulationRole": "ADVERSARY_SIMULATOR",
+    "defensiveRole": "DEFENSE_CLOSER",
+    "missionRouter": "RVIA",
+    "policyPlane": "SHADOW_GLASS",
+    "authorizationPlane": "ZYRA",
+    "ontologyPlane": "BLACK_HOUSE_ONTOLOGY",
+    "evidencePlane": "MISSION_HISTORY_LEDGER",
+    "telemetryPlane": "BLACK_HOUSE_TELEMETRY"
+  },
+  "executionPolicy": {
+    "default": "DENY_UNLESS_AUTHORIZED",
+    "adversarySimulation": "OWNED_AUTHORIZED_LAB_OR_SYNTHETIC_ONLY",
+    "defensiveMutation": "LEAST_PRIVILEGE_AND_POLICY_GATED",
+    "highImpactMutation": "EXPLICIT_HUMAN_APPROVAL_REQUIRED",
+    "unknownTargetOrScope": "FAIL_CLOSED",
+    "audit": "REQUIRED"
+  },
+  "vendorBoundary": {
+    "isCrowdStrikeIntegration": false,
+    "usesFalcon": false,
+    "usesSafeMindModels": false,
+    "usesCrowdStrikeTelemetry": false,
+    "usesProjectQuiltWorks": false,
+    "claimsPartnershipOrAffiliation": false,
+    "note": "This manifest registers a public architecture reference and Black House-native implementation pattern only."
+  }
+}
