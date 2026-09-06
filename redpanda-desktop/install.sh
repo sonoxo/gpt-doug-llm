@@ -49,10 +49,14 @@ fetch agentic_cpr_runtime.py
 fetch zfi_agent.py
 fetch redpanda-zsh-hook.zsh
 fetch redpanda-node
-chmod +x "$NODE/redpanda_agent.py" "$NODE/gpt_redpanda_llm.py" "$NODE/agentic_cpr_runtime.py" "$NODE/zfi_agent.py" "$NODE/redpanda-node"
+fetch va3lm-cpr
+fetch glass
+chmod +x "$NODE/redpanda_agent.py" "$NODE/gpt_redpanda_llm.py" "$NODE/agentic_cpr_runtime.py" "$NODE/zfi_agent.py" "$NODE/redpanda-node" "$NODE/va3lm-cpr" "$NODE/glass"
 
 cp "$NODE/redpanda-node" "$HOST_BIN/redpanda-node"
-chmod +x "$HOST_BIN/redpanda-node"
+cp "$NODE/va3lm-cpr" "$HOST_BIN/va3lm-cpr"
+cp "$NODE/glass" "$HOST_BIN/glass"
+chmod +x "$HOST_BIN/redpanda-node" "$HOST_BIN/va3lm-cpr" "$HOST_BIN/glass"
 cp "$NODE/redpanda-zsh-hook.zsh" "$HOST_SHARE/redpanda-zsh-hook.zsh"
 
 EVENT_FILE="$STATE/events/terminal-events.tsv"
@@ -67,6 +71,7 @@ for _redpanda_volume in /Volumes/*; do
 done
 unset _redpanda_volume
 [[ -n "${REDPANDA_EVENT_FILE:-}" && -f "$HOME/.local/share/gpt-redpanda/redpanda-zsh-hook.zsh" ]] && source "$HOME/.local/share/gpt-redpanda/redpanda-zsh-hook.zsh"
+command -v glass >/dev/null 2>&1 && alias '/glass=glass'
 EOF
 
 touch "$HOME/.zshenv"
@@ -123,6 +128,8 @@ say "🤖 Agentic CPR: autonomous + bounded + verify + circuit breaker"
 say "💾 Node: $NODE"
 say "🧬 State: $STATE"
 say "🚑 Cyber CPR: $(command -v cyber-cpr || echo 'install cyber-cpr separately')"
+say "🩺 VA3LM CPR shim: $HOST_BIN/va3lm-cpr"
+say "🧅 GLASS ONION command: $HOST_BIN/glass"
 say "👁 Terminal watch: metadata only (exit status + cwd; no command text)"
 say "🖥 Desktop: redpanda-node open"
 say "📁 ZFI Files: redpanda-node files"
@@ -130,5 +137,6 @@ say "🤖 Agentic CPR state: redpanda-node agentic-cpr-status"
 say "📱 Mobile/LAN: redpanda-node mobile"
 say "🔎 Status: redpanda-node status"
 say "🚑 Manual CPR: redpanda-node cpr"
+say "🧅 Intel: glass intel neptune-shield seal-tank"
 say ""
 say "Open the portal with: redpanda-node open"
