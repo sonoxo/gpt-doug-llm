@@ -8,7 +8,6 @@ from typing import Any
 
 from .models_v031 import Appointment
 
-
 SCHEMA = """
 PRAGMA journal_mode=WAL;
 PRAGMA foreign_keys=ON;
