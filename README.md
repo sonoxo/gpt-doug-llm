@@ -8,9 +8,13 @@
 
 **▶ PUBLIC RESILIENCE REFERENCE — human-controlled forecasting, course-of-action generation, simulation, and approval-gated execution**
 
+<a href="https://www.youtube.com/watch?v=qYByk5cwaWg"><img width="760" src="https://img.youtube.com/vi/qYByk5cwaWg/maxresdefault.jpg" alt="Public infrastructure resilience reference video II" /></a>
+
+**▶ PUBLIC RESILIENCE REFERENCE II — additional external architecture and infrastructure-protection reference**
+
 [![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
 
-<sub>Neptune Shield and the linked Palantir/Gallatin AI material are public external references. Their inclusion does not imply affiliation, endorsement, contract status, clearance, authorization, or third-party access.</sub>
+<sub>Neptune Shield and the linked public reference materials are external sources. Their inclusion does not imply affiliation, endorsement, contract status, clearance, authorization, or third-party access.</sub>
 
 # THE BLACK HOUSE // GPT-DOUG-LLM MAX
 
@@ -131,7 +135,8 @@ The Black House resilience policy turns public logistics/decision-workflow lesso
 - [Infrastructure resilience policy](safety-shield/policies/infrastructure-resilience.json)
 - [Deterministic validator](scripts/validate_infrastructure_resilience.py)
 - [CI resilience gate](.github/workflows/black-house-resilience-gate.yml)
-- [Public reference video](https://www.youtube.com/watch?v=jK5k9_Gql-I)
+- [Public reference video I](https://www.youtube.com/watch?v=jK5k9_Gql-I)
+- [Public reference video II](https://www.youtube.com/watch?v=qYByk5cwaWg)
 
 Read [SECURITY.md](SECURITY.md), [Federal / IC alignment](docs/FEDERAL_IC_ALIGNMENT.md), and [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md).
 
