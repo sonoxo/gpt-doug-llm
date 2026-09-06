@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+MARKER=".gpt-redpanda-node"
+MODE="${1:-run}"
+shift || true
+
+find_node() {
+  if [[ -n "${REDPANDA_USB_ROOT:-}" && -f "${REDPANDA_USB_ROOT}/${MARKER}" ]]; then
+    printf '%s\n' "${REDPANDA_USB_ROOT}"
+    return 0
+  fi
+  local p
+  for p in /Volumes/*; do
+    [[ -d "$p" ]] || continue
+    if [[ -f "$p/${MARKER}" && -f "$p/GPT-REDPANDA/redpanda_agent.py" ]]; then
+      printf '%s\n' "$p"
+      return 0
+    fi
+  done
+  return 1
+}
+
+NODE="$(find_node || true)"
+if [[ -z "$NODE" ]]; then
+  echo "🐼 GPT-REDPANDA USB node not mounted." >&2
+  exit 3
+fi
+
+export REDPANDA_USB_ROOT="$NODE"
+export REDPANDA_EVENT_FILE="$NODE/.redpanda/events/terminal-events.tsv"
+
+case "$MODE" in
+  run)
+    exec /usr/bin/python3 "$NODE/GPT-REDPANDA/redpanda_agent.py" "$@"
+    ;;
+  lan)
+    exec /usr/bin/python3 "$NODE/GPT-REDPANDA/redpanda_agent.py" --lan "$@"
+    ;;
+  cpr)
+    exec /usr/bin/python3 "$NODE/GPT-REDPANDA/redpanda_agent.py" --cpr-now "$@"
+    ;;
+  open)
+    TOKEN="$(cat "$NODE/.redpanda/portal-token" 2>/dev/null || true)"
+    PORT="${REDPANDA_PORT:-8765}"
+    URL="http://127.0.0.1:${PORT}/?token=${TOKEN}"
+    open "$URL"
+    ;;
+  status)
+    cat "$NODE/.redpanda/status.json" 2>/dev/null || echo '{"state":"unknown"}'
+    ;;
+  *)
+    echo "Usage: redpanda-node {run|lan|cpr|open|status}" >&2
+    exit 2
+    ;;
+esac
