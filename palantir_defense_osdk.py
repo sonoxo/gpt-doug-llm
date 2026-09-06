@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from palantir_foundry import FoundryClient
 
@@ -39,7 +39,7 @@ class DefenseOSDKDomain:
 class PalantirDefenseOSDK:
     """Local capability registry for an enrollment-generated Defense OSDK client."""
 
-    def __init__(self, foundry: Optional[FoundryClient]) -> None:
+    def __init__(self, foundry: FoundryClient | None) -> None:
         self.foundry = foundry
 
     @property
