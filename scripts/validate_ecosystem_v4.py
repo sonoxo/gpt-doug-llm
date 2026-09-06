@@ -9,6 +9,7 @@ AI_MANIFEST = ROOT / "config" / "ai-layer-manifest.json"
 EXPECTED_PLANES = {
     "black-house",
     "xunia-hq",
+    "xunia-domain-root",
     "zyra",
     "red-house",
     "green-house",
@@ -44,6 +45,8 @@ def main() -> None:
         fail("canonical control root drifted")
     if registry.get("canonical_hub") != "sonoxo/xuniahub":
         fail("canonical hub drifted")
+    if registry.get("domain_registry") != "sonoxo/xuniadao":
+        fail("XUNIAverse domain registry drifted")
     if registry.get("execution_plane") != "sonoxo/zyra":
         fail("execution plane drifted")
 
@@ -66,7 +69,7 @@ def main() -> None:
         fail("six-layer AI contract is incomplete")
 
     rules = " ".join(registry.get("architecture_rules", [])).lower()
-    for phrase in ("human-governed", "upstream", "authorization"):
+    for phrase in ("human-governed", "upstream", "authorization", "does not supersede"):
         if phrase not in rules:
             fail(f"missing architecture boundary containing: {phrase}")
 
@@ -75,6 +78,11 @@ def main() -> None:
     for domain, target in routing.items():
         if target not in known:
             fail(f"domain route {domain!r} points to unknown plane {target!r}")
+
+    flow = registry.get("canonical_flow", [])
+    for required in ("xunia-hq", "black-house", "xunia-domain-root", "zyra", "evidence", "human-review"):
+        if required not in flow:
+            fail(f"canonical flow missing {required}")
 
     print("ecosystem-v4: PASS")
     print(f"core planes: {len(planes)}")
