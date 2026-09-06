@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-05T14:38:35Z",
+  "cutoff_at": "2026-09-05T14:39:10Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -166,6 +166,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "3f0552bc1f21fae8294c5444362480244ec14d8ddc517b24a5f8f32096dd69d9",
       "size": 1070,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/black-house-resilience-gate.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T14:38:54Z",
+      "reviewed_at": null,
+      "sha256": "27a1eeb46dad1bd2f76d3dcc33d1c74ab52c81bfd9668cf0d6bdf72769111bb9",
+      "size": 1118,
       "validation_issues": [],
       "was_due": false
     },
@@ -2219,9 +2230,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T14:18:12Z",
+      "git_touched_at": "2026-09-06T14:38:37Z",
       "reviewed_at": null,
-      "sha256": "030e4b0efec556aa248f4d104728b0fc811f487fc9f575c2ccff0a86b1ef5bf3",
+      "sha256": "83809cfd6a5a72e90d4dc052b7127b8de46b99b499a9d2ce6833f8bb623439be",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -5468,6 +5479,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "069b11cb59b51f166efad6365bcbf92d1e8135027123eb89489d40bed193e8ef",
       "size": 2823,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/validate_infrastructure_resilience.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-06T14:38:44Z",
+      "reviewed_at": null,
+      "sha256": "034c27ead8d7e229439f367d1c6dd4028090f416422b63568bd851fbeec29224",
+      "size": 2855,
       "validation_issues": [],
       "was_due": false
     },
@@ -9301,11 +9323,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-06T14:38:35Z",
+  "generated_at": "2026-09-06T14:39:10Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 845,
+  "tracked_files_reviewed": 847,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
