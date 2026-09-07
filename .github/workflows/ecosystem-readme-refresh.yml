@@ -5,8 +5,11 @@ on:
     branches: [main]
     paths:
       - "scripts/generate_ecosystem_diagrams.py"
+      - "scripts/generate_kraken_infra_diagram.py"
       - "wakeup3lm/**"
       - "agents/**"
+      - "kraken_jutsu/**"
+      - "the-black-house/**"
       - "tests/**"
       - "safety-shield/**"
       - "foundry/**"
@@ -46,6 +49,7 @@ jobs:
             git reset --hard origin/main
 
             GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_ecosystem_diagrams.py
+            GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_kraken_infra_diagram.py
 
             if [[ -z "$(git status --porcelain docs/assets/)" ]]; then
               echo "Ecosystem diagrams already match repository state."
