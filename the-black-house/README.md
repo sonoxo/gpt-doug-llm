@@ -1,14 +1,16 @@
 # THE BLACK HOUSE // KERNEL 3.0.0
 
-Canonical governance, ontology, identity, mission-routing, evidence, telemetry, and command-center root for the Sonoxo agentic ecosystem.
+Canonical governance, ontology, identity, mission-routing, evidence, telemetry, command-center, and governed O/D simulation root for the Sonoxo agentic ecosystem.
 
-**Phases 1–8 implementation status:** code-complete. Phases 4–8 add the executable RVIA mission bus, durable mission/evidence history, live GitHub fleet telemetry, Palantir verification truth states, and the Black House Command Center on VA3LM port `8088`.
+**Phases 1–9 implementation status:** code-complete. Phases 4–8 provide the executable RVIA mission bus, durable mission/evidence history, live GitHub fleet telemetry, Palantir verification truth states, and the Black House Command Center on VA3LM port `8088`. Phase 9 adds a bounded offense/defense simulation plane based on a layered sense → transport → fusion → assessment → response architecture.
 
 > Phase 7 has an external dependency: repository implementation is complete, but a Palantir environment is **not** labeled `LIVE_TENANT_VERIFIED` until an authorized tenant probe succeeds. Code completeness never implies tenant entitlement.
 
+> Phase 9 is **plan/simulation only**. Offensive behavior is limited to synthetic, isolated-lab, or explicitly owned-test environments. Public-Internet exploitation, critical-infrastructure disruption, weapon control, and autonomous external mutation are disabled.
+
 ## Authority
 
-This directory is the machine-readable global root for ecosystem identity, service registration, agent registration, mission envelopes, ontology contracts, kernel vocabulary, routing policy, telemetry contracts, governance boundaries, phase status, and control-plane validation.
+This directory is the machine-readable global root for ecosystem identity, service registration, agent registration, mission envelopes, ontology contracts, kernel vocabulary, routing policy, telemetry contracts, governance boundaries, phase status, O/D simulation policy, and control-plane validation.
 
 It does **not** duplicate every service implementation. Each registered component remains owned by its source repository and is referenced here through Black House contracts.
 
@@ -26,6 +28,7 @@ It does **not** duplicate every service implementation. Each registered componen
 | 6 | Live ecosystem telemetry | `COMPLETE` |
 | 7 | Palantir verification plane | `CODE_COMPLETE`; live tenant state is probe-derived |
 | 8 | Black House Command Center | `COMPLETE` |
+| 9 | Offense/Defense Simulation Plane | `COMPLETE`; `PLAN_OR_SIMULATION_ONLY` |
 
 The machine-readable source is `status/phases.json`.
 
@@ -168,14 +171,48 @@ Open:
 http://127.0.0.1:8088/black-house
 ```
 
-The surface includes:
+The surface includes phases 1–9 status, RVIA mission console, durable Mission History, live GitHub fleet telemetry, Palantir verification truth state, Phase 9 O/D status, and the RVIA router manifest.
 
-- phases 1–8 status;
-- RVIA mission console;
-- durable Mission History;
-- live GitHub fleet telemetry;
-- Palantir verification truth state;
-- RVIA router manifest.
+## Phase 9 — Offense/Defense Simulation Plane
+
+Runtime implementation: `va3lm/src/va3lm/od_plane.py`.
+
+Canonical manifest: `od/od-plane.manifest.json`.
+
+The uploaded layered battlespace reference is translated into a software-resilience control loop rather than copied as a weapon-engagement system:
+
+```text
+SENSE
+  ↓
+TRANSPORT
+  ↓
+FUSE
+  ↓
+ASSESS
+  ↓
+EMULATE   ← authorized lab only
+  ↓
+DEFEND
+  ↓
+VERIFY
+  ↓
+EVIDENCE / AUDIT
+```
+
+The observation layer accepts endpoint, network, identity, cloud, application, OSINT, and synthetic telemetry. The fusion layer produces bounded assessment. The offense plane emits adversary-emulation scenarios only for `synthetic`, `isolated_lab`, and `owned_test` environments. The defense plane emits detect/contain/recover/verify plans and may generate read-only defensive recommendations for declared production scopes.
+
+Hard controls are machine-validated:
+
+- no public-Internet exploitation;
+- no real-world target execution;
+- no critical-infrastructure disruption;
+- no weapon control;
+- no autonomous external mutation;
+- explicit scope required;
+- consequential mutation requires explicit approval;
+- all runtime results state whether external execution occurred.
+
+Phase 9 runtime always reports `externalExecutionPerformed: false`.
 
 Runtime APIs:
 
@@ -187,6 +224,8 @@ GET  /api/black-house/missions
 GET  /api/black-house/missions/{mission_id}
 GET  /api/black-house/telemetry?live=true
 GET  /api/black-house/palantir
+GET  /api/black-house/od
+POST /api/black-house/od/simulate
 GET  /black-house
 ```
 
@@ -201,6 +240,7 @@ GET  /black-house
 | **ZYRA / NXYZ / Zyra Cloud** | `.black-house/kernel.json` + `.black-house/mission-router.json` | policy, approval, evidence, cloud execution |
 | **AIP quality plane** | `.black-house/runtime.json` + `.black-house/mission-router.json` | reusable CI/security quality plane |
 | **Palantir adapters** | authorized external adapter | optional tenant execution after verification |
+| **Black House O/D Plane** | `od/od-plane.manifest.json` | governed offense emulation + defensive planning; simulation only |
 
 ## Canonical files
 
@@ -217,7 +257,8 @@ GET  /black-house
 - `runtime/runtime-contract.json` — runtime health contract.
 - `telemetry/telemetry.schema.json` — live fleet telemetry contract.
 - `integrations/palantir/status.schema.json` — Palantir verification truth-state contract.
-- `status/phases.json` — phases 1–8 implementation state.
+- `od/od-plane.manifest.json` — Phase 9 O/D simulation contract.
+- `status/phases.json` — phases 1–9 implementation state.
 - `governance/CONTROL-PLANE.md` — execution and authority boundary.
 
 ## Full-completion CI contract
@@ -237,7 +278,11 @@ GET  /black-house
 11. kernel and mission-protocol coherence pass across repositories;
 12. telemetry collector contract passes and a live GitHub fleet probe is attempted;
 13. Palantir adapter/probe tests pass while tenant status remains truthfully probe-derived;
-14. final verdict fails closed unless every repository-controlled critical plane is GREEN.
+14. Phase 9 manifest is present, bound to the kernel, and validates fail-closed O/D policy;
+15. Phase 9 offense emulation holds on public-Internet/production scopes;
+16. Phase 9 mutation requests require explicit approval;
+17. Phase 9 runtime/API tests prove `externalExecutionPerformed` remains false;
+18. final verdict fails closed unless every repository-controlled critical plane is GREEN.
 
 ## State language
 
