@@ -46,9 +46,10 @@ async function jsonRequest(url, options = {}) {
 }
 
 export class PalantirToolboxClient {
-  constructor({ mode = "bridge", bridgeUrl = DEFAULT_BRIDGE, foundryOrigin = "", token = "" } = {}) {
+  constructor({ mode = "bridge", bridgeUrl = DEFAULT_BRIDGE, bridgeKey = "", foundryOrigin = "", token = "" } = {}) {
     this.mode = mode;
     this.bridgeUrl = cleanBridge(bridgeUrl);
+    this.bridgeKey = bridgeKey;
     this.foundryOrigin = foundryOrigin ? normalizeFoundryOrigin(foundryOrigin) : "";
     this.token = token;
   }
@@ -57,9 +58,11 @@ export class PalantirToolboxClient {
     if (!path.startsWith("/") || path.includes("://")) throw new Error("Unsafe request path");
 
     if (this.mode === "bridge") {
+      if (!this.bridgeKey) throw new Error("Enter the local bridge key for this browser session");
       return jsonRequest(`${this.bridgeUrl}${path}`, {
         method,
-        body: body ? JSON.stringify(body) : undefined
+        body: body ? JSON.stringify(body) : undefined,
+        headers: { "X-Palantir-Toolbox-Key": this.bridgeKey }
       });
     }
 
