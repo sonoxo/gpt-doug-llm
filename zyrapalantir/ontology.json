@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "zyrapalantir-resilience-ontology",
+  "name": "ZYRAPALANTIR Resilience Ontology",
+  "division": "GPT-ZYRA-PALANTIR",
+  "codename": "ZYRAPALANTIR",
+  "mode": "SIMULATION_ONLY",
+  "parent_graph": "gpt-doug-llm",
+  "object_types": [
+    "Division",
+    "InfrastructureDomain",
+    "DigitalTwinAsset",
+    "Dependency",
+    "SyntheticSensor",
+    "SyntheticAlert",
+    "Incident",
+    "SafetyEnvelope",
+    "FailoverResource",
+    "RecoveryStep",
+    "AuditEvent"
+  ],
+  "link_types": [
+    "DIVISION_OWNS_DOMAIN",
+    "DOMAIN_CONTAINS_ASSET",
+    "ASSET_DEPENDS_ON_ASSET",
+    "SENSOR_OBSERVES_ASSET",
+    "ALERT_AFFECTS_ASSET",
+    "INCIDENT_CONTAINS_ALERT",
+    "INCIDENT_THREATENS_DEPENDENCY",
+    "ASSET_HAS_FAILOVER",
+    "ACTION_PRODUCES_AUDIT_EVENT"
+  ],
+  "action_types": [
+    "DECLARE_EXERCISE",
+    "ACKNOWLEDGE_INCIDENT",
+    "ISOLATE_SIMULATED_NODE",
+    "ENTER_SIMULATED_SAFE_STATE",
+    "PRESERVE_LIFE_SAFETY_SERVICE",
+    "ACTIVATE_SIMULATED_FAILOVER",
+    "REROUTE_SIMULATED_EMS",
+    "ROLLBACK_SIMULATION_ACTION",
+    "RESTORE_SIMULATED_SERVICE",
+    "VERIFY_RECOVERY",
+    "CLOSE_EXERCISE"
+  ],
+  "domains": [
+    {"id": "power_sim", "label": "POWER_SIM", "synthetic": true},
+    {"id": "water_sim", "label": "WATER_SIM", "synthetic": true},
+    {"id": "traffic_sim", "label": "TRAFFIC_SIM", "synthetic": true},
+    {"id": "ems_sim", "label": "EMS_SIM", "synthetic": true},
+    {"id": "911_sim", "label": "911_SIM", "synthetic": true},
+    {"id": "988_sim", "label": "988_SIM", "synthetic": true},
+    {"id": "air_sim", "label": "AIR_SIM", "synthetic": true}
+  ],
+  "safety_invariants": {
+    "real_infrastructure_write_access": false,
+    "real_scada_control": false,
+    "real_plc_control": false,
+    "real_emergency_service_control": false,
+    "real_traffic_control": false,
+    "outbound_network_in_sim": false,
+    "synthetic_telemetry_only": true,
+    "human_approval_for_actions": true,
+    "audit_logging_required": true
+  }
+}
