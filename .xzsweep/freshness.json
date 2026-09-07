@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T03:27:01Z",
+  "cutoff_at": "2026-09-06T04:03:49Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -111,6 +111,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "9901c00159e9d54e980a5a4c08eca98a828b6b4edec7294825480cf0b2ab01db",
       "size": 1271,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/aeo-intel-gate.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "b058895c1d0fbe2748a18c0ab459f960205ff449694d3f770534f8ad7940d6a7",
+      "size": 550,
       "validation_issues": [],
       "was_due": false
     },
@@ -2344,6 +2355,17 @@
       "reviewed_at": null,
       "sha256": "2175f2972254b19488946d0f3e1be3eee86dfda07a2ce323a2d12b7fd8fdb29c",
       "size": 8272,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/assets/insignia-aeo.svg": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "94ace3fa66143612f05020ee3452223a0740cf64efe12d3f0af3b7bea9c531d2",
+      "size": 3944,
       "validation_issues": [],
       "was_due": false
     },
@@ -5314,6 +5336,72 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "d99663a41a4a2553a41e312705d8c30a7fe53cbe077a1106ff790025cbc25c53",
       "size": 15,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "c44ee8196a561cbc8ba3d1f17cde3d912eef620de6ded4d19009cb07b0405bca",
+      "size": 678,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/aeo/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "1c2852c821a5a9ead0919859d1dba25f83b7a68c966f4d7a5f0b9aa1549bf353",
+      "size": 3164,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/aeo/cases/AEO-CASE-0001-EDWARD-SNOWDEN.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "a94028043f52ddea90d99e131319f5a5434dd26423bfc5d346d882f94f04caa4",
+      "size": 2397,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/aeo/ontology/aeo-division.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "b4965a1d6e2da624a53870028f425dfe5d1ac9a8efb35469ca891d23635bcf56",
+      "size": 1340,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/aeo/policies/source-doctrine.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "fdf3e23faa17c522018ba53854969e8545daf4830ef7fa536773627313f858bf",
+      "size": 1904,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "rvia-intel/aeo/scripts/validate_aeo.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:03:40Z",
+      "reviewed_at": null,
+      "sha256": "0123b56ef929d3138ecc29a1c26af08b4002717e249bbe84e76217ed50d2945c",
+      "size": 2398,
       "validation_issues": [],
       "was_due": false
     },
@@ -9840,11 +9928,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T03:27:01Z",
+  "generated_at": "2026-09-07T04:03:49Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 894,
+  "tracked_files_reviewed": 902,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
