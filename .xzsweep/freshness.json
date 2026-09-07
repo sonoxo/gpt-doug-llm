@@ -1,15 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T06:23:39Z",
-  "due_files_reviewed": 6,
-  "due_paths": [
-    ".env.example",
-    "docs/PALANTIR_FULL_STACK.md",
-    "palantir_defense_osdk.py",
-    "palantir_stack.py",
-    "tests/test_palantir_full_stack.py",
-    "the-black-house/integrations/xunidirect-youtube-cleaner.json"
-  ],
+  "cutoff_at": "2026-09-06T07:26:28Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -58,13 +51,13 @@
     ".env.example": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T06:22:07Z",
       "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "fc8d0e6dcb3a27888094529717deb2e20f5f507bce2f5d7b096fe35378643b03",
       "size": 9025,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/ISSUE_TEMPLATE/bug_report.yml": {
       "actions": [],
@@ -2280,13 +2273,13 @@
     "docs/PALANTIR_FULL_STACK.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T06:22:07Z",
       "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "4026032dd04a8aa77dfeaa3b98bf60a1ad54971c81f84c78215d7f0efd811fd0",
       "size": 6463,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/PALANTIR_SOVEREIGNTY_PERFORMANCE.md": {
       "actions": [],
@@ -4015,6 +4008,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "integrations/reef/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T07:26:12Z",
+      "reviewed_at": null,
+      "sha256": "e3822645c69ef6fca7f30bd0a9565db57be6ec9fc03073a8e6f5623fda8f728a",
+      "size": 2801,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/reef/manifest.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T07:26:12Z",
+      "reviewed_at": null,
+      "sha256": "75d036c04619bdbe44daf35e3fef892ec8245809c24d6631b0e200ffa80e4abc",
+      "size": 2035,
+      "validation_issues": [],
+      "was_due": false
+    },
     "intel/AGENTIC_INTELLIGENCE_LOOP.md": {
       "actions": [],
       "binary": false,
@@ -5008,11 +5023,11 @@
     "ontology.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-15T23:25:27Z",
-      "reviewed_at": "2026-09-07T04:33:16Z",
-      "sha256": "c010d74af395342b7b4bc77bc91904b018812aa48da2f22d720ad4422d0c7046",
-      "size": 4923,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T07:26:12Z",
+      "reviewed_at": null,
+      "sha256": "738557b738759d99a994449f47676a6e097358405fd665108e238277e9a5c10b",
+      "size": 6004,
       "validation_issues": [],
       "was_due": false
     },
@@ -5151,13 +5166,13 @@
     "palantir_defense_osdk.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T06:22:07Z",
       "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "7ca8f9f97316dcdedb075aeadfa81e85989294a0ce7d6f1e1b5e0d78f3045438",
       "size": 3718,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_foundry.py": {
       "actions": [],
@@ -5184,13 +5199,13 @@
     "palantir_stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T06:22:07Z",
       "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "123a0f49a10d5da02e336f3f2cdee755b7ab70f8c76c1d76d4a3da2ce6fd4bb9",
       "size": 9919,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "palantir_tenant_probe.py": {
       "actions": [],
@@ -5387,6 +5402,17 @@
       "reviewed_at": null,
       "sha256": "c3f1c156a17d9eecfd76e683b94f76190cac0191aa66456212834de82463d78c",
       "size": 10519,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "reef_bridge.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T07:26:12Z",
+      "reviewed_at": null,
+      "sha256": "90bc09984e96e82a71164c2e1f7688fa6342c676452d7ead1f64874e596f9101",
+      "size": 10131,
       "validation_issues": [],
       "was_due": false
     },
@@ -6471,13 +6497,13 @@
     "tests/test_palantir_full_stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T06:22:07Z",
       "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "7fd96a15eb5a4685eb43642d8acfd770189f76621627191e5d566cd176dc1f2b",
       "size": 5233,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_palantir_terminal.py": {
       "actions": [],
@@ -6531,6 +6557,17 @@
       "reviewed_at": null,
       "sha256": "48547f16da1cd5aa4a57330771afd039d72501c6a2e4c57864ab3dd33f9bbf61",
       "size": 2384,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_reef_bridge.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T07:26:12Z",
+      "reviewed_at": null,
+      "sha256": "f9d426bf903933df069b5b1edaa29aeb52df4f70be9dc3f67b81938fc1735fb7",
+      "size": 4802,
       "validation_issues": [],
       "was_due": false
     },
@@ -6873,7 +6910,7 @@
       "sha256": "0d9f3e4e765bad9ef6ff8961f30b9980cc7d7920efb266261549b85a1e68526b",
       "size": 1881,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "the-black-house/kernel/kernel.manifest.json": {
       "actions": [],
@@ -10155,11 +10192,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T06:23:39Z",
+  "generated_at": "2026-09-07T07:26:28Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 922,
+  "tracked_files_reviewed": 926,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
