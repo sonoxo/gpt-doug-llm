@@ -1,5 +1,7 @@
 # 🧅 GLASS ONION / TECH FORCE Contributors Wanted
 
+[![Tech Force Authority Gate](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/tech-force-authority-gate.yml/badge.svg)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/tech-force-authority-gate.yml)
+
 GPT-DOUG-LLM / SONOXO participates in the **XUNIA / GLASS ONION** ecosystem contributor program.
 
 > **TECH FORCE is a civilian/open-source engineering contributor program. “Open Call Orders” are scoped project work orders — not military orders, government tasking, or authorization to access third-party systems.**
@@ -8,6 +10,9 @@ Before contributing, read:
 
 - [Ecosystem Disclaimer & Authority Boundary](ECOSYSTEM_DISCLAIMER.md)
 - [TECH FORCE // Open Call Orders](TECH_FORCE_OPEN_CALL.md)
+- [Machine-readable authority policy](safety-shield/policies/tech-force-authority.json)
+- [Authority gate validator](scripts/validate_tech_force_authority.py)
+- [Authority gate CI](.github/workflows/tech-force-authority-gate.yml)
 - [Contributing Guide](CONTRIBUTING.md)
 
 Open contributor lanes:
@@ -25,6 +30,8 @@ Open contributor lanes:
 - software supply-chain defense
 
 Public contribution work must remain defensive, simulated, local, owned, or explicitly authorized. Public references, policy documents, agent names, prompts, and repository labels do not create operational authority.
+
+The **Tech Force Authority Gate** is a repository-integrity check. A green gate means the checked files preserve the declared fail-closed policy; it does **not** mean a contributor, repository, organization, or operation has government approval, contractual authority, clearance, or permission to access any external system.
 
 Additional ecosystem contributor resources:
 
