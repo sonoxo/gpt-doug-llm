@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T02:19:35Z",
+  "cutoff_at": "2026-09-06T02:20:28Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -469,11 +469,11 @@
     ".github/workflows/palantir-full-stack.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T09:31:15Z",
-      "reviewed_at": "2026-09-06T13:51:43Z",
-      "sha256": "e3cc880a87d779cda9fb5aab2f13b2470f67af78cd42626370a30f9ac700f175",
-      "size": 1122,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:10:51Z",
+      "reviewed_at": null,
+      "sha256": "bdbcd547cabcef71eac7076ee630b9f57f1c783e492145ecfb34dfbef196fed1",
+      "size": 1362,
       "validation_issues": [],
       "was_due": false
     },
@@ -2641,6 +2641,39 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "4aee2d996029821071652eb2da1c3ff8fbfe193cb999e5b3d04a8cf76c5492dc",
       "size": 10092,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/zyrapalantir/app.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:16:53Z",
+      "reviewed_at": null,
+      "sha256": "0092c86a14fd53c67d46387c45d45535f630cd61f24b2cff7d89b7c8686fe338",
+      "size": 7370,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/zyrapalantir/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:15:19Z",
+      "reviewed_at": null,
+      "sha256": "a8611c411c5319ea8168db237958bc28660e66ec8cbf9e5e4d5d3a537be5d6f4",
+      "size": 10665,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/zyrapalantir/styles.css": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:16:27Z",
+      "reviewed_at": null,
+      "sha256": "10ee1d9233e75ee3232dedd2350c3124227763912ea3c5d3a7464de788b45bd3",
+      "size": 15989,
       "validation_issues": [],
       "was_due": false
     },
@@ -5034,11 +5067,11 @@
     "palantir_terminal.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T09:30:38Z",
-      "reviewed_at": "2026-09-06T13:51:43Z",
-      "sha256": "036a93fb67e13158d93b7894eaddfe174e8b3756cdd2211323aa938fa357f79c",
-      "size": 6651,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:10:38Z",
+      "reviewed_at": null,
+      "sha256": "19fa62b9e952c1d59d0bba8b962b3a2e4ba7d2cd37a34a780589d294007095a1",
+      "size": 6961,
       "validation_issues": [],
       "was_due": false
     },
@@ -6480,6 +6513,17 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "788764ae7432e762dfc51cf0489fc87a941e482c53b40ef7ef494415d69b6857",
       "size": 3004,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_zyrapalantir_backbone.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:10:10Z",
+      "reviewed_at": null,
+      "sha256": "55b8f155ad671a6832f335fc3d0305dd35b8f9bf9f28eabf33113a68dc98dc84",
+      "size": 4313,
       "validation_issues": [],
       "was_due": false
     },
@@ -9661,14 +9705,80 @@
       "size": 2759,
       "validation_issues": [],
       "was_due": false
+    },
+    "zyrapalantir/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:07:15Z",
+      "reviewed_at": null,
+      "sha256": "8343a1958a942e8162d757b305b0a19adc8f423b59c1acbeebe9a31c598902af",
+      "size": 2818,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyrapalantir/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:09:54Z",
+      "reviewed_at": null,
+      "sha256": "6a122e653affceecd30e43a3f94c3a7e2560ecbe09aab1a75bf0add910006220",
+      "size": 388,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyrapalantir/core.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:07:57Z",
+      "reviewed_at": null,
+      "sha256": "d9eb89c2f11849f364da7ef8edbb39b59b4c81bf96ac663b2e4782f139be9f2d",
+      "size": 7966,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyrapalantir/foundry_blueprint.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:09:46Z",
+      "reviewed_at": null,
+      "sha256": "a3d1e5811ab5ad7f1159d4c806ce6328508b643b39d534e568f472381e756639",
+      "size": 3460,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyrapalantir/ontology.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:07:27Z",
+      "reviewed_at": null,
+      "sha256": "bc2323c9fae83c5125d7520ee0b07522f28c0ef6781cf026aba40e124e26070c",
+      "size": 2001,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyrapalantir/palantir_backbone.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:17:29Z",
+      "reviewed_at": null,
+      "sha256": "b9f45ea02224cc0fed968c45446bf1d516eb968dc37647c754869da814f19166",
+      "size": 8375,
+      "validation_issues": [],
+      "was_due": false
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T02:19:35Z",
+  "generated_at": "2026-09-07T02:20:28Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 878,
+  "tracked_files_reviewed": 888,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
