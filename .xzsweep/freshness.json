@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T05:12:43Z",
+  "cutoff_at": "2026-09-06T05:16:30Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -2384,9 +2384,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T05:00:30Z",
+      "git_touched_at": "2026-09-07T05:12:53Z",
       "reviewed_at": null,
-      "sha256": "60839e92fd1ae907708fe3526ecefb8a4db8c0eb491995d0bf2c7bcff31bd058",
+      "sha256": "09327785f272e2b2fe5b8eca5705e2b0dd494cf80334094e265d00c0e03ec1cb",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -5222,10 +5222,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T10:53:12Z",
+      "git_touched_at": "2026-09-07T05:09:35Z",
       "reviewed_at": null,
-      "sha256": "eba5ae0c46498f5dfe5fd268067f4e1f6d40e968d52a53c9bd7b224dcc5e44f3",
-      "size": 3310,
+      "sha256": "225077090ce9f630c35d931623a4e198c8056f122d4ea1bcdb92c440cd46ade3",
+      "size": 4180,
       "validation_issues": [],
       "was_due": false
     },
@@ -5266,10 +5266,21 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T14:20:20Z",
+      "git_touched_at": "2026-09-07T05:09:16Z",
       "reviewed_at": null,
-      "sha256": "fbce34e98f8aa34d487888474bed7b63270802312f7d40b747dd3dd92cbefd86",
-      "size": 6500,
+      "sha256": "7c039791882ff1b95e6592ef0f2aa917b61c4170eda814e6fd8257e549ca1809",
+      "size": 6632,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "redpanda-desktop/palantir_cpr_probe.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T05:08:12Z",
+      "reviewed_at": null,
+      "sha256": "631dc6ff0d9d3973c31aebcb41d3da40c4973aa4f8a560d58a15266d29b3ad4c",
+      "size": 6222,
       "validation_issues": [],
       "was_due": false
     },
@@ -5277,10 +5288,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-06T11:30:46Z",
+      "git_touched_at": "2026-09-07T05:08:46Z",
       "reviewed_at": null,
-      "sha256": "9ba9e8dfdb15f53bcbf855a8896c2f3f30876ab84f45f452125efb36d39e42e4",
-      "size": 7438,
+      "sha256": "6b1d15db66ba313f4ebc9dec18fcfa68fd51a05ceaa24f6bde67eaa0f02faf69",
+      "size": 7635,
       "validation_issues": [],
       "was_due": false
     },
@@ -6494,6 +6505,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_redpanda_palantir_cpr_probe.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T05:09:48Z",
+      "reviewed_at": null,
+      "sha256": "390ed551258de154c6d0b5477ce97e5e96e3dc366a50c393979b033b1824141b",
+      "size": 2385,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_sfnn_monitor.py": {
       "actions": [],
       "binary": false,
@@ -6509,10 +6531,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T04:58:50Z",
+      "git_touched_at": "2026-09-07T05:12:42Z",
       "reviewed_at": null,
-      "sha256": "5b3e43d6caad417ffb8de87210b00b9e3a2469a560f65ffbd0f7bd42f95b9a55",
-      "size": 1719,
+      "sha256": "d6eb6f77083a1598f2afc222961e57ff19a5157120008a728cb98737ca1b4caa",
+      "size": 1740,
       "validation_issues": [],
       "was_due": false
     },
@@ -7917,9 +7939,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T05:00:26Z",
+      "git_touched_at": "2026-09-07T05:13:00Z",
       "reviewed_at": null,
-      "sha256": "a7583fa726f368664403caeea53038231c106b4fc5a3586e09c817a00640d3cf",
+      "sha256": "4c24d8b3a0d4f598afd11434a362884a09fc3f01e11bb55b3644ebfac3830a6e",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -10071,11 +10093,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T05:12:43Z",
+  "generated_at": "2026-09-07T05:16:30Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 915,
+  "tracked_files_reviewed": 917,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
