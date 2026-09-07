@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T04:48:15Z",
+  "cutoff_at": "2026-09-06T04:49:32Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -485,6 +485,17 @@
       "reviewed_at": null,
       "sha256": "bdbcd547cabcef71eac7076ee630b9f57f1c783e492145ecfb34dfbef196fed1",
       "size": 1362,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/palantir-toolbox.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:48:37Z",
+      "reviewed_at": null,
+      "sha256": "91cdf7ea406f8fac05aa70d6f96c02e6b7e761ff2d34f7b5d3c4e7380b8d07e9",
+      "size": 1572,
       "validation_issues": [],
       "was_due": false
     },
@@ -7264,6 +7275,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tools/palantir-toolbox/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T04:48:25Z",
+      "reviewed_at": null,
+      "sha256": "f376f8a3d38376fd95b6c3e4328d53eea2ed5c4c866c30afb0e89135fe860620",
+      "size": 4542,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tools/palantir-toolbox/background.js": {
       "actions": [],
       "binary": false,
@@ -10005,11 +10027,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T04:48:15Z",
+  "generated_at": "2026-09-07T04:49:32Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 909,
+  "tracked_files_reviewed": 911,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
