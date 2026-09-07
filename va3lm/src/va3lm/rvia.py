@@ -7,6 +7,7 @@ from uuid import uuid4
 from pydantic import BaseModel, Field
 
 from va3lm.mission_ledger import MissionLedger
+from va3lm.ontologi import OntologiEngine
 from va3lm.ontology import CONTROL_PLANE, KERNEL_VERSION
 from va3lm.planner import build_plan
 
@@ -28,7 +29,7 @@ CORE_TARGETS: dict[str, dict[str, Any]] = {
     },
     "VIRGINIA": {
         "mode": "local-runtime",
-        "capabilities": {"reasoning", "planning", "coding", "evidence"},
+        "capabilities": {"reasoning", "planning", "coding", "evidence", "ontology", "ontologi", "seed-memory"},
     },
     "WAKEUP3LM": {
         "mode": "local-ontology-runtime",
@@ -85,6 +86,7 @@ class RVIARouter:
 
     def __init__(self, ledger: MissionLedger | None = None) -> None:
         self.ledger = ledger or MissionLedger()
+        self.ontologi = OntologiEngine.load_default()
         self.handlers: dict[str, Handler] = {}
         self.register_handler("GPT_DOUG_MAX", self._planner_handler)
         self.register_handler("VIRGINIA", self._planner_handler)
@@ -110,6 +112,7 @@ class RVIARouter:
                 "IDENTITY",
                 "SHADOW_GLASS",
                 "ONTOLOGY_CONTEXT",
+                "ONTOLOGI_SEED_CONTEXT",
                 "PLANNER",
                 "ZYRA_AUTHORIZATION",
                 "DISPATCH",
@@ -146,6 +149,18 @@ class RVIARouter:
             "ONTOLOGY_CONTEXT",
             "THE_BLACK_HOUSE",
             {"kernelVersion": KERNEL_VERSION, "target": mission.target},
+        )
+        seed_context = self.ontologi.context(mission.intent)
+        self._audit(
+            mission,
+            "ONTOLOGI_SEED_CONTEXT",
+            "VIRGINIA",
+            {
+                "language": seed_context["language"],
+                "version": seed_context["version"],
+                "seedIds": [seed["id"] for seed in seed_context["seeds"]],
+                "candidateKnowledgePresent": seed_context["candidateKnowledgePresent"],
+            },
         )
 
         if mission.mutation and mission.approvalState != "APPROVED":
@@ -219,6 +234,7 @@ class RVIARouter:
             "target": mission.target,
             "adapterMode": CORE_TARGETS[mission.target]["mode"],
             "executionState": "LOCAL_PLAN_COMPLETE",
+            "ontologiContext": self.ontologi.context(mission.intent),
             "plan": plan,
         }
 

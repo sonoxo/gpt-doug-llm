@@ -1,0 +1,41 @@
+name: ontologi
+
+on:
+  pull_request:
+    paths:
+      - "va3lm/src/va3lm/ontologi.py"
+      - "va3lm/knowledge/core.ontologi"
+      - "va3lm/tests/test_ontologi.py"
+      - "va3lm/docs/ONTOLOGI.md"
+      - "va3lm/src/va3lm/rvia.py"
+      - ".github/workflows/ontologi.yml"
+  push:
+    branches: [main]
+    paths:
+      - "va3lm/src/va3lm/ontologi.py"
+      - "va3lm/knowledge/core.ontologi"
+      - "va3lm/tests/test_ontologi.py"
+      - "va3lm/docs/ONTOLOGI.md"
+      - "va3lm/src/va3lm/rvia.py"
+      - ".github/workflows/ontologi.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: va3lm
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install VA3LM test dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Run ONTologi tests
+        run: python -m pytest tests/test_ontologi.py -q

@@ -1,0 +1,22 @@
+ONTOLOGI 1.0
+# Core governed knowledge seeds for Virginia / RVIA.
+# Unverified external material remains CANDIDATE until evidence supports promotion.
+
+SEED agent:virginia Agent "Virginia is the local RVIA reasoning and coding runtime." status=VERIFIED confidence=1.0 tags=virginia,rvia,reasoning,coding
+SEED system:rvia System "RVIA routes governed missions through evidence and audit stages." status=VERIFIED confidence=1.0 tags=rvia,mission,governance,audit
+SEED concept:ontology Concept "Ontology represents knowledge as typed entities, typed relationships, governed actions, and evidence." status=VERIFIED confidence=1.0 tags=ontology,graph,knowledge
+SEED concept:provenance Concept "Knowledge should preserve where it came from and distinguish verified evidence from candidates." status=VERIFIED confidence=1.0 tags=provenance,evidence,trust
+SEED concept:ontologi Concept "ONTologi is the seed language used by Virginia and RVIA to encode, connect, retrieve, and govern knowledge." status=VERIFIED confidence=1.0 tags=ontologi,language,seeds,learning
+SEED capability:seed_retrieval Capability "Retrieve the most relevant ontology seeds for a mission before planning." status=VERIFIED confidence=1.0 tags=memory,retrieval,reasoning
+SEED capability:governed_learning Capability "Stage new knowledge as candidate seeds and promote only with evidence." status=VERIFIED confidence=1.0 tags=learning,governance,evidence
+SEED source:repo_ontology Source "va3lm/src/va3lm/ontology.py" status=VERIFIED confidence=1.0 tags=source,ontology,repo
+SEED source:repo_rvia Source "va3lm/src/va3lm/rvia.py" status=VERIFIED confidence=1.0 tags=source,rvia,repo
+SEED source:video_wzgkc6Iegx8 Source "https://www.youtube.com/watch?v=wzgkc6Iegx8" status=CANDIDATE confidence=0.0 tags=source,video,pending-verification
+
+LINK agent:virginia USES concept:ontologi
+LINK system:rvia USES concept:ontologi
+LINK concept:ontologi REQUIRES concept:provenance
+LINK concept:ontologi SUPPORTS capability:seed_retrieval
+LINK concept:ontologi SUPPORTS capability:governed_learning
+LINK source:repo_ontology EVIDENCES concept:ontology
+LINK source:repo_rvia EVIDENCES system:rvia
