@@ -20,9 +20,9 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, Mapping, Optional
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from http.client import HTTPConnection, HTTPSConnection
+from typing import Any, Dict, Iterable, Mapping, Optional, Tuple
+from urllib.parse import SplitResult, urlsplit
 
 REEF_UPSTREAM_REPOSITORY = "https://github.com/Human-Agent-Society/reef"
 REEF_UPSTREAM_LICENSE = "Apache-2.0"
@@ -125,30 +125,71 @@ class ReefBridge:
             headers.update(extra)
         return headers
 
+    def _parse_base_url(self) -> SplitResult:
+        """Validate the configured Reef transport before opening a connection."""
+        parsed = urlsplit(self.config.base_url)
+        if parsed.scheme not in {"http", "https"}:
+            raise ReefBridgeError("REEF_BASE_URL must use http:// or https://")
+        if not parsed.hostname:
+            raise ReefBridgeError("REEF_BASE_URL must include a hostname")
+        if parsed.username or parsed.password:
+            raise ReefBridgeError("REEF_BASE_URL must not embed credentials")
+        if parsed.query or parsed.fragment:
+            raise ReefBridgeError("REEF_BASE_URL must not include a query or fragment")
+        try:
+            _ = parsed.port
+        except ValueError as exc:
+            raise ReefBridgeError("REEF_BASE_URL contains an invalid port") from exc
+        return parsed
+
+    def _connection_target(self, path: str) -> Tuple[type, str, int, str]:
+        """Resolve a validated HTTP(S) connection class and request target."""
+        parsed = self._parse_base_url()
+        is_https = parsed.scheme == "https"
+        connection_class = HTTPSConnection if is_https else HTTPConnection
+        port = parsed.port or (443 if is_https else 80)
+        base_path = parsed.path.rstrip("/")
+        request_path = f"{base_path}/{path.lstrip('/')}"
+        if not request_path.startswith("/"):
+            request_path = f"/{request_path}"
+        return connection_class, parsed.hostname or "", port, request_path
+
     def _request(
         self,
         method: str,
         path: str,
         payload: Optional[Mapping[str, Any]] = None,
     ) -> Dict[str, Any]:
-        url = f"{self.config.base_url}/{path.lstrip('/')}"
+        connection_class, host, port, request_path = self._connection_target(path)
         body = None if payload is None else json.dumps(dict(payload)).encode("utf-8")
-        request = Request(url, data=body, headers=self._headers(), method=method.upper())
+        connection = connection_class(host, port=port, timeout=self.config.timeout)
 
         try:
-            with urlopen(request, timeout=self.config.timeout) as response:
-                raw = response.read().decode("utf-8")
+            connection.request(
+                method.upper(),
+                request_path,
+                body=body,
+                headers=self._headers(),
+            )
+            response = connection.getresponse()
+            raw = response.read().decode("utf-8", errors="replace")
+            if response.status >= 400:
+                raise ReefBridgeError(f"Reef HTTP {response.status}: {raw}")
+            try:
                 response_body = json.loads(raw) if raw else None
-                return {
-                    "status": response.status,
-                    "headers": {key.lower(): value for key, value in response.headers.items()},
-                    "body": response_body,
-                }
-        except HTTPError as exc:
-            detail = exc.read().decode("utf-8", errors="replace")
-            raise ReefBridgeError(f"Reef HTTP {exc.code}: {detail}") from exc
-        except URLError as exc:
-            raise ReefBridgeError(f"Reef connection failed: {exc.reason}") from exc
+            except json.JSONDecodeError as exc:
+                raise ReefBridgeError("Reef returned a non-JSON response") from exc
+            return {
+                "status": response.status,
+                "headers": {key.lower(): value for key, value in response.getheaders()},
+                "body": response_body,
+            }
+        except ReefBridgeError:
+            raise
+        except OSError as exc:
+            raise ReefBridgeError(f"Reef connection failed: {exc}") from exc
+        finally:
+            connection.close()
 
     def health(self) -> Dict[str, Any]:
         """Check the configured Reef deployment's health endpoint."""
