@@ -1,0 +1,61 @@
+{
+  "ontology": "GPT_REDPANDA_NETWORK_INTEL_V1",
+  "source_id": "youtube-OqmJb826mY4",
+  "mission": "Give GPT-REDPANDA a bounded, provenance-aware networking intelligence layer for diagnosis, observability, defensive analysis, and authorized-lab learning.",
+  "object_types": {
+    "NetworkInterface": ["name", "address", "prefix", "state", "scope"],
+    "NetworkSegment": ["cidr", "purpose", "trust_zone", "owner", "environment"],
+    "NetworkFlow": ["src", "dst", "protocol", "src_port", "dst_port", "state", "timestamp"],
+    "NetworkService": ["host", "port", "protocol", "service", "exposure", "evidence"],
+    "NetworkControl": ["type", "rule", "scope", "effect", "evidence"],
+    "NetworkEvidence": ["kind", "source", "hash", "captured_at", "authorization_ref"],
+    "NetworkFinding": ["summary", "severity", "confidence", "evidence_refs", "mitigation"],
+    "LabScope": ["owner", "targets", "allowed_actions", "expires_at"]
+  },
+  "link_types": [
+    {"from":"NetworkInterface","to":"NetworkSegment","type":"MEMBER_OF"},
+    {"from":"NetworkFlow","to":"NetworkService","type":"OBSERVES"},
+    {"from":"NetworkControl","to":"NetworkFlow","type":"GOVERNS"},
+    {"from":"NetworkEvidence","to":"NetworkFinding","type":"SUPPORTS"},
+    {"from":"NetworkFinding","to":"NetworkService","type":"CONCERNS"},
+    {"from":"LabScope","to":"NetworkEvidence","type":"AUTHORIZES_CAPTURE_OF"}
+  ],
+  "competencies": [
+    "osi_tcp_ip_reasoning",
+    "ipv4_ipv6_subnet_reasoning",
+    "tcp_udp_session_reasoning",
+    "dns_dhcp_arp_icmp_concepts",
+    "port_service_protocol_identification",
+    "routing_switching_segmentation_reasoning",
+    "firewall_acl_reasoning",
+    "pcap_and_log_analysis",
+    "network_baselining_and_anomaly_triage",
+    "scope_provenance_and_evidence_discipline"
+  ],
+  "governed_actions": {
+    "ALLOW": [
+      "explain_network_concepts",
+      "inspect_local_interface_and_route_metadata",
+      "analyze_user_supplied_network_logs",
+      "analyze_user_supplied_or_owned_lab_pcaps",
+      "classify_service_exposure_from_supplied_evidence",
+      "recommend_segmentation_and_firewall_mitigations",
+      "generate_detection_queries_from_supplied_evidence"
+    ],
+    "REVIEW": [
+      "active_discovery_in_declared_owned_lab_scope",
+      "packet_capture_on_shared_or_production_networks_with_explicit_authorization",
+      "router_switch_or_firewall_configuration_changes"
+    ],
+    "BLOCK": [
+      "third_party_targeting",
+      "credential_interception_or_theft",
+      "unauthorized_mitm",
+      "service_disruption",
+      "persistence_on_external_systems",
+      "stealth_or_evasion_against_non_lab_systems"
+    ]
+  },
+  "graduation_rule": "A networking competency is GREEN only when RedPanda can explain the concept, cite authorized evidence, distinguish observation from inference, identify defensive risk, and propose a reversible mitigation without exceeding declared scope.",
+  "provenance_rule": "Source title and URL are verified metadata. Detailed claims about the linked video remain unverified until captions/transcript or equivalent source content is captured."
+}
