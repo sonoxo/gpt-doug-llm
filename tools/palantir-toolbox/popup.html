@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Palantir Toolbox // GPT-DOUG</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">GPT-DOUG-LLM</div>
+      <h1>PALANTIR TOOLBOX</h1>
+      <p>Authorized Foundry / Ontology operator console</p>
+    </header>
+
+    <section class="card">
+      <label>Connection mode
+        <select id="mode">
+          <option value="bridge">Local secure bridge (recommended)</option>
+          <option value="direct">Direct short-lived bearer token</option>
+        </select>
+      </label>
+      <label id="bridgeRow">Bridge URL
+        <input id="bridgeUrl" value="http://127.0.0.1:8765" spellcheck="false" />
+      </label>
+      <label>Foundry tenant origin
+        <input id="foundryOrigin" placeholder="https://your-tenant.palantirfoundry.com" spellcheck="false" />
+      </label>
+      <label id="tokenRow" class="hidden">Bearer token (session only)
+        <input id="token" type="password" autocomplete="off" placeholder="Not persisted to disk" />
+      </label>
+      <div class="row">
+        <button id="save">Save config</button>
+        <button id="status" class="secondary">Test connection</button>
+      </div>
+      <pre id="statusOut">Not connected.</pre>
+    </section>
+
+    <section class="card">
+      <h2>Ontology</h2>
+      <div class="row">
+        <button id="listOntologies">List ontologies</button>
+        <button id="clear" class="secondary">Clear output</button>
+      </div>
+      <label>Ontology API name
+        <input id="ontology" placeholder="ontology-api-name" spellcheck="false" />
+      </label>
+      <label>Object type API name
+        <input id="objectType" placeholder="ObjectTypeApiName" spellcheck="false" />
+      </label>
+      <div class="row">
+        <button id="listTypes">Object types</button>
+        <button id="listObjects">Objects</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>A.E.O. / RVIA source capture</h2>
+      <p class="muted">Select text on a webpage, right-click, and choose “Capture selection to Palantir Toolbox.”</p>
+      <button id="showCapture" class="secondary">Show latest capture</button>
+    </section>
+
+    <section class="card">
+      <h2>Result</h2>
+      <pre id="output">Ready.</pre>
+    </section>
+
+    <footer>READ-FIRST · PROVENANCE-FIRST · EXPLICIT AUTHORITY</footer>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
