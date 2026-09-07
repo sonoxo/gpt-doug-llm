@@ -1,23 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T22:54:18Z",
-  "due_files_reviewed": 14,
-  "due_paths": [
-    ".github/workflows/ecosystem-v4-gate.yml",
-    ".github/workflows/grimthebuilder-app.yml",
-    ".github/workflows/grimthebuilder-image.yml",
-    ".github/workflows/zyra-cpr.yml",
-    "docs/assets/sonoxo-ecosystem-orbit.svg",
-    "ecosystem/README.md",
-    "ecosystem/registry.v4.json",
-    "ontology/gpt-doug-pocket.json",
-    "ontology/sonoxomus-research-profile.json",
-    "ontology/zyra-cpr.json",
-    "scripts/gpt-doug-pocket-install.sh",
-    "scripts/sonoxomus-research-bootstrap.sh",
-    "scripts/validate_ecosystem_v4.py",
-    "scripts/zyra-cpr.sh"
-  ],
+  "cutoff_at": "2026-09-06T23:01:50Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -286,13 +271,13 @@
     ".github/workflows/ecosystem-v4-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "5e7573dc3cbdf192e3950f9eabfada9d57b8ca23ec31e94c7804d6fc61fd6225",
       "size": 741,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/frontline-compliance-gate.yml": {
       "actions": [],
@@ -385,13 +370,13 @@
     ".github/workflows/grimthebuilder-app.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:39:32Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "ed413a3429c57fdc40478ef111f457afd2124f83e3c83818921cf04d30b50377",
       "size": 1372,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/grimthebuilder-image.yml": {
       "actions": [],
@@ -402,7 +387,7 @@
       "sha256": "b0ca070ae8f796de2a409aaff1414f49cd9e07b31e9227f4c4945b248e30ef38",
       "size": 5278,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/issue-automation.yml": {
       "actions": [],
@@ -787,7 +772,18 @@
       "sha256": "0452b64f68d7ecbd055bc6074d23994ca94b353b717f2d10fd30e0546e774a24",
       "size": 731,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
+    },
+    ".github/workflows/zyra-defense-aip-pipeline.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:53:28Z",
+      "reviewed_at": null,
+      "sha256": "822fd530b6a1e93b9c228bd35d93dbdf79f3336b4e1a9c1a7612a3e27ff2fc8e",
+      "size": 8228,
+      "validation_issues": [],
+      "was_due": false
     },
     ".gitignore": {
       "actions": [],
@@ -2263,6 +2259,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/GPT_DOUG_CLAWBOT_MODE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T18:16:02Z",
+      "reviewed_at": null,
+      "sha256": "ac566a73ed1bdbaae3212ce15405ae8d4904aac829fd3329e7ed99d5a1901e0a",
+      "size": 2478,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md": {
       "actions": [],
       "binary": false,
@@ -2520,9 +2527,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T17:07:04Z",
+      "git_touched_at": "2026-09-07T22:54:18Z",
       "reviewed_at": null,
-      "sha256": "99e7a848797160fb8eb8227f9f95e004c5da94d1ebcdc0edb4cf8b8bc8a914bb",
+      "sha256": "3761dd95eda064fa0f0b0069c9d2ac40b7c6a9fa612b11bd9e60f05a4a903509",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -2585,13 +2592,13 @@
     "docs/assets/sonoxo-ecosystem-orbit.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "5f76c85f27033a091eff397357e7a5bfedca042bd2021a08d21de774fbffa345",
       "size": 8792,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/assets/wakeup3lm-agent-loop.svg": {
       "actions": [],
@@ -3234,24 +3241,24 @@
     "ecosystem/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "3701c0425204ab62b91def2c286afce8f043aba94da0e2f94dbce06baadae9d0",
       "size": 4219,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ecosystem/registry.v4.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "b69eb87cf99436ade117e6317083f28193cbe34de6e5bc4bc95b65e30e7b14f2",
       "size": 5054,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "eureka.py": {
       "actions": [],
@@ -5319,7 +5326,7 @@
       "sha256": "da8ef2ba595ee91c2e02e783255f7d4f3a386b2025528a980a0496d08d7bbc13",
       "size": 1004,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ontology/regulatory/fcc-part100.binding.json": {
       "actions": [],
@@ -5352,7 +5359,7 @@
       "sha256": "c8368093c139ea10ca78e634107f5b7780bb3da797ba853d11ddc4844b6cb312",
       "size": 1558,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ontology/zyra-cpr.json": {
       "actions": [],
@@ -5363,7 +5370,7 @@
       "sha256": "0e7209fccd9079270e47c46193c094cf6395a31168b57aaccb2007158eb7e11e",
       "size": 929,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ontology/zyra-jukebox.json": {
       "actions": [],
@@ -6243,7 +6250,7 @@
       "sha256": "75e5a44bdf5e505b8866c21cf88a7de5cd9631daef72d37e6f53218aa52c5782",
       "size": 3731,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/gpt-doug-pocket-run.sh": {
       "actions": [],
@@ -6298,7 +6305,7 @@
       "sha256": "65e6347da0d5475920f6f46b7680befc2dde823497d31f856fd19aa0272e1bd9",
       "size": 1486,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/soundcloud_heartbeat.py": {
       "actions": [],
@@ -6347,13 +6354,13 @@
     "scripts/validate_ecosystem_v4.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T21:45:12Z",
       "reviewed_at": "2026-09-07T22:54:18Z",
       "sha256": "4a07770b9d915d64e61c8b4f2c3fa33303b436a9b2499beb11ba501dacb0e5fa",
       "size": 3275,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/validate_infrastructure_resilience.py": {
       "actions": [],
@@ -6419,7 +6426,7 @@
       "sha256": "1d897d081e434690b8ecb1b73c9bf7f9a90dd2890648779083dda5b9210282c6",
       "size": 7056,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "secret_store.py": {
       "actions": [],
@@ -6594,6 +6601,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "74813532e33493073efdbec705886e0403f85622a46bd1cc5a27fd62890a639d",
       "size": 2911,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_computer_agent.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T18:15:51Z",
+      "reviewed_at": null,
+      "sha256": "8cbd970f8e06d6fbafe9120fc2a04a3f97771923d28d022f40fb1a3d6fff1414",
+      "size": 2622,
       "validation_issues": [],
       "was_due": false
     },
@@ -8592,9 +8610,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T17:07:01Z",
+      "git_touched_at": "2026-09-07T22:54:22Z",
       "reviewed_at": null,
-      "sha256": "7b46873a68e46a16bf89b1e60293886be3e5ae384526892e63071a5b3ef9d44b",
+      "sha256": "71969da1e9dad23fbb727241bb6ec50728064b385fe8de00d46f911250c1c1d8",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -8614,9 +8632,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T16:47:02Z",
+      "git_touched_at": "2026-09-07T22:54:22Z",
       "reviewed_at": null,
-      "sha256": "21789c1a43fa068639b9384bb437386e31ac5b328d7d1dbc6f8f419e9cdc5dbd",
+      "sha256": "0db0f3b268d9a8a3ebbd16d3cdaba9590f4bc364c535420107d523a33412f92b",
       "size": 6084,
       "validation_issues": [],
       "was_due": false
@@ -8629,6 +8647,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "03c229c752615e7d29a961c6eb4438199757b70b4aba1f10643bca148aab3a74",
       "size": 19283,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "wakeup3lm/computer_agent.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T18:15:40Z",
+      "reviewed_at": null,
+      "sha256": "5eff880876d86c6b590fea2ee2975249e9119fd6bb0401c5c025efcba16d7833",
+      "size": 13156,
       "validation_issues": [],
       "was_due": false
     },
@@ -10414,6 +10443,127 @@
       "validation_issues": [],
       "was_due": false
     },
+    "zyra-defense/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "30e63d4820d30a24cddd1abbfe1c48aaab7155485c1332997ed6a5a85e53bea0",
+      "size": 1025,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/demo.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "68ed7f3071c23fbc6421781029267aa305152e451fda9aa7ccd930c7d414911b",
+      "size": 1819,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/pyproject.toml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "50986f5a9441a5da95d177ac8b3a87af118d59f4dd829ee07e6addd3f5bb9145",
+      "size": 221,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/tests/test_safety.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "4a1a41d4c3f6554e776f3a7baa1adc0e93647d91354636e202970db2cf8b8300",
+      "size": 2678,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "403e0ef4a731883ea8a410c972021ba60584adf1b2c44a9011741e1a7ccd09d6",
+      "size": 342,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/engine.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "387a4b8886609758c5584584a5c3761442082367969e2093dd09fff8d108fff2",
+      "size": 3528,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/models.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "4c37f25b7bc7ff8b5d2ba5eb37a0eee5481ba8adb113b4f23986dd55dc63f727",
+      "size": 4494,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/palantir_adapter.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "af9668f010231f69d21a64d0ea52799d05219235d291344f365497850c1b61a7",
+      "size": 2461,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/policy.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "9557e0bf0ad125c5eac53269eabfcffc4863fa43c8dafd3120869351a4668365",
+      "size": 2259,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology/store.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "ae8e4036a381ecc16ca4a5c12c2e703504e1f4b0ca7cb076dfabe6b6438f0865",
+      "size": 1084,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "zyra-defense/zyra_ontology_export.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T22:49:23Z",
+      "reviewed_at": null,
+      "sha256": "e9d47011848a7a74569fddf4b8adc4de5bd8ba186e6452f951873b73b3d4b318",
+      "size": 4071,
+      "validation_issues": [],
+      "was_due": false
+    },
     "zyra.py": {
       "actions": [],
       "binary": false,
@@ -10757,11 +10907,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T22:54:18Z",
+  "generated_at": "2026-09-07T23:01:50Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 976,
+  "tracked_files_reviewed": 991,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
