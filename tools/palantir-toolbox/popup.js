@@ -2,7 +2,7 @@ import { DEFAULT_BRIDGE, PalantirToolboxClient } from "./foundry.js";
 
 const $ = (id) => document.getElementById(id);
 const els = {
-  mode: $("mode"), bridgeUrl: $("bridgeUrl"), foundryOrigin: $("foundryOrigin"), token: $("token"),
+  mode: $("mode"), bridgeUrl: $("bridgeUrl"), bridgeKey: $("bridgeKey"), foundryOrigin: $("foundryOrigin"), token: $("token"),
   bridgeRow: $("bridgeRow"), tokenRow: $("tokenRow"), statusOut: $("statusOut"), output: $("output"),
   ontology: $("ontology"), objectType: $("objectType")
 };
@@ -27,12 +27,13 @@ function syncMode() {
 
 async function loadConfig() {
   const local = await chrome.storage.local.get(["palantirToolboxConfig"]);
-  const session = await chrome.storage.session.get(["palantirToolboxToken"]);
+  const session = await chrome.storage.session.get(["palantirToolboxToken", "palantirToolboxBridgeKey"]);
   const config = local.palantirToolboxConfig || {};
   els.mode.value = config.mode || "bridge";
   els.bridgeUrl.value = config.bridgeUrl || DEFAULT_BRIDGE;
   els.foundryOrigin.value = config.foundryOrigin || "";
   els.token.value = session.palantirToolboxToken || "";
+  els.bridgeKey.value = session.palantirToolboxBridgeKey || "";
   syncMode();
 }
 
@@ -43,17 +44,29 @@ async function saveConfig() {
     foundryOrigin: els.foundryOrigin.value.trim()
   };
   await chrome.storage.local.set({ palantirToolboxConfig: config });
-  if (els.mode.value === "direct" && els.token.value.trim()) {
-    await chrome.storage.session.set({ palantirToolboxToken: els.token.value.trim() });
-  } else if (els.mode.value !== "direct") {
+
+  if (els.mode.value === "direct") {
+    if (els.token.value.trim()) {
+      await chrome.storage.session.set({ palantirToolboxToken: els.token.value.trim() });
+    }
+    await chrome.storage.session.remove("palantirToolboxBridgeKey");
+  } else {
+    if (els.bridgeKey.value.trim()) {
+      await chrome.storage.session.set({ palantirToolboxBridgeKey: els.bridgeKey.value.trim() });
+    }
     await chrome.storage.session.remove("palantirToolboxToken");
   }
-  setStatus({ saved: true, mode: config.mode, tokenPersistence: "session-only" });
+
+  setStatus({
+    saved: true,
+    mode: config.mode,
+    secretPersistence: "chrome.storage.session only"
+  });
 }
 
 async function client() {
   const local = await chrome.storage.local.get(["palantirToolboxConfig"]);
-  const session = await chrome.storage.session.get(["palantirToolboxToken"]);
+  const session = await chrome.storage.session.get(["palantirToolboxToken", "palantirToolboxBridgeKey"]);
   const config = local.palantirToolboxConfig || {
     mode: els.mode.value,
     bridgeUrl: els.bridgeUrl.value.trim() || DEFAULT_BRIDGE,
@@ -61,6 +74,7 @@ async function client() {
   };
   return new PalantirToolboxClient({
     ...config,
+    bridgeKey: session.palantirToolboxBridgeKey || els.bridgeKey.value.trim(),
     token: session.palantirToolboxToken || els.token.value.trim()
   });
 }
