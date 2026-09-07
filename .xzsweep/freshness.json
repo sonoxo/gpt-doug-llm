@@ -1,24 +1,9 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T12:28:10Z",
-  "due_files_reviewed": 16,
+  "cutoff_at": "2026-09-06T13:10:01Z",
+  "due_files_reviewed": 1,
   "due_paths": [
-    ".github/workflows/cyber-cpr-watch.yml",
-    ".xunia/agentic-cpr-red-panda-bridge.json",
-    "cyber-cpr/install-service.sh",
-    "cyber-cpr/install.sh",
-    "governance/information-boundary/README.md",
-    "governance/information-boundary/artifact-metadata.template.yaml",
-    "gpt-redpanda-llm/docs/ARCHITECTURE.md",
-    "integrations/agentic-cpr-red-panda/activate.sh",
-    "kraken_jutsu/LIVE_DATA_ARCHITECTURE.md",
-    "redpanda-desktop/agentic_cpr_runtime.py",
-    "redpanda-desktop/gpt_redpanda_llm.py",
-    "redpanda-desktop/redpanda-zsh-hook.zsh",
-    "redpanda-desktop/redpanda_agent.py",
-    "redpanda-desktop/repair-zfi.sh",
-    "redpanda-desktop/zfi_agent.py",
-    "redpanda.html"
+    "kraken_jutsu/test_live.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -244,13 +229,13 @@
     ".github/workflows/cyber-cpr-watch.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:28:13Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "16229491b5ff1c012ddd13f6fedfa0be3129ad45f1cce141f7c86a15431b2d27",
       "size": 950,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/cyber-cpr.yml": {
       "actions": [],
@@ -458,6 +443,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "7f65343cb801e213788a4eb80906e534bd90be0dc369d9511744ef861bc6b0a1",
       "size": 2175,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/ontologi.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:05:12Z",
+      "reviewed_at": null,
+      "sha256": "f8a0ac1ec4c0c95b18c44a0c1aeee8cadc4009f90d912f12af87da0358342103",
+      "size": 1045,
       "validation_issues": [],
       "was_due": false
     },
@@ -794,13 +790,13 @@
     ".xunia/agentic-cpr-red-panda-bridge.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:07:12Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "fa581e0d239507dd2418b3a989cfb090164ee82b23f7aa6acc313ef860d7a0e2",
       "size": 374,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "AI-PENTEST.md": {
       "actions": [],
@@ -1982,24 +1978,24 @@
     "cyber-cpr/install-service.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:27:29Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "cf9443d3bf28662df5f65921187a607046aaac6be787ca5ef093127c43062332",
       "size": 2318,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/install.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:27:17Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "c6a6e9757653cd498ac4eec68ea2ac9a5a6b4973e875fb09303a6f71f712118d",
       "size": 899,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/release.sh": {
       "actions": [],
@@ -2401,9 +2397,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T07:26:22Z",
+      "git_touched_at": "2026-09-07T12:28:09Z",
       "reviewed_at": null,
-      "sha256": "d45e45d9e74166ace561bdcb1dcddaad9bf5e89bf2b2c5fb8fedd61b921aa3b8",
+      "sha256": "01cbc04229fe679ad965df194bb249006f958a2f81727bce4521d577c09f899e",
       "size": 8272,
       "validation_issues": [],
       "was_due": false
@@ -3412,24 +3408,24 @@
     "governance/information-boundary/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:54:59Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "30a74f06d091aa99c301bd55f0b0ea1db4411fdb752d5c5a6b2d4de758672afd",
       "size": 3904,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "governance/information-boundary/artifact-metadata.template.yaml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:55:05Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "f831b4147135c2e4daf2ef522558b7e8439f4b0ebd36b65088ecc05f7476b5c6",
       "size": 666,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt-doug": {
       "actions": [],
@@ -3467,13 +3463,13 @@
     "gpt-redpanda-llm/docs/ARCHITECTURE.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:38:21Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "d0861759dd149bba1675c7a4dd464b29b8a5d0bc89802bd6f51af218eed636de",
       "size": 1940,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "grimthebuilder-app/.env.example": {
       "actions": [],
@@ -4017,13 +4013,13 @@
     "integrations/agentic-cpr-red-panda/activate.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:07:12Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "282c9802471b0d8ce3e444cfa716a9716952b2a0be520d38fca65a4a36795deb",
       "size": 1349,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/reef/README.md": {
       "actions": [],
@@ -4567,13 +4563,13 @@
     "kraken_jutsu/LIVE_DATA_ARCHITECTURE.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:50:39Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "b7244710b297a843fa3cf54773737a36cd0cab708465f4415c95563beeb84e66",
       "size": 2711,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/README.md": {
       "actions": [],
@@ -4734,11 +4730,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T13:09:56Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T13:10:01Z",
       "sha256": "06f08864935aea03df4ca7f21606d87848884811e542de8fd6da4b261d02aed9",
       "size": 1777,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/test_ontology.py": {
       "actions": [],
@@ -5304,13 +5300,13 @@
     "redpanda-desktop/agentic_cpr_runtime.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:28:54Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "115cfba67a245f304a9a7092fbc24e39c691e4dff0ca7e521ac1c0b3f8f158b6",
       "size": 5814,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/glass": {
       "actions": [],
@@ -5326,13 +5322,13 @@
     "redpanda-desktop/gpt_redpanda_llm.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:29:12Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "d0499a02998f0c793c83609787976a170491582afc44c7123cecd553bafb65d4",
       "size": 2855,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/install.sh": {
       "actions": [],
@@ -5370,24 +5366,24 @@
     "redpanda-desktop/redpanda-zsh-hook.zsh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:51:11Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "d68e269c12261a31be9cd46819088fe9b3158deeff9fc7494a8e5f373c540bfc",
       "size": 588,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/redpanda_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T10:51:03Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "8052e7414f66f8c286ded601b19455f82476b96d665b6d63a44d6b4a66eb3bca",
       "size": 20705,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/repair-command-surface.sh": {
       "actions": [],
@@ -5403,13 +5399,13 @@
     "redpanda-desktop/repair-zfi.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:30:51Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "b8c50a99c7ceb16d1db9648ecad7ff47489846e6b649a8250e34ab98ea50ac97",
       "size": 2016,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/va3lm-cpr": {
       "actions": [],
@@ -5425,24 +5421,24 @@
     "redpanda-desktop/zfi_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:27:15Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "f5b488e1851c0779ac4d1183b92826b191986b96c34fac15357527c79bb2a84b",
       "size": 11085,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T11:39:09Z",
       "reviewed_at": "2026-09-07T12:28:10Z",
       "sha256": "c3f1c156a17d9eecfd76e683b94f76190cac0191aa66456212834de82463d78c",
       "size": 10519,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "reef_bridge.py": {
       "actions": [],
@@ -7721,6 +7717,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "va3lm/docs/ONTOLOGI.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:05:12Z",
+      "reviewed_at": null,
+      "sha256": "298e57f1e35daa8ad4fa4e86fc52f496459a76d26f09a78e03932b747a8b17b2",
+      "size": 1982,
+      "validation_issues": [],
+      "was_due": false
+    },
     "va3lm/docs/PACK_CAPABILITY_PLANE.md": {
       "actions": [],
       "binary": false,
@@ -7740,6 +7747,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "50c8a968232da50ef957340f2fd3a9d2a865ef398af5b03e8a0420330411a511",
       "size": 3875,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "va3lm/knowledge/core.ontologi": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:05:12Z",
+      "reviewed_at": null,
+      "sha256": "e8d76c29d2099655148bbe561f1cd61aa780b0dbd559b802c9732172089c53aa",
+      "size": 2147,
       "validation_issues": [],
       "was_due": false
     },
@@ -7930,6 +7948,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "va3lm/src/va3lm/ontologi.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:07:11Z",
+      "reviewed_at": null,
+      "sha256": "69450f14bfedf3555d3f3508c8b78d8aec9c4da9b4adf05020a19dd057ad00b8",
+      "size": 10584,
+      "validation_issues": [],
+      "was_due": false
+    },
     "va3lm/src/va3lm/ontology.py": {
       "actions": [],
       "binary": false,
@@ -7966,11 +7995,11 @@
     "va3lm/src/va3lm/rvia.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T17:09:48Z",
-      "reviewed_at": "2026-09-07T04:33:16Z",
-      "sha256": "a4e288ba793b41962c2bcf98205a3651052626f339d2ee81311a543fc84f8be8",
-      "size": 10562,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:05:12Z",
+      "reviewed_at": null,
+      "sha256": "770834c331e691a3a7c1594e7092ff011306d09f830e34158f8733d8f168d1b6",
+      "size": 11280,
       "validation_issues": [],
       "was_due": false
     },
@@ -8059,6 +8088,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "f65697ad6e62379b7147d30c3f6afd0cdb40c1a74233dbc2c59806dabb3241a1",
       "size": 2127,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "va3lm/tests/test_ontologi.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T13:07:25Z",
+      "reviewed_at": null,
+      "sha256": "33c75b60edc4d9591d1b66e078d1771afbcd699c44cf65f2c80205281aefe48f",
+      "size": 1483,
       "validation_issues": [],
       "was_due": false
     },
@@ -10253,11 +10293,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T12:28:10Z",
+  "generated_at": "2026-09-07T13:10:01Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 930,
+  "tracked_files_reviewed": 935,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
