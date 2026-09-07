@@ -1,0 +1,64 @@
+{
+  "framework": "NIST_SP_800_53_REV5",
+  "release": "5.2.0",
+  "profileModel": "CATALOG_TO_BASELINE_TO_TAILORING_TO_EVIDENCE_TO_ASSESSMENT",
+  "operatorUIReference": "compliance.gov EdgeScan Profile Controls visual reference supplied 2026-09-06",
+  "authoritativeSources": {
+    "controls": "https://csrc.nist.gov/projects/cprt/catalog",
+    "baselines": "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final",
+    "assessments": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"
+  },
+  "profiles": [
+    {
+      "id": "LOW",
+      "label": "NIST SP 800-53 Rev. 5 Low",
+      "source": "SP_800_53B",
+      "selectionRule": "USE_ONLY_AFTER_SYSTEM_SECURITY_CATEGORIZATION_SUPPORTS_LOW_IMPACT"
+    },
+    {
+      "id": "MODERATE",
+      "label": "NIST SP 800-53 Rev. 5 Moderate",
+      "source": "SP_800_53B",
+      "selectionRule": "USE_ONLY_AFTER_SYSTEM_SECURITY_CATEGORIZATION_SUPPORTS_MODERATE_IMPACT"
+    },
+    {
+      "id": "HIGH",
+      "label": "NIST SP 800-53 Rev. 5 High",
+      "source": "SP_800_53B",
+      "selectionRule": "USE_ONLY_AFTER_SYSTEM_SECURITY_CATEGORIZATION_SUPPORTS_HIGH_IMPACT"
+    },
+    {
+      "id": "PRIVACY",
+      "label": "NIST SP 800-53 Rev. 5 Privacy",
+      "source": "SP_800_53B",
+      "selectionRule": "APPLY_AS_REQUIRED_BY_PII_PROCESSING_AND_PRIVACY_RISK_SCOPE"
+    }
+  ],
+  "tailoringRequired": true,
+  "selectionEvidence": [
+    "system boundary",
+    "information types",
+    "security categorization and impact",
+    "applicable law/regulation/contract",
+    "common and inherited controls",
+    "tailoring rationale",
+    "supplemental controls and overlays",
+    "privacy applicability"
+  ],
+  "states": [
+    "IMPLEMENTED_EVIDENCE_PRESENT",
+    "PARTIAL_EVIDENCE",
+    "DEPLOYMENT_EVIDENCE_REQUIRED",
+    "EXTERNAL_AUTHORIZATION_REQUIRED",
+    "NOT_APPLICABLE_BY_DECLARED_SCOPE",
+    "SOURCE_GAP"
+  ],
+  "defaultState": "UNSELECTED_PENDING_CATEGORIZATION",
+  "prohibitions": [
+    "Do not auto-select Low, Moderate, High, or Privacy from a UI screenshot alone.",
+    "Do not equate profile membership with implementation.",
+    "Do not equate implementation with assessment effectiveness.",
+    "Do not equate assessment success with authorization.",
+    "Do not claim generic NIST compliance without scope, selected control set, and evidence state."
+  ]
+}
