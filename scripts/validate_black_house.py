@@ -24,6 +24,7 @@ REQUIRED_FILES = [
     BH / "runtime" / "runtime-contract.json",
     BH / "telemetry" / "telemetry.schema.json",
     BH / "integrations" / "palantir" / "status.schema.json",
+    BH / "od" / "od-plane.manifest.json",
     BH / "status" / "phases.json",
     BH / "governance" / "CONTROL-PLANE.md",
 ]
@@ -139,7 +140,14 @@ def main() -> None:
     require(kernel["kernelVersion"] == "3.0.0", "phase 3 kernel version mismatch")
     binding_ids = {item["component"] for item in kernel["bindings"]}
     require(
-        {"VA3LM", "WAKEUP3LM", "XUNIA", "ZYRA", "AIP_REGISTRY"}.issubset(binding_ids),
+        {
+            "VA3LM",
+            "WAKEUP3LM",
+            "XUNIA",
+            "ZYRA",
+            "AIP_REGISTRY",
+            "BLACK_HOUSE_OD_PLANE",
+        }.issubset(binding_ids),
         "kernel consumer bindings are incomplete",
     )
 
@@ -191,16 +199,48 @@ def main() -> None:
         "Palantir verification truth states are incomplete",
     )
 
+    od_plane = load_json(BH / "od" / "od-plane.manifest.json")
+    require(od_plane["id"] == "BLACK_HOUSE_OD_PLANE_V1", "phase 9 O/D plane identity mismatch")
+    require(od_plane["phase"] == 9, "O/D plane must be phase 9")
+    require(
+        od_plane["runtime"]["execution"] == "PLAN_OR_SIMULATION_ONLY",
+        "O/D plane execution mode must remain bounded",
+    )
+    safety = od_plane["safety"]
+    require(safety["realWorldTargetsAllowed"] is False, "real-world O/D targeting must remain disabled")
+    require(
+        safety["publicInternetExploitationAllowed"] is False,
+        "public Internet exploitation must remain disabled",
+    )
+    require(
+        safety["criticalInfrastructureDisruptionAllowed"] is False,
+        "critical-infrastructure disruption must remain disabled",
+    )
+    require(safety["weaponControlAllowed"] is False, "weapon control must remain disabled")
+    require(
+        safety["autonomousExternalMutationAllowed"] is False,
+        "autonomous external mutation must remain disabled",
+    )
+    require(safety["explicitScopeRequired"] is True, "O/D scenarios require explicit scope")
+    require(
+        safety["humanApprovalRequiredForMutation"] is True,
+        "O/D mutation must require human approval",
+    )
+
     phase_status = load_json(BH / "status" / "phases.json")
     phases = {item["phase"]: item for item in phase_status["phases"]}
-    require(set(phases) == set(range(1, 9)), "phase status must cover phases 1 through 8")
+    require(set(phases) == set(range(1, 10)), "phase status must cover phases 1 through 9")
     require(
-        all(phases[number]["codeState"] == "COMPLETE" for number in range(1, 9)),
+        all(phases[number]["codeState"] == "COMPLETE" for number in range(1, 10)),
         "all phase implementations must be code-complete",
     )
     require(
         phases[7].get("externalState") in {"LIVE_TENANT_UNVERIFIED", "LIVE_TENANT_VERIFIED"},
         "phase 7 must expose an explicit tenant verification state",
+    )
+    require(
+        phases[9].get("executionState") == "PLAN_OR_SIMULATION_ONLY",
+        "phase 9 execution state must remain bounded",
     )
 
     print("BLACK HOUSE CONTROL PLANE: GREEN")
@@ -213,7 +253,8 @@ def main() -> None:
         f"ontology_relationships={len(relationship_types)}"
     )
     print("runtime_contract=BLACK_HOUSE_RUNTIME_V1 port=8088")
-    print("phases=1-8 code_complete phase7_external_state=" + phases[7]["externalState"])
+    print("phases=1-9 code_complete phase7_external_state=" + phases[7]["externalState"])
+    print("phase9_od=PLAN_OR_SIMULATION_ONLY")
 
 
 if __name__ == "__main__":
