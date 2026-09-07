@@ -1,0 +1,43 @@
+{
+  "id": "youtube-OqmJb826mY4",
+  "type": "video-course",
+  "title": "Complete Networking for Ethical Hackers – Beginner's Guide (2026)",
+  "url": "https://www.youtube.com/watch?v=OqmJb826mY4",
+  "retrieved": "2026-09-07",
+  "target_agent": "GPT-REDPANDA-LLM",
+  "disposition": "KEEP_WITH_GAPS",
+  "extraction_status": "YouTube source identity and title resolved; transcript/captions were not retrieved in this ingestion pass.",
+  "confidence": {
+    "source_identity": "HIGH",
+    "detailed_video_claims": "LOW",
+    "defensive_curriculum_mapping": "MEDIUM"
+  },
+  "scope": [
+    "networking-fundamentals",
+    "network-observability",
+    "defensive-traffic-analysis",
+    "authorized-lab-learning"
+  ],
+  "durable_learning_targets": [
+    "osi-and-tcp-ip-model-reasoning",
+    "ipv4-ipv6-and-subnet-literacy",
+    "tcp-udp-and-session-state",
+    "dns-dhcp-arp-and-icmp-concepts",
+    "ports-services-and-protocol-identification",
+    "routing-switching-and-segmentation-concepts",
+    "firewall-and-access-control-reasoning",
+    "packet-capture-and-log-analysis",
+    "baseline-versus-anomalous-network-behavior",
+    "authorized-lab-scope-and-evidence-discipline"
+  ],
+  "controls": {
+    "real_world_targeting": false,
+    "credential_theft": false,
+    "traffic_interception_without_authorization": false,
+    "service_disruption": false,
+    "persistence_or_evasion": false,
+    "defensive_analysis": true,
+    "owned_or_declared_lab_testing": true
+  },
+  "notes": "Only source metadata verified from the linked YouTube page is treated as source fact. Topic-level networking knowledge is retained as a bounded defensive curriculum and must not be represented as a verbatim transcript-derived claim until captions or a transcript are captured."
+}
