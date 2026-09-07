@@ -1,14 +1,31 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T14:42:21Z",
-  "due_files_reviewed": 6,
+  "cutoff_at": "2026-09-06T16:25:34Z",
+  "due_files_reviewed": 23,
   "due_paths": [
-    ".github/workflows/black-house-resilience-gate.yml",
-    "intel/white-house/daily/2026-09-06.json",
-    "intel/white-house/daily/2026-09-06.md",
-    "intel/white-house/state.json",
-    "safety-shield/policies/infrastructure-resilience.json",
-    "scripts/validate_infrastructure_resilience.py"
+    ".github/workflows/ai-layer-gate.yml",
+    ".github/workflows/market-terminal-data.yml",
+    "config/ai-layer-manifest.json",
+    "docs/ARCHITECTURE.md",
+    "docs/assets/insignia-black-house.svg",
+    "docs/assets/insignia-kraken-jutsu.svg",
+    "docs/assets/insignia-zyra.svg",
+    "doug-market",
+    "free-video-studio/README.md",
+    "free-video-studio/engine.py",
+    "free-video-studio/test_engine.py",
+    "install_market_terminal.sh",
+    "install_zyra_terminal.sh",
+    "intel/white-house/daily/2026-09-04.json",
+    "intel/white-house/daily/2026-09-04.md",
+    "market-terminal/README.md",
+    "market-terminal/data/market-snapshot.json",
+    "market-terminal/index.html",
+    "market-terminal/scripts/collect_market_data.py",
+    "market-terminal/terminal.css",
+    "market-terminal/terminal.js",
+    "nxyz/control_plane.py",
+    "scripts/doug-max"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -159,11 +176,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:21:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "37a35264429acf6f836fca1fb3a462c905dedb3a07b51177aebeb161894a9537",
       "size": 952,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/authorized-web-content-discovery.yml": {
       "actions": [],
@@ -201,13 +218,13 @@
     ".github/workflows/black-house-resilience-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:38:54Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "27a1eeb46dad1bd2f76d3dcc33d1c74ab52c81bfd9668cf0d6bdf72769111bb9",
       "size": 1118,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/black-house-runtime.yml": {
       "actions": [],
@@ -423,11 +440,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:04:57Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "ae13118ebd4e583c48adc23a100620c70c5cbf0204df26a907ef954d6c87ebb2",
       "size": 1213,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/nxyz-agentic-upgrade.yml": {
       "actions": [],
@@ -855,6 +872,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "171cfe88ccbc4d96f4a5a8834da0f896bcf3ac74b20bfb29c3aad962f779b6dc",
       "size": 681,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "ECOSYSTEM_DISCLAIMER.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T16:25:23Z",
+      "reviewed_at": null,
+      "sha256": "b546ca29cd71b726355c7eb2d4621066da34f12aeb4466fb96c4e31ebb8de3b9",
+      "size": 5732,
       "validation_issues": [],
       "was_due": false
     },
@@ -1875,11 +1903,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:21:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "61c064febfced0fbf8d431268699d8b16e73da3089a0c381d3d4b7ebcf3c5e03",
       "size": 3268,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "crypto/blockchain_audit.py": {
       "actions": [],
@@ -2106,11 +2134,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:21:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "e6a10422ab3f131c56aa32bf4581410fc0cc740addda67b394957b918c9989e0",
       "size": 9380,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/BLACK_HOUSE_STUDIO.md": {
       "actions": [],
@@ -2413,10 +2441,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T14:06:47Z",
+      "git_touched_at": "2026-09-07T14:42:27Z",
       "reviewed_at": null,
-      "sha256": "3afc2c0e0ca7d55f294f210d51bf77c9de1628ed149117c07a43fe2211d55cfe",
-      "size": 8272,
+      "sha256": "a93df9febfa2fb1661e384dcfc25d0a4064b2298fb610ab8d17b52a148a5b49d",
+      "size": 12809,
       "validation_issues": [],
       "was_due": false
     },
@@ -2436,33 +2464,33 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T15:26:44Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "9d9c365194f322be57d505fc9e48b53acab7d7a38a0d814e741ff71563b905b2",
       "size": 16378,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/assets/insignia-kraken-jutsu.svg": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T15:24:26Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "31e60388fe21313b163069e0e7ed972438fe07bf23b6137f12ec0e3f3fc1f575",
       "size": 11007,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/assets/insignia-zyra.svg": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T15:29:16Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "cdfcea97507406cb871394a5914907179031a45d7fb71c33ef4a5bc76490af08",
       "size": 18195,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/assets/security-gates.svg": {
       "actions": [],
@@ -2887,11 +2915,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:23:37Z",
-      "reviewed_at": "2026-09-06T16:25:25Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "2557ad7bc618a62078a3968a704a5e59aec21c7d4f99bc6e9f0d902e1c56a715",
       "size": 1686,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "doug_core/__init__.py": {
       "actions": [],
@@ -3250,11 +3278,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:59:11Z",
-      "reviewed_at": "2026-09-06T15:06:40Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "26925a14987e5ee418d2d8b8bf93122e9e0a2c8797035e0f2fcada84ba4061e3",
       "size": 6376,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "free-video-studio/app.py": {
       "actions": [],
@@ -3272,11 +3300,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T14:59:11Z",
-      "reviewed_at": "2026-09-06T15:06:40Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "991f3ac60177b0acbc9505ecf5dfc86668ba304effdd749f6c24d535973fb01b",
       "size": 15666,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "free-video-studio/install_free.sh": {
       "actions": [],
@@ -3316,11 +3344,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T15:23:11Z",
-      "reviewed_at": "2026-09-06T15:24:36Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "4bcb4575d7db9fa457df57a1e1ee3289c5ad12a2048a0223c249176638ba046d",
       "size": 2682,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "golden_shield.py": {
       "actions": [],
@@ -4009,22 +4037,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:23:38Z",
-      "reviewed_at": "2026-09-06T16:25:25Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "172a2890e669cdb05b79f7f8ba99e565afa89d11844dee4050b363d168be5755",
       "size": 1178,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "install_zyra_terminal.sh": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:22:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "1112c3cd7dfa42eaed6b349ba91737c183c677edd99101f0bad8aef11c2cd647",
       "size": 2983,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/agentic-cpr-red-panda/activate.sh": {
       "actions": [],
@@ -4482,22 +4510,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "68df33e71b0a17c66a6a4f353f824d6f0cf95152caa6a698441d8f9b307d52c5",
       "size": 1156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-04.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T15:29:19Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "c2ed09439aa71d5e2c9a0fbf5a2e888518f201b58e69467c3d0870626d26bce2",
       "size": 909,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-05.json": {
       "actions": [],
@@ -4524,35 +4552,35 @@
     "intel/white-house/daily/2026-09-06.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:40:11Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "a6f09d740c1c4c326e9eadad442a77dfe5f0854eb96109ad490e00bf4b92d105",
       "size": 352,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-06.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:40:11Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "40bad3cbafc491aa9fc771fbc4b4ee09d7d0287f3648bc5a3c90a4b95feea242",
       "size": 579,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:40:11Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "5b4564c7f92657b1e836742744b91db6ef1e0b795eddb08556409e3bc6ad5421",
       "size": 11130,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intelligence_compliance.py": {
       "actions": [],
@@ -4801,66 +4829,66 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:15:14Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "570d6e2fa6ce56fd65d53b8e22e9b7966b891eefa4d1163fa4a7d5fe7213aab9",
       "size": 1450,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/data/market-snapshot.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:21:56Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "dd144172deb633f794f43c095dcc594d396036f54667ec7360bfb70ffdd83951",
       "size": 11199,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/index.html": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "de0736d39a8cca3b7422dcf04b47897de8459fac94b95893a81b9e0ae4f748ac",
       "size": 3370,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/scripts/collect_market_data.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "91263ebdb1bc5ed1d9b4078561ccdefc7c07b131eacd9b66cf695461fbaf3d60",
       "size": 3573,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/terminal.css": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "7de10fec7beec72a8f3fe42b081cce58e78c4301c78864bd97679e8b7d3a3a63",
       "size": 4243,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/terminal.js": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T16:04:24Z",
-      "reviewed_at": "2026-09-06T16:21:47Z",
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "eaa5eeb1277d38e8077447f711339773e3a69c4c8cc6685019e980791fe7aa90",
       "size": 7399,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "marketplace/__init__.py": {
       "actions": [],
@@ -5054,11 +5082,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T15:06:31Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "18f42641fa26e95049036de71621b733dccfa37c733a3e439a51aeb04c4905c0",
       "size": 2724,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "nxyz/policy.json": {
       "actions": [],
@@ -5888,13 +5916,13 @@
     "safety-shield/policies/infrastructure-resilience.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:38:26Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "ed4e5df8e9846c0d0e486a2cd2638ed86ee7a61e5338ae18d3b67ae6df5adf34",
       "size": 3191,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "safety-shield/policies/shield.rego": {
       "actions": [],
@@ -5945,11 +5973,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T16:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T16:25:34Z",
       "sha256": "97323ffe7da423291ae0ca5a8036fb1be93fe6a160eaee6985f35adc87ecb489",
       "size": 616,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/doug-max-compute": {
       "actions": [],
@@ -6119,13 +6147,13 @@
     "scripts/validate_infrastructure_resilience.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:38:44Z",
       "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "034c27ead8d7e229439f367d1c6dd4028090f416422b63568bd851fbeec29224",
       "size": 2855,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/validate_redpanda_network_intel.py": {
       "actions": [],
@@ -8243,9 +8271,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-07T14:06:45Z",
+      "git_touched_at": "2026-09-07T14:42:23Z",
       "reviewed_at": null,
-      "sha256": "9dca2e0d8d83a547d848bb94474af16c0e85f00be073a23d979ced9248baf4d2",
+      "sha256": "1aaf20db4370eac9e3c4b43d4982bdbb5252e545a8df396709cdfa6309f90de8",
       "size": 5810,
       "validation_issues": [],
       "was_due": false
@@ -10397,11 +10425,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T14:42:21Z",
+  "generated_at": "2026-09-07T16:25:34Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 944,
+  "tracked_files_reviewed": 945,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
