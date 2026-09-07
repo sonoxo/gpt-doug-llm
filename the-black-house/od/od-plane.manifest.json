@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "BLACK_HOUSE_OD_PLANE_V1",
+  "phase": 9,
+  "name": "Black House Offense/Defense Simulation Plane",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "missionProtocol": "black-house-mission-v1",
+  "purpose": "Fuse multi-layer telemetry into governed adversary-emulation and defensive-response plans without providing a live attack or weapons-control path.",
+  "controlLoop": [
+    "SENSE",
+    "TRANSPORT",
+    "FUSE",
+    "ASSESS",
+    "EMULATE",
+    "DEFEND",
+    "VERIFY",
+    "EVIDENCE"
+  ],
+  "layers": [
+    {
+      "id": "SENSOR_LAYER",
+      "role": "OBSERVATION",
+      "sources": ["endpoint", "network", "identity", "cloud", "application", "osint", "synthetic"]
+    },
+    {
+      "id": "TRANSPORT_LAYER",
+      "role": "EVENT_ROUTING",
+      "sources": ["RVIA", "telemetry", "mission-evidence"]
+    },
+    {
+      "id": "FUSION_LAYER",
+      "role": "CORRELATION_AND_ASSESSMENT"
+    },
+    {
+      "id": "OFFENSE_EMULATION_LAYER",
+      "role": "AUTHORIZED_LAB_EMULATION_ONLY"
+    },
+    {
+      "id": "DEFENSE_LAYER",
+      "role": "DETECT_CONTAIN_RECOVER_VERIFY"
+    },
+    {
+      "id": "EVIDENCE_LAYER",
+      "role": "PROVENANCE_AUDIT_AND_REPLAY"
+    }
+  ],
+  "modes": {
+    "OFFENSE_EMULATION": "Synthetic, isolated-lab, or explicitly owned-test environments only.",
+    "DEFENSE": "Read-only defensive planning may be produced for any declared scope; mutations still require approval and an external authorized executor.",
+    "FULL_LOOP": "Sense-assess-emulate-defend-verify in synthetic, isolated-lab, or owned-test environments only."
+  },
+  "safety": {
+    "realWorldTargetsAllowed": false,
+    "publicInternetExploitationAllowed": false,
+    "criticalInfrastructureDisruptionAllowed": false,
+    "weaponControlAllowed": false,
+    "autonomousExternalMutationAllowed": false,
+    "syntheticOrOwnedAssetsRequiredForEmulation": true,
+    "explicitScopeRequired": true,
+    "humanApprovalRequiredForMutation": true,
+    "evidenceRequired": true,
+    "unknownActionsFailClosed": true
+  },
+  "runtime": {
+    "module": "va3lm/src/va3lm/od_plane.py",
+    "statusEndpoint": "GET /api/black-house/od",
+    "simulateEndpoint": "POST /api/black-house/od/simulate",
+    "execution": "PLAN_OR_SIMULATION_ONLY"
+  }
+}
