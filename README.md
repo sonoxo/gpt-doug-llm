@@ -21,6 +21,11 @@
 <strong><a href="https://github.com/sonoxo/zyra">ZYRA</a></strong><br />
 <sub>Bounded agentic execution</sub>
 </td>
+<td align="center">
+<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo"><img width="210" src="docs/assets/insignia-aeo.svg" alt="A.E.O. All Eyes Open RVIA-INTEL insignia" /></a><br />
+<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo">A.E.O. // RVIA-INTEL</a></strong><br />
+<sub>All Eyes Open · provenance-first intelligence accountability</sub>
+</td>
 </tr>
 </table>
 
@@ -37,6 +42,7 @@
 **▶ PUBLIC RESILIENCE REFERENCE II — additional external architecture and infrastructure-protection reference**
 
 [![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
+[![A.E.O. Governance](https://img.shields.io/badge/A.E.O.-RVIA--INTEL-00bfff?style=for-the-badge)](rvia-intel/aeo/README.md)
 
 <sub>Neptune Shield and the linked public reference materials are external sources. Their inclusion does not imply affiliation, endorsement, contract status, clearance, authorization, or third-party access.</sub>
 
@@ -398,11 +404,3 @@ gpt-doug-llm/
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-<div align="center">
-
-### THE BLACK HOUSE // GPT-DOUG-LLM MAX
-
-**Prompt → Ontology → governed action → evidence → ship.**
-
-</div>
