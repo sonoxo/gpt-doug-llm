@@ -389,6 +389,9 @@ gpt-doug-llm/
 | [Product Portfolio](docs/PRODUCTS.md) | Products, buyer value, and readiness |
 | [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
 | [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
+| [OPERATIONDINNER](docs/OPERATIONDINNER.md) | Pinned Black House graph of verified public DoD-source fork lineage |
+| [LLMs-at-DoD Ontology](docs/LLMS_AT_DOD_ONTOLOGY.md) | Cell-level, source-grounded public tutorial ontology |
+| [NRL Repository Ecosystem](docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md) | Complete pinned public NRL catalog and metadata ontology |
 | [Commands](docs/COMMANDS.md) | Terminal command reference |
 | [Security](SECURITY.md) | Security limitations and vulnerability reporting |
 | [Contributing](CONTRIBUTING.md) | Development workflow |

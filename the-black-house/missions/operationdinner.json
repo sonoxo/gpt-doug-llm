@@ -1,0 +1,114 @@
+{
+  "missionId": "OPERATIONDINNER",
+  "requestedBy": "user",
+  "intent": "Expand The Black House with the complete observed set of public sonoxo forks whose GitHub direct parent is a deptofdefense repository and the complete public U.S. Naval Research Laboratory repository catalog, preserving provenance and officiality boundaries.",
+  "target": "BLACK_HOUSE_PUBLIC_DEFENSE_RESEARCH_ECOSYSTEM",
+  "classification": "public",
+  "requiredCapabilities": [
+    "GITHUB_PUBLIC_METADATA_READ",
+    "FORK_LINEAGE_VERIFICATION",
+    "ONTOLOGY_CONTEXT",
+    "LOCAL_MANIFEST_VALIDATION",
+    "PUBLIC_REPOSITORY_CATALOG"
+  ],
+  "allowedTools": [
+    "github_public_metadata_read",
+    "local_manifest_validation"
+  ],
+  "approvalState": "COMPLETED",
+  "mutation": false,
+  "plan": {
+    "collection": "Read public GitHub organization, repository, parent, source, and default-branch metadata for the DoD-source fork graph and NRL catalog.",
+    "normalization": "Separate official organization-hosted repositories, third-party upstream roots, and independent sonoxo forks.",
+    "integration": "Register pinned Black House ecosystem manifests and bind the LLMs-at-DoD and NRL public-repository ontologies.",
+    "verification": "Run deterministic fail-closed validators and regression tests."
+  },
+  "evidence": [
+    {
+      "type": "github_organization_profile",
+      "url": "https://github.com/deptofdefense",
+      "observedAt": "2026-09-07T22:07:51Z",
+      "finding": "GitHub marks the organization verified for dds.mil and archived."
+    },
+    {
+      "type": "github_repository_inventory",
+      "url": "https://github.com/orgs/deptofdefense/repositories",
+      "observedAt": "2026-09-07T22:07:51Z",
+      "finding": "63 public organization repositories; 38 verified direct sonoxo forks in the pinned snapshot."
+    },
+    {
+      "type": "black_house_integration_manifest",
+      "path": "the-black-house/integrations/deptofdefense/operationdinner-fork-ecosystem.json",
+      "finding": "Pinned fork heads, direct parents, transitive roots, coverage gaps, and guardrails."
+    },
+    {
+      "type": "source_grounded_ontology",
+      "path": "foundry/ontology/llms-at-dod-ontology.json",
+      "finding": "LLMs-at-DoD tutorials and workflows mapped to exact source artifacts and notebook cells."
+    },
+    {
+      "type": "github_organization_profile",
+      "url": "https://github.com/USNavalResearchLaboratory",
+      "observedAt": "2026-09-07T22:24:49Z",
+      "finding": "58 public NRL repositories; identity corroborated by official nrl.navy.mil pages linking NRL GitHub software."
+    },
+    {
+      "type": "black_house_integration_manifest",
+      "path": "the-black-house/integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json",
+      "finding": "58 repositories, 57 pinned heads, one empty repository, one upstream fork, metadata indexes, and fail-closed controls."
+    },
+    {
+      "type": "metadata_grounded_ontology",
+      "path": "foundry/ontology/nrl-public-repository-ontology.json",
+      "finding": "Typed materialization rules for repository, head, upstream, language, license, topic, and review objects."
+    }
+  ],
+  "result": {
+    "state": "IMPLEMENTED",
+    "externalExecutionPerformed": false,
+    "repositoriesCreated": 0,
+    "repositoriesModified": 0,
+    "sourceCodeExecuted": false,
+    "verifiedForksRegistered": 38,
+    "sourceOrganizationForksRegistered": 8,
+    "coverageGapsRecorded": 25,
+    "nrlRepositoriesRegistered": 58,
+    "nrlPinnedHeadsRegistered": 57,
+    "nrlEmptyRepositoriesRegistered": 1
+  },
+  "audit": [
+    {
+      "at": "2026-09-07T22:07:51Z",
+      "event": "PUBLIC_METADATA_COLLECTED",
+      "actor": "GPT_DOUG_BUILD"
+    },
+    {
+      "at": "2026-09-07T22:07:51Z",
+      "event": "FORK_LINEAGE_PINNED",
+      "actor": "BLACK_HOUSE_ONTOLOGY"
+    },
+    {
+      "at": "2026-09-07T22:07:51Z",
+      "event": "NO_EXTERNAL_EXECUTION_CONFIRMED",
+      "actor": "SHADOW_GLASS"
+    },
+    {
+      "at": "2026-09-07T22:24:49Z",
+      "event": "NRL_PUBLIC_CATALOG_PINNED",
+      "actor": "BLACK_HOUSE_ONTOLOGY"
+    }
+  ],
+  "metadata": {
+    "operationCode": "OPERATIONDINNER",
+    "controlPlane": "THE_BLACK_HOUSE_V1",
+    "missionProtocol": "black-house-mission-v1",
+    "integrationManifest": "the-black-house/integrations/deptofdefense/operationdinner-fork-ecosystem.json",
+    "ontology": "foundry/ontology/llms-at-dod-ontology.json",
+    "nrlIntegrationManifest": "the-black-house/integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json",
+    "nrlOntology": "foundry/ontology/nrl-public-repository-ontology.json",
+    "sourceOrganization": "deptofdefense",
+    "forkOwner": "sonoxo",
+    "officialityRule": "deptofdefense namespace is verified organization-hosted source; sonoxo namespace is an independent fork",
+    "operationalAuthority": "none"
+  }
+}

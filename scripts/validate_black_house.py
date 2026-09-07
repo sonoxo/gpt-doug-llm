@@ -2,12 +2,20 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from black_house_kernel import validate_kernel
 
 ROOT = Path(__file__).resolve().parents[1]
 BH = ROOT / "the-black-house"
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tools.validate_nrl_public_repository_ecosystem import (  # noqa: E402
+    validate as validate_nrl_ecosystem,
+)
+from tools.validate_operationdinner import validate as validate_operationdinner  # noqa: E402
 
 REQUIRED_FILES = [
     BH / "README.md",
@@ -27,6 +35,11 @@ REQUIRED_FILES = [
     BH / "od" / "od-plane.manifest.json",
     BH / "status" / "phases.json",
     BH / "governance" / "CONTROL-PLANE.md",
+    BH / "missions" / "operationdinner.json",
+    BH / "integrations" / "deptofdefense" / "operationdinner-fork-ecosystem.json",
+    ROOT / "foundry" / "ontology" / "llms-at-dod-ontology.json",
+    BH / "integrations" / "naval-research-laboratory" / "nrl-public-repository-ecosystem.json",
+    ROOT / "foundry" / "ontology" / "nrl-public-repository-ontology.json",
 ]
 
 
@@ -147,6 +160,8 @@ def main() -> None:
             "ZYRA",
             "AIP_REGISTRY",
             "BLACK_HOUSE_OD_PLANE",
+            "OPERATIONDINNER",
+            "NRL_PUBLIC_REPOSITORY_ECOSYSTEM",
         }.issubset(binding_ids),
         "kernel consumer bindings are incomplete",
     )
@@ -243,6 +258,32 @@ def main() -> None:
         "phase 9 execution state must remain bounded",
     )
 
+    operationdinner = load_json(
+        BH / "integrations" / "deptofdefense" / "operationdinner-fork-ecosystem.json"
+    )
+    operationdinner_mission = load_json(BH / "missions" / "operationdinner.json")
+    llms_at_dod = load_json(ROOT / "foundry" / "ontology" / "llms-at-dod-ontology.json")
+    operationdinner_errors = validate_operationdinner(
+        operationdinner, operationdinner_mission, llms_at_dod
+    )
+    require(
+        not operationdinner_errors,
+        "OPERATIONDINNER contract failed: " + "; ".join(operationdinner_errors),
+    )
+    nrl_ecosystem = load_json(
+        BH
+        / "integrations"
+        / "naval-research-laboratory"
+        / "nrl-public-repository-ecosystem.json"
+    )
+    nrl_ontology = load_json(
+        ROOT / "foundry" / "ontology" / "nrl-public-repository-ontology.json"
+    )
+    nrl_errors = validate_nrl_ecosystem(
+        nrl_ecosystem, nrl_ontology, operationdinner_mission
+    )
+    require(not nrl_errors, "NRL ecosystem contract failed: " + "; ".join(nrl_errors))
+
     print("BLACK HOUSE CONTROL PLANE: GREEN")
     print(
         f"kernel=3.0.0 repositories={len(repo_ids)} services={len(service_ids)} "
@@ -255,6 +296,14 @@ def main() -> None:
     print("runtime_contract=BLACK_HOUSE_RUNTIME_V1 port=8088")
     print("phases=1-9 code_complete phase7_external_state=" + phases[7]["externalState"])
     print("phase9_od=PLAN_OR_SIMULATION_ONLY")
+    print(
+        "operationdinner=PINNED_PUBLIC_METADATA "
+        f"verified_forks={operationdinner['scope']['verifiedSonoxoForkCount']}"
+    )
+    print(
+        "nrl_ecosystem=PINNED_PUBLIC_METADATA "
+        f"repositories={nrl_ecosystem['coverage']['publicRepositoryCount']}"
+    )
 
 
 if __name__ == "__main__":

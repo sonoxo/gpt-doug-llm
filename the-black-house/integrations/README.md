@@ -8,6 +8,8 @@ This directory registers external platforms, public architecture references, and
 - [`palantir/`](./palantir/) — Palantir integration contracts and verification state.
 - [`neptune-shield/`](./neptune-shield/) — Neptune Shield reference/integration material.
 - [`xunidirect-youtube-cleaner.json`](./xunidirect-youtube-cleaner.json) — XuniDirect integration contract.
+- [`deptofdefense/operationdinner-fork-ecosystem.json`](./deptofdefense/operationdinner-fork-ecosystem.json) — `OPERATIONDINNER` pinned public fork-lineage graph. It distinguishes the verified, archived `deptofdefense` source organization from independent `sonoxo` forks and performs no repository execution or synchronization.
+- [`naval-research-laboratory/nrl-public-repository-ecosystem.json`](./naval-research-laboratory/nrl-public-repository-ecosystem.json) — complete pinned metadata catalog for the public U.S. Naval Research Laboratory organization: 58 repositories, 57 commit heads, one empty repository, and one preserved upstream fork. Content execution remains disabled.
 
 ## SafeMind-derived Black House pattern
 

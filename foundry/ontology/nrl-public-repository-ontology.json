@@ -1,0 +1,292 @@
+{
+  "name": "GPT-DOUG NRL Public Repository Catalog Ontology",
+  "version": "1.0.0",
+  "mode": "PUBLIC_REPOSITORY_METADATA_ONLY",
+  "purpose": "Expose the pinned U.S. Naval Research Laboratory public repository catalog to Black House queries as typed, provenance-preserving metadata without treating repository descriptions as verified capabilities or permitting repository execution.",
+  "sourceManifest": "the-black-house/integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json",
+  "sourceOrganization": {
+    "login": "USNavalResearchLaboratory",
+    "identityState": "OFFICIAL_SITE_CORROBORATED",
+    "observedAt": "2026-09-07T22:24:49Z"
+  },
+  "expectedMaterialization": {
+    "ResearchOrganization": 1,
+    "PublicRepository": 58,
+    "CommitSnapshot": 57,
+    "UpstreamRepository": 1,
+    "ProgrammingLanguage": 10,
+    "LicenseDeclaration": 4,
+    "GitHubTopic": 62,
+    "RepositoryLanguageLinks": 51,
+    "RepositoryLicenseLinks": 43,
+    "RepositoryTopicLinks": 71
+  },
+  "objectTypes": [
+    {
+      "apiName": "ResearchOrganization",
+      "primaryKey": "organizationId",
+      "properties": {
+        "organizationId": "string",
+        "login": "string",
+        "url": "string",
+        "identityState": "string",
+        "observedAt": "timestamp"
+      }
+    },
+    {
+      "apiName": "PublicRepository",
+      "primaryKey": "repositoryId",
+      "properties": {
+        "repositoryId": "integer",
+        "fullName": "string",
+        "defaultBranch": "string",
+        "headState": "string",
+        "archived": "boolean",
+        "visibility": "string",
+        "description": "string",
+        "homepage": "string",
+        "observedAt": "timestamp"
+      }
+    },
+    {
+      "apiName": "CommitSnapshot",
+      "primaryKey": "sha",
+      "properties": {
+        "sha": "string",
+        "repositoryId": "integer",
+        "branch": "string",
+        "observedAt": "timestamp"
+      }
+    },
+    {
+      "apiName": "UpstreamRepository",
+      "primaryKey": "upstreamId",
+      "properties": {
+        "upstreamId": "integer",
+        "fullName": "string",
+        "relationship": "string"
+      }
+    },
+    {
+      "apiName": "ProgrammingLanguage",
+      "primaryKey": "name",
+      "properties": {
+        "name": "string"
+      }
+    },
+    {
+      "apiName": "LicenseDeclaration",
+      "primaryKey": "spdxOrApiValue",
+      "properties": {
+        "spdxOrApiValue": "string",
+        "interpretation": "string"
+      }
+    },
+    {
+      "apiName": "GitHubTopic",
+      "primaryKey": "name",
+      "properties": {
+        "name": "string"
+      }
+    },
+    {
+      "apiName": "EvidenceSource",
+      "primaryKey": "evidenceId",
+      "properties": {
+        "evidenceId": "string",
+        "kind": "string",
+        "url": "string",
+        "observedAt": "timestamp"
+      }
+    },
+    {
+      "apiName": "ReviewProposal",
+      "primaryKey": "proposalId",
+      "properties": {
+        "proposalId": "string",
+        "repositoryId": "integer",
+        "sourceCommit": "string",
+        "scope": "string",
+        "licenseReviewState": "string",
+        "safetyReviewState": "string",
+        "humanApprovalState": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {
+      "apiName": "OrganizationPublishesRepository",
+      "from": "ResearchOrganization",
+      "to": "PublicRepository"
+    },
+    {
+      "apiName": "RepositoryHasPinnedHead",
+      "from": "PublicRepository",
+      "to": "CommitSnapshot"
+    },
+    {
+      "apiName": "RepositoryForksUpstream",
+      "from": "PublicRepository",
+      "to": "UpstreamRepository"
+    },
+    {
+      "apiName": "RepositoryUsesPrimaryLanguage",
+      "from": "PublicRepository",
+      "to": "ProgrammingLanguage"
+    },
+    {
+      "apiName": "RepositoryDeclaresLicense",
+      "from": "PublicRepository",
+      "to": "LicenseDeclaration"
+    },
+    {
+      "apiName": "RepositoryTaggedWithTopic",
+      "from": "PublicRepository",
+      "to": "GitHubTopic"
+    },
+    {
+      "apiName": "RepositorySupportedByEvidence",
+      "from": "PublicRepository",
+      "to": "EvidenceSource"
+    },
+    {
+      "apiName": "ProposalTargetsRepository",
+      "from": "ReviewProposal",
+      "to": "PublicRepository"
+    }
+  ],
+  "mappingRules": [
+    {
+      "ruleId": "NRL-MAP-001",
+      "sourcePath": "$.organization",
+      "outputType": "ResearchOrganization",
+      "primaryKey": "login",
+      "claimNature": "observed_metadata"
+    },
+    {
+      "ruleId": "NRL-MAP-002",
+      "sourcePath": "$.repositories[*]",
+      "outputType": "PublicRepository",
+      "primaryKey": "repositoryId",
+      "claimNature": "observed_metadata"
+    },
+    {
+      "ruleId": "NRL-MAP-003",
+      "sourcePath": "$.repositories[?(@.headState == 'PINNED')]",
+      "outputType": "CommitSnapshot",
+      "primaryKey": "headSha",
+      "claimNature": "observed_metadata"
+    },
+    {
+      "ruleId": "NRL-MAP-004",
+      "sourcePath": "$.repositories[?(@.fork == true)]",
+      "outputType": "UpstreamRepository",
+      "primaryKey": "directParentId",
+      "claimNature": "observed_metadata"
+    },
+    {
+      "ruleId": "NRL-MAP-005",
+      "sourcePath": "$.metadataIndexes.primaryLanguages",
+      "outputType": "ProgrammingLanguage",
+      "primaryKey": "map key",
+      "claimNature": "metadata_index"
+    },
+    {
+      "ruleId": "NRL-MAP-006",
+      "sourcePath": "$.metadataIndexes.declaredLicenses",
+      "outputType": "LicenseDeclaration",
+      "primaryKey": "map key",
+      "claimNature": "metadata_index"
+    },
+    {
+      "ruleId": "NRL-MAP-007",
+      "sourcePath": "$.metadataIndexes.githubTopics",
+      "outputType": "GitHubTopic",
+      "primaryKey": "map key",
+      "claimNature": "metadata_index"
+    }
+  ],
+  "queryContracts": [
+    {
+      "apiName": "listRepositories",
+      "returns": "PublicRepository",
+      "filters": [
+        "primaryLanguage",
+        "license",
+        "topic",
+        "fork",
+        "headState"
+      ],
+      "readOnly": true
+    },
+    {
+      "apiName": "showForkLineage",
+      "returns": "PublicRepository+UpstreamRepository",
+      "filters": [
+        "repositoryId"
+      ],
+      "readOnly": true
+    },
+    {
+      "apiName": "listEmptyRepositories",
+      "returns": "PublicRepository",
+      "filters": [
+        "headState=EMPTY_REPOSITORY"
+      ],
+      "readOnly": true
+    },
+    {
+      "apiName": "listReviewCandidates",
+      "returns": "PublicRepository",
+      "filters": [
+        "license",
+        "topic",
+        "primaryLanguage"
+      ],
+      "readOnly": true
+    }
+  ],
+  "actions": [
+    {
+      "apiName": "queryNrlCatalog",
+      "objectType": "ResearchOrganization",
+      "effect": "Read materialized public metadata from the pinned source manifest.",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "requiresHumanReview": false
+    },
+    {
+      "apiName": "openSemanticReviewProposal",
+      "objectType": "PublicRepository",
+      "effect": "Create a local proposal pinned to one source commit; no clone, build, execution, deployment, or GitHub write.",
+      "readOnly": false,
+      "networkEgress": false,
+      "externalMutation": false,
+      "requiresHumanReview": true
+    }
+  ],
+  "guardrails": {
+    "publicMetadataOnly": true,
+    "manifestIsSourceOfTruth": true,
+    "repositoryContentIngestion": false,
+    "repositoryContentExecution": false,
+    "semanticInferenceFromDescription": false,
+    "cloneByDefault": false,
+    "dependencyInstallation": false,
+    "autonomousExternalFetch": false,
+    "autonomousDeployment": false,
+    "externalSecurityTesting": false,
+    "realWorldTargeting": false,
+    "weaponsControl": false,
+    "licenseReviewRequiredBeforeReuse": true,
+    "sourceCommitRequiredForDeepReview": true,
+    "humanReviewRequiredForExpansion": true,
+    "sourceNamespaceAffiliationDoesNotTransfer": true,
+    "governmentAffiliationInferredForGptDoug": false,
+    "governmentEndorsementInferredForGptDoug": false,
+    "networkEgress": "deny_by_default",
+    "externalMutation": "prohibited",
+    "operationalAuthority": "none"
+  }
+}

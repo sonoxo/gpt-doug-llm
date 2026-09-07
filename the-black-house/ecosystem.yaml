@@ -35,6 +35,18 @@ externalPlanes:
   - id: PALANTIR
     codeState: implemented
     liveState: tenant_unverified
+  - id: OPERATIONDINNER
+    codeState: implemented
+    liveState: pinned_public_metadata_snapshot
+    manifest: the-black-house/integrations/deptofdefense/operationdinner-fork-ecosystem.json
+    sourceOrganization: https://github.com/deptofdefense
+    execution: none
+  - id: NRL_PUBLIC_REPOSITORY_ECOSYSTEM
+    codeState: implemented
+    liveState: pinned_public_metadata_snapshot
+    manifest: the-black-house/integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json
+    sourceOrganization: https://github.com/USNavalResearchLaboratory
+    execution: none
 rules:
   - implementation_does_not_imply_deployment
   - credentials_do_not_imply_authorization
