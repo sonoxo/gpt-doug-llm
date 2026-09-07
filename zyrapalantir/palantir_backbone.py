@@ -16,6 +16,7 @@ from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
 from palantir_foundry import FoundryClient
+
 from .core import DigitalTwinAsset, SafetyViolation, ZyraPalantir
 
 
