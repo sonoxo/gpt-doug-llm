@@ -1,30 +1,38 @@
 {
-  "ontology": "ZYRA_JUKEBOX_v1",
+  "ontology": "ZYRA_JUKEBOX_v2",
   "product": "ZYRA JUKEBOX",
   "module": "zyra-jukebox",
   "class": "MusicPlaybackGateway",
   "parentEcosystem": "GPT-DOUG-LLM / ZYRA / XUNIA",
-  "purpose": "Federated, source-aware music discovery and playback with RetroViz 95 visualization.",
+  "purpose": "Federated, source-aware music discovery and playback with RetroViz 95 psychedelic visualization.",
   "entities": {
     "Artist": ["name", "sourceId", "source"],
     "Track": ["title", "artist", "source", "sourceUrl", "playbackMode", "rightsContext"],
     "MusicDirectory": ["name", "searchUrl", "playbackCapability"],
-    "PlaybackSession": ["track", "source", "startedAt", "mode"],
+    "PlaybackSession": ["track", "source", "startedAt", "mode", "visualizationMode"],
     "QueueItem": ["track", "position"],
-    "Visualizer": ["name", "mode", "audioReactive"]
+    "Visualizer": ["name", "mode", "audioReactive", "linkageMode", "fullscreen"],
+    "AudioFeatureFrame": ["energy", "bass", "mid", "treble", "waveformAvailable"],
+    "ExternalPlaybackLink": ["provider", "playerEvent", "rawAudioAvailable", "fallbackVisualMode"]
   },
   "relations": [
     "Artist CREATES Track",
     "Track DISCOVERED_VIA MusicDirectory",
     "PlaybackSession PLAYS Track",
     "QueueItem REFERENCES Track",
-    "Visualizer REACTS_TO PlaybackSession"
+    "Visualizer REACTS_TO PlaybackSession",
+    "AudioFeatureFrame DRIVES Visualizer",
+    "ExternalPlaybackLink SIGNALS Visualizer"
   ],
+  "visualModes": ["Trip Mode", "Neon Tunnel", "Kaleidoscope", "Liquid Plasma", "Cosmic Drift", "Binary Rain", "Spectrum Bars", "Oscilloscope"],
   "sources": ["Internet Archive", "SoundCloud", "YouTube", "Bandcamp", "Audius", "Jamendo", "Local Audio"],
   "policy": {
     "preserve_source_provenance": true,
     "no_rebroadcast_of_restricted_catalogs": true,
     "use_authorized_embed_or_direct_playback": true,
-    "core_paid_api_requirement": false
+    "core_paid_api_requirement": false,
+    "do_not_claim_raw_audio_reactivity_for_isolated_embeds": true,
+    "external_embed_visual_fallback": "LINKED_AMBIENT_TRIP",
+    "direct_audio_visual_mode": "TRUE_WEB_AUDIO_REACTIVE"
   }
 }

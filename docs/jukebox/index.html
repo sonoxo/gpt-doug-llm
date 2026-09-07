@@ -3,39 +3,91 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ZYRA JUKEBOX</title>
+  <meta name="theme-color" content="#000000" />
+  <title>ZYRA JUKEBOX — RetroViz 95 Trip Mode</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="shell">
     <header class="titlebar">
-      <div><strong>ZYRA JUKEBOX</strong><span>Music Directory Federation + RetroViz 95</span></div>
+      <div>
+        <strong>ZYRA JUKEBOX</strong>
+        <span>Music Directory Federation + RetroViz 95 // TRIP MODE</span>
+      </div>
       <div class="window-buttons" aria-hidden="true"><button>_</button><button>□</button><button>×</button></div>
     </header>
+
     <section class="toolbar panel">
       <input id="searchInput" type="search" placeholder="Search music, artist, genre, mood..." aria-label="Search music" />
       <button id="searchBtn">SEARCH</button>
       <label class="file-btn">LOCAL AUDIO<input id="localFile" type="file" accept="audio/*" /></label>
     </section>
+
     <section class="directory-grid panel" aria-label="Music directories">
-      <button data-provider="archive">Internet Archive</button><button data-provider="soundcloud">SoundCloud</button><button data-provider="youtube">YouTube</button><button data-provider="bandcamp">Bandcamp</button><button data-provider="audius">Audius</button><button data-provider="jamendo">Jamendo</button>
+      <button data-provider="archive">Internet Archive</button>
+      <button data-provider="soundcloud">SoundCloud</button>
+      <button data-provider="youtube">YouTube</button>
+      <button data-provider="bandcamp">Bandcamp</button>
+      <button data-provider="audius">Audius</button>
+      <button data-provider="jamendo">Jamendo</button>
     </section>
+
     <section class="main-grid">
       <section class="panel player-panel">
-        <div class="panel-title">NOW PLAYING</div><div id="nowPlaying" class="now-playing">Nothing loaded</div>
+        <div class="panel-title">NOW PLAYING</div>
+        <div id="nowPlaying" class="now-playing">Nothing loaded</div>
         <audio id="audio" controls preload="metadata"></audio>
-        <div class="visualizer-wrap"><canvas id="viz" width="960" height="360" aria-label="Audio reactive visualizer"></canvas></div>
-        <div class="viz-controls"><label>Visualizer <select id="vizMode"><option value="bars">Spectrum Bars</option><option value="scope">Oscilloscope</option><option value="binary">Binary Rain</option></select></label></div>
+
+        <div id="vizWrap" class="visualizer-wrap">
+          <canvas id="viz" width="1280" height="720" aria-label="RetroViz 95 psychedelic audio visualizer"></canvas>
+          <div class="viz-hud">
+            <span id="vizBadge">RETROVIZ 95 // IDLE</span>
+            <span id="vizEnergy">ENERGY 000</span>
+          </div>
+        </div>
+
+        <div class="viz-controls">
+          <label>Visual Mode
+            <select id="vizMode">
+              <option value="trip" selected>TRIP MODE</option>
+              <option value="tunnel">Neon Tunnel</option>
+              <option value="kaleido">Kaleidoscope</option>
+              <option value="plasma">Liquid Plasma</option>
+              <option value="stars">Cosmic Drift</option>
+              <option value="binary">Binary Rain</option>
+              <option value="bars">Spectrum Bars</option>
+              <option value="scope">Oscilloscope</option>
+            </select>
+          </label>
+          <label class="check95"><input id="autoTrip" type="checkbox" checked /> AUTO TRIP ON PLAY</label>
+          <button id="tripBtn" type="button">START TRIP</button>
+          <button id="fullscreenBtn" type="button">FULL SCREEN</button>
+        </div>
+        <div id="vizStatus" class="viz-status">Direct/local audio = true audio-reactive visuals. Embedded players = linked ambient trip visuals.</div>
       </section>
+
       <aside class="panel embed-panel">
         <div class="panel-title">EXTERNAL PLAYER</div>
-        <form id="embedForm"><input id="embedUrl" type="url" placeholder="Paste SoundCloud or YouTube URL" /><button type="submit">LOAD LINK</button></form>
+        <form id="embedForm">
+          <input id="embedUrl" type="url" placeholder="Paste SoundCloud or YouTube URL" />
+          <button type="submit">LOAD LINK</button>
+        </form>
         <div id="embedHost" class="embed-host">Paste a supported track URL.</div>
       </aside>
     </section>
-    <section class="panel"><div class="panel-title">SEARCH RESULTS</div><div id="status" class="status">Ready.</div><div id="results" class="results"></div></section>
-    <section class="panel queue-panel"><div class="panel-title">QUEUE</div><ol id="queue"></ol></section>
-    <footer>ZYRA JUKEBOX • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
+
+    <section class="panel">
+      <div class="panel-title">SEARCH RESULTS</div>
+      <div id="status" class="status">Ready.</div>
+      <div id="results" class="results"></div>
+    </section>
+
+    <section class="panel queue-panel">
+      <div class="panel-title">QUEUE</div>
+      <ol id="queue"></ol>
+    </section>
+
+    <footer>ZYRA JUKEBOX • RETROVIZ 95 TRIP MODE • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
   </main>
   <script src="app.js"></script>
 </body>
