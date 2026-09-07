@@ -10,6 +10,19 @@ GPT-REDPANDA is the portable local-first operator node for the Sonoxo / XUNIA ec
 - ZYRA File Intelligence intake for local file classification, SHA-256 fingerprinting, sidecar manifests, and controlled release routing.
 - Local-first runtime that can continue operating without paid hosted inference when a compatible local model is available.
 
+## Network intelligence pack
+
+GPT-REDPANDA now has a provenance-aware networking knowledge pack for defensive diagnosis, observability, traffic analysis, and explicitly authorized lab learning.
+
+- Source record: `../intel/sources/youtube-OqmJb826mY4.json`
+- Briefing: `../intel/briefings/2026-09-07-redpanda-networking-ethical-hackers.md`
+- Ontology: `../safety-shield/agents/knowledge/redpanda-network-intel-v1.json`
+- Validator: `../scripts/validate_redpanda_network_intel.py`
+
+Core competencies include OSI/TCP-IP reasoning, IPv4/IPv6 and subnet literacy, TCP/UDP session reasoning, DNS/DHCP/ARP/ICMP concepts, ports/services, routing/switching/segmentation, firewall/ACL reasoning, packet/log analysis, network baselining, and evidence/scope discipline.
+
+The pack does **not** grant autonomous authority for third-party targeting, credential interception, unauthorized MITM, disruption, persistence, stealth, or evasion. Active discovery and shared/production packet capture remain explicit-review actions tied to declared authorization.
+
 ## Current implementation
 
 The production implementation currently lives in `../redpanda-desktop/` inside `sonoxo/gpt-doug-llm` while this directory is the extraction-ready standalone product package.
