@@ -40,7 +40,7 @@ def test_learning_is_candidate_first_and_evidence_gated():
 
 def test_cortex_activates_multi_hop_knowledge_with_explainable_paths():
     engine = OntologiEngine.load_default()
-    result = engine.cortex("Virginia", limit=8, depth=2)
+    result = engine.cortex("local coding runtime", limit=8, depth=2)
     ids = {item["id"] for item in result["seeds"]}
 
     assert result["cortexVersion"] == "1.0"
