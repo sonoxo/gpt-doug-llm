@@ -1,17 +1,14 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T14:27:56Z",
-  "due_files_reviewed": 9,
+  "cutoff_at": "2026-09-06T14:42:21Z",
+  "due_files_reviewed": 6,
   "due_paths": [
-    "agents/neptune_shield_ecosystem.py",
-    "intel/white-house/daily/2026-09-05.json",
-    "intel/white-house/daily/2026-09-05.md",
-    "redpanda-desktop/glass",
-    "redpanda-desktop/repair-command-surface.sh",
-    "redpanda-desktop/va3lm-cpr",
-    "safety-shield/ontology/neptune-shield-vendor-ecosystem.json",
-    "the-black-house/integrations/neptune-shield/seal-tank.public-intel.json",
-    "the-black-house/layers/safehouse/layer.manifest.json"
+    ".github/workflows/black-house-resilience-gate.yml",
+    "intel/white-house/daily/2026-09-06.json",
+    "intel/white-house/daily/2026-09-06.md",
+    "intel/white-house/state.json",
+    "safety-shield/policies/infrastructure-resilience.json",
+    "scripts/validate_infrastructure_resilience.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -206,11 +203,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:38:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "27a1eeb46dad1bd2f76d3dcc33d1c74ab52c81bfd9668cf0d6bdf72769111bb9",
       "size": 1118,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/black-house-runtime.yml": {
       "actions": [],
@@ -270,11 +267,11 @@
     ".github/workflows/ecosystem-readme-refresh.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T21:32:57Z",
-      "reviewed_at": "2026-09-07T04:33:16Z",
-      "sha256": "74dec5c52f6a2b4f2ef7bd4750efc5e6154a6b083e7968c814155ef08de5d8f3",
-      "size": 1921,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T14:42:10Z",
+      "reviewed_at": null,
+      "sha256": "f973234403737d9582341c734f8d71447ebefc14e6e32621ec80a3438537b32a",
+      "size": 2122,
       "validation_issues": [],
       "was_due": false
     },
@@ -1403,13 +1400,13 @@
     "agents/neptune_shield_ecosystem.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:18:01Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "d720b6aae9cb5670f030c4ca48ab440824237b6389cd9c5d1e799fd93cf82630",
       "size": 6172,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "agents/ontology.py": {
       "actions": [],
@@ -4511,7 +4508,7 @@
       "sha256": "85f51eca69162ae0d240a5bb30c74931dbccb611ea882b6b6c846cdd4cc7d686",
       "size": 9939,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-05.md": {
       "actions": [],
@@ -4522,40 +4519,40 @@
       "sha256": "c48a8a90f0f532df8b5f46d5cb0aab1834a87834093544409b41f50569c68046",
       "size": 2141,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-06.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:40:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "a6f09d740c1c4c326e9eadad442a77dfe5f0854eb96109ad490e00bf4b92d105",
       "size": 352,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-06.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:40:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "40bad3cbafc491aa9fc771fbc4b4ee09d7d0287f3648bc5a3c90a4b95feea242",
       "size": 579,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:40:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "5b4564c7f92657b1e836742744b91db6ef1e0b795eddb08556409e3bc6ad5421",
       "size": 11130,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intelligence_compliance.py": {
       "actions": [],
@@ -5330,13 +5327,13 @@
     "redpanda-desktop/glass": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:19:03Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "8d0d246ed3b7a916113c8e4fd2d4163805c5008aba2b6db0f4f5f3ca8302a6e1",
       "size": 2133,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/gpt_redpanda_llm.py": {
       "actions": [],
@@ -5407,13 +5404,13 @@
     "redpanda-desktop/repair-command-surface.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:19:47Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "e5ae37bbcc8fc868b429cf7c482a6edffbd95f9703f95369656a15dce8b439cc",
       "size": 1214,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/repair-zfi.sh": {
       "actions": [],
@@ -5429,13 +5426,13 @@
     "redpanda-desktop/va3lm-cpr": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:18:50Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "5df44f4d2e18e62db6f281cf0838a95f8ed2dc35d88e058f7770ee4c8b61f2d5",
       "size": 638,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "redpanda-desktop/zfi_agent.py": {
       "actions": [],
@@ -5825,13 +5822,13 @@
     "safety-shield/ontology/neptune-shield-vendor-ecosystem.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:16:00Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "2f7c1b13e66d8fddfcc1772881031e9a9b799be4f41274d22085fcc391efacf2",
       "size": 5017,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "safety-shield/ontology/safety-shield.ttl": {
       "actions": [],
@@ -5893,11 +5890,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:38:26Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "ed4e5df8e9846c0d0e486a2cd2638ed86ee7a61e5338ae18d3b67ae6df5adf34",
       "size": 3191,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/policies/shield.rego": {
       "actions": [],
@@ -5984,6 +5981,17 @@
       "reviewed_at": "2026-09-07T04:33:16Z",
       "sha256": "b7ceefee210330e2dc045a91eb3655eb750de4a54e289eb2ad321dc40a12a656",
       "size": 11756,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/generate_kraken_infra_diagram.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T14:42:10Z",
+      "reviewed_at": null,
+      "sha256": "6b4e603a13545523327a46784d677b9934f334708dc93e8dc14521838dadf89e",
+      "size": 10021,
       "validation_issues": [],
       "was_due": false
     },
@@ -6113,11 +6121,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T14:38:44Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T14:42:21Z",
       "sha256": "034c27ead8d7e229439f367d1c6dd4028090f416422b63568bd851fbeec29224",
       "size": 2855,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/validate_redpanda_network_intel.py": {
       "actions": [],
@@ -6958,13 +6966,13 @@
     "the-black-house/integrations/neptune-shield/seal-tank.public-intel.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:10:52Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "e942023e103cef449e8a8ef136a974de55835de0781648de13f6e06cdde99ea8",
       "size": 7291,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "the-black-house/integrations/palantir/status.schema.json": {
       "actions": [],
@@ -7035,13 +7043,13 @@
     "the-black-house/layers/safehouse/layer.manifest.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T14:11:56Z",
       "reviewed_at": "2026-09-07T14:27:56Z",
       "sha256": "bf5056d50d703cbed971214fea7e1c740b4d5180612c3e26b3c28d0bacd90207",
       "size": 4494,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "the-black-house/missions/history.schema.json": {
       "actions": [],
@@ -10389,11 +10397,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T14:27:56Z",
+  "generated_at": "2026-09-07T14:42:21Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 943,
+  "tracked_files_reviewed": 944,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
