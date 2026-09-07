@@ -1,6 +1,6 @@
 """Unified ontology bridge for GPT Doug.
 
-Connects two ontology systems that previously lived in separate modules:
+Connects three semantic systems behind one stable interface:
 
   1. agents/ontology.py — Task-graph schema for multi-agent planning
      (Task → Steps → Artifacts → Constraints → Agent roles)
@@ -12,9 +12,15 @@ Connects two ontology systems that previously lived in separate modules:
      (Action Types: SubmitTask — routed through Zyra)
      Used by agent-daemon.py for task dispatch and knowledge retrieval.
 
-This bridge lets the terminal client (gpt-doug), the agent chain, and the
-worker daemon all share one coherent semantic model without either side
-losing its existing interface.
+  3. reef_bridge.py — Reef continual-learning lifecycle registration
+     (Serve → Observe → Grow → Commit)
+     (Objects: AgentInteraction, FeedbackReport, LearningCandidate, ArtifactVersion)
+     Used to preserve feedback receipts and version provenance when GPT Doug is
+     connected to an external Reef runtime.
+
+This bridge lets the terminal client (gpt-doug), the agent chain, the worker
+daemon, and optional continual-learning runtime share one coherent semantic
+model without any subsystem losing its existing interface.
 """
 
 from __future__ import annotations
@@ -44,13 +50,17 @@ _task_graph = _load_module("task_graph", _ROOT / "agents" / "ontology.py")
 # Load workers/ontology_workers.py (Foundry-inspired object/link/action)
 _workers_ont = _load_module("workers_ont", _ROOT / "workers" / "ontology_workers.py")
 
+# Load reef_bridge.py (continual-learning lifecycle registration + client)
+_reef_bridge = _load_module("reef_bridge", _ROOT / "reef_bridge.py")
+
 
 class Ontology:
     """Unified ontology access for GPT Doug.
 
-    Combines task-graph validation (for multi-agent planning) with the
-    Foundry-inspired object/link/action model (for task management and
-    knowledge retrieval). All action types go through Zyra.
+    Combines task-graph validation, the Foundry-inspired object/link/action
+    model, and an optional Reef continual-learning bridge. Existing action
+    types continue to go through Zyra; Reef only receives inference/feedback
+    when a caller explicitly uses the Reef bridge.
     """
 
     # --- Task-graph schema (agents/ontology.py) ---
@@ -111,11 +121,23 @@ class Ontology:
         Routed through Zyra guard; rejected if the prompt is unsafe."""
         return _workers_ont.submit_task_action(task_id, prompt)
 
+    # --- Reef continual-learning integration ---
+
+    @staticmethod
+    def reef_schema() -> dict:
+        """Return Reef's registered object/link/action lifecycle mapping."""
+        return _reef_bridge.ReefBridge.ontology_registration()
+
+    @staticmethod
+    def reef(config=None):
+        """Create an explicit Reef bridge client; no network call occurs here."""
+        return _reef_bridge.ReefBridge(config)
+
     # --- Summary ---
 
     @staticmethod
     def status() -> dict:
-        """Return a summary of all objects and links."""
+        """Return a summary of the core worker ontology."""
         return _workers_ont.summary()
 
     @staticmethod
@@ -131,12 +153,13 @@ class Ontology:
         s = _workers_ont.summary()
         lines = [
             "ONTOLOGY // UNIFIED SEMANTIC MODEL",
-            f"  Object types: Task, Result, KnowledgeEntry",
+            "  Object types: Task, Result, KnowledgeEntry",
             f"  Tasks: {s['object_counts']['Task']}",
             f"  Results: {s['object_counts']['Result']}",
             f"  Knowledge entries: {s['object_counts']['KnowledgeEntry']}",
             f"  Active links: {s['link_count']}",
             f"  Task-graph schema: {len(_task_graph.VALID_AGENT_ROLES)} agent roles",
-            f"  Action types: SubmitTask (Zyra-gated)",
+            "  Action types: SubmitTask (Zyra-gated)",
+            "  Continual learning: Reef registered (Serve → Observe → Grow → Commit)",
         ]
         return "\n".join(lines)
