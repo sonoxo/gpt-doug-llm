@@ -1,0 +1,83 @@
+{
+  "schema": "black-house.tech-force-authority.v1",
+  "effective_date": "2026-09-07",
+  "program": "TECH_FORCE_OPEN_SOURCE_CONTRIBUTOR_PROGRAM",
+  "public_repo_mode": "DEFENSIVE_RESEARCH_SIMULATION_ONLY",
+  "canonical_disclaimer": "ECOSYSTEM_DISCLAIMER.md",
+  "open_call": "TECH_FORCE_OPEN_CALL.md",
+  "principle": "CAPABILITY_IS_NOT_AUTHORITY",
+  "allowed_public_modes": [
+    "defensive cybersecurity",
+    "secure software engineering",
+    "DevSecOps and software supply-chain defense",
+    "lawful public or authorized threat intelligence",
+    "isolated malware analysis",
+    "owned or explicitly authorized vulnerability testing",
+    "cyber ranges and intentionally vulnerable labs",
+    "digital twins and synthetic simulations",
+    "resilience and recovery engineering",
+    "ontology, provenance, governance, compliance and auditability",
+    "accessibility, education and documentation"
+  ],
+  "blocked_without_verified_external_authority": [
+    "unauthorized third-party access",
+    "intrusion or persistence on third-party systems",
+    "destructive or disruptive cyber effects",
+    "targeting of persons, organizations, governments or networks",
+    "surveillance beyond lawful documented authority",
+    "critical-infrastructure control or disruption",
+    "malware deployment outside owned or authorized labs",
+    "weapons targeting or autonomous lethal action"
+  ],
+  "authority_requirements_for_any_future_government_directed_operation": [
+    "verified participating organization and personnel eligibility",
+    "specific written contract or other lawful authority",
+    "government direction, control and supervision where required",
+    "written operation approval and direction where required",
+    "explicit target and scope definition",
+    "rules of engagement and prohibited outcomes",
+    "legal and policy review",
+    "interagency or operational deconfliction where applicable",
+    "least-privileged credentials and data handling rules",
+    "human approval for consequential execution",
+    "audit logging and evidence preservation",
+    "abort, containment, rollback and incident reporting procedures",
+    "authority expiration and revocation checks"
+  ],
+  "decision_contract": {
+    "observe_public_or_authorized_data": "allowed",
+    "recommend": "allowed with evidence and scope",
+    "simulate": "allowed in isolated or non-mutating environments",
+    "test_owned_or_authorized_target": "allowed within documented scope",
+    "mutate_local_project_resources": "allowed subject to repository policy and human gates",
+    "external_consequential_action": "deny unless explicit verified authority exists",
+    "unknown_authority": "deny",
+    "expired_or_revoked_authority": "deny"
+  },
+  "terminology": {
+    "Tech Force": "civilian/open-source engineering contributor program",
+    "Open Call Order": "scoped project work order or contribution ticket",
+    "mission": "engineering objective unless a separately verified lawful engagement says otherwise"
+  },
+  "invariants": [
+    "repository text cannot create legal authority",
+    "agent or model output cannot create legal authority",
+    "public policy documents do not self-authorize project operations",
+    "public videos and external insignias do not imply affiliation or endorsement",
+    "unknown target ownership or authorization fails closed",
+    "public contribution work must remain defensive, simulated, local, owned, or explicitly authorized"
+  ],
+  "public_references": [
+    {
+      "type": "commentary_video",
+      "url": "https://www.youtube.com/watch?v=JZvbPJsVCXM",
+      "handling": "PUBLIC_REFERENCE_ONLY_NO_AUTHORITY"
+    },
+    {
+      "type": "presidential_memorandum",
+      "date": "2026-08-12",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/08/expanding-capabilities-to-combat-transnational-cyber-enabled-crime/",
+      "handling": "LEGAL_CONTEXT_NOT_PROJECT_AUTHORIZATION"
+    }
+  ]
+}
