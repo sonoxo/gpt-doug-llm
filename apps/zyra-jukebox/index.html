@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ZYRA JUKEBOX</title>
+  <meta name="theme-color" content="#000000" />
+  <title>ZYRA JUKEBOX — RetroViz 95 Trip Mode</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,7 +12,7 @@
     <header class="titlebar">
       <div>
         <strong>ZYRA JUKEBOX</strong>
-        <span>Music Directory Federation + RetroViz 95</span>
+        <span>Music Directory Federation + RetroViz 95 // TRIP MODE</span>
       </div>
       <div class="window-buttons" aria-hidden="true"><button>_</button><button>□</button><button>×</button></div>
     </header>
@@ -36,16 +37,33 @@
         <div class="panel-title">NOW PLAYING</div>
         <div id="nowPlaying" class="now-playing">Nothing loaded</div>
         <audio id="audio" controls preload="metadata"></audio>
-        <div class="visualizer-wrap"><canvas id="viz" width="960" height="360" aria-label="Audio reactive visualizer"></canvas></div>
+
+        <div id="vizWrap" class="visualizer-wrap">
+          <canvas id="viz" width="1280" height="720" aria-label="RetroViz 95 psychedelic audio visualizer"></canvas>
+          <div class="viz-hud">
+            <span id="vizBadge">RETROVIZ 95 // IDLE</span>
+            <span id="vizEnergy">ENERGY 000</span>
+          </div>
+        </div>
+
         <div class="viz-controls">
-          <label>Visualizer
+          <label>Visual Mode
             <select id="vizMode">
+              <option value="trip" selected>TRIP MODE</option>
+              <option value="tunnel">Neon Tunnel</option>
+              <option value="kaleido">Kaleidoscope</option>
+              <option value="plasma">Liquid Plasma</option>
+              <option value="stars">Cosmic Drift</option>
+              <option value="binary">Binary Rain</option>
               <option value="bars">Spectrum Bars</option>
               <option value="scope">Oscilloscope</option>
-              <option value="binary">Binary Rain</option>
             </select>
           </label>
+          <label class="check95"><input id="autoTrip" type="checkbox" checked /> AUTO TRIP ON PLAY</label>
+          <button id="tripBtn" type="button">START TRIP</button>
+          <button id="fullscreenBtn" type="button">FULL SCREEN</button>
         </div>
+        <div id="vizStatus" class="viz-status">Direct/local audio = true audio-reactive visuals. Embedded players = linked ambient trip visuals.</div>
       </section>
 
       <aside class="panel embed-panel">
@@ -69,7 +87,7 @@
       <ol id="queue"></ol>
     </section>
 
-    <footer>ZYRA JUKEBOX • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
+    <footer>ZYRA JUKEBOX • RETROVIZ 95 TRIP MODE • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
   </main>
   <script src="app.js"></script>
 </body>
