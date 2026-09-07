@@ -1,12 +1,18 @@
 # A.E.O. — ALL EYES OPEN
 
+<div align="center">
+
+<img width="360" src="../../../docs/assets/insignia-aeo.svg" alt="A.E.O. — All Eyes Open — RVIA-INTEL insignia" />
+
 **Division:** RVIA-INTEL  
 **Type:** Intelligence Accountability & Whistleblower Desk  
 **Doctrine:** `SOURCE → CLAIM → CORROBORATION → CONFIDENCE → JUDGMENT → GOVERNANCE`
 
-A.E.O. is the provenance-first intelligence research division for publicly documented intelligence personnel, whistleblowers, surveillance disclosures, oversight cases, institutional accountability, and related open-source intelligence.
-
 > **Observe everything. Believe nothing without evidence.**
+
+</div>
+
+A.E.O. is the provenance-first intelligence research division for publicly documented intelligence personnel, whistleblowers, surveillance disclosures, oversight cases, institutional accountability, and related open-source intelligence.
 
 ## Mission
 
@@ -46,9 +52,6 @@ Allegations, charges, convictions, employment, and whistleblower status remain s
 ```text
 rvia-intel/aeo/
 ├── README.md
-├── assets/
-│   ├── aeo-insignia.png
-│   └── aeo-branding-board.png
 ├── cases/
 │   └── AEO-CASE-0001-EDWARD-SNOWDEN.md
 ├── ontology/
@@ -57,6 +60,9 @@ rvia-intel/aeo/
 │   └── source-doctrine.md
 └── scripts/
     └── validate_aeo.py
+
+docs/assets/
+└── insignia-aeo.svg
 ```
 
 ## Case lifecycle
