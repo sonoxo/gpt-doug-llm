@@ -1,0 +1,48 @@
+name: Palantir Toolbox
+
+on:
+  pull_request:
+    paths:
+      - "tools/palantir-toolbox/**"
+      - "palantir_foundry.py"
+      - ".github/workflows/palantir-toolbox.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/palantir-toolbox/**"
+      - "palantir_foundry.py"
+      - ".github/workflows/palantir-toolbox.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('tools/palantir-toolbox/manifest.json','utf8')); console.log('manifest ok')"
+      - name: Parse extension JavaScript
+        run: |
+          node --check tools/palantir-toolbox/background.js
+          node --check tools/palantir-toolbox/foundry.js
+          node --check tools/palantir-toolbox/popup.js
+      - name: Compile bridge and Foundry client
+        run: python -m py_compile palantir_foundry.py tools/palantir-toolbox/bridge/palantir_bridge.py
+      - name: Verify read-first bridge contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('tools/palantir-toolbox/bridge/palantir_bridge.py').read_text()
+          assert 'apply_action' not in text
+          assert '127.0.0.1' in text
+          assert 'PALANTIR_TOOLBOX_BRIDGE_KEY' in text
+          print('read-first bridge contract ok')
+          PY
