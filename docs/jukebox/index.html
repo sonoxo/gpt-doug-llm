@@ -4,26 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#000000" />
-  <title>ZYRA JUKEBOX — RetroViz 95 Trip Mode</title>
+  <title>ZYRA JUKEBOX — RetroViz 95 + Live Radio</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="radio-controls.css" />
 </head>
 <body>
   <main class="shell">
     <header class="titlebar">
       <div>
         <strong>ZYRA JUKEBOX</strong>
-        <span>Music Directory Federation + RetroViz 95 // TRIP MODE</span>
+        <span>Music Federation + LIVE RADIO + RetroViz 95 // TRIP MODE</span>
       </div>
       <div class="window-buttons" aria-hidden="true"><button>_</button><button>□</button><button>×</button></div>
     </header>
 
     <section class="toolbar panel">
       <input id="searchInput" type="search" placeholder="Search music, artist, genre, mood..." aria-label="Search music" />
-      <button id="searchBtn">SEARCH</button>
+      <button id="searchBtn">SEARCH MUSIC</button>
       <label class="file-btn">LOCAL AUDIO<input id="localFile" type="file" accept="audio/*" /></label>
     </section>
 
     <section class="directory-grid panel" aria-label="Music directories">
+      <button id="liveRadioBtn" type="button">📻 LIVE RADIO</button>
       <button data-provider="archive">Internet Archive</button>
       <button data-provider="soundcloud">SoundCloud</button>
       <button data-provider="youtube">YouTube</button>
@@ -36,7 +38,27 @@
       <section class="panel player-panel">
         <div class="panel-title">NOW PLAYING</div>
         <div id="nowPlaying" class="now-playing">Nothing loaded</div>
+
         <audio id="audio" controls preload="metadata"></audio>
+        <audio id="radioAudio" preload="none"></audio>
+
+        <div class="controller-deck" aria-label="Playback controller">
+          <button id="prevBtn" type="button">⏮ PREV</button>
+          <button id="rewBtn" type="button">⏪ 10s</button>
+          <button id="playPauseBtn" type="button" class="primary-control">▶ PLAY</button>
+          <button id="stopBtn" type="button">■ STOP</button>
+          <button id="fwdBtn" type="button">10s ⏩</button>
+          <button id="nextBtn" type="button">NEXT ⏭</button>
+          <label class="volume-control">VOL
+            <input id="volume" type="range" min="0" max="1" value="0.85" step="0.01" />
+          </label>
+        </div>
+
+        <div class="save-controls">
+          <button id="saveCurrentBtn" type="button">★ SAVE CURRENT</button>
+          <button id="saveQueueBtn" type="button">💾 SAVE SESSION</button>
+          <button id="exportBtn" type="button">EXPORT JSON</button>
+        </div>
 
         <div id="vizWrap" class="visualizer-wrap">
           <canvas id="viz" width="1280" height="720" aria-label="RetroViz 95 psychedelic audio visualizer"></canvas>
@@ -63,7 +85,7 @@
           <button id="tripBtn" type="button">START TRIP</button>
           <button id="fullscreenBtn" type="button">FULL SCREEN</button>
         </div>
-        <div id="vizStatus" class="viz-status">Direct/local audio = true audio-reactive visuals. Embedded players = linked ambient trip visuals.</div>
+        <div id="vizStatus" class="viz-status">Direct/local audio = true audio-reactive visuals. Radio and embedded players use linked ambient trip visuals unless raw audio is safely available.</div>
       </section>
 
       <aside class="panel embed-panel">
@@ -76,19 +98,50 @@
       </aside>
     </section>
 
+    <section id="radioPanel" class="panel radio-panel">
+      <div class="panel-title">📻 LIVE RADIO DIRECTORY</div>
+      <div class="radio-toolbar">
+        <input id="radioSearch" type="search" placeholder="Station, genre, city, mood... e.g. jazz, hip hop, classical" aria-label="Search live radio" />
+        <select id="radioCountry" aria-label="Radio country">
+          <option value="">ANY COUNTRY</option>
+          <option value="US">UNITED STATES</option>
+          <option value="CA">CANADA</option>
+          <option value="GB">UNITED KINGDOM</option>
+          <option value="DE">GERMANY</option>
+          <option value="FR">FRANCE</option>
+          <option value="JP">JAPAN</option>
+          <option value="BR">BRAZIL</option>
+          <option value="MX">MEXICO</option>
+          <option value="AU">AUSTRALIA</option>
+        </select>
+        <button id="radioSearchBtn" type="button">SEARCH RADIO</button>
+        <button id="radioTopBtn" type="button">TOP STATIONS</button>
+      </div>
+      <div id="radioStatus" class="status">Search thousands of community-indexed internet radio streams.</div>
+      <div id="radioResults" class="results"></div>
+    </section>
+
     <section class="panel">
-      <div class="panel-title">SEARCH RESULTS</div>
+      <div class="panel-title">MUSIC SEARCH RESULTS</div>
       <div id="status" class="status">Ready.</div>
       <div id="results" class="results"></div>
     </section>
 
-    <section class="panel queue-panel">
-      <div class="panel-title">QUEUE</div>
-      <ol id="queue"></ol>
+    <section class="saved-grid">
+      <section class="panel queue-panel">
+        <div class="panel-title">QUEUE <span id="queueCount"></span></div>
+        <ol id="queue"></ol>
+      </section>
+      <section class="panel saved-panel">
+        <div class="panel-title">★ SAVED MUSIC + RADIO <span id="savedCount"></span></div>
+        <div id="savedItems" class="saved-items"></div>
+      </section>
     </section>
 
-    <footer>ZYRA JUKEBOX • RETROVIZ 95 TRIP MODE • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
+    <footer>ZYRA JUKEBOX • LIVE RADIO • RETROVIZ 95 TRIP MODE • LOCAL SAVES • FREE CORE • SOURCE-AWARE PLAYBACK</footer>
   </main>
   <script src="app.js"></script>
+  <script src="controls-save.js"></script>
+  <script src="radio.js"></script>
 </body>
 </html>
