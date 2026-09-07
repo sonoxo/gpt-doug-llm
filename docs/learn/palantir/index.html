@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="XUNIA Learning Lab: Palantir for Beginners, a visual picture-book guide to Foundry, Ontology, AIP, Gotham, Apollo, and operational data workflows." />
+  <title>Palantir for Beginners · XUNIA Learning Lab</title>
+  <link rel="stylesheet" href="../../zyra-theme.css" />
+  <style>
+    :root{color-scheme:dark;--cyan:#46f3ff;--violet:#9d5cff;--ink:#05070b;--panel:#0b111a;--muted:#9cb0bf}
+    *{box-sizing:border-box}
+    body{margin:0;background:radial-gradient(circle at 50% 0,rgba(70,243,255,.1),transparent 34%),#05070b;color:#eef8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    a{color:inherit}
+    main{max-width:1220px;margin:0 auto;padding:28px 20px 80px}
+    nav{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px;font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+    nav a{text-decoration:none;color:#a9bac7} nav a:hover{color:var(--cyan)}
+    .hero{display:grid;grid-template-columns:minmax(280px,.82fr) minmax(0,1.18fr);gap:36px;align-items:center;padding:34px;border:1px solid rgba(70,243,255,.24);border-radius:28px;background:linear-gradient(145deg,rgba(70,243,255,.075),rgba(157,92,255,.07));box-shadow:0 22px 80px rgba(0,0,0,.28)}
+    .cover{width:100%;max-height:720px;object-fit:contain;border-radius:22px;box-shadow:0 28px 80px rgba(0,0,0,.46);background:#0a0e14}
+    .eyebrow{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.15em;text-transform:uppercase;color:var(--cyan)}
+    h1{font-size:clamp(2.7rem,6vw,6.8rem);line-height:.9;letter-spacing:-.06em;margin:.25em 0 .2em}
+    .lede{font-size:1.07rem;line-height:1.7;color:#aec0cc;max-width:690px}
+    .chips{display:flex;flex-wrap:wrap;gap:9px;margin:20px 0 0}.chip{border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:8px 10px;background:rgba(255,255,255,.04);font-size:.8rem;color:#dceaf2}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:13px;padding:12px 15px;text-decoration:none;font-weight:800;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.055)}.btn.primary{color:#031015;background:var(--cyan);border-color:var(--cyan)}
+    .section{margin-top:34px;padding:28px;border:1px solid rgba(255,255,255,.095);border-radius:24px;background:linear-gradient(180deg,rgba(14,21,31,.96),rgba(7,10,16,.98))}
+    .section h2{font-size:clamp(1.7rem,4vw,3rem);letter-spacing:-.035em;margin:0 0 12px}.section p{color:var(--muted);line-height:1.65}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-top:18px}.lesson{padding:17px;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035)}.lesson b{display:block;margin-bottom:6px}.lesson span{color:#91a5b5;font-size:.88rem;line-height:1.5}
+    .reader{margin-top:34px}.reader iframe{display:block;width:100%;height:min(84vh,980px);border:1px solid rgba(70,243,255,.22);border-radius:22px;background:white}
+    .reader-fallback{margin-top:10px;color:#8398a7;font-size:.82rem}
+    .notice{margin-top:28px;padding:16px 18px;border-left:3px solid var(--violet);background:rgba(157,92,255,.06);color:#9fb2bf;line-height:1.55;font-size:.84rem}
+    footer{margin-top:38px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);color:#718696;font-size:.82rem}
+    @media(max-width:820px){main{padding:18px 13px 60px}.hero{grid-template-columns:1fr;padding:22px}.cover{max-height:610px}.reader iframe{height:72vh}}
+  </style>
+</head>
+<body>
+  <main>
+    <nav><a href="../../index.html">← XUNIA HQ</a><a href="../../resources.html">Learning & Resources</a></nav>
+
+    <section class="hero">
+      <img class="cover" src="./cover.webp" alt="Cover of Palantir for Beginners — A Graphic Picture Book Guide" />
+      <div>
+        <div class="eyebrow">XUNIA // Learning Lab // Visual Guide 001</div>
+        <h1>Palantir for Beginners</h1>
+        <p class="lede">A visual, beginner-first guide to the ideas behind Palantir: connecting data, modeling the real world with Ontology, turning information into workflows in Foundry, using AIP with context and governance, and understanding how Gotham and Apollo fit into the larger platform.</p>
+        <p class="lede">The guide follows a non-human aura of computational energy searching for a place to <strong>node, process, and compute</strong> across CPU/GPU infrastructure—turning abstract platform concepts into a simple visual journey.</p>
+        <div class="chips">
+          <span class="chip">Ontology</span><span class="chip">Foundry</span><span class="chip">AIP</span><span class="chip">Gotham</span><span class="chip">Apollo</span><span class="chip">CPU / GPU</span><span class="chip">Beginner</span>
+        </div>
+        <div class="actions">
+          <a class="btn primary" href="./ebook.pdf" target="_blank" rel="noopener">Read the ebook ↗</a>
+          <a class="btn" href="./ebook.pdf" download>Download PDF</a>
+          <a class="btn" href="../../resources.html">Browse XUNIA resources</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="eyebrow">What you will learn</div>
+      <h2>Six concepts. One connected mental model.</h2>
+      <div class="grid">
+        <div class="lesson"><b>1 · What is Palantir?</b><span>Connect data, reveal relationships, and support decisions.</span></div>
+        <div class="lesson"><b>2 · Core products</b><span>Gotham, Foundry, AIP, and Apollo in plain language.</span></div>
+        <div class="lesson"><b>3 · Ontology</b><span>Objects, properties, links, and actions as a shared model of reality.</span></div>
+        <div class="lesson"><b>4 · Foundry workflow</b><span>Ingest → clean → model → analyze → build apps → govern.</span></div>
+        <div class="lesson"><b>5 · AIP at work</b><span>Ask, retrieve context, reason, propose action, and preserve human approval.</span></div>
+        <div class="lesson"><b>6 · Beginner roadmap</b><span>Learn vocabulary, explore data, build one workflow, then practice a real use case.</span></div>
+      </div>
+    </section>
+
+    <section class="reader">
+      <div class="eyebrow">Embedded reader</div>
+      <iframe src="./ebook.pdf#view=FitH" title="Palantir for Beginners ebook"></iframe>
+      <div class="reader-fallback">If your browser does not render embedded PDFs, use “Read the ebook” or “Download PDF” above.</div>
+    </section>
+
+    <div class="notice">Independent educational material published inside the XUNIA Learning Lab. Palantir, Foundry, Gotham, AIP, and Apollo are referenced for educational purposes; this guide is not an official Palantir Technologies publication or endorsement.</div>
+    <footer>XUNIA Learning Lab · Visual Guide 001 · Part of the public XUNIA resource registry.</footer>
+  </main>
+  <script src="../../zyra-shell.js"></script>
+</body>
+</html>
