@@ -49,6 +49,7 @@ jobs:
           test -f _site/museum.js
           test -f _site/holo/index.html
           test -f _site/holo/holo.ts
+          test -f _site/arcade/index.html
           test ! -e _site/eye-mouse
 
       - name: Compile HOLO TypeScript
@@ -125,6 +126,15 @@ jobs:
             exit 1
           fi
 
+      - name: Arcade publication contract
+        run: |
+          test -f docs/arcade/index.html
+          grep -q 'SUPER GALACTIK FEDERATION' docs/arcade/index.html
+          grep -q 'XUNIA ARCADE ENTRY GATE' docs/arcade/index.html
+          grep -q '5 ORIGINAL GAMES' docs/arcade/index.html
+          grep -q 'href="./arcade/"' docs/index.html
+          grep -q '^xunia.org$' docs/CNAME
+
       - name: HOLO workable simulator contract
         run: |
           grep -q 'HOLO WORKABLE SIM' docs/holo/index.html
@@ -155,6 +165,7 @@ jobs:
             sleep 0.2
           done
           grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home.html
+          grep -q 'arcade/' /tmp/xunia-home.html
           grep -q 'museum.js' /tmp/xunia-home.html
           curl -fsS http://127.0.0.1:8080/resources.html | grep -q 'Interactive Tools & Resources'
           curl -fsS http://127.0.0.1:8080/resources.json | grep -q 'green-house'
@@ -165,6 +176,8 @@ jobs:
           curl -fsS http://127.0.0.1:8080/pipeline.html | grep -q 'agent pipeline'
           curl -fsS http://127.0.0.1:8080/holo/ | grep -q 'HOLO WORKABLE SIM'
           curl -fsS http://127.0.0.1:8080/holo/holo.js | grep -q 'XUNIA_HOLO_AAR_V1'
+          curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'SUPER GALACTIK FEDERATION'
+          curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'XUNIA ARCADE ENTRY GATE'
           if curl -fsS http://127.0.0.1:8080/eye-mouse/ >/dev/null 2>&1; then
             echo 'Unfinished prototype unexpectedly published.' >&2
             exit 1
@@ -202,6 +215,7 @@ jobs:
           test -s _site/holo/holo.js
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/arcade/index.html
           test ! -e _site/eye-mouse
 
       - name: Upload Pages artifact
