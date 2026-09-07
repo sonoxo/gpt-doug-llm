@@ -72,6 +72,8 @@ def fetch_recent_runs(repo: str, limit: int = DEFAULT_RUN_LIMIT) -> list[dict[st
             "list",
             "--repo",
             repo,
+            "--branch",
+            "main",
             "--limit",
             str(limit),
             "--json",
