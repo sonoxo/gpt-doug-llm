@@ -1,90 +1,119 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 790" width="1400" height="790" role="img" aria-labelledby="t d">
-<title id="t">Black House ecosystem flow</title><desc id="d">Beginner-readable flow from user intent through GPT-DOUG MAX, Wakeup3lm, ontology, Palantir layers, agent tools, security gates, evidence and shipping.</desc>
-<rect width="1400" height="790" rx="28" fill="#080D12"/>
-  <defs>
-    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#3DE1FF"/></marker>
-  </defs>
-  <style>
-    .h1{font:700 34px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#F8FBFF}.h2{font:600 18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#9FB2C8}
-    .title{font:700 18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#F8FBFF}.sub{font:500 13px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#AAB8C8}
-    .state{font:800 10px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:1px}.small{font:600 12px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#AAB8C8}
-  </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1120" width="1600" height="1120" role="img" aria-labelledby="title desc">
+<title id="title">Release the Kraken — ecosystem and infrastructure map</title>
+<desc id="desc">Kraken Jutsu receives attributed evidence, normalizes and corroborates it, grounds decisions in an ontology, routes defensive or authorized lab simulation modes through policy and approval gates, and connects GPT-DOUG, Wakeup3lm, ZYRAPALANTIR, ZYRA/XUNIA, edge, cloud, and authorized enterprise infrastructure with verification evidence.</desc>
+<rect width="1600" height="1120" rx="30" fill="#070B10"/>
+<defs>
+  <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <radialGradient id="krakenCore"><stop offset="0%" stop-color="#A970FF" stop-opacity=".95"/><stop offset="100%" stop-color="#111821" stop-opacity="1"/></radialGradient>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#3DE1FF"/></marker>
+</defs>
+<style>
+.h1{font:800 38px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#F8FBFF}
+.h2{font:600 18px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#9FB2C8}
+.title{font:750 17px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#F8FBFF}
+.sub{font:500 13px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#AAB8C8}
+.state{font:800 10px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;letter-spacing:1px}
+.label{font:800 11px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#3DE1FF;letter-spacing:1.4px}
+.core{font:850 28px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#FFFFFF}
+.coreSub{font:650 14px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#D7E3F2}
+.footer{font:650 14px -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#D8E4EE}
+</style>
+<text x="70" y="68" class="h1">RELEASE THE KRAKEN // ECOSYSTEM + INFRASTRUCTURE</text>
+<text x="70" y="101" class="h2">Evidence → normalize → corroborate → ontology judgment → D / O-D routing → approval → bounded execution → proof</text>
+<text x="1515" y="68" text-anchor="end" class="sub">repo 3646cd0</text>
 
-<text x="70" y="70" class="h1">THE BLACK HOUSE // HOW THE ECOSYSTEM FLOWS</text>
-<text x="70" y="103" class="h2">Prompt → governed reasoning → ontology context → tools → proof → ship</text>
-<text x="1270" y="70" text-anchor="end" class="small">repo bc695bd</text>
-<g transform="translate(70 150)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#A970FF" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#A970FF"/>
-      <text x="44" y="43" class="title">GPT-DOUG-LLM MAX</text>
-      <text x="44" y="68" class="sub">orchestration + reasoning</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(385 150)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#3DE1FF" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#3DE1FF"/>
-      <text x="44" y="43" class="title">Wakeup3lm</text>
-      <text x="44" y="68" class="sub">IDE-native LLM execution kernel</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(700 150)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#7CFF6B" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#7CFF6B"/>
-      <text x="44" y="43" class="title">Ontology</text>
-      <text x="44" y="68" class="sub">typed graph • 30 core object types</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(1015 150)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#FFB454" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#FFB454"/>
-      <text x="44" y="43" class="title">Palantir AIP / Foundry</text>
-      <text x="44" y="68" class="sub">model + Logic + authorized Ontology</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(1015 390)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#FF6BD6" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#FF6BD6"/>
-      <text x="44" y="43" class="title">Agent + Tool Runtime</text>
-      <text x="44" y="68" class="sub">files • terminal • build • validation</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(700 390)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#FF5D73" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#FF5D73"/>
-      <text x="44" y="43" class="title">Security Gates</text>
-      <text x="44" y="68" class="sub">19 repo security/control workflows</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(385 390)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#FFD166" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#FFD166"/>
-      <text x="44" y="43" class="title">Evidence</text>
-      <text x="44" y="68" class="sub">57 Python test modules + audit state</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><g transform="translate(70 390)">
-      <rect width="250" height="112" rx="20" fill="#111821" stroke="#2DD4BF" stroke-width="2"/>
-      <rect x="18" y="18" width="8" height="76" rx="4" fill="#2DD4BF"/>
-      <text x="44" y="43" class="title">Ship</text>
-      <text x="44" y="68" class="sub">preview • release • deployment adapters</text>
-      <circle cx="171" cy="86" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
-      <text x="185" y="91" class="state" fill="#7CFF6B">LIVE</text>
-    </g><path d="M320 206 L385 206" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M635 206 L700 206" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M950 206 L1015 206" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M1140 262 L1140 390" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M1015 446 L950 446" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M700 446 L635 446" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><path d="M385 446 L320 446" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10">
-      <animate attributeName="stroke-dashoffset" values="20;0" dur="1.2s" repeatCount="indefinite"/>
-    </path><g transform="translate(70 585)"><rect width="1260" height="125" rx="22" fill="#0D141C" stroke="#263746"/>
-<text x="28" y="38" class="title">BEGINNER RULE</text>
-<text x="28" y="68" class="sub">The model can propose. The Ontology supplies context. Policy decides what is allowed. Tools do the work.</text>
-<text x="28" y="94" class="sub">Tests, logs and probes produce evidence before a result is kept or deployed. External platforms keep their own permissions.</text></g></svg>
+<text x="70" y="142" class="label">01 // EVIDENCE + TELEMETRY PLANE</text>
+<g transform="translate(70 165)">
+<rect width="320" height="120" rx="20" fill="#111821" stroke="#2DD4BF" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="120" rx="4" fill="#2DD4BF"/>
+<text x="28" y="34" class="title">GOV / STANDARDS</text>
+<text x="28" y="62" class="sub">CISA KEV • NIST NVD</text><text x="28" y="86" class="sub">NIST OSCAL / 800-53</text>
+<circle cx="242" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="256" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><g transform="translate(450 165)">
+<rect width="320" height="120" rx="20" fill="#111821" stroke="#FFB454" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="120" rx="4" fill="#FFB454"/>
+<text x="28" y="34" class="title">BEHAVIOR GRAPH</text>
+<text x="28" y="62" class="sub">MITRE ATT&amp;CK</text><text x="28" y="86" class="sub">mapped techniques + controls</text>
+<circle cx="242" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="256" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><g transform="translate(830 165)">
+<rect width="320" height="120" rx="20" fill="#111821" stroke="#A970FF" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="120" rx="4" fill="#A970FF"/>
+<text x="28" y="34" class="title">OSINT EVIDENCE</text>
+<text x="28" y="62" class="sub">API / offline exports</text><text x="28" y="86" class="sub">untrusted until corroborated</text>
+<circle cx="242" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="256" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><g transform="translate(1210 165)">
+<rect width="320" height="120" rx="20" fill="#111821" stroke="#3DE1FF" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="120" rx="4" fill="#3DE1FF"/>
+<text x="28" y="34" class="title">EDGE / USB AGENTS</text>
+<text x="28" y="62" class="sub">fingerprint • quarantine</text><text x="28" y="86" class="sub">portable evidence intake</text>
+<circle cx="242" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="256" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><path d="M230 285 L800 370" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><path d="M610 285 L800 370" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><path d="M990 285 L800 370" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><path d="M1370 285 L800 370" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path>
+<text x="70" y="360" class="label">02 // KRAKEN JUTSU DECISION CORE</text>
+<g filter="url(#glow)">
+  <circle cx="800" cy="500" r="138" fill="url(#krakenCore)" stroke="#A970FF" stroke-width="3"/>
+  <circle cx="800" cy="500" r="113" fill="none" stroke="#3DE1FF" stroke-width="1.5" stroke-dasharray="7 10"/>
+  <text x="800" y="463" text-anchor="middle" class="core">KRAKEN JUTSU</text>
+  <text x="800" y="491" text-anchor="middle" class="coreSub">NORMALIZE • CORROBORATE</text>
+  <text x="800" y="516" text-anchor="middle" class="coreSub">ONTOLOGY JUDGE</text>
+  <text x="800" y="541" text-anchor="middle" class="coreSub">D ↔ O-D MODE ROUTER</text>
+  <text x="800" y="566" text-anchor="middle" class="coreSub">ACTION PROPOSAL + AUDIT</text>
+  <path d="M708 577 C665 622 689 661 643 686" stroke="#A970FF" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M748 605 C722 650 744 686 718 711" stroke="#3DE1FF" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M800 613 C800 666 800 687 800 720" stroke="#7CFF6B" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M852 605 C878 650 856 686 882 711" stroke="#3DE1FF" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M892 577 C935 622 911 661 957 686" stroke="#A970FF" stroke-width="8" fill="none" stroke-linecap="round"/>
+</g>
+<g transform="translate(70 405)">
+<rect width="430" height="190" rx="20" fill="#111821" stroke="#FF5D73" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="190" rx="4" fill="#FF5D73"/>
+<text x="28" y="34" class="title">SHADOW GLASS / GLASS ONION</text>
+<text x="28" y="62" class="sub">identity • provenance • confidence • policy</text><text x="28" y="86" class="sub">role ≠ permission • least privilege</text><text x="28" y="110" class="sub">high-authority actions require approval</text><text x="28" y="134" class="sub">append-only evidence / rollback posture</text>
+<circle cx="352" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="366" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><path d="M500 500 L650 500" stroke="#FF5D73" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><g transform="translate(1100 405)">
+<rect width="430" height="190" rx="20" fill="#111821" stroke="#FFD166" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="190" rx="4" fill="#FFD166"/>
+<text x="28" y="34" class="title">BLACK HOUSE CONTROL PLANE</text>
+<text x="28" y="62" class="sub">GPT-DOUG MAX → governed mission</text><text x="28" y="86" class="sub">Wakeup3lm → tool / repair loop</text><text x="28" y="110" class="sub">ZYRAPALANTIR → ontology + simulation</text><text x="28" y="134" class="sub">ZYRA / XUNIA → bounded product surfaces</text>
+<circle cx="352" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="366" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><path d="M950 500 L1100 500" stroke="#FFD166" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path>
+<g transform="translate(615 650)">
+  <rect width="370" height="80" rx="18" fill="#0D141C" stroke="#3DE1FF" stroke-width="2"/>
+  <text x="185" y="30" text-anchor="middle" class="title">MODE CONTRACT</text>
+  <text x="185" y="52" text-anchor="middle" class="sub">D = defensive action</text>
+  <text x="185" y="70" text-anchor="middle" class="sub">O-D = D + authorized lab / digital-twin emulation only</text>
+</g>
+<text x="70" y="785" class="label">03 // EXECUTION + INFRASTRUCTURE PLANES</text><g transform="translate(70 810)">
+<rect width="450" height="150" rx="20" fill="#111821" stroke="#3DE1FF" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="150" rx="4" fill="#3DE1FF"/>
+<text x="28" y="34" class="title">EDGE / USB // KRAKENXYZ</text>
+<text x="28" y="62" class="sub">.krakenxyz/ontology.db • WAL storage</text><text x="28" y="86" class="sub">audit.jsonl • agent inbox • quarantine</text><text x="28" y="110" class="sub">local fingerprints + portable recovery</text>
+<circle cx="372" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="386" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><g transform="translate(575 810)">
+<rect width="450" height="150" rx="20" fill="#111821" stroke="#7CFF6B" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="150" rx="4" fill="#7CFF6B"/>
+<text x="28" y="34" class="title">CLOUD / REPO // PROOF PIPELINE</text>
+<text x="28" y="62" class="sub">GitHub Actions • policy gates • tests</text><text x="28" y="86" class="sub">build / preview / logs / checkpoints</text><text x="28" y="110" class="sub">deploy adapters only after verification</text>
+<circle cx="372" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="386" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><g transform="translate(1080 810)">
+<rect width="450" height="150" rx="20" fill="#111821" stroke="#FFB454" stroke-width="2"/>
+<rect x="0" y="0" width="9" height="150" rx="4" fill="#FFB454"/>
+<text x="28" y="34" class="title">AUTHORIZED ENTERPRISE // ZYRAPALANTIR</text>
+<text x="28" y="62" class="sub">Foundry Ontology • AIP • published Logic</text><text x="28" y="86" class="sub">simulation / governed actions / audit</text><text x="28" y="110" class="sub">external tenant permissions stay authoritative</text>
+<circle cx="372" cy="31" r="6" fill="#7CFF6B"><animate attributeName="opacity" values=".35;1;.35" dur="2.2s" repeatCount="indefinite"/></circle>
+<text x="386" y="36" class="state" fill="#7CFF6B">LIVE</text>
+</g><path d="M650 705 L295 810" stroke="#3DE1FF" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><path d="M800 720 L800 810" stroke="#7CFF6B" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path><path d="M950 705 L1305 810" stroke="#FFB454" stroke-width="3" fill="none" marker-end="url(#arrow)" stroke-dasharray="10 10"><animate attributeName="stroke-dashoffset" values="20;0" dur="1.25s" repeatCount="indefinite"/></path>
+<g transform="translate(70 995)">
+  <rect width="1460" height="86" rx="20" fill="#0B1219" stroke="#FF5D73" stroke-width="2"/>
+  <text x="28" y="31" class="title">SAFETY / AUTHORITY BOUNDARY</text>
+  <text x="28" y="57" class="footer">Material infrastructure actions remain human-controlled and approval-gated. No autonomous external dispatch.</text>
+  <text x="28" y="77" class="footer">Kraken can analyze, simulate, defend, verify, and recommend; offensive emulation is restricted to owned / authorized lab or digital-twin environments.</text>
+</g>
+</svg>
