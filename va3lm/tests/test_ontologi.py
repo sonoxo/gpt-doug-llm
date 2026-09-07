@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from va3lm.ontologi import CORE_ONTOLOGI, OntologiEngine, OntologiError, parse
 
 
