@@ -1,28 +1,11 @@
 """Unified ontology bridge for GPT Doug.
 
-Connects three semantic systems behind one stable interface:
-
-  1. agents/ontology.py — Task-graph schema for multi-agent planning
-     (Task → Steps → Artifacts → Constraints → Agent roles)
-     Used by agent_chain.py to structure the planner's output.
-
-  2. workers/ontology_workers.py — Foundry-inspired object/link/action model
-     (Object Types: Task, Result, KnowledgeEntry)
-     (Link Types: produced, referenced)
-     (Action Types: SubmitTask — routed through Zyra)
-     Used by agent-daemon.py for task dispatch and knowledge retrieval.
-
-  3. reef_bridge.py — Reef continual-learning lifecycle registration
-     (Serve → Observe → Grow → Commit)
-     (Objects: AgentInteraction, FeedbackReport, LearningCandidate, ArtifactVersion)
-     Used to preserve feedback receipts and version provenance when GPT Doug is
-     connected to an external Reef runtime.
-
-This bridge lets the terminal client (gpt-doug), the agent chain, the worker
-daemon, and optional continual-learning runtime share one coherent semantic
-model without any subsystem losing its existing interface.
+Stable interface over:
+- agents/ontology.py: task-graph validation.
+- workers/ontology_workers.py: Task/Result/KnowledgeEntry objects, links and actions.
+- workers/arcade_ontology.py: ArcadeRun/BountyClaim objects and XUNIA bounty actions.
+- reef_bridge.py: optional continual-learning lifecycle registration.
 """
-
 from __future__ import annotations
 
 import importlib.util
@@ -33,7 +16,6 @@ _ROOT = Path(__file__).resolve().parent
 
 
 def _load_module(name: str, path: Path):
-    """Load a module from a specific file path, avoiding circular imports."""
     full_name = f"_doung_ontology_{name}"
     if full_name in sys.modules:
         return sys.modules[full_name]
@@ -44,122 +26,111 @@ def _load_module(name: str, path: Path):
     return mod
 
 
-# Load agents/ontology.py (task-graph schema)
 _task_graph = _load_module("task_graph", _ROOT / "agents" / "ontology.py")
-
-# Load workers/ontology_workers.py (Foundry-inspired object/link/action)
 _workers_ont = _load_module("workers_ont", _ROOT / "workers" / "ontology_workers.py")
-
-# Load reef_bridge.py (continual-learning lifecycle registration + client)
+_arcade_ont = _load_module("arcade_ont", _ROOT / "workers" / "arcade_ontology.py")
 _reef_bridge = _load_module("reef_bridge", _ROOT / "reef_bridge.py")
 
 
 class Ontology:
-    """Unified ontology access for GPT Doug.
-
-    Combines task-graph validation, the Foundry-inspired object/link/action
-    model, and an optional Reef continual-learning bridge. Existing action
-    types continue to go through Zyra; Reef only receives inference/feedback
-    when a caller explicitly uses the Reef bridge.
-    """
-
-    # --- Task-graph schema (agents/ontology.py) ---
+    """Unified ontology access for planning, workers, arcade bounties and Reef."""
 
     @staticmethod
     def validate_plan(data: dict) -> dict:
-        """Validate a parsed task-graph plan from the planner agent."""
         return _task_graph.validate_task_graph(data)
 
     @staticmethod
     def extract_plan_json(text: str) -> str:
-        """Extract the first JSON object from model output."""
         return _task_graph.extract_json_object(text)
 
     @staticmethod
     def schema_description() -> str:
-        """Return the schema prompt for the planner agent."""
         return _task_graph.TASK_GRAPH_SCHEMA_DESCRIPTION
 
     @staticmethod
     def valid_roles() -> set:
         return set(_task_graph.VALID_AGENT_ROLES)
 
-    # --- Object types (workers/ontology_workers.py) ---
-
     @staticmethod
     def tasks() -> list:
-        """List all Task objects (queued + processed)."""
         return _workers_ont.list_tasks()
 
     @staticmethod
     def results() -> list:
-        """List all Result objects."""
         return _workers_ont.list_results()
 
     @staticmethod
     def knowledge() -> list:
-        """List all KnowledgeEntry objects from the knowledge base."""
         return _workers_ont.list_knowledge()
-
-    # --- Link types ---
 
     @staticmethod
     def task_result(task_id: str) -> dict:
-        """Link: Task --produced--> Result."""
         return _workers_ont.link_task_to_result(task_id)
 
     @staticmethod
     def task_knowledge(task_id: str, prompt: str, top_n: int = 3) -> list:
-        """Link: Task --referenced--> KnowledgeEntry (keyword-scored)."""
         return _workers_ont.link_task_to_knowledge(task_id, prompt, top_n)
-
-    # --- Action types (Zyra-gated) ---
 
     @staticmethod
     def submit_task(task_id: str, prompt: str) -> dict:
-        """Action: SubmitTask — writes a task file for the daemon to pick up.
-        Routed through Zyra guard; rejected if the prompt is unsafe."""
+        """Zyra-gated SubmitTask action."""
         return _workers_ont.submit_task_action(task_id, prompt)
 
-    # --- Reef continual-learning integration ---
+    @staticmethod
+    def arcade_bounties() -> dict:
+        """Return deterministic game -> ontology-function bounty catalog."""
+        return _arcade_ont.bounty_catalog()
+
+    @staticmethod
+    def record_arcade_run(receipt: dict) -> dict:
+        """Validate a browser receipt, execute its bounded ontology function and award XBC."""
+        return _arcade_ont.record_arcade_run_action(receipt)
+
+    @staticmethod
+    def arcade_runs() -> list:
+        return _arcade_ont.list_arcade_runs()
+
+    @staticmethod
+    def bounty_claims() -> list:
+        return _arcade_ont.list_bounty_claims()
+
+    @staticmethod
+    def bounty_balance() -> dict:
+        return _arcade_ont.bounty_balance()
 
     @staticmethod
     def reef_schema() -> dict:
-        """Return Reef's registered object/link/action lifecycle mapping."""
         return _reef_bridge.ReefBridge.ontology_registration()
 
     @staticmethod
     def reef(config=None):
-        """Create an explicit Reef bridge client; no network call occurs here."""
         return _reef_bridge.ReefBridge(config)
-
-    # --- Summary ---
 
     @staticmethod
     def status() -> dict:
-        """Return a summary of the core worker ontology."""
-        return _workers_ont.summary()
+        core = _workers_ont.summary()
+        core["arcade"] = _arcade_ont.bounty_balance()
+        return core
 
     @staticmethod
     def snapshot() -> dict:
-        """Persist a timestamped snapshot of the ontology state."""
         return _workers_ont.write_snapshot()
-
-    # --- Display ---
 
     @staticmethod
     def display() -> str:
-        """Human-readable ontology status for the terminal client."""
         s = _workers_ont.summary()
+        b = _arcade_ont.bounty_balance()
         lines = [
             "ONTOLOGY // UNIFIED SEMANTIC MODEL",
-            "  Object types: Task, Result, KnowledgeEntry",
+            "  Object types: Task, Result, KnowledgeEntry, ArcadeRun, BountyClaim",
             f"  Tasks: {s['object_counts']['Task']}",
             f"  Results: {s['object_counts']['Result']}",
             f"  Knowledge entries: {s['object_counts']['KnowledgeEntry']}",
             f"  Active links: {s['link_count']}",
+            f"  Arcade bounty claims: {b['claim_count']}",
+            f"  Arcade XBC awarded: {b['awarded']}",
             f"  Task-graph schema: {len(_task_graph.VALID_AGENT_ROLES)} agent roles",
-            "  Action types: SubmitTask (Zyra-gated)",
+            "  Action types: SubmitTask (Zyra-gated), RecordArcadeRun",
             "  Continual learning: Reef registered (Serve → Observe → Grow → Commit)",
         ]
         return "\n".join(lines)
