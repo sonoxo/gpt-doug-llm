@@ -141,6 +141,21 @@ async function probeBridge(bridgeUrl, appOrigin) {
   }
 }
 
+export async function probeStreamingBridge(bridgeUrl, appOrigin) {
+  try {
+    return await request(endpoint(bridgeUrl, '/api/chat/stream'), {
+      method: 'OPTIONS',
+      headers: {
+        Origin: appOrigin,
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'Authorization, Content-Type, X-Doug-Project',
+      },
+    });
+  } catch {
+    return null;
+  }
+}
+
 async function ensureBridge({ bridgeUrl, ollamaUrl, appOrigin, appPort }) {
   const existing = await probeBridge(bridgeUrl, appOrigin);
   if (existing?.response.ok && existing.body.ok === true && existing.body.model_ready === true) {
@@ -148,15 +163,22 @@ async function ensureBridge({ bridgeUrl, ollamaUrl, appOrigin, appPort }) {
     if (allowedOrigin !== appOrigin) {
       throw new Error(
         `A bridge is already using ${bridgeUrl} but does not allow ${appOrigin}. `
-        + "Stop it with: pkill -f '[w]akeup3lm.bridge'",
+        + "Stop it with: pkill -f '[w]akeup3lm'",
       );
     }
-    console.log(`[ready] GPT Doug bridge: ${bridgeUrl}`);
+    const streaming = await probeStreamingBridge(bridgeUrl, appOrigin);
+    if (!streaming?.response.ok || streaming.body.stream !== 'ndjson') {
+      throw new Error(
+        `A legacy non-streaming bridge is already using ${bridgeUrl}. `
+        + "Stop the old launcher with Ctrl-C (or run: pkill -f '[w]akeup3lm') and run npm run start:full again.",
+      );
+    }
+    console.log(`[ready] GPT Doug streaming bridge: ${bridgeUrl}`);
     return;
   }
 
   const origins = mergeBridgeOrigins(process.env.DOUG_BRIDGE_ORIGINS, appPort);
-  startOwned('GPT Doug bridge', process.env.PYTHON_BIN || 'python3', ['-m', 'wakeup3lm.bridge'], {
+  startOwned('GPT Doug streaming bridge', process.env.PYTHON_BIN || 'python3', ['-m', 'wakeup3lm.stream_bridge'], {
     cwd: REPO_ROOT,
     env: {
       ...process.env,
@@ -182,7 +204,22 @@ async function ensureBridge({ bridgeUrl, ollamaUrl, appOrigin, appPort }) {
   if (result.body.model_ready !== true) {
     throw new Error(result.body.error || result.body.detail || 'GPT Doug model is not ready.');
   }
-  console.log(`[ready] GPT Doug bridge: ${bridgeUrl}`);
+  await waitFor(
+    endpoint(bridgeUrl, '/api/chat/stream'),
+    probe => probe.response.ok && probe.body.stream === 'ndjson',
+    {
+      options: {
+        method: 'OPTIONS',
+        headers: {
+          Origin: appOrigin,
+          'Access-Control-Request-Method': 'POST',
+          'Access-Control-Request-Headers': 'Authorization, Content-Type, X-Doug-Project',
+        },
+      },
+      timeoutMs: 10_000,
+    },
+  );
+  console.log(`[ready] GPT Doug streaming bridge: ${bridgeUrl}`);
 }
 
 async function ensureApp(appOrigin) {
@@ -243,7 +280,7 @@ export async function main() {
   const bridgeUrl = process.env.DOUG_BRIDGE_URL || `http://127.0.0.1:${process.env.DOUG_BRIDGE_PORT || '8791'}`;
   const ollamaUrl = process.env.DOUG_BRIDGE_OLLAMA_URL || 'http://127.0.0.1:11434';
 
-  console.log('GrimTheBuilder + GPT Doug startup');
+  console.log('GrimTheBuilder + GPT Doug autonomous startup');
   console.log(`Repository: ${REPO_ROOT}`);
   await ensureOllama(ollamaUrl);
   await ensureBridge({ bridgeUrl, ollamaUrl, appOrigin, appPort });
@@ -252,7 +289,8 @@ export async function main() {
 
   console.log('\n==============================================');
   console.log(`ONLINE: ${appOrigin}`);
-  console.log(`MODEL BRIDGE: ${bridgeUrl}`);
+  console.log(`STREAMING MODEL BRIDGE: ${bridgeUrl}`);
+  console.log('AUTONOMOUS MODE: default for every GPT Doug build');
   console.log('Leave this terminal open. Press Ctrl-C to stop.');
   console.log('==============================================\n');
   openBrowser(appOrigin);
