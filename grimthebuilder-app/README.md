@@ -4,12 +4,13 @@ The canonical **GrimTheBuilder application** is the XUNIA browser IDE/program cu
 
 https://orbit-code-studio.almighty-son-8109.chatgpt.site/
 
-This `grimthebuilder-app/` directory is the repository-backed local workspace, export, self-hosting, and integration runtime. It now includes an actual GPT Doug connector UI rather than relying on undocumented settings.
+This `grimthebuilder-app/` directory is the repository-backed local workspace, export, self-hosting, and integration runtime. It includes the visible GPT Doug connector UI and a one-command launcher for the complete local stack.
 
 ## Implemented
 
 - multi-project persistent workspace storage
-- safe project filesystem with traversal protection and file-size limits
+- automatic creation of the first project when storage is empty
+- visible recovery instead of a silent RUN AGENT no-op when no project is loaded
 - Monaco editor with browser fallback
 - live static preview and reverse-proxied backend preview
 - real project shell over WebSocket
@@ -25,10 +26,31 @@ This `grimthebuilder-app/` directory is the repository-backed local workspace, e
 - client validation for operation count, file size, path traversal, absolute paths, and `.grim` access
 - automatic checkpoint before GPT Doug writes or deletes project files
 - bearer token retained only in browser session storage
+- one-command Ollama, bridge, application, and first-project startup
 - deterministic local builder fallback
 - Docker image, health endpoint, and Node regression tests
 
-## Run
+## One-command startup — recommended
+
+```bash
+cd "$HOME/gpt-doug-llm/grimthebuilder-app"
+npm install
+npm run start:full
+```
+
+The full launcher:
+
+1. reuses Ollama when it is already online or starts `ollama serve`;
+2. reuses a correctly configured GPT Doug bridge or starts one with both local app origins allowed;
+3. starts GrimTheBuilder on `http://localhost:8787`;
+4. creates `GPT Doug Build` when there are no projects;
+5. opens the application in the browser.
+
+**Leave this terminal open. Pressing Ctrl-C stops every service started by the launcher.**
+
+Set `GRIM_OPEN_BROWSER=0` to prevent automatic browser opening.
+
+## Application-only startup
 
 ```bash
 cd grimthebuilder-app
@@ -36,7 +58,7 @@ npm install
 npm start
 ```
 
-Open `http://localhost:8787`.
+Open `http://localhost:8787` and leave the `npm start` terminal open. This command starts only the GrimTheBuilder application server. Pressing Ctrl-C stops the application API even if the already-loaded browser page remains visible.
 
 Or:
 
@@ -44,14 +66,14 @@ Or:
 docker compose up --build
 ```
 
-## Connect GPT Doug
+## Manual GPT Doug connection
 
 Start Ollama and install the model served by the bridge. From the repository root, allow the exact browser origin that will open GrimTheBuilder.
 
 For the local runtime:
 
 ```bash
-DOUG_BRIDGE_ORIGINS=http://localhost:8787 python3 -m wakeup3lm.bridge
+DOUG_BRIDGE_ORIGINS=http://localhost:8787,http://127.0.0.1:8787 python3 -m wakeup3lm.bridge
 ```
 
 For the current hosted Orbit origin:
