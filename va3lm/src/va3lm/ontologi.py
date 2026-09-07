@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
-from pathlib import Path
 import re
 import shlex
+from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Iterable
 
 ONTOLOGI_VERSION = "1.0"
