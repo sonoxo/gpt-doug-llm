@@ -1,9 +1,14 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T06:20:41Z",
-  "due_files_reviewed": 1,
+  "cutoff_at": "2026-09-06T06:23:39Z",
+  "due_files_reviewed": 6,
   "due_paths": [
-    "kraken_jutsu/intel.py"
+    ".env.example",
+    "docs/PALANTIR_FULL_STACK.md",
+    "palantir_defense_osdk.py",
+    "palantir_stack.py",
+    "tests/test_palantir_full_stack.py",
+    "the-black-house/integrations/xunidirect-youtube-cleaner.json"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -55,11 +60,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T06:22:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "fc8d0e6dcb3a27888094529717deb2e20f5f507bce2f5d7b096fe35378643b03",
       "size": 9025,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/ISSUE_TEMPLATE/bug_report.yml": {
       "actions": [],
@@ -2277,11 +2282,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T06:22:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "4026032dd04a8aa77dfeaa3b98bf60a1ad54971c81f84c78215d7f0efd811fd0",
       "size": 6463,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/PALANTIR_SOVEREIGNTY_PERFORMANCE.md": {
       "actions": [],
@@ -2646,6 +2651,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/learn/palantir/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T06:23:08Z",
+      "reviewed_at": null,
+      "sha256": "55a4c6e2e54e663a47e2b8d84030a0dafa8c32af937a5f04b8bf3171d1e93b20",
+      "size": 9639,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/metrics.html": {
       "actions": [],
       "binary": false,
@@ -2704,11 +2720,11 @@
     "docs/resources.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T02:44:24Z",
-      "reviewed_at": "2026-09-07T04:33:16Z",
-      "sha256": "d88845286a79cae8f11a7b84477f5ca5fdb0e70ad50b8c1ed3dde56dac0ab872",
-      "size": 5580,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T06:21:14Z",
+      "reviewed_at": null,
+      "sha256": "cf40804faece8a550b037ca2fe43b4ad04ed4005cd951455646bb6d87b590338",
+      "size": 6234,
       "validation_issues": [],
       "was_due": false
     },
@@ -4574,13 +4590,13 @@
     "kraken_jutsu/intel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T05:56:22Z",
       "reviewed_at": "2026-09-07T06:20:41Z",
       "sha256": "8d4790939a7ad67cac9e7f3041c4582d56cb4df5fab2ad46d1f85d99a7b1dcfc",
       "size": 5453,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/live.py": {
       "actions": [],
@@ -5137,11 +5153,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T06:22:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "7ca8f9f97316dcdedb075aeadfa81e85989294a0ce7d6f1e1b5e0d78f3045438",
       "size": 3718,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "palantir_foundry.py": {
       "actions": [],
@@ -5170,11 +5186,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T06:22:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "123a0f49a10d5da02e336f3f2cdee755b7ab70f8c76c1d76d4a3da2ce6fd4bb9",
       "size": 9919,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "palantir_tenant_probe.py": {
       "actions": [],
@@ -6457,11 +6473,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T06:22:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "7fd96a15eb5a4685eb43642d8acfd770189f76621627191e5d566cd176dc1f2b",
       "size": 5233,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_palantir_terminal.py": {
       "actions": [],
@@ -6853,11 +6869,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-04T05:56:59Z",
-      "reviewed_at": "2026-09-06T06:22:18Z",
+      "reviewed_at": "2026-09-07T06:23:39Z",
       "sha256": "0d9f3e4e765bad9ef6ff8961f30b9980cc7d7920efb266261549b85a1e68526b",
       "size": 1881,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-black-house/kernel/kernel.manifest.json": {
       "actions": [],
@@ -10139,11 +10155,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T06:20:41Z",
+  "generated_at": "2026-09-07T06:23:39Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 921,
+  "tracked_files_reviewed": 922,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
