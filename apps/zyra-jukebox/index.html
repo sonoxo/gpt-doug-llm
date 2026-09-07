@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ZYRA JUKEBOX</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="titlebar">
+      <div>
+        <strong>ZYRA JUKEBOX</strong>
+        <span>Music Directory Federation + RetroViz 95</span>
+      </div>
+      <div class="window-buttons" aria-hidden="true"><button>_</button><button>□</button><button>×</button></div>
+    </header>
+
+    <section class="toolbar panel">
+      <input id="searchInput" type="search" placeholder="Search music, artist, genre, mood..." aria-label="Search music" />
+      <button id="searchBtn">SEARCH</button>
+      <label class="file-btn">LOCAL AUDIO<input id="localFile" type="file" accept="audio/*" /></label>
+    </section>
+
+    <section class="directory-grid panel" aria-label="Music directories">
+      <button data-provider="archive">Internet Archive</button>
+      <button data-provider="soundcloud">SoundCloud</button>
+      <button data-provider="youtube">YouTube</button>
+      <button data-provider="bandcamp">Bandcamp</button>
+      <button data-provider="audius">Audius</button>
+      <button data-provider="jamendo">Jamendo</button>
+    </section>
+
+    <section class="main-grid">
+      <section class="panel player-panel">
+        <div class="panel-title">NOW PLAYING</div>
+        <div id="nowPlaying" class="now-playing">Nothing loaded</div>
+        <audio id="audio" controls preload="metadata"></audio>
+        <div class="visualizer-wrap"><canvas id="viz" width="960" height="360" aria-label="Audio reactive visualizer"></canvas></div>
+        <div class="viz-controls">
+          <label>Visualizer
+            <select id="vizMode">
+              <option value="bars">Spectrum Bars</option>
+              <option value="scope">Oscilloscope</option>
+              <option value="binary">Binary Rain</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <aside class="panel embed-panel">
+        <div class="panel-title">EXTERNAL PLAYER</div>
+        <form id="embedForm">
+          <input id="embedUrl" type="url" placeholder="Paste SoundCloud or YouTube URL" />
+          <button type="submit">LOAD LINK</button>
+        </form>
+        <div id="embedHost" class="embed-host">Paste a supported track URL.</div>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">SEARCH RESULTS</div>
+      <div id="status" class="status">Ready.</div>
+      <div id="results" class="results"></div>
+    </section>
+
+    <section class="panel queue-panel">
+      <div class="panel-title">QUEUE</div>
+      <ol id="queue"></ol>
+    </section>
+
+    <footer>ZYRA JUKEBOX • FREE CORE • SOURCE-AWARE PLAYBACK • GPT-DOUG-LLM ECOSYSTEM</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
