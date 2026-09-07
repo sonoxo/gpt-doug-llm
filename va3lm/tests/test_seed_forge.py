@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from va3lm.ontologi import OntologiEngine, OntologiError
 from va3lm.seed_forge import ForgeArtifact, SeedForge
 
