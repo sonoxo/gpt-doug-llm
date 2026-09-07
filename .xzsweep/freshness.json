@@ -1,25 +1,18 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T17:23:29Z",
-  "due_files_reviewed": 17,
+  "cutoff_at": "2026-09-06T20:09:11Z",
+  "due_files_reviewed": 10,
   "due_paths": [
-    ".github/workflows/xunia-forge.yml",
-    "intel/briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md",
-    "intel/sources/crowdstrike-safemind-2026-09-06.json",
-    "safety-shield/agents/knowledge/safemind-inspired-defensive-loop-v1.json",
-    "the-black-house/integrations/crowdstrike-safemind-reference.json",
-    "xunia-forge/.devcontainer/devcontainer.json",
-    "xunia-forge/.env.example",
-    "xunia-forge/NXYZ_CLOUD.md",
-    "xunia-forge/README.md",
-    "xunia-forge/compose.yaml",
-    "xunia-forge/continue/config.yaml",
-    "xunia-forge/control-plane/Dockerfile",
-    "xunia-forge/control-plane/pyproject.toml",
-    "xunia-forge/forge",
-    "xunia-forge/litellm/config.yaml",
-    "xunia-forge/searxng/settings.yml",
-    "xunia-forge/tofu/main.tf"
+    "AI-PENTEST.md",
+    "docs/.xunia-deployment-probe.txt",
+    "kraken_jutsu/cognitive_sources/darren_kitchen_hak5_2026.json",
+    "kraken_jutsu/cyber_ontology.json",
+    "scripts/validate_ai_layers.py",
+    "tests/test_cognitive_source_ontology.py",
+    "tests/test_cyber_ontology.py",
+    "the-black-house/integrations/README.md",
+    "tools/validate_cyber_ontology.py",
+    "xunia-forge/control-plane/app/main.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -746,7 +739,7 @@
       "sha256": "01671bdc1a4883079ccd6e7b4c26d4f11dee67580d2d807221ae0504432921d5",
       "size": 848,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/xunia-platform.yml": {
       "actions": [],
@@ -830,11 +823,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T18:43:43Z",
-      "reviewed_at": "2026-09-06T19:32:52Z",
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "01d624740788634738220767073bda61cda422953b7ae0ddddd12f347ea069bf",
       "size": 2587,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "CONTRIBUTING.md": {
       "actions": [],
@@ -2095,11 +2088,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T18:17:07Z",
-      "reviewed_at": "2026-09-06T18:37:03Z",
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "d65703e27fea5c897510cc478cbd7a671e0b39ca8ffc3eb4c4c2e57ced715dfb",
       "size": 200,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/ADAPTIVE_INTELLIGENCE.md": {
       "actions": [],
@@ -3600,11 +3593,11 @@
     "grimthebuilder-app/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T08:43:59Z",
-      "reviewed_at": "2026-09-07T10:22:33Z",
-      "sha256": "ebfc8e7e9b281eb1afc665a9b621d93b95929371896b8bd6d394de52c1fd7bfc",
-      "size": 2482,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "d28f610b1dfae12829d0d2a1388538b7012c9ae12c5777bc6d9b90445ef51f12",
+      "size": 3906,
       "validation_issues": [],
       "was_due": false
     },
@@ -3655,44 +3648,55 @@
     "grimthebuilder-app/package.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T08:44:05Z",
-      "reviewed_at": "2026-09-07T10:22:33Z",
-      "sha256": "c827dc98304d8f181aa4ee4a84d86d7e9b8ff899d6ba647bfa6bbbb2dceba56a",
-      "size": 549,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "40fdf7a50a5e5d1d1d0f0ed60ee0b041577b2d0577ef0a95ef6dcd1c65699238",
+      "size": 594,
       "validation_issues": [],
       "was_due": false
     },
     "grimthebuilder-app/public/app.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T06:51:36Z",
-      "reviewed_at": "2026-09-07T10:22:33Z",
-      "sha256": "95ff712f76bfcc0f1f943c80d684194f6e98a0368a5b0765e191ccb9b335565c",
-      "size": 7044,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "fdb41f195ee9baeccc2a38df269179d3870cf760d3eea9f347f120367e339335",
+      "size": 17375,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "grimthebuilder-app/public/gpt-doug-connector.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "7b10747c77fcb7b5cb61fe36d59ceee9ff630d10dbca684c0d5f9250b9b28a26",
+      "size": 9320,
       "validation_issues": [],
       "was_due": false
     },
     "grimthebuilder-app/public/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T06:50:58Z",
-      "reviewed_at": "2026-09-07T10:22:33Z",
-      "sha256": "123a9e23df7529628c01c47fcbabca0baa76e8f15db07d1377cda954c0a537b9",
-      "size": 1873,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "cce513c51e003497a4e0eae0fce4636aa7aa085cd69ed7a9dee74a288a7d07b3",
+      "size": 4712,
       "validation_issues": [],
       "was_due": false
     },
     "grimthebuilder-app/public/styles.css": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T06:51:11Z",
-      "reviewed_at": "2026-09-07T10:22:33Z",
-      "sha256": "7386aca29020b40fc78f9ff1cabf86e968d0bfa8cb678c092e254565327c51ad",
-      "size": 3312,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "6f63189b3bc14820b0a12e5e75516a8b81669f4e183f17a5e49f07cac0d7a6c7",
+      "size": 5752,
       "validation_issues": [],
       "was_due": false
     },
@@ -3704,6 +3708,17 @@
       "reviewed_at": "2026-09-07T10:22:33Z",
       "sha256": "489bc5a60fb2de7ae0f12df352472bb6a2da7d0a79ced7b7b090b81f2f08428f",
       "size": 12077,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "grimthebuilder-app/tests/gpt-doug-connector.test.mjs": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T20:08:59Z",
+      "reviewed_at": null,
+      "sha256": "745b814c8516130ddbfdef9039af2f2c48458431a03f19db0193d10c7a0f0d32",
+      "size": 3895,
       "validation_issues": [],
       "was_due": false
     },
@@ -4238,13 +4253,13 @@
     "intel/briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T17:21:54Z",
       "reviewed_at": "2026-09-07T17:23:29Z",
       "sha256": "21aee779986aa4c3732ce6fdfee5c997db5b19332106806988a749baf8ae6d32",
       "size": 4463,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/briefings/2026-09-07-redpanda-networking-ethical-hackers.md": {
       "actions": [],
@@ -4403,13 +4418,13 @@
     "intel/sources/crowdstrike-safemind-2026-09-06.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T17:21:33Z",
       "reviewed_at": "2026-09-07T17:23:29Z",
       "sha256": "1acf12ffe8c2c356c42e851dc16bf12329d22a95cce874e963c335caea0a9c70",
       "size": 3148,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/sources/the-cyber-news-protected-reference.json": {
       "actions": [],
@@ -4724,22 +4739,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T19:32:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "76ddebd7bbc879b29eeb7e2c5f63c3feef168971348df8f07a4b00fc09db885c",
       "size": 6602,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/cyber_ontology.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T19:32:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "fecbd9bfbadb6b3b8f63c5ea3331e351ead2fbacee3ee872e354901c1ba79076",
       "size": 6501,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/gov_sources.json": {
       "actions": [],
@@ -4909,11 +4924,11 @@
     "market-terminal/data/market-snapshot.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-06T16:21:56Z",
-      "reviewed_at": "2026-09-07T16:25:34Z",
-      "sha256": "dd144172deb633f794f43c095dcc594d396036f54667ec7360bfb70ffdd83951",
-      "size": 11199,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T18:13:27Z",
+      "reviewed_at": null,
+      "sha256": "a180bd72a1d931f06b8bde38531d28f9f2483ce0149a3bc87d6669dc64a50ad5",
+      "size": 11153,
       "validation_issues": [],
       "was_due": false
     },
@@ -5833,13 +5848,13 @@
     "safety-shield/agents/knowledge/safemind-inspired-defensive-loop-v1.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T17:22:18Z",
       "reviewed_at": "2026-09-07T17:23:29Z",
       "sha256": "fbd1149a7d5e0a7889de64a89fb5f19767b590813346cfc2b94f238e189f49e1",
       "size": 4625,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "safety-shield/agents/knowledge_loader.py": {
       "actions": [],
@@ -6198,11 +6213,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T18:36:56Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "dc3ba09194ba715fc7a7bfe85000873c4b3a01b2dd7b88662f77d3ba35599b17",
       "size": 3041,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/validate_black_house.py": {
       "actions": [],
@@ -6462,11 +6477,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T19:32:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "73fde14bea76220a704777aef03b90b537d957074c2281e62b5ec0ecf45cb412",
       "size": 1823,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_compliance.py": {
       "actions": [],
@@ -6484,11 +6499,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T19:32:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "6ebf85796b2ce8b6ec1478aa7288cdce15975ac323c2d2fef4c0dc0b33be6924",
       "size": 1600,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_dev_terminal.py": {
       "actions": [],
@@ -7078,22 +7093,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T17:23:40Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "d7f3c053e6c7099867370f4f4dbeaa56fd83eee1b363594bb4078d6b47fcb271",
       "size": 1656,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-black-house/integrations/crowdstrike-safemind-reference.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T17:22:36Z",
       "reviewed_at": "2026-09-07T17:23:29Z",
       "sha256": "e4ce54ff3b7415f99b1d73633079e2a7ad6aeaa1c22ca61a9aa53f9d9e676c00",
       "size": 1540,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "the-black-house/integrations/neptune-shield/seal-tank.public-intel.json": {
       "actions": [],
@@ -7738,11 +7753,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-06T19:32:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "470fd250955216c0adb8276e1ebba8868226311c4045bd0af6b067d0ded91885",
       "size": 5100,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tools/validate_intelligence_knowledge.py": {
       "actions": [],
@@ -9524,7 +9539,7 @@
       "sha256": "b04ee5aaa935c506a2b8b3c794f4ecc4595acfa3c2d56328c26be4170447abde",
       "size": 1036,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/.env.example": {
       "actions": [],
@@ -9535,7 +9550,7 @@
       "sha256": "ceb11c3f42c55e3e2398641c19509d9be6fcc4e7b7fd52a6a1250eff85337e6f",
       "size": 244,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/NXYZ_CLOUD.md": {
       "actions": [],
@@ -9546,7 +9561,7 @@
       "sha256": "3d48cf4ddef2c5291285575c0423277ec9fdc65cd55f88ccbe4070bf1712bb09",
       "size": 577,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/README.md": {
       "actions": [],
@@ -9557,7 +9572,7 @@
       "sha256": "d24ff22fd752cfb80a377316b20b18f55eed3494ecf210607100036c89c2639a",
       "size": 2571,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/compose.yaml": {
       "actions": [],
@@ -9568,7 +9583,7 @@
       "sha256": "caecfe232f45794fd70e436941ac2c41ee4449864e362d271b9fefea69aa6f2f",
       "size": 1232,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/continue/config.yaml": {
       "actions": [],
@@ -9579,7 +9594,7 @@
       "sha256": "ba07f947362209dd994dfe4880187a73220fc27172cc887ad444b522930a54d4",
       "size": 343,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/control-plane/Dockerfile": {
       "actions": [],
@@ -9590,18 +9605,18 @@
       "sha256": "804b71a6205c5cced6cfc8f0b7865fae8f9bf97e7e602c5b625826790630be8e",
       "size": 249,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/control-plane/app/main.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T17:48:04Z",
-      "reviewed_at": "2026-09-06T18:37:03Z",
+      "reviewed_at": "2026-09-07T20:09:11Z",
       "sha256": "1d102284b7627f71e3ba1f64d1e781cf074a72f94430d367533a2f7c768e2170",
       "size": 3232,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "xunia-forge/control-plane/pyproject.toml": {
       "actions": [],
@@ -9612,7 +9627,7 @@
       "sha256": "46587337af6b6ce2b330f26e8fe7fc412fdbd4066de5ab0acae7ff5d339b1b24",
       "size": 230,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/forge": {
       "actions": [],
@@ -9623,7 +9638,7 @@
       "sha256": "7695e687bee7a388f555df39a30e33e3a7a78ad7332c1188da3daf75020409fe",
       "size": 727,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/litellm/config.yaml": {
       "actions": [],
@@ -9634,7 +9649,7 @@
       "sha256": "73934666119ddd91a975ca1f54ce3991dd9e285e69ba7d12f52ce7f3077c3495",
       "size": 347,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/searxng/settings.yml": {
       "actions": [],
@@ -9645,7 +9660,7 @@
       "sha256": "2e77ecf42daa1405736f12308a91eff62e332fd82cc794d54b29ad2a3ab14cc3",
       "size": 265,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-forge/tofu/main.tf": {
       "actions": [],
@@ -9656,7 +9671,7 @@
       "sha256": "863b56a51cd0379e56b609a6c71b087a886bdec774f8f200283ae00afe95b78f",
       "size": 634,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia-party.sh": {
       "actions": [],
@@ -10540,11 +10555,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T17:23:29Z",
+  "generated_at": "2026-09-07T20:09:11Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 956,
+  "tracked_files_reviewed": 958,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
