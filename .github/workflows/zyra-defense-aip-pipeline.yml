@@ -1,0 +1,219 @@
+name: ZYRA Defense Ontology + Palantir AIP Pipeline
+
+on:
+  push:
+    branches: [main, dev, feature/clawbot-mode]
+    paths:
+      - "zyra-defense/**"
+      - "palantir_*.py"
+      - "wakeup3lm/palantir.py"
+      - "zyrapalantir/**"
+      - "tests/test_palantir_full_stack.py"
+      - "tests/test_zyrapalantir_backbone.py"
+      - ".github/workflows/zyra-defense-aip-pipeline.yml"
+  pull_request:
+    paths:
+      - "zyra-defense/**"
+      - "palantir_*.py"
+      - "wakeup3lm/palantir.py"
+      - "zyrapalantir/**"
+      - "tests/test_palantir_full_stack.py"
+      - "tests/test_zyrapalantir_backbone.py"
+      - ".github/workflows/zyra-defense-aip-pipeline.yml"
+  workflow_dispatch:
+    inputs:
+      run_model_probe:
+        description: "Execute one minimal authorized AIP model readiness request"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zyra-defense-aip-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ontology-safety-gate:
+    name: Ontology safety gate / Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install CI dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest
+
+      - name: Compile ZYRA and Palantir adapters
+        run: |
+          python -m compileall -q \
+            zyra-defense/zyra_ontology \
+            palantir_aip.py \
+            palantir_automate.py \
+            palantir_foundry.py \
+            palantir_tenant_probe.py \
+            wakeup3lm/palantir.py \
+            zyrapalantir
+
+      - name: Run ZYRA defense simulation safety tests
+        run: python -m unittest discover -s zyra-defense/tests -v
+
+      - name: Run Palantir contract tests
+        run: python -m pytest tests/test_palantir_full_stack.py tests/test_zyrapalantir_backbone.py -q
+
+  export-contract:
+    name: Build and validate ontology export
+    needs: ontology-safety-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate ZYRA ontology export
+        working-directory: zyra-defense
+        run: python demo.py
+
+      - name: Enforce simulation-only export invariants
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("zyra-defense/zyra_ontology_export.json")
+          objects = json.loads(path.read_text(encoding="utf-8"))
+          assert isinstance(objects, list) and objects, "ontology export must contain objects"
+
+          effect_count = 0
+          for obj in objects:
+              obj_type = obj.get("type")
+              if obj_type == "WeaponSystemModel":
+                  assert obj.get("simulation_only") is True, "weapon system model escaped simulation-only boundary"
+                  assert obj.get("has_actuation_interface") is False, "actuation interface is forbidden"
+              elif obj_type == "EngagementRecommendation":
+                  assert obj.get("advisory_only") is True, "recommendations must remain advisory"
+              elif obj_type == "AuthorizationRequest":
+                  assert obj.get("simulation_only") is True, "authorization request must remain simulation-only"
+              elif obj_type == "EffectSimulation":
+                  effect_count += 1
+                  result = obj.get("result", {})
+                  assert obj.get("synthetic") is True, "effect result must be synthetic"
+                  assert result.get("mode") == "simulation_only", "effect mode must be simulation_only"
+                  assert result.get("real_world_actuation") is False, "real-world actuation is forbidden"
+
+          assert effect_count > 0, "expected at least one EffectSimulation"
+          print(f"validated {len(objects)} ontology objects; {effect_count} synthetic effect simulation(s)")
+          PY
+
+      - name: Upload ontology export artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zyra-defense-ontology-${{ github.sha }}
+          path: zyra-defense/zyra_ontology_export.json
+          if-no-files-found: error
+          retention-days: 14
+
+  palantir-aip-readiness:
+    name: Authorized Palantir AIP readiness probe
+    needs: export-contract
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      FOUNDRY_BASE_URL: ${{ secrets.FOUNDRY_BASE_URL }}
+      FOUNDRY_TOKEN: ${{ secrets.FOUNDRY_TOKEN }}
+      FOUNDRY_CLIENT_ID: ${{ secrets.FOUNDRY_CLIENT_ID }}
+      FOUNDRY_CLIENT_SECRET: ${{ secrets.FOUNDRY_CLIENT_SECRET }}
+      FOUNDRY_ALLOWED_HOST: ${{ secrets.FOUNDRY_ALLOWED_HOST }}
+      FOUNDRY_SCOPES: ${{ secrets.FOUNDRY_SCOPES }}
+      PALANTIR_AIP_ONTOLOGY: ${{ secrets.PALANTIR_AIP_ONTOLOGY }}
+      PALANTIR_AIP_LOGIC_QUERY: ${{ secrets.PALANTIR_AIP_LOGIC_QUERY }}
+      PALANTIR_AIP_MODEL: ${{ secrets.PALANTIR_AIP_MODEL }}
+      FOUNDRY_ENABLE_WRITES: "false"
+      RUN_MODEL_PROBE: ${{ inputs.run_model_probe || false }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Probe authorized Foundry / AIP resources
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from palantir_tenant_probe import PalantirTenantProbe
+
+          base = os.getenv("FOUNDRY_BASE_URL", "").strip()
+          token = os.getenv("FOUNDRY_TOKEN", "").strip()
+          client_id = os.getenv("FOUNDRY_CLIENT_ID", "").strip()
+          client_secret = os.getenv("FOUNDRY_CLIENT_SECRET", "").strip()
+          configured = bool(base and (token or (client_id and client_secret)))
+          run_model = os.getenv("RUN_MODEL_PROBE", "false").strip().lower() == "true"
+          summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+
+          if not configured:
+              summary.write_text(
+                  "## Palantir AIP readiness\n\n"
+                  "Skipped live tenant probe because authorized Foundry credentials are not configured for this repository.\n",
+                  encoding="utf-8",
+              )
+              print("Palantir credentials absent: local contract gates passed; live probe skipped.")
+              raise SystemExit(0)
+
+          if run_model and not os.getenv("PALANTIR_AIP_MODEL", "").strip():
+              raise SystemExit("run_model_probe=true but PALANTIR_AIP_MODEL is not configured")
+
+          result = PalantirTenantProbe().probe(execute_aip_model=run_model)
+          print(json.dumps(result, indent=2))
+
+          required_components = {"Foundry/Ontology", "AIP Logic"}
+          if run_model:
+              required_components.add("AIP Model Proxy")
+
+          failures = [
+              item for item in result["items"]
+              if item["component"] in required_components
+              and item["configured"]
+              and not item["live_verified"]
+          ]
+
+          lines = ["## Palantir AIP readiness", ""]
+          for item in result["items"]:
+              if item["component"] not in required_components:
+                  continue
+              state = "PASS" if item["live_verified"] else ("SKIP" if not item["configured"] else "FAIL")
+              lines.append(f"- **{item['component']}**: {state} — {item['detail']}")
+          lines.append("")
+          lines.append("Foundry writes were forced off for this CI run.")
+          summary.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+          if failures:
+              names = ", ".join(item["component"] for item in failures)
+              raise SystemExit(f"Palantir readiness failed: {names}")
+          PY
