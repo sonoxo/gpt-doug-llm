@@ -12,6 +12,27 @@ async function readFailure(response) {
   }
 }
 
+function showStartupFailure(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  const status = document.querySelector('#status');
+  const feed = document.querySelector('#agentFeed');
+  const runButton = document.querySelector('#agentRun');
+
+  if (status) status.textContent = 'PROJECT INIT ERROR';
+  if (feed) {
+    const row = document.createElement('div');
+    row.className = 'msg grim';
+    row.innerHTML = '<b>GRIM</b><div></div>';
+    row.querySelector('div').textContent = `Could not create or load a project: ${message}`;
+    feed.appendChild(row);
+  }
+  if (runButton) {
+    runButton.disabled = false;
+    runButton.textContent = 'RETRY PROJECT SETUP';
+  }
+  console.error('GrimTheBuilder could not create the first project:', error);
+}
+
 export async function ensureInitialProject({
   fetchImpl = fetch,
   reload = () => location.reload(),
@@ -45,11 +66,29 @@ async function bootFirstProject() {
   try {
     await ensureInitialProject();
   } catch (error) {
-    console.error('GrimTheBuilder could not create the first project:', error);
+    showStartupFailure(error);
+  }
+}
+
+async function recoverMissingProject(event) {
+  const button = event.target.closest?.('#agentRun');
+  if (!button || document.querySelector('#projectList .item')) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  button.disabled = true;
+  button.textContent = 'CREATING PROJECT…';
+
+  try {
+    const result = await ensureInitialProject();
+    if (!result.created) location.reload();
+  } catch (error) {
+    showStartupFailure(error);
   }
 }
 
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  document.addEventListener('click', recoverMissingProject, true);
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootFirstProject, { once: true });
   } else {
