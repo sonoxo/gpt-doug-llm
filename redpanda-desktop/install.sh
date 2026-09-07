@@ -46,12 +46,13 @@ fetch() { local name="$1"; curl -fsSL "$REPO_RAW/$name" -o "$NODE/$name"; }
 fetch redpanda_agent.py
 fetch gpt_redpanda_llm.py
 fetch agentic_cpr_runtime.py
+fetch palantir_cpr_probe.py
 fetch zfi_agent.py
 fetch redpanda-zsh-hook.zsh
 fetch redpanda-node
 fetch va3lm-cpr
 fetch glass
-chmod +x "$NODE/redpanda_agent.py" "$NODE/gpt_redpanda_llm.py" "$NODE/agentic_cpr_runtime.py" "$NODE/zfi_agent.py" "$NODE/redpanda-node" "$NODE/va3lm-cpr" "$NODE/glass"
+chmod +x "$NODE/redpanda_agent.py" "$NODE/gpt_redpanda_llm.py" "$NODE/agentic_cpr_runtime.py" "$NODE/palantir_cpr_probe.py" "$NODE/zfi_agent.py" "$NODE/redpanda-node" "$NODE/va3lm-cpr" "$NODE/glass"
 
 cp "$NODE/redpanda-node" "$HOST_BIN/redpanda-node"
 cp "$NODE/va3lm-cpr" "$HOST_BIN/va3lm-cpr"
@@ -137,6 +138,7 @@ say "🤖 Agentic CPR state: redpanda-node agentic-cpr-status"
 say "📱 Mobile/LAN: redpanda-node mobile"
 say "🔎 Status: redpanda-node status"
 say "🚑 Manual CPR: redpanda-node cpr"
+say "🧬 Palantir CPR: redpanda-node cpr-palantir /path/to/gpt-doug-llm"
 say "🧅 Intel: glass intel neptune-shield seal-tank"
 say ""
 say "Open the portal with: redpanda-node open"

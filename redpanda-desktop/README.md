@@ -10,6 +10,7 @@ USB-resident local-first assistant node for the GPT-DOUG-LLM ecosystem.
 - Automatically invokes `cyber-cpr check ... --repair` after failed terminal exits and on a 180-second heartbeat.
 - If a failed command occurred inside a GitHub repository, GPT-REDPANDA resolves that repository from its `origin` remote and CPR-checks it; otherwise it falls back to `sonoxo/gpt-doug-llm`.
 - Cyber CPR repair remains bounded: only explicitly enabled allow-listed commands in the USB `cyber-cpr-config.json` can execute.
+- Includes `redpanda-node cpr-palantir` for a read-only local integrity check of the GPT-DOUG Palantir/Foundry integration, Chrome Toolbox, sovereignty runtime, knowledge registry, Python syntax, and local accelerator profile.
 - Serves a token-protected local web portal for desktop.
 - `redpanda-node mobile` temporarily switches from the background desktop service to LAN mode and exposes the same token-protected portal to a phone on the same network.
 - `redpanda-node desktop` restores the background desktop service afterward.
@@ -34,11 +35,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/red
 redpanda-node open
 redpanda-node status
 redpanda-node cpr
+redpanda-node cpr-palantir /path/to/gpt-doug-llm
+redpanda-node cpr-palantir /path/to/gpt-doug-llm --benchmark
 redpanda-node mobile
 redpanda-node desktop
 redpanda-node stop
 redpanda-node run
 ```
+
+`cpr-palantir` is deliberately read-only. It validates that the local Palantir integration files exist, parses the Manifest V3 Chrome extension and knowledge registry, compiles the Python integration modules, runs the local sovereignty hardware profile, and confirms that the runtime still declares `palantir_infrastructure_controlled=false`. It does not call Foundry Actions, mutate the repo, change Palantir tenant configuration, or manufacture access.
 
 The default LaunchAgent binds to localhost only. `redpanda-node mobile` stops that service and starts a token-protected LAN session. Press Control-C to stop mobile mode, then run `redpanda-node desktop` to restore the background desktop node.
 
@@ -49,6 +54,8 @@ The default LaunchAgent binds to localhost only. `redpanda-node mobile` stops th
 ├── .gpt-redpanda-node
 ├── GPT-REDPANDA/
 │   ├── redpanda_agent.py
+│   ├── agentic_cpr_runtime.py
+│   ├── palantir_cpr_probe.py
 │   ├── redpanda-node
 │   └── redpanda-zsh-hook.zsh
 └── .redpanda/
