@@ -1,19 +1,115 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>GrimTheBuilder — XUNIA</title>
   <link rel="stylesheet" href="/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
 </head>
 <body>
-<header><strong>GrimTheBuilder</strong><span id="status">RUNTIME CHECK…</span><div class="grow"></div><button id="newProject">NEW PROJECT</button><button id="checkpoint">CHECKPOINT</button><button id="runProject">RUN</button><a href="https://xunia.org/" target="_blank">XUNIA HQ ↗</a></header>
+<header>
+  <strong>GrimTheBuilder</strong>
+  <span id="status">RUNTIME CHECK…</span>
+  <div class="grow"></div>
+  <button id="newProject" type="button">NEW PROJECT</button>
+  <button id="checkpoint" type="button">CHECKPOINT</button>
+  <button id="runProject" type="button">RUN</button>
+  <a href="https://xunia.org/" target="_blank" rel="noreferrer">XUNIA HQ ↗</a>
+</header>
 <main>
-  <aside class="projects"><h3>PROJECTS</h3><div id="projectList"></div></aside>
-  <aside class="files"><div class="paneHead"><h3>FILES</h3><button id="newFile">＋</button></div><div id="fileList"></div></aside>
-  <section class="work"><nav><button data-tab="code" class="active">CODE</button><button data-tab="preview">PREVIEW</button><button data-tab="terminal">TERM</button></nav><div id="codePane" class="pane active"><div id="editor"></div><textarea id="fallbackEditor" spellcheck="false"></textarea></div><div id="previewPane" class="pane"><iframe id="preview"></iframe></div><div id="terminalPane" class="pane"><pre id="term"></pre><form id="termForm"><span>$</span><input id="termInput" autocomplete="off" spellcheck="false"></form></div></section>
-  <aside class="agent"><h3>GRIM AGENT</h3><div id="agentFeed"><p>Build, fix, plan, or explain this project.</p></div><select id="agentMode"><option>build</option><option>fix</option><option>plan</option><option>explain</option></select><textarea id="agentPrompt" placeholder="Build a responsive dashboard with authentication UI…"></textarea><button id="agentRun">RUN AGENT</button></aside>
+  <aside class="projects">
+    <h3>PROJECTS</h3>
+    <div id="projectList"></div>
+  </aside>
+  <aside class="files">
+    <div class="paneHead"><h3>FILES</h3><button id="newFile" type="button">＋</button></div>
+    <div id="fileList"></div>
+  </aside>
+  <section class="work">
+    <nav>
+      <button data-tab="code" class="active" type="button">CODE</button>
+      <button data-tab="preview" type="button">PREVIEW</button>
+      <button data-tab="terminal" type="button">TERM</button>
+    </nav>
+    <div id="codePane" class="pane active">
+      <div id="editor"></div>
+      <textarea id="fallbackEditor" spellcheck="false"></textarea>
+    </div>
+    <div id="previewPane" class="pane"><iframe id="preview" title="Project preview"></iframe></div>
+    <div id="terminalPane" class="pane">
+      <pre id="term"></pre>
+      <form id="termForm"><span>$</span><input id="termInput" autocomplete="off" spellcheck="false"></form>
+    </div>
+  </section>
+  <aside class="agent">
+    <div class="agentHead">
+      <h3>GRIM AGENT</h3>
+      <button id="bridgeSettings" class="ghost compact" type="button">GPT DOUG SETTINGS</button>
+    </div>
+    <div id="bridgeStatus" class="connectorStatus disconnected">
+      <span class="statusDot" aria-hidden="true"></span>
+      <div class="connectorCopy">
+        <strong id="bridgeStatusText">GPT DOUG OFFLINE</strong>
+        <small id="bridgeStatusDetail">Click CONNECT to use your local model.</small>
+      </div>
+      <button id="bridgeQuickConnect" class="ghost compact" type="button">CONNECT</button>
+    </div>
+    <label class="fieldLabel" for="agentProvider">AGENT PROVIDER</label>
+    <select id="agentProvider">
+      <option value="gpt-doug">GPT Doug local bridge</option>
+      <option value="builtin">Built-in server agent</option>
+    </select>
+    <div id="agentFeed"><p>Build, fix, plan, or explain this project.</p></div>
+    <select id="agentMode">
+      <option>build</option>
+      <option>fix</option>
+      <option>plan</option>
+      <option>explain</option>
+    </select>
+    <textarea id="agentPrompt" maxlength="5000" placeholder="Build a responsive dashboard with authentication UI…"></textarea>
+    <button id="agentRun" class="primary" type="button">RUN AGENT</button>
+  </aside>
 </main>
+
+<div id="bridgeModal" class="modal" hidden>
+  <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="bridgeTitle">
+    <div class="dialogHead">
+      <div>
+        <small>LOCAL MODEL CONNECTOR</small>
+        <h2 id="bridgeTitle">Connect GPT Doug</h2>
+      </div>
+      <button id="bridgeClose" class="iconButton" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="callout">
+      <strong>Start the bridge with this exact browser origin allowed:</strong>
+      <code id="bridgeCommand"></code>
+      <button id="bridgeCopyCommand" class="ghost" type="button">COPY COMMAND</button>
+    </div>
+
+    <label for="bridgeUrl">GPT Doug bridge URL</label>
+    <input id="bridgeUrl" type="url" value="http://127.0.0.1:8791" autocomplete="url" spellcheck="false">
+
+    <label for="bridgeToken">Bearer token <span>optional on loopback</span></label>
+    <input id="bridgeToken" type="password" autocomplete="off" placeholder="Kept only in this browser session">
+
+    <label for="bridgeModel">Installed model</label>
+    <select id="bridgeModel"><option>qwen2.5-coder:7b</option></select>
+
+    <p class="originNote">Current browser origin: <code id="bridgeOrigin"></code></p>
+    <div id="bridgeResult" class="bridgeResult" aria-live="polite">Not connected.</div>
+
+    <div class="dialogActions">
+      <button id="bridgeDisconnect" class="danger" type="button">DISCONNECT</button>
+      <div class="grow"></div>
+      <button id="bridgeCancel" class="ghost" type="button">CLOSE</button>
+      <button id="bridgeConnect" class="primary" type="button">CONNECT &amp; DISCOVER MODELS</button>
+    </div>
+  </section>
+</div>
+
 <div id="toast"></div>
 <script type="module" src="/app.js"></script>
-</body></html>
+</body>
+</html>
