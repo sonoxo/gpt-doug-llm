@@ -29,6 +29,53 @@ def test_config_reads_environment(monkeypatch):
     assert config.timeout == 12.5
 
 
+def test_transport_accepts_https_and_preserves_base_path():
+    bridge = ReefBridge(ReefConfig(base_url="https://reef.example/runtime"))
+
+    connection_class, host, port, path = bridge._connection_target("/healthz")
+
+    assert connection_class.__name__ == "HTTPSConnection"
+    assert host == "reef.example"
+    assert port == 443
+    assert path == "/runtime/healthz"
+
+
+def test_transport_rejects_non_http_schemes():
+    for base_url in ("file:///tmp/reef", "ftp://reef.example", "gopher://reef.example"):
+        bridge = ReefBridge(ReefConfig(base_url=base_url))
+        try:
+            bridge._connection_target("/healthz")
+        except ReefBridgeError as exc:
+            assert "http" in str(exc).lower()
+        else:
+            raise AssertionError(f"expected unsafe scheme to fail: {base_url}")
+
+
+def test_transport_rejects_embedded_credentials():
+    bridge = ReefBridge(ReefConfig(base_url="https://user:password@reef.example"))
+
+    try:
+        bridge._connection_target("/healthz")
+    except ReefBridgeError as exc:
+        assert "credentials" in str(exc).lower()
+    else:
+        raise AssertionError("expected embedded credentials to fail")
+
+
+def test_transport_rejects_query_and_fragment():
+    for base_url in (
+        "https://reef.example?redirect=file:///tmp/reef",
+        "https://reef.example/#fragment",
+    ):
+        bridge = ReefBridge(ReefConfig(base_url=base_url))
+        try:
+            bridge._connection_target("/healthz")
+        except ReefBridgeError as exc:
+            assert "query or fragment" in str(exc).lower()
+        else:
+            raise AssertionError(f"expected ambiguous base URL to fail: {base_url}")
+
+
 def test_chat_completion_preserves_receipt(monkeypatch):
     bridge = ReefBridge(ReefConfig())
 
