@@ -157,7 +157,7 @@ jobs:
         with:
           repository: sonoxo/xuniadao
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: yarn
@@ -188,7 +188,7 @@ jobs:
         with:
           repository: sonoxo/zyra
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
