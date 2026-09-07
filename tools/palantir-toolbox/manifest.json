@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Palantir Toolbox // GPT-DOUG",
+  "version": "0.1.0",
+  "description": "Operator-side Palantir Foundry/Ontology toolbox for authorized environments. Local bridge first; direct token mode optional.",
+  "permissions": ["storage", "activeTab", "contextMenus"],
+  "host_permissions": [
+    "http://127.0.0.1:8765/*",
+    "https://*.palantirfoundry.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Palantir Toolbox // GPT-DOUG",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}
