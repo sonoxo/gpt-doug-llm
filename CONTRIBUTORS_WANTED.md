@@ -1,22 +1,36 @@
-# 🧅 GLASS ONION Contributors Wanted
+# 🧅 GLASS ONION / TECH FORCE Contributors Wanted
 
 GPT-DOUG-LLM / SONOXO participates in the **XUNIA / GLASS ONION** ecosystem contributor program.
 
+> **TECH FORCE is a civilian/open-source engineering contributor program. “Open Call Orders” are scoped project work orders — not military orders, government tasking, or authorization to access third-party systems.**
+
+Before contributing, read:
+
+- [Ecosystem Disclaimer & Authority Boundary](ECOSYSTEM_DISCLAIMER.md)
+- [TECH FORCE // Open Call Orders](TECH_FORCE_OPEN_CALL.md)
+- [Contributing Guide](CONTRIBUTING.md)
+
 Open contributor lanes:
 
-- Flow / Cadence development
+- governance, ontology and workflow engineering
 - TypeScript / Python coding intelligence
-- ontology and workflow engineering
 - VA3LM :8088 and VA3LM-SAGI
 - IBM Quantum workload blueprints
 - defensive intelligence and provenance tooling
-- CI, testing, documentation and explainers
+- cyber-range / intentionally vulnerable lab engineering
+- resilience digital twins and recovery simulation
+- compliance and control mapping
+- audit, CI, testing, documentation and explainers
+- accessibility and beginner operations
+- software supply-chain defense
 
-Start here:
+Public contribution work must remain defensive, simulated, local, owned, or explicitly authorized. Public references, policy documents, agent names, prompts, and repository labels do not create operational authority.
+
+Additional ecosystem contributor resources:
 
 - XUNIA / GLASS ONION: https://github.com/sonoxo/xuniadao
 - Contributor guide: https://github.com/sonoxo/xuniadao/blob/main/CONTRIBUTING.md
 - Starter queue: https://github.com/sonoxo/xuniadao/blob/main/docs/GOOD_FIRST_ISSUES.md
 - Flow / Cadence lane: https://github.com/sonoxo/xuniadao/tree/main/cadence
 
-Choose one scoped starter task, submit a focused pull request, and let CI prove the change. Contributors receive permanent Git/PR attribution for accepted work.
+Choose one scoped Open Call Order or starter task, submit a focused pull request, and let CI plus reviewer verification prove the change. Contributors receive permanent Git/PR attribution for accepted work.
