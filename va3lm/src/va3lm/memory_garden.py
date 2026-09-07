@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass, replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Iterable
 
 from va3lm.ontologi import OntologiEngine, OntologiError, Program, Seed, validate
