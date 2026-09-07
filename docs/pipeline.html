@@ -4,93 +4,148 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#050510">
+  <meta name="description" content="Verified documentation view of the XUNIA / Black House governed mission pipeline.">
   <title>Agent Pipeline // XUNIAverse</title>
   <link rel="stylesheet" href="./zyra-theme.css">
   <script src="./zyra-shell-v2.js" defer></script>
   <style>
-    .pipeline-head{margin-bottom:22px}.pipeline-head .zyra-eyebrow{margin-bottom:8px}.pipeline-head h1{font-size:clamp(32px,5vw,58px)!important;margin:0 0 10px!important;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent!important}.pipeline-head p{max-width:760px;color:var(--dim);line-height:1.65}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--dim);margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.legend span{display:flex;align-items:center;gap:7px}.sw{width:20px;height:2px;background:#dcefff}.sw.block{background:var(--danger)}.sw.accent{background:var(--cyan)}figure{margin:0}.pipeline-svg{width:100%;height:auto;display:block}.pipeline-svg text{font-family:Inter,ui-sans-serif,system-ui}.pipeline-svg .glow-node{filter:drop-shadow(0 0 7px rgba(70,243,255,.3))}.pipeline-svg .flow-normal,.pipeline-svg .flow-context,.pipeline-svg .flow-block{stroke-dasharray:8 10;animation:zyra-flow 3s linear infinite}.pipeline-svg .flow-context{animation-duration:4s}.pipeline-svg .flow-block{animation-duration:2.2s}.pipeline-note{margin-top:16px;color:var(--dim);font-size:13px;line-height:1.6}.pipeline-note strong{color:#dcefff}@media(prefers-reduced-motion:reduce){.pipeline-svg .flow-normal,.pipeline-svg .flow-context,.pipeline-svg .flow-block{animation:none!important}}
+    .pipeline-head{margin-bottom:22px}.pipeline-head .zyra-eyebrow{margin-bottom:8px}.pipeline-head h1{font-size:clamp(34px,6vw,66px)!important;line-height:.98;margin:0 0 12px!important;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent!important}.pipeline-head p{max-width:860px;color:var(--dim);line-height:1.68;font-size:15px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.badge{font-size:10px;font-weight:900;letter-spacing:.12em;border:1px solid #30355d;border-radius:999px;padding:7px 10px;background:#0c1024;color:#cfd8ff}.badge.good{color:var(--lime);border-color:rgba(168,255,96,.28)}.badge.cyan{color:var(--cyan);border-color:rgba(70,243,255,.28)}
+    .pipeline-card{border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(11,13,29,.98),rgba(5,6,18,.98));padding:clamp(14px,3vw,26px);box-shadow:0 24px 80px #0007;overflow:hidden}.pipeline-card h2{margin:0 0 5px;font-size:14px;letter-spacing:.12em;text-transform:uppercase}.pipeline-card>.sub{margin:0 0 20px;color:var(--dim);font-size:12px;line-height:1.6}.rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:26px 18px;position:relative}.stage{position:relative;min-height:150px;border:1px solid #2c3155;border-radius:16px;padding:15px 14px;background:linear-gradient(145deg,#0d1126,#070919);box-shadow:inset 0 1px #ffffff08}.stage::after{content:"→";position:absolute;right:-23px;top:50%;transform:translateY(-50%);color:#5f6a93;font-size:20px;font-weight:800}.stage:nth-child(5)::after,.stage:nth-child(10)::after{display:none}.stage .n{display:grid;place-items:center;width:27px;height:27px;border:1px solid #39406c;border-radius:8px;color:var(--cyan);font-size:10px;font-weight:900;margin-bottom:12px;background:#0b0e20}.stage .name{font-size:12px;font-weight:900;letter-spacing:.06em;color:#eff7ff}.stage .owner{margin-top:5px;font-size:10px;font-weight:800;color:#9da8c6;text-transform:uppercase;letter-spacing:.08em}.stage p{margin:10px 0 0;color:var(--dim);font-size:11px;line-height:1.55}.stage.cyan{border-color:rgba(70,243,255,.62);box-shadow:0 0 28px rgba(70,243,255,.07)}.stage.violet{border-color:rgba(157,92,255,.62);box-shadow:0 0 28px rgba(157,92,255,.08)}.stage.guard{border-color:rgba(255,107,122,.62);box-shadow:0 0 28px rgba(255,107,122,.06)}.stage.good{border-color:rgba(168,255,96,.42)}
+    .dispatch-box{margin-top:18px;border:1px solid #292f52;border-radius:18px;padding:15px;background:#070919}.dispatch-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.dispatch-head strong{font-size:11px;letter-spacing:.1em}.dispatch-head span{font-size:10px;color:var(--dim)}.targets{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.target{border:1px solid #30365d;border-radius:10px;padding:8px 10px;background:#0e1228;color:#d8e3ff;font-size:10px;font-weight:800}.target.primary{border-color:rgba(70,243,255,.42);color:var(--cyan)}
+    .branches{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.branch{border:1px solid var(--line);border-radius:16px;padding:14px;background:#080a19}.branch strong{display:block;font-size:11px;margin-bottom:6px}.branch p{margin:0;color:var(--dim);font-size:11px;line-height:1.55}.branch.block{border-color:rgba(255,107,122,.38)}.branch.block strong{color:#ff9aa6}.branch.loop{border-color:rgba(70,243,255,.34)}.branch.loop strong{color:var(--cyan)}
+    .truth{margin-top:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.truth article{border:1px solid var(--line);border-radius:15px;padding:14px;background:#080a19}.truth strong{display:block;font-size:11px;margin-bottom:7px}.truth p{margin:0;color:var(--dim);font-size:11px;line-height:1.55}.truth code{font-size:10px}.source-note{margin:18px 0 0;color:var(--dim);font-size:12px;line-height:1.7}.source-note a{color:var(--cyan)}
+    @media(max-width:1000px){.rail{grid-template-columns:repeat(2,minmax(0,1fr))}.stage::after{right:-15px}.stage:nth-child(5)::after{display:block}.stage:nth-child(even)::after,.stage:nth-child(10)::after{display:none}.truth{grid-template-columns:1fr}}
+    @media(max-width:650px){.rail{grid-template-columns:1fr;gap:13px}.stage{min-height:auto}.stage::after,.stage:nth-child(5)::after{display:none}.branches{grid-template-columns:1fr}.pipeline-card{border-radius:18px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <header class="pipeline-head">
-      <div class="zyra-eyebrow">XUNIA // AGENT RUNTIME // VERIFICATION FLOW</div>
-      <h1>xuniaverse-production agent pipeline</h1>
-      <p>The documented running path a task takes from intake through Zyra review, GPT-Doug execution, result capture, and contextual feedback. Motion indicates data flow; it does not imply background execution on this static page.</p>
+      <div class="zyra-eyebrow">BLACK HOUSE // GOVERNED MISSION ROUTER // XUNIA</div>
+      <h1>XUNIAverse production pipeline</h1>
+      <p>The public architecture view now mirrors the repository’s governed mission path: identity and scope checks, ontology grounding, planning, Zyra authorization, bounded dispatch, verification, evidence capture, and audit. This page documents the control flow; it is not a remote-control surface and does not claim background execution from the browser.</p>
+      <div class="badges" aria-label="Pipeline properties">
+        <span class="badge good">ROUTER CONTRACT VERIFIED</span>
+        <span class="badge cyan">FAIL-CLOSED</span>
+        <span class="badge">EVIDENCE-FIRST</span>
+        <span class="badge">HUMAN-GOVERNED WRITES</span>
+      </div>
     </header>
 
-    <figure>
-      <svg class="pipeline-svg" viewBox="0 0 1000 460" role="img" aria-labelledby="pipeline-title pipeline-desc">
-        <title id="pipeline-title">XUNIAverse agent task pipeline</title>
-        <desc id="pipeline-desc">A task file is claimed, checked by Zyra, either blocked or passed to Doug, then written as a result and fed into context for later tasks.</desc>
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#dcefff"/></marker>
-          <marker id="arrowCyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#46f3ff"/></marker>
-          <marker id="arrowBlock" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ff6b7a"/></marker>
-        </defs>
+    <section class="pipeline-card" aria-labelledby="flow-title">
+      <h2 id="flow-title">Canonical mission flow</h2>
+      <p class="sub">The ten documented routing stages are shown in execution order. Component labels describe the primary responsibility, not an exclusive implementation boundary.</p>
 
-        <rect x="20" y="60" width="140" height="56" rx="12" fill="#0e1228" stroke="#323862" stroke-width="1.5"/>
-        <text x="90" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#eff7ff">tasks/*.json</text>
-        <text x="90" y="100" text-anchor="middle" font-size="10" fill="#8490ad">task file written</text>
+      <div class="rail">
+        <article class="stage cyan">
+          <div class="n">01</div>
+          <div class="name">RVIA</div>
+          <div class="owner">Mission intake</div>
+          <p>Accept the governed mission envelope and establish the routing contract for the requested work.</p>
+        </article>
+        <article class="stage">
+          <div class="n">02</div>
+          <div class="name">IDENTITY</div>
+          <div class="owner">Scope + principal</div>
+          <p>Resolve who or what is acting, the allowed scope, and the authority attached to the mission.</p>
+        </article>
+        <article class="stage">
+          <div class="n">03</div>
+          <div class="name">SHADOW GLASS</div>
+          <div class="owner">Preflight</div>
+          <p>Inspect mission context and constraints before planning or external action is allowed to proceed.</p>
+        </article>
+        <article class="stage violet">
+          <div class="n">04</div>
+          <div class="name">ONTOLOGY CONTEXT</div>
+          <div class="owner">NXYZ + knowledge graph</div>
+          <p>Ground objects, links, repositories, services, evidence, policies, and prior state in the shared ontology.</p>
+        </article>
+        <article class="stage violet">
+          <div class="n">05</div>
+          <div class="name">PLANNER</div>
+          <div class="owner">Reasoning layer</div>
+          <p>Turn the grounded mission into an explicit plan with required capabilities, bounded tools, and verification criteria.</p>
+        </article>
+        <article class="stage guard">
+          <div class="n">06</div>
+          <div class="name">ZYRA AUTHORIZATION</div>
+          <div class="owner">Policy gate</div>
+          <p>Authorize, deny, or require approval based on policy, mutation risk, scope, and the requested tool boundary.</p>
+        </article>
+        <article class="stage cyan">
+          <div class="n">07</div>
+          <div class="name">DISPATCH</div>
+          <div class="owner">XUNIA orchestration</div>
+          <p>Route approved work to the registered builder, agent, cloud, registry, or integration target needed for the mission.</p>
+        </article>
+        <article class="stage good">
+          <div class="n">08</div>
+          <div class="name">GLASS ONION</div>
+          <div class="owner">Verification</div>
+          <p>Compare claimed outcomes with observable results, tests, postconditions, and returned tool evidence.</p>
+        </article>
+        <article class="stage good">
+          <div class="n">09</div>
+          <div class="name">EVIDENCE</div>
+          <div class="owner">Proof capture</div>
+          <p>Persist result evidence, provenance, attempts, outputs, and verification state instead of relying on completion claims.</p>
+        </article>
+        <article class="stage">
+          <div class="n">10</div>
+          <div class="name">AUDIT</div>
+          <div class="owner">History + feedback</div>
+          <p>Record the durable mission timeline and feed verified state back into later routing and ontology context.</p>
+        </article>
+      </div>
 
-        <line class="flow-normal" x1="160" y1="88" x2="215" y2="88" stroke="#dcefff" stroke-width="1.6" marker-end="url(#arrow)"/>
-        <text x="187" y="77" text-anchor="middle" font-size="10" fill="#8490ad">claim</text>
-        <rect x="220" y="60" width="140" height="56" rx="12" fill="#0e1228" stroke="#323862" stroke-width="1.5"/>
-        <text x="290" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#eff7ff">claimed/</text>
-        <text x="290" y="100" text-anchor="middle" font-size="10" fill="#8490ad">worker thread</text>
+      <div class="dispatch-box" aria-label="Registered dispatch targets">
+        <div class="dispatch-head">
+          <strong>REGISTERED DISPATCH TARGETS</strong>
+          <span>selected by mission requirements; not all run on every mission</span>
+        </div>
+        <div class="targets">
+          <span class="target primary">XUNIA</span>
+          <span class="target primary">GPT-DOUG MAX</span>
+          <span class="target">VIRGINIA</span>
+          <span class="target">WAKEUP3LM</span>
+          <span class="target">ZYRA</span>
+          <span class="target">NXYZ</span>
+          <span class="target">ZYRA CLOUD</span>
+          <span class="target">AIP REGISTRY</span>
+          <span class="target">PALANTIR</span>
+        </div>
+      </div>
 
-        <line class="flow-normal" x1="290" y1="116" x2="290" y2="160" stroke="#dcefff" stroke-width="1.6" marker-end="url(#arrow)"/>
-        <text x="302" y="143" font-size="10" fill="#8490ad">review()</text>
+      <div class="branches">
+        <article class="branch block">
+          <strong>DENY / HOLD PATH</strong>
+          <p>If Zyra authorization fails or required approval is missing, dispatch does not proceed. The denial/hold state and reason become part of the mission record.</p>
+        </article>
+        <article class="branch loop">
+          <strong>VERIFY → REPAIR → RETEST LOOP</strong>
+          <p>A failed verification result can return the bounded mission to planning or execution for repair. Success is based on observed proof, not an agent saying “done.”</p>
+        </article>
+      </div>
+    </section>
 
-        <rect class="glow-node" x="190" y="164" width="200" height="64" rx="14" fill="#0b1023" stroke="#46f3ff" stroke-width="2"/>
-        <text x="290" y="190" text-anchor="middle" font-size="13" font-weight="800" fill="#46f3ff">ZYRA GUARD</text>
-        <text x="290" y="207" text-anchor="middle" font-size="10" fill="#8490ad">pattern + semantic + decode +</text>
-        <text x="290" y="220" text-anchor="middle" font-size="10" fill="#8490ad">confusable + policy checks</text>
+    <section class="truth" aria-label="Pipeline truth model">
+      <article>
+        <strong>CONTROL PLANE</strong>
+        <p>The Black House defines the canonical mission, routing, ontology, agent/service registry, evidence, and audit contracts.</p>
+      </article>
+      <article>
+        <strong>EXECUTION BOUNDARY</strong>
+        <p>XUNIA coordinates approved work. External writes and higher-impact mutations remain subject to authorization and postcondition checks.</p>
+      </article>
+      <article>
+        <strong>PUBLIC PAGE</strong>
+        <p><code>pipeline.html</code> is documentation. Animated or visual flow never implies that this browser page is itself running private agents.</p>
+      </article>
+    </section>
 
-        <line class="flow-block" x1="230" y1="228" x2="120" y2="290" stroke="#ff6b7a" stroke-width="1.7" marker-end="url(#arrowBlock)"/>
-        <text x="130" y="255" font-size="10" fill="#ff6b7a">blocked</text>
-        <rect x="20" y="294" width="180" height="56" rx="12" fill="#2a1119" stroke="#ff6b7a" stroke-width="1.5"/>
-        <text x="110" y="317" text-anchor="middle" font-size="11" font-weight="700" fill="#ff9aa6">blocked result</text>
-        <text x="110" y="334" text-anchor="middle" font-size="10" fill="#a9939a">reason + classification</text>
-
-        <line class="flow-normal" x1="360" y1="228" x2="480" y2="290" stroke="#dcefff" stroke-width="1.7" marker-end="url(#arrow)"/>
-        <text x="440" y="255" font-size="10" fill="#aab6d2">allowed</text>
-
-        <rect x="420" y="294" width="200" height="90" rx="14" fill="#0e1228" stroke="#9d5cff" stroke-width="2"/>
-        <text x="520" y="318" text-anchor="middle" font-size="13" font-weight="800" fill="#caa8ff">GPT-DOUG AGENT</text>
-        <text x="520" y="337" text-anchor="middle" font-size="10" fill="#8490ad">reason → plan → act → observe</text>
-        <text x="520" y="353" text-anchor="middle" font-size="10" fill="#8490ad">test → fix → retest → verify</text>
-        <text x="520" y="369" text-anchor="middle" font-size="10" fill="#8490ad">bounded tool execution</text>
-
-        <line class="flow-normal" x1="520" y1="384" x2="520" y2="420" stroke="#dcefff" stroke-width="1.5" marker-end="url(#arrow)"/>
-        <text x="531" y="405" font-size="10" fill="#8490ad">delegates</text>
-        <rect x="438" y="420" width="82" height="34" rx="9" fill="#0a0d1d" stroke="#323862" stroke-width="1.2"/>
-        <text x="479" y="441" text-anchor="middle" font-size="11" fill="#eff7ff">coder</text>
-        <rect x="530" y="420" width="82" height="34" rx="9" fill="#0a0d1d" stroke="#323862" stroke-width="1.2"/>
-        <text x="571" y="441" text-anchor="middle" font-size="11" fill="#eff7ff">tester</text>
-
-        <path class="flow-normal" d="M420 320 Q395 320 395 250 Q395 210 420 210" fill="none" stroke="#dcefff" stroke-width="1.2" marker-end="url(#arrow)"/>
-        <text x="345" y="270" font-size="9" fill="#8490ad">retry / repair</text>
-
-        <line class="flow-normal" x1="620" y1="330" x2="700" y2="330" stroke="#dcefff" stroke-width="1.7" marker-end="url(#arrow)"/>
-        <rect x="704" y="294" width="180" height="72" rx="14" fill="#0e1228" stroke="#323862" stroke-width="1.5"/>
-        <text x="794" y="318" text-anchor="middle" font-size="12" font-weight="700" fill="#eff7ff">results/*.json</text>
-        <text x="794" y="336" text-anchor="middle" font-size="10" fill="#8490ad">output + evidence +</text>
-        <text x="794" y="352" text-anchor="middle" font-size="10" fill="#8490ad">attempt metadata</text>
-
-        <path class="flow-context" d="M794 294 Q794 60 290 60 Q240 60 240 118" fill="none" stroke="#46f3ff" stroke-width="1.8" marker-end="url(#arrowCyan)"/>
-        <text x="510" y="49" text-anchor="middle" font-size="10" fill="#46f3ff">context feedback → later dispatches</text>
-      </svg>
-      <figcaption>The diagram is a visual representation of the project’s documented task lifecycle. The public page is static; it does not expose or remotely control private runtime processes.</figcaption>
-    </figure>
-
-    <div class="legend" aria-label="Diagram legend">
-      <span><span class="sw"></span>normal execution flow</span>
-      <span><span class="sw block"></span>Zyra block path</span>
-      <span><span class="sw accent"></span>context feedback loop</span>
-    </div>
-
-    <p class="pipeline-note"><strong>Motion accessibility:</strong> animated paths automatically stop when the operating system or browser requests reduced motion.</p>
+    <p class="source-note">Repository source of truth: <a href="https://github.com/sonoxo/gpt-doug-llm/blob/main/the-black-house/missions/router.manifest.json" rel="noopener">mission router manifest</a>, <a href="https://github.com/sonoxo/gpt-doug-llm/blob/main/the-black-house/missions/mission.schema.json" rel="noopener">mission envelope schema</a>, and <a href="https://github.com/sonoxo/gpt-doug-llm/blob/main/the-black-house/ontology/ontology.schema.json" rel="noopener">ontology schema</a>.</p>
   </main>
 </body>
 </html>
