@@ -6,7 +6,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 MODULE_PATH = Path(__file__).resolve().parents[1] / "redpanda-desktop" / "palantir_cpr_probe.py"
 SPEC = importlib.util.spec_from_file_location("palantir_cpr_probe", MODULE_PATH)
 assert SPEC and SPEC.loader
