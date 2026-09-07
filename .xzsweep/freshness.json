@@ -1,24 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-06T00:56:56Z",
-  "due_files_reviewed": 15,
-  "due_paths": [
-    ".github/workflows/cyber-cpr.yml",
-    "cyber-cpr/CHANGELOG.md",
-    "cyber-cpr/LICENSE",
-    "cyber-cpr/README.md",
-    "cyber-cpr/SECURITY.md",
-    "cyber-cpr/VERSION",
-    "cyber-cpr/config.example.json",
-    "cyber-cpr/release.sh",
-    "cyber-cpr/uninstall-service.sh",
-    "cyber-cpr/uninstall.sh",
-    "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md",
-    "scripts/gpt-doug-pocket-run.sh",
-    "scripts/pocket-benchmark-suite.py",
-    "scripts/pocket-publication-benchmark.py",
-    "zyra_pocket.py"
-  ],
+  "cutoff_at": "2026-09-06T02:05:37Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -243,13 +227,13 @@
     ".github/workflows/cyber-cpr.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:12:42Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "9fe149d99b9a30dee86c09d9b2ea2e860a13cefe4fa9f6e0d7a14518c6caf6d1",
       "size": 1670,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/docker-publish.yml": {
       "actions": [],
@@ -1714,6 +1698,50 @@
       "validation_issues": [],
       "was_due": false
     },
+    "apps/zyra-jukebox/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "dbd0c24068b6668b92175d8898a271c475dc98d50c235839cf758ff5b00ef07f",
+      "size": 1224,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "apps/zyra-jukebox/app.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "63a8c9f31a184eb11a6fa495104109565b320bbc4406e78dda3df4872603670a",
+      "size": 4976,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "apps/zyra-jukebox/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "2273e3355067316a252d479800073d92af2730b8c5e4cd0dff7b62b1e5722193",
+      "size": 2913,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "apps/zyra-jukebox/styles.css": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "832c91dc3ce8d45c0f4b38de6f741eb2fd49cc09f82d389f05743df7215fdac8",
+      "size": 2560,
+      "validation_issues": [],
+      "was_due": false
+    },
     "astral.py": {
       "actions": [],
       "binary": false,
@@ -1794,68 +1822,68 @@
     "cyber-cpr/CHANGELOG.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:11:42Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "a8ecbe9e06c04651144418299fc70d5b1ac244fd1a630d2a09294c3192b352fd",
       "size": 1090,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/LICENSE": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:03:02Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "18df46b456afeffde29c5bc0c5e108908c16ed3ea835f8f0b968d7f128ec3b90",
       "size": 1063,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:12:33Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "2ef73019f6c825b92657b6d9c8e49153680feaf69d072c95da6877239b082d89",
       "size": 4474,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/SECURITY.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:11:49Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "0208a2d242cb4000b497cc325d9537388fef924888dcd725ea129695decde505",
       "size": 1108,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/VERSION": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:11:34Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "e9dd8507f4bf0c6f42458e41aea833ad0bd3f6127272335eee9bf4d58541ed67",
       "size": 6,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/config.example.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:59:53Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "4dba2da3371133e61ecb805b45b5db918584258847ad4ff44053beffb8a0d600",
       "size": 183,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/cyber_cpr.py": {
       "actions": [],
@@ -1893,35 +1921,35 @@
     "cyber-cpr/release.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:12:14Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "a2a16b557ff981bca51a804bae2cd17a53eb6d6f1d815d84617b07f39f929e7f",
       "size": 1080,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/uninstall-service.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:12:06Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "4a1c9ca8a8ec84706f5d6d791c7ca95c33aeafc2254b68309733c9bc1da8ce25",
       "size": 431,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "cyber-cpr/uninstall.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T22:02:51Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "c31bfdc23a3a45b93369892cfd6a712b97856e474e8cf38f16384761d5dd0279",
       "size": 515,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "dev_terminal.py": {
       "actions": [],
@@ -2113,13 +2141,13 @@
     "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:52:58Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "6f7fc8e4900f16f7a75a8d6365067fd2e46f967325757fc2d2ec3700a912e8b7",
       "size": 5598,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/GPT_XUNIA_GODIS.md": {
       "actions": [],
@@ -2459,6 +2487,39 @@
       "reviewed_at": "2026-09-06T04:30:15Z",
       "sha256": "7862f132923f94640c8829994dda1b62c43f1d3098aaa27e10ffef75fb60124f",
       "size": 8612,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/jukebox/app.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "b12ad946b90c2c832b86e605b0272ccd60e27f1a562cb62e66ab169925e316a6",
+      "size": 5306,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/jukebox/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "b19d92d948e931e9a68feba81f3c70d6387cb45c633b965f2fddee425c17d251",
+      "size": 2660,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/jukebox/styles.css": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "832c91dc3ce8d45c0f4b38de6f741eb2fd49cc09f82d389f05743df7215fdac8",
+      "size": 2560,
       "validation_issues": [],
       "was_due": false
     },
@@ -4838,6 +4899,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "ontology/zyra-jukebox.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-07T02:05:27Z",
+      "reviewed_at": null,
+      "sha256": "2aebec95e03de4f559efe55b4830288cb75b7f3df226342ea8472a1ad0acd5fb",
+      "size": 1177,
+      "validation_issues": [],
+      "was_due": false
+    },
     "package-lock.json": {
       "actions": [],
       "binary": false,
@@ -5589,13 +5661,13 @@
     "scripts/gpt-doug-pocket-run.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:54:15Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "0151b1aa987f9026977eef0f45373bba27f0e3b54f55abf12c2ce2f7102618d4",
       "size": 5770,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/install_xunia_godis.sh": {
       "actions": [],
@@ -5611,24 +5683,24 @@
     "scripts/pocket-benchmark-suite.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:53:53Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "73958f8d4e86511c5108c5e750f9c02f2cc1e2d84ad7275b49a2d8a544b0c202",
       "size": 6083,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/pocket-publication-benchmark.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:52:38Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "bce048bfb6f24c3ea70dcc08a722e1a4aa1bf97db248b29c2aa32403e82fc292",
       "size": 14940,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/sonoxomus-research-bootstrap.sh": {
       "actions": [],
@@ -9527,13 +9599,13 @@
     "zyra_pocket.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-05T21:52:35Z",
       "reviewed_at": "2026-09-07T00:56:56Z",
       "sha256": "ccc875a7ec23ff2ee3f3cb961c16a1f98e8761990536eedf8855c8410b2a8330",
       "size": 6577,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra_protected_sleeper.py": {
       "actions": [],
@@ -9592,11 +9664,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-07T00:56:56Z",
+  "generated_at": "2026-09-07T02:05:37Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 870,
+  "tracked_files_reviewed": 878,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
