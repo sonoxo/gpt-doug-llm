@@ -226,3 +226,29 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify-public:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify canonical xunia.org routes
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/arcade/?v=${CACHE_BUST}" -o /tmp/xunia-arcade.html \
+              && grep -q 'SUPER GALACTIK FEDERATION' /tmp/xunia-arcade.html \
+              && grep -q 'XUNIA ARCADE ENTRY GATE' /tmp/xunia-arcade.html; then
+              ok=1
+              break
+            fi
+            sleep 2
+          done
+          test "$ok" -eq 1
+          curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/?v=${CACHE_BUST}" -o /tmp/xunia-home-live.html
+          grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home-live.html
+          grep -q 'Super Galactik Federation Arcade' /tmp/xunia-home-live.html
+          echo 'CANONICAL_XUNIA_ARCADE_LIVE=PASS'
