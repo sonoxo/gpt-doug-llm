@@ -21,9 +21,14 @@
           <option value="direct">Direct short-lived bearer token</option>
         </select>
       </label>
-      <label id="bridgeRow">Bridge URL
-        <input id="bridgeUrl" value="http://127.0.0.1:8765" spellcheck="false" />
-      </label>
+      <div id="bridgeRow">
+        <label>Bridge URL
+          <input id="bridgeUrl" value="http://127.0.0.1:8765" spellcheck="false" />
+        </label>
+        <label>Bridge key (session only)
+          <input id="bridgeKey" type="password" autocomplete="off" placeholder="PALANTIR_TOOLBOX_BRIDGE_KEY" />
+        </label>
+      </div>
       <label>Foundry tenant origin
         <input id="foundryOrigin" placeholder="https://your-tenant.palantirfoundry.com" spellcheck="false" />
       </label>
