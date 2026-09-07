@@ -1,0 +1,30 @@
+{
+  "ontology": "ZYRA_JUKEBOX_v1",
+  "product": "ZYRA JUKEBOX",
+  "module": "zyra-jukebox",
+  "class": "MusicPlaybackGateway",
+  "parentEcosystem": "GPT-DOUG-LLM / ZYRA / XUNIA",
+  "purpose": "Federated, source-aware music discovery and playback with RetroViz 95 visualization.",
+  "entities": {
+    "Artist": ["name", "sourceId", "source"],
+    "Track": ["title", "artist", "source", "sourceUrl", "playbackMode", "rightsContext"],
+    "MusicDirectory": ["name", "searchUrl", "playbackCapability"],
+    "PlaybackSession": ["track", "source", "startedAt", "mode"],
+    "QueueItem": ["track", "position"],
+    "Visualizer": ["name", "mode", "audioReactive"]
+  },
+  "relations": [
+    "Artist CREATES Track",
+    "Track DISCOVERED_VIA MusicDirectory",
+    "PlaybackSession PLAYS Track",
+    "QueueItem REFERENCES Track",
+    "Visualizer REACTS_TO PlaybackSession"
+  ],
+  "sources": ["Internet Archive", "SoundCloud", "YouTube", "Bandcamp", "Audius", "Jamendo", "Local Audio"],
+  "policy": {
+    "preserve_source_provenance": true,
+    "no_rebroadcast_of_restricted_catalogs": true,
+    "use_authorized_embed_or_direct_playback": true,
+    "core_paid_api_requirement": false
+  }
+}
