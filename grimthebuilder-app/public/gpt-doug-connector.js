@@ -30,11 +30,11 @@ export function normalizeBridgeUrl(value) {
     throw new Error('Bridge URL must be a base URL without a path.');
   }
 
-  const isLoopback = LOOPBACK_HOSTS.has(loopbackHostname(parsed.hostname));
+  const host = loopbackHostname(parsed.hostname);
+  const isLoopback = LOOPBACK_HOSTS.has(host) || host.startsWith('127.');
   if (parsed.protocol === 'http:' && !isLoopback) {
     throw new Error('Non-loopback bridge URLs must use HTTPS.');
   }
-
   return `${parsed.protocol}//${parsed.host}`;
 }
 
@@ -50,7 +50,7 @@ async function requestJson(fetchImpl, url, options = {}, timeoutMs = 15_000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetchImpl(url, { ...options, signal: controller.signal });
+    const response = await fetchImpl(url, { ...options, mode: 'cors', cache: 'no-store', signal: controller.signal });
     const text = await response.text();
     let payload = {};
     if (text) {
@@ -60,12 +60,13 @@ async function requestJson(fetchImpl, url, options = {}, timeoutMs = 15_000) {
         throw new Error(`GPT Doug returned invalid JSON (${response.status}).`);
       }
     }
-    if (!response.ok) {
-      throw new Error(payload.error || `GPT Doug request failed (${response.status}).`);
-    }
+    if (!response.ok) throw new Error(payload.error || `GPT Doug request failed (${response.status}).`);
     return payload;
   } catch (error) {
     if (error?.name === 'AbortError') throw new Error('GPT Doug bridge request timed out.');
+    if (error instanceof TypeError) {
+      throw new Error('Cannot reach GPT Doug. Keep the bridge running and allow this page origin in DOUG_BRIDGE_ORIGINS.');
+    }
     throw error;
   } finally {
     clearTimeout(timeout);
@@ -76,7 +77,6 @@ export async function discoverGptDoug(config, fetchImpl = fetch) {
   const baseUrl = normalizeBridgeUrl(config?.baseUrl);
   const token = String(config?.token || '');
   const headers = requestHeaders({ token });
-
   const health = await requestJson(fetchImpl, `${baseUrl}/health`, { method: 'GET', headers });
   if (health.ok !== true || health.model_ready !== true) {
     throw new Error(health.error || health.detail || 'GPT Doug model is not ready.');
@@ -84,12 +84,11 @@ export async function discoverGptDoug(config, fetchImpl = fetch) {
 
   const tags = await requestJson(fetchImpl, `${baseUrl}/api/tags`, { method: 'GET', headers });
   const models = Array.isArray(tags.models)
-    ? tags.models
-        .map((item) => (typeof item === 'string' ? item : item?.name || item?.model || ''))
-        .filter(Boolean)
+    ? [...new Set(tags.models
+        .map(item => typeof item === 'string' ? item : item?.name || item?.model || '')
+        .filter(Boolean))]
     : [];
-
-  if (!models.length) throw new Error('The bridge returned no allowed models.');
+  if (!models.length) throw new Error('The bridge returned no installed, allowed models.');
 
   const requestedModel = String(config?.model || '');
   return {
@@ -121,9 +120,7 @@ export async function chatGptDoug(config, messages, options = {}, fetchImpl = fe
   const model = String(config?.model || '').trim();
   if (!model) throw new Error('Select a GPT Doug model first.');
 
-  const projectId = PROJECT_RE.test(String(options.projectId || ''))
-    ? String(options.projectId)
-    : '';
+  const projectId = PROJECT_RE.test(String(options.projectId || '')) ? String(options.projectId) : '';
   const payload = {
     model,
     messages,
@@ -137,16 +134,11 @@ export async function chatGptDoug(config, messages, options = {}, fetchImpl = fe
     },
   };
 
-  const result = await requestJson(
-    fetchImpl,
-    `${baseUrl}/api/chat`,
-    {
-      method: 'POST',
-      headers: requestHeaders({ token: String(config?.token || ''), projectId, json: true }),
-      body: JSON.stringify(payload),
-    },
-    Number(options.timeoutMs || 180_000),
-  );
+  const result = await requestJson(fetchImpl, `${baseUrl}/api/chat`, {
+    method: 'POST',
+    headers: requestHeaders({ token: String(config?.token || ''), projectId, json: true }),
+    body: JSON.stringify(payload),
+  }, Number(options.timeoutMs || 180_000));
 
   if (result.done !== true || typeof result.message?.content !== 'string') {
     throw new Error('GPT Doug did not return a completed chat response.');
@@ -156,22 +148,22 @@ export async function chatGptDoug(config, messages, options = {}, fetchImpl = fe
 
 function cleanRelativePath(value) {
   const path = String(value || '').trim();
-  if (!path || path.length > 240 || path.includes('\0') || path.includes('\\')) {
+  if (!path || path.length > 240 || /[\u0000-\u001f\u007f]/.test(path) || path.includes('\\')) {
     throw new Error('GPT Doug returned an invalid file path.');
   }
   if (path.startsWith('/') || /^[A-Za-z]:/.test(path)) {
     throw new Error('GPT Doug returned an absolute file path.');
   }
   const parts = path.split('/');
-  if (parts.some((part) => !part || part === '.' || part === '..')) {
+  if (parts.some(part => !part || part === '.' || part === '..')) {
     throw new Error('GPT Doug returned an unsafe file path.');
   }
+  if (parts[0] === '.grim') throw new Error('GPT Doug returned a reserved file path.');
   return path;
 }
 
 export function parseAgentResult(text) {
-  const cleaned = String(text || '')
-    .trim()
+  const cleaned = String(text || '').trim()
     .replace(/^```(?:json)?\s*/i, '')
     .replace(/\s*```$/, '');
 
@@ -181,7 +173,6 @@ export function parseAgentResult(text) {
   } catch {
     throw new Error('GPT Doug returned invalid agent JSON.');
   }
-
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error('GPT Doug agent response must be a JSON object.');
   }
@@ -189,17 +180,17 @@ export function parseAgentResult(text) {
   const operations = Array.isArray(value.operations) ? value.operations : [];
   if (operations.length > MAX_OPERATIONS) throw new Error('GPT Doug returned too many file operations.');
 
-  const normalized = operations.map((operation) => {
-    if (!operation || !['write_file', 'delete_file'].includes(operation.op)) {
+  const normalized = operations.map(operation => {
+    if (!operation || typeof operation !== 'object' || !['write_file', 'delete_file'].includes(operation.op)) {
       throw new Error('GPT Doug returned an unsupported file operation.');
     }
     const path = cleanRelativePath(operation.path);
     if (operation.op === 'delete_file') return { op: 'delete_file', path };
-    const content = String(operation.content ?? '');
-    if (new TextEncoder().encode(content).length > MAX_FILE_BYTES) {
+    if (typeof operation.content !== 'string') throw new Error(`GPT Doug returned invalid content for ${path}.`);
+    if (new TextEncoder().encode(operation.content).length > MAX_FILE_BYTES) {
       throw new Error(`GPT Doug file is too large: ${path}`);
     }
-    return { op: 'write_file', path, content };
+    return { op: 'write_file', path, content: operation.content };
   });
 
   return {
@@ -219,7 +210,7 @@ export function createAgentMessages({ prompt, mode = 'build', files = [] }) {
     `Mode: ${mode}.`,
     'Return ONLY one JSON object with this exact shape:',
     '{"message":"brief result","operations":[{"op":"write_file","path":"relative/path","content":"complete file"},{"op":"delete_file","path":"relative/path"}]}',
-    'Never use absolute paths, backslashes, or .. path segments.',
+    'Never use absolute paths, backslashes, .. path segments, or the reserved .grim directory.',
     'Use complete file contents, not patches.',
     mode === 'plan' || mode === 'explain'
       ? 'Do not modify files. Return operations as an empty array.'
@@ -242,9 +233,6 @@ export function createAgentMessages({ prompt, mode = 'build', files = [] }) {
 
   return [
     { role: 'system', content: system },
-    {
-      role: 'user',
-      content: `REQUEST:\n${request}\n\nPROJECT FILES:\n${context.join('\n\n') || '(no readable files)'}`,
-    },
+    { role: 'user', content: `REQUEST:\n${request}\n\nPROJECT FILES:\n${context.join('\n\n') || '(no readable files)'}` },
   ];
 }
