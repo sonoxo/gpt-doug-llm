@@ -1,6 +1,11 @@
 import unittest
 
-from sovereignty_performance import PerformancePolicy, TTLRUCache, choose_accelerator, hardware_profile
+from sovereignty_performance import (
+    PerformancePolicy,
+    TTLRUCache,
+    choose_accelerator,
+    hardware_profile,
+)
 
 
 class SovereigntyPerformanceTests(unittest.TestCase):
