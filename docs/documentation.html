@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="GPT-DOUG-LLM and XUNIA documentation: architecture, tools, runtime surfaces, Green House, Black House, NXYZ Cloud, integrations, development and governance.">
+  <title>GPT-DOUG-LLM Documentation</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <style>
+    :root{--docs-side:286px;--docs-toc:210px}
+    .docs-shell{max-width:1480px;margin:0 auto;display:grid;grid-template-columns:var(--docs-side) minmax(0,1fr) var(--docs-toc);gap:26px;padding:26px clamp(14px,3vw,34px) 80px}
+    .docs-nav,.docs-toc{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 98px);overflow:auto;padding-right:8px}
+    .docs-nav::-webkit-scrollbar,.docs-toc::-webkit-scrollbar{width:7px}.docs-nav::-webkit-scrollbar-thumb,.docs-toc::-webkit-scrollbar-thumb{background:#262a4b;border-radius:999px}
+    .docs-logo{display:flex;align-items:center;gap:11px;margin:4px 0 18px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(11,13,29,.84)}
+    .docs-logo-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--cyan);border-radius:12px;color:var(--cyan);font-weight:950;box-shadow:0 0 22px rgba(70,243,255,.18)}
+    .docs-logo strong{display:block;font-size:13px}.docs-logo small{display:block;color:var(--dim);font-size:9px;letter-spacing:.14em;margin-top:3px}
+    .docs-search{width:100%;padding:12px 13px;margin-bottom:17px;border:1px solid #2a2f53;background:#0b0e20;color:#fff;border-radius:12px;outline:none}.docs-search:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(70,243,255,.08)}
+    .nav-group{margin:18px 0}.nav-group h3{margin:0 0 7px;padding:0 8px;color:#6e7a9a;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.nav-group a{display:block;text-decoration:none;color:#bcc7df;font-size:12px;font-weight:650;padding:8px 10px;border-radius:9px;margin:2px 0}.nav-group a:hover,.nav-group a.active{background:#12162d;color:#fff}.nav-group a.active{box-shadow:inset 2px 0 var(--cyan)}
+    .docs-main{min-width:0}.docs-hero{padding:34px 0 28px;border-bottom:1px solid var(--line)}.docs-hero .eyebrow{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase}.docs-hero h1{font-size:clamp(42px,7vw,78px)!important;line-height:.95;margin:12px 0 16px!important;background:linear-gradient(90deg,#fff,var(--cyan) 52%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent!important}.docs-hero .lead{max-width:820px;color:#aeb9d1;font-size:18px;line-height:1.72}.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}.doc-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #30365f;border-radius:11px;background:#10142a;color:#fff;text-decoration:none;font-weight:800;font-size:12px}.doc-btn.primary{background:var(--cyan);color:#061016;border-color:var(--cyan)}
+    .notice{margin-top:22px;border:1px solid rgba(168,255,96,.22);background:rgba(168,255,96,.055);border-radius:16px;padding:15px 17px;color:#cfd8c8;font-size:13px;line-height:1.6}.notice strong{color:var(--lime)}
+    .doc-section{padding:36px 0;border-bottom:1px solid rgba(38,42,75,.72);scroll-margin-top:86px}.doc-section h2{font-size:30px;margin:0 0 10px}.doc-section>p{color:#a2aec8;line-height:1.75;max-width:860px}.doc-section h3{margin-top:28px}.doc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}.doc-card{position:relative;padding:18px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,rgba(13,17,38,.92),rgba(7,9,21,.95));text-decoration:none;color:var(--ink);min-height:124px;transition:transform .18s ease,border-color .18s ease}.doc-card:hover{transform:translateY(-2px);border-color:rgba(70,243,255,.45)}.doc-card .tag{font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}.doc-card h3{margin:10px 0 6px;font-size:16px}.doc-card p{margin:0;color:#8d9ab7;font-size:12px;line-height:1.55}.doc-card .arrow{position:absolute;right:15px;top:14px;color:var(--violet)}
+    .architecture{margin-top:18px;border:1px solid var(--line);border-radius:20px;background:#060713;padding:18px;overflow:auto}.architecture pre{margin:0;color:#d9e7f5;background:transparent;border:0;font:600 12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;min-width:680px}.architecture code{background:transparent;border:0;padding:0;color:inherit}
+    .table-wrap{overflow:auto;margin-top:17px;border:1px solid var(--line);border-radius:17px}.docs-table{width:100%;border-collapse:collapse;min-width:720px;background:rgba(7,9,20,.86)}.docs-table th,.docs-table td{padding:13px 14px;border-bottom:1px solid #202544;text-align:left;font-size:12px;vertical-align:top}.docs-table th{color:#dbe7ff;background:#0d1024;font-size:10px;letter-spacing:.12em;text-transform:uppercase}.docs-table td{color:#aeb9d1}.docs-table tr:last-child td{border-bottom:0}.status{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:900;letter-spacing:.08em}.status.public{color:var(--lime);background:rgba(168,255,96,.08);border:1px solid rgba(168,255,96,.2)}.status.local{color:#ffd36a;background:rgba(255,211,106,.07);border:1px solid rgba(255,211,106,.22)}
+    .codebox{position:relative;margin:16px 0;border:1px solid #262c50;border-radius:15px;background:#070914;overflow:auto}.codebox pre{margin:0;padding:18px;color:#d9e7f5;font:600 12px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace}.codebox button{position:absolute;right:9px;top:9px;border:1px solid #343b69;background:#11152d;color:#cdd7ef;border-radius:8px;padding:6px 8px;font-size:10px;cursor:pointer}
+    .toc-title{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#6e7a9a;margin:6px 0 9px}.docs-toc a{display:block;color:#8f9dbb;text-decoration:none;font-size:11px;padding:6px 0}.docs-toc a:hover{color:var(--cyan)}.toc-source{margin-top:20px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#0b0e1f;color:#8f9dbb;font-size:11px;line-height:1.55}.toc-source a{color:var(--cyan);padding:0;margin-top:5px}
+    .index-count{margin-top:12px;color:#66728e;font-size:11px}.hidden-doc{display:none!important}.no-results{display:none;padding:18px;border:1px dashed #343a63;border-radius:14px;color:#8995b0;text-align:center;margin-top:16px}.no-results.show{display:block}
+    @media(max-width:1120px){.docs-shell{grid-template-columns:250px minmax(0,1fr)}.docs-toc{display:none}}
+    @media(max-width:780px){.docs-shell{display:block;padding-top:12px}.docs-nav{position:relative;top:auto;max-height:none;overflow:visible;margin-bottom:18px}.docs-nav .nav-scroll{display:none}.docs-nav.open .nav-scroll{display:block}.docs-mobile-toggle{display:block!important}.doc-grid{grid-template-columns:1fr}.docs-hero h1{font-size:clamp(40px,15vw,66px)!important}}
+    .docs-mobile-toggle{display:none;width:100%;padding:10px 12px;margin-bottom:10px;border:1px solid #2d335c;border-radius:11px;background:#0f1328;color:#fff;text-align:left;font-weight:800}
+    @media(prefers-reduced-motion:reduce){.doc-card{transition:none}.doc-card:hover{transform:none}}
+  </style>
+</head>
+<body>
+  <div class="docs-shell">
+    <aside class="docs-nav" aria-label="Documentation navigation">
+      <div class="docs-logo"><div class="docs-logo-mark">D</div><div><strong>GPT-DOUG-LLM</strong><small>DOCUMENTATION // XUNIA</small></div></div>
+      <button id="docsToggle" class="docs-mobile-toggle" type="button">☰ Documentation index</button>
+      <div class="nav-scroll">
+        <input id="docsSearch" class="docs-search" type="search" placeholder="Search documentation…" autocomplete="off">
+        <nav id="docsIndex">
+          <div class="nav-group" data-group="getting-started"><h3>Getting Started</h3><a href="#introduction" data-keywords="introduction overview start">Introduction</a><a href="#quick-start" data-keywords="quick start install launch local">Quick Start</a><a href="#design-principles" data-keywords="design philosophy principles ontology evidence">Design Principles</a></div>
+          <div class="nav-group" data-group="platform"><h3>Platform & Surfaces</h3><a href="#architecture" data-keywords="architecture graph control plane agents ontology">Architecture</a><a href="#public-surfaces" data-keywords="public pages tools resources browser">Public Surfaces</a><a href="#houses" data-keywords="black house green house control intelligence">House System</a><a href="#cloud" data-keywords="nxyz cloud local compute podman">NXYZ Cloud</a></div>
+          <div class="nav-group" data-group="agents"><h3>Agents & Intelligence</h3><a href="#agent-runtime" data-keywords="gpt doug zyra agents runtime mission">Agent Runtime</a><a href="#ontology" data-keywords="ontology object links actions palantir bpo">Ontology</a><a href="#evidence" data-keywords="verification evidence tests ci status">Evidence & Verification</a></div>
+          <div class="nav-group" data-group="workflows"><h3>Workflows</h3><a href="#creation-standard" data-keywords="creation standard browser first free access">Creation Standard</a><a href="#development" data-keywords="developer repository git github contribute">Development</a><a href="#integrations" data-keywords="integrations github palantir world monitor green house">Integrations</a></div>
+          <div class="nav-group" data-group="reference"><h3>Reference</h3><a href="#commands" data-keywords="commands doug greenhouse nxyz cli">Commands</a><a href="#routes" data-keywords="routes urls pages endpoints">Routes</a><a href="#governance" data-keywords="governance safety permissions provenance license">Governance & Provenance</a><a href="#machine-index" data-keywords="agents llms docs index json machine readable">Machine Index</a></div>
+        </nav>
+        <div id="indexCount" class="index-count">16 documentation topics</div>
+        <div id="noResults" class="no-results">No documentation topics match that search.</div>
+      </div>
+    </aside>
+
+    <main class="docs-main">
+      <header id="introduction" class="docs-hero doc-section" data-doc="introduction overview gpt doug llm xunia docs">
+        <div class="eyebrow">GPT-DOUG-LLM // XUNIA DOCUMENTATION</div>
+        <h1>Documentation</h1>
+        <p class="lead">The operational guide to the GPT‑DOUG‑LLM / XUNIA ecosystem: how the public web surfaces, local runtimes, House layers, ontology graph, agents, cloud tooling, evidence gates, and repository fleet fit together.</p>
+        <div class="hero-actions"><a class="doc-btn primary" href="#quick-start">Start here →</a><a class="doc-btn" href="./resources.html">Open tools & resources</a><a class="doc-btn" href="https://github.com/sonoxo/gpt-doug-llm">Source repository ↗</a></div>
+        <div class="notice"><strong>Documentation truth rule:</strong> a repository, tool, or concept appearing here does not automatically mean it is deployed or runtime-connected. Status labels distinguish public surfaces, local-ready components, architecture, and verified evidence.</div>
+      </header>
+
+      <section id="quick-start" class="doc-section" data-doc="quick start install launch commands doug greenhouse nxyz">
+        <h2>Quick Start</h2><p>Choose the surface you need. Browser pages require no local install. Local runtimes expose capabilities that need your machine, filesystem, container engine, or private credentials.</p>
+        <div class="doc-grid">
+          <a class="doc-card" href="./resources.html"><span class="arrow">↗</span><div class="tag">Browser</div><h3>Interactive Tools & Resources</h3><p>Central public catalog for XUNIA dashboards, simulators, learning tools, and local-ready systems.</p></a>
+          <a class="doc-card" href="./"><span class="arrow">↗</span><div class="tag">Browser</div><h3>XUNIA Museum + HQ</h3><p>Repository map, products, experiments, build evidence, and public ecosystem entry point.</p></a>
+          <a class="doc-card" href="https://github.com/sonoxo/thegreenhouse"><span class="arrow">↗</span><div class="tag">Local + Repo</div><h3>THE GREEN HOUSE</h3><p>Environmental, biological, pharmaceutical, regulatory, and global-intelligence surface.</p></a>
+          <a class="doc-card" href="https://github.com/sonoxo/gpt-doug-llm"><span class="arrow">↗</span><div class="tag">Source</div><h3>GPT-DOUG-LLM</h3><p>Main source repository for the agent runtime, XUNIA public pages, governance, tests, and integration layers.</p></a>
+        </div>
+      </section>
+
+      <section id="design-principles" class="doc-section" data-doc="design principles philosophy ontology evidence public free first">
+        <h2>Design Principles</h2><p>The ecosystem is built around a few repeatable constraints: ontology before isolated scripts, browser access before unnecessary installation, evidence before status claims, local execution when privileged access is required, and explicit provenance for third-party components.</p>
+        <div class="doc-grid">
+          <div class="doc-card"><div class="tag">01</div><h3>Ontology-first</h3><p>Objects, links, actions, ownership, dependencies, capabilities and events are modeled as a connected system instead of unrelated repositories.</p></div>
+          <div class="doc-card"><div class="tag">02</div><h3>Browser-first / free-access</h3><p>Interactive creations should expose a free browser page whenever the capability can safely run on the web.</p></div>
+          <div class="doc-card"><div class="tag">03</div><h3>Evidence-gated</h3><p>Tests, CI, runtime checks and explicit truth states are preferred over declaring a component complete without proof.</p></div>
+          <div class="doc-card"><div class="tag">04</div><h3>Local where necessary</h3><p>Filesystem, hardware, private credentials and privileged controls remain local or admin-only instead of being pushed into public browser code.</p></div>
+        </div>
+      </section>
+
+      <section id="architecture" class="doc-section" data-doc="architecture control plane black house green house zyra gpt doug ontology repository fleet">
+        <h2>Architecture</h2><p>GPT‑DOUG‑LLM is treated as a connected ecosystem graph. XUNIA provides public product surfaces; GPT‑DOUG coordinates planning/execution; Zyra bounds and verifies work; House layers group operational domains; repositories provide capabilities and evidence.</p>
+        <div class="architecture"><pre><code>PUBLIC USERS
+    │
+    ├── xunia.org / GitHub Pages ── Museum · Resources · Arcade · HOLO · Docs
+    │
+    ▼
+XUNIA PUBLIC ACCESS LAYER
+    │
+    ├── GPT-DOUG-LLM ───── plan · execute · integrate · document
+    ├── ZYRA ───────────── bound · verify · safety · evidence
+    │
+    ▼
+ONTOLOGY / CONTROL GRAPH
+    │
+    ├── THE BLACK HOUSE ── control-plane / governed operations
+    ├── THE GREEN HOUSE ── eco · bio · pharma · regulatory · global intel
+    ├── NXYZ CLOUD ─────── local compute / services / runtime nodes
+    └── REPOSITORY FLEET ─ tools · products · experiments · references
+    │
+    ▼
+EVIDENCE LAYER
+    tests · CI · runtime health · provenance · status pages · audit records</code></pre></div>
+      </section>
+
+      <section id="public-surfaces" class="doc-section" data-doc="public surfaces browser tools resources arcade holo museum status metrics pipeline">
+        <h2>Public Surfaces</h2><p>These are designed as browser-accessible entry points. They are separate from local/admin runtimes that require system access.</p>
+        <div class="table-wrap"><table class="docs-table"><thead><tr><th>Surface</th><th>Role</th><th>Access</th><th>Route</th></tr></thead><tbody>
+          <tr><td>XUNIA Museum + HQ</td><td>Public ecosystem front door and repository museum</td><td><span class="status public">PUBLIC</span></td><td><a href="./">/</a></td></tr>
+          <tr><td>Tools & Resources</td><td>Interactive catalog and creation registry</td><td><span class="status public">PUBLIC</span></td><td><a href="./resources.html">/resources.html</a></td></tr>
+          <tr><td>Super Galactik Federation Arcade</td><td>Free browser mini-game collection</td><td><span class="status public">PUBLIC</span></td><td><a href="./arcade/">/arcade/</a></td></tr>
+          <tr><td>HOLO Workable Simulator</td><td>Scenario / AAR browser simulator</td><td><span class="status public">PUBLIC</span></td><td><a href="./holo/">/holo/</a></td></tr>
+          <tr><td>Status / Metrics / Pipeline</td><td>Build evidence, telemetry and agent-flow views</td><td><span class="status public">PUBLIC</span></td><td><a href="./status.html">status</a> · <a href="./metrics.html">metrics</a> · <a href="./pipeline.html">pipeline</a></td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section id="houses" class="doc-section" data-doc="house black green house intelligence control plane world monitor">
+        <h2>House System</h2><p>House names represent bounded operational domains in the wider ontology. They are not claims of external affiliation; each layer has its own purpose, interfaces and truth state.</p>
+        <div class="doc-grid">
+          <div class="doc-card"><div class="tag">Control</div><h3>THE BLACK HOUSE</h3><p>Parent control-plane pattern for governed actions, routing, orchestration, auditability, simulation and resilience.</p></div>
+          <a class="doc-card" href="https://github.com/sonoxo/thegreenhouse"><span class="arrow">↗</span><div class="tag">Intelligence</div><h3>THE GREEN HOUSE</h3><p>Branded eco / bio / pharma / regulatory / global-intelligence project. Public source routes to sonoxo/thegreenhouse.</p></a>
+        </div>
+      </section>
+
+      <section id="cloud" class="doc-section" data-doc="nxyz cloud podman local compute control plane dashboard 8080">
+        <h2>NXYZ Cloud</h2><p>NXYZ Cloud is the local compute/service layer used for self-hosted runtime experiments and node-oriented workflows. The local CLI is designed to hide multi-step startup behind a compact command surface.</p>
+        <div class="codebox"><button data-copy="nxyz">copy</button><pre><code>nxyz</code></pre></div>
+        <div class="table-wrap"><table class="docs-table"><thead><tr><th>Command</th><th>Purpose</th></tr></thead><tbody><tr><td><code>nxyz start</code></td><td>Start the local NXYZ Cloud services.</td></tr><tr><td><code>nxyz status</code></td><td>Check local node/service health.</td></tr><tr><td><code>nxyz dashboard</code></td><td>Open the local browser dashboard.</td></tr><tr><td><code>nxyz stop</code></td><td>Stop the local runtime.</td></tr></tbody></table></div>
+      </section>
+
+      <section id="agent-runtime" class="doc-section" data-doc="agent runtime gpt doug zyra mission execution safety verify">
+        <h2>Agent Runtime</h2><p>The runtime separates planning/execution from verification and boundaries. GPT‑DOUG is the planning and work-execution identity; Zyra is the guard/verification identity; evidence flows back into the status layer instead of being treated as implicit success.</p>
+        <div class="architecture"><pre><code>REQUEST → PLAN → BOUND → EXECUTE → TEST → VERIFY → PUBLISH / RETRY
+            │       │        │        │       │
+         GPT-DOUG  ZYRA   repo/tools  CI   evidence graph</code></pre></div>
+      </section>
+
+      <section id="ontology" class="doc-section" data-doc="ontology palantir bpo object types link types actions schemas ingestion validation">
+        <h2>Ontology</h2><p>The shared ontology is the connective tissue across agents and repositories. A component should have a canonical identity, purpose, owner, dependencies, capabilities, interfaces, permissions, environments and evidence rather than existing as an isolated project.</p>
+        <div class="doc-grid"><div class="doc-card"><div class="tag">Objects</div><h3>Canonical entities</h3><p>Agents, repositories, tools, services, Houses, datasets, actions, environments and evidence records.</p></div><div class="doc-card"><div class="tag">Links</div><h3>System relationships</h3><p>Owns, depends-on, exposes, verifies, deploys-to, consumes, derives-from, monitors and governs.</p></div><div class="doc-card"><div class="tag">Actions</div><h3>Governed operations</h3><p>Build, test, deploy, ingest, validate, simulate, publish, rollback and audit.</p></div><div class="doc-card"><div class="tag">BPO</div><h3>Build Palantir Ontology</h3><p>Standing command for ontology-first repository work: object/link types, actions, schemas, ingestion, validation and integration points.</p></div></div>
+      </section>
+
+      <section id="evidence" class="doc-section" data-doc="evidence verification tests ci status truth state runtime health">
+        <h2>Evidence & Verification</h2><p>Completion claims should be tied to measurable evidence. Public status pages distinguish implemented, partial and not-yet-verified work; runtime-facing tools should expose health checks or explicit failure states.</p>
+        <div class="doc-grid"><a class="doc-card" href="./status.html"><span class="arrow">↗</span><div class="tag">Evidence</div><h3>Build Status</h3><p>Component-level verification and implementation state.</p></a><a class="doc-card" href="./metrics.html"><span class="arrow">↗</span><div class="tag">Telemetry</div><h3>Metrics</h3><p>Measured ontology, testing and system evidence.</p></a><a class="doc-card" href="./pipeline.html"><span class="arrow">↗</span><div class="tag">Flow</div><h3>Agent Pipeline</h3><p>Task intake through execution, testing, verification and feedback.</p></a></div>
+      </section>
+
+      <section id="creation-standard" class="doc-section" data-doc="creation standard browser first free access resources public page local required">
+        <h2>Creation Standard</h2><p>Interactive creations are expected to receive a free public browser page whenever technically and safely possible, plus a catalog entry in the XUNIA resource hub. Local-only access must be justified by a real technical requirement such as hardware, private credentials or filesystem permissions.</p>
+        <div class="hero-actions"><a class="doc-btn" href="./resources.html">Resource Hub</a><a class="doc-btn" href="https://github.com/sonoxo/gpt-doug-llm/blob/main/CREATION_STANDARD.md">Creation Standard source ↗</a></div>
+      </section>
+
+      <section id="development" class="doc-section" data-doc="development github clone source branches tests contribute">
+        <h2>Development</h2><p>The repository is the source of truth for this documentation and the public XUNIA pages.</p>
+        <div class="codebox"><button data-copy="git clone https://github.com/sonoxo/gpt-doug-llm.git">copy</button><pre><code>git clone https://github.com/sonoxo/gpt-doug-llm.git
+cd gpt-doug-llm</code></pre></div>
+        <p>Use the repository’s existing tests and workflows as the acceptance boundary for changes. Interactive public work should also update the resource registry.</p>
+      </section>
+
+      <section id="integrations" class="doc-section" data-doc="integrations github palantir green house world monitor public data APIs">
+        <h2>Integrations</h2><p>Integrations are modeled as explicit connections, not implied ownership. Public-facing source links should route to XUNIA/Sonoxo repositories when they represent our product surface, while third-party code/data retains its required license and provenance in the appropriate legal or source files.</p>
+        <div class="doc-grid"><a class="doc-card" href="https://github.com/sonoxo"><span class="arrow">↗</span><div class="tag">Platform</div><h3>GitHub</h3><p>Source hosting, repository fleet, Actions, releases and GitHub Pages.</p></a><a class="doc-card" href="https://github.com/sonoxo/thegreenhouse"><span class="arrow">↗</span><div class="tag">Product</div><h3>THE GREEN HOUSE</h3><p>Standalone branded intelligence repository and local runtime surface.</p></a></div>
+      </section>
+
+      <section id="commands" class="doc-section" data-doc="commands doug greenhouse nxyz bpo cli terminal">
+        <h2>Commands</h2><div class="table-wrap"><table class="docs-table"><thead><tr><th>Command</th><th>Scope</th><th>Meaning</th></tr></thead><tbody><tr><td><code>doug</code></td><td>Local</td><td>GPT‑DOUG local command/runtime entry where installed.</td></tr><tr><td><code>greenhouse</code></td><td>Local</td><td>Launch THE GREEN HOUSE local intelligence surface where installed.</td></tr><tr><td><code>nxyz</code></td><td>Local</td><td>Start or control NXYZ Cloud.</td></tr><tr><td><code>bpo</code></td><td>Workflow</td><td>Build Palantir Ontology: model object/link types, governed actions, schemas, ingestion and validation.</td></tr></tbody></table></div>
+      </section>
+
+      <section id="routes" class="doc-section" data-doc="routes xunia org resources documentation arcade holo status metrics pipeline">
+        <h2>Routes</h2><div class="table-wrap"><table class="docs-table"><thead><tr><th>Route</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="./">xunia.org/</a></td><td>Museum + HQ</td></tr><tr><td><a href="./documentation.html">/documentation.html</a></td><td>GPT‑DOUG‑LLM documentation</td></tr><tr><td><a href="./resources.html">/resources.html</a></td><td>Interactive tools/resources hub</td></tr><tr><td><a href="./arcade/">/arcade/</a></td><td>Super Galactik Federation Arcade</td></tr><tr><td><a href="./holo/">/holo/</a></td><td>HOLO simulator</td></tr><tr><td><a href="./status.html">/status.html</a></td><td>Build evidence</td></tr><tr><td><a href="./metrics.html">/metrics.html</a></td><td>Metrics</td></tr><tr><td><a href="./pipeline.html">/pipeline.html</a></td><td>Agent pipeline</td></tr></tbody></table></div>
+      </section>
+
+      <section id="governance" class="doc-section" data-doc="governance provenance licensing safety permissions external affiliation attribution">
+        <h2>Governance & Provenance</h2><p>Brand identity and source provenance are separate concerns. XUNIA pages can present our products under our own branding while still preserving license notices, copyright records, source obligations and third-party terms wherever required. External vendor, government or upstream relationships are not implied unless documented.</p>
+      </section>
+
+      <section id="machine-index" class="doc-section" data-doc="machine docs index json llms agent discovery">
+        <h2>Machine Index</h2><p>A machine-readable documentation index is published beside this page so agents and tools can discover the major GPT‑DOUG‑LLM documentation topics without scraping the interface.</p>
+        <div class="hero-actions"><a class="doc-btn primary" href="./docs-index.json">Open docs-index.json →</a><a class="doc-btn" href="./resources.json">Open resources.json</a></div>
+      </section>
+
+      <footer class="zyra-footer"><span>GPT‑DOUG‑LLM Documentation · XUNIA public documentation surface.</span><span>Canonical source: <a href="https://github.com/sonoxo/gpt-doug-llm">sonoxo/gpt-doug-llm</a></span></footer>
+    </main>
+
+    <aside class="docs-toc" aria-label="On this page">
+      <div class="toc-title">On this page</div><a href="#introduction">Introduction</a><a href="#quick-start">Quick Start</a><a href="#architecture">Architecture</a><a href="#public-surfaces">Public Surfaces</a><a href="#houses">House System</a><a href="#agent-runtime">Agent Runtime</a><a href="#ontology">Ontology</a><a href="#creation-standard">Creation Standard</a><a href="#commands">Commands</a><a href="#routes">Routes</a><a href="#governance">Governance</a><div class="toc-source">SOURCE OF TRUTH<a href="https://github.com/sonoxo/gpt-doug-llm">sonoxo/gpt-doug-llm ↗</a></div>
+    </aside>
+  </div>
+
+  <script>
+    const search=document.querySelector('#docsSearch');
+    const links=[...document.querySelectorAll('#docsIndex a')];
+    const groups=[...document.querySelectorAll('.nav-group')];
+    const count=document.querySelector('#indexCount');
+    const noResults=document.querySelector('#noResults');
+    function filterDocs(){const q=search.value.trim().toLowerCase();let visible=0;links.forEach(a=>{const hit=!q||(a.textContent+' '+(a.dataset.keywords||'')).toLowerCase().includes(q);a.classList.toggle('hidden-doc',!hit);if(hit)visible++});groups.forEach(g=>g.classList.toggle('hidden-doc',![...g.querySelectorAll('a')].some(a=>!a.classList.contains('hidden-doc'))));count.textContent=`${visible} / ${links.length} documentation topics`;noResults.classList.toggle('show',visible===0)}
+    search.addEventListener('input',filterDocs);
+    document.querySelector('#docsToggle').addEventListener('click',()=>document.querySelector('.docs-nav').classList.toggle('open'));
+    document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{const value=btn.dataset.copy;try{await navigator.clipboard.writeText(value);btn.textContent='copied'}catch{btn.textContent='copy failed'}setTimeout(()=>btn.textContent='copy',1200)}));
+    const sections=[...document.querySelectorAll('.doc-section[id]')];
+    const observer=new IntersectionObserver(entries=>{const active=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!active)return;links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${active.target.id}`))},{rootMargin:'-20% 0px -70% 0px',threshold:[0,.2,.5]});sections.forEach(s=>observer.observe(s));
+  </script>
+  <script src="./zyra-shell-v2.js"></script>
+</body>
+</html>
