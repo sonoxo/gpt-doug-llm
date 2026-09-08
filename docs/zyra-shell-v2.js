@@ -3,6 +3,8 @@
   const base = path.includes('/gpt-doug-llm') ? '/gpt-doug-llm/' : '/';
   const links = [
     ['Museum + HQ', base],
+    ['Documentation', `${base}documentation.html`],
+    ['Resources', `${base}resources.html`],
     ['Arcade', `${base}arcade/`],
     ['Experiments', `${base}experiments.html`],
     ['Status', `${base}status.html`],
