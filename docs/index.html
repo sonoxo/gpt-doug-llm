@@ -2,23 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050510">
-  <meta name="description" content="XUNIA Museum and HQ: a public map of the Sonoxo repository ecosystem, experimentation gallery, evidence, and how the layers connect.">
+  <meta name="description" content="XUNIA.org is the public hub and live ecosystem map for XUNIA: explore the Planet, projects, games, documentation, evidence, and how the system connects. No GitHub account required.">
   <title>XUNIA Museum + HQ</title>
   <link rel="stylesheet" href="./zyra-theme.css">
   <link rel="stylesheet" href="./museum.css">
+  <style>
+    .public-start{margin-top:24px;padding:22px;border:1px solid #343a66;border-radius:22px;background:linear-gradient(135deg,rgba(70,243,255,.07),rgba(157,92,255,.08));position:relative;overflow:hidden}.public-start::after{content:"";position:absolute;width:260px;height:260px;border:1px solid rgba(70,243,255,.16);border-radius:50%;right:-110px;top:-155px;box-shadow:0 0 70px rgba(70,243,255,.08);animation:hub-orbit 14s linear infinite;pointer-events:none}.public-start h2{margin:4px 0 8px;font-size:clamp(24px,4vw,38px)}.public-start>p{margin:0 0 16px;max-width:820px;color:#c1cbe4;font-size:17px;line-height:1.65}.public-start-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;position:relative;z-index:1}.public-start-card{display:block;min-height:122px;padding:16px;border:1px solid #343a66;border-radius:16px;background:#0b0e20;text-decoration:none;color:#eff7ff;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.public-start-card:hover{transform:translateY(-2px);border-color:#46f3ff;box-shadow:0 12px 36px #0008,0 0 26px rgba(70,243,255,.08)}.public-start-card strong{display:block;font-size:17px;margin-bottom:6px}.public-start-card span{display:block;color:#aeb9d3;font-size:14px;line-height:1.5}.public-start-card.planet{border-color:#46f3ff99;background:radial-gradient(circle at 90% 10%,rgba(70,243,255,.12),transparent 38%),#0b0e20}.public-start-card.planet strong{color:#7bf7ff}.planet-launch-card{grid-column:span 2;background:radial-gradient(circle at 82% 12%,rgba(70,243,255,.12),transparent 38%),linear-gradient(180deg,rgba(12,20,39,.98),rgba(7,8,20,.98))!important;border-color:#46f3ff66!important}.planet-launch-card::before{content:"";position:absolute;width:150px;height:150px;border:1px solid #46f3ff33;border-radius:50%;right:-48px;bottom:-76px;box-shadow:0 0 45px #46f3ff18;animation:hub-orbit 12s linear infinite}.plain-language-note{color:#d6def2!important}.no-account{color:#a8ff60!important;border-color:#a8ff6066!important}.hub-live-node{position:absolute;right:34px;bottom:34px;width:84px;height:84px;border:1px solid #46f3ff55;border-radius:50%;box-shadow:0 0 45px #46f3ff22,inset 0 0 30px #9d5cff12;pointer-events:none}.hub-live-node::before,.hub-live-node::after{content:"";position:absolute;border-radius:50%;inset:14px;border:1px solid #9d5cff66;animation:hub-pulse 3s ease-in-out infinite}.hub-live-node::after{inset:30px;background:#46f3ff;box-shadow:0 0 24px #46f3ff;animation-delay:-1.5s}@keyframes hub-orbit{to{transform:rotate(360deg)}}@keyframes hub-pulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1.06)}}@media(max-width:900px){.public-start-grid{grid-template-columns:1fr 1fr}.planet-launch-card{grid-column:span 2}}@media(max-width:560px){.public-start{padding:18px}.public-start-grid{grid-template-columns:1fr}.planet-launch-card{grid-column:auto}.hub-live-node{display:none}.public-start-card{min-height:auto}}@media(prefers-reduced-motion:reduce){.public-start::after,.planet-launch-card::before,.hub-live-node::before,.hub-live-node::after{animation:none!important}.public-start-card{transition:none!important}}
+  </style>
   <script src="./zyra-shell-v2.js" defer></script>
   <script src="./museum.js" defer></script>
 </head>
 <body>
   <main class="wrap">
     <section class="zyra-hero" aria-labelledby="hero-title">
-      <div class="zyra-eyebrow">XUNIA // MUSEUM + HEADQUARTERS // VIRGINIA</div>
+      <div class="zyra-eyebrow">XUNIA // PUBLIC HUB + LIVE ECOSYSTEM NODE // VIRGINIA</div>
       <h1 id="hero-title">The XUNIAverse Museum + HQ</h1>
-      <p>This is the public front door to the ecosystem: a searchable repository museum, architecture map, experimental-project gallery, build evidence center, operating record, and launch surface for XUNIA products.</p>
+      <p class="plain-language-note"><strong>XUNIA.org is the public brain and front door for the ecosystem.</strong> Anyone can explore what XUNIA is, see its projects, launch public experiences, and understand how the pieces connect. You do not need GitHub or a technical background to use this site.</p>
       <div class="zyra-badges" aria-label="Museum characteristics">
         <span class="zyra-badge live">● HQ ONLINE</span>
+        <span class="zyra-badge no-account">NO ACCOUNT REQUIRED</span>
         <span class="zyra-badge">XUNIA PRODUCTS</span>
         <span class="zyra-badge">62 PUBLIC EXHIBITS</span>
         <span class="zyra-badge">LIVE GITHUB INVENTORY</span>
@@ -32,10 +36,26 @@
         <div class="hq-stat"><strong>4</strong><span>private modules not exposed here</span></div>
         <div class="hq-stat"><strong>7</strong><span>museum departments</span></div>
       </div>
-      <p class="hq-note"><strong>What “connected” means:</strong> a repository belongs to the connected Sonoxo GitHub inventory or XUNIAverse source graph. It does not automatically mean the repository is actively wired into one runtime, nor does it transfer upstream ownership or imply vendor/government endorsement.</p>
+      <p class="hq-note"><strong>Plain-language note:</strong> “Connected” means a project belongs to the XUNIA ecosystem inventory. It does not automatically mean every project is running live at the same time. GitHub links are provided for people who want source code, but they are not required to explore XUNIA.</p>
+      <div class="hub-live-node" aria-hidden="true"></div>
+
+      <section class="public-start" aria-labelledby="start-title">
+        <div class="zyra-eyebrow">START HERE</div>
+        <h2 id="start-title">New to XUNIA? Pick what you want to do.</h2>
+        <p>These are the easiest public entry points. Every option works in a normal web browser, and the site includes keyboard support, larger-text mode, higher contrast, and reduced-motion controls.</p>
+        <div class="public-start-grid">
+          <a class="public-start-card planet" href="./planet/"><strong>🌐 Explore the Planet</strong><span>See the ecosystem as an interactive world. Touch, click, drag, or use keyboard controls.</span></a>
+          <a class="public-start-card" href="#museum"><strong>Browse the Museum</strong><span>See XUNIA projects with simple explanations before opening any source code.</span></a>
+          <a class="public-start-card" href="./arcade/"><strong>Play the Arcade</strong><span>Try public browser experiences with touch and keyboard controls.</span></a>
+          <a class="public-start-card" href="./documentation.html"><strong>Learn What XUNIA Is</strong><span>Read the documentation and architecture in a more traditional format.</span></a>
+        </div>
+      </section>
     </section>
 
     <section class="zyra-grid" aria-label="Headquarters operational rooms and products">
+      <a class="zyra-card planet-launch-card" href="./planet/">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">PUBLIC WORLD · START HERE</div><h2>XUNIA Planet</h2><p>Explore the XUNIA ecosystem as an interactive fictional world with project nodes, ecology, and public game layers. No account or GitHub knowledge required.</p>
+      </a>
       <a class="zyra-card" href="./arcade/">
         <span class="arrow" aria-hidden="true">↗</span><div class="kicker">XUNIA PRODUCT</div><h2>Super Galactik Federation Arcade</h2><p>Five original, free browser mini-games with keyboard and touch controls, protected by the independent-project legal entry gate.</p>
       </a>
@@ -109,8 +129,8 @@
     </section>
 
     <footer class="zyra-footer">
-      <span>XUNIA Museum + HQ · public repository inventory, architecture, evidence, demonstrations, and XUNIA product launch surface.</span>
-      <span>Canonical ecosystem root: <a href="https://github.com/sonoxo/xuniadao">sonoxo/xuniadao</a> · Runtime/HQ source: <a href="https://github.com/sonoxo/gpt-doug-llm">sonoxo/gpt-doug-llm</a></span>
+      <span>XUNIA.org · public hub, live ecosystem node, museum, Planet, evidence center, demonstrations, and XUNIA product launch surface.</span>
+      <span>Source code is optional for visitors. Canonical ecosystem root: <a href="https://github.com/sonoxo/xuniadao">sonoxo/xuniadao</a> · Runtime/HQ source: <a href="https://github.com/sonoxo/gpt-doug-llm">sonoxo/gpt-doug-llm</a></span>
     </footer>
   </main>
 </body>
