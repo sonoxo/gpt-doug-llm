@@ -43,7 +43,26 @@ The integration fingerprints queries and treats provider output as untrusted evi
 - mapped vulnerabilities / ATT&CK behaviors / NIST controls / OSINT providers
 - `recommended_mode`: `d` or `od`
 
-Run tests from repository root with:
+## Actor–Narrative–Cyber verification
+
+`narrative_intel.py` adds a second, incident-focused reasoning path built around the invariant **CLAIM != COMPROMISE**.
+
+```text
+EVENT -> NARRATIVE -> ACTOR -> MOTIVATION -> TARGET -> TTP
+      -> OBSERVABLE -> IMPACT -> DEFENSE -> CONFIDENCE
+```
+
+Claims move through `CLAIMED`, `CORROBORATED`, `VERIFIED_INCIDENT`, `DISPUTED`, or `RETRACTED`. A verified incident requires multiple independent sources plus authoritative and technical corroboration; actor self-claims alone can never establish compromise.
+
+See [`ACTOR_NARRATIVE_CYBER.md`](./ACTOR_NARRATIVE_CYBER.md) for the schema, evidence model, example, and acceptance properties.
+
+Run the narrative verification tests from repository root with:
+
+```bash
+python -m pytest tests/test_kraken_narrative_intel.py -q
+```
+
+Run the existing ontology tests with:
 
 ```bash
 python -m pytest kraken_jutsu/test_ontology.py -q
