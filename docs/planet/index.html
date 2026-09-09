@@ -15,6 +15,22 @@
 </head>
 <body>
   <div class="fallback"><div><b>XUNIA // MMGIS</b><span>LOADING PLANETARY FORGE</span></div></div>
-  <iframe id="forge" title="XUNIAverse MMGIS Planetary Forge" src="https://xunia-mmgis-forge.onrender.com/" allow="fullscreen; geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <iframe id="forge" title="XUNIAverse MMGIS Planetary Forge" allow="fullscreen; geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <script>
+    (()=>{
+      const BASE='https://xunia-mmgis-forge.onrender.com/';
+      const DEFAULT='v=2&lat=30.2672&lon=-97.7431&alt=600&heading=15&pitch=-30&roll=360&style=normal&bloom=0&sharpen=1&bi=0&bv=2&si=49&hud=tactical&hv=1&dm=DENSE&dd=75&da=elastic&kf=7&ko=1&cr=0&sc=1&scf=11&map=osm&l=&lo=f.e.1&ui=c.c.1_c.p.0_l.c.1_l.p.0_d.c.1_v.c.1_r.c.1_s.c.1_g.c.1_p.c.1_m.c.0';
+      const forge=document.getElementById('forge');
+      const valid=()=>{const p=new URLSearchParams(location.hash.slice(1));return p.get('v')==='2'&&Number.isFinite(Number(p.get('lat')))&&Number.isFinite(Number(p.get('lon')))};
+      if(!valid())history.replaceState(null,'',`${location.pathname}#${DEFAULT}`);
+      forge.src=BASE+location.hash;
+      addEventListener('hashchange',()=>{forge.src=BASE+location.hash});
+      addEventListener('message',e=>{
+        if(e.origin!=='https://xunia-mmgis-forge.onrender.com')return;
+        if(e.data?.type!=='xunia:share-state'||typeof e.data.hash!=='string'||!e.data.hash.startsWith('#v=2&'))return;
+        history.replaceState(null,'',`${location.pathname}${e.data.hash}`);
+      });
+    })();
+  </script>
 </body>
 </html>
