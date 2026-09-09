@@ -29,7 +29,7 @@ DEPLOY
 <!-- WAKEUP3LM:AUTO:START -->
 ## Live ecosystem pulse
 
-> Generated automatically from the repository. Last refresh: **2026-09-09 07:02 UTC**
+> Generated automatically from the repository. Last refresh: **2026-09-09 08:36 UTC**
 
 <p align="center"><img src="./assets/ecosystem.svg" alt="Wakeup3lm animated ecosystem architecture" width="100%" /></p>
 
