@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "sourceId": "SAFEHOUSE_EVERYDAYSPY_TRAINING_V1",
+  "displayName": "The Safehouse / EverydaySpy",
+  "publicEntryPoint": "https://safehouse.everydayspy.com/invite",
+  "personContext": {
+    "name": "Andrew Bustamante",
+    "role": "public-facing intelligence-training educator / former CIA officer",
+    "relationshipToEcosystem": "external public training source"
+  },
+  "integration": {
+    "primaryConsumer": "RVIA",
+    "secondaryConsumers": ["GPT_DOUG_MAX", "XUNIA", "ZYRA"],
+    "mode": "TRAINING_AND_SIMULATION_ONLY",
+    "ingestPolicy": "Only public, user-authorized, licensed, or explicitly provided training materials may be ingested.",
+    "credentialPolicy": "Do not store Safehouse credentials, session cookies, invite tokens, or account secrets in the repository.",
+    "classificationBoundary": "Do not ingest classified, CUI, need-to-know, stolen, or access-controlled government material unless explicitly authorized and handled in an approved environment."
+  },
+  "ontology": {
+    "objectTypes": [
+      "TrainingSource",
+      "Instructor",
+      "CourseModule",
+      "Scenario",
+      "Task",
+      "EvidenceArtifact",
+      "AnalyticJudgment",
+      "ConfidenceAssessment",
+      "SourceProvenance"
+    ],
+    "relationships": [
+      "INSTRUCTS",
+      "CONTAINS",
+      "PRESENTS_SCENARIO",
+      "REQUIRES_TASK",
+      "SUPPORTED_BY",
+      "DERIVED_FROM",
+      "ASSESSED_WITH",
+      "REVIEWED_BY"
+    ]
+  },
+  "rviaPipeline": [
+    "INGEST_PUBLIC_OR_USER_AUTHORIZED_TRAINING",
+    "NORMALIZE_SCENARIO_AND_TASKS",
+    "ATTACH_SOURCE_PROVENANCE",
+    "RUN_ONTOLOGY_GROUNDED_ANALYSIS",
+    "SEPARATE_FACT_FROM_INFERENCE",
+    "ASSIGN_CONFIDENCE",
+    "HUMAN_REVIEW",
+    "STORE_TRAINING_RESULT"
+  ],
+  "truthBoundary": {
+    "ciaAccess": false,
+    "ciaAffiliation": false,
+    "ciaAuthorization": false,
+    "clearanceImplied": false,
+    "allAccessMode": "ECOSYSTEM_INTERNAL_ALIAS_ONLY",
+    "allAccessMeaning": "Full routing visibility across approved GPT-Doug/RVIA training modules; it does not grant access to CIA systems, data, facilities, networks, credentials, or authorities."
+  }
+}
