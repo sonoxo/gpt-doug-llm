@@ -74,7 +74,8 @@ def main() -> None:
             fail(f"missing architecture boundary containing: {phrase}")
 
     routing = registry.get("domain_routing", {})
-    known = EXPECTED_PLANES
+    internal_division_ids = {division.get("id") for division in registry.get("internal_divisions", [])}
+    known = EXPECTED_PLANES | internal_division_ids
     for domain, target in routing.items():
         if target not in known:
             fail(f"domain route {domain!r} points to unknown plane {target!r}")
