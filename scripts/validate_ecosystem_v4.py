@@ -39,8 +39,8 @@ def main() -> None:
     registry = json.loads(REGISTRY.read_text())
     ai = json.loads(AI_MANIFEST.read_text())
 
-    if registry.get("ecosystem_version") != "4.0.0":
-        fail("ecosystem_version must be 4.0.0")
+    if registry.get("ecosystem_version") != "4.1.0":
+        fail("ecosystem_version must be 4.1.0")
     if registry.get("canonical_control_root") != "sonoxo/gpt-doug-llm":
         fail("canonical control root drifted")
     if registry.get("canonical_hub") != "sonoxo/xuniahub":
