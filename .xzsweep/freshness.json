@@ -1,20 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-08T08:37:33Z",
-  "due_files_reviewed": 11,
-  "due_paths": [
-    ".github/workflows/security-gate.yml",
-    "agents/nist_profile_compliance_gate.py",
-    "intel/compliance/government-intelligence-readiness.json",
-    "intel/compliance/nist-800-53-rev5-control-catalog.md",
-    "intel/compliance/nist-800-53-rev5-profiles.json",
-    "intel/compliance/system-security-plan.md",
-    "kraken_jutsu/ACTOR_NARRATIVE_CYBER.md",
-    "kraken_jutsu/README.md",
-    "kraken_jutsu/__init__.py",
-    "kraken_jutsu/narrative_intel.py",
-    "tests/test_kraken_narrative_intel.py"
-  ],
+  "cutoff_at": "2026-09-08T09:41:24Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -558,13 +546,13 @@
     ".github/workflows/security-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:52Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "e46c9ed62978fcb24cf2cb61bd38dd37bb604615e544f48512fb616e3e5fa6c4",
       "size": 3394,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/sonoxo-xraycloud.yml": {
       "actions": [],
@@ -1460,13 +1448,13 @@
     "agents/nist_profile_compliance_gate.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:39Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "b38db50910ddd5b3371b4c445043082cdd514a93391dd8b7e2cec508e96ecbf1",
       "size": 3399,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "agents/ontology.py": {
       "actions": [],
@@ -2561,9 +2549,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T08:36:17Z",
+      "git_touched_at": "2026-09-09T08:37:32Z",
       "reviewed_at": null,
-      "sha256": "33dabce8fec6b85542939a521dc30045e8e48bc7f6fd5588169b049a71dc469f",
+      "sha256": "506a7dbfe99355a4ff73ba0c020ca277899e7af826d5e7608ad009afb51d4e68",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -2902,10 +2890,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T07:58:06Z",
+      "git_touched_at": "2026-09-09T09:41:15Z",
       "reviewed_at": null,
-      "sha256": "973f5e448a3929b2017544b607da24a0868047741323a58a34257db3e6645971",
-      "size": 19086,
+      "sha256": "dd6a18e610c77094cd33eddeba4e75ebeb708ae4f7c7990ccd6d32eec8bf93b5",
+      "size": 1302,
       "validation_issues": [],
       "was_due": false
     },
@@ -4551,13 +4539,13 @@
     "intel/compliance/government-intelligence-readiness.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:02Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "4f02e66504fe420d375266e111247297751e7af4971111e8b0a3f01208c69e56",
       "size": 7337,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/compliance/incident-response-plan.md": {
       "actions": [],
@@ -4573,24 +4561,24 @@
     "intel/compliance/nist-800-53-rev5-control-catalog.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:17:53Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "4371892032339a17fd21246044f0f6905f175e907fa44648b50c1c5f169a8a38",
       "size": 5677,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/compliance/nist-800-53-rev5-profiles.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:18:38Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "222c14ffa529604b639805d72a2c8732a1423de0a2e7406eab70aec89d11cf3f",
       "size": 2301,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/compliance/poam.json": {
       "actions": [],
@@ -4606,13 +4594,13 @@
     "intel/compliance/system-security-plan.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:19Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "fc5c30b43232c52455e90c3708231acab071385cb6cddbd8b46c2adb107066a6",
       "size": 5286,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/glassonion/DOJ-26-972.json": {
       "actions": [],
@@ -4958,13 +4946,13 @@
     "kraken_jutsu/ACTOR_NARRATIVE_CYBER.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:05:35Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "314a1b0fcf135a640fb2f316ecca78462076fac03e79653af7c9690fd115f641",
       "size": 3403,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/LIVE_DATA_ARCHITECTURE.md": {
       "actions": [],
@@ -4980,24 +4968,24 @@
     "kraken_jutsu/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:05:53Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "49786c31ccd2378477ddf4e4a1245f530dea5b55658802abbc4c506ba1775626",
       "size": 2807,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/__init__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:50Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "bf14875f662afd0527ba80c5047bba277e98e4b502fe60a37df5ef55a41b53cc",
       "size": 589,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/agents_v031.py": {
       "actions": [],
@@ -5079,13 +5067,13 @@
     "kraken_jutsu/narrative_intel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:25Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "74a96790cf401a60b5177d9d864a87f736c154d90b42929d33b889a9dd6a9c27",
       "size": 10597,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "kraken_jutsu/ontology.py": {
       "actions": [],
@@ -6960,13 +6948,13 @@
     "tests/test_kraken_narrative_intel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:42Z",
       "reviewed_at": "2026-09-09T08:37:33Z",
       "sha256": "e165fbd331988ee029182f937c52567f13b58d9a6414875e5a23955ed54f168e",
       "size": 3350,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_llms_at_dod_ontology.py": {
       "actions": [],
@@ -8897,9 +8885,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T08:36:21Z",
+      "git_touched_at": "2026-09-09T08:37:36Z",
       "reviewed_at": null,
-      "sha256": "d4881d30b4cd5e7c712137d893afc24b6da400fb76e8ac234bb13f3f403b891d",
+      "sha256": "7a24f253ee0c7875b9783c03d77311185edcfd7a936d5c20d5d7ee2c7b09ce6e",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -8919,9 +8907,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T07:02:17Z",
+      "git_touched_at": "2026-09-09T08:37:36Z",
       "reviewed_at": null,
-      "sha256": "c9b6cab6d8e985f0ac816c9bf109a40fc8e77ea212ae273e4fd3548929806e16",
+      "sha256": "9bd89767d6ceaa5c96f5a270d00bb671d4307e02feb283dcc312fdc7ff1da91d",
       "size": 6085,
       "validation_issues": [],
       "was_due": false
@@ -11205,7 +11193,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-09T08:37:33Z",
+  "generated_at": "2026-09-09T09:41:24Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
