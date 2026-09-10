@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Interactive local browser dashboard for ZYRAPALANTIR field decision support.
 
-The service binds to loopback only, visualizes local defensive state, and exposes
-read-only investigation/readiness/audit views. It does not select targets,
+The service binds to loopback only, visualizes local defensive state, exposes
+read-only investigation/readiness/audit views, and surfaces the latest persisted
+real Palantir Maven publish/retrieve/hash proof. It does not select targets,
 control weapons, issue fires, steer vehicles, or perform automatic external
 actions.
 """
@@ -112,7 +113,19 @@ def audit_events(limit: int = 40) -> list[dict[str, Any]]:
 def assistant_reply(prompt: str, state: dict[str, Any]) -> str:
     text = prompt.lower().strip()
     if not text:
-        return "Ask about readiness, cyber findings, communications, assets, incidents, investigations, proposals, or audit history."
+        return "Ask about readiness, Maven proof, cyber findings, communications, assets, incidents, investigations, proposals, or audit history."
+    if any(k in text for k in ("maven", "artifact", "sha", "hash", "provenance", "roundtrip", "round-trip")):
+        p = state.get("maven_proof", {}) or {}
+        if not p.get("coordinates"):
+            return "No persisted real Maven round-trip proof is available yet. Run the Palantir Maven roundtrip command, then refresh this dashboard."
+        pub, ret, integ = p.get("publish", {}), p.get("retrieve", {}), p.get("integrity", {})
+        return (
+            f"Real Maven proof: {p.get('coordinates')} on {p.get('host')}. "
+            f"Publish POM/JAR={pub.get('pom_status')}/{pub.get('jar_status')}; "
+            f"retrieve POM/JAR={ret.get('pom_status')}/{ret.get('jar_status')}; "
+            f"POM match={bool(integ.get('pom_match'))}; JAR match={bool(integ.get('jar_match'))}; "
+            f"defense_ready={bool(p.get('defense_ready'))}."
+        )
     if any(k in text for k in ("ready", "readiness", "status")):
         return (
             f"Field readiness is {'READY' if state.get('field_ready') else 'DEGRADED/PENDING'}. "
@@ -158,7 +171,47 @@ def assistant_reply(prompt: str, state: dict[str, Any]) -> str:
             f"{'REQUIRED' if state.get('analyst_attention_required') else 'NOT CURRENTLY REQUIRED'}. "
             "Any external response remains human-authorized."
         )
-    return "I can summarize readiness, cyber findings, communications, assets, incidents, investigations, proposals, and audit history from the local ZYRAPALANTIR state."
+    return "I can summarize readiness, real Maven round-trip proof, cyber findings, communications, assets, incidents, investigations, proposals, and audit history."
+
+
+def _index_html() -> bytes:
+    html = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
+    injection = r'''
+<style>
+#realMavenProof{position:absolute;right:18px;top:58px;z-index:6;width:min(470px,46vw);max-height:48vh;overflow:auto;background:#0d151bdd;border:1px solid #355468;border-radius:10px;padding:12px 14px;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:0 10px 30px #0008}
+#realMavenProof h3{margin:0 0 7px;font-size:12px;color:#e8eef4}#realMavenProof .good{color:#50d890}#realMavenProof .bad{color:#ee5b63}#realMavenProof .muted{color:#8fa2b5}#realMavenProof code{word-break:break-all;color:#d7e5ef}
+</style>
+<div id="realMavenProof"><h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="muted">Waiting for persisted proof…</div></div>
+<script>
+(function(){
+ const el=document.getElementById('realMavenProof');
+ const esc2=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ async function refreshMavenProof(){
+  try{
+   const r=await fetch('/api/maven-proof',{cache:'no-store'}); const p=await r.json();
+   if(!p||!p.coordinates){el.innerHTML='<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="bad">NO PERSISTED PROOF</div><div class="muted">Run: bash redpanda-desktop/palantir-maven roundtrip</div>';return;}
+   const pub=p.publish||{},ret=p.retrieve||{},i=p.integrity||{}; const ok=!!(p.ok&&i.pom_match&&i.jar_match);
+   el.innerHTML=`<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3>
+   <div class="${ok?'good':'bad'}">${ok?'✅ VERIFIED':'❌ FAILED'}</div>
+   <div>Host: <code>${esc2(p.host)}</code></div>
+   <div>Artifact: <code>${esc2(p.coordinates)}</code></div>
+   <div>Verified: <code>${esc2(p.verified_at||'unknown')}</code></div>
+   <hr style="border:0;border-top:1px solid #2d3b48">
+   <div>⬆ PUBLISH — POM <b>${esc2(pub.pom_status)}</b> / JAR <b>${esc2(pub.jar_status)}</b></div>
+   <div>⬇ RETRIEVE — POM <b>${esc2(ret.pom_status)}</b> / JAR <b>${esc2(ret.jar_status)}</b></div>
+   <div>🔏 POM match: <b class="${i.pom_match?'good':'bad'}">${esc2(i.pom_match)}</b></div>
+   <div>🔏 JAR match: <b class="${i.jar_match?'good':'bad'}">${esc2(i.jar_match)}</b></div>
+   <div># POM SHA-256: <code>${esc2(i.pom_sha256||'n/a')}</code></div>
+   <div># JAR SHA-256: <code>${esc2(i.jar_sha256||'n/a')}</code></div>
+   <div>🛡 defense_ready: <b class="${p.defense_ready?'good':'bad'}">${esc2(p.defense_ready)}</b></div>
+   <div>🔐 credentials stored/printed: false/false</div>`;
+  }catch(e){el.innerHTML='<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="bad">Proof API unavailable: '+esc2(e.message)+'</div>'}
+ }
+ refreshMavenProof(); setInterval(refreshMavenProof,3000);
+})();
+</script>
+'''
+    return html.replace("</body>", injection + "\n</body>").encode("utf-8")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -183,11 +236,23 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def _index(self) -> None:
+        body = _index_html()
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_GET(self) -> None:
         parsed = urllib.parse.urlparse(self.path)
         state = None
         if parsed.path == "/api/state":
             self._json(field.snapshot(None))
+            return
+        if parsed.path == "/api/maven-proof":
+            self._json(field.latest_maven_proof())
             return
         if parsed.path == "/api/assistant":
             q = urllib.parse.parse_qs(parsed.query).get("q", [""])[0]
@@ -206,7 +271,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"items": audit_events(40)})
             return
         if parsed.path in ("/", "/index.html"):
-            self._file(WEB_ROOT / "index.html", "text/html; charset=utf-8")
+            self._index()
             return
         self.send_error(404)
 
@@ -226,7 +291,8 @@ def main() -> int:
 
     url = f"http://127.0.0.1:{args.port}/"
     server = ThreadingHTTPServer((args.host, args.port), Handler)
-    print("🎖️ ZYRAPALANTIR VISUAL FIELD OPS v2")
+    print("🎖️ ZYRAPALANTIR VISUAL FIELD OPS v3")
+    print("📦 real Palantir Maven round-trip proof + live readiness")
     print("🧠 interactive investigations + readiness + audit + analyst summaries")
     print("🛰️ local defensive telemetry + human decision support")
     print("🗺️ right panel is NON-GEOGRAPHIC system topology")
