@@ -18,6 +18,7 @@ chmod +x "$BIN/zyra-field" "$BIN/zyra-field-mega"
 
 printf '✅ ZYRAPALANTIR field terminal installed.\n'
 printf '🎖️ Mega boot:  zyra-field-mega\n'
+printf '🖥️ Visual:     zyra-field visual\n'
 printf '📟 Console:    zyra-field status\n'
 printf '🧩 Assets:     zyra-field assets\n'
 printf '📶 Comms:      zyra-field comms\n'

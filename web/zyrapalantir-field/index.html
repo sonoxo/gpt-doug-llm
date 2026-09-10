@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ZYRAPALANTIR Visual Field Ops</title>
+<style>
+:root{--bg:#11151b;--panel:#19222c;--panel2:#202b36;--line:#334250;--text:#e8eef4;--muted:#8fa2b5;--ok:#50d890;--warn:#f1b24a;--bad:#ee5b63;--cyan:#66c7ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;height:100vh;overflow:hidden}
+.top{height:36px;background:#1d9b55;display:flex;align-items:center;justify-content:center;font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:#dff8e8}.app{height:calc(100vh - 36px);display:grid;grid-template-columns:220px 1.1fr 1.4fr}.rail{border-right:1px solid var(--line);padding:22px 18px;background:#171d24}.brand{font-weight:800;font-size:19px}.sub{color:var(--muted);font-size:12px;margin-top:4px}.nav{margin-top:28px;display:grid;gap:8px}.nav button{border:0;background:transparent;color:#c9d4de;text-align:left;padding:10px 12px;border-radius:8px;font-weight:650;cursor:pointer}.nav button.active,.nav button:hover{background:#26333f}.guard{margin-top:28px;padding:12px;border:1px solid #314354;background:#141b22;border-radius:10px;font-size:11px;line-height:1.55;color:#b6c4d1}.left{display:flex;flex-direction:column;border-right:1px solid var(--line);min-width:0}.tabs{height:48px;display:flex;align-items:end;padding:0 18px;background:#1a232d;border-bottom:1px solid var(--line)}.tab{padding:13px 14px 11px;font-weight:700;font-size:13px;color:#91a4b6}.tab.active{color:#fff;border-bottom:2px solid var(--cyan)}.feed{padding:18px;overflow:auto;flex:1}.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px}.card h3{font-size:14px;margin:0 0 8px}.row{display:flex;gap:8px;align-items:center;font-size:12px;color:#c5d0da;line-height:1.5}.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px currentColor}.metricgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.metric{background:#131a21;border:1px solid #2d3b48;border-radius:8px;padding:9px}.metric b{display:block;font-size:18px}.metric span{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em}.findings{display:grid;gap:8px}.finding{padding:9px;border-radius:8px;background:#151d25;border-left:3px solid var(--warn);font-size:11px}.composer{padding:14px;border-top:1px solid var(--line);display:flex;gap:8px;background:#171f28}.composer input{flex:1;background:#111820;border:1px solid #344450;color:#fff;padding:11px;border-radius:8px;outline:none}.composer button{background:#1676d2;border:0;color:white;font-weight:800;padding:0 15px;border-radius:8px;cursor:pointer}.right{position:relative;background:radial-gradient(circle at 40% 35%,#273642 0,#182129 45%,#11171d 100%);overflow:hidden}.right:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:42px 42px}.righthead{position:absolute;left:18px;right:18px;top:16px;z-index:4;display:flex;justify-content:space-between;align-items:center}.righthead h2{margin:0;font-size:14px}.badge{font-size:10px;border:1px solid #50606d;background:#151d23;padding:6px 9px;border-radius:20px;color:#aebdca}.topology{position:absolute;inset:70px 28px 75px 28px}.link{stroke:#5e7c92;stroke-width:1.5;opacity:.65}.link.hot{stroke:#f2b14a;stroke-dasharray:5 6;animation:dash 8s linear infinite}@keyframes dash{to{stroke-dashoffset:-100}}.node{cursor:default}.node circle{fill:#1c2a35;stroke:#77a6c2;stroke-width:2}.node.ok circle{stroke:var(--ok)}.node.warn circle{stroke:var(--warn)}.node text{fill:#dce6ee;font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace}.pulse{transform-origin:center;animation:pulse 2.2s infinite}@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.95}}.legend{position:absolute;left:22px;bottom:18px;z-index:3;background:#111920dd;border:1px solid #32414d;border-radius:8px;padding:10px 12px;font-size:10px;line-height:1.6;color:#aebdcc}.statusbar{position:absolute;right:18px;bottom:18px;z-index:3;display:flex;gap:7px}.chip{padding:7px 9px;border-radius:7px;background:#10171ddd;border:1px solid #354552;font-size:10px}.oktxt{color:var(--ok)}.warntxt{color:var(--warn)}.badtxt{color:var(--bad)}.answer{margin-top:10px;color:#d8e3eb;font-size:12px;line-height:1.5}.stamp{color:var(--muted);font-size:10px;margin-top:8px}@media(max-width:980px){.app{grid-template-columns:0 1fr 1fr}.rail{display:none}}
+</style>
+</head>
+<body>
+<div class="top">UNCLASSIFIED / LOCAL DEFENSIVE TELEMETRY</div>
+<div class="app">
+  <aside class="rail">
+    <div class="brand">🐼 ZYRAPALANTIR</div><div class="sub">FIELD OPS VISUAL</div>
+    <div class="nav"><button class="active">AIP Terminal</button><button>Investigations</button><button>Readiness</button><button>Audit</button></div>
+    <div class="guard">🧅 GLASS ONION<br>👤 Human approval required<br>⛔ Auto external action disabled<br>🎯 Targeting control disabled<br>🧨 Weapons control disabled</div>
+  </aside>
+  <section class="left">
+    <div class="tabs"><div class="tab active">AIP Terminal</div><div class="tab">Investigations</div><div class="tab">Proposals</div></div>
+    <div class="feed">
+      <div class="card">
+        <h3>🐼 GPT-REDPANDA // Field Readiness</h3>
+        <div class="row"><span class="dot"></span><span id="summary">Connecting to ZYRAPALANTIR LIVE…</span></div>
+        <div class="metricgrid">
+          <div class="metric"><b id="ready">—</b><span>Field status</span></div>
+          <div class="metric"><b id="severity">—</b><span>Highest severity</span></div>
+          <div class="metric"><b id="maven">—</b><span>Maven</span></div>
+          <div class="metric"><b id="redpanda">—</b><span>REDPANDA CPR</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🛡️ Defensive Findings</h3>
+        <div class="findings" id="findings"><div class="finding">Waiting for current local telemetry…</div></div>
+      </div>
+      <div class="card">
+        <h3>🧠 Assistant</h3>
+        <div class="answer" id="answer">Ask me to summarize readiness, cyber findings, comms, assets, or incidents.</div>
+        <div class="stamp" id="stamp"></div>
+      </div>
+    </div>
+    <div class="composer"><input id="q" placeholder="Ask about the current defensive posture…"><button id="send">➤</button></div>
+  </section>
+  <section class="right">
+    <div class="righthead"><h2>Field Overview // System Topology</h2><div class="badge">NON-GEOGRAPHIC • LIVE</div></div>
+    <svg class="topology" viewBox="0 0 760 620" preserveAspectRatio="xMidYMid meet">
+      <line class="link hot" x1="370" y1="310" x2="170" y2="130"/><line class="link" x1="370" y1="310" x2="585" y2="120"/><line class="link" x1="370" y1="310" x2="630" y2="330"/><line class="link" x1="370" y1="310" x2="560" y2="520"/><line class="link" x1="370" y1="310" x2="175" y2="500"/>
+      <g class="node ok" transform="translate(370 310)"><circle class="pulse" r="52" fill="none"/><circle r="36"/><text text-anchor="middle" y="4">LOCAL HOST</text></g>
+      <g class="node ok" transform="translate(170 130)"><circle r="31"/><text text-anchor="middle" y="4">COMMS</text></g>
+      <g class="node ok" transform="translate(585 120)"><circle r="31"/><text text-anchor="middle" y="4">MAVEN</text></g>
+      <g class="node ok" transform="translate(630 330)"><circle r="31"/><text text-anchor="middle" y="4">REDPANDA</text></g>
+      <g class="node warn" id="incidentNode" transform="translate(560 520)"><circle r="31"/><text text-anchor="middle" y="4">INCIDENTS</text></g>
+      <g class="node ok" transform="translate(175 500)"><circle r="31"/><text text-anchor="middle" y="4">READINESS</text></g>
+    </svg>
+    <div class="legend">This panel visualizes system relationships only.<br>No real-world coordinates, target selection, fires, or vehicle control.</div>
+    <div class="statusbar"><div class="chip" id="livechip">📡 LIVE —</div><div class="chip" id="alertchip">🚨 ALERT —</div><div class="chip oktxt">👤 HUMAN CONTROL</div></div>
+  </section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function refresh(){
+  try{
+    const s=await fetch('/api/state',{cache:'no-store'}).then(r=>r.json());
+    $('ready').textContent=s.field_ready?'READY':'PENDING';
+    $('ready').className=s.field_ready?'oktxt':'warntxt';
+    $('severity').textContent=s.highest_severity||'UNKNOWN';
+    $('maven').textContent=s.maven_ok?'PASS':'WAIT'; $('maven').className=s.maven_ok?'oktxt':'warntxt';
+    $('redpanda').textContent=s.redpanda_cpr_ok?'PASS':'WAIT'; $('redpanda').className=s.redpanda_cpr_ok?'oktxt':'warntxt';
+    $('summary').textContent=`Defense ${s.defense_profile_active?'ACTIVE':'INACTIVE'} • LIVE ${s.live_service_running?'RUNNING':'STOPPED'} • ${s.cyber?.finding_count||0} current findings`;
+    $('livechip').textContent=`📡 LIVE ${s.live_service_running?'RUNNING':'STOPPED'}`;
+    $('alertchip').textContent=`🚨 ALERT ${s.analyst_attention_required?'REVIEW':'CLEAR'}`;
+    $('alertchip').className='chip '+(s.analyst_attention_required?'badtxt':'oktxt');
+    const f=(s.cyber?.findings||[]).slice(0,6);
+    $('findings').innerHTML=f.length?f.map(x=>`<div class="finding"><b>${esc(x.severity||'INFO')}</b> · ${esc(x.description||x.target||'Finding')}</div>`).join(''):'<div class="finding">No current defensive findings.</div>';
+    $('incidentNode').setAttribute('class',`node ${s.analyst_attention_required?'warn':'ok'}`);
+    $('stamp').textContent=`Updated ${new Date(s.timestamp).toLocaleTimeString()} • auto action: false`;
+  }catch(e){$('summary').textContent='Unable to read local field state';}
+}
+async function ask(){const q=$('q').value.trim();if(!q)return;$('answer').textContent='Analyzing current local field snapshot…';const d=await fetch('/api/assistant?q='+encodeURIComponent(q),{cache:'no-store'}).then(r=>r.json());$('answer').textContent=d.reply;$('q').value=''}
+$('send').onclick=ask;$('q').addEventListener('keydown',e=>{if(e.key==='Enter')ask()});
+refresh();setInterval(refresh,3000);
+</script>
+</body>
+</html>

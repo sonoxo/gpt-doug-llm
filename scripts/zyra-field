@@ -1,4 +1,10 @@
 #!/bin/sh
 set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+
+if [ "${1:-}" = "visual" ]; then
+  shift
+  exec python3 "$ROOT/scripts/zyrapalantir_visual.py" "$@"
+fi
+
 exec python3 "$ROOT/scripts/zyrapalantir_field.py" "$@"
