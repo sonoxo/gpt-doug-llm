@@ -3,8 +3,9 @@
 
 This verifier exercises only the configured Palantir Foundry Maven artifact
 repository. It creates a tiny inert JAR containing metadata text, publishes the
-POM + JAR under a unique version, downloads both back, and verifies SHA-256
-identity. It executes no code from the artifact and never prints credentials.
+POM + JAR under a unique version, downloads both back, verifies SHA-256
+identity, and persists the latest non-secret proof for the visual dashboard.
+It executes no code from the artifact and never prints or stores credentials.
 """
 from __future__ import annotations
 
@@ -13,6 +14,7 @@ import hashlib
 import io
 import json
 import os
+import pathlib
 import sys
 import urllib.error
 import urllib.parse
@@ -23,10 +25,33 @@ from typing import Any
 
 GROUP_ID = "com.xunia"
 ARTIFACT_ID = "defense-readiness-test"
+STATE_DIR = pathlib.Path.home() / ".config" / "gpt-doug"
+PROOF_FILE = STATE_DIR / "palantir-maven-roundtrip-last.json"
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def write_private(payload: dict[str, Any]) -> None:
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    PROOF_FILE.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    PROOF_FILE.chmod(0o600)
 
 
 def fail(message: str, *, code: int = 2) -> int:
-    print(json.dumps({"ok": False, "error": message}, indent=2), file=sys.stderr)
+    payload = {
+        "schema": "xunia.palantir-maven-readiness.v1",
+        "ok": False,
+        "defense_ready": False,
+        "verified_at": utc_now(),
+        "error": message,
+        "artifact_executed": False,
+        "credentials_printed": False,
+        "credentials_stored": False,
+    }
+    write_private(payload)
+    print(json.dumps(payload, indent=2, sort_keys=True), file=sys.stderr)
     return code
 
 
@@ -39,7 +64,7 @@ def build_jar(version: str) -> bytes:
         "artifact": f"{GROUP_ID}:{ARTIFACT_ID}:{version}",
         "purpose": "harmless Palantir Maven readiness verification",
         "executable": False,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": utc_now(),
     }
     out = io.BytesIO()
     with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as jar:
@@ -72,7 +97,7 @@ def request(url: str, *, method: str, auth: str, body: bytes | None = None, cont
     headers = {
         "Authorization": auth,
         "Accept": "*/*",
-        "User-Agent": "gpt-doug-palantir-maven-readiness/1",
+        "User-Agent": "gpt-doug-palantir-maven-readiness/2",
     }
     if body is not None:
         headers["Content-Type"] = content_type
@@ -133,6 +158,7 @@ def main() -> int:
 
     result: dict[str, Any] = {
         "schema": "xunia.palantir-maven-readiness.v1",
+        "verified_at": utc_now(),
         "ok": ok,
         "coordinates": f"{GROUP_ID}:{ARTIFACT_ID}:{version}",
         "host": parsed.hostname.lower(),
@@ -146,8 +172,10 @@ def main() -> int:
         },
         "artifact_executed": False,
         "credentials_printed": False,
+        "credentials_stored": False,
         "defense_ready": ok,
     }
+    write_private(result)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if ok else 1
 
