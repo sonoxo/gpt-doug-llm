@@ -14,29 +14,29 @@ pause_demo() {
 
 banner() {
   printf '\n'
-  printf '============================================================\n'
-  printf ' ZYRAPALANTIR // GLASS ONION // GPT-REDPANDA\n'
-  printf ' PALANTIR MAVEN DEFENSIVE SOFTWARE DEMO MODE\n'
-  printf '============================================================\n'
+  printf '🛡️  ==========================================================\n'
+  printf '🐼  ZYRAPALANTIR // GLASS ONION // GPT-REDPANDA\n'
+  printf '📦  PALANTIR MAVEN DEFENSIVE SOFTWARE DEMO MODE\n'
+  printf '🛡️  ==========================================================\n'
 }
 
 intel_banner() {
   printf '\n'
-  printf '============================================================\n'
-  printf ' ZYRAPALANTIR // DEFENSIVE INTELLIGENCE FUSION DEMO\n'
-  printf ' EXERCISE LANTERN SHIELD — SYNTHETIC//UNCLASSIFIED\n'
-  printf '============================================================\n'
+  printf '🛰️  ==========================================================\n'
+  printf '🐼  ZYRAPALANTIR // DEFENSIVE INTELLIGENCE FUSION DEMO\n'
+  printf '🧪  EXERCISE LANTERN SHIELD — SYNTHETIC//UNCLASSIFIED\n'
+  printf '🛰️  ==========================================================\n'
 }
 
 require_demo_env() {
   if [ -z "${PALANTIR_MAVEN_REPOSITORY_URL:-}" ]; then
     echo '❌ PALANTIR_MAVEN_REPOSITORY_URL is not set.' >&2
-    echo '   Export the Foundry Maven repository URL in this shell first.' >&2
+    echo '🔧 Export the Foundry Maven repository URL in this shell first.' >&2
     exit 1
   fi
   if [ -z "${PALANTIR_MAVEN_TOKEN:-}" ]; then
     echo '❌ PALANTIR_MAVEN_TOKEN is not set.' >&2
-    echo '   Generate a fresh Foundry Maven token and export it in this shell.' >&2
+    echo '🔐 Generate a fresh Foundry Maven token and export it in this shell.' >&2
     exit 1
   fi
 }
@@ -44,108 +44,118 @@ require_demo_env() {
 demo() {
   require_demo_env
   banner
-  echo 'DEMO SAFETY: inert readiness artifact only; no artifact execution.'
+  echo '🧪 DEMO SAFETY: inert readiness artifact only; no artifact execution.'
   pause_demo
 
-  echo '\n[1/6] BASELINE — demonstrate OFF state'
+  echo '\n🔴 [1/6] BASELINE — demonstrate OFF state'
+  echo '   ↳ Turning the local defensive profile OFF so the audience can see a real state change.'
   sh "$ROOT/scripts/defense" deactivate
   sh "$ROOT/scripts/defense" status
   pause_demo
 
-  echo '\n[2/6] ACTIVATE — Glass Onion + Maven + REDPANDA gates'
+  echo '\n🟢 [2/6] ACTIVATE — Glass Onion + Maven + REDPANDA gates'
+  echo '   ↳ Validating policy, repository connectivity, and defensive readiness before activation.'
   sh "$ROOT/scripts/defense" activate
   pause_demo
 
-  echo '\n[3/6] STATE — prove profile persisted ACTIVE'
+  echo '\n💾 [3/6] STATE — prove profile persisted ACTIVE'
+  echo '   ↳ Reading the saved local state record; active=true means the validated profile is ON.'
   sh "$ROOT/scripts/defense" status
   pause_demo
 
-  echo '\n[4/6] DOCTOR — live ontology/Maven/CPR health check'
+  echo '\n🩺 [4/6] DOCTOR — live ontology/Maven/CPR health check'
+  echo '   ↳ Re-running the health gates live instead of trusting a stale status flag.'
   sh "$ROOT/scripts/defense" doctor
   pause_demo
 
-  echo '\n[5/6] PALANTIR MAVEN — end-to-end publish/retrieve/SHA-256 verification'
+  echo '\n📦 [5/6] PALANTIR MAVEN — publish → retrieve → SHA-256 verify'
+  echo '   ↳ Publishing a harmless test artifact, downloading it back, and verifying byte-for-byte integrity.'
   bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
   pause_demo
 
-  echo '\n[6/6] FINAL — demo verdict'
+  echo '\n🏁 [6/6] FINAL — demo verdict'
   sh "$ROOT/scripts/defense" status
-  printf '\n✅ ZYRAPALANTIR DEMO PASS\n'
-  printf '   DEFENSE_PROFILE=ACTIVE\n'
-  printf '   GLASS_ONION=VALID\n'
-  printf '   PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
-  printf '   GPT_REDPANDA_CPR=PASS\n'
-  printf '   ARTIFACT_EXECUTED=false\n'
-  printf '   DEMO_MODE=READY\n'
+  printf '\n🎉 ✅ ZYRAPALANTIR DEMO PASS\n'
+  printf '   🛡️  DEFENSE_PROFILE=ACTIVE\n'
+  printf '   🧅 GLASS_ONION=VALID\n'
+  printf '   📦 PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
+  printf '   🐼 GPT_REDPANDA_CPR=PASS\n'
+  printf '   🔒 ARTIFACT_EXECUTED=false\n'
+  printf '   🚦 DEMO_MODE=READY\n'
 }
 
 intel_demo() {
   require_demo_env
   intel_banner
-  echo 'MISSION: demonstrate defensive intelligence correlation and mission assurance.'
-  echo 'DATA: synthetic/unclassified training data only.'
-  echo 'ACTION POLICY: analyst decision support only; no automatic external action.'
+  echo '🎯 MISSION: demonstrate defensive intelligence correlation and mission assurance.'
+  echo '🧪 DATA: synthetic/unclassified training data only.'
+  echo '👤 ACTION POLICY: analyst decision support only; no automatic external action.'
   pause_demo
 
-  echo '\n[1/7] BASELINE — start inactive'
+  echo '\n🔴 [1/7] BASELINE — start inactive'
+  echo '   ↳ Establishing a clean OFF state before the exercise begins.'
   sh "$ROOT/scripts/defense" deactivate
   sh "$ROOT/scripts/defense" status
   pause_demo
 
-  echo '\n[2/7] CONTROL PLANE — activate governed defensive profile'
+  echo '\n🛡️  [2/7] CONTROL PLANE — activate governed defensive profile'
+  echo '   ↳ Glass Onion policy + Maven readiness + GPT-REDPANDA CPR must pass first.'
   sh "$ROOT/scripts/defense" activate
   pause_demo
 
-  echo '\n[3/7] SUPPLY CHAIN — prove Palantir Maven artifact integrity'
+  echo '\n📦 [3/7] SUPPLY CHAIN — prove Palantir Maven artifact integrity'
+  echo '   ↳ Harmless artifact goes UP ⬆️, comes BACK DOWN ⬇️, then SHA-256 proves it did not change.'
   bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
   pause_demo
 
-  echo '\n[4/7] INTEL ONTOLOGY — validate synthetic mission graph policy'
+  echo '\n🧠 [4/7] INTEL ONTOLOGY — validate synthetic mission graph policy'
+  echo '   ↳ Checking the structured rulebook that connects mission, systems, assets, intel, and recommendations.'
   python3 -m json.tool "$ROOT/safety-shield/ontology/zyrapalantir-intel-demo.json" >/dev/null
   echo '✅ ZYRAPALANTIR intelligence ontology valid'
   pause_demo
 
-  echo '\n[5/7] INTEL FUSION — correlate independent synthetic evidence'
+  echo '\n🔎 [5/7] INTEL FUSION — correlate independent synthetic evidence'
+  echo '   ↳ GPT-REDPANDA compares multiple training reports and looks for corroborated indicators.'
   python3 "$ROOT/scripts/zyrapalantir_intel_demo.py"
   pause_demo
 
-  echo '\n[6/7] ANALYST CONTROL — verify human decision boundary'
-  echo '✅ recommendations generated'
+  echo '\n👤 [6/7] ANALYST CONTROL — verify human decision boundary'
+  echo '💡 recommendations generated'
   echo '✅ human analyst approval required'
-  echo '✅ automatic external action taken: false'
-  echo '✅ classified/operational data used: false'
+  echo '⛔ automatic external action taken: false'
+  echo '🔓 classified/operational data used: false'
   pause_demo
 
-  echo '\n[7/7] FINAL — mission-assurance demo verdict'
-  printf '✅ ZYRAPALANTIR INTEL DEMO PASS\n'
-  printf '   DEFENSE_PROFILE=ACTIVE\n'
-  printf '   SYNTHETIC_INTEL=CORRELATED\n'
-  printf '   MISSION_DEPENDENCY=MODELED\n'
-  printf '   PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
-  printf '   GPT_REDPANDA_CPR=PASS\n'
-  printf '   ANALYST_APPROVAL=REQUIRED\n'
-  printf '   AUTOMATIC_EXTERNAL_ACTION=false\n'
-  printf '   MIL_READINESS_STAGE=M0_DEMO_READY\n'
+  echo '\n🏁 [7/7] FINAL — mission-assurance demo verdict'
+  printf '🎉 ✅ ZYRAPALANTIR INTEL DEMO PASS\n'
+  printf '   🛡️  DEFENSE_PROFILE=ACTIVE\n'
+  printf '   🧠 SYNTHETIC_INTEL=CORRELATED\n'
+  printf '   🔗 MISSION_DEPENDENCY=MODELED\n'
+  printf '   📦 PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
+  printf '   🐼 GPT_REDPANDA_CPR=PASS\n'
+  printf '   👤 ANALYST_APPROVAL=REQUIRED\n'
+  printf '   ⛔ AUTOMATIC_EXTERNAL_ACTION=false\n'
+  printf '   🎖️  MIL_READINESS_STAGE=M0_DEMO_READY\n'
 }
 
 mil_readiness() {
-  printf '\nZYRAPALANTIR MILITARY-READINESS ENGINEERING TRACK\n'
-  printf '=================================================\n'
-  printf 'M0  Demo Ready                    ✅ current target\n'
-  printf 'M1  Engineering Baseline          ◻ tests/SBOM/signed releases\n'
-  printf 'M2  Enterprise Security Baseline  ◻ IAM/MFA/RBAC/logging/secrets\n'
-  printf 'M3  RMF Evidence Package          ◻ controls/evidence/risk register\n'
-  printf 'M4  Environment Hardening         ◻ STIG/SRG/data handling as applicable\n'
-  printf 'M5  Operational Test & Evaluation ◻ authorized range testing/recovery drills\n'
-  printf 'M6  Authorization Path            ◻ organizational RMF/ATO decision\n'
-  printf '\nRoadmap: %s/docs/MIL_READINESS.md\n' "$ROOT"
-  printf 'Framework alignment target: NIST SP 800-53 Rev. 5 / Release 5.2.0\n'
-  printf 'Status is engineering alignment only — not certification or ATO.\n'
+  printf '\n🎖️  ZYRAPALANTIR MILITARY-READINESS ENGINEERING TRACK\n'
+  printf '=======================================================\n'
+  printf 'M0  🟢 Demo Ready                    ✅ current target\n'
+  printf 'M1  🧱 Engineering Baseline          ⬜ tests/SBOM/signed releases\n'
+  printf 'M2  🔐 Enterprise Security Baseline  ⬜ IAM/MFA/RBAC/logging/secrets\n'
+  printf 'M3  📋 RMF Evidence Package          ⬜ controls/evidence/risk register\n'
+  printf 'M4  🛠️  Environment Hardening         ⬜ STIG/SRG/data handling as applicable\n'
+  printf 'M5  🧪 Operational Test & Evaluation ⬜ authorized range testing/recovery drills\n'
+  printf 'M6  🏛️  Authorization Path            ⬜ organizational RMF/ATO decision\n'
+  printf '\n🗺️  Roadmap: %s/docs/MIL_READINESS.md\n' "$ROOT"
+  printf '📚 Framework alignment target: NIST SP 800-53 Rev. 5 / Release 5.2.0\n'
+  printf '⚠️  Status is engineering alignment only — not certification or ATO.\n'
 }
 
 status() {
   banner
-  echo 'ZYRAPALANTIR command installed.'
+  echo '📟 ZYRAPALANTIR command installed.'
   sh "$ROOT/scripts/defense" status
 }
 
