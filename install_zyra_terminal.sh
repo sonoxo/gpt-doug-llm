@@ -22,6 +22,12 @@ exec "$ROOT/scripts/doug-max" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/doug-max" "$ROOT/scripts/doug-max"
 
+cat > "$HOME/.local/bin/defense" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/defense" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/defense"
+
 ZSHRC="$HOME/.zshrc"
 BACKUP=""
 if [ -f "$ZSHRC" ]; then
@@ -44,7 +50,7 @@ if start in text and end in text:
     text = before.rstrip() + '\n' + after.lstrip()
 
 # Repair the known zsh alias/function collision without deleting unrelated user commands.
-known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra'}
+known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra', 'defense'}
 aliases = set()
 out = []
 for line in text.splitlines():
@@ -72,6 +78,8 @@ managed = f'''{start}
 # Prefer the managed launchers over stale aliases/functions from older installs.
 unalias doug-max 2>/dev/null || true
 unfunction doug-max 2>/dev/null || true
+unalias defense 2>/dev/null || true
+unfunction defense 2>/dev/null || true
 if [[ -o interactive && -t 0 && -f "$HOME/.config/gpt-doug/zyra-autostart" && -z "${{ZYRA_ACTIVE:-}}" ]]; then
   "$HOME/.local/bin/zyra"
 fi
@@ -96,4 +104,6 @@ echo 'ZYRA terminal launcher repaired and upgraded.'
 echo 'Launcher: ~/.local/bin/zyra'
 echo 'MAX one-prompt launcher: ~/.local/bin/doug-max'
 echo 'Market terminal: ~/.local/bin/doug-market'
+echo 'Defense terminal: ~/.local/bin/defense'
+echo 'Start defense profile: defense activate'
 echo 'Start now: ~/.local/bin/zyra'
