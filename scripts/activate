@@ -7,9 +7,17 @@ if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "demo" ] && [ "$#" -eq 2 ]; the
   exec sh "$ROOT/scripts/zyrapalantir" demo
 fi
 
+if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "intel-demo" ] && [ "$#" -eq 2 ]; then
+  exec sh "$ROOT/scripts/zyrapalantir" intel-demo
+fi
+
+if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "mil-readiness" ] && [ "$#" -eq 2 ]; then
+  exec sh "$ROOT/scripts/zyrapalantir" mil-readiness
+fi
+
 if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "status" ] && [ "$#" -eq 2 ]; then
   exec sh "$ROOT/scripts/zyrapalantir" status
 fi
 
-echo 'usage: activate zyrapalantir [demo|status]' >&2
+echo 'usage: activate zyrapalantir [demo|intel-demo|mil-readiness|status]' >&2
 exit 2
