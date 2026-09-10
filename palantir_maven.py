@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
@@ -86,17 +87,50 @@ class PalantirMavenConfig:
         )
 
     def probe(self) -> dict[str, Any]:
+        """Probe the configured repository without confusing HTTP status with transport failure.
+
+        Maven repository roots are not necessarily browsable. A 404/405 still proves that
+        the configured Foundry host and repository route answered. 401/403 are reported as
+        explicit authentication/authorization rejection instead of a generic HTTPError.
+        """
         status = self.validate(require_credentials=False)
-        headers = {"Accept": "*/*", "User-Agent": "gpt-doug-palantir-maven/1"}
+        headers = {"Accept": "*/*", "User-Agent": "gpt-doug-palantir-maven/2"}
         if self.token:
             import base64
+
             raw = f"{self.username}:{self.token}".encode("utf-8")
             headers["Authorization"] = "Basic " + base64.b64encode(raw).decode("ascii")
         request = urllib.request.Request(self.repository_url, headers=headers, method="GET")
         try:
             with urllib.request.urlopen(request, timeout=self.timeout) as response:
                 code = int(getattr(response, "status", 0))
-                status.update({"reachable": 200 <= code < 500, "http_status": code})
+                status.update(
+                    {
+                        "reachable": True,
+                        "http_status": code,
+                        "auth_rejected": code in {401, 403},
+                        "root_browsable": 200 <= code < 400,
+                    }
+                )
+        except urllib.error.HTTPError as exc:
+            code = int(exc.code)
+            status.update(
+                {
+                    "reachable": True,
+                    "http_status": code,
+                    "auth_rejected": code in {401, 403},
+                    "root_browsable": False,
+                    "http_response": "repository route answered",
+                }
+            )
+        except urllib.error.URLError as exc:
+            status.update(
+                {
+                    "reachable": False,
+                    "error": "URLError",
+                    "reason": str(exc.reason),
+                }
+            )
         except Exception as exc:
             status.update({"reachable": False, "error": type(exc).__name__})
         return status
@@ -114,7 +148,7 @@ def main() -> int:
         elif args.command == "probe":
             payload = config.probe()
             print(json.dumps(payload, indent=2, sort_keys=True))
-            if not payload.get("reachable"):
+            if not payload.get("reachable") or payload.get("auth_rejected"):
                 return 1
         else:
             print(config.settings_xml(), end="")
