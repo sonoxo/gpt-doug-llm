@@ -14,7 +14,12 @@ cat > "$BIN/zyra-field-mega" <<EOF
 exec sh "$ROOT/scripts/zyra-field-mega" "\$@"
 EOF
 
-chmod +x "$BIN/zyra-field" "$BIN/zyra-field-mega"
+cat > "$BIN/zyra-maven" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/zyra-maven" "\$@"
+EOF
+
+chmod +x "$BIN/zyra-field" "$BIN/zyra-field-mega" "$BIN/zyra-maven"
 
 printf '✅ ZYRAPALANTIR field terminal installed.\n'
 printf '🎖️ Mega boot:  zyra-field-mega\n'
@@ -27,6 +32,10 @@ printf '🛡️ Cyber:      zyra-field cyber\n'
 printf '🚨 Incidents:  zyra-field incidents\n'
 printf '📋 Readiness:  zyra-field readiness\n'
 printf '🧪 Simulation: zyra-field simulate\n'
+printf '📦 Maven CLI:  zyra-maven verify\n'
+printf '🩺 Maven doctor: zyra-maven doctor\n'
+printf '🧾 Maven proof: zyra-maven proof\n'
+printf '🖥️ Maven visual: zyra-maven visual\n'
 
 case ":$PATH:" in
   *":$BIN:"*) : ;;
