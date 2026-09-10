@@ -107,33 +107,50 @@ def correlate(scenario: dict) -> dict:
     }
 
 
+def severity_emoji(severity: str) -> str:
+    return {
+        "LOW": "🟢",
+        "MEDIUM": "🟡",
+        "HIGH": "🟠",
+        "CRITICAL": "🔴",
+    }.get(severity, "⚪")
+
+
 def print_human(result: dict) -> None:
     mission = result["mission"]
     corr = result["correlation"]
-    print("\n============================================================")
-    print(" ZYRAPALANTIR // SYNTHETIC INTELLIGENCE FUSION")
-    print(" EXERCISE LANTERN SHIELD — SYNTHETIC//UNCLASSIFIED")
-    print("============================================================")
-    print(f"Mission:          {mission['name']}")
-    print(f"Mission system:   {mission['system']} ({mission['system_status']})")
-    print(f"Affected asset:   {mission['affected_asset']}")
-    print(f"Defense profile:  {'ACTIVE' if result['defense_profile_active'] else 'INACTIVE'}")
-    print("\nINTELLIGENCE CORRELATION")
-    print(f"  Reports:             {corr['intel_reports']}")
-    print(f"  Independent sources: {corr['independent_sources']}")
-    print(f"  Corroborated IOCs:   {len(corr['corroborated_indicators'])}")
-    print(f"  Evidence score:      {corr['evidence_score']}/100")
-    print(f"  Highest severity:    {corr['highest_finding_severity']}")
-    print(f"  Assessment:          {result['assessment']}")
-    print("\nANALYST DECISION SUPPORT")
+    active_icon = "🟢" if result["defense_profile_active"] else "🔴"
+    sev_icon = severity_emoji(corr["highest_finding_severity"])
+    assessment_icon = "👀" if result["assessment"] == "REVIEW_REQUIRED" else "📡"
+
+    print("\n🛰️  ============================================================")
+    print("🐼  ZYRAPALANTIR // SYNTHETIC INTELLIGENCE FUSION")
+    print("🧪  EXERCISE LANTERN SHIELD — SYNTHETIC//UNCLASSIFIED")
+    print("🛰️  ============================================================")
+    print(f"🎯 Mission:          {mission['name']}")
+    print(f"🖥️  Mission system:   {mission['system']} ({mission['system_status']})")
+    print(f"💻 Affected asset:   {mission['affected_asset']}")
+    print(f"{active_icon} Defense profile:  {'ACTIVE' if result['defense_profile_active'] else 'INACTIVE'}")
+
+    print("\n🔎 INTELLIGENCE CORRELATION")
+    print(f"  📄 Reports:             {corr['intel_reports']}")
+    print(f"  📡 Independent sources: {corr['independent_sources']}")
+    print(f"  🔗 Corroborated IOCs:   {len(corr['corroborated_indicators'])}")
+    print(f"  📊 Evidence score:      {corr['evidence_score']}/100")
+    print(f"  {sev_icon} Highest severity:    {corr['highest_finding_severity']}")
+    print(f"  {assessment_icon} Assessment:          {result['assessment']}")
+
+    print("\n💡 ANALYST DECISION SUPPORT")
     for idx, action in enumerate(result["recommended_actions"], start=1):
-        print(f"  {idx}. {action}")
-    print("\nCONTROL STATUS")
-    print("  ✅ Synthetic data only")
-    print("  ✅ Evidence sources correlated")
-    print("  ✅ Maven provenance required")
-    print("  ✅ Human analyst approval required")
-    print("  ✅ Automatic external action taken: false")
+        print(f"  {idx}. 🧭 {action}")
+
+    print("\n🛡️  CONTROL STATUS")
+    print("  🧪 ✅ Synthetic data only")
+    print("  🔎 ✅ Evidence sources correlated")
+    print("  📦 ✅ Maven provenance required")
+    print("  👤 ✅ Human analyst approval required")
+    print("  ⛔ ✅ Automatic external action taken: false")
+    print("  🔒 ✅ No classified/operational data used")
 
 
 def main() -> int:
@@ -150,8 +167,8 @@ def main() -> int:
         print(json.dumps(result, indent=2))
     else:
         print_human(result)
-        print(f"\nAudit record: {AUDIT_PATH}")
-        print("✅ ZYRAPALANTIR INTEL CORRELATION PASS")
+        print(f"\n🧾 Audit record: {AUDIT_PATH}")
+        print("🎉 ✅ ZYRAPALANTIR INTEL CORRELATION PASS")
     return 0
 
 
