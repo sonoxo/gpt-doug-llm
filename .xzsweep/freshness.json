@@ -1,8 +1,13 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-09-09T08:00:55Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-09-09T08:15:00Z",
+  "due_files_reviewed": 4,
+  "due_paths": [
+    "divisions/chaotic-good/README.md",
+    "docs/zyra-shell-v2.js",
+    "ecosystem/README.md",
+    "ecosystem/registry.v4.json"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1918,6 +1923,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "compliance/mil-readiness/control-profile.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:13:13Z",
+      "reviewed_at": null,
+      "sha256": "a188838053f03efa52675447d7b10ffc191084b5611267848df4ed073f153b99",
+      "size": 3170,
+      "validation_issues": [],
+      "was_due": false
+    },
     "config/ai-layer-manifest.json": {
       "actions": [],
       "binary": false,
@@ -2083,6 +2099,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "demo/zyrapalantir-intel-scenario.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:10:42Z",
+      "reviewed_at": null,
+      "sha256": "7b0f40c4006794dd78039995cbf5a993992c11a0732557a1b9b763ef0c9eede9",
+      "size": 3102,
+      "validation_issues": [],
+      "was_due": false
+    },
     "dev_terminal.py": {
       "actions": [],
       "binary": false,
@@ -2095,15 +2122,17 @@
       "was_due": false
     },
     "divisions/chaotic-good/README.md": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:12:01Z",
-      "reviewed_at": null,
-      "sha256": "195967b5ff5aac20b7a4eb103f454253f59c204b4fbbcd0826eb849bebc596fa",
-      "size": 4020,
+      "reviewed_at": "2026-09-10T08:15:00Z",
+      "sha256": "e334041754a2dc3ba78964051dd3f386966dbd80fb79875034f6a9fd00c2d251",
+      "size": 4021,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/.xunia-deployment-probe.txt": {
       "actions": [],
@@ -2355,6 +2384,17 @@
       "reviewed_at": "2026-09-10T07:07:30Z",
       "sha256": "8531b5f5fe75f1ef503f4620125fa2cf2575ea6aaefc392d571714bf9ec5b2e2",
       "size": 1664,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/MIL_READINESS.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:11:42Z",
+      "reviewed_at": null,
+      "sha256": "b97bf5883f7170d07722052a3d15ac8504f6551303266d23a84ce19303517929",
+      "size": 4858,
       "validation_issues": [],
       "was_due": false
     },
@@ -2957,11 +2997,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:05:09Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T08:15:00Z",
       "sha256": "4a0bea40bfa924760e2087831b98d9a1877bee72766a245dc52d21af285d13b8",
       "size": 2645,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/zyra-shell.js": {
       "actions": [],
@@ -3309,22 +3349,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:12:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T08:15:00Z",
       "sha256": "f1ad41cdb60004450323312d9db697c9cea8220c8c293db7ee6db5d403da0360",
       "size": 5014,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "ecosystem/registry.v4.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:12:22Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T08:15:00Z",
       "sha256": "a5e9a29a1a0e73994474185b97c702fdf5c2b88c8d1bfce6177e9d2cc5626f2a",
       "size": 5676,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "eureka.py": {
       "actions": [],
@@ -6329,6 +6369,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "safety-shield/ontology/zyrapalantir-intel-demo.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:10:22Z",
+      "reviewed_at": null,
+      "sha256": "a6aef2501d8815fa627947fb81e0dad5cb9db5c7b898773b8b9871cfcaa62045",
+      "size": 2190,
+      "validation_issues": [],
+      "was_due": false
+    },
     "safety-shield/policies/control-matrix.json": {
       "actions": [],
       "binary": false,
@@ -6421,10 +6472,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T08:00:14Z",
+      "git_touched_at": "2026-09-10T08:12:31Z",
       "reviewed_at": null,
-      "sha256": "c9c5307b9ac8a1d62b00be8e079645ac0a9b6ad1eceab1d069a97f074d529a26",
-      "size": 400,
+      "sha256": "f94c9ded48b1447b199a7afe8adaec345f97221e696a56c8d571823af3c3fa8a",
+      "size": 715,
       "validation_issues": [],
       "was_due": false
     },
@@ -6707,10 +6758,21 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T07:59:54Z",
+      "git_touched_at": "2026-09-10T08:12:19Z",
       "reviewed_at": null,
-      "sha256": "764544af3b1f5d836f850083bb8fc7dec9875c67c560ac7eb297c87b6a483b9c",
-      "size": 2563,
+      "sha256": "6a1250573d4f815853f8ef7955043f2563850896b6f4be764648eaf8f8d01345",
+      "size": 5641,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/zyrapalantir_intel_demo.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:11:14Z",
+      "reviewed_at": null,
+      "sha256": "682db9183c919bfd84ebfde7489a847d7a94f536872e9957f47aca06aefc149b",
+      "size": 6565,
       "validation_issues": [],
       "was_due": false
     },
@@ -7514,6 +7576,17 @@
       "reviewed_at": "2026-09-10T07:07:30Z",
       "sha256": "55b8f155ad671a6832f335fc3d0305dd35b8f9bf9f28eabf33113a68dc98dc84",
       "size": 4313,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_zyrapalantir_intel_demo.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T08:12:49Z",
+      "reviewed_at": null,
+      "sha256": "71cf5e50a5728214aa36c5854cc265abb6026199d46a7d9453e6e2284c80ce45",
+      "size": 1805,
       "validation_issues": [],
       "was_due": false
     },
@@ -11314,11 +11387,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-10T08:00:55Z",
+  "generated_at": "2026-09-10T08:15:00Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "divisions/chaotic-good/README.md"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1028,
+  "tracked_files_reviewed": 1034,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
