@@ -1,0 +1,92 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+CMD="${1:-status}"
+DELAY="${ZYRAPALANTIR_DEMO_DELAY:-1}"
+
+pause_demo() {
+  case "$DELAY" in
+    0|0.0) return 0 ;;
+    *) sleep "$DELAY" 2>/dev/null || true ;;
+  esac
+}
+
+banner() {
+  printf '\n'
+  printf '============================================================\n'
+  printf ' ZYRAPALANTIR // GLASS ONION // GPT-REDPANDA\n'
+  printf ' PALANTIR MAVEN DEFENSIVE SOFTWARE DEMO MODE\n'
+  printf '============================================================\n'
+}
+
+require_demo_env() {
+  if [ -z "${PALANTIR_MAVEN_REPOSITORY_URL:-}" ]; then
+    echo '❌ PALANTIR_MAVEN_REPOSITORY_URL is not set.' >&2
+    echo '   Export the Foundry Maven repository URL in this shell first.' >&2
+    exit 1
+  fi
+  if [ -z "${PALANTIR_MAVEN_TOKEN:-}" ]; then
+    echo '❌ PALANTIR_MAVEN_TOKEN is not set.' >&2
+    echo '   Generate a fresh Foundry Maven token and export it in this shell.' >&2
+    exit 1
+  fi
+}
+
+demo() {
+  require_demo_env
+  banner
+  echo 'DEMO SAFETY: inert readiness artifact only; no artifact execution.'
+  pause_demo
+
+  echo '\n[1/6] BASELINE — demonstrate OFF state'
+  sh "$ROOT/scripts/defense" deactivate
+  sh "$ROOT/scripts/defense" status
+  pause_demo
+
+  echo '\n[2/6] ACTIVATE — Glass Onion + Maven + REDPANDA gates'
+  sh "$ROOT/scripts/defense" activate
+  pause_demo
+
+  echo '\n[3/6] STATE — prove profile persisted ACTIVE'
+  sh "$ROOT/scripts/defense" status
+  pause_demo
+
+  echo '\n[4/6] DOCTOR — live ontology/Maven/CPR health check'
+  sh "$ROOT/scripts/defense" doctor
+  pause_demo
+
+  echo '\n[5/6] PALANTIR MAVEN — end-to-end publish/retrieve/SHA-256 verification'
+  bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
+  pause_demo
+
+  echo '\n[6/6] FINAL — demo verdict'
+  STATUS_JSON="$(sh "$ROOT/scripts/defense" status)"
+  printf '%s\n' "$STATUS_JSON"
+  printf '\n'
+  printf '✅ ZYRAPALANTIR DEMO PASS\n'
+  printf '   DEFENSE_PROFILE=ACTIVE\n'
+  printf '   GLASS_ONION=VALID\n'
+  printf '   PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
+  printf '   GPT_REDPANDA_CPR=PASS\n'
+  printf '   ARTIFACT_EXECUTED=false\n'
+  printf '   DEMO_MODE=READY\n'
+}
+
+status() {
+  banner
+  echo 'ZYRAPALANTIR demo command installed.'
+  sh "$ROOT/scripts/defense" status
+}
+
+case "$CMD" in
+  demo) demo ;;
+  status) status ;;
+  doctor) sh "$ROOT/scripts/defense" doctor ;;
+  activate) sh "$ROOT/scripts/defense" activate ;;
+  deactivate) sh "$ROOT/scripts/defense" deactivate ;;
+  *)
+    echo 'usage: zyrapalantir [demo|status|doctor|activate|deactivate]' >&2
+    exit 2
+    ;;
+esac
