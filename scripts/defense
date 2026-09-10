@@ -7,6 +7,7 @@ STATE_FILE="$STATE_DIR/defense-profile.json"
 PROFILE="xunia-defense-maven-gated"
 CMD="${1:-status}"
 SUBCMD="${2:-}"
+MODE="${3:-}"
 
 ontology_check() {
   python3 -m json.tool "$ROOT/safety-shield/ontology/defense-maven-activation.json" >/dev/null
@@ -73,6 +74,12 @@ activate_field() {
   echo ""
   echo "🎖️ FIELD MODE REQUESTED"
   echo "📡 Starting ZYRAPALANTIR LIVE + field-operations console..."
+  if [ "$MODE" = "visual" ]; then
+    sh "$ROOT/scripts/zyra-field-mega"
+    echo ""
+    echo "🖥️ Opening local visual field dashboard..."
+    exec sh "$ROOT/scripts/zyra-field" visual
+  fi
   exec sh "$ROOT/scripts/zyra-field-mega"
 }
 
@@ -100,14 +107,19 @@ doctor() {
 }
 
 usage() {
-  echo "usage: defense [activate [field]|act [field]|status|deactivate|doctor]" >&2
+  echo "usage: defense [activate [field [visual]]|act [field [visual]]|status|deactivate|doctor]" >&2
 }
 
 case "$CMD" in
   activate|act)
     case "$SUBCMD" in
-      "") activate ;;
-      field) activate_field ;;
+      "") [ -z "$MODE" ] || { usage; exit 2; }; activate ;;
+      field)
+        case "$MODE" in
+          ""|visual) activate_field ;;
+          *) usage; exit 2 ;;
+        esac
+        ;;
       *) usage; exit 2 ;;
     esac
     ;;
