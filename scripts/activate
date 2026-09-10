@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+
+if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "demo" ] && [ "$#" -eq 2 ]; then
+  exec sh "$ROOT/scripts/zyrapalantir" demo
+fi
+
+if [ "${1:-}" = "zyrapalantir" ] && [ "${2:-}" = "status" ] && [ "$#" -eq 2 ]; then
+  exec sh "$ROOT/scripts/zyrapalantir" status
+fi
+
+echo 'usage: activate zyrapalantir [demo|status]' >&2
+exit 2
