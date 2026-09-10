@@ -1,8 +1,24 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-09T08:23:20Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-09T09:08:29Z",
+  "due_files_reviewed": 15,
+  "due_paths": [
+    ".github/workflows/security-gate.yml",
+    "agents/nist_profile_compliance_gate.py",
+    "intel/compliance/government-intelligence-readiness.json",
+    "intel/compliance/nist-800-53-rev5-control-catalog.md",
+    "intel/compliance/nist-800-53-rev5-profiles.json",
+    "intel/compliance/system-security-plan.md",
+    "kraken_jutsu/ACTOR_NARRATIVE_CYBER.md",
+    "kraken_jutsu/README.md",
+    "kraken_jutsu/__init__.py",
+    "kraken_jutsu/narrative_intel.py",
+    "tests/test_kraken_narrative_intel.py",
+    "the-black-house/training/safehouse/README.md",
+    "the-black-house/training/safehouse/safehouse.manifest.json",
+    "the-black-house/vendor-engagement/README.md",
+    "the-black-house/vendor-engagement/vendor-engagement.manifest.json"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -548,11 +564,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:52Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "e46c9ed62978fcb24cf2cb61bd38dd37bb604615e544f48512fb616e3e5fa6c4",
       "size": 3394,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/sonoxo-xraycloud.yml": {
       "actions": [],
@@ -1450,11 +1466,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:39Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "b38db50910ddd5b3371b4c445043082cdd514a93391dd8b7e2cec508e96ecbf1",
       "size": 3399,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "agents/ontology.py": {
       "actions": [],
@@ -4364,10 +4380,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T08:00:43Z",
+      "git_touched_at": "2026-09-10T09:03:21Z",
       "reviewed_at": null,
-      "sha256": "ec8173cc72c3f22d9eb8da49b4232736fc51dbb27759bc292b5c4af24c869bd4",
-      "size": 3896,
+      "sha256": "052e5086ee92fcfebaae70b500a2488a1375916cac56715369f6e2e93be0393f",
+      "size": 3957,
       "validation_issues": [],
       "was_due": false
     },
@@ -4585,11 +4601,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:02Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "4f02e66504fe420d375266e111247297751e7af4971111e8b0a3f01208c69e56",
       "size": 7337,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/compliance/incident-response-plan.md": {
       "actions": [],
@@ -4607,22 +4623,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:17:53Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "4371892032339a17fd21246044f0f6905f175e907fa44648b50c1c5f169a8a38",
       "size": 5677,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/compliance/nist-800-53-rev5-profiles.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:18:38Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "222c14ffa529604b639805d72a2c8732a1423de0a2e7406eab70aec89d11cf3f",
       "size": 2301,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/compliance/poam.json": {
       "actions": [],
@@ -4640,11 +4656,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-07T01:19:19Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "fc5c30b43232c52455e90c3708231acab071385cb6cddbd8b46c2adb107066a6",
       "size": 5286,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/glassonion/DOJ-26-972.json": {
       "actions": [],
@@ -5014,11 +5030,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:05:35Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "314a1b0fcf135a640fb2f316ecca78462076fac03e79653af7c9690fd115f641",
       "size": 3403,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/LIVE_DATA_ARCHITECTURE.md": {
       "actions": [],
@@ -5036,22 +5052,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:05:53Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "49786c31ccd2378477ddf4e4a1245f530dea5b55658802abbc4c506ba1775626",
       "size": 2807,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/__init__.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:50Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "bf14875f662afd0527ba80c5047bba277e98e4b502fe60a37df5ef55a41b53cc",
       "size": 589,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/agents_v031.py": {
       "actions": [],
@@ -5135,11 +5151,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:25Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "74a96790cf401a60b5177d9d864a87f736c154d90b42929d33b889a9dd6a9c27",
       "size": 10597,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "kraken_jutsu/ontology.py": {
       "actions": [],
@@ -5849,10 +5865,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T07:11:38Z",
+      "git_touched_at": "2026-09-10T09:06:32Z",
       "reviewed_at": null,
-      "sha256": "4714e8de03b3e5fbc79b0a975d4763592671ceaf7196ec8cbf251d1575ae0554",
-      "size": 6802,
+      "sha256": "9ac906f0d9540ddd4ef22c094a7b3a23e0d3c3fa3398ef162ddebbf257583fa0",
+      "size": 7920,
       "validation_issues": [],
       "was_due": false
     },
@@ -6373,6 +6389,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "safety-shield/ontology/zyrapalantir-live.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T09:01:51Z",
+      "reviewed_at": null,
+      "sha256": "eafbafbd620c789e476f96e158d863012f3d7479e8098e3e45588e024b65b99d",
+      "size": 2343,
+      "validation_issues": [],
+      "was_due": false
+    },
     "safety-shield/policies/control-matrix.json": {
       "actions": [],
       "binary": false,
@@ -6465,10 +6492,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T08:12:31Z",
+      "git_touched_at": "2026-09-10T09:02:56Z",
       "reviewed_at": null,
-      "sha256": "f94c9ded48b1447b199a7afe8adaec345f97221e696a56c8d571823af3c3fa8a",
-      "size": 715,
+      "sha256": "d6217cdcae889e708b800ab38e07a72bd1955675de99dfbb5239ca5304634a65",
+      "size": 856,
       "validation_issues": [],
       "was_due": false
     },
@@ -6751,10 +6778,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T08:23:09Z",
+      "git_touched_at": "2026-09-10T09:02:38Z",
       "reviewed_at": null,
-      "sha256": "5a735ba2eabe3f7e41133f4b7bd4254a3360a0d282136f2fa0e1664f93408f4c",
-      "size": 6956,
+      "sha256": "f5517bfee050c635dc74ad08b9e06a8262ae920ef60969e88f0b82251b23f519",
+      "size": 9233,
       "validation_issues": [],
       "was_due": false
     },
@@ -6766,6 +6793,17 @@
       "reviewed_at": null,
       "sha256": "20ed44469704f3fcdab8731fe4dd7957179576b3a066cdb46afed54b26a64f7e",
       "size": 7205,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/zyrapalantir_live.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T09:01:29Z",
+      "reviewed_at": null,
+      "sha256": "8a64b7bef626eb5a60e528fc1ee494de21768198c58197d6a877d0c8c00110c2",
+      "size": 15016,
       "validation_issues": [],
       "was_due": false
     },
@@ -7126,11 +7164,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-06T16:04:42Z",
-      "reviewed_at": "2026-09-09T08:37:33Z",
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "e165fbd331988ee029182f937c52567f13b58d9a6414875e5a23955ed54f168e",
       "size": 3350,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_llms_at_dod_ontology.py": {
       "actions": [],
@@ -7289,11 +7327,11 @@
     "tests/test_redpanda_palantir_cpr_probe.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-07T05:56:03Z",
-      "reviewed_at": "2026-09-09T09:49:36Z",
-      "sha256": "48547f16da1cd5aa4a57330771afd039d72501c6a2e4c57864ab3dd33f9bbf61",
-      "size": 2384,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T09:06:47Z",
+      "reviewed_at": null,
+      "sha256": "385b08660ad68cadd165519e82fa40b03e9072ca434db1c49dee009b6df4f676",
+      "size": 3697,
       "validation_issues": [],
       "was_due": false
     },
@@ -7580,6 +7618,17 @@
       "reviewed_at": null,
       "sha256": "71cf5e50a5728214aa36c5854cc265abb6026199d46a7d9453e6e2284c80ce45",
       "size": 1805,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_zyrapalantir_live.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T09:03:37Z",
+      "reviewed_at": null,
+      "sha256": "234dc0972eecdb7f5564cecb4e31eb1f14224f3070ae32144ee5fea9a894fd7f",
+      "size": 2146,
       "validation_issues": [],
       "was_due": false
     },
@@ -7962,44 +8011,44 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:32:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "6090d5c10a349192ed09dad4befe2e7154fea080b58384da8b71ae6cfb520cbd",
       "size": 1523,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-black-house/training/safehouse/safehouse.manifest.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:32:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "92777162e1e88ae6a1c09ac99f079a7bc9745697ee4216b9b370c7eb8307786d",
       "size": 2188,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-black-house/vendor-engagement/README.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:27:02Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "cf97ac86c2a51bb48e88c4caff05522710844c2e3c7b02390dbf95eb4dc44454",
       "size": 1654,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-black-house/vendor-engagement/vendor-engagement.manifest.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-09T08:26:51Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T09:08:29Z",
       "sha256": "1d79ff768ce672460bd268bfc39b69b65a0746b68544ba6bfa1a124f24532f9b",
       "size": 3442,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "the-green-house/bin/install-and-run-worldmonitor.sh": {
       "actions": [],
@@ -11380,11 +11429,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-10T08:23:20Z",
+  "generated_at": "2026-09-10T09:08:29Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1034,
+  "tracked_files_reviewed": 1037,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
