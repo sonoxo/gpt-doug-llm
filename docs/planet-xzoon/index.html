@@ -33,7 +33,7 @@
     </aside>
 
     <section class="xz-panel xz-stage" aria-label="Interactive Planet xZoon ontology globe">
-      <div class="xz-toolbar"><button id="xz-pause" type="button">Pause</button><button id="xz-reset" type="button">Reset</button><label class="xz-file" for="xz-file">Import JSON</label><input id="xz-file" type="file" accept="application/json"></div>
+      <div class="xz-toolbar"><button id="xz-pause" type="button">Pause</button><button id="xz-reset" type="button">Reset</button><button id="xz-maven" type="button">Load Maven</button><label class="xz-file" for="xz-file">Import JSON</label><input id="xz-file" type="file" accept="application/json"></div>
       <canvas id="xz-globe"></canvas><div id="xz-tip" class="xz-tip"></div>
       <div class="xz-legend"><span><i style="background:#45e7ff"></i>Agents</span><span><i style="background:#9b6cff"></i>Systems</span><span><i style="background:#55f7a5"></i>Knowledge</span><span><i style="background:#ff4fd8"></i>Security</span><span><i style="background:#ffd166"></i>Governance</span></div>
     </section>
@@ -67,7 +67,30 @@
   function stats(){document.getElementById('xz-nodes').textContent=data.nodes.length;document.getElementById('xz-links').textContent=data.links.length;document.getElementById('xz-agents').textContent=data.nodes.filter(n=>n.type==='agent').length;document.getElementById('xz-verified').textContent=data.nodes.filter(n=>n.status==='verified').length;let t=data.nodes.reduce((s,n)=>s+(+n.confidence||0),0)/Math.max(1,data.nodes.length);document.getElementById('xz-trust').textContent=t.toFixed(2)}
   function list(q=''){q=q.toLowerCase();let el=document.getElementById('xz-list');el.innerHTML='';data.nodes.filter(n=>!q||n.label.toLowerCase().includes(q)||n.type.toLowerCase().includes(q)).forEach(n=>{let d=document.createElement('div');d.className='xz-row';d.innerHTML=`<b style="color:${colors[n.type]||'#fff'}">${n.label}</b><small>${n.type.toUpperCase()} · ${n.status||'unknown'} · ${(n.confidence||0).toFixed(2)}</small>`;d.onclick=()=>{rot=-(n.lon*Math.PI/180);tilt=n.lat*Math.PI/180*.3;log('focused '+n.label,'xZoon')};el.appendChild(d)})}
   function log(text,name='Live'){let s=document.getElementById('xz-stream'),d=document.createElement('div');d.className='xz-event';d.innerHTML=`<b>${name}</b> ${text}`;s.prepend(d);while(s.children.length>12)s.lastChild.remove()}
-  stats();list();['Cortex linked ontology cluster','Memory Garden reinforced verified seed','Seed Forge queued candidate claim','Harvester detected changed artifact'].forEach((x,i)=>setTimeout(()=>log(x,i%2?'Virginia':'ONTologi'),i*80));
+  stats();list();
+
+  document.getElementById('xz-maven').onclick = async () => {
+    try {
+      const response = await fetch('../maven-ontology/ontology.json', {cache:'no-store'});
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const parsed = await response.json();
+
+      if (!Array.isArray(parsed.nodes) || !Array.isArray(parsed.links)) {
+        throw new Error('Maven ontology requires nodes and links arrays');
+      }
+
+      data = parsed;
+      stats();
+      list();
+
+      document.getElementById('xz-mode').textContent = 'MAVEN ONTOLOGY LIVE';
+      log(`loaded Maven Ontology: ${data.nodes.length} objects / ${data.links.length} links`, 'Maven');
+    } catch (error) {
+      console.error('Maven Ontology import failed', error);
+      alert('Unable to load Maven Ontology: ' + error.message);
+    }
+  };
+['Cortex linked ontology cluster','Memory Garden reinforced verified seed','Seed Forge queued candidate claim','Harvester detected changed artifact'].forEach((x,i)=>setTimeout(()=>log(x,i%2?'Virginia':'ONTologi'),i*80));
   canvas.onmousedown=e=>{drag=true;lx=e.clientX;ly=e.clientY};addEventListener('mouseup',()=>drag=false);addEventListener('mousemove',e=>{if(drag){rot+=(e.clientX-lx)*.006;tilt+=(e.clientY-ly)*.004;tilt=Math.max(-1,Math.min(1,tilt));lx=e.clientX;ly=e.clientY}});canvas.addEventListener('wheel',e=>{e.preventDefault();zoom*=e.deltaY>0?.92:1.08;zoom=Math.max(.65,Math.min(1.7,zoom))},{passive:false});canvas.addEventListener('mousemove',e=>{if(drag)return;let r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,h=[...screen].reverse().find(p=>(p.x-x)**2+(p.y-y)**2<p.r**2);if(h){tip.style.display='block';tip.style.left=Math.min(r.width-290,x+15)+'px';tip.style.top=Math.min(r.height-105,y+15)+'px';tip.innerHTML=`<h3>${h.n.label}</h3><p>${h.n.desc}</p><p>${h.n.type} · ${h.n.status} · trust ${(h.n.confidence||0).toFixed(2)}</p>`}else tip.style.display='none'});
   document.getElementById('xz-pause').onclick=()=>{paused=!paused;document.getElementById('xz-pause').textContent=paused?'Resume':'Pause'};document.getElementById('xz-reset').onclick=()=>{rot=0;tilt=.08;zoom=1};document.getElementById('xz-search').oninput=e=>list(e.target.value);document.getElementById('xz-file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let x=JSON.parse(await f.text());if(!Array.isArray(x.nodes)||!Array.isArray(x.links))throw Error('Expected {nodes:[], links:[]}');data=x;stats();list();document.getElementById('xz-mode').textContent='IMPORTED REAL DATA';log('loaded '+f.name,'Importer')}catch(err){alert('Invalid ontology JSON: '+err.message)}};setInterval(()=>{document.getElementById('xz-clock').textContent=new Date().toLocaleTimeString();if(Math.random()<.25){let n=data.nodes[Math.floor(Math.random()*data.nodes.length)];if(n)log('heartbeat from '+n.label)}},1000);
 })();
