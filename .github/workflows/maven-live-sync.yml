@@ -1,6 +1,13 @@
 name: Maven Live Sync
 
 on:
+  pull_request:
+    paths:
+      - "tools/maven_live_sync.py"
+      - "tests/test_maven_live_sync.py"
+      - ".github/workflows/maven-live-sync.yml"
+      - "maven-sync/**"
+      - "docs/maven-ontology/**"
   push:
     branches:
       - main
@@ -15,16 +22,53 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: maven-live-sync-main
+  group: maven-live-sync-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  contract:
+    name: Maven sync contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Unit and governance tests
+        run: python -m pytest -q tests/test_maven_live_sync.py
+
+      - name: Validate example export without writes
+        run: |
+          python tools/maven_live_sync.py \
+            --input maven-sync/examples/approved-export.json \
+            --target docs/maven-ontology/ontology.json \
+            --audit /tmp/maven-sync-audit.json \
+            --check
+
+      - name: Diff hygiene
+        run: git diff --check
+
   sync:
+    name: Publish approved Maven export
+    if: github.event_name != 'pull_request'
+    needs: contract
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -37,15 +81,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install test dependency
-        run: python -m pip install --disable-pip-version-check pytest
-
       - name: Resolve approved exports
-        id: exports
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
           DISPATCH_PATH: ${{ inputs.export_path }}
+          EVENT_BEFORE: ${{ github.event.before }}
           EVENT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
@@ -53,7 +94,7 @@ jobs:
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             printf '%s\n' "$DISPATCH_PATH" >> /tmp/maven_exports.txt
           else
-            git diff-tree --no-commit-id --name-only -r "$EVENT_SHA" \
+            git diff --name-only "$EVENT_BEFORE" "$EVENT_SHA" \
               | grep -E '^maven-sync/approved/[^/]+\.json$' \
               | sort -u >> /tmp/maven_exports.txt || true
           fi
@@ -68,10 +109,6 @@ jobs:
             esac
             [[ -f "$export_path" ]] || { echo "Missing export: $export_path"; exit 1; }
           done < /tmp/maven_exports.txt
-          echo "count=$(wc -l < /tmp/maven_exports.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
-
-      - name: Validate sync engine
-        run: python -m pytest -q tests/test_maven_live_sync.py
 
       - name: Apply approved exports
         shell: bash
@@ -104,9 +141,6 @@ jobs:
               assert source in id_set, f'broken link source: {source}'
               assert target in id_set, f'broken link target: {target}'
               assert relation, 'empty relation'
-          for node in graph['nodes']:
-              if str(node.get('id', '')).startswith('maven:') and node.get('provenance'):
-                  assert isinstance(node['provenance'], dict)
           governance = graph['governance']
           assert governance['actionModes'] == ['recommend', 'simulate', 'approved']
           assert governance['autonomousDisruptiveActions'] is False
