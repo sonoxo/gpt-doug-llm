@@ -1,11 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-09T13:37:59Z",
-  "due_files_reviewed": 2,
-  "due_paths": [
-    "docs/planet/index.html",
-    "scripts/validate_ecosystem_v4.py"
-  ],
+  "cutoff_at": "2026-09-09T13:52:40Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -2607,9 +2604,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T11:31:59Z",
+      "git_touched_at": "2026-09-10T13:38:00Z",
       "reviewed_at": null,
-      "sha256": "22a6f9a79efee8e0c0db6793241bba4d330c123d610033828f247536dcadbda5",
+      "sha256": "f49323ffdd45123a27fcf2c8351ad4258c82b41eb15dc665a49aa5a420271f20",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -2900,6 +2897,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/maven-ontology/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T13:51:02Z",
+      "reviewed_at": null,
+      "sha256": "1aa01e3323542925856f2e32aa942b63dcb12a3573691b6ca0332648e2578a87",
+      "size": 3181,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/metrics.html": {
       "actions": [],
       "binary": false,
@@ -2944,16 +2952,27 @@
       "validation_issues": [],
       "was_due": false
     },
-    "docs/planet/index.html": {
+    "docs/planet-xzoon/index.html": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T13:50:39Z",
+      "reviewed_at": null,
+      "sha256": "03001a347a5fcb5cf43bec7a485ee9ff2e94ed67f49e11ad73e5ee5408283f38",
+      "size": 14256,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/planet/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-09T12:10:33Z",
       "reviewed_at": "2026-09-10T13:37:59Z",
       "sha256": "c488bde7298bee1441a4aea2496b6431e6a3d1b9694918083e8ecc399444b6ad",
       "size": 2394,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/resources.html": {
       "actions": [],
@@ -3002,11 +3021,11 @@
     "docs/zyra-shell-v2.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-09T08:05:09Z",
-      "reviewed_at": "2026-09-10T08:15:00Z",
-      "sha256": "4a0bea40bfa924760e2087831b98d9a1877bee72766a245dc52d21af285d13b8",
-      "size": 2645,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T13:51:22Z",
+      "reviewed_at": null,
+      "sha256": "64b8c3ad19f1dde006c838ceab90347f6baed829a12fae6b8be93dea8eadbfab",
+      "size": 2740,
       "validation_issues": [],
       "was_due": false
     },
@@ -6720,13 +6739,13 @@
     "scripts/validate_ecosystem_v4.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-09T12:53:44Z",
       "reviewed_at": "2026-09-10T13:37:59Z",
       "sha256": "50403bc8227e2a87c540837393b0fca35835418c4f902b516aee9462c9a2d541",
       "size": 3403,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/validate_infrastructure_resilience.py": {
       "actions": [],
@@ -9229,9 +9248,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T11:32:02Z",
+      "git_touched_at": "2026-09-10T13:37:58Z",
       "reviewed_at": null,
-      "sha256": "3c9af0265fd75210d1c711dcc49a091f0244697838511ccd27f4b15e13cbc5f0",
+      "sha256": "0df01e48fe2056212ae7df1b9bdaba2b228c3b4b20d27050f2afe5f892b28deb",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -9251,9 +9270,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T11:23:19Z",
+      "git_touched_at": "2026-09-10T13:37:58Z",
       "reviewed_at": null,
-      "sha256": "4ff3168533f9fd32b06c1d88ad69e3f17d8ec54d993d435bdc85df8fbc3d1ff2",
+      "sha256": "9d3083a0d2f77a5ac133bca834a1a5150510bf741136d34ddb25810df5c1a3ab",
       "size": 6085,
       "validation_issues": [],
       "was_due": false
@@ -11548,11 +11567,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-10T13:37:59Z",
+  "generated_at": "2026-09-10T13:52:40Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1049,
+  "tracked_files_reviewed": 1051,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
