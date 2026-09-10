@@ -26,18 +26,23 @@ REQUIRED_FILES = (
     "tools/palantir-toolbox/bridge/palantir_bridge.py",
     "safety-shield/agents/knowledge/palantir-stack-v1.json",
     "safety-shield/ontology/palantir-maven-glass-onion.json",
+    "safety-shield/ontology/zyrapalantir-live.json",
     "redpanda-desktop/palantir-maven",
+    "scripts/zyrapalantir",
+    "scripts/zyrapalantir_live.py",
 )
 PYTHON_FILES = (
     "palantir_foundry.py",
     "palantir_maven.py",
     "sovereignty_performance.py",
     "tools/palantir-toolbox/bridge/palantir_bridge.py",
+    "scripts/zyrapalantir_live.py",
 )
 JSON_FILES = (
     "tools/palantir-toolbox/manifest.json",
     "safety-shield/agents/knowledge/palantir-stack-v1.json",
     "safety-shield/ontology/palantir-maven-glass-onion.json",
+    "safety-shield/ontology/zyrapalantir-live.json",
 )
 
 
@@ -103,7 +108,9 @@ def _run_sovereignty_profile(root: Path, benchmark: bool) -> dict[str, Any]:
             "cpu_count": hardware.get("cpu_count"),
             "memory_bytes": hardware.get("memory_bytes"),
             "benchmark": payload.get("benchmark") if benchmark else None,
-            "palantir_infrastructure_controlled": payload.get("palantir_infrastructure_controlled"),
+            "palantir_infrastructure_controlled": payload.get(
+                "palantir_infrastructure_controlled"
+            ),
         }
     except Exception as exc:
         return {"ok": False, "exit_code": 1, "error": str(exc)}
@@ -112,12 +119,29 @@ def _run_sovereignty_profile(root: Path, benchmark: bool) -> dict[str, Any]:
 def probe(repo_root: Path, benchmark: bool = False) -> dict[str, Any]:
     root = repo_root.resolve()
     missing = [name for name in REQUIRED_FILES if not (root / name).is_file()]
-    syntax = {name: _compile_python(root / name) for name in PYTHON_FILES if (root / name).is_file()}
-    parsed_json = {name: _parse_json(root / name) for name in JSON_FILES if (root / name).is_file()}
+    syntax = {
+        name: _compile_python(root / name)
+        for name in PYTHON_FILES
+        if (root / name).is_file()
+    }
+    parsed_json = {
+        name: _parse_json(root / name)
+        for name in JSON_FILES
+        if (root / name).is_file()
+    }
 
-    manifest = parsed_json.get("tools/palantir-toolbox/manifest.json", {}).get("payload") or {}
-    knowledge = parsed_json.get("safety-shield/agents/knowledge/palantir-stack-v1.json", {}).get("payload") or {}
-    maven_ontology = parsed_json.get("safety-shield/ontology/palantir-maven-glass-onion.json", {}).get("payload") or {}
+    manifest = parsed_json.get("tools/palantir-toolbox/manifest.json", {}).get(
+        "payload"
+    ) or {}
+    knowledge = parsed_json.get(
+        "safety-shield/agents/knowledge/palantir-stack-v1.json", {}
+    ).get("payload") or {}
+    maven_ontology = parsed_json.get(
+        "safety-shield/ontology/palantir-maven-glass-onion.json", {}
+    ).get("payload") or {}
+    live_ontology = parsed_json.get(
+        "safety-shield/ontology/zyrapalantir-live.json", {}
+    ).get("payload") or {}
 
     manifest_ok = manifest.get("manifest_version") == 3
     knowledge_ok = knowledge.get("knowledge_id") == "palantir-stack-v1"
@@ -126,15 +150,34 @@ def probe(repo_root: Path, benchmark: bool = False) -> dict[str, Any]:
         and maven_ontology.get("guardrails", {}).get("automaticPublishing") is False
         and maven_ontology.get("guardrails", {}).get("storesCredentialsInGit") is False
     )
+    live_controls = live_ontology.get("controls", {})
+    live_ontology_ok = (
+        live_ontology.get("ontology") == "ZYRAPALANTIRLive"
+        and live_ontology.get("mode") == "DEFENSIVE_MONITORING_ONLY"
+        and live_controls.get("automaticExternalAction") is False
+        and live_controls.get("artifactExecutionFromMonitor") is False
+        and live_controls.get("humanApprovalRequiredForExternalAction") is True
+    )
     syntax_ok = bool(syntax) and all(item.get("ok") for item in syntax.values())
-    json_ok = len(parsed_json) == len(JSON_FILES) and all(item.get("ok") for item in parsed_json.values())
+    json_ok = len(parsed_json) == len(JSON_FILES) and all(
+        item.get("ok") for item in parsed_json.values()
+    )
     runtime = (
         _run_sovereignty_profile(root, benchmark)
         if not missing and (root / "sovereignty_performance.py").is_file()
         else {"ok": False, "skipped": True, "reason": "required files missing"}
     )
 
-    ok = not missing and syntax_ok and json_ok and manifest_ok and knowledge_ok and maven_ontology_ok and bool(runtime.get("ok"))
+    ok = (
+        not missing
+        and syntax_ok
+        and json_ok
+        and manifest_ok
+        and knowledge_ok
+        and maven_ontology_ok
+        and live_ontology_ok
+        and bool(runtime.get("ok"))
+    )
     return {
         "schema": "gpt-redpanda.palantir-cpr.v2",
         "mode": "read-only-local-integrity",
@@ -143,10 +186,14 @@ def probe(repo_root: Path, benchmark: bool = False) -> dict[str, Any]:
         "missing": missing,
         "checks": {
             "python_syntax": syntax,
-            "json": {key: {k: v for k, v in value.items() if k != "payload"} for key, value in parsed_json.items()},
+            "json": {
+                key: {k: v for k, v in value.items() if k != "payload"}
+                for key, value in parsed_json.items()
+            },
             "manifest_v3": manifest_ok,
             "knowledge_registry": knowledge_ok,
             "palantir_maven_glass_onion": maven_ontology_ok,
+            "zyrapalantir_live_policy": live_ontology_ok,
             "sovereignty_runtime": runtime,
         },
         "writes_performed": False,
@@ -159,7 +206,9 @@ def probe(repo_root: Path, benchmark: bool = False) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(prog="redpanda-palantir-cpr")
     parser.add_argument("--repo-root", default="", help="local gpt-doug-llm checkout")
-    parser.add_argument("--benchmark", action="store_true", help="include local microbenchmark")
+    parser.add_argument(
+        "--benchmark", action="store_true", help="include local microbenchmark"
+    )
     args = parser.parse_args()
     result = probe(_resolve_repo_root(args.repo_root), benchmark=args.benchmark)
     print(json.dumps(result, indent=2, sort_keys=True))
