@@ -20,6 +20,14 @@ banner() {
   printf '============================================================\n'
 }
 
+intel_banner() {
+  printf '\n'
+  printf '============================================================\n'
+  printf ' ZYRAPALANTIR // DEFENSIVE INTELLIGENCE FUSION DEMO\n'
+  printf ' EXERCISE LANTERN SHIELD — SYNTHETIC//UNCLASSIFIED\n'
+  printf '============================================================\n'
+}
+
 require_demo_env() {
   if [ -z "${PALANTIR_MAVEN_REPOSITORY_URL:-}" ]; then
     echo '❌ PALANTIR_MAVEN_REPOSITORY_URL is not set.' >&2
@@ -61,10 +69,8 @@ demo() {
   pause_demo
 
   echo '\n[6/6] FINAL — demo verdict'
-  STATUS_JSON="$(sh "$ROOT/scripts/defense" status)"
-  printf '%s\n' "$STATUS_JSON"
-  printf '\n'
-  printf '✅ ZYRAPALANTIR DEMO PASS\n'
+  sh "$ROOT/scripts/defense" status
+  printf '\n✅ ZYRAPALANTIR DEMO PASS\n'
   printf '   DEFENSE_PROFILE=ACTIVE\n'
   printf '   GLASS_ONION=VALID\n'
   printf '   PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
@@ -73,20 +79,86 @@ demo() {
   printf '   DEMO_MODE=READY\n'
 }
 
+intel_demo() {
+  require_demo_env
+  intel_banner
+  echo 'MISSION: demonstrate defensive intelligence correlation and mission assurance.'
+  echo 'DATA: synthetic/unclassified training data only.'
+  echo 'ACTION POLICY: analyst decision support only; no automatic external action.'
+  pause_demo
+
+  echo '\n[1/7] BASELINE — start inactive'
+  sh "$ROOT/scripts/defense" deactivate
+  sh "$ROOT/scripts/defense" status
+  pause_demo
+
+  echo '\n[2/7] CONTROL PLANE — activate governed defensive profile'
+  sh "$ROOT/scripts/defense" activate
+  pause_demo
+
+  echo '\n[3/7] SUPPLY CHAIN — prove Palantir Maven artifact integrity'
+  bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
+  pause_demo
+
+  echo '\n[4/7] INTEL ONTOLOGY — validate synthetic mission graph policy'
+  python3 -m json.tool "$ROOT/safety-shield/ontology/zyrapalantir-intel-demo.json" >/dev/null
+  echo '✅ ZYRAPALANTIR intelligence ontology valid'
+  pause_demo
+
+  echo '\n[5/7] INTEL FUSION — correlate independent synthetic evidence'
+  python3 "$ROOT/scripts/zyrapalantir_intel_demo.py"
+  pause_demo
+
+  echo '\n[6/7] ANALYST CONTROL — verify human decision boundary'
+  echo '✅ recommendations generated'
+  echo '✅ human analyst approval required'
+  echo '✅ automatic external action taken: false'
+  echo '✅ classified/operational data used: false'
+  pause_demo
+
+  echo '\n[7/7] FINAL — mission-assurance demo verdict'
+  printf '✅ ZYRAPALANTIR INTEL DEMO PASS\n'
+  printf '   DEFENSE_PROFILE=ACTIVE\n'
+  printf '   SYNTHETIC_INTEL=CORRELATED\n'
+  printf '   MISSION_DEPENDENCY=MODELED\n'
+  printf '   PALANTIR_MAVEN=ROUNDTRIP_VERIFIED\n'
+  printf '   GPT_REDPANDA_CPR=PASS\n'
+  printf '   ANALYST_APPROVAL=REQUIRED\n'
+  printf '   AUTOMATIC_EXTERNAL_ACTION=false\n'
+  printf '   MIL_READINESS_STAGE=M0_DEMO_READY\n'
+}
+
+mil_readiness() {
+  printf '\nZYRAPALANTIR MILITARY-READINESS ENGINEERING TRACK\n'
+  printf '=================================================\n'
+  printf 'M0  Demo Ready                    ✅ current target\n'
+  printf 'M1  Engineering Baseline          ◻ tests/SBOM/signed releases\n'
+  printf 'M2  Enterprise Security Baseline  ◻ IAM/MFA/RBAC/logging/secrets\n'
+  printf 'M3  RMF Evidence Package          ◻ controls/evidence/risk register\n'
+  printf 'M4  Environment Hardening         ◻ STIG/SRG/data handling as applicable\n'
+  printf 'M5  Operational Test & Evaluation ◻ authorized range testing/recovery drills\n'
+  printf 'M6  Authorization Path            ◻ organizational RMF/ATO decision\n'
+  printf '\nRoadmap: %s/docs/MIL_READINESS.md\n' "$ROOT"
+  printf 'Framework alignment target: NIST SP 800-53 Rev. 5 / Release 5.2.0\n'
+  printf 'Status is engineering alignment only — not certification or ATO.\n'
+}
+
 status() {
   banner
-  echo 'ZYRAPALANTIR demo command installed.'
+  echo 'ZYRAPALANTIR command installed.'
   sh "$ROOT/scripts/defense" status
 }
 
 case "$CMD" in
   demo) demo ;;
+  intel-demo) intel_demo ;;
+  mil-readiness) mil_readiness ;;
   status) status ;;
   doctor) sh "$ROOT/scripts/defense" doctor ;;
   activate) sh "$ROOT/scripts/defense" activate ;;
   deactivate) sh "$ROOT/scripts/defense" deactivate ;;
   *)
-    echo 'usage: zyrapalantir [demo|status|doctor|activate|deactivate]' >&2
+    echo 'usage: zyrapalantir [demo|intel-demo|mil-readiness|status|doctor|activate|deactivate]' >&2
     exit 2
     ;;
 esac
