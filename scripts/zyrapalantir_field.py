@@ -24,6 +24,7 @@ LIVE_STATE = STATE_DIR / "zyrapalantir-live-state.json"
 LIVE_PID = STATE_DIR / "zyrapalantir-live.pid"
 FIELD_STATE = STATE_DIR / "zyrapalantir-field-state.json"
 FIELD_AUDIT = STATE_DIR / "zyrapalantir-field-audit.jsonl"
+MAVEN_PROOF = STATE_DIR / "palantir-maven-roundtrip-last.json"
 
 SEVERITY = {"SAFE": 0, "INFO": 0, "LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4, "PLANETARY": 4}
 
@@ -50,6 +51,28 @@ def append_audit(payload: dict[str, Any]) -> None:
     with FIELD_AUDIT.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(payload, sort_keys=True) + "\n")
     FIELD_AUDIT.chmod(0o600)
+
+
+def latest_maven_proof() -> dict[str, Any]:
+    """Return only the non-secret fields from the latest real Maven round-trip."""
+    raw = load_json(MAVEN_PROOF, {}) or {}
+    if not isinstance(raw, dict):
+        return {}
+    return {
+        "schema": raw.get("schema"),
+        "verified_at": raw.get("verified_at"),
+        "ok": bool(raw.get("ok")),
+        "defense_ready": bool(raw.get("defense_ready")),
+        "coordinates": raw.get("coordinates"),
+        "host": raw.get("host"),
+        "publish": raw.get("publish") if isinstance(raw.get("publish"), dict) else {},
+        "retrieve": raw.get("retrieve") if isinstance(raw.get("retrieve"), dict) else {},
+        "integrity": raw.get("integrity") if isinstance(raw.get("integrity"), dict) else {},
+        "artifact_executed": bool(raw.get("artifact_executed", False)),
+        "credentials_printed": bool(raw.get("credentials_printed", False)),
+        "credentials_stored": bool(raw.get("credentials_stored", False)),
+        "error": raw.get("error"),
+    }
 
 
 def pid_running() -> tuple[bool, int | None]:
@@ -120,6 +143,7 @@ def snapshot(data_path: str | None = None) -> dict[str, Any]:
     live = load_json(LIVE_STATE, {}) or {}
     running, live_pid = pid_running()
     imported = load_authorized_data(data_path)
+    maven_proof = latest_maven_proof()
 
     findings = live.get("findings", [])
     if not isinstance(findings, list):
@@ -147,6 +171,7 @@ def snapshot(data_path: str | None = None) -> dict[str, Any]:
         "live_pid": live_pid,
         "live_readiness": readiness,
         "maven_ok": maven_ok,
+        "maven_proof": maven_proof,
         "redpanda_cpr_ok": cpr_ok,
         "highest_severity": highest,
         "analyst_attention_required": analyst_attention,
@@ -193,6 +218,10 @@ def show_status(s: dict[str, Any]) -> None:
     print(f"🛡️  DEFENSE PROFILE ....... {'✅ ACTIVE' if s['defense_profile_active'] else '❌ INACTIVE'}")
     print(f"📡 LIVE MONITOR ........... {'🟢 RUNNING' if s['live_service_running'] else '⚫ STOPPED'}")
     print(f"📦 PALANTIR MAVEN ......... {'✅ PASS' if s['maven_ok'] else '⚠️ NOT READY'}")
+    proof = s.get("maven_proof", {})
+    if proof.get("coordinates"):
+        print(f"   ↳ REAL ROUNDTRIP ....... {'✅ VERIFIED' if proof.get('ok') else '❌ FAILED'}")
+        print(f"   ↳ ARTIFACT ............. {proof.get('coordinates')}")
     print(f"🐼 REDPANDA CPR ........... {'✅ PASS' if s['redpanda_cpr_ok'] else '⚠️ NOT READY'}")
     print(f"🚨 ANALYST ATTENTION ...... {'REQUIRED' if s['analyst_attention_required'] else 'NO'}")
     print("👤 EXTERNAL ACTION ........ HUMAN APPROVAL REQUIRED")
@@ -232,6 +261,29 @@ def show_intel(s: dict[str, Any]) -> None:
         print(f"   ↳ {sev}: {str(finding.get('description', ''))[:150]}")
 
 
+def show_maven(s: dict[str, Any]) -> None:
+    p = s.get("maven_proof", {})
+    print("📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF")
+    if not p.get("coordinates"):
+        print("   ⚠️ no persisted round-trip proof yet")
+        print("   Run: bash redpanda-desktop/palantir-maven roundtrip")
+        return
+    pub = p.get("publish", {})
+    ret = p.get("retrieve", {})
+    integ = p.get("integrity", {})
+    print(f"   🕒 verified at: {p.get('verified_at') or 'unknown'}")
+    print(f"   🌐 host: {p.get('host') or 'unknown'}")
+    print(f"   🧩 coordinates: {p.get('coordinates')}")
+    print(f"   ⬆️ publish: POM={pub.get('pom_status')} JAR={pub.get('jar_status')}")
+    print(f"   ⬇️ retrieve: POM={ret.get('pom_status')} JAR={ret.get('jar_status')}")
+    print(f"   #️⃣ POM SHA-256: {integ.get('pom_sha256') or 'n/a'}")
+    print(f"   #️⃣ JAR SHA-256: {integ.get('jar_sha256') or 'n/a'}")
+    print(f"   ✅ POM byte match: {bool(integ.get('pom_match'))}")
+    print(f"   ✅ JAR byte match: {bool(integ.get('jar_match'))}")
+    print(f"   🛡️ defense_ready: {bool(p.get('defense_ready'))}")
+    print("   🔐 credentials stored/printed: false/false")
+
+
 def show_cyber(s: dict[str, Any]) -> None:
     counts = s["cyber"]["severity_counts"]
     print("🛡️  CYBER")
@@ -240,6 +292,10 @@ def show_cyber(s: dict[str, Any]) -> None:
         f"🔴 HIGH={counts['HIGH']}  🚨 CRITICAL={counts['CRITICAL']}"
     )
     print(f"   📦 Maven: {'PASS' if s['maven_ok'] else 'NOT READY'}")
+    proof = s.get("maven_proof", {})
+    if proof.get("coordinates"):
+        print(f"   ↳ real artifact: {proof.get('coordinates')}")
+        print(f"   ↳ round-trip integrity: {'VERIFIED' if proof.get('ok') else 'FAILED'}")
     print(f"   🐼 REDPANDA CPR: {'PASS' if s['redpanda_cpr_ok'] else 'NOT READY'}")
 
 
@@ -264,6 +320,8 @@ def show_readiness(s: dict[str, Any]) -> None:
     print(f"   🛡️ defense profile: {'PASS' if s['defense_profile_active'] else 'FAIL'}")
     print(f"   📡 live telemetry: {'PASS' if s['live_service_running'] else 'FAIL'}")
     print(f"   📦 Maven supply-chain gate: {'PASS' if s['maven_ok'] else 'FAIL'}")
+    proof = s.get("maven_proof", {})
+    print(f"   🔏 Maven real round-trip proof: {'VERIFIED' if proof.get('ok') else 'MISSING/FAILED'}")
     print(f"   🐼 REDPANDA CPR: {'PASS' if s['redpanda_cpr_ok'] else 'FAIL'}")
     print(f"   🚦 field console: {'READY' if s['field_ready'] else 'DEGRADED/PENDING'}")
     print("   ⚠️ engineering readiness only — not certification/ATO")
@@ -288,6 +346,8 @@ def show_all(s: dict[str, Any]) -> None:
     print()
     show_intel(s)
     print()
+    show_maven(s)
+    print()
     show_cyber(s)
     print()
     show_incidents(s)
@@ -300,7 +360,7 @@ def main() -> int:
     parser.add_argument(
         "command",
         nargs="?",
-        choices=["status", "assets", "comms", "intel", "cyber", "incidents", "readiness", "simulate", "all"],
+        choices=["status", "assets", "comms", "intel", "maven", "cyber", "incidents", "readiness", "simulate", "all"],
         default="status",
     )
     parser.add_argument(
@@ -324,6 +384,7 @@ def main() -> int:
             "command": args.command,
             "field_ready": s["field_ready"],
             "highest_severity": s["highest_severity"],
+            "maven_roundtrip_verified": bool(s.get("maven_proof", {}).get("ok")),
             "automatic_external_action": False,
             "weapons_control": False,
             "targeting_control": False,
@@ -339,6 +400,7 @@ def main() -> int:
         "assets": show_assets,
         "comms": show_comms,
         "intel": show_intel,
+        "maven": show_maven,
         "cyber": show_cyber,
         "incidents": show_incidents,
         "readiness": show_readiness,
