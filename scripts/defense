@@ -6,6 +6,7 @@ STATE_DIR="$HOME/.config/gpt-doug"
 STATE_FILE="$STATE_DIR/defense-profile.json"
 PROFILE="xunia-defense-maven-gated"
 CMD="${1:-status}"
+SUBCMD="${2:-}"
 
 ontology_check() {
   python3 -m json.tool "$ROOT/safety-shield/ontology/defense-maven-activation.json" >/dev/null
@@ -67,6 +68,14 @@ PY
   echo "State: $STATE_FILE"
 }
 
+activate_field() {
+  activate
+  echo ""
+  echo "🎖️ FIELD MODE REQUESTED"
+  echo "📡 Starting ZYRAPALANTIR LIVE + field-operations console..."
+  exec sh "$ROOT/scripts/zyra-field-mega"
+}
+
 status() {
   if [ -f "$STATE_FILE" ]; then
     cat "$STATE_FILE"
@@ -90,13 +99,23 @@ doctor() {
   echo "✅ REDPANDA CPR"
 }
 
+usage() {
+  echo "usage: defense [activate [field]|act [field]|status|deactivate|doctor]" >&2
+}
+
 case "$CMD" in
-  activate) activate ;;
+  activate|act)
+    case "$SUBCMD" in
+      "") activate ;;
+      field) activate_field ;;
+      *) usage; exit 2 ;;
+    esac
+    ;;
   status) status ;;
   deactivate) deactivate ;;
   doctor) doctor ;;
   *)
-    echo "usage: defense [activate|status|deactivate|doctor]" >&2
+    usage
     exit 2
     ;;
 esac
