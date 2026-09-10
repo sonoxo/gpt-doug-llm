@@ -1,0 +1,102 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+STATE_DIR="$HOME/.config/gpt-doug"
+STATE_FILE="$STATE_DIR/defense-profile.json"
+PROFILE="xunia-defense-maven-gated"
+CMD="${1:-status}"
+
+ontology_check() {
+  python3 -m json.tool "$ROOT/safety-shield/ontology/defense-maven-activation.json" >/dev/null
+  python3 -m json.tool "$ROOT/safety-shield/ontology/palantir-maven-glass-onion.json" >/dev/null
+}
+
+maven_check() {
+  python3 "$ROOT/palantir_maven.py" status >/dev/null
+  python3 "$ROOT/palantir_maven.py" probe
+}
+
+cpr_check() {
+  python3 "$ROOT/redpanda-desktop/palantir_cpr_probe.py"
+}
+
+activate() {
+  echo "🛡️ GPT-DOUG // DEFENSE ACTIVATION"
+  echo "1/4 ontology"
+  ontology_check
+  echo "✅ Glass Onion + Defense Maven ontology valid"
+
+  echo "2/4 Palantir Maven"
+  if ! MAVEN_RESULT="$(maven_check)"; then
+    echo "❌ Palantir Maven readiness failed; defensive profile remains inactive" >&2
+    exit 1
+  fi
+  printf '%s\n' "$MAVEN_RESULT"
+
+  echo "3/4 GPT-REDPANDA CPR"
+  if ! CPR_RESULT="$(cpr_check)"; then
+    printf '%s\n' "$CPR_RESULT" >&2
+    echo "❌ REDPANDA CPR failed; defensive profile remains inactive" >&2
+    exit 1
+  fi
+  printf '%s\n' "$CPR_RESULT"
+
+  echo "4/4 activate local defensive software profile"
+  mkdir -p "$STATE_DIR"
+  python3 - "$STATE_FILE" "$PROFILE" <<'PY'
+from datetime import datetime, timezone
+import json, pathlib, sys
+path = pathlib.Path(sys.argv[1])
+profile = sys.argv[2]
+payload = {
+    "schema": "gpt-doug.defense-profile.v1",
+    "profile": profile,
+    "active": True,
+    "artifact_source": "PALANTIR_MAVEN_REQUIRED",
+    "glass_onion": True,
+    "redpanda_cpr": True,
+    "activated_at": datetime.now(timezone.utc).isoformat(),
+    "scope": "defensive software, monitoring, resilience, recovery, simulation, software assurance"
+}
+path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+PY
+  chmod 600 "$STATE_FILE"
+  echo "✅ DEFENSIVE SOFTWARE PROFILE ACTIVE"
+  echo "Profile: $PROFILE"
+  echo "State: $STATE_FILE"
+}
+
+status() {
+  if [ -f "$STATE_FILE" ]; then
+    cat "$STATE_FILE"
+  else
+    printf '{\n  "profile": "%s",\n  "active": false\n}\n' "$PROFILE"
+  fi
+}
+
+deactivate() {
+  rm -f "$STATE_FILE"
+  echo "✅ Defensive software profile inactive"
+}
+
+doctor() {
+  echo "🩺 DEFENSE DOCTOR"
+  ontology_check
+  echo "✅ ontology"
+  maven_check
+  echo "✅ Maven"
+  cpr_check
+  echo "✅ REDPANDA CPR"
+}
+
+case "$CMD" in
+  activate) activate ;;
+  status) status ;;
+  deactivate) deactivate ;;
+  doctor) doctor ;;
+  *)
+    echo "usage: defense [activate|status|deactivate|doctor]" >&2
+    exit 2
+    ;;
+esac
