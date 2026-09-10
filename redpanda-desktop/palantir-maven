@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CMD="${1:-status}"
+case "$CMD" in
+  status|probe|settings)
+    exec python3 "$ROOT/palantir_maven.py" "$CMD"
+    ;;
+  kraken)
+    echo "🐼 GPT-REDPANDA // PALANTIR MAVEN"
+    echo "1/3 ontology: $ROOT/safety-shield/ontology/palantir-maven-glass-onion.json"
+    python3 -m json.tool "$ROOT/safety-shield/ontology/palantir-maven-glass-onion.json" >/dev/null
+    echo "2/3 adapter syntax"
+    python3 -m py_compile "$ROOT/palantir_maven.py"
+    echo "3/3 configuration"
+    python3 "$ROOT/palantir_maven.py" status
+    echo "✅ RELEASE THE KRAKEN: local Maven wiring verified"
+    ;;
+  *)
+    echo "usage: palantir-maven [status|probe|settings|kraken]" >&2
+    exit 2
+    ;;
+esac
