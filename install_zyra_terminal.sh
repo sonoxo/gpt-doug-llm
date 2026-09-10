@@ -28,6 +28,18 @@ exec sh "$ROOT/scripts/defense" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/defense"
 
+cat > "$HOME/.local/bin/zyrapalantir" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/zyrapalantir" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/zyrapalantir"
+
+cat > "$HOME/.local/bin/activate" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/activate" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/activate"
+
 ZSHRC="$HOME/.zshrc"
 BACKUP=""
 if [ -f "$ZSHRC" ]; then
@@ -49,8 +61,8 @@ if start in text and end in text:
     _, after = rest.split(end, 1)
     text = before.rstrip() + '\n' + after.lstrip()
 
-# Repair the known zsh alias/function collision without deleting unrelated user commands.
-known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra', 'defense'}
+# Repair known alias/function collisions without deleting unrelated user commands.
+known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra', 'defense', 'zyrapalantir', 'activate'}
 aliases = set()
 out = []
 for line in text.splitlines():
@@ -80,6 +92,10 @@ unalias doug-max 2>/dev/null || true
 unfunction doug-max 2>/dev/null || true
 unalias defense 2>/dev/null || true
 unfunction defense 2>/dev/null || true
+unalias zyrapalantir 2>/dev/null || true
+unfunction zyrapalantir 2>/dev/null || true
+unalias activate 2>/dev/null || true
+unfunction activate 2>/dev/null || true
 if [[ -o interactive && -t 0 && -f "$HOME/.config/gpt-doug/zyra-autostart" && -z "${{ZYRA_ACTIVE:-}}" ]]; then
   "$HOME/.local/bin/zyra"
 fi
@@ -105,5 +121,8 @@ echo 'Launcher: ~/.local/bin/zyra'
 echo 'MAX one-prompt launcher: ~/.local/bin/doug-max'
 echo 'Market terminal: ~/.local/bin/doug-market'
 echo 'Defense terminal: ~/.local/bin/defense'
+echo 'ZYRAPALANTIR terminal: ~/.local/bin/zyrapalantir'
+echo 'Demo command: activate zyrapalantir demo'
+echo 'Short demo command: zyrapalantir demo'
 echo 'Start defense profile: defense activate'
 echo 'Start now: ~/.local/bin/zyra'
