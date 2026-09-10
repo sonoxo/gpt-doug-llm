@@ -4,6 +4,8 @@
   const links = [
     ['Museum + HQ', base],
     ['Planet', `${base}planet/`],
+    ['Planet xZoon', `${base}planet-xzoon/`],
+    ['Maven Ontology', `${base}maven-ontology/`],
     ['Documentation', `${base}documentation.html`],
     ['Resources', `${base}resources.html`],
     ['Arcade', `${base}arcade/`],
