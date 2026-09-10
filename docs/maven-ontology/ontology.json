@@ -5,26 +5,36 @@
     "version": "1.0",
     "description": "XUNIA Maven ontology graph for Planet xZoon.",
     "freeMode": true,
-    "generatedBy": "GPT-DOUG-LLM BPO"
+    "generatedBy": "GPT-DOUG-LLM BPO",
+    "liveSync": {
+      "version": "1.0",
+      "lastExportId": "live-sync-smoke-20260910-1636z",
+      "lastSourceSystem": "Palantir Maven Live Sync Test",
+      "lastSourceUri": "xunia://maven-live-sync/smoke/2026-09-10",
+      "sourceGeneratedAt": "2026-09-10T16:36:00Z",
+      "approvedBy": "xunia-governed-smoke-test",
+      "approvedAt": "2026-09-10T16:36:30Z",
+      "graphFingerprint": "a1f1ab5eaf06d2dd1949532ddd18cf5cd9ee37715c2f692bc9a0b8295b55327c"
+    }
   },
   "objectTypes": [
-    "Mission",
+    "Action",
     "Agent",
-    "System",
-    "Platform",
+    "Approval",
+    "Artifact",
     "Asset",
+    "Capability",
+    "Control",
     "Dataset",
+    "Evidence",
+    "Finding",
+    "Mission",
+    "Platform",
+    "Requirement",
     "Sensor",
     "Source",
-    "Capability",
-    "Requirement",
-    "Threat",
-    "Finding",
-    "Evidence",
-    "Control",
-    "Action",
-    "Approval",
-    "Artifact"
+    "System",
+    "Threat"
   ],
   "relationTypes": [
     "AFFECTS",
@@ -53,15 +63,15 @@
   },
   "nodes": [
     {
-      "id": "maven:mission",
-      "label": "Mission",
-      "objectType": "Mission",
-      "type": "governance",
-      "lat": -52,
-      "lon": -160,
+      "id": "maven:action",
+      "label": "Action",
+      "objectType": "Action",
+      "type": "agent",
+      "lat": 6,
+      "lon": 38,
       "status": "verified",
       "confidence": 0.95,
-      "desc": "A bounded objective with ownership, requirements and evidence.",
+      "desc": "A governed operation in recommend, simulate or approved mode.",
       "provenance": {
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
@@ -85,15 +95,164 @@
       }
     },
     {
-      "id": "maven:system",
-      "label": "System",
-      "objectType": "System",
-      "type": "system",
-      "lat": -14,
-      "lon": -86,
+      "id": "maven:approval",
+      "label": "Approval",
+      "objectType": "Approval",
+      "type": "governance",
+      "lat": 25,
+      "lon": 75,
       "status": "verified",
       "confidence": 0.95,
-      "desc": "A software, infrastructure or operational system.",
+      "desc": "Human authorization governing an action.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:artifact",
+      "label": "Artifact",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "lat": 44,
+      "lon": 112,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "A generated or ingested output with provenance.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:artifact:live-sync-smoke-20260910",
+      "label": "Maven Live Sync Smoke Proof",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.5,
+      "desc": "Harmless provenance artifact proving the approved Maven Live Sync commit path end to end.",
+      "lat": 11.3672,
+      "lon": -98.7336,
+      "provenance": {
+        "sourceSystem": "Palantir Maven Live Sync Test",
+        "sourceUri": "xunia://maven-live-sync/smoke/2026-09-10",
+        "exportId": "live-sync-smoke-20260910-1636z",
+        "generatedAt": "2026-09-10T16:36:00Z",
+        "approvedBy": "xunia-governed-smoke-test",
+        "approvedAt": "2026-09-10T16:36:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:asset",
+      "label": "Asset",
+      "objectType": "Asset",
+      "type": "system",
+      "lat": 24,
+      "lon": -12,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "A governed resource represented in the ontology.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:capability",
+      "label": "Capability",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "lat": -4,
+      "lon": 136,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "A function available to a mission, agent or system.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:control",
+      "label": "Control",
+      "objectType": "Control",
+      "type": "governance",
+      "lat": -13,
+      "lon": 1,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "A defensive or governance safeguard.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:dataset",
+      "label": "Dataset",
+      "objectType": "Dataset",
+      "type": "knowledge",
+      "lat": 43,
+      "lon": 25,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Structured information derived from approved sources.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:evidence",
+      "label": "Evidence",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": -32,
+      "lon": -36,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Information supporting a claim, finding or decision.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:finding",
+      "label": "Finding",
+      "objectType": "Finding",
+      "type": "security",
+      "lat": -51,
+      "lon": -73,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "An observed condition requiring evidence and review.",
+      "provenance": {
+        "source": "xunia://maven-ontology/schema/v1",
+        "method": "declared-schema",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:mission",
+      "label": "Mission",
+      "objectType": "Mission",
+      "type": "governance",
+      "lat": -52,
+      "lon": -160,
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "A bounded objective with ownership, requirements and evidence.",
       "provenance": {
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
@@ -117,31 +276,15 @@
       }
     },
     {
-      "id": "maven:asset",
-      "label": "Asset",
-      "objectType": "Asset",
-      "type": "system",
-      "lat": 24,
-      "lon": -12,
+      "id": "maven:requirement",
+      "label": "Requirement",
+      "objectType": "Requirement",
+      "type": "governance",
+      "lat": 15,
+      "lon": -147,
       "status": "verified",
       "confidence": 0.95,
-      "desc": "A governed resource represented in the ontology.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:dataset",
-      "label": "Dataset",
-      "objectType": "Dataset",
-      "type": "knowledge",
-      "lat": 43,
-      "lon": 25,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "Structured information derived from approved sources.",
+      "desc": "A constraint or condition governing execution.",
       "provenance": {
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
@@ -181,31 +324,15 @@
       }
     },
     {
-      "id": "maven:capability",
-      "label": "Capability",
-      "objectType": "Capability",
-      "type": "knowledge",
-      "lat": -4,
-      "lon": 136,
+      "id": "maven:system",
+      "label": "System",
+      "objectType": "System",
+      "type": "system",
+      "lat": -14,
+      "lon": -86,
       "status": "verified",
       "confidence": 0.95,
-      "desc": "A function available to a mission, agent or system.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:requirement",
-      "label": "Requirement",
-      "objectType": "Requirement",
-      "type": "governance",
-      "lat": 15,
-      "lon": -147,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "A constraint or condition governing execution.",
+      "desc": "A software, infrastructure or operational system.",
       "provenance": {
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
@@ -227,119 +354,18 @@
         "method": "declared-schema",
         "version": "1.0"
       }
-    },
-    {
-      "id": "maven:finding",
-      "label": "Finding",
-      "objectType": "Finding",
-      "type": "security",
-      "lat": -51,
-      "lon": -73,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "An observed condition requiring evidence and review.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:evidence",
-      "label": "Evidence",
-      "objectType": "Evidence",
-      "type": "knowledge",
-      "lat": -32,
-      "lon": -36,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "Information supporting a claim, finding or decision.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:control",
-      "label": "Control",
-      "objectType": "Control",
-      "type": "governance",
-      "lat": -13,
-      "lon": 1,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "A defensive or governance safeguard.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:action",
-      "label": "Action",
-      "objectType": "Action",
-      "type": "agent",
-      "lat": 6,
-      "lon": 38,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "A governed operation in recommend, simulate or approved mode.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:approval",
-      "label": "Approval",
-      "objectType": "Approval",
-      "type": "governance",
-      "lat": 25,
-      "lon": 75,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "Human authorization governing an action.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
-    },
-    {
-      "id": "maven:artifact",
-      "label": "Artifact",
-      "objectType": "Artifact",
-      "type": "knowledge",
-      "lat": 44,
-      "lon": 112,
-      "status": "verified",
-      "confidence": 0.95,
-      "desc": "A generated or ingested output with provenance.",
-      "provenance": {
-        "source": "xunia://maven-ontology/schema/v1",
-        "method": "declared-schema",
-        "version": "1.0"
-      }
     }
   ],
   "links": [
     [
-      "maven:mission",
-      "maven:capability",
+      "maven:action",
+      "maven:approval",
       "REQUIRES"
     ],
     [
-      "maven:mission",
-      "maven:platform",
-      "USES"
-    ],
-    [
-      "maven:requirement",
-      "maven:mission",
-      "GOVERNS"
+      "maven:action",
+      "maven:finding",
+      "RESPONDS_TO"
     ],
     [
       "maven:agent",
@@ -347,24 +373,24 @@
       "EXECUTES"
     ],
     [
-      "maven:platform",
-      "maven:system",
-      "HOSTS"
+      "maven:approval",
+      "maven:action",
+      "GOVERNS"
     ],
     [
-      "maven:system",
-      "maven:asset",
-      "CONTAINS"
+      "maven:artifact",
+      "maven:evidence",
+      "DERIVED_FROM"
     ],
     [
-      "maven:system",
-      "maven:capability",
-      "PROVIDES"
+      "maven:artifact:live-sync-smoke-20260910",
+      "maven:source",
+      "DERIVED_FROM"
     ],
     [
-      "maven:sensor",
-      "maven:dataset",
-      "FEEDS"
+      "maven:control",
+      "maven:threat",
+      "MITIGATES"
     ],
     [
       "maven:dataset",
@@ -382,34 +408,44 @@
       "SUPPORTED_BY"
     ],
     [
-      "maven:threat",
-      "maven:asset",
-      "AFFECTS"
-    ],
-    [
-      "maven:control",
-      "maven:threat",
-      "MITIGATES"
-    ],
-    [
-      "maven:action",
-      "maven:finding",
-      "RESPONDS_TO"
-    ],
-    [
-      "maven:action",
-      "maven:approval",
+      "maven:mission",
+      "maven:capability",
       "REQUIRES"
     ],
     [
-      "maven:approval",
-      "maven:action",
+      "maven:mission",
+      "maven:platform",
+      "USES"
+    ],
+    [
+      "maven:platform",
+      "maven:system",
+      "HOSTS"
+    ],
+    [
+      "maven:requirement",
+      "maven:mission",
       "GOVERNS"
     ],
     [
-      "maven:artifact",
-      "maven:evidence",
-      "DERIVED_FROM"
+      "maven:sensor",
+      "maven:dataset",
+      "FEEDS"
+    ],
+    [
+      "maven:system",
+      "maven:asset",
+      "CONTAINS"
+    ],
+    [
+      "maven:system",
+      "maven:capability",
+      "PROVIDES"
+    ],
+    [
+      "maven:threat",
+      "maven:asset",
+      "AFFECTS"
     ]
   ]
 }

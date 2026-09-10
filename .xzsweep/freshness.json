@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-09T13:52:40Z",
+  "cutoff_at": "2026-09-09T20:15:05Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -419,6 +419,17 @@
       "reviewed_at": "2026-09-10T07:07:30Z",
       "sha256": "ae13118ebd4e583c48adc23a100620c70c5cbf0204df26a907ef954d6c87ebb2",
       "size": 1213,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/maven-live-sync.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:44:50Z",
+      "reviewed_at": null,
+      "sha256": "0817d75d40dd4c4f97526aa3212db00f1c7797f9cb92555f8fa7e4cba33b353a",
+      "size": 5815,
       "validation_issues": [],
       "was_due": false
     },
@@ -2604,9 +2615,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T13:38:00Z",
+      "git_touched_at": "2026-09-10T16:45:06Z",
       "reviewed_at": null,
-      "sha256": "f49323ffdd45123a27fcf2c8351ad4258c82b41eb15dc665a49aa5a420271f20",
+      "sha256": "01c8d6677308c5276f7dddeacb7c0db83910fb1e4096be977909560639695561",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -2901,10 +2912,32 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T13:51:02Z",
+      "git_touched_at": "2026-09-10T15:15:10Z",
       "reviewed_at": null,
-      "sha256": "1aa01e3323542925856f2e32aa942b63dcb12a3573691b6ca0332648e2578a87",
-      "size": 3181,
+      "sha256": "781ab365c26242c913d58763c97967a581b827d111e2f88cff540482eb66626b",
+      "size": 5377,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/maven-ontology/ontology.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:45:40Z",
+      "reviewed_at": null,
+      "sha256": "5c2851cdf64bde2ca708dca79210bc0a10a6c5ce3d9bad4f5f0825fe09cc283f",
+      "size": 10931,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/maven-ontology/sync-log.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:45:40Z",
+      "reviewed_at": null,
+      "sha256": "48c5f21726431af17f6e81b6baed3aad854f6ca628031a3f752f37c4741a905f",
+      "size": 517,
       "validation_issues": [],
       "was_due": false
     },
@@ -2956,10 +2989,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T13:50:39Z",
+      "git_touched_at": "2026-09-10T15:15:10Z",
       "reviewed_at": null,
-      "sha256": "03001a347a5fcb5cf43bec7a485ee9ff2e94ed67f49e11ad73e5ee5408283f38",
-      "size": 14256,
+      "sha256": "b24c487f8683eeb72dbc8fcda703f79ac68693a2956a34e06eff8448d1171ac8",
+      "size": 15137,
       "validation_issues": [],
       "was_due": false
     },
@@ -3763,6 +3796,17 @@
       "reviewed_at": "2026-09-10T07:07:30Z",
       "sha256": "d0861759dd149bba1675c7a4dd464b29b8a5d0bc89802bd6f51af218eed636de",
       "size": 1940,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt-redpanda-llm/intel/sources/youtube-uijZR7hnDGM.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T20:14:52Z",
+      "reviewed_at": null,
+      "sha256": "0f0c91b6d2b924f2f5074d05ac08ab7cc3803d28029ec589786f52114047737f",
+      "size": 582,
       "validation_issues": [],
       "was_due": false
     },
@@ -4800,6 +4844,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "intel/sources/youtube-uijZR7hnDGM.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T20:14:52Z",
+      "reviewed_at": null,
+      "sha256": "1cb3ca86d4160c6b6e9f86ad0b361c272f148017cee062464dbeb55b0ed18e62",
+      "size": 1221,
+      "validation_issues": [],
+      "was_due": false
+    },
     "intel/sources/youtube-vgwql8Mv1CE.json": {
       "actions": [],
       "binary": false,
@@ -5001,9 +5056,9 @@
     "intel/white-house/daily/2026-09-09.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-09T15:37:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T16:45:01Z",
       "sha256": "45110fc427ec13bfb37952c119bc25299475945d7898067955d70e4235adfcb8",
       "size": 31605,
       "validation_issues": [],
@@ -5012,11 +5067,33 @@
     "intel/white-house/daily/2026-09-09.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-09T15:37:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-10T16:45:01Z",
       "sha256": "436fa41686b60fbf2ca388022627f60b92d5cee803966cc84b59e5f3b38c976c",
       "size": 5515,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-09-10.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T15:32:55Z",
+      "reviewed_at": null,
+      "sha256": "11931ee078ffa5e5fc2374339c09928c6ded56bf7ce689741fe339cf7ff7b03a",
+      "size": 6719,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-09-10.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T15:32:55Z",
+      "reviewed_at": null,
+      "sha256": "1894b884cb14fef6d77aee48b91d606b854a22e9b787e762ded98fb12385a328",
+      "size": 2119,
       "validation_issues": [],
       "was_due": false
     },
@@ -5024,10 +5101,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T15:37:06Z",
+      "git_touched_at": "2026-09-10T15:32:55Z",
       "reviewed_at": null,
-      "sha256": "bd8c21a3cc82a5b02b423df51f9997d8c1586727d0b25df3a4d27819478677da",
-      "size": 13145,
+      "sha256": "5bfa93e0c6097acffa33c97eaa9fc9fc41e1f343cac62853a35e1e815358f489",
+      "size": 13702,
       "validation_issues": [],
       "was_due": false
     },
@@ -5310,10 +5387,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-09T22:27:30Z",
+      "git_touched_at": "2026-09-10T19:32:31Z",
       "reviewed_at": null,
-      "sha256": "34aeaf475bc94ccb96b7da73e784be0e023a0812da06a5ed64a8c4f2fa2102e5",
-      "size": 11018,
+      "sha256": "12ae131ddc645485c9c8f41572f3b0c548cadcc3a10500ec57b041af2b011530",
+      "size": 11209,
       "validation_issues": [],
       "was_due": false
     },
@@ -5380,6 +5457,39 @@
       "reviewed_at": "2026-09-10T10:44:47Z",
       "sha256": "e2107591be94a5f391c55f8b6a350c3fbc3d4b75fbb78169a26ff259f9bf9497",
       "size": 5066,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "maven-sync/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:44:50Z",
+      "reviewed_at": null,
+      "sha256": "4afcabd9124f5ddabec5493ad6bab696c37d7882f62c6dbaa4012c40f5efc324",
+      "size": 3486,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "maven-sync/approved/live-sync-smoke-20260910.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:45:13Z",
+      "reviewed_at": null,
+      "sha256": "90d62bab08a0346c811f0b0cbdbc87af5a1595ec07469eff23c7751e5dfd9838",
+      "size": 892,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "maven-sync/examples/approved-export.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:44:50Z",
+      "reviewed_at": null,
+      "sha256": "4ca86264415a2907f02531357f3ca520b37aaf1d086f7849a3df0a0128e774ec",
+      "size": 1352,
       "validation_issues": [],
       "was_due": false
     },
@@ -7286,6 +7396,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_maven_live_sync.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:44:50Z",
+      "reviewed_at": null,
+      "sha256": "439e2d6fcadbc13056476664a17e8ebc09396725963ff63aaed8604738cc9b97",
+      "size": 6514,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_mythos_bridge.py": {
       "actions": [],
       "binary": false,
@@ -7503,6 +7624,17 @@
       "reviewed_at": "2026-09-10T07:07:30Z",
       "sha256": "25516bfc8d3b94fb6e4a3ab2c1f90e6714f195b262eb4b3918879da0dbed28c2",
       "size": 1947,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_video_source_uijzr7hndgm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T20:14:52Z",
+      "reviewed_at": null,
+      "sha256": "b2b22c8e90e7ef6ceeba2b2ac22d97e05ae37ed2d3faa1799d92b8373bf73e05",
+      "size": 1806,
       "validation_issues": [],
       "was_due": false
     },
@@ -8265,6 +8397,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tools/maven_live_sync.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T16:44:50Z",
+      "reviewed_at": null,
+      "sha256": "98c16822edf3b9abf6ecfe87cc0e9b4d25ed4b1014b11a7fe5810ba2477adf24",
+      "size": 13741,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tools/mission_control.py": {
       "actions": [],
       "binary": false,
@@ -8796,11 +8939,11 @@
     "va3lm/knowledge/core.ontologi": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-07T13:05:12Z",
-      "reviewed_at": "2026-09-10T07:07:30Z",
-      "sha256": "e8d76c29d2099655148bbe561f1cd61aa780b0dbd559b802c9732172089c53aa",
-      "size": 2147,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-10T20:14:52Z",
+      "reviewed_at": null,
+      "sha256": "21666ed8da9f3fc6f1142883d872e662a6fd27ef8ea5253d4f777a243dbd393b",
+      "size": 2321,
       "validation_issues": [],
       "was_due": false
     },
@@ -9248,9 +9391,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T13:37:58Z",
+      "git_touched_at": "2026-09-10T16:45:02Z",
       "reviewed_at": null,
-      "sha256": "0df01e48fe2056212ae7df1b9bdaba2b228c3b4b20d27050f2afe5f892b28deb",
+      "sha256": "a351ce769a48884ea56af3a653ba2247c6f8f0698cbbf9576c1cad55f5657c36",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -9270,9 +9413,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-10T13:37:58Z",
+      "git_touched_at": "2026-09-10T16:45:02Z",
       "reviewed_at": null,
-      "sha256": "9d3083a0d2f77a5ac133bca834a1a5150510bf741136d34ddb25810df5c1a3ab",
+      "sha256": "6508aed7103ae3d012652becff79cecaa59f4eb885939a94a2d146a276ab8729",
       "size": 6085,
       "validation_issues": [],
       "was_due": false
@@ -11567,11 +11710,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-10T13:52:40Z",
+  "generated_at": "2026-09-10T20:15:05Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1051,
+  "tracked_files_reviewed": 1064,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
