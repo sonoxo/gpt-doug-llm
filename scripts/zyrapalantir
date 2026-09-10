@@ -4,6 +4,10 @@ set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 CMD="${1:-status}"
 DELAY="${ZYRAPALANTIR_DEMO_DELAY:-1}"
+STATE_DIR="$HOME/.config/gpt-doug"
+LIVE_PID="$STATE_DIR/zyrapalantir-live.pid"
+LIVE_LOG="$STATE_DIR/zyrapalantir-live.log"
+LIVE_STATE="$STATE_DIR/zyrapalantir-live-state.json"
 
 pause_demo() {
   case "$DELAY" in
@@ -16,7 +20,7 @@ banner() {
   printf '\n'
   printf '🛡️  ==========================================================\n'
   printf '🐼  ZYRAPALANTIR // GLASS ONION // GPT-REDPANDA\n'
-  printf '📦  PALANTIR MAVEN DEFENSIVE SOFTWARE DEMO MODE\n'
+  printf '📦  PALANTIR MAVEN DEFENSIVE SOFTWARE\n'
   printf '🛡️  ==========================================================\n'
 }
 
@@ -41,38 +45,143 @@ require_demo_env() {
   fi
 }
 
+defense_is_active() {
+  [ -f "$STATE_DIR/defense-profile.json" ] && python3 - "$STATE_DIR/defense-profile.json" <<'PY' >/dev/null 2>&1
+import json, sys
+try:
+    data=json.load(open(sys.argv[1]))
+except Exception:
+    raise SystemExit(1)
+raise SystemExit(0 if data.get('active') is True else 1)
+PY
+}
+
+ensure_live_ready() {
+  mkdir -p "$STATE_DIR"
+  if ! defense_is_active; then
+    echo '🛡️  Defensive profile is inactive — activating governed control plane first.'
+    sh "$ROOT/scripts/defense" activate
+  fi
+}
+
+live_pid_running() {
+  [ -f "$LIVE_PID" ] || return 1
+  pid="$(cat "$LIVE_PID" 2>/dev/null || true)"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" 2>/dev/null
+}
+
+live_foreground() {
+  ensure_live_ready
+  echo '📡 Starting ZYRAPALANTIR LIVE in foreground. Press Ctrl-C to stop.'
+  exec python3 "$ROOT/scripts/zyrapalantir_live.py" "$@"
+}
+
+live_once() {
+  ensure_live_ready
+  exec python3 "$ROOT/scripts/zyrapalantir_live.py" --once "$@"
+}
+
+live_start() {
+  ensure_live_ready
+  if live_pid_running; then
+    echo "🟢 ZYRAPALANTIR LIVE already running (PID $(cat "$LIVE_PID"))."
+    return 0
+  fi
+  rm -f "$LIVE_PID"
+  : > "$LIVE_LOG"
+  chmod 600 "$LIVE_LOG"
+  nohup python3 "$ROOT/scripts/zyrapalantir_live.py" >>"$LIVE_LOG" 2>&1 &
+  pid=$!
+  printf '%s\n' "$pid" > "$LIVE_PID"
+  chmod 600 "$LIVE_PID"
+  sleep 1
+  if kill -0 "$pid" 2>/dev/null; then
+    echo "🟢 ZYRAPALANTIR LIVE started in background (PID $pid)."
+    echo "📟 Status: zyrapalantir live-status"
+    echo "🧾 Logs:   zyrapalantir live-log"
+  else
+    echo '❌ ZYRAPALANTIR LIVE failed to start. Recent log:' >&2
+    tail -n 40 "$LIVE_LOG" >&2 || true
+    rm -f "$LIVE_PID"
+    exit 1
+  fi
+}
+
+live_stop() {
+  if ! live_pid_running; then
+    rm -f "$LIVE_PID"
+    echo '⚫ ZYRAPALANTIR LIVE is not running.'
+    return 0
+  fi
+  pid="$(cat "$LIVE_PID")"
+  echo "🛑 Stopping ZYRAPALANTIR LIVE (PID $pid)..."
+  kill "$pid" 2>/dev/null || true
+  i=0
+  while kill -0 "$pid" 2>/dev/null && [ "$i" -lt 30 ]; do
+    sleep 0.2
+    i=$((i+1))
+  done
+  if kill -0 "$pid" 2>/dev/null; then
+    echo '⚠️  Process did not exit promptly; leaving PID file for inspection.' >&2
+    return 1
+  fi
+  rm -f "$LIVE_PID"
+  echo '✅ ZYRAPALANTIR LIVE stopped.'
+}
+
+live_status() {
+  banner
+  if live_pid_running; then
+    echo "🟢 LIVE SERVICE: RUNNING (PID $(cat "$LIVE_PID"))"
+  else
+    echo '⚫ LIVE SERVICE: STOPPED'
+  fi
+  if [ -f "$LIVE_STATE" ]; then
+    echo '📊 Last runtime state:'
+    cat "$LIVE_STATE"
+  else
+    echo '📊 No live runtime state recorded yet.'
+  fi
+}
+
+live_log() {
+  if [ -f "$LIVE_LOG" ]; then
+    tail -n "${ZYRAPALANTIR_LOG_LINES:-80}" "$LIVE_LOG"
+  else
+    echo '🧾 No live log exists yet.'
+  fi
+}
+
+live_follow() {
+  mkdir -p "$STATE_DIR"
+  touch "$LIVE_LOG"
+  chmod 600 "$LIVE_LOG"
+  echo '👀 Following ZYRAPALANTIR LIVE log. Press Ctrl-C to stop following.'
+  exec tail -f "$LIVE_LOG"
+}
+
 demo() {
   require_demo_env
   banner
   echo '🧪 DEMO SAFETY: inert readiness artifact only; no artifact execution.'
   pause_demo
-
   echo '\n🔴 [1/6] BASELINE — demonstrate OFF state'
-  echo '   ↳ Turning the local defensive profile OFF so the audience can see a real state change.'
   sh "$ROOT/scripts/defense" deactivate
   sh "$ROOT/scripts/defense" status
   pause_demo
-
   echo '\n🟢 [2/6] ACTIVATE — Glass Onion + Maven + REDPANDA gates'
-  echo '   ↳ Validating policy, repository connectivity, and defensive readiness before activation.'
   sh "$ROOT/scripts/defense" activate
   pause_demo
-
   echo '\n💾 [3/6] STATE — prove profile persisted ACTIVE'
-  echo '   ↳ Reading the saved local state record; active=true means the validated profile is ON.'
   sh "$ROOT/scripts/defense" status
   pause_demo
-
   echo '\n🩺 [4/6] DOCTOR — live ontology/Maven/CPR health check'
-  echo '   ↳ Re-running the health gates live instead of trusting a stale status flag.'
   sh "$ROOT/scripts/defense" doctor
   pause_demo
-
   echo '\n📦 [5/6] PALANTIR MAVEN — publish → retrieve → SHA-256 verify'
-  echo '   ↳ Publishing a harmless test artifact, downloading it back, and verifying byte-for-byte integrity.'
   bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
   pause_demo
-
   echo '\n🏁 [6/6] FINAL — demo verdict'
   sh "$ROOT/scripts/defense" status
   printf '\n🎉 ✅ ZYRAPALANTIR DEMO PASS\n'
@@ -91,41 +200,29 @@ intel_demo() {
   echo '🧪 DATA: synthetic/unclassified training data only.'
   echo '👤 ACTION POLICY: analyst decision support only; no automatic external action.'
   pause_demo
-
   echo '\n🔴 [1/7] BASELINE — start inactive'
-  echo '   ↳ Establishing a clean OFF state before the exercise begins.'
   sh "$ROOT/scripts/defense" deactivate
   sh "$ROOT/scripts/defense" status
   pause_demo
-
   echo '\n🛡️  [2/7] CONTROL PLANE — activate governed defensive profile'
-  echo '   ↳ Glass Onion policy + Maven readiness + GPT-REDPANDA CPR must pass first.'
   sh "$ROOT/scripts/defense" activate
   pause_demo
-
   echo '\n📦 [3/7] SUPPLY CHAIN — prove Palantir Maven artifact integrity'
-  echo '   ↳ Harmless artifact goes UP ⬆️, comes BACK DOWN ⬇️, then SHA-256 proves it did not change.'
   bash "$ROOT/redpanda-desktop/palantir-maven" roundtrip
   pause_demo
-
   echo '\n🧠 [4/7] INTEL ONTOLOGY — validate synthetic mission graph policy'
-  echo '   ↳ Checking the structured rulebook that connects mission, systems, assets, intel, and recommendations.'
   python3 -m json.tool "$ROOT/safety-shield/ontology/zyrapalantir-intel-demo.json" >/dev/null
   echo '✅ ZYRAPALANTIR intelligence ontology valid'
   pause_demo
-
   echo '\n🔎 [5/7] INTEL FUSION — correlate independent synthetic evidence'
-  echo '   ↳ GPT-REDPANDA compares multiple training reports and looks for corroborated indicators.'
   python3 "$ROOT/scripts/zyrapalantir_intel_demo.py"
   pause_demo
-
   echo '\n👤 [6/7] ANALYST CONTROL — verify human decision boundary'
   echo '💡 recommendations generated'
   echo '✅ human analyst approval required'
   echo '⛔ automatic external action taken: false'
   echo '🔓 classified/operational data used: false'
   pause_demo
-
   echo '\n🏁 [7/7] FINAL — mission-assurance demo verdict'
   printf '🎉 ✅ ZYRAPALANTIR INTEL DEMO PASS\n'
   printf '   🛡️  DEFENSE_PROFILE=ACTIVE\n'
@@ -149,26 +246,34 @@ mil_readiness() {
   printf 'M5  🧪 Operational Test & Evaluation ⬜ authorized range testing/recovery drills\n'
   printf 'M6  🏛️  Authorization Path            ⬜ organizational RMF/ATO decision\n'
   printf '\n🗺️  Roadmap: %s/docs/MIL_READINESS.md\n' "$ROOT"
-  printf '📚 Framework alignment target: NIST SP 800-53 Rev. 5 / Release 5.2.0\n'
-  printf '⚠️  Status is engineering alignment only — not certification or ATO.\n'
+  printf '⚠️  Engineering alignment only — not certification or ATO.\n'
 }
 
 status() {
   banner
   echo '📟 ZYRAPALANTIR command installed.'
   sh "$ROOT/scripts/defense" status
+  printf '\n'
+  live_status
 }
 
 case "$CMD" in
   demo) demo ;;
   intel-demo) intel_demo ;;
   mil-readiness) mil_readiness ;;
+  live) shift; live_foreground "$@" ;;
+  live-once) shift; live_once "$@" ;;
+  live-start) live_start ;;
+  live-stop) live_stop ;;
+  live-status) live_status ;;
+  live-log) live_log ;;
+  live-follow) live_follow ;;
   status) status ;;
   doctor) sh "$ROOT/scripts/defense" doctor ;;
   activate) sh "$ROOT/scripts/defense" activate ;;
   deactivate) sh "$ROOT/scripts/defense" deactivate ;;
   *)
-    echo 'usage: zyrapalantir [demo|intel-demo|mil-readiness|status|doctor|activate|deactivate]' >&2
+    echo 'usage: zyrapalantir [live|live-start|live-stop|live-status|live-once|live-log|live-follow|demo|intel-demo|mil-readiness|status|doctor|activate|deactivate]' >&2
     exit 2
     ;;
 esac
