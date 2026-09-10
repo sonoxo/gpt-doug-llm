@@ -24,7 +24,65 @@
       <article class="maven-card"><strong>GOVERNED ACTIONS</strong><p>Approval-aware actions and simulation boundaries that preserve auditability and human authority.</p></article>
     </div>
     <div class="maven-pipeline">MAVEN DATA → ONTOLOGY TYPES → LINKS → EVIDENCE → GOVERNED ACTIONS → PLANET xZOON</div>
+
+    <section id="maven-live" style="margin-top:24px">
+      <div class="maven-eyebrow">LIVE ONTOLOGY STATUS</div>
+      <div class="maven-grid">
+        <article class="maven-card">
+          <strong id="maven-object-count">—</strong>
+          <p>Ontology objects</p>
+        </article>
+        <article class="maven-card">
+          <strong id="maven-link-count">—</strong>
+          <p>Typed relationships</p>
+        </article>
+        <article class="maven-card">
+          <strong id="maven-type-count">—</strong>
+          <p>Object types</p>
+        </article>
+        <article class="maven-card">
+          <strong id="maven-verified-count">—</strong>
+          <p>Verified objects</p>
+        </article>
+        <article class="maven-card">
+          <strong id="maven-evidence-count">—</strong>
+          <p>Evidence objects</p>
+        </article>
+        <article class="maven-card">
+          <strong id="maven-health">LOADING</strong>
+          <p>Ontology health</p>
+        </article>
+      </div>
+    </section>
+
     <div class="maven-actions"><a href="../planet-xzoon/">Open Planet xZoon →</a><a href="../">Return to XUNIA HQ</a></div>
   </main>
+
+<script>
+(async () => {
+  try {
+    const response = await fetch('./ontology.json', {cache: 'no-store'});
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const graph = await response.json();
+
+    const nodes = Array.isArray(graph.nodes) ? graph.nodes : [];
+    const links = Array.isArray(graph.links) ? graph.links : [];
+    const types = Array.isArray(graph.objectTypes) ? graph.objectTypes : [];
+
+    document.getElementById('maven-object-count').textContent = nodes.length;
+    document.getElementById('maven-link-count').textContent = links.length;
+    document.getElementById('maven-type-count').textContent = types.length;
+    document.getElementById('maven-verified-count').textContent =
+      nodes.filter(node => node.status === 'verified').length;
+    document.getElementById('maven-evidence-count').textContent =
+      nodes.filter(node => node.objectType === 'Evidence').length;
+    document.getElementById('maven-health').textContent = 'VALIDATED';
+  } catch (error) {
+    document.getElementById('maven-health').textContent = 'LOAD ERROR';
+    console.error('Maven Ontology load failed', error);
+  }
+})();
+</script>
+
 </body>
 </html>
