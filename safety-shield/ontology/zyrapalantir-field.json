@@ -1,0 +1,63 @@
+{
+  "ontology": "ZYRAPALANTIRFieldOps",
+  "version": "1.0.0",
+  "mode": "FIELD_DECISION_SUPPORT_ONLY",
+  "purpose": "Provide a human-controlled field operations terminal for authorized situational awareness, cyber defense, communications health, readiness, assets, intelligence correlation, incidents, logistics context, and training simulation.",
+  "objectTypes": [
+    "FieldAsset",
+    "CommsLink",
+    "CyberFinding",
+    "IntelReport",
+    "Incident",
+    "ReadinessCheck",
+    "LogisticsRecord",
+    "AnalystDecision",
+    "AuditEvent"
+  ],
+  "controls": {
+    "authorizedDataOnly": true,
+    "humanApprovalForExternalAction": true,
+    "automaticExternalAction": false,
+    "weaponsControl": false,
+    "targetingControl": false,
+    "firesControl": false,
+    "vehicleActuation": false,
+    "criticalInfrastructureDisruption": false,
+    "artifactExecutionFromFieldConsole": false,
+    "readOnlyLocalTelemetryByDefault": true,
+    "explicitAuthorizationRequiredForImportedData": true
+  },
+  "allowedFunctions": [
+    "status",
+    "assets",
+    "comms",
+    "intel",
+    "cyber",
+    "incidents",
+    "readiness",
+    "simulate",
+    "audit"
+  ],
+  "prohibitedFunctions": [
+    "weapon engagement",
+    "target selection",
+    "fires release",
+    "autonomous attack",
+    "remote destructive action",
+    "critical infrastructure disruption"
+  ],
+  "integration": {
+    "liveState": "~/.config/gpt-doug/zyrapalantir-live-state.json",
+    "defenseState": "~/.config/gpt-doug/defense-profile.json",
+    "fieldState": "~/.config/gpt-doug/zyrapalantir-field-state.json",
+    "fieldAudit": "~/.config/gpt-doug/zyrapalantir-field-audit.jsonl",
+    "maven": "Palantir Foundry Maven readiness inherited from ZYRAPALANTIR LIVE",
+    "redpanda": "GPT-REDPANDA CPR readiness inherited from ZYRAPALANTIR LIVE"
+  },
+  "guardrails": {
+    "militaryCertificationClaimed": false,
+    "atoClaimed": false,
+    "operationalWeaponsAuthority": "NONE",
+    "humanDecisionBoundary": "REQUIRED"
+  }
+}
