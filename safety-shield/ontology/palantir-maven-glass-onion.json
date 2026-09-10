@@ -1,0 +1,84 @@
+{
+  "ontology": "PalantirMavenGlassOnion",
+  "version": "1.0.0",
+  "purpose": "Model authorized Palantir Foundry Maven artifact access as a governed dependency surface for GPT-DOUG, GPT-REDPANDA, XUNIA, ZYRA, and GLASS ONION.",
+  "objectTypes": [
+    "ArtifactRepository",
+    "MavenArtifact",
+    "RuntimeAgent",
+    "OntologyLayer",
+    "CredentialBinding",
+    "ValidationCheck"
+  ],
+  "linkTypes": [
+    "AgentConsumesRepository",
+    "RepositoryPublishesArtifact",
+    "ArtifactImplementsOntologyLayer",
+    "CredentialAuthorizesRepository",
+    "ValidationCheckVerifiesRepository",
+    "RuntimeObservedByGlassOnion"
+  ],
+  "objects": [
+    {
+      "objectType": "ArtifactRepository",
+      "id": "palantir-foundry-maven",
+      "properties": {
+        "provider": "Palantir Foundry",
+        "repositoryType": "Maven",
+        "accessState": "OPERATOR_PROVISIONED",
+        "secretStorage": "ENVIRONMENT_ONLY",
+        "transport": "HTTPS"
+      }
+    },
+    {
+      "objectType": "RuntimeAgent",
+      "id": "gpt-doug-llm",
+      "properties": {"role": "orchestrator"}
+    },
+    {
+      "objectType": "RuntimeAgent",
+      "id": "gpt-redpanda-llm",
+      "properties": {"role": "local-supervisor-and-cpr"}
+    },
+    {
+      "objectType": "OntologyLayer",
+      "id": "glass-onion",
+      "properties": {"role": "provenance-observability-control-plane"}
+    },
+    {
+      "objectType": "CredentialBinding",
+      "id": "palantir-maven-env-binding",
+      "properties": {
+        "tokenVariable": "PALANTIR_MAVEN_TOKEN",
+        "usernameVariable": "PALANTIR_MAVEN_USERNAME",
+        "repositoryUrlVariable": "PALANTIR_MAVEN_REPOSITORY_URL",
+        "persistence": "PROHIBITED_IN_REPOSITORY"
+      }
+    },
+    {
+      "objectType": "ValidationCheck",
+      "id": "redpanda-palantir-maven-doctor",
+      "properties": {
+        "implementation": "palantir_maven.py",
+        "defaultMode": "LOCAL_CONFIGURATION_ONLY",
+        "networkProbe": "EXPLICIT_ONLY"
+      }
+    }
+  ],
+  "links": [
+    {"linkType": "AgentConsumesRepository", "from": "RuntimeAgent:gpt-doug-llm", "to": "ArtifactRepository:palantir-foundry-maven"},
+    {"linkType": "AgentConsumesRepository", "from": "RuntimeAgent:gpt-redpanda-llm", "to": "ArtifactRepository:palantir-foundry-maven"},
+    {"linkType": "CredentialAuthorizesRepository", "from": "CredentialBinding:palantir-maven-env-binding", "to": "ArtifactRepository:palantir-foundry-maven"},
+    {"linkType": "ValidationCheckVerifiesRepository", "from": "ValidationCheck:redpanda-palantir-maven-doctor", "to": "ArtifactRepository:palantir-foundry-maven"},
+    {"linkType": "RuntimeObservedByGlassOnion", "from": "RuntimeAgent:gpt-doug-llm", "to": "OntologyLayer:glass-onion"},
+    {"linkType": "RuntimeObservedByGlassOnion", "from": "RuntimeAgent:gpt-redpanda-llm", "to": "OntologyLayer:glass-onion"}
+  ],
+  "guardrails": {
+    "createsPalantirEntitlement": false,
+    "storesCredentialsInGit": false,
+    "automaticPublishing": false,
+    "automaticFoundryWrites": false,
+    "networkProbeRequiresExplicitCommand": true,
+    "humanProvisionedRepositoryRequired": true
+  }
+}
