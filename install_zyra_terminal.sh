@@ -53,7 +53,6 @@ import re, sys
 path = Path(sys.argv[1])
 text = path.read_text() if path.exists() else ''
 
-# Remove only our previous managed block.
 start = '# >>> GPT-DOUG ZYRA TERMINAL >>>'
 end = '# <<< GPT-DOUG ZYRA TERMINAL <<<'
 if start in text and end in text:
@@ -61,7 +60,6 @@ if start in text and end in text:
     _, after = rest.split(end, 1)
     text = before.rstrip() + '\n' + after.lstrip()
 
-# Repair known alias/function collisions without deleting unrelated user commands.
 known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra', 'defense', 'zyrapalantir', 'activate'}
 aliases = set()
 out = []
@@ -87,7 +85,6 @@ export PATH="$HOME/.local/bin:$PATH"
 '''
 
 managed = f'''{start}
-# Prefer the managed launchers over stale aliases/functions from older installs.
 unalias doug-max 2>/dev/null || true
 unfunction doug-max 2>/dev/null || true
 unalias defense 2>/dev/null || true
@@ -122,7 +119,12 @@ echo 'MAX one-prompt launcher: ~/.local/bin/doug-max'
 echo 'Market terminal: ~/.local/bin/doug-market'
 echo 'Defense terminal: ~/.local/bin/defense'
 echo 'ZYRAPALANTIR terminal: ~/.local/bin/zyrapalantir'
-echo 'Demo command: activate zyrapalantir demo'
-echo 'Short demo command: zyrapalantir demo'
-echo 'Start defense profile: defense activate'
-echo 'Start now: ~/.local/bin/zyra'
+echo 'Live service start: activate zyrapalantir live'
+echo 'Live foreground:    zyrapalantir live'
+echo 'Live status:        zyrapalantir live-status'
+echo 'Live logs:          zyrapalantir live-log'
+echo 'Live stop:          zyrapalantir live-stop'
+echo 'One live cycle:     zyrapalantir live-once'
+echo 'Demo command:       activate zyrapalantir demo'
+echo 'Start defense:      defense activate'
+echo 'Start ZYRA now:     ~/.local/bin/zyra'
