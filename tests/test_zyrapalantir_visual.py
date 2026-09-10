@@ -17,19 +17,51 @@ class VisualFieldTests(unittest.TestCase):
     def test_dashboard_contains_safety_boundaries(self):
         html = (ROOT / "web" / "zyrapalantir-field" / "index.html").read_text(encoding="utf-8")
         self.assertIn("NON-GEOGRAPHIC", html)
-        self.assertIn("Targeting control disabled", html)
-        self.assertIn("Weapons control disabled", html)
-        self.assertIn("auto action: false", html)
+        self.assertIn("Human approval required", html)
+        self.assertIn("Auto external action disabled", html)
+        self.assertIn("no Foundry write or external action", html)
 
-    def test_dashboard_controls_are_wired(self):
+    def test_all_navigation_views_are_wired(self):
         html = (ROOT / "web" / "zyrapalantir-field" / "index.html").read_text(encoding="utf-8")
-        self.assertIn('data-view="investigations"', html)
-        self.assertIn('data-view="readiness"', html)
-        self.assertIn('data-view="audit"', html)
-        self.assertIn("/api/investigations", html)
-        self.assertIn("/api/proposals", html)
-        self.assertIn("/api/audit", html)
-        self.assertIn("data-node=\"host\"", html)
+        for view in ("terminal", "investigations", "proposals", "readiness", "audit", "maven", "ontology"):
+            self.assertIn(f'data-view="{view}"', html)
+        for endpoint in ("/api/investigations", "/api/proposals", "/api/audit", "/api/maven-proof", "/api/ontology"):
+            self.assertIn(endpoint, html)
+        self.assertIn("function goBack()", html)
+        self.assertIn("onclick=\"goBack()\"", html)
+
+    def test_maven_proof_toggle_is_wired(self):
+        html = (ROOT / "web" / "zyrapalantir-field" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('id="mavenToggle"', html)
+        self.assertIn('id="mavenDrawer"', html)
+        self.assertIn("function toggleMavenProof", html)
+        self.assertIn("localStorage.setItem('zyra.mavenProofOpen'", html)
+
+    def test_system_and_ontology_connectors_are_clickable(self):
+        html = (ROOT / "web" / "zyrapalantir-field" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-edge="LOCAL HOST → MAVEN"', html)
+        self.assertIn("showSystemEdge", html)
+        self.assertIn("ontologyConnector", html)
+        self.assertIn("showOntologyEdge", html)
+
+    def test_ontology_loads_and_validates_connectors(self):
+        mod = load_visual()
+        payload = mod.ontology_payload()
+        self.assertTrue(payload["nodes"])
+        self.assertTrue(payload["links"])
+        self.assertEqual(payload["session"]["status"], "STANDBY")
+        self.assertFalse(payload["foundry_write"])
+        self.assertFalse(payload["external_action"])
+
+    def test_ontology_initiation_is_local_and_audited(self):
+        mod = load_visual()
+        result = mod.initiate_ontology()
+        self.assertTrue(result["ok"])
+        self.assertGreater(result["node_count"], 0)
+        self.assertGreater(result["link_count"], 0)
+        self.assertFalse(result["foundry_write"])
+        self.assertFalse(result["automatic_external_action"])
+        self.assertEqual(result["ontology"]["session"]["status"], "ACTIVE")
 
     def test_assistant_is_readonly_summary(self):
         mod = load_visual()
@@ -45,6 +77,13 @@ class VisualFieldTests(unittest.TestCase):
         reply = mod.assistant_reply("show readiness", state)
         self.assertIn("READY", reply)
         self.assertIn("Maven=PASS", reply)
+
+    def test_assistant_reports_ontology(self):
+        mod = load_visual()
+        reply = mod.assistant_reply("show maven ontology", {})
+        self.assertIn("objects", reply)
+        self.assertIn("connectors", reply)
+        self.assertIn("no Foundry write", reply)
 
     def test_investigations_are_human_controlled(self):
         mod = load_visual()
