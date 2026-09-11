@@ -1,0 +1,517 @@
+{
+  "name": "GPT Doug C4ADS Covert Compute Ontology",
+  "version": "1.0.0",
+  "mode": "PUBLIC_UNCLASSIFIED_SUPPLY_CHAIN_COMPLIANCE_ONLY",
+  "deploymentState": "SOURCE_GROUNDED_ANALYTICAL_BLUEPRINT",
+  "purpose": "Represent the public C4ADS Covert Compute findings as an attributed supply-chain, trade, ownership-risk, and export-control compliance graph. The ontology supports defensive due diligence and research only; it does not provide sourcing, routing, concealment, or evasion assistance for controlled AI hardware.",
+  "sourceSnapshot": {
+    "sourceId": "c4ads-covert-compute-2026-09-09",
+    "title": "Covert Compute: How Advanced AI Chips Reach China",
+    "publisher": "C4ADS",
+    "author": "Mishel Kondi",
+    "published": "2026-09-09",
+    "observedAt": "2026-09-09",
+    "reportPage": "https://c4ads.org/reports/covert-compute/",
+    "pdfUrl": "https://c4ads.org/wp-content/uploads/2026/09/Covert-Compute-C4ADS.pdf",
+    "sourceClass": "PUBLIC_UNCLASSIFIED_REPORT",
+    "coverageNote": "This ontology is grounded to the public C4ADS report page and executive summary. The PDF endpoint returned a cache miss during ingestion, so no claim is made that every PDF detail is represented."
+  },
+  "interpretationRules": {
+    "sourceClaims": "ATTRIBUTE_TO_C4ADS",
+    "thirdPartyReporting": "PRESERVE_C4ADS_ATTRIBUTION",
+    "derivedComplianceMappings": "LABEL_AS_ANALYST_DERIVED",
+    "ownershipLinks": "DO_NOT_INFER_UNNAMED_BENEFICIAL_OWNERS",
+    "entityRisk": "DO_NOT_TREAT_AS_LEGAL_DETERMINATION",
+    "governmentStatus": "NEVER_INFER",
+    "operationalAuthority": "NONE"
+  },
+  "objectTypes": [
+    {
+      "apiName": "SourceReport",
+      "primaryKey": "reportId",
+      "properties": {
+        "reportId": "string",
+        "title": "string",
+        "publisher": "string",
+        "author": "string",
+        "published": "date",
+        "reportPage": "string",
+        "pdfUrl": "string"
+      }
+    },
+    {
+      "apiName": "ChipClass",
+      "primaryKey": "chipClassId",
+      "properties": {
+        "chipClassId": "string",
+        "name": "string",
+        "controlStatus": "string",
+        "manufacturer": "string"
+      }
+    },
+    {
+      "apiName": "AcquisitionPathway",
+      "primaryKey": "pathwayId",
+      "properties": {
+        "pathwayId": "string",
+        "name": "string",
+        "pathwayClass": "string",
+        "description": "string"
+      }
+    },
+    {
+      "apiName": "OrganizationClass",
+      "primaryKey": "organizationClassId",
+      "properties": {
+        "organizationClassId": "string",
+        "name": "string",
+        "description": "string"
+      }
+    },
+    {
+      "apiName": "Organization",
+      "primaryKey": "organizationId",
+      "properties": {
+        "organizationId": "string",
+        "name": "string",
+        "organizationType": "string",
+        "sourceCharacterization": "string"
+      }
+    },
+    {
+      "apiName": "Jurisdiction",
+      "primaryKey": "jurisdictionId",
+      "properties": {
+        "jurisdictionId": "string",
+        "name": "string",
+        "role": "string"
+      }
+    },
+    {
+      "apiName": "TradeAggregate",
+      "primaryKey": "aggregateId",
+      "properties": {
+        "aggregateId": "string",
+        "metricClass": "string",
+        "count": "number",
+        "usdValue": "number",
+        "periodStart": "string",
+        "periodEnd": "string",
+        "qualifier": "string"
+      }
+    },
+    {
+      "apiName": "ExportControlAuthority",
+      "primaryKey": "authorityId",
+      "properties": {
+        "authorityId": "string",
+        "name": "string",
+        "parentDepartment": "string",
+        "role": "string"
+      }
+    },
+    {
+      "apiName": "ComplianceControl",
+      "primaryKey": "controlId",
+      "properties": {
+        "controlId": "string",
+        "name": "string",
+        "objective": "string",
+        "derivation": "string"
+      }
+    },
+    {
+      "apiName": "FindingCaveat",
+      "primaryKey": "caveatId",
+      "properties": {
+        "caveatId": "string",
+        "statement": "string",
+        "impact": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "ReportConcernsChipClass", "from": "SourceReport", "to": "ChipClass"},
+    {"apiName": "ReportIdentifiesPathway", "from": "SourceReport", "to": "AcquisitionPathway"},
+    {"apiName": "PathwayUsesOrganizationClass", "from": "AcquisitionPathway", "to": "OrganizationClass"},
+    {"apiName": "PathwayInvolvesOrganization", "from": "AcquisitionPathway", "to": "Organization"},
+    {"apiName": "PathwayRoutesThroughJurisdiction", "from": "AcquisitionPathway", "to": "Jurisdiction"},
+    {"apiName": "PathwayTargetsJurisdiction", "from": "AcquisitionPathway", "to": "Jurisdiction"},
+    {"apiName": "PathwaySummarizedByAggregate", "from": "AcquisitionPathway", "to": "TradeAggregate"},
+    {"apiName": "OrganizationAssociatedWithAggregate", "from": "Organization", "to": "TradeAggregate"},
+    {"apiName": "ReportReferencesAuthority", "from": "SourceReport", "to": "ExportControlAuthority"},
+    {"apiName": "ReportSupportsComplianceControl", "from": "SourceReport", "to": "ComplianceControl"},
+    {"apiName": "ControlAddressesPathway", "from": "ComplianceControl", "to": "AcquisitionPathway"},
+    {"apiName": "ReportStatesCaveat", "from": "SourceReport", "to": "FindingCaveat"}
+  ],
+  "evidence": [
+    {
+      "evidenceId": "evidence-report-metadata",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "C4ADS report page header",
+      "claimNature": "source_statement",
+      "summary": "C4ADS published Covert Compute: How Advanced AI Chips Reach China on September 9, 2026, authored by Mishel Kondi."
+    },
+    {
+      "evidenceId": "evidence-policy-context",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary",
+      "claimNature": "source_statement",
+      "summary": "C4ADS states that since 2022 the U.S. Department of Commerce Bureau of Industry and Security has used export controls to limit access by some countries, including China, to advanced semiconductor chips produced with U.S. inputs and technology."
+    },
+    {
+      "evidenceId": "evidence-direct-acquisition",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary - Direct Acquisition by Universities and Research Institutions",
+      "claimNature": "source_statement",
+      "summary": "C4ADS reports that between July 2025 and January 2026 Chinese universities and research institutions procured at least 56 restricted NVIDIA chips worth US$1.7 million; the chips were bundled inside multimillion-dollar contracts and routed through uncredentialed companies."
+    },
+    {
+      "evidenceId": "evidence-institution-ties",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary - Direct Acquisition by Universities and Research Institutions",
+      "claimNature": "source_statement",
+      "summary": "C4ADS states that most of the buyer institutions it identified maintain ties to the Chinese government and China's defense industrial base."
+    },
+    {
+      "evidenceId": "evidence-transshipment",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary - Diversion and/or Transshipment through Southeast Asian Trade Networks",
+      "claimNature": "source_statement",
+      "summary": "C4ADS reports 50 export shipments of restricted NVIDIA GPUs diverted through Vietnam, India, and Malaysia to Hong Kong and China between 2023 and 2025, totaling approximately US$13.4 million."
+    },
+    {
+      "evidenceId": "evidence-megaspeed",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary - Opaque Corporate Ownership Structures",
+      "claimNature": "source_statement",
+      "summary": "C4ADS states that Megaspeed International Pte. Ltd. was reported by Bloomberg and The New York Times as the largest Southeast Asian importer of NVIDIA hardware, with US$4.6 billion in imports from 2022 to 2025, and that its ultimate beneficial ownership network may have ties to the PRC."
+    },
+    {
+      "evidenceId": "evidence-understatement",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary conclusion",
+      "claimNature": "source_statement",
+      "summary": "C4ADS cautions that its findings almost certainly understate the true volume of diverted chips because its analysis covers a limited window and tallies only chips explicitly mentioned in available records and trade data."
+    },
+    {
+      "evidenceId": "evidence-recommendations",
+      "sourceId": "c4ads-covert-compute-2026-09-09",
+      "locator": "Executive Summary conclusion",
+      "claimNature": "source_statement",
+      "summary": "C4ADS recommends sustained coordination between BIS and regional partners, meaningful post-sale end-user verification, and private-sector compliance treated as an ongoing obligation."
+    },
+    {
+      "evidenceId": "evidence-derived-bindings",
+      "sourceId": "gpt-doug-analyst-mapping-v1",
+      "locator": "Local ontology derivation",
+      "claimNature": "derived_compliance_mapping",
+      "summary": "The links from C4ADS recommendations to specific pathway classes are analyst-derived compliance mappings and are not represented as direct source claims."
+    }
+  ],
+  "objects": [
+    {
+      "id": "c4ads-covert-compute-2026-09-09",
+      "type": "SourceReport",
+      "properties": {
+        "reportId": "c4ads-covert-compute-2026-09-09",
+        "title": "Covert Compute: How Advanced AI Chips Reach China",
+        "publisher": "C4ADS",
+        "author": "Mishel Kondi",
+        "published": "2026-09-09",
+        "reportPage": "https://c4ads.org/reports/covert-compute/",
+        "pdfUrl": "https://c4ads.org/wp-content/uploads/2026/09/Covert-Compute-C4ADS.pdf"
+      },
+      "evidenceIds": ["evidence-report-metadata"]
+    },
+    {
+      "id": "restricted-nvidia-ai-chips",
+      "type": "ChipClass",
+      "properties": {
+        "chipClassId": "restricted-nvidia-ai-chips",
+        "name": "Restricted NVIDIA AI chips",
+        "controlStatus": "RESTRICTED_UNDER_US_EXPORT_CONTROLS_AS_CHARACTERIZED_BY_SOURCE",
+        "manufacturer": "NVIDIA"
+      },
+      "evidenceIds": ["evidence-policy-context", "evidence-direct-acquisition", "evidence-transshipment"]
+    },
+    {
+      "id": "direct-university-research-acquisition",
+      "type": "AcquisitionPathway",
+      "properties": {
+        "pathwayId": "direct-university-research-acquisition",
+        "name": "Direct Acquisition by Universities and Research Institutions",
+        "pathwayClass": "PROCUREMENT",
+        "description": "Restricted chip procurement through university and research-institution purchasing channels, including contracts routed through uncredentialed companies as described by C4ADS."
+      },
+      "evidenceIds": ["evidence-direct-acquisition", "evidence-institution-ties"]
+    },
+    {
+      "id": "southeast-asia-diversion-transshipment",
+      "type": "AcquisitionPathway",
+      "properties": {
+        "pathwayId": "southeast-asia-diversion-transshipment",
+        "name": "Diversion and/or Transshipment through Southeast Asian Trade Networks",
+        "pathwayClass": "TRADE_ROUTING_RISK",
+        "description": "Observed trade-flow pathway in which restricted NVIDIA GPUs were reported as diverted through intermediate jurisdictions to Hong Kong and China."
+      },
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "opaque-corporate-ownership",
+      "type": "AcquisitionPathway",
+      "properties": {
+        "pathwayId": "opaque-corporate-ownership",
+        "name": "Opaque Corporate Ownership Structures",
+        "pathwayClass": "OWNERSHIP_TRANSPARENCY_RISK",
+        "description": "Ownership-opacity pathway illustrated by the corporate structure described by C4ADS around a major Southeast Asian NVIDIA hardware importer."
+      },
+      "evidenceIds": ["evidence-megaspeed"]
+    },
+    {
+      "id": "universities-research-institutions",
+      "type": "OrganizationClass",
+      "properties": {
+        "organizationClassId": "universities-research-institutions",
+        "name": "Universities and research institutions",
+        "description": "Buyer institution class identified by C4ADS in direct procurement records."
+      },
+      "evidenceIds": ["evidence-direct-acquisition", "evidence-institution-ties"]
+    },
+    {
+      "id": "uncredentialed-companies",
+      "type": "OrganizationClass",
+      "properties": {
+        "organizationClassId": "uncredentialed-companies",
+        "name": "Uncredentialed companies",
+        "description": "Intermediary company class described by C4ADS in the direct-acquisition pathway."
+      },
+      "evidenceIds": ["evidence-direct-acquisition"]
+    },
+    {
+      "id": "megaspeed-international-pte-ltd",
+      "type": "Organization",
+      "properties": {
+        "organizationId": "megaspeed-international-pte-ltd",
+        "name": "Megaspeed International Pte. Ltd.",
+        "organizationType": "COMPANY",
+        "sourceCharacterization": "C4ADS cites third-party reporting that identifies the company as the largest Southeast Asian importer of NVIDIA hardware and analyzes its opaque beneficial ownership structure."
+      },
+      "evidenceIds": ["evidence-megaspeed"]
+    },
+    {
+      "id": "china",
+      "type": "Jurisdiction",
+      "properties": {"jurisdictionId": "china", "name": "China", "role": "REPORTED_END_USER_DESTINATION_AND_POLICY_CONTEXT"},
+      "evidenceIds": ["evidence-policy-context", "evidence-transshipment"]
+    },
+    {
+      "id": "hong-kong",
+      "type": "Jurisdiction",
+      "properties": {"jurisdictionId": "hong-kong", "name": "Hong Kong", "role": "REPORTED_DESTINATION"},
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "vietnam",
+      "type": "Jurisdiction",
+      "properties": {"jurisdictionId": "vietnam", "name": "Vietnam", "role": "REPORTED_TRANSIT_JURISDICTION"},
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "india",
+      "type": "Jurisdiction",
+      "properties": {"jurisdictionId": "india", "name": "India", "role": "REPORTED_TRANSIT_JURISDICTION"},
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "malaysia",
+      "type": "Jurisdiction",
+      "properties": {"jurisdictionId": "malaysia", "name": "Malaysia", "role": "REPORTED_TRANSIT_JURISDICTION"},
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "aggregate-direct-procurement",
+      "type": "TradeAggregate",
+      "properties": {
+        "aggregateId": "aggregate-direct-procurement",
+        "metricClass": "PROCUREMENT",
+        "count": 56,
+        "usdValue": 1700000,
+        "periodStart": "2025-07",
+        "periodEnd": "2026-01",
+        "qualifier": "AT_LEAST_56_CHIPS"
+      },
+      "evidenceIds": ["evidence-direct-acquisition"]
+    },
+    {
+      "id": "aggregate-transshipment",
+      "type": "TradeAggregate",
+      "properties": {
+        "aggregateId": "aggregate-transshipment",
+        "metricClass": "EXPORT_SHIPMENTS",
+        "count": 50,
+        "usdValue": 13400000,
+        "periodStart": "2023",
+        "periodEnd": "2025",
+        "qualifier": "APPROXIMATE_USD_VALUE"
+      },
+      "evidenceIds": ["evidence-transshipment"]
+    },
+    {
+      "id": "aggregate-megaspeed-imports",
+      "type": "TradeAggregate",
+      "properties": {
+        "aggregateId": "aggregate-megaspeed-imports",
+        "metricClass": "IMPORT_VALUE",
+        "count": 0,
+        "usdValue": 4600000000,
+        "periodStart": "2022",
+        "periodEnd": "2025",
+        "qualifier": "THIRD_PARTY_REPORTED_IMPORT_VALUE_CITED_BY_C4ADS"
+      },
+      "evidenceIds": ["evidence-megaspeed"]
+    },
+    {
+      "id": "bis",
+      "type": "ExportControlAuthority",
+      "properties": {
+        "authorityId": "bis",
+        "name": "Bureau of Industry and Security",
+        "parentDepartment": "U.S. Department of Commerce",
+        "role": "EXPORT_CONTROL_AUTHORITY_AS_DESCRIBED_BY_SOURCE"
+      },
+      "evidenceIds": ["evidence-policy-context", "evidence-recommendations"]
+    },
+    {
+      "id": "control-regional-coordination",
+      "type": "ComplianceControl",
+      "properties": {
+        "controlId": "control-regional-coordination",
+        "name": "Regional Enforcement Coordination",
+        "objective": "Sustain coordination between BIS and regional partners to close jurisdictional enforcement gaps.",
+        "derivation": "SOURCE_RECOMMENDATION"
+      },
+      "evidenceIds": ["evidence-recommendations"]
+    },
+    {
+      "id": "control-post-sale-end-user-verification",
+      "type": "ComplianceControl",
+      "properties": {
+        "controlId": "control-post-sale-end-user-verification",
+        "name": "Post-Sale End-User Verification",
+        "objective": "Verify the actual end user and continuing disposition of controlled hardware after sale.",
+        "derivation": "SOURCE_RECOMMENDATION"
+      },
+      "evidenceIds": ["evidence-recommendations"]
+    },
+    {
+      "id": "control-ongoing-private-sector-compliance",
+      "type": "ComplianceControl",
+      "properties": {
+        "controlId": "control-ongoing-private-sector-compliance",
+        "name": "Ongoing Private-Sector Compliance",
+        "objective": "Treat compliance as a continuous obligation rather than a one-time transaction check.",
+        "derivation": "SOURCE_RECOMMENDATION"
+      },
+      "evidenceIds": ["evidence-recommendations"]
+    },
+    {
+      "id": "control-beneficial-ownership-review",
+      "type": "ComplianceControl",
+      "properties": {
+        "controlId": "control-beneficial-ownership-review",
+        "name": "Beneficial Ownership Review",
+        "objective": "Escalate opaque ownership structures for documented beneficial-ownership due diligence without inferring unnamed owners.",
+        "derivation": "ANALYST_DERIVED_FROM_SOURCE_RISK_PATTERN"
+      },
+      "evidenceIds": ["evidence-megaspeed", "evidence-derived-bindings"]
+    },
+    {
+      "id": "caveat-public-records-understate-volume",
+      "type": "FindingCaveat",
+      "properties": {
+        "caveatId": "caveat-public-records-understate-volume",
+        "statement": "The observed public-record cases almost certainly understate the true volume of diverted chips.",
+        "impact": "DO_NOT_TREAT_OBSERVED_TOTALS_AS_COMPLETE_UNIVERSE"
+      },
+      "evidenceIds": ["evidence-understatement"]
+    }
+  ],
+  "links": [
+    {"id": "link-report-chip-class", "type": "ReportConcernsChipClass", "from": "c4ads-covert-compute-2026-09-09", "to": "restricted-nvidia-ai-chips", "evidenceIds": ["evidence-policy-context"]},
+    {"id": "link-report-direct", "type": "ReportIdentifiesPathway", "from": "c4ads-covert-compute-2026-09-09", "to": "direct-university-research-acquisition", "evidenceIds": ["evidence-direct-acquisition"]},
+    {"id": "link-report-transshipment", "type": "ReportIdentifiesPathway", "from": "c4ads-covert-compute-2026-09-09", "to": "southeast-asia-diversion-transshipment", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-report-ownership", "type": "ReportIdentifiesPathway", "from": "c4ads-covert-compute-2026-09-09", "to": "opaque-corporate-ownership", "evidenceIds": ["evidence-megaspeed"]},
+    {"id": "link-direct-universities", "type": "PathwayUsesOrganizationClass", "from": "direct-university-research-acquisition", "to": "universities-research-institutions", "evidenceIds": ["evidence-direct-acquisition"]},
+    {"id": "link-direct-intermediaries", "type": "PathwayUsesOrganizationClass", "from": "direct-university-research-acquisition", "to": "uncredentialed-companies", "evidenceIds": ["evidence-direct-acquisition"]},
+    {"id": "link-direct-aggregate", "type": "PathwaySummarizedByAggregate", "from": "direct-university-research-acquisition", "to": "aggregate-direct-procurement", "evidenceIds": ["evidence-direct-acquisition"]},
+    {"id": "link-transit-vietnam", "type": "PathwayRoutesThroughJurisdiction", "from": "southeast-asia-diversion-transshipment", "to": "vietnam", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-transit-india", "type": "PathwayRoutesThroughJurisdiction", "from": "southeast-asia-diversion-transshipment", "to": "india", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-transit-malaysia", "type": "PathwayRoutesThroughJurisdiction", "from": "southeast-asia-diversion-transshipment", "to": "malaysia", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-transit-hong-kong", "type": "PathwayTargetsJurisdiction", "from": "southeast-asia-diversion-transshipment", "to": "hong-kong", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-transit-china", "type": "PathwayTargetsJurisdiction", "from": "southeast-asia-diversion-transshipment", "to": "china", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-transit-aggregate", "type": "PathwaySummarizedByAggregate", "from": "southeast-asia-diversion-transshipment", "to": "aggregate-transshipment", "evidenceIds": ["evidence-transshipment"]},
+    {"id": "link-ownership-megaspeed", "type": "PathwayInvolvesOrganization", "from": "opaque-corporate-ownership", "to": "megaspeed-international-pte-ltd", "evidenceIds": ["evidence-megaspeed"]},
+    {"id": "link-megaspeed-aggregate", "type": "OrganizationAssociatedWithAggregate", "from": "megaspeed-international-pte-ltd", "to": "aggregate-megaspeed-imports", "evidenceIds": ["evidence-megaspeed"]},
+    {"id": "link-report-bis", "type": "ReportReferencesAuthority", "from": "c4ads-covert-compute-2026-09-09", "to": "bis", "evidenceIds": ["evidence-policy-context", "evidence-recommendations"]},
+    {"id": "link-report-regional-control", "type": "ReportSupportsComplianceControl", "from": "c4ads-covert-compute-2026-09-09", "to": "control-regional-coordination", "evidenceIds": ["evidence-recommendations"]},
+    {"id": "link-report-euv-control", "type": "ReportSupportsComplianceControl", "from": "c4ads-covert-compute-2026-09-09", "to": "control-post-sale-end-user-verification", "evidenceIds": ["evidence-recommendations"]},
+    {"id": "link-report-private-sector-control", "type": "ReportSupportsComplianceControl", "from": "c4ads-covert-compute-2026-09-09", "to": "control-ongoing-private-sector-compliance", "evidenceIds": ["evidence-recommendations"]},
+    {"id": "link-control-regional-transit", "type": "ControlAddressesPathway", "from": "control-regional-coordination", "to": "southeast-asia-diversion-transshipment", "evidenceIds": ["evidence-recommendations", "evidence-derived-bindings"]},
+    {"id": "link-control-euv-direct", "type": "ControlAddressesPathway", "from": "control-post-sale-end-user-verification", "to": "direct-university-research-acquisition", "evidenceIds": ["evidence-recommendations", "evidence-derived-bindings"]},
+    {"id": "link-control-private-all", "type": "ControlAddressesPathway", "from": "control-ongoing-private-sector-compliance", "to": "direct-university-research-acquisition", "evidenceIds": ["evidence-recommendations", "evidence-derived-bindings"]},
+    {"id": "link-control-ubo-ownership", "type": "ControlAddressesPathway", "from": "control-beneficial-ownership-review", "to": "opaque-corporate-ownership", "evidenceIds": ["evidence-derived-bindings"]},
+    {"id": "link-report-caveat", "type": "ReportStatesCaveat", "from": "c4ads-covert-compute-2026-09-09", "to": "caveat-public-records-understate-volume", "evidenceIds": ["evidence-understatement"]}
+  ],
+  "actions": [
+    {
+      "apiName": "RecordPublicSourceClaim",
+      "description": "Record an attributed public-source claim with a source locator and confidence note.",
+      "externalMutation": false,
+      "requiresSourceEvidence": true
+    },
+    {
+      "apiName": "MapSupplyChainComplianceRisk",
+      "description": "Map observed procurement, trade, or ownership evidence to a defensive compliance risk category without generating evasion guidance.",
+      "externalMutation": false,
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "RecordBeneficialOwnershipEvidence",
+      "description": "Record documented ownership evidence while prohibiting inference of unnamed beneficial owners.",
+      "externalMutation": false,
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "GenerateEndUserVerificationQueue",
+      "description": "Generate a local review queue for end-user verification based on documented compliance-risk indicators.",
+      "externalMutation": false,
+      "requiresHumanReview": true
+    },
+    {
+      "apiName": "GenerateSupplyChainRiskReport",
+      "description": "Produce a read-only report separating source claims, aggregate observations, caveats, and analyst-derived compliance mappings.",
+      "externalMutation": false,
+      "requiresHumanReview": true
+    }
+  ],
+  "guardrails": {
+    "publicUnclassifiedSourcesOnly": true,
+    "sourceClaimsRemainAttributed": true,
+    "legalViolationInferred": false,
+    "governmentAffiliationInferred": false,
+    "unnamedBeneficialOwnersInferred": false,
+    "sanctionsEvasionAssistance": false,
+    "exportControlEvasionOptimization": false,
+    "restrictedChipSupplierSourcing": false,
+    "routingRecommendations": false,
+    "transshipmentOptimization": false,
+    "concealmentAdvice": false,
+    "falseEndUserDocumentation": false,
+    "credentialStorage": false,
+    "automatedEnforcement": false,
+    "externalMutation": false,
+    "arbitraryShell": false,
+    "humanReviewRequired": true
+  }
+}
