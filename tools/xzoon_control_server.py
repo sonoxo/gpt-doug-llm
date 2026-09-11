@@ -13,7 +13,6 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
-
 from http.server import (
     SimpleHTTPRequestHandler,
     ThreadingHTTPServer,
@@ -656,11 +655,12 @@ def main():
         args.site
     ).resolve()
 
-    handler = lambda *a, **kw: Handler(
-        *a,
-        directory=str(site),
-        **kw,
-    )
+    def handler(*args, **kwargs):
+        return Handler(
+            *args,
+            directory=str(site),
+            **kwargs,
+        )
 
     server = ThreadingHTTPServer(
         (
