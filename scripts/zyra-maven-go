@@ -1,8 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-REPO="$HOME/gpt-doug-llm"
-BRANCH="feat/maven-ontology-v1-20260910-111133"
+REPO="$(
+    CDPATH= cd -- "$(dirname -- "$0")/.." &&
+    pwd
+)"
+SOURCE_REF="${ZYRA_MAVEN_SOURCE_REF:-origin/main}"
+SOURCE_BRANCH="${ZYRA_MAVEN_SOURCE_BRANCH:-main}"
 RUNTIME="$HOME/.cache/gpt-doug/maven-go-runtime"
 STATE="$HOME/.config/gpt-doug"
 
@@ -35,11 +39,24 @@ echo '=== 1/10 CLEAN SOURCE ==='
 
 cd "$REPO"
 
-git fetch origin "$BRANCH"
+case "$SOURCE_REF" in
+    origin/*)
+        git fetch origin "${SOURCE_REF#origin/}"
+        ;;
+    HEAD)
+        ;;
+    *)
+        git rev-parse             --verify             "${SOURCE_REF}^{commit}"             >/dev/null
+        ;;
+esac
 
-REMOTE_HEAD="$(git rev-parse "origin/$BRANCH")"
+SOURCE_HEAD="$(
+    git rev-parse "${SOURCE_REF}^{commit}"
+)"
 
-echo "REMOTE HEAD : $REMOTE_HEAD"
+echo "SOURCE REF    : $SOURCE_REF"
+echo "SOURCE BRANCH : $SOURCE_BRANCH"
+echo "SOURCE COMMIT : $SOURCE_HEAD"
 
 git worktree remove "$RUNTIME" --force 2>/dev/null || true
 rm -rf "$RUNTIME"
@@ -48,7 +65,16 @@ git worktree prune
 git worktree add \
     --detach \
     "$RUNTIME" \
-    "$REMOTE_HEAD"
+    "$SOURCE_HEAD"
+
+RUNTIME_HEAD="$(
+    git -C "$RUNTIME" rev-parse HEAD
+)"
+
+[ "$RUNTIME_HEAD" = "$SOURCE_HEAD" ] || {
+    echo 'NO-GO: Maven runtime source mismatch'
+    exit 1
+}
 
 cd "$RUNTIME"
 
@@ -324,8 +350,8 @@ PYGO
 echo
 echo '=== 6/10 PREPARE RELEASE ==='
 
-export ZYRA_GIT_SHA="$REMOTE_HEAD"
-export ZYRA_GIT_BRANCH="$BRANCH"
+export ZYRA_GIT_SHA="$SOURCE_HEAD"
+export ZYRA_GIT_BRANCH="$SOURCE_BRANCH"
 
 export ZYRA_MAVEN_GROUP="com.xunia"
 export ZYRA_MAVEN_ARTIFACT="gpt-doug-foundry-bridge"
