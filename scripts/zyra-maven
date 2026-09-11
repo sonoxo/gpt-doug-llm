@@ -6,8 +6,11 @@ ONTOLOGY="$ROOT/docs/maven-ontology/ontology.json"
 
 usage() {
   cat <<'EOF'
-Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual]
+Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual|go|palantir|token]
 
+  go         Run complete fail-closed Foundry Maven pipeline
+  palantir   Open the ZYRA Foundry Artifact Repository
+  token      Open the Foundry Maven token destination
   status     Show the latest persisted real Maven verification summary
   verify     Perform a real Foundry Maven PUT → GET → SHA-256 round-trip
   roundtrip  Alias for verify
@@ -78,6 +81,27 @@ cmd="${1:-status}"
 [ "$#" -gt 0 ] && shift || true
 
 case "$cmd" in
+  go)
+    exec bash "$ROOT/scripts/zyra-maven-go" go "$@"
+    ;;
+  palantir)
+    URL="https://zyra.usw-17.palantirfoundry.com/workspace/artifacts/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+    echo "$URL"
+    if command -v open >/dev/null 2>&1; then
+      open "$URL"
+    fi
+    ;;
+  token)
+    URL="https://zyra.usw-17.palantirfoundry.com/workspace/artifacts/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+    echo
+    echo "PALANTIR MAVEN TOKEN:"
+    echo "$URL"
+    echo
+    echo "Open: Publish -> Maven -> Generate token"
+    if command -v open >/dev/null 2>&1; then
+      open "$URL"
+    fi
+    ;;
   status)
     if [ -x "$ROOT/scripts/zyra-maven-status" ]; then
       "$ROOT/scripts/zyra-maven-status"
