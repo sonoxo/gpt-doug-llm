@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 LABEL org.opencontainers.image.title="GPT Doug LLM"
 LABEL org.opencontainers.image.description="Unified local-first agentic AI system"
