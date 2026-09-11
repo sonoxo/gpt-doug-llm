@@ -80,6 +80,55 @@ def validate_graph(path):
     }
 
 
+def validate_https_host(host):
+    """Return a safe HTTPS network location for operator config."""
+
+    candidate = str(host).strip()
+
+    if (
+        not candidate
+        or "://" in candidate
+        or any(
+            character in candidate
+            for character in "/?#@\\"
+        )
+        or any(
+            character.isspace()
+            for character in candidate
+        )
+    ):
+        raise ValueError(
+            "invalid Foundry host"
+        )
+
+    parsed = urllib.parse.urlsplit(
+        "https://" + candidate
+    )
+
+    try:
+        port = parsed.port
+    except ValueError as exc:
+        raise ValueError(
+            "invalid Foundry port"
+        ) from exc
+
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path not in ("", "/")
+        or parsed.query
+        or parsed.fragment
+        or port not in (None, 443)
+    ):
+        raise ValueError(
+            "Foundry endpoint must be HTTPS"
+        )
+
+    return parsed.netloc
+
+
 class Handler(SimpleHTTPRequestHandler):
     server_version = "xZOON-Control/1.0"
 
@@ -551,9 +600,13 @@ class Handler(SimpleHTTPRequestHandler):
             else ""
         )
 
+        safe_host = validate_https_host(
+            host
+        )
+
         url = (
             "https://"
-            + host
+            + safe_host
             + "/api/v2/ontologies/"
             + urllib.parse.quote(
                 ontology,
@@ -596,7 +649,9 @@ class Handler(SimpleHTTPRequestHandler):
         )
 
         try:
-            with urllib.request.urlopen(
+            # B310 is intentionally suppressed only after
+            # validate_https_host() guarantees an HTTPS origin.
+            with urllib.request.urlopen(  # nosec B310
                 req,
                 timeout=60,
             ) as response:

@@ -10,6 +10,7 @@ import pathlib
 import shutil
 import subprocess
 import time
+import urllib.parse
 import urllib.request
 
 
@@ -25,15 +26,35 @@ def fetch_json(repo: str, resource: str):
         if p.returncode == 0:
             return json.loads(p.stdout)
 
+    url = "https://api.github.com/" + endpoint
+
+    parsed = urllib.parse.urlsplit(url)
+
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname != "api.github.com"
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.port not in (None, 443)
+    ):
+        raise ValueError(
+            "refusing non-HTTPS or unexpected GitHub API origin"
+        )
+
     req = urllib.request.Request(
-        "https://api.github.com/" + endpoint,
+        url,
         headers={
             "Accept": "application/vnd.github+json",
             "User-Agent": "gpt-doug-xzoon-live",
         },
     )
 
-    with urllib.request.urlopen(req, timeout=30) as r:
+    # B310 is intentionally suppressed only after validating
+    # the fixed HTTPS GitHub API origin above.
+    with urllib.request.urlopen(  # nosec B310
+        req,
+        timeout=30,
+    ) as r:
         return json.load(r)
 
 
