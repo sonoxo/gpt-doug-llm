@@ -1,0 +1,541 @@
+{
+  "name": "GPT Doug Damn Vulnerable Drone Security Ontology",
+  "version": "1.0.0",
+  "mode": "AUTHORIZED_SIMULATION_DEFENSIVE_ONLY",
+  "deploymentState": "LOCAL_BLUEPRINT_NOT_REAL_WORLD_CONTROL",
+  "purpose": "Model the Damn Vulnerable Drone training environment as source-grounded lab assets, mission phases, threat abstractions, data assets, and defensive controls for authorized simulation and defensive analysis.",
+  "sourceSnapshot": {
+    "sourceId": "hackers-arise-dvd-2026-07-29",
+    "title": "Drone Hacking: Hacking UAVs with Damn Vulnerable Drone",
+    "publisher": "Hackers Arise",
+    "published": "2026-07-29",
+    "observedAt": "2026-09-09",
+    "url": "https://hackers-arise.com/drone-hacking-hacking-uavs-with-damn-vulnerable-drone/",
+    "sourceClass": "PUBLIC_WEB_ARTICLE",
+    "projectRepository": "https://github.com/nicholasaleks/Damn-Vulnerable-Drone"
+  },
+  "interpretationRules": {
+    "sourceClaims": "ATTRIBUTE_TO_SOURCE",
+    "defensiveControls": "DERIVED_DEFENSIVE_MAPPING_NOT_SOURCE_CLAIM",
+    "scenarioDetail": "ABSTRACT_NON_PROCEDURAL_ONLY",
+    "realWorldAuthorization": "NEVER_INFER",
+    "operationalAuthority": "NONE"
+  },
+  "objectTypes": [
+    {
+      "apiName": "SourceRecord",
+      "primaryKey": "sourceId",
+      "properties": {
+        "sourceId": "string",
+        "title": "string",
+        "publisher": "string",
+        "url": "string",
+        "published": "date",
+        "sourceClass": "string"
+      }
+    },
+    {
+      "apiName": "DroneLab",
+      "primaryKey": "labId",
+      "properties": {
+        "labId": "string",
+        "name": "string",
+        "labKind": "string",
+        "runtime": "string",
+        "isSimulation": "boolean"
+      }
+    },
+    {
+      "apiName": "Component",
+      "primaryKey": "componentId",
+      "properties": {
+        "componentId": "string",
+        "name": "string",
+        "role": "string",
+        "attackableInLab": "boolean",
+        "isCoreSimulator": "boolean"
+      }
+    },
+    {
+      "apiName": "ProtocolOrInterface",
+      "primaryKey": "interfaceId",
+      "properties": {
+        "interfaceId": "string",
+        "name": "string",
+        "kind": "string",
+        "scope": "string"
+      }
+    },
+    {
+      "apiName": "FlightPhase",
+      "primaryKey": "phaseId",
+      "properties": {
+        "phaseId": "string",
+        "name": "string",
+        "order": "integer"
+      }
+    },
+    {
+      "apiName": "ScenarioCategory",
+      "primaryKey": "categoryId",
+      "properties": {
+        "categoryId": "string",
+        "name": "string",
+        "riskClass": "string",
+        "description": "string"
+      }
+    },
+    {
+      "apiName": "DataAsset",
+      "primaryKey": "assetId",
+      "properties": {
+        "assetId": "string",
+        "name": "string",
+        "sensitivity": "string"
+      }
+    },
+    {
+      "apiName": "DefensiveControl",
+      "primaryKey": "controlId",
+      "properties": {
+        "controlId": "string",
+        "name": "string",
+        "objective": "string",
+        "controlClass": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "SourceDescribesLab", "from": "SourceRecord", "to": "DroneLab"},
+    {"apiName": "LabContainsComponent", "from": "DroneLab", "to": "Component"},
+    {"apiName": "ComponentUsesInterface", "from": "Component", "to": "ProtocolOrInterface"},
+    {"apiName": "LabHasFlightPhase", "from": "DroneLab", "to": "FlightPhase"},
+    {"apiName": "SourceDefinesScenarioCategory", "from": "SourceRecord", "to": "ScenarioCategory"},
+    {"apiName": "ScenarioCategoryAffectsComponent", "from": "ScenarioCategory", "to": "Component"},
+    {"apiName": "ScenarioCategoryRisksDataAsset", "from": "ScenarioCategory", "to": "DataAsset"},
+    {"apiName": "ScenarioCategoryMitigatedByControl", "from": "ScenarioCategory", "to": "DefensiveControl"}
+  ],
+  "evidence": [
+    {
+      "evidenceId": "evidence-system-model",
+      "sourceId": "hackers-arise-dvd-2026-07-29",
+      "locator": "The Damn Vulnerable Drone / Under the Hood",
+      "claimNature": "source_statement",
+      "summary": "The training environment models a flight controller, companion computer, ground control station, simulator, and their networked interfaces inside a software lab."
+    },
+    {
+      "evidenceId": "evidence-flight-phases",
+      "sourceId": "hackers-arise-dvd-2026-07-29",
+      "locator": "Interface and Feedback",
+      "claimNature": "source_statement",
+      "summary": "The management console exposes five mission states: boot, arm and takeoff, autopilot flight, emergency/return-to-land, and post-flight processing."
+    },
+    {
+      "evidenceId": "evidence-scenario-library",
+      "sourceId": "hackers-arise-dvd-2026-07-29",
+      "locator": "The Attack Scenario Library",
+      "claimNature": "source_statement",
+      "summary": "The lab groups more than forty exercises into reconnaissance, protocol tampering, denial of service, injection, exfiltration, and firmware attack categories."
+    },
+    {
+      "evidenceId": "evidence-derived-controls",
+      "sourceId": "gpt-doug-defensive-mapping-v1",
+      "locator": "Local ontology derivation",
+      "claimNature": "derived_defensive_mapping",
+      "summary": "Controls are defensive abstractions inferred from the modeled risk surfaces and are not represented as recommendations made by the source article."
+    }
+  ],
+  "objects": [
+    {
+      "id": "hackers-arise-dvd-2026-07-29",
+      "type": "SourceRecord",
+      "properties": {
+        "sourceId": "hackers-arise-dvd-2026-07-29",
+        "title": "Drone Hacking: Hacking UAVs with Damn Vulnerable Drone",
+        "publisher": "Hackers Arise",
+        "url": "https://hackers-arise.com/drone-hacking-hacking-uavs-with-damn-vulnerable-drone/",
+        "published": "2026-07-29",
+        "sourceClass": "PUBLIC_WEB_ARTICLE"
+      },
+      "evidenceIds": ["evidence-system-model", "evidence-flight-phases", "evidence-scenario-library"]
+    },
+    {
+      "id": "dvd-lab",
+      "type": "DroneLab",
+      "properties": {
+        "labId": "dvd-lab",
+        "name": "Damn Vulnerable Drone",
+        "labKind": "CYBERSECURITY_TRAINING_SIMULATOR",
+        "runtime": "DOCKER_WITH_ARDUPILOT_SITL_AND_OPTIONAL_GAZEBO",
+        "isSimulation": true
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "flight-controller",
+      "type": "Component",
+      "properties": {
+        "componentId": "flight-controller",
+        "name": "Flight Controller",
+        "role": "Runs simulated ArduPilot flight-control firmware",
+        "attackableInLab": true,
+        "isCoreSimulator": false
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "companion-computer",
+      "type": "Component",
+      "properties": {
+        "componentId": "companion-computer",
+        "name": "Companion Computer",
+        "role": "Handles networking, camera streaming, telemetry logging, navigation, and a web interface",
+        "attackableInLab": true,
+        "isCoreSimulator": false
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "ground-control-station",
+      "type": "Component",
+      "properties": {
+        "componentId": "ground-control-station",
+        "name": "Ground Control Station",
+        "role": "Models pilot-side mission planning, mapping, video, and control",
+        "attackableInLab": true,
+        "isCoreSimulator": false
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "simulator",
+      "type": "Component",
+      "properties": {
+        "componentId": "simulator",
+        "name": "Gazebo / Flight Physics Simulator",
+        "role": "Provides simulated flight physics and sensor behavior",
+        "attackableInLab": false,
+        "isCoreSimulator": true
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "mavlink",
+      "type": "ProtocolOrInterface",
+      "properties": {
+        "interfaceId": "mavlink",
+        "name": "MAVLink",
+        "kind": "TELEMETRY_AND_COMMAND_PROTOCOL",
+        "scope": "LAB_INTERNAL"
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "wifi",
+      "type": "ProtocolOrInterface",
+      "properties": {
+        "interfaceId": "wifi",
+        "name": "Wi-Fi",
+        "kind": "SIMULATED_WIRELESS_ACCESS_LAYER",
+        "scope": "LAB_INTERNAL"
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "gazebo-sitl",
+      "type": "ProtocolOrInterface",
+      "properties": {
+        "interfaceId": "gazebo-sitl",
+        "name": "ArduPilot SITL / Gazebo Interface",
+        "kind": "SIMULATION_INTERFACE",
+        "scope": "LAB_INTERNAL"
+      },
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "phase-boot",
+      "type": "FlightPhase",
+      "properties": {"phaseId": "phase-boot", "name": "Initial Boot", "order": 1},
+      "evidenceIds": ["evidence-flight-phases"]
+    },
+    {
+      "id": "phase-arm-takeoff",
+      "type": "FlightPhase",
+      "properties": {"phaseId": "phase-arm-takeoff", "name": "Arm & Takeoff", "order": 2},
+      "evidenceIds": ["evidence-flight-phases"]
+    },
+    {
+      "id": "phase-autopilot",
+      "type": "FlightPhase",
+      "properties": {"phaseId": "phase-autopilot", "name": "Autopilot Flight", "order": 3},
+      "evidenceIds": ["evidence-flight-phases"]
+    },
+    {
+      "id": "phase-emergency-rtl",
+      "type": "FlightPhase",
+      "properties": {"phaseId": "phase-emergency-rtl", "name": "Emergency / Return-to-Land", "order": 4},
+      "evidenceIds": ["evidence-flight-phases"]
+    },
+    {
+      "id": "phase-post-flight",
+      "type": "FlightPhase",
+      "properties": {"phaseId": "phase-post-flight", "name": "Post-Flight Data Processing", "order": 5},
+      "evidenceIds": ["evidence-flight-phases"]
+    },
+    {
+      "id": "reconnaissance",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "reconnaissance",
+        "name": "Reconnaissance",
+        "riskClass": "OBSERVATION",
+        "description": "Passive or low-impact discovery of lab components and exposed metadata."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "protocol-tampering",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "protocol-tampering",
+        "name": "Protocol Tampering",
+        "riskClass": "INTEGRITY",
+        "description": "Manipulation of telemetry or protocol data inside the authorized simulator."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "denial-of-service",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "denial-of-service",
+        "name": "Denial of Service",
+        "riskClass": "AVAILABILITY",
+        "description": "Loss or degradation of simulated communications or control availability."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "injection",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "injection",
+        "name": "Injection",
+        "riskClass": "COMMAND_INTEGRITY",
+        "description": "Unauthorized command or control-message concepts represented only as non-executable threat abstractions."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "exfiltration",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "exfiltration",
+        "name": "Exfiltration",
+        "riskClass": "CONFIDENTIALITY",
+        "description": "Unauthorized data-access concepts represented only as non-executable threat abstractions."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "firmware-attacks",
+      "type": "ScenarioCategory",
+      "properties": {
+        "categoryId": "firmware-attacks",
+        "name": "Firmware Attacks",
+        "riskClass": "SOFTWARE_INTEGRITY",
+        "description": "Firmware modification or reverse-engineering risk represented only as a defensive analysis category."
+      },
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "telemetry",
+      "type": "DataAsset",
+      "properties": {"assetId": "telemetry", "name": "Telemetry", "sensitivity": "OPERATIONAL_LAB_DATA"},
+      "evidenceIds": ["evidence-system-model"]
+    },
+    {
+      "id": "mission-plans",
+      "type": "DataAsset",
+      "properties": {"assetId": "mission-plans", "name": "Mission Plans", "sensitivity": "OPERATIONAL_LAB_DATA"},
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "flight-logs",
+      "type": "DataAsset",
+      "properties": {"assetId": "flight-logs", "name": "Flight Logs", "sensitivity": "OPERATIONAL_LAB_DATA"},
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "camera-feed",
+      "type": "DataAsset",
+      "properties": {"assetId": "camera-feed", "name": "Camera Feed", "sensitivity": "SIMULATED_SENSOR_DATA"},
+      "evidenceIds": ["evidence-scenario-library"]
+    },
+    {
+      "id": "control-network-segmentation",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-network-segmentation",
+        "name": "Network Segmentation",
+        "objective": "Limit unnecessary trust paths between lab components and management surfaces.",
+        "controlClass": "ARCHITECTURE"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-command-authenticity",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-command-authenticity",
+        "name": "Command Authenticity Validation",
+        "objective": "Reject unexpected or unauthenticated control messages and enforce command allowlists where supported.",
+        "controlClass": "INTEGRITY"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-telemetry-validation",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-telemetry-validation",
+        "name": "Telemetry Consistency Validation",
+        "objective": "Detect implausible or contradictory telemetry before it is trusted by downstream logic.",
+        "controlClass": "DETECTION"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-rate-limits",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-rate-limits",
+        "name": "Rate Limits and Resource Protection",
+        "objective": "Constrain message floods and preserve availability of safety-relevant processing.",
+        "controlClass": "AVAILABILITY"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-data-access",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-data-access",
+        "name": "Least-Privilege Data Access",
+        "objective": "Restrict access to logs, mission data, telemetry, and camera streams to explicitly authorized identities and services.",
+        "controlClass": "CONFIDENTIALITY"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-firmware-integrity",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-firmware-integrity",
+        "name": "Firmware Integrity Verification",
+        "objective": "Verify expected firmware provenance and integrity before execution or deployment.",
+        "controlClass": "SOFTWARE_SUPPLY_CHAIN"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    },
+    {
+      "id": "control-security-logging",
+      "type": "DefensiveControl",
+      "properties": {
+        "controlId": "control-security-logging",
+        "name": "Security Event Logging",
+        "objective": "Capture defensive evidence for lab exercises without retaining credentials or weapon-control data.",
+        "controlClass": "AUDIT"
+      },
+      "evidenceIds": ["evidence-derived-controls"]
+    }
+  ],
+  "links": [
+    {"id": "link-source-lab", "type": "SourceDescribesLab", "from": "hackers-arise-dvd-2026-07-29", "to": "dvd-lab", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-lab-flight-controller", "type": "LabContainsComponent", "from": "dvd-lab", "to": "flight-controller", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-lab-companion", "type": "LabContainsComponent", "from": "dvd-lab", "to": "companion-computer", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-lab-gcs", "type": "LabContainsComponent", "from": "dvd-lab", "to": "ground-control-station", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-lab-simulator", "type": "LabContainsComponent", "from": "dvd-lab", "to": "simulator", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-fc-mavlink", "type": "ComponentUsesInterface", "from": "flight-controller", "to": "mavlink", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-fc-gazebo", "type": "ComponentUsesInterface", "from": "flight-controller", "to": "gazebo-sitl", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-companion-wifi", "type": "ComponentUsesInterface", "from": "companion-computer", "to": "wifi", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-gcs-mavlink", "type": "ComponentUsesInterface", "from": "ground-control-station", "to": "mavlink", "evidenceIds": ["evidence-system-model"]},
+    {"id": "link-phase-1", "type": "LabHasFlightPhase", "from": "dvd-lab", "to": "phase-boot", "evidenceIds": ["evidence-flight-phases"]},
+    {"id": "link-phase-2", "type": "LabHasFlightPhase", "from": "dvd-lab", "to": "phase-arm-takeoff", "evidenceIds": ["evidence-flight-phases"]},
+    {"id": "link-phase-3", "type": "LabHasFlightPhase", "from": "dvd-lab", "to": "phase-autopilot", "evidenceIds": ["evidence-flight-phases"]},
+    {"id": "link-phase-4", "type": "LabHasFlightPhase", "from": "dvd-lab", "to": "phase-emergency-rtl", "evidenceIds": ["evidence-flight-phases"]},
+    {"id": "link-phase-5", "type": "LabHasFlightPhase", "from": "dvd-lab", "to": "phase-post-flight", "evidenceIds": ["evidence-flight-phases"]},
+    {"id": "link-source-recon", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "reconnaissance", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-source-protocol", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "protocol-tampering", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-source-dos", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "denial-of-service", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-source-injection", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "injection", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-source-exfil", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "exfiltration", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-source-firmware", "type": "SourceDefinesScenarioCategory", "from": "hackers-arise-dvd-2026-07-29", "to": "firmware-attacks", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-recon-companion", "type": "ScenarioCategoryAffectsComponent", "from": "reconnaissance", "to": "companion-computer", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-recon-gcs", "type": "ScenarioCategoryAffectsComponent", "from": "reconnaissance", "to": "ground-control-station", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-protocol-fc", "type": "ScenarioCategoryAffectsComponent", "from": "protocol-tampering", "to": "flight-controller", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-dos-companion", "type": "ScenarioCategoryAffectsComponent", "from": "denial-of-service", "to": "companion-computer", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-injection-fc", "type": "ScenarioCategoryAffectsComponent", "from": "injection", "to": "flight-controller", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-injection-companion", "type": "ScenarioCategoryAffectsComponent", "from": "injection", "to": "companion-computer", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-firmware-fc", "type": "ScenarioCategoryAffectsComponent", "from": "firmware-attacks", "to": "flight-controller", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-protocol-telemetry", "type": "ScenarioCategoryRisksDataAsset", "from": "protocol-tampering", "to": "telemetry", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-exfil-mission", "type": "ScenarioCategoryRisksDataAsset", "from": "exfiltration", "to": "mission-plans", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-exfil-logs", "type": "ScenarioCategoryRisksDataAsset", "from": "exfiltration", "to": "flight-logs", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-exfil-camera", "type": "ScenarioCategoryRisksDataAsset", "from": "exfiltration", "to": "camera-feed", "evidenceIds": ["evidence-scenario-library"]},
+    {"id": "link-recon-segmentation", "type": "ScenarioCategoryMitigatedByControl", "from": "reconnaissance", "to": "control-network-segmentation", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-protocol-validation", "type": "ScenarioCategoryMitigatedByControl", "from": "protocol-tampering", "to": "control-telemetry-validation", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-dos-rate", "type": "ScenarioCategoryMitigatedByControl", "from": "denial-of-service", "to": "control-rate-limits", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-injection-command", "type": "ScenarioCategoryMitigatedByControl", "from": "injection", "to": "control-command-authenticity", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-exfil-access", "type": "ScenarioCategoryMitigatedByControl", "from": "exfiltration", "to": "control-data-access", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-firmware-integrity", "type": "ScenarioCategoryMitigatedByControl", "from": "firmware-attacks", "to": "control-firmware-integrity", "evidenceIds": ["evidence-derived-controls"]},
+    {"id": "link-recon-logging", "type": "ScenarioCategoryMitigatedByControl", "from": "reconnaissance", "to": "control-security-logging", "evidenceIds": ["evidence-derived-controls"]}
+  ],
+  "actions": [
+    {
+      "apiName": "RegisterAuthorizedDroneLab",
+      "description": "Register metadata for an explicitly authorized simulation lab.",
+      "externalMutation": false,
+      "simulationOnly": true,
+      "requiresAuthorizedScope": true
+    },
+    {
+      "apiName": "RecordDefensiveObservation",
+      "description": "Record a local defensive observation or detection result from the authorized simulator.",
+      "externalMutation": false,
+      "simulationOnly": true,
+      "requiresAuthorizedScope": true
+    },
+    {
+      "apiName": "AssociateDefensiveControl",
+      "description": "Map a source-grounded threat category to a non-executable defensive control.",
+      "externalMutation": false,
+      "simulationOnly": true,
+      "requiresAuthorizedScope": true
+    },
+    {
+      "apiName": "GenerateDefenseCoverageReport",
+      "description": "Produce a read-only gap report showing which threat categories have defensive control mappings.",
+      "externalMutation": false,
+      "simulationOnly": true,
+      "requiresAuthorizedScope": true
+    }
+  ],
+  "guardrails": {
+    "authorizedLabOnly": true,
+    "simulationOnly": true,
+    "realWorldTargeting": false,
+    "autonomousTargeting": false,
+    "externalScanning": false,
+    "rfInterference": false,
+    "deauthenticationExecution": false,
+    "credentialAttackExecution": false,
+    "exploitExecution": false,
+    "commandInjectionExecution": false,
+    "firmwareModificationExecution": false,
+    "dataExfiltrationExecution": false,
+    "arbitraryShell": false,
+    "externalMutation": false,
+    "humanReviewRequiredForScopeChange": true,
+    "sourceClaimsRemainAttributed": true
+  }
+}
