@@ -1,259 +1,230 @@
 #!/usr/bin/env python3
-
 from __future__ import annotations
 
 import json
 import pathlib
+import subprocess
 
-STATE = (
-    pathlib.Path.home()
-    /
-    ".config"
-    /
-    "gpt-doug"
-)
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+STATE = pathlib.Path.home() / ".config" / "gpt-doug"
 
-files = {
-    "readiness":
-        STATE /
-        "palantir-maven-roundtrip-last.json",
-
-    "release":
-        STATE /
-        "palantir-maven-release-last.json",
-
-    "consumer":
-        STATE /
-        "palantir-maven-consumer-last.json",
-
-    "lineage":
-        STATE /
-        "palantir-maven-lineage.json",
+FILES = {
+    "release": "palantir-maven-release-last.json",
+    "consumer": "palantir-maven-consumer-last.json",
+    "binding": "palantir-maven-binding-last.json",
+    "lineage": "palantir-maven-lineage.json",
+    "gate": "maven-gate-last.json",
+    "assurance": "maven-assurance-last.json",
+    "signature": "maven-signature-last.json",
+    "rollback": "maven-rollback-last.json",
+    "autopilot": "maven-autopilot-last.json",
 }
 
 
 def load(name):
-    path = files[name]
-
-    if not path.exists():
-        return None
-
+    p = STATE / FILES[name]
     try:
-        return json.loads(
-            path.read_text()
-        )
+        return json.loads(p.read_text())
     except Exception:
-        return None
+        return {}
 
 
-readiness = load(
-    "readiness"
+def coord(d):
+    return d.get("coordinate") or d.get("coordinates")
+
+
+def git(*args):
+    p = subprocess.run(
+        ["git", "-C", str(ROOT), *args],
+        text=True,
+        capture_output=True,
+    )
+    return p.stdout.strip() if p.returncode == 0 else ""
+
+
+def row(name, value):
+    print(f"{name:24} : {value}")
+
+
+release = load("release")
+consumer = load("consumer")
+binding = load("binding")
+lineage = load("lineage")
+gate = load("gate")
+assurance = load("assurance")
+signature = load("signature")
+rollback = load("rollback")
+autopilot = load("autopilot")
+
+try:
+    subprocess.run(
+        ["git", "-C", str(ROOT), "fetch", "--quiet", "origin", "main"],
+        check=False,
+        timeout=20,
+    )
+except Exception:
+    pass
+
+branch = git("branch", "--show-current") or "detached"
+head = git("rev-parse", "HEAD") or "unknown"
+main = git("rev-parse", "origin/main") or "unknown"
+
+artifact = coord(release)
+release_sha = str(release.get("git_commit") or "")
+release_branch = str(release.get("git_branch") or "")
+
+ancestor = False
+if release_sha and main != "unknown":
+    ancestor = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(ROOT),
+            "merge-base",
+            "--is-ancestor",
+            release_sha,
+            main,
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    ).returncode == 0
+
+current = (
+    ancestor
+    and release_sha == main
+    and release_branch == "main"
 )
 
-release = load(
-    "release"
+binding_coord = (
+    binding.get("dependency", {}).get("coordinates")
+    if isinstance(binding.get("dependency"), dict)
+    else None
 )
 
-consumer = load(
-    "consumer"
-)
+lineage_coord = lineage.get("latestCoordinate")
 
-lineage = load(
-    "lineage"
+impact = gate.get("operationalImpactCount", 0)
+try:
+    impact_ok = int(impact) >= 1
+except Exception:
+    impact_ok = False
+
+integrity = release.get("integrity", {})
+
+checks = {
+    "RELEASE":
+        release.get("ok") is True,
+
+    "REMOTE BYTE MATCH":
+        integrity.get("pom_match") is True
+        and integrity.get("jar_match") is True,
+
+    "CONSUMER":
+        consumer.get("ok") is True
+        and coord(consumer) == artifact
+        and consumer.get("resolution", {}).get("jar_match") is True,
+
+    "RUNTIME BINDING":
+        binding.get("ok") is True
+        and binding_coord == artifact
+        and binding.get("dependency", {}).get("jarMatch") is True,
+
+    "VERSION LINEAGE":
+        bool(artifact)
+        and lineage_coord == artifact,
+
+    "OPERATIONAL IMPACT":
+        impact_ok,
+
+    "READ-ONLY GATE":
+        gate.get("decision") == "GO"
+        and coord(gate) == artifact,
+
+    "SUPPLY ASSURANCE":
+        assurance.get("decision") == "GO"
+        and coord(assurance) == artifact,
+
+    "ZERO VULNERABILITIES":
+        assurance.get("vulnerabilityCount") == 0,
+
+    "ROLLBACK":
+        rollback.get("qualified") is True,
+
+    "POM SIGNED":
+        signature.get("checks", {}).get("POM SIGNATURE") is True,
+
+    "JAR SIGNED":
+        signature.get("checks", {}).get("JAR SIGNATURE") is True,
+
+    "TOKEN NOT STORED":
+        signature.get("mavenTokenStored") is False,
+
+    "PRIVATE KEY SAFE":
+        signature.get("privateKeyCommitted") is False,
+
+    "AUTOPILOT":
+        autopilot.get("decision") == "GO"
+        and coord(autopilot) == artifact,
+
+    "SOURCE PROVENANCE":
+        ancestor,
+
+    "COORDINATE ALIGNMENT":
+        bool(artifact)
+        and coord(consumer) == artifact
+        and binding_coord == artifact
+        and lineage_coord == artifact
+        and coord(gate) == artifact
+        and coord(assurance) == artifact
+        and coord(signature) == artifact
+        and coord(autopilot) == artifact,
+}
+
+overall = all(checks.values())
+
+print()
+print("=" * 68)
+print(" GPT-DOUG // FOUNDRY MAVEN PRODUCTION HUD")
+print("=" * 68)
+
+row("LOCAL BRANCH", branch)
+row("LOCAL HEAD", head)
+row("ORIGIN/MAIN", main)
+row("SOURCE BRANCH", release_branch or "unknown")
+row("SOURCE COMMIT", release_sha or "unknown")
+row(
+    "SOURCE FRESHNESS",
+    "CURRENT"
+    if current
+    else ("VALID / MAIN ADVANCED" if ancestor else "INVALID"),
+)
+row("ARTIFACT", artifact or "NO RELEASE")
+row("IMPACT COUNT", impact)
+row(
+    "SIGNING FINGERPRINT",
+    signature.get("fingerprint")
+    or autopilot.get("signingFingerprint")
+    or "unknown",
 )
 
 print()
-print(
-    "=============================================="
-)
-print(
-    "GPT-DOUG // FOUNDRY MAVEN CONTROL STATUS"
-)
-print(
-    "=============================================="
-)
+for name, passed in checks.items():
+    row(name, "PASS" if passed else "FAIL")
 
-if readiness:
-    print(
-        "READINESS        :",
-        "VERIFIED"
-        if readiness.get(
-            "defense_ready"
-        )
-        else "FAILED",
-    )
+print()
+print("=" * 68)
+row("MAVEN PRODUCTION", "GO" if overall else "NO-GO")
+print("=" * 68)
 
-    print(
-        "READINESS COORD  :",
-        readiness.get(
-            "coordinates"
-        ),
-    )
-
+if overall and current:
+    print("STATE                   : CURRENT MAIN RELEASED + VERIFIED")
+elif overall:
+    print("STATE                   : RELEASE VERIFIED; MAIN ADVANCED")
+    print("NEXT                    : zyra-maven go")
 else:
-    print(
-        "READINESS        : NO PROOF"
-    )
+    failed = [k for k, v in checks.items() if not v]
+    print("FAILED GATES            :", ", ".join(failed))
+    print("NEXT                    : zyra-maven go")
 
 print()
-
-if release:
-    integrity = release.get(
-        "integrity",
-        {}
-    )
-
-    print(
-        "LATEST RELEASE   :",
-        release.get(
-            "coordinates"
-        ),
-    )
-
-    print(
-        "RELEASE VERIFIED :",
-        release.get(
-            "ok"
-        )
-        is True,
-    )
-
-    print(
-        "POM PUT / GET    :",
-        release.get(
-            "publish",
-            {}
-        ).get(
-            "pom_status"
-        ),
-        "/",
-        release.get(
-            "retrieve",
-            {}
-        ).get(
-            "pom_status"
-        ),
-    )
-
-    print(
-        "JAR PUT / GET    :",
-        release.get(
-            "publish",
-            {}
-        ).get(
-            "jar_status"
-        ),
-        "/",
-        release.get(
-            "retrieve",
-            {}
-        ).get(
-            "jar_status"
-        ),
-    )
-
-    print(
-        "JAR SHA MATCH    :",
-        integrity.get(
-            "jar_match"
-        )
-        is True,
-    )
-
-    print(
-        "JAR SHA256       :",
-        integrity.get(
-            "jar_sha256"
-        ),
-    )
-
-else:
-    print(
-        "LATEST RELEASE   : NO PROOF"
-    )
-
-print()
-
-if consumer:
-    print(
-        "MAVEN CONSUMER   :",
-        "VERIFIED"
-        if (
-            consumer.get(
-                "ok"
-            )
-            is True
-            and
-            consumer.get(
-                "resolution",
-                {}
-            ).get(
-                "jar_match"
-            )
-            is True
-        )
-        else "FAILED",
-    )
-
-    print(
-        "CONSUMED COORD   :",
-        consumer.get(
-            "coordinates"
-        ),
-    )
-
-    print(
-        "CLIENT           :",
-        consumer.get(
-            "maven_client"
-        ),
-    )
-
-else:
-    print(
-        "MAVEN CONSUMER   : NO PROOF"
-    )
-
-print()
-
-if lineage:
-    print(
-        "VERSION LINEAGE  : VERIFIED"
-    )
-
-    print(
-        "RELEASE COUNT    :",
-        len(
-            lineage.get(
-                "versions",
-                []
-            )
-        ),
-    )
-
-    print(
-        "CURRENT VERSION  :",
-        lineage.get(
-            "latestCoordinate"
-        ),
-    )
-
-    print(
-        "GRAPH HASH       :",
-        lineage.get(
-            "graphFingerprint"
-        ),
-    )
-
-else:
-    print(
-        "VERSION LINEAGE  : NOT BUILT"
-    )
-
-print()
-print(
-    "CREDENTIALS      : NOT STORED"
-)
-print(
-    "=============================================="
-)
+raise SystemExit(0 if overall else 1)
