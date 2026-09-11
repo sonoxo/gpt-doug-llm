@@ -6,11 +6,12 @@ ONTOLOGY="$ROOT/docs/maven-ontology/ontology.json"
 
 usage() {
   cat <<'EOF'
-Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual|go|gate|assure|palantir|token]
+Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual|go|gate|assure|sign|palantir|token]
 
   go         Run complete fail-closed Foundry Maven pipeline
   gate       Read-only live verification of the current Maven release
   assure     SBOM + OSV + provenance + verified rollback qualification
+  sign       Agentic OpenPGP signing + remote signature verification
   palantir   Open the ZYRA Foundry Artifact Repository
   token      Open the Foundry Maven token destination
   status     Show the latest persisted real Maven verification summary
@@ -91,6 +92,9 @@ case "$cmd" in
     ;;
   assure)
     exec python3 "$ROOT/scripts/zyra-maven-assure" "$@"
+    ;;
+  sign)
+    exec python3 "$ROOT/scripts/zyra-maven-sign" "$@"
     ;;
   palantir)
     URL="https://zyra.usw-17.palantirfoundry.com/workspace/artifacts/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
