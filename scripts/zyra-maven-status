@@ -1,0 +1,259 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import json
+import pathlib
+
+STATE = (
+    pathlib.Path.home()
+    /
+    ".config"
+    /
+    "gpt-doug"
+)
+
+files = {
+    "readiness":
+        STATE /
+        "palantir-maven-roundtrip-last.json",
+
+    "release":
+        STATE /
+        "palantir-maven-release-last.json",
+
+    "consumer":
+        STATE /
+        "palantir-maven-consumer-last.json",
+
+    "lineage":
+        STATE /
+        "palantir-maven-lineage.json",
+}
+
+
+def load(name):
+    path = files[name]
+
+    if not path.exists():
+        return None
+
+    try:
+        return json.loads(
+            path.read_text()
+        )
+    except Exception:
+        return None
+
+
+readiness = load(
+    "readiness"
+)
+
+release = load(
+    "release"
+)
+
+consumer = load(
+    "consumer"
+)
+
+lineage = load(
+    "lineage"
+)
+
+print()
+print(
+    "=============================================="
+)
+print(
+    "GPT-DOUG // FOUNDRY MAVEN CONTROL STATUS"
+)
+print(
+    "=============================================="
+)
+
+if readiness:
+    print(
+        "READINESS        :",
+        "VERIFIED"
+        if readiness.get(
+            "defense_ready"
+        )
+        else "FAILED",
+    )
+
+    print(
+        "READINESS COORD  :",
+        readiness.get(
+            "coordinates"
+        ),
+    )
+
+else:
+    print(
+        "READINESS        : NO PROOF"
+    )
+
+print()
+
+if release:
+    integrity = release.get(
+        "integrity",
+        {}
+    )
+
+    print(
+        "LATEST RELEASE   :",
+        release.get(
+            "coordinates"
+        ),
+    )
+
+    print(
+        "RELEASE VERIFIED :",
+        release.get(
+            "ok"
+        )
+        is True,
+    )
+
+    print(
+        "POM PUT / GET    :",
+        release.get(
+            "publish",
+            {}
+        ).get(
+            "pom_status"
+        ),
+        "/",
+        release.get(
+            "retrieve",
+            {}
+        ).get(
+            "pom_status"
+        ),
+    )
+
+    print(
+        "JAR PUT / GET    :",
+        release.get(
+            "publish",
+            {}
+        ).get(
+            "jar_status"
+        ),
+        "/",
+        release.get(
+            "retrieve",
+            {}
+        ).get(
+            "jar_status"
+        ),
+    )
+
+    print(
+        "JAR SHA MATCH    :",
+        integrity.get(
+            "jar_match"
+        )
+        is True,
+    )
+
+    print(
+        "JAR SHA256       :",
+        integrity.get(
+            "jar_sha256"
+        ),
+    )
+
+else:
+    print(
+        "LATEST RELEASE   : NO PROOF"
+    )
+
+print()
+
+if consumer:
+    print(
+        "MAVEN CONSUMER   :",
+        "VERIFIED"
+        if (
+            consumer.get(
+                "ok"
+            )
+            is True
+            and
+            consumer.get(
+                "resolution",
+                {}
+            ).get(
+                "jar_match"
+            )
+            is True
+        )
+        else "FAILED",
+    )
+
+    print(
+        "CONSUMED COORD   :",
+        consumer.get(
+            "coordinates"
+        ),
+    )
+
+    print(
+        "CLIENT           :",
+        consumer.get(
+            "maven_client"
+        ),
+    )
+
+else:
+    print(
+        "MAVEN CONSUMER   : NO PROOF"
+    )
+
+print()
+
+if lineage:
+    print(
+        "VERSION LINEAGE  : VERIFIED"
+    )
+
+    print(
+        "RELEASE COUNT    :",
+        len(
+            lineage.get(
+                "versions",
+                []
+            )
+        ),
+    )
+
+    print(
+        "CURRENT VERSION  :",
+        lineage.get(
+            "latestCoordinate"
+        ),
+    )
+
+    print(
+        "GRAPH HASH       :",
+        lineage.get(
+            "graphFingerprint"
+        ),
+    )
+
+else:
+    print(
+        "VERSION LINEAGE  : NOT BUILT"
+    )
+
+print()
+print(
+    "CREDENTIALS      : NOT STORED"
+)
+print(
+    "=============================================="
+)
