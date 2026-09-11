@@ -1,0 +1,145 @@
+{
+  "ontology_id": "xunia.flipper.v1",
+  "namespace": "xunia://devices/flipper-zero",
+  "ecosystem": ["GPT-DOUG-LLM", "XUNIA", "ZYRA", "ZYRAPALANTIR"],
+  "role": "authorized edge-security sensor and lab interface",
+  "object_types": {
+    "FlipperDevice": {
+      "canonical_id": "xunia://device/flipper/{device_id}",
+      "properties": [
+        "device_id",
+        "name",
+        "model",
+        "firmware",
+        "owner_id",
+        "environment",
+        "connection_state",
+        "battery_percent",
+        "trust_level",
+        "authorization_state",
+        "last_seen"
+      ]
+    },
+    "Asset": {
+      "properties": [
+        "asset_id",
+        "name",
+        "owner_id",
+        "asset_type",
+        "authorization_status",
+        "sensitivity",
+        "protected_class"
+      ]
+    },
+    "Authorization": {
+      "properties": [
+        "authorization_id",
+        "actor_id",
+        "device_id",
+        "asset_id",
+        "scope",
+        "granted_at",
+        "expires_at",
+        "granted_by",
+        "environment",
+        "evidence_reference"
+      ]
+    },
+    "TestSession": {
+      "properties": [
+        "session_id",
+        "device_id",
+        "operator_id",
+        "asset_id",
+        "environment",
+        "purpose",
+        "authorization_id",
+        "status",
+        "started_at",
+        "ended_at"
+      ]
+    },
+    "Observation": {
+      "properties": [
+        "observation_id",
+        "session_id",
+        "timestamp",
+        "module",
+        "protocol",
+        "metadata",
+        "signal_hash",
+        "confidence"
+      ]
+    },
+    "DigitalTwin": {
+      "properties": [
+        "twin_id",
+        "asset_id",
+        "protocol",
+        "simulated_state",
+        "created_at",
+        "source_observations",
+        "confidence"
+      ]
+    },
+    "AuditEvent": {
+      "properties": ["event_id", "event", "timestamp", "payload"]
+    }
+  },
+  "link_types": [
+    "UserOwnsFlipperDevice",
+    "FlipperDeviceCreatesObservation",
+    "ObservationDescribesProtocol",
+    "ObservationAssociatedWithAsset",
+    "AssetHasDigitalTwin",
+    "TestSessionUsesFlipperDevice",
+    "TestSessionTargetsAsset",
+    "TestSessionRequiresAuthorization",
+    "AuthorizationPermitsAction",
+    "ActionProducesAuditEvent"
+  ],
+  "governed_actions": [
+    "OBSERVE_SIGNAL",
+    "PARSE_SIGNAL",
+    "CREATE_DIGITAL_TWIN",
+    "RUN_SIMULATION",
+    "EXECUTE_AUTHORIZED_TEST",
+    "ABORT_SESSION"
+  ],
+  "hardware_modules": ["NFC", "RFID", "IR", "SUB_GHZ", "GPIO", "BLE", "USB", "STORAGE"],
+  "events": [
+    "FLIPPER_REGISTERED",
+    "ASSET_REGISTERED",
+    "AUTHORIZATION_GRANTED",
+    "SESSION_STARTED",
+    "SESSION_ABORTED",
+    "SIGNAL_OBSERVED",
+    "DIGITAL_TWIN_CREATED",
+    "ACTION_REQUESTED"
+  ],
+  "policy": {
+    "default": "DENY",
+    "unknown_assets": "DENY",
+    "denied_assets": "DENY",
+    "physical_actuation": "STAGED_ONLY",
+    "human_review_required_for_physical_actions": true,
+    "protected_real_world_asset_classes": [
+      "EMERGENCY_COMMUNICATIONS",
+      "PUBLIC_INFRASTRUCTURE",
+      "TRAFFIC_CONTROL",
+      "UTILITY_INFRASTRUCTURE",
+      "MEDICAL_SYSTEM",
+      "THIRD_PARTY_ACCESS_SYSTEM"
+    ],
+    "preferred_execution_path": [
+      "DISCOVER",
+      "VERIFY_AUTHORIZATION",
+      "OBSERVE",
+      "CLASSIFY",
+      "CREATE_DIGITAL_TWIN",
+      "SIMULATE",
+      "REQUEST_GOVERNED_ACTION",
+      "AUDIT"
+    ]
+  }
+}
