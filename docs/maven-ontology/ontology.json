@@ -8,13 +8,13 @@
     "generatedBy": "GPT-DOUG-LLM BPO",
     "liveSync": {
       "version": "1.0",
-      "lastExportId": "fbi-raia-evolving-threats-20260911-1902z",
-      "lastSourceSystem": "XUNIA Public Threat Intelligence",
-      "lastSourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
-      "sourceGeneratedAt": "2026-09-11T19:02:00Z",
+      "lastExportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+      "lastSourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+      "lastSourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+      "sourceGeneratedAt": "2026-09-11T19:15:00Z",
       "approvedBy": "xunia-operator-user-direction",
-      "approvedAt": "2026-09-11T19:02:30Z",
-      "graphFingerprint": "f72bcb12e9e4cfb18fcfa59f5b9699c215c9e1d339c0bee8d67b7768f66413a2"
+      "approvedAt": "2026-09-11T19:15:30Z",
+      "graphFingerprint": "b81a342e2ae8dbcb6328015093b410b9f948aeb0814bf63049599e705dd7f9e1"
     }
   },
   "objectTypes": [
@@ -33,6 +33,7 @@
     "Finding",
     "Mission",
     "Partner",
+    "PermissionStatement",
     "Platform",
     "Requirement",
     "ReviewEvent",
@@ -64,6 +65,7 @@
     "REQUIRES",
     "RESPONDS_TO",
     "REVIEWED_BY",
+    "REVIEWS",
     "SUPPORTED_BY",
     "USES"
   ],
@@ -93,6 +95,31 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "label": "Evaluate Public Use Claim",
+      "objectType": "Action",
+      "type": "agent",
+      "status": "verified",
+      "confidence": 0.98,
+      "mode": "recommend",
+      "desc": "Recommend verification of the claimed authorization against authoritative terms and actual entitlements. This action does not create credentials, grant access, enroll an account, or execute external side effects.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governed-review-action",
+          "version": "1.0"
+        }
+      },
+      "lat": 0.1974,
+      "lon": 50.8147
     },
     {
       "id": "maven:agent",
@@ -238,6 +265,30 @@
       }
     },
     {
+      "id": "maven:capability:authorized-public-use-path",
+      "label": "Authorized Public Use Path",
+      "objectType": "Capability",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Resolve a claimed public-use permission into a bounded, terms-compliant integration path: identify the actual product, verify eligibility, use only issued credentials, preserve provenance, and restrict actions to the granted scope.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governed-integration-pattern",
+          "version": "1.0"
+        }
+      },
+      "lat": -30.9798,
+      "lon": -8.4167
+    },
+    {
       "id": "maven:capability:emerging-tech-horizon-scan",
       "label": "Emerging Technology Horizon Scan",
       "objectType": "Capability",
@@ -338,6 +389,30 @@
       }
     },
     {
+      "id": "maven:control:permission-verification-gate",
+      "label": "Permission Verification Gate",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Before relying on a public statement as authorization, verify the exact product/capability, allowed users, permitted purposes, enrollment requirements, terms, account entitlements, and any data handling restrictions. Public media never substitutes for credentials or access controls.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governance-policy",
+          "version": "1.0"
+        }
+      },
+      "lat": -1.9794,
+      "lon": 110.5469
+    },
+    {
       "id": "maven:dataset",
       "label": "Dataset",
       "objectType": "Dataset",
@@ -389,6 +464,31 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "label": "Public Use Claim Evidence",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Evidence record for the operator-reported statement that the referenced system or capability may be used. This records the claim without treating it as a verified entitlement, credential, license, or access grant.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "claim": "they said we can use it",
+          "verificationState": "candidate"
+        }
+      },
+      "lat": -6.5093,
+      "lon": 175.5384
     },
     {
       "id": "maven:finding",
@@ -465,6 +565,37 @@
       }
     },
     {
+      "id": "maven:permission-statement:public-use:ccY6D0jKVck",
+      "label": "Public Use Permission Statement",
+      "objectType": "PermissionStatement",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Candidate permission statement representing an asserted public authorization to use a capability. Effective scope must be resolved from authoritative terms, enrollment, account entitlements, or an independently verified source before operational reliance.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "verificationState": "candidate",
+          "doesNotImply": [
+            "credentials",
+            "license",
+            "government-system access",
+            "Palantir entitlements",
+            "Maven Smart System access"
+          ]
+        }
+      },
+      "lat": 13.1149,
+      "lon": 82.1109
+    },
+    {
       "id": "maven:platform",
       "label": "Platform",
       "objectType": "Platform",
@@ -516,6 +647,30 @@
         "syncMethod": "maven-live-sync/1.0",
         "upstream": {}
       }
+    },
+    {
+      "id": "maven:review-event:permission-ccY6D0jKVck",
+      "label": "Permission Scope Verification Review",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.8,
+      "desc": "Human review event to verify what the video actually authorizes and map that statement to authoritative product terms or account entitlements before changing the permission statement to verified.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "reviewState": "pending"
+        }
+      },
+      "lat": -38.097,
+      "lon": -34.8373
     },
     {
       "id": "maven:scenario:emerging-drone-misuse",
@@ -691,6 +846,31 @@
       "lon": 140.1434
     },
     {
+      "id": "maven:source:youtube:ccY6D0jKVck",
+      "label": "YouTube Source ccY6D0jKVck",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.7,
+      "desc": "Operator-supplied public video asserted to contain a statement permitting use of the referenced capability. Public indexing did not independently expose enough metadata/transcript to verify the exact scope of permission at ingestion time.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+        "generatedAt": "2026-09-11T19:15:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:15:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "assertedBy": "operator",
+          "verificationState": "pending-independent-verification"
+        }
+      },
+      "lat": -20.7736,
+      "lon": 54.9647
+    },
+    {
       "id": "maven:system",
       "label": "System",
       "objectType": "System",
@@ -777,6 +957,16 @@
       "RESPONDS_TO"
     ],
     [
+      "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "RESPONDS_TO"
+    ],
+    [
+      "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "maven:review-event:permission-ccY6D0jKVck",
+      "REQUIRES"
+    ],
+    [
       "maven:agent",
       "maven:action",
       "EXECUTES"
@@ -829,6 +1019,11 @@
     [
       "maven:control:behavior-evidence-civil-liberties",
       "maven:review-event:evolving-threat-2026",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:permission-verification-gate",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
       "GOVERNS"
     ],
     [
@@ -887,6 +1082,16 @@
       "DERIVED_FROM"
     ],
     [
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "maven:capability:authorized-public-use-path",
+      "GOVERNS"
+    ],
+    [
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "SUPPORTED_BY"
+    ],
+    [
       "maven:platform",
       "maven:system",
       "HOSTS"
@@ -900,6 +1105,11 @@
       "maven:review-event:evolving-threat-2026",
       "maven:audit-record:evolving-threat-2026",
       "RECORDED_IN"
+    ],
+    [
+      "maven:review-event:permission-ccY6D0jKVck",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "REVIEWS"
     ],
     [
       "maven:scenario:emerging-drone-misuse",
@@ -925,6 +1135,11 @@
       "maven:signal:public-tip-model",
       "maven:track:evolving-decentralized-threat",
       "FUSES_INTO"
+    ],
+    [
+      "maven:source:youtube:ccY6D0jKVck",
+      "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "PROVIDES"
     ],
     [
       "maven:system",
