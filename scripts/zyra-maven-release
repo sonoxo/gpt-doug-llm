@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import base64
+import hashlib
+import io
+import json
+import os
+import pathlib
+import sys
+import urllib.error
+import urllib.request
+import zipfile
+
+from datetime import datetime, timezone
+from urllib.parse import urlparse
+
+
+GROUP = os.getenv("ZYRA_MAVEN_GROUP", "com.xunia")
+ARTIFACT = os.getenv("ZYRA_MAVEN_ARTIFACT", "gpt-doug-foundry-bridge")
+
+STATE_DIR = pathlib.Path.home() / ".config" / "gpt-doug"
+PROOF_FILE = STATE_DIR / "palantir-maven-release-last.json"
+
+
+def fail(msg: str) -> None:
+    raise SystemExit("ERROR: " + msg)
+
+
+base = os.getenv("PALANTIR_MAVEN_REPOSITORY_URL", "").strip().rstrip("/")
+host_lock = os.getenv("PALANTIR_MAVEN_ALLOWED_HOST", "").strip().lower()
+username = os.getenv("PALANTIR_MAVEN_USERNAME", "")
+token = os.getenv("PALANTIR_MAVEN_TOKEN", "").strip()
+
+if not base:
+    fail("PALANTIR_MAVEN_REPOSITORY_URL missing")
+
+if not token:
+    fail("PALANTIR_MAVEN_TOKEN missing")
+
+parsed = urlparse(base)
+
+if parsed.scheme != "https" or not parsed.hostname:
+    fail("HTTPS Maven endpoint required")
+
+if parsed.username or parsed.password:
+    fail("credentials must not be embedded in URL")
+
+if host_lock and parsed.hostname.lower() != host_lock:
+    fail("Maven host does not match host lock")
+
+if "/workspace/" in parsed.path:
+    fail("Foundry UI URL supplied instead of Maven repository")
+
+if "/stemma/git/" in parsed.path:
+    fail("Foundry Git URL supplied instead of Maven repository")
+
+if "/artifacts/api/repositories/" not in parsed.path:
+    fail("not a Foundry Artifact Repository API endpoint")
+
+if not parsed.path.endswith("/contents/release/maven"):
+    fail("endpoint is not Maven release repository")
+
+version = os.getenv("ZYRA_MAVEN_VERSION", "").strip()
+
+if not version:
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    version = "1.0.0-" + stamp
+
+git_sha = os.getenv("ZYRA_GIT_SHA", "unknown")
+git_branch = os.getenv("ZYRA_GIT_BRANCH", "unknown")
+
+created = datetime.now(timezone.utc).isoformat()
+
+metadata = {
+    "schema": "xunia.gpt-doug.maven-artifact.v1",
+    "coordinates": f"{GROUP}:{ARTIFACT}:{version}",
+    "git_commit": git_sha,
+    "git_branch": git_branch,
+    "created_at": created,
+    "executable_payload": False,
+}
+
+buffer = io.BytesIO()
+
+with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as jar:
+    jar.writestr(
+        "META-INF/MANIFEST.MF",
+        "Manifest-Version: 1.0\n"
+        "Implementation-Title: GPT-Doug Foundry Bridge\n"
+        f"Implementation-Version: {version}\n"
+        f"Git-Commit: {git_sha}\n\n",
+    )
+
+    jar.writestr(
+        "META-INF/gpt-doug/release.json",
+        json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+    )
+
+jar_data = buffer.getvalue()
+
+pom_data = f"""<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>{GROUP}</groupId>
+  <artifactId>{ARTIFACT}</artifactId>
+  <version>{version}</version>
+  <packaging>jar</packaging>
+  <name>GPT-Doug Foundry Bridge</name>
+  <description>GPT-Doug Maven release linked to Git commit {git_sha}</description>
+</project>
+""".encode()
+
+group_path = GROUP.replace(".", "/")
+prefix = f"{base}/{group_path}/{ARTIFACT}/{version}"
+
+pom_url = f"{prefix}/{ARTIFACT}-{version}.pom"
+jar_url = f"{prefix}/{ARTIFACT}-{version}.jar"
+
+auth = "Basic " + base64.b64encode(
+    f"{username}:{token}".encode()
+).decode()
+
+
+def request(url: str, method: str, body=None, content_type=None):
+    headers = {
+        "Authorization": auth,
+        "Accept": "*/*",
+        "User-Agent": "gpt-doug-foundry-maven/1",
+    }
+
+    if content_type:
+        headers["Content-Type"] = content_type
+
+    req = urllib.request.Request(
+        url,
+        data=body,
+        headers=headers,
+        method=method,
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as response:
+            return int(response.status), response.read()
+    except urllib.error.HTTPError as exc:
+        detail = exc.read(800).decode("utf-8", errors="replace")
+        raise RuntimeError(
+            f"HTTP {exc.code} {method} {urlparse(url).path}: {detail}"
+        ) from exc
+
+
+print("PUT POM")
+pom_put, _ = request(
+    pom_url,
+    "PUT",
+    pom_data,
+    "application/xml",
+)
+
+print("HTTP", pom_put)
+
+print("PUT JAR")
+jar_put, _ = request(
+    jar_url,
+    "PUT",
+    jar_data,
+    "application/java-archive",
+)
+
+print("HTTP", jar_put)
+
+print("GET POM")
+pom_get, pom_remote = request(pom_url, "GET")
+print("HTTP", pom_get)
+
+print("GET JAR")
+jar_get, jar_remote = request(jar_url, "GET")
+print("HTTP", jar_get)
+
+pom_sha = hashlib.sha256(pom_data).hexdigest()
+jar_sha = hashlib.sha256(jar_data).hexdigest()
+
+pom_remote_sha = hashlib.sha256(pom_remote).hexdigest()
+jar_remote_sha = hashlib.sha256(jar_remote).hexdigest()
+
+pom_match = pom_data == pom_remote and pom_sha == pom_remote_sha
+jar_match = jar_data == jar_remote and jar_sha == jar_remote_sha
+
+ok = all(
+    (
+        200 <= pom_put < 300,
+        200 <= jar_put < 300,
+        200 <= pom_get < 300,
+        200 <= jar_get < 300,
+        pom_match,
+        jar_match,
+    )
+)
+
+proof = {
+    "schema": "xunia.gpt-doug.maven-release-proof.v1",
+    "ok": ok,
+    "verified_at": datetime.now(timezone.utc).isoformat(),
+    "host": parsed.hostname.lower(),
+    "coordinates": f"{GROUP}:{ARTIFACT}:{version}",
+    "git_commit": git_sha,
+    "git_branch": git_branch,
+    "publish": {
+        "pom_status": pom_put,
+        "jar_status": jar_put,
+    },
+    "retrieve": {
+        "pom_status": pom_get,
+        "jar_status": jar_get,
+    },
+    "integrity": {
+        "pom_sha256": pom_sha,
+        "jar_sha256": jar_sha,
+        "pom_remote_sha256": pom_remote_sha,
+        "jar_remote_sha256": jar_remote_sha,
+        "pom_match": pom_match,
+        "jar_match": jar_match,
+    },
+    "credentials_printed": False,
+    "credentials_stored": False,
+}
+
+STATE_DIR.mkdir(parents=True, exist_ok=True)
+
+PROOF_FILE.write_text(
+    json.dumps(proof, indent=2, sort_keys=True) + "\n",
+    encoding="utf-8",
+)
+
+PROOF_FILE.chmod(0o600)
+
+print()
+print("=== RELEASE PROOF ===")
+print("COORDINATES:", proof["coordinates"])
+print("GIT COMMIT :", git_sha)
+print("POM PUT    :", pom_put)
+print("JAR PUT    :", jar_put)
+print("POM GET    :", pom_get)
+print("JAR GET    :", jar_get)
+print("POM MATCH  :", pom_match)
+print("JAR MATCH  :", jar_match)
+print("POM SHA256 :", pom_sha)
+print("JAR SHA256 :", jar_sha)
+print("PROOF      :", PROOF_FILE)
+
+if not ok:
+    fail("remote Maven release verification failed")
+
+print()
+print("REAL FOUNDRY MAVEN RELEASE VERIFIED")

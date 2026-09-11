@@ -1,0 +1,145 @@
+#!/bin/sh
+set -eu
+
+ROOT="$HOME/gpt-doug-llm"
+STATE="$HOME/.config/gpt-doug"
+SITE="$STATE/xzoon-github-live"
+REPO="${XZOON_GITHUB_REPO:-sonoxo/gpt-doug-llm}"
+
+mkdir -p "$STATE"
+chmod 700 "$STATE"
+
+safe_kill() {
+    file="$1"
+    pattern="$2"
+
+    [ -f "$file" ] || return 0
+
+    pid="$(cat "$file" 2>/dev/null || true)"
+
+    [ -n "$pid" ] || return 0
+
+    if kill -0 "$pid" 2>/dev/null; then
+        command="$(
+            ps -p "$pid" -o command= \
+            2>/dev/null || true
+        )"
+
+        case "$command" in
+            *"$pattern"*)
+                kill "$pid" \
+                    2>/dev/null || true
+                ;;
+        esac
+    fi
+}
+
+safe_kill \
+    "$STATE/xzoon-github-watch.pid" \
+    "xzoon_github_live.py"
+
+safe_kill \
+    "$STATE/xzoon-github-http.pid" \
+    "http.server"
+
+safe_kill \
+    "$STATE/xzoon-watch.pid" \
+    "xzoon-sync-from-maven-proof"
+
+safe_kill \
+    "$STATE/xzoon-http.pid" \
+    "http.server"
+
+sleep 1
+
+rm -rf "$SITE"
+mkdir -p "$SITE"
+
+cp -R "$ROOT/docs/." "$SITE/"
+
+cp \
+    "$ROOT/docs/maven-ontology/ontology.json" \
+    "$SITE/maven-ontology/ontology.base.json"
+
+WATCH_LOG="/tmp/xzoon-github-watch.log"
+
+nohup python3 \
+    "$ROOT/tools/xzoon_github_live.py" \
+    --repo "$REPO" \
+    --site "$SITE" \
+    --interval 10 \
+    >"$WATCH_LOG" 2>&1 &
+
+WATCH_PID=$!
+
+echo "$WATCH_PID" \
+    > "$STATE/xzoon-github-watch.pid"
+
+i=0
+
+while [ "$i" -lt 20 ]; do
+    if [ -f \
+        "$SITE/planet-xzoon/github-live.json" \
+    ]; then
+        break
+    fi
+
+    sleep 1
+    i=$((i + 1))
+done
+
+test -f \
+    "$SITE/planet-xzoon/github-live.json" || {
+        echo 'GITHUB WATCHER FAILED'
+        cat "$WATCH_LOG"
+        exit 1
+    }
+
+PORT=8910
+
+while lsof -nP \
+    -iTCP:"$PORT" \
+    -sTCP:LISTEN \
+    >/dev/null 2>&1
+do
+    PORT=$((PORT + 1))
+done
+
+HTTP_LOG="/tmp/xzoon-github-http.log"
+
+nohup python3 \
+    -m http.server "$PORT" \
+    --bind 127.0.0.1 \
+    --directory "$SITE" \
+    >"$HTTP_LOG" 2>&1 &
+
+HTTP_PID=$!
+
+echo "$HTTP_PID" \
+    > "$STATE/xzoon-github-http.pid"
+
+echo "$PORT" \
+    > "$STATE/xzoon-github-http.port"
+
+sleep 2
+
+URL="http://127.0.0.1:${PORT}/planet-xzoon/?reality=$(date +%s)"
+
+curl -fsS "$URL" >/dev/null
+
+curl -fsS \
+    "http://127.0.0.1:${PORT}/planet-xzoon/github-live.json" \
+    >/dev/null
+
+echo
+echo '============================================'
+echo 'PLANET xZOON REALITY STREAM ONLINE'
+echo "REPO      : $REPO"
+echo "URL       : $URL"
+echo "WATCH PID : $WATCH_PID"
+echo "HTTP PID  : $HTTP_PID"
+echo 'GITHUB    : POLL EVERY 10 SECONDS'
+echo 'BROWSER   : REFRESH EVERY 2 SECONDS'
+echo '============================================'
+
+open "$URL"

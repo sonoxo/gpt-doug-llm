@@ -14,7 +14,27 @@
       "sourceGeneratedAt": "2026-09-11T19:20:00Z",
       "approvedBy": "xunia-operator-user-direction",
       "approvedAt": "2026-09-11T19:20:30Z",
-      "graphFingerprint": "a77416d3113a1da45917a3b9a015343358b8f4b2d0b90ff8dd701716301ba83c"
+      "graphFingerprint": "2af6cbc5a6fcebb27231f8d399bb294d5fc6fe2ceca1674438131dbcfb76d5a4",
+      "remotePutVerified": true,
+      "remoteGetVerified": true,
+      "sha256Verified": true,
+      "mavenConsumerVerified": true,
+      "mavenConsumerCoordinates": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+      "mavenConsumerVerifiedAt": "2026-09-11T09:24:20.150537+00:00",
+      "mavenConsumerClient": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)",
+      "mavenLineageVersion": "2.1",
+      "mavenReleaseCount": 4,
+      "mavenLatestCoordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+      "mavenLatestNode": "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "mavenVersionLineage": true,
+      "mavenImpactSemantics": "explicit-runtime-dependencies-only",
+      "mavenOperationalImpactCount": 1,
+      "mavenRuntimeBinding": true,
+      "mavenRuntimeConsumer": "system:gpt-doug-foundry-consumer",
+      "mavenRuntimeCoordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+      "mavenRuntimeBindingVerifiedAt": "2026-09-11T20:08:02.546898+00:00",
+      "mavenMode": "REAL_FOUNDRY_MAVEN",
+      "mavenMergeStrategy": "current-main-plus-verified-maven-runtime"
     }
   },
   "objectTypes": [
@@ -67,7 +87,9 @@
     "REVIEWED_BY",
     "REVIEWS",
     "SUPPORTED_BY",
-    "USES"
+    "USES",
+    "PREVIOUS_VERSION",
+    "CURRENT_VERSION"
   ],
   "governance": {
     "actionModes": [
@@ -494,7 +516,7 @@
       "type": "governance",
       "status": "verified",
       "confidence": 0.99,
-      "desc": "Threat evaluation must rely on lawful behavior, context, provenance, and articulable evidence—not race, ethnicity, sex, national origin, religion, disability, political viewpoint, lawful speech, or other protected characteristics.",
+      "desc": "Threat evaluation must rely on lawful behavior, context, provenance, and articulable evidence\u2014not race, ethnicity, sex, national origin, religion, disability, political viewpoint, lawful speech, or other protected characteristics.",
       "lat": 21.0818,
       "lon": 174.2606,
       "provenance": {
@@ -1256,6 +1278,351 @@
         "syncMethod": "maven-live-sync/1.0",
         "upstream": {}
       }
+    },
+    {
+      "id": "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "label": "Foundry Maven 1.0.0-git-6651a601c2a7-20260910230916",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "lat": -7.5059,
+      "lon": 103.6275,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, GET and SHA-256.",
+      "provenance": {
+        "sourceSystem": "Palantir Foundry Artifact Repository",
+        "sourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
+        "exportId": "com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
+        "generatedAt": "2026-09-10T23:09:17.053093+00:00",
+        "approvedBy": "gpt-doug-remote-roundtrip",
+        "approvedAt": "2026-09-10T23:09:17.053093+00:00",
+        "syncMethod": "foundry-maven-live/2.0",
+        "upstream": {
+          "gitCommit": "6651a601c2a7ea7c9203e3d960fceee5d9a46c00",
+          "gitBranch": "feat/maven-ontology-v1-20260910-111133",
+          "pomPutStatus": 204,
+          "jarPutStatus": 204,
+          "pomGetStatus": 200,
+          "jarGetStatus": 200,
+          "pomSha256": "b4719910790e1d27a16d7a490925dc7127aece48c74c07a221da3b00425ff3c6",
+          "jarSha256": "0ca53db8f4ee4972db219b64c0f1d972ed6761845933d3fdcd4e6ce11ab64c74",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "label": "SHA256 Proof 1.0.0-git-6651a601c2a7-20260910230916",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": 1.4941,
+      "lon": 123.6275,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Remote byte-integrity evidence for the Foundry Maven POM and JAR.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Verifier",
+        "sourceUri": "proof://foundry-maven/1.0.0-git-6651a601c2a7-20260910230916",
+        "generatedAt": "2026-09-10T23:09:17.053093+00:00",
+        "syncMethod": "sha256-roundtrip/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
+          "pomSha256": "b4719910790e1d27a16d7a490925dc7127aece48c74c07a221da3b00425ff3c6",
+          "jarSha256": "0ca53db8f4ee4972db219b64c0f1d972ed6761845933d3fdcd4e6ce11ab64c74",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "label": "Foundry Maven 1.0.0-live-ce5f51f84713-20260910233608",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "lat": -57.5451,
+      "lon": 30.8824,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, GET and SHA-256.",
+      "provenance": {
+        "sourceSystem": "Palantir Foundry Artifact Repository",
+        "sourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.0.0-live-ce5f51f84713-20260910233608",
+        "exportId": "com.xunia:gpt-doug-foundry-bridge:1.0.0-live-ce5f51f84713-20260910233608",
+        "generatedAt": "2026-09-10T23:36:09.092513+00:00",
+        "approvedBy": "gpt-doug-remote-roundtrip",
+        "approvedAt": "2026-09-10T23:36:09.092513+00:00",
+        "syncMethod": "foundry-maven-live/2.0",
+        "upstream": {
+          "gitCommit": "ce5f51f84713aeadca9e57fa41129507bf5ba6cd",
+          "gitBranch": "feat/maven-ontology-v1-20260910-111133",
+          "pomPutStatus": 204,
+          "jarPutStatus": 204,
+          "pomGetStatus": 200,
+          "jarGetStatus": 200,
+          "pomSha256": "108186eaecbd334c32ff9c7aadd68ed69c3688141cfd0d950e10ce0a511eaa1f",
+          "jarSha256": "6c43671d1d970edf43931b35bdbb2822d161445d45d329b66f9afa064585f5da",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "label": "SHA256 Proof 1.0.0-live-ce5f51f84713-20260910233608",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": -48.5451,
+      "lon": 50.8824,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Remote byte-integrity evidence for the Foundry Maven POM and JAR.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Verifier",
+        "sourceUri": "proof://foundry-maven/1.0.0-live-ce5f51f84713-20260910233608",
+        "generatedAt": "2026-09-10T23:36:09.092513+00:00",
+        "syncMethod": "sha256-roundtrip/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.0.0-live-ce5f51f84713-20260910233608",
+          "pomSha256": "108186eaecbd334c32ff9c7aadd68ed69c3688141cfd0d950e10ce0a511eaa1f",
+          "jarSha256": "6c43671d1d970edf43931b35bdbb2822d161445d45d329b66f9afa064585f5da",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "label": "Foundry Maven 1.1.0-xzoon-e2510a336c-20260911062654",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "lat": -18.8784,
+      "lon": 159.902,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, GET and SHA-256.",
+      "provenance": {
+        "sourceSystem": "Palantir Foundry Artifact Repository",
+        "sourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.1.0-xzoon-e2510a336c-20260911062654",
+        "exportId": "com.xunia:gpt-doug-foundry-bridge:1.1.0-xzoon-e2510a336c-20260911062654",
+        "generatedAt": "2026-09-11T06:26:55.651525+00:00",
+        "approvedBy": "gpt-doug-remote-roundtrip",
+        "approvedAt": "2026-09-11T06:26:55.651525+00:00",
+        "syncMethod": "foundry-maven-live/2.0",
+        "upstream": {
+          "gitCommit": "e2510a336c1b1bd3813433c5651aa05ce0fb4d3b",
+          "gitBranch": "feat/maven-ontology-v1-20260910-111133",
+          "pomPutStatus": 204,
+          "jarPutStatus": 204,
+          "pomGetStatus": 200,
+          "jarGetStatus": 200,
+          "pomSha256": "a12ff2f3e74d32c89f55ac789007e5a3f60ec5b8f3426bd23ee453922ca19744",
+          "jarSha256": "00787820729dcd65208fc5f3c3cb32bc37f39e56fa1ebefb24de5b393c367559",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "label": "SHA256 Proof 1.1.0-xzoon-e2510a336c-20260911062654",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": -9.8784,
+      "lon": 179.902,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Remote byte-integrity evidence for the Foundry Maven POM and JAR.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Verifier",
+        "sourceUri": "proof://foundry-maven/1.1.0-xzoon-e2510a336c-20260911062654",
+        "generatedAt": "2026-09-11T06:26:55.651525+00:00",
+        "syncMethod": "sha256-roundtrip/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.1.0-xzoon-e2510a336c-20260911062654",
+          "pomSha256": "a12ff2f3e74d32c89f55ac789007e5a3f60ec5b8f3426bd23ee453922ca19744",
+          "jarSha256": "00787820729dcd65208fc5f3c3cb32bc37f39e56fa1ebefb24de5b393c367559",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:consumer:1.1.0-xzoon-e2510a336c-20260911062654",
+      "label": "Maven Consumer Resolution 1.1.0-xzoon-e2510a336c-20260911062654",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": -11.0588,
+      "lon": -103.6275,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Independent Apache Maven client resolved the Foundry-hosted artifact by Maven coordinates and reproduced the expected JAR SHA-256.",
+      "provenance": {
+        "sourceSystem": "Apache Maven Consumer Verification",
+        "sourceUri": "proof://maven-consumer/1.1.0-xzoon-e2510a336c-20260911062654",
+        "generatedAt": "2026-09-11T06:31:40.358734+00:00",
+        "syncMethod": "apache-maven-coordinate-resolution/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.1.0-xzoon-e2510a336c-20260911062654",
+          "repositoryHost": "zyra.usw-17.palantirfoundry.com",
+          "mavenClient": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)",
+          "resolved": true,
+          "jarSha256": "00787820729dcd65208fc5f3c3cb32bc37f39e56fa1ebefb24de5b393c367559",
+          "jarMatch": true,
+          "credentialsStored": false
+        }
+      }
+    },
+    {
+      "id": "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "label": "Foundry Maven 1.2.0-maven-f4a1710eef-20260911092350",
+      "objectType": "Artifact",
+      "type": "knowledge",
+      "lat": -9.7804,
+      "lon": -51.4706,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, GET and SHA-256.",
+      "provenance": {
+        "sourceSystem": "Palantir Foundry Artifact Repository",
+        "sourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+        "exportId": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+        "generatedAt": "2026-09-11T09:24:08.312619+00:00",
+        "approvedBy": "gpt-doug-remote-roundtrip",
+        "approvedAt": "2026-09-11T09:24:08.312619+00:00",
+        "syncMethod": "foundry-maven-live/2.0",
+        "upstream": {
+          "gitCommit": "f4a1710eefeb52b5158735335e47094dec93bab6",
+          "gitBranch": "feat/maven-ontology-v1-20260910-111133",
+          "pomPutStatus": 204,
+          "jarPutStatus": 204,
+          "pomGetStatus": 200,
+          "jarGetStatus": 200,
+          "pomSha256": "f0710e0a08d53402e36c944f063d7643da63db4c4a8c504910f0819d7a1331ae",
+          "jarSha256": "e564cc2c9da983086283c655763fcdf84a78419aa901fce86c604864ed94c224",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "label": "SHA256 Proof 1.2.0-maven-f4a1710eef-20260911092350",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": -0.7804,
+      "lon": -31.4706,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Remote byte-integrity evidence for the Foundry Maven POM and JAR.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Verifier",
+        "sourceUri": "proof://foundry-maven/1.2.0-maven-f4a1710eef-20260911092350",
+        "generatedAt": "2026-09-11T09:24:08.312619+00:00",
+        "syncMethod": "sha256-roundtrip/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+          "pomSha256": "f0710e0a08d53402e36c944f063d7643da63db4c4a8c504910f0819d7a1331ae",
+          "jarSha256": "e564cc2c9da983086283c655763fcdf84a78419aa901fce86c604864ed94c224",
+          "pomMatch": true,
+          "jarMatch": true
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:consumer:1.2.0-maven-f4a1710eef-20260911092350",
+      "label": "Maven Consumer Resolution 1.2.0-maven-f4a1710eef-20260911092350",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": 44.4706,
+      "lon": -89.902,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Independent Apache Maven client resolved the Foundry-hosted artifact by Maven coordinates and reproduced the expected JAR SHA-256.",
+      "provenance": {
+        "sourceSystem": "Apache Maven Consumer Verification",
+        "sourceUri": "proof://maven-consumer/1.2.0-maven-f4a1710eef-20260911092350",
+        "generatedAt": "2026-09-11T09:24:20.150537+00:00",
+        "syncMethod": "apache-maven-coordinate-resolution/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+          "repositoryHost": "zyra.usw-17.palantirfoundry.com",
+          "mavenClient": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)",
+          "resolved": true,
+          "jarSha256": "e564cc2c9da983086283c655763fcdf84a78419aa901fce86c604864ed94c224",
+          "jarMatch": true,
+          "credentialsStored": false
+        }
+      }
+    },
+    {
+      "id": "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "label": "GPT-DOUG Foundry Maven Release Train",
+      "objectType": "System",
+      "type": "system",
+      "lat": 12.0,
+      "lon": -12.0,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Version lineage for cryptographically verified GPT-DOUG releases published to Palantir Foundry Maven.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Lineage Engine",
+        "sourceUri": "local://maven-lineage",
+        "generatedAt": "2026-09-11T09:47:43.654530+00:00",
+        "syncMethod": "maven-version-lineage/1.0",
+        "upstream": {
+          "latestCoordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+          "versions": 4
+        }
+      }
+    },
+    {
+      "id": "system:gpt-doug-foundry-consumer",
+      "label": "GPT-DOUG Foundry Maven Consumer",
+      "objectType": "System",
+      "type": "system",
+      "lat": 19.2353,
+      "lon": -47.3333,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Real Maven project whose POM declares and resolves the verified GPT-DOUG Foundry Maven artifact.",
+      "provenance": {
+        "sourceSystem": "Apache Maven Dependency Tree",
+        "sourceUri": "file://integrations/foundry-maven-consumer/pom.xml",
+        "generatedAt": "2026-09-11T20:08:02.546898+00:00",
+        "syncMethod": "maven-project-binding/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+          "jarSha256": "e564cc2c9da983086283c655763fcdf84a78419aa901fce86c604864ed94c224",
+          "dependencyTreeSha256": "3d2d7f25ca75611f2c33bf14663728f3690d6bcdab242e20eca65700dd42c745",
+          "mavenClient": "Apache Maven 3.9.16 (2bdd9fddda4b155ebf8000e807eb73fd829a51d5)",
+          "gitCommit": "f4a1710eefeb52b5158735335e47094dec93bab6",
+          "credentialsStored": false
+        }
+      }
+    },
+    {
+      "id": "maven:evidence:binding:1.2.0-maven-f4a1710eef-20260911092350",
+      "label": "Maven Runtime Binding 1.2.0-maven-f4a1710eef-20260911092350",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "lat": 22.2353,
+      "lon": -44.3333,
+      "status": "verified",
+      "confidence": 1.0,
+      "desc": "Evidence that a real Maven project resolved this exact Foundry artifact and reproduced its expected SHA-256.",
+      "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Binding",
+        "sourceUri": "proof://palantir-maven-binding-last",
+        "generatedAt": "2026-09-11T20:08:02.546898+00:00",
+        "syncMethod": "maven-project-binding-proof/1.0",
+        "upstream": {
+          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
+          "jarSha256": "e564cc2c9da983086283c655763fcdf84a78419aa901fce86c604864ed94c224",
+          "jarMatch": true,
+          "dependencyTreeSha256": "3d2d7f25ca75611f2c33bf14663728f3690d6bcdab242e20eca65700dd42c745"
+        }
+      }
     }
   ],
   "links": [
@@ -1578,6 +1945,141 @@
       "maven:track:evolving-decentralized-threat",
       "maven:threat-pattern:decentralized-online-mobilization",
       "MATCHES_PATTERN"
+    ],
+    [
+      "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "maven:evidence:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:evidence:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "maven:evidence:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:evidence:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:evidence:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:evidence:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:evidence:consumer:1.1.0-xzoon-e2510a336c-20260911062654",
+      "SUPPORTED_BY"
+    ],
+    [
+      "maven:evidence:consumer:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:evidence:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:evidence:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:evidence:consumer:1.2.0-maven-f4a1710eef-20260911092350",
+      "SUPPORTED_BY"
+    ],
+    [
+      "maven:evidence:consumer:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:source",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "CONTAINS"
+    ],
+    [
+      "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "CONTAINS"
+    ],
+    [
+      "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "CONTAINS"
+    ],
+    [
+      "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "CONTAINS"
+    ],
+    [
+      "system:gpt-doug-foundry-consumer",
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "USES"
+    ],
+    [
+      "system:gpt-doug-foundry-consumer",
+      "maven:evidence:binding:1.2.0-maven-f4a1710eef-20260911092350",
+      "SUPPORTED_BY"
+    ],
+    [
+      "maven:evidence:binding:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
+      "PREVIOUS_VERSION"
+    ],
+    [
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "maven:artifact:foundry:1.0.0-live-ce5f51f84713-20260910233608",
+      "PREVIOUS_VERSION"
+    ],
+    [
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "maven:artifact:foundry:1.1.0-xzoon-e2510a336c-20260911062654",
+      "PREVIOUS_VERSION"
+    ],
+    [
+      "maven:release-train:com.xunia:gpt-doug-foundry-bridge",
+      "maven:artifact:foundry:1.2.0-maven-f4a1710eef-20260911092350",
+      "CURRENT_VERSION"
     ]
   ]
 }

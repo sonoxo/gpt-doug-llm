@@ -1,0 +1,119 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+STATE="$HOME/.config/gpt-doug"
+PROOF="$STATE/palantir-maven-release-last.json"
+SYNC="$ROOT/scripts/xzoon-sync-from-maven-proof"
+
+mkdir -p "$STATE"
+chmod 700 "$STATE"
+
+"$SYNC"
+
+kill_owned_pid() {
+    file="$1"
+    pattern="$2"
+
+    [ -f "$file" ] || return 0
+
+    pid="$(cat "$file" 2>/dev/null || true)"
+
+    [ -n "$pid" ] || return 0
+
+    if kill -0 "$pid" 2>/dev/null; then
+        command="$(ps -p "$pid" -o command= 2>/dev/null || true)"
+
+        case "$command" in
+            *"$pattern"*)
+                kill "$pid" 2>/dev/null || true
+                sleep 1
+                ;;
+        esac
+    fi
+}
+
+kill_owned_pid \
+    "$STATE/xzoon-http.pid" \
+    "http.server"
+
+kill_owned_pid \
+    "$STATE/xzoon-watch.pid" \
+    "xzoon-sync-from-maven-proof"
+
+PORT="${XZOON_PORT:-8765}"
+
+while lsof -nP \
+    -iTCP:"$PORT" \
+    -sTCP:LISTEN \
+    >/dev/null 2>&1
+do
+    PORT=$((PORT + 1))
+done
+
+SERVER_LOG="/tmp/xzoon-http-${PORT}.log"
+WATCH_LOG="/tmp/xzoon-watch-${PORT}.log"
+
+nohup python3 \
+    -m http.server "$PORT" \
+    --bind 127.0.0.1 \
+    --directory "$ROOT/docs" \
+    >"$SERVER_LOG" 2>&1 &
+
+SERVER_PID=$!
+
+echo "$SERVER_PID" \
+    > "$STATE/xzoon-http.pid"
+
+echo "$PORT" \
+    > "$STATE/xzoon-http.port"
+
+nohup sh -c '
+PROOF="$1"
+SYNC="$2"
+LOG="$3"
+
+last=""
+
+while :
+do
+    current="$(
+        stat -f "%m" "$PROOF" 2>/dev/null ||
+        stat -c "%Y" "$PROOF" 2>/dev/null ||
+        echo 0
+    )"
+
+    if [ "$current" != "$last" ]; then
+        "$SYNC" >>"$LOG" 2>&1 || true
+        last="$current"
+    fi
+
+    sleep 3
+done
+' sh "$PROOF" "$SYNC" "$WATCH_LOG" &
+
+WATCH_PID=$!
+
+echo "$WATCH_PID" \
+    > "$STATE/xzoon-watch.pid"
+
+sleep 2
+
+URL="http://127.0.0.1:${PORT}/planet-xzoon/"
+
+curl -fsS "$URL" >/dev/null
+
+echo
+echo '=========================================='
+echo 'PLANET xZOON LIVE'
+echo "URL       : $URL"
+echo "HTTP PID  : $SERVER_PID"
+echo "WATCH PID : $WATCH_PID"
+echo "PORT      : $PORT"
+echo 'MAVEN     : AUTO-LOAD'
+echo 'POLL      : 3 SECONDS'
+echo '=========================================='
+
+if command -v open >/dev/null 2>&1; then
+    open "$URL"
+fi

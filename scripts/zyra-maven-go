@@ -1,0 +1,834 @@
+#!/bin/bash
+set -euo pipefail
+
+REPO="$HOME/gpt-doug-llm"
+BRANCH="feat/maven-ontology-v1-20260910-111133"
+RUNTIME="$HOME/.cache/gpt-doug/maven-go-runtime"
+STATE="$HOME/.config/gpt-doug"
+
+HOST="zyra.usw-17.palantirfoundry.com"
+RID="ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+
+BASE="https://${HOST}/artifacts/api/repositories/${RID}/contents/release/maven"
+REPO_ID="zyra-foundry-maven"
+
+CMD="${1:-status}"
+
+if [ "$#" -gt 0 ]; then
+    shift
+fi
+
+if [ "$CMD" != "go" ]; then
+    exec "$REPO/scripts/zyra-maven" "$CMD" "$@"
+fi
+
+mkdir -p "$STATE" "$HOME/.cache/gpt-doug"
+chmod 700 "$STATE"
+
+echo
+echo '============================================================'
+echo ' GPT-DOUG // FOUNDRY MAVEN SELF-HEALING GO'
+echo '============================================================'
+
+echo
+echo '=== 1/10 CLEAN SOURCE ==='
+
+cd "$REPO"
+
+git fetch origin "$BRANCH"
+
+REMOTE_HEAD="$(git rev-parse "origin/$BRANCH")"
+
+echo "REMOTE HEAD : $REMOTE_HEAD"
+
+git worktree remove "$RUNTIME" --force 2>/dev/null || true
+rm -rf "$RUNTIME"
+git worktree prune
+
+git worktree add \
+    --detach \
+    "$RUNTIME" \
+    "$REMOTE_HEAD"
+
+cd "$RUNTIME"
+
+echo
+echo '=== 2/10 ENGINE VALIDATION ==='
+
+for F in \
+    palantir_maven.py \
+    scripts/zyra-maven-release \
+    scripts/zyra-maven-consumer-verify \
+    scripts/zyra-maven-bind \
+    scripts/zyra-maven-lineage \
+    scripts/xzoon-sync-from-maven-proof \
+    docs/maven-ontology/ontology.json
+do
+    test -f "$F" || {
+        echo "NO-GO: missing $F"
+        exit 1
+    }
+done
+
+sh -n scripts/zyra-maven-consumer-verify
+
+python3 -m py_compile \
+    scripts/zyra-maven-release \
+    scripts/zyra-maven-bind \
+    scripts/zyra-maven-lineage
+
+python3 -m json.tool \
+    docs/maven-ontology/ontology.json \
+    >/dev/null
+
+command -v mvn >/dev/null 2>&1 || {
+    echo 'NO-GO: Apache Maven is not installed'
+    exit 1
+}
+
+MAVEN_VERSION_OUTPUT="$(mvn -version 2>&1)"
+MAVEN_VERSION_FIRST="${MAVEN_VERSION_OUTPUT%%$'\n'*}"
+echo "MAVEN : $MAVEN_VERSION_FIRST"
+echo 'ENGINE VALIDATION : PASS'
+
+echo
+echo '=== 3/10 SINGLE-CREDENTIAL PATCH ==='
+
+python3 - <<'PY'
+from pathlib import Path
+
+p = Path("scripts/zyra-maven-bind")
+s = p.read_text()
+
+old = '''username = input(
+    "Maven username (ENTER if none): "
+).strip()
+
+token = getpass.getpass(
+    "Foundry Maven token (HIDDEN): "
+).strip()
+'''
+
+new = '''username = os.getenv(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+).strip()
+
+token = os.getenv(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
+).strip()
+
+if not token:
+    username = input(
+        "Maven username (ENTER if none): "
+    ).strip()
+
+    token = getpass.getpass(
+        "Foundry Maven token (HIDDEN): "
+    ).strip()
+'''
+
+if old in s:
+    p.write_text(
+        s.replace(
+            old,
+            new,
+            1,
+        )
+    )
+
+elif "PALANTIR_MAVEN_TOKEN" not in s:
+    raise SystemExit(
+        "NO-GO: unknown zyra-maven-bind credential layout"
+    )
+
+print("TOKEN REUSE : READY")
+PY
+
+python3 -m py_compile scripts/zyra-maven-bind
+
+echo
+echo '=== 4/10 FRESH FOUNDRY MAVEN TOKEN ==='
+echo
+echo 'USE: Artifact Repository -> Publish -> Maven -> Generate token'
+echo 'DO NOT use an Ontology/OAuth token.'
+echo
+
+if [ -z "${PALANTIR_MAVEN_TOKEN:-}" ]; then
+
+    printf 'FRESH MAVEN PUBLISH TOKEN (HIDDEN): ' >/dev/tty
+
+    if ! IFS= read -r -s PALANTIR_MAVEN_TOKEN </dev/tty; then
+        printf '\n' >/dev/tty
+        echo 'NO-GO: could not read Maven token from terminal' >&2
+        exit 1
+    fi
+
+    printf '\n' >/dev/tty
+
+else
+
+    echo 'TOKEN SOURCE : EXISTING SECURE SESSION'
+
+fi
+
+test -n "${PALANTIR_MAVEN_TOKEN:-}" || {
+    echo 'NO-GO: token missing'
+    exit 1
+}
+
+export PALANTIR_MAVEN_TOKEN
+export PALANTIR_MAVEN_USERNAME=""
+export PALANTIR_MAVEN_ALLOWED_HOST="$HOST"
+export PALANTIR_MAVEN_REPOSITORY_URL="$BASE"
+export PALANTIR_MAVEN_REPOSITORY_ID="$REPO_ID"
+
+cleanup() {
+    unset PALANTIR_MAVEN_TOKEN
+    unset PALANTIR_MAVEN_USERNAME
+}
+
+trap cleanup EXIT INT TERM
+
+echo
+echo '=== 5/10 AUTHENTICATED EXACT READ PREFLIGHT ==='
+
+python3 - "$STATE/palantir-maven-release-last.json" "$BASE" <<'PYGO'
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+import urllib.error
+import urllib.request
+
+proof_path = Path(sys.argv[1])
+base = sys.argv[2].rstrip("/")
+
+if not proof_path.exists():
+    print(
+        "No previous release proof; "
+        "publish preflight will continue."
+    )
+    raise SystemExit(0)
+
+proof = json.loads(
+    proof_path.read_text()
+)
+
+if proof.get("ok") is not True:
+    print(
+        "Previous release proof is not GO; "
+        "continuing to fresh publish."
+    )
+    raise SystemExit(0)
+
+coord = proof.get(
+    "coordinates",
+    "",
+)
+
+if not coord:
+    raise SystemExit(
+        "NO-GO: previous coordinate missing"
+    )
+
+group, artifact, version = coord.split(
+    ":",
+    2,
+)
+
+token = os.environ.get(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
+)
+
+username = os.environ.get(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+)
+
+if not token:
+    raise SystemExit(
+        "NO-GO: Maven token missing"
+    )
+
+url = (
+    f"{base}/"
+    f"{group.replace('.', '/')}/"
+    f"{artifact}/"
+    f"{version}/"
+    f"{artifact}-{version}.jar"
+)
+
+auth = base64.b64encode(
+    f"{username}:{token}".encode()
+).decode()
+
+request = urllib.request.Request(
+    url,
+    headers={
+        "Authorization":
+            f"Basic {auth}",
+        "Accept":
+            "*/*",
+        "User-Agent":
+            "gpt-doug-maven-go-preflight/2",
+    },
+    method="GET",
+)
+
+try:
+    with urllib.request.urlopen(
+        request,
+        timeout=30,
+    ) as response:
+        data = response.read()
+        status = int(response.status)
+
+except urllib.error.HTTPError as exc:
+    raise SystemExit(
+        f"NO-GO: authenticated Maven GET "
+        f"returned HTTP {exc.code}"
+    ) from exc
+
+expected = (
+    proof
+    .get("integrity", {})
+    .get("jar_sha256")
+)
+
+actual = hashlib.sha256(
+    data
+).hexdigest()
+
+if not 200 <= status < 300:
+    raise SystemExit(
+        f"NO-GO: Maven GET status {status}"
+    )
+
+if expected and actual != expected:
+    raise SystemExit(
+        "NO-GO: authenticated preflight SHA mismatch"
+    )
+
+print("TEST ARTIFACT :", coord)
+print("REMOTE GET    :", status)
+print("REMOTE SHA256 :", actual)
+print("SHA MATCH     : PASS")
+print("AUTH PREFLIGHT: PASS")
+PYGO
+
+echo
+echo '=== 6/10 PREPARE RELEASE ==='
+
+export ZYRA_GIT_SHA="$REMOTE_HEAD"
+export ZYRA_GIT_BRANCH="$BRANCH"
+
+export ZYRA_MAVEN_GROUP="com.xunia"
+export ZYRA_MAVEN_ARTIFACT="gpt-doug-foundry-bridge"
+
+STAMP="$(date -u +%Y%m%d%H%M%S)"
+SHORT_SHA="$(git rev-parse --short=10 HEAD)"
+
+export ZYRA_MAVEN_VERSION="1.3.0-maven-${SHORT_SHA}-${STAMP}"
+
+echo "GROUP    : $ZYRA_MAVEN_GROUP"
+echo "ARTIFACT : $ZYRA_MAVEN_ARTIFACT"
+echo "VERSION  : $ZYRA_MAVEN_VERSION"
+
+echo
+echo '=== 7/10 REAL FOUNDRY RELEASE ==='
+
+LOG="$STATE/maven-go-release-last.log"
+
+set +e
+
+python3 scripts/zyra-maven-release \
+    2>&1 |
+    tee "$LOG"
+
+RELEASE_RC="${PIPESTATUS[0]}"
+
+set -e
+
+if [ "$RELEASE_RC" -ne 0 ]; then
+
+    if grep -q 'HTTP 400 PUT' "$LOG"; then
+
+        echo
+        echo 'FIRST VERSION WAS REJECTED WITH HTTP 400.'
+        echo 'RETRYING ONCE WITH CONSERVATIVE SEMVER...'
+
+        STAMP2="$(date -u +%Y%m%d%H%M%S)"
+
+        export ZYRA_MAVEN_VERSION="1.3.0-${STAMP2}"
+
+        echo "RETRY VERSION : $ZYRA_MAVEN_VERSION"
+
+        set +e
+
+        python3 scripts/zyra-maven-release \
+            2>&1 |
+            tee "$LOG"
+
+        RELEASE_RC="${PIPESTATUS[0]}"
+
+        set -e
+    fi
+fi
+
+if [ "$RELEASE_RC" -ne 0 ]; then
+
+    echo
+    echo '============================================================'
+    echo ' MAVEN PIPELINE: NO-GO'
+    echo '============================================================'
+
+    if grep -Eq 'HTTP (400|401|403) PUT' "$LOG"; then
+        echo 'FOUNDRY PUBLISH AUTHORIZATION/POLICY REJECTED THE WRITE.'
+        echo
+        echo 'Check only these two things:'
+        echo '1. Token came from Artifact Repository -> Publish -> Maven.'
+        echo '2. Your account has Edit permission on that Artifact Repository.'
+    else
+        echo 'Foundry release failed. See:'
+        echo "$LOG"
+    fi
+
+    echo
+    echo 'No consumer/binding/lineage stage was allowed to continue.'
+    echo '============================================================'
+
+    exit 1
+fi
+
+echo 'FOUNDRY RELEASE : PASS'
+
+echo
+echo '=== 8/10 ONTOLOGY + APACHE MAVEN CONSUMER ==='
+
+python3 scripts/xzoon-sync-from-maven-proof
+
+bash scripts/zyra-maven-consumer-verify
+
+if [ -f scripts/xzoon-sync-from-maven-consumer-proof ]; then
+
+    if head -n 1 \
+        scripts/xzoon-sync-from-maven-consumer-proof |
+        grep -q python
+    then
+        python3 scripts/xzoon-sync-from-maven-consumer-proof
+    else
+        bash scripts/xzoon-sync-from-maven-consumer-proof
+    fi
+fi
+
+echo
+echo '=== 9/10 RUNTIME BINDING + LINEAGE ==='
+
+python3 scripts/zyra-maven-bind
+python3 scripts/zyra-maven-lineage
+
+echo
+echo '=== 10/10 FAIL-CLOSED PIPELINE AUDIT ==='
+
+python3 - <<'PY'
+import json
+import shutil
+from pathlib import Path
+
+state = Path.home() / ".config" / "gpt-doug"
+root = Path.cwd()
+
+def load(name):
+    p = state / name
+
+    if not p.exists():
+        raise SystemExit(
+            "NO-GO: missing proof " + str(p)
+        )
+
+    return json.loads(
+        p.read_text()
+    )
+
+release = load(
+    "palantir-maven-release-last.json"
+)
+
+consumer = load(
+    "palantir-maven-consumer-last.json"
+)
+
+binding = load(
+    "palantir-maven-binding-last.json"
+)
+
+lineage = load(
+    "palantir-maven-lineage.json"
+)
+
+ontology = json.loads(
+    (
+        root /
+        "docs/maven-ontology/ontology.json"
+    ).read_text()
+)
+
+coord = release["coordinates"]
+
+consumer_id = (
+    binding["consumer"]["id"]
+)
+
+artifact = next(
+    (
+        node
+        for node in ontology["nodes"]
+        if node
+        .get(
+            "provenance",
+            {},
+        )
+        .get(
+            "exportId"
+        )
+        ==
+        coord
+    ),
+    None,
+)
+
+version = next(
+    (
+        item
+        for item in lineage["versions"]
+        if item.get(
+            "coordinate"
+        )
+        ==
+        coord
+    ),
+    None,
+)
+
+checks = {}
+
+checks["RELEASE"] = (
+    release.get("ok")
+    is True
+)
+
+checks["POM PUT"] = (
+    200
+    <=
+    release.get(
+        "publish",
+        {},
+    ).get(
+        "pom_status",
+        0,
+    )
+    <
+    300
+)
+
+checks["JAR PUT"] = (
+    200
+    <=
+    release.get(
+        "publish",
+        {},
+    ).get(
+        "jar_status",
+        0,
+    )
+    <
+    300
+)
+
+checks["POM GET"] = (
+    200
+    <=
+    release.get(
+        "retrieve",
+        {},
+    ).get(
+        "pom_status",
+        0,
+    )
+    <
+    300
+)
+
+checks["JAR GET"] = (
+    200
+    <=
+    release.get(
+        "retrieve",
+        {},
+    ).get(
+        "jar_status",
+        0,
+    )
+    <
+    300
+)
+
+checks["POM SHA256"] = (
+    release.get(
+        "integrity",
+        {},
+    ).get(
+        "pom_match"
+    )
+    is True
+)
+
+checks["JAR SHA256"] = (
+    release.get(
+        "integrity",
+        {},
+    ).get(
+        "jar_match"
+    )
+    is True
+)
+
+checks["MAVEN CONSUMER"] = (
+    consumer.get("ok")
+    is True
+    and
+    consumer.get(
+        "coordinates"
+    )
+    ==
+    coord
+)
+
+checks["CONSUMER SHA256"] = (
+    consumer.get(
+        "resolution",
+        {},
+    ).get(
+        "jar_match"
+    )
+    is True
+)
+
+checks["RUNTIME BINDING"] = (
+    binding.get("ok")
+    is True
+    and
+    binding.get(
+        "dependency",
+        {},
+    ).get(
+        "coordinates"
+    )
+    ==
+    coord
+    and
+    binding.get(
+        "dependency",
+        {},
+    ).get(
+        "jarMatch"
+    )
+    is True
+)
+
+checks["ONTOLOGY ARTIFACT"] = (
+    artifact
+    is not None
+)
+
+checks["USES EDGE"] = (
+    artifact is not None
+    and
+    [
+        consumer_id,
+        artifact["id"],
+        "USES",
+    ]
+    in
+    ontology["links"]
+)
+
+checks["VERSION LINEAGE"] = (
+    lineage.get(
+        "latestCoordinate"
+    )
+    ==
+    coord
+)
+
+checks["IMPACT"] = (
+    version is not None
+    and
+    version.get(
+        "operationalImpactCount",
+        0,
+    )
+    >=
+    1
+    and
+    consumer_id
+    in
+    version.get(
+        "operationalImpactObjects",
+        [],
+    )
+)
+
+ids = {
+    node["id"]
+    for node in ontology["nodes"]
+    if node.get("id")
+}
+
+checks["GRAPH"] = all(
+    len(edge) == 3
+    and edge[0] in ids
+    and edge[1] in ids
+    for edge in ontology["links"]
+)
+
+checks["NO FALSE CONSUMED_BY"] = not any(
+    len(edge) == 3
+    and edge[2] == "CONSUMED_BY"
+    for edge in ontology["links"]
+)
+
+checks["SECRETS NOT STORED"] = (
+    release.get(
+        "credentials_stored"
+    )
+    is False
+    and
+    consumer.get(
+        "credentials_stored"
+    )
+    is False
+    and
+    binding.get(
+        "credentialsStored"
+    )
+    is False
+)
+
+decision = all(
+    checks.values()
+)
+
+print()
+print(
+    "============================================================"
+)
+print(
+    " ZYRA // FOUNDRY MAVEN PIPELINE"
+)
+print(
+    "============================================================"
+)
+
+for name, passed in checks.items():
+    print(
+        f"{name:24} {'PASS' if passed else 'FAIL'}"
+    )
+
+print()
+print(
+    "CURRENT ARTIFACT :",
+    coord,
+)
+
+print(
+    "MAVEN CLIENT     :",
+    consumer.get(
+        "maven_client"
+    ),
+)
+
+print(
+    "IMPACT COUNT     :",
+    0
+    if version is None
+    else version.get(
+        "operationalImpactCount",
+        0,
+    ),
+)
+
+print(
+    "IMPACT OBJECTS   :",
+    []
+    if version is None
+    else version.get(
+        "operationalImpactObjects",
+        [],
+    ),
+)
+
+snapshot = (
+    state /
+    "maven-ontology-last.json"
+)
+
+shutil.copy2(
+    root /
+    "docs/maven-ontology/ontology.json",
+    snapshot,
+)
+
+print(
+    "ONTOLOGY SNAPSHOT:",
+    snapshot,
+)
+
+print()
+print(
+    "============================================================"
+)
+
+if decision:
+    print(
+        " MAVEN PIPELINE: GO"
+    )
+else:
+    print(
+        " MAVEN PIPELINE: NO-GO"
+    )
+
+print(
+    "============================================================"
+)
+
+if not decision:
+    print()
+    print(
+        "FAILED GATES:"
+    )
+
+    for name, passed in checks.items():
+        if not passed:
+            print(
+                " -",
+                name,
+            )
+
+    raise SystemExit(1)
+PY
+
+echo
+echo 'TOKEN STORED     : NO'
+echo 'TOKEN PRINTED    : NO'
+echo 'GIT AUTO-COMMIT  : NO'
+echo 'GIT AUTO-PUSH    : NO'
+echo
+echo 'NEXT RUN:'
+echo '  zyra-maven go'
+echo

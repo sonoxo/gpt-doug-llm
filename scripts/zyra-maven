@@ -6,11 +6,21 @@ ONTOLOGY="$ROOT/docs/maven-ontology/ontology.json"
 
 usage() {
   cat <<'EOF'
-Usage: zyra-maven [status|verify|roundtrip|proof|doctor|ontology|visual]
+Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual|go|gate|assure|sign|palantir|token]
 
+  go         One-prompt publish + verify + assure + sign pipeline
+  gate       Read-only live verification of the current Maven release
+  assure     SBOM + OSV + provenance + verified rollback qualification
+  sign       Agentic OpenPGP signing + remote signature verification
+  palantir   Open the ZYRA Foundry Artifact Repository
+  token      Open the Foundry Maven token destination
   status     Show the latest persisted real Maven verification summary
   verify     Perform a real Foundry Maven PUT → GET → SHA-256 round-trip
   roundtrip  Alias for verify
+  release    Publish a real versioned GPT-DOUG Maven release
+  consume    Resolve latest Foundry release with Apache Maven
+  lineage    Build verified Maven version/dependency lineage
+  bind       Bind a real Maven project to the verified release
   proof      Print the complete latest persisted non-secret proof JSON
   doctor     Run config/probe + real round-trip + GPT-REDPANDA CPR
   ontology   Validate and summarize the local governed Maven ontology
@@ -74,8 +84,57 @@ cmd="${1:-status}"
 [ "$#" -gt 0 ] && shift || true
 
 case "$cmd" in
+  go)
+    exec bash "$ROOT/scripts/zyra-maven-auto" "$@"
+    ;;
+  gate)
+    exec python3 "$ROOT/scripts/zyra-maven-gate" "$@"
+    ;;
+  assure)
+    exec python3 "$ROOT/scripts/zyra-maven-assure" "$@"
+    ;;
+  sign)
+    exec python3 "$ROOT/scripts/zyra-maven-sign" "$@"
+    ;;
+  palantir)
+    URL="https://zyra.usw-17.palantirfoundry.com/workspace/artifacts/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+    echo "$URL"
+    if command -v open >/dev/null 2>&1; then
+      open "$URL"
+    fi
+    ;;
+  token)
+    URL="https://zyra.usw-17.palantirfoundry.com/workspace/artifacts/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+    echo
+    echo "PALANTIR MAVEN TOKEN:"
+    echo "$URL"
+    echo
+    echo "Open: Publish -> Maven -> Generate token"
+    if command -v open >/dev/null 2>&1; then
+      open "$URL"
+    fi
+    ;;
   status)
-    summary
+    if [ -x "$ROOT/scripts/zyra-maven-status" ]; then
+      "$ROOT/scripts/zyra-maven-status"
+    else
+      summary
+    fi
+    ;;
+  release)
+    exec python3 "$ROOT/scripts/zyra-maven-release" "$@"
+    ;;
+  consume)
+    "$ROOT/scripts/zyra-maven-consumer-verify" "$@"
+    if [ -x "$ROOT/scripts/xzoon-sync-from-maven-consumer-proof" ]; then
+      "$ROOT/scripts/xzoon-sync-from-maven-consumer-proof"
+    fi
+    ;;
+  lineage)
+    python3 "$ROOT/scripts/zyra-maven-lineage" "$@"
+    ;;
+  bind)
+    python3 "$ROOT/scripts/zyra-maven-bind" "$@"
     ;;
   proof)
     if [ ! -f "$PROOF" ]; then

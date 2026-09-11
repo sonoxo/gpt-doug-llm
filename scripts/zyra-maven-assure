@@ -1,0 +1,1309 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import base64
+import getpass
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import tempfile
+import urllib.error
+import urllib.request
+import uuid
+import webbrowser
+import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
+
+
+ROOT = Path(__file__).resolve().parents[1]
+STATE = Path.home() / ".config" / "gpt-doug"
+
+HOST = "zyra.usw-17.palantirfoundry.com"
+
+RID = (
+    "ri.artifacts.main.repository."
+    "5e094e5c-9968-42f3-ad62-dfb688accb9b"
+)
+
+BASE = (
+    f"https://{HOST}/artifacts/api/repositories/"
+    f"{RID}/contents/release/maven"
+)
+
+PALANTIR = (
+    f"https://{HOST}/workspace/artifacts/"
+    f"{RID}/publish"
+    "?layout=maven&name=gpt-doug-foundry-bridge"
+)
+
+
+def load(name):
+    path = STATE / name
+
+    if not path.exists():
+        raise SystemExit(
+            f"NO-GO: required proof missing: {path}"
+        )
+
+    return json.loads(
+        path.read_text()
+    )
+
+
+def sha256_bytes(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def sha256_file(path):
+    digest = hashlib.sha256()
+
+    with path.open("rb") as stream:
+        for block in iter(
+            lambda: stream.read(1024 * 1024),
+            b"",
+        ):
+            digest.update(block)
+
+    return digest.hexdigest()
+
+
+def remote_get(url, username, token):
+    auth = base64.b64encode(
+        f"{username}:{token}".encode()
+    ).decode()
+
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Basic {auth}",
+            "Accept": "*/*",
+            "User-Agent":
+                "gpt-doug-maven-assurance/1",
+        },
+        method="GET",
+    )
+
+    try:
+        with urllib.request.urlopen(
+            request,
+            timeout=30,
+        ) as response:
+            return (
+                int(response.status),
+                response.read(),
+            )
+
+    except urllib.error.HTTPError as exc:
+        detail = exc.read(1200).decode(
+            "utf-8",
+            errors="replace",
+        )
+
+        print(
+            f"REMOTE HTTP {exc.code}: {detail}"
+        )
+
+        raise SystemExit(
+            "MAVEN ASSURANCE: NO-GO"
+        ) from exc
+
+
+def artifact_urls(coordinate):
+    group, artifact, version = coordinate.split(
+        ":",
+        2,
+    )
+
+    group_path = group.replace(
+        ".",
+        "/",
+    )
+
+    prefix = (
+        f"{BASE}/"
+        f"{group_path}/"
+        f"{artifact}/"
+        f"{version}"
+    )
+
+    return {
+        "group": group,
+        "artifact": artifact,
+        "version": version,
+        "pom":
+            f"{prefix}/{artifact}-{version}.pom",
+        "jar":
+            f"{prefix}/{artifact}-{version}.jar",
+    }
+
+
+STATE.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+STATE.chmod(0o700)
+
+release = load(
+    "palantir-maven-release-last.json"
+)
+
+lineage = load(
+    "palantir-maven-lineage.json"
+)
+
+coordinate = release["coordinates"]
+
+expected_pom_sha = (
+    release["integrity"]["pom_sha256"]
+)
+
+expected_jar_sha = (
+    release["integrity"]["jar_sha256"]
+)
+
+print()
+print("=" * 70)
+print(" ZYRA // MAVEN SUPPLY-CHAIN ASSURANCE")
+print("=" * 70)
+print("CURRENT ARTIFACT :", coordinate)
+print("PALANTIR HOST    :", HOST)
+
+token = os.getenv(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
+).strip()
+
+username = os.getenv(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+)
+
+if not token:
+
+    print()
+    print("PALANTIR MAVEN TOKEN:")
+    print(PALANTIR)
+    print()
+    print(
+        "Generate a NEW token: Publish -> Maven"
+    )
+
+    try:
+        webbrowser.open(
+            PALANTIR
+        )
+    except Exception:
+        pass
+
+    token = getpass.getpass(
+        "Foundry Maven token (HIDDEN): "
+    ).strip()
+
+if not token:
+    raise SystemExit(
+        "NO-GO: Maven token required"
+    )
+
+env = os.environ.copy()
+
+env[
+    "PALANTIR_MAVEN_TOKEN"
+] = token
+
+env[
+    "PALANTIR_MAVEN_USERNAME"
+] = username
+
+
+# ----------------------------------------------------------
+# 1. EXISTING LIVE MAVEN GATE
+# ----------------------------------------------------------
+
+print()
+print("=== 1/6 LIVE MAVEN GATE ===")
+
+gate = subprocess.run(
+    [
+        sys.executable,
+        str(
+            ROOT /
+            "scripts/zyra-maven-gate"
+        ),
+    ],
+    cwd=ROOT,
+    env=env,
+)
+
+if gate.returncode != 0:
+    raise SystemExit(
+        "MAVEN ASSURANCE: NO-GO "
+        "(base gate failed)"
+    )
+
+gate_proof = load(
+    "maven-gate-last.json"
+)
+
+if (
+    gate_proof.get("decision")
+    !=
+    "GO"
+):
+    raise SystemExit(
+        "MAVEN ASSURANCE: NO-GO "
+        "(gate proof not GO)"
+    )
+
+
+# ----------------------------------------------------------
+# 2. EXACT CURRENT POM + JAR
+# ----------------------------------------------------------
+
+print()
+print("=== 2/6 CURRENT ARTIFACT MATERIALIZATION ===")
+
+urls = artifact_urls(
+    coordinate
+)
+
+pom_status, pom = remote_get(
+    urls["pom"],
+    username,
+    token,
+)
+
+jar_status, jar = remote_get(
+    urls["jar"],
+    username,
+    token,
+)
+
+pom_sha = sha256_bytes(
+    pom
+)
+
+jar_sha = sha256_bytes(
+    jar
+)
+
+if pom_sha != expected_pom_sha:
+    raise SystemExit(
+        "NO-GO: POM SHA-256 mismatch"
+    )
+
+if jar_sha != expected_jar_sha:
+    raise SystemExit(
+        "NO-GO: JAR SHA-256 mismatch"
+    )
+
+print("POM GET       :", pom_status)
+print("JAR GET       :", jar_status)
+print("POM SHA256    :", pom_sha)
+print("JAR SHA256    :", jar_sha)
+
+
+# ----------------------------------------------------------
+# 3. POM DEPENDENCY INVENTORY + CYCLONEDX SBOM
+# ----------------------------------------------------------
+
+print()
+print("=== 3/6 CYCLONEDX SBOM ===")
+
+root = ET.fromstring(
+    pom
+)
+
+namespace = {
+    "m":
+        "http://maven.apache.org/POM/4.0.0"
+}
+
+dependencies = []
+
+for dep in root.findall(
+    ".//m:dependencies/m:dependency",
+    namespace,
+):
+
+    def text(name):
+        node = dep.find(
+            f"m:{name}",
+            namespace,
+        )
+
+        return (
+            node.text.strip()
+            if node is not None
+            and node.text
+            else ""
+        )
+
+    g = text("groupId")
+    a = text("artifactId")
+    v = text("version")
+
+    if g and a and v:
+        dependencies.append(
+            {
+                "group":
+                    g,
+                "artifact":
+                    a,
+                "version":
+                    v,
+            }
+        )
+
+
+# The current bridge is intentionally dependency-free.
+# Fail closed if that changes until the assurance engine
+# is upgraded to recursively inventory transitive deps.
+if dependencies:
+    print(
+        "POM DEPENDENCIES DETECTED:",
+        dependencies,
+    )
+
+    raise SystemExit(
+        "NO-GO: release dependency model changed; "
+        "recursive SBOM inventory required"
+    )
+
+group = urls["group"]
+artifact = urls["artifact"]
+version = urls["version"]
+
+artifact_ref = (
+    f"pkg:maven/{group}/"
+    f"{artifact}@{version}"
+)
+
+consumer_ref = (
+    "pkg:maven/com.xunia/"
+    "gpt-doug-foundry-consumer@1.0.0"
+)
+
+now = datetime.now(
+    timezone.utc
+).isoformat()
+
+sbom = {
+    "$schema":
+        "https://cyclonedx.org/schema/"
+        "bom-1.6.schema.json",
+
+    "bomFormat":
+        "CycloneDX",
+
+    "specVersion":
+        "1.6",
+
+    "serialNumber":
+        f"urn:uuid:{uuid.uuid4()}",
+
+    "version":
+        1,
+
+    "metadata": {
+        "timestamp":
+            now,
+
+        "component": {
+            "type":
+                "application",
+
+            "bom-ref":
+                consumer_ref,
+
+            "group":
+                "com.xunia",
+
+            "name":
+                "gpt-doug-foundry-consumer",
+
+            "version":
+                "1.0.0",
+
+            "purl":
+                consumer_ref,
+        },
+    },
+
+    "components": [
+        {
+            "type":
+                "library",
+
+            "bom-ref":
+                artifact_ref,
+
+            "group":
+                group,
+
+            "name":
+                artifact,
+
+            "version":
+                version,
+
+            "purl":
+                artifact_ref,
+
+            "hashes": [
+                {
+                    "alg":
+                        "SHA-256",
+
+                    "content":
+                        jar_sha,
+                }
+            ],
+
+            "properties": [
+                {
+                    "name":
+                        "xunia:gitCommit",
+
+                    "value":
+                        str(
+                            release.get(
+                                "git_commit",
+                                "unknown",
+                            )
+                        ),
+                },
+                {
+                    "name":
+                        "xunia:foundryHost",
+
+                    "value":
+                        HOST,
+                },
+            ],
+        }
+    ],
+
+    "dependencies": [
+        {
+            "ref":
+                consumer_ref,
+
+            "dependsOn": [
+                artifact_ref
+            ],
+        },
+        {
+            "ref":
+                artifact_ref,
+
+            "dependsOn":
+                [],
+        },
+    ],
+}
+
+sbom_path = (
+    STATE /
+    "maven-sbom-last.cdx.json"
+)
+
+sbom_path.write_text(
+    json.dumps(
+        sbom,
+        indent=2,
+        sort_keys=True,
+    )
+    +
+    "\n"
+)
+
+sbom_path.chmod(
+    0o600
+)
+
+sbom_sha = sha256_file(
+    sbom_path
+)
+
+print("COMPONENTS     :", len(sbom["components"]))
+print("DEPENDENCIES   :", len(dependencies))
+print("SBOM           :", sbom_path)
+print("SBOM SHA256    :", sbom_sha)
+
+
+# ----------------------------------------------------------
+# 4. OSV VULNERABILITY GATE
+# ----------------------------------------------------------
+
+print()
+print("=== 4/6 OSV VULNERABILITY GATE ===")
+
+scanner = shutil.which(
+    "osv-scanner"
+)
+
+if scanner is None:
+
+    brew = shutil.which(
+        "brew"
+    )
+
+    if brew is None:
+        raise SystemExit(
+            "NO-GO: osv-scanner unavailable "
+            "and Homebrew is not installed"
+        )
+
+    print(
+        "Installing official osv-scanner..."
+    )
+
+    install = subprocess.run(
+        [
+            brew,
+            "install",
+            "osv-scanner",
+        ],
+    )
+
+    if install.returncode != 0:
+        raise SystemExit(
+            "NO-GO: osv-scanner installation failed"
+        )
+
+    scanner = shutil.which(
+        "osv-scanner"
+    )
+
+if scanner is None:
+    raise SystemExit(
+        "NO-GO: osv-scanner unavailable"
+    )
+
+osv_path = (
+    STATE /
+    "maven-osv-last.json"
+)
+
+with tempfile.TemporaryDirectory(
+    prefix="zyra-osv-"
+) as td:
+
+    scan_dir = Path(td)
+
+    scan_sbom = (
+        scan_dir /
+        "maven-release.cdx.json"
+    )
+
+    shutil.copy2(
+        sbom_path,
+        scan_sbom,
+    )
+
+    with osv_path.open(
+        "w",
+    ) as stream:
+
+        result = subprocess.run(
+            [
+                scanner,
+                "scan",
+                "source",
+                "--format=json",
+                "--recursive",
+                str(scan_dir),
+            ],
+            stdout=stream,
+        )
+
+osv_path.chmod(
+    0o600
+)
+
+try:
+    osv = json.loads(
+        osv_path.read_text()
+    )
+except Exception as exc:
+    raise SystemExit(
+        "NO-GO: invalid OSV JSON output"
+    ) from exc
+
+vulnerability_count = 0
+
+for result_item in osv.get(
+    "results",
+    [],
+):
+
+    for package in result_item.get(
+        "packages",
+        [],
+    ):
+
+        vulnerability_count += len(
+            package.get(
+                "vulnerabilities",
+                [],
+            )
+        )
+
+print(
+    "OSV SCANNER     :",
+    subprocess.run(
+        [scanner, "--version"],
+        text=True,
+        capture_output=True,
+    ).stdout.strip()
+    or "installed",
+)
+
+print(
+    "VULNERABILITIES :",
+    vulnerability_count,
+)
+
+print(
+    "OSV REPORT      :",
+    osv_path,
+)
+
+if result.returncode != 0:
+    raise SystemExit(
+        "NO-GO: vulnerability gate failed"
+    )
+
+if vulnerability_count != 0:
+    raise SystemExit(
+        "NO-GO: known vulnerabilities detected"
+    )
+
+
+# ----------------------------------------------------------
+# 5. SLSA v1-COMPATIBLE PROVENANCE STATEMENT
+#
+# This is intentionally labeled UNSIGNED.
+# Do not claim a cryptographic signature or SLSA level.
+# ----------------------------------------------------------
+
+print()
+print("=== 5/6 PROVENANCE STATEMENT ===")
+
+git_commit = str(
+    release.get(
+        "git_commit",
+        "unknown",
+    )
+)
+
+git_branch = str(
+    release.get(
+        "git_branch",
+        "unknown",
+    )
+)
+
+provenance = {
+    "_type":
+        "https://in-toto.io/Statement/v1",
+
+    "subject": [
+        {
+            "name":
+                coordinate,
+
+            "digest": {
+                "sha256":
+                    jar_sha,
+            },
+        }
+    ],
+
+    "predicateType":
+        "https://slsa.dev/provenance/v1",
+
+    "predicate": {
+        "buildDefinition": {
+            "buildType":
+                (
+                    "https://github.com/sonoxo/"
+                    "gpt-doug-llm/blob/"
+                    f"{git_commit}/scripts/"
+                    "zyra-maven-release"
+                ),
+
+            "externalParameters": {
+                "coordinate":
+                    coordinate,
+
+                "repositoryHost":
+                    HOST,
+
+                "gitCommit":
+                    git_commit,
+
+                "gitBranch":
+                    git_branch,
+            },
+
+            "internalParameters": {
+                "releaseProofSchema":
+                    release.get(
+                        "schema"
+                    ),
+            },
+
+            "resolvedDependencies": [
+                {
+                    "uri":
+                        (
+                            "git+https://github.com/"
+                            "sonoxo/gpt-doug-llm"
+                        ),
+
+                    "digest": {
+                        "gitCommit":
+                            git_commit,
+                    },
+                }
+            ],
+        },
+
+        "runDetails": {
+            "builder": {
+                "id":
+                    (
+                        "https://github.com/sonoxo/"
+                        "gpt-doug-llm/scripts/"
+                        "zyra-maven-go"
+                    ),
+            },
+
+            "metadata": {
+                "invocationId":
+                    str(
+                        uuid.uuid4()
+                    ),
+
+                "startedOn":
+                    release.get(
+                        "verified_at",
+                        now,
+                    ),
+
+                "finishedOn":
+                    now,
+            },
+
+            "byproducts": [
+                {
+                    "name":
+                        "CycloneDX SBOM",
+
+                    "digest": {
+                        "sha256":
+                            sbom_sha,
+                    },
+                },
+                {
+                    "name":
+                        "Maven Gate Proof",
+
+                    "digest": {
+                        "sha256":
+                            sha256_file(
+                                STATE /
+                                "maven-gate-last.json"
+                            ),
+                    },
+                },
+            ],
+        },
+    },
+
+    "x-xunia-signatureStatus":
+        "UNSIGNED",
+}
+
+provenance_path = (
+    STATE /
+    "maven-provenance-last.intoto.json"
+)
+
+provenance_path.write_text(
+    json.dumps(
+        provenance,
+        indent=2,
+        sort_keys=True,
+    )
+    +
+    "\n"
+)
+
+provenance_path.chmod(
+    0o600
+)
+
+provenance_sha = sha256_file(
+    provenance_path
+)
+
+print(
+    "PROVENANCE      :",
+    provenance_path,
+)
+
+print(
+    "PROVENANCE SHA  :",
+    provenance_sha,
+)
+
+print(
+    "SIGNATURE       : UNSIGNED"
+)
+
+
+# ----------------------------------------------------------
+# 6. PREVIOUS VERSION / ROLLBACK QUALIFICATION
+# ----------------------------------------------------------
+
+print()
+print("=== 6/6 ROLLBACK QUALIFICATION ===")
+
+versions = lineage.get(
+    "versions",
+    [],
+)
+
+current_index = next(
+    (
+        index
+        for index, item
+        in enumerate(versions)
+        if item.get("coordinate")
+        ==
+        coordinate
+    ),
+    None,
+)
+
+if current_index is None:
+    raise SystemExit(
+        "NO-GO: current release absent from lineage"
+    )
+
+previous_index = (
+    current_index + 1
+)
+
+if previous_index >= len(versions):
+    raise SystemExit(
+        "NO-GO: no previous release available "
+        "for rollback qualification"
+    )
+
+previous = versions[
+    previous_index
+]
+
+previous_coordinate = previous.get(
+    "coordinate"
+)
+
+previous_expected_sha = previous.get(
+    "jarSha256"
+)
+
+if (
+    not previous_coordinate
+    or not previous_expected_sha
+):
+    raise SystemExit(
+        "NO-GO: previous release lacks rollback proof"
+    )
+
+previous_urls = artifact_urls(
+    previous_coordinate
+)
+
+previous_status, previous_jar = remote_get(
+    previous_urls["jar"],
+    username,
+    token,
+)
+
+previous_actual_sha = sha256_bytes(
+    previous_jar
+)
+
+rollback_match = (
+    previous_actual_sha
+    ==
+    previous_expected_sha
+)
+
+rollback_consumer_verified = (
+    previous.get(
+        "consumerVerified"
+    )
+    is True
+)
+
+rollback_proof = {
+    "schema":
+        "xunia.maven-rollback-qualification.v1",
+
+    "verifiedAt":
+        datetime.now(
+            timezone.utc
+        ).isoformat(),
+
+    "currentCoordinate":
+        coordinate,
+
+    "rollbackCoordinate":
+        previous_coordinate,
+
+    "remoteStatus":
+        previous_status,
+
+    "expectedJarSha256":
+        previous_expected_sha,
+
+    "actualJarSha256":
+        previous_actual_sha,
+
+    "jarMatch":
+        rollback_match,
+
+    "previousConsumerVerified":
+        rollback_consumer_verified,
+
+    "qualified":
+        (
+            200 <= previous_status < 300
+            and
+            rollback_match
+            and
+            rollback_consumer_verified
+        ),
+
+    "credentialsStored":
+        False,
+}
+
+rollback_path = (
+    STATE /
+    "maven-rollback-last.json"
+)
+
+rollback_path.write_text(
+    json.dumps(
+        rollback_proof,
+        indent=2,
+        sort_keys=True,
+    )
+    +
+    "\n"
+)
+
+rollback_path.chmod(
+    0o600
+)
+
+print(
+    "ROLLBACK VERSION :",
+    previous_coordinate,
+)
+
+print(
+    "ROLLBACK GET     :",
+    previous_status,
+)
+
+print(
+    "ROLLBACK SHA     :",
+    "PASS"
+    if rollback_match
+    else "FAIL",
+)
+
+print(
+    "PREV CONSUMER    :",
+    "PASS"
+    if rollback_consumer_verified
+    else "FAIL",
+)
+
+if not rollback_proof["qualified"]:
+    raise SystemExit(
+        "NO-GO: rollback candidate not qualified"
+    )
+
+
+# ----------------------------------------------------------
+# FINAL ASSURANCE DECISION
+# ----------------------------------------------------------
+
+checks = {
+    "MAVEN LIVE GATE":
+        gate_proof.get(
+            "decision"
+        )
+        ==
+        "GO",
+
+    "REMOTE POM":
+        (
+            200 <= pom_status < 300
+            and
+            pom_sha == expected_pom_sha
+        ),
+
+    "REMOTE JAR":
+        (
+            200 <= jar_status < 300
+            and
+            jar_sha == expected_jar_sha
+        ),
+
+    "CYCLONEDX SBOM":
+        (
+            sbom.get("bomFormat")
+            ==
+            "CycloneDX"
+            and
+            sbom.get("specVersion")
+            ==
+            "1.6"
+            and
+            len(
+                sbom.get(
+                    "components",
+                    [],
+                )
+            )
+            ==
+            1
+        ),
+
+    "DEPENDENCY MODEL":
+        len(dependencies) == 0,
+
+    "OSV VULNERABILITY GATE":
+        (
+            result.returncode == 0
+            and
+            vulnerability_count == 0
+        ),
+
+    "PROVENANCE STATEMENT":
+        (
+            provenance[
+                "predicateType"
+            ]
+            ==
+            "https://slsa.dev/provenance/v1"
+            and
+            provenance[
+                "subject"
+            ][0][
+                "digest"
+            ][
+                "sha256"
+            ]
+            ==
+            jar_sha
+        ),
+
+    "ROLLBACK QUALIFIED":
+        rollback_proof[
+            "qualified"
+        ]
+        is True,
+
+    "CREDENTIAL STORAGE":
+        (
+            release.get(
+                "credentials_stored"
+            )
+            is False
+            and
+            rollback_proof[
+                "credentialsStored"
+            ]
+            is False
+        ),
+}
+
+decision = all(
+    checks.values()
+)
+
+assurance = {
+    "schema":
+        "xunia.maven-supply-chain-assurance.v1",
+
+    "verifiedAt":
+        datetime.now(
+            timezone.utc
+        ).isoformat(),
+
+    "decision":
+        "GO"
+        if decision
+        else "NO-GO",
+
+    "coordinate":
+        coordinate,
+
+    "checks":
+        checks,
+
+    "artifacts": {
+        "sbom":
+            str(
+                sbom_path
+            ),
+
+        "sbomSha256":
+            sbom_sha,
+
+        "osvReport":
+            str(
+                osv_path
+            ),
+
+        "provenance":
+            str(
+                provenance_path
+            ),
+
+        "provenanceSha256":
+            provenance_sha,
+
+        "rollbackProof":
+            str(
+                rollback_path
+            ),
+    },
+
+    "vulnerabilityCount":
+        vulnerability_count,
+
+    "rollbackCoordinate":
+        previous_coordinate,
+
+    "signatureStatus":
+        "UNSIGNED",
+
+    "credentialsStored":
+        False,
+}
+
+assurance_path = (
+    STATE /
+    "maven-assurance-last.json"
+)
+
+assurance_path.write_text(
+    json.dumps(
+        assurance,
+        indent=2,
+        sort_keys=True,
+    )
+    +
+    "\n"
+)
+
+assurance_path.chmod(
+    0o600
+)
+
+# Drop credential references before final output.
+token = ""
+env.pop(
+    "PALANTIR_MAVEN_TOKEN",
+    None,
+)
+
+print()
+print("=" * 70)
+print(" ZYRA // MAVEN SUPPLY-CHAIN ASSURANCE")
+print("=" * 70)
+
+for name, value in checks.items():
+    print(
+        f"{name:29} "
+        f"{'PASS' if value else 'FAIL'}"
+    )
+
+print()
+print(
+    "CURRENT ARTIFACT  :",
+    coordinate,
+)
+
+print(
+    "SBOM              :",
+    sbom_path,
+)
+
+print(
+    "VULNERABILITIES   :",
+    vulnerability_count,
+)
+
+print(
+    "PROVENANCE        :",
+    provenance_path,
+)
+
+print(
+    "ROLLBACK ARTIFACT :",
+    previous_coordinate,
+)
+
+print(
+    "ASSURANCE PROOF   :",
+    assurance_path,
+)
+
+print(
+    "SIGNATURE STATUS  : UNSIGNED"
+)
+
+print()
+print("=" * 70)
+
+if decision:
+    print(
+        " MAVEN SUPPLY-CHAIN ASSURANCE: GO"
+    )
+else:
+    print(
+        " MAVEN SUPPLY-CHAIN ASSURANCE: NO-GO"
+    )
+
+print("=" * 70)
+
+if not decision:
+
+    print()
+    print("FAILED GATES:")
+
+    for name, value in checks.items():
+        if not value:
+            print(
+                " -",
+                name,
+            )
+
+    raise SystemExit(1)
