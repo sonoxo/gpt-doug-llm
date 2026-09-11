@@ -2,21 +2,23 @@
 set -eu
 ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
 PROOF="$HOME/.config/gpt-doug/palantir-maven-roundtrip-last.json"
+ONTOLOGY="$ROOT/docs/maven-ontology/ontology.json"
 
 usage() {
   cat <<'EOF'
-Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|visual]
+Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual]
 
   status     Show the latest persisted real Maven verification summary
   verify     Perform a real Foundry Maven PUT → GET → SHA-256 round-trip
   roundtrip  Alias for verify
-  release    Publish a real versioned GPT-Doug Maven release
+  release    Publish a real versioned GPT-DOUG Maven release
   consume    Resolve latest Foundry release with Apache Maven
-  bind       Bind a real Maven project to the verified release
   lineage    Build verified Maven version/dependency lineage
+  bind       Bind a real Maven project to the verified release
   proof      Print the complete latest persisted non-secret proof JSON
   doctor     Run config/probe + real round-trip + GPT-REDPANDA CPR
-  visual     Perform a real round-trip, then open the ZYRAPALANTIR visual console
+  ontology   Validate and summarize the local governed Maven ontology
+  visual     Verify Maven, ensure ZYRAPALANTIR LIVE, then open the control-map HUD
 EOF
 }
 
@@ -49,12 +51,54 @@ print("🔐 Credentials stored . false")
 PY
 }
 
+ontology_summary() {
+  python3 - "$ONTOLOGY" <<'PY'
+import json, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+d = json.loads(p.read_text())
+nodes = d.get("nodes", [])
+links = d.get("links", [])
+ids = {n.get("id") for n in nodes if isinstance(n, dict) and n.get("id")}
+bad = [x for x in links if not isinstance(x, list) or len(x) < 3 or x[0] not in ids or x[1] not in ids]
+if bad:
+    raise SystemExit(f"❌ Maven ontology invalid: {len(bad)} broken connector(s)")
+meta = d.get("meta", {})
+print("🧠 MAVEN CONTROL ONTOLOGY")
+print(f"ID ............... {meta.get('id','unknown')}")
+print(f"Version .......... {meta.get('version','unknown')}")
+print(f"Objects .......... {len(nodes)}")
+print(f"Connectors ....... {len(links)}")
+print("Validation ....... PASS")
+print("Foundry write .... false")
+print("External action .. false")
+PY
+}
+
 cmd="${1:-status}"
 [ "$#" -gt 0 ] && shift || true
 
 case "$cmd" in
   status)
-    "$ROOT/scripts/zyra-maven-status"
+    if [ -x "$ROOT/scripts/zyra-maven-status" ]; then
+      "$ROOT/scripts/zyra-maven-status"
+    else
+      summary
+    fi
+    ;;
+  release)
+    exec python3 "$ROOT/scripts/zyra-maven-release" "$@"
+    ;;
+  consume)
+    "$ROOT/scripts/zyra-maven-consumer-verify" "$@"
+    if [ -x "$ROOT/scripts/xzoon-sync-from-maven-consumer-proof" ]; then
+      "$ROOT/scripts/xzoon-sync-from-maven-consumer-proof"
+    fi
+    ;;
+  lineage)
+    python3 "$ROOT/scripts/zyra-maven-lineage" "$@"
+    ;;
+  bind)
+    python3 "$ROOT/scripts/zyra-maven-bind" "$@"
     ;;
   proof)
     if [ ! -f "$PROOF" ]; then
@@ -68,33 +112,29 @@ case "$cmd" in
     echo
     summary
     ;;
-  release)
-    exec python3 "$ROOT/scripts/zyra-maven-release" "$@"
-    ;;
-  consume)
-    "$ROOT/scripts/zyra-maven-consumer-verify" "$@"
-    "$ROOT/scripts/xzoon-sync-from-maven-consumer-proof"
-    ;;
-  lineage)
-    python3 "$ROOT/scripts/zyra-maven-lineage"
-    ;;
-  bind)
-    python3 "$ROOT/scripts/zyra-maven-bind" "$@"
-    ;;
   doctor)
-    echo "🩺 [1/3] Palantir Maven configuration/probe"
+    echo "🩺 [1/4] Palantir Maven configuration/probe"
     python3 "$ROOT/palantir_maven.py" probe
-    echo "📦 [2/3] Real publish → retrieve → SHA-256 round-trip"
+    echo "📦 [2/4] Real publish → retrieve → SHA-256 round-trip"
     python3 "$ROOT/scripts/palantir_maven_readiness_roundtrip.py"
-    echo "🐼 [3/3] GPT-REDPANDA CPR"
+    echo "🐼 [3/4] GPT-REDPANDA CPR"
     python3 "$ROOT/redpanda-desktop/palantir_cpr_probe.py"
+    echo "🧠 [4/4] Maven ontology"
+    ontology_summary
     echo
     summary
+    ;;
+  ontology)
+    ontology_summary
     ;;
   visual)
     echo "📦 Running REAL Foundry Maven verification first..."
     python3 "$ROOT/scripts/palantir_maven_readiness_roundtrip.py"
-    echo "🖥️ Opening visual console with persisted real Maven proof..."
+    echo "🧠 Validating Maven control ontology..."
+    ontology_summary
+    echo "📡 Ensuring ZYRAPALANTIR LIVE is running..."
+    sh "$ROOT/scripts/zyrapalantir" live-start
+    echo "🖥️ Opening visual console with fresh real Maven proof + ontology control map..."
     exec python3 "$ROOT/scripts/zyrapalantir_visual.py" "$@"
     ;;
   -h|--help|help)

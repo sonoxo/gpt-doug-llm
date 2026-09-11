@@ -1,0 +1,207 @@
+{
+  "schemaVersion": "maven-export/1.0",
+  "source": {
+    "system": "XUNIA Public Architecture Intelligence",
+    "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+    "uri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+    "generatedAt": "2026-09-11T19:20:00Z"
+  },
+  "approval": {
+    "status": "approved",
+    "scope": "ontology-sync",
+    "approvedBy": "xunia-operator-user-direction",
+    "approvedAt": "2026-09-11T19:20:30Z"
+  },
+  "nodes": [
+    {
+      "id": "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM",
+      "label": "Palantir AIPCon 9 Multi-Domain AI Talk",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Official Palantir video: Multi-Domain AI: The Future of Command and Control | CDAO at AIPCon 9, featuring Cameron Stanley and describing enterprise AI adoption, workflow integration, data fusion, ontology-mediated interoperability, and decision advantage.",
+      "provenance": {
+        "url": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "publisher": "Palantir",
+        "publishedAt": "2026-03-13"
+      }
+    },
+    {
+      "id": "maven:platform:mss-public-reference",
+      "label": "Maven Smart System Public Reference Architecture",
+      "objectType": "Platform",
+      "type": "system",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Public reference representation of Maven Smart System as described in Palantir's AIPCon 9 presentation: a software platform integrating multiple data sources and workflows through shared data structures, visualization, and governed action surfaces. This node does not imply XUNIA possesses Maven Smart System access, credentials, licenses, or government entitlements.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "accessClaim": "public-reference-only"
+      }
+    },
+    {
+      "id": "maven:finding:workflow-bottleneck-over-isolated-ai",
+      "label": "Workflow Bottleneck Over Isolated AI",
+      "objectType": "Finding",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.93,
+      "desc": "The presentation argues that deploying isolated AI capability without redesigning the surrounding workflow leaves the larger process bottleneck intact. Architecture should therefore start from the decision and end-to-end process rather than a standalone model metric.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "public-presentation-analysis"
+      }
+    },
+    {
+      "id": "maven:requirement:decision-centric-ai-design",
+      "label": "Decision-Centric AI Design",
+      "objectType": "Requirement",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Before integrating AI, define the decision to support, current workflow, required data, user interaction, success criteria, feedback path, and iteration plan. Workflow-first design is required before introducing additional automation.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "decision-centric-architecture-rule"
+      }
+    },
+    {
+      "id": "maven:capability:multi-source-fusion",
+      "label": "Multi-Source Data Fusion",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Fuse authorized, provenance-bearing data from multiple sources into a common decision context while retaining source lineage, confidence, and access controls.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "public-reference-pattern"
+      }
+    },
+    {
+      "id": "maven:capability:single-decision-surface",
+      "label": "Single Decision Surface",
+      "objectType": "Capability",
+      "type": "system",
+      "status": "verified",
+      "confidence": 0.94,
+      "desc": "Present multiple authorized data layers and decision-relevant context in one governed visualization surface to reduce manual handoffs and repeated data entry. Recommendations remain reviewable before consequential actions.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "public-reference-pattern"
+      }
+    },
+    {
+      "id": "maven:capability:ontology-mediated-interoperability",
+      "label": "Ontology-Mediated Interoperability",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.98,
+      "desc": "Use a shared ontology, consistent data formatting, and an abstraction layer so heterogeneous upstream systems can exchange decision-relevant objects without repeated manual translation.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "public-reference-pattern"
+      }
+    },
+    {
+      "id": "maven:capability:operator-feedback-flywheel",
+      "label": "Operator Feedback Flywheel",
+      "objectType": "Capability",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Couple technology iteration with workflow/process improvement so authorized operators can provide timely feedback and validated changes can improve the system without bypassing governance or testing.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "public-reference-pattern"
+      }
+    },
+    {
+      "id": "maven:control:human-decision-authority",
+      "label": "Human Decision Authority",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "AI may organize data, surface options, and recommend bounded actions, but consequential decisions remain subject to explicit human review and authorization. No autonomous weapon targeting, kinetic strike execution, or autonomous consequential external side effects are introduced by this ontology update.",
+      "provenance": {
+        "method": "xunia-governance-invariant",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:control:public-reference-no-entitlement",
+      "label": "Public Reference Does Not Confer Access",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Public demonstrations and presentations may inform architecture but do not confer Maven Smart System access, Palantir credentials, government permissions, classified data access, or operational authority.",
+      "provenance": {
+        "method": "access-boundary-policy",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:scenario:multidomain-c2-simulation",
+      "label": "Multi-Domain Decision Support Simulation",
+      "objectType": "Scenario",
+      "type": "simulation",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Safe training and digital-twin scenario for testing multi-source fusion, ontology alignment, decision surfaces, latency, provenance, and human review under non-kinetic simulated conditions. The scenario excludes real target selection, engagement, weapons employment, and autonomous external execution.",
+      "provenance": {
+        "method": "safe-digital-twin-pattern",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:review-event:operator-feedback-cycle",
+      "label": "Operator Feedback Review Cycle",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.97,
+      "desc": "Human review event that captures operator observations, validates evidence, measures workflow performance, and approves or rejects changes before they enter governed production paths.",
+      "provenance": {
+        "method": "governed-feedback-cycle",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:audit-record:aipcon9-yrtDgoqWmgM-20260911",
+      "label": "AIPCon 9 Maven Architecture Update Audit Record",
+      "objectType": "AuditRecord",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Audit record for ingestion of the public AIPCon 9 multi-domain AI architecture lessons into the XUNIA Maven ontology under existing human-approval and non-autonomous-action controls.",
+      "provenance": {
+        "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "method": "maven-live-sync/1.0"
+      }
+    }
+  ],
+  "links": [
+    ["maven:platform:mss-public-reference", "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM", "DERIVED_FROM"],
+    ["maven:finding:workflow-bottleneck-over-isolated-ai", "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM", "DERIVED_FROM"],
+    ["maven:requirement:decision-centric-ai-design", "maven:finding:workflow-bottleneck-over-isolated-ai", "RESPONDS_TO"],
+    ["maven:platform:mss-public-reference", "maven:capability:multi-source-fusion", "PROVIDES"],
+    ["maven:platform:mss-public-reference", "maven:capability:single-decision-surface", "PROVIDES"],
+    ["maven:platform:mss-public-reference", "maven:capability:ontology-mediated-interoperability", "PROVIDES"],
+    ["maven:platform:mss-public-reference", "maven:capability:operator-feedback-flywheel", "PROVIDES"],
+    ["maven:requirement:decision-centric-ai-design", "maven:capability:multi-source-fusion", "REQUIRES"],
+    ["maven:requirement:decision-centric-ai-design", "maven:capability:ontology-mediated-interoperability", "REQUIRES"],
+    ["maven:capability:operator-feedback-flywheel", "maven:review-event:operator-feedback-cycle", "REQUIRES"],
+    ["maven:control:human-decision-authority", "maven:scenario:multidomain-c2-simulation", "GOVERNS"],
+    ["maven:control:human-decision-authority", "maven:review-event:operator-feedback-cycle", "GOVERNS"],
+    ["maven:control:public-reference-no-entitlement", "maven:platform:mss-public-reference", "GOVERNS"],
+    ["maven:scenario:multidomain-c2-simulation", "maven:capability:multi-source-fusion", "USES"],
+    ["maven:scenario:multidomain-c2-simulation", "maven:capability:single-decision-surface", "USES"],
+    ["maven:scenario:multidomain-c2-simulation", "maven:capability:ontology-mediated-interoperability", "USES"],
+    ["maven:review-event:operator-feedback-cycle", "maven:audit-record:aipcon9-yrtDgoqWmgM-20260911", "RECORDED_IN"],
+    ["maven:audit-record:aipcon9-yrtDgoqWmgM-20260911", "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM", "SUPPORTED_BY"]
+  ]
+}

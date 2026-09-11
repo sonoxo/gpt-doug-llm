@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Interactive local browser dashboard for ZYRAPALANTIR field decision support.
+"""Interactive loopback-only ZYRAPALANTIR field dashboard.
 
-The service binds to loopback only, visualizes local defensive state, exposes
-read-only investigation/readiness/audit views, and surfaces the latest persisted
-real Palantir Maven publish/retrieve/hash proof. It does not select targets,
-control weapons, issue fires, steer vehicles, or perform automatic external
-actions.
+Provides local defensive state, real persisted Palantir Maven round-trip proof,
+read-only investigations/proposals/audit views, and a governed local Maven
+ontology control-map session. Ontology initiation activates visualization and
+local audit state only; it does not write to Foundry or perform external actions.
 """
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import hashlib
 import importlib.util
 import json
@@ -23,6 +23,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 WEB_ROOT = ROOT / "web" / "zyrapalantir-field"
 STATE_DIR = pathlib.Path.home() / ".config" / "gpt-doug"
 LIVE_AUDIT = STATE_DIR / "zyrapalantir-live-audit.jsonl"
+ONTOLOGY_PATH = ROOT / "docs" / "maven-ontology" / "ontology.json"
+ONTOLOGY_SESSION: dict[str, Any] = {"status": "STANDBY", "initiated_at": None}
 
 spec = importlib.util.spec_from_file_location("zyrapalantir_field", ROOT / "scripts" / "zyrapalantir_field.py")
 field = importlib.util.module_from_spec(spec)
@@ -46,6 +48,71 @@ def _tail_jsonl(path: pathlib.Path, limit: int = 30) -> list[dict[str, Any]]:
     return out
 
 
+def _append_audit(event: dict[str, Any]) -> None:
+    path = getattr(field, "FIELD_AUDIT", STATE_DIR / "zyrapalantir-field-audit.jsonl")
+    try:
+        path = pathlib.Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(event, sort_keys=True) + "\n")
+        path.chmod(0o600)
+    except Exception:
+        pass
+
+
+def _load_ontology() -> dict[str, Any]:
+    data = json.loads(ONTOLOGY_PATH.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("Maven ontology must be a JSON object")
+    nodes = data.get("nodes")
+    links = data.get("links")
+    if not isinstance(nodes, list) or not isinstance(links, list):
+        raise ValueError("Maven ontology requires nodes[] and links[]")
+    node_ids = {n.get("id") for n in nodes if isinstance(n, dict) and n.get("id")}
+    invalid_links = [x for x in links if not isinstance(x, list) or len(x) < 3 or x[0] not in node_ids or x[1] not in node_ids]
+    if invalid_links:
+        raise ValueError(f"Maven ontology has {len(invalid_links)} invalid connector(s)")
+    return data
+
+
+def ontology_payload() -> dict[str, Any]:
+    data = _load_ontology()
+    out = dict(data)
+    out["session"] = dict(ONTOLOGY_SESSION)
+    out["source_path"] = str(ONTOLOGY_PATH)
+    out["external_action"] = False
+    out["foundry_write"] = False
+    return out
+
+
+def initiate_ontology() -> dict[str, Any]:
+    data = _load_ontology()
+    now = dt.datetime.now(dt.timezone.utc).isoformat()
+    ONTOLOGY_SESSION.update({"status": "ACTIVE", "initiated_at": now})
+    event = {
+        "timestamp": now,
+        "schema": "xunia.maven-ontology-control-map.v1",
+        "action": "ontology_initiated",
+        "ontology_id": (data.get("meta") or {}).get("id"),
+        "node_count": len(data.get("nodes", [])),
+        "link_count": len(data.get("links", [])),
+        "local_control_map": True,
+        "foundry_write": False,
+        "automatic_external_action": False,
+    }
+    _append_audit(event)
+    return {
+        "ok": True,
+        "initiated_at": now,
+        "node_count": len(data.get("nodes", [])),
+        "link_count": len(data.get("links", [])),
+        "meta": data.get("meta", {}),
+        "ontology": ontology_payload(),
+        "foundry_write": False,
+        "automatic_external_action": False,
+    }
+
+
 def investigations(state: dict[str, Any]) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     findings = state.get("cyber", {}).get("findings", [])
@@ -59,47 +126,41 @@ def investigations(state: dict[str, Any]) -> list[dict[str, Any]]:
         desc = str(finding.get("description", "Defensive finding"))
         material = f"{severity}|{target}|{desc}".encode("utf-8", errors="replace")
         case_id = "INV-" + hashlib.sha256(material).hexdigest()[:8].upper()
-        items.append(
-            {
-                "id": case_id,
-                "severity": severity,
-                "target": target,
-                "title": desc[:100],
-                "description": desc,
-                "recommendation": str(finding.get("recommendation", "Analyst review")),
-                "status": "ANALYST_REVIEW" if severity in {"HIGH", "CRITICAL"} else "OBSERVE",
-                "source": "ZYRAPALANTIR LIVE",
-                "human_authorization_required": True,
-                "automatic_external_action": False,
-            }
-        )
+        items.append({
+            "id": case_id,
+            "severity": severity,
+            "target": target,
+            "title": desc[:100],
+            "description": desc,
+            "recommendation": str(finding.get("recommendation", "Analyst review")),
+            "status": "ANALYST_REVIEW" if severity in {"HIGH", "CRITICAL"} else "OBSERVE",
+            "source": "ZYRAPALANTIR LIVE",
+            "human_authorization_required": True,
+            "automatic_external_action": False,
+        })
     return items
 
 
 def proposals(state: dict[str, Any]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for inv in investigations(state):
-        out.append(
-            {
-                "id": "PROP-" + inv["id"].split("-", 1)[-1],
-                "severity": inv["severity"],
-                "title": f"Review {inv['target']}",
-                "proposal": inv["recommendation"],
-                "decision": "PENDING HUMAN REVIEW",
-                "external_action": False,
-            }
-        )
+        out.append({
+            "id": "PROP-" + inv["id"].split("-", 1)[-1],
+            "severity": inv["severity"],
+            "title": f"Review {inv['target']}",
+            "proposal": inv["recommendation"],
+            "decision": "PENDING HUMAN REVIEW",
+            "external_action": False,
+        })
     if not out:
-        out.append(
-            {
-                "id": "PROP-BASELINE",
-                "severity": "INFO",
-                "title": "Maintain defensive baseline",
-                "proposal": "Continue monitoring and preserve the current approved defensive configuration.",
-                "decision": "INFORMATIONAL",
-                "external_action": False,
-            }
-        )
+        out.append({
+            "id": "PROP-BASELINE",
+            "severity": "INFO",
+            "title": "Maintain defensive baseline",
+            "proposal": "Continue monitoring and preserve the current approved defensive configuration.",
+            "decision": "INFORMATIONAL",
+            "external_action": False,
+        })
     return out
 
 
@@ -113,11 +174,23 @@ def audit_events(limit: int = 40) -> list[dict[str, Any]]:
 def assistant_reply(prompt: str, state: dict[str, Any]) -> str:
     text = prompt.lower().strip()
     if not text:
-        return "Ask about readiness, Maven proof, cyber findings, communications, assets, incidents, investigations, proposals, or audit history."
+        return "Ask about readiness, Maven proof, Maven ontology, cyber findings, communications, assets, incidents, investigations, proposals, or audit history."
+    if "ontology" in text or "control map" in text:
+        try:
+            o = ontology_payload()
+            meta = o.get("meta", {})
+            session = o.get("session", {})
+            return (
+                f"Maven ontology {meta.get('id','unknown')} v{meta.get('version','unknown')} is {session.get('status','STANDBY')} "
+                f"with {len(o.get('nodes', []))} objects and {len(o.get('links', []))} connectors. "
+                "Initiation activates the local governed control map only; no Foundry write occurs."
+            )
+        except Exception as exc:
+            return f"Maven ontology is unavailable: {exc}"
     if any(k in text for k in ("maven", "artifact", "sha", "hash", "provenance", "roundtrip", "round-trip")):
         p = state.get("maven_proof", {}) or {}
         if not p.get("coordinates"):
-            return "No persisted real Maven round-trip proof is available yet. Run the Palantir Maven roundtrip command, then refresh this dashboard."
+            return "No persisted real Maven round-trip proof is available yet. Run zyra-maven verify, then refresh this dashboard."
         pub, ret, integ = p.get("publish", {}), p.get("retrieve", {}), p.get("integrity", {})
         return (
             f"Real Maven proof: {p.get('coordinates')} on {p.get('host')}. "
@@ -138,8 +211,7 @@ def assistant_reply(prompt: str, state: dict[str, Any]) -> str:
         c = state.get("cyber", {})
         counts = c.get("severity_counts", {})
         return (
-            "Current defensive findings: "
-            f"LOW={counts.get('LOW',0)}, MEDIUM={counts.get('MEDIUM',0)}, "
+            f"Current defensive findings: LOW={counts.get('LOW',0)}, MEDIUM={counts.get('MEDIUM',0)}, "
             f"HIGH={counts.get('HIGH',0)}, CRITICAL={counts.get('CRITICAL',0)}. "
             f"Highest severity is {state.get('highest_severity','UNKNOWN')}."
         )
@@ -152,66 +224,27 @@ def assistant_reply(prompt: str, state: dict[str, Any]) -> str:
     if "audit" in text:
         events = audit_events(40)
         return f"The local audit view currently exposes {len(events)} recent ZYRAPALANTIR events from private JSONL logs."
-    if any(k in text for k in ("comms", "network", "link")):
+    if any(k in text for k in ("comms", "network", "link", "connector")):
         c = state.get("comms", {})
         return (
             f"Local defensive comms view: interface={c.get('default_route_interface','unknown')}; "
             f"addresses={', '.join(c.get('local_addresses', [])[:4]) or 'none'}. "
-            "This console does not reconfigure or disrupt networks."
+            "Connectors are inspectable model relationships; this console does not reconfigure or disrupt networks."
         )
     if any(k in text for k in ("asset", "host", "device")):
         a = state.get("local_asset", {})
-        return (
-            f"Local asset: {a.get('hostname','unknown')} running {a.get('system','unknown')} "
-            f"{a.get('release','')} on {a.get('machine','unknown')}."
-        )
+        return f"Local asset: {a.get('hostname','unknown')} running {a.get('system','unknown')} {a.get('release','')} on {a.get('machine','unknown')}."
     if "incident" in text:
         return (
             "Analyst attention is "
             f"{'REQUIRED' if state.get('analyst_attention_required') else 'NOT CURRENTLY REQUIRED'}. "
             "Any external response remains human-authorized."
         )
-    return "I can summarize readiness, real Maven round-trip proof, cyber findings, communications, assets, incidents, investigations, proposals, and audit history."
+    return "I can summarize readiness, real Maven proof, Maven ontology, cyber findings, communications, assets, incidents, investigations, proposals, and audit history."
 
 
 def _index_html() -> bytes:
-    html = (WEB_ROOT / "index.html").read_text(encoding="utf-8")
-    injection = r'''
-<style>
-#realMavenProof{position:absolute;right:18px;top:58px;z-index:6;width:min(470px,46vw);max-height:48vh;overflow:auto;background:#0d151bdd;border:1px solid #355468;border-radius:10px;padding:12px 14px;font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:0 10px 30px #0008}
-#realMavenProof h3{margin:0 0 7px;font-size:12px;color:#e8eef4}#realMavenProof .good{color:#50d890}#realMavenProof .bad{color:#ee5b63}#realMavenProof .muted{color:#8fa2b5}#realMavenProof code{word-break:break-all;color:#d7e5ef}
-</style>
-<div id="realMavenProof"><h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="muted">Waiting for persisted proof…</div></div>
-<script>
-(function(){
- const el=document.getElementById('realMavenProof');
- const esc2=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- async function refreshMavenProof(){
-  try{
-   const r=await fetch('/api/maven-proof',{cache:'no-store'}); const p=await r.json();
-   if(!p||!p.coordinates){el.innerHTML='<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="bad">NO PERSISTED PROOF</div><div class="muted">Run: bash redpanda-desktop/palantir-maven roundtrip</div>';return;}
-   const pub=p.publish||{},ret=p.retrieve||{},i=p.integrity||{}; const ok=!!(p.ok&&i.pom_match&&i.jar_match);
-   el.innerHTML=`<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3>
-   <div class="${ok?'good':'bad'}">${ok?'✅ VERIFIED':'❌ FAILED'}</div>
-   <div>Host: <code>${esc2(p.host)}</code></div>
-   <div>Artifact: <code>${esc2(p.coordinates)}</code></div>
-   <div>Verified: <code>${esc2(p.verified_at||'unknown')}</code></div>
-   <hr style="border:0;border-top:1px solid #2d3b48">
-   <div>⬆ PUBLISH — POM <b>${esc2(pub.pom_status)}</b> / JAR <b>${esc2(pub.jar_status)}</b></div>
-   <div>⬇ RETRIEVE — POM <b>${esc2(ret.pom_status)}</b> / JAR <b>${esc2(ret.jar_status)}</b></div>
-   <div>🔏 POM match: <b class="${i.pom_match?'good':'bad'}">${esc2(i.pom_match)}</b></div>
-   <div>🔏 JAR match: <b class="${i.jar_match?'good':'bad'}">${esc2(i.jar_match)}</b></div>
-   <div># POM SHA-256: <code>${esc2(i.pom_sha256||'n/a')}</code></div>
-   <div># JAR SHA-256: <code>${esc2(i.jar_sha256||'n/a')}</code></div>
-   <div>🛡 defense_ready: <b class="${p.defense_ready?'good':'bad'}">${esc2(p.defense_ready)}</b></div>
-   <div>🔐 credentials stored/printed: false/false</div>`;
-  }catch(e){el.innerHTML='<h3>📦 PALANTIR MAVEN // REAL ROUND-TRIP PROOF</h3><div class="bad">Proof API unavailable: '+esc2(e.message)+'</div>'}
- }
- refreshMavenProof(); setInterval(refreshMavenProof,3000);
-})();
-</script>
-'''
-    return html.replace("</body>", injection + "\n</body>").encode("utf-8")
+    return (WEB_ROOT / "index.html").read_bytes()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -219,18 +252,6 @@ class Handler(BaseHTTPRequestHandler):
         body = json.dumps(payload, indent=2).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
-        self.send_header("Cache-Control", "no-store")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def _file(self, path: pathlib.Path, content_type: str) -> None:
-        if not path.exists():
-            self.send_error(404)
-            return
-        body = path.read_bytes()
-        self.send_response(200)
-        self.send_header("Content-Type", content_type)
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
@@ -247,12 +268,17 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urllib.parse.urlparse(self.path)
-        state = None
         if parsed.path == "/api/state":
             self._json(field.snapshot(None))
             return
         if parsed.path == "/api/maven-proof":
             self._json(field.latest_maven_proof())
+            return
+        if parsed.path == "/api/ontology":
+            try:
+                self._json(ontology_payload())
+            except Exception as exc:
+                self._json({"ok": False, "error": str(exc)}, 500)
             return
         if parsed.path == "/api/assistant":
             q = urllib.parse.parse_qs(parsed.query).get("q", [""])[0]
@@ -275,6 +301,16 @@ class Handler(BaseHTTPRequestHandler):
             return
         self.send_error(404)
 
+    def do_POST(self) -> None:
+        parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/api/ontology/initiate":
+            try:
+                self._json(initiate_ontology())
+            except Exception as exc:
+                self._json({"ok": False, "error": str(exc)}, 500)
+            return
+        self.send_error(404)
+
     def log_message(self, fmt: str, *args: Any) -> None:
         return
 
@@ -288,15 +324,16 @@ def main() -> int:
 
     if args.host not in {"127.0.0.1", "localhost", "::1"}:
         raise SystemExit("Refusing non-loopback bind by default; visual console is local-only.")
-
+    _load_ontology()
     url = f"http://127.0.0.1:{args.port}/"
     server = ThreadingHTTPServer((args.host, args.port), Handler)
-    print("🎖️ ZYRAPALANTIR VISUAL FIELD OPS v3")
-    print("📦 real Palantir Maven round-trip proof + live readiness")
-    print("🧠 interactive investigations + readiness + audit + analyst summaries")
+    print("🎖️ ZYRAPALANTIR VISUAL FIELD OPS v4")
+    print("📦 toggleable real Palantir Maven proof")
+    print("🧠 governed Maven ontology control map + inspectable connectors")
+    print("🔗 working menus, back navigation, nodes and connector details")
     print("🛰️ local defensive telemetry + human decision support")
-    print("🗺️ right panel is NON-GEOGRAPHIC system topology")
-    print("⛔ targeting/weapons/automatic external action: DISABLED")
+    print("🗺️ right panel remains NON-GEOGRAPHIC")
+    print("⛔ automatic external action: DISABLED")
     print(f"🌐 {url}")
     print("Press Ctrl-C to stop the visual console.")
     if not args.no_open:

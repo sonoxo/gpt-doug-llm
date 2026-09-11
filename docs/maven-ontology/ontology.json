@@ -7,15 +7,14 @@
     "freeMode": true,
     "generatedBy": "GPT-DOUG-LLM BPO",
     "liveSync": {
-      "version": "3.0",
-      "lastExportId": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
-      "lastSourceSystem": "Palantir Foundry Artifact Repository",
-      "lastSourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
-      "sourceGeneratedAt": "2026-09-11T09:24:08.312619+00:00",
-      "approvedBy": "remote-put-get-sha256",
-      "approvedAt": "2026-09-11T09:24:08.312619+00:00",
-      "graphFingerprint": "bc416948e2a378950f09a1d4f9e8c1ee0233a1771aef9952701df3b8b10f2623",
-      "mode": "REAL_FOUNDRY_MAVEN",
+      "version": "1.0",
+      "lastExportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+      "lastSourceSystem": "XUNIA Public Architecture Intelligence",
+      "lastSourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+      "sourceGeneratedAt": "2026-09-11T19:20:00Z",
+      "approvedBy": "xunia-operator-user-direction",
+      "approvedAt": "2026-09-11T19:20:30Z",
+      "graphFingerprint": "2af6cbc5a6fcebb27231f8d399bb294d5fc6fe2ceca1674438131dbcfb76d5a4",
       "remotePutVerified": true,
       "remoteGetVerified": true,
       "sha256Verified": true,
@@ -33,7 +32,9 @@
       "mavenRuntimeBinding": true,
       "mavenRuntimeConsumer": "system:gpt-doug-foundry-consumer",
       "mavenRuntimeCoordinate": "com.xunia:gpt-doug-foundry-bridge:1.2.0-maven-f4a1710eef-20260911092350",
-      "mavenRuntimeBindingVerifiedAt": "2026-09-11T20:08:02.546898+00:00"
+      "mavenRuntimeBindingVerifiedAt": "2026-09-11T20:08:02.546898+00:00",
+      "mavenMode": "REAL_FOUNDRY_MAVEN",
+      "mavenMergeStrategy": "current-main-plus-verified-maven-runtime"
     }
   },
   "objectTypes": [
@@ -41,32 +42,50 @@
     "Agent",
     "Approval",
     "Artifact",
+    "Assessment",
     "Asset",
+    "AuditRecord",
     "Capability",
     "Control",
     "Dataset",
+    "DecisionPacket",
     "Evidence",
     "Finding",
     "Mission",
+    "Partner",
+    "PermissionStatement",
     "Platform",
     "Requirement",
+    "ReviewEvent",
+    "Scenario",
     "Sensor",
+    "Signal",
     "Source",
     "System",
-    "Threat"
+    "Threat",
+    "ThreatPattern",
+    "Track"
   ],
   "relationTypes": [
     "AFFECTS",
+    "ASSESSED_BY",
     "CONTAINS",
     "DERIVED_FROM",
     "EXECUTES",
     "FEEDS",
+    "FUSES_INTO",
     "GOVERNS",
     "HOSTS",
+    "INFORMS",
+    "MATCHES_PATTERN",
     "MITIGATES",
+    "PACKAGED_IN",
     "PROVIDES",
+    "RECORDED_IN",
     "REQUIRES",
     "RESPONDS_TO",
+    "REVIEWED_BY",
+    "REVIEWS",
     "SUPPORTED_BY",
     "USES",
     "PREVIOUS_VERSION",
@@ -98,6 +117,31 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "label": "Evaluate Public Use Claim",
+      "objectType": "Action",
+      "type": "agent",
+      "status": "verified",
+      "confidence": 0.98,
+      "mode": "recommend",
+      "desc": "Recommend verification of the claimed authorization against authoritative terms and actual entitlements. This action does not create credentials, grant access, enroll an account, or execute external side effects.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governed-review-action",
+          "version": "1.0"
+        }
+      },
+      "lat": 0.1974,
+      "lon": 50.8147
     },
     {
       "id": "maven:agent",
@@ -169,6 +213,27 @@
       }
     },
     {
+      "id": "maven:assessment:evolving-threat-2026",
+      "label": "2026 Evolving Threat Assessment",
+      "objectType": "Assessment",
+      "type": "security",
+      "status": "verified",
+      "confidence": 0.9,
+      "desc": "Assessment that adaptive threat actors increasingly exploit online channels and decentralized mobilization, increasing the importance of provenance, public-tip intake, interagency fusion, and emerging-technology horizon scanning.",
+      "lat": -52.3169,
+      "lon": 120.7056,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
       "id": "maven:asset",
       "label": "Asset",
       "objectType": "Asset",
@@ -182,6 +247,51 @@
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
         "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:audit-record:aipcon9-yrtDgoqWmgM-20260911",
+      "label": "AIPCon 9 Maven Architecture Update Audit Record",
+      "objectType": "AuditRecord",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Audit record for ingestion of the public AIPCon 9 multi-domain AI architecture lessons into the XUNIA Maven ontology under existing human-approval and non-autonomous-action controls.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "maven-live-sync/1.0"
+        }
+      },
+      "lat": -61.2756,
+      "lon": -97.1905
+    },
+    {
+      "id": "maven:audit-record:evolving-threat-2026",
+      "label": "Evolving Threat Update Audit Record",
+      "objectType": "AuditRecord",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.98,
+      "desc": "Provenance and decision-lineage record for the 2026 evolving-threat ontology update.",
+      "lat": 32.3637,
+      "lon": -135.327,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
       }
     },
     {
@@ -201,6 +311,189 @@
       }
     },
     {
+      "id": "maven:capability:authorized-public-use-path",
+      "label": "Authorized Public Use Path",
+      "objectType": "Capability",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Resolve a claimed public-use permission into a bounded, terms-compliant integration path: identify the actual product, verify eligibility, use only issued credentials, preserve provenance, and restrict actions to the granted scope.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governed-integration-pattern",
+          "version": "1.0"
+        }
+      },
+      "lat": -30.9798,
+      "lon": -8.4167
+    },
+    {
+      "id": "maven:capability:emerging-tech-horizon-scan",
+      "label": "Emerging Technology Horizon Scan",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.88,
+      "desc": "Model emerging technology risks as simulation scenarios for preparedness and policy review, without autonomous operational response.",
+      "lat": -37.3302,
+      "lon": 148.2794,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:capability:interagency-fusion",
+      "label": "Interagency Information Fusion",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Correlate authorized information across partner organizations while retaining provenance, confidence, source markings, and review history.",
+      "lat": 10.0822,
+      "lon": 11.9686,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:capability:multi-source-fusion",
+      "label": "Multi-Source Data Fusion",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Fuse authorized, provenance-bearing data from multiple sources into a common decision context while retaining source lineage, confidence, and access controls.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "public-reference-pattern"
+        }
+      },
+      "lat": 30.217,
+      "lon": 25.0712
+    },
+    {
+      "id": "maven:capability:ontology-mediated-interoperability",
+      "label": "Ontology-Mediated Interoperability",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.98,
+      "desc": "Use a shared ontology, consistent data formatting, and an abstraction layer so heterogeneous upstream systems can exchange decision-relevant objects without repeated manual translation.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "public-reference-pattern"
+        }
+      },
+      "lat": 8.6539,
+      "lon": -100.0517
+    },
+    {
+      "id": "maven:capability:operator-feedback-flywheel",
+      "label": "Operator Feedback Flywheel",
+      "objectType": "Capability",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Couple technology iteration with workflow/process improvement so authorized operators can provide timely feedback and validated changes can improve the system without bypassing governance or testing.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "public-reference-pattern"
+        }
+      },
+      "lat": 17.5354,
+      "lon": 140.0891
+    },
+    {
+      "id": "maven:capability:public-tip-triage",
+      "label": "Public Tip Triage",
+      "objectType": "Capability",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.94,
+      "desc": "Receive, provenance-tag, prioritize, and route public-safety tips for authorized human review using behavior and context rather than protected characteristics.",
+      "lat": 21.514,
+      "lon": 146.9961,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:capability:single-decision-surface",
+      "label": "Single Decision Surface",
+      "objectType": "Capability",
+      "type": "system",
+      "status": "verified",
+      "confidence": 0.94,
+      "desc": "Present multiple authorized data layers and decision-relevant context in one governed visualization surface to reduce manual handoffs and repeated data entry. Recommendations remain reviewable before consequential actions.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "public-reference-pattern"
+        }
+      },
+      "lat": 6.8015,
+      "lon": -62.9717
+    },
+    {
       "id": "maven:control",
       "label": "Control",
       "objectType": "Control",
@@ -217,6 +510,99 @@
       }
     },
     {
+      "id": "maven:control:behavior-evidence-civil-liberties",
+      "label": "Behavior and Evidence Civil Liberties Control",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Threat evaluation must rely on lawful behavior, context, provenance, and articulable evidence\u2014not race, ethnicity, sex, national origin, religion, disability, political viewpoint, lawful speech, or other protected characteristics.",
+      "lat": 21.0818,
+      "lon": 174.2606,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:control:human-decision-authority",
+      "label": "Human Decision Authority",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "AI may organize data, surface options, and recommend bounded actions, but consequential decisions remain subject to explicit human review and authorization. No autonomous weapon targeting, kinetic strike execution, or autonomous consequential external side effects are introduced by this ontology update.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "xunia-governance-invariant",
+          "version": "1.0"
+        }
+      },
+      "lat": -6.9334,
+      "lon": -172.2975
+    },
+    {
+      "id": "maven:control:permission-verification-gate",
+      "label": "Permission Verification Gate",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Before relying on a public statement as authorization, verify the exact product/capability, allowed users, permitted purposes, enrollment requirements, terms, account entitlements, and any data handling restrictions. Public media never substitutes for credentials or access controls.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governance-policy",
+          "version": "1.0"
+        }
+      },
+      "lat": -1.9794,
+      "lon": 110.5469
+    },
+    {
+      "id": "maven:control:public-reference-no-entitlement",
+      "label": "Public Reference Does Not Confer Access",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Public demonstrations and presentations may inform architecture but do not confer Maven Smart System access, Palantir credentials, government permissions, classified data access, or operational authority.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "access-boundary-policy",
+          "version": "1.0"
+        }
+      },
+      "lat": -38.2609,
+      "lon": -133.7135
+    },
+    {
       "id": "maven:dataset",
       "label": "Dataset",
       "objectType": "Dataset",
@@ -230,6 +616,27 @@
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
         "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:decision-packet:evolving-threat-readiness-2026",
+      "label": "Evolving Threat Readiness Decision Packet",
+      "objectType": "DecisionPacket",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.86,
+      "desc": "Decision-support packet recommending non-kinetic readiness improvements: tip triage, cross-agency fusion, scenario planning, and operator review. It does not execute external actions.",
+      "lat": -6.0026,
+      "lon": -111.4811,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
       }
     },
     {
@@ -249,6 +656,31 @@
       }
     },
     {
+      "id": "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "label": "Public Use Claim Evidence",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Evidence record for the operator-reported statement that the referenced system or capability may be used. This records the claim without treating it as a verified entitlement, credential, license, or access grant.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "claim": "they said we can use it",
+          "verificationState": "candidate"
+        }
+      },
+      "lat": -6.5093,
+      "lon": 175.5384
+    },
+    {
       "id": "maven:finding",
       "label": "Finding",
       "objectType": "Finding",
@@ -263,6 +695,30 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:finding:workflow-bottleneck-over-isolated-ai",
+      "label": "Workflow Bottleneck Over Isolated AI",
+      "objectType": "Finding",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.93,
+      "desc": "The presentation argues that deploying isolated AI capability without redesigning the surrounding workflow leaves the larger process bottleneck intact. Architecture should therefore start from the decision and end-to-end process rather than a standalone model metric.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "public-presentation-analysis"
+        }
+      },
+      "lat": -19.3534,
+      "lon": 27.9981
     },
     {
       "id": "maven:mission",
@@ -281,6 +737,79 @@
       }
     },
     {
+      "id": "maven:mission:adaptive-threat-readiness",
+      "label": "Adaptive Threat Readiness",
+      "objectType": "Mission",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.94,
+      "desc": "Defensive mission for anticipating evolving threats, improving lawful information fusion, preserving civil liberties, and routing consequential recommendations through human review.",
+      "lat": 36.8486,
+      "lon": -96.4243,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:partner:interagency-task-force-model",
+      "label": "Interagency Task Force Partnership Model",
+      "objectType": "Partner",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Abstract partnership model for authorized information sharing and coordinated review across federal, state, local, tribal, territorial, and other approved partners.",
+      "lat": 59.0753,
+      "lon": 19.4565,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:permission-statement:public-use:ccY6D0jKVck",
+      "label": "Public Use Permission Statement",
+      "objectType": "PermissionStatement",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Candidate permission statement representing an asserted public authorization to use a capability. Effective scope must be resolved from authoritative terms, enrollment, account entitlements, or an independently verified source before operational reliance.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "verificationState": "candidate",
+          "doesNotImply": [
+            "credentials",
+            "license",
+            "government-system access",
+            "Palantir entitlements",
+            "Maven Smart System access"
+          ]
+        }
+      },
+      "lat": 13.1149,
+      "lon": 82.1109
+    },
+    {
       "id": "maven:platform",
       "label": "Platform",
       "objectType": "Platform",
@@ -295,6 +824,30 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:platform:mss-public-reference",
+      "label": "Maven Smart System Public Reference Architecture",
+      "objectType": "Platform",
+      "type": "system",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Public reference representation of Maven Smart System as described in Palantir's AIPCon 9 presentation: a software platform integrating multiple data sources and workflows through shared data structures, visualization, and governed action surfaces. This node does not imply XUNIA possesses Maven Smart System access, credentials, licenses, or government entitlements.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "accessClaim": "public-reference-only"
+        }
+      },
+      "lat": -42.6557,
+      "lon": 41.1409
     },
     {
       "id": "maven:requirement",
@@ -313,6 +866,144 @@
       }
     },
     {
+      "id": "maven:requirement:decision-centric-ai-design",
+      "label": "Decision-Centric AI Design",
+      "objectType": "Requirement",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Before integrating AI, define the decision to support, current workflow, required data, user interaction, success criteria, feedback path, and iteration plan. Workflow-first design is required before introducing additional automation.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "source": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "method": "decision-centric-architecture-rule"
+        }
+      },
+      "lat": 27.323,
+      "lon": -107.0167
+    },
+    {
+      "id": "maven:review-event:evolving-threat-2026",
+      "label": "Evolving Threat Human Review",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.85,
+      "desc": "Human review checkpoint for evolving-threat recommendations before any consequential permission-scoped Ontology Action.",
+      "lat": -58.2545,
+      "lon": -66.2181,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:review-event:operator-feedback-cycle",
+      "label": "Operator Feedback Review Cycle",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.97,
+      "desc": "Human review event that captures operator observations, validates evidence, measures workflow performance, and approves or rejects changes before they enter governed production paths.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "governed-feedback-cycle",
+          "version": "1.0"
+        }
+      },
+      "lat": -50.5836,
+      "lon": -131.7829
+    },
+    {
+      "id": "maven:review-event:permission-ccY6D0jKVck",
+      "label": "Permission Scope Verification Review",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.8,
+      "desc": "Human review event to verify what the video actually authorizes and map that statement to authoritative product terms or account entitlements before changing the permission statement to verified.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "reviewState": "pending"
+        }
+      },
+      "lat": -38.097,
+      "lon": -34.8373
+    },
+    {
+      "id": "maven:scenario:emerging-drone-misuse",
+      "label": "Emerging Drone Misuse Readiness Scenario",
+      "objectType": "Scenario",
+      "type": "security",
+      "status": "candidate",
+      "confidence": 0.78,
+      "desc": "Horizon-scanning and training scenario for malicious misuse of unmanned aircraft. Simulation and preparedness only; no targeting, engagement, or autonomous interdiction logic.",
+      "lat": -48.6128,
+      "lon": -161.0933,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
+      }
+    },
+    {
+      "id": "maven:scenario:multidomain-c2-simulation",
+      "label": "Multi-Domain Decision Support Simulation",
+      "objectType": "Scenario",
+      "type": "simulation",
+      "status": "verified",
+      "confidence": 0.96,
+      "desc": "Safe training and digital-twin scenario for testing multi-source fusion, ontology alignment, decision surfaces, latency, provenance, and human review under non-kinetic simulated conditions. The scenario excludes real target selection, engagement, weapons employment, and autonomous external execution.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "method": "safe-digital-twin-pattern",
+          "version": "1.0"
+        }
+      },
+      "lat": -25.2041,
+      "lon": 164.8859
+    },
+    {
       "id": "maven:sensor",
       "label": "Sensor",
       "objectType": "Sensor",
@@ -326,6 +1017,27 @@
         "source": "xunia://maven-ontology/schema/v1",
         "method": "declared-schema",
         "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:signal:public-tip-model",
+      "label": "Public Safety Tip Signal",
+      "objectType": "Signal",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Behavior- and context-based public-safety tip normalized into a provenance-bearing signal. Human review is mandatory; protected traits and lawful expression are not threat indicators by themselves.",
+      "lat": 31.0962,
+      "lon": 77.9962,
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
       }
     },
     {
@@ -343,6 +1055,155 @@
         "method": "declared-schema",
         "version": "1.0"
       }
+    },
+    {
+      "id": "maven:source:abc-raia-20260907",
+      "label": "ABC News Raia Threat Interview Reporting",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.97,
+      "desc": "Public reporting on FBI Co-Deputy Director Chris Raia's 2026 assessment of evolving terrorism threats, including online radicalization, lone offenders, and emerging drone concerns.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://abcnews.com/US/top-fbi-official-warns-911-inspiring-terrorists-inside/story?id=136258064",
+          "publisher": "ABC News",
+          "publishedAt": "2026-09-07"
+        }
+      },
+      "lat": 8.8695,
+      "lon": -14.7675
+    },
+    {
+      "id": "maven:source:dhs-suspicious-activity",
+      "label": "DHS Suspicious Activity Civil Liberties Guidance",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Official DHS guidance that suspicious-activity reporting should focus on behavior and situations rather than protected characteristics or appearance.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.dhs.gov/see-something-say-something/what-suspicious-activity",
+          "publisher": "U.S. Department of Homeland Security"
+        }
+      },
+      "lat": 45.0911,
+      "lon": 62.4939
+    },
+    {
+      "id": "maven:source:fbi-ctd-20241121",
+      "label": "FBI Counterterrorism Division Turns 25",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Official FBI source describing counterterrorism evolution, public-tip triage, Joint Terrorism Task Force partnerships, and multi-agency information sharing.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.fbi.gov/news/stories/the-fbis-counterterrorism-division-turns-25",
+          "publisher": "Federal Bureau of Investigation",
+          "publishedAt": "2024-11-21"
+        }
+      },
+      "lat": -63.1816,
+      "lon": -138.7264
+    },
+    {
+      "id": "maven:source:fbi-youtube-raia-20260911",
+      "label": "FBI Raia Evolving Terror Threat Video",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Public FBI YouTube source: Deputy Director Raia on how the terror threat has evolved, published 2026-09-11.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=jWBd4RYJFd0",
+          "publisher": "Federal Bureau of Investigation",
+          "retrievedAt": "2026-09-11T19:02:00Z"
+        }
+      },
+      "lat": 14.0771,
+      "lon": 140.1434
+    },
+    {
+      "id": "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM",
+      "label": "Palantir AIPCon 9 Multi-Domain AI Talk",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Official Palantir video: Multi-Domain AI: The Future of Command and Control | CDAO at AIPCon 9, featuring Cameron Stanley and describing enterprise AI adoption, workflow integration, data fusion, ontology-mediated interoperability, and decision advantage.",
+      "provenance": {
+        "sourceSystem": "XUNIA Public Architecture Intelligence",
+        "sourceUri": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+        "exportId": "aipcon9-multidomain-ai-yrtDgoqWmgM-20260911",
+        "generatedAt": "2026-09-11T19:20:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:20:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=yrtDgoqWmgM",
+          "publisher": "Palantir",
+          "publishedAt": "2026-03-13"
+        }
+      },
+      "lat": -56.346,
+      "lon": 177.7701
+    },
+    {
+      "id": "maven:source:youtube:ccY6D0jKVck",
+      "label": "YouTube Source ccY6D0jKVck",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.7,
+      "desc": "Operator-supplied public video asserted to contain a statement permitting use of the referenced capability. Public indexing did not independently expose enough metadata/transcript to verify the exact scope of permission at ingestion time.",
+      "provenance": {
+        "sourceSystem": "XUNIA Operator-Supplied Public Authorization Evidence",
+        "sourceUri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+        "exportId": "public-use-claim-ccY6D0jKVck-20260911-1911z",
+        "generatedAt": "2026-09-11T19:11:31Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:12:00Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {
+          "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+          "assertedBy": "operator",
+          "verificationState": "pending-independent-verification"
+        }
+      },
+      "lat": -20.7736,
+      "lon": 54.9647
     },
     {
       "id": "maven:system",
@@ -377,57 +1238,45 @@
       }
     },
     {
-      "id": "maven:artifact:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
-      "label": "Foundry Maven Release 1.0.0-git-6651a601c2a7-20260910230916",
-      "objectType": "Artifact",
-      "type": "knowledge",
-      "lat": -7.1176,
-      "lon": 100.6667,
+      "id": "maven:threat-pattern:decentralized-online-mobilization",
+      "label": "Decentralized Online Mobilization Pattern",
+      "objectType": "ThreatPattern",
+      "type": "security",
       "status": "verified",
-      "confidence": 1.0,
-      "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, remote GET, and SHA-256 integrity.",
+      "confidence": 0.92,
+      "desc": "Defensive analytic pattern representing a shift from centrally coordinated plots toward dispersed online radicalization and harder-to-detect lone-offender mobilization. This is not a person-level risk score.",
+      "lat": 58.5898,
+      "lon": -53.9514,
       "provenance": {
-        "sourceSystem": "Palantir Foundry Artifact Repository",
-        "sourceUri": "foundry://zyra.usw-17.palantirfoundry.com/com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
-        "exportId": "com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
-        "generatedAt": "2026-09-10T23:09:17.053093+00:00",
-        "approvedBy": "remote-put-get-sha256-verifier",
-        "approvedAt": "2026-09-10T23:09:17.053093+00:00",
-        "syncMethod": "real-foundry-maven/1.0",
-        "upstream": {
-          "gitCommit": "6651a601c2a7ea7c9203e3d960fceee5d9a46c00",
-          "gitBranch": "feat/maven-ontology-v1-20260910-111133",
-          "pomPutStatus": 204,
-          "jarPutStatus": 204,
-          "pomGetStatus": 200,
-          "jarGetStatus": 200,
-          "pomSha256": "b4719910790e1d27a16d7a490925dc7127aece48c74c07a221da3b00425ff3c6",
-          "jarSha256": "0ca53db8f4ee4972db219b64c0f1d972ed6761845933d3fdcd4e6ce11ab64c74"
-        }
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
       }
     },
     {
-      "id": "maven:evidence:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
-      "label": "Foundry Maven Remote Verification",
-      "objectType": "Evidence",
-      "type": "knowledge",
-      "lat": 0.8824,
-      "lon": 118.6667,
+      "id": "maven:track:evolving-decentralized-threat",
+      "label": "Evolving Decentralized Threat Track",
+      "objectType": "Track",
+      "type": "security",
       "status": "verified",
-      "confidence": 1.0,
-      "desc": "Cryptographic evidence that the Maven POM and JAR written to Foundry were retrieved byte-for-byte successfully.",
+      "confidence": 0.9,
+      "desc": "Fused defensive track that correlates authorized, provenanced signals about decentralized and online-enabled threat evolution without automated identity-based targeting.",
+      "lat": -28.2102,
+      "lon": -58.9767,
       "provenance": {
-        "sourceSystem": "GPT-DOUG Maven Release Verifier",
-        "sourceUri": "proof://foundry-maven/1.0.0-git-6651a601c2a7-20260910230916",
-        "generatedAt": "2026-09-10T23:09:17.053093+00:00",
-        "syncMethod": "sha256-roundtrip/1.0",
-        "upstream": {
-          "coordinate": "com.xunia:gpt-doug-foundry-bridge:1.0.0-git-6651a601c2a7-20260910230916",
-          "pomSha256": "b4719910790e1d27a16d7a490925dc7127aece48c74c07a221da3b00425ff3c6",
-          "jarSha256": "0ca53db8f4ee4972db219b64c0f1d972ed6761845933d3fdcd4e6ce11ab64c74",
-          "pomMatch": true,
-          "jarMatch": true
-        }
+        "sourceSystem": "XUNIA Public Threat Intelligence",
+        "sourceUri": "xunia://public-threat-intel/fbi-raia/evolving-threats/2026-09-11",
+        "exportId": "fbi-raia-evolving-threats-20260911-1902z",
+        "generatedAt": "2026-09-11T19:02:00Z",
+        "approvedBy": "xunia-operator-user-direction",
+        "approvedAt": "2026-09-11T19:02:30Z",
+        "syncMethod": "maven-live-sync/1.0",
+        "upstream": {}
       }
     },
     {
@@ -788,6 +1637,16 @@
       "RESPONDS_TO"
     ],
     [
+      "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "RESPONDS_TO"
+    ],
+    [
+      "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "maven:review-event:permission-ccY6D0jKVck",
+      "REQUIRES"
+    ],
+    [
       "maven:agent",
       "maven:action",
       "EXECUTES"
@@ -808,14 +1667,79 @@
       "DERIVED_FROM"
     ],
     [
+      "maven:assessment:evolving-threat-2026",
+      "maven:decision-packet:evolving-threat-readiness-2026",
+      "PACKAGED_IN"
+    ],
+    [
+      "maven:audit-record:aipcon9-yrtDgoqWmgM-20260911",
+      "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM",
+      "SUPPORTED_BY"
+    ],
+    [
+      "maven:capability:emerging-tech-horizon-scan",
+      "maven:source:abc-raia-20260907",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:capability:interagency-fusion",
+      "maven:source:fbi-ctd-20241121",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:capability:operator-feedback-flywheel",
+      "maven:review-event:operator-feedback-cycle",
+      "REQUIRES"
+    ],
+    [
+      "maven:capability:public-tip-triage",
+      "maven:source:fbi-ctd-20241121",
+      "DERIVED_FROM"
+    ],
+    [
       "maven:control",
       "maven:threat",
       "MITIGATES"
     ],
     [
+      "maven:control:behavior-evidence-civil-liberties",
+      "maven:mission:adaptive-threat-readiness",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:behavior-evidence-civil-liberties",
+      "maven:review-event:evolving-threat-2026",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:human-decision-authority",
+      "maven:review-event:operator-feedback-cycle",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:human-decision-authority",
+      "maven:scenario:multidomain-c2-simulation",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:permission-verification-gate",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "GOVERNS"
+    ],
+    [
+      "maven:control:public-reference-no-entitlement",
+      "maven:platform:mss-public-reference",
+      "GOVERNS"
+    ],
+    [
       "maven:dataset",
       "maven:source",
       "DERIVED_FROM"
+    ],
+    [
+      "maven:decision-packet:evolving-threat-readiness-2026",
+      "maven:review-event:evolving-threat-2026",
+      "REVIEWED_BY"
     ],
     [
       "maven:evidence",
@@ -828,6 +1752,11 @@
       "SUPPORTED_BY"
     ],
     [
+      "maven:finding:workflow-bottleneck-over-isolated-ai",
+      "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM",
+      "DERIVED_FROM"
+    ],
+    [
       "maven:mission",
       "maven:capability",
       "REQUIRES"
@@ -838,9 +1767,69 @@
       "USES"
     ],
     [
+      "maven:mission:adaptive-threat-readiness",
+      "maven:capability:emerging-tech-horizon-scan",
+      "REQUIRES"
+    ],
+    [
+      "maven:mission:adaptive-threat-readiness",
+      "maven:capability:interagency-fusion",
+      "REQUIRES"
+    ],
+    [
+      "maven:mission:adaptive-threat-readiness",
+      "maven:capability:public-tip-triage",
+      "REQUIRES"
+    ],
+    [
+      "maven:mission:adaptive-threat-readiness",
+      "maven:partner:interagency-task-force-model",
+      "SUPPORTED_BY"
+    ],
+    [
+      "maven:partner:interagency-task-force-model",
+      "maven:source:fbi-ctd-20241121",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "maven:capability:authorized-public-use-path",
+      "GOVERNS"
+    ],
+    [
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "SUPPORTED_BY"
+    ],
+    [
       "maven:platform",
       "maven:system",
       "HOSTS"
+    ],
+    [
+      "maven:platform:mss-public-reference",
+      "maven:capability:multi-source-fusion",
+      "PROVIDES"
+    ],
+    [
+      "maven:platform:mss-public-reference",
+      "maven:capability:ontology-mediated-interoperability",
+      "PROVIDES"
+    ],
+    [
+      "maven:platform:mss-public-reference",
+      "maven:capability:operator-feedback-flywheel",
+      "PROVIDES"
+    ],
+    [
+      "maven:platform:mss-public-reference",
+      "maven:capability:single-decision-surface",
+      "PROVIDES"
+    ],
+    [
+      "maven:platform:mss-public-reference",
+      "maven:source:palantir-youtube-aipcon9-yrtDgoqWmgM",
+      "DERIVED_FROM"
     ],
     [
       "maven:requirement",
@@ -848,9 +1837,79 @@
       "GOVERNS"
     ],
     [
+      "maven:requirement:decision-centric-ai-design",
+      "maven:capability:multi-source-fusion",
+      "REQUIRES"
+    ],
+    [
+      "maven:requirement:decision-centric-ai-design",
+      "maven:capability:ontology-mediated-interoperability",
+      "REQUIRES"
+    ],
+    [
+      "maven:requirement:decision-centric-ai-design",
+      "maven:finding:workflow-bottleneck-over-isolated-ai",
+      "RESPONDS_TO"
+    ],
+    [
+      "maven:review-event:evolving-threat-2026",
+      "maven:audit-record:evolving-threat-2026",
+      "RECORDED_IN"
+    ],
+    [
+      "maven:review-event:operator-feedback-cycle",
+      "maven:audit-record:aipcon9-yrtDgoqWmgM-20260911",
+      "RECORDED_IN"
+    ],
+    [
+      "maven:review-event:permission-ccY6D0jKVck",
+      "maven:permission-statement:public-use:ccY6D0jKVck",
+      "REVIEWS"
+    ],
+    [
+      "maven:scenario:emerging-drone-misuse",
+      "maven:mission:adaptive-threat-readiness",
+      "INFORMS"
+    ],
+    [
+      "maven:scenario:emerging-drone-misuse",
+      "maven:source:abc-raia-20260907",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:scenario:multidomain-c2-simulation",
+      "maven:capability:multi-source-fusion",
+      "USES"
+    ],
+    [
+      "maven:scenario:multidomain-c2-simulation",
+      "maven:capability:ontology-mediated-interoperability",
+      "USES"
+    ],
+    [
+      "maven:scenario:multidomain-c2-simulation",
+      "maven:capability:single-decision-surface",
+      "USES"
+    ],
+    [
       "maven:sensor",
       "maven:dataset",
       "FEEDS"
+    ],
+    [
+      "maven:signal:public-tip-model",
+      "maven:source:dhs-suspicious-activity",
+      "DERIVED_FROM"
+    ],
+    [
+      "maven:signal:public-tip-model",
+      "maven:track:evolving-decentralized-threat",
+      "FUSES_INTO"
+    ],
+    [
+      "maven:source:youtube:ccY6D0jKVck",
+      "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "PROVIDES"
     ],
     [
       "maven:system",
@@ -868,19 +1927,24 @@
       "AFFECTS"
     ],
     [
-      "maven:artifact:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
-      "maven:evidence:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
+      "maven:threat-pattern:decentralized-online-mobilization",
+      "maven:source:abc-raia-20260907",
       "DERIVED_FROM"
     ],
     [
-      "maven:artifact:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
-      "maven:source",
+      "maven:threat-pattern:decentralized-online-mobilization",
+      "maven:source:fbi-youtube-raia-20260911",
       "DERIVED_FROM"
     ],
     [
-      "maven:evidence:foundry-release:1.0.0-git-6651a601c2a7-20260910230916",
-      "maven:source",
-      "DERIVED_FROM"
+      "maven:track:evolving-decentralized-threat",
+      "maven:assessment:evolving-threat-2026",
+      "ASSESSED_BY"
+    ],
+    [
+      "maven:track:evolving-decentralized-threat",
+      "maven:threat-pattern:decentralized-online-mobilization",
+      "MATCHES_PATTERN"
     ],
     [
       "maven:artifact:foundry:1.0.0-git-6651a601c2a7-20260910230916",
