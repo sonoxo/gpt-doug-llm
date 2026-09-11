@@ -21,6 +21,13 @@ ARTIFACT = os.getenv("ZYRA_MAVEN_ARTIFACT", "gpt-doug-foundry-bridge")
 
 STATE_DIR = pathlib.Path.home() / ".config" / "gpt-doug"
 PROOF_FILE = STATE_DIR / "palantir-maven-release-last.json"
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+INTEGRATION_MANIFEST = (
+    REPO_ROOT
+    / "integrations"
+    / "authorized-sensor-bridge"
+    / "manifest.json"
+)
 
 
 def fail(msg: str) -> None:
@@ -70,6 +77,16 @@ if not version:
 git_sha = os.getenv("ZYRA_GIT_SHA", "unknown")
 git_branch = os.getenv("ZYRA_GIT_BRANCH", "unknown")
 
+integration = None
+if INTEGRATION_MANIFEST.exists():
+    integration = json.loads(INTEGRATION_MANIFEST.read_text(encoding="utf-8"))
+    if integration.get("schema") != "xunia.maven.integration.v1":
+        fail("unsupported sensor integration manifest schema")
+    if integration.get("credentials_in_artifact") is not False:
+        fail("sensor integration manifest must prohibit credentials in artifact")
+    if integration.get("requires_explicit_authorization") is not True:
+        fail("sensor integration manifest must require explicit authorization")
+
 created = datetime.now(timezone.utc).isoformat()
 
 metadata = {
@@ -79,6 +96,7 @@ metadata = {
     "git_branch": git_branch,
     "created_at": created,
     "executable_payload": False,
+    "integrations": [integration["id"]] if integration else [],
 }
 
 buffer = io.BytesIO()
@@ -96,6 +114,12 @@ with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as jar:
         "META-INF/gpt-doug/release.json",
         json.dumps(metadata, indent=2, sort_keys=True) + "\n",
     )
+
+    if integration:
+        jar.writestr(
+            "META-INF/gpt-doug/integrations/authorized-sensor-bridge.json",
+            json.dumps(integration, indent=2, sort_keys=True) + "\n",
+        )
 
 jar_data = buffer.getvalue()
 
@@ -205,6 +229,7 @@ proof = {
     "coordinates": f"{GROUP}:{ARTIFACT}:{version}",
     "git_commit": git_sha,
     "git_branch": git_branch,
+    "integrations": metadata["integrations"],
     "publish": {
         "pom_status": pom_put,
         "jar_status": jar_put,
@@ -238,6 +263,7 @@ print()
 print("=== RELEASE PROOF ===")
 print("COORDINATES:", proof["coordinates"])
 print("GIT COMMIT :", git_sha)
+print("INTEGRATIONS:", ", ".join(proof["integrations"]) or "none")
 print("POM PUT    :", pom_put)
 print("JAR PUT    :", jar_put)
 print("POM GET    :", pom_get)
