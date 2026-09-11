@@ -8,7 +8,7 @@ usage() {
   cat <<'EOF'
 Usage: zyra-maven [status|verify|roundtrip|release|consume|lineage|bind|proof|doctor|ontology|visual|go|gate|assure|sign|palantir|token]
 
-  go         Run complete fail-closed Foundry Maven pipeline
+  go         One-prompt publish + verify + assure + sign pipeline
   gate       Read-only live verification of the current Maven release
   assure     SBOM + OSV + provenance + verified rollback qualification
   sign       Agentic OpenPGP signing + remote signature verification
@@ -85,7 +85,7 @@ cmd="${1:-status}"
 
 case "$cmd" in
   go)
-    exec bash "$ROOT/scripts/zyra-maven-go" go "$@"
+    exec bash "$ROOT/scripts/zyra-maven-auto" "$@"
     ;;
   gate)
     exec python3 "$ROOT/scripts/zyra-maven-gate" "$@"

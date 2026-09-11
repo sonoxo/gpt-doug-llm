@@ -86,7 +86,9 @@ command -v mvn >/dev/null 2>&1 || {
     exit 1
 }
 
-echo "MAVEN : $(mvn -version | head -n 1)"
+MAVEN_VERSION_OUTPUT="$(mvn -version 2>&1)"
+MAVEN_VERSION_FIRST="${MAVEN_VERSION_OUTPUT%%$'\n'*}"
+echo "MAVEN : $MAVEN_VERSION_FIRST"
 echo 'ENGINE VALIDATION : PASS'
 
 echo
@@ -153,11 +155,25 @@ echo 'USE: Artifact Repository -> Publish -> Maven -> Generate token'
 echo 'DO NOT use an Ontology/OAuth token.'
 echo
 
-printf 'FRESH MAVEN PUBLISH TOKEN (HIDDEN): '
-IFS= read -r -s PALANTIR_MAVEN_TOKEN
-printf '\n'
+if [ -z "${PALANTIR_MAVEN_TOKEN:-}" ]; then
 
-test -n "$PALANTIR_MAVEN_TOKEN" || {
+    printf 'FRESH MAVEN PUBLISH TOKEN (HIDDEN): ' >/dev/tty
+
+    if ! IFS= read -r -s PALANTIR_MAVEN_TOKEN </dev/tty; then
+        printf '\n' >/dev/tty
+        echo 'NO-GO: could not read Maven token from terminal' >&2
+        exit 1
+    fi
+
+    printf '\n' >/dev/tty
+
+else
+
+    echo 'TOKEN SOURCE : EXISTING SECURE SESSION'
+
+fi
+
+test -n "${PALANTIR_MAVEN_TOKEN:-}" || {
     echo 'NO-GO: token missing'
     exit 1
 }
@@ -176,103 +192,134 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 echo
-echo '=== 5/10 AUTHENTICATED READ PREFLIGHT ==='
+echo '=== 5/10 AUTHENTICATED EXACT READ PREFLIGHT ==='
 
-LAST_COORD=""
-
-if [ -f "$STATE/palantir-maven-release-last.json" ]; then
-
-    LAST_COORD="$(
-        python3 - \
-            "$STATE/palantir-maven-release-last.json" <<'PY'
+python3 - "$STATE/palantir-maven-release-last.json" "$BASE" <<'PYGO'
+import base64
+import hashlib
 import json
+import os
+from pathlib import Path
 import sys
+import urllib.error
+import urllib.request
 
-try:
-    d = json.load(
-        open(sys.argv[1])
+proof_path = Path(sys.argv[1])
+base = sys.argv[2].rstrip("/")
+
+if not proof_path.exists():
+    print(
+        "No previous release proof; "
+        "publish preflight will continue."
+    )
+    raise SystemExit(0)
+
+proof = json.loads(
+    proof_path.read_text()
+)
+
+if proof.get("ok") is not True:
+    print(
+        "Previous release proof is not GO; "
+        "continuing to fresh publish."
+    )
+    raise SystemExit(0)
+
+coord = proof.get(
+    "coordinates",
+    "",
+)
+
+if not coord:
+    raise SystemExit(
+        "NO-GO: previous coordinate missing"
     )
 
-    if d.get("ok") is True:
-        print(
-            d.get(
-                "coordinates",
-                "",
-            )
-        )
+group, artifact, version = coord.split(
+    ":",
+    2,
+)
 
-except Exception:
-    pass
-PY
-    )"
-fi
+token = os.environ.get(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
+)
 
-if [ -n "$LAST_COORD" ]; then
+username = os.environ.get(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+)
 
-    TMP="$(
-        mktemp -d \
-        "${TMPDIR:-/tmp}/zyra-maven-auth.XXXXXX"
-    )"
+if not token:
+    raise SystemExit(
+        "NO-GO: Maven token missing"
+    )
 
-    chmod 700 "$TMP"
+url = (
+    f"{base}/"
+    f"{group.replace('.', '/')}/"
+    f"{artifact}/"
+    f"{version}/"
+    f"{artifact}-{version}.jar"
+)
 
-    cat > "$TMP/settings.xml" <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
-  <servers>
-    <server>
-      <id>${REPO_ID}</id>
-      <username>\${env.PALANTIR_MAVEN_USERNAME}</username>
-      <password>\${env.PALANTIR_MAVEN_TOKEN}</password>
-    </server>
-  </servers>
-</settings>
-EOF
+auth = base64.b64encode(
+    f"{username}:{token}".encode()
+).decode()
 
-    chmod 600 "$TMP/settings.xml"
+request = urllib.request.Request(
+    url,
+    headers={
+        "Authorization":
+            f"Basic {auth}",
+        "Accept":
+            "*/*",
+        "User-Agent":
+            "gpt-doug-maven-go-preflight/2",
+    },
+    method="GET",
+)
 
-    echo "TEST ARTIFACT : $LAST_COORD"
+try:
+    with urllib.request.urlopen(
+        request,
+        timeout=30,
+    ) as response:
+        data = response.read()
+        status = int(response.status)
 
-    set +e
+except urllib.error.HTTPError as exc:
+    raise SystemExit(
+        f"NO-GO: authenticated Maven GET "
+        f"returned HTTP {exc.code}"
+    ) from exc
 
-    mvn \
-        -B \
-        -q \
-        -s "$TMP/settings.xml" \
-        -Dmaven.repo.local="$TMP/repository" \
-        org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get \
-        "-Dartifact=${LAST_COORD}:jar" \
-        "-DremoteRepositories=${REPO_ID}::default::${BASE}" \
-        -Dtransitive=false
+expected = (
+    proof
+    .get("integrity", {})
+    .get("jar_sha256")
+)
 
-    AUTH_RC=$?
+actual = hashlib.sha256(
+    data
+).hexdigest()
 
-    set -e
+if not 200 <= status < 300:
+    raise SystemExit(
+        f"NO-GO: Maven GET status {status}"
+    )
 
-    rm -rf "$TMP"
+if expected and actual != expected:
+    raise SystemExit(
+        "NO-GO: authenticated preflight SHA mismatch"
+    )
 
-    if [ "$AUTH_RC" -ne 0 ]; then
-
-        echo
-        echo '============================================================'
-        echo ' MAVEN PIPELINE: NO-GO'
-        echo '============================================================'
-        echo 'Fresh token could not read the last verified Maven artifact.'
-        echo
-        echo 'Required credential:'
-        echo 'Artifact Repository -> Publish -> Maven -> Generate token'
-        echo
-        echo 'Nothing was published.'
-        echo '============================================================'
-
-        exit 1
-    fi
-
-    echo 'AUTHENTICATED MAVEN READ : PASS'
-
-else
-    echo 'No previous proof available; continuing to publish gate.'
-fi
+print("TEST ARTIFACT :", coord)
+print("REMOTE GET    :", status)
+print("REMOTE SHA256 :", actual)
+print("SHA MATCH     : PASS")
+print("AUTH PREFLIGHT: PASS")
+PYGO
 
 echo
 echo '=== 6/10 PREPARE RELEASE ==='

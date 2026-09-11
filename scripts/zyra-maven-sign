@@ -632,30 +632,47 @@ print(
 
 
 # ------------------------------------------------------
-# FRESH PALANTIR MAVEN TOKEN
+# PALANTIR MAVEN TOKEN
 # ------------------------------------------------------
 
 print()
-print("=== FRESH FOUNDRY MAVEN TOKEN ===")
-print(PALANTIR)
+print("=== FOUNDRY MAVEN TOKEN ===")
 
-try:
-    webbrowser.open(
-        PALANTIR
-    )
-except Exception:
-    pass
-
-token = getpass.getpass(
-    "FRESH Foundry Maven token (HIDDEN): "
+token = os.environ.get(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
 ).strip()
+
+username = os.environ.get(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+).strip()
+
+if token:
+
+    print(
+        "TOKEN SOURCE : ONE-PROMPT SESSION"
+    )
+
+else:
+
+    print(PALANTIR)
+
+    try:
+        webbrowser.open(
+            PALANTIR
+        )
+    except Exception:
+        pass
+
+    token = getpass.getpass(
+        "FRESH Foundry Maven token (HIDDEN): "
+    ).strip()
 
 if not token:
     raise SystemExit(
         "NO-GO: Maven token required"
     )
-
-username = ""
 
 
 # ------------------------------------------------------
