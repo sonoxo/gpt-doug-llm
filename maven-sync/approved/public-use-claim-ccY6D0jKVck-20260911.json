@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "maven-export/1.0",
+  "source": {
+    "system": "XUNIA Operator-Supplied Public Authorization Evidence",
+    "exportId": "public-use-claim-ccY6D0jKVck-20260911-1915z",
+    "uri": "xunia://public-authorization/youtube/ccY6D0jKVck/2026-09-11",
+    "generatedAt": "2026-09-11T19:15:00Z"
+  },
+  "approval": {
+    "status": "approved",
+    "scope": "ontology-sync",
+    "approvedBy": "xunia-operator-user-direction",
+    "approvedAt": "2026-09-11T19:15:30Z"
+  },
+  "nodes": [
+    {
+      "id": "maven:source:youtube:ccY6D0jKVck",
+      "label": "YouTube Source ccY6D0jKVck",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.7,
+      "desc": "Operator-supplied public video asserted to contain a statement permitting use of the referenced capability. Public indexing did not independently expose enough metadata/transcript to verify the exact scope of permission at ingestion time.",
+      "provenance": {
+        "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+        "assertedBy": "operator",
+        "verificationState": "pending-independent-verification"
+      }
+    },
+    {
+      "id": "maven:evidence:public-use-claim:ccY6D0jKVck",
+      "label": "Public Use Claim Evidence",
+      "objectType": "Evidence",
+      "type": "knowledge",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Evidence record for the operator-reported statement that the referenced system or capability may be used. This records the claim without treating it as a verified entitlement, credential, license, or access grant.",
+      "provenance": {
+        "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+        "claim": "they said we can use it",
+        "verificationState": "candidate"
+      }
+    },
+    {
+      "id": "maven:permission-statement:public-use:ccY6D0jKVck",
+      "label": "Public Use Permission Statement",
+      "objectType": "PermissionStatement",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.65,
+      "desc": "Candidate permission statement representing an asserted public authorization to use a capability. Effective scope must be resolved from authoritative terms, enrollment, account entitlements, or an independently verified source before operational reliance.",
+      "provenance": {
+        "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+        "verificationState": "candidate",
+        "doesNotImply": [
+          "credentials",
+          "license",
+          "government-system access",
+          "Palantir entitlements",
+          "Maven Smart System access"
+        ]
+      }
+    },
+    {
+      "id": "maven:control:permission-verification-gate",
+      "label": "Permission Verification Gate",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Before relying on a public statement as authorization, verify the exact product/capability, allowed users, permitted purposes, enrollment requirements, terms, account entitlements, and any data handling restrictions. Public media never substitutes for credentials or access controls.",
+      "provenance": {
+        "method": "governance-policy",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:capability:authorized-public-use-path",
+      "label": "Authorized Public Use Path",
+      "objectType": "Capability",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95,
+      "desc": "Resolve a claimed public-use permission into a bounded, terms-compliant integration path: identify the actual product, verify eligibility, use only issued credentials, preserve provenance, and restrict actions to the granted scope.",
+      "provenance": {
+        "method": "governed-integration-pattern",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:review-event:permission-ccY6D0jKVck",
+      "label": "Permission Scope Verification Review",
+      "objectType": "ReviewEvent",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.8,
+      "desc": "Human review event to verify what the video actually authorizes and map that statement to authoritative product terms or account entitlements before changing the permission statement to verified.",
+      "provenance": {
+        "url": "https://www.youtube.com/watch?v=ccY6D0jKVck",
+        "reviewState": "pending"
+      }
+    },
+    {
+      "id": "maven:action:evaluate-public-use-claim-ccY6D0jKVck",
+      "label": "Evaluate Public Use Claim",
+      "objectType": "Action",
+      "type": "agent",
+      "status": "verified",
+      "confidence": 0.98,
+      "mode": "recommend",
+      "desc": "Recommend verification of the claimed authorization against authoritative terms and actual entitlements. This action does not create credentials, grant access, enroll an account, or execute external side effects.",
+      "provenance": {
+        "method": "governed-review-action",
+        "version": "1.0"
+      }
+    }
+  ],
+  "links": [
+    ["maven:source:youtube:ccY6D0jKVck", "maven:evidence:public-use-claim:ccY6D0jKVck", "PROVIDES"],
+    ["maven:permission-statement:public-use:ccY6D0jKVck", "maven:evidence:public-use-claim:ccY6D0jKVck", "SUPPORTED_BY"],
+    ["maven:control:permission-verification-gate", "maven:permission-statement:public-use:ccY6D0jKVck", "GOVERNS"],
+    ["maven:permission-statement:public-use:ccY6D0jKVck", "maven:capability:authorized-public-use-path", "GOVERNS"],
+    ["maven:review-event:permission-ccY6D0jKVck", "maven:permission-statement:public-use:ccY6D0jKVck", "REVIEWS"],
+    ["maven:action:evaluate-public-use-claim-ccY6D0jKVck", "maven:permission-statement:public-use:ccY6D0jKVck", "RESPONDS_TO"],
+    ["maven:action:evaluate-public-use-claim-ccY6D0jKVck", "maven:review-event:permission-ccY6D0jKVck", "REQUIRES"]
+  ]
+}
