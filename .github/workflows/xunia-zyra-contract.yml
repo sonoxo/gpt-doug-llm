@@ -1,0 +1,59 @@
+name: XUNIA Zyra integration contract
+on:
+  pull_request:
+    paths:
+      - 'va3lm/src/va3lm/rvia.py'
+      - 'va3lm/src/va3lm/training_sources.py'
+      - 'va3lm/src/va3lm/service_status.py'
+      - 'va3lm/tests/test_service_status_integration.py'
+      - 'va3lm/tests/test_priority_integration.py'
+      - 'the-black-house/training/safehouse/**'
+      - 'the-black-house/kernel/kernel.manifest.json'
+      - 'packages/mission-contract/**'
+      - 'scripts/verify_xunia_zyra_integration.mjs'
+      - '.github/workflows/xunia-zyra-contract.yml'
+  workflow_dispatch:
+    inputs:
+      zyra_ref:
+        description: Zyra branch or commit for cross-repository verification
+        default: main
+        required: true
+      xunia_ref:
+        description: XUNIA branch or commit for cross-repository verification
+        default: main
+        required: true
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'pydantic>=2.8,<3'
+      - run: python -m unittest discover -s va3lm/tests -p 'test_*integration.py' -v
+        env:
+          PYTHONPATH: va3lm/src
+      - run: node --test packages/mission-contract/contract.test.mjs
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          repository: sonoxo/zyra
+          ref: ${{ inputs.zyra_ref }}
+          path: integration/zyra
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          repository: sonoxo/gods-eye-viewXUNIA
+          ref: ${{ inputs.xunia_ref }}
+          path: integration/xunia
+      - run: node scripts/verify_xunia_zyra_integration.mjs
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ZYRA_REPO_PATH: integration/zyra
+          XUNIA_REPO_PATH: integration/xunia
