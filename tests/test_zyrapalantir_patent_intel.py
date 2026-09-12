@@ -15,6 +15,29 @@ EXPECTED_EXACT = {
     "US-12585804-B2",
     "US-20260080157-A1",
     "US-12579156-B2",
+    "US-12572542-B2",
+    "US-12572545-B2",
+    "US-20260017391-A1",
+    "US-20260017828-A1",
+    "US-20260017267-A1",
+    "US-20260019665-A1",
+    "US-12487876-B2",
+}
+
+EXPECTED_PATTERNS = {
+    "eligibility-engine-generative-ai-criteria-evaluation",
+    "shared-infrastructure-data-security-governance",
+    "live-data-migration-and-consistency",
+    "shared-infrastructure-object-permission-governance",
+    "generative-ai-evidence-routed-document-workflow",
+    "linked-dataset-interactive-visualization",
+    "natural-language-to-data-pipeline-generation",
+    "ontology-query-execution-planning",
+    "data-platform-segment-security-enforcement",
+    "branch-aware-dataset-update-synchronization",
+    "recursive-resource-discovery-and-governed-deletion",
+    "access-controlled-secure-communications-orchestration",
+    "language-model-assisted-error-analysis",
 }
 
 
@@ -87,14 +110,7 @@ def test_patent_ontology_contains_exact_attributions_and_architecture_watches():
     exact_numbers = {item["document_number"] for item in ontology["high_confidence_attributions"]}
     assert EXPECTED_EXACT.issubset(exact_numbers)
     patterns = {item["name"] for item in ontology["architecture_watch_patterns"]}
-    assert {
-        "eligibility-engine-generative-ai-criteria-evaluation",
-        "shared-infrastructure-data-security-governance",
-        "live-data-migration-and-consistency",
-        "shared-infrastructure-object-permission-governance",
-        "generative-ai-evidence-routed-document-workflow",
-        "linked-dataset-interactive-visualization",
-    }.issubset(patterns)
+    assert EXPECTED_PATTERNS.issubset(patterns)
     blocked = set(ontology["governed_actions"]["BLOCK"])
     review = set(ontology["governed_actions"]["REVIEW"])
     assert "claim_freedom_to_operate_automatically" in blocked
@@ -105,10 +121,8 @@ def test_brief_and_cli_are_wired():
     assert BRIEF.exists()
     text = BRIEF.read_text(encoding="utf-8")
     assert "USPTO PALANTIR-QUERY TECHNOLOGY LANDSCAPE" in text
-    assert "US-20260093834-A1" in text
-    assert "US-12591555-B2" in text
-    assert "US-20260080157-A1" in text
-    assert "US-12579156-B2" in text
+    for number in ("US-12572542-B2", "US-12572545-B2", "US-20260017391-A1", "US-20260019665-A1", "US-12487876-B2"):
+        assert number in text
     cli = load_cli()
     assert cli.doctor() == 0
 
