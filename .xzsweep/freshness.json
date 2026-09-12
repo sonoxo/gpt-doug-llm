@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-11T20:42:02Z",
+  "cutoff_at": "2026-09-11T20:42:54Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -7143,6 +7143,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/gpt_doug_autonomy_prior_art.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-12T20:42:12Z",
+      "reviewed_at": null,
+      "sha256": "6e1210f22c81c7bffdca423124449b05df5aa52e62cd0d0607714fc62fb07ec5",
+      "size": 5594,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/install_xunia_godis.sh": {
       "actions": [],
       "binary": false,
@@ -7888,6 +7899,17 @@
       "reviewed_at": "2026-09-12T19:46:31Z",
       "sha256": "3dccfd76ba1cbca650f2b7cc8a08ab3c8ebad4c4585ea0f507df20315ff9e5c5",
       "size": 8796,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_gpt_doug_autonomy_prior_art.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-12T20:42:24Z",
+      "reviewed_at": null,
+      "sha256": "c132631d16cd1c6efeedce3eee270fb264dd77ceff2fa0f10e77c142ac34adc0",
+      "size": 3120,
       "validation_issues": [],
       "was_due": false
     },
@@ -12370,11 +12392,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-12T20:42:02Z",
+  "generated_at": "2026-09-12T20:42:54Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1124,
+  "tracked_files_reviewed": 1126,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
