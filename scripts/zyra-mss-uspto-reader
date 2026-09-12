@@ -1,0 +1,49 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+VENV="${ZYRA_MSS_VENV:-$ROOT/.venv-zyra-mss}"
+PY="$VENV/bin/python"
+OUT="${ZYRA_MSS_USPTO_OUTPUT:-$HOME/.config/gpt-doug/zyra-mss-uspto-palantir}"
+
+bootstrap() {
+  if [ ! -x "$PY" ]; then
+    echo "🧰 Creating isolated ZYRA-MSS reader environment..."
+    python3 -m venv "$VENV"
+  fi
+
+  if ! "$PY" -c 'import playwright, pypdf' >/dev/null 2>&1; then
+    echo "📦 Installing reader dependencies into $VENV ..."
+    "$PY" -m pip install --upgrade pip >/dev/null
+    "$PY" -m pip install --upgrade playwright pypdf
+  fi
+}
+
+bootstrap
+
+if [ "${1:-}" = "mega" ]; then
+  shift
+  echo "🚀 ZYRA-MSS USPTO MEGA READ"
+  echo "   query  : palantir"
+  echo "   output : $OUT"
+
+  if [ -s "$OUT/discovered.jsonl" ] && [ "${ZYRA_MSS_FORCE_REDISCOVER:-0}" != "1" ]; then
+    echo "♻️ Existing discovery manifest found; retrying downloads/index without recrawling PPUBS search pages."
+    "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" retry \
+      --query palantir \
+      --workers 6 \
+      --output "$OUT" \
+      "$@"
+  else
+    "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" crawl \
+      --query palantir \
+      --workers 6 \
+      --output "$OUT" \
+      "$@"
+  fi
+
+  "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" doctor --output "$OUT"
+  exit $?
+fi
+
+exec "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" "$@"
