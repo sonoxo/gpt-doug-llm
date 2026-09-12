@@ -22,13 +22,15 @@ import time
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urljoin
 from urllib.request import Request, urlopen
 
 PPUBS = "https://ppubs.uspto.gov"
 BASIC = PPUBS + "/basic/"
 EXTERNAL = PPUBS + "/pubwebapp/external.html"
-PDF_BASE = PPUBS + "/dirsearch-public/print/downloadPdf/{}.pdf"
+IMAGE_PPUBS = "https://image-ppubs.uspto.gov"
+# USPTO's documented direct-PDF format intentionally has no .pdf suffix.
+PDF_BASE = IMAGE_PPUBS + "/dirsearch-public/print/downloadPdf/{}"
 DOC_RE = re.compile(r"\bUS[-\s]?(\d{7,11})[-\s]?([A-Z]\d)\b", re.I)
 MAX_NET = 6
 ROLE_BANDS = [
@@ -73,6 +75,11 @@ def pdf_number(docno):
     return m.group(1) if m else None
 
 
+def canonical_pdf_url(docno):
+    raw = pdf_number(docno)
+    return PDF_BASE.format(raw) if raw else ""
+
+
 def chrome():
     for p in [
         "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -92,12 +99,7 @@ def _launch(playwright, headed):
 
 
 def _collect_rows(page, pageno):
-    """Collect document numbers from any visible result rows.
-
-    PPUBS Basic currently renders rows containing `Preview PDF Text`. We do not
-    depend on the PDF anchor itself: USPTO exposes a stable PDF endpoint keyed by
-    the document/publication number, so a row document number is sufficient.
-    """
+    """Collect document numbers and, when available, the row's real PDF link."""
     found = {}
     rows = page.locator("tr")
     for i in range(rows.count()):
@@ -109,9 +111,19 @@ def _collect_rows(page, pageno):
         docno = number(text)
         if not docno:
             continue
-        raw = pdf_number(docno)
-        if raw:
-            found[docno] = Doc(docno, PDF_BASE.format(raw), text, pageno)
+
+        pdf_url = canonical_pdf_url(docno)
+        try:
+            links = row.locator("a", has_text=re.compile(r"^\s*PDF\s*$", re.I))
+            if links.count():
+                href = links.first.get_attribute("href")
+                if href and not href.lower().startswith("javascript:"):
+                    pdf_url = urljoin(page.url, href)
+        except Exception:
+            pass
+
+        if pdf_url:
+            found[docno] = Doc(docno, pdf_url, text, pageno)
     return found
 
 
@@ -168,8 +180,6 @@ def _discover_basic(page, query, max_pages):
     page.goto(BASIC, wait_until="domcontentloaded", timeout=120000)
     page.wait_for_timeout(1500)
 
-    # Basic Search has Quick Lookup first, followed by the Basic Search text
-    # inputs. Pick the first visible text/search input after Quick Lookup.
     inputs = page.locator("input:visible")
     if inputs.count() < 2:
         raise RuntimeError(f"PPUBS Basic form not detected (visible inputs={inputs.count()})")
@@ -191,8 +201,6 @@ def _discover_basic(page, query, max_pages):
 
 
 def _discover_external(page, query, max_pages):
-    # USPTO documents external query URLs for Patent Public Search. A plain term
-    # searches the full document when no field suffix is supplied.
     url = f"{EXTERNAL}?q={quote(query)}&db=USPAT,US-PGPUB&type=queryString"
     page.goto(url, wait_until="domcontentloaded", timeout=120000)
     page.wait_for_timeout(4000)
@@ -223,7 +231,6 @@ def discover(query, max_pages, headed, debug_dir):
                 found = _discover_external(page, query, max_pages)
 
             if not found:
-                # Leave forensic evidence instead of pretending the crawl ran.
                 try:
                     (debug_dir / "discovery-debug.html").write_text(page.content(), encoding="utf-8")
                     page.screenshot(path=str(debug_dir / "discovery-debug.png"), full_page=True)
@@ -251,31 +258,51 @@ def download(doc, out, cookie):
     p = out / "pdf" / (re.sub(r"[^A-Za-z0-9_.-]", "_", doc.document_number) + ".pdf")
     p.parent.mkdir(parents=True, exist_ok=True)
     headers = {
-        "User-Agent": "ZYRA-MSS-public-patent-research/1.0",
-        "Accept": "application/pdf,*/*;q=0.8",
+        "User-Agent": "Mozilla/5.0 ZYRA-MSS-public-patent-research/1.1",
+        "Accept": "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
+        "Referer": PPUBS + "/",
     }
     if cookie:
         headers["Cookie"] = cookie
-    try:
-        with urlopen(Request(doc.pdf_url, headers=headers), timeout=90) as r, p.open("wb") as f:
-            shutil.copyfileobj(r, f)
-        if p.read_bytes()[:5] != b"%PDF-":
-            raise RuntimeError("not a PDF")
-        return {
-            "document_number": doc.document_number,
-            "pdf_url": doc.pdf_url,
-            "pdf_path": str(p),
-            "bytes": p.stat().st_size,
-            "sha256": sha(p),
-            "status": "downloaded",
-        }
-    except Exception as e:
-        return {
-            "document_number": doc.document_number,
-            "pdf_url": doc.pdf_url,
-            "status": "failed",
-            "error": f"{type(e).__name__}: {e}",
-        }
+
+    urls = []
+    if doc.pdf_url:
+        urls.append(doc.pdf_url)
+    canonical = canonical_pdf_url(doc.document_number)
+    if canonical and canonical not in urls:
+        urls.append(canonical)
+
+    last_error = None
+    for url in urls:
+        try:
+            if p.exists():
+                p.unlink()
+            with urlopen(Request(url, headers=headers), timeout=90) as r, p.open("wb") as f:
+                shutil.copyfileobj(r, f)
+            if p.read_bytes()[:5] != b"%PDF-":
+                raise RuntimeError("response was not a PDF")
+            return {
+                "document_number": doc.document_number,
+                "pdf_url": url,
+                "pdf_path": str(p),
+                "bytes": p.stat().st_size,
+                "sha256": sha(p),
+                "status": "downloaded",
+            }
+        except Exception as e:
+            last_error = f"{type(e).__name__}: {e}"
+            try:
+                if p.exists():
+                    p.unlink()
+            except Exception:
+                pass
+
+    return {
+        "document_number": doc.document_number,
+        "pdf_url": canonical or doc.pdf_url,
+        "status": "failed",
+        "error": last_error or "no usable PDF URL",
+    }
 
 
 def extract(pdf, text):
@@ -297,49 +324,91 @@ def extract(pdf, text):
         raise RuntimeError("Install poppler (pdftotext) or pypdf") from e
 
 
-def crawl(a):
-    out = Path(a.output).expanduser().resolve()
-    out.mkdir(parents=True, exist_ok=True)
-    docs, cookie = discover(a.query, a.max_pages, a.headed, out)
-    (out / "discovered.jsonl").write_text(
-        "".join(json.dumps(asdict(d), sort_keys=True) + "\n" for d in docs),
-        encoding="utf-8",
-    )
-    print(f"📚 discovered {len(docs)} unique PPUBS PDFs")
+def load_discovered(out):
+    path = out / "discovered.jsonl"
+    if not path.exists():
+        return []
+    docs = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            data = json.loads(line)
+            docno = data.get("document_number")
+            if not docno:
+                continue
+            # Always refresh the direct URL so old manifests with the wrong host
+            # are repaired automatically.
+            data["pdf_url"] = canonical_pdf_url(docno)
+            docs.append(Doc(**{k: data.get(k) for k in ("document_number", "pdf_url", "row_text", "page")}))
+        except Exception:
+            continue
+    return docs
 
+
+def write_summary(out, *, query, discovered, indexed, failed, workers, failures=None):
+    failures = failures or []
+    summary = {
+        "schema": "xunia.zyra-mss.uspto-corpus.v1",
+        "source": PPUBS,
+        "query": query,
+        "discovered": discovered,
+        "indexed": indexed,
+        "failed": failed,
+        "complete": indexed == discovered and failed == 0 and discovered > 0,
+        "logical_worker_count": 100,
+        "actual_network_concurrency": workers,
+        "generated_at": now(),
+        "failure_samples": [
+            {"document_number": r.get("document_number"), "error": r.get("error"), "pdf_url": r.get("pdf_url")}
+            for r in failures[:5]
+        ],
+    }
+    (out / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return summary
+
+
+def process_docs(docs, out, *, query, workers, delay, cookie=""):
     if not docs:
-        summary = {
-            "schema": "xunia.zyra-mss.uspto-corpus.v1",
-            "source": PPUBS,
-            "query": a.query,
-            "discovered": 0,
-            "indexed": 0,
-            "failed": 0,
-            "complete": False,
-            "logical_worker_count": 100,
-            "actual_network_concurrency": 0,
-            "generated_at": now(),
-            "error": "PPUBS discovery returned zero documents",
-            "debug_files": [
-                str(out / "discovery-debug.html"),
-                str(out / "discovery-debug.png"),
-                str(out / "discovery-debug.txt"),
-            ],
-        }
-        (out / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print("❌ PPUBS discovery returned 0 documents; debug capture written to output directory")
+        print("❌ No discovered USPTO documents are available to process")
         return 2
 
-    results = []
-    workers = max(1, min(a.workers, MAX_NET))
+    workers = max(1, min(workers, MAX_NET))
+
+    # Fail-fast preflight: prove one real PDF works before launching thousands of
+    # requests. This prevents another 3,000+ request failure storm.
+    print(f"🧪 PDF preflight: {docs[0].document_number}")
+    probe = download(docs[0], out, cookie)
+    if probe.get("status") != "downloaded":
+        print(f"❌ PDF preflight failed: {probe.get('error')}")
+        print(f"   URL: {probe.get('pdf_url')}")
+        write_summary(
+            out,
+            query=query,
+            discovered=len(docs),
+            indexed=0,
+            failed=len(docs),
+            workers=0,
+            failures=[probe],
+        )
+        return 3
+    print(f"✅ PDF preflight passed: {probe.get('bytes', 0)} bytes")
+
+    results = [probe]
+    remaining = docs[1:]
     with cf.ThreadPoolExecutor(max_workers=workers) as pool:
-        futs = [pool.submit(download, d, out, cookie) for d in docs]
-        for i, f in enumerate(cf.as_completed(futs), 1):
+        futs = [pool.submit(download, d, out, cookie) for d in remaining]
+        total = len(docs)
+        done = 1
+        if total == 1:
+            print("⬇️ 1/1")
+        for f in cf.as_completed(futs):
             results.append(f.result())
-            if i % 25 == 0 or i == len(futs):
-                print(f"⬇️ {i}/{len(futs)}")
-            if a.delay:
-                time.sleep(a.delay)
+            done += 1
+            if done % 25 == 0 or done == total:
+                print(f"⬇️ {done}/{total}")
+            if delay:
+                time.sleep(delay)
 
     results.sort(key=lambda x: x["document_number"])
     db = out / "corpus.sqlite3"
@@ -389,7 +458,7 @@ def crawl(a):
             con.execute("INSERT INTO documents_fts VALUES(?,?)", (r["document_number"], body))
             indexed += 1
         except Exception as e:
-            r.update(status="failed", error=str(e))
+            r.update(status="failed", error=f"extract/index: {type(e).__name__}: {e}")
             failed.append(r)
 
     con.commit()
@@ -398,21 +467,71 @@ def crawl(a):
         "".join(json.dumps(r, sort_keys=True) + "\n" for r in results),
         encoding="utf-8",
     )
-    summary = {
-        "schema": "xunia.zyra-mss.uspto-corpus.v1",
-        "source": PPUBS,
-        "query": a.query,
-        "discovered": len(docs),
-        "indexed": indexed,
-        "failed": len(failed),
-        "complete": indexed == len(docs) and not failed,
-        "logical_worker_count": 100,
-        "actual_network_concurrency": workers,
-        "generated_at": now(),
-    }
-    (out / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (out / "failures.jsonl").write_text(
+        "".join(json.dumps(r, sort_keys=True) + "\n" for r in failed),
+        encoding="utf-8",
+    )
+    summary = write_summary(
+        out,
+        query=query,
+        discovered=len(docs),
+        indexed=indexed,
+        failed=len(failed),
+        workers=workers,
+        failures=failed,
+    )
     print(f"🏁 discovered={len(docs)} indexed={indexed} failed={len(failed)} complete={summary['complete']}")
+    if failed:
+        first = failed[0]
+        print(f"⚠️ first failure: {first.get('document_number')} :: {first.get('error')}")
     return 0 if summary["complete"] else 1
+
+
+def crawl(a):
+    out = Path(a.output).expanduser().resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    docs, cookie = discover(a.query, a.max_pages, a.headed, out)
+    (out / "discovered.jsonl").write_text(
+        "".join(json.dumps(asdict(d), sort_keys=True) + "\n" for d in docs),
+        encoding="utf-8",
+    )
+    print(f"📚 discovered {len(docs)} unique PPUBS PDFs")
+
+    if not docs:
+        summary = {
+            "schema": "xunia.zyra-mss.uspto-corpus.v1",
+            "source": PPUBS,
+            "query": a.query,
+            "discovered": 0,
+            "indexed": 0,
+            "failed": 0,
+            "complete": False,
+            "logical_worker_count": 100,
+            "actual_network_concurrency": 0,
+            "generated_at": now(),
+            "error": "PPUBS discovery returned zero documents",
+            "debug_files": [
+                str(out / "discovery-debug.html"),
+                str(out / "discovery-debug.png"),
+                str(out / "discovery-debug.txt"),
+            ],
+        }
+        (out / "summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print("❌ PPUBS discovery returned 0 documents; debug capture written to output directory")
+        return 2
+
+    return process_docs(docs, out, query=a.query, workers=a.workers, delay=a.delay, cookie=cookie)
+
+
+def retry(a):
+    out = Path(a.output).expanduser().resolve()
+    docs = load_discovered(out)
+    if not docs:
+        print(f"❌ No discovery manifest found at {out / 'discovered.jsonl'}")
+        print("Run the crawl/mega command once to discover the PPUBS result set.")
+        return 2
+    print(f"♻️ Reusing {len(docs)} already-discovered documents; no USPTO search recrawl")
+    return process_docs(docs, out, query=a.query, workers=a.workers, delay=a.delay)
 
 
 def search(a):
@@ -428,7 +547,7 @@ def search(a):
     if not exists:
         con.close()
         print("❌ Corpus exists but is incomplete; documents_fts has not been built")
-        print("Run: scripts/zyra-mss-uspto-reader mega")
+        print("Run: scripts/zyra-mss-uspto-reader retry")
         return 2
     rows = con.execute(
         "SELECT document_number,snippet(documents_fts,1,'[',']',' … ',20) FROM documents_fts WHERE documents_fts MATCH ? LIMIT ?",
@@ -449,6 +568,10 @@ def doctor(a):
         return 2
     s = json.loads(summary.read_text())
     print(json.dumps(s, indent=2, sort_keys=True))
+    if s.get("failure_samples"):
+        print("\nFailure sample(s):")
+        for f in s["failure_samples"]:
+            print(f"- {f.get('document_number')}: {f.get('error')}")
     return 0 if s.get("complete") else 1
 
 
@@ -464,6 +587,13 @@ def main():
     c.add_argument("--delay", type=float, default=.02)
     c.add_argument("--headed", action="store_true")
     c.set_defaults(fn=crawl)
+
+    r = sp.add_parser("retry")
+    r.add_argument("--query", default="palantir")
+    r.add_argument("--output", default="~/.config/gpt-doug/zyra-mss-uspto-palantir")
+    r.add_argument("--workers", type=int, default=6)
+    r.add_argument("--delay", type=float, default=.02)
+    r.set_defaults(fn=retry)
 
     s = sp.add_parser("search")
     s.add_argument("terms")
