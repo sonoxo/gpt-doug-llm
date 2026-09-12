@@ -6,7 +6,8 @@
     "PatentSearch": ["authority", "query", "retrieved", "reported_result_count", "page"],
     "PatentRecord": ["document_number", "title", "publication_date", "source_rank", "claim_review_status"],
     "ApplicantAttribution": ["document_number", "applicant_name", "location", "attribution_basis", "confidence"],
-    "EligibilityEnginePattern": ["name", "diagram_components", "gpt_doug_mapping", "review_status"],
+    "AssigneeAttribution": ["document_number", "assignee_name", "location", "attribution_basis", "confidence"],
+    "ArchitectureWatchPattern": ["name", "source_document", "diagram_components", "gpt_doug_mapping", "review_status"],
     "CapabilityTheme": ["name", "description", "risk_level"],
     "ArchitectureModule": ["name", "repository_path", "owner", "design_status"],
     "DesignDecision": ["id", "summary", "decision_date", "independent_design_evidence", "review_status"],
@@ -16,7 +17,8 @@
   "link_types": [
     {"from": "PatentSearch", "to": "PatentRecord", "type": "RETURNED_RECORD"},
     {"from": "PatentRecord", "to": "ApplicantAttribution", "type": "ATTRIBUTED_BY_DOCUMENT_FRONT_PAGE"},
-    {"from": "PatentRecord", "to": "EligibilityEnginePattern", "type": "ARCHITECTURE_WATCH_FOR"},
+    {"from": "PatentRecord", "to": "AssigneeAttribution", "type": "ASSIGNEE_PRINTED_ON_DOCUMENT_FRONT_PAGE"},
+    {"from": "PatentRecord", "to": "ArchitectureWatchPattern", "type": "ARCHITECTURE_WATCH_FOR"},
     {"from": "PatentRecord", "to": "CapabilityTheme", "type": "RESEARCH_RELEVANT_TO"},
     {"from": "ArchitectureModule", "to": "CapabilityTheme", "type": "USES_CAPABILITY_THEME"},
     {"from": "PatentRecord", "to": "DesignDecision", "type": "MAY_TRIGGER_REVIEW_OF"},
@@ -26,6 +28,10 @@
   "watch_themes": [
     "ontology_and_object_modeling",
     "eligibility_engine_and_ai_criteria_evaluation",
+    "data_security_compliance_and_shared_infrastructure_governance",
+    "live_data_migration_and_resilience",
+    "generative_ai_document_workflows",
+    "linked_dataset_visualization",
     "ai_workflow_governance",
     "natural_language_data_systems",
     "software_supply_chain",
@@ -43,6 +49,51 @@
       "attribution_basis": "Applicant field printed on user-supplied USPTO publication front page",
       "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
       "source_id": "uspto-palantir-attributed-US-20260119865-A1"
+    },
+    {
+      "document_number": "US-20260093834-A1",
+      "title": "APPROACHES OF ENFORCING DATA SECURITY, COMPLIANCE, AND GOVERNANCE IN SHARED INFRASTRUCTURES",
+      "applicant_name": "Palantir Technologies Inc.",
+      "applicant_location": "Denver, CO (US)",
+      "attribution_basis": "Applicant field printed on user-supplied USPTO publication front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-20260093834-A1"
+    },
+    {
+      "document_number": "US-12591555-B2",
+      "title": "SYSTEM AND METHODS FOR LIVE DATA MIGRATION",
+      "applicant_name": "Palantir Technologies Inc.",
+      "assignee_name": "Palantir Technologies Inc.",
+      "attribution_basis": "Applicant and Assignee fields printed on user-supplied U.S. patent front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-12591555-B2"
+    },
+    {
+      "document_number": "US-12585804-B2",
+      "title": "APPROACHES OF ENFORCING DATA SECURITY, COMPLIANCE, AND GOVERNANCE IN SHARED INFRASTRUCTURES",
+      "applicant_name": "Palantir Technologies Inc.",
+      "assignee_name": "Palantir Technologies Inc.",
+      "attribution_basis": "Applicant and Assignee fields printed on user-supplied U.S. patent front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-12585804-B2"
+    },
+    {
+      "document_number": "US-20260080157-A1",
+      "title": "SYSTEMS AND METHODS FOR USING GENERATIVE ARTIFICIAL INTELLIGENCE FOR DOCUMENT GENERATION",
+      "applicant_name": "Palantir Technologies Inc.",
+      "applicant_location": "Denver, CO (US)",
+      "attribution_basis": "Applicant field printed on user-supplied USPTO publication front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-20260080157-A1"
+    },
+    {
+      "document_number": "US-12579156-B2",
+      "title": "SYSTEMS AND METHODS FOR VISUALIZING ONE OR MORE DATASETS",
+      "applicant_name": "Palantir Technologies Inc.",
+      "assignee_name": "Palantir Technologies Inc.",
+      "attribution_basis": "Applicant and Assignee fields printed on user-supplied U.S. patent front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-12579156-B2"
     }
   ],
   "architecture_watch_patterns": [
@@ -50,30 +101,56 @@
       "name": "eligibility-engine-generative-ai-criteria-evaluation",
       "source_document": "US-20260119865-A1",
       "source_id": "uspto-palantir-attributed-US-20260119865-A1",
-      "diagram_components": [
-        "Trigger",
-        "Eligibility Evaluation",
-        "Criterion Evaluation",
-        "GAI Logic",
-        "Add/Update",
-        "Dispatcher Function",
-        "Evaluation Function Set"
-      ],
-      "gpt_doug_mapping": [
-        "ontology object eligibility",
-        "governed criteria evaluation",
-        "AI-assisted policy evaluation",
-        "state transition/update",
-        "dispatcher/orchestration",
-        "human review gate for consequential decisions"
-      ],
-      "design_rule": "Use this as a high-level architecture watch and independent-design review trigger only. Do not copy patent claim language or treat the diagram as an implementation specification."
+      "diagram_components": ["Trigger", "Eligibility Evaluation", "Criterion Evaluation", "GAI Logic", "Add/Update", "Dispatcher Function", "Evaluation Function Set"],
+      "gpt_doug_mapping": ["ontology object eligibility", "governed criteria evaluation", "AI-assisted policy evaluation", "state transition/update", "dispatcher/orchestration", "human review gate for consequential decisions"],
+      "design_rule": "Use as a high-level architecture watch and independent-design review trigger only; do not copy patent claim language or treat the diagram as an implementation specification."
+    },
+    {
+      "name": "shared-infrastructure-data-security-governance",
+      "source_document": "US-20260093834-A1",
+      "source_id": "uspto-palantir-attributed-US-20260093834-A1",
+      "diagram_components": ["Client", "Shared data system", "Data objects or structures", "Access permissions", "Request evaluation", "Governed transmission"],
+      "gpt_doug_mapping": ["Glass Onion policy gate", "ontology object permission checks", "least-privilege access evaluation", "data-governance decision logging", "human review for consequential access decisions"],
+      "design_rule": "Compare only at a high architectural level and preserve independent requirements, policy models and implementation history."
+    },
+    {
+      "name": "live-data-migration-and-consistency",
+      "source_document": "US-12591555-B2",
+      "source_id": "uspto-palantir-attributed-US-12591555-B2",
+      "diagram_components": ["User query or application", "Network", "Computing system", "Source database", "Destination database", "Live migration flow"],
+      "gpt_doug_mapping": ["data migration planning", "replication and synchronization", "rollback-aware migration", "continuity monitoring", "audit of migration state"],
+      "design_rule": "Use as a migration/resilience watch only; independently design protocols and state transitions."
+    },
+    {
+      "name": "shared-infrastructure-object-permission-governance",
+      "source_document": "US-12585804-B2",
+      "source_id": "uspto-palantir-attributed-US-12585804-B2",
+      "diagram_components": ["Computing component", "Hardware processors", "Machine-readable storage media", "Data objects or structures", "Access permissions", "Client", "Object and attribute permissions"],
+      "gpt_doug_mapping": ["Glass Onion access-policy evaluation", "ontology object and property permissions", "least-privilege data access", "governed shared infrastructure", "audit of authorization decisions"],
+      "design_rule": "Use as a governance watch only and maintain independent access-control requirements and implementation evidence."
+    },
+    {
+      "name": "generative-ai-evidence-routed-document-workflow",
+      "source_document": "US-20260080157-A1",
+      "source_id": "uspto-palantir-attributed-US-20260080157-A1",
+      "diagram_components": ["External system", "Data connector", "Documentation triggers", "Requirements or criteria", "Extract evidence", "Evidence objects", "Determine document types", "Route for document generation", "Generate documents", "User-facing workflow", "Feedback objects", "Track user actions"],
+      "gpt_doug_mapping": ["governed evidence ingestion", "document-type ontology classification", "route selection by policy", "AI-assisted document generation", "human review workflow", "feedback and audit trail"],
+      "design_rule": "Use as a document-workflow architecture watch; independently design prompts, routing, evidence handling and review controls."
+    },
+    {
+      "name": "linked-dataset-interactive-visualization",
+      "source_document": "US-12579156-B2",
+      "source_id": "uspto-palantir-attributed-US-12579156-B2",
+      "diagram_components": ["Dataset", "Root objects", "Linked data attributes", "Interactive chart", "Rows of related attribute data", "Graphical indicators", "Correlated data presentation"],
+      "gpt_doug_mapping": ["ZYRAPALANTIR visual control map", "ontology-linked datasets", "interactive readiness views", "correlated audit visualization", "human-readable operational summaries"],
+      "design_rule": "Use as a visualization watch only; independently design the HUD, interaction model and data-to-view transformations."
     }
   ],
   "governed_actions": {
     "ALLOW": [
       "index_public_patent_metadata",
       "index_document_front_page_applicant_attribution",
+      "index_document_front_page_assignee_attribution",
       "map_public_diagram_to_high_level_architecture_watch",
       "map_patent_titles_to_high_level_capability_themes",
       "cite_public_uspto_metadata",
@@ -92,13 +169,14 @@
     "BLOCK": [
       "treat_search_hit_as_proof_of_patent_ownership",
       "treat_front_page_applicant_attribution_as_current_ownership_or_enforceability_proof",
+      "treat_front_page_assignee_attribution_as_current_ownership_or_enforceability_proof",
       "claim_legal_clearance_from_title_only_search",
       "claim_freedom_to_operate_automatically",
       "present_research_layer_as_legal_advice",
       "automatically_clone_claimed_patent_implementation"
     ]
   },
-  "provenance_rule": "Keyword-search results and exact publication pages have different evidence strength. Search-result presence alone never establishes assignee or ownership. A publication front page may support a document-level applicant attribution when the Applicant field is visible, but that attribution must not be converted into a claim about current ownership, validity, enforceability, infringement or freedom to operate.",
+  "provenance_rule": "Keyword-search results and exact publication/patent front pages have different evidence strength. Search-result presence alone never establishes assignee or ownership. A front page may support document-level Applicant or Assignee attribution when the field is visible, but that attribution must not be converted into a claim about current ownership, validity, enforceability, infringement or freedom to operate.",
   "graduation_rule": "A patent-intelligence mapping is GREEN only when it distinguishes source fact from architectural inference, cites the public record, preserves independent-design evidence and escalates claim-level legal conclusions to human review.",
   "legal_notice": "Research and engineering awareness only. This ontology does not provide legal advice, patent validity analysis, infringement analysis or freedom-to-operate clearance."
 }
