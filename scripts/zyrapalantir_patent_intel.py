@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = ROOT / "intel" / "sources"
 SOURCE_GLOB = "uspto-palantir-query-2026-09-12*.json"
-ATTRIBUTED_SOURCE = SOURCE_DIR / "uspto-palantir-attributed-US-20260119865-A1.json"
+ATTRIBUTED_GLOB = "uspto-palantir-attributed-*.json"
 ONTOLOGY = ROOT / "safety-shield" / "agents" / "knowledge" / "gpt-doug-uspto-patent-intel-v1.json"
 BRIEF = ROOT / "intel" / "briefings" / "2026-09-12-uspto-palantir-patent-landscape.md"
 
@@ -26,30 +26,52 @@ def load_json(path: Path) -> dict:
 def source_paths() -> list[Path]:
     paths = sorted(SOURCE_DIR.glob(SOURCE_GLOB))
     if not paths:
-        raise RuntimeError("no USPTO Palantir patent-intel sources found")
+        raise RuntimeError("no USPTO Palantir patent-intel search sources found")
     return paths
 
 
-def load_attributed_source() -> dict:
-    if not ATTRIBUTED_SOURCE.exists():
-        raise RuntimeError("high-confidence attributed patent source missing")
-    data = load_json(ATTRIBUTED_SOURCE)
-    if data.get("document_number") != "US-20260119865-A1":
-        raise RuntimeError("unexpected attributed patent document number")
-    return data
+def attributed_paths() -> list[Path]:
+    paths = sorted(SOURCE_DIR.glob(ATTRIBUTED_GLOB))
+    if not paths:
+        raise RuntimeError("no exact attributed Palantir patent sources found")
+    return paths
+
+
+def load_attributed_sources() -> list[dict]:
+    records = [load_json(path) for path in attributed_paths()]
+    seen: set[str] = set()
+    for record in records:
+        number = str(record.get("document_number", "")).strip()
+        if not number:
+            raise RuntimeError("attributed patent source missing document number")
+        if number in seen:
+            raise RuntimeError(f"duplicate attributed patent source: {number}")
+        seen.add(number)
+    return records
+
+
+def find_attributed(document_number: str) -> dict:
+    for source in load_attributed_sources():
+        if source.get("document_number") == document_number:
+            return source
+    raise RuntimeError(f"attributed patent source not found: {document_number}")
 
 
 def attributed_as_record(source: dict) -> dict:
     watch = source.get("architecture_watch", {})
+    applicant = source.get("applicant", {})
+    assignee = source.get("assignee", {})
     return {
         "rank": "exact",
         "document_number": source.get("document_number"),
         "title": source.get("title"),
-        "publication_date": source.get("publication_date"),
+        "publication_date": source.get("publication_date") or source.get("patent_date"),
         "themes": watch.get("themes", []),
-        "applicant": source.get("applicant", {}).get("name"),
-        "attribution_confidence": source.get("applicant", {}).get("confidence"),
+        "applicant": applicant.get("name"),
+        "assignee": assignee.get("name"),
+        "attribution_confidence": assignee.get("confidence") or applicant.get("confidence"),
         "source_type": "document-front-page",
+        "architecture_watch": watch.get("name"),
     }
 
 
@@ -98,7 +120,13 @@ def load_source() -> dict:
             str(record.get("document_number", "")),
         ),
     )
-    merged["attributed_records"] = [attributed_as_record(load_attributed_source())]
+    merged["attributed_records"] = [
+        attributed_as_record(source)
+        for source in sorted(
+            load_attributed_sources(),
+            key=lambda source: str(source.get("document_number", "")),
+        )
+    ]
     return merged
 
 
@@ -129,7 +157,7 @@ def print_summary(source: dict) -> None:
     print(f"Attributed exact . {len(attributed)} document-front-page record(s)")
     print(f"Retrieved ........ {source.get('retrieved')}")
     print("Search ownership . NOT ESTABLISHED FROM SEARCH RESULT")
-    print("Exact attribution. DOCUMENT-LEVEL APPLICANT FIELD ONLY")
+    print("Exact attribution. DOCUMENT-LEVEL APPLICANT/ASSIGNEE FIELDS ONLY")
     print("Legal conclusion . NONE / HUMAN REVIEW REQUIRED")
     print("\n🧠 Top architecture-watch themes")
     for theme, count in counts.most_common(15):
@@ -139,9 +167,10 @@ def print_summary(source: dict) -> None:
     print("  zyrapalantir patent-intel attributed")
     print("  zyrapalantir patent-intel eligibility-engine")
     print("  zyrapalantir patent-intel themes")
-    print("  zyrapalantir patent-intel search ontology")
-    print("  zyrapalantir patent-intel search maven")
-    print("  zyrapalantir patent-intel search geospatial")
+    print("  zyrapalantir patent-intel search governance")
+    print("  zyrapalantir patent-intel search migration")
+    print("  zyrapalantir patent-intel search document-generation")
+    print("  zyrapalantir patent-intel search visualization")
     print("  zyrapalantir patent-intel json")
 
 
@@ -155,6 +184,8 @@ def print_records(source: dict, query: str | None = None) -> int:
                 str(record.get("document_number", "")),
                 str(record.get("title", "")),
                 str(record.get("applicant", "")),
+                str(record.get("assignee", "")),
+                str(record.get("architecture_watch", "")),
                 " ".join(str(x) for x in record.get("themes", [])),
             ]
         ).lower()
@@ -170,7 +201,13 @@ def print_records(source: dict, query: str | None = None) -> int:
         print(f"#{record.get('rank')}  {record.get('document_number')}  {record.get('publication_date')}")
         print(f"  {record.get('title')}")
         if record.get("applicant"):
-            print(f"  applicant: {record.get('applicant')} ({record.get('attribution_confidence')})")
+            print(f"  applicant: {record.get('applicant')}")
+        if record.get("assignee"):
+            print(f"  assignee: {record.get('assignee')}")
+        if record.get("attribution_confidence"):
+            print(f"  attribution: {record.get('attribution_confidence')}")
+        if record.get("architecture_watch"):
+            print(f"  architecture-watch: {record.get('architecture_watch')}")
         print(f"  themes: {', '.join(record.get('themes', []))}")
     if not matched:
         print("No selected records matched. This local index contains curated records from supplied USPTO materials, not the full 3,544-result set.")
@@ -178,23 +215,27 @@ def print_records(source: dict, query: str | None = None) -> int:
 
 
 def print_attributed() -> None:
-    source = load_attributed_source()
-    applicant = source.get("applicant", {})
-    print("🏷️ GPT-DOUG // HIGH-CONFIDENCE DOCUMENT ATTRIBUTION")
-    print("================================================")
-    print(f"Document ......... {source.get('document_number')}")
-    print(f"Published ........ {source.get('publication_date')}")
-    print(f"Title ............ {source.get('title')}")
-    print(f"Applicant ........ {applicant.get('name')}")
-    print(f"Location ......... {applicant.get('location')}")
-    print(f"Evidence ......... {applicant.get('attribution_basis')}")
-    print(f"Confidence ....... {applicant.get('confidence')}")
-    print("Current ownership  NOT ESTABLISHED")
+    sources = load_attributed_sources()
+    print("🏷️ GPT-DOUG // HIGH-CONFIDENCE DOCUMENT ATTRIBUTIONS")
+    print("=================================================")
+    for source in sorted(sources, key=lambda item: str(item.get("document_number", ""))):
+        applicant = source.get("applicant", {})
+        assignee = source.get("assignee", {})
+        date = source.get("publication_date") or source.get("patent_date")
+        print(f"\nDocument ......... {source.get('document_number')}")
+        print(f"Date ............. {date}")
+        print(f"Title ............ {source.get('title')}")
+        if applicant:
+            print(f"Applicant ........ {applicant.get('name')} ({applicant.get('confidence')})")
+        if assignee:
+            print(f"Assignee ......... {assignee.get('name')} ({assignee.get('confidence')})")
+        print(f"Watch ............ {source.get('architecture_watch', {}).get('name')}")
+    print("\nCurrent ownership  NOT INFERRED BEYOND DOCUMENT FIELDS")
     print("Claim conclusions  NOT PERFORMED")
 
 
 def print_eligibility_engine() -> None:
-    source = load_attributed_source()
+    source = find_attributed("US-20260119865-A1")
     watch = source.get("architecture_watch", {})
     print("🧠 GPT-DOUG // ELIGIBILITY-ENGINE ARCHITECTURE WATCH")
     print("==================================================")
@@ -222,7 +263,7 @@ def print_themes(source: dict) -> None:
 def doctor() -> int:
     source = load_source()
     ontology = load_json(ONTOLOGY)
-    attributed = load_attributed_source()
+    attributed_sources = load_attributed_sources()
     errors: list[str] = []
 
     if source.get("reported_result_count") != 3544:
@@ -236,7 +277,7 @@ def doctor() -> int:
 
     document_numbers = [r.get("document_number") for r in source.get("records", [])]
     if len(document_numbers) != len(set(document_numbers)):
-        errors.append("duplicate document number")
+        errors.append("duplicate search-result document number")
     if len(source.get("reported_pages", [])) < 2:
         errors.append("expected at least two captured USPTO pages")
 
@@ -248,18 +289,44 @@ def doctor() -> int:
         if controls.get("claim_non_infringement") is not False:
             errors.append(f"non-infringement guard missing: {path.name}")
 
-    applicant = attributed.get("applicant", {})
-    if attributed.get("document_number") != "US-20260119865-A1":
-        errors.append("attributed document mismatch")
-    if applicant.get("name") != "Palantir Technologies Inc.":
-        errors.append("document-front-page applicant mismatch")
-    if applicant.get("confidence") != "HIGH_FROM_DOCUMENT_FRONT_PAGE":
-        errors.append("document attribution confidence mismatch")
-    if attributed.get("controls", {}).get("treat_applicant_attribution_as_current_ownership_or_enforceability_proof") is not False:
-        errors.append("current-ownership guard missing")
-    patterns = ontology.get("architecture_watch_patterns", [])
-    if not any(p.get("name") == "eligibility-engine-generative-ai-criteria-evaluation" for p in patterns):
-        errors.append("eligibility-engine architecture watch missing")
+    expected_exact = {
+        "US-20260119865-A1",
+        "US-20260093834-A1",
+        "US-12591555-B2",
+        "US-12585804-B2",
+        "US-20260080157-A1",
+        "US-12579156-B2",
+    }
+    exact_numbers = {str(record.get("document_number")) for record in attributed_sources}
+    missing_exact = expected_exact - exact_numbers
+    if missing_exact:
+        errors.append(f"missing exact attributed records: {sorted(missing_exact)}")
+
+    for attributed in attributed_sources:
+        applicant = attributed.get("applicant", {})
+        assignee = attributed.get("assignee", {})
+        controls = attributed.get("controls", {})
+        if applicant and applicant.get("name") != "Palantir Technologies Inc.":
+            errors.append(f"unexpected applicant: {attributed.get('document_number')}")
+        if assignee and assignee.get("name") != "Palantir Technologies Inc.":
+            errors.append(f"unexpected assignee: {attributed.get('document_number')}")
+        if controls.get("claim_freedom_to_operate") is not False:
+            errors.append(f"exact-source FTO guard missing: {attributed.get('document_number')}")
+        if controls.get("claim_non_infringement") is not False:
+            errors.append(f"exact-source non-infringement guard missing: {attributed.get('document_number')}")
+
+    pattern_names = {p.get("name") for p in ontology.get("architecture_watch_patterns", [])}
+    expected_patterns = {
+        "eligibility-engine-generative-ai-criteria-evaluation",
+        "shared-infrastructure-data-security-governance",
+        "live-data-migration-and-consistency",
+        "shared-infrastructure-object-permission-governance",
+        "generative-ai-evidence-routed-document-workflow",
+        "linked-dataset-interactive-visualization",
+    }
+    missing_patterns = expected_patterns - pattern_names
+    if missing_patterns:
+        errors.append(f"architecture watch patterns missing: {sorted(missing_patterns)}")
 
     if errors:
         print("❌ PATENT INTEL DOCTOR FAILED")
@@ -270,10 +337,10 @@ def doctor() -> int:
     print("✅ PATENT INTEL DOCTOR: GREEN")
     print(f"   search sources . {len(source.get('source_ids', []))} captured pages")
     print(f"   selected ...... {len(document_numbers)} unique search records")
-    print("   attributed .... 1 high-confidence document-front-page record")
+    print(f"   attributed .... {len(attributed_sources)} exact document-front-page records")
     print(f"   ontology ...... {ontology.get('ontology')}")
-    print("   eligibility ... architecture watch active")
-    print("   ownership ..... current ownership not inferred")
+    print(f"   watches ....... {len(pattern_names)} architecture pattern(s)")
+    print("   ownership ..... only document-level party fields retained")
     print("   legal advice .. false")
     return 0
 
