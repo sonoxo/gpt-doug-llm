@@ -1,10 +1,12 @@
 {
   "ontology": "GPT_DOUG_USPTO_PATENT_INTEL_V1",
   "source_id": "uspto-palantir-query-2026-09-12",
-  "mission": "Give GPT-DOUG and ZYRAPALANTIR a provenance-aware public patent landscape for architecture research, design-review triggers and independent-design evidence without making ownership, infringement or freedom-to-operate claims.",
+  "mission": "Give GPT-DOUG and ZYRAPALANTIR a provenance-aware public patent landscape for architecture research, design-review triggers and independent-design evidence without making infringement or freedom-to-operate claims.",
   "object_types": {
     "PatentSearch": ["authority", "query", "retrieved", "reported_result_count", "page"],
     "PatentRecord": ["document_number", "title", "publication_date", "source_rank", "claim_review_status"],
+    "ApplicantAttribution": ["document_number", "applicant_name", "location", "attribution_basis", "confidence"],
+    "EligibilityEnginePattern": ["name", "diagram_components", "gpt_doug_mapping", "review_status"],
     "CapabilityTheme": ["name", "description", "risk_level"],
     "ArchitectureModule": ["name", "repository_path", "owner", "design_status"],
     "DesignDecision": ["id", "summary", "decision_date", "independent_design_evidence", "review_status"],
@@ -13,6 +15,8 @@
   },
   "link_types": [
     {"from": "PatentSearch", "to": "PatentRecord", "type": "RETURNED_RECORD"},
+    {"from": "PatentRecord", "to": "ApplicantAttribution", "type": "ATTRIBUTED_BY_DOCUMENT_FRONT_PAGE"},
+    {"from": "PatentRecord", "to": "EligibilityEnginePattern", "type": "ARCHITECTURE_WATCH_FOR"},
     {"from": "PatentRecord", "to": "CapabilityTheme", "type": "RESEARCH_RELEVANT_TO"},
     {"from": "ArchitectureModule", "to": "CapabilityTheme", "type": "USES_CAPABILITY_THEME"},
     {"from": "PatentRecord", "to": "DesignDecision", "type": "MAY_TRIGGER_REVIEW_OF"},
@@ -21,6 +25,7 @@
   ],
   "watch_themes": [
     "ontology_and_object_modeling",
+    "eligibility_engine_and_ai_criteria_evaluation",
     "ai_workflow_governance",
     "natural_language_data_systems",
     "software_supply_chain",
@@ -29,9 +34,47 @@
     "sensor_and_data_fusion",
     "identity_privacy_and_governance"
   ],
+  "high_confidence_attributions": [
+    {
+      "document_number": "US-20260119865-A1",
+      "title": "SYSTEMS AND METHODS FOR ELIGIBILITY ENGINES USING GENERATIVE ARTIFICIAL INTELLIGENCE MODELS",
+      "applicant_name": "Palantir Technologies Inc.",
+      "applicant_location": "Denver, CO (US)",
+      "attribution_basis": "Applicant field printed on user-supplied USPTO publication front page",
+      "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+      "source_id": "uspto-palantir-attributed-US-20260119865-A1"
+    }
+  ],
+  "architecture_watch_patterns": [
+    {
+      "name": "eligibility-engine-generative-ai-criteria-evaluation",
+      "source_document": "US-20260119865-A1",
+      "source_id": "uspto-palantir-attributed-US-20260119865-A1",
+      "diagram_components": [
+        "Trigger",
+        "Eligibility Evaluation",
+        "Criterion Evaluation",
+        "GAI Logic",
+        "Add/Update",
+        "Dispatcher Function",
+        "Evaluation Function Set"
+      ],
+      "gpt_doug_mapping": [
+        "ontology object eligibility",
+        "governed criteria evaluation",
+        "AI-assisted policy evaluation",
+        "state transition/update",
+        "dispatcher/orchestration",
+        "human review gate for consequential decisions"
+      ],
+      "design_rule": "Use this as a high-level architecture watch and independent-design review trigger only. Do not copy patent claim language or treat the diagram as an implementation specification."
+    }
+  ],
   "governed_actions": {
     "ALLOW": [
       "index_public_patent_metadata",
+      "index_document_front_page_applicant_attribution",
+      "map_public_diagram_to_high_level_architecture_watch",
       "map_patent_titles_to_high_level_capability_themes",
       "cite_public_uspto_metadata",
       "compare_high_level_architecture_themes",
@@ -41,20 +84,21 @@
     ],
     "REVIEW": [
       "claim_level_patent_analysis",
-      "assignee_or_ownership_attribution_not_independently_verified",
+      "current_ownership_or_assignment_status",
       "freedom_to_operate_assessment",
       "infringement_or_non_infringement_assessment",
       "implementation_choices_based_directly_on_patent_claim_language"
     ],
     "BLOCK": [
       "treat_search_hit_as_proof_of_patent_ownership",
+      "treat_front_page_applicant_attribution_as_current_ownership_or_enforceability_proof",
       "claim_legal_clearance_from_title_only_search",
       "claim_freedom_to_operate_automatically",
       "present_research_layer_as_legal_advice",
       "automatically_clone_claimed_patent_implementation"
     ]
   },
-  "provenance_rule": "The source is a user-supplied USPTO Patent Public Search result page for the query 'palantir'. Document numbers, titles and publication dates may be indexed as supplied. Search presence alone must never be converted into an assignee/ownership assertion.",
+  "provenance_rule": "Keyword-search results and exact publication pages have different evidence strength. Search-result presence alone never establishes assignee or ownership. A publication front page may support a document-level applicant attribution when the Applicant field is visible, but that attribution must not be converted into a claim about current ownership, validity, enforceability, infringement or freedom to operate.",
   "graduation_rule": "A patent-intelligence mapping is GREEN only when it distinguishes source fact from architectural inference, cites the public record, preserves independent-design evidence and escalates claim-level legal conclusions to human review.",
   "legal_notice": "Research and engineering awareness only. This ontology does not provide legal advice, patent validity analysis, infringement analysis or freedom-to-operate clearance."
 }
