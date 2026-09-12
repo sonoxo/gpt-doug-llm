@@ -1,0 +1,68 @@
+{
+  "ontology": "ZyraBallisticWarningSimulation",
+  "version": "1.0.0",
+  "purpose": "Provide simulation-only ballistic-warning decision support for ZYRA / Maven without targeting, fire-control, interception, or weapons-release functionality.",
+  "mode": "SIMULATION_ONLY",
+  "objectTypes": [
+    "BallisticWarningScenario",
+    "SyntheticTrackObservation",
+    "BallisticWarningAssessment",
+    "OperatorAcknowledgement",
+    "AuditEvent"
+  ],
+  "linkTypes": [
+    "ScenarioContainsObservation",
+    "ObservationProducesAssessment",
+    "AssessmentBelongsToScenario",
+    "AssessmentRequiresAcknowledgement",
+    "AssessmentEmitsAuditEvent"
+  ],
+  "properties": {
+    "SyntheticTrackObservation": [
+      "scenarioId",
+      "trackId",
+      "observedAt",
+      "classification",
+      "zoneRelation",
+      "confidence",
+      "trackQuality",
+      "sourceLabel"
+    ],
+    "BallisticWarningAssessment": [
+      "severity",
+      "rationale",
+      "classification",
+      "confidence",
+      "trackQuality",
+      "zoneRelation",
+      "recommendedAction",
+      "humanAcknowledgementRequired"
+    ]
+  },
+  "classificationValues": ["BENIGN", "UNKNOWN", "BALLISTIC_LIKE"],
+  "zoneRelationValues": ["OUTSIDE", "NEAR", "CROSSED", "UNKNOWN"],
+  "severityValues": ["NOTICE", "WATCH", "WARNING"],
+  "integration": {
+    "producer": "agents.ballistic_warning",
+    "consumer": "Palantir Maven / Foundry ontology ingestion layer",
+    "writes": "guarded ontology events only",
+    "realWorldSensorIngest": false,
+    "syntheticScenarioIngest": true
+  },
+  "guardrails": {
+    "simulationOnly": true,
+    "humanReviewRequired": true,
+    "readOnlyDecisionSupport": true,
+    "automaticEngagement": false,
+    "autonomousTargeting": false,
+    "weaponsRelease": false,
+    "fireControlCue": false,
+    "interceptorRecommendation": false,
+    "computesImpactPoint": false,
+    "computesLaunchOrigin": false,
+    "acceptsAimpoints": false,
+    "acceptsWeaponIdentifiers": false,
+    "acceptsGuidanceParameters": false,
+    "acceptsRealWorldCoordinates": false
+  }
+}
