@@ -1,8 +1,8 @@
 import json
-from pathlib import Path
+import pathlib
 
 
-REGISTRY = Path("safety-shield/integrations/defensive-awareness-oss.json")
+REGISTRY = pathlib.Path("safety-shield/integrations/defensive-awareness-oss.json")
 
 
 def _load_registry():
