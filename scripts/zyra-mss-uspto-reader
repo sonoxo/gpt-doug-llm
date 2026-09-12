@@ -26,11 +26,22 @@ if [ "${1:-}" = "mega" ]; then
   echo "🚀 ZYRA-MSS USPTO MEGA READ"
   echo "   query  : palantir"
   echo "   output : $OUT"
-  "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" crawl \
-    --query palantir \
-    --workers 6 \
-    --output "$OUT" \
-    "$@"
+
+  if [ -s "$OUT/discovered.jsonl" ] && [ "${ZYRA_MSS_FORCE_REDISCOVER:-0}" != "1" ]; then
+    echo "♻️ Existing discovery manifest found; retrying downloads/index without recrawling PPUBS search pages."
+    "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" retry \
+      --query palantir \
+      --workers 6 \
+      --output "$OUT" \
+      "$@"
+  else
+    "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" crawl \
+      --query palantir \
+      --workers 6 \
+      --output "$OUT" \
+      "$@"
+  fi
+
   "$PY" "$ROOT/scripts/zyra_mss_uspto_reader.py" doctor --output "$OUT"
   exit $?
 fi
