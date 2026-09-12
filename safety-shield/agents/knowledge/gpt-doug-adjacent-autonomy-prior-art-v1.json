@@ -1,0 +1,83 @@
+{
+  "ontology": "GPT_DOUG_ADJACENT_AUTONOMY_PRIOR_ART_V1",
+  "mission": "Track exact public autonomy patent-family evidence as adjacent prior art for independent engineering review without converting civilian mobility concepts into targeting, weapons, or unattended real-world command functions.",
+  "source_ids": [
+    "uspto-adjacent-tesla-autonomous-vehicle-summon-family"
+  ],
+  "object_types": {
+    "PatentFamily": ["title", "company", "documents", "evidence_basis"],
+    "PatentDocument": ["document_number", "date", "application_number", "source_type"],
+    "PartyAttribution": ["party_name", "role", "location", "confidence"],
+    "AutonomyArchitectureWatch": ["name", "visible_flow", "themes", "independent_design_mapping"],
+    "SafetyBoundary": ["rule", "status", "rationale"],
+    "DesignDecision": ["id", "summary", "review_status", "independent_design_evidence"]
+  },
+  "link_types": [
+    {"from": "PatentFamily", "to": "PatentDocument", "type": "CONTAINS_DOCUMENT"},
+    {"from": "PatentDocument", "to": "PartyAttribution", "type": "ATTRIBUTED_BY_FRONT_PAGE"},
+    {"from": "PatentFamily", "to": "AutonomyArchitectureWatch", "type": "ARCHITECTURE_WATCH_FOR"},
+    {"from": "AutonomyArchitectureWatch", "to": "SafetyBoundary", "type": "BOUNDED_BY"},
+    {"from": "DesignDecision", "to": "AutonomyArchitectureWatch", "type": "MAY_REQUIRE_REVIEW_AGAINST"}
+  ],
+  "family": {
+    "title": "AUTONOMOUS AND USER CONTROLLED VEHICLE SUMMON TO A TARGET",
+    "company": "Tesla, Inc.",
+    "documents": [
+      "US-20230176593-A1",
+      "US-11567514-B2",
+      "US-20200257317-A1"
+    ],
+    "relationship_summary": "US-11567514-B2 issued from application 16/272,273; US-20200257317-A1 is the prior publication for that application; US-20230176593-A1 is a continuation publication from application 18/166,565."
+  },
+  "architecture_watch": {
+    "name": "civilian-autonomous-mobility-perception-planning-execution-loop",
+    "visible_flow": [
+      "Receive Destination",
+      "Receive Vision Data",
+      "Determine Drivable Space",
+      "Generate Occupancy Grid",
+      "Determine Path Goal",
+      "Navigate To Path Goal",
+      "Check Arrival At Destination",
+      "Complete Summon"
+    ],
+    "independent_design_mapping": [
+      "authorized destination request",
+      "sensor or vision evidence ingestion",
+      "environment-state estimation",
+      "simulated occupancy representation",
+      "route or path-goal planning",
+      "bounded navigation state machine",
+      "arrival/termination verification",
+      "human authorization and safe-stop controls"
+    ],
+    "review_status": "ADJACENT_PRIOR_ART_REVIEW"
+  },
+  "governed_actions": {
+    "ALLOW": [
+      "index_public_front_page_metadata",
+      "model_patent_family_relationships",
+      "compare_high_level_civilian_autonomy_architecture",
+      "preserve_independent_design_evidence",
+      "simulate_non_weapon_mobility_state_machines",
+      "review_perception_planning_safety_patterns"
+    ],
+    "REVIEW": [
+      "real_world_vehicle_control",
+      "claim_level_patent_analysis",
+      "freedom_to_operate_assessment",
+      "safety_case_for_autonomous_mobility"
+    ],
+    "BLOCK": [
+      "map_destination_to_hostile_targeting",
+      "weapon_target_selection",
+      "weapons_release",
+      "drone_swarm_attack_control",
+      "hostile_pursuit_or_engagement",
+      "unattended_real_world_vehicle_command",
+      "treat_front_page_party_attribution_as_current_ownership_or_legal_clearance"
+    ]
+  },
+  "graduation_rule": "Architecture review is GREEN only when the implementation is independently derived, non-weapon, human-authorized for any real-world action, and retains explicit safe-stop and audit controls.",
+  "legal_notice": "Research and engineering awareness only. No claim interpretation, infringement conclusion, or freedom-to-operate clearance is provided."
+}
