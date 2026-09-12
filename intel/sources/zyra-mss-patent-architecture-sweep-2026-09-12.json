@@ -1,0 +1,56 @@
+{
+  "id": "zyra-mss-patent-architecture-sweep-2026-09-12",
+  "type": "public-patent-architecture-research-sweep",
+  "retrieved": "2026-09-12",
+  "primary_source": "https://ppubs.uspto.gov/basic/",
+  "secondary_public_metadata_source": "https://free-competitor-patent-data.minesoft.com/",
+  "scope_note": "Targeted architecture sweep over public patent metadata and user-supplied USPTO front pages. This is not a complete read of every USPTO PDF or every result in the Palantir query.",
+  "research_method": {
+    "logical_agent_count": 100,
+    "meaning": "100 virtual analysis roles for partitioning research themes and documents; this repository does not claim that 100 independent external agents were executed in this chat.",
+    "network_concurrency_cap": 6,
+    "respect_rate_limits": true,
+    "human_review_required": true
+  },
+  "architecture_signals": [
+    {"document":"US-20260236234-A1","theme":"ontology-build-automation","signal":"Generate ontology definition artifacts and SDKs from governed object-type definitions."},
+    {"document":"US-20260187067-A1","theme":"ontology-query-planning","signal":"Permission-aware ontology queries can be transformed into database work and routed across execution environments."},
+    {"document":"US-20260170002-A1","theme":"federated-ontology-query","signal":"A unified ontology API can route requests to different backing object databases."},
+    {"document":"US-20260253000-A1","theme":"ai-workflow-governance","signal":"AI workflow performance can be evaluated over time with developer and operations views."},
+    {"document":"US-20260252432-A1","theme":"incident-analysis","signal":"LLMs can assist root-cause summaries and proposed remediation using prior incident context."},
+    {"document":"US-20260127063-A1","theme":"llm-error-analysis","signal":"Error logs plus contextual data can be converted into explanation and suggested-fix workflows."},
+    {"document":"US-20260244304-A1","theme":"workflow-visualization","signal":"Automation, action, and data objects can be rendered as an interactive dependency graph."},
+    {"document":"US-20260219902-A1","theme":"cross-application-state","signal":"Applications can advertise capabilities and synchronize shared state through governed messaging."},
+    {"document":"US-20260219966-A1","theme":"api-discovery","signal":"AI-assisted API discovery and configuration can support tool selection and integration workflows."},
+    {"document":"US-20260220195-A1","theme":"hierarchical-data-mapping","signal":"Generative models can help map unstructured inputs into hierarchical data structures."},
+    {"document":"US-20260140843-A1","theme":"audit-logging","signal":"Structured user-action logging enables object-level investigations and audit review."},
+    {"document":"US-20260147567-A1","theme":"offline-capable-applications","signal":"Ontology-backed applications can be built with explicit cache strategies for disconnected operation."},
+    {"document":"US-20260261593-A1","theme":"edge-stream-processing","signal":"Versioned transform logic can be synchronized across edge servers while normalizing lagging outputs."},
+    {"document":"US-20260195173-A1","theme":"mobile-tasking","signal":"Task objects can be linked to data objects and presented with location/context metadata."},
+    {"document":"US-20260187171-A1","theme":"interactive-map","signal":"Large geospatial/object collections can be clustered and explored interactively."},
+    {"document":"US-20260147779-A1","theme":"risk-assessment","signal":"AI-assisted risk workflows can combine extraction, screening, analysis, scoring, and audit history."},
+    {"document":"US-20260120029-A1","theme":"workflow-documentation","signal":"Observed workflows can be converted into auditable documentation with AI assistance."},
+    {"document":"US-20260119865-A1","theme":"eligibility-policy","signal":"Criteria can be modeled as linked object types and evaluated with governed modalities and instructions."},
+    {"document":"US-20260220795-A1","theme":"sensor-fusion-research","signal":"Multi-source imagery can be registered before higher-level object correlation; ZYRA-MSS limits this pattern to non-targeting defensive or civilian analytics."},
+    {"document":"US-20260220788-A1","theme":"track-correlation-research","signal":"Candidate associations across sensor tracks can be confidence-scored and merged; ZYRA-MSS does not use this for hostile targeting or weapons control."}
+  ],
+  "zyra_mss_design_principles": [
+    "ontology-first mission support",
+    "human-authorized consequential actions",
+    "policy-before-tool-execution",
+    "provenance on every evidence object",
+    "offline/edge continuity with later reconciliation",
+    "Maven-gated software supply chain",
+    "auditable agent recommendations",
+    "separate observation from inference",
+    "safe-stop and rollback",
+    "no weapons release, autonomous targeting, or hostile engagement control"
+  ],
+  "legal_and_research_controls": {
+    "public_prior_art_research_only": true,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claim_language_into_implementation": false,
+    "independent_design_required": true
+  }
+}
