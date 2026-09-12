@@ -1,0 +1,60 @@
+{
+  "ontology": "GPT_DOUG_USPTO_PATENT_INTEL_V1",
+  "source_id": "uspto-palantir-query-2026-09-12",
+  "mission": "Give GPT-DOUG and ZYRAPALANTIR a provenance-aware public patent landscape for architecture research, design-review triggers and independent-design evidence without making ownership, infringement or freedom-to-operate claims.",
+  "object_types": {
+    "PatentSearch": ["authority", "query", "retrieved", "reported_result_count", "page"],
+    "PatentRecord": ["document_number", "title", "publication_date", "source_rank", "claim_review_status"],
+    "CapabilityTheme": ["name", "description", "risk_level"],
+    "ArchitectureModule": ["name", "repository_path", "owner", "design_status"],
+    "DesignDecision": ["id", "summary", "decision_date", "independent_design_evidence", "review_status"],
+    "ProvenanceAssertion": ["source_id", "fact", "confidence", "verified_at"],
+    "LegalReviewGate": ["trigger", "status", "reviewer", "notes"]
+  },
+  "link_types": [
+    {"from": "PatentSearch", "to": "PatentRecord", "type": "RETURNED_RECORD"},
+    {"from": "PatentRecord", "to": "CapabilityTheme", "type": "RESEARCH_RELEVANT_TO"},
+    {"from": "ArchitectureModule", "to": "CapabilityTheme", "type": "USES_CAPABILITY_THEME"},
+    {"from": "PatentRecord", "to": "DesignDecision", "type": "MAY_TRIGGER_REVIEW_OF"},
+    {"from": "DesignDecision", "to": "ProvenanceAssertion", "type": "SUPPORTED_BY"},
+    {"from": "DesignDecision", "to": "LegalReviewGate", "type": "REQUIRES_WHEN_CLAIM_LEVEL"}
+  ],
+  "watch_themes": [
+    "ontology_and_object_modeling",
+    "ai_workflow_governance",
+    "natural_language_data_systems",
+    "software_supply_chain",
+    "operational_resilience",
+    "visual_operations",
+    "sensor_and_data_fusion",
+    "identity_privacy_and_governance"
+  ],
+  "governed_actions": {
+    "ALLOW": [
+      "index_public_patent_metadata",
+      "map_patent_titles_to_high_level_capability_themes",
+      "cite_public_uspto_metadata",
+      "compare_high_level_architecture_themes",
+      "flag_designs_for_human_review",
+      "preserve_independent_design_evidence",
+      "search_local_patent_watchlist"
+    ],
+    "REVIEW": [
+      "claim_level_patent_analysis",
+      "assignee_or_ownership_attribution_not_independently_verified",
+      "freedom_to_operate_assessment",
+      "infringement_or_non_infringement_assessment",
+      "implementation_choices_based_directly_on_patent_claim_language"
+    ],
+    "BLOCK": [
+      "treat_search_hit_as_proof_of_patent_ownership",
+      "claim_legal_clearance_from_title_only_search",
+      "claim_freedom_to_operate_automatically",
+      "present_research_layer_as_legal_advice",
+      "automatically_clone_claimed_patent_implementation"
+    ]
+  },
+  "provenance_rule": "The source is a user-supplied USPTO Patent Public Search result page for the query 'palantir'. Document numbers, titles and publication dates may be indexed as supplied. Search presence alone must never be converted into an assignee/ownership assertion.",
+  "graduation_rule": "A patent-intelligence mapping is GREEN only when it distinguishes source fact from architectural inference, cites the public record, preserves independent-design evidence and escalates claim-level legal conclusions to human review.",
+  "legal_notice": "Research and engineering awareness only. This ontology does not provide legal advice, patent validity analysis, infringement analysis or freedom-to-operate clearance."
+}
