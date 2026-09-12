@@ -1,0 +1,74 @@
+{
+  "source_id": "rosenblatt-palantir-aipcon11-2026-09-11",
+  "captured_at": "2026-09-12",
+  "source_type": "user_supplied_research_screenshot",
+  "publisher": "Rosenblatt Securities",
+  "title": "Palantir Technologies (PLTR) - AIPCon 11 Was a Hot Kitchen and Checks Look Strong--Reiterating Buy and $225 Target",
+  "report_date": "2026-09-11",
+  "canonical_url": null,
+  "canonical_url_status": "not_provided",
+  "artifact_status": "screenshot reviewed in ChatGPT session; binary artifact not committed",
+  "classification": "public-source market research / secondary source",
+  "source_claims": [
+    {
+      "claim": "Rosenblatt reiterated a Buy rating and $225 price target for PLTR while citing a report price of $165.86.",
+      "status": "SOURCE_STATEMENT_ONLY",
+      "notes": "Analyst rating, target, valuation multiple and forward growth estimates are opinions/forecasts, not verified facts or system requirements."
+    },
+    {
+      "claim": "AIPCon 11 highlighted NVIDIA's Digital Supply Chain Intelligence command center built with Palantir technology.",
+      "status": "CORROBORATED",
+      "corroboration": [
+        "https://nvidianews.nvidia.com/news/nvidia-and-palantir-bring-sovereign-intelligence-to-critical-supply-chains",
+        "https://developer.nvidia.com/blog/from-wafer-out-to-first-token-codifying-supply-chain-expertise-with-nemotron-and-palantir-foundry/"
+      ]
+    },
+    {
+      "claim": "L3Harris reported fine-tuned open models outperforming frontier models for a country-of-origin workflow in under 48 hours at roughly 95% lower model cost.",
+      "status": "CORROBORATED_WITH_EVENT_REPORTING",
+      "corroboration": [
+        "https://www.investing.com/news/transcripts/palantir-at-aipcon-11-ai-shifts-from-talk-to-operations-93CH-4896825"
+      ],
+      "notes": "Treat the benchmark as workload-specific and customer-reported; do not generalize it into a universal model-performance claim."
+    },
+    {
+      "claim": "The U.S. Army moved TITAN into production with $127M awarded to Palantir and $65M to Anduril for eight initial production systems over the next 18 months.",
+      "status": "VERIFIED_OFFICIAL_GOVERNMENT_SOURCE",
+      "corroboration": [
+        "https://cpeisw.army.mil/2026/09/01/army-announces-move-to-production-for-titan/"
+      ],
+      "notes": "Record procurement and architecture significance only; this knowledge item does not encode targeting, fire-control, engagement or operational employment procedures."
+    },
+    {
+      "claim": "PwC and Palantir expanded their strategic alliance around scaled enterprise AI, M&A transformation and ERP modernization.",
+      "status": "VERIFIED_FIRST_PARTY",
+      "corroboration": [
+        "https://www.pwc.com/us/en/about-us/newsroom/press-releases/pwc-palantir-enterprise-ai.html"
+      ]
+    },
+    {
+      "claim": "Peter Zaffino is scheduled to join Palantir as Global Head of Financial Services effective January 15, 2027.",
+      "status": "CORROBORATED_OFFICIAL_PRESS_RELEASE",
+      "corroboration": [
+        "https://www.nasdaq.com/press-release/peter-zaffino-join-palantir-technologies-global-head-financial-services-2026-09-02"
+      ]
+    },
+    {
+      "claim": "Palantir commercial revenue grew 110% year over year in Q2 2026.",
+      "status": "VERIFIED_FIRST_PARTY_FINANCIAL_FILING",
+      "corroboration": [
+        "https://investors.palantir.com/files/2026%20Q2%20PLTR%2010-Q.pdf"
+      ],
+      "notes": "Palantir's Q2 2026 filing reports total commercial revenue growth of 110% Y/Y; U.S. commercial revenue growth was 149% Y/Y."
+    }
+  ],
+  "disposition": "KEEP_WITH_PROVENANCE",
+  "confidence": "HIGH_FOR_CORROBORATED_FACTS / LOW_FOR_ANALYST_FORECASTS",
+  "knowledge_rules": [
+    "analyst price target is sentiment, not fact",
+    "customer benchmark is workload-specific",
+    "prefer official vendor/government/filing sources for durable knowledge",
+    "preserve source dates and provenance",
+    "do not infer partnership, endorsement, customer access or proprietary system access from public reporting"
+  ]
+}
