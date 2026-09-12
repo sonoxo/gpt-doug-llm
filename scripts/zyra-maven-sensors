@@ -1,0 +1,334 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import ipaddress
+import json
+import pathlib
+import socket
+from urllib.parse import urlparse
+
+STATE = pathlib.Path.home() / ".config" / "gpt-doug"
+DEFAULT_CONFIG = STATE / "authorized-sensors.json"
+DEFAULT_SNAPSHOT = STATE / "authorized-sensors-last.json"
+
+ALLOWED_KINDS = {"camera", "vms", "sensor", "gateway"}
+ALLOWED_PROTOCOLS = {"onvif", "rtsp", "rtsps", "http", "https", "tcp"}
+SECRET_KEYS = {
+    "password", "passwd", "token", "secret", "api_key", "apikey",
+    "authorization", "cookie", "private_key", "credential", "credentials",
+}
+
+
+def die(msg: str) -> None:
+    raise SystemExit("NO-GO: " + msg)
+
+
+def load_json(path: pathlib.Path) -> dict:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        die(f"config not found: {path}")
+    except json.JSONDecodeError as exc:
+        die(f"invalid JSON in {path}: {exc}")
+    if not isinstance(data, dict):
+        die("top-level config must be an object")
+    return data
+
+
+def contains_secret_key(value, prefix=""):
+    if isinstance(value, dict):
+        for key, child in value.items():
+            name = str(key).lower()
+            if name in SECRET_KEYS or any(x in name for x in ("password", "token", "secret", "credential")):
+                return f"{prefix}{key}"
+            found = contains_secret_key(child, f"{prefix}{key}.")
+            if found:
+                return found
+    elif isinstance(value, list):
+        for idx, child in enumerate(value):
+            found = contains_secret_key(child, f"{prefix}{idx}.")
+            if found:
+                return found
+    return None
+
+
+def hostname_label_ok(label: str) -> bool:
+    if not label or len(label) > 63 or label[0] == "-" or label[-1] == "-":
+        return False
+    return all(c.isalnum() or c == "-" for c in label)
+
+
+def validate_host(host: str) -> str:
+    host = host.strip()
+    if not host:
+        die("sensor host is empty")
+    if any(x in host for x in ("/", "\\", "@", ":", "?", "#")):
+        die(f"host must be a bare hostname/IP, not a URL: {host!r}")
+    try:
+        ipaddress.ip_address(host)
+        return host
+    except ValueError:
+        pass
+    if not all(hostname_label_ok(x) for x in host.split(".")):
+        die(f"invalid hostname: {host!r}")
+    return host
+
+
+def parse_coordinate(raw, name: str, low: float, high: float):
+    if raw in (None, ""):
+        return None
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        die(f"{name} must be numeric")
+    if not low <= value <= high:
+        die(f"{name} must be between {low:g} and {high:g}")
+    return round(value, 6)
+
+
+def normalize_sensor(raw: dict, allow_hosts: set[str]) -> dict:
+    if not isinstance(raw, dict):
+        die("each sensor entry must be an object")
+    sensor_id = str(raw.get("id", "")).strip()
+    if not sensor_id:
+        die("sensor id is required")
+    if raw.get("authorized") is not True:
+        die(f"{sensor_id}: authorized must be true")
+    kind = str(raw.get("kind", "")).strip().lower()
+    if kind not in ALLOWED_KINDS:
+        die(f"{sensor_id}: unsupported kind {kind!r}")
+    protocol = str(raw.get("protocol", "")).strip().lower()
+    if protocol not in ALLOWED_PROTOCOLS:
+        die(f"{sensor_id}: unsupported protocol {protocol!r}")
+    host = validate_host(str(raw.get("host", "")))
+    if host not in allow_hosts:
+        die(f"{sensor_id}: host {host!r} is not explicitly allowlisted")
+    try:
+        port = int(raw.get("port"))
+    except Exception:
+        die(f"{sensor_id}: numeric port required")
+    if not 1 <= port <= 65535:
+        die(f"{sensor_id}: invalid port {port}")
+    for key in ("uri", "url", "endpoint"):
+        if raw.get(key):
+            parsed = urlparse(str(raw[key]))
+            if parsed.username or parsed.password:
+                die(f"{sensor_id}: embedded credentials are forbidden")
+
+    latitude = parse_coordinate(raw.get("latitude"), "latitude", -90, 90)
+    longitude = parse_coordinate(raw.get("longitude"), "longitude", -180, 180)
+    if (latitude is None) != (longitude is None):
+        die(f"{sensor_id}: latitude and longitude must be supplied together")
+
+    normalized = {
+        "id": sensor_id,
+        "kind": kind,
+        "protocol": protocol,
+        "host": host,
+        "port": port,
+        "authorized": True,
+        "site": str(raw.get("site", "")).strip(),
+        "label": str(raw.get("label", sensor_id)).strip(),
+        "tags": [str(x) for x in raw.get("tags", []) if str(x).strip()],
+    }
+    if latitude is not None:
+        normalized["latitude"] = latitude
+        normalized["longitude"] = longitude
+    return normalized
+
+
+def validate_config(data: dict) -> tuple[list[dict], dict]:
+    if data.get("schema") != "xunia.authorized-sensors.v1":
+        die("schema must be xunia.authorized-sensors.v1")
+    if data.get("authorization_assertion") is not True:
+        die("authorization_assertion must be true")
+    secret = contains_secret_key(data)
+    if secret:
+        die(f"secret-like field is not allowed in inventory: {secret}")
+    allow_hosts_raw = data.get("allow_hosts", [])
+    if not isinstance(allow_hosts_raw, list) or not allow_hosts_raw:
+        die("allow_hosts must contain at least one exact authorized hostname/IP")
+    allow_hosts = {validate_host(str(x)) for x in allow_hosts_raw}
+    sensors_raw = data.get("sensors", [])
+    if not isinstance(sensors_raw, list) or not sensors_raw:
+        die("sensors must contain at least one authorized entry")
+    sensors = [normalize_sensor(x, allow_hosts) for x in sensors_raw]
+    ids = [x["id"] for x in sensors]
+    if len(ids) != len(set(ids)):
+        die("sensor ids must be unique")
+    policy = {
+        "explicit_allowlist": True,
+        "discovery": False,
+        "credential_storage": False,
+        "content_capture": False,
+        "person_identification": False,
+        "targeting": False,
+        "health_probe_only": True,
+    }
+    return sensors, policy
+
+
+def probe(sensor: dict, timeout: float) -> dict:
+    started = dt.datetime.now(dt.timezone.utc)
+    reachable = False
+    error = None
+    try:
+        with socket.create_connection((sensor["host"], sensor["port"]), timeout=timeout):
+            reachable = True
+    except OSError as exc:
+        error = f"{exc.__class__.__name__}: {exc}"
+    finished = dt.datetime.now(dt.timezone.utc)
+    return {
+        **sensor,
+        "reachable": reachable,
+        "checked_at": finished.isoformat(),
+        "latency_ms": round((finished - started).total_seconds() * 1000, 2),
+        "error": error,
+    }
+
+
+def write_private(path: pathlib.Path, data: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.chmod(0o600)
+
+
+def empty_config() -> dict:
+    return {
+        "schema": "xunia.authorized-sensors.v1",
+        "authorization_assertion": True,
+        "allow_hosts": [],
+        "sensors": [],
+    }
+
+
+def add_sensor(config: pathlib.Path) -> int:
+    data = load_json(config) if config.exists() else empty_config()
+    if contains_secret_key(data):
+        die("existing inventory contains secret-like fields; refusing modification")
+
+    print("AUTHORIZED SENSOR REGISTRATION")
+    print("This registers ONE exact system you are explicitly authorized to access.")
+    print("No network discovery. No credentials. No video capture.")
+    print()
+    sensor_id = input("Sensor ID: ").strip()
+    kind = input("Kind [camera|vms|sensor|gateway]: ").strip().lower()
+    protocol = input("Protocol [onvif|rtsp|rtsps|http|https|tcp]: ").strip().lower()
+    host = validate_host(input("Exact hostname/IP: ").strip())
+    try:
+        port = int(input("Port: ").strip())
+    except ValueError:
+        die("numeric port required")
+    site = input("Site label: ").strip()
+    label = input("Display label: ").strip() or sensor_id
+    lat_raw = input("Latitude (optional): ").strip()
+    lon_raw = input("Longitude (optional): ").strip()
+    latitude = parse_coordinate(lat_raw, "latitude", -90, 90) if lat_raw else None
+    longitude = parse_coordinate(lon_raw, "longitude", -180, 180) if lon_raw else None
+    if (latitude is None) != (longitude is None):
+        die("latitude and longitude must be supplied together")
+    confirm = input("Type AUTHORIZED to confirm you have permission for this system: ").strip()
+    if confirm != "AUTHORIZED":
+        die("authorization confirmation not provided")
+
+    if any(str(x.get("id")) == sensor_id for x in data.get("sensors", []) if isinstance(x, dict)):
+        die(f"duplicate sensor id: {sensor_id}")
+
+    entry = {
+        "id": sensor_id,
+        "kind": kind,
+        "protocol": protocol,
+        "host": host,
+        "port": port,
+        "authorized": True,
+        "site": site,
+        "label": label,
+        "tags": ["operator-authorized"],
+    }
+    if latitude is not None:
+        entry["latitude"] = latitude
+        entry["longitude"] = longitude
+
+    allow = list(data.get("allow_hosts", []))
+    if host not in allow:
+        allow.append(host)
+    data["allow_hosts"] = allow
+    data.setdefault("sensors", []).append(entry)
+    validate_config(data)
+    write_private(config, data)
+    print()
+    print("REGISTERED : PASS")
+    print("CONFIG     :", config)
+    print("NEXT       : zyra-maven sensors snapshot")
+    return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(
+        description="Fail-closed authorized sensor inventory + health bridge. No discovery, capture, credentials, or targeting."
+    )
+    ap.add_argument("command", choices=("add", "validate", "snapshot", "status"))
+    ap.add_argument("--config", default=str(DEFAULT_CONFIG))
+    ap.add_argument("--output", default=str(DEFAULT_SNAPSHOT))
+    ap.add_argument("--timeout", type=float, default=2.0)
+    ns = ap.parse_args()
+
+    config = pathlib.Path(ns.config).expanduser()
+    output = pathlib.Path(ns.output).expanduser()
+
+    if ns.command == "add":
+        return add_sensor(config)
+
+    if ns.command == "status":
+        if not output.exists():
+            print("SENSOR SNAPSHOT : NONE")
+            print("NEXT            : zyra-maven sensors add")
+            return 1
+        data = load_json(output)
+        print("AUTHORIZED SENSOR BRIDGE")
+        print("DECISION        :", data.get("decision", "UNKNOWN"))
+        print("CHECKED         :", data.get("checked_at", "unknown"))
+        print("SENSORS         :", len(data.get("sensors", [])))
+        print("REACHABLE       :", sum(1 for x in data.get("sensors", []) if x.get("reachable") is True))
+        print("DISCOVERY       : DISABLED")
+        print("CONTENT CAPTURE : DISABLED")
+        print("TARGETING       : DISABLED")
+        print("CREDENTIALS     : NOT STORED")
+        return 0 if data.get("decision") == "GO" else 1
+
+    data = load_json(config)
+    sensors, policy = validate_config(data)
+    print("CONFIG VALID    : PASS")
+    print("AUTHORIZED      :", len(sensors))
+    print("DISCOVERY       : DISABLED")
+    print("CREDENTIALS     : NOT STORED")
+    print("CONTENT CAPTURE : DISABLED")
+    print("TARGETING       : DISABLED")
+
+    if ns.command == "validate":
+        return 0
+
+    results = [probe(sensor, ns.timeout) for sensor in sensors]
+    snapshot = {
+        "schema": "xunia.authorized-sensor-health.v1",
+        "checked_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "decision": "GO" if all(x["reachable"] for x in results) else "NO-GO",
+        "policy": policy,
+        "sensors": results,
+    }
+    write_private(output, snapshot)
+
+    print()
+    for result in results:
+        state = "UP" if result["reachable"] else "DOWN"
+        print(f'{result["id"]:<28} {state:<5} {result["host"]}:{result["port"]}')
+    print()
+    print("DECISION        :", snapshot["decision"])
+    print("SNAPSHOT        :", output)
+    return 0 if snapshot["decision"] == "GO" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
