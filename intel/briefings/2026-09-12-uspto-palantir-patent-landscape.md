@@ -1,48 +1,82 @@
 # GPT-DOUG INTEL BRIEF // USPTO PALANTIR-QUERY TECHNOLOGY LANDSCAPE
 
 **Date:** 2026-09-12  
-**Authority:** United States Patent and Trademark Office (USPTO) Patent Public Search  
+**Authority:** United States Patent and Trademark Office (USPTO) Patent Public Search and user-supplied USPTO publication front page  
 **Source query:** `palantir`  
-**Reported results:** `3544` records; supplied captures now cover pages `1 of 71` and `2 of 71`  
+**Reported results:** `3544` records; supplied search captures cover pages `1 of 71` and `2 of 71`  
+**Exact attributed publication added:** `US-20260119865-A1`  
 **Disposition:** `KEEP_AS_PUBLIC_PRIOR_ART_AND_ARCHITECTURE_WATCHLIST`  
-**Confidence:** `HIGH` for the supplied search query, document numbers, titles and publication dates; `NOT ESTABLISHED` for assignee/ownership attribution from the result pages alone; `UNASSESSED` for claim-level relevance.
+**Confidence:** `HIGH` for supplied search metadata; `HIGH_FROM_DOCUMENT_FRONT_PAGE` for the Applicant field on `US-20260119865-A1`; `UNASSESSED` for claim-level relevance.
 
 ## Why this updates GPT-DOUG
 
-The supplied USPTO search captures expose a dense public technology landscape around themes that overlap GPT-DOUG, ZYRAPALANTIR, Maven, Glass Onion and RedPanda engineering. The correct upgrade is not to copy implementations or pretend that a search hit proves ownership. The useful upgrade is to create a provenance-aware **architecture watchlist** that tells GPT-DOUG when a design decision touches an area with visible patent activity and should receive a deeper design/legal review.
+The supplied USPTO materials expose a dense public technology landscape around themes that overlap GPT-DOUG, ZYRAPALANTIR, Maven, Glass Onion and RedPanda engineering. The correct upgrade is not to copy implementations or pretend a search hit proves ownership. The useful upgrade is a provenance-aware **architecture watchlist** that tells GPT-DOUG when a design decision touches an area with visible patent activity and should receive deeper design/legal review.
 
-The second captured page materially strengthens the watchlist around **ontology query execution, federated ontology databases, secure software deployment, network anomaly detection, audit/action logging, geospatial interfaces, identity federation, granular access control, rule governance, distributed computing and model-assisted diagnostics**.
+The second captured search page materially strengthens the watchlist around **ontology query execution, federated ontology databases, secure software deployment, network anomaly detection, audit/action logging, geospatial interfaces, identity federation, granular access control, rule governance, distributed computing and model-assisted diagnostics**.
+
+The exact publication front page for `US-20260119865-A1`, titled **SYSTEMS AND METHODS FOR ELIGIBILITY ENGINES USING GENERATIVE ARTIFICIAL INTELLIGENCE MODELS**, materially increases source confidence for one record because the document itself prints **Palantir Technologies Inc.** in the Applicant field. That supports a document-level applicant attribution; it does not establish current ownership, validity, enforceability, infringement, or freedom to operate.
 
 ## High-value architecture themes
 
 The selected records create the following durable watch areas:
 
 1. **Ontology and object modeling** — object-type selection, ontology build automation, ontology query execution, federated ontology databases, entity extraction/resolution and model-object storage.
-2. **AI workflow governance** — AI workflow management, workflow design, rule management, state-machine management, hierarchical AI constraints and language-model rule improvement.
-3. **Natural-language data systems** — permissioned language-model document search, natural-language pipeline generation, language-model incident/error analysis and data-object extraction.
-4. **Software supply chain** — build orchestration, artifact transport, software distribution and secure software-package deployment.
-5. **Operational resilience** — autoscaling, replication/synchronization, real-time edge processing, offline-capable applications and distributed programming environments.
-6. **Visual and geospatial operations** — interactive workflow visualization, dynamic geospatial applications, map tiles and model-assisted geospatial analysis.
-7. **Data and sensor fusion** — image registration, sensor correlation, heterogeneous-source geolocation and object-state modeling.
-8. **Identity, privacy and access control** — multi-modal identity governance, multiple identity providers, granular access policies and privacy-preserving ML data transformation.
-9. **Cyber observability and audit** — monitoring/alerting, graph-based network anomaly detection, action logs and audit logging databases.
-10. **Data integration and harmonization** — data harmonization, dataset integrations, time-series storage and unified query interfaces.
+2. **Eligibility engines and AI criteria evaluation** — triggers, eligibility evaluation, criterion evaluation, generative-AI logic, state updates and dispatch/evaluation functions.
+3. **AI workflow governance** — AI workflow management, workflow design, rule management, state-machine management, hierarchical AI constraints and language-model rule improvement.
+4. **Natural-language data systems** — permissioned language-model document search, natural-language pipeline generation, language-model incident/error analysis and data-object extraction.
+5. **Software supply chain** — build orchestration, artifact transport, software distribution and secure software-package deployment.
+6. **Operational resilience** — autoscaling, replication/synchronization, real-time edge processing, offline-capable applications and distributed programming environments.
+7. **Visual and geospatial operations** — interactive workflow visualization, dynamic geospatial applications, map tiles and model-assisted geospatial analysis.
+8. **Data and sensor fusion** — image registration, sensor correlation, heterogeneous-source geolocation and object-state modeling.
+9. **Identity, privacy and access control** — multi-modal identity governance, multiple identity providers, granular access policies and privacy-preserving ML data transformation.
+10. **Cyber observability and audit** — monitoring/alerting, graph-based network anomaly detection, action logs and audit logging databases.
+11. **Data integration and harmonization** — data harmonization, dataset integrations, time-series storage and unified query interfaces.
 
 ## GPT-DOUG design rule
 
 When a new module overlaps one of these themes, GPT-DOUG should:
 
 - cite the relevant public patent metadata;
-- label the relationship as **architectural similarity / research relevance**, not legal equivalence;
+- distinguish a search-result hit from an exact document-front-page attribution;
+- label architecture mappings as **engineering inference / research relevance**, not legal equivalence;
 - preserve independent-design evidence such as requirements, design notes, commits and test history;
 - prefer standards, documented public APIs and independently derived abstractions;
-- trigger human review before any claim-level patent analysis or freedom-to-operate conclusion;
-- never infer assignee/ownership solely from the fact that the result appeared in a `palantir` search.
+- trigger human review before claim-level patent analysis or freedom-to-operate conclusions;
+- never infer current ownership solely from a keyword search or historical Applicant field.
+
+## Eligibility-engine architecture watch
+
+**Source:** `US-20260119865-A1`  
+**Applicant printed on supplied front page:** `Palantir Technologies Inc.`  
+**Publication date:** `2026-04-30`  
+**Confidence:** `HIGH_FROM_DOCUMENT_FRONT_PAGE`
+
+The supplied diagram supports a high-level architecture watch around these visible components:
+
+- Trigger
+- Eligibility Evaluation
+- Criterion Evaluation
+- GAI Logic
+- Add/Update
+- Dispatcher Function
+- Evaluation Function Set
+
+GPT-DOUG maps those concepts only at a high architectural level to:
+
+- ontology object eligibility;
+- governed criteria evaluation;
+- AI-assisted policy evaluation;
+- state transition/update;
+- dispatcher/orchestration;
+- human review gates for consequential decisions.
+
+**Design boundary:** this is a research/design-review trigger, not an implementation specification. GPT-DOUG should not copy patent claim language or automatically reproduce a claimed implementation.
 
 ## Selected high-priority records
 
 | Document | Public title | GPT-DOUG watch area |
 | --- | --- | --- |
+| `US-20260119865-A1` | SYSTEMS AND METHODS FOR ELIGIBILITY ENGINES USING GENERATIVE ARTIFICIAL INTELLIGENCE MODELS | eligibility engine / governed AI criteria evaluation |
 | `US-20260236234-A1` | ONTOLOGY BUILD AUTOMATION TOOL | BPO / ontology generation |
 | `US-12711140-B2` | Systems and methods for object type selections | ontology object modeling |
 | `US-20260187067-A1` | EFFICIENT QUERY EXECUTION FOR ONTOLOGY-BASED DATABASES | ontology runtime/query design |
@@ -72,8 +106,10 @@ When a new module overlaps one of these themes, GPT-DOUG should:
 ### Promote to durable knowledge
 
 - patent/publication metadata indexing;
+- document-front-page applicant attribution with explicit confidence;
 - technology-theme classification;
 - provenance-aware prior-art watchlists;
+- eligibility-engine architecture-watch patterns;
 - design-review triggers;
 - independent-design evidence retention;
 - high-level architecture comparison.
@@ -81,14 +117,15 @@ When a new module overlaps one of these themes, GPT-DOUG should:
 ### Keep human review-gated
 
 - claim charting;
-- assignee/ownership assertions not independently verified;
+- current ownership/assignment status;
 - freedom-to-operate analysis;
 - infringement/non-infringement conclusions;
-- implementation decisions based directly on patent claims.
+- implementation decisions based directly on patent claim language.
 
 ### Block as automatic behavior
 
 - claiming a USPTO search hit proves Palantir ownership;
+- treating a publication-front-page Applicant field as proof of current ownership or enforceability;
 - claiming GPT-DOUG has legal clearance because no exact title match was found;
 - automatically rewriting architecture to mirror a patent's claimed implementation;
 - presenting this research layer as legal advice.
@@ -97,11 +134,12 @@ When a new module overlaps one of these themes, GPT-DOUG should:
 
 - page 1 source: `intel/sources/uspto-palantir-query-2026-09-12.json`
 - page 2 source: `intel/sources/uspto-palantir-query-2026-09-12-page2.json`
+- exact attributed source: `intel/sources/uspto-palantir-attributed-US-20260119865-A1.json`
 - aggregate CLI: `scripts/zyrapalantir_patent_intel.py`
 - ontology: `safety-shield/agents/knowledge/gpt-doug-uspto-patent-intel-v1.json`
 - validation: `tests/test_zyrapalantir_patent_intel.py`
-- command: `zyrapalantir patent-intel summary`
+- commands: `zyrapalantir patent-intel summary`, `zyrapalantir patent-intel attributed`, `zyrapalantir patent-intel eligibility-engine`
 
 ## Intelligence judgment
 
-The two supplied USPTO pages materially improve GPT-DOUG's architecture awareness. Page 1 established ontology automation, AI workflow management, incident analysis, artifact transport, visualization, governance and sensor/data fusion. Page 2 extends that into ontology-query runtime, secure package deployment, network anomaly detection, geospatial interfaces, identity federation, access-control enforcement, audit logging and distributed-system design. The safe and technically useful interpretation remains **research awareness**, not ownership attribution or legal clearance.
+The supplied USPTO materials materially improve GPT-DOUG's architecture awareness. The two search-result pages establish a broad watchlist. The exact `US-20260119865-A1` front page adds a stronger, document-level applicant attribution and a new eligibility-engine architecture watch around object eligibility, criteria evaluation, generative-AI logic, state updates and dispatch/orchestration. The safe and technically useful interpretation remains **research awareness and independent-design review**, not legal clearance.
