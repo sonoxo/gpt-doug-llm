@@ -260,6 +260,7 @@ status() {
 case "$CMD" in
   demo) demo ;;
   intel-demo) intel_demo ;;
+  patent-intel) shift; exec python3 "$ROOT/scripts/zyrapalantir_patent_intel.py" "$@" ;;
   mil-readiness) mil_readiness ;;
   live) shift; live_foreground "$@" ;;
   live-once) shift; live_once "$@" ;;
@@ -273,7 +274,7 @@ case "$CMD" in
   activate) sh "$ROOT/scripts/defense" activate ;;
   deactivate) sh "$ROOT/scripts/defense" deactivate ;;
   *)
-    echo 'usage: zyrapalantir [live|live-start|live-stop|live-status|live-once|live-log|live-follow|demo|intel-demo|mil-readiness|status|doctor|activate|deactivate]' >&2
+    echo 'usage: zyrapalantir [live|live-start|live-stop|live-status|live-once|live-log|live-follow|demo|intel-demo|patent-intel|mil-readiness|status|doctor|activate|deactivate]' >&2
     exit 2
     ;;
 esac
