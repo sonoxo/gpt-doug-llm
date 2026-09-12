@@ -1,0 +1,336 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import pathlib
+import random
+import subprocess
+import threading
+import webbrowser
+from collections import deque
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import urlparse
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+WEB_ROOT = ROOT / "docs" / "sensor-command"
+SENSOR_ENGINE = ROOT / "scripts" / "zyra-maven-sensors"
+STATE_DIR = pathlib.Path.home() / ".config" / "gpt-doug"
+DEFAULT_CONFIG = STATE_DIR / "authorized-sensors.json"
+DEFAULT_SNAPSHOT = STATE_DIR / "authorized-sensors-last.json"
+
+POLICY = {
+    "explicit_allowlist": True,
+    "discovery": False,
+    "credential_storage": False,
+    "content_capture": False,
+    "person_identification": False,
+    "targeting": False,
+    "health_probe_only": True,
+}
+
+DEMO_NODES = [
+    {"id": "WATCHTOWER-03", "kind": "gateway", "protocol": "https", "site": "ARCTIC", "label": "Watchtower 03", "latitude": 68.5, "longitude": -42.0},
+    {"id": "EAGLE-01", "kind": "camera", "protocol": "onvif", "site": "ALASKA", "label": "Eagle 01", "latitude": 61.2, "longitude": -149.9},
+    {"id": "SENTINEL-08", "kind": "sensor", "protocol": "tcp", "site": "US WEST", "label": "Sentinel 08", "latitude": 37.8, "longitude": -122.4},
+    {"id": "ORBITER-07", "kind": "sensor", "protocol": "tcp", "site": "PACIFIC", "label": "Orbiter 07", "latitude": 18.0, "longitude": -155.0},
+    {"id": "HORIZON-06", "kind": "gateway", "protocol": "https", "site": "S OCEAN", "label": "Horizon 06", "latitude": -45.0, "longitude": 120.0},
+    {"id": "BEACON-05", "kind": "sensor", "protocol": "tcp", "site": "MIDDLE EAST", "label": "Beacon 05", "latitude": 25.2, "longitude": 55.3},
+    {"id": "GATEWAY-04", "kind": "vms", "protocol": "https", "site": "EUROPE", "label": "Gateway 04", "latitude": 52.5, "longitude": 13.4},
+    {"id": "RAVEN-02", "kind": "camera", "protocol": "rtsp", "site": "N ATLANTIC", "label": "Raven 02", "latitude": 45.0, "longitude": -30.0},
+]
+
+
+def utc_now() -> str:
+    return dt.datetime.now(dt.timezone.utc).isoformat()
+
+
+def stable_latency(sensor_id: str, tick: int) -> float:
+    seed = int(hashlib.sha256(f"{sensor_id}:{tick // 3}".encode()).hexdigest()[:8], 16)
+    rng = random.Random(seed)
+    return round(rng.uniform(18, 86), 2)
+
+
+class State:
+    def __init__(self, mode: str, config: pathlib.Path, snapshot: pathlib.Path, interval: float, timeout: float):
+        self.mode = mode
+        self.config = config
+        self.snapshot = snapshot
+        self.interval = interval
+        self.timeout = timeout
+        self.lock = threading.RLock()
+        self.stop_event = threading.Event()
+        self.events = deque(maxlen=200)
+        self.previous = {}
+        self.demo_faults = set()
+        self.tick = 0
+        self.last_error = None
+        self.state = self._empty_state()
+
+    def _empty_state(self) -> dict:
+        return {
+            "schema": "xunia.sensor-command.v1",
+            "mode": self.mode,
+            "checked_at": utc_now(),
+            "decision": "UNKNOWN",
+            "summary": {"total": 0, "online": 0, "offline": 0, "avg_latency_ms": 0.0},
+            "policy": POLICY,
+            "sensors": [],
+            "events": [],
+            "last_error": None,
+        }
+
+    def add_event(self, kind: str, message: str, sensor_id: str | None = None, severity: str = "info") -> None:
+        self.events.appendleft({
+            "time": utc_now(),
+            "kind": kind,
+            "message": message,
+            "sensor_id": sensor_id,
+            "severity": severity,
+        })
+
+    def _record_transitions(self, sensors: list[dict]) -> None:
+        current_ids = set()
+        for sensor in sensors:
+            sid = sensor.get("id", "UNKNOWN")
+            current_ids.add(sid)
+            online = sensor.get("reachable") is True
+            old = self.previous.get(sid)
+            if old is None:
+                self.add_event("node", f"{sid} registered // {'ONLINE' if online else 'OFFLINE'}", sid, "good" if online else "bad")
+            elif old != online:
+                self.add_event("node", f"{sid} {'recovered' if online else 'communication loss'}", sid, "good" if online else "bad")
+            self.previous[sid] = online
+        for sid in set(self.previous) - current_ids:
+            self.add_event("node", f"{sid} removed from authorized inventory", sid, "warn")
+            self.previous.pop(sid, None)
+
+    @staticmethod
+    def _summary(sensors: list[dict]) -> dict:
+        total = len(sensors)
+        online = sum(1 for x in sensors if x.get("reachable") is True)
+        offline = total - online
+        latencies = [float(x.get("latency_ms", 0.0) or 0.0) for x in sensors]
+        avg = round(sum(latencies) / total, 2) if total else 0.0
+        return {"total": total, "online": online, "offline": offline, "avg_latency_ms": avg}
+
+    def _demo_snapshot(self) -> dict:
+        self.tick += 1
+        sensors = []
+        for base in DEMO_NODES:
+            sid = base["id"]
+            reachable = sid not in self.demo_faults
+            sensors.append({
+                **base,
+                "host": "demo.local",
+                "port": 0,
+                "authorized": True,
+                "tags": ["demo", "synthetic"],
+                "reachable": reachable,
+                "checked_at": utc_now(),
+                "latency_ms": stable_latency(sid, self.tick) if reachable else 0.0,
+                "error": None if reachable else "SIMULATED_COMMUNICATION_LOSS",
+            })
+        return {
+            "schema": "xunia.authorized-sensor-health.v1",
+            "checked_at": utc_now(),
+            "decision": "GO" if all(x["reachable"] for x in sensors) else "NO-GO",
+            "policy": POLICY,
+            "sensors": sensors,
+        }
+
+    def _live_snapshot(self) -> dict:
+        proc = subprocess.run(
+            ["python3", str(SENSOR_ENGINE), "snapshot", "--config", str(self.config), "--output", str(self.snapshot), "--timeout", str(self.timeout)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=max(10.0, self.timeout * 10),
+        )
+        if proc.returncode not in (0, 2):
+            raise RuntimeError((proc.stderr or "sensor engine failed").strip())
+        return json.loads(self.snapshot.read_text(encoding="utf-8"))
+
+    def refresh(self) -> dict:
+        try:
+            snap = self._demo_snapshot() if self.mode == "demo" else self._live_snapshot()
+            sensors = list(snap.get("sensors", []))
+            with self.lock:
+                self._record_transitions(sensors)
+                previous_decision = self.state.get("decision")
+                decision = snap.get("decision", "UNKNOWN")
+                if previous_decision not in (None, "UNKNOWN") and previous_decision != decision:
+                    self.add_event("system", f"Grid status changed: {previous_decision} -> {decision}", severity="good" if decision == "GO" else "bad")
+                self.last_error = None
+                self.state = {
+                    "schema": "xunia.sensor-command.v1",
+                    "mode": self.mode,
+                    "checked_at": snap.get("checked_at", utc_now()),
+                    "decision": decision,
+                    "summary": self._summary(sensors),
+                    "policy": snap.get("policy", POLICY),
+                    "sensors": sensors,
+                    "events": list(self.events),
+                    "last_error": None,
+                }
+                return self.state
+        except Exception as exc:
+            with self.lock:
+                message = f"{exc.__class__.__name__}: {exc}"
+                if message != self.last_error:
+                    self.add_event("system", f"Telemetry error: {message}", severity="bad")
+                self.last_error = message
+                self.state = {**self.state, "checked_at": utc_now(), "decision": "ERROR", "events": list(self.events), "last_error": message}
+                return self.state
+
+    def public_state(self) -> dict:
+        with self.lock:
+            return json.loads(json.dumps(self.state))
+
+    def demo_action(self, action: str, sensor_id: str | None) -> dict:
+        if self.mode != "demo":
+            raise ValueError("demo actions are available only in demo mode")
+        ids = {x["id"] for x in DEMO_NODES}
+        if sensor_id not in ids:
+            raise ValueError("unknown demo sensor id")
+        if action == "fault":
+            self.demo_faults.add(sensor_id)
+            self.add_event("operator", f"Simulated fault injected for {sensor_id}", sensor_id, "warn")
+        elif action == "recover":
+            self.demo_faults.discard(sensor_id)
+            self.add_event("operator", f"Simulated recovery requested for {sensor_id}", sensor_id, "info")
+        else:
+            raise ValueError("unsupported action")
+        return self.refresh()
+
+    def run(self) -> None:
+        self.refresh()
+        while not self.stop_event.wait(self.interval):
+            self.refresh()
+
+
+class Handler(SimpleHTTPRequestHandler):
+    server_version = "ZYRA-SensorCommand/1.0"
+
+    def __init__(self, *args, directory=None, **kwargs):
+        super().__init__(*args, directory=str(WEB_ROOT), **kwargs)
+
+    def log_message(self, fmt, *args):
+        return
+
+    def _json(self, status: int, payload: dict) -> None:
+        body = json.dumps(payload, separators=(",", ":")).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "no-referrer")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        parsed = urlparse(self.path)
+        if parsed.path == "/api/state":
+            self._json(200, self.server.command_state.public_state())
+            return
+        if parsed.path == "/api/health":
+            state = self.server.command_state.public_state()
+            self._json(200, {"ok": state.get("decision") != "ERROR", "mode": state.get("mode"), "decision": state.get("decision")})
+            return
+        if parsed.path == "/":
+            self.path = "/index.html"
+        return super().do_GET()
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        if parsed.path not in ("/api/action", "/api/refresh"):
+            self._json(404, {"error": "not found"})
+            return
+        if parsed.path == "/api/refresh":
+            self._json(200, self.server.command_state.refresh())
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            if length > 4096:
+                raise ValueError("request too large")
+            body = json.loads(self.rfile.read(length) or b"{}")
+            payload = self.server.command_state.demo_action(str(body.get("action", "")), body.get("sensor_id"))
+            self._json(200, payload)
+        except Exception as exc:
+            self._json(400, {"error": str(exc)})
+
+
+class CommandServer(ThreadingHTTPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+    def __init__(self, address, handler, state):
+        super().__init__(address, handler)
+        self.command_state = state
+
+
+def parse_args():
+    ap = argparse.ArgumentParser(description="Local ZYRA authorized sensor command-center HUD")
+    ap.add_argument("--mode", choices=("auto", "live", "demo"), default="auto")
+    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--port", type=int, default=0)
+    ap.add_argument("--config", default=str(DEFAULT_CONFIG))
+    ap.add_argument("--snapshot", default=str(DEFAULT_SNAPSHOT))
+    ap.add_argument("--interval", type=float, default=2.0)
+    ap.add_argument("--timeout", type=float, default=2.0)
+    ap.add_argument("--no-open", action="store_true")
+    return ap.parse_args()
+
+
+def main() -> int:
+    ns = parse_args()
+    if ns.host not in ("127.0.0.1", "localhost", "::1"):
+        raise SystemExit("NO-GO: command center is intentionally loopback-only")
+    if not WEB_ROOT.joinpath("index.html").exists():
+        raise SystemExit(f"NO-GO: dashboard not found: {WEB_ROOT / 'index.html'}")
+    config = pathlib.Path(ns.config).expanduser()
+    snapshot = pathlib.Path(ns.snapshot).expanduser()
+    mode = ns.mode
+    if mode == "auto":
+        mode = "live" if config.exists() else "demo"
+    if mode == "live" and not config.exists():
+        raise SystemExit(f"NO-GO: live mode requires authorized config: {config}")
+
+    state = State(mode, config, snapshot, max(0.5, ns.interval), max(0.1, ns.timeout))
+    threading.Thread(target=state.run, daemon=True, name="sensor-refresh").start()
+
+    server = CommandServer((ns.host, ns.port), Handler, state)
+    host, port = server.server_address[:2]
+    url_host = "127.0.0.1" if host in ("0.0.0.0", "::") else host
+    url = f"http://{url_host}:{port}/"
+
+    print("============================================================", flush=True)
+    print(" ZYRA // SENSOR COMMAND CENTER", flush=True)
+    print("============================================================", flush=True)
+    print(f"MODE     : {mode.upper()}", flush=True)
+    print(f"URL      : {url}", flush=True)
+    print(f"CONFIG   : {config}", flush=True)
+    print("BIND     : LOOPBACK ONLY", flush=True)
+    print("CAPTURE  : DISABLED", flush=True)
+    print("TARGETING: DISABLED", flush=True)
+    print("CTRL-C   : STOP", flush=True)
+    print("============================================================", flush=True)
+
+    if not ns.no_open:
+        threading.Timer(0.5, lambda: webbrowser.open(url)).start()
+
+    try:
+        server.serve_forever(poll_interval=0.25)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        state.stop_event.set()
+        server.server_close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
