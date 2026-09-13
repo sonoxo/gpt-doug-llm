@@ -1,12 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-12T08:25:46Z",
-  "due_files_reviewed": 3,
-  "due_paths": [
-    "agents/mission_support_workbench.py",
-    "docs/MISSION_SUPPORT_WORKBENCH.md",
-    "tests/test_mission_support_workbench.py"
-  ],
+  "cutoff_at": "2026-09-12T08:44:06Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1452,13 +1448,13 @@
     "agents/mission_support_workbench.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
       "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "24e7328c787ff923ae4b46d9967b26cf64588f4a285300ae00b718f4f9cc88d1",
       "size": 7274,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "agents/mythos_bridge.py": {
       "actions": [],
@@ -2362,6 +2358,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/GPT_DOUG_MAX_ROBOTICS_COMPLIANCE_LAB.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:43:58Z",
+      "reviewed_at": null,
+      "sha256": "12d8c9ca21f4182d853033263afa635d3ec0864e1dfd8576402597a6e5586fe6",
+      "size": 5078,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md": {
       "actions": [],
       "binary": false,
@@ -2442,13 +2449,13 @@
     "docs/MISSION_SUPPORT_WORKBENCH.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
       "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "803d913f72c1862412ad356796b6a1141371474b75d563329ef737e38ce1aecc",
       "size": 2059,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -2904,11 +2911,11 @@
     "docs/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-07T17:03:38Z",
-      "reviewed_at": "2026-09-12T16:58:17Z",
-      "sha256": "75c62049b7e5ce5d82a223b3607e78aa2f1c1997cf53d2682b0a2ccaefd17dfe",
-      "size": 9016,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:25:54Z",
+      "reviewed_at": null,
+      "sha256": "baa1aba7c17ff2dde046095bfbe441ecce2eeb266917cd5275c29a6f621427d3",
+      "size": 9405,
       "validation_issues": [],
       "was_due": false
     },
@@ -6865,10 +6872,21 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T00:57:10Z",
+      "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": null,
-      "sha256": "28106aa7f66d5334d99f90563d17aa61dd99da05020479ee33405a19daeed98a",
-      "size": 3766,
+      "sha256": "cd28b319ef12eacf5899677efc35fa9ba6ed715e97a2fc24a38cc2626afb08eb",
+      "size": 6248,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "safety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:43:58Z",
+      "reviewed_at": null,
+      "sha256": "647884659998c311a6edd415583b14903a7d9af0e9501008a83c8b09a4367b06",
+      "size": 8394,
       "validation_issues": [],
       "was_due": false
     },
@@ -6913,6 +6931,17 @@
       "reviewed_at": "2026-09-12T19:46:31Z",
       "sha256": "d56971968cc9205f5d10b8a2366c455135411c9f507d082c3f9b803003b56371",
       "size": 11160,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "safety-shield/agents/knowledge/patents/us-12697722-b2-robot-mission-seed.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:43:58Z",
+      "reviewed_at": null,
+      "sha256": "97d439a0009683113a5552d04637181e1aa28d36f1aaede452a1ba44487da5a4",
+      "size": 2782,
       "validation_issues": [],
       "was_due": false
     },
@@ -7272,10 +7301,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T02:03:23Z",
+      "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": null,
-      "sha256": "9292b47dfa3fd4174f2494f8860d4c00e075c7c25c1f8b01b5f837259219fb51",
-      "size": 1399,
+      "sha256": "756ca60ddff70a278b03ca0f973ccb1d047171b5d1e1ef356d6a8c220ce6a237",
+      "size": 1529,
       "validation_issues": [],
       "was_due": false
     },
@@ -7360,10 +7389,21 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T00:57:10Z",
+      "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": null,
-      "sha256": "3cb636fe13cc757ed845444ce0804ba81ed40b18d1d48f78406e4f49d2cba72e",
-      "size": 6249,
+      "sha256": "afcb2589994e118d6cee40fa7afd95de3249d76660fd6388cdd97baf406facba",
+      "size": 8234,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt_doug_max_robotics_lab.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:43:58Z",
+      "reviewed_at": null,
+      "sha256": "a960e7f95dc4af710b79a67ebf540f9a564185b2fd50ccedf898c786349d4e3d",
+      "size": 19818,
       "validation_issues": [],
       "was_due": false
     },
@@ -8192,6 +8232,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_gpt_doug_max_robotics_lab.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:43:58Z",
+      "reviewed_at": null,
+      "sha256": "d2c986c51d4a39d75480a21e4fc8aab9e6defd9622b863cb7a51b8df55d085fc",
+      "size": 3920,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_green_house_ontology.py": {
       "actions": [],
       "binary": false,
@@ -8294,13 +8345,13 @@
     "tests/test_mission_support_workbench.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
       "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "2e75b84b1569eab405280c1dbe644e3fc7c8ee66bf5db502bc5bdcf44c59e2b6",
       "size": 3143,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_mythos_bridge.py": {
       "actions": [],
@@ -12682,11 +12733,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-13T08:25:46Z",
+  "generated_at": "2026-09-13T08:44:06Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1152,
+  "tracked_files_reviewed": 1157,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
