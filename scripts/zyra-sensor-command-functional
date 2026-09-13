@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.machinery
 import importlib.util
 import pathlib
 import threading
@@ -11,11 +12,12 @@ from urllib.parse import urlparse
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = ROOT / "scripts" / "zyra-sensor-command"
 
-spec = importlib.util.spec_from_file_location("zyra_sensor_command_base", BASE)
-if spec is None or spec.loader is None:
+loader = importlib.machinery.SourceFileLoader("zyra_sensor_command_base", str(BASE))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+if spec is None:
     raise SystemExit("NO-GO: unable to load base sensor command server")
 base = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(base)
+loader.exec_module(base)
 
 PREVIEW_JS = r"""
 (() => {
