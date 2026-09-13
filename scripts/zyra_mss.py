@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ONTOLOGY = ROOT / "safety-shield" / "ontology" / "zyra-mss-v1.json"
 SWEEP = ROOT / "intel" / "sources" / "zyra-mss-patent-architecture-sweep-2026-09-12.json"
+WIRING = ROOT / "safety-shield" / "agents" / "knowledge" / "gpt-doug-max-patent-wiring-v1.json"
 DOC = ROOT / "docs" / "ZYRA_MSS.md"
 
 
@@ -73,7 +74,22 @@ def patent_sweep() -> None:
     print("\nSelected architecture signals:")
     for item in s["architecture_signals"]:
         print(f"  {item['document']:<20} {item['theme']}")
-    print("\nResearch note: targeted sweep only; not a complete read of every USPTO PDF.")
+    print("\nResearch note: targeted sweep only; the exhaustive local corpus reader is a separate path.")
+
+
+def patent_wiring() -> None:
+    w = load(WIRING)
+    print("🔗 ZYRA-MSS // GPT-DOUG-MAX PATENT FABRIC")
+    print("==========================================")
+    print(f"Schema ........... {w['schema']}")
+    print(f"Mode ............. {w['mode']}")
+    print(f"Components ....... {len(w['components'])}")
+    print(f"Links ............ {len(w['links'])}")
+    print("\nZYRA-MSS links:")
+    for link in w["links"]:
+        if "ZYRA_MSS" in (link["from"], link["to"]):
+            print(f"  {link['from']} --{link['type']}--> {link['to']}")
+    print("\nBoundary ......... advisory research only; consequential actions remain human-authorized")
 
 
 def doctor() -> int:
@@ -81,8 +97,9 @@ def doctor() -> int:
     try:
         o = load(ONTOLOGY)
         s = load(SWEEP)
+        w = load(WIRING)
     except Exception as exc:
-        print(f"❌ ZYRA-MSS DOCTOR: invalid JSON: {exc}")
+        print(f"❌ ZYRA-MSS DOCTOR: invalid/missing JSON: {exc}")
         return 1
 
     if o.get("ontology") != "ZYRA_MSS_V1":
@@ -105,6 +122,12 @@ def doctor() -> int:
         errors.append("safety block set incomplete")
     if s.get("research_method", {}).get("network_concurrency_cap", 999) > 8:
         errors.append("research network concurrency cap too high")
+    required_wiring = {"GPT_DOUG_MAX", "ZYRA_MSS", "USPTO_PATENT_INTEL", "USPTO_CORPUS_READER", "GLASS_ONION", "HUMAN_REVIEW"}
+    missing_wiring = required_wiring - set(w.get("components", {}))
+    if missing_wiring:
+        errors.append(f"patent wiring incomplete: {sorted(missing_wiring)}")
+    if w.get("required_controls", {}).get("automatic_external_action") is not False:
+        errors.append("patent fabric automatic external action must be false")
     if not DOC.exists():
         errors.append("ZYRA_MSS.md missing")
 
@@ -120,6 +143,8 @@ def doctor() -> int:
     print(f"   link types ..... {len(o['link_types'])}")
     print(f"   logical agents . {o['logical_agent_fleet']['count']}")
     print(f"   patent signals . {len(s['architecture_signals'])}")
+    print("   GPT-DOUG-MAX ... wired")
+    print("   USPTO corpus ... wired")
     print("   auto external . false")
     print("   human boundary  required")
     return 0
@@ -128,7 +153,7 @@ def doctor() -> int:
 def main() -> int:
     p = argparse.ArgumentParser(prog="zyrapalantir mss")
     p.add_argument("command", nargs="?", default="summary",
-                   choices=["summary", "ontology", "agents", "patent-sweep", "doctor"])
+                   choices=["summary", "ontology", "agents", "patent-sweep", "patent-wiring", "doctor"])
     a = p.parse_args()
     if a.command == "summary":
         summary(); return 0
@@ -138,6 +163,8 @@ def main() -> int:
         agents(); return 0
     if a.command == "patent-sweep":
         patent_sweep(); return 0
+    if a.command == "patent-wiring":
+        patent_wiring(); return 0
     if a.command == "doctor":
         return doctor()
     return 2
