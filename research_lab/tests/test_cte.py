@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -58,15 +59,16 @@ class TestCounterfactualTransactionEngine(unittest.TestCase):
             "online",
         )
 
-    def test_cli_committed_transaction(self):
+    def test_cli_rejects_boolean_approval_bypass(self):
         root = Path(__file__).resolve().parents[2]
+
         payload = {
             "state": {
                 "version": "ontology-v1",
                 "objects": {"service": {"status": "online"}},
             },
             "transition": {
-                "transition_id": "tx-cli-001",
+                "transition_id": "tx-cli-bypass",
                 "actor": "gpt-doug",
                 "changes": {"service": {"status": "maintenance"}},
                 "required_policy": "policy-v1",
@@ -89,13 +91,108 @@ class TestCounterfactualTransactionEngine(unittest.TestCase):
                 text=True,
             )
 
+        self.assertEqual(result.returncode, 2)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["status"], "ERROR")
+        self.assertIn("human_approved", output["message"])
+
+    def test_cli_executes_only_with_receipt(self):
+        from research_lab.approval import digest
+        from research_lab.cte import ReceiptAuthorizer
+
+        root = Path(__file__).resolve().parents[2]
+
+        state = StateSnapshot(
+            version="ontology-v1",
+            objects={"service": {"status": "online"}},
+        )
+
+        transition = ProposedTransition(
+            transition_id="tx-cli-receipt",
+            actor="gpt-doug",
+            changes={"service": {"status": "maintenance"}},
+            required_policy="policy-v1",
+        )
+
+        code_versions = {
+            "cte-engine": digest("cte-code-v1"),
+        }
+
+        data_versions = {
+            "ontology-schema": digest("schema-v1"),
+        }
+
+        policy_versions = {
+            "policy-v1": digest("policy-content-v1"),
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            database = str(
+                Path(directory) / "cte-approvals.sqlite"
+            )
+
+            authorizer = ReceiptAuthorizer(
+                database,
+                {"human-reviewer"},
+            )
+
+            try:
+                token = authorizer.issue(
+                    state,
+                    transition,
+                    code_versions,
+                    data_versions,
+                    policy_versions,
+                    "human-reviewer",
+                    now=1000.0,
+                    ttl=300,
+                )
+            finally:
+                authorizer.close()
+
+            payload = {
+                "state": {
+                    "version": state.version,
+                    "objects": state.objects,
+                },
+                "transition": {
+                    "transition_id": transition.transition_id,
+                    "actor": transition.actor,
+                    "changes": transition.changes,
+                    "required_policy": transition.required_policy,
+                },
+                "approval_database": database,
+                "code_versions": code_versions,
+                "data_versions": data_versions,
+                "policy_versions": policy_versions,
+                "now": 1001.0,
+            }
+
+            source = Path(directory) / "cte-execute.json"
+            source.write_text(
+                json.dumps(payload),
+                encoding="utf-8",
+            )
+
+            env = os.environ.copy()
+            env["ZYRA_CTE_APPROVERS"] = "human-reviewer"
+            env["ZYRA_CTE_RECEIPT"] = token
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(root / "scripts/invention_lab.py"),
+                    "cte-execute",
+                    str(source),
+                ],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+
         self.assertEqual(result.returncode, 0)
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "COMMITTED")
-
-
-if __name__ == "__main__":
-    unittest.main()
 
 
 class TestCTEAuthorizationReceipts(unittest.TestCase):
@@ -231,3 +328,7 @@ class TestCTEAuthorizationReceipts(unittest.TestCase):
         )
 
         self.assertEqual(result.status, "AUTHORIZATION_DENIED")
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,24 +1,22 @@
 """JSON input/output interface. No mutation of repositories or live systems."""
 import argparse
 import json
+import os
 from dataclasses import asdict
 from pathlib import Path
 
 from . import demo, lineage, reconcile, repair
-from .cte import CounterfactualTransactionEngine, ProposedTransition, StateSnapshot
+from .cte import (
+    CounterfactualTransactionEngine,
+    ProposedTransition,
+    ReceiptAuthorizer,
+    StateSnapshot,
+)
 
 
-def run_cte(data):
+def _cte_objects(data):
     state_data = data["state"]
     transition_data = data["transition"]
-
-    human_approved = data.get("human_approved", False)
-    if not isinstance(human_approved, bool):
-        raise TypeError("human_approved must be boolean")
-
-    observed_override = data.get("observed_override")
-    if observed_override is not None and not isinstance(observed_override, dict):
-        raise TypeError("observed_override must be an object or null")
 
     state = StateSnapshot(
         version=state_data["version"],
@@ -36,15 +34,77 @@ def run_cte(data):
         ),
     )
 
-    engine = CounterfactualTransactionEngine()
-    return asdict(
-        engine.run(
+    return state, transition
+
+
+def _host_approvers():
+    raw = os.getenv("ZYRA_CTE_APPROVERS", "")
+    approvers = frozenset(
+        value.strip()
+        for value in raw.split(",")
+        if value.strip()
+    )
+
+    if not approvers:
+        raise ValueError(
+            "ZYRA_CTE_APPROVERS host allowlist is required"
+        )
+
+    return approvers
+
+
+def run_cte(data):
+    """Counterfactual proposal/dry-run only. Cannot self-approve."""
+
+    if "human_approved" in data:
+        raise ValueError(
+            "human_approved bypass is disabled; "
+            "authorized execution requires cte-execute"
+        )
+
+    state, transition = _cte_objects(data)
+
+    result = CounterfactualTransactionEngine().run(
+        state,
+        transition,
+        human_approved=False,
+    )
+
+    return asdict(result)
+
+
+def run_cte_execute(data):
+    """Execute synthetic CTE transaction only after receipt consumption."""
+
+    if "human_approved" in data:
+        raise ValueError("human_approved bypass is disabled")
+
+    receipt = os.getenv("ZYRA_CTE_RECEIPT", "").strip()
+    if not receipt:
+        raise ValueError("ZYRA_CTE_RECEIPT is required")
+
+    state, transition = _cte_objects(data)
+
+    authorizer = ReceiptAuthorizer(
+        data["approval_database"],
+        _host_approvers(),
+    )
+
+    try:
+        result = authorizer.execute(
+            receipt,
             state,
             transition,
-            human_approved=human_approved,
-            observed_override=observed_override,
+            data["code_versions"],
+            data["data_versions"],
+            data["policy_versions"],
+            data["now"],
+            observed_override=data.get("observed_override"),
         )
-    )
+    finally:
+        authorizer.close()
+
+    return asdict(result)
 
 
 def main(argv=None):
@@ -52,7 +112,13 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("demo")
 
-    for name in ("repair", "reconcile", "lineage", "cte"):
+    for name in (
+        "repair",
+        "reconcile",
+        "lineage",
+        "cte",
+        "cte-execute",
+    ):
         command = sub.add_parser(name)
         command.add_argument(
             "input",
@@ -66,7 +132,9 @@ def main(argv=None):
         if args.command == "demo":
             result = demo.run()
         else:
-            data = json.loads(args.input.read_text(encoding="utf-8"))
+            data = json.loads(
+                args.input.read_text(encoding="utf-8")
+            )
 
             if args.command == "repair":
                 result = repair.plan(
@@ -86,24 +154,44 @@ def main(argv=None):
                     data["claims"],
                     data["documents"],
                 )
-            else:
+            elif args.command == "cte":
                 result = run_cte(data)
+            else:
+                result = run_cte_execute(data)
 
-        print(json.dumps(result, indent=2, sort_keys=True, allow_nan=False))
+        print(
+            json.dumps(
+                result,
+                indent=2,
+                sort_keys=True,
+                allow_nan=False,
+            )
+        )
 
         if args.command == "demo":
             return 0 if result["passed"] else 1
+
         if args.command == "repair":
             return 0 if result["status"] == "PLAN_READY" else 1
+
         if args.command == "reconcile":
             return 0 if result["apply_allowed"] else 1
+
         if args.command == "lineage":
             return 1 if result["invalidated"] else 0
-        if args.command == "cte":
+
+        if args.command in {"cte", "cte-execute"}:
             return 0 if result["status"] == "COMMITTED" else 1
 
         return 1
 
     except (OSError, ValueError, TypeError, KeyError) as exc:
-        print(json.dumps({"status": "ERROR", "message": str(exc)}))
+        print(
+            json.dumps(
+                {
+                    "status": "ERROR",
+                    "message": str(exc),
+                }
+            )
+        )
         return 2
