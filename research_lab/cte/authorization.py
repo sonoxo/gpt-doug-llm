@@ -6,8 +6,7 @@ from dataclasses import asdict
 from research_lab.approval import ApprovalGate, digest
 
 from .engine import CounterfactualTransactionEngine
-from .models import ProposedTransition, StateSnapshot, TransactionResult
-
+from .models import TransactionResult
 
 RESERVED_DATA_BINDINGS = {
     "ontology_state",
