@@ -36,6 +36,10 @@ def test_scope_library_contains_validated_patents() -> None:
         "US-20260201971-A9",
         "US-20250355943-A1",
         "US-20250298916-A1",
+        "US-20250290768-A1",
+        "US-12430017-B2",
+        "US-20250390662-A1",
+        "US-20250374009-A1",
     } <= ids
     assert "US-20260271508-A1" not in ids
 
@@ -123,6 +127,90 @@ def test_purpose_bound_seed_keeps_governance_gates() -> None:
     assert policy["automatic_policy_bypass"] is False
     assert policy["automatic_owner_approval"] is False
     assert policy["provenance_required"] is True
+
+
+def test_dynamic_geospatial_scaling_scope_matches_map_query() -> None:
+    result = run(
+        "match",
+        "dynamic marker scaling zoom marker density screen resolution map layer visual clutter",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250290768-A1"
+
+
+def test_dynamic_geospatial_seed_blocks_person_tracking() -> None:
+    result = run("show", "US-20250290768-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    policy = json.loads(result.stdout)["privacy_and_safety_policy"]
+    assert policy["authorized_geospatial_data_only"] is True
+    assert policy["person_identification"] is False
+    assert policy["covert_person_tracking"] is False
+    assert policy["targeting_or_operational_tasking"] is False
+
+
+def test_simulated_systems_scope_matches_digital_twin_query() -> None:
+    result = run(
+        "match",
+        "digital twin simulation UI time series model registry scenario time scrubber trend panel",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-12430017-B2"
+
+
+def test_simulated_systems_seed_keeps_human_control_gate() -> None:
+    result = run("show", "US-12430017-B2")
+    assert result.returncode == 0, result.stdout + result.stderr
+    policy = json.loads(result.stdout)["safety_policy"]
+    assert policy["simulation_only_by_default"] is True
+    assert policy["human_review_for_consequential_actions"] is True
+    assert policy["automatic_high_impact_physical_control"] is False
+    assert policy["targeting_or_weapon_control"] is False
+
+
+def test_irregularity_scope_matches_normalization_query() -> None:
+    result = run(
+        "match",
+        "data normalization canonical fields irregularity anomaly schema mapping statistical baseline fraud",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250390662-A1"
+
+
+def test_irregularity_seed_requires_human_review_before_adverse_action() -> None:
+    result = run("show", "US-20250390662-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    policy = json.loads(result.stdout)["governance_policy"]
+    assert policy["human_review_before_adverse_action"] is True
+    assert policy["anomaly_is_not_proof_of_wrongdoing"] is True
+    assert policy["automatic_enforcement_or_punitive_action"] is False
+
+
+def test_composite_geolocation_scope_matches_asset_fusion_query() -> None:
+    result = run(
+        "match",
+        "composite object geolocation ontology heterogeneous source priority confidence time aggregate asset",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250374009-A1"
+
+
+def test_composite_geolocation_seed_is_non_person_by_default() -> None:
+    result = run("show", "US-20250374009-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    policy = json.loads(result.stdout)["privacy_and_surveillance_policy"]
+    assert policy["default_entity_scope"] == "NON_PERSON_ASSET_OR_AGGREGATE"
+    assert policy["person_identification"] is False
+    assert policy["individual_person_location_inference"] is False
+    assert policy["covert_person_tracking"] is False
+    assert policy["targeting_or_operational_tasking"] is False
 
 
 def test_fluid_seed_keeps_independent_design_gate() -> None:
