@@ -86,6 +86,6 @@ This lab is for civilian/industrial programmable devices. Weapon, fire-control, 
 
 Add a jurisdiction object to:
 
-`sa​​fety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json`
+`safety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json`
 
 A pack should identify official authorities, legal/regulatory triggers, source URLs, effective/transition status, and a human applicability-review requirement. Unknown or ambiguous rules should remain `VERIFY_CURRENT_RULES` or `HUMAN_APPLICABILITY_REVIEW`; do not convert uncertainty into a compliance claim.
