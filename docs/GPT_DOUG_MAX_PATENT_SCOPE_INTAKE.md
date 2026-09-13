@@ -40,8 +40,8 @@ Validated patent seeds live in `safety-shield/agents/knowledge/patents/` and eve
 scripts/doug-max patent-scope status
 scripts/doug-max patent-scope list
 scripts/doug-max patent-scope pending
-scripts/doug-max patent-scope show US-20260201971-A9
-scripts/doug-max patent-scope match "pressure sensor normally closed valve pneumatic actuator"
+scripts/doug-max patent-scope show US-20250363154-A1
+scripts/doug-max patent-scope match "natural language ontology graph database query generation"
 scripts/doug-max patent-scope doctor
 ```
 
@@ -57,10 +57,19 @@ Fluid-control and actuator feedback: normally closed supply/exhaust valves, pres
 
 The A9 seed is linked to the `WO2020056395A1 / US20220030757A1` family for research context. Official A9 claims must be re-fetched and compared before claim-element analysis because an A9 publication can reflect a correction or republication.
 
+### US-20250363154-A1
+Ontology-backed database interaction using machine learning: natural-language query intake, LLM generation of graph/relational queries, ontology-aware API function calling, multi-database access, candidate-query selection, ontology updates, and preservation of provenance/access-control semantics.
+
+GPT-DOUG-MAX stores the reusable build profile as `ONTOLOGY_FIRST_GOVERNED_LLM_QUERY_COMPILER`. The independent reference architecture keeps authoritative ontology data outside model memory and inserts deterministic schema validation, query-policy linting, least-privilege execution, read/write separation, provenance, dry-run/explain support, and human approval for high-impact mutations between LLM generation and execution.
+
 ## Current pending intake
 
 ### US-20260271508-A1
 Registered from a user-supplied USPTO US-PGPUB link. The ephemeral request token is not stored. In the current execution environment the official document text/PDF could not be retrieved, so title, abstract, claims, CPC/IPC, inventors, assignee, and technical scope remain intentionally unverified. This record will not influence design matching until it is promoted to a validated scope seed after source review.
+
+## Building-memory rule
+
+A learned patent may contribute high-level architecture patterns to GPT-DOUG-MAX only when they are stored as independent-design abstractions. Build memory should favor reusable interfaces, validation gates, provenance, safety/security controls, and implementation-neutral patterns. It must not copy patent claim language, patent figures, or represent that a generated design has freedom to operate.
 
 ## Patent-family rule
 
