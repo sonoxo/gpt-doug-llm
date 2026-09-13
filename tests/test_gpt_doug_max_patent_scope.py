@@ -10,21 +10,52 @@ CLI = ROOT / "scripts" / "gpt_doug_max_patent_scope.py"
 
 
 def run(*args: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run([sys.executable, str(CLI), *args], cwd=ROOT, capture_output=True, text=True, check=False)
+    return subprocess.run(
+        [sys.executable, str(CLI), *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 def test_scope_doctor_green() -> None:
     result = run("doctor")
     assert result.returncode == 0, result.stdout + result.stderr
     assert "PATENT SCOPE DOCTOR: GREEN" in result.stdout
+    assert "Unknown scope ...... FAIL-CLOSED" in result.stdout
 
 
-def test_scope_library_contains_both_patents() -> None:
+def test_scope_library_contains_both_validated_patents() -> None:
     result = run("list", "--json")
     assert result.returncode == 0, result.stdout + result.stderr
     rows = json.loads(result.stdout)
     ids = {row["patent_id"] for row in rows}
     assert {"US-12697722-B2", "US-20260201971-A9"} <= ids
+    assert "US-20260271508-A1" not in ids
+
+
+def test_new_patent_is_registered_as_pending_not_invented_scope() -> None:
+    result = run("pending", "--json")
+    assert result.returncode == 0, result.stdout + result.stderr
+    rows = json.loads(result.stdout)
+    row = next(x for x in rows if x["patent_id"] == "US-20260271508-A1")
+    assert row["status"] == "PENDING_SCOPE_EXTRACTION"
+    assert row["official_document_text_retrieved"] is False
+
+    shown = run("show", "US-20260271508-A1")
+    assert shown.returncode == 0, shown.stdout + shown.stderr
+    intake = json.loads(shown.stdout)
+    assert intake["scope_policy"]["infer_scope_without_document"] is False
+    assert intake["source"]["request_token_persisted"] is False
+
+
+def test_pending_patent_is_excluded_from_scope_ranking() -> None:
+    result = run("match", "pressure sensor supply exhaust valve pneumatic actuator", "--json")
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert "US-20260271508-A1" in payload["pending_patents_excluded_from_scope_ranking"]
+    assert payload["results"][0]["patent_id"] == "US-20260201971-A9"
 
 
 def test_fluid_control_scope_matches_fluid_query() -> None:
