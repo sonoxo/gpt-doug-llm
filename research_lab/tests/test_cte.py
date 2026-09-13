@@ -407,5 +407,185 @@ class TestCTEAuthorizationReceipts(unittest.TestCase):
             journal.close()
 
 
+    def test_durable_execution_records_full_lifecycle(self):
+        from research_lab.cte import ExecutionJournal
+
+        token = self.issue()
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "durable.sqlite")
+        )
+
+        try:
+            result = self.authorizer.execute_durable(
+                journal,
+                "attempt-durable",
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1001,
+            )
+
+            self.assertEqual(result.status, "COMMITTED")
+
+            self.assertEqual(
+                [event.to_phase for event in journal.events("attempt-durable")],
+                [
+                    "PROPOSED",
+                    "SIMULATED",
+                    "AUTHORIZED",
+                    "EXECUTING",
+                    "OBSERVED",
+                    "COMMITTED",
+                ],
+            )
+        finally:
+            journal.close()
+
+    def test_durable_terminal_replay_is_idempotent(self):
+        from research_lab.cte import ExecutionJournal
+
+        token = self.issue()
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "replay.sqlite")
+        )
+
+        try:
+            first = self.authorizer.execute_durable(
+                journal,
+                "attempt-replay",
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1001,
+            )
+
+            second = self.authorizer.execute_durable(
+                journal,
+                "attempt-replay",
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1002,
+            )
+
+            self.assertEqual(first.status, "COMMITTED")
+            self.assertEqual(second.status, "COMMITTED")
+            self.assertEqual(
+                len(journal.events("attempt-replay")),
+                6,
+            )
+        finally:
+            journal.close()
+
+    def test_durable_drift_rolls_back(self):
+        from research_lab.cte import ExecutionJournal
+
+        token = self.issue()
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "rollback.sqlite")
+        )
+
+        try:
+            result = self.authorizer.execute_durable(
+                journal,
+                "attempt-rollback",
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1001,
+                observed_override={
+                    "service": {"status": "error"},
+                },
+            )
+
+            self.assertEqual(result.status, "ROLLED_BACK")
+            self.assertEqual(
+                journal.get("attempt-rollback").phase,
+                "ROLLED_BACK",
+            )
+        finally:
+            journal.close()
+
+    def test_nonterminal_retry_fails_closed_for_recovery(self):
+        from research_lab.cte import ExecutionJournal
+
+        token = self.issue()
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "recovery.sqlite")
+        )
+
+        try:
+            self.authorizer.begin_attempt(
+                journal,
+                "attempt-recovery",
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1000,
+            )
+
+            journal.advance(
+                "attempt-recovery",
+                "SIMULATED",
+                1000,
+                {"synthetic_crash_point": True},
+            )
+
+            result = self.authorizer.execute_durable(
+                journal,
+                "attempt-recovery",
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1001,
+            )
+
+            self.assertEqual(
+                result.status,
+                "RECOVERY_REQUIRED",
+            )
+
+            self.assertEqual(
+                journal.get("attempt-recovery").phase,
+                "SIMULATED",
+            )
+
+            # Recovery refusal occurs before receipt consumption.
+            legacy = self.authorizer.execute(
+                token,
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1002,
+            )
+
+            self.assertEqual(legacy.status, "COMMITTED")
+        finally:
+            journal.close()
+
+
 if __name__ == "__main__":
     unittest.main()
