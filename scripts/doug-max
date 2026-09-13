@@ -10,8 +10,36 @@ fi
 
 if [[ $# -eq 0 ]]; then
   cd "$ROOT"
-  exec env ZYRA_ACTIVE=1 python3 "$ROOT/zyra_chat.py"
+  exec env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 python3 "$ROOT/zyra_chat.py"
 fi
+
+case "${1,,}" in
+  patent-wire|patent-fabric)
+    shift
+    exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" "$@"
+    ;;
+  patent-intel|patents)
+    shift
+    if [[ $# -eq 0 ]]; then set -- summary; fi
+    exec python3 "$ROOT/scripts/zyrapalantir_patent_intel.py" "$@"
+    ;;
+  patent-corpus)
+    shift
+    exec "$ROOT/scripts/zyra-mss-uspto-reader" "$@"
+    ;;
+  patent-search)
+    shift
+    if [[ $# -eq 0 ]]; then
+      echo "usage: doug-max patent-search <terms>" >&2
+      exit 2
+    fi
+    exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" search "$*"
+    ;;
+  mss)
+    shift
+    exec python3 "$ROOT/scripts/zyra_mss.py" "$@"
+    ;;
+esac
 
 goal="$*"
 case "${goal,,}" in
@@ -23,4 +51,4 @@ case "${goal,,}" in
 esac
 
 cd "$ROOT"
-printf '%s\n/quit\n' "$command" | env ZYRA_ACTIVE=1 python3 "$ROOT/zyra_chat.py"
+printf '%s\n/quit\n' "$command" | env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 python3 "$ROOT/zyra_chat.py"
