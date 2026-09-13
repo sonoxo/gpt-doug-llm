@@ -1,0 +1,147 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12430017-B2",
+  "title": "Interactive graphical user interfaces for simulated systems",
+  "document_type": "US patent grant",
+  "kind_code": "B2",
+  "publication_date": "2025-09-30",
+  "application_number": "18/297,490",
+  "filed": "2023-04-07",
+  "priority_date": "2020-09-08",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Andrew Floren", "Feridun Arda Kara", "Adil Majid", "Ted Mabrey", "Thomas McArdle", "Timothy Slatcher", "Christopher Martin", "Thomas Pearson", "Jesse Rickard", "Gabriel Boning", "Joh Reeves", "David Skiff", "Adam Storr", "Vipul Shekhawat", "Sander Kromwijk"
+  ],
+  "related_application_signals": [
+    "continuation of US application 17/447,105",
+    "earlier publication US20230259263A1",
+    "family includes US11650728B2",
+    "continuation family includes US20260003488A1",
+    "WO family includes WO2022056529A1"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-12430017-B2?source=USPAT",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US12430017B2/en"
+    }
+  ],
+  "classification_signals": [
+    "G06F30/12 GUI-assisted computer-aided design",
+    "G06F3/04847 parameter-setting user interfaces",
+    "G06F30/18 network/topological system design"
+  ],
+  "scope_tags": [
+    "digital-twin",
+    "simulation-ui",
+    "multi-model-simulation",
+    "time-series",
+    "object-graph",
+    "map-ui",
+    "trend-panel",
+    "simulation-panel",
+    "time-scrubbing",
+    "model-state-visualization",
+    "what-if-analysis",
+    "alerts",
+    "human-in-the-loop",
+    "decision-support"
+  ],
+  "publicly_described_functional_concepts": [
+    "visualizing multiple models that collectively represent a real-world system",
+    "associating interface nodes with models and time-based input data",
+    "simulating model state and updating node appearance for a selected point in time",
+    "graph- or map-based exploration of simulated objects and relationships",
+    "trend, information, simulation, mapping, schematic, time, equipment, and alert-oriented panels",
+    "interactive charts, histograms, annotations, and state-dependent visual styling",
+    "using measured or historical data to inform model simulation and operator analysis"
+  ],
+  "scope_model": {
+    "technical_domain": ["digital twins", "simulation orchestration", "interactive analytics", "human-computer interaction", "time-series visualization"],
+    "core_architecture": [
+      "authoritative object/ontology layer",
+      "model registry",
+      "time-series input store",
+      "simulation runner",
+      "scenario state store",
+      "graph/map view",
+      "trend and chart panels",
+      "time scrubber",
+      "alert panel",
+      "explainability/provenance panel",
+      "human decision gate"
+    ],
+    "analysis_loop": "select authorized models and data -> run or replay simulation -> compute node/object properties over time -> project state into graph/map/panel UI -> scrub or compare scenarios -> surface alerts/assumptions -> require human decision for consequential real-world actions",
+    "building_patterns_relevant_to_independent_design": [
+      "separate model definitions, scenario inputs, simulation outputs, and UI state",
+      "treat time as a first-class navigation dimension",
+      "link every displayed simulation value back to model version and source inputs",
+      "support graph, map, chart, and schematic views over the same canonical object state",
+      "keep simulation outcomes distinct from observed real-world measurements",
+      "provide side-by-side scenario comparison and uncertainty indicators",
+      "use simulation for decision support rather than automatic high-impact physical control"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "UI nodes associated with models and time-based data",
+      "simulation of real-world-system models",
+      "updating node appearance based on simulation results and selected time",
+      "graph/map views with interactive charts or related panels"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "ontology-object-layer",
+      "model-registry",
+      "time-series-store",
+      "simulation-runner",
+      "scenario-store",
+      "graph-map-renderer",
+      "trend-panel",
+      "time-scrubber",
+      "alert-explainability-panel",
+      "human-decision-gate",
+      "audit-log"
+    ],
+    "default_build_profile": "HUMAN_GOVERNED_DIGITAL_TWIN_WORKBENCH",
+    "use_for": [
+      "industrial simulation",
+      "supply-chain modeling",
+      "infrastructure digital twins",
+      "capacity planning",
+      "maintenance forecasting",
+      "authorized what-if analysis"
+    ]
+  },
+  "safety_policy": {
+    "simulation_only_by_default": true,
+    "observed_vs_simulated_state_separated": true,
+    "human_review_for_consequential_actions": true,
+    "automatic_high_impact_physical_control": false,
+    "targeting_or_weapon_control": false,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED_FOR_REAL_WORLD_ACTION",
+    "default_pattern": "USE_PUBLIC_SIMULATION_UI_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_DIGITAL_TWIN_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": ["object/ontology layer", "model registry", "time-series inputs", "simulation runner", "scenario store", "graph/map UI", "trend panels", "time scrubber", "alert/explainability", "human decision gate"],
+    "mandatory_safety_boundaries": ["simulation separated from observed state", "no automatic high-impact control", "human approval for consequential actions", "no weapon/targeting control", "complete provenance"]
+  }
+}
