@@ -96,3 +96,138 @@ class TestCounterfactualTransactionEngine(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestCTEAuthorizationReceipts(unittest.TestCase):
+    def setUp(self):
+        from research_lab.approval import digest
+        from research_lab.cte import ReceiptAuthorizer
+
+        self.directory = tempfile.TemporaryDirectory()
+
+        self.authorizer = ReceiptAuthorizer(
+            str(Path(self.directory.name) / "cte-approvals.sqlite"),
+            {"human-reviewer"},
+        )
+
+        self.state = StateSnapshot(
+            version="ontology-v1",
+            objects={"service": {"status": "online"}},
+        )
+
+        self.transition = ProposedTransition(
+            transition_id="tx-auth-001",
+            actor="gpt-doug",
+            changes={"service": {"status": "maintenance"}},
+            required_policy="policy-v1",
+        )
+
+        self.code_versions = {
+            "cte-engine": digest("cte-code-v1"),
+        }
+
+        self.data_versions = {
+            "ontology-schema": digest("schema-v1"),
+        }
+
+        self.policy_versions = {
+            "policy-v1": digest("policy-content-v1"),
+        }
+
+    def tearDown(self):
+        self.authorizer.close()
+        self.directory.cleanup()
+
+    def issue(self):
+        return self.authorizer.issue(
+            self.state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            self.policy_versions,
+            "human-reviewer",
+            now=1000.0,
+            ttl=300,
+        )
+
+    def test_valid_receipt_commits(self):
+        token = self.issue()
+
+        result = self.authorizer.execute(
+            token,
+            self.state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            self.policy_versions,
+            now=1001.0,
+        )
+
+        self.assertEqual(result.status, "COMMITTED")
+
+    def test_receipt_cannot_be_replayed(self):
+        token = self.issue()
+
+        first = self.authorizer.execute(
+            token,
+            self.state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            self.policy_versions,
+            now=1001.0,
+        )
+
+        second = self.authorizer.execute(
+            token,
+            self.state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            self.policy_versions,
+            now=1002.0,
+        )
+
+        self.assertEqual(first.status, "COMMITTED")
+        self.assertEqual(second.status, "AUTHORIZATION_DENIED")
+
+    def test_state_change_invalidates_receipt(self):
+        token = self.issue()
+
+        changed_state = StateSnapshot(
+            version="ontology-v1",
+            objects={"service": {"status": "degraded"}},
+        )
+
+        result = self.authorizer.execute(
+            token,
+            changed_state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            self.policy_versions,
+            now=1001.0,
+        )
+
+        self.assertEqual(result.status, "AUTHORIZATION_DENIED")
+
+    def test_policy_change_invalidates_receipt(self):
+        from research_lab.approval import digest
+
+        token = self.issue()
+
+        changed_policy_versions = {
+            "policy-v1": digest("policy-content-v2"),
+        }
+
+        result = self.authorizer.execute(
+            token,
+            self.state,
+            self.transition,
+            self.code_versions,
+            self.data_versions,
+            changed_policy_versions,
+            now=1001.0,
+        )
+
+        self.assertEqual(result.status, "AUTHORIZATION_DENIED")
