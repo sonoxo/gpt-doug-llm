@@ -1,0 +1,47 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250355868-A1",
+  "title": "Efficient query execution for ontology-based databases",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-11-20",
+  "application_number": "18/768,985",
+  "filed": "2024-07-10",
+  "priority_date": "2024-05-15",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": ["James Baker", "Xavier Falco", "Samuel Flavio Barroso Souza", "Amr Al Mallah", "Yixun Xu", "Arseny Bogomolov", "Slawomir Mucha"],
+  "related_application_signals": ["later granted as US12585648B2"],
+  "source_provenance": [
+    {"type":"user_supplied_official_pdf","source":"USPTO Patent Public Search","url":"https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250355868-A1?source=US-PGPUB","note":"Ephemeral request-token parameters are intentionally not persisted."},
+    {"type":"public_readable_mirror","source":"Google Patents","url":"https://patents.google.com/patent/US20250355868A1/en"}
+  ],
+  "classification_signals": ["G06F16/9024 graph structures", "G06F16/2453 query optimization", "G06F16/24534 query rewriting", "G06F21/6218 database access control", "G06F21/6227 record/type/query protection"],
+  "scope_tags": ["ontology-query","query-optimization","query-rewriting","aggregation","joins","multi-database","access-aware-costing","distributed-compute","graph-database","relational-database","query-routing","provenance"],
+  "publicly_described_functional_concepts": [
+    "receiving an ontology query from an authorized user account",
+    "transforming ontology-level requests into backend database queries",
+    "selecting among graph, relational, indexed, compressed, or other representations of ontology data",
+    "estimating aggregation or join cost while considering the data visible under the requesting user's permissions",
+    "routing expensive operations to a high-performance distributed execution environment",
+    "transforming backend results back into ontology-level results"
+  ],
+  "scope_model": {
+    "technical_domain": ["ontology databases", "query planning", "distributed query execution", "access-controlled analytics"],
+    "core_architecture": ["ontology query API", "authorization context", "ontology-to-backend mapping", "query planner", "cost estimator", "backend selector", "regular executor", "high-performance executor", "result normalizer", "provenance telemetry"],
+    "analysis_loop": "receive authorized ontology query -> resolve ontology types and permissions -> generate candidate backend queries -> estimate join/aggregation cost after access filtering -> select backend and execution tier -> execute -> normalize result to ontology objects -> record plan and performance telemetry",
+    "building_patterns_relevant_to_independent_design": [
+      "keep ontology semantics independent from physical database layout",
+      "include authorization-filtered cardinality in cost estimation",
+      "support multiple backend representations through explicit adapters",
+      "route expensive plans to scalable compute only after deterministic policy validation",
+      "record model/schema versions, chosen plan, estimated cost, actual cost, and result provenance",
+      "keep write/mutation paths separate from read optimization"
+    ]
+  },
+  "claim_scope_signals": {"status":"HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION","independent_claim_themes":["ontology query transformed into backend queries","access-aware estimation of aggregation/join processing cost","routing expensive exact operations to optimized nodes","transforming results back to ontology data"],"legal_scope_rule":"Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."},
+  "building_memory": {"safe_reference_architecture":["ontology-query-api","authorization-context","schema-mapper","query-rewriter","cost-estimator","backend-selector","distributed-executor","result-normalizer","query-provenance-store"],"default_build_profile":"ACCESS_AWARE_ONTOLOGY_QUERY_OPTIMIZER","use_for":["ontology analytics","federated graph/SQL query planning","large-scale aggregations","access-controlled data exploration","query observability"]},
+  "governance_policy": {"authorized_data_only":true,"access_control_before_costing":true,"query_policy_validation_required":true,"least_privilege_execution_required":true,"automatic_destructive_actions":false,"provenance_required":true,"audit_logging_required":true},
+  "independent_design_policy": {"copy_claim_language":false,"copy_figures_or_drawings":false,"assert_freedom_to_operate":false,"claim_element_mapping_requires_human_review":true,"commercial_release_requires_patent_counsel_review":true,"default_execution_gate":"POLICY_VALIDATION_REQUIRED_BEFORE_EXECUTION","default_pattern":"USE_PUBLIC_QUERY_OPTIMIZATION_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_ONTOLOGY_PLANNER"},
+  "schematic_seed": {"modules":["ontology query API", "authorization context", "backend mapping", "query planner", "cost estimator", "backend selector", "distributed executor", "result normalizer", "provenance"],"mandatory_safety_boundaries":["authorized access only", "policy validation before execution", "least privilege", "no automatic destructive writes", "complete query provenance"]}
+}
