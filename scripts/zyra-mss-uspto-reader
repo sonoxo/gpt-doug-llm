@@ -21,6 +21,13 @@ bootstrap() {
 
 bootstrap
 
+if [ "${1:-}" = "resume" ]; then
+  shift
+  echo "♻️ ZYRA-MSS USPTO RESUME"
+  echo "   output : $OUT"
+  exec "$PY" "$ROOT/scripts/zyra_mss_uspto_resume.py" --output "$OUT" "$@"
+fi
+
 if [ "${1:-}" = "mega" ]; then
   shift
   echo "🚀 ZYRA-MSS USPTO MEGA READ"
