@@ -50,6 +50,7 @@
     </a>
     <nav aria-label="Public site navigation">
       ${links.map(([label, href]) => `<a href="${href}"${current(href) ? ' aria-current="page"' : ''}>${label}</a>`).join('')}
+      <a href="https://xuniabay.lovable.app" target="_blank" rel="noopener noreferrer">Xuniabay ↗</a>
       <a href="https://github.com/sonoxo" rel="noopener">Repository Fleet ↗</a>
     </nav>`;
 
