@@ -18,6 +18,10 @@ case "${1,,}" in
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
     ;;
+  robotics-lab|schematic-lab|patent-robotics)
+    shift
+    exec python3 "$ROOT/scripts/gpt_doug_max_robotics_lab.py" "$@"
+    ;;
   patent-wire|patent-fabric)
     shift
     exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" "$@"
