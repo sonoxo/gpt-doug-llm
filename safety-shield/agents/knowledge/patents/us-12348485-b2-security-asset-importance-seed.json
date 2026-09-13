@@ -1,0 +1,173 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12348485-B2",
+  "title": "Systems and methods for determining asset importance in security risk management",
+  "document_type": "US patent grant",
+  "kind_code": "B2",
+  "publication_date": "2025-07-01",
+  "application_number": "18/422,470",
+  "filed": "2024-01-25",
+  "priority_date": "2019-09-30",
+  "applicant": "BitSight Technologies, Inc.",
+  "assignee": "BitSight Technologies, Inc.",
+  "inventors": ["Daniel Dahlberg"],
+  "related_application_signals": [
+    "published application US20240163252A1",
+    "continuation family includes US17/320,997 and US17/039,675",
+    "provisional priority includes US62/908,565 filed 2019-09-30",
+    "related grants include US11032244B2 and US11949655B2"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-12348485-B2?source=USPAT",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/12348485"
+    }
+  ],
+  "classification_signals": [
+    "G06F15/173 distributed data processing",
+    "G06F16/951 web or network information retrieval",
+    "H04L9/40 network security",
+    "H04L61/4511 DNS-related addressing",
+    "H04L61/5007 network address management"
+  ],
+  "scope_tags": [
+    "cybersecurity-risk-management",
+    "asset-importance",
+    "asset-prioritization",
+    "host-ranking",
+    "ip-address-ranking",
+    "dns-telemetry",
+    "certificate-metadata",
+    "application-configuration",
+    "multi-source-scoring",
+    "risk-prioritization",
+    "authorized-asset-inventory",
+    "provenance",
+    "human-in-the-loop"
+  ],
+  "publicly_described_functional_concepts": [
+    "receiving multiple datasets that describe computer-network assets associated with an entity",
+    "deriving input features from signals such as DNS lookup frequency, application or website configuration, authentication-certificate metadata, and other asset context",
+    "computing an importance value or ranking for hosts or IP addresses using one or more weighted input signals",
+    "presenting ranked asset importance to support security-risk prioritization",
+    "using multiple source types to reduce reliance on any single indicator of asset significance"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "defensive cybersecurity risk management",
+      "asset inventory prioritization",
+      "security analytics",
+      "multi-source scoring"
+    ],
+    "core_architecture": [
+      "authorized asset inventory",
+      "approved telemetry adapters",
+      "feature normalization layer",
+      "source-quality and provenance resolver",
+      "asset-importance scoring engine",
+      "confidence and uncertainty layer",
+      "risk-prioritization API",
+      "analyst review interface",
+      "audit and model-version store"
+    ],
+    "analysis_loop": "ingest authorized asset and telemetry records -> normalize source-specific features -> preserve provenance and source quality -> compute independently designed asset-importance scores -> attach confidence and contributing factors -> present ranked assets for analyst review -> use rankings to prioritize defensive assessment and remediation -> record outcomes for calibration",
+    "building_patterns_relevant_to_independent_design": [
+      "separate asset identity from importance score and from vulnerability severity",
+      "make each contributing signal explainable and provenance-linked",
+      "normalize heterogeneous telemetry before weighting or aggregation",
+      "version scoring formulas and thresholds so rankings are reproducible",
+      "include confidence and missing-data indicators rather than treating scores as ground truth",
+      "use rankings to prioritize authorized defensive work rather than to enable intrusion or exploitation",
+      "require analyst review before consequential remediation or access changes",
+      "support organization-specific weights through governed configuration rather than hidden model behavior"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "ranking importance of entity-associated hosts or IP addresses",
+      "deriving ranking inputs from multiple data sources such as DNS activity, configuration signals, or certificate information",
+      "combining or weighting multiple input signals to determine asset importance",
+      "using resulting rankings in security or asset-management workflows"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "authorized-asset-catalog",
+      "telemetry-adapter-layer",
+      "feature-normalizer",
+      "source-quality-resolver",
+      "asset-importance-scorer",
+      "confidence-explainer",
+      "risk-prioritization-api",
+      "analyst-review-workbench",
+      "scoring-version-audit-store"
+    ],
+    "default_build_profile": "EXPLAINABLE_AUTHORIZED_ASSET_IMPORTANCE_RANKING",
+    "use_for": [
+      "defensive asset prioritization",
+      "SOC triage",
+      "vulnerability-remediation ordering",
+      "authorized attack-surface inventory prioritization",
+      "security-budget prioritization",
+      "asset criticality review"
+    ]
+  },
+  "defensive_security_policy": {
+    "authorized_or_owned_assets_only": true,
+    "defensive_analysis_only": true,
+    "unauthorized_network_scanning": false,
+    "credential_bypass": false,
+    "offensive_exploitation": false,
+    "malware_deployment": false,
+    "automatic_disruptive_remediation": false,
+    "human_review_for_consequential_actions": true,
+    "provenance_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "AUTHORIZED_DEFENSIVE_CONTEXT_AND_HUMAN_REVIEW_REQUIRED",
+    "default_pattern": "USE_PUBLIC_ASSET_PRIORITIZATION_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_EXPLAINABLE_RANKING_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently selected asset features and scoring functions",
+    "derive weights from documented organizational risk objectives and validation data",
+    "separate ranking from vulnerability detection and remediation execution",
+    "store score explanations, feature provenance, confidence, and model version for every result",
+    "avoid copying patent figures, claim wording, or exact example weight combinations"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "authorized asset inventory",
+      "approved telemetry sources",
+      "feature normalization",
+      "source quality and provenance",
+      "asset importance scoring",
+      "confidence and explanation",
+      "risk prioritization API",
+      "analyst review",
+      "audit and score-version history"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized or owned assets only",
+      "no unauthorized scanning or access",
+      "no offensive exploitation",
+      "no automatic disruptive remediation",
+      "human review for consequential actions",
+      "complete provenance and score-version auditability"
+    ]
+  }
+}
