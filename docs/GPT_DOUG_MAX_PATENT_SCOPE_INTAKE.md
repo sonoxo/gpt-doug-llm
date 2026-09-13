@@ -1,10 +1,25 @@
 # GPT-DOUG-MAX Patent Scope Intake
 
-GPT-DOUG-MAX treats each accepted patent as a provenance-preserving **technical-scope seed**, not as text to copy.
+GPT-DOUG-MAX treats patent feeds as provenance-preserving engineering evidence, not as text to copy. Intake is deliberately two-stage so the system never invents technical scope when a source document cannot be verified.
 
-## Intake contract
+## Stage 1 - pending intake
 
-For every patent, capture:
+A newly supplied publication is first registered under `safety-shield/agents/knowledge/patent-intake/` using `xunia.patent-intake.v1` when the official text/PDF cannot yet be retrieved or verified.
+
+A pending record stores only verified identifiers, stable source provenance, extraction status, and the promotion gates needed before the patent can influence design retrieval. Temporary USPTO request tokens are never persisted.
+
+Pending patents are visible through:
+
+```bash
+scripts/doug-max patent-scope pending
+scripts/doug-max patent-scope show US-20260271508-A1
+```
+
+Pending records are **excluded from technical scope ranking**. Unknown scope is fail-closed rather than guessed.
+
+## Stage 2 - validated scope seed
+
+After source review, capture:
 
 1. exact publication or grant identifier and kind code;
 2. title, application/priority dates, inventors, and verified document-level applicant/assignee metadata;
@@ -17,21 +32,22 @@ For every patent, capture:
 9. independent-design defaults and human legal-review gates;
 10. schematic seeds and safety boundaries relevant to civilian/industrial programmable devices.
 
-Patent seeds live in `safety-shield/agents/knowledge/patents/` and every JSON seed using `xunia.patent-robotics.seed.v1` is discovered automatically.
+Validated patent seeds live in `safety-shield/agents/knowledge/patents/` and every JSON seed using `xunia.patent-robotics.seed.v1` is discovered automatically.
 
 ## Commands
 
 ```bash
 scripts/doug-max patent-scope status
 scripts/doug-max patent-scope list
+scripts/doug-max patent-scope pending
 scripts/doug-max patent-scope show US-20260201971-A9
 scripts/doug-max patent-scope match "pressure sensor normally closed valve pneumatic actuator"
 scripts/doug-max patent-scope doctor
 ```
 
-`match` ranks technical relevance from declared scope signals. It does not decide infringement, validity, ownership, licensing, patentability, or freedom to operate.
+`match` ranks technical relevance only from validated scope signals. It does not decide infringement, validity, ownership, licensing, patentability, or freedom to operate.
 
-## Current learned scopes
+## Current validated scopes
 
 ### US-12697722-B2
 Robot mission generation and selection: robot-independent tasks, mission repositories, context, metrics, ranking/confidence, heterogeneous robot adapters, and fleet abstraction.
@@ -40,6 +56,11 @@ Robot mission generation and selection: robot-independent tasks, mission reposit
 Fluid-control and actuator feedback: normally closed supply/exhaust valves, pressure-sensor feedback, fill/vent paths, pressure-band control, fluid cylinders/airbags, force regulation, dual-circuit actuation, and agricultural implement control.
 
 The A9 seed is linked to the `WO2020056395A1 / US20220030757A1` family for research context. Official A9 claims must be re-fetched and compared before claim-element analysis because an A9 publication can reflect a correction or republication.
+
+## Current pending intake
+
+### US-20260271508-A1
+Registered from a user-supplied USPTO US-PGPUB link. The ephemeral request token is not stored. In the current execution environment the official document text/PDF could not be retrieved, so title, abstract, claims, CPC/IPC, inventors, assignee, and technical scope remain intentionally unverified. This record will not influence design matching until it is promoted to a validated scope seed after source review.
 
 ## Patent-family rule
 
