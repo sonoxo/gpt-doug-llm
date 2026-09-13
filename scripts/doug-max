@@ -22,6 +22,10 @@ case "${1,,}" in
     shift
     exec python3 "$ROOT/scripts/gpt_doug_max_robotics_lab.py" "$@"
     ;;
+  patent-scope|scope)
+    shift
+    exec python3 "$ROOT/scripts/gpt_doug_max_patent_scope.py" "$@"
+    ;;
   patent-wire|patent-fabric)
     shift
     exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" "$@"
