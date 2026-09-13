@@ -37,7 +37,7 @@ doug-max patent-intel summary
 doug-max patent-search "access control"
 doug-max patent-corpus resume
 
-a# equivalent ZYRAPALANTIR entrypoint
+# equivalent ZYRAPALANTIR entrypoint
 zyrapalantir patent-wire status
 zyrapalantir patent-wire doctor
 zyrapalantir mss patent-wiring
