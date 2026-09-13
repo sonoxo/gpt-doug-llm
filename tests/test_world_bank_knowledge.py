@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import importlib
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "workers"))
-import ontology_workers as ontology  # noqa: E402
+ontology = importlib.import_module("ontology_workers")
 
 
 EXPECTED_WORLD_BANK_IDS = {
