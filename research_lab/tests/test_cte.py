@@ -1,4 +1,9 @@
+import json
+import subprocess
+import sys
+import tempfile
 import unittest
+from pathlib import Path
 
 from research_lab.cte import (
     CounterfactualTransactionEngine,
@@ -52,6 +57,41 @@ class TestCounterfactualTransactionEngine(unittest.TestCase):
             self.state.objects["service"]["status"],
             "online",
         )
+
+    def test_cli_committed_transaction(self):
+        root = Path(__file__).resolve().parents[2]
+        payload = {
+            "state": {
+                "version": "ontology-v1",
+                "objects": {"service": {"status": "online"}},
+            },
+            "transition": {
+                "transition_id": "tx-cli-001",
+                "actor": "gpt-doug",
+                "changes": {"service": {"status": "maintenance"}},
+                "required_policy": "policy-v1",
+            },
+            "human_approved": True,
+        }
+
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "cte.json"
+            source.write_text(json.dumps(payload), encoding="utf-8")
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(root / "scripts/invention_lab.py"),
+                    "cte",
+                    str(source),
+                ],
+                capture_output=True,
+                text=True,
+            )
+
+        self.assertEqual(result.returncode, 0)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["status"], "COMMITTED")
 
 
 if __name__ == "__main__":
