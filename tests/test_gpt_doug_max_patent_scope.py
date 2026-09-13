@@ -26,12 +26,16 @@ def test_scope_doctor_green() -> None:
     assert "Unknown scope ...... FAIL-CLOSED" in result.stdout
 
 
-def test_scope_library_contains_both_validated_patents() -> None:
+def test_scope_library_contains_validated_patents() -> None:
     result = run("list", "--json")
     assert result.returncode == 0, result.stdout + result.stderr
     rows = json.loads(result.stdout)
     ids = {row["patent_id"] for row in rows}
-    assert {"US-12697722-B2", "US-20260201971-A9"} <= ids
+    assert {
+        "US-12697722-B2",
+        "US-20260201971-A9",
+        "US-20250355943-A1",
+    } <= ids
     assert "US-20260271508-A1" not in ids
 
 
@@ -70,6 +74,30 @@ def test_robot_mission_scope_matches_planning_query() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
     payload = json.loads(result.stdout)
     assert payload["results"][0]["patent_id"] == "US-12697722-B2"
+
+
+def test_system_event_detection_scope_matches_defensive_security_query() -> None:
+    result = run(
+        "match",
+        "cybersecurity event object graph entity descriptor SIEM incident triage defensive response",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250355943-A1"
+
+
+def test_system_event_detection_seed_keeps_defensive_response_gates() -> None:
+    result = run("show", "US-20250355943-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    seed = json.loads(result.stdout)
+    policy = seed["defensive_security_policy"]
+    assert policy["authorized_security_data_only"] is True
+    assert policy["human_review_for_consequential_actions"] is True
+    assert policy["automatic_device_isolation"] is False
+    assert policy["automatic_permission_revocation"] is False
+    assert policy["automatic_file_deletion"] is False
+    assert policy["offensive_exploitation"] is False
 
 
 def test_fluid_seed_keeps_independent_design_gate() -> None:
