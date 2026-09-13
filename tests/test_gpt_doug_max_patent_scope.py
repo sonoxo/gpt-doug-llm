@@ -26,12 +26,17 @@ def test_scope_doctor_green() -> None:
     assert "Unknown scope ...... FAIL-CLOSED" in result.stdout
 
 
-def test_scope_library_contains_both_validated_patents() -> None:
+def test_scope_library_contains_validated_patents() -> None:
     result = run("list", "--json")
     assert result.returncode == 0, result.stdout + result.stderr
     rows = json.loads(result.stdout)
     ids = {row["patent_id"] for row in rows}
-    assert {"US-12697722-B2", "US-20260201971-A9"} <= ids
+    assert {
+        "US-12697722-B2",
+        "US-20260201971-A9",
+        "US-20260263586-A1",
+        "US-20250363994-A1",
+    } <= ids
     assert "US-20260271508-A1" not in ids
 
 
@@ -70,6 +75,30 @@ def test_robot_mission_scope_matches_planning_query() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
     payload = json.loads(result.stdout)
     assert payload["results"][0]["patent_id"] == "US-12697722-B2"
+
+
+def test_audio_analysis_scope_matches_audio_analytics_query() -> None:
+    result = run(
+        "match",
+        "audio transcription translation confidence entity tagging knowledge graph human review",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250363994-A1"
+
+
+def test_audio_seed_has_building_memory_and_privacy_gate() -> None:
+    result = run("show", "US-20250363994-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    seed = json.loads(result.stdout)
+    assert seed["building_memory"]["default_build_profile"] == "PRIVACY_PRESERVING_HUMAN_IN_THE_LOOP_AUDIO_ANALYTICS"
+    privacy = seed["privacy_and_surveillance_policy"]
+    assert privacy["authorized_data_only"] is True
+    assert privacy["biometric_voiceprint_identification"] is False
+    assert privacy["person_identification"] is False
+    assert privacy["cross_dataset_person_tracking"] is False
+    assert privacy["human_review_before_object_linking"] is True
 
 
 def test_fluid_seed_keeps_independent_design_gate() -> None:
