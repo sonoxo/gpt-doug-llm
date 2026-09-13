@@ -1,0 +1,137 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250289879-A1",
+  "title": "Therapeutic modulation of genes in myeloid lineage cells and uses thereof in ophthalmology",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-09-18",
+  "application_number": "18/861,150",
+  "filed": "2023-04-28",
+  "priority_date": "2022-04-29",
+  "applicant": "Boston Children's Hospital",
+  "assignee": "Boston Children's Hospital",
+  "inventors": ["Ye Sun", "Tianxi Wang"],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250289879-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250289879A1/en"
+    }
+  ],
+  "classification_signals": [
+    "ophthalmic therapeutics",
+    "gene-expression modulation",
+    "myeloid-cell biology",
+    "retinal disease"
+  ],
+  "scope_tags": [
+    "ophthalmology",
+    "retinal-disease",
+    "myeloid-lineage-cells",
+    "gene-modulation",
+    "therapeutic-targeting",
+    "neovascularization",
+    "translational-medicine",
+    "biomarker-context",
+    "regulatory-review"
+  ],
+  "publicly_described_functional_concepts": [
+    "modulating biological factors associated with activation of myeloid-lineage cells in retinal disease",
+    "using therapeutic approaches intended to reduce pathological retinal inflammation or neovascularization",
+    "applying the concepts to diseases such as retinopathy, retinal injury, or related ophthalmic conditions",
+    "evaluating candidate therapeutic modalities at a high level without encoding experimental procedures or sequence-level instructions"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "ophthalmology",
+      "immunology",
+      "gene-regulation therapeutics",
+      "translational biomedical research"
+    ],
+    "core_architecture": [
+      "disease-context model",
+      "target-evidence registry",
+      "therapeutic-modality abstraction",
+      "preclinical evidence index",
+      "safety and regulatory evidence layer",
+      "human expert review gate"
+    ],
+    "analysis_loop": "identify disease context -> summarize target/pathway evidence -> classify therapeutic modality at a non-operational level -> compare efficacy/safety evidence -> map regulatory and translational considerations -> require qualified biomedical review before any experimental or clinical action",
+    "building_patterns_relevant_to_independent_design": [
+      "represent therapeutic targets and evidence as structured research objects",
+      "separate mechanistic hypotheses from validated clinical evidence",
+      "retain provenance for every biological claim",
+      "keep wet-lab implementation details outside automated building memory",
+      "require qualified human review for biomedical interpretation and use"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "therapeutic reduction of myeloid-cell activation in retinal disease",
+      "modulation of factors associated with inflammatory or neovascular retinal pathology",
+      "use of multiple therapeutic modality classes in ophthalmic treatment contexts"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is a non-operational biomedical research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "biomedical-evidence-registry",
+      "target-pathway-ontology",
+      "therapeutic-modality-catalog",
+      "preclinical-clinical-evidence-separator",
+      "regulatory-evidence-layer",
+      "expert-review-gate"
+    ],
+    "default_build_profile": "NON_OPERATIONAL_BIOMEDICAL_PATENT_EVIDENCE_MODEL",
+    "use_for": [
+      "patent-landscape analysis",
+      "high-level therapeutic target research",
+      "biomedical evidence mapping",
+      "regulatory and translational research planning"
+    ]
+  },
+  "biological_safety_policy": {
+    "high_level_research_only": true,
+    "store_nucleotide_or_amino_acid_sequences": false,
+    "generate_sequence_designs": false,
+    "store_actionable_wet_lab_protocols": false,
+    "generate_cell_engineering_steps": false,
+    "generate_vector_construction_protocols": false,
+    "generate_dosing_or_administration_protocols": false,
+    "qualified_human_review_required": true,
+    "clinical_decision_support_enabled": false
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "QUALIFIED_BIOMEDICAL_AND_LEGAL_REVIEW_REQUIRED",
+    "default_pattern": "USE_PUBLIC_BIOMEDICAL_CONCEPTS_AS_NON_OPERATIONAL_PRIOR_ART_SIGNAL"
+  },
+  "schematic_seed": {
+    "modules": [
+      "disease context",
+      "target evidence",
+      "therapeutic modality abstraction",
+      "evidence quality",
+      "regulatory context",
+      "expert review"
+    ],
+    "mandatory_safety_boundaries": [
+      "no sequence-level design",
+      "no wet-lab procedures",
+      "no vector construction instructions",
+      "no dosing or clinical administration instructions",
+      "human expert review required"
+    ]
+  }
+}
