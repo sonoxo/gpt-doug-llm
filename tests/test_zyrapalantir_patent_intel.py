@@ -80,7 +80,9 @@ def test_search_records_are_unique_and_include_core_watch_areas():
 def test_aggregate_spans_captured_pages_and_exact_documents():
     cli = load_cli()
     source = cli.load_source()
-    assert source["reported_pages"] == ["1 of 71", "2 of 71"]
+    # File-system glob ordering is not semantic provenance. Verify that both
+    # captured USPTO pages are present regardless of filename ordering.
+    assert sorted(source["reported_pages"], key=lambda page: int(page.split()[0])) == ["1 of 71", "2 of 71"]
     assert len(source["source_ids"]) == 2
     assert len(source["records"]) >= 60
     exact_numbers = {record["document_number"] for record in source["attributed_records"]}
