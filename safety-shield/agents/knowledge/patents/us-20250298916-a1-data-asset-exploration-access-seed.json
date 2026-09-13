@@ -1,0 +1,229 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250298916-A1",
+  "title": "Exploration and access to electronic data assets",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-09-25",
+  "application_number": "19/226,589",
+  "filed": "2025-06-03",
+  "priority_date": "2022-11-18",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Ethan Bond",
+    "Georgiana Petria",
+    "Jason Marmon",
+    "Martijn Arts",
+    "Michael Nazario",
+    "Orbay Altuntoprak",
+    "Stefany Louise Pauline Ebba Barker",
+    "Veronika Eickhoff",
+    "Arttu Voutilainen"
+  ],
+  "related_application_signals": [
+    "continuation of US application 18/158,395 filed 2023-01-23",
+    "priority benefit of US provisional application 63/384,330 filed 2022-11-18",
+    "related granted US family includes US12353582B2",
+    "earlier publication in the family includes US20240169082A1"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250298916-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250298916A1/en"
+    },
+    {
+      "type": "family_context",
+      "source": "USPTO Patent Official Gazette",
+      "url": "https://patentsgazette.uspto.gov/week27/OG/html/1536-2/US12353582-20250708.html"
+    }
+  ],
+  "classification_signals": [
+    "G06F21/60 protecting data",
+    "G06F21/604 tools and structures for administering access control",
+    "G06F21/62 platform-based protection of access to data",
+    "G06F21/6218 access control for files, objects, distributed file systems, or databases",
+    "G06F21/6227 access protection concerning records, types, queries, or data structure"
+  ],
+  "scope_tags": [
+    "purpose-based-access",
+    "data-governance",
+    "data-exploration",
+    "summary-only-discovery",
+    "cohort-filtering",
+    "data-owner-approval",
+    "investigation-workspace",
+    "least-data-access",
+    "dataset-versioning",
+    "reproducibility",
+    "sensitivity-metadata",
+    "access-request-objects",
+    "ontology-governance",
+    "auditability",
+    "time-bounded-access",
+    "revocable-access",
+    "human-in-the-loop",
+    "privacy-preserving-discovery"
+  ],
+  "publicly_described_functional_concepts": [
+    "guided exploration of summarized or aggregated dataset information without exposing underlying data items",
+    "iterative cohort filtering using dataset or record characteristics before access is granted",
+    "purpose-based access requests associated with a declared investigation or use purpose",
+    "authorization workflows that involve dataset permission levels and data-owner approval",
+    "generation of a dedicated investigation dataset containing only authorized data items",
+    "self-contained investigation workspaces that isolate purpose-authorized data",
+    "version history and metadata sufficient to reproduce an earlier investigation dataset",
+    "controlled updates or feeds from source datasets into an approved investigation workspace",
+    "governance objects linking users, purposes, datasets, requests, owners, and approvals",
+    "auditability of why access was requested, approved, used, updated, revoked, or expired"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "data governance",
+      "access control",
+      "ontology-backed data platforms",
+      "privacy-preserving data discovery",
+      "dataset lifecycle and versioning",
+      "governed investigation workspaces"
+    ],
+    "core_architecture": [
+      "authorized dataset catalog",
+      "summary and aggregation service",
+      "guided discovery interface",
+      "cohort filter engine",
+      "purpose declaration",
+      "access request object",
+      "policy and permission resolver",
+      "data-owner approval workflow",
+      "minimal dataset slicer",
+      "isolated investigation workspace",
+      "version and reproducibility store",
+      "controlled source-data feed",
+      "revocation and expiry service",
+      "provenance and audit ledger"
+    ],
+    "analysis_loop": "browse only permitted summaries -> iteratively filter a candidate cohort -> declare purpose -> evaluate policy and required owners -> collect approvals -> materialize only authorized data into an isolated workspace -> preserve versions and provenance -> optionally refresh through governed feeds -> expire or revoke access when policy requires",
+    "building_patterns_relevant_to_independent_design": [
+      "separate data discovery permission from underlying record access permission",
+      "use privacy-preserving summaries or aggregates for pre-authorization exploration",
+      "make purpose a first-class object carried through request, approval, workspace, and audit events",
+      "materialize the minimum authorized subset instead of granting broad source-system access",
+      "separate source datasets from investigation copies or references using an isolated workspace boundary",
+      "record owner approvals, policy decisions, timestamps, purpose, filters, and source versions with every workspace",
+      "support explicit expiration, revocation, and refresh decisions rather than indefinite access",
+      "maintain immutable or versioned investigation manifests so prior analyses can be reproduced",
+      "expose sensitivity and governance metadata without revealing protected record values",
+      "require policy checks whenever a workspace receives new or modified source data"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "filtering electronic data assets using summarized information while withholding underlying data items",
+      "receiving a purpose-based request for selected data assets and determining authorization for that purpose",
+      "generating an investigation dataset from purpose-authorized data and providing controlled access to it",
+      "dependent themes include aggregated statistics, dynamic visual filtering, isolated workspaces, reproducibility metadata, sensitivity display, governed updates, and version history"
+    ],
+    "legal_scope_rule": "Patent scope depends on the controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "parent_application": "US18/158,395",
+    "provisional_priority": "US63/384,330",
+    "related_us_grant": "US12353582B2",
+    "earlier_us_publication": "US20240169082A1",
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US publication or family. Recheck controlling claims and legal status in each relevant jurisdiction before legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "governed-data-catalog",
+      "summary-only-explorer",
+      "cohort-filter-engine",
+      "purpose-object-service",
+      "access-request-service",
+      "policy-permission-resolver",
+      "data-owner-approval-queue",
+      "minimum-data-slicer",
+      "isolated-investigation-workspace",
+      "workspace-version-manifest",
+      "governed-refresh-feed",
+      "revocation-expiry-service",
+      "provenance-audit-ledger"
+    ],
+    "default_build_profile": "PURPOSE_BOUND_PRIVACY_PRESERVING_DATA_WORKSPACE",
+    "use_for": [
+      "governed analytics workspaces",
+      "privacy-preserving data catalogs",
+      "purpose-limited research environments",
+      "ontology-backed access-request systems",
+      "human-reviewed data sharing workflows",
+      "reproducible investigation datasets",
+      "data minimization and least-privilege access",
+      "auditable dataset discovery and approval"
+    ]
+  },
+  "governance_policy": {
+    "authorized_data_only": true,
+    "summary_discovery_before_record_access": true,
+    "purpose_required_for_restricted_access": true,
+    "data_owner_or_policy_approval_supported": true,
+    "minimum_necessary_data_required": true,
+    "workspace_isolation_required_for_restricted_data": true,
+    "revocation_and_expiry_supported": true,
+    "refresh_requires_policy_recheck": true,
+    "provenance_required": true,
+    "audit_logging_required": true,
+    "automatic_policy_bypass": false,
+    "automatic_owner_approval": false
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "POLICY_AND_OWNER_APPROVAL_REQUIRED_FOR_RESTRICTED_DATA",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_PURPOSE_BOUND_DATA_GOVERNANCE_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently designed purpose, request, approval, and workspace object schemas",
+    "use independently selected aggregation and privacy-preserving summary techniques",
+    "separate discovery, approval, provisioning, refresh, and revocation into explicit services",
+    "record an immutable workspace manifest instead of relying on implicit source-system state",
+    "bind every restricted-data read to a current policy decision and purpose context",
+    "enforce minimum-necessary access with independently designed slicing and policy rules",
+    "keep authorization decisions outside the language model and inside deterministic policy services"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "authorized data catalog",
+      "privacy-preserving summary service",
+      "guided exploration UI",
+      "cohort filter service",
+      "purpose and request object service",
+      "policy and owner approval service",
+      "minimum-data provisioning service",
+      "isolated investigation workspace",
+      "version and reproducibility manifest",
+      "governed refresh service",
+      "revocation and expiry service",
+      "provenance and audit ledger"
+    ],
+    "mandatory_safety_boundaries": [
+      "do not expose restricted record values during summary-only discovery",
+      "no restricted-data access without current authorization and purpose context",
+      "no policy or data-owner approval bypass",
+      "minimum-necessary data provisioning",
+      "explicit workspace isolation for restricted datasets",
+      "governed refresh, expiration, and revocation",
+      "complete provenance and audit logging",
+      "human privacy/legal review for high-risk personal or regulated data deployments"
+    ]
+  }
+}
