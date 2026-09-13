@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GPT-DOUG-MAX bridge for the governed USPTO patent-intelligence stack."""
+"""GPT-DOUG-MAX bridge for the governed patent-intelligence and robotics-design stack."""
 from __future__ import annotations
 
 import argparse
@@ -17,6 +17,9 @@ PATENT_CLI = ROOT / "scripts" / "zyrapalantir_patent_intel.py"
 MSS_CLI = ROOT / "scripts" / "zyra_mss.py"
 READER = ROOT / "scripts" / "zyra-mss-uspto-reader"
 MAVEN = ROOT / "redpanda-desktop" / "palantir-maven"
+ROBOTICS_LAB = ROOT / "scripts" / "gpt_doug_max_robotics_lab.py"
+ROBOTICS_REGISTRY = ROOT / "safety-shield" / "agents" / "knowledge" / "gpt-doug-max-robotics-compliance-v1.json"
+ROBOTICS_PATENT_SEED = ROOT / "safety-shield" / "agents" / "knowledge" / "patents" / "us-12697722-b2-robot-mission-seed.json"
 CORPUS = Path.home() / ".config" / "gpt-doug" / "zyra-mss-uspto-palantir"
 
 
@@ -59,6 +62,7 @@ def corpus_state() -> dict:
 def status() -> int:
     wiring = load(WIRING)
     state = corpus_state()
+    robotics = load(ROBOTICS_REGISTRY) if ROBOTICS_REGISTRY.exists() else {}
     print("🧠 GPT-DOUG-MAX // PATENT INTELLIGENCE FABRIC")
     print("================================================")
     print(f"Wiring ........... {wiring['schema']}")
@@ -70,8 +74,10 @@ def status() -> int:
     print(f"Corpus failed .... {state['failed']}")
     print(f"FTS5 ready ....... {str(state['fts_ready']).lower()}")
     print(f"Corpus complete .. {str(state['complete']).lower()}")
+    print(f"Robotics registry  {robotics.get('schema', 'missing')}")
     print("Authority ........ ADVISORY_ONLY")
     print("Claim-level legal  HUMAN REVIEW REQUIRED")
+    print("Commercial release HUMAN ENGINEERING + LEGAL REVIEW")
     print("External action .. DISABLED")
     return 0
 
@@ -87,7 +93,18 @@ def graph() -> int:
 
 def doctor() -> int:
     errors: list[str] = []
-    required_files = [WIRING, PATENT_ONTOLOGY, MSS_ONTOLOGY, PATENT_CLI, MSS_CLI, READER, MAVEN]
+    required_files = [
+        WIRING,
+        PATENT_ONTOLOGY,
+        MSS_ONTOLOGY,
+        PATENT_CLI,
+        MSS_CLI,
+        READER,
+        MAVEN,
+        ROBOTICS_LAB,
+        ROBOTICS_REGISTRY,
+        ROBOTICS_PATENT_SEED,
+    ]
     for path in required_files:
         if not path.exists():
             errors.append(f"missing: {path.relative_to(ROOT)}")
@@ -96,19 +113,37 @@ def doctor() -> int:
         wiring = load(WIRING)
         required_components = {
             "GPT_DOUG", "GPT_DOUG_MAX", "ZYRAPALANTIR", "ZYRA_MSS",
-            "USPTO_PATENT_INTEL", "USPTO_CORPUS_READER", "GLASS_ONION",
+            "USPTO_PATENT_INTEL", "USPTO_CORPUS_READER", "PATENT_ROBOTICS_LAB",
+            "ROBOTICS_COMPLIANCE_REGISTRY", "SCHEMATIC_PACKAGE", "GLASS_ONION",
             "PALANTIR_MAVEN", "GPT_REDPANDA", "HUMAN_REVIEW",
         }
         missing = required_components - set(wiring.get("components", {}))
         if missing:
             errors.append(f"missing components: {sorted(missing)}")
         controls = wiring.get("required_controls", {})
-        if controls.get("automatic_external_action") is not False:
-            errors.append("automatic external action must be false")
-        if controls.get("human_review_for_claim_level_analysis") is not True:
-            errors.append("claim-level human review gate missing")
-        if controls.get("provenance_required") is not True:
-            errors.append("provenance gate missing")
+        expected = {
+            "automatic_external_action": False,
+            "automatic_claim_copying": False,
+            "automatic_physical_mission_execution_from_generated_design": False,
+            "human_review_for_claim_level_analysis": True,
+            "human_review_for_commercial_release": True,
+            "unknown_jurisdiction_fails_closed": True,
+            "official_source_recheck_before_release": True,
+            "provenance_required": True,
+            "weapon_or_targeting_design_generation": False,
+        }
+        for key, value in expected.items():
+            if controls.get(key) is not value:
+                errors.append(f"control {key} must be {value!r}")
+
+        registry = load(ROBOTICS_REGISTRY)
+        if registry.get("coverage_policy", {}).get("unknown_jurisdiction") != "BLOCK_AND_REQUIRE_REVIEW":
+            errors.append("robotics registry must fail closed on unknown jurisdictions")
+        seed = load(ROBOTICS_PATENT_SEED)
+        if seed.get("patent_id") != "US-12697722-B2":
+            errors.append("US-12697722-B2 patent seed missing or mismatched")
+        if seed.get("independent_design_policy", {}).get("copy_claim_language") is not False:
+            errors.append("patent seed must prohibit automatic claim copying")
 
     if errors:
         print("❌ GPT-DOUG-MAX PATENT WIRING DOCTOR FAILED")
@@ -122,6 +157,9 @@ def doctor() -> int:
     print("   ZYRAPALANTIR .... wired")
     print("   ZYRA-MSS ........ wired")
     print("   USPTO corpus .... wired")
+    print("   Robotics lab .... wired")
+    print("   Compliance ...... fail-closed")
+    print("   Patent boundary . enforced")
     print("   GLASS ONION ..... wired")
     print("   Maven ........... wired")
     print("   REDPANDA CPR .... wired")
@@ -153,6 +191,8 @@ def main() -> int:
     sp.add_parser("patents")
     sp.add_parser("mss")
     sp.add_parser("corpus")
+    r = sp.add_parser("robotics")
+    r.add_argument("args", nargs=argparse.REMAINDER)
     a = p.parse_args()
 
     command = a.command or "status"
@@ -170,6 +210,8 @@ def main() -> int:
         return run_passthrough([sys.executable, str(MSS_CLI), "summary"])
     if command == "corpus":
         return run_passthrough([str(READER), "doctor"])
+    if command == "robotics":
+        return run_passthrough([sys.executable, str(ROBOTICS_LAB), *(a.args or ["status"])])
     return 2
 
 
