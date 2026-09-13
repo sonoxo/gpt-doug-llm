@@ -1,0 +1,46 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12367310-B2",
+  "title": "Data security",
+  "document_type": "US patent grant",
+  "kind_code": "B2",
+  "publication_date": "2025-07-22",
+  "application_number": "18/416,728",
+  "filed": "2024-01-18",
+  "priority_date": "2018-10-18",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": ["Samuel Szuflita", "Alice Yu", "Emily Wang", "Hao Dang", "Megha Arora", "Nicholas Gates", "Samuel Rogerson"],
+  "source_provenance": [
+    {"type":"user_supplied_official_pdf","source":"USPTO Patent Public Search","url":"https://ppubs.uspto.gov/api/pdf/downloadPdf/US-12367310-B2?source=USPAT","note":"Ephemeral request-token parameters are intentionally not persisted."},
+    {"type":"public_readable_mirror","source":"Google Patents","url":"https://patents.google.com/patent/US12367310B2/en"}
+  ],
+  "classification_signals": ["G06F21/6218 database/file access control", "G06F21/6227 record/type/query protection", "G06F16/367 ontology", "G06F16/9024 graph structures", "G06F21/6245 personal-data protection"],
+  "scope_tags": ["data-security","quarantine-database","sensitive-data-detection","sensitivity-markers","human-governor-review","controlled-release","ontology-ingest","access-control","provenance","privacy"],
+  "publicly_described_functional_concepts": [
+    "receiving datasets into a restricted quarantine environment before downstream use",
+    "detecting portions that may contain sensitive information",
+    "presenting candidate sensitivity markings for human confirmation or editing",
+    "requiring explicit authorization before release from quarantine",
+    "moving only approved data into a separate environment where broader authorized use is permitted",
+    "applying access controls and ontology mappings after governed release"
+  ],
+  "scope_model": {
+    "technical_domain": ["data governance", "privacy engineering", "secure data onboarding", "ontology ingestion"],
+    "core_architecture": ["restricted ingest gateway", "quarantine store", "sensitivity detector", "governor review UI", "release approval gate", "released-data store", "ontology mapper", "access-control service", "audit/provenance ledger"],
+    "analysis_loop": "ingest into quarantine -> detect possible sensitive fields -> present evidence to authorized governor -> confirm or edit markings -> approve explicit release -> transfer only approved portions -> enforce access policy -> map into ontology -> audit every transition",
+    "building_patterns_relevant_to_independent_design": [
+      "quarantine unreviewed external datasets by default",
+      "separate automated sensitivity suggestions from authoritative labels",
+      "require a human/governance release decision before broader use",
+      "preserve raw, marked, and released states with immutable provenance",
+      "apply least-privilege access separately to quarantine and released environments",
+      "keep authorization and privacy decisions outside language-model memory"
+    ]
+  },
+  "claim_scope_signals": {"status":"HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION","independent_claim_themes":["quarantine of a dataset with restricted copying/moving/sharing","sensitive-data detection and human sensitivity marking","authorized release into a second database","access based on authorization and sensitivity markers"],"legal_scope_rule":"Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."},
+  "building_memory": {"safe_reference_architecture":["quarantine-ingest","sensitivity-scanner","governor-review-queue","release-gate","released-data-store","ontology-mapper","policy-enforcer","audit-ledger"],"default_build_profile":"GOVERNED_QUARANTINE_TO_ONTOLOGY_PIPELINE","use_for":["secure data onboarding","privacy review workflows","regulated dataset import","ontology ingestion with human release gates","sensitive-data governance"]},
+  "governance_policy": {"authorized_data_only":true,"quarantine_before_unreviewed_release":true,"human_review_for_sensitivity":true,"explicit_release_authorization_required":true,"automatic_policy_bypass":false,"automatic_release":false,"provenance_required":true,"audit_logging_required":true},
+  "independent_design_policy": {"copy_claim_language":false,"copy_figures_or_drawings":false,"assert_freedom_to_operate":false,"claim_element_mapping_requires_human_review":true,"commercial_release_requires_patent_counsel_review":true,"default_execution_gate":"HUMAN_GOVERNANCE_RELEASE_REQUIRED","default_pattern":"USE_PUBLIC_DATA_GOVERNANCE_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_QUARANTINE_ARCHITECTURE"},
+  "schematic_seed": {"modules":["restricted ingest", "quarantine store", "sensitivity detector", "governor review", "release gate", "released store", "ontology mapping", "policy enforcement", "audit"],"mandatory_safety_boundaries":["no automatic release", "no policy bypass", "human review for sensitivity decisions", "least privilege", "complete provenance"]}
+}
