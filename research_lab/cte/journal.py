@@ -137,6 +137,7 @@ class ExecutionJournal:
         transition_id,
         base_version,
         now,
+        request_binding=None,
     ):
         """Create an attempt or replay the identical idempotent request."""
 
@@ -183,6 +184,10 @@ class ExecutionJournal:
                 )
 
             if created:
+                payload = {}
+                if request_binding is not None:
+                    payload["request_binding"] = str(request_binding)
+
                 self.db.execute(
                     """
                     INSERT INTO cte_journal_events (
@@ -197,9 +202,36 @@ class ExecutionJournal:
                     (
                         attempt_id,
                         now,
-                        "{}",
+                        json.dumps(
+                            payload,
+                            allow_nan=False,
+                            separators=(",", ":"),
+                            sort_keys=True,
+                        ),
                     ),
                 )
+
+            elif request_binding is not None:
+                event = self.db.execute(
+                    """
+                    SELECT payload_json
+                    FROM cte_journal_events
+                    WHERE attempt_id = ?
+                    ORDER BY sequence
+                    LIMIT 1
+                    """,
+                    (attempt_id,),
+                ).fetchone()
+
+                existing = (
+                    json.loads(event["payload_json"])
+                    .get("request_binding")
+                )
+
+                if existing != str(request_binding):
+                    raise ValueError(
+                        "attempt_id already bound to a different request"
+                    )
 
         return self.get(attempt_id)
 

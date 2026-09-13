@@ -112,5 +112,41 @@ class TestExecutionJournal(unittest.TestCase):
             journal.close()
 
 
+    def test_attempt_request_binding_is_stable(self):
+        journal = ExecutionJournal(":memory:")
+        try:
+            journal.start(
+                "a-bound",
+                "tx-bound",
+                "state-v1",
+                1,
+                request_binding="digest-a",
+            )
+
+            journal.start(
+                "a-bound",
+                "tx-bound",
+                "state-v1",
+                2,
+                request_binding="digest-a",
+            )
+
+            self.assertEqual(
+                len(journal.events("a-bound")),
+                1,
+            )
+
+            with self.assertRaises(ValueError):
+                journal.start(
+                    "a-bound",
+                    "tx-bound",
+                    "state-v1",
+                    3,
+                    request_binding="digest-b",
+                )
+        finally:
+            journal.close()
+
+
 if __name__ == "__main__":
     unittest.main()
