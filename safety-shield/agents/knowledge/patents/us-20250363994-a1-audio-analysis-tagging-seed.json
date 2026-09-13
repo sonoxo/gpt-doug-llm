@@ -1,0 +1,220 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250363994-A1",
+  "title": "System and methods for audio data analysis and tagging",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-11-27",
+  "application_number": "19/178,623",
+  "filed": "2025-04-14",
+  "priority_date": "2021-03-19",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Ashley Meuser",
+    "Emma Langfitt",
+    "Jessica Headrick",
+    "Megha Arora",
+    "Madeleine Brickell",
+    "Scott Cook",
+    "Shomik Jain",
+    "Stewart Beckendorff",
+    "Tate Krasner",
+    "Ryan Hermstein"
+  ],
+  "related_application_signals": [
+    "continuation of US application 17/655,331 filed 2022-03-17",
+    "claims benefit of US provisional application 63/163,321 filed 2021-03-19"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250363994-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/20250363994"
+    }
+  ],
+  "classification_signals": [
+    "G10L17/14 speaker recognition or speaker-related audio processing",
+    "G06F40/58 machine translation",
+    "G06F40/279 natural-language entity or semantic processing",
+    "G06F40/117 text annotation or tagging",
+    "G06F3/16 audio-oriented human-computer interaction",
+    "G10L21/028 audio or speech signal processing"
+  ],
+  "scope_tags": [
+    "audio-analysis",
+    "speech-to-text",
+    "machine-translation",
+    "multi-model-confidence",
+    "confidence-fusion",
+    "entity-extraction",
+    "suggested-tags",
+    "human-in-the-loop",
+    "knowledge-graph",
+    "tracked-object-linking",
+    "audio-triage",
+    "provenance",
+    "transcript-feedback",
+    "model-feedback",
+    "speaker-diarization",
+    "interactive-analytics",
+    "data-visualization"
+  ],
+  "publicly_described_functional_concepts": [
+    "cloud or distributed processing of large audio collections",
+    "machine-learning transcription and translation within one analytic environment",
+    "combining outputs from multiple models using confidence information",
+    "entity extraction from generated transcripts",
+    "suggested tags that require analyst review before becoming accepted links",
+    "linking reviewed entities to graph or knowledge-management objects",
+    "audio and transcript triage based on relevance, recency, status, or tracked-object hits",
+    "user feedback on transcription, translation, acoustic processing, and tagging",
+    "interface views combining audio playback, transcript review, model confidence, tags, and graph context",
+    "speaker separation or diarization as an audio-organization concept"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "audio machine learning",
+      "automatic speech recognition",
+      "machine translation",
+      "natural-language processing",
+      "human-in-the-loop analytics",
+      "knowledge graphs and object linking",
+      "interactive data visualization"
+    ],
+    "core_architecture": [
+      "authorized audio source",
+      "ingestion and provenance layer",
+      "audio preprocessing",
+      "speech/transcription model ensemble",
+      "translation model ensemble",
+      "confidence fusion",
+      "entity extraction",
+      "suggested-tag queue",
+      "human approval gate",
+      "knowledge-graph/object store",
+      "transcript and audio review interface",
+      "feedback/evaluation dataset",
+      "audit and retention controls"
+    ],
+    "analysis_loop": "ingest authorized audio -> generate transcript/translation candidates -> attach confidence -> extract candidate entities -> present suggestions -> require human review -> link approved non-sensitive objects -> collect feedback -> evaluate/update models",
+    "building_patterns_relevant_to_independent_design": [
+      "use pluggable transcription and translation providers behind model adapters",
+      "preserve model-specific confidence and provenance before any fusion step",
+      "treat extracted entities as proposals rather than facts",
+      "place a human approval boundary before graph/object linking",
+      "store accepted tags separately from raw model suggestions",
+      "use anonymous speaker labels for diarization by default",
+      "maintain reversible links from transcript spans to source timestamps",
+      "keep feedback datasets versioned and separate from production model state",
+      "expose confidence, model version, and provenance in the analyst interface",
+      "apply retention, access-control, and audit policy at ingestion rather than after analysis"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "audio processing with multiple machine-learning outputs and confidence-aware transcript generation",
+      "entity extraction followed by a user interface that presents suggested tags",
+      "human selection that links accepted entities with stored audio/transcript records and tracked objects",
+      "interface organization combining transcript review, audio playback, suggestions, and confidence information",
+      "speaker-related acoustic processing appears in dependent-claim themes and is treated as a privacy-sensitive boundary signal rather than a default implementation pattern"
+    ],
+    "legal_scope_rule": "Patent scope depends on the controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "continuation_application": "17/655,331",
+    "provisional_priority": "63/163,321",
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US publication; recheck the relevant national or regional registers before legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "authorized-audio-ingest",
+      "provenance-and-access-control",
+      "transcription-adapters",
+      "translation-adapters",
+      "confidence-fusion",
+      "entity-proposal-layer",
+      "human-review-queue",
+      "knowledge-graph-linker",
+      "anonymous-diarization",
+      "feedback-and-evaluation-store",
+      "audit-log",
+      "retention-policy"
+    ],
+    "default_build_profile": "PRIVACY_PRESERVING_HUMAN_IN_THE_LOOP_AUDIO_ANALYTICS",
+    "use_for": [
+      "authorized meeting or media transcription workflows",
+      "multilingual document/audio review",
+      "customer-support and research audio triage",
+      "human-reviewed entity tagging",
+      "knowledge-graph enrichment from authorized data",
+      "model quality and confidence dashboards"
+    ]
+  },
+  "privacy_and_surveillance_policy": {
+    "authorized_data_only": true,
+    "default_speaker_mode": "ANONYMOUS_DIARIZATION_LABELS",
+    "biometric_voiceprint_identification": false,
+    "person_identification": false,
+    "cross_dataset_person_tracking": false,
+    "covert_surveillance": false,
+    "targeting_or_operational_tasking": false,
+    "human_review_before_object_linking": true,
+    "data_minimization_required": true,
+    "retention_policy_required": true,
+    "access_control_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_PRIVACY_PRESERVING_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently selected model orchestration and confidence-fusion logic",
+    "use a proposal/review/accept lifecycle rather than automatically converting extracted entities into authoritative objects",
+    "default speaker handling to anonymous diarization rather than biometric identification",
+    "separate source media storage from derived transcript, translation, graph, and feedback stores",
+    "make provenance, model versions, and confidence visible and auditable",
+    "enforce least-privilege access and explicit retention policies for audio and derived data",
+    "require legal/privacy review before deploying person-linked audio analytics"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "authorized audio ingestion",
+      "provenance and access-control gateway",
+      "audio preprocessing",
+      "transcription model adapters",
+      "translation model adapters",
+      "confidence fusion",
+      "entity proposal engine",
+      "human review and tagging queue",
+      "knowledge graph/object store",
+      "anonymous speaker diarization",
+      "audio/transcript review UI",
+      "feedback and evaluation store",
+      "audit and retention service"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized data source",
+      "human approval before entity-to-object linking",
+      "no biometric voiceprint identification by default",
+      "no person tracking across unrelated datasets",
+      "role-based access control",
+      "data minimization and retention policy",
+      "model/provenance audit trail",
+      "privacy and legal review for person-linked deployments"
+    ]
+  }
+}
