@@ -30,9 +30,15 @@ After source review, capture:
 7. a `scope_model` describing architecture, control loops, interfaces, and reusable engineering patterns;
 8. family-level claim-scope signals for retrieval only, explicitly marked **not claim construction**;
 9. independent-design defaults and human legal-review gates;
-10. schematic seeds and safety boundaries relevant to civilian/industrial programmable devices.
+10. schematic seeds and safety/privacy boundaries relevant to civilian/industrial programmable devices.
 
 Validated patent seeds live in `safety-shield/agents/knowledge/patents/` and every JSON seed using `xunia.patent-robotics.seed.v1` is discovered automatically.
+
+## Building memory
+
+Validated seeds may include a `building_memory` block. This stores reusable architecture patterns for future GPT-DOUG-MAX design work without copying claim language or treating the patent as an implementation specification.
+
+Building memory must preserve the seed's safety, privacy, legal, and independent-design controls. A patent feature that is privacy-sensitive or operationally restricted can be indexed as a scope boundary without becoming an enabled build pattern.
 
 ## Commands
 
@@ -40,8 +46,8 @@ Validated patent seeds live in `safety-shield/agents/knowledge/patents/` and eve
 scripts/doug-max patent-scope status
 scripts/doug-max patent-scope list
 scripts/doug-max patent-scope pending
-scripts/doug-max patent-scope show US-20260201971-A9
-scripts/doug-max patent-scope match "pressure sensor normally closed valve pneumatic actuator"
+scripts/doug-max patent-scope show US-20250363994-A1
+scripts/doug-max patent-scope match "audio transcription translation confidence entity tagging knowledge graph"
 scripts/doug-max patent-scope doctor
 ```
 
@@ -57,6 +63,14 @@ Fluid-control and actuator feedback: normally closed supply/exhaust valves, pres
 
 The A9 seed is linked to the `WO2020056395A1 / US20220030757A1` family for research context. Official A9 claims must be re-fetched and compared before claim-element analysis because an A9 publication can reflect a correction or republication.
 
+### US-20260263586-A1
+Influenza B vaccine/public-health patent landscape scope. The seed is deliberately non-operational: biological sequences, mutation design, wet-lab procedures, propagation parameters, and virulence/transmissibility optimization are excluded.
+
+### US-20250363994-A1
+Audio data analysis and tagging: authorized audio ingestion, transcription/translation model adapters, confidence-aware model fusion, entity extraction, suggested tags, human review, graph/object linking, transcript/audio review interfaces, feedback datasets, provenance, triage, and anonymous speaker diarization.
+
+The reusable build profile is `PRIVACY_PRESERVING_HUMAN_IN_THE_LOOP_AUDIO_ANALYTICS`. Person identification, biometric voiceprint matching, cross-dataset person tracking, covert surveillance, and targeting/tasking are not enabled building patterns. The patent's speaker-identification concepts remain indexed only as privacy-sensitive claim/scope signals.
+
 ## Current pending intake
 
 ### US-20260271508-A1
@@ -68,4 +82,4 @@ A patent family is not one worldwide right. GPT-DOUG-MAX stores family signals f
 
 ## Safety boundary
 
-Patent-derived scope data may inform civilian/industrial robotics and programmable-device engineering. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, or missile design. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, or sector regulation.
+Patent-derived scope data may inform civilian/industrial robotics and programmable-device engineering. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, or missile design. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, biometric-data restrictions, communications law, or sector regulation.
