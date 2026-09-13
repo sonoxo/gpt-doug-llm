@@ -1,0 +1,85 @@
+{
+  "schema": "xunia.gpt-doug-max.patent-wiring.v1",
+  "name": "GPT-DOUG-MAX Patent Intelligence Wiring",
+  "purpose": "Connect GPT-DOUG-MAX, GPT-DOUG, ZYRAPALANTIR, ZYRA-MSS, the USPTO corpus reader, Glass Onion governance, Palantir Maven assurance, and GPT-REDPANDA CPR into one provenance-aware patent research graph.",
+  "mode": "PUBLIC_PATENT_RESEARCH_AND_INDEPENDENT_DESIGN_SUPPORT",
+  "components": {
+    "GPT_DOUG": {
+      "role": "ecosystem coordinator",
+      "entrypoint": "scripts/zyrapalantir patent-intel"
+    },
+    "GPT_DOUG_MAX": {
+      "role": "deep-analysis, synthesis, architecture comparison, and decision-packet preparation",
+      "entrypoint": "scripts/doug-max patent-wire",
+      "authority": "ADVISORY_ONLY"
+    },
+    "ZYRAPALANTIR": {
+      "role": "ontology and governed operational-intelligence control plane",
+      "entrypoint": "scripts/zyrapalantir patent-wire"
+    },
+    "ZYRA_MSS": {
+      "role": "100-role bounded research and mission-support analysis fleet",
+      "entrypoint": "scripts/zyrapalantir mss patent-wiring"
+    },
+    "USPTO_PATENT_INTEL": {
+      "role": "curated provenance-preserving patent metadata and exact front-page attribution",
+      "path": "safety-shield/agents/knowledge/gpt-doug-uspto-patent-intel-v1.json"
+    },
+    "USPTO_CORPUS_READER": {
+      "role": "exhaustive local PDF download, text extraction, SHA-256 provenance, and FTS5 indexing",
+      "entrypoint": "scripts/zyra-mss-uspto-reader",
+      "default_output": "~/.config/gpt-doug/zyra-mss-uspto-palantir"
+    },
+    "GLASS_ONION": {
+      "role": "policy, provenance, authorization, and independent-design boundary"
+    },
+    "PALANTIR_MAVEN": {
+      "role": "software supply-chain verification for runtime artifacts",
+      "entrypoint": "redpanda-desktop/palantir-maven"
+    },
+    "GPT_REDPANDA": {
+      "role": "CPR integrity and runtime supervision"
+    },
+    "HUMAN_REVIEW": {
+      "role": "claim-level legal review, consequential decisions, destructive actions, and external actions"
+    }
+  },
+  "links": [
+    {"from": "USPTO_CORPUS_READER", "to": "USPTO_PATENT_INTEL", "type": "EXPANDS_EVIDENCE_CORPUS"},
+    {"from": "USPTO_PATENT_INTEL", "to": "GPT_DOUG_MAX", "type": "FEEDS_DEEP_ANALYSIS"},
+    {"from": "GPT_DOUG_MAX", "to": "ZYRA_MSS", "type": "DELEGATES_BOUNDED_RESEARCH_TASKS"},
+    {"from": "ZYRA_MSS", "to": "GPT_DOUG_MAX", "type": "RETURNS_PROVENANCE_AWARE_FINDINGS"},
+    {"from": "GPT_DOUG_MAX", "to": "ZYRAPALANTIR", "type": "PUBLISHES_ARCHITECTURE_RECOMMENDATIONS"},
+    {"from": "ZYRAPALANTIR", "to": "GLASS_ONION", "type": "ENFORCES_POLICY_AND_PROVENANCE"},
+    {"from": "PALANTIR_MAVEN", "to": "ZYRAPALANTIR", "type": "PROVES_RUNTIME_ARTIFACT_INTEGRITY"},
+    {"from": "GPT_REDPANDA", "to": "ZYRAPALANTIR", "type": "SUPERVISES_RUNTIME_INTEGRITY"},
+    {"from": "GLASS_ONION", "to": "HUMAN_REVIEW", "type": "ESCALATES_CONSEQUENTIAL_DECISIONS"},
+    {"from": "GPT_DOUG", "to": "GPT_DOUG_MAX", "type": "ORCHESTRATES_DEEP_ANALYSIS"}
+  ],
+  "analysis_pipeline": [
+    "discover_or_resume_public_USPTO_documents",
+    "verify_pdf_magic_and_sha256",
+    "extract_full_text",
+    "index_FTS5_corpus",
+    "preserve_source_provenance",
+    "retrieve_relevant_patent_evidence",
+    "GPT_DOUG_MAX_synthesize_architecture_patterns",
+    "ZYRA_MSS_parallel_bounded_review",
+    "independent_design_comparison",
+    "Glass_Onion_policy_check",
+    "human_review_when_claim_level_or_consequential",
+    "audit_decision_packet"
+  ],
+  "required_controls": {
+    "search_hit_is_not_ownership_proof": true,
+    "front_page_attribution_is_document_level_only": true,
+    "freedom_to_operate_claims": false,
+    "legal_advice": false,
+    "automatic_claim_copying": false,
+    "automatic_external_action": false,
+    "human_review_for_claim_level_analysis": true,
+    "human_review_for_consequential_actions": true,
+    "provenance_required": true,
+    "sha256_for_local_pdf_corpus": true
+  }
+}
