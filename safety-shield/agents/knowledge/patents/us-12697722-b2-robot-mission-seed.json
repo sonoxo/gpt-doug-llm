@@ -12,6 +12,43 @@
     {"type": "official_identifier", "source": "USPTO Patent Public Search", "url": "https://ppubs.uspto.gov/pubwebapp/", "lookup": "12697722"},
     {"type": "public_readable_mirror", "url": "https://patents.justia.com/patent/12697722"}
   ],
+  "scope_tags": [
+    "robot-mission-planning",
+    "robot-agnostic-tasking",
+    "mission-library",
+    "mission-metrics",
+    "context-aware-planning",
+    "mission-ranking",
+    "confidence-scoring",
+    "heterogeneous-robots",
+    "fleet-abstraction",
+    "task-to-mission-selection"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "robotics",
+      "mission planning",
+      "task abstraction",
+      "fleet orchestration",
+      "performance-metric-based selection"
+    ],
+    "core_architecture": [
+      "operator task request",
+      "robot-independent task representation",
+      "mission repository",
+      "task/facility context",
+      "recorded mission metrics",
+      "ranking or confidence engine",
+      "mission selection",
+      "robot-specific execution adapter"
+    ],
+    "engineering_relevance": [
+      "separating task intent from robot-specific implementation",
+      "reusing recorded mission templates",
+      "ranking candidate missions using performance metadata",
+      "supporting heterogeneous robot fleets through abstraction layers"
+    ]
+  },
   "publicly_described_functional_concepts": [
     "robot-agnostic task descriptions",
     "repository of previously recorded robot missions",
@@ -21,6 +58,11 @@
     "heterogeneous robot fleet interfaces",
     "mission metrics retained as metadata"
   ],
+  "claim_scope_signals": {
+    "status": "RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_theme": "mission-building and mission-selection architecture using task/context information and recorded mission metrics for robot operations",
+    "legal_scope_rule": "Controlling claim language, prosecution history, legal status, and jurisdiction-specific law must be reviewed before any infringement, licensing, or freedom-to-operate conclusion."
+  },
   "independent_design_policy": {
     "copy_claim_language": false,
     "copy_figures_or_drawings": false,
