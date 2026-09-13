@@ -22,6 +22,11 @@
 <sub>Bounded agentic execution</sub>
 </td>
 <td align="center">
+<a href="https://github.com/sonoxo/gpt-doug-llm"><img width="210" src="docs/assets/insignia-gpt-doug-llm-max.svg" alt="GPT-Doug-LLM-Max project insignia" /></a><br />
+<strong><a href="docs/INSIGNIAS.md#gpt-doug-llm-max">GPT-DOUG-LLM-MAX</a></strong><br />
+<sub>Hybrid collective intelligence · people + agents + evidence</sub>
+</td>
+<td align="center">
 <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo"><img width="210" src="docs/assets/insignia-aeo.svg" alt="A.E.O. All Eyes Open RVIA-INTEL insignia" /></a><br />
 <strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo">A.E.O. // RVIA-INTEL</a></strong><br />
 <sub>All Eyes Open · provenance-first intelligence accountability</sub>
@@ -41,6 +46,7 @@
 
 **▶ PUBLIC RESILIENCE REFERENCE II — additional external architecture and infrastructure-protection reference**
 
+[![GPT-Doug-LLM-Max](https://img.shields.io/badge/GPT--DOUG--LLM--MAX-HYBRID%20INTELLIGENCE-d4af37?style=for-the-badge)](docs/INSIGNIAS.md#gpt-doug-llm-max)
 [![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
 [![A.E.O. Governance](https://img.shields.io/badge/A.E.O.-RVIA--INTEL-00bfff?style=for-the-badge)](rvia-intel/aeo/README.md)
 
