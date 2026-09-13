@@ -1,13 +1,16 @@
 """JSON input/output interface. No mutation of repositories or live systems."""
+
 import argparse
 import json
 import os
+import sqlite3
 from dataclasses import asdict
 from pathlib import Path
 
 from . import demo, lineage, reconcile, repair
 from .cte import (
     CounterfactualTransactionEngine,
+    ExecutionJournal,
     ProposedTransition,
     ReceiptAuthorizer,
     StateSnapshot,
@@ -53,6 +56,15 @@ def _host_approvers():
     return approvers
 
 
+def _host_receipt():
+    receipt = os.getenv("ZYRA_CTE_RECEIPT", "").strip()
+
+    if not receipt:
+        raise ValueError("ZYRA_CTE_RECEIPT is required")
+
+    return receipt
+
+
 def run_cte(data):
     """Counterfactual proposal/dry-run only. Cannot self-approve."""
 
@@ -74,14 +86,10 @@ def run_cte(data):
 
 
 def run_cte_execute(data):
-    """Execute synthetic CTE transaction only after receipt consumption."""
+    """Legacy synthetic execution after receipt consumption."""
 
     if "human_approved" in data:
         raise ValueError("human_approved bypass is disabled")
-
-    receipt = os.getenv("ZYRA_CTE_RECEIPT", "").strip()
-    if not receipt:
-        raise ValueError("ZYRA_CTE_RECEIPT is required")
 
     state, transition = _cte_objects(data)
 
@@ -92,7 +100,7 @@ def run_cte_execute(data):
 
     try:
         result = authorizer.execute(
-            receipt,
+            _host_receipt(),
             state,
             transition,
             data["code_versions"],
@@ -107,9 +115,97 @@ def run_cte_execute(data):
     return asdict(result)
 
 
+def run_cte_execute_durable(data):
+    """Receipt-authorized synthetic execution with durable journal."""
+
+    if "human_approved" in data:
+        raise ValueError("human_approved bypass is disabled")
+
+    attempt_id = str(data["attempt_id"]).strip()
+
+    if not attempt_id:
+        raise ValueError("attempt_id is required")
+
+    state, transition = _cte_objects(data)
+
+    journal = ExecutionJournal(data["journal_database"])
+    authorizer = ReceiptAuthorizer(
+        data["approval_database"],
+        _host_approvers(),
+    )
+
+    try:
+        result = authorizer.execute_durable(
+            journal,
+            attempt_id,
+            _host_receipt(),
+            state,
+            transition,
+            data["code_versions"],
+            data["data_versions"],
+            data["policy_versions"],
+            data["now"],
+            observed_override=data.get("observed_override"),
+        )
+
+        attempt = journal.get(attempt_id)
+    finally:
+        authorizer.close()
+        journal.close()
+
+    output = asdict(result)
+    output["attempt_id"] = attempt_id
+    output["journal_phase"] = (
+        attempt.phase if attempt is not None else None
+    )
+
+    return output
+
+
+def run_cte_status(data):
+    """Read durable attempt state and event history."""
+
+    attempt_id = str(data["attempt_id"]).strip()
+
+    if not attempt_id:
+        raise ValueError("attempt_id is required")
+
+    journal = ExecutionJournal(data["journal_database"])
+
+    try:
+        attempt = journal.get(attempt_id)
+
+        if attempt is None:
+            return {
+                "status": "NOT_FOUND",
+                "attempt_id": attempt_id,
+                "events": [],
+            }
+
+        events = [
+            asdict(event)
+            for event in journal.events(attempt_id)
+        ]
+    finally:
+        journal.close()
+
+    return {
+        "status": "FOUND",
+        "attempt": asdict(attempt),
+        "events": events,
+    }
+
+
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="doug-max invention-lab")
-    sub = parser.add_subparsers(dest="command", required=True)
+    parser = argparse.ArgumentParser(
+        prog="doug-max invention-lab"
+    )
+
+    sub = parser.add_subparsers(
+        dest="command",
+        required=True,
+    )
+
     sub.add_parser("demo")
 
     for name in (
@@ -118,12 +214,17 @@ def main(argv=None):
         "lineage",
         "cte",
         "cte-execute",
+        "cte-execute-durable",
+        "cte-status",
     ):
         command = sub.add_parser(name)
         command.add_argument(
             "input",
             type=Path,
-            help="local UTF-8 JSON input; see research_lab/README.md",
+            help=(
+                "local UTF-8 JSON input; "
+                "see research_lab/README.md"
+            ),
         )
 
     args = parser.parse_args(argv)
@@ -131,6 +232,7 @@ def main(argv=None):
     try:
         if args.command == "demo":
             result = demo.run()
+
         else:
             data = json.loads(
                 args.input.read_text(encoding="utf-8")
@@ -143,21 +245,31 @@ def main(argv=None):
                     data["tests"],
                     data["revisions"],
                 )
+
             elif args.command == "reconcile":
                 result = reconcile.reconcile(
                     data["base"],
                     data["local"],
                     data["remote"],
                 )
+
             elif args.command == "lineage":
                 result = lineage.audit(
                     data["claims"],
                     data["documents"],
                 )
+
             elif args.command == "cte":
                 result = run_cte(data)
-            else:
+
+            elif args.command == "cte-execute":
                 result = run_cte_execute(data)
+
+            elif args.command == "cte-execute-durable":
+                result = run_cte_execute_durable(data)
+
+            else:
+                result = run_cte_status(data)
 
         print(
             json.dumps(
@@ -172,7 +284,11 @@ def main(argv=None):
             return 0 if result["passed"] else 1
 
         if args.command == "repair":
-            return 0 if result["status"] == "PLAN_READY" else 1
+            return (
+                0
+                if result["status"] == "PLAN_READY"
+                else 1
+            )
 
         if args.command == "reconcile":
             return 0 if result["apply_allowed"] else 1
@@ -180,12 +296,33 @@ def main(argv=None):
         if args.command == "lineage":
             return 1 if result["invalidated"] else 0
 
-        if args.command in {"cte", "cte-execute"}:
-            return 0 if result["status"] == "COMMITTED" else 1
+        if args.command in {
+            "cte",
+            "cte-execute",
+            "cte-execute-durable",
+        }:
+            return (
+                0
+                if result["status"] == "COMMITTED"
+                else 1
+            )
+
+        if args.command == "cte-status":
+            return (
+                0
+                if result["status"] == "FOUND"
+                else 1
+            )
 
         return 1
 
-    except (OSError, ValueError, TypeError, KeyError) as exc:
+    except (
+        OSError,
+        ValueError,
+        TypeError,
+        KeyError,
+        sqlite3.Error,
+    ) as exc:
         print(
             json.dumps(
                 {
