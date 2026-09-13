@@ -3,7 +3,7 @@
 from copy import deepcopy
 from dataclasses import asdict
 
-from research_lab.approval import ApprovalGate, digest
+from research_lab.approval import ApprovalGate, digest, validate_snapshot
 
 from .engine import CounterfactualTransactionEngine
 from .models import TransactionResult
@@ -43,6 +43,26 @@ def build_authorization_snapshot(
     }
 
 
+def build_authorization_binding(
+    state,
+    transition,
+    code_versions,
+    data_versions,
+    policy_versions,
+):
+    """Return the validated digest bound to an authorization snapshot."""
+
+    snapshot = build_authorization_snapshot(
+        state,
+        transition,
+        code_versions,
+        data_versions,
+        policy_versions,
+    )
+
+    return validate_snapshot(snapshot)
+
+
 class ReceiptAuthorizer:
     """Consumes a valid receipt before allowing synthetic CTE execution."""
 
@@ -52,6 +72,35 @@ class ReceiptAuthorizer:
 
     def close(self):
         self.gate.close()
+
+    def begin_attempt(
+        self,
+        journal,
+        attempt_id,
+        state,
+        transition,
+        code_versions,
+        data_versions,
+        policy_versions,
+        now,
+    ):
+        """Bind a durable attempt to the exact authorization snapshot."""
+
+        binding = build_authorization_binding(
+            state,
+            transition,
+            code_versions,
+            data_versions,
+            policy_versions,
+        )
+
+        return journal.start(
+            attempt_id,
+            transition.transition_id,
+            state.version,
+            now,
+            request_binding=binding,
+        )
 
     def issue(
         self,

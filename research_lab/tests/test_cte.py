@@ -330,5 +330,82 @@ class TestCTEAuthorizationReceipts(unittest.TestCase):
         self.assertEqual(result.status, "AUTHORIZATION_DENIED")
 
 
+    def test_attempt_id_binds_exact_state_snapshot(self):
+        from research_lab.cte import ExecutionJournal
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "state-journal.sqlite")
+        )
+
+        try:
+            self.authorizer.begin_attempt(
+                journal,
+                "attempt-state",
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1000,
+            )
+
+            changed_state = StateSnapshot(
+                version=self.state.version,
+                objects={"service": {"status": "degraded"}},
+            )
+
+            with self.assertRaises(ValueError):
+                self.authorizer.begin_attempt(
+                    journal,
+                    "attempt-state",
+                    changed_state,
+                    self.transition,
+                    self.code_versions,
+                    self.data_versions,
+                    self.policy_versions,
+                    now=1001,
+                )
+        finally:
+            journal.close()
+
+    def test_attempt_id_binds_exact_policy_snapshot(self):
+        from research_lab.approval import digest
+        from research_lab.cte import ExecutionJournal
+
+        journal = ExecutionJournal(
+            str(Path(self.directory.name) / "policy-journal.sqlite")
+        )
+
+        try:
+            self.authorizer.begin_attempt(
+                journal,
+                "attempt-policy",
+                self.state,
+                self.transition,
+                self.code_versions,
+                self.data_versions,
+                self.policy_versions,
+                now=1000,
+            )
+
+            changed_policy = {
+                "policy-v1": digest("policy-content-v2"),
+            }
+
+            with self.assertRaises(ValueError):
+                self.authorizer.begin_attempt(
+                    journal,
+                    "attempt-policy",
+                    self.state,
+                    self.transition,
+                    self.code_versions,
+                    self.data_versions,
+                    changed_policy,
+                    now=1001,
+                )
+        finally:
+            journal.close()
+
+
 if __name__ == "__main__":
     unittest.main()
