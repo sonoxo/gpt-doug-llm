@@ -1,1 +1,228 @@
-TEMP
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250355943-A1",
+  "title": "System event detection system and method",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-11-20",
+  "application_number": "19/281,448",
+  "filed": "2025-07-25",
+  "priority_date": "2019-10-04",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Andrew Eggleton",
+    "Alexandra Serenhov",
+    "Ankit Shankar",
+    "Brandon Helms",
+    "Brian Keohane",
+    "Darren Zhao",
+    "Elliot Colquhoun",
+    "Gautam Punukollu",
+    "Morten Kromann",
+    "Nikhil Seetharaman",
+    "Ranec Highet",
+    "Raj Krishnan",
+    "Xiao Tang",
+    "Sriram Krishnan",
+    "Simon Vahr",
+    "Tareq Alkhatib",
+    "Thomas Mathew"
+  ],
+  "related_application_signals": [
+    "continuation of US application 18/525,710 filed 2023-11-30",
+    "continuation lineage includes US application 16/660,217 filed 2019-10-22",
+    "related granted US family includes US11874872B2 and US12399938B2"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250355943-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250355943A1/en"
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/20250355943"
+    }
+  ],
+  "classification_signals": [
+    "G06F16/9024 graph data structures",
+    "G06F21/552 long-term intrusion monitoring or reporting",
+    "G06F21/554 event detection and countermeasure context",
+    "H04L63/1408 network-security traffic monitoring",
+    "H04L63/1416 security-event detection",
+    "H04L63/1425 traffic logging and anomaly detection",
+    "H04L63/1433 vulnerability analysis"
+  ],
+  "scope_tags": [
+    "cybersecurity",
+    "event-detection",
+    "security-ontology",
+    "object-graph",
+    "event-descriptor",
+    "entity-descriptor",
+    "course-of-action",
+    "security-analytics",
+    "siem-integration",
+    "multi-source-ingest",
+    "source-reliability",
+    "indicator-generation",
+    "incident-triage",
+    "graph-traversal",
+    "analyst-interface",
+    "defensive-response",
+    "provenance",
+    "human-in-the-loop"
+  ],
+  "publicly_described_functional_concepts": [
+    "receiving event records from system logs or security-monitoring applications",
+    "normalizing event records into event descriptor objects with structured properties",
+    "normalizing security-relevant entities into entity descriptor objects",
+    "linking events and entities in an object graph for cybersecurity analysis",
+    "using source-reliability signals when selecting entity-property values from multiple sources",
+    "deriving cybersecurity indicators from graph relationships",
+    "presenting linked events, entities, risks, vulnerabilities, indicators, sightings, observed data, reports, and defensive course-of-action objects to analysts",
+    "supporting graph traversal from a suspicious event to related entities and defensive response guidance"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "defensive cybersecurity analytics",
+      "security information and event management",
+      "ontology and graph-based security data",
+      "incident investigation",
+      "security operations user interfaces"
+    ],
+    "core_architecture": [
+      "authorized security telemetry sources",
+      "event ingestion and normalization",
+      "entity ingestion and normalization",
+      "source reliability resolver",
+      "event/entity object graph",
+      "indicator and risk derivation",
+      "analyst query and traversal API",
+      "defensive course-of-action recommendation layer",
+      "human approval gate",
+      "audit and provenance store"
+    ],
+    "analysis_loop": "ingest authorized security events and entity context -> normalize descriptors -> resolve source reliability -> associate descriptors in graph -> derive indicators and risk context -> present linked evidence to analyst -> propose defensive course of action -> require policy/human approval before consequential action -> record provenance and outcome",
+    "building_patterns_relevant_to_independent_design": [
+      "treat normalized event and entity descriptors as typed ontology objects rather than raw log strings",
+      "preserve source provenance and reliability alongside every normalized property",
+      "separate evidence objects from inferred indicators and risk objects",
+      "make every graph edge explainable through source properties or deterministic correlation rules",
+      "represent defensive response guidance as proposals, not automatic execution",
+      "require explicit approval before disruptive actions such as isolation, permission revocation, or deletion",
+      "provide reversible graph traversal from an alert back to source events and forward to related entities",
+      "use least-privilege connectors for logs, SIEM, identity, asset, and vulnerability systems",
+      "retain analyst decisions and response outcomes as feedback for later quality evaluation",
+      "keep automated containment disabled by default in the generic building profile"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "display of event descriptor objects and retrieval of associated entity or defensive course-of-action objects through an object graph",
+      "event descriptors generated from system logs or security-monitoring applications",
+      "graph paths connecting security events, entities, and course-of-action descriptors",
+      "entity properties aggregated from multiple sources with reliability-aware selection",
+      "analysis of graph relationships to derive cybersecurity indicators"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "parent_application": "US18/525,710",
+    "earlier_application": "US16/660,217",
+    "related_us_grants": ["US11874872B2", "US12399938B2"],
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US publication or its family; recheck each national or regional register before legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "telemetry-ingest-gateway",
+      "event-normalizer",
+      "entity-normalizer",
+      "source-reliability-resolver",
+      "security-object-graph",
+      "indicator-and-risk-engine",
+      "analyst-traversal-api",
+      "incident-workbench",
+      "defensive-action-proposal-layer",
+      "human-approval-gate",
+      "provenance-audit-store",
+      "feedback-and-outcome-store"
+    ],
+    "default_build_profile": "DEFENSIVE_SECURITY_ONTOLOGY_EVENT_GRAPH",
+    "use_for": [
+      "authorized SOC and SIEM enrichment",
+      "security event correlation",
+      "incident investigation workbenches",
+      "risk and vulnerability context graphs",
+      "human-reviewed defensive response planning",
+      "security data lineage and provenance",
+      "explainable alert-to-evidence traversal"
+    ]
+  },
+  "defensive_security_policy": {
+    "authorized_security_data_only": true,
+    "defensive_monitoring_and_analysis": true,
+    "human_review_for_consequential_actions": true,
+    "automatic_device_isolation": false,
+    "automatic_permission_revocation": false,
+    "automatic_file_deletion": false,
+    "credential_theft_or_bypass": false,
+    "unauthorized_network_access": false,
+    "malware_deployment": false,
+    "offensive_exploitation": false,
+    "targeting_or_operational_tasking": false,
+    "provenance_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED_FOR_CONSEQUENTIAL_RESPONSE",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_DEFENSIVE_SECURITY_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently designed event/entity schemas and graph edge semantics",
+    "store evidence, inference, and response-proposal objects in separate layers",
+    "use deterministic provenance and confidence fields on every normalization and correlation step",
+    "keep disruptive remediation out of the default automated path",
+    "require human approval and policy checks before containment or destructive actions",
+    "maintain complete event-to-source and response-to-outcome auditability"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "authorized telemetry ingestion",
+      "event descriptor normalizer",
+      "entity descriptor normalizer",
+      "source reliability resolver",
+      "security ontology/object graph",
+      "indicator and risk analytics",
+      "analyst API and graph traversal",
+      "incident investigation UI",
+      "defensive action proposal service",
+      "human approval gate",
+      "audit and provenance store"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized defensive telemetry only",
+      "no offensive exploitation",
+      "no unauthorized access",
+      "no credential bypass",
+      "no malware deployment",
+      "no automatic disruptive remediation by default",
+      "human approval for containment or destructive actions",
+      "complete provenance and audit logging"
+    ]
+  }
+}
