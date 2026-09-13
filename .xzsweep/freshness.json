@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-12T23:20:49Z",
+  "cutoff_at": "2026-09-12T23:46:40Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -6263,6 +6263,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "ontology/world-bank-data-apis.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T23:46:32Z",
+      "reviewed_at": null,
+      "sha256": "892772918f874e9f2194a7da9e59088b4e500a4a26e837c93df51a02c5989f7e",
+      "size": 2397,
+      "validation_issues": [],
+      "was_due": false
+    },
     "ontology/zyra-cpr.json": {
       "actions": [],
       "binary": false,
@@ -8889,6 +8900,17 @@
       "reviewed_at": "2026-09-13T18:09:58Z",
       "sha256": "84d8e659c0bfcc5ac4c1725183e8659e2f92a024b8861dc4edeeee6ff77cfe3b",
       "size": 5994,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_world_bank_knowledge.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T23:46:32Z",
+      "reviewed_at": null,
+      "sha256": "eed42eb39714534401ac188db9ec2d4d32152323514a6053c790cd906d70f66d",
+      "size": 1559,
       "validation_issues": [],
       "was_due": false
     },
@@ -11521,6 +11543,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "workers/knowledge/world_bank_data_apis.jsonl": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T23:46:32Z",
+      "reviewed_at": null,
+      "sha256": "d301b2d0354f6b3d189a334e5ae03bc9fb05bf6062b71c326993f47ec3b18598",
+      "size": 5439,
+      "validation_issues": [],
+      "was_due": false
+    },
     "workers/ontology_workers.py": {
       "actions": [],
       "binary": false,
@@ -13052,11 +13085,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-13T23:20:49Z",
+  "generated_at": "2026-09-13T23:46:40Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1186,
+  "tracked_files_reviewed": 1189,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
