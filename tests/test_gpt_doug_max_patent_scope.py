@@ -35,6 +35,7 @@ def test_scope_library_contains_validated_patents() -> None:
         "US-12697722-B2",
         "US-20260201971-A9",
         "US-20250355943-A1",
+        "US-20250298916-A1",
     } <= ids
     assert "US-20260271508-A1" not in ids
 
@@ -98,6 +99,30 @@ def test_system_event_detection_seed_keeps_defensive_response_gates() -> None:
     assert policy["automatic_permission_revocation"] is False
     assert policy["automatic_file_deletion"] is False
     assert policy["offensive_exploitation"] is False
+
+
+def test_purpose_bound_data_access_scope_matches_governance_query() -> None:
+    result = run(
+        "match",
+        "purpose based data access summary discovery cohort filter owner approval investigation workspace reproducibility",
+        "--json",
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    payload = json.loads(result.stdout)
+    assert payload["results"][0]["patent_id"] == "US-20250298916-A1"
+
+
+def test_purpose_bound_seed_keeps_governance_gates() -> None:
+    result = run("show", "US-20250298916-A1")
+    assert result.returncode == 0, result.stdout + result.stderr
+    seed = json.loads(result.stdout)
+    policy = seed["governance_policy"]
+    assert policy["authorized_data_only"] is True
+    assert policy["summary_discovery_before_record_access"] is True
+    assert policy["minimum_necessary_data_required"] is True
+    assert policy["automatic_policy_bypass"] is False
+    assert policy["automatic_owner_approval"] is False
+    assert policy["provenance_required"] is True
 
 
 def test_fluid_seed_keeps_independent_design_gate() -> None:
