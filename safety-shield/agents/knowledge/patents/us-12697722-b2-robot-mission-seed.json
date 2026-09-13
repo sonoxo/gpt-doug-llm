@@ -1,0 +1,64 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12697722-B2",
+  "title": "Building a robot mission based on mission metrics",
+  "grant_date": "2026-08-04",
+  "application_number": "18/077,964",
+  "publication_number": "US-2024-0189996-A1",
+  "filed": "2022-12-08",
+  "assignee": "Yokogawa Electric Corporation",
+  "inventor": "Brendon Bao-An Lu",
+  "source_provenance": [
+    {"type": "official_identifier", "source": "USPTO Patent Public Search", "url": "https://ppubs.uspto.gov/pubwebapp/", "lookup": "12697722"},
+    {"type": "public_readable_mirror", "url": "https://patents.justia.com/patent/12697722"}
+  ],
+  "publicly_described_functional_concepts": [
+    "robot-agnostic task descriptions",
+    "repository of previously recorded robot missions",
+    "context metadata associated with tasks and facilities",
+    "mission ranking using recorded performance or quality metrics",
+    "confidence or ranking information used to select a mission",
+    "heterogeneous robot fleet interfaces",
+    "mission metrics retained as metadata"
+  ],
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "separate patent evidence retrieval from runtime control",
+    "use an explicit compliance and safety gate before mission activation",
+    "require operator approval before executing a generated mission",
+    "use independently defined multi-objective scoring rather than copying claim wording or claimed scoring sequence",
+    "use vendor/device adapters only after a robot-independent task contract has passed safety review",
+    "maintain provenance showing which patent concepts informed each design decision"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "operator task interface",
+      "task/context model",
+      "prior-art evidence store",
+      "independent pattern synthesizer",
+      "safety and compliance gate",
+      "mission planner",
+      "human approval gate",
+      "device abstraction layer",
+      "robot-specific adapter",
+      "telemetry and audit store"
+    ],
+    "mandatory_safety_boundaries": [
+      "manual override",
+      "safe-state transition",
+      "watchdog",
+      "emergency-stop or equivalent risk control where physical motion can create hazards",
+      "least-privilege device control",
+      "signed or authenticated software update path",
+      "audit log of mission approval and execution"
+    ]
+  }
+}
