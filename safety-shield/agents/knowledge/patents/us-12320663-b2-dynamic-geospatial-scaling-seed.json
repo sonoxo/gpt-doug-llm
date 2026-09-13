@@ -1,0 +1,185 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12320663-B2",
+  "title": "Dynamic scaling of geospatial data on maps",
+  "document_type": "US patent grant",
+  "kind_code": "B2",
+  "publication_date": "2025-06-03",
+  "application_number": "18/595,193",
+  "filed": "2024-03-04",
+  "priority_date": "2018-10-24",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Andrew Elder",
+    "Cooper Bills",
+    "Reese Glidden"
+  ],
+  "related_application_signals": [
+    "published as US20240200965A1",
+    "continuation of US application 17/527,442 filed 2021-11-16",
+    "continuation lineage includes US application 16/242,615 filed 2019-01-08, now US11175157",
+    "claims priority to US provisional application 62/750,031 filed 2018-10-24",
+    "later continuation-family publication includes US20250290768A1"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-12320663-B2?source=USPAT",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/12320663"
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US12320663B2/en"
+    }
+  ],
+  "classification_signals": [
+    "GIS and geospatial visualization",
+    "interactive map zoom and marker rendering",
+    "zoom-dependent graphical-object scaling",
+    "marker-type, marker-density, and display-resolution-aware rendering"
+  ],
+  "scope_tags": [
+    "geospatial-ui",
+    "dynamic-marker-scaling",
+    "zoom-aware-rendering",
+    "map-scale",
+    "marker-density",
+    "screen-resolution",
+    "marker-types",
+    "threshold-scaling",
+    "visual-clutter-reduction",
+    "gis",
+    "interactive-maps",
+    "readability"
+  ],
+  "publicly_described_functional_concepts": [
+    "displaying a geographical map with one or more marker layers",
+    "changing marker size as map zoom or map scale changes",
+    "using low and high threshold regions to bound marker scaling behavior",
+    "determining marker-size changes using marker type, marker density, or display resolution",
+    "supporting different scale relationships for different marker types",
+    "maintaining map readability and pattern visibility without removing underlying geospatial objects"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "GIS visualization",
+      "interactive map rendering",
+      "human-computer interaction",
+      "geospatial analytics"
+    ],
+    "core_architecture": [
+      "authorized geospatial data adapter",
+      "map viewport and zoom state",
+      "marker-layer registry",
+      "marker metadata and type policy",
+      "density and display-resolution estimator",
+      "threshold resolver",
+      "bounded scaling function",
+      "map renderer",
+      "readability telemetry"
+    ],
+    "analysis_loop": "receive authorized geospatial objects -> resolve viewport, zoom, density, type, and display context -> select independently designed bounded marker-scaling policy -> render marker layers -> measure overlap/readability -> recompute on zoom or viewport change",
+    "building_patterns_relevant_to_independent_design": [
+      "keep geographic coordinates separate from visual marker-size policy",
+      "treat zoom, marker type, density, and display resolution as independent rendering inputs",
+      "use explicit lower and upper bounds for display size",
+      "allow per-layer or per-type scaling functions instead of one global curve",
+      "preserve source objects while reducing visual clutter at extreme zoom levels",
+      "record rendering policy versions and viewport telemetry for reproducibility",
+      "keep visualization logic separate from operational or physical action logic"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "map and marker-layer presentation at a first scale",
+      "changing marker size after a zoom-level change",
+      "threshold-aware determination of marker-size adjustment",
+      "marker type, density, or map/display resolution as scaling inputs",
+      "multiple marker types with independently configurable scaling behavior"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "publication": "US20240200965A1",
+    "parent_application": "US17/527,442",
+    "earlier_application": "US16/242,615",
+    "provisional_priority": "US62/750,031",
+    "later_continuation_publication": "US20250290768A1",
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US grant or family; recheck controlling claims, prosecution history, and legal status in each relevant jurisdiction."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "geospatial-data-adapter",
+      "viewport-state",
+      "marker-layer-registry",
+      "density-estimator",
+      "display-context-resolver",
+      "marker-policy-engine",
+      "bounded-scale-resolver",
+      "map-renderer",
+      "readability-metrics"
+    ],
+    "default_build_profile": "ZOOM_AWARE_GEOSPATIAL_VISUALIZATION",
+    "use_for": [
+      "civilian GIS dashboards",
+      "infrastructure maps",
+      "fleet and logistics visualization",
+      "environmental monitoring",
+      "asset maps",
+      "large-scale geospatial data exploration"
+    ]
+  },
+  "privacy_and_safety_policy": {
+    "authorized_geospatial_data_only": true,
+    "person_identification": false,
+    "biometric_identification": false,
+    "covert_person_tracking": false,
+    "cross_dataset_person_tracking": false,
+    "targeting_or_operational_tasking": false,
+    "rendering_logic_only": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_REVIEW_FOR_PERSON_LINKED_GEOSPATIAL_DEPLOYMENTS",
+    "default_pattern": "USE_PUBLIC_VISUALIZATION_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_RENDERING_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently designed scaling curves and threshold values",
+    "derive layout/readability objectives from product requirements rather than patent examples",
+    "keep data semantics and rendering policy in separate modules",
+    "prefer testable visual-density and accessibility metrics for tuning",
+    "avoid copying patent figures, claim wording, or exact parameter choices"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "authorized map data source",
+      "viewport and zoom state",
+      "marker layer registry",
+      "density/display estimator",
+      "marker scaling policy",
+      "bounded scale resolver",
+      "renderer",
+      "readability telemetry"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized geospatial data only",
+      "no person identification or covert tracking",
+      "no targeting or operational tasking",
+      "visualization separated from consequential action",
+      "complete provenance for rendering-policy versions"
+    ]
+  }
+}
