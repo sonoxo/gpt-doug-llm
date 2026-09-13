@@ -404,6 +404,14 @@ gpt-doug-llm/
 
 ---
 
+## Invention Lab
+
+The [GPT-Doug Invention Lab](research_lab/README.md) contains
+four local research prototypes for evidence-bound admission, dependency-aware
+repair planning, offline reconciliation, and citation lineage. Run
+`bash scripts/doug-max invention-lab demo` for the synthetic end-to-end checks.
+These are experimental tools, not patentability findings or live execution gates.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
