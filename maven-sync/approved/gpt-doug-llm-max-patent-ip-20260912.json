@@ -1,0 +1,134 @@
+{
+  "schemaVersion": "maven-export/1.0",
+  "source": {
+    "system": "GPT-DOUG-LLM-MAX IP Evidence",
+    "exportId": "gpt-doug-llm-max-patent-ip-20260912-2103et",
+    "uri": "https://github.com/sonoxo/gpt-doug-llm/tree/main/free-video-studio",
+    "generatedAt": "2026-09-13T01:03:00Z"
+  },
+  "approval": {
+    "status": "approved",
+    "scope": "ontology-sync",
+    "approvedBy": "xunia-operator-user-direction",
+    "approvedAt": "2026-09-13T01:03:30Z"
+  },
+  "nodes": [
+    {
+      "id": "maven:source:gpt-doug-llm-max-astra-code",
+      "label": "GPT-DOUG-LLM-MAX AsTra Technical Source",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Repository evidence for gpt-doug-llm-max-AsTra, a local-first AI video studio implementing text-to-video, image-to-video and storyboard workflows, continuity anchors, deterministic seed controls, chained shots, provenance logs, optional synchronized audio, and platform-specific local inference backends.",
+      "provenance": {
+        "url": "https://github.com/sonoxo/gpt-doug-llm/blob/main/free-video-studio/app.py",
+        "method": "repository-source-inspection"
+      }
+    },
+    {
+      "id": "maven:source:gpt-doug-uspto-patent-intel-20260912",
+      "label": "GPT-DOUG USPTO Patent Intelligence Source",
+      "objectType": "Source",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "GPT-DOUG patent-intelligence evidence model using USPTO Patent Public Search and exact patent/publication front-page records. It explicitly separates search hits, document attribution, engineering inference, ownership, validity, infringement and freedom-to-operate conclusions.",
+      "provenance": {
+        "url": "https://github.com/sonoxo/gpt-doug-llm/blob/main/intel/briefings/2026-09-12-uspto-palantir-patent-landscape.md",
+        "authority": "USPTO Patent Public Search plus exact public patent/publication evidence"
+      }
+    },
+    {
+      "id": "maven:ip-asset:gpt-doug-llm-max-astra",
+      "label": "GPT-DOUG-LLM-MAX AsTra IP Asset",
+      "objectType": "IPAsset",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.98,
+      "desc": "Technical IP asset representing the independently developed GPT-DOUG-LLM-MAX/AsTra workflow and implementation evidence. The asset record preserves technical provenance but does not itself establish patentability, ownership beyond the repository evidence, or a USPTO filing.",
+      "provenance": {
+        "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/free-video-studio",
+        "evidenceClass": "technical-implementation"
+      }
+    },
+    {
+      "id": "maven:technical-disclosure:gpt-doug-llm-max-astra-v1",
+      "label": "GPT-DOUG-LLM-MAX AsTra Technical Disclosure",
+      "objectType": "TechnicalDisclosure",
+      "type": "knowledge",
+      "status": "verified",
+      "confidence": 0.98,
+      "desc": "Verified implementation disclosure covering: local inference without a paid generation API; automatic Apple Silicon MLX-Gen versus Linux/NVIDIA Wan2.2 backend selection; text-to-video, image-to-video and storyboard modes; reference-image continuity anchors; explicit continuity locks; deterministic seed control; chaining storyboard shots from the prior final frame; optional MMAudio synchronization; and generation log/provenance output.",
+      "provenance": {
+        "source": "https://github.com/sonoxo/gpt-doug-llm/blob/main/free-video-studio/app.py",
+        "method": "code-derived-technical-disclosure"
+      }
+    },
+    {
+      "id": "maven:patent-record:gpt-doug-llm-max-astra",
+      "label": "GPT-DOUG-LLM-MAX AsTra Patent Status Record",
+      "objectType": "PatentRecord",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.8,
+      "desc": "Patent/IP status record for GPT-DOUG-LLM-MAX/AsTra. Technical implementation evidence exists, but the currently available repository, Library and public-search evidence does not establish a verified USPTO application number, provisional filing number, publication number, grant number, filing receipt, filing date, named inventor list, assignee record, or issued claims specifically for GPT-DOUG-LLM-MAX/AsTra. Filing status therefore remains unverified until authoritative filing evidence is attached.",
+      "provenance": {
+        "technicalEvidence": "https://github.com/sonoxo/gpt-doug-llm/blob/main/free-video-studio/app.py",
+        "patentEvidenceState": "no-specific-official-filing-record-verified",
+        "inventorAttribution": "pending-authoritative-filing-evidence"
+      }
+    },
+    {
+      "id": "maven:requirement:gpt-doug-max-independent-patent-review",
+      "label": "Independent Patentability and Prior-Art Review",
+      "objectType": "Requirement",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Before asserting novelty, patentability, infringement, freedom to operate, claim scope or ownership conclusions for GPT-DOUG-LLM-MAX, preserve independent design evidence, compare the technical disclosure against authoritative prior art, distinguish engineering similarities from claim interpretation, and require human review for legal conclusions.",
+      "provenance": {
+        "source": "https://github.com/sonoxo/gpt-doug-llm/blob/main/intel/briefings/2026-09-12-uspto-palantir-patent-landscape.md",
+        "method": "independent-design-governance"
+      }
+    },
+    {
+      "id": "maven:control:official-patent-filing-evidence-gate",
+      "label": "Official Patent Filing Evidence Gate",
+      "objectType": "Control",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "The ontology may promote GPT-DOUG-LLM-MAX patent status from candidate to filed, published or granted only when authoritative evidence such as a USPTO filing receipt, application number, official publication, patent front page, or equivalent official record is attached. Repository code, drafts, search results or user intent alone do not establish a patent filing or grant.",
+      "provenance": {
+        "method": "patent-evidence-governance",
+        "version": "1.0"
+      }
+    },
+    {
+      "id": "maven:audit-record:gpt-doug-llm-max-patent-ip-20260912",
+      "label": "GPT-DOUG-LLM-MAX Patent/IP Ontology Update Audit",
+      "objectType": "AuditRecord",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.99,
+      "desc": "Audit record for adding GPT-DOUG-LLM-MAX technical IP evidence and a non-overclaiming patent-status record to the Maven ontology.",
+      "provenance": {
+        "method": "maven-live-sync/1.0",
+        "date": "2026-09-12"
+      }
+    }
+  ],
+  "links": [
+    ["maven:ip-asset:gpt-doug-llm-max-astra", "maven:source:gpt-doug-llm-max-astra-code", "SUPPORTED_BY"],
+    ["maven:technical-disclosure:gpt-doug-llm-max-astra-v1", "maven:source:gpt-doug-llm-max-astra-code", "DERIVED_FROM"],
+    ["maven:ip-asset:gpt-doug-llm-max-astra", "maven:technical-disclosure:gpt-doug-llm-max-astra-v1", "CONTAINS"],
+    ["maven:patent-record:gpt-doug-llm-max-astra", "maven:ip-asset:gpt-doug-llm-max-astra", "SUPPORTED_BY"],
+    ["maven:requirement:gpt-doug-max-independent-patent-review", "maven:source:gpt-doug-uspto-patent-intel-20260912", "DERIVED_FROM"],
+    ["maven:patent-record:gpt-doug-llm-max-astra", "maven:requirement:gpt-doug-max-independent-patent-review", "REQUIRES"],
+    ["maven:control:official-patent-filing-evidence-gate", "maven:patent-record:gpt-doug-llm-max-astra", "GOVERNS"],
+    ["maven:technical-disclosure:gpt-doug-llm-max-astra-v1", "maven:requirement:gpt-doug-max-independent-patent-review", "REQUIRES"],
+    ["maven:audit-record:gpt-doug-llm-max-patent-ip-20260912", "maven:source:gpt-doug-llm-max-astra-code", "SUPPORTED_BY"],
+    ["maven:audit-record:gpt-doug-llm-max-patent-ip-20260912", "maven:source:gpt-doug-uspto-patent-intel-20260912", "SUPPORTED_BY"]
+  ]
+}
