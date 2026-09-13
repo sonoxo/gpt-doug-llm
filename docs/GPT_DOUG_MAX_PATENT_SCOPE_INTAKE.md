@@ -40,8 +40,8 @@ Validated patent seeds live in `safety-shield/agents/knowledge/patents/` and eve
 scripts/doug-max patent-scope status
 scripts/doug-max patent-scope list
 scripts/doug-max patent-scope pending
-scripts/doug-max patent-scope show US-20250355943-A1
-scripts/doug-max patent-scope match "cybersecurity event object graph entity descriptor SIEM incident triage defensive response"
+scripts/doug-max patent-scope show US-20250298916-A1
+scripts/doug-max patent-scope match "purpose based data access summary discovery cohort owner approval investigation workspace"
 scripts/doug-max patent-scope doctor
 ```
 
@@ -63,6 +63,9 @@ Influenza B mutant/vaccine patent scope is stored only as a high-level, non-oper
 ### US-20250355943-A1
 Defensive cybersecurity event-graph architecture: authorized security telemetry is normalized into event/entity descriptor objects, correlated in a security ontology/object graph, enriched with source reliability and risk/indicator context, and presented to analysts with defensive course-of-action proposals. The default build profile is `DEFENSIVE_SECURITY_ONTOLOGY_EVENT_GRAPH`; disruptive remediation is not automatic and requires human/policy approval.
 
+### US-20250298916-A1
+Purpose-bound data exploration and access: users can discover and filter datasets through summaries/aggregates without exposing protected underlying records, declare a purpose, route the request through policy and data-owner approval, and materialize only the authorized subset into an isolated investigation workspace. The build profile is `PURPOSE_BOUND_PRIVACY_PRESERVING_DATA_WORKSPACE` with minimum-necessary provisioning, reproducible version manifests, governed refresh, expiry/revocation, and full provenance/audit.
+
 ## Current pending intake
 
 ### US-20260271508-A1
@@ -74,4 +77,4 @@ A patent family is not one worldwide right. GPT-DOUG-MAX stores family signals f
 
 ## Safety boundary
 
-Patent-derived scope data may inform civilian/industrial robotics, programmable-device engineering, and defensive cybersecurity architecture. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, missile, offensive exploitation, credential theft, malware deployment, or unauthorized-access design. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, or sector regulation.
+Patent-derived scope data may inform civilian/industrial robotics, programmable-device engineering, governed data systems, and defensive cybersecurity architecture. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, missile, offensive exploitation, credential theft, malware deployment, unauthorized-access design, or bypass of data governance and privacy controls. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, sector regulation, or contractual data restrictions.
