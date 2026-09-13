@@ -1,8 +1,12 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-12T02:03:33Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-12T08:25:46Z",
+  "due_files_reviewed": 3,
+  "due_paths": [
+    "agents/mission_support_workbench.py",
+    "docs/MISSION_SUPPORT_WORKBENCH.md",
+    "tests/test_mission_support_workbench.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1450,11 +1454,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "24e7328c787ff923ae4b46d9967b26cf64588f4a285300ae00b718f4f9cc88d1",
       "size": 7274,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "agents/mythos_bridge.py": {
       "actions": [],
@@ -2440,11 +2444,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "803d913f72c1862412ad356796b6a1141371474b75d563329ef737e38ce1aecc",
       "size": 2059,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -2692,9 +2696,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T01:01:46Z",
+      "git_touched_at": "2026-09-13T02:03:34Z",
       "reviewed_at": null,
-      "sha256": "3d1a82bb63fdf1a6569fc96e97bb008b155c8aff89cbba9e274f505e73ea4997",
+      "sha256": "f37ea07658d2c664012a2f3e8cb98dd6d196b50d1e7ed3b94a2c72824b9b3180",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -3186,11 +3190,11 @@
     "docs/zyra-shell-v2.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-11T19:08:07Z",
-      "reviewed_at": "2026-09-12T19:46:31Z",
-      "sha256": "9abc0ee3080b19d7fc5e96214a2ce3376a815580e81c2e6bcf8a5798a144bc75",
-      "size": 2741,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-13T08:25:36Z",
+      "reviewed_at": null,
+      "sha256": "00b5279e8a485289a34c6094a32034a2eee5d2e0faa374b3e0a0e9a2f61ac465",
+      "size": 2844,
       "validation_issues": [],
       "was_due": false
     },
@@ -8292,11 +8296,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-13T08:25:46Z",
       "sha256": "2e75b84b1569eab405280c1dbe644e3fc7c8ee66bf5db502bc5bdcf44c59e2b6",
       "size": 3143,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_mythos_bridge.py": {
       "actions": [],
@@ -10337,9 +10341,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T01:01:47Z",
+      "git_touched_at": "2026-09-13T02:03:33Z",
       "reviewed_at": null,
-      "sha256": "a09df71a383486425be8af3b978b6cfbde036147d798267da5cb80d741628eda",
+      "sha256": "99836b8f2ab4510cf774d5c64bb2eadf5c326d9ea190b0cb89f5256493c65d4c",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -10359,9 +10363,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T00:57:20Z",
+      "git_touched_at": "2026-09-13T02:03:33Z",
       "reviewed_at": null,
-      "sha256": "8f75e70034ac90d3d883eb110efbc790fe6ca5fc83b2103e121faceaa9c246f3",
+      "sha256": "e1f21d821dac00be7ebddbd969c93dba5009e69add8a3936f0aa20a768648ba7",
       "size": 6085,
       "validation_issues": [],
       "was_due": false
@@ -12678,7 +12682,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-13T02:03:33Z",
+  "generated_at": "2026-09-13T08:25:46Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
