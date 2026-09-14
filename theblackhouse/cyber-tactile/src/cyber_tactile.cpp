@@ -38,7 +38,7 @@ SpatialThreat SpatialMapper::map(const ThreatTelemetry& t) const {
     const auto severity = clamp01(0.50*cvss + 0.40*conf + 0.10*traffic);
     return {.event_id=t.event_id,.kind=t.kind,.target_asset=t.target_asset,.position=t.target_position,
         .direction=normalize({t.target_position.x-t.source_position.x,t.target_position.y-t.source_position.y,t.target_position.z-t.source_position.z}),
-        .severity=severity,.confidence=conf};
+        .severity=severity,.confidence=conf,.target_rid=t.target_rid,.entity_rid=t.entity_rid,.geotime_track_rid=t.geotime_track_rid};
 }
 
 HapticFrame HapticEncoder::encode(const SpatialThreat& t) const {
@@ -84,9 +84,13 @@ const std::vector<std::pair<DefenseAction,std::string>>& MockResponseExecutor::a
 ResponseController::ResponseController(IResponseExecutor& e) : executor_(e) {}
 DefenseAction ResponseController::action_for(GestureKind g, const SpatialThreat& t) noexcept {
     switch (g) {
-        case GestureKind::Pinch: return DefenseAction::OpenIncident;
-        case GestureKind::Squeeze: return t.severity >= 0.80 ? DefenseAction::IsolateHost : DefenseAction::BlockIndicator;
-        case GestureKind::Press: return t.kind == ThreatKind::MalwareExecution ? DefenseAction::TerminateProcess : DefenseAction::BlockIndicator;
+        case GestureKind::Pinch:
+            return t.kind == ThreatKind::PrivilegeEscalation ? DefenseAction::RevokeSession : DefenseAction::OpenIncident;
+        case GestureKind::Squeeze:
+            return t.severity >= 0.80 ? DefenseAction::IsolateHost : DefenseAction::BlockIndicator;
+        case GestureKind::Press:
+            if (t.kind == ThreatKind::DdosVolumetric || t.kind == ThreatKind::PortSweep) return DefenseAction::BlockIpRange;
+            return t.kind == ThreatKind::MalwareExecution ? DefenseAction::TerminateProcess : DefenseAction::BlockIndicator;
     }
     return DefenseAction::OpenIncident;
 }
@@ -118,6 +122,14 @@ const char* to_string(ThreatKind v) noexcept {
     switch(v){case ThreatKind::DdosVolumetric:return "ddos_volumetric";case ThreatKind::PrivilegeEscalation:return "privilege_escalation";case ThreatKind::PortSweep:return "port_sweep";case ThreatKind::MalwareExecution:return "malware_execution";case ThreatKind::Unknown:return "unknown";} return "unknown";
 }
 const char* to_string(DefenseAction v) noexcept {
-    switch(v){case DefenseAction::OpenIncident:return "open_incident";case DefenseAction::BlockIndicator:return "block_indicator";case DefenseAction::IsolateHost:return "isolate_host";case DefenseAction::TerminateProcess:return "terminate_process";} return "open_incident";
+    switch(v){
+        case DefenseAction::OpenIncident:return "open_incident";
+        case DefenseAction::BlockIndicator:return "block_indicator";
+        case DefenseAction::IsolateHost:return "isolate_host";
+        case DefenseAction::TerminateProcess:return "terminate_process";
+        case DefenseAction::RevokeSession:return "revoke_session";
+        case DefenseAction::BlockIpRange:return "block_ip_range";
+    }
+    return "open_incident";
 }
 } // namespace blackhouse::tactile
