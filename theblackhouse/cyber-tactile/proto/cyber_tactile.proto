@@ -23,6 +23,9 @@ message ThreatTelemetry {
   double anomaly_confidence = 8;
   uint64 bytes_per_second = 9;
   uint64 observed_at_unix_ms = 10;
+  string gotham_target_rid = 11;
+  string ontology_entity_rid = 12;
+  string geotime_track_rid = 13;
 }
 
 message SpatialThreat {
@@ -33,6 +36,9 @@ message SpatialThreat {
   Vec3 direction = 5;
   double severity = 6;
   double confidence = 7;
+  string gotham_target_rid = 8;
+  string ontology_entity_rid = 9;
+  string geotime_track_rid = 10;
 }
 
 enum HapticPattern {
@@ -54,7 +60,7 @@ message HapticEvent {
   uint64 generated_at_monotonic_ns = 7;
 }
 
-message LinkHealth { bool connected = 1; double jitter_ms = 2; }
+message LinkHealth { bool connected = 1; double jitter_ms = 2; bool token_valid = 3; }
 
 enum GestureKind {
   GESTURE_KIND_UNSPECIFIED = 0;
@@ -88,6 +94,8 @@ enum DefenseAction {
   DEFENSE_ACTION_BLOCK_INDICATOR = 2;
   DEFENSE_ACTION_ISOLATE_HOST = 3;
   DEFENSE_ACTION_TERMINATE_PROCESS = 4;
+  DEFENSE_ACTION_REVOKE_SESSION = 5;
+  DEFENSE_ACTION_BLOCK_IP_RANGE = 6;
 }
 
 message ActionReceipt {
@@ -98,6 +106,7 @@ message ActionReceipt {
   string operator_id = 5;
   string reason = 6;
   uint64 audit_sequence = 7;
+  string external_audit_id = 8;
 }
 
 message MappingAck { string event_id = 1; bool accepted = 2; }
