@@ -1,0 +1,46 @@
+{
+  "schema": "xunia.astral-grid.v1",
+  "publicBase": "https://xunia.org",
+  "sourceOwner": "sonoxo",
+  "publicRoutingPolicy": "xunia-first",
+  "routes": {
+    "home": "https://xunia.org/xuniaverse",
+    "projects": "https://xunia.org/projects",
+    "gptDoug": "https://xunia.org/projects/gpt-doug-llm",
+    "zyra": "https://xunia.org/projects/zyra",
+    "greenHouse": "https://xunia.org/projects/thegreenhouse",
+    "rvia": "https://xunia.org/rvia/nexus",
+    "holo": "https://xunia.org/holoforge/system",
+    "learning": "https://xunia.org/learning/foundry"
+  },
+  "orchestration": {
+    "resourceAware": true,
+    "peerAssist": true,
+    "failClosed": true,
+    "checkpointRetry": true,
+    "provenanceRequired": true,
+    "humanGovernedConsequentialActions": true
+  },
+  "resourceSignals": [
+    "capacity",
+    "load",
+    "health",
+    "authorization",
+    "dependencyStatus",
+    "contextBudget",
+    "queuePressure"
+  ],
+  "evidenceLoop": [
+    "mission",
+    "policy",
+    "ontology",
+    "evidence",
+    "route",
+    "approval",
+    "execution",
+    "verify",
+    "artifact",
+    "audit"
+  ],
+  "truthBoundary": "Astral Grid is a software orchestration architecture. It does not imply external government, military, vendor or standards-body authorization and does not provide autonomous real-world actuation authority."
+}
