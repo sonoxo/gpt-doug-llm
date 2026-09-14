@@ -1,8 +1,15 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-09-13T11:20:49Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-09-13T15:00:40Z",
+  "due_files_reviewed": 6,
+  "due_paths": [
+    "README.md",
+    "docs/GPT_DOUG_MAX_PATENT_SCOPE_INTAKE.md",
+    "docs/INSIGNIAS.md",
+    "docs/assets/insignia-gpt-doug-llm-max.svg",
+    "safety-shield/agents/knowledge/patents/us-20250355943-a1-system-event-detection-seed.json",
+    "tests/test_gpt_doug_max_patent_scope.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -162,10 +169,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T03:12:53Z",
+      "git_touched_at": "2026-09-14T15:00:27Z",
       "reviewed_at": null,
-      "sha256": "793fdc86839c57510556ebb4cf148ad6838c6a365c99cde69eaaa088605c3342",
-      "size": 1000,
+      "sha256": "1ba57c7faab68380f7a370eea34bea8500a13ca0c1d00b03c8f8476ba24db96e",
+      "size": 988,
       "validation_issues": [],
       "was_due": false
     },
@@ -984,15 +991,17 @@
       "was_due": false
     },
     "README.md": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T14:37:24Z",
-      "reviewed_at": null,
-      "sha256": "2f81bccf9b6656e9488b9d164fead913b3740eee858dd375566a7a1360f7f3bc",
-      "size": 22283,
+      "reviewed_at": "2026-09-14T15:00:40Z",
+      "sha256": "cb5076f72c87aaf99212d3f34cbcb92a09eb4c5a7bea04f175d86c7363172903",
+      "size": 22284,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "SECURITY.md": {
       "actions": [],
@@ -2418,11 +2427,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:32:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T15:00:40Z",
       "sha256": "e8087d8d0ae954a036d125a23587f4ecf29bf53f3da15fcc350e8fcb50f7a689",
       "size": 5336,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/GPT_DOUG_MAX_PATENT_WIRING.md": {
       "actions": [],
@@ -2473,11 +2482,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T14:28:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T15:00:40Z",
       "sha256": "1aa7ade4596af543552a9df3f6c22e78028b604625c7c2c31f32371c587f98c8",
       "size": 2446,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/INTELLIGENCE_COMPLIANCE.md": {
       "actions": [],
@@ -2825,11 +2834,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T14:28:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T15:00:40Z",
       "sha256": "b203aa9c7014329b82fc4fa3c890a0e472efde8d149a1f726ca7a1b6bebf89be",
       "size": 4073,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/assets/insignia-kraken-jutsu.svg": {
       "actions": [],
@@ -7225,11 +7234,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:31:35Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T15:00:40Z",
       "sha256": "255e0873a1ce10a979805cb91e08ca064e1aa819f5fb41e61d176d327949acb3",
       "size": 9992,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/patents/us-20260201971-a9-fluid-control-seed.json": {
       "actions": [],
@@ -8589,11 +8598,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:31:50Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T15:00:40Z",
       "sha256": "9636c6d5961981a65c36c940f84181f6157ed741d85f38c064828a0983e0fb4d",
       "size": 4337,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_gpt_doug_max_patent_wiring.py": {
       "actions": [],
@@ -13382,9 +13391,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-14T11:20:49Z",
+  "generated_at": "2026-09-14T15:00:40Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "README.md"
+  ],
   "schema": "xzsweep.freshness.v1",
   "tracked_files_reviewed": 1216,
   "validation_issue_files": 0,
