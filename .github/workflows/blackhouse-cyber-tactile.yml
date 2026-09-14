@@ -19,11 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Configure
+      - name: Configure C++20 core
         run: cmake -S theblackhouse/cyber-tactile -B build/blackhouse-cyber-tactile -DCMAKE_BUILD_TYPE=Release
-      - name: Build
+      - name: Build C++20 core
         run: cmake --build build/blackhouse-cyber-tactile --parallel 2
-      - name: Test
+      - name: Test C++20 core
         run: ctest --test-dir build/blackhouse-cyber-tactile --output-on-failure
+      - name: Test Palantir bridge contracts
+        run: |
+          cd theblackhouse/cyber-tactile
+          PYTHONPATH=. python3 -m unittest -v tests.test_palantir_bridge
       - name: Demo smoke test
         run: ./build/blackhouse-cyber-tactile/blackhouse_cyber_tactile_demo
