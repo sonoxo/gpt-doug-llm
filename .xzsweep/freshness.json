@@ -1,8 +1,19 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-09-13T03:18:59Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-09-13T10:43:25Z",
+  "due_files_reviewed": 10,
+  "due_paths": [
+    "agents/mission_support_workbench.py",
+    "docs/GPT_DOUG_MAX_ROBOTICS_COMPLIANCE_LAB.md",
+    "docs/MISSION_SUPPORT_WORKBENCH.md",
+    "docs/index.html",
+    "docs/zyra-shell-v2.js",
+    "safety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json",
+    "scripts/gpt_doug_max_patent_bridge.py",
+    "scripts/gpt_doug_max_robotics_lab.py",
+    "tests/test_gpt_doug_max_robotics_lab.py",
+    "tests/test_mission_support_workbench.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1472,11 +1483,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": "2026-09-13T08:25:46Z",
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "24e7328c787ff923ae4b46d9967b26cf64588f4a285300ae00b718f4f9cc88d1",
       "size": 7274,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "agents/mythos_bridge.py": {
       "actions": [],
@@ -2440,11 +2451,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:43:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "12d8c9ca21f4182d853033263afa635d3ec0864e1dfd8576402597a6e5586fe6",
       "size": 5078,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md": {
       "actions": [],
@@ -2539,11 +2550,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": "2026-09-13T08:25:46Z",
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "803d913f72c1862412ad356796b6a1141371474b75d563329ef737e38ce1aecc",
       "size": 2059,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -2603,11 +2614,11 @@
     "docs/PALANTIR_MAVEN.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-10T07:11:50Z",
-      "reviewed_at": "2026-09-13T18:09:58Z",
-      "sha256": "fc1afae53797b7934e73b9891337e33cbfdc429192ac168e1af4544f4cce36e9",
-      "size": 2095,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-14T03:19:10Z",
+      "reviewed_at": null,
+      "sha256": "111a98e7685643eb1504d6edb55dbca72a96b6f76c35ec616a1539c942663543",
+      "size": 3266,
       "validation_issues": [],
       "was_due": false
     },
@@ -2791,9 +2802,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T03:13:07Z",
+      "git_touched_at": "2026-09-14T03:19:13Z",
       "reviewed_at": null,
-      "sha256": "559ed25140c272f85398021970c0191d74fd9c1e8de7ec25a952181f8e1e70ec",
+      "sha256": "1254b3d930ba7277554df06d52ebe8f43613fc67393251ee7f906d9b9e94ae58",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -3023,11 +3034,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:25:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "baa1aba7c17ff2dde046095bfbe441ecce2eeb266917cd5275c29a6f621427d3",
       "size": 9405,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/jukebox/app.js": {
       "actions": [],
@@ -3305,15 +3316,17 @@
       "was_due": false
     },
     "docs/zyra-shell-v2.js": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:25:36Z",
-      "reviewed_at": null,
-      "sha256": "00b5279e8a485289a34c6094a32034a2eee5d2e0faa374b3e0a0e9a2f61ac465",
-      "size": 2844,
+      "reviewed_at": "2026-09-14T10:43:25Z",
+      "sha256": "861b9141aac57e87035a78a403d70465ebd8b955485d5dd00fa64a06d6b79477",
+      "size": 2845,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/zyra-shell.js": {
       "actions": [],
@@ -7137,11 +7150,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:43:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "647884659998c311a6edd415583b14903a7d9af0e9501008a83c8b09a4367b06",
       "size": 8394,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/gpt-doug-uspto-patent-intel-v1.json": {
       "actions": [],
@@ -7698,11 +7711,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:43:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "afcb2589994e118d6cee40fa7afd95de3249d76660fd6388cdd97baf406facba",
       "size": 8234,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/gpt_doug_max_patent_scope.py": {
       "actions": [],
@@ -7720,11 +7733,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:43:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "a960e7f95dc4af710b79a67ebf540f9a564185b2fd50ccedf898c786349d4e3d",
       "size": 19818,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/install_xunia_godis.sh": {
       "actions": [],
@@ -8600,11 +8613,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T08:43:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "d2c986c51d4a39d75480a21e4fc8aab9e6defd9622b863cb7a51b8df55d085fc",
       "size": 3920,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_green_house_ontology.py": {
       "actions": [],
@@ -8694,6 +8707,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_maven_gotham_mode.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-14T03:18:59Z",
+      "reviewed_at": null,
+      "sha256": "cb595d18196a84b21b800f6db4b7d91bd31d05cc398d230c780babf460123364",
+      "size": 1628,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_maven_live_sync.py": {
       "actions": [],
       "binary": false,
@@ -8710,11 +8734,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-12T08:17:13Z",
-      "reviewed_at": "2026-09-13T08:25:46Z",
+      "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "2e75b84b1569eab405280c1dbe644e3fc7c8ee66bf5db502bc5bdcf44c59e2b6",
       "size": 3143,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_mythos_bridge.py": {
       "actions": [],
@@ -10909,9 +10933,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T03:13:03Z",
+      "git_touched_at": "2026-09-14T03:19:09Z",
       "reviewed_at": null,
-      "sha256": "ddd3b19f6d192f3ea90d364e960214f955798dedb97588c2b1d0b93c5b32319f",
+      "sha256": "58820ea5f1582f2230625eac69f773d0cbf560d9632d7756cb831f6dc9a74e9d",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -10931,9 +10955,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T03:13:03Z",
+      "git_touched_at": "2026-09-14T03:19:09Z",
       "reviewed_at": null,
-      "sha256": "1242b54f9cf4772b6a9beac6ea3d72de2511eff66a4d1129734c77e43ba54345",
+      "sha256": "75eaf605290f63512084b60a45ba55cdfa9a7b51db02dee01091182ed458b34e",
       "size": 6085,
       "validation_issues": [],
       "was_due": false
@@ -13305,11 +13329,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-14T03:18:59Z",
+  "generated_at": "2026-09-14T10:43:25Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "docs/zyra-shell-v2.js"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1209,
+  "tracked_files_reviewed": 1210,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
