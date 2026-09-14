@@ -1,7 +1,10 @@
+import sys
 import unittest
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
-from astral.grid import AstralGrid, ResourceNode, Task, build_grid
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from grid import AstralGrid, ResourceNode, Task, build_grid
 
 
 class AstralGridTests(unittest.TestCase):
