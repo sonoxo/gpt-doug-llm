@@ -1,18 +1,17 @@
 {
-  "content_repairs": 1,
-  "cutoff_at": "2026-09-13T10:43:25Z",
-  "due_files_reviewed": 10,
+  "content_repairs": 0,
+  "cutoff_at": "2026-09-13T11:18:08Z",
+  "due_files_reviewed": 9,
   "due_paths": [
-    "agents/mission_support_workbench.py",
-    "docs/GPT_DOUG_MAX_ROBOTICS_COMPLIANCE_LAB.md",
-    "docs/MISSION_SUPPORT_WORKBENCH.md",
-    "docs/index.html",
-    "docs/zyra-shell-v2.js",
-    "safety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json",
-    "scripts/gpt_doug_max_patent_bridge.py",
-    "scripts/gpt_doug_max_robotics_lab.py",
-    "tests/test_gpt_doug_max_robotics_lab.py",
-    "tests/test_mission_support_workbench.py"
+    "safety-shield/agents/knowledge/gpt-doug-max-patent-wiring-v1.json",
+    "safety-shield/agents/knowledge/patent-intake/us-20260271508-a1.json",
+    "safety-shield/agents/knowledge/patents/us-12697722-b2-robot-mission-seed.json",
+    "safety-shield/agents/knowledge/patents/us-20260201971-a9-fluid-control-seed.json",
+    "safety-shield/agents/knowledge/patents/us-20260263586-a1-influenza-b-mutants-seed.json",
+    "scripts/doug-max",
+    "scripts/gpt_doug_max_patent_scope.py",
+    "tests/test_doug_max_macos_bash_compat.py",
+    "tests/test_gpt_doug_max_biological_patent_scope.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -1487,7 +1486,7 @@
       "sha256": "24e7328c787ff923ae4b46d9967b26cf64588f4a285300ae00b718f4f9cc88d1",
       "size": 7274,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "agents/mythos_bridge.py": {
       "actions": [],
@@ -2449,13 +2448,13 @@
     "docs/GPT_DOUG_MAX_ROBOTICS_COMPLIANCE_LAB.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "12d8c9ca21f4182d853033263afa635d3ec0864e1dfd8576402597a6e5586fe6",
       "size": 5078,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/GPT_DOUG_POCKET_BENCHMARK_PROTOCOL.md": {
       "actions": [],
@@ -2554,7 +2553,7 @@
       "sha256": "803d913f72c1862412ad356796b6a1141371474b75d563329ef737e38ce1aecc",
       "size": 2059,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -3032,13 +3031,13 @@
     "docs/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:25:54Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "baa1aba7c17ff2dde046095bfbe441ecce2eeb266917cd5275c29a6f621427d3",
       "size": 9405,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/jukebox/app.js": {
       "actions": [],
@@ -3316,17 +3315,15 @@
       "was_due": false
     },
     "docs/zyra-shell-v2.js": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-13T08:25:36Z",
+      "git_touched_at": "2026-09-14T10:43:44Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "861b9141aac57e87035a78a403d70465ebd8b955485d5dd00fa64a06d6b79477",
       "size": 2845,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/zyra-shell.js": {
       "actions": [],
@@ -7139,22 +7136,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "ef9d573bb03191e8bd8cdd0be1012f1e79c4fb78c06cb6fa7cdc3354bd012b25",
       "size": 7580,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/gpt-doug-max-robotics-compliance-v1.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "647884659998c311a6edd415583b14903a7d9af0e9501008a83c8b09a4367b06",
       "size": 8394,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "safety-shield/agents/knowledge/gpt-doug-uspto-patent-intel-v1.json": {
       "actions": [],
@@ -7205,22 +7202,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "9ff93869f8fca07032d5288ddd7fb766fd44a40d6907b7d76f7c0b6ddc984deb",
       "size": 1951,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/patents/us-12697722-b2-robot-mission-seed.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "c3e6091448da6164c60daf12963cd9a75171c20d955c97d47d62c29563ece260",
       "size": 4331,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/patents/us-20250355943-a1-system-event-detection-seed.json": {
       "actions": [],
@@ -7238,22 +7235,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "9379ba2d2631ca066b8d03cae3bfa9571133feafee2a67f33b758f945f73dea5",
       "size": 7088,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/patents/us-20260263586-a1-influenza-b-mutants-seed.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "6e70b3005df13f6d2df85c515fe40da29a16c8bb4373cfa5db144b8329b671cc",
       "size": 6278,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "safety-shield/agents/knowledge/patents/us-20260269089-a1-fusion-capacitor-seed.json": {
       "actions": [],
@@ -7623,11 +7620,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "bd5ad15af7a39e380c449a43121e0857de54a808b22f0c311aafb58884fa2cfc",
       "size": 1767,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/doug-max-compute": {
       "actions": [],
@@ -7709,35 +7706,35 @@
     "scripts/gpt_doug_max_patent_bridge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "afcb2589994e118d6cee40fa7afd95de3249d76660fd6388cdd97baf406facba",
       "size": 8234,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/gpt_doug_max_patent_scope.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "e844fb383a1825e203f8bb740e26f897079c8bd1666160c58cccc28352378972",
       "size": 11611,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/gpt_doug_max_robotics_lab.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "a960e7f95dc4af710b79a67ebf540f9a564185b2fd50ccedf898c786349d4e3d",
       "size": 19818,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/install_xunia_godis.sh": {
       "actions": [],
@@ -8470,11 +8467,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "2b3f2aba403a79bc897dda2becb06269275fd47648b50fe569e554f3d885e3ed",
       "size": 654,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_doug_terminal_agent_hardening.py": {
       "actions": [],
@@ -8580,11 +8577,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T11:13:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T11:18:08Z",
       "sha256": "5d3f340daaae43ce2a543f4c483be2cf3ea77a97d87989574c9217986dca9227",
       "size": 1483,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_gpt_doug_max_patent_scope.py": {
       "actions": [],
@@ -8611,13 +8608,13 @@
     "tests/test_gpt_doug_max_robotics_lab.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T08:43:58Z",
       "reviewed_at": "2026-09-14T10:43:25Z",
       "sha256": "d2c986c51d4a39d75480a21e4fc8aab9e6defd9622b863cb7a51b8df55d085fc",
       "size": 3920,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_green_house_ontology.py": {
       "actions": [],
@@ -8738,7 +8735,7 @@
       "sha256": "2e75b84b1569eab405280c1dbe644e3fc7c8ee66bf5db502bc5bdcf44c59e2b6",
       "size": 3143,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_mythos_bridge.py": {
       "actions": [],
@@ -10299,6 +10296,17 @@
       "reviewed_at": "2026-09-14T00:50:58Z",
       "sha256": "0c6ec47b0f4a3cacbd626cd7be63b176198094b3a9eb3484f20e05ed060a458f",
       "size": 8380,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tools/zyrazap-mac/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-14T11:17:59Z",
+      "reviewed_at": null,
+      "sha256": "fb667c707487756cf19e7874deb72d06163683fa6a309d8225873f3cda4570a6",
+      "size": 1959,
       "validation_issues": [],
       "was_due": false
     },
@@ -13329,13 +13337,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-14T10:43:25Z",
+  "generated_at": "2026-09-14T11:18:08Z",
   "mode": "apply",
-  "repaired_paths": [
-    "docs/zyra-shell-v2.js"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1210,
+  "tracked_files_reviewed": 1211,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
