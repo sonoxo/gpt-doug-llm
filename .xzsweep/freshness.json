@@ -1,16 +1,18 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-13T01:07:46Z",
-  "due_files_reviewed": 8,
+  "cutoff_at": "2026-09-13T02:58:13Z",
+  "due_files_reviewed": 10,
   "due_paths": [
-    "docs/GPT_DOUG_MAX_PATENT_WIRING.md",
-    "docs/maven-ontology/ontology.json",
-    "docs/maven-ontology/sync-log.json",
-    "maven-sync/approved/gpt-doug-llm-max-patent-ip-20260912.json",
-    "scripts/zyra_mss.py",
-    "scripts/zyrapalantir",
-    "tests/test_gpt_doug_max_patent_wiring.py",
-    "tests/test_zyrapalantir_patent_intel.py"
+    ".github/workflows/invention-lab.yml",
+    "research_lab/INVENTION_CANDIDATES.md",
+    "research_lab/__init__.py",
+    "research_lab/approval.py",
+    "research_lab/demo.py",
+    "research_lab/lineage.py",
+    "research_lab/reconcile.py",
+    "research_lab/repair.py",
+    "research_lab/tests/test_lab.py",
+    "scripts/invention_lab.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -414,11 +416,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "4d82567f24cfbca433b351e07c24c0892d695e8039d6c8fc624dbf430a285e8b",
       "size": 686,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/issue-automation.yml": {
       "actions": [],
@@ -1938,6 +1940,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "astral/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-14T02:58:04Z",
+      "reviewed_at": null,
+      "sha256": "f4ad5de275c6c53695047f96f518179f9f8538dfdc9eb3920759c49d331a40ea",
+      "size": 2486,
+      "validation_issues": [],
+      "was_due": false
+    },
     "auth_gate.py": {
       "actions": [],
       "binary": false,
@@ -2381,13 +2394,13 @@
     "docs/GPT_DOUG_MAX_PATENT_WIRING.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T00:57:10Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "05c95378c9f57da0e9c9f352f41790310bf90b0bf05b733ed581a52d04612f0b",
       "size": 1858,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/GPT_DOUG_MAX_ROBOTICS_COMPLIANCE_LAB.md": {
       "actions": [],
@@ -2745,9 +2758,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T00:51:01Z",
+      "git_touched_at": "2026-09-14T01:07:52Z",
       "reviewed_at": null,
-      "sha256": "43f2ceecd967b45d561f9cea23d9b8fbb2354bfebcc8960e7d6255cf3e4e0f87",
+      "sha256": "957251b837d6194b3dda99b56c010982209d95e50a4530d9649c1ee8cb22fa7c",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -3074,24 +3087,24 @@
     "docs/maven-ontology/ontology.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T01:05:12Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "e7b49ac5e8f7f836e99afb9a4085090ed227fb07f98e06cb8e5347799b439f58",
       "size": 88616,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/maven-ontology/sync-log.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T01:05:12Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "92e206dc5606241a118094fe3250c539873ce2af04178cb10be1fbe15098af2f",
       "size": 3543,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/metrics.html": {
       "actions": [],
@@ -5989,13 +6002,13 @@
     "maven-sync/approved/gpt-doug-llm-max-patent-ip-20260912.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T01:04:52Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "a2d6ea2cf4ee61dacffc38d810c3d6d49ae5f5f0af9778a69f52e9f87128cf6c",
       "size": 7995,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "maven-sync/approved/live-sync-smoke-20260910.json": {
       "actions": [],
@@ -6673,11 +6686,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "06d4ccd05685021b738553cb638cf2005a5ca485d7380d277ff8d51368de11a2",
       "size": 3587,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/README.md": {
       "actions": [],
@@ -6695,22 +6708,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "6c4874e81f668587d6d003ba2e650ea56746eeec870bf2d7c537783fc9b93a63",
       "size": 66,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/approval.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "c8b993c530a6af3b7f0d24ea5daf840d175176a42181a48bf68ae4ddad4ea87e",
       "size": 3407,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/cli.py": {
       "actions": [],
@@ -6783,44 +6796,44 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "d1d83a900f3701a4cb49bbea259d55b6a994307ca223704db226fbd793e401b5",
       "size": 2183,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/lineage.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "ad55a03e4ec835afce9daf516a9187eeb4faf90e0cd9c345e44ce42caa4356c9",
       "size": 1746,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/reconcile.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "194ac74fd612cff068f5c861124e9ba897b28e62c96fdb1c17bb2ea1e8fea52c",
       "size": 1771,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/repair.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "58762ee32cc9321c8bb61d33c39ab5410e27dd7a0cc04abd1b5786d543d9cce0",
       "size": 2301,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/tests/test_cte.py": {
       "actions": [],
@@ -6871,11 +6884,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "b3f41d8443d33102c077a1bdd2f7fcc7f3f27cdb5c83e35b4465e15ede774d40",
       "size": 8214,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "rvia-intel/README.md": {
       "actions": [],
@@ -7685,11 +7698,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-13T02:03:23Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-14T02:58:13Z",
       "sha256": "27f363fb418871f840085916f5b2c90cbf2b3dd65934f9d015eaf48cae917e38",
       "size": 280,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/palantir_maven_readiness_roundtrip.py": {
       "actions": [],
@@ -8079,13 +8092,13 @@
     "scripts/zyra_mss.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T00:58:46Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "f4d1f1f87c5acb56fb52f9bd2ea92009e2a4e6c25ecd569cdd476608347b9571",
       "size": 6874,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/zyra_mss_uspto_reader.py": {
       "actions": [],
@@ -8112,13 +8125,13 @@
     "scripts/zyrapalantir": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T00:58:46Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "ef6a7c1833565f505d74a5912697a4183525301968c466b309174fe5fbcaae8d",
       "size": 9517,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/zyrapalantir_field.py": {
       "actions": [],
@@ -8530,13 +8543,13 @@
     "tests/test_gpt_doug_max_patent_wiring.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T00:57:10Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "1aa08766657709e4008ff81ca1b015317303fbc047baa8c12e6dd279e285ac4c",
       "size": 1898,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_gpt_doug_max_robotics_lab.py": {
       "actions": [],
@@ -9157,13 +9170,13 @@
     "tests/test_zyrapalantir_patent_intel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-13T01:01:37Z",
       "reviewed_at": "2026-09-14T01:07:46Z",
       "sha256": "f45c2ad4f06919eb3a5e30fd5a32bc65fe4dedb3470e181715fe13d287c4f3e2",
       "size": 5734,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_zyrapalantir_visual.py": {
       "actions": [],
@@ -10852,9 +10865,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-14T00:50:59Z",
+      "git_touched_at": "2026-09-14T01:07:47Z",
       "reviewed_at": null,
-      "sha256": "0a6e86e858e3aae26eee698dc3dcbe41b9ad9666175a91fbe725e4a0239aa4a9",
+      "sha256": "7fb8e31e5f76cfd50580a281a8576f58eb3630dca9753df54179468b4ef79186",
       "size": 5811,
       "validation_issues": [],
       "was_due": false
@@ -13248,11 +13261,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-14T01:07:46Z",
+  "generated_at": "2026-09-14T02:58:13Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1203,
+  "tracked_files_reviewed": 1204,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
