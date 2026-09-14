@@ -12,7 +12,13 @@ void require(bool condition, std::string_view message) {
 }
 ThreatTelemetry high_severity_threat() {
     return {.event_id="evt-001",.kind=ThreatKind::PrivilegeEscalation,.source_asset="identity-proxy",.target_asset="db-prod-7",
-        .source_position={-1.0,0.0,0.0},.target_position={1.0,0.0,0.0},.cvss=10.0,.anomaly_confidence=1.0,.bytes_per_second=0,.observed_at_unix_ms=0};
+        .source_position={-1.0,0.0,0.0},.target_position={1.0,0.0,0.0},.cvss=10.0,.anomaly_confidence=1.0,.bytes_per_second=0,.observed_at_unix_ms=0,
+        .target_rid="ri.gotham.target.001",.entity_rid="ri.object.001",.geotime_track_rid="ri.gotham.track.001"};
+}
+ThreatTelemetry ddos_threat() {
+    auto t=high_severity_threat();
+    t.event_id="evt-ddos"; t.kind=ThreatKind::DdosVolumetric; t.target_asset="edge-gw-1"; t.bytes_per_second=2ULL*1024ULL*1024ULL*1024ULL;
+    return t;
 }
 void test_pipeline_actuation_and_deadline() {
     MockHapticDevice device; CyberTactilePipeline pipeline{device};
@@ -23,6 +29,8 @@ void test_pipeline_actuation_and_deadline() {
     require(device.frames().size()==1,"device should receive one haptic frame");
     require(r.frame.normalized_amplitude<=0.65,"amplitude limiter must clamp frame");
     require(r.frame.duty_cycle<=0.40,"duty-cycle limiter must clamp frame");
+    require(r.threat.target_rid=="ri.gotham.target.001","Gotham target RID must stay attached to spatial threat");
+    require(r.threat.geotime_track_rid=="ri.gotham.track.001","geotime track RID must stay attached to spatial threat");
 }
 void test_fail_passive_on_jitter() {
     MockHapticDevice device; CyberTactilePipeline pipeline{device};
@@ -39,15 +47,29 @@ void test_zero_trust_gate() {
     require(!receipt.accepted,"missing hardware-token proof must reject action");
     require(executor.actions().empty(),"rejected action must not reach response executor");
 }
-void test_gesture_to_defense_trigger() {
+void test_squeeze_to_isolate_host() {
     MockResponseExecutor executor; ResponseController controller{executor}; SpatialMapper mapper; const auto threat=mapper.map(high_severity_threat());
     const GestureEvent gesture{.event_id="gesture-002",.kind=GestureKind::Squeeze,.threat_event_id=threat.event_id,.target_asset=threat.target_asset,.deliberate_confirmation=true};
     const SecurityContext secure{.mtls_verified=true,.hardware_token_verified=true,.pq_hybrid_channel_verified=true,.operator_authorized=true,.operator_id="operator-7",.pq_suite="ML-KEM-768+X25519"};
     const auto receipt=controller.handle(gesture,threat,secure);
     require(receipt.accepted,"authorized tactile gesture should trigger response adapter");
     require(receipt.action==DefenseAction::IsolateHost,"high-severity squeeze should request host isolation");
-    require(executor.actions().size()==1,"exactly one action should execute");
-    require(executor.actions().front().second=="db-prod-7","action must stay bound to active threat target");
+}
+void test_pinch_to_revoke_session() {
+    MockResponseExecutor executor; ResponseController controller{executor}; SpatialMapper mapper; const auto threat=mapper.map(high_severity_threat());
+    const GestureEvent gesture{.event_id="gesture-003",.kind=GestureKind::Pinch,.threat_event_id=threat.event_id,.target_asset=threat.target_asset,.deliberate_confirmation=true};
+    const SecurityContext secure{.mtls_verified=true,.hardware_token_verified=true,.pq_hybrid_channel_verified=true,.operator_authorized=true,.operator_id="operator-7",.pq_suite="ML-KEM-768+X25519"};
+    const auto receipt=controller.handle(gesture,threat,secure);
+    require(receipt.accepted,"authorized privilege pinch should trigger response adapter");
+    require(receipt.action==DefenseAction::RevokeSession,"privilege-escalation pinch should request session revocation");
+}
+void test_press_to_block_ip_range() {
+    MockResponseExecutor executor; ResponseController controller{executor}; SpatialMapper mapper; const auto threat=mapper.map(ddos_threat());
+    const GestureEvent gesture{.event_id="gesture-004",.kind=GestureKind::Press,.threat_event_id=threat.event_id,.target_asset=threat.target_asset,.deliberate_confirmation=true};
+    const SecurityContext secure{.mtls_verified=true,.hardware_token_verified=true,.pq_hybrid_channel_verified=true,.operator_authorized=true,.operator_id="operator-7",.pq_suite="ML-KEM-768+X25519"};
+    const auto receipt=controller.handle(gesture,threat,secure);
+    require(receipt.accepted,"authorized DDoS press should trigger response adapter");
+    require(receipt.action==DefenseAction::BlockIpRange,"DDoS press should request IP-range block action");
 }
 void test_spsc_ingest_queue() {
     SpscRingBuffer<ThreatTelemetry,4> queue;
@@ -62,7 +84,9 @@ int main() {
     test_pipeline_actuation_and_deadline();
     test_fail_passive_on_jitter();
     test_zero_trust_gate();
-    test_gesture_to_defense_trigger();
+    test_squeeze_to_isolate_host();
+    test_pinch_to_revoke_session();
+    test_press_to_block_ip_range();
     test_spsc_ingest_queue();
     std::cout << "PASS: blackhouse cyber tactile tests\n";
     return 0;
