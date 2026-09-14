@@ -1,10 +1,11 @@
 {
-  "schema": "xunia.astral-grid.v1",
+  "schema": "xunia.astral-grid.v2",
   "publicBase": "https://xunia.org",
   "sourceOwner": "sonoxo",
   "publicRoutingPolicy": "xunia-first",
   "routes": {
     "home": "https://xunia.org/xuniaverse",
+    "astral": "https://xunia.org/astral",
     "projects": "https://xunia.org/projects",
     "gptDoug": "https://xunia.org/projects/gpt-doug-llm",
     "zyra": "https://xunia.org/projects/zyra",
@@ -14,22 +15,72 @@
     "learning": "https://xunia.org/learning/foundry"
   },
   "orchestration": {
+    "multiResourceAdmission": true,
     "resourceAware": true,
     "peerAssist": true,
+    "leaseBasedReservations": true,
+    "depletionAwareRebalance": true,
+    "atomicAdmission": true,
+    "quarantine": true,
     "failClosed": true,
     "checkpointRetry": true,
     "provenanceRequired": true,
+    "tamperEvidentAuditChain": true,
     "humanGovernedConsequentialActions": true
   },
+  "resourceDimensions": [
+    "compute",
+    "memory",
+    "context",
+    "storage",
+    "network"
+  ],
   "resourceSignals": [
     "capacity",
-    "load",
+    "usage",
+    "headroom",
     "health",
     "authorization",
     "dependencyStatus",
-    "contextBudget",
-    "queuePressure"
+    "quarantineState",
+    "zone",
+    "queuePressure",
+    "leaseState"
   ],
+  "routingStages": [
+    "sense",
+    "validate",
+    "classify",
+    "authorize",
+    "score",
+    "reserve",
+    "peer-assist",
+    "execute",
+    "verify",
+    "rebalance-or-release",
+    "artifact",
+    "audit"
+  ],
+  "containment": {
+    "zoneAware": true,
+    "nonShareableResourcesStayPrimary": true,
+    "crossZoneDefault": "deny",
+    "dependencyFailureDefault": "deny",
+    "unauthorizedNodeDefault": "deny",
+    "quarantinedNodeDefault": "deny"
+  },
+  "adaptiveAcquisition": {
+    "enabled": true,
+    "principle": "request only the missing state needed to make an admissible routing decision",
+    "inputs": [
+      "task requirements",
+      "required labels",
+      "required zone",
+      "node resource snapshot",
+      "authorization state",
+      "dependency state"
+    ]
+  },
   "evidenceLoop": [
     "mission",
     "policy",
@@ -37,10 +88,30 @@
     "evidence",
     "route",
     "approval",
+    "reservation",
     "execution",
     "verify",
+    "rebalance",
     "artifact",
     "audit"
   ],
-  "truthBoundary": "Astral Grid is a software orchestration architecture. It does not imply external government, military, vendor or standards-body authorization and does not provide autonomous real-world actuation authority."
+  "researchLineage": [
+    {
+      "reference": "US20260270734A1",
+      "softwareAbstraction": "monitor depletion, locate eligible peers, request bounded assistance, continue under constraints"
+    },
+    {
+      "reference": "US20260269610A1",
+      "softwareAbstraction": "controller-mediated transfer request, eligibility decision, execute-or-deny"
+    },
+    {
+      "reference": "US12724802B1",
+      "softwareAbstraction": "targeted state acquisition, preprocessing, validation, guardrails, structured output"
+    },
+    {
+      "reference": "US20260264028A1",
+      "softwareAbstraction": "staged containment, separation boundaries, controlled release interfaces"
+    }
+  ],
+  "truthBoundary": "Astral Grid is a software orchestration architecture. Patent references are high-level research inspirations only. The system does not imply external government, military, vendor or standards-body authorization and does not provide autonomous real-world actuation authority."
 }
