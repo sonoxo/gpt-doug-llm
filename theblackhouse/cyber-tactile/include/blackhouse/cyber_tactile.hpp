@@ -18,7 +18,14 @@ struct Vec3 { double x{}; double y{}; double z{}; };
 enum class ThreatKind : std::uint8_t { DdosVolumetric, PrivilegeEscalation, PortSweep, MalwareExecution, Unknown };
 enum class HapticPattern : std::uint8_t { ExpandingRing, RisingColumn, DirectionalSweep, SharpPulse, NeutralPulse };
 enum class GestureKind : std::uint8_t { Pinch, Squeeze, Press };
-enum class DefenseAction : std::uint8_t { OpenIncident, BlockIndicator, IsolateHost, TerminateProcess };
+enum class DefenseAction : std::uint8_t {
+    OpenIncident,
+    BlockIndicator,
+    IsolateHost,
+    TerminateProcess,
+    RevokeSession,
+    BlockIpRange,
+};
 
 struct ThreatTelemetry {
     std::string event_id;
@@ -31,6 +38,9 @@ struct ThreatTelemetry {
     double anomaly_confidence{};
     std::uint64_t bytes_per_second{};
     std::uint64_t observed_at_unix_ms{};
+    std::string target_rid;
+    std::string entity_rid;
+    std::string geotime_track_rid;
 };
 
 struct SpatialThreat {
@@ -41,6 +51,9 @@ struct SpatialThreat {
     Vec3 direction{};
     double severity{};
     double confidence{};
+    std::string target_rid;
+    std::string entity_rid;
+    std::string geotime_track_rid;
 };
 
 struct HapticFrame {
