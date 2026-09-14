@@ -33,7 +33,7 @@ jobs:
         run: python -m json.tool astral/xunia-grid.json >/dev/null
 
       - name: Run Astral Grid tests
-        run: python -m unittest astral/test_grid.py -v
+        run: python astral/test_grid.py -v
 
       - name: Truth-boundary gate
         run: |
