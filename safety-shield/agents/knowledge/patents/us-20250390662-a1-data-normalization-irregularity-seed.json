@@ -1,0 +1,146 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250390662-A1",
+  "title": "Data normalization and irregularity detection system",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-12-25",
+  "application_number": "19/304,389",
+  "filed": "2025-08-19",
+  "priority_date": "2017-12-22",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": ["Charles Sharzer", "Meghana Bhat", "William Brady"],
+  "related_application_signals": [
+    "continuation of US application 17/652,646 filed 2022-02-25",
+    "family includes US12417337B2 and US11263382B1",
+    "provisional priority 62/610,039 filed 2017-12-22"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250390662-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250390662A1/en"
+    }
+  ],
+  "classification_signals": [
+    "H04L63/1425 anomaly/traffic logging",
+    "G06F16/90332 natural-language query formulation",
+    "G06F16/907 metadata-based retrieval",
+    "G06F17/18 statistical evaluation",
+    "G06Q20/4016 transaction fraud/risk assessment"
+  ],
+  "scope_tags": [
+    "data-normalization",
+    "schema-mapping",
+    "canonical-fields",
+    "heterogeneous-data",
+    "irregularity-detection",
+    "anomaly-detection",
+    "fraud-triage",
+    "statistical-baselines",
+    "interactive-analytics",
+    "data-ingestion",
+    "annotation",
+    "human-review",
+    "provenance"
+  ],
+  "publicly_described_functional_concepts": [
+    "ingesting records from heterogeneous files, databases, ledgers, or provider systems",
+    "detecting source formats and translating data into a common or canonical representation",
+    "mapping codes, abbreviations, descriptions, and source-specific terminology into analyst-readable fields",
+    "using statistics and visualizations to identify unusual patterns or deviations",
+    "interactive filtering and drill-down from aggregate anomalies to underlying records",
+    "learning or adapting format mappings from previously seen data",
+    "using annotation and reference mappings to enrich normalized records"
+  ],
+  "scope_model": {
+    "technical_domain": ["data integration", "anomaly detection", "fraud analytics", "interactive investigation", "schema normalization"],
+    "core_architecture": [
+      "authorized data source adapters",
+      "format classifier",
+      "schema mapper",
+      "canonical record model",
+      "code/description resolver",
+      "annotation engine",
+      "statistics and baseline engine",
+      "irregularity detector",
+      "interactive investigation UI",
+      "evidence/provenance store",
+      "human review queue"
+    ],
+    "analysis_loop": "ingest authorized records -> detect source format -> normalize to canonical schema -> resolve codes/descriptions -> compute baselines and distributions -> surface deviations -> allow analyst filtering/drill-down -> record review outcome and provenance",
+    "building_patterns_relevant_to_independent_design": [
+      "preserve raw source values alongside normalized values",
+      "version schema mappings and transformation logic",
+      "separate format detection from business-rule anomaly detection",
+      "show analysts why a record was flagged and which baseline or rule contributed",
+      "use anomalies as review signals rather than automatic allegations",
+      "allow drill-down from aggregate statistics to source evidence under access controls",
+      "monitor mapping drift and unknown-field rates",
+      "keep sensitive identity attributes minimized and access-controlled"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "receiving records associated with persons/providers and determining record format",
+      "mapping source fields into canonical fields",
+      "calculating converted values based on data type or conversion factors",
+      "normalization and interactive irregularity-analysis workflows"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "source-adapter-layer",
+      "format-classifier",
+      "schema-mapping-registry",
+      "canonical-record-store",
+      "reference-code-resolver",
+      "annotation-service",
+      "baseline-statistics-engine",
+      "irregularity-scoring-service",
+      "analyst-investigation-ui",
+      "review-feedback-store",
+      "provenance-audit-log"
+    ],
+    "default_build_profile": "EXPLAINABLE_HUMAN_REVIEWED_IRREGULARITY_ANALYTICS",
+    "use_for": [
+      "authorized fraud-prevention analytics",
+      "data-quality monitoring",
+      "transaction anomaly triage",
+      "claims or reimbursement analytics",
+      "schema harmonization",
+      "operational irregularity detection"
+    ]
+  },
+  "governance_policy": {
+    "authorized_data_only": true,
+    "human_review_before_adverse_action": true,
+    "anomaly_is_not_proof_of_wrongdoing": true,
+    "explanation_and_provenance_required": true,
+    "sensitive_data_minimization_required": true,
+    "automatic_person_risk_labeling_for_adverse_action": false,
+    "automatic_enforcement_or_punitive_action": false
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_REVIEW_REQUIRED_BEFORE_ADVERSE_ACTION",
+    "default_pattern": "USE_PUBLIC_NORMALIZATION_AND_ANALYTICS_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_EXPLAINABLE_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": ["source adapters", "format classifier", "schema mapper", "canonical store", "code resolver", "annotation engine", "statistics engine", "irregularity scorer", "investigation UI", "provenance/audit"],
+    "mandatory_safety_boundaries": ["authorized data only", "anomaly is not guilt", "human review before adverse action", "sensitive-data minimization", "full provenance"]
+  }
+}

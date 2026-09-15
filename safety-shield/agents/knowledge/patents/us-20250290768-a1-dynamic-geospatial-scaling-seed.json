@@ -1,0 +1,133 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250290768-A1",
+  "title": "Dynamic scaling of geospatial data on maps",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-09-18",
+  "application_number": "19/225,677",
+  "filed": "2025-06-02",
+  "priority_date": "2018-10-24",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": ["Andrew Elder", "Cooper Bills", "Reese Glidden"],
+  "related_application_signals": [
+    "continuation of US application 18/595,193 filed 2024-03-04",
+    "family includes US11920946B2 and US11175157B1",
+    "provisional priority 62/750,031 filed 2018-10-24"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250290768-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250290768A1/en"
+    }
+  ],
+  "classification_signals": [
+    "G01C21/367 map scale/zoom display",
+    "G06F3/04845 GUI image manipulation",
+    "G06T3/40 image scaling",
+    "G06F2203/04806 zoom interaction"
+  ],
+  "scope_tags": [
+    "geospatial-ui",
+    "dynamic-marker-scaling",
+    "zoom-aware-rendering",
+    "marker-density",
+    "screen-resolution",
+    "map-layers",
+    "visual-clutter-reduction",
+    "multi-marker-types",
+    "gis",
+    "interactive-maps",
+    "ontology-backed-geospatial-objects"
+  ],
+  "publicly_described_functional_concepts": [
+    "displaying geospatial object markers over a map",
+    "changing marker size in response to map zoom level",
+    "using threshold regions between minimum and maximum marker scales",
+    "using marker type, marker density, or screen resolution when determining scaling behavior",
+    "allowing different marker types to use different scaling functions and thresholds",
+    "preserving high-level pattern visibility while reducing marker overlap and clutter"
+  ],
+  "scope_model": {
+    "technical_domain": ["GIS visualization", "interactive map rendering", "human-computer interaction", "geospatial analytics"],
+    "core_architecture": [
+      "authorized geospatial dataset",
+      "map viewport/zoom state",
+      "marker layer registry",
+      "density estimator",
+      "marker-type policy",
+      "threshold and scale resolver",
+      "renderer",
+      "interaction telemetry"
+    ],
+    "analysis_loop": "receive authorized geospatial objects -> compute viewport and density context -> resolve marker policy by type -> calculate marker size within bounded scale rules -> render map/layers -> update on pan/zoom while preserving readability",
+    "building_patterns_relevant_to_independent_design": [
+      "separate geographic coordinates from visual marker-size policy",
+      "derive marker presentation from zoom, density, marker type, and display characteristics",
+      "use bounded minimum and maximum display sizes",
+      "support independently configurable scaling curves per layer/type",
+      "measure overlap and readability rather than deleting source objects from the data model",
+      "keep rendering logic independent from any operational decision logic"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "map plus marker-layer presentation",
+      "marker-size changes based on map scale and marker type/density/resolution",
+      "bounded or threshold-dependent marker scaling",
+      "different scaling behavior for multiple marker types"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "geospatial-object-adapter",
+      "viewport-state",
+      "layer-registry",
+      "density-estimator",
+      "marker-policy-engine",
+      "bounded-scale-resolver",
+      "map-renderer",
+      "accessibility-and-readability-metrics"
+    ],
+    "default_build_profile": "ZOOM_AWARE_GEOSPATIAL_VISUALIZATION",
+    "use_for": [
+      "civilian GIS dashboards",
+      "infrastructure maps",
+      "fleet and logistics visualization",
+      "environmental monitoring",
+      "asset maps",
+      "large-scale geospatial data exploration"
+    ]
+  },
+  "privacy_and_safety_policy": {
+    "authorized_geospatial_data_only": true,
+    "person_identification": false,
+    "covert_person_tracking": false,
+    "cross_dataset_person_tracking": false,
+    "targeting_or_operational_tasking": false,
+    "rendering_logic_only": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_REVIEW_FOR_PERSON_LINKED_GEOSPATIAL_DEPLOYMENTS",
+    "default_pattern": "USE_PUBLIC_VISUALIZATION_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_RENDERING_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": ["map data source", "viewport state", "marker-layer registry", "density estimator", "scale policy", "renderer", "readability telemetry"],
+    "mandatory_safety_boundaries": ["authorized data only", "no person identification or covert tracking", "no targeting", "rendering separated from operational action"]
+  }
+}

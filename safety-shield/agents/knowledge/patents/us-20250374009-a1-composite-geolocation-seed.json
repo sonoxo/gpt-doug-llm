@@ -1,0 +1,140 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250374009-A1",
+  "title": "Determining geolocations of composite entities based on heterogeneous data sources",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-12-04",
+  "application_number": "19/257,371",
+  "filed": "2025-07-01",
+  "priority_date": "2019-07-31",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": ["Peter Wilczynski", "Andrew Elder", "Anand Gupta"],
+  "related_application_signals": [
+    "continuation of US application 16/871,912 filed 2020-05-11",
+    "family includes US11966430B2 and US12361045B2",
+    "provisional priority 62/880,805 filed 2019-07-31"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250374009-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/20250374009"
+    }
+  ],
+  "classification_signals": [
+    "H04W4/029 location-based services",
+    "G06F16/29 geospatial database structures",
+    "H04W4/02 location information services",
+    "H04W4/021 location-based service management"
+  ],
+  "scope_tags": [
+    "geospatial-data-fusion",
+    "ontology",
+    "composite-objects",
+    "heterogeneous-data-sources",
+    "time-aware-location",
+    "source-priority",
+    "confidence-scoring",
+    "geospatial-cache",
+    "asset-location",
+    "aggregate-location",
+    "provenance",
+    "privacy-boundary"
+  ],
+  "publicly_described_functional_concepts": [
+    "associating elementary and composite objects through ontology-defined relationships",
+    "retrieving timestamped geolocation observations from heterogeneous data sources",
+    "combining constituent-object location observations to infer a composite-object location",
+    "using source priority or confidence signals to resolve conflicting observations",
+    "storing computed location plus time context for reuse by authorized applications",
+    "supporting time-aware geolocation requests against ontology-backed object models",
+    "person-location examples in the publication are retained only as patent-scope boundary signals and are not enabled as default building memory"
+  ],
+  "scope_model": {
+    "technical_domain": ["geospatial data fusion", "ontology-backed data systems", "time-series location data", "multi-source confidence resolution"],
+    "core_architecture": [
+      "authorized non-person asset/location sources",
+      "ontology relationship resolver",
+      "timestamp alignment service",
+      "source-priority/confidence resolver",
+      "composite-location aggregator",
+      "uncertainty/provenance store",
+      "coarse geospatial result API",
+      "privacy and authorization gate"
+    ],
+    "analysis_loop": "receive authorized asset or aggregate-location request -> resolve permitted ontology relationships -> fetch timestamped source observations -> align time windows -> score source quality/confidence -> derive coarse composite location -> attach uncertainty/provenance -> return only policy-authorized result",
+    "building_patterns_relevant_to_independent_design": [
+      "treat source reliability and time alignment as explicit fields",
+      "keep raw observations separate from derived composite locations",
+      "return uncertainty/confidence with every derived location",
+      "bind every source traversal to authorization and purpose context",
+      "prefer coarse aggregate or asset-level locations over person-linked location inference",
+      "make data-source provenance reversible from every derived location",
+      "apply retention and freshness rules to cached geospatial conclusions"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "ontology-based association of elementary objects with moving composite objects",
+      "receiving timestamped geolocation datasets from multiple associated data sources",
+      "deriving composite-object location and corresponding time identifiers",
+      "related distance/alert and changing-membership concepts appear in dependent claim themes"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "authorized-asset-location-adapter",
+      "ontology-relationship-resolver",
+      "time-alignment-service",
+      "source-confidence-engine",
+      "composite-location-aggregator",
+      "uncertainty-provenance-store",
+      "privacy-policy-gate",
+      "coarse-location-api"
+    ],
+    "default_build_profile": "PRIVACY_GOVERNED_ASSET_AND_AGGREGATE_GEOSPATIAL_FUSION",
+    "use_for": [
+      "authorized fleet or equipment location aggregation",
+      "logistics and asset coordination",
+      "infrastructure geospatial state",
+      "environmental or disaster-response asset aggregation",
+      "coarse aggregate geospatial analytics"
+    ]
+  },
+  "privacy_and_surveillance_policy": {
+    "authorized_data_only": true,
+    "default_entity_scope": "NON_PERSON_ASSET_OR_AGGREGATE",
+    "person_identification": false,
+    "biometric_identification": false,
+    "covert_person_tracking": false,
+    "cross_dataset_person_tracking": false,
+    "individual_person_location_inference": false,
+    "targeting_or_operational_tasking": false,
+    "purpose_and_access_control_required": true,
+    "provenance_required": true,
+    "retention_policy_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "PRIVACY_AND_AUTHORIZATION_REVIEW_REQUIRED",
+    "default_pattern": "USE_PUBLIC_DATA_FUSION_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_NON_PERSON_GEOSPATIAL_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": ["authorized location sources", "ontology resolver", "time aligner", "source-confidence engine", "composite aggregator", "uncertainty/provenance", "privacy gate", "coarse location API"],
+    "mandatory_safety_boundaries": ["no person identification", "no covert or cross-dataset person tracking", "no targeting", "authorized asset/aggregate data only", "full provenance and retention controls"]
+  }
+}
