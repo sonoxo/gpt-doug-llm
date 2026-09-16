@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0.0",
+  "federation_id": "the-north-star-federation",
+  "display_name": "THE NORTH STAR FEDERATION",
+  "north_star": "Ontology + heterogeneous agents + humans + evidence + dissent + simulation + consensus + policy + authorized actions + outcome learning",
+  "decision_contract": {
+    "independent_proposals_first": true,
+    "preserve_dissent": true,
+    "require_provenance": true,
+    "simulate_before_material_action_when_available": true,
+    "policy_gate_required": true,
+    "human_authority_for_material_actions": true,
+    "record_outcomes": true
+  },
+  "members": [
+    {
+      "id": "gpt-doug-max",
+      "name": "GPT-DOUG-LLM-MAX",
+      "role": "collective-supervisor",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm",
+      "capabilities": [
+        "orchestration",
+        "ontology-grounded-reasoning",
+        "multi-agent-deliberation",
+        "evidence-synthesis"
+      ],
+      "authority_boundary": "proposes and coordinates; material actions remain policy-gated"
+    },
+    {
+      "id": "zyra",
+      "name": "ZYRA",
+      "role": "execution-governor",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/zyra",
+      "capabilities": [
+        "bounded-agentic-execution",
+        "policy-gating",
+        "audit",
+        "rollback"
+      ],
+      "authority_boundary": "executes only allowed and authorized actions"
+    },
+    {
+      "id": "wakeup3lm",
+      "name": "Wakeup3lm",
+      "role": "development-kernel",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/wakeup3lm",
+      "capabilities": [
+        "structured-agent-decisions",
+        "workspace-tools",
+        "repair-loops",
+        "audit-state"
+      ],
+      "authority_boundary": "workspace-scoped tools and configured capability boundaries"
+    },
+    {
+      "id": "black-house",
+      "name": "THE BLACK HOUSE",
+      "role": "mission-ontology-root",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/the-black-house",
+      "capabilities": [
+        "governance",
+        "ontology",
+        "mission-root"
+      ],
+      "authority_boundary": "governance and shared semantic context"
+    },
+    {
+      "id": "kraken-jutsu",
+      "name": "KRAKEN JUTSU",
+      "role": "judgment-defense-specialist",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/kraken_jutsu",
+      "capabilities": [
+        "provenance-first-judgment",
+        "defensive-orchestration"
+      ],
+      "authority_boundary": "defensive and evidence-bound operations"
+    },
+    {
+      "id": "aeo-rvia-intel",
+      "name": "A.E.O. / RVIA-INTEL",
+      "role": "intelligence-accountability",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo",
+      "capabilities": [
+        "provenance",
+        "accountability",
+        "intelligence-review"
+      ],
+      "authority_boundary": "observe, validate, report, and preserve provenance"
+    },
+    {
+      "id": "shadow-glass",
+      "name": "SHADOW GLASS / GLASS ONION",
+      "role": "policy-provenance-shield",
+      "status": "implemented",
+      "canonical_source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/safety-shield",
+      "capabilities": [
+        "policy",
+        "provenance",
+        "defensive-controls",
+        "authority-observability"
+      ],
+      "authority_boundary": "fail-closed policy and provenance controls"
+    }
+  ],
+  "integrations": [
+    {
+      "id": "palantir-foundry-aip",
+      "name": "Palantir Foundry / AIP",
+      "status": "integration-ready",
+      "external_authorization_required": true,
+      "note": "External tenant, credentials, licensing, and permissions remain authoritative."
+    }
+  ]
+}

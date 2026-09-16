@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0.0",
+  "policies": {
+    "decision": {
+      "require_evidence": true,
+      "require_provenance": true,
+      "preserve_strongest_counterargument": true,
+      "preserve_unresolved_uncertainty": true,
+      "allow_consensus_without_unanimity": true
+    },
+    "authority": {
+      "default_external_write": "deny",
+      "material_action_requires_human_authority": true,
+      "least_privilege": true,
+      "temporary_capabilities_preferred": true,
+      "revocable_authority": true
+    },
+    "verification": {
+      "simulation_or_dry_run_preferred": true,
+      "tests_are_evidence": true,
+      "self_reported_success_is_insufficient": true,
+      "record_failure_and_rollback": true
+    },
+    "federation": {
+      "independent_proposals_first": true,
+      "agent_diversity_preferred": true,
+      "cross_agent_challenge_enabled": true,
+      "dissent_is_first_class_data": true
+    },
+    "defense_adjacent": {
+      "allowed_live_domains": [
+        "readiness",
+        "logistics",
+        "maintenance",
+        "defensive-cybersecurity",
+        "communications-resilience",
+        "infrastructure-resilience",
+        "sensor-health",
+        "simulation",
+        "decision-support"
+      ],
+      "excluded_live_domains": [
+        "weapon-targeting",
+        "fire-control",
+        "weapons-release",
+        "autonomous-engagement"
+      ]
+    }
+  }
+}
