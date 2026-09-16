@@ -1,0 +1,73 @@
+{
+  "registry": "zyra-xunia-defensive-awareness-oss",
+  "version": "1.0.0",
+  "mode": "DEFENSIVE_AWARENESS_ONLY",
+  "ownerLayer": "GPT-DOUG-LLM / BLACK HOUSE",
+  "purpose": "Govern optional open-source telemetry, geospatial, tracking, spatial-database, and operator-visualization integrations used by ZYRA and XUNIA.",
+  "components": [
+    {
+      "id": "openmct",
+      "repository": "https://github.com/nasa/openmct",
+      "role": ["telemetry-visualization", "historical-playback", "operator-dashboard"],
+      "integrationMode": "OPTIONAL_ADAPTER",
+      "defaultAuthority": "READ_ONLY"
+    },
+    {
+      "id": "cesium",
+      "repository": "https://github.com/CesiumGS/cesium",
+      "role": ["3d-globe", "terrain", "geospatial-visualization"],
+      "integrationMode": "OPTIONAL_FRONTEND",
+      "defaultAuthority": "VISUALIZATION_ONLY"
+    },
+    {
+      "id": "stone-soup",
+      "repository": "https://github.com/dstl/Stone-Soup",
+      "role": ["multi-sensor-track-fusion", "state-estimation", "tracking-research"],
+      "integrationMode": "OPTIONAL_ANALYTICS_SERVICE",
+      "defaultAuthority": "DECISION_SUPPORT_ONLY"
+    },
+    {
+      "id": "tracktable",
+      "repository": "https://github.com/sandialabs/tracktable",
+      "role": ["trajectory-analysis", "anomaly-detection", "movement-analytics"],
+      "integrationMode": "OPTIONAL_ANALYTICS_SERVICE",
+      "defaultAuthority": "DECISION_SUPPORT_ONLY"
+    },
+    {
+      "id": "postgis",
+      "repository": "https://github.com/postgis/postgis",
+      "role": ["spatial-storage", "geofence-query", "historical-track-store"],
+      "integrationMode": "DATA_LAYER",
+      "defaultAuthority": "APPLICATION_SCOPED"
+    },
+    {
+      "id": "maplibre-gl-js",
+      "repository": "https://github.com/maplibre/maplibre-gl-js",
+      "role": ["2d-operational-map", "layer-rendering", "alert-visualization"],
+      "integrationMode": "OPTIONAL_FRONTEND",
+      "defaultAuthority": "VISUALIZATION_ONLY"
+    }
+  ],
+  "dataContract": {
+    "authorizedLiveTelemetry": true,
+    "realWorldGeospatialAwareness": true,
+    "historicalPlayback": true,
+    "sensorHealth": true,
+    "anomalyDetection": true,
+    "safetyGeofences": true,
+    "humanReviewedAlerts": true,
+    "externalWritesDefault": "DENY",
+    "secrets": "EXTERNAL_SECRET_STORE_ONLY",
+    "provenanceRequired": true
+  },
+  "guardrails": {
+    "weaponTargeting": false,
+    "aimpointGeneration": false,
+    "interceptGuidance": false,
+    "fireControl": false,
+    "autonomousEngagement": false,
+    "weaponsRelease": false,
+    "humanAuthorityRequiredForMaterialAction": true,
+    "auditEvidenceRequired": true
+  }
+}
