@@ -1,0 +1,388 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import pathlib
+import select
+import signal
+import socket
+import subprocess
+import sys
+import time
+from datetime import datetime, timezone
+
+STATE = pathlib.Path.home() / ".config" / "gpt-doug"
+CONFIG = STATE / "authorized-sensors.json"
+BRIDGE_STATE = STATE / "local-camera-bridge.json"
+HEALTH = STATE / "local-camera-health.json"
+LOG = STATE / "local-camera-bridge.log"
+LEGACY_PID = STATE / "local-camera-health.pid"
+SENSOR_ID = "LAPTOP-CAM-01"
+HOST = "127.0.0.1"
+
+
+def now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def write_private(path: pathlib.Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.chmod(0o600)
+
+
+def camera_names() -> list[str]:
+    if sys.platform != "darwin":
+        return []
+    try:
+        proc = subprocess.run(
+            ["system_profiler", "SPCameraDataType", "-json"],
+            capture_output=True,
+            text=True,
+            timeout=15,
+        )
+        if proc.returncode != 0:
+            return []
+        data = json.loads(proc.stdout or "{}")
+        cameras = data.get("SPCameraDataType", [])
+        return [
+            str(cam.get("_name") or cam.get("spcamera_model-id") or "Mac Camera")
+            for cam in cameras
+            if isinstance(cam, dict)
+        ]
+    except Exception:
+        return []
+
+
+def pid_alive(pid: int) -> bool:
+    if pid <= 1:
+        return False
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def tcp_up(port: int, timeout: float = 0.25) -> bool:
+    try:
+        with socket.create_connection((HOST, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
+def choose_port() -> int:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.bind((HOST, 0))
+        return int(sock.getsockname()[1])
+
+
+def load_bridge_state() -> dict:
+    try:
+        value = json.loads(BRIDGE_STATE.read_text(encoding="utf-8"))
+        return value if isinstance(value, dict) else {}
+    except Exception:
+        return {}
+
+
+def stop_pid(pid: int) -> None:
+    if not pid_alive(pid):
+        return
+    try:
+        os.kill(pid, signal.SIGTERM)
+    except OSError:
+        return
+    deadline = time.time() + 4
+    while time.time() < deadline and pid_alive(pid):
+        time.sleep(0.1)
+    if pid_alive(pid):
+        try:
+            os.kill(pid, signal.SIGKILL)
+        except OSError:
+            pass
+
+
+def stop_legacy() -> None:
+    try:
+        pid = int(LEGACY_PID.read_text(encoding="utf-8").strip())
+    except Exception:
+        return
+    stop_pid(pid)
+    try:
+        LEGACY_PID.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def stop_bridge() -> None:
+    state = load_bridge_state()
+    try:
+        pid = int(state.get("pid", 0))
+    except Exception:
+        pid = 0
+    stop_pid(pid)
+    stop_legacy()
+    try:
+        BRIDGE_STATE.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def serve(port: int) -> int:
+    STATE.mkdir(parents=True, exist_ok=True)
+    STATE.chmod(0o700)
+    running = True
+    listener: socket.socket | None = None
+    present = False
+    names: list[str] = []
+    last_probe = 0.0
+
+    def stop(*_args):
+        nonlocal running
+        running = False
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+
+    write_private(
+        BRIDGE_STATE,
+        {
+            "schema": "xunia.local-camera-bridge.v1",
+            "pid": os.getpid(),
+            "host": HOST,
+            "port": port,
+            "started_at": now(),
+            "server_capture": False,
+            "streaming": False,
+            "network": "loopback-only",
+        },
+    )
+
+    while running:
+        t = time.monotonic()
+        if t - last_probe >= 2.0:
+            names = camera_names()
+            present = bool(names)
+            last_probe = t
+
+            if present and listener is None:
+                try:
+                    listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                    listener.bind((HOST, port))
+                    listener.listen(16)
+                    listener.setblocking(False)
+                except OSError:
+                    if listener is not None:
+                        listener.close()
+                    listener = None
+
+            if not present and listener is not None:
+                listener.close()
+                listener = None
+
+            write_private(
+                HEALTH,
+                {
+                    "schema": "xunia.local-camera-health.v1",
+                    "checked_at": now(),
+                    "present": present,
+                    "camera_names": names,
+                    "host": HOST,
+                    "port": port,
+                    "reachable": listener is not None,
+                    "server_capture": False,
+                    "streaming": False,
+                    "network": "loopback-only",
+                },
+            )
+
+        if listener is not None:
+            try:
+                ready, _, _ = select.select([listener], [], [], 0.25)
+                if ready:
+                    conn, _ = listener.accept()
+                    conn.close()
+            except OSError:
+                try:
+                    listener.close()
+                except Exception:
+                    pass
+                listener = None
+        else:
+            time.sleep(0.25)
+
+    if listener is not None:
+        listener.close()
+    return 0
+
+
+def start_bridge() -> tuple[int, int]:
+    STATE.mkdir(parents=True, exist_ok=True)
+    STATE.chmod(0o700)
+    stop_legacy()
+
+    current = load_bridge_state()
+    try:
+        current_pid = int(current.get("pid", 0))
+        current_port = int(current.get("port", 0))
+    except Exception:
+        current_pid = 0
+        current_port = 0
+
+    if pid_alive(current_pid) and current_port and tcp_up(current_port):
+        return current_pid, current_port
+
+    if current_pid:
+        stop_pid(current_pid)
+
+    port = choose_port()
+    log_handle = LOG.open("ab", buffering=0)
+    proc = subprocess.Popen(
+        [sys.executable, str(pathlib.Path(__file__).resolve()), "_serve", "--port", str(port)],
+        stdin=subprocess.DEVNULL,
+        stdout=log_handle,
+        stderr=log_handle,
+        start_new_session=True,
+        close_fds=True,
+    )
+    log_handle.close()
+
+    deadline = time.time() + 12
+    while time.time() < deadline:
+        if not pid_alive(proc.pid):
+            break
+        if tcp_up(port):
+            return proc.pid, port
+        time.sleep(0.25)
+
+    stop_pid(proc.pid)
+    raise SystemExit(f"NO-GO: local camera health adapter did not start; log: {LOG}")
+
+
+def register_sensor(port: int, names: list[str]) -> None:
+    if CONFIG.exists():
+        try:
+            data = json.loads(CONFIG.read_text(encoding="utf-8"))
+        except Exception as exc:
+            raise SystemExit(f"NO-GO: invalid sensor config: {exc}") from exc
+    else:
+        data = {
+            "schema": "xunia.authorized-sensors.v1",
+            "authorization_assertion": True,
+            "allow_hosts": [],
+            "sensors": [],
+        }
+
+    if data.get("schema") != "xunia.authorized-sensors.v1":
+        raise SystemExit("NO-GO: unsupported sensor config schema")
+    data["authorization_assertion"] = True
+
+    allow_hosts = [str(x) for x in data.get("allow_hosts", [])]
+    if HOST not in allow_hosts:
+        allow_hosts.append(HOST)
+    data["allow_hosts"] = allow_hosts
+
+    sensors = [x for x in data.get("sensors", []) if isinstance(x, dict) and x.get("id") != SENSOR_ID]
+    sensors.append(
+        {
+            "id": SENSOR_ID,
+            "kind": "camera",
+            "protocol": "tcp",
+            "host": HOST,
+            "port": port,
+            "authorized": True,
+            "site": "LOCAL",
+            "label": names[0] if names else "MacBook Camera",
+            "tags": [
+                "operator-authorized",
+                "local-camera",
+                "health-only",
+                "loopback-only",
+                "browser-preview-capable",
+                "no-server-content-capture",
+            ],
+        }
+    )
+    data["sensors"] = sensors
+    write_private(CONFIG, data)
+
+
+def command_setup() -> int:
+    names = camera_names()
+    if not names:
+        raise SystemExit("NO-GO: macOS reports no local camera hardware")
+    stop_bridge()
+    pid, port = start_bridge()
+    register_sensor(port, names)
+    print("============================================================")
+    print(" ZYRA // LOCAL CAMERA")
+    print("============================================================")
+    print("SENSOR ID      :", SENSOR_ID)
+    print("CAMERA         :", names[0])
+    print("HEALTH BRIDGE  : ONLINE")
+    print("HOST           :", HOST)
+    print("PORT           :", port)
+    print("PID            :", pid)
+    print("CONFIG         :", CONFIG)
+    print("SERVER CAPTURE : DISABLED")
+    print("NETWORK        : LOOPBACK ONLY")
+    print("NEXT           : zyra-maven hud --mode live")
+    print("============================================================")
+    return 0
+
+
+def command_status() -> int:
+    names = camera_names()
+    state = load_bridge_state()
+    try:
+        pid = int(state.get("pid", 0))
+        port = int(state.get("port", 0))
+    except Exception:
+        pid = 0
+        port = 0
+    alive = pid_alive(pid)
+    healthy = bool(port and tcp_up(port))
+    print("LOCAL CAMERA HARDWARE :", "DETECTED" if names else "NOT DETECTED")
+    if names:
+        print("CAMERA NAME           :", names[0])
+    print("BRIDGE PROCESS        :", "RUNNING" if alive else "STOPPED")
+    print("HEALTH ENDPOINT       :", f"{HOST}:{port}" if port else "NONE")
+    print("HEALTH                :", "GO" if healthy else "NO-GO")
+    print("SERVER CAPTURE        : DISABLED")
+    print("NETWORK               : LOOPBACK ONLY")
+    return 0 if names and healthy else 1
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Managed local Mac camera health adapter for ZYRA")
+    parser.add_argument("command", choices=("setup", "start", "stop", "status", "_serve"))
+    parser.add_argument("--port", type=int, default=0)
+    ns = parser.parse_args()
+
+    if ns.command == "_serve":
+        if not 1 <= ns.port <= 65535:
+            raise SystemExit("NO-GO: valid --port required")
+        return serve(ns.port)
+    if ns.command == "setup":
+        return command_setup()
+    if ns.command == "start":
+        names = camera_names()
+        if not names:
+            raise SystemExit("NO-GO: macOS reports no local camera hardware")
+        pid, port = start_bridge()
+        register_sensor(port, names)
+        print(f"LOCAL CAMERA BRIDGE : ONLINE // {HOST}:{port} // PID {pid}")
+        return 0
+    if ns.command == "stop":
+        stop_bridge()
+        print("LOCAL CAMERA BRIDGE : STOPPED")
+        return 0
+    return command_status()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
