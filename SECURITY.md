@@ -1,54 +1,29 @@
-# Security Policy
+# Security Model
 
-## Supported Versions
+THE NORTH STAR FEDERATION is a coordination and governance layer. It does not grant authority by itself.
 
-GPT Doug LLM is actively developed. Security fixes apply to the latest `main` branch.
+## Security invariants
 
-## Reporting a Vulnerability
+- Default external mutation is denied unless explicitly enabled and authorized.
+- Material actions require the configured human authority path.
+- Members should receive least-privilege, revocable capabilities.
+- Evidence and provenance are required for consequential decisions.
+- Safe simulation, dry-run, staging, or rollback is preferred before material changes.
+- Unknown or malformed federation actions fail closed.
+- Secrets belong in an external secrets manager or authorized runtime, not in the federation registry.
+- Model confidence is never accepted as proof of authorization.
+- Self-reported agent success is not sufficient verification.
 
-DO NOT open a public GitHub issue for security vulnerabilities.
+## External integrations
 
-Instead, email: security@sonoxo.com with:
-1. Description of the vulnerability
-2. Steps to reproduce
-3. Potential impact
-4. Suggested fix (if any)
+The federation may describe integration adapters for systems such as GitHub or authorized Palantir Foundry/AIP environments. Those external systems remain authoritative for authentication, licensing, permissions, tenancy, and audit requirements.
 
-You will receive a response within 72 hours. If the vulnerability is confirmed, a fix will be released and you will be credited (unless you prefer to remain anonymous).
+## Defense-adjacent boundary
 
-## Zyra Security Model
+Allowed live domains include readiness, logistics, maintenance, defensive cybersecurity, communications resilience, infrastructure resilience, sensor health, simulation, and decision support.
 
-GPT Doug uses a defense-in-depth architecture:
+Operational real-world weapon targeting, fire-control, weapons release, and autonomous engagement are outside the live-action federation layer.
 
-| Layer | Module | Purpose |
-|---|---|---|
-| 1 | Zyra 3.0 | Input/output inspection, secret redaction, block patterns |
-| 2 | Golden Shield | Perimeter defense, threat elimination, rate containment |
-| 3 | Zyra Sentinel | 24/7 vulnerability scanning, threat intel feeds |
-| 4 | Compliance Gate | Jurisdiction-aware policy enforcement |
-| 5 | Three-Factor Auth | Business email + phone + TOTP |
-| 6 | ASTRAL | Two-person high-assurance elevation control |
-| 7 | EUREKA 369 | Constrained developer terminal (allowlisted commands only) |
+## Reporting
 
-**Zyra is deterministic, not semantic.** It catches known attack patterns. Novel attacks that don't match known patterns may pass. OS-level sandboxing, least-privilege credentials, container isolation, and professional security review are still required.
-
-## Audit Trail
-
-All security decisions are written to a tamper-evident HMAC-chained audit log at `~/.gpt-doug/zyra-audit.jsonl` (owner-only, 0600 permissions). Verify integrity with:
-
-```bash
-python3 security_review.py
-```
-
-## Known Limitations
-
-- No third-party security audit has been performed
-- No formal compliance certification (SOC2, FedRAMP, CJIS, NIST 800-53)
-- No load/stress testing at scale
-- Zyra is keyword/pattern-based, not a semantic understanding system
-- Single-machine deployment (no redundancy, failover, or monitoring beyond local logs)
-- Agent-daemon retry logic has no automated regression tests
-
-## Responsible Disclosure
-
-We follow responsible disclosure. Security researchers who report valid vulnerabilities will be acknowledged in release notes (unless they prefer anonymity).
+For security findings in a federation member, report the issue to that member's canonical repository and follow its security policy. For federation-registry problems, open an issue with reproduction steps and avoid publishing secrets or private credentials.

@@ -1,1 +1,0 @@
-"""GPT Doug hackathon agents."""
