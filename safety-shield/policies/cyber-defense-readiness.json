@@ -1,0 +1,94 @@
+{
+  "name": "CyberDefenseReadiness",
+  "version": "1.0.0",
+  "mode": "DEFENSIVE_ONLY",
+  "mission": "Protect ZYRA, XUNIA, GPT-DOUG-LLM and authorized integrations from cyber compromise while preserving human authority, evidence, recoverability and fail-closed behavior.",
+  "frameworks": {
+    "nistCsf2": [
+      "GOVERN",
+      "IDENTIFY",
+      "PROTECT",
+      "DETECT",
+      "RESPOND",
+      "RECOVER"
+    ],
+    "cisaKnownExploitedVulnerabilities": "PRIORITY_INPUT"
+  },
+  "threatClasses": [
+    "ZERO_DAY_EXPLOITATION",
+    "KNOWN_EXPLOITED_VULNERABILITY",
+    "CREDENTIAL_THEFT",
+    "DESTRUCTIVE_MALWARE",
+    "RANSOMWARE",
+    "SUPPLY_CHAIN_COMPROMISE",
+    "LATERAL_MOVEMENT",
+    "DATA_EXFILTRATION",
+    "DENIAL_OF_SERVICE",
+    "CI_CD_COMPROMISE"
+  ],
+  "requiredControls": {
+    "phishingResistantMfaForPrivilegedAccess": true,
+    "leastPrivilege": true,
+    "separatedAdminRoles": true,
+    "centralizedLogging": true,
+    "networkAndServiceSegmentation": true,
+    "dependencyProvenance": true,
+    "sbomEvidence": true,
+    "signedReleaseEvidence": true,
+    "secretScanning": true,
+    "secureConfigurationBaseline": true,
+    "driftDetection": true,
+    "offlineOrImmutableCriticalBackup": true,
+    "testedRestoreProcedure": true,
+    "incidentEvidencePreservation": true,
+    "humanApprovalForConsequentialExternalActions": true,
+    "externalMutationDefault": "DENY"
+  },
+  "allowedActions": [
+    "COLLECT_AUTHORIZED_TELEMETRY",
+    "CORRELATE_DEFENSIVE_ALERTS",
+    "ISOLATE_OWNED_OR_AUTHORIZED_ASSET",
+    "REVOKE_OWNED_OR_AUTHORIZED_CREDENTIAL",
+    "BLOCK_CONFIRMED_MALICIOUS_INDICATOR",
+    "PRESERVE_FORENSIC_EVIDENCE",
+    "PATCH_OR_MITIGATE_OWNED_OR_AUTHORIZED_ASSET",
+    "RESTORE_KNOWN_GOOD_BACKUP",
+    "RUN_SYNTHETIC_OR_AUTHORIZED_RANGE_EXERCISE",
+    "ESCALATE_TO_HUMAN_INCIDENT_COMMAND"
+  ],
+  "prohibitedActions": [
+    "COUNTER_HACK",
+    "UNAUTHORIZED_ACCESS",
+    "EXTERNAL_CREDENTIAL_THEFT",
+    "DEPLOY_MALWARE_TO_THIRD_PARTY",
+    "DESTRUCTIVE_EXTERNAL_ACTION",
+    "UNAUTHORIZED_PERSISTENCE",
+    "WEAPON_TARGETING",
+    "AIMPOINT_GENERATION",
+    "INTERCEPT_GUIDANCE",
+    "FIRE_CONTROL",
+    "AUTONOMOUS_ENGAGEMENT",
+    "WEAPONS_RELEASE"
+  ],
+  "incidentSequence": [
+    "IDENTIFY",
+    "CONTAIN",
+    "PRESERVE",
+    "ERADICATE",
+    "RECOVER",
+    "REPORT",
+    "LEARN"
+  ],
+  "vulnerabilityPriority": [
+    "KNOWN_EXPLOITATION_ON_EXPOSED_OR_PRIVILEGED_ASSET",
+    "IDENTITY_REMOTE_ACCESS_CI_CD_OR_SECURITY_CONTROL_COMPROMISE",
+    "REMOTELY_EXPLOITABLE_CRITICAL_SYSTEM",
+    "MISSION_CRITICAL_INTERNAL_SYSTEM",
+    "RISK_BASED_REMAINDER"
+  ],
+  "exerciseBoundary": {
+    "ownedOrExplicitlyAuthorizedEnvironmentsOnly": true,
+    "unauthorizedThirdPartyAccess": false,
+    "syntheticDestructivePayloadsForRecoveryDrills": true
+  }
+}
