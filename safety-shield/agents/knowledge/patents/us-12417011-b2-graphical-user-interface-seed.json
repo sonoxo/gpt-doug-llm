@@ -1,0 +1,144 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12417011-B2",
+  "title": "Graphical user interface system",
+  "document_type": "US patent grant",
+  "kind_code": "B2",
+  "publication_date": "2025-09-16",
+  "application_number": "18/346,716",
+  "filed": "2023-07-03",
+  "priority_date": "2018-04-03",
+  "assignee": "Palantir Technologies Inc.",
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-12417011-B2?source=USPAT",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_family_context",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US11733856B2/en",
+      "note": "Family record identifies US12417011B2 as continuation-family member with the same graphical user interface title and application lineage."
+    }
+  ],
+  "scope_tags": [
+    "graphical-user-interface",
+    "multi-application-workspace",
+    "subwindow-management",
+    "drag-and-drop",
+    "cross-application-data-transfer",
+    "application-state",
+    "interaction-history",
+    "workspace-composition",
+    "visual-context-switching"
+  ],
+  "publicly_described_functional_concepts": [
+    "hosting multiple applications inside one main graphical workspace",
+    "presenting a primary application and minimized secondary application panels within the same window",
+    "switching primary focus among applications without losing workspace context",
+    "dragging data or resources between application panels",
+    "updating destination application interfaces in response to drag interactions",
+    "capturing interaction or transformation history for later visual presentation"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "graphical user interfaces",
+      "multi-application workspaces",
+      "cross-application interaction",
+      "visual workflow composition"
+    ],
+    "core_architecture": [
+      "main workspace shell",
+      "application panel manager",
+      "focus and minimize controller",
+      "cross-panel drag event broker",
+      "typed transferable resource model",
+      "destination preview/highlight service",
+      "interaction history store",
+      "workspace state persistence"
+    ],
+    "analysis_loop": "render multiple application panels -> assign primary focus -> keep secondary panels visible/minimized -> detect user drag or transfer intent -> validate transferable resource and destination capability -> preview target state -> apply authorized transfer -> persist interaction/workspace history",
+    "building_patterns_relevant_to_independent_design": [
+      "use typed cross-application payload contracts instead of arbitrary DOM coupling",
+      "separate workspace layout state from application business state",
+      "provide visible destination previews before data transfer",
+      "make transfers reversible or auditable where practical",
+      "persist workspace composition and interaction history independently of any one application",
+      "enforce permission checks before moving protected data across application boundaries"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "multiple application interfaces presented inside a common workspace",
+      "primary and secondary application window states",
+      "cross-application drag/drop or transfer interactions",
+      "destination UI updates and transfer history"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "continuation_application": "US18/346,716",
+    "earlier_family_grants": ["US10838614B2", "US11733856B2"],
+    "family_priority": "2018-04-03",
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US grant or family record; recheck relevant official registers before legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "workspace-shell",
+      "panel-registry",
+      "focus-minimize-controller",
+      "cross-app-event-broker",
+      "typed-transfer-contracts",
+      "destination-preview",
+      "permission-gate",
+      "workspace-state-store",
+      "interaction-history"
+    ],
+    "default_build_profile": "COMPOSABLE_MULTI_APP_WORKSPACE_SHELL",
+    "use_for": [
+      "analyst workbenches",
+      "multi-tool dashboards",
+      "cross-application drag-and-drop",
+      "composable data applications",
+      "workflow-oriented desktop/web shells"
+    ]
+  },
+  "governance_policy": {
+    "authorized_data_only": true,
+    "cross_application_permission_check_required": true,
+    "typed_transfer_contract_required": true,
+    "arbitrary_secret_transfer": false,
+    "provenance_required_for_sensitive_transfers": true,
+    "audit_logging_supported": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "PERMISSION_VALIDATION_REQUIRED_FOR_CROSS_APP_TRANSFER",
+    "default_pattern": "USE_PUBLIC_GUI_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_COMPOSABLE_WORKSPACE_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": [
+      "workspace shell",
+      "application panel manager",
+      "focus controller",
+      "drag event broker",
+      "typed transfer adapter",
+      "permission gate",
+      "destination preview",
+      "state/history store"
+    ],
+    "mandatory_safety_boundaries": [
+      "no protected-data transfer without authorization",
+      "validate destination before transfer",
+      "preserve workspace and transfer auditability for sensitive data",
+      "no claim or figure copying"
+    ]
+  }
+}

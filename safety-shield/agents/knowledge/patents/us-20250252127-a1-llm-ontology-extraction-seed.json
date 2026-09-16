@@ -1,0 +1,161 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250252127-A1",
+  "title": "Language model-based data object extraction and visualization",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-08-07",
+  "application_number": "19/178,736",
+  "filed": "2025-04-14",
+  "priority_date": "2023-04-24",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Anirvan Mukherjee",
+    "Craig De Souza",
+    "Edgar Gomes de Araujo",
+    "Johannes Beil",
+    "Jessica Winssinger",
+    "Michael Zullo",
+    "Rushad Heerjee",
+    "Shubhankar Sachdev"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250252127-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250252127A1/en"
+    }
+  ],
+  "classification_signals": [
+    "G06F16/3344 natural-language query execution",
+    "G06F18/2415 probabilistic classification",
+    "G06N3/0895 weakly or semi-supervised learning"
+  ],
+  "scope_tags": [
+    "llm-extraction",
+    "unstructured-data",
+    "ontology-enrichment",
+    "classified-triples",
+    "entity-extraction",
+    "relationship-extraction",
+    "similarity-search",
+    "ontology-matching",
+    "human-review",
+    "interactive-visualization",
+    "object-generation",
+    "provenance"
+  ],
+  "publicly_described_functional_concepts": [
+    "using one or more language models to extract entities and relationships from unstructured text",
+    "classifying extracted triples against ontology object and link types",
+    "using normalization, vectorization, or similarity search to match classified triples to ontology definitions",
+    "creating ontology-backed data objects when extracted structure matches governed schema",
+    "collecting unmatched classified triples for review instead of silently changing the ontology",
+    "using interactive graph visualizations to review clusters of unmatched concepts and proposed ontology updates"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "ontology enrichment",
+      "LLM-assisted information extraction",
+      "knowledge graph construction",
+      "human-in-the-loop schema evolution"
+    ],
+    "core_architecture": [
+      "authorized unstructured-data ingest",
+      "LLM extraction adapter",
+      "triple classifier",
+      "ontology context provider",
+      "normalizer and vectorizer",
+      "similarity matcher",
+      "matched-object materializer",
+      "unmatched-triple queue",
+      "human review visualization",
+      "ontology-change proposal gate",
+      "provenance and audit store"
+    ],
+    "analysis_loop": "ingest authorized text -> extract entity/relation triples -> classify to ontology concepts -> normalize/vectorize -> compare with current ontology -> materialize only governed matches -> queue unmatched structures -> visualize for human review -> approve or reject schema changes -> preserve provenance",
+    "building_patterns_relevant_to_independent_design": [
+      "keep ontology definitions authoritative and external to model memory",
+      "treat LLM output as proposals rather than authoritative objects",
+      "separate matched-object creation from schema mutation",
+      "require review for new object/link types",
+      "record extraction model version, prompts/configuration, source record, match score, and reviewer decision",
+      "use reversible links from generated objects back to source passages"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "LLM extraction of data triples from unstructured data",
+      "classification of triples against ontology definitions",
+      "similarity-based matching of classified triples to object/link types",
+      "interactive processing of unmatched triples to support ontology updates"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "authorized-document-ingest",
+      "llm-triple-extractor",
+      "ontology-classifier",
+      "similarity-matcher",
+      "governed-object-materializer",
+      "unmatched-triple-review-queue",
+      "graph-review-ui",
+      "schema-change-approval-gate",
+      "provenance-audit-store"
+    ],
+    "default_build_profile": "HUMAN_GOVERNED_LLM_ONTOLOGY_ENRICHMENT",
+    "use_for": [
+      "document-to-ontology pipelines",
+      "knowledge graph enrichment",
+      "schema-aware entity extraction",
+      "human-reviewed ontology evolution",
+      "provenance-preserving LLM data integration"
+    ]
+  },
+  "governance_policy": {
+    "authorized_data_only": true,
+    "llm_output_is_non_authoritative": true,
+    "schema_change_requires_review": true,
+    "matched_object_validation_required": true,
+    "automatic_destructive_actions": false,
+    "provenance_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_REVIEW_REQUIRED_FOR_SCHEMA_MUTATION",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_HUMAN_GOVERNED_ONTOLOGY_ENRICHMENT_ARCHITECTURE"
+  },
+  "schematic_seed": {
+    "modules": [
+      "authorized ingest",
+      "LLM triple extraction",
+      "ontology classification",
+      "similarity matching",
+      "object materialization",
+      "unmatched queue",
+      "graph review UI",
+      "schema approval gate",
+      "provenance store"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized data only",
+      "no automatic ontology mutation from unmatched model output",
+      "human review for schema changes",
+      "complete provenance and audit logging"
+    ]
+  }
+}
