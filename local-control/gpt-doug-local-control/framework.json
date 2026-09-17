@@ -1,0 +1,49 @@
+{
+  "name": "XUNIA-ZYRA GPT-Doug Local Control Framework",
+  "version": "0.2.0",
+  "principles": [
+    "loopback_only",
+    "read_first",
+    "explicit_short_lived_arm",
+    "panic_stop",
+    "auditable_actions",
+    "user_granted_os_permissions_only",
+    "no_silent_persistence",
+    "fail_closed"
+  ],
+  "frameworks": {
+    "authority": {
+      "states": ["DISARMED", "ARMED", "PANIC"],
+      "default": "DISARMED",
+      "max_arm_seconds": 300
+    },
+    "capability": {
+      "classes": ["read", "control", "write", "shell"],
+      "control_requires_arm": true,
+      "write_requires_arm": true,
+      "shell_requires_arm": true
+    },
+    "transport": {
+      "bind": "127.0.0.1",
+      "port": 8765,
+      "authentication": "random bearer token mode 0600",
+      "public_listener": false
+    },
+    "loop": {
+      "interval_seconds": 2,
+      "purpose": "health/state heartbeat only",
+      "autonomous_mutation": false
+    },
+    "audit": {
+      "format": "jsonl",
+      "typed_text_logged": false,
+      "max_remote_scope": "none"
+    },
+    "macos_permissions": {
+      "full_disk_access": "user_granted",
+      "accessibility": "user_granted",
+      "screen_recording": "user_granted",
+      "silent_grant": false
+    }
+  }
+}
