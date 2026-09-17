@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import json, os, shutil, subprocess, time
+import json, os, shutil, subprocess, sys, time
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +28,7 @@ def _expand(p: str) -> Path:
 
 DENY = [_expand(p) for p in POLICY.get("deny_paths", [])]
 HDD_ALLOWED = [_expand(p) for p in POLICY.get("hdd_intel", {}).get("allowed_roots", ["~"])]
+BUILDER_ALLOWED = [_expand(p) for p in POLICY.get("xunia_zyra_builder", {}).get("allowed_roots", ["~"])]
 
 
 def _blocked(path: Path) -> bool:
@@ -50,6 +51,28 @@ def _hdd_root_allowed(path: Path) -> bool:
         except Exception:
             pass
     return False
+
+
+def _builder_root_allowed(path: Path) -> bool:
+    rp = path.resolve()
+    if _blocked(rp):
+        return False
+    for allowed in BUILDER_ALLOWED:
+        try:
+            if rp == allowed or allowed in rp.parents:
+                return True
+        except Exception:
+            pass
+    return False
+
+
+def _workspace_root(action: dict[str, Any]) -> Path:
+    root = _expand(str(action.get("root", "")))
+    if not root.exists() or not root.is_dir():
+        raise FileNotFoundError(f"workspace not found: {root}")
+    if not _builder_root_allowed(root):
+        raise PermissionError("workspace is outside configured builder roots or blocked by policy")
+    return root
 
 
 def _audit(entry: dict[str, Any]) -> None:
@@ -156,6 +179,56 @@ def execute(action: dict[str, Any]) -> dict[str, Any]:
         result = recent_files(limit=int(action.get("limit", 50)))
     elif typ == "hdd_duplicate_candidates":
         result = duplicate_candidates(limit_groups=int(action.get("limit_groups", 50)))
+    elif typ == "workspace_status":
+        root = _workspace_root(action)
+        def _git(*args: str) -> str:
+            proc = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True, timeout=30)
+            if proc.returncode != 0:
+                return (proc.stderr or proc.stdout or "").strip()[-12000:]
+            return (proc.stdout or "").strip()[-12000:]
+        markers = {
+            "xunia_godis": (root / "xunia_godis.py").exists(),
+            "zyra_agent": (root / "zyra_agent.py").exists(),
+            "zyra_sleeper": (root / "zyra_sleeper.py").exists(),
+            "package_json": (root / "package.json").exists(),
+            "pyproject": (root / "pyproject.toml").exists(),
+        }
+        result = {
+            "root": str(root),
+            "branch": _git("branch", "--show-current"),
+            "status": _git("status", "--short"),
+            "head": _git("rev-parse", "--short", "HEAD"),
+            "markers": markers,
+            "builder_ready": all(markers[k] for k in ("xunia_godis", "zyra_agent", "zyra_sleeper")),
+        }
+    elif typ == "xunia_zyra_mission":
+        root = _workspace_root(action)
+        sleeper = root / "zyra_sleeper.py"
+        if not sleeper.exists() or not (root / "zyra_agent.py").exists():
+            raise FileNotFoundError("selected workspace is missing ZYRA Agent Core files")
+        goal = str(action.get("goal", "")).strip()
+        if not goal or len(goal) > 4000:
+            raise ValueError("goal must be between 1 and 4000 characters")
+        cfg = POLICY.get("xunia_zyra_builder", {})
+        model = str(action.get("model") or cfg.get("default_model", "gpt-xunia-agent")).strip()
+        max_steps = min(max(1, int(action.get("max_steps", 8))), int(cfg.get("max_steps", 12)))
+        max_seconds = min(max(30, int(action.get("max_seconds", 240))), int(cfg.get("max_seconds", 600)))
+        max_model_calls = min(max(1, int(action.get("max_model_calls", 12))), int(cfg.get("max_model_calls", 18)))
+        cmd = [sys.executable, str(sleeper), "--root", str(root), "--model", model,
+               "--max-steps", str(max_steps), "--max-seconds", str(max_seconds),
+               "--max-model-calls", str(max_model_calls), "run-once", goal]
+        if bool(action.get("evolve", False)):
+            cmd.append("--evolve")
+        proc = subprocess.run(cmd, cwd=str(root), capture_output=True, text=True, timeout=max_seconds + 90)
+        result = {
+            "returncode": proc.returncode,
+            "stdout": (proc.stdout or "")[-60000:],
+            "stderr": (proc.stderr or "")[-20000:],
+            "workspace": str(root),
+            "model": model,
+            "push_performed": False,
+            "deploy_performed": False,
+        }
     elif typ == "write_file":
         p = _path_arg(action)
         p.parent.mkdir(parents=True, exist_ok=True)
