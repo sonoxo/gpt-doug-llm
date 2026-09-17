@@ -1,6 +1,6 @@
 {
-  "name": "GPT-Doug MAXLLM Local Chaotic Good Control",
-  "version": "0.7.0",
+  "name": "GPT-Doug MAXLLM XUNIA ZYRA Builder Control",
+  "version": "0.8.0",
   "loopback_only": true,
   "default_mode": "READ_ONLY",
   "heartbeat_interval_seconds": 2,
@@ -43,6 +43,18 @@
     "write_file": "write",
     "move_file": "write",
     "trash_file": "write",
-    "run_command": "shell"
+    "run_command": "shell",
+    "workspace_status": "read",
+    "xunia_zyra_mission": "write"
+  },
+  "xunia_zyra_builder": {
+    "allowed_roots": ["~", "/Volumes"],
+    "max_steps": 12,
+    "max_seconds": 600,
+    "max_model_calls": 18,
+    "default_model": "gpt-xunia-agent",
+    "allow_push": false,
+    "allow_deploy": false,
+    "allow_secret_access": false
   }
 }
