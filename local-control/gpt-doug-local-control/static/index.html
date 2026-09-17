@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>GPT-Doug Local Control</title><style>
+body{font-family:system-ui;background:#0b0d10;color:#e8edf2;max-width:900px;margin:40px auto;padding:0 16px}button,textarea,input{font:inherit}button{padding:10px 14px;margin:4px;background:#1c232b;color:#fff;border:1px solid #3a4652;border-radius:8px}button.danger{background:#5b0f16}textarea{width:100%;height:180px;background:#111820;color:#dce7ef;border:1px solid #33404b;border-radius:8px;padding:12px}pre{background:#111820;padding:12px;border-radius:8px;white-space:pre-wrap}.row{display:flex;gap:8px;flex-wrap:wrap}.muted{color:#9aa8b5}</style></head><body>
+<h1>GPT-Doug Local Chaotic Good Control ⚡</h1><p class="muted">Loopback-only local control. Authority starts DISARMED. Heartbeat updates every ~2 seconds. Mutating actions require a 5-minute arm.</p>
+<div class="row"><button onclick="cmd('/arm',{seconds:300})">ARM 5 MIN</button><button onclick="cmd('/disarm',{})">DISARM</button><button class="danger" onclick="cmd('/panic',{})">PANIC STOP</button><button onclick="cmd('/clear-panic',{})">CLEAR PANIC</button><button onclick="status()">STATUS</button></div>
+<h3>Action JSON</h3><textarea id="action">{"type":"list_dir","path":"~"}</textarea><br><button onclick="execute()">EXECUTE</button>
+<pre id="out">Ready.</pre>
+<script>
+let token='';
+async function getToken(){token=(await (await fetch('/token',{cache:'no-store'})).json()).token}
+async function cmd(path,body){if(!token)await getToken();let r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(body),cache:'no-store'});document.getElementById('out').textContent=JSON.stringify(await r.json(),null,2)}
+async function execute(){let x;try{x=JSON.parse(document.getElementById('action').value)}catch(e){return document.getElementById('out').textContent=e};cmd('/execute',x)}
+async function status(){let r=await fetch('/status',{cache:'no-store'});document.getElementById('out').textContent=JSON.stringify(await r.json(),null,2)}
+status();setInterval(status,2000);
+</script></body></html>
