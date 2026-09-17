@@ -1,0 +1,44 @@
+name: NUCLR Global Telemetry Pipeline
+
+on:
+  pull_request:
+    paths:
+      - "nuclear/global_pipeline/**"
+      - "tests/test_nuclear_global_pipeline.py"
+      - ".github/workflows/nuclear-global-pipeline.yml"
+  push:
+    branches:
+      - "feature/nuclear-energy-global-pipeline"
+    paths:
+      - "nuclear/global_pipeline/**"
+      - "tests/test_nuclear_global_pipeline.py"
+      - ".github/workflows/nuclear-global-pipeline.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  telemetry-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile pipeline
+        run: python -m py_compile nuclear/global_pipeline/pipeline.py
+      - name: Run unit tests
+        run: python -m unittest tests.test_nuclear_global_pipeline -v
+      - name: Run synthetic pipeline
+        run: |
+          python nuclear/global_pipeline/pipeline.py \
+            nuclear/global_pipeline/sample.synthetic.json \
+            --output /tmp/nuclr-output.json
+          cat /tmp/nuclr-output.json
+          python - <<'PY'
+          import json
+          data = json.load(open('/tmp/nuclr-output.json'))
+          assert data['advisory_only'] is True
+          assert data['external_actuation'] is False
+          assert 0 <= data['charge_component'] <= 100
+          PY
