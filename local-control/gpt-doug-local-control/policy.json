@@ -1,0 +1,31 @@
+{
+  "name": "GPT-Doug Local Chaotic Good Control",
+  "version": "0.2.0",
+  "loopback_only": true,
+  "default_mode": "READ_ONLY",
+  "heartbeat_interval_seconds": 2,
+  "arm_ttl_seconds": 300,
+  "deny_paths": [
+    "~/.ssh",
+    "~/Library/Keychains",
+    "~/Library/Application Support/Google/Chrome/Default/Login Data",
+    "~/Library/Application Support/Google/Chrome/Default/Cookies",
+    "/Library/Keychains",
+    "/System",
+    "/private/var/db/dslocal/nodes/Default/users"
+  ],
+  "capabilities": {
+    "read_file": "read",
+    "list_dir": "read",
+    "open_app": "control",
+    "open_url": "control",
+    "screenshot": "read",
+    "type_text": "control",
+    "hotkey": "control",
+    "click": "control",
+    "write_file": "write",
+    "move_file": "write",
+    "trash_file": "write",
+    "run_command": "shell"
+  }
+}
