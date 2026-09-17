@@ -4,6 +4,15 @@ import json, os, shutil, subprocess, time
 from pathlib import Path
 from typing import Any
 
+from hdd_swarm import (
+    build_index,
+    duplicate_candidates,
+    large_files,
+    recent_files,
+    search_index,
+    summary as hdd_summary,
+)
+
 ROOT = Path(__file__).resolve().parent
 RUNTIME = ROOT / "runtime"
 RUNTIME.mkdir(exist_ok=True)
@@ -18,6 +27,7 @@ def _expand(p: str) -> Path:
 
 
 DENY = [_expand(p) for p in POLICY.get("deny_paths", [])]
+HDD_ALLOWED = [_expand(p) for p in POLICY.get("hdd_intel", {}).get("allowed_roots", ["~"])]
 
 
 def _blocked(path: Path) -> bool:
@@ -25,6 +35,17 @@ def _blocked(path: Path) -> bool:
     for denied in DENY:
         try:
             if rp == denied or denied in rp.parents:
+                return True
+        except Exception:
+            pass
+    return False
+
+
+def _hdd_root_allowed(path: Path) -> bool:
+    rp = path.resolve()
+    for allowed in HDD_ALLOWED:
+        try:
+            if rp == allowed or allowed in rp.parents:
                 return True
         except Exception:
             pass
@@ -106,6 +127,35 @@ def execute(action: dict[str, Any]) -> dict[str, Any]:
     elif typ == "read_file":
         p = _path_arg(action)
         result = {"text": p.read_text(encoding="utf-8", errors="replace")[:200000]}
+    elif typ == "hdd_index":
+        p = _path_arg(action)
+        if not _hdd_root_allowed(p):
+            raise PermissionError("HDD indexing is limited to the user's home directory and /Volumes by policy")
+        cfg = POLICY.get("hdd_intel", {})
+        workers = min(int(action.get("workers", cfg.get("default_workers", 8))), int(cfg.get("max_workers", 32)))
+        max_files = min(int(action.get("max_files", cfg.get("default_max_files", 25000))), int(cfg.get("max_files", 100000)))
+        result = build_index(
+            p,
+            _blocked,
+            max_files=max_files,
+            workers=workers,
+            include_hidden=bool(action.get("include_hidden", False)),
+        )
+    elif typ == "hdd_search":
+        result = search_index(
+            str(action.get("query", "")),
+            category=str(action.get("category")) if action.get("category") else None,
+            extension=str(action.get("extension")) if action.get("extension") else None,
+            limit=int(action.get("limit", 100)),
+        )
+    elif typ == "hdd_summary":
+        result = hdd_summary()
+    elif typ == "hdd_large_files":
+        result = large_files(limit=int(action.get("limit", 50)), min_bytes=int(action.get("min_bytes", 100 * 1024 * 1024)))
+    elif typ == "hdd_recent":
+        result = recent_files(limit=int(action.get("limit", 50)))
+    elif typ == "hdd_duplicate_candidates":
+        result = duplicate_candidates(limit_groups=int(action.get("limit_groups", 50)))
     elif typ == "write_file":
         p = _path_arg(action)
         p.parent.mkdir(parents=True, exist_ok=True)
