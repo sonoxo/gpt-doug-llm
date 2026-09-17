@@ -75,6 +75,21 @@ Public context informing this disclaimer:
 
 These references are informational only and do not imply endorsement or participation.
 
+## 9. No false endorsement, certification, or government affiliation
+
+References to government policies, standards, instructions, agencies, insignia, public documents, or public technical material are descriptive implementation references only.
+
+Unless supported by a separately verifiable contract, authorization, certification, accreditation, designation, or written government statement, this ecosystem and its outputs must **not** be represented as:
+
+- approved, certified, accredited, sponsored, endorsed, operated, or authorized by the U.S. Government or any agency;
+- an official government product, service, system, program, office, unit, platform, record, or communication;
+- evidence of security-clearance status, procurement eligibility, contract award, operational tasking, or authorization to act;
+- proof that a repository or build is compliant merely because a local policy check passes.
+
+CI/CD, policy engines, documentation, dashboards, receipts, and release artifacts must use bounded language such as **“alignment check,” “implementation mapping,” “evidence generated,” or “local controls passed.”** They must not emit claims such as **“DoW approved,” “DoD certified,” “government accredited,” or equivalent** unless the claim is backed by explicit, current, verifiable authority.
+
+Government seals, badges, marks, and visual identity must not be used in project branding or presentation in a manner that reasonably implies sponsorship or endorsement. Where such material is reproduced for commentary, education, or documentation, the surrounding context should make its reference-only nature clear.
+
 ---
 
 **Canonical rule:** capability is not authority. Authorization must be explicit, scoped, attributable, and verifiable before consequential external action.
