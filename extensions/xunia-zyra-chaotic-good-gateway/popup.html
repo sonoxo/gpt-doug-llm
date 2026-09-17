@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>XUNIA ZYRA Gateway</title>
+  <style>
+    body { font: 13px system-ui, sans-serif; min-width: 390px; margin: 0; padding: 14px; }
+    h1 { font-size: 16px; margin: 0 0 5px; }
+    h2 { font-size: 13px; margin: 12px 0 6px; }
+    p { margin: 6px 0 10px; }
+    .row { display: flex; gap: 6px; margin: 7px 0; flex-wrap: wrap; }
+    input, button, textarea { font: inherit; }
+    input, textarea { width: 100%; box-sizing: border-box; padding: 7px; }
+    button { padding: 7px 10px; cursor: pointer; }
+    #status, #scan { padding: 8px; border: 1px solid; border-radius: 6px; margin-bottom: 9px; white-space: pre-wrap; }
+    #snapshot { max-height: 220px; overflow: auto; white-space: pre-wrap; word-break: break-word; border: 1px solid; border-radius: 6px; padding: 8px; }
+    .muted { opacity: 0.72; }
+    .danger { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>XUNIA × ZYRA Chaotic Good Gateway</h1>
+  <p class="muted">Local-only browser shield. Read-first; writes require temporary arming.</p>
+  <div id="status">Loading…</div>
+  <div id="scan">No scan yet.</div>
+
+  <div class="row">
+    <button id="scanNow">Shield scan</button>
+    <button id="snapshotNow">Snapshot</button>
+    <button id="startLoop">Start 2s loop</button>
+    <button id="stopLoop">Stop loop</button>
+  </div>
+
+  <div class="row">
+    <button id="shieldOn">Shield ON</button>
+    <button id="shieldOff">Shield OFF</button>
+    <button id="arm">Arm writes 5m</button>
+    <button id="disarm">Disarm</button>
+    <button id="panic" class="danger">PANIC STOP</button>
+  </div>
+
+  <h2>Browser action</h2>
+  <label>CSS selector</label>
+  <input id="selector" placeholder="#id, button, [data-testid=…]" />
+  <div class="row">
+    <button id="highlight">Highlight</button>
+    <button id="focus">Focus</button>
+    <button id="click">Click</button>
+  </div>
+
+  <label>Text (never written to the audit log)</label>
+  <textarea id="text" rows="2" placeholder="Text to enter"></textarea>
+  <div class="row">
+    <button id="type">Type</button>
+    <button id="up">Scroll ↑</button>
+    <button id="down">Scroll ↓</button>
+  </div>
+
+  <h2>Latest page snapshot</h2>
+  <pre id="snapshot">None yet.</pre>
+  <script src="popup.js"></script>
+</body>
+</html>
