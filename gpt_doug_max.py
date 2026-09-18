@@ -275,7 +275,13 @@ class Brain:
 
         self.backend = llm_backend
         self.history: list[dict[str, str]] = []
-        self.system = (
+        self.prompt_path = Path(
+            os.getenv(
+                "GPT_DOUG_GOD_PROMPT",
+                str(Path.home() / ".gpt-doug" / "GOD_PROMPT.md"),
+            )
+        ).expanduser()
+        self.base_system = (
             "You are GPT-Doug MAX, the concise terminal operator for this repository. "
             "XUNIA provides local/multi-provider reasoning and retrieval; ZYRA provides "
             "bounded agent execution; Palantir Foundry provides governed ontology/data "
@@ -284,9 +290,47 @@ class Brain:
             "happened unless the terminal actually returns a successful receipt. "
             "Prefer short actionable answers. Human approval remains required for mutations."
         )
+        self.system = ""
+        self.reload_system_prompt()
+
+    def reload_system_prompt(self) -> dict[str, Any]:
+        extra = ""
+        try:
+            if self.prompt_path.exists():
+                extra = self.prompt_path.read_text(encoding="utf-8").strip()
+        except Exception as exc:
+            self.system = self.base_system
+            return {
+                "loaded": False,
+                "path": str(self.prompt_path),
+                "chars": 0,
+                "error": f"{type(exc).__name__}: {exc}",
+            }
+
+        self.system = self.base_system
+        if extra:
+            self.system += (
+                "\n\nGPT-DOUG MASTER DIRECTIVE (user-configured):\n"
+                + extra
+            )
+        return {
+            "loaded": bool(extra),
+            "path": str(self.prompt_path),
+            "chars": len(extra),
+        }
+
+    def prompt_status(self) -> dict[str, Any]:
+        return {
+            "path": str(self.prompt_path),
+            "exists": self.prompt_path.exists(),
+            "system_chars": len(self.system),
+            "master_loaded": "GPT-DOUG MASTER DIRECTIVE" in self.system,
+        }
 
     def health(self) -> dict[str, Any]:
-        return self.backend.health()
+        payload = dict(self.backend.health())
+        payload["master_prompt"] = self.prompt_status()
+        return payload
 
     def ask(self, prompt: str, context: str = "") -> str:
         messages: list[dict[str, str]] = [{"role": "system", "content": self.system}]
@@ -580,7 +624,9 @@ class MaxShell:
         print(
             """Commands
   /status                  system + git + provider + visual-state health
-  /brain                   provider health
+  /brain                   provider health + master-prompt status
+  /prompt                  show master-prompt wiring status
+  /reloadprompt            reload ~/.gpt-doug/GOD_PROMPT.md live
   /xunia <prompt>          local GPT-XUNIA-GODIS prompt
   /rag <question>          local repository-grounded answer
   /agent <goal>            bounded ZYRA coding mission (requires /arm)
@@ -620,6 +666,11 @@ converted into a shell command.
             self.cmd_status()
         elif cmd == "/brain":
             print(json.dumps(self.brain.health(), indent=2, default=str))
+        elif cmd == "/prompt":
+            print(json.dumps(self.brain.prompt_status(), indent=2, default=str))
+        elif cmd == "/reloadprompt":
+            print(json.dumps(self.brain.reload_system_prompt(), indent=2, default=str))
+            self.set_state("IDLE", "master prompt reloaded")
         elif cmd == "/xunia":
             self.cmd_xunia(rest or "Report your current capabilities in one paragraph.")
         elif cmd == "/rag":
