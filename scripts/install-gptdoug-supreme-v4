@@ -5,12 +5,14 @@ ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
 BIN="$HOME/.local/bin"
 STATE="$HOME/.gpt-doug"
 CONFIG="$STATE/env"
+ZSHRC="$HOME/.zshrc"
 STAMP="$(date +%Y%m%d-%H%M%S)"
+BEGIN="# >>> GPT-DOUG HOME >>>"
 
 cd "$ROOT" || exit 1
 
 mkdir -p "$BIN" "$STATE"
-touch "$CONFIG"
+touch "$CONFIG" "$ZSHRC"
 
 if [[ -f "$BIN/gptdoug-home" ]]; then
   cp "$BIN/gptdoug-home" "$BIN/gptdoug-home.backup-$STAMP"
@@ -106,6 +108,19 @@ tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
 echo "GPT-DOUG HOME paused. Run: doug-on"
 SH
 chmod +x "$BIN/doug-off"
+
+grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$ZSHRC" || echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$ZSHRC"
+
+if ! grep -qF "$BEGIN" "$ZSHRC"; then
+cat >> "$ZSHRC" <<'SH'
+
+# >>> GPT-DOUG HOME >>>
+if [[ -o interactive ]] && [[ -z "${TMUX:-}" ]] && [[ -x "$HOME/.local/bin/gptdoug-home" ]] && [[ ! -e "$HOME/.gpt-doug/STOP" ]]; then
+  "$HOME/.local/bin/gptdoug-home" </dev/tty >/dev/tty 2>&1 || true
+fi
+# <<< GPT-DOUG HOME <<<
+SH
+fi
 
 rm -f "$STATE/STOP"
 echo auto > "$STATE/blackhouse-mode"
