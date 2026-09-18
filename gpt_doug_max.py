@@ -45,16 +45,13 @@ DIM = "\033[2m"
 RESET = "\033[0m"
 
 READ_ONLY_COMMANDS = {
-    "pwd", "ls", "cat", "head", "tail", "sed", "grep", "rg", "find", "which",
-    "command", "type", "env", "printenv", "uname", "whoami", "id", "date", "df",
-    "du", "ps", "pgrep", "git", "python", "python3", "pytest", "ruff", "node",
-    "npm", "npx", "pnpm", "yarn", "ollama", "gh", "curl",
+    "pwd", "ls", "cat", "head", "tail", "grep", "rg", "which", "type", "printenv",
+    "uname", "whoami", "id", "date", "df", "du", "ps", "pgrep", "git", "ollama",
 }
 READ_ONLY_GIT = {
-    "status", "diff", "log", "show", "branch", "rev-parse", "remote", "ls-files",
-    "grep", "describe", "tag", "worktree", "config",
+    "status", "diff", "log", "show", "rev-parse", "ls-files", "grep", "describe",
 }
-READ_ONLY_GH = {"status", "repo", "pr", "issue", "run", "workflow", "release", "api"}
+READ_ONLY_OLLAMA = {"list", "ps", "show"}
 MUTATION_TOKENS = {
     "rm", "mv", "cp", "chmod", "chown", "mkdir", "touch", "tee", "dd", "kill",
     "pkill", "launchctl", "brew", "pip", "pip3", "install", "uninstall", "push",
@@ -256,18 +253,18 @@ def shell_is_read_only(command: str) -> bool:
     tool = Path(parts[0]).name
     if tool not in READ_ONLY_COMMANDS:
         return False
-    if tool == "git" and len(parts) > 1:
-        return parts[1] in READ_ONLY_GIT
-    if tool == "gh" and len(parts) > 1:
-        if parts[1] not in READ_ONLY_GH:
+    if tool == "git":
+        if len(parts) < 2:
             return False
-        lowered = [p.lower() for p in parts]
-        if "--method" in lowered or "-x" in lowered:
-            return False
-    if tool == "curl":
-        lowered = [p.lower() for p in parts]
-        if any(flag in lowered for flag in {"-x", "--request", "-d", "--data", "--data-raw", "--form"}):
-            return False
+        if parts[1] in READ_ONLY_GIT:
+            return True
+        if parts[1] == "branch":
+            return parts[2:] == ["--show-current"]
+        if parts[1] == "remote":
+            return parts[2:] in ([], ["-v"], ["show"])
+        return False
+    if tool == "ollama":
+        return len(parts) > 1 and parts[1] in READ_ONLY_OLLAMA
     return True
 
 
