@@ -33,6 +33,7 @@ STATE_FILE = Path.home() / ".gpt-doug" / "max-shell-state.json"
 MODE_FILE = Path.home() / ".gpt-doug" / "blackhouse-mode"
 EMOTE_FILE = Path.home() / ".gpt-doug" / "visual-emote.json"
 CUSTOM_EMOTES_FILE = Path.home() / ".gpt-doug" / "emotes.json"
+WALK_FILE = Path.home() / ".gpt-doug" / "visual-walk.json"
 
 SKIN_CANDIDATES = [
     Path(os.environ["GPT_DOUG_SKIN"]).expanduser() if os.environ.get("GPT_DOUG_SKIN") else None,
@@ -499,6 +500,83 @@ def apply_emote(frame: Image.Image, emote: dict, t: float) -> Image.Image:
     return frame
 
 
+
+def resolve_walk() -> dict:
+    config = {
+        "mode": "off",
+        "speed": 1.0,
+        "range": 0.82,
+    }
+    try:
+        data = json.loads(WALK_FILE.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            mode = str(data.get("mode", "off")).strip().lower()
+            if mode in {"on", "walk"}:
+                mode = "patrol"
+            if mode not in {"off", "patrol", "wander"}:
+                mode = "patrol"
+            config["mode"] = mode
+            config["speed"] = max(0.20, min(float(data.get("speed", 1.0)), 3.5))
+            config["range"] = max(0.10, min(float(data.get("range", 0.82)), 1.0))
+    except Exception:
+        pass
+    return config
+
+
+def walk_position(cols: int, width: int, t: float, walk: dict) -> int:
+    available = max(0, cols - width)
+    if available <= 0 or walk.get("mode") == "off":
+        return available // 2
+
+    speed = float(walk.get("speed", 1.0))
+    span = available * float(walk.get("range", 0.82))
+    center = available / 2.0
+
+    if walk.get("mode") == "wander":
+        signal = (
+            0.68 * math.sin(t * 0.42 * speed)
+            + 0.22 * math.sin(t * 0.91 * speed + 1.8)
+            + 0.10 * math.sin(t * 1.71 * speed + 0.4)
+        )
+    else:
+        signal = math.sin(t * 0.50 * speed)
+
+    target = center + signal * span * 0.5
+    # Quantize movement to reduce full-row repaint pressure in Terminal.app.
+    return max(0, min(available, int(round(target))))
+
+
+def apply_walk_pose(frame: Image.Image, walk: dict, t: float) -> Image.Image:
+    if walk.get("mode") == "off":
+        return frame
+
+    speed = float(walk.get("speed", 1.0))
+    w, h = frame.size
+    head = (int(w * 0.27), int(h * 0.055), int(w * 0.73), int(h * 0.67))
+    shoulders = (int(w * 0.13), int(h * 0.60), int(w * 0.87), int(h * 0.97))
+
+    stride = math.sin(t * 5.0 * speed)
+    counter = math.sin(t * 2.5 * speed + math.pi / 2.0)
+    bob = abs(stride) * 0.75
+
+    frame = region_warp(
+        frame,
+        shoulders,
+        sx=1.0 + 0.008 * abs(stride),
+        sy=1.0 + 0.008 * abs(counter),
+        dx=stride * 0.65,
+        dy=bob * 0.45,
+        brightness=1.0 + 0.012 * abs(stride),
+    )
+    frame = region_warp(
+        frame,
+        head,
+        dx=-stride * 0.32,
+        dy=-bob * 0.16,
+    )
+    return frame
+
+
 class BinaryRain:
     def __init__(self):
         self.width = 0
@@ -869,11 +947,19 @@ def main() -> int:
             emote_values = emotion_motion.update(emote_target, emote_intensity, dt)
             frame = apply_emote(frame, emote_values, now - started)
 
+            walk = resolve_walk()
+            frame = apply_walk_pose(frame, walk, now - started)
+
             grid = compose(frame, rain, mode)
 
             cols, _rows = size
             width = len(grid[0]) if grid else 0
-            left = max(0, (cols - width) // 2)
+            raw_left = walk_position(cols, width, now - started, walk)
+            # Cap locomotion repaint cadence to ~5 Hz while preserving 15 FPS face motion.
+            left = raw_left if previous_left is None else (
+                raw_left if int((now - started) * 5) != int((now - started - dt) * 5)
+                else previous_left
+            )
 
             provider = str(bus.get("provider", "none"))
             model = str(bus.get("model", "unknown"))
@@ -882,7 +968,8 @@ def main() -> int:
             header = [
                 CYAN + "24K // GPT-DOUG SUPREME VISUAL V6" + RESET
                 + "  " + GREEN + f"[{mode.upper()}]" + RESET
-                + "  " + MAGENTA + f"EMOTE:{emote_name.upper()}" + RESET,
+                + "  " + MAGENTA + f"EMOTE:{emote_name.upper()}" + RESET
+                + "  " + CYAN + f"ROAM:{str(walk.get('mode', 'off')).upper()}" + RESET,
                 MAGENTA + f"{provider} // {model}" + RESET
                 + "  " + DIM + detail + RESET,
             ]
@@ -892,7 +979,7 @@ def main() -> int:
                 + f"  {int(FPS)}fps  {width}cols  "
                 + GREEN + "AUTO" + RESET
                 + "  "
-                + DIM + "blink breath gaze brow jaw emote-synth binary-depth" + RESET
+                + DIM + "blink breath gaze brow jaw emote-synth walk binary-depth" + RESET
             )
 
             image_row = len(header) + 1
