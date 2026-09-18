@@ -36,6 +36,7 @@ ROOT = Path(__file__).resolve().parent
 STATE_DIR = Path.home() / ".gpt-doug"
 STATE_FILE = STATE_DIR / "max-shell-state.json"
 EMOTE_FILE = STATE_DIR / "visual-emote.json"
+WALK_FILE = STATE_DIR / "visual-walk.json"
 
 CYAN = "\033[38;5;51m"
 MAGENTA = "\033[38;5;201m"
@@ -588,6 +589,60 @@ class MaxShell:
         )
         self.set_state("IDLE", f"facial emote {name}")
 
+    def cmd_walk(self, rest: str) -> None:
+        """Control bounded avatar locomotion inside the visual pane."""
+        args = shlex.split(rest)
+        if not args or args[0] in {"status", "help"}:
+            try:
+                payload = json.loads(WALK_FILE.read_text(encoding="utf-8"))
+            except Exception:
+                payload = {"mode": "off", "speed": 1.0, "range": 0.82}
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            print("usage: /walk off|patrol|wander [speed 0.2-3.5] [range 0.1-1.0]")
+            return
+
+        mode = args[0].strip().lower()
+        if mode in {"on", "walk"}:
+            mode = "patrol"
+        if mode in {"stop", "idle", "false", "0"}:
+            mode = "off"
+        if mode not in {"off", "patrol", "wander"}:
+            print("usage: /walk off|patrol|wander [speed 0.2-3.5] [range 0.1-1.0]")
+            return
+
+        speed = 1.0
+        roam_range = 0.82
+
+        if len(args) > 1:
+            try:
+                speed = max(0.20, min(float(args[1]), 3.5))
+            except ValueError:
+                pass
+
+        if len(args) > 2:
+            try:
+                roam_range = max(0.10, min(float(args[2]), 1.0))
+            except ValueError:
+                pass
+
+        STATE_DIR.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "mode": mode,
+            "speed": speed,
+            "range": roam_range,
+            "source": "gpt_doug_max",
+        }
+        WALK_FILE.write_text(
+            json.dumps(payload, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+        print(
+            CYAN
+            + f"WALK // {mode.upper()} // speed={speed:.2f} // range={roam_range:.2f}"
+            + RESET
+        )
+        self.set_state("IDLE", f"visual locomotion {mode}")
+
     def cmd_palantir(self, raw: str) -> None:
         try:
             from palantir_bridge import DougPalantirBridge
@@ -692,6 +747,7 @@ class MaxShell:
   /agents                  show installed agent surfaces
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
   /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
+  /walk <mode> [speed] [r] avatar patrol/wander inside the terminal visual pane
   /palantir <command>      Foundry/Ontology command; writes need arm+approval
   /github                  git/GitHub local status
   /test [targets...]       run pytest
@@ -749,6 +805,8 @@ converted into a shell command.
             self.cmd_swarm(rest)
         elif cmd in {"/emote", "/face"}:
             self.cmd_emote(rest)
+        elif cmd in {"/walk", "/roam"}:
+            self.cmd_walk(rest)
         elif cmd == "/palantir":
             self.cmd_palantir(rest or "status")
         elif cmd == "/github":
