@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-17T02:13:17Z",
+  "cutoff_at": "2026-09-17T08:56:57Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -606,6 +606,17 @@
       "reviewed_at": "2026-09-17T20:39:44Z",
       "sha256": "d3b279255248a7b1cc5c2d8d60bf24915d82388dd1db862815e386c1fb56625f",
       "size": 977,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/revenue-swarm-ci.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-18T08:56:46Z",
+      "reviewed_at": null,
+      "sha256": "3c54c5b64ec6f245d761325b61ff57bbe28b57724732e468c4d7f5ce4ccf65c4",
+      "size": 766,
       "validation_issues": [],
       "was_due": false
     },
@@ -2710,6 +2721,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/REVENUE_SWARM.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-18T08:56:46Z",
+      "reviewed_at": null,
+      "sha256": "94db73d3ea61accbd5373245666956b49e523ccab891b8fa6866ae5d6c039652",
+      "size": 2918,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/ROADMAP.md": {
       "actions": [],
       "binary": false,
@@ -2846,9 +2868,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-18T02:11:47Z",
+      "git_touched_at": "2026-09-18T02:12:14Z",
       "reviewed_at": null,
-      "sha256": "6754feae441698f9bc9a71d5f73142d2c72952315db989729d3af7a5913f04dd",
+      "sha256": "129457950a4a22a0e2f7074946c141150fc9917bf8fb216c5f6847cf837e435e",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -8122,6 +8144,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "safety-shield/policies/dowi-8430-01.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-18T08:56:46Z",
+      "reviewed_at": null,
+      "sha256": "66f12121848d83997aef3e851efab2ec36f61249752155d04bae604f5d24eb41",
+      "size": 2060,
+      "validation_issues": [],
+      "was_due": false
+    },
     "safety-shield/policies/external-model-egress.rego": {
       "actions": [],
       "binary": false,
@@ -9538,6 +9571,17 @@
       "reviewed_at": "2026-09-17T20:39:44Z",
       "sha256": "f9d426bf903933df069b5b1edaa29aeb52df4f70be9dc3f67b81938fc1735fb7",
       "size": 4802,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_revenue_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-18T08:56:46Z",
+      "reviewed_at": null,
+      "sha256": "90207b66bf6a781047fcd5f300adb2d3de8cb007535223f962f5a946d0e5b248",
+      "size": 3836,
       "validation_issues": [],
       "was_due": false
     },
@@ -12533,6 +12577,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "workers/revenue_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-18T08:56:46Z",
+      "reviewed_at": null,
+      "sha256": "31ac754cad1b1a21f5aa3f09d1a2446780941cc06dda9b6f74f8cce3770bb72a",
+      "size": 15217,
+      "validation_issues": [],
+      "was_due": false
+    },
     "workers/trust_dossier.py": {
       "actions": [],
       "binary": false,
@@ -14053,11 +14108,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-18T02:13:17Z",
+  "generated_at": "2026-09-18T08:56:57Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1277,
+  "tracked_files_reviewed": 1282,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
