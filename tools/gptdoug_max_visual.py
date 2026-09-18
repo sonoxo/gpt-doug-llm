@@ -42,8 +42,18 @@ if SKIN is None:
 
 FPS = max(15.0, min(float(os.environ.get("GPT_DOUG_VISUAL_FPS", "60")), 60.0))
 FRAME_TIME = 1.0 / FPS
-MAX_RENDER_COLS = max(64, min(int(os.environ.get("GPT_DOUG_VISUAL_COLS", "110")), 180))
-COLOR_STEP = max(4, min(int(os.environ.get("GPT_DOUG_COLOR_STEP", "16")), 64))
+
+# "24K" here means maximum-fidelity terminal sampling from the master portrait.
+# ANSI terminals cannot physically display a 24,576-pixel-wide raster; output is
+# still bounded by the visible terminal character grid.
+VISUAL_PRESET = os.environ.get("GPT_DOUG_VISUAL_PRESET", "").strip().lower()
+if VISUAL_PRESET in {"24k", "24k-master", "ultra"}:
+    MAX_RENDER_COLS = max(120, min(int(os.environ.get("GPT_DOUG_VISUAL_COLS", "240")), 320))
+    COLOR_STEP = max(4, min(int(os.environ.get("GPT_DOUG_COLOR_STEP", "8")), 32))
+else:
+    MAX_RENDER_COLS = max(64, min(int(os.environ.get("GPT_DOUG_VISUAL_COLS", "110")), 320))
+    COLOR_STEP = max(4, min(int(os.environ.get("GPT_DOUG_COLOR_STEP", "16")), 64))
+
 DIFF_FULL_THRESHOLD = max(0.15, min(float(os.environ.get("GPT_DOUG_DIFF_THRESHOLD", "0.58")), 0.95))
 
 RESET = "\033[0m"
@@ -433,7 +443,9 @@ def main() -> int:
             left = max(0, (cols - len(grid[0])) // 2) if grid and grid[0] else 0
 
             header_lines = [
-                "\033[38;2;0;240;255m24K // GPT-DOUG MAX // SMOOTH LIVE SKIN\033[0m"
+                "\033[38;2;0;240;255m24K // GPT-DOUG MAX // "
+                + ("24K MASTER TERMINAL SAMPLE" if VISUAL_PRESET in {"24k", "24k-master", "ultra"} else "SMOOTH LIVE SKIN")
+                + "\033[0m"
                 f"  \033[38;2;80;255;120m[{name}]\033[0m",
                 f"\033[38;2;255;70;220m{provider} // {model}\033[0m  {detail}",
             ]
