@@ -1,0 +1,6 @@
+#!/bin/zsh
+set -eu
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+cd "$ROOT"
+PY="$(command -v python3 || command -v python)"
+exec "$PY" "$ROOT/gpt_doug_max.py" "$@"
