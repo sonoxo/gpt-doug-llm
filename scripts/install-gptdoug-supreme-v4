@@ -1,0 +1,120 @@
+#!/bin/zsh
+set -eu
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+BIN="$HOME/.local/bin"
+STATE="$HOME/.gpt-doug"
+CONFIG="$STATE/env"
+STAMP="$(date +%Y%m%d-%H%M%S)"
+
+cd "$ROOT" || exit 1
+
+mkdir -p "$BIN" "$STATE"
+touch "$CONFIG"
+
+if [[ -f "$BIN/gptdoug-home" ]]; then
+  cp "$BIN/gptdoug-home" "$BIN/gptdoug-home.backup-$STAMP"
+fi
+
+cp "$ROOT/scripts/gptdoug-home-v4" "$BIN/gptdoug-home"
+chmod +x "$BIN/gptdoug-home"
+
+python3 - <<'PY'
+from pathlib import Path
+
+p = Path.home() / ".gpt-doug" / "env"
+
+settings = {
+    "GPT_DOUG_VISUAL_FPS": "15",
+    "GPT_DOUG_VISUAL_COLS": "132",
+    "GPT_DOUG_COLOR_STEP": "8",
+    "GPT_DOUG_MATRIX": "1",
+    "GPT_DOUG_MATRIX_FPS": "6",
+    "GPT_DOUG_BRIGHTNESS": "1.20",
+    "GPT_DOUG_SATURATION": "1.18",
+    "GPT_DOUG_SHARPNESS": "1.15",
+    "GPT_DOUG_VOICE_NAME": "Alex",
+}
+
+old = p.read_text().splitlines() if p.exists() else []
+out = []
+seen = set()
+
+for line in old:
+    if "=" not in line:
+        out.append(line)
+        continue
+    key = line.split("=", 1)[0].strip()
+    if key in settings:
+        if key not in seen:
+            out.append(f"{key}={settings[key]}")
+            seen.add(key)
+    else:
+        # Keep provider/model and unrelated user settings.
+        out.append(line)
+
+for key, value in settings.items():
+    if key not in seen:
+        out.append(f"{key}={value}")
+
+p.write_text("\n".join(out).rstrip() + "\n")
+PY
+
+cat > "$BIN/doug-mode" <<'SH'
+#!/bin/zsh
+mkdir -p "$HOME/.gpt-doug"
+echo "${1:-auto}" > "$HOME/.gpt-doug/blackhouse-mode"
+SH
+chmod +x "$BIN/doug-mode"
+
+for mode in auto idle listen think talk act eureka power error; do
+  cat > "$BIN/doug-$mode" <<SH
+#!/bin/zsh
+exec "$HOME/.local/bin/doug-mode" "$mode"
+SH
+  chmod +x "$BIN/doug-$mode"
+done
+
+cat > "$BIN/doug-say" <<'SH'
+#!/bin/zsh
+CONFIG="$HOME/.gpt-doug/env"
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+mkdir -p "$HOME/.gpt-doug"
+echo talk > "$HOME/.gpt-doug/blackhouse-mode"
+say -v "${GPT_DOUG_VOICE_NAME:-Alex}" "$*"
+echo auto > "$HOME/.gpt-doug/blackhouse-mode"
+SH
+chmod +x "$BIN/doug-say"
+
+cat > "$BIN/doug-on" <<'SH'
+#!/bin/zsh
+rm -f "$HOME/.gpt-doug/STOP"
+exec "$HOME/.local/bin/gptdoug-home"
+SH
+chmod +x "$BIN/doug-on"
+
+cat > "$BIN/doug-off" <<'SH'
+#!/bin/zsh
+mkdir -p "$HOME/.gpt-doug"
+touch "$HOME/.gpt-doug/STOP"
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
+echo "GPT-DOUG HOME paused. Run: doug-on"
+SH
+chmod +x "$BIN/doug-off"
+
+rm -f "$STATE/STOP"
+echo auto > "$STATE/blackhouse-mode"
+
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
+
+echo "GPT-DOUG SUPREME VISUAL V4 INSTALLED"
+echo "15 FPS // 132 COLS // BINARY DEPTH // NO SYNTHETIC SWARM"
+echo "MANNERISMS: BLINK BREATH GAZE BROWS JAW TALK POWER"
+echo
+exec "$BIN/gptdoug-home"
