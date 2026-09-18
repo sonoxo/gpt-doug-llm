@@ -47,7 +47,14 @@ FRAME_TIME = 1.0 / FPS
 # ANSI terminals cannot physically display a 24,576-pixel-wide raster; output is
 # still bounded by the visible terminal character grid.
 VISUAL_PRESET = os.environ.get("GPT_DOUG_VISUAL_PRESET", "").strip().lower()
-if VISUAL_PRESET in {"24k", "24k-master", "ultra"}:
+FAST_MODE = VISUAL_PRESET in {"sonic", "genesis", "speed", "16bit"}
+
+if FAST_MODE:
+    # Genesis-style performance target: 60 Hz, low-resolution sprite work,
+    # coarse 3-bit-per-channel-like color quantization, minimal full-frame FX.
+    MAX_RENDER_COLS = max(64, min(int(os.environ.get("GPT_DOUG_VISUAL_COLS", "96")), 128))
+    COLOR_STEP = max(16, min(int(os.environ.get("GPT_DOUG_COLOR_STEP", "32")), 64))
+elif VISUAL_PRESET in {"24k", "24k-master", "ultra"}:
     MAX_RENDER_COLS = max(120, min(int(os.environ.get("GPT_DOUG_VISUAL_COLS", "240")), 320))
     COLOR_STEP = max(4, min(int(os.environ.get("GPT_DOUG_COLOR_STEP", "8")), 32))
 else:
@@ -124,7 +131,8 @@ def fit(img: Image.Image) -> Image.Image:
     h = max(24, int(img.height * scale))
     if h % 2:
         h -= 1
-    return img.resize((w, h), Image.Resampling.LANCZOS)
+    sampler = Image.Resampling.NEAREST if FAST_MODE else Image.Resampling.LANCZOS
+    return img.resize((w, h), sampler)
 
 
 def rgb_shift(img: Image.Image, amount: int) -> Image.Image:
@@ -162,10 +170,19 @@ def warp_region(
         crop = ImageEnhance.Brightness(crop).enhance(brightness)
     cw, ch = max(1, x2 - x1), max(1, y2 - y1)
     nw, nh = max(2, int(cw * sx)), max(2, int(ch * sy))
-    crop = crop.resize((nw, nh), Image.Resampling.BICUBIC)
+    crop = crop.resize(
+        (nw, nh),
+        Image.Resampling.NEAREST if FAST_MODE else Image.Resampling.BICUBIC,
+    )
     out = img.copy()
     px = int((x1 + x2) / 2 - nw / 2 + dx)
     py = int((y1 + y2) / 2 - nh / 2 + dy)
+
+    if FAST_MODE:
+        # Hard sprite paste: no Gaussian mask allocation or convolution.
+        out.paste(crop, (px, py))
+        return out
+
     blur = max(1, min(nw, nh) // 20)
     mask = Image.new("L", (nw, nh), 255).filter(ImageFilter.GaussianBlur(blur))
     out.paste(crop, (px, py), mask)
@@ -220,25 +237,24 @@ def animate(base: Image.Image, levels: dict[str, float], t: float) -> Image.Imag
     left_brow = (int(w * 0.32), int(h * 0.25), int(w * 0.48), int(h * 0.34))
     right_brow = (int(w * 0.52), int(h * 0.25), int(w * 0.68), int(h * 0.34))
 
-    # Breathing lives mostly in the shoulders, so the whole image does not
-    # thrash every frame. This is much friendlier to differential painting.
-    breath = math.sin(t * 1.25)
-    frame = warp_region(
-        frame,
-        shoulders,
-        sy=1.0 + 0.007 * breath,
-        dy=0.55 * breath,
-        brightness=1.0 + 0.012 * max(0.0, breath),
-    )
+    if not FAST_MODE:
+        # High-fidelity mode: breathing + micro head motion.
+        breath = math.sin(t * 1.25)
+        frame = warp_region(
+            frame,
+            shoulders,
+            sy=1.0 + 0.007 * breath,
+            dy=0.55 * breath,
+            brightness=1.0 + 0.012 * max(0.0, breath),
+        )
 
-    # Subtle head presence / listening lean / action focus.
-    head_dx = (
-        math.sin(t * 0.62) * 0.55
-        + listen * math.sin(t * 0.95) * 0.65
-        + act * math.sin(t * 2.4) * 0.35
-    )
-    head_dy = math.sin(t * 0.83) * 0.34
-    frame = warp_region(frame, head, dx=head_dx, dy=head_dy)
+        head_dx = (
+            math.sin(t * 0.62) * 0.55
+            + listen * math.sin(t * 0.95) * 0.65
+            + act * math.sin(t * 2.4) * 0.35
+        )
+        head_dy = math.sin(t * 0.83) * 0.34
+        frame = warp_region(frame, head, dx=head_dx, dy=head_dy)
 
     # Natural blink remains active in every non-offline state.
     blink = blink_amount(t) * (1.0 - offline)
@@ -274,28 +290,52 @@ def animate(base: Image.Image, levels: dict[str, float], t: float) -> Image.Imag
 
     # THINK/ACT are deliberately restrained: small chromatic drift, not a
     # full-frame seizure. POWER is the intentionally dramatic exception.
-    shift = int(round(
-        think * math.sin(t * 4.6) * 1.1
-        + act * math.sin(t * 7.0) * 1.0
-        + power * (2.0 + abs(math.sin(t * 8.0)) * 3.0)
-        + error * math.sin(t * 13.0) * 2.0
-    ))
-    if shift:
-        frame = rgb_shift(frame, shift)
+    if FAST_MODE:
+        # Keep effects sprite-local. Avoid transforms that invalidate the entire
+        # terminal grid every frame.
+        if think > 0.01:
+            pulse = 1.0 + 0.14 * think * abs(math.sin(t * 5.0))
+            frame = warp_region(frame, left_eye, brightness=pulse)
+            frame = warp_region(frame, right_eye, brightness=pulse)
+        if act > 0.01:
+            frame = warp_region(
+                frame,
+                mouth,
+                dy=math.sin(t * 8.0) * 0.35 * act,
+                brightness=1.0 + 0.05 * act,
+            )
+        if power > 0.01:
+            pulse = 1.0 + 0.50 * power * abs(math.sin(t * 8.0))
+            frame = warp_region(frame, left_eye, brightness=pulse)
+            frame = warp_region(frame, right_eye, brightness=pulse)
+        if error > 0.01:
+            frame = warp_region(frame, left_eye, brightness=1.0 + 0.20 * error)
+            frame = warp_region(frame, right_eye, brightness=1.0 + 0.20 * error)
+        if offline > 0.01:
+            frame = ImageEnhance.Brightness(frame).enhance(1.0 - 0.45 * offline)
+    else:
+        shift = int(round(
+            think * math.sin(t * 4.6) * 1.1
+            + act * math.sin(t * 7.0) * 1.0
+            + power * (2.0 + abs(math.sin(t * 8.0)) * 3.0)
+            + error * math.sin(t * 13.0) * 2.0
+        ))
+        if shift:
+            frame = rgb_shift(frame, shift)
 
-    if power > 0.01:
-        pulse = abs(math.sin(t * 6.8))
-        frame = ImageEnhance.Contrast(frame).enhance(1.0 + power * (0.10 + 0.08 * pulse))
-        frame = ImageEnhance.Brightness(frame).enhance(1.0 + power * (0.08 + 0.10 * pulse))
-        if power > 0.35:
-            bloom = frame.filter(ImageFilter.GaussianBlur(1.6 + 1.4 * pulse))
-            frame = Image.blend(frame, bloom, min(0.08, 0.035 + power * 0.035))
+        if power > 0.01:
+            pulse = abs(math.sin(t * 6.8))
+            frame = ImageEnhance.Contrast(frame).enhance(1.0 + power * (0.10 + 0.08 * pulse))
+            frame = ImageEnhance.Brightness(frame).enhance(1.0 + power * (0.08 + 0.10 * pulse))
+            if power > 0.35:
+                bloom = frame.filter(ImageFilter.GaussianBlur(1.6 + 1.4 * pulse))
+                frame = Image.blend(frame, bloom, min(0.08, 0.035 + power * 0.035))
 
-    if error > 0.01:
-        frame = tint(frame, (255, 0, 0), 0.10 * error)
+        if error > 0.01:
+            frame = tint(frame, (255, 0, 0), 0.10 * error)
 
-    if offline > 0.01:
-        frame = ImageEnhance.Brightness(frame).enhance(1.0 - 0.58 * offline)
+        if offline > 0.01:
+            frame = ImageEnhance.Brightness(frame).enhance(1.0 - 0.58 * offline)
 
     return frame
 
@@ -444,7 +484,11 @@ def main() -> int:
 
             header_lines = [
                 "\033[38;2;0;240;255m24K // GPT-DOUG MAX // "
-                + ("24K MASTER TERMINAL SAMPLE" if VISUAL_PRESET in {"24k", "24k-master", "ultra"} else "SMOOTH LIVE SKIN")
+                + (
+                    "SONIC SPEED // 60HZ SPRITE MODE"
+                    if FAST_MODE
+                    else ("24K MASTER TERMINAL SAMPLE" if VISUAL_PRESET in {"24k", "24k-master", "ultra"} else "SMOOTH LIVE SKIN")
+                )
                 + "\033[0m"
                 f"  \033[38;2;80;255;120m[{name}]\033[0m",
                 f"\033[38;2;255;70;220m{provider} // {model}\033[0m  {detail}",
