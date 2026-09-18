@@ -124,8 +124,9 @@ class VoiceEngine:
         if not self.enabled or not self.available or not text.strip():
             return
         self.stop()
+        voice_name = os.getenv("GPT_DOUG_VOICE_NAME", "Alex").strip() or "Alex"
         self._proc = subprocess.Popen(
-            ["say", "-r", str(self.rate), text[:4000]],
+            ["say", "-v", voice_name, "-r", str(self.rate), text[:4000]],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             text=True,
