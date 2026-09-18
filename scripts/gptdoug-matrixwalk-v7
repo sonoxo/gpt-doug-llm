@@ -1,0 +1,69 @@
+#!/bin/zsh
+set -u
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+STATE="$HOME/.gpt-doug"
+ENVFILE="$STATE/env"
+SESSION="gptdoug-matrixwalk"
+
+mkdir -p "$STATE"
+cd "$ROOT" || exit 1
+
+if [[ -f "$ENVFILE" ]]; then
+  set -a
+  source "$ENVFILE"
+  set +a
+fi
+
+export GPT_DOUG_VISUAL_FPS="${GPT_DOUG_VISUAL_FPS:-15}"
+export GPT_DOUG_VISUAL_COLS="${GPT_DOUG_VISUAL_COLS:-132}"
+export GPT_DOUG_COLOR_STEP="${GPT_DOUG_COLOR_STEP:-8}"
+export GPT_DOUG_MATRIX=1
+export GPT_DOUG_MATRIX_FPS="${GPT_DOUG_MATRIX_FPS:-6}"
+export GPT_DOUG_BRIGHTNESS="${GPT_DOUG_BRIGHTNESS:-1.26}"
+export GPT_DOUG_SATURATION="${GPT_DOUG_SATURATION:-1.24}"
+export GPT_DOUG_SHARPNESS="${GPT_DOUG_SHARPNESS:-1.15}"
+
+if [[ -z "${TMUX:-}" ]]; then
+  python3 tools/gptdoug_matrix_boot_v7.py || exit $?
+fi
+
+cat > "$STATE/visual-walk.json" <<'JSON'
+{"mode":"wander","speed":1.10,"range":1.0,"source":"matrixwalk-v7"}
+JSON
+
+cat > "$STATE/visual-emote.json" <<'JSON'
+{"name":"auto","intensity":1.0,"until":0,"source":"matrixwalk-v7"}
+JSON
+
+for s in gptdoug-matrixwalk gptdoug-dreamwave gptdoug-vaporwave gptdoug-supreme gptdoug-max gptdoug-blackhouse; do
+  tmux kill-session -t "$s" 2>/dev/null || true
+done
+
+tmux new-session -d -s "$SESSION" -n "MATRIX" -c "$ROOT"   "python3 tools/gptdoug_supreme_visual_v4.py"
+
+tmux split-window -h -p 28 -t "$SESSION":0.0 -c "$ROOT"   "python3 tools/gptdoug_matrixops_v7.py"
+
+tmux select-pane -t "$SESSION":0.0
+tmux split-window -v -p 35 -t "$SESSION":0.0 -c "$ROOT"   "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
+
+tmux set-option -t "$SESSION" status on
+tmux set-option -t "$SESSION" status-position top
+tmux set-option -t "$SESSION" status-style "bg=#020602,fg=#c8ffd8"
+tmux set-option -t "$SESSION" status-left-length 120
+tmux set-option -t "$SESSION" status-right-length 100
+tmux set-option -t "$SESSION" status-left '#[fg=#32ff78,bold]GPT-DOUG #[fg=#86ffc0]// MATRIX WALK #[fg=#00eaff]// XUNIA+ZYRA'
+tmux set-option -t "$SESSION" status-right '#[fg=#32ff78]◆ LINKED #[fg=#00eaff]● DYNAMIC #[fg=#bbffda]∞ '
+tmux set-option -t "$SESSION" pane-border-style "fg=#12351f"
+tmux set-option -t "$SESSION" pane-active-border-style "fg=#32ff78"
+tmux set-option -t "$SESSION" pane-border-status top
+tmux set-option -t "$SESSION" pane-border-format '#[fg=#32ff78]◆ #[fg=#9affbd,bold]#{pane_title} '
+tmux set-option -t "$SESSION" mouse on
+tmux set-option -t "$SESSION" escape-time 0
+tmux set-option -t "$SESSION" remain-on-exit off
+
+tmux select-pane -t "$SESSION":0.0 -T "🤖 GPT-DOUG // WALKING MATRIX"
+tmux select-pane -t "$SESSION":0.1 -T "🟢 MATRIXOPS // LIVE RESPONSE"
+tmux select-pane -t "$SESSION":0.2 -T "⌨ GPT-DOUG // COMMAND LINK"
+tmux select-pane -t "$SESSION":0.2
+
+exec tmux attach-session -t "$SESSION"
