@@ -35,6 +35,7 @@ from typing import Any, Iterable
 ROOT = Path(__file__).resolve().parent
 STATE_DIR = Path.home() / ".gpt-doug"
 STATE_FILE = STATE_DIR / "max-shell-state.json"
+EMOTE_FILE = STATE_DIR / "visual-emote.json"
 
 CYAN = "\033[38;5;51m"
 MAGENTA = "\033[38;5;201m"
@@ -529,6 +530,64 @@ class MaxShell:
             self.set_state("ERROR", str(exc))
             print(RED + f"SWARM ERROR // {exc}" + RESET)
 
+    def cmd_emote(self, rest: str) -> None:
+        """Drive the visual cortex with built-in or procedural facial emotes."""
+        presets = [
+            "auto", "neutral", "happy", "grin", "laugh", "curious",
+            "skeptical", "focused", "surprised", "proud", "sleepy",
+            "wink", "intense", "celebrate", "glitch",
+        ]
+        args = shlex.split(rest)
+
+        if not args or args[0] in {"list", "help"}:
+            print("EMOTES // " + " ".join(presets))
+            print("Any other name becomes a stable procedural expression.")
+            print("usage: /emote <name> [intensity 0-1.5] [seconds]")
+            return
+
+        name = args[0].strip().lower()
+        if name in {"off", "clear", "reset"}:
+            name = "auto"
+
+        if name == "random":
+            pool = presets[1:]
+            name = pool[int(time.time()) % len(pool)]
+
+        intensity = 1.0
+        seconds = 0.0
+
+        if len(args) > 1:
+            try:
+                intensity = max(0.0, min(float(args[1]), 1.5))
+            except ValueError:
+                pass
+
+        if len(args) > 2:
+            try:
+                seconds = max(0.0, min(float(args[2]), 3600.0))
+            except ValueError:
+                pass
+
+        STATE_DIR.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "name": name,
+            "intensity": intensity,
+            "until": time.time() + seconds if seconds > 0 else 0,
+            "source": "gpt_doug_max",
+        }
+        EMOTE_FILE.write_text(
+            json.dumps(payload, indent=2, sort_keys=True),
+            encoding="utf-8",
+        )
+
+        print(
+            MAGENTA
+            + f"EMOTE // {name.upper()} // intensity={intensity:.2f}"
+            + (f" // {seconds:.1f}s" if seconds > 0 else " // persistent")
+            + RESET
+        )
+        self.set_state("IDLE", f"facial emote {name}")
+
     def cmd_palantir(self, raw: str) -> None:
         try:
             from palantir_bridge import DougPalantirBridge
@@ -632,6 +691,7 @@ class MaxShell:
   /agent <goal>            bounded ZYRA coding mission (requires /arm)
   /agents                  show installed agent surfaces
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
+  /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
   /palantir <command>      Foundry/Ontology command; writes need arm+approval
   /github                  git/GitHub local status
   /test [targets...]       run pytest
@@ -687,6 +747,8 @@ converted into a shell command.
             self.cmd_agents()
         elif cmd == "/swarm":
             self.cmd_swarm(rest)
+        elif cmd in {"/emote", "/face"}:
+            self.cmd_emote(rest)
         elif cmd == "/palantir":
             self.cmd_palantir(rest or "status")
         elif cmd == "/github":
