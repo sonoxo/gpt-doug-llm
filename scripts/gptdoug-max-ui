@@ -1,10 +1,18 @@
 #!/bin/zsh
 set -eu
+
+CONFIG="$HOME/.gpt-doug/env"
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
 ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
 cd "$ROOT"
 
 if ! command -v tmux >/dev/null 2>&1; then
-  echo "GPT-DOUG MAX UI uses tmux to keep the 60fps skin and command shell in separate PTYs."
+  echo "GPT-DOUG MAX UI uses tmux to keep the live skin and command shell in separate PTYs."
   echo "Install once: brew install tmux"
   echo "Then run: scripts/gptdoug-max-ui"
   exit 1
