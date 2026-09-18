@@ -13,6 +13,7 @@ Design goals:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
@@ -30,6 +31,8 @@ except ImportError as exc:
 
 STATE_FILE = Path.home() / ".gpt-doug" / "max-shell-state.json"
 MODE_FILE = Path.home() / ".gpt-doug" / "blackhouse-mode"
+EMOTE_FILE = Path.home() / ".gpt-doug" / "visual-emote.json"
+CUSTOM_EMOTES_FILE = Path.home() / ".gpt-doug" / "emotes.json"
 
 SKIN_CANDIDATES = [
     Path(os.environ["GPT_DOUG_SKIN"]).expanduser() if os.environ.get("GPT_DOUG_SKIN") else None,
@@ -239,6 +242,261 @@ class Motion:
             target = 1.0 if name == mode else 0.0
             self.level[name] += (target - self.level[name]) * alpha
         return self.level
+
+
+
+EMOTE_NEUTRAL = {
+    "brow_l": 0.0,
+    "brow_r": 0.0,
+    "eye_l": 1.0,
+    "eye_r": 1.0,
+    "eye_bright": 1.0,
+    "mouth_sx": 1.0,
+    "mouth_sy": 1.0,
+    "mouth_dy": 0.0,
+    "head_dx": 0.0,
+    "head_dy": 0.0,
+    "jitter": 0.0,
+}
+
+EMOTE_PRESETS = {
+    "neutral": {},
+    "happy": {
+        "brow_l": 0.8, "brow_r": 0.8,
+        "eye_l": 0.86, "eye_r": 0.86,
+        "eye_bright": 1.16,
+        "mouth_sx": 1.12, "mouth_sy": 0.92, "mouth_dy": -0.4,
+    },
+    "grin": {
+        "brow_l": 1.0, "brow_r": 1.0,
+        "eye_l": 0.74, "eye_r": 0.74,
+        "eye_bright": 1.20,
+        "mouth_sx": 1.18, "mouth_sy": 1.06, "mouth_dy": -0.25,
+    },
+    "laugh": {
+        "brow_l": 1.35, "brow_r": 1.35,
+        "eye_l": 0.63, "eye_r": 0.63,
+        "eye_bright": 1.22,
+        "mouth_sx": 1.12, "mouth_sy": 1.32, "mouth_dy": 0.75,
+    },
+    "curious": {
+        "brow_l": 1.65, "brow_r": -0.35,
+        "eye_l": 1.08, "eye_r": 0.95,
+        "eye_bright": 1.15,
+        "mouth_sx": 0.96, "mouth_sy": 0.96,
+        "head_dx": 0.55, "head_dy": -0.15,
+    },
+    "skeptical": {
+        "brow_l": 1.0, "brow_r": -1.15,
+        "eye_l": 0.94, "eye_r": 0.72,
+        "eye_bright": 1.06,
+        "mouth_sx": 0.94, "mouth_sy": 0.88, "mouth_dy": 0.25,
+        "head_dx": -0.35,
+    },
+    "focused": {
+        "brow_l": -0.95, "brow_r": -0.95,
+        "eye_l": 0.82, "eye_r": 0.82,
+        "eye_bright": 1.24,
+        "mouth_sx": 0.93, "mouth_sy": 0.86,
+    },
+    "surprised": {
+        "brow_l": 2.2, "brow_r": 2.2,
+        "eye_l": 1.24, "eye_r": 1.24,
+        "eye_bright": 1.34,
+        "mouth_sx": 0.84, "mouth_sy": 1.42, "mouth_dy": 0.65,
+    },
+    "proud": {
+        "brow_l": 0.55, "brow_r": 0.55,
+        "eye_l": 0.90, "eye_r": 0.90,
+        "eye_bright": 1.18,
+        "mouth_sx": 1.07, "mouth_sy": 0.88, "mouth_dy": -0.15,
+        "head_dy": -0.45,
+    },
+    "sleepy": {
+        "brow_l": -0.25, "brow_r": -0.25,
+        "eye_l": 0.42, "eye_r": 0.42,
+        "eye_bright": 0.96,
+        "mouth_sx": 0.98, "mouth_sy": 0.92,
+        "head_dy": 0.35,
+    },
+    "wink": {
+        "brow_l": 0.85, "brow_r": 0.15,
+        "eye_l": 0.18, "eye_r": 0.95,
+        "eye_bright": 1.22,
+        "mouth_sx": 1.10, "mouth_sy": 0.90,
+    },
+    "intense": {
+        "brow_l": -1.65, "brow_r": -1.65,
+        "eye_l": 0.74, "eye_r": 0.74,
+        "eye_bright": 1.48,
+        "mouth_sx": 0.90, "mouth_sy": 0.82,
+    },
+    "celebrate": {
+        "brow_l": 1.55, "brow_r": 1.55,
+        "eye_l": 0.78, "eye_r": 0.78,
+        "eye_bright": 1.42,
+        "mouth_sx": 1.18, "mouth_sy": 1.18, "mouth_dy": 0.25,
+        "head_dy": -0.55,
+    },
+    "glitch": {
+        "brow_l": -0.4, "brow_r": 0.9,
+        "eye_l": 0.78, "eye_r": 1.10,
+        "eye_bright": 1.35,
+        "mouth_sx": 0.96, "mouth_sy": 1.08,
+        "jitter": 1.0,
+    },
+}
+
+AUTO_EMOTE_BY_MODE = {
+    "idle": "neutral",
+    "listen": "curious",
+    "think": "focused",
+    "talk": "happy",
+    "act": "focused",
+    "eureka": "surprised",
+    "power": "intense",
+    "error": "skeptical",
+}
+
+
+def _complete_emote(values: dict) -> dict:
+    out = dict(EMOTE_NEUTRAL)
+    for key, value in values.items():
+        if key in out:
+            try:
+                out[key] = float(value)
+            except (TypeError, ValueError):
+                pass
+    return out
+
+
+def _custom_emotes() -> dict:
+    try:
+        data = json.loads(CUSTOM_EMOTES_FILE.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def procedural_emote(name: str) -> dict:
+    """Generate a stable bounded expression from any arbitrary emote name."""
+    digest = hashlib.sha256(name.encode("utf-8")).digest()
+
+    def unit(i: int) -> float:
+        return digest[i % len(digest)] / 255.0
+
+    return _complete_emote({
+        "brow_l": -1.3 + 3.1 * unit(0),
+        "brow_r": -1.3 + 3.1 * unit(1),
+        "eye_l": 0.58 + 0.60 * unit(2),
+        "eye_r": 0.58 + 0.60 * unit(3),
+        "eye_bright": 1.02 + 0.34 * unit(4),
+        "mouth_sx": 0.90 + 0.27 * unit(5),
+        "mouth_sy": 0.78 + 0.55 * unit(6),
+        "mouth_dy": -0.55 + 1.10 * unit(7),
+        "head_dx": -0.65 + 1.30 * unit(8),
+        "head_dy": -0.40 + 0.80 * unit(9),
+        "jitter": 0.25 * unit(10),
+    })
+
+
+def resolve_emote(mode: str) -> tuple[str, dict, float]:
+    name = "auto"
+    intensity = 1.0
+
+    try:
+        payload = json.loads(EMOTE_FILE.read_text(encoding="utf-8"))
+        if isinstance(payload, dict):
+            until = float(payload.get("until", 0) or 0)
+            if until and time.time() > until:
+                name = "auto"
+            else:
+                name = str(payload.get("name", "auto")).strip().lower() or "auto"
+                intensity = max(0.0, min(float(payload.get("intensity", 1.0)), 1.5))
+    except Exception:
+        pass
+
+    if name in {"auto", "state"}:
+        name = AUTO_EMOTE_BY_MODE.get(mode, "neutral")
+
+    custom = _custom_emotes()
+    if name in custom and isinstance(custom[name], dict):
+        values = _complete_emote(custom[name])
+    elif name in EMOTE_PRESETS:
+        values = _complete_emote(EMOTE_PRESETS[name])
+    else:
+        values = procedural_emote(name)
+
+    return name, values, intensity
+
+
+class EmotionMotion:
+    def __init__(self):
+        self.current = dict(EMOTE_NEUTRAL)
+
+    def update(self, target: dict, intensity: float, dt: float) -> dict:
+        alpha = 1.0 - math.exp(-8.5 * max(0.001, min(dt, 0.09)))
+        out = {}
+        for key, neutral in EMOTE_NEUTRAL.items():
+            desired = neutral + (target.get(key, neutral) - neutral) * intensity
+            self.current[key] += (desired - self.current[key]) * alpha
+            out[key] = self.current[key]
+        return out
+
+
+def apply_emote(frame: Image.Image, emote: dict, t: float) -> Image.Image:
+    w, h = frame.size
+
+    head = (int(w * 0.27), int(h * 0.055), int(w * 0.73), int(h * 0.67))
+    left_eye = (int(w * 0.35), int(h * 0.30), int(w * 0.47), int(h * 0.43))
+    right_eye = (int(w * 0.53), int(h * 0.30), int(w * 0.65), int(h * 0.43))
+    left_brow = (int(w * 0.32), int(h * 0.25), int(w * 0.48), int(h * 0.34))
+    right_brow = (int(w * 0.52), int(h * 0.25), int(w * 0.68), int(h * 0.34))
+    mouth = (int(w * 0.39), int(h * 0.51), int(w * 0.61), int(h * 0.65))
+
+    jitter = emote.get("jitter", 0.0)
+    jitter_x = math.sin(t * 31.0) * jitter
+    jitter_y = math.sin(t * 23.0 + 0.8) * jitter * 0.45
+
+    frame = region_warp(
+        frame,
+        head,
+        dx=emote.get("head_dx", 0.0) + jitter_x,
+        dy=emote.get("head_dy", 0.0) + jitter_y,
+    )
+    frame = region_warp(
+        frame,
+        left_brow,
+        dy=-emote.get("brow_l", 0.0),
+        brightness=1.0 + max(0.0, emote.get("brow_l", 0.0)) * 0.02,
+    )
+    frame = region_warp(
+        frame,
+        right_brow,
+        dy=-emote.get("brow_r", 0.0),
+        brightness=1.0 + max(0.0, emote.get("brow_r", 0.0)) * 0.02,
+    )
+    frame = region_warp(
+        frame,
+        left_eye,
+        sy=max(0.12, emote.get("eye_l", 1.0)),
+        brightness=max(0.75, emote.get("eye_bright", 1.0)),
+    )
+    frame = region_warp(
+        frame,
+        right_eye,
+        sy=max(0.12, emote.get("eye_r", 1.0)),
+        brightness=max(0.75, emote.get("eye_bright", 1.0)),
+    )
+    frame = region_warp(
+        frame,
+        mouth,
+        sx=max(0.72, emote.get("mouth_sx", 1.0)),
+        sy=max(0.62, emote.get("mouth_sy", 1.0)),
+        dy=emote.get("mouth_dy", 0.0),
+        brightness=1.02,
+    )
+    return frame
 
 
 class BinaryRain:
@@ -560,6 +818,7 @@ def main() -> int:
 
     size = shutil.get_terminal_size()
     motion = Motion()
+    emotion_motion = EmotionMotion()
     rain = BinaryRain()
 
     previous = None
@@ -606,6 +865,10 @@ def main() -> int:
                 now - started,
             )
 
+            emote_name, emote_target, emote_intensity = resolve_emote(mode)
+            emote_values = emotion_motion.update(emote_target, emote_intensity, dt)
+            frame = apply_emote(frame, emote_values, now - started)
+
             grid = compose(frame, rain, mode)
 
             cols, _rows = size
@@ -617,8 +880,9 @@ def main() -> int:
             detail = str(bus.get("detail", ""))[:84]
 
             header = [
-                CYAN + "24K // GPT-DOUG SUPREME VISUAL V4" + RESET
-                + "  " + GREEN + f"[{mode.upper()}]" + RESET,
+                CYAN + "24K // GPT-DOUG SUPREME VISUAL V6" + RESET
+                + "  " + GREEN + f"[{mode.upper()}]" + RESET
+                + "  " + MAGENTA + f"EMOTE:{emote_name.upper()}" + RESET,
                 MAGENTA + f"{provider} // {model}" + RESET
                 + "  " + DIM + detail + RESET,
             ]
@@ -628,7 +892,7 @@ def main() -> int:
                 + f"  {int(FPS)}fps  {width}cols  "
                 + GREEN + "AUTO" + RESET
                 + "  "
-                + DIM + "blink breath gaze brow jaw binary-depth" + RESET
+                + DIM + "blink breath gaze brow jaw emote-synth binary-depth" + RESET
             )
 
             image_row = len(header) + 1
