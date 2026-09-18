@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path.home() / "gpt-doug-llm"
 STATE_FILE = Path.home() / ".gpt-doug" / "max-shell-state.json"
 EMOTE_FILE = Path.home() / ".gpt-doug" / "visual-emote.json"
+WALK_FILE = Path.home() / ".gpt-doug" / "visual-walk.json"
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -82,6 +83,15 @@ def emote_state() -> str:
             return str(data.get("name", "auto")).strip().lower() or "auto"
     except Exception:
         return "auto"
+
+
+def walk_state() -> str:
+    try:
+        data = json.loads(WALK_FILE.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            return str(data.get("mode", "off")).strip().lower() or "off"
+    except Exception:
+        return "off"
 
 
 def safe_width() -> int:
@@ -168,6 +178,7 @@ def main() -> int:
             model = str(s.get("model", "unknown"))
             detail = str(s.get("detail", ""))
             emote = emote_state()
+            walk = walk_state()
 
             branch = sh("git", "branch", "--show-current") or "detached"
             commit = sh("git", "rev-parse", "--short", "HEAD") or "-------"
@@ -219,6 +230,7 @@ def main() -> int:
                 f" model   {PURPLE}{clip(model, max(12, width-9))}{RESET}",
                 f" detail  {GRAY}{clip(detail, max(12, width-9))}{RESET}",
                 f" emote   {PINK}{clip(emote, max(12, width-9))}{RESET}",
+                f" roam    {CYAN}{clip(walk, max(12, width-9))}{RESET}",
                 "",
                 WHITE + BOLD + "📟 MACHINE" + RESET,
                 f" load    {meter(min(1.0, load / 8.0))} {load:.2f}",
