@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT = Path.home() / "gpt-doug-llm"
 STATE_FILE = Path.home() / ".gpt-doug" / "max-shell-state.json"
+EMOTE_FILE = Path.home() / ".gpt-doug" / "visual-emote.json"
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
@@ -69,6 +70,18 @@ def state() -> dict:
         "model": "unknown",
         "detail": "waiting for GPT-Doug",
     }
+
+
+def emote_state() -> str:
+    try:
+        data = json.loads(EMOTE_FILE.read_text(encoding="utf-8"))
+        if isinstance(data, dict):
+            until = float(data.get("until", 0) or 0)
+            if until and time.time() > until:
+                return "auto"
+            return str(data.get("name", "auto")).strip().lower() or "auto"
+    except Exception:
+        return "auto"
 
 
 def safe_width() -> int:
@@ -154,6 +167,7 @@ def main() -> int:
             provider = str(s.get("provider", "none"))
             model = str(s.get("model", "unknown"))
             detail = str(s.get("detail", ""))
+            emote = emote_state()
 
             branch = sh("git", "branch", "--show-current") or "detached"
             commit = sh("git", "rev-parse", "--short", "HEAD") or "-------"
@@ -204,6 +218,7 @@ def main() -> int:
                 f" mode    {color}{mode}{RESET}",
                 f" model   {PURPLE}{clip(model, max(12, width-9))}{RESET}",
                 f" detail  {GRAY}{clip(detail, max(12, width-9))}{RESET}",
+                f" emote   {PINK}{clip(emote, max(12, width-9))}{RESET}",
                 "",
                 WHITE + BOLD + "📟 MACHINE" + RESET,
                 f" load    {meter(min(1.0, load / 8.0))} {load:.2f}",
