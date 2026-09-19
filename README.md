@@ -418,6 +418,42 @@ repair planning, offline reconciliation, and citation lineage. Run
 `bash scripts/doug-max invention-lab demo` for the synthetic end-to-end checks.
 These are experimental tools, not patentability findings or live execution gates.
 
+---
+
+## Visual GPT-Doug + Global Skill Lattice
+
+GPT-Doug now has a documented **local visual foundation** and a **lazy 100,000,000-address global skill lattice**.
+
+```text
+ONTOLOGY
+   ↓
+GENOME / PHENOTYPE
+   ↓
+EMBODIMENT
+   ↓
+HUD + MATRIX
+   ↓
+KNOWLEDGE + SKILLS + RESEARCH
+   ↓
+MAX CONTROL
+   ↓
+USER-AUTHORIZED ADMIN
+```
+
+The visual shell is documented separately from the canonical runtime so a HUD failure cannot overwrite the core. The skill lattice exposes exactly `100 × 100 × 100 × 100 = 100,000,000` deterministic workflow addresses across the global economy, AI infrastructure, public-sector operations, defensive intelligence, musicians, artists, developers, research, infrastructure, and the creative economy. It is **lazy and compositional**: GPT-Doug generates skill descriptors on demand instead of pretending to ship 100 million pretrained expert models or storing 100 million files.
+
+Quick checks:
+
+```bash
+python3 skills/global_skill_lattice.py count
+python3 skills/global_skill_lattice.py show 54217804
+python3 skills/global_skill_lattice.py search music release
+python3 skills/global_skill_lattice.py search ai-infrastructure reliability
+```
+
+Read: [GPT-Doug MAX Foundation](docs/GPTDOUG_MAX_FOUNDATION.md) · [Visual GPT-Doug](docs/VISUAL_GPTDOUG.md) · [Global Skill Lattice](docs/GLOBAL_SKILL_LATTICE.md)
+
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
