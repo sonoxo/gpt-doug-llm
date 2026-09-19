@@ -56,6 +56,10 @@ MATRIX_RATE = max(2.0, min(float(os.environ.get("GPT_DOUG_MATRIX_FPS", "6")), FP
 BRIGHTNESS = max(0.8, min(float(os.environ.get("GPT_DOUG_BRIGHTNESS", "1.20")), 1.8))
 SATURATION = max(0.8, min(float(os.environ.get("GPT_DOUG_SATURATION", "1.18")), 1.8))
 SHARPNESS = max(0.8, min(float(os.environ.get("GPT_DOUG_SHARPNESS", "1.15")), 2.0))
+FUSION_ENABLED = os.environ.get("GPT_DOUG_MATRIX_FUSION", "0").lower() in {"1", "on", "true", "yes"}
+FUSION_DENSITY = max(0.0, min(float(os.environ.get("GPT_DOUG_FUSION_DENSITY", "0.58")), 1.0))
+FUSION_DIM = max(0.15, min(float(os.environ.get("GPT_DOUG_FUSION_DIM", "0.48")), 1.0))
+FUSION_GLYPHS = "01x+·:"
 
 RESET = "\033[0m"
 HOME = "\033[H"
@@ -756,6 +760,40 @@ def apply_cinematic_mannerisms(base: Image.Image, levels: dict, mode: str, t: fl
     return frame
 
 
+def _fusion_text_cell(top, bottom, x: int, y: int):
+    """Blend the RGB portrait with a dim Matrix/ASCII silhouette.
+
+    Bright edge/eye cells remain truecolor half-blocks while darker facial
+    structure becomes colored terminal glyphs. This creates the large ghost
+    portrait look without sacrificing the canonical RGB identity.
+    """
+    avg = tuple((int(top[i]) + int(bottom[i])) // 2 for i in range(3))
+    lum = 0.2126 * avg[0] + 0.7152 * avg[1] + 0.0722 * avg[2]
+    chroma = max(avg) - min(avg)
+
+    # Preserve neon rim light, eyes, and bright RGB fragments.
+    if lum >= 112 or chroma >= 118:
+        return ("img", quantize(top), quantize(bottom))
+
+    # Deterministic spatial mask prevents shimmer between frames.
+    selector = ((x * 17 + y * 31 + 7) % 100) / 100.0
+    if selector > FUSION_DENSITY:
+        return ("img", quantize(top), quantize(bottom))
+
+    if lum < 18:
+        glyph = " "
+    else:
+        idx = int((lum / 112.0) * (len(FUSION_GLYPHS) - 1))
+        idx = max(0, min(len(FUSION_GLYPHS) - 1, idx))
+        glyph = FUSION_GLYPHS[idx]
+
+    color = tuple(
+        max(0, min(255, int(channel * FUSION_DIM + (16 if i == 1 else 0))))
+        for i, channel in enumerate(avg)
+    )
+    return ("txt", glyph, quantize(color))
+
+
 def subject_grid(img: Image.Image):
     mask = matte_from_source(img)
     p = img.load()
@@ -769,6 +807,8 @@ def subject_grid(img: Image.Image):
         for x in range(w):
             if max(m[x, y], m[x, y2]) < 22:
                 row.append(None)
+            elif FUSION_ENABLED:
+                row.append(_fusion_text_cell(p[x, y], p[x, y2], x, y))
             else:
                 row.append(("img", quantize(p[x, y]), quantize(p[x, y2])))
         rows.append(row)
@@ -979,7 +1019,11 @@ def main() -> int:
                 + f"  {int(FPS)}fps  {width}cols  "
                 + GREEN + "AUTO" + RESET
                 + "  "
-                + DIM + "blink breath gaze brow jaw emote-synth walk binary-depth" + RESET
+                + DIM + (
+                    "blink breath gaze brow jaw emote-synth walk matrix-fusion"
+                    if FUSION_ENABLED
+                    else "blink breath gaze brow jaw emote-synth walk binary-depth"
+                ) + RESET
             )
 
             image_row = len(header) + 1
