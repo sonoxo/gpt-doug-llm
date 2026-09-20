@@ -5,7 +5,6 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
-
 _PATH = Path(__file__).resolve().parent / "apm_law.json"
 
 
