@@ -138,3 +138,25 @@ def test_cloud_nxyz_refuses_to_learn_unexecuted_success(tmp_path):
                 "components": [{"component_id": "foundation"}],
             },
         )
+
+
+def test_cloud_nxyz_modification_plan_isolates_target_component(tmp_path):
+    engine = CloudNXYZEngine(root=tmp_path, state_dir=tmp_path / ".state")
+    base = engine.plan("deploy nxyz", _manifest(tmp_path))
+    replacement = tmp_path / "infra" / "app-v2.yaml"
+    replacement.write_text(
+        "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: nxyz-v2\n",
+        encoding="utf-8",
+    )
+
+    plan = engine.modification_plan(
+        base,
+        component_id="app",
+        config_path="infra/app-v2.yaml",
+    )
+
+    assert plan["modification_scope"] == "ISOLATED_COMPONENT"
+    assert plan["affected_components"] == ["app"]
+    assert plan["preserved_components"] == ["foundation"]
+    assert [row["component_id"] for row in plan["components"]] == ["app"]
+    assert plan["apm_validation"]["valid"] is True
