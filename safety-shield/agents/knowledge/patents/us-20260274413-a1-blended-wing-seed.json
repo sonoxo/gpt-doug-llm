@@ -1,0 +1,163 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20260274413-A1",
+  "title": "Blended wing aircraft",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2026-09-17",
+  "application_number": "19/681,471",
+  "filed": "2026-05-19",
+  "assignee": "General Electric Company",
+  "source_provenance": [
+    {
+      "type": "official_identifier",
+      "source": "USPTO Patent Public Search",
+      "collection": "US-PGPUB",
+      "stable_pdf_url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/20260274413",
+      "user_supplied_ephemeral_request_token_persisted": false
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "PatSnap Eureka",
+      "url": "https://eureka.patsnap.com/patent/US20260274413A1",
+      "review_status": "full-text-and-claims-summary-reviewed-2026-09-20"
+    }
+  ],
+  "verification": {
+    "official_pdf_retrieved_in_current_environment": false,
+    "public_readable_text_reviewed": true,
+    "title_verified_from_public_mirror": true,
+    "assignee_verified_from_public_mirror": true,
+    "publication_date_verified_from_public_mirror": true,
+    "application_number_verified_from_public_mirror": true,
+    "claims_reviewed_from_public_mirror": true,
+    "scope_source_quality": "SECONDARY_PUBLIC_MIRROR_WITH_EXACT_PUBLICATION_IDENTIFIER"
+  },
+  "scope_tags": [
+    "blended-wing-aircraft",
+    "blended-wing-body",
+    "aft-mounted-propulsion",
+    "pusher-turbofan",
+    "pusher-fan",
+    "boundary-layer-ingestion",
+    "trailing-edge-engine-integration",
+    "separate-core-inlet",
+    "fan-inlet-flowpath-integration",
+    "inlet-channel",
+    "deflection-surface-feature",
+    "variable-pitch-fan",
+    "reverse-thrust-fan-pitch",
+    "open-rotor-option",
+    "drive-turbine-fan-coupling",
+    "distributed-propulsion-layout"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "civil aircraft conceptual design",
+      "aerodynamics",
+      "propulsion-airframe integration",
+      "boundary-layer ingestion",
+      "gas-turbine and open-rotor propulsion",
+      "digital-twin simulation"
+    ],
+    "core_architecture": [
+      "lifting blended-wing body with laterally extending wings",
+      "one or more engines positioned at or near the aft body",
+      "fan located downstream of the combustion section in a pusher arrangement",
+      "fan inlet arranged to ingest body boundary-layer airflow",
+      "core turbomachine inlet may be routed separately from fan ingestion flow",
+      "body flowpath can include inlet channels that guide air toward the engine",
+      "surface shaping upstream of an inlet may condition incoming flow",
+      "variable-pitch fan architecture may support forward and reverse thrust modes",
+      "engine installation may be top-side, bottom-side, trailing-edge integrated, pylon-mounted, or overhung depending on the design variant",
+      "open-rotor and nacelle-enclosed fan variants are both contemplated"
+    ],
+    "engineering_relevance": [
+      "treat airframe and propulsion as one coupled aerodynamic system",
+      "use boundary-layer ingestion as a drag-reduction design variable rather than only an engine-placement choice",
+      "separate fan-flow management from core-engine inlet requirements when evaluating pusher configurations",
+      "compare integrated trailing-edge installation against pylon-mounted installation using structural, maintenance, acoustic, thermal, and distortion metrics",
+      "evaluate variable-pitch fan logic as part of propulsion-airframe integration instead of as an isolated engine feature",
+      "optimize around system-level efficiency, not only isolated fan or body efficiency"
+    ],
+    "simulation_metrics": [
+      "pressure recovery",
+      "inlet distortion",
+      "boundary-layer capture fraction",
+      "fan efficiency",
+      "net propulsive efficiency",
+      "drag delta",
+      "shaft-length proxy",
+      "installation mass penalty",
+      "thermal recirculation risk",
+      "acoustic exposure",
+      "foreign-object susceptibility",
+      "maintenance accessibility",
+      "asymmetric propulsion sensitivity"
+    ]
+  },
+  "publicly_described_functional_concepts": [
+    "blended-wing body contributes substantial lift",
+    "aft pusher arrangement shortens the mechanical distance between drive turbine and fan",
+    "pusher fan can ingest boundary-layer flow from the aircraft body",
+    "re-energizing slower boundary-layer air can reduce aircraft-level drag",
+    "fan flow and turbomachine-core inlet flow can be managed through different pathways",
+    "flowpath channels and upstream shaping features can condition inlet flow",
+    "variable-pitch fan can provide both forward and reverse thrust modes",
+    "multiple laterally spaced engines can be integrated at the aft body",
+    "open-rotor and enclosed-fan architectures can be evaluated within the same propulsion-airframe concept family"
+  ],
+  "claim_scope_signals": {
+    "status": "RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_theme": "blended-wing aircraft with a body-mounted aft propulsion arrangement in which a fan is downstream of the combustion section, including variants that integrate the engine with lower-body or trailing-edge flowpath features",
+    "legal_scope_rule": "The controlling claims, prosecution history, continuation/divisional lineage, legal status, territorial scope, and any later amendments must be checked in the official record before infringement, licensing, or freedom-to-operate conclusions."
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "SIMULATION_AND_ENGINEERING_REVIEW_ONLY",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "start from independent mission, payload, range, noise, maintainability, and certification requirements rather than reproducing the disclosed geometry",
+    "use a parameterized digital twin instead of fixed patent dimensions",
+    "compare pusher, tractor, open-rotor, and distributed-electric alternatives before selecting a configuration",
+    "independently derive inlet shaping from CFD and distortion limits rather than copying figure geometry",
+    "treat top, bottom, trailing-edge, pylon, and overhung installations as a trade space",
+    "maintain provenance for every patent-derived architecture signal",
+    "require qualified aerospace review and applicable airworthiness processes before any physical flight article"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "mission-and-payload model",
+      "parameterized blended-wing geometry",
+      "aerodynamic solver interface",
+      "boundary-layer estimator",
+      "fan-flow ingestion model",
+      "core-inlet model",
+      "propulsion cycle model",
+      "variable-pitch fan model",
+      "installation mass and structure model",
+      "thermal and acoustic model",
+      "maintenance-access model",
+      "stability and control model",
+      "multi-objective optimizer",
+      "GPT-CHAOS stress-test harness",
+      "provenance and design-decision log"
+    ],
+    "mandatory_safety_boundaries": [
+      "simulation-first",
+      "no claim that patent geometry is flight-ready",
+      "no autonomous real-world vehicle control",
+      "no flight-test release without qualified engineering review",
+      "independent structural analysis required",
+      "independent aeroelastic analysis required",
+      "independent propulsion and fire-safety analysis required",
+      "airworthiness and regulatory review required for physical aircraft",
+      "patent and licensing review required before commercial release"
+    ]
+  }
+}
