@@ -4,6 +4,7 @@
 import os
 import sys
 import getpass
+import json
 
 from agents import llm_backend
 
@@ -21,6 +22,8 @@ from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
+from universal_hive import UniversalHiveRuntime
+from gpt_chaos import GPTChaos
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -112,6 +115,8 @@ def main():
     compliance = ComplianceGate(user_context)
     dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
     deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
+    universal_hive = UniversalHiveRuntime()
+    gpt_chaos = GPTChaos(hive=universal_hive)
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -130,6 +135,8 @@ def main():
     provider = llm_backend.health()
     print(CYAN + f"AI PROVIDER // {provider['provider'].upper()} // {provider['message']}" + RESET)
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
+    hive_status = universal_hive.status()
+    print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
     history = []
     while True:
         try:
@@ -146,7 +153,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -182,6 +189,17 @@ def main():
             continue
         if prompt == "/ontology":
             print(Ontology.display())
+            continue
+        if prompt == "/hive":
+            print(json.dumps(gpt_chaos.status(), indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/summon "):
+            job = prompt[len("/summon "):].strip()
+            if not job:
+                print("Usage: /summon <job>")
+                continue
+            swarm = gpt_chaos.summon(job)
+            print(json.dumps(swarm, indent=2, sort_keys=True))
             continue
         if prompt.startswith("/knowledge "):
             query = prompt[len("/knowledge "):]
