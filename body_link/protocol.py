@@ -6,7 +6,6 @@ import json
 import time
 from urllib.parse import urlparse
 
-
 PROTOCOL = "gptdoug-body-link-v1"
 MAX_CLOCK_SKEW_SECONDS = 120
 
