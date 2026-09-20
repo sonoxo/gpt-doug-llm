@@ -63,6 +63,15 @@ Influenza B mutant/vaccine patent scope is stored only as a high-level, non-oper
 ### US-20250355943-A1
 Defensive cybersecurity event-graph architecture: authorized security telemetry is normalized into event/entity descriptor objects, correlated in a security ontology/object graph, enriched with source reliability and risk/indicator context, and presented to analysts with defensive course-of-action proposals. The default build profile is `DEFENSIVE_SECURITY_ONTOLOGY_EVENT_GRAPH`; disruptive remediation is not automatic and requires human/policy approval.
 
+### US-20260274413-A1
+Blended-wing aircraft propulsion-airframe integration: aft pusher propulsion, boundary-layer ingestion, separate fan/core inlet considerations, trailing-edge or pylon installation trade spaces, inlet-flow conditioning, variable-pitch fan behavior, and open-rotor comparison. GPT-Doug stores the publication as prior-art architecture evidence, while GPT-Chaos exposes a simulation-only trade-space and stress-test pattern. The current environment could not retrieve the USPTO PDF directly, so the scope seed records that limitation and identifies the reviewed public mirror. No patent figure geometry is copied and no flight-ready or airworthiness claim is made.
+
+```bash
+gpt-chaos blended-wing
+gpt-chaos blended-wing-stress
+scripts/doug-max patent-scope show US-20260274413-A1
+```
+
 ## Current pending intake
 
 ### US-20260271508-A1
