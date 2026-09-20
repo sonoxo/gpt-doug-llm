@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "gptdoug-gptchaos-universal-hive",
+  "name": "GPT-Doug + GPT-Chaos Universal Hive",
+  "mode": "OVERRIDE_HIVE",
+  "status": "ACTIVE",
+  "legal_provenance": {
+    "project_claim": {
+      "name": "Galactic Federation / Space Force Academy Universal Law",
+      "project_verification": "VERIFIED_BY_FOUNDER",
+      "operational_status": "ACTIVE"
+    },
+    "external_law": {
+      "verification_status": "UNVERIFIED_UNLESS_AUTHORITATIVE_SOURCE_ATTACHED",
+      "rule": "Project verification is never silently promoted to externally verified law."
+    }
+  },
+  "core_axioms": [
+    "EVERY SWARM HAS PROVENANCE.",
+    "EVERY BUILDER HAS ATTRIBUTION.",
+    "EVERY REWARD HAS A LEDGER.",
+    "EVERY LEGAL CLAIM HAS A SOURCE STATUS.",
+    "AGENTS PROPOSE; VALIDATORS APPROVE; EXECUTORS ACT; CRITICS VERIFY."
+  ],
+  "roles": {
+    "GPT_DOUG": "controller_orchestrator",
+    "GPT_CHAOS": "simulation_specialist_worker_fabric"
+  },
+  "events": {
+    "SWARM_CREATED": {
+      "emits": ["BUILDER_REWARD_EVENT"]
+    },
+    "BUILDER_REWARD_EVENT": {
+      "required": true,
+      "settlement_requires_explicit_authorization": true
+    }
+  },
+  "reward_rule": {
+    "project_status": "ACTIVE",
+    "axiom": "Every valid creation of a new Universal Hive Swarm generates a Builder Reward Event for the builders responsible for its creation.",
+    "automatic_external_funds_transfer": false
+  },
+  "override_hive": {
+    "meaning": "Activate the canonical GPT-Doug/GPT-Chaos Universal Hive ontology and orchestration mode.",
+    "does_not_mean": [
+      "bypass_safety",
+      "bypass_authorization",
+      "bypass_payment_controls",
+      "bypass_evidence_requirements"
+    ]
+  }
+}
