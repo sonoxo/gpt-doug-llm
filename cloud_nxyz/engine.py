@@ -26,6 +26,7 @@ SUPPORTED_PROVIDERS = {
     "gcp",
     "generic",
     "local",
+    "ibm",
 }
 SUCCESS = {"PASSED", "READY", "SUCCESS", "SUCCEEDED"}
 
@@ -119,6 +120,8 @@ class CloudNXYZEngine:
         resolved = (self.root / config_path).resolve()
         if not self._inside_root(resolved):
             raise ValueError(f"config_path escapes Cloud-NXYZ root: {config_path}")
+        if not resolved.exists():
+            raise FileNotFoundError(f"Cloud-NXYZ config does not exist: {config_path}")
 
         return CloudComponent(
             component_id=component_id,
@@ -217,7 +220,7 @@ class CloudNXYZEngine:
             "authorization_boundary": "EXPLICIT_RUNTIME_GATE_REQUIRED_FOR_EXTERNAL_MUTATION",
             "context_validation": "VALIDATE_IAC_BEFORE_APPLY",
             "rollback": "PROVIDER_OR_IAC_NATIVE_ROLLBACK_OR_COMPENSATING_ACTION_REQUIRED",
-            "verified": True,
+            "procedure_verified": True,
             "provenance": {
                 "source": self.SOURCE,
                 "manifest_sha256": hashlib.sha256(
@@ -299,7 +302,9 @@ class CloudNXYZEngine:
                     "exit_code": proc.returncode,
                     "duration_ms": int((time.monotonic() - started) * 1000),
                     "command": shlex.join(argv),
-                    "output_tail": proc.stdout[-4000:],
+                    "output_bytes": len(proc.stdout.encode("utf-8")),
+                    "output_sha256": hashlib.sha256(proc.stdout.encode("utf-8")).hexdigest(),
+                    **({"output_tail": proc.stdout[-4000:]} if os.getenv("GPT_DOUG_CLOUD_NXYZ_CAPTURE_OUTPUT", "").strip() == "1" else {}),
                 })
                 if proc.returncode != 0:
                     overall = "FAILED"
@@ -329,6 +334,10 @@ class CloudNXYZEngine:
         receipt: Mapping[str, Any],
     ) -> dict[str, Any]:
         status = str(receipt.get("status") or "UNKNOWN").upper()
+        if not receipt.get("executed"):
+            raise ValueError("APM refuses to learn a deployment outcome without an executed receipt")
+        if status in SUCCESS and not receipt.get("components"):
+            raise ValueError("APM refuses to promote success without component execution evidence")
         return self.accelerator.record_event(
             automation_type="cloud-nxyz",
             stage="deploy",
