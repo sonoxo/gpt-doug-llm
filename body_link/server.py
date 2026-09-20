@@ -10,7 +10,6 @@ from typing import Any
 
 from .protocol import canonical_json, sign, verify
 
-
 MAX_BODY_BYTES = 64 * 1024
 NONCE_TTL_SECONDS = 300
 

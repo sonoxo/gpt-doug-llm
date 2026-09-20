@@ -359,8 +359,8 @@ class MaxShell:
         self.body_link = None
         self.body_link_error = None
         try:
-            from universal_hive import UniversalHiveRuntime
             from body_link import BodyLinkClient
+            from universal_hive import UniversalHiveRuntime
 
             hive = UniversalHiveRuntime()
             self.body_link = BodyLinkClient.optional_from_env(
@@ -490,7 +490,7 @@ class MaxShell:
 
     def cmd_xunia(self, prompt: str) -> None:
         try:
-            from xunia_godis import OllamaClient, PROFILES
+            from xunia_godis import PROFILES, OllamaClient
 
             self.set_state("THINK", "XUNIA local brain")
             client = OllamaClient()
@@ -574,7 +574,13 @@ class MaxShell:
 
     def cmd_swarm(self, rest: str) -> None:
         try:
-            from workers.revenue_swarm import Prospect, RevenueSwarm, SwarmConfig, _demo_prospects, _load_prospects
+            from workers.revenue_swarm import (
+                Prospect,
+                RevenueSwarm,
+                SwarmConfig,
+                _demo_prospects,
+                _load_prospects,
+            )
 
             args = shlex.split(rest)
             workers = int(os.getenv("GPT_DOUG_SWARM_WORKERS", "8"))
