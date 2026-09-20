@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 from cloud_nxyz import CloudNXYZEngine
-from .aerospace import pattern as blended_wing_pattern, stress_test as stress_test_blended_wing
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
+
+from .aerospace import pattern as blended_wing_pattern
+from .aerospace import stress_test as stress_test_blended_wing
 
 
 class GPTChaos:
