@@ -40,7 +40,7 @@ def test_apm_law_accepts_verified_reversible_procedure():
     law = APMLaw()
     verdict = law.validate_procedure(
         {
-            "verified": True,
+            "procedure_verified": True,
             "provenance": {"source": "test"},
             "context_validation": "validate",
             "authorization_boundary": "explicit",
@@ -101,7 +101,9 @@ def test_cloud_nxyz_verified_outcome_feeds_apm(tmp_path):
     plan = engine.plan("deploy nxyz", _manifest(tmp_path))
     receipt = {
         "status": "PASSED",
+        "executed": True,
         "monitoring_attachment_status": "READY_FOR_MONITORING_BIND",
+        "components": [{"component_id": "foundation", "steps": [{"phase": "apply", "status": "PASSED", "exit_code": 0}]}],
     }
     event = engine.record_outcome(plan, receipt)
 
@@ -122,3 +124,17 @@ def test_cloud_nxyz_rejects_config_escape(tmp_path):
     }
     with pytest.raises(ValueError):
         engine.plan("deploy", manifest)
+
+
+def test_cloud_nxyz_refuses_to_learn_unexecuted_success(tmp_path):
+    engine = CloudNXYZEngine(root=tmp_path, state_dir=tmp_path / ".state")
+    plan = engine.plan("deploy nxyz", _manifest(tmp_path))
+    with pytest.raises(ValueError):
+        engine.record_outcome(
+            plan,
+            {
+                "status": "PASSED",
+                "executed": False,
+                "components": [{"component_id": "foundation"}],
+            },
+        )
