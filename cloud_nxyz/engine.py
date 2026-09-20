@@ -6,12 +6,12 @@ import os
 import shlex
 import subprocess
 import time
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 
-from universal_hive import AdaptiveAutomationAccelerator
-from universal_hive.apm_law import APMLaw
+from universal_hive import APMLaw, AdaptiveAutomationAccelerator
 
 
 SUPPORTED_IAC = {
