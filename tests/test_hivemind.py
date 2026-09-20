@@ -71,3 +71,26 @@ def test_execute_runs_registered_handlers_in_dependency_order(monkeypatch):
     assert "01-define" in calls
     assert calls.index("01-define") < calls.index("04-parse")
     assert calls.index("04-parse") < calls.index("08-execute")
+
+
+def test_hivemind_plan_is_bound_to_universal_hive(tmp_path, monkeypatch):
+    monkeypatch.setenv("GPT_DOUG_HIVE_STATE_DIR", str(tmp_path))
+    hive = Hivemind()
+    plan = hive.build_plan("test universal hive metadata")
+    assert plan.metadata["hive_id"] == hive.hive.hive_id
+    assert plan.metadata["ontology_hash"] == hive.hive.ontology_hash
+    assert plan.metadata["controller"] == "GPT_DOUG"
+    assert plan.metadata["simulation_layer"] == "GPT_CHAOS"
+
+
+def test_hivemind_summon_creates_reward_event(tmp_path, monkeypatch):
+    monkeypatch.setenv("GPT_DOUG_HIVE_STATE_DIR", str(tmp_path))
+    hive = Hivemind()
+    swarm = hive.summon(
+        "create a bounded swarm",
+        builders=["builder-a"],
+        request_id="test-hivemind-summon",
+    )
+    assert swarm["event"] == "SWARM_CREATED"
+    assert swarm["simulation_layer"] == "GPT_CHAOS"
+    assert hive.hive_status()["hive"]["reward_event_count"] == 1
