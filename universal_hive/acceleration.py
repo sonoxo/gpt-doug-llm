@@ -129,10 +129,7 @@ class AdaptiveAutomationAccelerator:
         if not kind or not stage_name or not state:
             raise ValueError("automation_type, stage, and status are required")
 
-        event = {
-            "schema": "adaptive-automation/event-v1",
-            "event_id": "",
-            "recorded_at": _utc_now(),
+        identity = {
             "automation_type": kind,
             "stage": stage_name,
             "status": state,
@@ -142,7 +139,12 @@ class AdaptiveAutomationAccelerator:
             "source": str(source),
             "run_id": run_id,
         }
-        event["event_id"] = "ae-" + hashlib.sha256(_canonical(event)).hexdigest()[:24]
+        event = {
+            "schema": "adaptive-automation/event-v1",
+            "event_id": "ae-" + hashlib.sha256(_canonical(identity)).hexdigest()[:24],
+            "recorded_at": _utc_now(),
+            **identity,
+        }
 
         with self._lock():
             existing_ids = {row.get("event_id") for row in self._events()}
