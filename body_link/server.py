@@ -29,6 +29,10 @@ class BodyNodeState:
         now = int(time.time())
         with self.lock:
             self.nonces = {key: seen for key, seen in self.nonces.items() if now - seen < NONCE_TTL_SECONDS}
+            if len(self.nonces) > 10000:
+                oldest = sorted(self.nonces.items(), key=lambda item: item[1])[:1000]
+                for key, _seen in oldest:
+                    self.nonces.pop(key, None)
             if nonce in self.nonces:
                 return False
             self.nonces[nonce] = now
