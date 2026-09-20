@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "ontology_id": "gptdoug-gptchaos-universal-hive",
   "name": "GPT-Doug + GPT-Chaos Universal Hive",
   "mode": "OVERRIDE_HIVE",
@@ -20,15 +20,19 @@
     "EVERY BUILDER HAS ATTRIBUTION.",
     "EVERY REWARD HAS A LEDGER.",
     "EVERY LEGAL CLAIM HAS A SOURCE STATUS.",
-    "AGENTS PROPOSE; VALIDATORS APPROVE; EXECUTORS ACT; CRITICS VERIFY."
+    "AGENTS PROPOSE; VALIDATORS APPROVE; EXECUTORS ACT; CRITICS VERIFY.",
+    "VERIFIED EXPERIENCE MAY BECOME PROCEDURE; MEMORY NEVER BECOMES AUTHORITY."
   ],
   "roles": {
     "GPT_DOUG": "controller_orchestrator",
-    "GPT_CHAOS": "simulation_specialist_worker_fabric"
+    "GPT_CHAOS": "simulation_specialist_worker_fabric",
+    "CLOUD_NXYZ": "apm_governed_cloud_build_control_plane"
   },
   "events": {
     "SWARM_CREATED": {
-      "emits": ["BUILDER_REWARD_EVENT"]
+      "emits": [
+        "BUILDER_REWARD_EVENT"
+      ]
     },
     "BUILDER_REWARD_EVENT": {
       "required": true,
@@ -48,5 +52,26 @@
       "bypass_payment_controls",
       "bypass_evidence_requirements"
     ]
+  },
+  "universal_ai_laws": {
+    "APM": {
+      "law_id": "APM-001",
+      "name": "Adaptive Procedural Memory Universal AI Law",
+      "project_status": "ACTIVE",
+      "applies_to": "ALL_GPT_DOUG_GPT_CHAOS_CONNECTED_AGENTS",
+      "axiom": "An AI system may convert verified experience into reusable procedure, but every reuse must preserve provenance, revalidate context, retain authorization boundaries, and remain reversible where mutation is possible.",
+      "canonical_loop": [
+        "OBSERVE",
+        "VERIFY",
+        "COMPOSITE",
+        "PROCEDURE",
+        "REVALIDATE",
+        "AUTHORIZE",
+        "EXECUTE",
+        "MEASURE",
+        "LEARN"
+      ],
+      "external_legal_status": "PROJECT_GOVERNANCE_DOCTRINE_NOT_STATUTORY_LAW"
+    }
   }
 }
