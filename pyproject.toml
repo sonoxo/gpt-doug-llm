@@ -40,6 +40,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 gpt-doug = "gpt_doug:main"
 gpt-doug-hivemind = "hivemind.cli:main"
 gpt-chaos = "gpt_chaos.cli:main"
+cloud-nxyz = "cloud_nxyz.cli:main"
 zyra-sentinel = "golden_shield:start_247_monitoring"
 
 [project.urls]
@@ -48,7 +49,7 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive"]
+packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive", "cloud_nxyz"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
@@ -65,4 +66,4 @@ select = ["E", "F", "W", "I"]
 ignore = ["E501"]
 
 [tool.coverage.run]
-source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard", "hivemind"]
+source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard", "hivemind", "cloud_nxyz", "universal_hive"]
