@@ -22,7 +22,8 @@ from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
-from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
+from universal_hive import APMLaw, AdaptiveAutomationAccelerator, UniversalHiveRuntime
+from cloud_nxyz import CloudNXYZEngine
 from gpt_chaos import GPTChaos
 
 MODEL = llm_backend.DEFAULT_MODEL
@@ -120,6 +121,13 @@ def main():
     automation_accelerator = AdaptiveAutomationAccelerator(
         universal_hive.state_dir / "automation-acceleration"
     )
+    apm_law = APMLaw()
+    cloud_nxyz = CloudNXYZEngine(
+        root=Path(__file__).parent,
+        state_dir=universal_hive.state_dir / "cloud-nxyz",
+        accelerator=automation_accelerator,
+        apm_law=apm_law,
+    )
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -141,6 +149,8 @@ def main():
     hive_status = universal_hive.status()
     print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
     print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
+    print(CYAN + "APM LAW // APM-001 ACTIVE // VERIFIED EXPERIENCE -> REUSABLE PROCEDURE" + RESET)
+    print(CYAN + "CLOUD-NXYZ // READY // ONE COMMAND -> IaC -> MONITOR -> LEARN" + RESET)
     history = []
     while True:
         try:
@@ -157,7 +167,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /accelerator  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -204,6 +214,12 @@ def main():
             continue
         if prompt == "/automation-template":
             print(json.dumps(automation_accelerator.template("hivemind"), indent=2, sort_keys=True))
+            continue
+        if prompt == "/apm-law":
+            print(json.dumps(apm_law.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/cloud-nxyz":
+            print(json.dumps(cloud_nxyz.status(), indent=2, sort_keys=True))
             continue
         if prompt.startswith("/summon "):
             job = prompt[len("/summon "):].strip()
