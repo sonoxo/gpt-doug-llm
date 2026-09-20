@@ -26,6 +26,11 @@ def main() -> int:
     plan.add_argument("single_command")
     plan.add_argument("--manifest", required=True)
 
+    modify = sub.add_parser("modify", help="Build an isolated component modification plan.")
+    modify.add_argument("--plan", required=True)
+    modify.add_argument("--component", required=True)
+    modify.add_argument("--config", required=True)
+
     apply = sub.add_parser("apply", help="Execute a previously generated plan behind the explicit runtime gate.")
     apply.add_argument("--plan", required=True)
     apply.add_argument("--execute", action="store_true")
@@ -43,6 +48,17 @@ def main() -> int:
         return 0
     if args.command == "plan":
         payload = engine.plan(args.single_command, _load(args.manifest))
+        path = engine.write_plan(payload)
+        payload = dict(payload)
+        payload["written_to"] = str(path)
+        _print(payload)
+        return 0
+    if args.command == "modify":
+        payload = engine.modification_plan(
+            _load(args.plan),
+            component_id=args.component,
+            config_path=args.config,
+        )
         path = engine.write_plan(payload)
         payload = dict(payload)
         payload["written_to"] = str(path)
