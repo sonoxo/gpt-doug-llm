@@ -242,6 +242,75 @@ class CloudNXYZEngine:
             )
         return payload
 
+    def modification_plan(
+        self,
+        base_plan: Mapping[str, Any],
+        *,
+        component_id: str,
+        config_path: str,
+    ) -> dict[str, Any]:
+        matches = [
+            dict(item) for item in base_plan.get("components") or []
+            if str(item.get("component_id")) == component_id
+        ]
+        if not matches:
+            raise KeyError(f"unknown Cloud-NXYZ component: {component_id}")
+        original = matches[0]
+        replacement = self._normalize_component({
+            "id": component_id,
+            "provider": original["provider"],
+            "iac_tool": original["iac_tool"],
+            "config_path": config_path,
+            "depends_on": [],
+            "monitoring": original.get("monitoring") or "api",
+        })
+        payload = {
+            "schema": "cloud-nxyz/modification-plan-v1",
+            "command": f"modify {component_id}",
+            "project": base_plan.get("project") or "nxyz",
+            "base_plan_id": base_plan.get("plan_id"),
+            "modification_scope": "ISOLATED_COMPONENT",
+            "affected_components": [component_id],
+            "preserved_components": [
+                str(item.get("component_id"))
+                for item in base_plan.get("components") or []
+                if str(item.get("component_id")) != component_id
+            ],
+            "components": [{
+                **replacement.to_dict(),
+                "commands": self._commands(replacement),
+            }],
+            "monitoring": dict(base_plan.get("monitoring") or {
+                "required": True,
+                "mode": "api",
+                "feedback_to_apm": True,
+            }),
+            "authorization_boundary": "EXPLICIT_RUNTIME_GATE_REQUIRED_FOR_EXTERNAL_MUTATION",
+            "context_validation": "VALIDATE_TARGET_COMPONENT_AND_PRESERVE_UNRELATED_COMPONENTS",
+            "rollback": "RESTORE_PREVIOUS_COMPONENT_CONFIGURATION_OR_COMPENSATING_ACTION",
+            "procedure_verified": True,
+            "provenance": {
+                "source": self.SOURCE,
+                "base_plan_id": base_plan.get("plan_id"),
+                "replacement_config_sha256": hashlib.sha256(
+                    (self.root / config_path).resolve().read_bytes()
+                ).hexdigest(),
+            },
+        }
+        payload["plan_id"] = "nxyz-mod-" + hashlib.sha256(
+            json.dumps(payload, sort_keys=True).encode("utf-8")
+        ).hexdigest()[:20]
+        payload["apm_validation"] = self.apm_law.validate_procedure(
+            payload,
+            requires_mutation=True,
+        )
+        if not payload["apm_validation"]["valid"]:
+            raise ValueError(
+                "APM law rejected Cloud-NXYZ modification plan: "
+                + ", ".join(payload["apm_validation"]["failed"])
+            )
+        return payload
+
     def write_plan(self, plan: Mapping[str, Any]) -> Path:
         plan_id = str(plan["plan_id"])
         destination = self.runs_dir / f"{plan_id}.json"
