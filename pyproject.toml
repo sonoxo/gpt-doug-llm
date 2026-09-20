@@ -39,6 +39,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 [project.scripts]
 gpt-doug = "gpt_doug:main"
 gpt-doug-hivemind = "hivemind.cli:main"
+gpt-chaos = "gpt_chaos.cli:main"
 zyra-sentinel = "golden_shield:start_247_monitoring"
 
 [project.urls]
@@ -47,7 +48,7 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["agents", "web", "workers", "tests", "models", "hivemind"]
+packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]

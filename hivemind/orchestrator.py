@@ -11,6 +11,8 @@ from typing import Callable
 from .capabilities import doctor
 from .registry import BY_SLUG
 from .types import RunPlan, Stage, StageResult, WorkItem
+from universal_hive import UniversalHiveRuntime
+from gpt_chaos import GPTChaos
 
 
 class Hivemind:
@@ -32,6 +34,8 @@ class Hivemind:
         self.root = Path(root).resolve()
         self.max_workers = max(1, min(int(max_workers), 32))
         self.handlers: dict[str, Callable[[WorkItem], dict]] = {}
+        self.hive = UniversalHiveRuntime()
+        self.chaos = GPTChaos(hive=self.hive)
 
     def register_handler(self, integration_slug: str, handler: Callable[[WorkItem], dict]) -> None:
         if integration_slug not in BY_SLUG:
@@ -64,8 +68,19 @@ class Hivemind:
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "max_workers": self.max_workers,
                 "execution_default": "dry-run",
+                "hive_id": self.hive.hive_id,
+                "ontology_hash": self.hive.ontology_hash,
+                "controller": "GPT_DOUG",
+                "simulation_layer": "GPT_CHAOS",
             },
         )
+
+    def summon(self, job: str, *, builders: list[str] | None = None, request_id: str | None = None) -> dict:
+        """Create a persisted Universal Hive swarm and its builder reward event."""
+        return self.chaos.summon(job, builders=builders, request_id=request_id)
+
+    def hive_status(self) -> dict:
+        return self.chaos.status()
 
     def _select_integration(self, item: WorkItem, availability: dict[str, bool]) -> str | None:
         for slug in item.preferred_integrations:
