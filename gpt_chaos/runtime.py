@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from universal_hive import UniversalHiveRuntime
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
+from cloud_nxyz import CloudNXYZEngine
 from .aerospace import pattern as blended_wing_pattern, stress_test as stress_test_blended_wing
 
 
@@ -42,6 +43,20 @@ class GPTChaos:
             "execution_boundary": "PROPOSE_VALIDATE_EXECUTE_CRITIC",
         }
 
+    def cloud_nxyz(self, root: str = ".") -> CloudNXYZEngine:
+        """Return the APM-governed Cloud-NXYZ control plane shared with this hive."""
+        accelerator = AdaptiveAutomationAccelerator(
+            self.hive.state_dir / "automation-acceleration"
+        )
+        return CloudNXYZEngine(
+            root=root,
+            state_dir=self.hive.state_dir / "cloud-nxyz",
+            accelerator=accelerator,
+        )
+
+    def cloud_plan(self, command: str, manifest: dict, root: str = ".") -> dict:
+        return self.cloud_nxyz(root).plan(command, manifest)
+
     def aerospace_pattern(self) -> dict:
         return blended_wing_pattern()
 
@@ -53,4 +68,6 @@ class GPTChaos:
             "gpt_chaos": "WORKER_FABRIC_READY",
             "worker_fabric": list(self.WORKER_FABRIC),
             "hive": self.hive.status(),
+            "apm_law": "APM-001 ACTIVE",
+            "cloud_nxyz": "READY",
         }
