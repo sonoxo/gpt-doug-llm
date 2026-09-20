@@ -11,8 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from universal_hive import APMLaw, AdaptiveAutomationAccelerator
-
+from universal_hive import AdaptiveAutomationAccelerator, APMLaw
 
 SUPPORTED_IAC = {
     "terraform",
