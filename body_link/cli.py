@@ -33,6 +33,14 @@ def main() -> int:
     if args.command == "serve":
         return serve()
 
+    if args.command == "status" and not os.getenv("GPT_DOUG_BODY_URL", "").strip() and not os.getenv("GPT_DOUG_BODY_LINK_KEY", ""):
+        _print({
+            "configured": False,
+            "workspace_url": BodyLinkClient.WORKSPACE_URL,
+            "required_env": ["GPT_DOUG_BODY_URL", "GPT_DOUG_BODY_LINK_KEY"],
+        })
+        return 0
+
     client = _client()
     if args.command == "status":
         _print(client.status())
