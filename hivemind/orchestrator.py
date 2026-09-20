@@ -11,7 +11,7 @@ from typing import Callable
 from .capabilities import doctor
 from .registry import BY_SLUG
 from .types import RunPlan, Stage, StageResult, WorkItem
-from universal_hive import UniversalHiveRuntime
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 from gpt_chaos import GPTChaos
 
 
@@ -36,6 +36,9 @@ class Hivemind:
         self.handlers: dict[str, Callable[[WorkItem], dict]] = {}
         self.hive = UniversalHiveRuntime()
         self.chaos = GPTChaos(hive=self.hive)
+        self.accelerator = AdaptiveAutomationAccelerator(
+            self.hive.state_dir / "automation-acceleration"
+        )
 
     def register_handler(self, integration_slug: str, handler: Callable[[WorkItem], dict]) -> None:
         if integration_slug not in BY_SLUG:
@@ -72,6 +75,7 @@ class Hivemind:
                 "ontology_hash": self.hive.ontology_hash,
                 "controller": "GPT_DOUG",
                 "simulation_layer": "GPT_CHAOS",
+                "adaptive_automation_template": self.accelerator.template("hivemind") or None,
             },
         )
 
@@ -80,7 +84,21 @@ class Hivemind:
         return self.chaos.summon(job, builders=builders, request_id=request_id)
 
     def hive_status(self) -> dict:
-        return self.chaos.status()
+        payload = self.chaos.status()
+        payload["adaptive_automation"] = self.accelerator.status()
+        return payload
+
+    def acceleration_status(self) -> dict:
+        return self.accelerator.status()
+
+    def automation_template(self, automation_type: str = "hivemind") -> dict:
+        return self.accelerator.template(automation_type)
+
+    def generate_setup_object(self, automation_type: str = "hivemind", explicit_input: dict | None = None) -> dict:
+        return self.accelerator.generate_setup_object(
+            automation_type,
+            explicit_input=explicit_input or {},
+        )
 
     def _select_integration(self, item: WorkItem, availability: dict[str, bool]) -> str | None:
         for slug in item.preferred_integrations:
@@ -135,11 +153,20 @@ class Hivemind:
         else:
             results = self._run_dag(plan, selected)
 
-        return {
+        payload = {
             "plan": plan.to_dict(),
             "capabilities": [cap.to_dict() for cap in capabilities],
             "results": [result.to_dict() for result in results],
         }
+        if execute:
+            payload["adaptive_automation"] = self.accelerator.observe_hivemind_run(payload)
+        else:
+            payload["adaptive_automation"] = {
+                "dry_run": True,
+                "recorded_events": 0,
+                "template": self.accelerator.template("hivemind") or None,
+            }
+        return payload
 
     def _run_dag(self, plan: RunPlan, selected: dict[str, str | None]) -> list[StageResult]:
         pending = {item.id: item for item in plan.items}

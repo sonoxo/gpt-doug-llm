@@ -22,7 +22,7 @@ from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
-from universal_hive import UniversalHiveRuntime
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 from gpt_chaos import GPTChaos
 
 MODEL = llm_backend.DEFAULT_MODEL
@@ -117,6 +117,9 @@ def main():
     deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
     universal_hive = UniversalHiveRuntime()
     gpt_chaos = GPTChaos(hive=universal_hive)
+    automation_accelerator = AdaptiveAutomationAccelerator(
+        universal_hive.state_dir / "automation-acceleration"
+    )
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -137,6 +140,7 @@ def main():
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
     hive_status = universal_hive.status()
     print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
+    print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
     history = []
     while True:
         try:
@@ -153,7 +157,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /accelerator  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -191,7 +195,15 @@ def main():
             print(Ontology.display())
             continue
         if prompt == "/hive":
-            print(json.dumps(gpt_chaos.status(), indent=2, sort_keys=True))
+            payload = gpt_chaos.status()
+            payload["adaptive_automation"] = automation_accelerator.status()
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            continue
+        if prompt == "/accelerator":
+            print(json.dumps(automation_accelerator.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/automation-template":
+            print(json.dumps(automation_accelerator.template("hivemind"), indent=2, sort_keys=True))
             continue
         if prompt.startswith("/summon "):
             job = prompt[len("/summon "):].strip()

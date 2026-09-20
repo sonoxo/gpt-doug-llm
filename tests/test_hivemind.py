@@ -94,3 +94,35 @@ def test_hivemind_summon_creates_reward_event(tmp_path, monkeypatch):
     assert swarm["event"] == "SWARM_CREATED"
     assert swarm["simulation_layer"] == "GPT_CHAOS"
     assert hive.hive_status()["hive"]["reward_event_count"] == 1
+
+
+def test_hivemind_dry_run_does_not_mutate_adaptive_learning(tmp_path, monkeypatch):
+    monkeypatch.setenv("GPT_DOUG_HIVE_STATE_DIR", str(tmp_path))
+    hive = Hivemind()
+    before = hive.acceleration_status()["event_count"]
+
+    result = hive.run("dry run should not learn", execute=False)
+
+    assert result["adaptive_automation"]["dry_run"] is True
+    assert result["adaptive_automation"]["recorded_events"] == 0
+    assert hive.acceleration_status()["event_count"] == before
+
+
+def test_hivemind_execute_records_outcomes_into_adaptive_loop(tmp_path, monkeypatch):
+    monkeypatch.setenv("GPT_DOUG_HIVE_STATE_DIR", str(tmp_path))
+    monkeypatch.setenv("GPT_DOUG_HIVEMIND_EXECUTE", "1")
+    hive = Hivemind(max_workers=4)
+
+    def handler(item):
+        return {"ok": True}
+
+    for slug in BY_SLUG:
+        hive.register_handler(slug, handler)
+
+    result = hive.run("learn from executed pipeline", execute=True)
+
+    assert result["adaptive_automation"]["recorded_events"] == 10
+    assert hive.acceleration_status()["event_count"] == 10
+    template = hive.automation_template("hivemind")
+    assert template["automation_type"] == "hivemind"
+    assert template["validation"]["require_explicit_external_authorization"] is True

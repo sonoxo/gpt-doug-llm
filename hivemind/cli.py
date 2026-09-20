@@ -29,6 +29,15 @@ def main() -> int:
     summon.add_argument("--builders", default="", help="Comma-separated builder IDs.")
     summon.add_argument("--request-id", default=None, help="Optional idempotency key.")
 
+    learn_status = sub.add_parser("learn-status", help="Show adaptive automation learning state.")
+
+    template = sub.add_parser("template", help="Show a learned automation-type template.")
+    template.add_argument("--automation-type", default="hivemind")
+
+    setup = sub.add_parser("setup", help="Generate a non-executable setup object from a learned template.")
+    setup.add_argument("--automation-type", default="hivemind")
+    setup.add_argument("--input-json", default="{}", help="Explicit input as a JSON object.")
+
     run = sub.add_parser("run", help="Run the control plane. Defaults to a non-mutating dry-run.")
     run.add_argument("job")
     run.add_argument("--workers", type=int, default=8)
@@ -48,6 +57,24 @@ def main() -> int:
     if args.command == "summon":
         builders = [x.strip() for x in args.builders.split(",") if x.strip()] or None
         _print_json(hive.summon(args.job, builders=builders, request_id=args.request_id))
+        return 0
+
+    if args.command == "learn-status":
+        _print_json(hive.acceleration_status())
+        return 0
+
+    if args.command == "template":
+        _print_json(hive.automation_template(args.automation_type))
+        return 0
+
+    if args.command == "setup":
+        try:
+            explicit_input = json.loads(args.input_json)
+        except json.JSONDecodeError as exc:
+            parser.error(f"--input-json must be valid JSON: {exc}")
+        if not isinstance(explicit_input, dict):
+            parser.error("--input-json must decode to a JSON object")
+        _print_json(hive.generate_setup_object(args.automation_type, explicit_input))
         return 0
 
     if args.command == "plan":
