@@ -15,6 +15,8 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("status", help="Show GPT-Chaos + Universal Hive status.")
+    sub.add_parser("blended-wing", help="Show the US-20260274413-A1-derived simulation pattern.")
+    sub.add_parser("blended-wing-stress", help="Run the bounded blended-wing concept stress-test checklist.")
 
     summon = sub.add_parser("summon", help="Create a new Universal Hive swarm.")
     summon.add_argument("job")
@@ -34,6 +36,14 @@ def main() -> int:
 
     if args.command == "status":
         _print(chaos.status())
+        return 0
+
+    if args.command == "blended-wing":
+        _print(chaos.aerospace_pattern())
+        return 0
+
+    if args.command == "blended-wing-stress":
+        _print(chaos.aerospace_stress_test())
         return 0
 
     if args.command == "summon":
