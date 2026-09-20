@@ -356,6 +356,20 @@ class MaxShell:
         self.voice = VoiceEngine(enabled=voice)
         self.gate = ArmGate()
         self.brain = Brain()
+        self.body_link = None
+        self.body_link_error = None
+        try:
+            from universal_hive import UniversalHiveRuntime
+            from body_link import BodyLinkClient
+
+            hive = UniversalHiveRuntime()
+            self.body_link = BodyLinkClient.optional_from_env(
+                state_dir=hive.state_dir / "body-link",
+                hive_id=hive.hive_id,
+                ontology_hash=hive.ontology_hash,
+            )
+        except Exception as exc:
+            self.body_link_error = str(exc)
         self.running = True
         self._speech_epoch = 0
         state = self.brain.health()
@@ -377,6 +391,13 @@ class MaxShell:
             + f"voice={'on' if self.voice.enabled else 'off'}"
             + RESET
         )
+        if self.body_link:
+            body = self.body_link.status()
+            print(CYAN + f"REPLIT BODY // {'LINKED' if body['linked'] else 'CONFIGURED'} // {body['body_url']}" + RESET)
+        elif self.body_link_error:
+            print(RED + f"REPLIT BODY // CONFIG ERROR // {self.body_link_error}" + RESET)
+        else:
+            print(DIM + "REPLIT BODY // DISCONNECTED // /body for setup state" + RESET)
         print(DIM + "Type /help. Plain English talks to the brain. Prefix shell commands with $." + RESET)
 
     def set_state(self, state: str, detail: str = "") -> None:
@@ -441,6 +462,11 @@ class MaxShell:
                 "system": system_snapshot(),
                 "brain": self.brain.health(),
                 "armed_seconds": self.gate.remaining(),
+                "replit_body": self.body_link.status() if self.body_link else {
+                    "configured": False,
+                    "error": self.body_link_error,
+                    "workspace_url": "https://replit.com/@24kmediaproduct/GPT-Doug-AI-Hub",
+                },
             },
             indent=2,
             default=str,
@@ -454,6 +480,11 @@ class MaxShell:
             "visual_state": asdict(self.bus.state),
             "armed_seconds": self.gate.remaining(),
             "state_file": str(STATE_FILE),
+            "replit_body": self.body_link.status() if self.body_link else {
+                "configured": False,
+                "error": self.body_link_error,
+                "workspace_url": "https://replit.com/@24kmediaproduct/GPT-Doug-AI-Hub",
+            },
         }
         print(json.dumps(payload, indent=2, default=str))
 
@@ -508,8 +539,38 @@ class MaxShell:
             "palantir_terminal": (ROOT / "palantir_terminal.py").exists(),
             "revenue_swarm": (ROOT / "workers" / "revenue_swarm.py").exists(),
             "mission_control": (ROOT / "doug_mission_control.py").exists(),
+            "replit_body_link": (ROOT / "body_link" / "client.py").exists(),
         }
         print(json.dumps(checks, indent=2))
+
+    def cmd_body(self, rest: str) -> None:
+        action = (rest or "status").strip().lower()
+        if not self.body_link:
+            payload = {
+                "configured": False,
+                "workspace_url": "https://replit.com/@24kmediaproduct/GPT-Doug-AI-Hub",
+                "error": self.body_link_error,
+                "required_env": ["GPT_DOUG_BODY_URL", "GPT_DOUG_BODY_LINK_KEY"],
+            }
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            return
+        try:
+            self.set_state("THINK", f"Replit body {action}")
+            if action in {"status", ""}:
+                payload = self.body_link.status()
+            elif action == "link":
+                payload = self.body_link.link()
+            elif action in {"ping", "heartbeat"}:
+                payload = self.body_link.ping()
+            else:
+                print("usage: /body [status|link|ping]")
+                self.set_state("IDLE", "body command help")
+                return
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            self.set_state("IDLE", f"Replit body {action} complete")
+        except Exception as exc:
+            self.set_state("ERROR", str(exc))
+            print(RED + f"REPLIT BODY ERROR // {exc}" + RESET)
 
     def cmd_swarm(self, rest: str) -> None:
         try:
@@ -745,6 +806,7 @@ class MaxShell:
   /rag <question>          local repository-grounded answer
   /agent <goal>            bounded ZYRA coding mission (requires /arm)
   /agents                  show installed agent surfaces
+  /body [status|link|ping]  authenticated Replit body-node link
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
   /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
   /walk <mode> [speed] [r] avatar patrol/wander inside the terminal visual pane
@@ -801,6 +863,8 @@ converted into a shell command.
                 self.cmd_agent(rest)
         elif cmd == "/agents":
             self.cmd_agents()
+        elif cmd == "/body":
+            self.cmd_body(rest)
         elif cmd == "/swarm":
             self.cmd_swarm(rest)
         elif cmd in {"/emote", "/face"}:
