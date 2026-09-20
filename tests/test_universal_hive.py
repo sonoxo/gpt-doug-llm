@@ -3,7 +3,7 @@ import json
 import pytest
 
 from gpt_chaos import GPTChaos
-from universal_hive import UniversalHiveRuntime
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 
 
 def _read_jsonl(path):
@@ -91,3 +91,49 @@ def test_gpt_chaos_uses_shared_hive_runtime(tmp_path):
     assert swarm["simulation_layer"] == "GPT_CHAOS"
     assert "stress-test" in swarm["worker_fabric"]
     assert hive.status()["reward_event_count"] == 1
+
+
+def test_adaptive_accelerator_builds_composites_rules_templates_and_setup_objects(tmp_path):
+    accelerator = AdaptiveAutomationAccelerator(tmp_path / "learning")
+
+    for index in range(4):
+        accelerator.record_event(
+            automation_type="hivemind",
+            stage="execute",
+            status="PASSED",
+            attributes={"integration": "hermes-agent", "sample": index},
+            requirements=["preserve_provenance", "keep_rollback_path"],
+            run_id=f"run-{index}",
+        )
+
+    status = accelerator.status()
+    template = accelerator.template("hivemind")
+    setup = accelerator.generate_setup_object(
+        "hivemind",
+        explicit_input={"goal": "build safely"},
+    )
+
+    assert status["event_count"] == 4
+    assert status["composite_count"] == 4
+    assert status["template_count"] == 1
+    assert template["prepopulated"]["preferred_integrations"]["execute"] == "hermes-agent"
+    assert setup["execution"] == "NON_EXECUTABLE_SETUP_OBJECT"
+    assert setup["explicit_input"]["goal"] == "build safely"
+    assert setup["validation"]["require_rollback_for_mutation"] is True
+
+
+def test_adaptive_accelerator_event_ingestion_is_idempotent_for_same_run_item(tmp_path):
+    accelerator = AdaptiveAutomationAccelerator(tmp_path / "learning")
+    kwargs = {
+        "automation_type": "hivemind",
+        "stage": "execute",
+        "status": "PASSED",
+        "attributes": {"integration": "hermes-agent", "item_id": "08-execute"},
+        "requirements": ["preserve_provenance"],
+        "run_id": "mission-1",
+    }
+    first = accelerator.record_event(**kwargs)
+    second = accelerator.record_event(**kwargs)
+
+    assert first["event_id"] == second["event_id"]
+    assert accelerator.status()["event_count"] == 1
