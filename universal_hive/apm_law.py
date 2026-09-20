@@ -45,7 +45,7 @@ class APMLaw:
         requires_mutation: bool,
     ) -> dict[str, Any]:
         provenance = procedure.get("provenance")
-        verified = bool(procedure.get("verified"))
+        verified = bool(procedure.get("procedure_verified") or procedure.get("verified"))
         authorization_boundary = procedure.get("authorization_boundary")
         context_validation = procedure.get("context_validation")
         rollback = procedure.get("rollback") or procedure.get("recovery")
