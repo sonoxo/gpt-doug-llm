@@ -26,6 +26,7 @@ from universal_hive import APMLaw, AdaptiveAutomationAccelerator, UniversalHiveR
 from cloud_nxyz import CloudNXYZEngine
 from gpt_chaos import GPTChaos
 from body_link import BodyLinkClient, BodyStateRelay, runtime_body_state
+from uap_matrix import UAPMatrixSharedSpace
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -119,6 +120,11 @@ def main():
     deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
     universal_hive = UniversalHiveRuntime()
     gpt_chaos = GPTChaos(hive=universal_hive)
+    uap_matrix = UAPMatrixSharedSpace(
+        state_dir=universal_hive.state_dir / "uap-matrix",
+        hive_id=universal_hive.hive_id,
+        ontology_hash=universal_hive.ontology_hash,
+    )
     try:
         body_link = BodyLinkClient.optional_from_env(
             state_dir=universal_hive.state_dir / "body-link",
@@ -163,6 +169,13 @@ def main():
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
     hive_status = universal_hive.status()
     print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
+    matrix_status = uap_matrix.status()
+    print(
+        CYAN
+        + f"UAP MATRIX // {matrix_status['uap_matrix']} // "
+        + f"{matrix_status['matrix_id']} // DOUG = CHAOS PEERS"
+        + RESET
+    )
     if body_link:
         body_status = body_link.status()
         print(CYAN + f"REPLIT BODY // {'LINKED' if body_status['linked'] else 'CONFIGURED'} // {body_status['body_url']}" + RESET)
@@ -191,7 +204,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /matrix  /matrix checkpoint  /matrix publish <channel> <message>  /matrix propose <statement>  /matrix vote <decision> <SUPPORT|DISSENT|ABSTAIN>  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -232,6 +245,53 @@ def main():
             payload = gpt_chaos.status()
             payload["adaptive_automation"] = automation_accelerator.status()
             print(json.dumps(payload, indent=2, sort_keys=True))
+            continue
+        if prompt == "/matrix":
+            print(json.dumps(uap_matrix.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/matrix checkpoint":
+            print(
+                json.dumps(
+                    uap_matrix.checkpoint("gpt-doug-terminal"),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            continue
+        if prompt.startswith("/matrix publish "):
+            parts = prompt[len("/matrix publish "):].split(" ", 1)
+            if len(parts) != 2:
+                print("Usage: /matrix publish <channel> <message>")
+                continue
+            channel, message = parts
+            try:
+                event = uap_matrix.publish("GPT_DOUG", channel, message)
+                print(json.dumps(event, indent=2, sort_keys=True))
+            except ValueError as error:
+                print(f"UAP MATRIX // REJECTED // {error}")
+            continue
+        if prompt.startswith("/matrix propose "):
+            statement = prompt[len("/matrix propose "):].strip()
+            if not statement:
+                print("Usage: /matrix propose <statement>")
+                continue
+            decision = uap_matrix.propose("GPT_DOUG", statement)
+            print(json.dumps(decision, indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/matrix vote "):
+            parts = prompt[len("/matrix vote "):].split()
+            if len(parts) != 2:
+                print(
+                    "Usage: /matrix vote <decision_id> "
+                    "<SUPPORT|DISSENT|ABSTAIN>"
+                )
+                continue
+            decision_id, choice = parts
+            try:
+                decision = uap_matrix.vote("GPT_DOUG", decision_id, choice)
+                print(json.dumps(decision, indent=2, sort_keys=True))
+            except (KeyError, ValueError) as error:
+                print(f"UAP MATRIX // REJECTED // {error}")
             continue
         if prompt == "/body":
             if not body_link:
