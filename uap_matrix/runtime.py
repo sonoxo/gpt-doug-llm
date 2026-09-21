@@ -78,6 +78,13 @@ class UAPMatrixSharedSpace:
         with self._locked():
             if not self.state_path.exists():
                 _atomic_write_json(self.state_path, self._initial_state())
+            else:
+                existing = self._load_state()
+                self.matrix_id = existing.get("matrix_id", self.matrix_id)
+                self.hive_id = existing.get("hive_id", self.hive_id)
+                self.ontology_hash = existing.get(
+                    "ontology_hash", self.ontology_hash
+                )
 
     def _initial_state(self) -> dict[str, Any]:
         return {
