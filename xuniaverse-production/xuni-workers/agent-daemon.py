@@ -14,15 +14,15 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import zyra_guard
 import ontology
+import zyra_guard
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
