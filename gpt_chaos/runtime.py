@@ -8,7 +8,8 @@ from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 
 from .aerospace import pattern as blended_wing_pattern
 from .aerospace import stress_test as stress_test_blended_wing
-from .digital_clone import evaluate_learning_event, pattern as digital_clone_pattern
+from .digital_clone import evaluate_learning_event
+from .digital_clone import pattern as digital_clone_pattern
 
 
 class GPTChaos:
