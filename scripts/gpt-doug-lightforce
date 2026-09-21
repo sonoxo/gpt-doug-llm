@@ -6,6 +6,9 @@ STATE_FILE="${GPTDOUG_LIGHTFORCE_STATE:-$STATE_DIR/lightforce-state.json}"
 SWARMS="${GPTDOUG_LIGHTFORCE_SWARMS:-999}"
 HIVES="${GPTDOUG_LIGHTFORCE_HIVES:-999}"
 ACTION="${1:-on}"
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+REPO_LIVE="$SCRIPT_DIR/../tools/gptdoug_lightforce_live.py"
+INSTALLED_LIVE="${GPTDOUG_LIGHTFORCE_LIVE:-$HOME/.local/share/gpt-doug/gptdoug_lightforce_live.py}"
 
 mkdir -p "$STATE_DIR"
 
@@ -94,6 +97,21 @@ case "$ACTION" in
     pulse
     write_state true "ACTIVE"
     ;;
+  live|takeover|show)
+    write_state true "LIVE"
+    live_tool=""
+    if [ -f "$INSTALLED_LIVE" ]; then
+      live_tool="$INSTALLED_LIVE"
+    elif [ -f "$REPO_LIVE" ]; then
+      live_tool="$REPO_LIVE"
+    fi
+    if [ -z "$live_tool" ]; then
+      printf "%b\n" "${dim}LIGHTFORCE // live visualizer missing; reinstall Light Force${reset}" >&2
+      exit 3
+    fi
+    python3 "$live_tool" --swarms "$SWARMS" --hives "$HIVES"
+    write_state true "ACTIVE"
+    ;;
   status)
     show_status
     ;;
@@ -102,7 +120,7 @@ case "$ACTION" in
     printf "%b\n" "${dim}🌑 LIGHT FORCE // OFF // logical federation preserved, no background processes${reset}"
     ;;
   *)
-    printf "usage: gpt-doug-lightforce [on|pulse|status|off]\n" >&2
+    printf "usage: gpt-doug-lightforce [on|live|pulse|status|off]\n" >&2
     exit 2
     ;;
 esac
