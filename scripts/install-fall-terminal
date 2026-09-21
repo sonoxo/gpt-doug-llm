@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+THEME_DIR="${GPTDOUG_HOME:-$HOME/.config/gptdoug}"
+THEME_FILE="$THEME_DIR/fall-terminal.zsh"
+RAW_URL="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/shell/gpt-doug-fall.zsh"
+
+mkdir -p "$THEME_DIR"
+
+if command -v curl >/dev/null 2>&1; then
+  curl -fsSL "$RAW_URL" -o "$THEME_FILE"
+elif command -v wget >/dev/null 2>&1; then
+  wget -qO "$THEME_FILE" "$RAW_URL"
+else
+  printf '%s\n' "🍂 curl or wget is required." >&2
+  exit 1
+fi
+
+chmod 600 "$THEME_FILE"
+
+printf '%s\n' "[GPTDOUG // FALL THEME] 🍁 installed"
+printf 'theme=%s\n' "$THEME_FILE"
+printf '%s\n' "CURRENT_SHELL=run: source \"$THEME_FILE\""
+printf '%s\n' "PERSIST_LATER=after .zshrc syntax is healthy, add: source \"$THEME_FILE\""
