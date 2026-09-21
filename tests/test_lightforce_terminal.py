@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+import time
 from pathlib import Path
 
 
@@ -28,6 +29,7 @@ def test_lightforce_writes_bounded_logical_state(tmp_path):
     assert state["hidden_processes_spawned"] == 0
     assert state["human_override"] is True
     assert state["peer_mode"] == "DOUG_EQUALS_CHAOS"
+    assert state["mode"] == "REAL_TELEMETRY_ONLY"
 
 
 def test_lightforce_off_is_non_background(tmp_path):
@@ -59,9 +61,8 @@ def test_live_visualizer_is_single_process_foreground_contract():
     live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
     launcher = (root / "scripts" / "gpt-doug-lightforce").read_text(encoding="utf-8")
 
-    assert "SINGLE FOREGROUND PROCESS" in live
-    assert "q/Esc=RETURN CONTROL" in live
-    assert "Ctrl+C=KILL SWITCH" in live
+    assert "foreground HUD process" in live
+    assert "q / Esc / Ctrl-C" in live
     assert "subprocess.Popen(" not in live
     assert "multiprocessing" not in live
     assert 'live|takeover|show)' in launcher
@@ -72,39 +73,81 @@ def test_live_visualizer_plain_frames_exit_cleanly():
     root = Path(__file__).resolve().parent.parent
     live = root / "tools" / "gptdoug_lightforce_live.py"
     proc = subprocess.run(
-        ["python3", str(live), "--plain", "--frames", "2", "--fps", "30"],
+        ["python3", str(live), "--plain", "--frames", "1", "--fps", "10"],
         text=True,
         capture_output=True,
         check=False,
         timeout=10,
     )
     assert proc.returncode == 0, proc.stderr
-    assert "LIGHTFORCE LIVE" in proc.stdout
-    assert "999 logical swarms" in proc.stdout
+    assert "REAL SWARM TELEMETRY" in proc.stdout
+    assert "NO MOCK DATA" in proc.stdout
+    assert "NO SYNTHETIC STATUS OR PROGRESS" in proc.stdout
 
 
-def test_live_visualizer_defaults_to_100_visible_hives():
+def test_live_visualizer_defaults_to_100_truthful_slots():
     root = Path(__file__).resolve().parent.parent
     live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
 
-    assert 'default=100' in live
-    assert 'visible_hives={visible}/{len(cells)}' in live
-    assert 'grid_cols = min(5, max(2, inner // 28))' in live
-    assert 'args.cells = max(4, min(args.cells, 200))' in live
+    assert "default=100" in live
+    assert "display capacity; unused slots show NO LIVE DATA" in live
+    assert "grid_cols = min(5, max(2, inner // 28))" in live
+    assert "args.cells = max(4, min(args.cells, 200))" in live
+    assert "math.sin" not in live
+    assert "STATUSES =" not in live
+    assert "EVENTS =" not in live
 
 
-def test_live_visualizer_stability_defaults():
+def test_live_visualizer_reads_real_stage_evidence(tmp_path):
     root = Path(__file__).resolve().parent.parent
-    live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
+    live = root / "tools" / "gptdoug_lightforce_live.py"
 
-    assert 'default=6.0' in live
-    assert 'self.progress += (target - self.progress) * 0.10' in live
-    assert 'slot = int(t // 4.0)' in live
-    assert 'next_event = 24' in live
-    assert 'DOUG <-> CHAOS <-> HIVE' in live
-    assert 'GPT-DOUG // GPT-CHAOS // SWARM LIGHT FORCE // DARK FALL' in live
-    assert '✨ GPT-DOUG' not in live
-    assert '🐝 {swarms}' not in live
+    (tmp_path / "workers" / "live").mkdir(parents=True)
+    (tmp_path / "workers" / "revenue_swarm.py").write_text("# marker\n")
+    now = time.time()
+    records = [
+        {
+            "type": "stage_start",
+            "ts": now,
+            "prospect": {"prospect_id": "actual-prospect"},
+            "stage": "qa",
+        }
+    ]
+    log = tmp_path / "workers" / "live" / "revenue-swarm.jsonl"
+    log.write_text("\n".join(json.dumps(row) for row in records) + "\n")
+
+    metrics = {
+        "active_workers": 4,
+        "provider": "remote",
+        "prospects_unique": 1,
+        "started_at": now,
+    }
+    (tmp_path / "workers" / "live" / "revenue-swarm-metrics.json").write_text(
+        json.dumps(metrics)
+    )
+
+    proc = subprocess.run(
+        [
+            "python3",
+            str(live),
+            "--plain",
+            "--frames",
+            "1",
+            "--repo",
+            str(tmp_path),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+
+    assert proc.returncode == 0, proc.stderr
+    assert "actual-pro" in proc.stdout
+    assert "RUN" in proc.stdout
+    assert "qa" in proc.stdout
+    assert "revenue=1" in proc.stdout
+    assert "provider=remote" in proc.stdout
 
 
 def test_gpt_swarm_command_is_real_wrapper():
