@@ -211,3 +211,23 @@ authentication method or credentials.
 
 The local stagenet helper uses the same generated credentials for the wallet RPC
 process, the environment file, the readiness probe, and the Python doctor.
+
+
+## Repairing a stale wallet-RPC credential process
+
+If the daemon is reachable but the doctor reports wallet RPC HTTP 401, the
+wallet-RPC process may have been started with credentials that no longer match
+`~/.config/gptdoug/xmr-neural.env`.
+
+Re-run the stagenet helper:
+
+```bash
+bash scripts/start-xmr-stagenet
+```
+
+The helper now distinguishes `ready`, `unauthorized`, and `offline`. For an
+unauthorized wallet RPC that it previously started, it validates the recorded
+PID and command line, sends SIGTERM only to that managed
+`monero-wallet-rpc --rpc-bind-port 38088` process, and restarts it with the
+current saved credentials. If the process is not managed by the helper, it
+fails closed instead of killing an unknown process.
