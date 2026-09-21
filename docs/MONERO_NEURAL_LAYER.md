@@ -34,7 +34,7 @@ stores hashes and compact provenance metadata only.
 ```bash
 export GPT_DOUG_XMR_NEURAL_STATE_DIR="$HOME/.gpt-doug/monero-neural"
 export MONERO_DAEMON_RPC="http://127.0.0.1:38081/json_rpc"
-export MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"
+export MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"
 ```
 
 Optional HTTP basic-auth variables:
@@ -161,3 +161,42 @@ gpt-doug-xmr-neural doctor --strict-rpc
 
 `--strict-rpc` is useful for automation because it exits non-zero until both
 configured RPC endpoints are reachable.
+
+
+## Start the local Monero stagenet runtime
+
+Official Monero stagenet uses daemon JSON-RPC on port `38081` and wallet RPC on
+port `38088`. Port `38082` is the stagenet ZMQ RPC port and should not be
+used for `monero-wallet-rpc`.
+
+On macOS with Homebrew:
+
+```bash
+brew install monero
+bash scripts/start-xmr-stagenet
+```
+
+Or allow the helper to install the Homebrew formula when it is missing:
+
+```bash
+bash scripts/start-xmr-stagenet --install
+```
+
+The helper:
+
+- starts a pruned local `monerod --stagenet` bound to `127.0.0.1:38081`
+- starts `monero-wallet-rpc --stagenet` bound to `127.0.0.1:38088`
+- protects wallet RPC with generated local RPC credentials
+- creates only a wallet directory; it does not create or open a wallet
+- does not load or persist a private spend key
+- keeps the neural settlement layer external-signer-only
+
+After startup:
+
+```bash
+~/.local/bin/gpt-doug-xmr-neural doctor
+```
+
+A healthy runtime reports `READY_END_TO_END`. The daemon may still be syncing
+the stagenet blockchain; `daemon-info` exposes the current height while it
+catches up.
