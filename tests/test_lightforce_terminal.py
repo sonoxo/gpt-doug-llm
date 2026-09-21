@@ -91,3 +91,17 @@ def test_live_visualizer_defaults_to_100_visible_hives():
     assert 'visible_hives={visible}/{len(cells)}' in live
     assert 'grid_cols = min(5, max(2, inner // 28))' in live
     assert 'args.cells = max(4, min(args.cells, 200))' in live
+
+
+def test_live_visualizer_stability_defaults():
+    root = Path(__file__).resolve().parent.parent
+    live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
+
+    assert 'default=6.0' in live
+    assert 'self.progress += (target - self.progress) * 0.10' in live
+    assert 'slot = int(t // 4.0)' in live
+    assert 'next_event = 24' in live
+    assert 'DOUG <-> CHAOS <-> HIVE' in live
+    assert 'GPT-DOUG // GPT-CHAOS // SWARM LIGHT FORCE // DARK FALL' in live
+    assert '✨ GPT-DOUG' not in live
+    assert '🐝 {swarms}' not in live
