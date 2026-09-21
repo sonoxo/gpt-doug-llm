@@ -68,7 +68,7 @@ daemon_ready() {
 }
 
 wallet_ready() {
-  curl -fsS --max-time 3 \
+  curl -fsS --max-time 3 --digest \
     -u "$MONERO_WALLET_RPC_USER:$MONERO_WALLET_RPC_PASSWORD" \
     "$MONERO_WALLET_RPC" \
     -H 'Content-Type: application/json' \
