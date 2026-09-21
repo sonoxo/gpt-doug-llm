@@ -468,6 +468,13 @@ def _int_or_none(value: Any) -> Optional[int]:
         return None
 
 
+def _load1() -> str:
+    try:
+        return f"{os.getloadavg()[0]:.2f}"
+    except (AttributeError, OSError):
+        return "N/A"
+
+
 def _fmt_duration(value: Optional[float]) -> str:
     if value is None:
         return "-"
@@ -564,7 +571,7 @@ def render(
 
     process_line = (
         f"HUD PROCESS  uptime={process_uptime:.1f}s cpu_time={process_cpu_s:.2f}s "
-        f"render={render_ms:.2f}ms pid={os.getpid()} load1={os.getloadavg()[0]:.2f}"
+        f"render={render_ms:.2f}ms pid={os.getpid()} load1={_load1()}"
     )
     lines.append(DIMFG + "│ " + crop(process_line, cols - 4).ljust(cols - 4) + " │" + RESET)
 
