@@ -262,6 +262,7 @@ class RevenueSwarm:
             {
                 "type": "stage_start",
                 "ts": started,
+                "pid": os.getpid(),
                 "prospect": asdict(prospect),
                 "stage": stage,
             }
@@ -305,6 +306,7 @@ class RevenueSwarm:
             {
                 "type": "pipeline_start",
                 "ts": pipeline_started,
+                "pid": os.getpid(),
                 "prospect": asdict(prospect),
             }
         )
