@@ -238,30 +238,37 @@ def match(query: str, top: int, as_json: bool = False) -> int:
     for path, seed in seeds():
         points, hits = score(seed, query)
         row = {
-            "score": points,
             "patent_id": seed.get("patent_id"),
             "title": seed.get("title"),
-            "matched_scope_signals": hits,
             "scope_tags": seed.get("scope_tags", []),
             "path": str(path.relative_to(ROOT)),
             "_publication_date": publication_date_value(seed),
         }
         title_key = norm(str(seed.get("title", "")))
         existing = data_by_title.get(title_key)
-        if existing is None or (
-            row["_publication_date"],
-            int(row["score"]),
-            str(row["patent_id"]),
-        ) > (
+        if existing is None:
+            data_by_title[title_key] = {
+                **row,
+                "score": points,
+                "matched_scope_signals": hits,
+                "_best_match_key": (points, row["_publication_date"], str(row["patent_id"])),
+            }
+            continue
+        if (row["_publication_date"], str(row["patent_id"])) > (
             existing["_publication_date"],
-            int(existing["score"]),
             str(existing["patent_id"]),
         ):
-            data_by_title[title_key] = row
+            existing.update(row)
+        best_match_key = (points, row["_publication_date"], str(row["patent_id"]))
+        if best_match_key > existing["_best_match_key"]:
+            existing["score"] = points
+            existing["matched_scope_signals"] = hits
+            existing["_best_match_key"] = best_match_key
     data = list(data_by_title.values())
     data.sort(key=lambda x: (-int(x["score"]), str(x["patent_id"])))
     for row in data:
         row.pop("_publication_date", None)
+        row.pop("_best_match_key", None)
     data = data[: max(1, top)]
     payload = {
         "query": query,
