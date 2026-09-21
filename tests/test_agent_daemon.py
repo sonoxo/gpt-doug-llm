@@ -5,11 +5,9 @@ Adapted for pytest compatibility in the unified gpt-doug-llm project.
 """
 import importlib.util
 import json
-import sys
 import tempfile
 from pathlib import Path
 
-import pytest
 
 HERE = Path(__file__).resolve().parent
 
