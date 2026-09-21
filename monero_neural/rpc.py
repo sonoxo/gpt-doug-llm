@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import base64
 import json
 import os
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any, Dict, Optional
 
@@ -15,8 +15,9 @@ class MoneroRPCError(RuntimeError):
 class MoneroRPCClient:
     """Minimal read/query Monero JSON-RPC client.
 
-    This client intentionally contains no transfer method and never accepts or
-    stores a private spend key.
+    Monero's --rpc-login uses HTTP Digest authentication. This client supports
+    that challenge/response flow while intentionally exposing no transfer
+    method and never accepting or storing a private spend key.
     """
 
     def __init__(
@@ -49,13 +50,23 @@ class MoneroRPCClient:
         )
 
     def _headers(self) -> Dict[str, str]:
-        headers = {"Content-Type": "application/json", "Accept": "application/json"}
-        if self.username is not None:
-            token = base64.b64encode(
-                (self.username + ":" + (self.password or "")).encode("utf-8")
-            ).decode("ascii")
-            headers["Authorization"] = "Basic " + token
-        return headers
+        return {"Content-Type": "application/json", "Accept": "application/json"}
+
+    def _open(self, request: urllib.request.Request):
+        if self.username is None:
+            return urllib.request.urlopen(request, timeout=self.timeout)
+
+        password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        password = self.password or ""
+        password_mgr.add_password(None, self.endpoint, self.username, password)
+
+        parsed = urllib.parse.urlsplit(self.endpoint)
+        origin = f"{parsed.scheme}://{parsed.netloc}/"
+        password_mgr.add_password(None, origin, self.username, password)
+
+        digest = urllib.request.HTTPDigestAuthHandler(password_mgr)
+        opener = urllib.request.build_opener(digest)
+        return opener.open(request, timeout=self.timeout)
 
     def call(self, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         body = {
@@ -71,7 +82,7 @@ class MoneroRPCClient:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            with self._open(request) as response:
                 payload = json.loads(response.read().decode("utf-8"))
         except (urllib.error.URLError, TimeoutError, ValueError) as exc:
             raise MoneroRPCError("Monero RPC request failed: %s" % exc) from exc
