@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BIN_DIR="${GPT_DOUG_BIN_DIR:-$HOME/.local/bin}"
+TARGET="$BIN_DIR/gpt-doug-lightforce"
+RAW_URL="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/gpt-doug-lightforce"
+
+mkdir -p "$BIN_DIR"
+
+if command -v curl >/dev/null 2>&1; then
+  curl -fsSL "$RAW_URL" -o "$TARGET"
+elif command -v wget >/dev/null 2>&1; then
+  wget -qO "$TARGET" "$RAW_URL"
+else
+  printf '%s\n' "✨ curl or wget is required." >&2
+  exit 1
+fi
+
+chmod 755 "$TARGET"
+printf '%s\n' "[GPTDOUG // LIGHTFORCE] ✨ installed"
+printf 'launcher=%s\n' "$TARGET"
+"$TARGET" on
