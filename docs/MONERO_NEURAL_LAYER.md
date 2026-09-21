@@ -104,3 +104,60 @@ receipt = chain.reconcile(job["job_id"], final_output={"result": "A"})
 The resulting receipt contains hashes of the model, ontology, input and output,
 plus worker/critic/verifier provenance. It can then be linked to a human-approved
 Monero settlement handled by a separate signer.
+
+
+## End-to-end macOS/Linux bootstrap
+
+Use the repository bootstrap instead of installing into Homebrew's system Python.
+It creates an isolated virtual environment, installs the package there, writes a
+stable launcher to `~/.local/bin/gpt-doug-xmr-neural`, and keeps Monero RPC
+configuration in `~/.config/gptdoug/xmr-neural.env`.
+
+```bash
+curl -fsSLo /tmp/install-xmr-neural \
+  https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/install-xmr-neural
+bash /tmp/install-xmr-neural
+```
+
+The installer deliberately does **not** use `--break-system-packages` and does
+not modify `~/.zshrc`. If `~/.local/bin` is not already on your PATH, either
+invoke the launcher directly:
+
+```bash
+~/.local/bin/gpt-doug-xmr-neural doctor
+```
+
+or add it to PATH after repairing any existing shell-config parse errors:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+The bootstrap synchronizes its installation checkout from the public HTTPS Git
+URL, so a missing GitHub SSH key does not block read/install access.
+
+### Doctor states
+
+```text
+READY_LOCAL
+  package + isolated Python + ledger are healthy; RPC checks skipped
+
+READY_LOCAL_RPC_OFFLINE
+  GPT-Doug is installed correctly; Monero daemon and/or wallet RPC is offline
+
+READY_END_TO_END
+  package + ledger + daemon RPC + wallet RPC are all reachable
+
+LOCAL_INSTALL_INCOMPLETE
+  the Python environment or local ledger failed validation
+```
+
+Run:
+
+```bash
+gpt-doug-xmr-neural doctor
+gpt-doug-xmr-neural doctor --strict-rpc
+```
+
+`--strict-rpc` is useful for automation because it exits non-zero until both
+configured RPC endpoints are reachable.
