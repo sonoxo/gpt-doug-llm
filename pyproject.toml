@@ -40,6 +40,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 gpt-doug = "gpt_doug:main"
 gpt-doug-hivemind = "hivemind.cli:main"
 gpt-chaos = "gpt_chaos.cli:main"
+uap-matrix = "uap_matrix.cli:main"
 gpt-doug-body = "body_link.cli:main"
 cloud-nxyz = "cloud_nxyz.cli:main"
 gpt-doug-xmr-neural = "monero_neural.cli:main"
@@ -51,7 +52,7 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural"]
+packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
@@ -68,4 +69,4 @@ select = ["E", "F", "W", "I"]
 ignore = ["E501"]
 
 [tool.coverage.run]
-source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard", "hivemind", "cloud_nxyz", "universal_hive"]
+source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard", "hivemind", "cloud_nxyz", "universal_hive", "uap_matrix"]

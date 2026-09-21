@@ -3,11 +3,13 @@ from __future__ import annotations
 from typing import Iterable
 
 from cloud_nxyz import CloudNXYZEngine
+from uap_matrix import UAPMatrixSharedSpace
 from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 
 from .aerospace import pattern as blended_wing_pattern
 from .aerospace import stress_test as stress_test_blended_wing
-from .digital_clone import evaluate_learning_event, pattern as digital_clone_pattern
+from .digital_clone import evaluate_learning_event
+from .digital_clone import pattern as digital_clone_pattern
 
 
 class GPTChaos:
@@ -23,6 +25,11 @@ class GPTChaos:
 
     def __init__(self, hive: UniversalHiveRuntime | None = None) -> None:
         self.hive = hive or UniversalHiveRuntime()
+        self.matrix = UAPMatrixSharedSpace(
+            state_dir=self.hive.state_dir / "uap-matrix",
+            hive_id=self.hive.hive_id,
+            ontology_hash=self.hive.ontology_hash,
+        )
 
     def summon(
         self,
@@ -91,6 +98,21 @@ class GPTChaos:
     def aerospace_stress_test(self) -> dict:
         return stress_test_blended_wing()
 
+    def matrix_publish(
+        self, channel: str, content: object, *, evidence: object | None = None
+    ) -> dict:
+        return self.matrix.publish("GPT_CHAOS", channel, content, evidence=evidence)
+
+    def matrix_propose(
+        self, statement: str, *, evidence: object | None = None
+    ) -> dict:
+        return self.matrix.propose("GPT_CHAOS", statement, evidence=evidence)
+
+    def matrix_vote(
+        self, decision_id: str, vote: str, *, evidence: object | None = None
+    ) -> dict:
+        return self.matrix.vote("GPT_CHAOS", decision_id, vote, evidence=evidence)
+
     def status(self) -> dict:
         return {
             "gpt_chaos": "WORKER_FABRIC_READY",
@@ -99,4 +121,5 @@ class GPTChaos:
             "apm_law": "APM-001 ACTIVE",
             "cloud_nxyz": "READY",
             "digital_clone_pattern": "READY",
+            "uap_matrix": self.matrix.status(),
         }
