@@ -21,10 +21,13 @@ GPT-Doug-AI-Hub
         +-- /health
         +-- /v1/handshake
         +-- /v1/heartbeat
+        +-- /v1/state      (signed POST, safe GET snapshot)
+        +-- /v1/stream     (same-origin SSE for the browser avatar)
 ```
 
-This first body-link protocol intentionally exposes no remote shell and no
-arbitrary command endpoint.
+The body-link protocol intentionally exposes no remote shell and no arbitrary
+command endpoint. Body-Link V2 adds a sanitized live state plane while preserving
+`gptdoug-body-link-v1` wire compatibility for handshake and HMAC signatures.
 
 ## Replit side
 
@@ -57,6 +60,8 @@ Then:
 gpt-doug-body link
 gpt-doug-body ping
 gpt-doug-body status
+gpt-doug-body state LEARN --detail "archive + critic review"
+gpt-doug-body demo --interval 2
 gpt-doug-body watch --interval 30
 ```
 
@@ -67,6 +72,68 @@ Inside the main GPT-Doug terminal:
 /body link
 /body ping
 ```
+
+
+## Body-Link V2 live state
+
+The controller converts GPT-Doug runtime transitions into a sanitized body-state
+packet. Canonical states are:
+
+`IDLE LISTEN THINK TALK ACT LEARN POWER ERROR SLEEP`
+
+`POST /v1/state` is HMAC-authenticated and accepts only the whitelisted animation
+schema. Unknown fields such as credentials, passwords, or private keys are dropped
+by the sanitizer. The server keeps only the latest sanitized animation state.
+
+The browser does **not** receive the HMAC key. It reads the same-origin stream:
+
+```js
+const stream = new EventSource('/v1/stream');
+
+stream.addEventListener('body_state', (event) => {
+  const packet = JSON.parse(event.data);
+  const body = packet.body_state;
+
+  // Feed these values into the existing Three.js animation/state store.
+  // body.state is one of:
+  // IDLE LISTEN THINK TALK ACT LEARN POWER ERROR SLEEP
+  applyGptDougBodyState(body);
+});
+```
+
+The current snapshot is also available at:
+
+```text
+GET /v1/state
+```
+
+The MAX shell uses a latest-state-only background relay, so animation network
+latency never blocks the command shell. State changes such as `THINK`, `TALK`,
+`LISTEN`, `ACT`, `POWER`, and `ERROR` are forwarded automatically whenever
+the remote body is configured.
+
+### LEARN packet
+
+```json
+{
+  "schema": "gptdoug/body-state-v1",
+  "state": "LEARN",
+  "emotion": "curious",
+  "intensity": 0.8,
+  "eyes": {"focus": 0.9, "blinkRate": 0.18},
+  "mouth": {"active": false, "viseme": "rest", "amplitude": 0.0},
+  "head": {"yaw": 0.0, "pitch": -0.03, "roll": 0.0},
+  "voice": {"active": false},
+  "microphone": {"active": false},
+  "speaker": {"active": false},
+  "learning": {"active": true, "pulse": 0.8}
+}
+```
+
+Recommended Three.js mapping for `LEARN`: focused eyes, subtle head micro-motion,
+continued breathing, cyan/magenta neural pulse, and an active ontology/memory HUD.
+The controller supplies state; the Replit renderer owns interpolation and visual
+presentation.
 
 ## Authentication protocol
 
