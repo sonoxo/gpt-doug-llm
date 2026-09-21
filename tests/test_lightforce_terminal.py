@@ -109,6 +109,7 @@ def test_live_visualizer_reads_real_stage_evidence(tmp_path):
         {
             "type": "stage_start",
             "ts": now,
+            "pid": os.getpid(),
             "prospect": {"prospect_id": "actual-prospect"},
             "stage": "qa",
         }
@@ -174,3 +175,42 @@ def test_gpt_swarm_help_exits_cleanly():
     )
     assert proc.returncode == 0
     assert "Launch stable 100-HIVE live terminal swarm" in proc.stdout
+
+
+def test_live_visualizer_reads_real_daemon_telemetry(tmp_path):
+    root = Path(__file__).resolve().parent.parent
+    live = root / "tools" / "gptdoug_lightforce_live.py"
+
+    (tmp_path / "workers").mkdir(parents=True)
+    (tmp_path / "workers" / "revenue_swarm.py").write_text("# marker\n")
+    daemon_live = tmp_path / "xuni-workers" / "live"
+    daemon_live.mkdir(parents=True)
+    now = time.time()
+    record = {
+        "type": "task_start",
+        "task_id": "actual-task",
+        "state": "RUN",
+        "ts": now,
+        "pid": os.getpid(),
+    }
+    (daemon_live / "agent-telemetry.jsonl").write_text(json.dumps(record) + "\n")
+
+    proc = subprocess.run(
+        [
+            "python3",
+            str(live),
+            "--plain",
+            "--frames",
+            "1",
+            "--repo",
+            str(tmp_path),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+
+    assert proc.returncode == 0, proc.stderr
+    assert "actual-ta" in proc.stdout
+    assert "daemon=1" in proc.stdout
