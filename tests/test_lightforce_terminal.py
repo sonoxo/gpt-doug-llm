@@ -81,3 +81,13 @@ def test_live_visualizer_plain_frames_exit_cleanly():
     assert proc.returncode == 0, proc.stderr
     assert "LIGHTFORCE LIVE" in proc.stdout
     assert "999 logical swarms" in proc.stdout
+
+
+def test_live_visualizer_defaults_to_100_visible_hives():
+    root = Path(__file__).resolve().parent.parent
+    live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
+
+    assert 'default=100' in live
+    assert 'visible_hives={visible}/{len(cells)}' in live
+    assert 'grid_cols = min(5, max(2, inner // 28))' in live
+    assert 'args.cells = max(4, min(args.cells, 200))' in live

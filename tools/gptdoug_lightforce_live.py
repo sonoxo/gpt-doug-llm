@@ -165,36 +165,37 @@ def frame(
     lines.append(RUST + "├" + "─" * (cols - 2) + "┤" + RESET)
 
     inner = cols - 4
-    gap = 3
-    boxw = max(30, (inner - gap) // 2)
-    visible = min(len(cells), max(6, (rows - 14) * 2))
+    gap = 1
+
+    # Compact multi-column hive wall. A normal 120x38 terminal can now show
+    # 100 HIVE cells at once (4 columns x 25 available rows), while wider
+    # terminals use 5 columns for a denser wall.
+    grid_cols = min(5, max(2, inner // 28))
+    boxw = max(22, (inner - gap * (grid_cols - 1)) // grid_cols)
+    grid_rows = max(6, rows - 13)
+    visible = min(len(cells), grid_cols * grid_rows)
     visible_cells = cells[:visible]
 
-    for i in range(0, len(visible_cells), 2):
+    for i in range(0, len(visible_cells), grid_cols):
         chunks = []
-        for c in visible_cells[i : i + 2]:
-            meter_width = max(6, boxw - 27)
-            label = f"{c.icon} {c.name:<12} {c.status:<9} {bar(c.progress, meter_width)} {int(c.progress*100):3d}%"
+        for cell in visible_cells[i : i + grid_cols]:
+            meter_width = max(4, boxw - 22)
+            short_status = cell.status[:5]
+            label = (
+                f"{cell.name} {short_status:<5} "
+                f"{bar(cell.progress, meter_width)} {int(cell.progress*100):3d}%"
+            )
             chunks.append(crop(label, boxw))
-        while len(chunks) < 2:
+        while len(chunks) < grid_cols:
             chunks.append(" " * boxw)
-        lines.append(
-            "│ "
-            + CREAM
-            + chunks[0].ljust(boxw)
-            + RESET
-            + " " * gap
-            + CREAM
-            + chunks[1].ljust(boxw)
-            + RESET
-            + " │"
-        )
+        row = (" " * gap).join(chunk.ljust(boxw) for chunk in chunks)
+        lines.append("│ " + CREAM + row + RESET + " │")
 
     lines.append(RUST + "├" + "─" * (cols - 2) + "┤" + RESET)
     pulse_char = ["·", "✦", "✧", "✨", "✧", "✦"][tick % 6]
     bus = (
         f"{pulse_char} PEER BUS  DOUG ⇄ CHAOS ⇄ HIVE  "
-        f"pulse={pulse:0.2f}  visible_cells={visible}  "
+        f"pulse={pulse:0.2f}  visible_hives={visible}/{len(cells)}  "
         f"logical_federation={swarms}×{hives}"
     )
     lines.append(AMBER + "│ " + crop(bus, cols - 4).ljust(cols - 4) + " │" + RESET)
@@ -238,14 +239,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="GPT-Doug Light Force live terminal visualization")
     parser.add_argument("--frames", type=int, default=0, help="exit after N frames; 0 means run until q/Ctrl-C")
     parser.add_argument("--fps", type=float, default=12.0)
-    parser.add_argument("--cells", type=int, default=16)
+    parser.add_argument(
+        "--cells",
+        type=int,
+        default=100,
+        help="number of visible HIVE cells to animate (default: 100)",
+    )
     parser.add_argument("--swarms", type=int, default=int(os.getenv("GPTDOUG_LIGHTFORCE_SWARMS", "999")))
     parser.add_argument("--hives", type=int, default=int(os.getenv("GPTDOUG_LIGHTFORCE_HIVES", "999")))
     parser.add_argument("--plain", action="store_true", help="no alternate screen; useful for tests/logs")
     args = parser.parse_args()
 
     args.fps = max(2.0, min(args.fps, 30.0))
-    args.cells = max(4, min(args.cells, 40))
+    args.cells = max(4, min(args.cells, 200))
     cells = build_cells(args.cells)
     events: Deque[str] = deque(maxlen=12)
     events.extend(
