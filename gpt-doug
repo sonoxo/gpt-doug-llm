@@ -4,6 +4,7 @@
 import os
 import sys
 import getpass
+import json
 
 from agents import llm_backend
 
@@ -21,6 +22,10 @@ from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
+from universal_hive import APMLaw, AdaptiveAutomationAccelerator, UniversalHiveRuntime
+from cloud_nxyz import CloudNXYZEngine
+from gpt_chaos import GPTChaos
+from body_link import BodyLinkClient
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -112,6 +117,26 @@ def main():
     compliance = ComplianceGate(user_context)
     dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
     deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
+    universal_hive = UniversalHiveRuntime()
+    gpt_chaos = GPTChaos(hive=universal_hive)
+    try:
+        body_link = BodyLinkClient.optional_from_env(
+            state_dir=universal_hive.state_dir / "body-link",
+            hive_id=universal_hive.hive_id,
+            ontology_hash=universal_hive.ontology_hash,
+        )
+    except ValueError as error:
+        raise SystemExit(f"REPLIT BODY LINK CONFIGURATION REJECTED: {error}")
+    automation_accelerator = AdaptiveAutomationAccelerator(
+        universal_hive.state_dir / "automation-acceleration"
+    )
+    apm_law = APMLaw()
+    cloud_nxyz = CloudNXYZEngine(
+        root=Path(__file__).parent,
+        state_dir=universal_hive.state_dir / "cloud-nxyz",
+        accelerator=automation_accelerator,
+        apm_law=apm_law,
+    )
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -130,6 +155,16 @@ def main():
     provider = llm_backend.health()
     print(CYAN + f"AI PROVIDER // {provider['provider'].upper()} // {provider['message']}" + RESET)
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
+    hive_status = universal_hive.status()
+    print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
+    if body_link:
+        body_status = body_link.status()
+        print(CYAN + f"REPLIT BODY // {'LINKED' if body_status['linked'] else 'CONFIGURED'} // {body_status['body_url']}" + RESET)
+    else:
+        print(CYAN + "REPLIT BODY // DISCONNECTED // configure GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY" + RESET)
+    print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
+    print(CYAN + "APM LAW // APM-001 ACTIVE // VERIFIED EXPERIENCE -> REUSABLE PROCEDURE" + RESET)
+    print(CYAN + "CLOUD-NXYZ // READY // ONE COMMAND -> IaC -> MONITOR -> LEARN" + RESET)
     history = []
     while True:
         try:
@@ -146,7 +181,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -182,6 +217,55 @@ def main():
             continue
         if prompt == "/ontology":
             print(Ontology.display())
+            continue
+        if prompt == "/hive":
+            payload = gpt_chaos.status()
+            payload["adaptive_automation"] = automation_accelerator.status()
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            continue
+        if prompt == "/body":
+            if not body_link:
+                print(json.dumps({"configured": False, "workspace_url": BodyLinkClient.WORKSPACE_URL}, indent=2))
+            else:
+                print(json.dumps(body_link.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/body link":
+            if not body_link:
+                print("REPLIT BODY // NOT CONFIGURED // set GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY")
+            else:
+                try:
+                    print(json.dumps(body_link.link(), indent=2, sort_keys=True))
+                except Exception as error:
+                    print(f"REPLIT BODY // LINK FAILED // {error}")
+            continue
+        if prompt == "/body ping":
+            if not body_link:
+                print("REPLIT BODY // NOT CONFIGURED // set GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY")
+            else:
+                try:
+                    print(json.dumps(body_link.ping(), indent=2, sort_keys=True))
+                except Exception as error:
+                    print(f"REPLIT BODY // HEARTBEAT FAILED // {error}")
+            continue
+        if prompt == "/accelerator":
+            print(json.dumps(automation_accelerator.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/automation-template":
+            print(json.dumps(automation_accelerator.template("hivemind"), indent=2, sort_keys=True))
+            continue
+        if prompt == "/apm-law":
+            print(json.dumps(apm_law.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/cloud-nxyz":
+            print(json.dumps(cloud_nxyz.status(), indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/summon "):
+            job = prompt[len("/summon "):].strip()
+            if not job:
+                print("Usage: /summon <job>")
+                continue
+            swarm = gpt_chaos.summon(job)
+            print(json.dumps(swarm, indent=2, sort_keys=True))
             continue
         if prompt.startswith("/knowledge "):
             query = prompt[len("/knowledge "):]

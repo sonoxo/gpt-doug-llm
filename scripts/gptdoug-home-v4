@@ -1,0 +1,59 @@
+#!/bin/zsh
+set -u
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+CONFIG="$HOME/.gpt-doug/env"
+STOP="$HOME/.gpt-doug/STOP"
+SESSION="gptdoug-max"
+
+mkdir -p "$HOME/.gpt-doug"
+
+if [[ -f "$STOP" ]]; then
+  echo "GPT-DOUG HOME paused. Run: doug-on"
+  exit 0
+fi
+
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
+export GPT_DOUG_VISUAL_FPS="${GPT_DOUG_VISUAL_FPS:-15}"
+export GPT_DOUG_VISUAL_COLS="${GPT_DOUG_VISUAL_COLS:-132}"
+export GPT_DOUG_COLOR_STEP="${GPT_DOUG_COLOR_STEP:-8}"
+export GPT_DOUG_MATRIX="${GPT_DOUG_MATRIX:-1}"
+export GPT_DOUG_MATRIX_FPS="${GPT_DOUG_MATRIX_FPS:-6}"
+export GPT_DOUG_BRIGHTNESS="${GPT_DOUG_BRIGHTNESS:-1.20}"
+export GPT_DOUG_SATURATION="${GPT_DOUG_SATURATION:-1.18}"
+export GPT_DOUG_SHARPNESS="${GPT_DOUG_SHARPNESS:-1.15}"
+export GPT_DOUG_VOICE_NAME="${GPT_DOUG_VOICE_NAME:-Alex}"
+
+cd "$ROOT" || exit 1
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "tmux missing. Install once: brew install tmux"
+  exit 1
+fi
+
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  exec tmux attach-session -t "$SESSION"
+fi
+
+echo auto > "$HOME/.gpt-doug/blackhouse-mode"
+
+tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
+
+tmux new-session -d -s "$SESSION" -n doug -c "$ROOT" \
+  "python3 tools/gptdoug_supreme_visual_v4.py"
+
+tmux split-window -v -p 30 -t "$SESSION":0 -c "$ROOT" \
+  "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
+
+tmux set-option -t "$SESSION" status off
+tmux set-option -t "$SESSION" mouse on
+tmux set-option -t "$SESSION" escape-time 0
+tmux set-option -t "$SESSION" remain-on-exit off
+tmux select-pane -t "$SESSION":0.1
+
+exec tmux attach-session -t "$SESSION"

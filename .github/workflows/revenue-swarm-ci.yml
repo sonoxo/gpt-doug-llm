@@ -1,0 +1,37 @@
+name: Revenue Swarm CI
+
+on:
+  pull_request:
+    paths:
+      - "workers/revenue_swarm.py"
+      - "tests/test_revenue_swarm.py"
+      - "docs/REVENUE_SWARM.md"
+      - ".github/workflows/revenue-swarm-ci.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "workers/revenue_swarm.py"
+      - "tests/test_revenue_swarm.py"
+      - "docs/REVENUE_SWARM.md"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependency
+        run: python -m pip install --upgrade pytest
+
+      - name: Revenue swarm tests
+        run: pytest -q tests/test_revenue_swarm.py

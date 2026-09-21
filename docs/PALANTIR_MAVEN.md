@@ -35,6 +35,33 @@ bash redpanda-desktop/palantir-maven kraken
 
 `kraken` validates the ontology JSON, Python adapter syntax, and Maven environment configuration. It does **not** publish artifacts or call a Foundry Action.
 
+## CONSEC + Gotham Mode
+
+`maven_gotham_mode.py` adds a bounded consequence-analysis layer for defensive decision support:
+
+```text
+MAVEN DECISION PACKETS
+  -> CONSEC CONSEQUENCE ENVELOPES
+  -> GOTHAM SIMULATION VIEW
+  -> ARTILLERY ANALYTIC SALVO
+  -> HUMAN REVIEW
+```
+
+- **CONSEC** scores defensive operational impact across service continuity, data integrity, public safety, recovery complexity, and resource strain.
+- **Gotham Mode** is a simulation/visualization profile for organizing fused evidence and consequence envelopes.
+- **ARTILLERY** is a metaphor for a batched analytic salvo: up to 25 review items ordered by consequence score and confidence.
+
+This mode intentionally does **not** implement weapon target selection, person-level target ranking, fire control, ballistic calculation, firing solutions, strike recommendations, weapon control, or kinetic execution. Precise coordinates are not emitted in analytic rounds.
+
+Quick local demo:
+
+```bash
+python3 maven_gotham_mode.py
+pytest -q tests/test_maven_gotham_mode.py
+```
+
+The equivalent XUNIA public operator surface is `https://xunia.org/rvia/maven`, with the API supporting `mode: "GOTHAM_SIMULATION"`.
+
 ## Temporary Maven settings
 
 ```bash

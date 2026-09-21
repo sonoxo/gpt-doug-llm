@@ -102,3 +102,22 @@ See [candidate disclosures](INVENTION_CANDIDATES.md). These designs use establis
 techniques; no uniqueness or patentability is inferred from passing tests. Record
 actual human conception, prior art comparisons, public disclosure dates, and
 specific measurable improvements before presenting a filing candidate.
+
+## ZYRA-CTE durable execution
+
+`cte-execute-durable` runs the synthetic CTE lifecycle through the
+SQLite execution journal. Its JSON input supplies `approval_database`,
+`journal_database`, `attempt_id`, exact state/transition version maps,
+and `now`. The authorization receipt remains host-supplied through
+`ZYRA_CTE_RECEIPT`; it is not accepted from the JSON request.
+
+The durable lifecycle is:
+
+`PROPOSED -> SIMULATED -> AUTHORIZED -> EXECUTING -> OBSERVED ->
+COMMITTED/ROLLED_BACK`
+
+`cte-status` is read-only and returns the persisted attempt plus its
+ordered event history. A non-terminal retry fails closed as
+`RECOVERY_REQUIRED`; v2 does not blindly repeat a partially completed
+execution. Execution remains synthetic-only and performs no live
+external mutation.
