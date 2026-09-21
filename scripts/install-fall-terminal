@@ -4,6 +4,9 @@ set -euo pipefail
 THEME_DIR="${GPTDOUG_HOME:-$HOME/.config/gptdoug}"
 THEME_FILE="$THEME_DIR/fall-terminal.zsh"
 RAW_URL="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/shell/gpt-doug-fall.zsh"
+ZSHENV="$HOME/.zshenv"
+START_MARKER="# >>> GPTDOUG FALL PERMA >>>"
+END_MARKER="# <<< GPTDOUG FALL PERMA <<<"
 
 mkdir -p "$THEME_DIR"
 
@@ -18,7 +21,45 @@ fi
 
 chmod 600 "$THEME_FILE"
 
-printf '%s\n' "[GPTDOUG // FALL THEME] 🍁 installed"
+tmp="$(mktemp "${TMPDIR:-/tmp}/gptdoug-zshenv.XXXXXX")"
+cleanup() { rm -f "$tmp"; }
+trap cleanup EXIT
+
+if [ -f "$ZSHENV" ]; then
+  cp "$ZSHENV" "$ZSHENV.gptdoug-backup"
+  awk -v start="$START_MARKER" -v end="$END_MARKER" '
+    $0 == start {skip=1; next}
+    $0 == end {skip=0; next}
+    !skip {print}
+  ' "$ZSHENV" > "$tmp"
+else
+  : > "$tmp"
+fi
+
+cat >> "$tmp" <<'EOF'
+
+# >>> GPTDOUG FALL PERMA >>>
+if [[ -o interactive && -r "$HOME/.config/gptdoug/fall-terminal.zsh" ]]; then
+  export GPTDOUG_FALL_MODE="auto"
+  source "$HOME/.config/gptdoug/fall-terminal.zsh"
+fi
+# <<< GPTDOUG FALL PERMA <<<
+EOF
+
+if command -v zsh >/dev/null 2>&1; then
+  zsh -n "$tmp" || {
+    printf '%s\n' "🍂 Refusing to install: generated ~/.zshenv failed syntax validation." >&2
+    exit 1
+  }
+fi
+
+mv "$tmp" "$ZSHENV"
+trap - EXIT
+chmod 600 "$ZSHENV"
+
+printf '%s\n' "[GPTDOUG // FALL THEME] 🍁 PERMANENT"
 printf 'theme=%s\n' "$THEME_FILE"
-printf '%s\n' "CURRENT_SHELL=run: source \"$THEME_FILE\""
-printf '%s\n' "PERSIST_LATER=after .zshrc syntax is healthy, add: source \"$THEME_FILE\""
+printf 'loader=%s\n' "$ZSHENV"
+printf '%s\n' "mode=auto (macOS Dark -> Dark Fall, Light -> Light Fall)"
+printf '%s\n' "current_shell=source \"$THEME_FILE\""
+printf '%s\n' "next_shell=automatic"
