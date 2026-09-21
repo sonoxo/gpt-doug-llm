@@ -85,3 +85,14 @@ def test_rpc_login_uses_http_digest_not_basic(monkeypatch):
     assert result["version"] == 1
     assert isinstance(captured["handler"], urllib.request.HTTPDigestAuthHandler)
     assert captured["authorization"] is None
+
+
+def test_stagenet_helper_repairs_managed_stale_wallet_auth():
+    root = Path(__file__).resolve().parent.parent
+    text = (root / "scripts" / "start-xmr-stagenet").read_text(encoding="utf-8")
+    assert "wallet_probe_state" in text
+    assert 'state="unauthorized"' in text
+    assert "managed_wallet_pid" in text
+    assert "stop_managed_wallet" in text
+    assert "restarting managed wallet RPC" in text
+    assert "different credentials and is not managed by this helper" in text
