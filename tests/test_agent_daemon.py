@@ -26,6 +26,7 @@ def _load_daemon_module(root: Path):
     mod.PROCESSED_DIR = root / "xuni-workers" / "processed"
     mod.RESULTS_DIR = root / "xuni-workers" / "results"
     mod.CONTEXT_LOG = root / "xuni-workers" / "live" / "context.jsonl"
+    mod.TELEMETRY_LOG = root / "xuni-workers" / "live" / "agent-telemetry.jsonl"
     for d in (mod.TASKS_DIR, mod.CLAIMED_DIR, mod.PROCESSED_DIR, mod.RESULTS_DIR, mod.CONTEXT_LOG.parent):
         d.mkdir(parents=True, exist_ok=True)
     return mod
