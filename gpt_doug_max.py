@@ -622,10 +622,12 @@ class MaxShell:
         action = (rest or "on").strip().lower()
         if action in {"activate", "summon"}:
             action = "on"
+        elif action in {"takeover", "show"}:
+            action = "live"
         elif action in {"deactivate", "sleep"}:
             action = "off"
-        if action not in {"on", "off", "pulse", "status"}:
-            print("usage: /lightforce [on|pulse|status|off]")
+        if action not in {"on", "live", "off", "pulse", "status"}:
+            print("usage: /lightforce [on|live|pulse|status|off]")
             return
 
         script = ROOT / "scripts" / "gpt-doug-lightforce"
@@ -633,7 +635,7 @@ class MaxShell:
             print(RED + f"LIGHTFORCE ERROR // missing {script}" + RESET)
             return
 
-        if action in {"on", "pulse"}:
+        if action in {"on", "live", "pulse"}:
             self.set_state("POWER", f"lightforce {action}")
         try:
             proc = subprocess.run(
@@ -877,7 +879,7 @@ class MaxShell:
   gpt-doug-body state NAME  push IDLE/LISTEN/THINK/TALK/ACT/LEARN/etc.
   gpt-doug-body demo        cycle all body states for visual verification
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
-  /lightforce [mode]        999x999 logical swarm visual: on|pulse|status|off
+  /lightforce [mode]        999x999 logical swarm visual: on|live|pulse|status|off
   /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
   /walk <mode> [speed] [r] avatar patrol/wander inside the terminal visual pane
   /palantir <command>      Foundry/Ontology command; writes need arm+approval
