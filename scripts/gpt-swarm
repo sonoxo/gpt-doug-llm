@@ -3,6 +3,25 @@ set -euo pipefail
 
 BIN_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 LIGHTFORCE="$BIN_DIR/gpt-doug-lightforce"
+ACTION="${1:-live}"
+
+if [ "$ACTION" = "help" ] || [ "$ACTION" = "-h" ] || [ "$ACTION" = "--help" ]; then
+  cat <<'EOF'
+gpt-swarm                 Launch stable 100-HIVE live terminal swarm
+gpt-swarm live            Same as default
+gpt-swarm pulse           Trigger Light Force pulse
+gpt-swarm status          Show swarm state
+gpt-swarm off             Disable Light Force state
+gpt-swarm on              Enable Light Force state without full-screen view
+
+Controls in live mode:
+  p        pulse
+  Space    pause/resume
+  q / Esc  return terminal
+  Ctrl+C   kill switch
+EOF
+  exit 0
+fi
 
 if [ ! -x "$LIGHTFORCE" ]; then
   LIGHTFORCE="$HOME/.local/bin/gpt-doug-lightforce"
@@ -14,7 +33,7 @@ if [ ! -x "$LIGHTFORCE" ]; then
   exit 127
 fi
 
-case "${1:-live}" in
+case "$ACTION" in
   live|show|takeover)
     exec "$LIGHTFORCE" live
     ;;
@@ -29,22 +48,6 @@ case "${1:-live}" in
     ;;
   off|deactivate|sleep)
     exec "$LIGHTFORCE" off
-    ;;
-  help|-h|--help)
-    cat <<'EOF'
-gpt-swarm                 Launch stable 100-HIVE live terminal swarm
-gpt-swarm live            Same as default
-gpt-swarm pulse           Trigger Light Force pulse
-gpt-swarm status          Show swarm state
-gpt-swarm off             Disable Light Force state
-gpt-swarm on              Enable Light Force state without full-screen view
-
-Controls in live mode:
-  p        pulse
-  Space    pause/resume
-  q / Esc  return terminal
-  Ctrl+C   kill switch
-EOF
     ;;
   *)
     printf 'usage: gpt-swarm [live|on|pulse|status|off|help]\n' >&2
