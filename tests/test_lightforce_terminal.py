@@ -82,7 +82,7 @@ def test_live_visualizer_plain_frames_exit_cleanly():
     assert proc.returncode == 0, proc.stderr
     assert "REAL SWARM TELEMETRY" in proc.stdout
     assert "NO MOCK DATA" in proc.stdout
-    assert "NO SYNTHETIC STATUS OR PROGRESS" in proc.stdout
+    assert "TRUTH MODE=ON" in proc.stdout
 
 
 def test_live_visualizer_defaults_to_100_truthful_slots():
@@ -148,7 +148,7 @@ def test_live_visualizer_reads_real_stage_evidence(tmp_path):
     assert "RUN" in proc.stdout
     assert "qa" in proc.stdout
     assert "revenue=1" in proc.stdout
-    assert "provider=remote" in proc.stdout
+    assert "revenue START actual-prospect/qa" in proc.stdout
 
 
 def test_gpt_swarm_command_is_real_wrapper():
