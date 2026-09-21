@@ -25,7 +25,7 @@ from ontology import Ontology
 from universal_hive import APMLaw, AdaptiveAutomationAccelerator, UniversalHiveRuntime
 from cloud_nxyz import CloudNXYZEngine
 from gpt_chaos import GPTChaos
-from body_link import BodyLinkClient
+from body_link import BodyLinkClient, BodyStateRelay, runtime_body_state
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -127,6 +127,12 @@ def main():
         )
     except ValueError as error:
         raise SystemExit(f"REPLIT BODY LINK CONFIGURATION REJECTED: {error}")
+    body_relay = BodyStateRelay(body_link) if body_link else None
+
+    def body_state(name, detail=""):
+        if body_relay:
+            body_relay.publish(runtime_body_state(name, detail))
+
     automation_accelerator = AdaptiveAutomationAccelerator(
         universal_hive.state_dir / "automation-acceleration"
     )
@@ -165,6 +171,7 @@ def main():
     print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
     print(CYAN + "APM LAW // APM-001 ACTIVE // VERIFIED EXPERIENCE -> REUSABLE PROCEDURE" + RESET)
     print(CYAN + "CLOUD-NXYZ // READY // ONE COMMAND -> IaC -> MONITOR -> LEARN" + RESET)
+    body_state("IDLE", "GPT-Doug terminal online")
     history = []
     while True:
         try:
@@ -175,6 +182,9 @@ def main():
         if not prompt:
             continue
         if prompt == "/quit":
+            body_state("SLEEP", "terminal closed")
+            if body_relay:
+                body_relay.close()
             return
         if prompt == "/clear":
             history.clear()
@@ -323,6 +333,7 @@ def main():
                 continue
             dev_terminal.run(session_seconds=astral_config.session_seconds, max_commands=astral_config.max_commands)
             continue
+        body_state("THINK", prompt)
         compliance_decision = compliance.inspect(prompt)
         if not compliance_decision.allowed:
             print("COMPLIANCE BLOCKED // " + compliance_decision.reason)
@@ -362,11 +373,13 @@ def main():
                 print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
                 continue
             safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else final_text
+            body_state("TALK", safe_text[:160])
             print(safe_text)
             if len(think_passes) > 1 and think_passes[0].text != think_passes[-1].text:
                 print("DEEP THINK // revised after self-critique")
             if final_text:
                 history.append({"role": "assistant", "content": final_text})
+            body_state("IDLE", "ready")
         else:
             answer = chat(history)
             if answer:
@@ -375,10 +388,12 @@ def main():
                     print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
                     continue
                 safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else answer
+                body_state("TALK", safe_text[:160])
                 print(safe_text)
                 if safe_text != answer:
                     print("GOLDEN SHIELD // output was sterilized")
                 history.append({"role": "assistant", "content": safe_text})
+                body_state("IDLE", "ready")
 
 
 if __name__ == "__main__":
