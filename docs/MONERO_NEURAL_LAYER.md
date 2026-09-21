@@ -200,3 +200,14 @@ After startup:
 A healthy runtime reports `READY_END_TO_END`. The daemon may still be syncing
 the stagenet blockchain; `daemon-info` exposes the current height while it
 catches up.
+
+
+## RPC authentication
+
+When `monero-wallet-rpc` is started with `--rpc-login user:password`, GPT-Doug
+uses Monero-compatible HTTP Digest authentication. A 401 from an otherwise
+reachable wallet RPC usually means the client and server disagree on the RPC
+authentication method or credentials.
+
+The local stagenet helper uses the same generated credentials for the wallet RPC
+process, the environment file, the readiness probe, and the Python doctor.
