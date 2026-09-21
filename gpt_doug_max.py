@@ -617,6 +617,48 @@ class MaxShell:
             self.set_state("ERROR", str(exc))
             print(RED + f"SWARM ERROR // {exc}" + RESET)
 
+    def cmd_lightforce(self, rest: str) -> None:
+        """Activate the bounded terminal-only 999x999 logical swarm visual state."""
+        action = (rest or "on").strip().lower()
+        if action in {"activate", "summon"}:
+            action = "on"
+        elif action in {"deactivate", "sleep"}:
+            action = "off"
+        if action not in {"on", "off", "pulse", "status"}:
+            print("usage: /lightforce [on|pulse|status|off]")
+            return
+
+        script = ROOT / "scripts" / "gpt-doug-lightforce"
+        if not script.exists():
+            print(RED + f"LIGHTFORCE ERROR // missing {script}" + RESET)
+            return
+
+        if action in {"on", "pulse"}:
+            self.set_state("POWER", f"lightforce {action}")
+        try:
+            proc = subprocess.run(
+                ["bash", str(script), action],
+                cwd=ROOT,
+                text=True,
+                check=False,
+            )
+        except KeyboardInterrupt:
+            self.set_state("IDLE", "lightforce interrupted")
+            print("\nLIGHTFORCE // interrupted")
+            return
+
+        if proc.returncode != 0:
+            self.set_state("ERROR", f"lightforce exit {proc.returncode}")
+            print(RED + f"LIGHTFORCE ERROR // exit={proc.returncode}" + RESET)
+            return
+
+        if action == "off":
+            self.set_state("IDLE", "lightforce off")
+        elif action == "status":
+            self.set_state("IDLE", "lightforce status")
+        else:
+            self.set_state("POWER", "999x999 logical swarm light force active")
+
     def cmd_emote(self, rest: str) -> None:
         """Drive the visual cortex with built-in or procedural facial emotes."""
         presets = [
@@ -835,6 +877,7 @@ class MaxShell:
   gpt-doug-body state NAME  push IDLE/LISTEN/THINK/TALK/ACT/LEARN/etc.
   gpt-doug-body demo        cycle all body states for visual verification
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
+  /lightforce [mode]        999x999 logical swarm visual: on|pulse|status|off
   /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
   /walk <mode> [speed] [r] avatar patrol/wander inside the terminal visual pane
   /palantir <command>      Foundry/Ontology command; writes need arm+approval
@@ -894,6 +937,8 @@ converted into a shell command.
             self.cmd_body(rest)
         elif cmd == "/swarm":
             self.cmd_swarm(rest)
+        elif cmd == "/lightforce":
+            self.cmd_lightforce(rest)
         elif cmd in {"/emote", "/face"}:
             self.cmd_emote(rest)
         elif cmd in {"/walk", "/roam"}:
