@@ -32,7 +32,7 @@ import time
 import tty
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 ESC = "\x1b"
 RESET = f"{ESC}[0m"
@@ -61,7 +61,7 @@ class LiveItem:
     source: str
     state: str
     stage: str = ""
-    duration_s: float | None = None
+    duration_s: Optional[float] = None
     updated_ts: float = 0.0
     detail: str = ""
 
@@ -71,16 +71,16 @@ class Snapshot:
     items: list[LiveItem]
     events: list[str]
     revenue_active: int
-    revenue_queue: int | None
-    revenue_pool: int | None
+    revenue_queue: Optional[int]
+    revenue_pool: Optional[int]
     revenue_provider: str
     daemon_active: int
     daemon_queue: int
     completed_60s: int
     failed_60s: int
-    avg_stage_s: float | None
-    persisted_swarms: int | None
-    latest_event_ts: float | None
+    avg_stage_s: Optional[float]
+    persisted_swarms: Optional[int]
+    latest_event_ts: Optional[float]
     source_count: int
 
 
@@ -126,7 +126,7 @@ def crop(text: str, width: int) -> str:
     return text[: width - 1] + "…"
 
 
-def _json_file(path: Path) -> dict[str, Any] | None:
+def _json_file(path: Path) -> Optional[dict[str, Any]]:
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
@@ -158,7 +158,7 @@ def _tail_jsonl(path: Path, max_bytes: int = 2_000_000) -> list[dict[str, Any]]:
     return records
 
 
-def _repo_root(explicit: str | None) -> Path | None:
+def _repo_root(explicit: Optional[str]) -> Optional[Path]:
     candidates: list[Path] = []
     if explicit:
         candidates.append(Path(explicit).expanduser())
@@ -175,7 +175,7 @@ def _repo_root(explicit: str | None) -> Path | None:
 
 
 class TelemetryCollector:
-    def __init__(self, repo: Path | None, capacity: int) -> None:
+    def __init__(self, repo: Optional[Path], capacity: int) -> None:
         self.repo = repo
         self.capacity = capacity
 
@@ -315,7 +315,7 @@ class TelemetryCollector:
 
         return items, len(claimed_files), len(queued_files), events
 
-    def _hive_count(self) -> int | None:
+    def _hive_count(self) -> Optional[int]:
         state = _json_file(
             Path.home() / ".gpt-doug" / "universal-hive" / "state.json"
         )
@@ -405,21 +405,21 @@ def _stamp(ts: float) -> str:
     return time.strftime("%H:%M:%S", time.localtime(ts))
 
 
-def _float_or_none(value: Any) -> float | None:
+def _float_or_none(value: Any) -> Optional[float]:
     try:
         return float(value)
     except (TypeError, ValueError):
         return None
 
 
-def _int_or_none(value: Any) -> int | None:
+def _int_or_none(value: Any) -> Optional[int]:
     try:
         return int(value)
     except (TypeError, ValueError):
         return None
 
 
-def _fmt_duration(value: float | None) -> str:
+def _fmt_duration(value: Optional[float]) -> str:
     if value is None:
         return "-"
     if value < 1:
@@ -427,7 +427,7 @@ def _fmt_duration(value: float | None) -> str:
     return f"{value:.1f}s"
 
 
-def _cell_label(slot: int, item: LiveItem | None, width: int) -> str:
+def _cell_label(slot: int, item: Optional[LiveItem], width: int) -> str:
     if item is None:
         return crop(f"HIVE-{slot:03d} NO LIVE DATA", width)
     key = crop(item.key, 9)
