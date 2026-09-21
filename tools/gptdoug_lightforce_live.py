@@ -158,6 +158,16 @@ def _tail_jsonl(path: Path, max_bytes: int = 2_000_000) -> list[dict[str, Any]]:
     return records
 
 
+def _pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    return True
+
+
 def _repo_root(explicit: Optional[str]) -> Optional[Path]:
     candidates: list[Path] = []
     if explicit:
@@ -203,14 +213,16 @@ class TelemetryCollector:
                 stage = str(record.get("stage") or "")
                 key = (prospect_id, stage)
                 starts[key] = record
+                pid = _int_or_none(record.get("pid"))
+                state = "RUN" if pid is not None and _pid_alive(pid) else "OPEN"
                 latest[key] = LiveItem(
                     key=prospect_id,
                     source="revenue",
-                    state="RUN",
+                    state=state,
                     stage=stage,
                     duration_s=max(0.0, now - ts),
                     updated_ts=ts,
-                    detail="measured stage start",
+                    detail=f"pid={pid}" if pid is not None else "pid=unavailable",
                 )
                 events.append(
                     f"[{_stamp(ts)}] revenue START {prospect_id}/{stage}"
@@ -241,6 +253,9 @@ class TelemetryCollector:
             record = starts[key]
             ts = float(record.get("ts") or 0.0)
             latest[key].duration_s = max(0.0, now - ts)
+            pid = _int_or_none(record.get("pid"))
+            if pid is not None and not _pid_alive(pid):
+                latest[key].state = "STALE"
 
         items = sorted(
             latest.values(),
@@ -251,69 +266,99 @@ class TelemetryCollector:
     def _daemon(self, now: float) -> tuple[list[LiveItem], int, int, list[str]]:
         if self.repo is None:
             return [], 0, 0, []
-        base = self.repo / "xuniaverse-production" / "xuni-workers"
-        claimed = base / "claimed"
-        queued = base / "tasks"
-        results = base / "results"
+
+        bases = [
+            self.repo / "xuni-workers",
+            self.repo / "xuniaverse-production" / "xuni-workers",
+        ]
         items: list[LiveItem] = []
         events: list[str] = []
+        active = 0
+        queued_total = 0
+        seen_keys: set[tuple[str, str]] = set()
 
-        claimed_files = sorted(
-            claimed.glob("*.json"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        ) if claimed.exists() else []
-        for path in claimed_files:
-            ts = path.stat().st_mtime
-            payload = _json_file(path) or {}
-            task_id = str(payload.get("id") or path.stem)
-            items.append(
-                LiveItem(
-                    key=task_id,
-                    source="daemon",
-                    state="RUN",
-                    stage="task",
-                    duration_s=max(0.0, now - ts),
-                    updated_ts=ts,
-                    detail="claimed task",
+        for base in bases:
+            if not base.exists():
+                continue
+            queued = base / "tasks"
+            queued_total += len(list(queued.glob("*.json"))) if queued.exists() else 0
+
+            telemetry = _tail_jsonl(base / "live" / "agent-telemetry.jsonl")
+            starts: dict[str, dict[str, Any]] = {}
+            latest: dict[str, LiveItem] = {}
+
+            for record in telemetry:
+                kind = str(record.get("type") or "")
+                task_id = str(record.get("task_id") or "unknown")
+                ts = float(record.get("ts") or 0.0)
+                pid = _int_or_none(record.get("pid"))
+                if kind == "task_start":
+                    starts[task_id] = record
+                    state = "RUN" if pid is not None and _pid_alive(pid) else "OPEN"
+                    latest[task_id] = LiveItem(
+                        key=task_id,
+                        source="daemon",
+                        state=state,
+                        stage="task",
+                        duration_s=max(0.0, now - ts),
+                        updated_ts=ts,
+                        detail=f"pid={pid}" if pid is not None else "pid=unavailable",
+                    )
+                    events.append(f"[{_stamp(ts)}] daemon START {task_id}")
+                elif kind == "task_result":
+                    starts.pop(task_id, None)
+                    state = str(record.get("state") or "FAIL")
+                    latest[task_id] = LiveItem(
+                        key=task_id,
+                        source="daemon",
+                        state=state,
+                        stage="task",
+                        duration_s=_float_or_none(record.get("duration_seconds")),
+                        updated_ts=ts,
+                        detail=f"attempts={record.get('attempts')}",
+                    )
+                    events.append(f"[{_stamp(ts)}] daemon {state} {task_id}")
+
+            for task_id, record in starts.items():
+                pid = _int_or_none(record.get("pid"))
+                if pid is not None and not _pid_alive(pid):
+                    latest[task_id].state = "STALE"
+                elif latest[task_id].state == "RUN":
+                    active += 1
+
+            if telemetry:
+                for item in latest.values():
+                    identity = (item.source, item.key)
+                    if identity not in seen_keys:
+                        seen_keys.add(identity)
+                        items.append(item)
+                continue
+
+            claimed = base / "claimed"
+            claimed_files = list(claimed.glob("*.json")) if claimed.exists() else []
+            for path in claimed_files:
+                ts = path.stat().st_mtime
+                payload = _json_file(path) or {}
+                task_id = str(payload.get("id") or path.stem)
+                identity = ("daemon", task_id)
+                if identity in seen_keys:
+                    continue
+                seen_keys.add(identity)
+                items.append(
+                    LiveItem(
+                        key=task_id,
+                        source="daemon",
+                        state="CLAIM",
+                        stage="task",
+                        duration_s=max(0.0, now - ts),
+                        updated_ts=ts,
+                        detail="claimed file; process state unverified",
+                    )
                 )
-            )
-            events.append(f"[{_stamp(ts)}] daemon RUN {task_id}")
+                events.append(f"[{_stamp(ts)}] daemon CLAIM {task_id}")
 
-        queued_files = list(queued.glob("*.json")) if queued.exists() else []
-
-        result_files = sorted(
-            results.glob("*.json"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )[:40] if results.exists() else []
-        for path in result_files:
-            ts = path.stat().st_mtime
-            payload = _json_file(path) or {}
-            task_id = str(payload.get("id") or path.stem)
-            if payload.get("blocked_by"):
-                state = "BLOCK"
-            elif payload.get("returncode") == 0:
-                state = "DONE"
-            else:
-                state = "FAIL"
-            duration = _float_or_none(payload.get("duration_seconds"))
-            attempts = payload.get("attempts")
-            detail = f"attempts={attempts}" if attempts is not None else ""
-            items.append(
-                LiveItem(
-                    key=task_id,
-                    source="daemon",
-                    state=state,
-                    stage="task",
-                    duration_s=duration,
-                    updated_ts=ts,
-                    detail=detail,
-                )
-            )
-            events.append(f"[{_stamp(ts)}] daemon {state} {task_id}")
-
-        return items, len(claimed_files), len(queued_files), events
+        items.sort(key=lambda item: (item.state != "RUN", -item.updated_ts))
+        return items, active, queued_total, events
 
     def _hive_count(self) -> Optional[int]:
         state = _json_file(
