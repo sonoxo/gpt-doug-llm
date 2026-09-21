@@ -162,11 +162,29 @@ autofall() {
   _gptdoug_sync_system_theme 1
 }
 
+lightforce() {
+  local action="${1:-on}"
+  local tool="$HOME/.local/bin/gpt-doug-lightforce"
+  local repo_tool="$HOME/gpt-doug-llm/scripts/gpt-doug-lightforce"
+
+  if [[ -x "$tool" ]]; then
+    "$tool" "$action"
+  elif [[ -x "$repo_tool" ]]; then
+    "$repo_tool" "$action"
+  else
+    print -P "%F{${GPTDOUG_FALL_AMBER}}✨ LIGHTFORCE NOT INSTALLED%f"
+    print "Install: curl -fsSL https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/install-lightforce | bash"
+    return 127
+  fi
+}
+
 alias fallhud='_gptdoug_fall_hud'
 alias leaves='print -P "%F{${GPTDOUG_FALL_RUST}}🍁%f  %F{${GPTDOUG_FALL_ORANGE}}🍂%f  %F{${GPTDOUG_FALL_GOLD}}🌾%f  %F{${GPTDOUG_FALL_PUMPKIN}}🎃%f  %F{${GPTDOUG_FALL_SAGE}}🍃%f  %F{${GPTDOUG_FALL_AMBER}}✨%f"'
+alias lightforce-status='lightforce status'
+alias lightforce-off='lightforce off'
 
 _gptdoug_sync_system_theme
 print -P "%F{${GPTDOUG_FALL_RUST}}╭──────────────────────────────────────────────╮%f"
 print -P "%F{${GPTDOUG_FALL_ORANGE}}│ 🍂 GPT-DOUG // ${GPTDOUG_FALL_LABEL} ONLINE 🍁%f"
-print -P "%F{${GPTDOUG_FALL_GOLD}}│ 🧠 DOUG   ⚡ CHAOS   🐝 HIVE   🎃 XUNIA     │%f"
+print -P "%F{${GPTDOUG_FALL_GOLD}}│ 🧠 DOUG   ⚡ CHAOS   🐝 HIVE   ✨ LIGHTFORCE │%f"
 print -P "%F{${GPTDOUG_FALL_RUST}}╰──────────────────────────────────────────────╯%f"
