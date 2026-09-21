@@ -105,3 +105,29 @@ def test_live_visualizer_stability_defaults():
     assert 'GPT-DOUG // GPT-CHAOS // SWARM LIGHT FORCE // DARK FALL' in live
     assert '✨ GPT-DOUG' not in live
     assert '🐝 {swarms}' not in live
+
+
+def test_gpt_swarm_command_is_real_wrapper():
+    root = Path(__file__).resolve().parent.parent
+    wrapper = (root / "scripts" / "gpt-swarm").read_text(encoding="utf-8")
+    installer = (root / "scripts" / "install-lightforce").read_text(encoding="utf-8")
+
+    assert 'exec "$LIGHTFORCE" live' in wrapper
+    assert 'gpt-swarm [live|on|pulse|status|off|help]' in wrapper
+    assert 'SWARM_TARGET="$BIN_DIR/gpt-swarm"' in installer
+    assert 'fetch "$RAW_BASE/scripts/gpt-swarm" "$SWARM_TARGET"' in installer
+    assert 'chmod 755 "$TARGET" "$SWARM_TARGET" "$LIVE_TARGET"' in installer
+
+
+def test_gpt_swarm_help_exits_cleanly():
+    root = Path(__file__).resolve().parent.parent
+    wrapper = root / "scripts" / "gpt-swarm"
+    proc = subprocess.run(
+        ["bash", str(wrapper), "--help"],
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+    assert proc.returncode == 0
+    assert "Launch stable 100-HIVE live terminal swarm" in proc.stdout
