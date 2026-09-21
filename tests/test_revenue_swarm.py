@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import time
 
 from workers import revenue_swarm as rs
@@ -149,6 +150,7 @@ def test_persisted_swarm_emits_real_lifecycle_telemetry(monkeypatch, tmp_path):
     assert first_start["prospect"]["prospect_id"] == "real-1"
     assert first_start["stage"] == rs.STAGES[0]
     assert first_start["ts"] > 0
+    assert first_start["pid"] == os.getpid()
 
     metrics = json.loads((tmp_path / "revenue-swarm-metrics.json").read_text())
     assert metrics["prospects_unique"] == 1
