@@ -258,6 +258,14 @@ class RevenueSwarm:
     def _run_stage(self, prospect: Prospect, stage: str, prior: str) -> StageResult:
         started = time.time()
         approval_required = stage == "outreach_draft"
+        self._persist_record(
+            {
+                "type": "stage_start",
+                "ts": started,
+                "prospect": asdict(prospect),
+                "stage": stage,
+            }
+        )
         try:
             response = self.runner(stage, ROLE_PROMPTS[stage], prospect, prior) or {}
             output = str(response.get("output", "")).strip()
@@ -292,6 +300,14 @@ class RevenueSwarm:
         return result
 
     def _run_pipeline(self, prospect: Prospect) -> dict:
+        pipeline_started = time.time()
+        self._persist_record(
+            {
+                "type": "pipeline_start",
+                "ts": pipeline_started,
+                "prospect": asdict(prospect),
+            }
+        )
         stage_results = []
         prior_parts = []
         for stage in STAGES:
@@ -302,12 +318,22 @@ class RevenueSwarm:
                 break
             prior_parts.append(f"[{stage}]\n{result.output}")
         completed = bool(stage_results) and stage_results[-1].stage == "qa"
-        return {
+        pipeline = {
             "prospect": asdict(prospect),
             "completed": completed,
             "results": [asdict(item) for item in stage_results],
             "approval_required": any(item.approval_required for item in stage_results),
         }
+        self._persist_record(
+            {
+                "type": "pipeline_result",
+                "ts": time.time(),
+                "prospect": asdict(prospect),
+                "completed": completed,
+                "duration_s": round(time.time() - pipeline_started, 3),
+            }
+        )
+        return pipeline
 
     def run(self, prospects: Iterable[Prospect]) -> dict:
         self.metrics.started_at = time.time()
@@ -324,6 +350,7 @@ class RevenueSwarm:
             seen.add(key)
             unique.append(prospect)
         self.metrics.prospects_unique = len(unique)
+        self._persist_metrics()
 
         pipelines = []
         with ThreadPoolExecutor(
