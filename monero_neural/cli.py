@@ -37,11 +37,11 @@ def _probe_rpc(client: MoneroRPCClient, method: str) -> Dict[str, Any]:
                     else "mainnet"
                 ),
             }
-        result = client.wallet_balance(account_index=0)
+        result = client.wallet_version()
         return {
             "reachable": True,
-            "balance": result.get("balance"),
-            "unlocked_balance": result.get("unlocked_balance"),
+            "rpc_version": result.get("version"),
+            "release": result.get("release"),
         }
     except MoneroRPCError as exc:
         return {"reachable": False, "error": str(exc)}
