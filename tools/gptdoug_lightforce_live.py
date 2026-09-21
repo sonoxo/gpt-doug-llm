@@ -51,7 +51,7 @@ STATUSES = ["SYNC", "PLAN", "ROUTE", "VERIFY", "LEARN", "RECONCILE", "IDLE", "PU
 EVENTS = [
     "ontology hash verified",
     "blackboard state reconciled",
-    "Doug↔Chaos peer link synchronized",
+    "Doug<->Chaos peer link synchronized",
     "artifact provenance checked",
     "bounded worker route completed",
     "hive telemetry heartbeat",
