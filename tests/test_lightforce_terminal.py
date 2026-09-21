@@ -1,3 +1,4 @@
+# PR #256 final CI branch for the truth-only swarm telemetry contract.
 # Truth-only live telemetry: missing runtime evidence must remain NO LIVE DATA.
 # HUD assertions are width-aware because terminal output intentionally crops long lines.
 import json
