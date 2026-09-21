@@ -52,3 +52,32 @@ def test_max_shell_exposes_lightforce_command():
     text = (root / "gpt_doug_max.py").read_text(encoding="utf-8")
     assert "/lightforce" in text
     assert "cmd_lightforce" in text
+
+
+def test_live_visualizer_is_single_process_foreground_contract():
+    root = Path(__file__).resolve().parent.parent
+    live = (root / "tools" / "gptdoug_lightforce_live.py").read_text(encoding="utf-8")
+    launcher = (root / "scripts" / "gpt-doug-lightforce").read_text(encoding="utf-8")
+
+    assert "SINGLE FOREGROUND PROCESS" in live
+    assert "q/Esc=RETURN CONTROL" in live
+    assert "Ctrl+C=KILL SWITCH" in live
+    assert "subprocess.Popen(" not in live
+    assert "multiprocessing" not in live
+    assert 'live|takeover|show)' in launcher
+    assert 'write_state true "LIVE"' in launcher
+
+
+def test_live_visualizer_plain_frames_exit_cleanly():
+    root = Path(__file__).resolve().parent.parent
+    live = root / "tools" / "gptdoug_lightforce_live.py"
+    proc = subprocess.run(
+        ["python3", str(live), "--plain", "--frames", "2", "--fps", "30"],
+        text=True,
+        capture_output=True,
+        check=False,
+        timeout=10,
+    )
+    assert proc.returncode == 0, proc.stderr
+    assert "LIGHTFORCE LIVE" in proc.stdout
+    assert "999 logical swarms" in proc.stdout

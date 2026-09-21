@@ -2,21 +2,31 @@
 set -euo pipefail
 
 BIN_DIR="${GPT_DOUG_BIN_DIR:-$HOME/.local/bin}"
+LIB_DIR="${GPT_DOUG_LIB_DIR:-$HOME/.local/share/gpt-doug}"
 TARGET="$BIN_DIR/gpt-doug-lightforce"
-RAW_URL="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/gpt-doug-lightforce"
+LIVE_TARGET="$LIB_DIR/gptdoug_lightforce_live.py"
+RAW_BASE="https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main"
 
-mkdir -p "$BIN_DIR"
+mkdir -p "$BIN_DIR" "$LIB_DIR"
 
-if command -v curl >/dev/null 2>&1; then
-  curl -fsSL "$RAW_URL" -o "$TARGET"
-elif command -v wget >/dev/null 2>&1; then
-  wget -qO "$TARGET" "$RAW_URL"
-else
-  printf '%s\n' "✨ curl or wget is required." >&2
-  exit 1
-fi
+fetch() {
+  local url="$1"
+  local out="$2"
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$url" -o "$out"
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO "$out" "$url"
+  else
+    printf '%s\n' "✨ curl or wget is required." >&2
+    exit 1
+  fi
+}
 
-chmod 755 "$TARGET"
+fetch "$RAW_BASE/scripts/gpt-doug-lightforce" "$TARGET"
+fetch "$RAW_BASE/tools/gptdoug_lightforce_live.py" "$LIVE_TARGET"
+
+chmod 755 "$TARGET" "$LIVE_TARGET"
 printf '%s\n' "[GPTDOUG // LIGHTFORCE] ✨ installed"
 printf 'launcher=%s\n' "$TARGET"
+printf 'live_visualizer=%s\n' "$LIVE_TARGET"
 "$TARGET" on
