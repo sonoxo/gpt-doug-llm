@@ -44,9 +44,15 @@ if [ ! -f "$ENV_FILE" ]; then
   cat > "$ENV_FILE" <<'EOF'
 export GPT_DOUG_XMR_NEURAL_STATE_DIR="$HOME/.gpt-doug/monero-neural"
 export MONERO_DAEMON_RPC="http://127.0.0.1:38081/json_rpc"
-export MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"
+export MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"
 EOF
   chmod 600 "$ENV_FILE"
+elif grep -q 'MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"' "$ENV_FILE"; then
+  tmp="$ENV_FILE.tmp.$$"
+  sed 's#MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"#MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"#' "$ENV_FILE" > "$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$ENV_FILE"
+  say "[GPTDOUG // XMR-INSTALL] migrated stagenet wallet RPC 38082 -> 38088"
 fi
 
 cat > "$LAUNCHER" <<EOF
@@ -69,5 +75,8 @@ say "repo=$REPO_DIR"
 say "venv=$VENV_DIR"
 if ! command -v gpt-doug-xmr-neural >/dev/null 2>&1; then
   say "PATH_NOTE=add $BIN_DIR to PATH, or invoke $LAUNCHER directly"
+fi
+if ! command -v monerod >/dev/null 2>&1 || ! command -v monero-wallet-rpc >/dev/null 2>&1; then
+  say "MONERO_NOTE=runtime binaries not found; on Homebrew systems run: brew install monero"
 fi
 say "NEXT=$LAUNCHER doctor"
