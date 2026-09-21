@@ -1,3 +1,4 @@
+# HUD assertions are width-aware because terminal output intentionally crops long lines.
 import json
 import os
 import subprocess
