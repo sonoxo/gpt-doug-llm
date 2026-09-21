@@ -72,6 +72,15 @@ gpt-chaos blended-wing-stress
 scripts/doug-max patent-scope show US-20260274413-A1
 ```
 
+### US-20260279583-A1
+Hybrid AI-powered digital clone architecture: continuous signal intake, graph-linked context, adaptive/meta-learning, a searchable multimodal Memory Archivist, an interactive voice/text AI interface, and explicit user control over major actions. GPT-Doug generalizes the source architecture into a non-medical State Guardian + episodic/semantic/procedural memory model + Body Link + bounded adaptation proposal loop. Health-specific predictive claims are not promoted into autonomous medical capabilities.
+
+```bash
+gpt-chaos digital-clone
+scripts/doug-max patent-scope show US-20260279583-A1
+scripts/doug-max patent-scope match "adaptive digital clone multimodal memory meta learning voice interface"
+```
+
 ## Current pending intake
 
 ### US-20260271508-A1

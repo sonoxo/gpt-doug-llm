@@ -7,6 +7,7 @@ from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 
 from .aerospace import pattern as blended_wing_pattern
 from .aerospace import stress_test as stress_test_blended_wing
+from .digital_clone import evaluate_learning_event, pattern as digital_clone_pattern
 
 
 class GPTChaos:
@@ -41,7 +42,10 @@ class GPTChaos:
             "controller": "GPT_DOUG",
             "simulation_layer": "GPT_CHAOS",
             "worker_fabric": list(self.WORKER_FABRIC),
-            "learned_patterns": ["US-20260274413-A1:BLENDED_WING_PUSHER_BLI_V1"],
+            "learned_patterns": [
+                "US-20260274413-A1:BLENDED_WING_PUSHER_BLI_V1",
+                "US-20260279583-A1:ADAPTIVE_DIGITAL_CLONE_MEMORY_INTERFACE_V1",
+            ],
             "execution_boundary": "PROPOSE_VALIDATE_EXECUTE_CRITIC",
         }
 
@@ -59,6 +63,28 @@ class GPTChaos:
     def cloud_plan(self, command: str, manifest: dict, root: str = ".") -> dict:
         return self.cloud_nxyz(root).plan(command, manifest)
 
+    def digital_clone_pattern(self) -> dict:
+        return digital_clone_pattern()
+
+    def evaluate_digital_clone_learning(
+        self,
+        *,
+        has_provenance: bool,
+        contains_secret: bool,
+        is_sensitive_personal_data: bool,
+        user_consent: bool,
+        proposes_external_action: bool,
+        approved: bool,
+    ) -> dict:
+        return evaluate_learning_event(
+            has_provenance=has_provenance,
+            contains_secret=contains_secret,
+            is_sensitive_personal_data=is_sensitive_personal_data,
+            user_consent=user_consent,
+            proposes_external_action=proposes_external_action,
+            approved=approved,
+        )
+
     def aerospace_pattern(self) -> dict:
         return blended_wing_pattern()
 
@@ -72,4 +98,5 @@ class GPTChaos:
             "hive": self.hive.status(),
             "apm_law": "APM-001 ACTIVE",
             "cloud_nxyz": "READY",
+            "digital_clone_pattern": "READY",
         }

@@ -17,6 +17,7 @@ def main() -> int:
     sub.add_parser("status", help="Show GPT-Chaos + Universal Hive status.")
     sub.add_parser("blended-wing", help="Show the US-20260274413-A1-derived simulation pattern.")
     sub.add_parser("blended-wing-stress", help="Run the bounded blended-wing concept stress-test checklist.")
+    sub.add_parser("digital-clone", help="Show the US-20260279583-A1-derived generalized digital-clone learning pattern.")
 
     summon = sub.add_parser("summon", help="Create a new Universal Hive swarm.")
     summon.add_argument("job")
@@ -44,6 +45,10 @@ def main() -> int:
 
     if args.command == "blended-wing-stress":
         _print(chaos.aerospace_stress_test())
+        return 0
+
+    if args.command == "digital-clone":
+        _print(chaos.digital_clone_pattern())
         return 0
 
     if args.command == "summon":
