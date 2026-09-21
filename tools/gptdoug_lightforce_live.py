@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Truthful live telemetry HUD for GPT-Doug / GPT-Chaos swarm activity.
 
+TRUTH CONTRACT: missing evidence is displayed as missing; it is never synthesized.
+
 Every displayed activity metric is derived from persisted runtime evidence.
 No synthetic worker states, random progress bars, or time-driven fake events
 are generated. Empty capacity is rendered as NO LIVE DATA.
