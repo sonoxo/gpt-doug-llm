@@ -415,9 +415,11 @@ class TelemetryCollector:
         if self.repo is not None:
             if (self.repo / "workers" / "live" / "revenue-swarm.jsonl").exists():
                 source_count += 1
-            daemon_base = self.repo / "xuniaverse-production" / "xuni-workers"
-            if daemon_base.exists():
-                source_count += 1
+            daemon_bases = [
+                self.repo / "xuni-workers",
+                self.repo / "xuniaverse-production" / "xuni-workers",
+            ]
+            source_count += sum(base.exists() for base in daemon_bases)
         hive_count = self._hive_count()
         if hive_count is not None:
             source_count += 1
