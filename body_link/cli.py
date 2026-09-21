@@ -7,6 +7,7 @@ import time
 
 from .client import BodyLinkClient
 from .server import main as serve
+from .state import ALLOWED_BODY_STATES
 
 
 def _client() -> BodyLinkClient:
@@ -26,6 +27,13 @@ def main() -> int:
     sub.add_parser("link")
     sub.add_parser("ping")
     sub.add_parser("serve")
+
+    state = sub.add_parser("state", help="Push one signed body state.")
+    state.add_argument("name", choices=ALLOWED_BODY_STATES)
+    state.add_argument("--detail", default="")
+
+    demo = sub.add_parser("demo", help="Cycle all canonical body states.")
+    demo.add_argument("--interval", type=float, default=2.0)
     watch = sub.add_parser("watch")
     watch.add_argument("--interval", type=int, default=30)
 
@@ -50,6 +58,16 @@ def main() -> int:
         return 0
     if args.command == "ping":
         _print(client.ping())
+        return 0
+    if args.command == "state":
+        _print(client.push_runtime_state(args.name, args.detail))
+        return 0
+    if args.command == "demo":
+        interval = max(0.25, min(float(args.interval), 30.0))
+        for name in ALLOWED_BODY_STATES:
+            _print(client.push_runtime_state(name, f"body demo: {name.lower()}"))
+            time.sleep(interval)
+        _print(client.push_runtime_state("IDLE", "body demo complete"))
         return 0
     if args.command == "watch":
         interval = max(5, min(args.interval, 3600))
