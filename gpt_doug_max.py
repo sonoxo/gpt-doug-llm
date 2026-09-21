@@ -357,9 +357,10 @@ class MaxShell:
         self.gate = ArmGate()
         self.brain = Brain()
         self.body_link = None
+        self.body_relay = None
         self.body_link_error = None
         try:
-            from body_link import BodyLinkClient
+            from body_link import BodyLinkClient, BodyStateRelay
             from universal_hive import UniversalHiveRuntime
 
             hive = UniversalHiveRuntime()
@@ -368,6 +369,8 @@ class MaxShell:
                 hive_id=hive.hive_id,
                 ontology_hash=hive.ontology_hash,
             )
+            if self.body_link:
+                self.body_relay = BodyStateRelay(self.body_link)
         except Exception as exc:
             self.body_link_error = str(exc)
         self.running = True
@@ -380,6 +383,13 @@ class MaxShell:
             provider=str(state.get("provider") or state.get("backend") or "unknown"),
             model=str(state.get("model") or "unknown"),
         )
+        if self.body_relay:
+            try:
+                from body_link import runtime_body_state
+
+                self.body_relay.publish(runtime_body_state("IDLE", "GPT-Doug MAX online"))
+            except Exception as exc:
+                self.body_link_error = f"initial state relay failed: {exc}"
 
     def banner(self) -> None:
         state = self.brain.health()
@@ -407,6 +417,13 @@ class MaxShell:
             voice=self.voice.enabled,
             armed=self.gate.active(),
         )
+        if self.body_relay:
+            try:
+                from body_link import runtime_body_state
+
+                self.body_relay.publish(runtime_body_state(state, detail))
+            except Exception as exc:
+                self.body_link_error = f"state relay failed: {exc}"
 
     def speak_response(self, text: str, detail: str = "speaking") -> None:
         self._speech_epoch += 1
@@ -467,6 +484,7 @@ class MaxShell:
                     "error": self.body_link_error,
                     "workspace_url": "https://replit.com/@24kmediaproduct/GPT-Doug-AI-Hub",
                 },
+                "body_state_relay": self.body_relay.status() if self.body_relay else None,
             },
             indent=2,
             default=str,
@@ -485,6 +503,7 @@ class MaxShell:
                 "error": self.body_link_error,
                 "workspace_url": "https://replit.com/@24kmediaproduct/GPT-Doug-AI-Hub",
             },
+            "body_state_relay": self.body_relay.status() if self.body_relay else None,
         }
         print(json.dumps(payload, indent=2, default=str))
 
@@ -813,6 +832,8 @@ class MaxShell:
   /agent <goal>            bounded ZYRA coding mission (requires /arm)
   /agents                  show installed agent surfaces
   /body [status|link|ping]  authenticated Replit body-node link
+  gpt-doug-body state NAME  push IDLE/LISTEN/THINK/TALK/ACT/LEARN/etc.
+  gpt-doug-body demo        cycle all body states for visual verification
   /swarm [demo|file.json]  bounded revenue swarm; drafts only
   /emote <name> [i] [sec]  facial expression; arbitrary names synthesize new faces
   /walk <mode> [speed] [r] avatar patrol/wander inside the terminal visual pane
@@ -949,6 +970,8 @@ converted into a shell command.
 
     def shutdown(self) -> None:
         self.voice.stop()
+        if self.body_relay:
+            self.body_relay.close()
         self.gate.disarm()
         self.bus.set("OFFLINE", "shell closed", armed=False)
         print(DIM + "GPT-Doug MAX offline. Normal shell control returned." + RESET)

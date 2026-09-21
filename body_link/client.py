@@ -10,6 +10,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 from .protocol import canonical_json, normalize_runtime_url, sign, verify
+from .state import runtime_body_state, sanitize_body_state
 
 
 class BodyLinkError(RuntimeError):
@@ -182,6 +183,22 @@ class BodyLinkClient:
         self._write_state({**state, **data})
         return data
 
+    def push_state(self, body_state: dict[str, Any]) -> dict[str, Any]:
+        sanitized = sanitize_body_state(body_state)
+        payload = {
+            "controller_id": self.controller_id,
+            "hive_id": self.hive_id,
+            "ontology_hash": self.ontology_hash,
+            "body_state": sanitized,
+        }
+        data = self._post("/v1/state", payload)
+        if data.get("accepted") is not True:
+            raise BodyLinkError("body node did not accept state update")
+        return data
+
+    def push_runtime_state(self, state: str, detail: str = "") -> dict[str, Any]:
+        return self.push_state(runtime_body_state(state, detail))
+
     def status(self) -> dict[str, Any]:
         state = self._state()
         return {
@@ -195,5 +212,7 @@ class BodyLinkClient:
             "last_heartbeat_at": state.get("last_heartbeat_at"),
             "capabilities": state.get("capabilities", []),
             "remote_shell": False,
+            "state_push": True,
+            "state_stream": True,
             "secrets_persisted": False,
         }
