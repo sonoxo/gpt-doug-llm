@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-20T02:06:41Z",
+  "cutoff_at": "2026-09-20T02:21:38Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -2784,6 +2784,17 @@
       "reviewed_at": "2026-09-20T09:50:18Z",
       "sha256": "803d913f72c1862412ad356796b6a1141371474b75d563329ef737e38ce1aecc",
       "size": 2059,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/MONERO_NEURAL_LAYER.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "da813431ce3f7f14d3cd1216ba01fa897b080bd80a6ccadf7386ae1b251233f4",
+      "size": 2739,
       "validation_issues": [],
       "was_due": false
     },
@@ -7187,6 +7198,61 @@
       "validation_issues": [],
       "was_due": false
     },
+    "monero_neural/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "b611fdaeb8d5745a4eaeba6944fc9740bbcb33e1f361e3bc93f2f4fd6f5885f9",
+      "size": 334,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "monero_neural/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "f8375744d218d46335431b4891f58c35f14ffd20869dcd6ae4668005a4a34eb4",
+      "size": 1896,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "monero_neural/core.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "abcf9800ec3b90eb9aa5685079d5d77b62e63cbd6c6d3dec5828be3367b0cc63",
+      "size": 11831,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "monero_neural/ledger.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "612bc45544bdf4c21fe0ada289cc68929abbb779cbed72c8cfe5721d76ab0fc9",
+      "size": 3711,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "monero_neural/rpc.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "ac72e87d9fbf0ce9cf285d9697260f4acff4d1c32f62659e75f37fc6427afa3f",
+      "size": 3649,
+      "validation_issues": [],
+      "was_due": false
+    },
     "mythos_doug.py": {
       "actions": [],
       "binary": false,
@@ -7510,10 +7576,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-20T23:41:22Z",
+      "git_touched_at": "2026-09-21T02:21:27Z",
       "reviewed_at": null,
-      "sha256": "096517bcf3b8f25c1215a06e9bdb76daa7aeec7041738856842a8d8b86ad9f93",
-      "size": 2514,
+      "sha256": "1f4601f92fa74e53025aeb04d6157ff46a174d1de0c1bb7cba9f6de101a418b2",
+      "size": 2578,
       "validation_issues": [],
       "was_due": false
     },
@@ -10143,6 +10209,17 @@
       "reviewed_at": "2026-09-20T09:50:18Z",
       "sha256": "2e75b84b1569eab405280c1dbe644e3fc7c8ee66bf5db502bc5bdcf44c59e2b6",
       "size": 3143,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_monero_neural_layer.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-21T02:21:27Z",
+      "reviewed_at": null,
+      "sha256": "05e2fbbf545bb38bc4ec43c838da97eccfb8aeafa2e038e594dd6696d5f5f54f",
+      "size": 4809,
       "validation_issues": [],
       "was_due": false
     },
@@ -15010,11 +15087,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-21T02:06:41Z",
+  "generated_at": "2026-09-21T02:21:38Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1364,
+  "tracked_files_reviewed": 1371,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
