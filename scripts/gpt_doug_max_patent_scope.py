@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,6 +99,14 @@ def score(seed: dict, query: str) -> tuple[int, list[str]]:
             hits.append(term)
 
     return points, list(dict.fromkeys(hits))
+
+
+def publication_date_value(seed: dict) -> date:
+    raw = str(seed.get("publication_date", "")).strip()
+    try:
+        return date.fromisoformat(raw)
+    except ValueError:
+        return date.min
 
 
 def validate_seed(path: Path, seed: dict) -> list[str]:
@@ -225,20 +234,34 @@ def show(patent_id: str) -> int:
 
 
 def match(query: str, top: int, as_json: bool = False) -> int:
-    data: list[dict] = []
+    data_by_title: dict[str, dict] = {}
     for path, seed in seeds():
         points, hits = score(seed, query)
-        data.append(
-            {
-                "score": points,
-                "patent_id": seed.get("patent_id"),
-                "title": seed.get("title"),
-                "matched_scope_signals": hits,
-                "scope_tags": seed.get("scope_tags", []),
-                "path": str(path.relative_to(ROOT)),
-            }
-        )
+        row = {
+            "score": points,
+            "patent_id": seed.get("patent_id"),
+            "title": seed.get("title"),
+            "matched_scope_signals": hits,
+            "scope_tags": seed.get("scope_tags", []),
+            "path": str(path.relative_to(ROOT)),
+            "_publication_date": publication_date_value(seed),
+        }
+        title_key = norm(str(seed.get("title", "")))
+        existing = data_by_title.get(title_key)
+        if existing is None or (
+            row["_publication_date"],
+            int(row["score"]),
+            str(row["patent_id"]),
+        ) > (
+            existing["_publication_date"],
+            int(existing["score"]),
+            str(existing["patent_id"]),
+        ):
+            data_by_title[title_key] = row
+    data = list(data_by_title.values())
     data.sort(key=lambda x: (-int(x["score"]), str(x["patent_id"])))
+    for row in data:
+        row.pop("_publication_date", None)
     data = data[: max(1, top)]
     payload = {
         "query": query,
