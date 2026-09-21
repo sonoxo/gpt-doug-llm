@@ -138,6 +138,9 @@ def test_dynamic_geospatial_scaling_scope_matches_map_query() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
     payload = json.loads(result.stdout)
     assert payload["results"][0]["patent_id"] == "US-20250290768-A1"
+    ids = [row["patent_id"] for row in payload["results"]]
+    assert "US-12320663-B2" in ids
+    assert ids.index("US-20250290768-A1") < ids.index("US-12320663-B2")
 
 
 def test_dynamic_geospatial_seed_blocks_person_tracking() -> None:
