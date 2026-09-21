@@ -1,3 +1,5 @@
+import json
+import urllib.request
 from pathlib import Path
 
 from monero_neural.cli import _probe_rpc
@@ -39,7 +41,47 @@ def test_stagenet_helper_is_local_authenticated_and_non_custodial():
     assert "--rpc-bind-port 38081" in text
     assert "--rpc-bind-port 38088" in text
     assert "--rpc-login" in text
+    assert "--digest" in text
     assert "--stagenet" in text
     assert "create_wallet" not in text
     assert "transfer(" not in text
     assert "spend key was loaded" in text
+
+
+def test_rpc_login_uses_http_digest_not_basic(monkeypatch):
+    captured = {}
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self):
+            return json.dumps(
+                {"jsonrpc": "2.0", "id": "gpt-doug-xmr-neural", "result": {"version": 1}}
+            ).encode("utf-8")
+
+    class FakeOpener:
+        def open(self, request, timeout):
+            captured["authorization"] = request.headers.get("Authorization")
+            captured["timeout"] = timeout
+            return FakeResponse()
+
+    def fake_build_opener(handler):
+        captured["handler"] = handler
+        return FakeOpener()
+
+    monkeypatch.setattr(urllib.request, "build_opener", fake_build_opener)
+
+    client = MoneroRPCClient(
+        "http://127.0.0.1:38088/json_rpc",
+        username="gptdoug",
+        password="secret",
+    )
+    result = client.wallet_version()
+
+    assert result["version"] == 1
+    assert isinstance(captured["handler"], urllib.request.HTTPDigestAuthHandler)
+    assert captured["authorization"] is None
