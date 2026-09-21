@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Iterable
 
 from cloud_nxyz import CloudNXYZEngine
-from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 from uap_matrix import UAPMatrixSharedSpace
+from universal_hive import AdaptiveAutomationAccelerator, UniversalHiveRuntime
 
 from .aerospace import pattern as blended_wing_pattern
 from .aerospace import stress_test as stress_test_blended_wing
