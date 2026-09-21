@@ -41,7 +41,7 @@ write_state() {
   "logical_hives": $HIVES,
   "hidden_processes_spawned": 0,
   "human_override": true,
-  "mode": "TERMINAL_VISUAL_LOGICAL_SWARM",
+  "mode": "REAL_TELEMETRY_ONLY",
   "timestamp_epoch": $ts
 }
 EOF
@@ -109,7 +109,7 @@ case "$ACTION" in
       printf "%b\n" "${dim}LIGHTFORCE // live visualizer missing; reinstall Light Force${reset}" >&2
       exit 3
     fi
-    python3 "$live_tool" --swarms "$SWARMS" --hives "$HIVES"
+    python3 "$live_tool"
     write_state true "ACTIVE"
     ;;
   status)

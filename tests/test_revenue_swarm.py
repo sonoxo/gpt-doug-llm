@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import os
 import time
 
 from workers import revenue_swarm as rs
@@ -118,3 +120,38 @@ def test_failed_stage_stops_only_that_pipeline(monkeypatch):
 
     assert result["metrics"]["pipelines_completed"] == 1
     assert result["metrics"]["stages_failed"] == 1
+
+
+def test_persisted_swarm_emits_real_lifecycle_telemetry(monkeypatch, tmp_path):
+    monkeypatch.setattr(rs, "_provider_name", lambda: "remote")
+    monkeypatch.setattr(rs, "LIVE_DIR", tmp_path)
+    monkeypatch.setattr(rs, "RUN_LOG", tmp_path / "revenue-swarm.jsonl")
+    monkeypatch.setattr(rs, "METRICS_FILE", tmp_path / "revenue-swarm-metrics.json")
+
+    swarm = rs.RevenueSwarm(
+        config=rs.SwarmConfig(requested_workers=2, persist=True),
+        runner=fake_runner,
+    )
+    swarm.run([rs.Prospect("real-1", organization="Real Org")])
+
+    rows = [
+        json.loads(line)
+        for line in (tmp_path / "revenue-swarm.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    kinds = [row["type"] for row in rows]
+
+    assert kinds.count("pipeline_start") == 1
+    assert kinds.count("pipeline_result") == 1
+    assert kinds.count("stage_start") == len(rs.STAGES)
+    assert kinds.count("stage_result") == len(rs.STAGES)
+
+    first_start = next(row for row in rows if row["type"] == "stage_start")
+    assert first_start["prospect"]["prospect_id"] == "real-1"
+    assert first_start["stage"] == rs.STAGES[0]
+    assert first_start["ts"] > 0
+    assert first_start["pid"] == os.getpid()
+
+    metrics = json.loads((tmp_path / "revenue-swarm-metrics.json").read_text())
+    assert metrics["prospects_unique"] == 1
+    assert metrics["started_at"] > 0
