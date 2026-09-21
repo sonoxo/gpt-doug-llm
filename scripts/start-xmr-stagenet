@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+INSTALL=0
+if [ "${1:-}" = "--install" ]; then
+  INSTALL=1
+elif [ -n "${1:-}" ]; then
+  printf '%s\n' "usage: $0 [--install]" >&2
+  exit 2
+fi
+
+ENV_FILE="${GPT_DOUG_XMR_ENV_FILE:-$HOME/.config/gptdoug/xmr-neural.env}"
+MONERO_HOME="${GPT_DOUG_MONERO_HOME:-$HOME/.gpt-doug/monero}"
+DATA_DIR="$MONERO_HOME"
+WALLET_DIR="$MONERO_HOME/stagenet-wallets"
+LOG_DIR="$MONERO_HOME/logs"
+RUN_DIR="$MONERO_HOME/run"
+
+say() { printf '%s\n' "$*"; }
+fail() { say "[GPTDOUG // XMR-STAGENET] ERROR: $*" >&2; exit 1; }
+
+command -v python3 >/dev/null 2>&1 || fail "python3 is required"
+command -v curl >/dev/null 2>&1 || fail "curl is required"
+
+mkdir -p "$(dirname "$ENV_FILE")" "$DATA_DIR" "$WALLET_DIR" "$LOG_DIR" "$RUN_DIR"
+
+if [ -f "$ENV_FILE" ]; then
+  # shellcheck disable=SC1090
+  . "$ENV_FILE"
+fi
+
+MONERO_DAEMON_RPC="${MONERO_DAEMON_RPC:-http://127.0.0.1:38081/json_rpc}"
+MONERO_WALLET_RPC="${MONERO_WALLET_RPC:-http://127.0.0.1:38088/json_rpc}"
+MONERO_WALLET_RPC_USER="${MONERO_WALLET_RPC_USER:-gptdoug}"
+
+if [ -z "${MONERO_WALLET_RPC_PASSWORD:-}" ]; then
+  MONERO_WALLET_RPC_PASSWORD="$(python3 -c 'import secrets; print(secrets.token_hex(24))')"
+  {
+    printf '%s\n' 'export MONERO_WALLET_RPC_USER="gptdoug"'
+    printf 'export MONERO_WALLET_RPC_PASSWORD="%s"\n' "$MONERO_WALLET_RPC_PASSWORD"
+  } >> "$ENV_FILE"
+  chmod 600 "$ENV_FILE"
+fi
+
+if ! grep -q '^export MONERO_DAEMON_RPC=' "$ENV_FILE" 2>/dev/null; then
+  printf '%s\n' 'export MONERO_DAEMON_RPC="http://127.0.0.1:38081/json_rpc"' >> "$ENV_FILE"
+fi
+if ! grep -q '^export MONERO_WALLET_RPC=' "$ENV_FILE" 2>/dev/null; then
+  printf '%s\n' 'export MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"' >> "$ENV_FILE"
+fi
+chmod 600 "$ENV_FILE"
+
+if ! command -v monerod >/dev/null 2>&1 || ! command -v monero-wallet-rpc >/dev/null 2>&1; then
+  if [ "$INSTALL" -eq 1 ]; then
+    command -v brew >/dev/null 2>&1 || fail "Homebrew is required for --install"
+    say "[GPTDOUG // XMR-STAGENET] installing Monero via Homebrew"
+    brew install monero
+  else
+    fail "Monero binaries not found. On Homebrew systems run: brew install monero"
+  fi
+fi
+
+daemon_ready() {
+  curl -fsS --max-time 3 "$MONERO_DAEMON_RPC" \
+    -H 'Content-Type: application/json' \
+    -d '{"jsonrpc":"2.0","id":"gpt-doug","method":"get_info","params":{}}' \
+    | grep -q '"result"'
+}
+
+wallet_ready() {
+  curl -fsS --max-time 3 \
+    -u "$MONERO_WALLET_RPC_USER:$MONERO_WALLET_RPC_PASSWORD" \
+    "$MONERO_WALLET_RPC" \
+    -H 'Content-Type: application/json' \
+    -d '{"jsonrpc":"2.0","id":"gpt-doug","method":"get_version","params":{}}' \
+    | grep -q '"result"'
+}
+
+if daemon_ready; then
+  say "[GPTDOUG // XMR-STAGENET] monerod already reachable"
+else
+  say "[GPTDOUG // XMR-STAGENET] starting local pruned stagenet daemon"
+  monerod \
+    --stagenet \
+    --data-dir "$DATA_DIR" \
+    --prune-blockchain \
+    --rpc-bind-ip 127.0.0.1 \
+    --rpc-bind-port 38081 \
+    --log-file "$LOG_DIR/monerod-stagenet.log" \
+    --detach \
+    --pidfile "$RUN_DIR/monerod-stagenet.pid"
+  sleep 2
+fi
+
+if wallet_ready; then
+  say "[GPTDOUG // XMR-STAGENET] wallet RPC already reachable"
+else
+  say "[GPTDOUG // XMR-STAGENET] starting authenticated wallet RPC"
+  monero-wallet-rpc \
+    --stagenet \
+    --daemon-address 127.0.0.1:38081 \
+    --trusted-daemon \
+    --wallet-dir "$WALLET_DIR" \
+    --rpc-bind-ip 127.0.0.1 \
+    --rpc-bind-port 38088 \
+    --rpc-login "$MONERO_WALLET_RPC_USER:$MONERO_WALLET_RPC_PASSWORD" \
+    --log-file "$LOG_DIR/wallet-rpc-stagenet.log" \
+    --detach \
+    --pidfile "$RUN_DIR/wallet-rpc-stagenet.pid"
+  sleep 2
+fi
+
+say "[GPTDOUG // XMR-STAGENET] runtime started"
+say "daemon_rpc=$MONERO_DAEMON_RPC"
+say "wallet_rpc=$MONERO_WALLET_RPC"
+say "wallet_dir=$WALLET_DIR"
+say "note=no wallet was created or opened; no spend key was loaded"
+
+if [ -x "$HOME/.local/bin/gpt-doug-xmr-neural" ]; then
+  "$HOME/.local/bin/gpt-doug-xmr-neural" doctor
+else
+  say "doctor=$HOME/.local/bin/gpt-doug-xmr-neural doctor"
+fi

@@ -43,7 +43,7 @@ class MoneroRPCClient:
     @classmethod
     def wallet_from_env(cls) -> "MoneroRPCClient":
         return cls(
-            os.getenv("MONERO_WALLET_RPC", "http://127.0.0.1:38082/json_rpc"),
+            os.getenv("MONERO_WALLET_RPC", "http://127.0.0.1:38088/json_rpc"),
             username=os.getenv("MONERO_WALLET_RPC_USER") or None,
             password=os.getenv("MONERO_WALLET_RPC_PASSWORD") or None,
         )
@@ -84,6 +84,9 @@ class MoneroRPCClient:
 
     def daemon_info(self) -> Dict[str, Any]:
         return self.call("get_info")
+
+    def wallet_version(self) -> Dict[str, Any]:
+        return self.call("get_version")
 
     def wallet_balance(self, *, account_index: int = 0) -> Dict[str, Any]:
         return self.call("get_balance", {"account_index": int(account_index)})
