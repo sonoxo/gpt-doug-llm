@@ -34,6 +34,8 @@ def test_bulk_import_generates_stable_permalinks_and_manifest(tmp_path: Path) ->
     con.close()
     assert rows[0][1] == ppubs_permalink(rows[0][0])
     assert "ppubs.uspto.gov/pubwebapp/external.html" in rows[1][1]
+    assert "db=USPAT" in ppubs_permalink("US-12744799-B1")
+    assert "db=US-PGPUB" in ppubs_permalink("US-20260279583-A1")
 
 
 def test_expected_manifest_can_prove_only_supplied_artifact_set(tmp_path: Path) -> None:
