@@ -60,6 +60,10 @@ case "$first_arg_lc" in
     shift
     exec "$ROOT/scripts/zyra-mss-uspto-reader" "$@"
     ;;
+  patent-bulk-memory|bulk-patents)
+    shift
+    exec python3 "$ROOT/scripts/uspto_bulk_memory.py" "$@"
+    ;;
   patent-search)
     shift
     if [[ $# -eq 0 ]]; then
