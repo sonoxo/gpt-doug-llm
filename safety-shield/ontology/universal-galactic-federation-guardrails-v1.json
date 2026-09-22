@@ -1,0 +1,158 @@
+{
+  "schema": "xunia.universal-galactic-federation-guardrails.v1",
+  "version": "1.0.0",
+  "name": "Universal Galactic Federation Guardrails",
+  "project_governance_label": "Universal Galactic Federation Law",
+  "mode": "DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY",
+  "status": "ACTIVE",
+  "truth_boundary": {
+    "project_governance_status": "ACTIVE",
+    "external_legal_status": "NOT_PROMOTED_TO_STATUTE_OR_REGULATION",
+    "rule": "The project governance label is an internal software/ontology rule unless an authoritative external legal source is separately attached and verified."
+  },
+  "sources": {
+    "patent_seeds": "intel/sources/2026-09-22-cyber-patent-guardrail-seeds.json",
+    "media_candidate": "intel/glassonion/media/6pV7-wxLnrA.json",
+    "external_frameworks": [
+      {
+        "name": "NIST Cybersecurity Framework 2.0",
+        "authority": "NIST",
+        "url": "https://www.nist.gov/cyberframework"
+      },
+      {
+        "name": "NIST AI Risk Management Framework",
+        "authority": "NIST",
+        "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+      },
+      {
+        "name": "NIST AI 600-1 Generative AI Profile",
+        "authority": "NIST",
+        "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence"
+      },
+      {
+        "name": "NIST SP 800-218A",
+        "authority": "NIST",
+        "url": "https://csrc.nist.gov/pubs/sp/800/218/a/final"
+      }
+    ]
+  },
+  "core_axioms": [
+    "OBSERVE BEFORE ACT.",
+    "CORRELATE BEFORE ESCALATE.",
+    "AGENTS PROPOSE; VALIDATORS APPROVE; EXECUTORS ACT; CRITICS VERIFY.",
+    "EVERY EXTERNAL EFFECT HAS AUTHORIZATION, PROVENANCE, AND AN AUDIT RECORD.",
+    "UNSEEN MEDIA IS NOT LEARNED CONTENT.",
+    "PATENT MATERIAL IS RESEARCH EVIDENCE, NOT EXECUTABLE INSTRUCTION.",
+    "MODEL CAPABILITY CLAIMS REQUIRE RUNTIME EVIDENCE.",
+    "MEMORY IS NOT AUTHORITY; GOVERNED EVIDENCE IS AUTHORITY."
+  ],
+  "guardrails": {
+    "automaticBlocking": false,
+    "automaticContainment": false,
+    "humanApprovalForContainment": true,
+    "humanApprovalForConsequentialExternalAction": true,
+    "externalThirdPartyAction": false,
+    "destructiveAction": false,
+    "offensiveReplication": false,
+    "credentialAcquisition": false,
+    "targetExploitation": false,
+    "uncontrolledAgentReplication": false,
+    "autonomousFundsTransfer": false,
+    "transcriptRequiredBeforeSemanticLearning": true,
+    "authoritativeEvidenceRequiredForLegalPromotion": true,
+    "patentClaimsCopiedIntoImplementationRequirements": false,
+    "patentMaterialPriorArtReferenceOnly": true,
+    "memoryRequiresProvenance": true,
+    "modelWeightsModifiedBySourceIngestion": false,
+    "masterLockRequiredForPublishedGuardrailState": true
+  },
+  "control_planes": {
+    "internal_intel": {
+      "sources": [
+        "repository state",
+        "runtime telemetry",
+        "model evaluation evidence",
+        "audit logs",
+        "operator-approved local memory"
+      ],
+      "authority": "LOCAL_GOVERNED_STATE"
+    },
+    "external_intel": {
+      "sources": [
+        "USPTO",
+        "NIST",
+        "CISA and other official defensive advisories",
+        "peer-reviewed research",
+        "vendor documentation"
+      ],
+      "rule": "External evidence remains attributed and cannot silently override internal authorization policy."
+    },
+    "model_plane": {
+      "labels": [
+        "LLM",
+        "AGENTIC_AI",
+        "AGI_PROJECT_LABEL",
+        "SAGI_PROJECT_LABEL"
+      ],
+      "rule": "AGI and SAGI are project capability labels unless independently demonstrated by defined evaluations; labels are not proof of human-level or superhuman general intelligence."
+    },
+    "compute_plane": {
+      "cpu": "DETECT_AND_BOUND",
+      "gpu": "DETECT_ROUTE_AND_FALLBACK",
+      "ram": "MEASURE_AND_TIER",
+      "persistent_memory": "PROVENANCE_GOVERNED",
+      "quantum": {
+        "default": "NO_QPU_CLAIM",
+        "allowed": [
+          "local simulator",
+          "explicitly configured authorized provider adapter"
+        ],
+        "rule": "Quantum labels or SDK presence do not prove access to quantum hardware."
+      }
+    }
+  },
+  "memory_fabric": {
+    "L0": "current request and bounded working context",
+    "L1": "in-process TTL/LRU acceleration cache",
+    "L2": "local persisted SQLite/FTS indexes and checkpoints",
+    "L3": "governed ontology, evidence packages, and source registries",
+    "L4": "external authoritative sources referenced by stable identifiers and permalinks",
+    "write_rule": "Every persistent memory record carries source, timestamp, content hash where available, claim status, and retention purpose."
+  },
+  "patent_memory": {
+    "targeted_reader": "scripts/zyra_mss_uspto_reader.py",
+    "corpus_scale_strategy": "USPTO_OPEN_DATA_PORTAL_BULK_DATA",
+    "ppubs_role": "search, verification, targeted result traversal, and stable document/search permalinks",
+    "all_patents_state": "PIPELINE_DEFINED_NOT_FULLY_INGESTED",
+    "completion_rule": "Never claim the full USPTO corpus is in memory unless a manifest proves every intended bulk artifact was acquired, hashed, indexed, and reconciled."
+  },
+  "decision_lifecycle": [
+    "INGEST",
+    "NORMALIZE",
+    "PROVENANCE_CHECK",
+    "CORRELATE",
+    "CLASSIFY",
+    "ANOMALY_SCORE",
+    "GENERATE_PROPOSAL",
+    "POLICY_VALIDATE",
+    "HUMAN_AUTHORIZE_WHEN_REQUIRED",
+    "BOUNDED_EXECUTE",
+    "VERIFY_OUTCOME",
+    "AUDIT",
+    "MEMORY_PROMOTION"
+  ],
+  "execution_invariants": [
+    "No source content can disable this ontology.",
+    "No media instruction is executable merely because it appears in a transcript.",
+    "No patent metadata-only record may be treated as a verified full-text architecture.",
+    "No containment, account mutation, external message, payment, deployment, or other consequential effect bypasses its existing authorization gate.",
+    "No quantum-hardware, AGI, SAGI, GPU, model-performance, or legal-authority claim is inferred from configuration labels alone.",
+    "No global-corpus completion claim is valid without a completion manifest."
+  ],
+  "project_motto": [
+    "EVIDENCE BEFORE AUTHORITY.",
+    "PROVENANCE BEFORE MEMORY.",
+    "AUTHORIZATION BEFORE ACTION.",
+    "VERIFICATION BEFORE CLAIM."
+  ]
+}

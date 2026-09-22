@@ -2,15 +2,26 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+GUARDRAIL_ONTOLOGY="$ROOT/safety-shield/ontology/universal-galactic-federation-guardrails-v1.json"
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo "GPT-DOUG-MAX: python3 is required" >&2
   exit 1
 fi
 
+# Fail closed when the canonical next-gen guardrail ontology is present.
+# Set GPT_DOUG_GUARDRAIL_PREFLIGHT=0 only for repository recovery/repair work.
+if [[ -f "$GUARDRAIL_ONTOLOGY" && "${GPT_DOUG_GUARDRAIL_PREFLIGHT:-1}" != "0" ]]; then
+  if ! PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m agents.galactic_guardrails --root "$ROOT" validate >/dev/null; then
+    echo "GPT-DOUG-MAX: GALACTIC GUARDRAIL PREFLIGHT FAILED" >&2
+    echo "Run: scripts/doug-max guardrails validate" >&2
+    exit 78
+  fi
+fi
+
 if [[ $# -eq 0 ]]; then
   cd "$ROOT"
-  exec env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 python3 "$ROOT/zyra_chat.py"
+  exec env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 GPT_DOUG_GUARDRAILS=1 python3 "$ROOT/zyra_chat.py"
 fi
 
 first_arg_lc="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
@@ -45,6 +56,10 @@ case "$first_arg_lc" in
     shift
     exec "$ROOT/scripts/zyra-mss-uspto-reader" "$@"
     ;;
+  patent-bulk-memory|bulk-patents)
+    shift
+    exec python3 "$ROOT/scripts/uspto_bulk_memory.py" "$@"
+    ;;
   patent-search)
     shift
     if [[ $# -eq 0 ]]; then
@@ -70,4 +85,4 @@ case "$goal_lc" in
 esac
 
 cd "$ROOT"
-printf '%s\n/quit\n' "$command" | env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 python3 "$ROOT/zyra_chat.py"
+printf '%s\n/quit\n' "$command" | env ZYRA_ACTIVE=1 GPT_DOUG_MAX=1 GPT_DOUG_GUARDRAILS=1 python3 "$ROOT/zyra_chat.py"
