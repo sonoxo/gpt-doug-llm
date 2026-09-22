@@ -72,9 +72,12 @@ def numeric_patent_number(document_number: str) -> str:
 
 def ppubs_permalink(document_number: str) -> str:
     number = numeric_patent_number(document_number)
+    match = DOC_RE.search(document_number)
+    kind = (match.group(2) or "").upper() if match else ""
+    database = "US-PGPUB" if kind.startswith("A") else "USPAT"
     return (
         "https://ppubs.uspto.gov/pubwebapp/external.html"
-        f"?q=({number}).pn.&db=USPAT&type=ids"
+        f"?q=({number}).pn.&db={database}&type=ids"
     )
 
 
