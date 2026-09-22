@@ -78,6 +78,20 @@
   ],
   "internal_divisions": [
     {
+      "id": "gpt-nedu",
+      "host_repo": "sonoxo/gpt-doug-llm",
+      "path": "gpt_nedu",
+      "role": "novice-education",
+      "label": "GPT-NEDU // NOVICE EDU",
+      "responsibilities": [
+        "beginner explanations",
+        "source-grounded learning",
+        "isolated demonstrations",
+        "defensive design education"
+      ],
+      "authority_boundary": "Education module within GPT-Doug; ZYRA retains governed execution. Source text and lesson examples grant no execution authority."
+    },
+    {
       "id": "chaotic-good",
       "host_repo": "sonoxo/gpt-doug-llm",
       "path": "divisions/chaotic-good",
@@ -117,6 +131,7 @@
     "human-review"
   ],
   "domain_routing": {
+    "novice_education": "gpt-nedu",
     "security": "red-house",
     "environment_bio_regulatory": "green-house",
     "economic_scenarios": "orange-house",

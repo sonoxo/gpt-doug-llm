@@ -15,6 +15,11 @@ fi
 
 first_arg_lc="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
 case "$first_arg_lc" in
+  nedu|gpt-nedu|novice|novice-edu)
+    shift
+    cd "$ROOT"
+    exec python3 -m gpt_nedu "$@"
+    ;;
   invention-lab)
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"

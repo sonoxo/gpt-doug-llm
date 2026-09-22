@@ -865,6 +865,7 @@ class MaxShell:
     def help(self) -> None:
         print(
             """Commands
+  /nedu                    GPT-NEDU beginner learning menu (q returns)
   /status                  system + git + provider + visual-state health
   /brain                   provider health + master-prompt status
   /prompt                  show master-prompt wiring status
@@ -910,6 +911,13 @@ converted into a shell command.
             return True
         if cmd == "/help":
             self.help()
+        elif cmd in {"/nedu", "/novice", "/gpt-nedu"}:
+            from gpt_nedu.cli import main as nedu_main
+            self.set_state("LEARN", "GPT-NEDU novice education")
+            try:
+                nedu_main([])
+            finally:
+                self.set_state("IDLE", "returned from GPT-NEDU")
         elif cmd == "/status":
             self.cmd_status()
         elif cmd == "/brain":
