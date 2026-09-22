@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_URL="${GPT_DOUG_REPO_URL:-https://github.com/sonoxo/gpt-doug-llm.git}"
+REPO_DIR="${GPT_DOUG_REPO_DIR:-$HOME/.config/gptdoug/src/gpt-doug-llm}"
+VENV_DIR="${GPT_DOUG_XMR_VENV:-$HOME/.config/gptdoug/venvs/xmr-neural}"
+BIN_DIR="${GPT_DOUG_BIN_DIR:-$HOME/.local/bin}"
+ENV_FILE="${GPT_DOUG_XMR_ENV_FILE:-$HOME/.config/gptdoug/xmr-neural.env}"
+LAUNCHER="$BIN_DIR/gpt-doug-xmr-neural"
+
+say() { printf '%s\n' "$*"; }
+fail() { say "[GPTDOUG // XMR-INSTALL] ERROR: $*" >&2; exit 1; }
+
+command -v git >/dev/null 2>&1 || fail "git is required"
+command -v python3 >/dev/null 2>&1 || fail "python3 is required"
+
+python3 - <<'PY' || fail "Python 3.9 or newer is required"
+import sys
+raise SystemExit(0 if sys.version_info >= (3, 9) else 1)
+PY
+
+mkdir -p "$(dirname "$REPO_DIR")" "$(dirname "$VENV_DIR")" "$BIN_DIR" "$(dirname "$ENV_FILE")"
+
+if [ -d "$REPO_DIR/.git" ]; then
+  say "[GPTDOUG // XMR-INSTALL] syncing source over HTTPS"
+  git -C "$REPO_DIR" fetch --quiet "$REPO_URL" main || fail "could not fetch public HTTPS source"
+  git -C "$REPO_DIR" merge --ff-only FETCH_HEAD || fail "local source diverged; resolve it manually, then rerun"
+else
+  if [ -e "$REPO_DIR" ]; then
+    fail "$REPO_DIR exists but is not a git checkout"
+  fi
+  say "[GPTDOUG // XMR-INSTALL] cloning source over HTTPS"
+  git clone --depth 1 --branch main "$REPO_URL" "$REPO_DIR" || fail "clone failed"
+fi
+
+[ -f "$REPO_DIR/pyproject.toml" ] || fail "pyproject.toml missing after source sync"
+[ -d "$REPO_DIR/monero_neural" ] || fail "monero_neural package missing after source sync"
+
+say "[GPTDOUG // XMR-INSTALL] creating isolated Python environment"
+python3 -m venv "$VENV_DIR"
+"$VENV_DIR/bin/python" -m pip install --disable-pip-version-check -e "$REPO_DIR"
+
+if [ ! -f "$ENV_FILE" ]; then
+  cat > "$ENV_FILE" <<'EOF'
+export GPT_DOUG_XMR_NEURAL_STATE_DIR="$HOME/.gpt-doug/monero-neural"
+export MONERO_DAEMON_RPC="http://127.0.0.1:38081/json_rpc"
+export MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"
+EOF
+  chmod 600 "$ENV_FILE"
+elif grep -q 'MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"' "$ENV_FILE"; then
+  tmp="$ENV_FILE.tmp.$$"
+  sed 's#MONERO_WALLET_RPC="http://127.0.0.1:38082/json_rpc"#MONERO_WALLET_RPC="http://127.0.0.1:38088/json_rpc"#' "$ENV_FILE" > "$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$ENV_FILE"
+  say "[GPTDOUG // XMR-INSTALL] migrated stagenet wallet RPC 38082 -> 38088"
+fi
+
+cat > "$LAUNCHER" <<EOF
+#!/bin/sh
+if [ -f "$ENV_FILE" ]; then
+  . "$ENV_FILE"
+fi
+exec "$VENV_DIR/bin/gpt-doug-xmr-neural" "\$@"
+EOF
+chmod 755 "$LAUNCHER"
+
+say "[GPTDOUG // XMR-INSTALL] verifying local wiring"
+"$LAUNCHER" doctor --skip-rpc
+
+say ""
+say "[GPTDOUG // XMR-INSTALL] READY_LOCAL"
+say "launcher=$LAUNCHER"
+say "env_file=$ENV_FILE"
+say "repo=$REPO_DIR"
+say "venv=$VENV_DIR"
+if ! command -v gpt-doug-xmr-neural >/dev/null 2>&1; then
+  say "PATH_NOTE=add $BIN_DIR to PATH, or invoke $LAUNCHER directly"
+fi
+if ! command -v monerod >/dev/null 2>&1 || ! command -v monero-wallet-rpc >/dev/null 2>&1; then
+  say "MONERO_NOTE=runtime binaries not found; on Homebrew systems run: brew install monero"
+fi
+say "NEXT=$LAUNCHER doctor"

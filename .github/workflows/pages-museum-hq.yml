@@ -50,6 +50,7 @@ jobs:
           test -f _site/holo/index.html
           test -f _site/holo/holo.ts
           test -f _site/arcade/index.html
+          test -f _site/cte/index.html
           test ! -e _site/eye-mouse
 
       - name: Compile HOLO TypeScript
@@ -135,6 +136,14 @@ jobs:
           grep -q 'href="./arcade/"' docs/index.html
           grep -q '^xunia.org$' docs/CNAME
 
+      - name: CTE public showcase contract
+        run: |
+          test -f docs/cte/index.html
+          grep -q 'ZYRA-CTE' docs/cte/index.html
+          grep -q 'Counterfactual Transaction Engine' docs/cte/index.html
+          grep -q 'SYNTHETIC-ONLY' docs/cte/index.html
+          grep -q 'HUMAN CONTROL ENABLED' docs/cte/index.html
+
       - name: HOLO workable simulator contract
         run: |
           grep -q 'HOLO WORKABLE SIM' docs/holo/index.html
@@ -178,6 +187,9 @@ jobs:
           curl -fsS http://127.0.0.1:8080/holo/holo.js | grep -q 'XUNIA_HOLO_AAR_V1'
           curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'SUPER GALACTIK FEDERATION'
           curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'XUNIA ARCADE ENTRY GATE'
+          curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'ZYRA-CTE'
+          curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'Counterfactual Transaction Engine'
+          curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'SYNTHETIC-ONLY'
           if curl -fsS http://127.0.0.1:8080/eye-mouse/ >/dev/null 2>&1; then
             echo 'Unfinished prototype unexpectedly published.' >&2
             exit 1
@@ -216,10 +228,12 @@ jobs:
           test -f _site/resources.html
           test -f _site/resources.json
           test -f _site/arcade/index.html
+          test -f _site/cte/index.html
+          grep -q 'ZYRA-CTE' _site/cte/index.html
           test ! -e _site/eye-mouse
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -237,18 +251,34 @@ jobs:
           CACHE_BUST: ${{ github.sha }}
         run: |
           set -euo pipefail
-          ok=0
+          arcade_ok=0
           for attempt in $(seq 1 20); do
             if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/arcade/?v=${CACHE_BUST}" -o /tmp/xunia-arcade.html \
               && grep -q 'SUPER GALACTIK FEDERATION' /tmp/xunia-arcade.html \
               && grep -q 'XUNIA ARCADE ENTRY GATE' /tmp/xunia-arcade.html; then
-              ok=1
+              arcade_ok=1
               break
             fi
             sleep 2
           done
-          test "$ok" -eq 1
+          test "$arcade_ok" -eq 1
+
           curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/?v=${CACHE_BUST}" -o /tmp/xunia-home-live.html
           grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home-live.html
           grep -q 'Super Galactik Federation Arcade' /tmp/xunia-home-live.html
+
+          cte_ok=0
+          for attempt in $(seq 1 30); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/cte/?v=${CACHE_BUST}" -o /tmp/xunia-cte.html \
+              && grep -q 'ZYRA-CTE' /tmp/xunia-cte.html \
+              && grep -q 'Counterfactual Transaction Engine' /tmp/xunia-cte.html \
+              && grep -q 'SYNTHETIC-ONLY' /tmp/xunia-cte.html; then
+              cte_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$cte_ok" -eq 1
+
           echo 'CANONICAL_XUNIA_ARCADE_LIVE=PASS'
+          echo 'CANONICAL_XUNIA_CTE_LIVE=PASS'

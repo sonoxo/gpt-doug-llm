@@ -11,26 +11,47 @@
     "target",
     "classification",
     "approvalState",
+    "riskManagement",
     "evidence",
     "audit"
   ],
   "properties": {
-    "missionId": {"type": "string", "minLength": 1},
-    "requestedBy": {"type": "string", "minLength": 1},
-    "intent": {"type": "string", "minLength": 1},
-    "target": {"type": "string", "minLength": 1},
+    "missionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requestedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "type": "string",
+      "minLength": 1
+    },
     "classification": {
       "type": "string",
-      "enum": ["public", "internal", "restricted"]
+      "enum": [
+        "public",
+        "internal",
+        "restricted"
+      ]
     },
     "requiredCapabilities": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": {
+        "type": "string"
+      },
       "default": []
     },
     "allowedTools": {
       "type": "array",
-      "items": {"type": "string"},
+      "items": {
+        "type": "string"
+      },
       "default": []
     },
     "approvalState": {
@@ -44,11 +65,231 @@
         "FAILED"
       ]
     },
-    "mutation": {"type": "boolean", "default": false},
-    "plan": {"type": ["object", "null"]},
-    "evidence": {"type": "array", "items": {"type": "object"}},
-    "result": {"type": ["object", "null"]},
-    "audit": {"type": "array", "items": {"type": "object"}},
-    "metadata": {"type": "object", "default": {}}
+    "mutation": {
+      "type": "boolean",
+      "default": false
+    },
+    "plan": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "riskManagement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profileId",
+        "humanOwner",
+        "riskLevel",
+        "decision",
+        "functions",
+        "trustworthiness",
+        "tevv",
+        "residualRisks",
+        "lifecycleState"
+      ],
+      "properties": {
+        "profileId": {
+          "const": "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1"
+        },
+        "humanOwner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "riskLevel": {
+          "type": "string",
+          "enum": [
+            "NEGLIGIBLE",
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "CRITICAL"
+          ]
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "APPROVE",
+            "CONDITIONAL",
+            "HOLD",
+            "DENY",
+            "BYPASS",
+            "DECOMMISSION"
+          ]
+        },
+        "functions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "GOVERN",
+            "MAP",
+            "MEASURE",
+            "MANAGE"
+          ],
+          "properties": {
+            "GOVERN": {
+              "type": "string",
+              "enum": [
+                "SATISFIED",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "MAP": {
+              "type": "string",
+              "enum": [
+                "SATISFIED",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "MEASURE": {
+              "type": "string",
+              "enum": [
+                "SATISFIED",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "MANAGE": {
+              "type": "string",
+              "enum": [
+                "SATISFIED",
+                "PENDING",
+                "NOT_APPLICABLE"
+              ]
+            }
+          }
+        },
+        "trustworthiness": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "VALID_AND_RELIABLE",
+              "SAFE",
+              "SECURE_AND_RESILIENT",
+              "ACCOUNTABLE_AND_TRANSPARENT",
+              "EXPLAINABLE_AND_INTERPRETABLE",
+              "PRIVACY_ENHANCED",
+              "FAIR_WITH_HARMFUL_BIAS_MANAGED"
+            ]
+          }
+        },
+        "tevv": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "planned",
+            "completed",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "planned": {
+              "type": "boolean"
+            },
+            "completed": {
+              "type": "boolean"
+            },
+            "evidenceRefs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "residualRisks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "description",
+              "treatment"
+            ],
+            "properties": {
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "treatment": {
+                "type": "string",
+                "enum": [
+                  "MITIGATE",
+                  "TRANSFER",
+                  "AVOID",
+                  "ACCEPT"
+                ]
+              },
+              "owner": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "legalContext": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "thirdPartyComponents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "monitoringPlan": {
+          "type": "string"
+        },
+        "decommissionPlan": {
+          "type": "string"
+        },
+        "profileAppliedRetrospectively": {
+          "type": "boolean",
+          "default": false
+        },
+        "lifecycleState": {
+          "type": "string",
+          "enum": [
+            "DESIGN",
+            "TEST",
+            "DEPLOY",
+            "MONITOR",
+            "INCIDENT",
+            "RECOVER",
+            "COMPLETED",
+            "DECOMMISSIONED"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "result": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "audit": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "default": {}
+    }
   }
 }

@@ -77,4 +77,4 @@ A patent family is not one worldwide right. GPT-DOUG-MAX stores family signals f
 
 ## Safety boundary
 
-Patent-derived scope data may inform civilian/industrial robotics and programmable-device engineering. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, or missile design. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, or sector regulation.
+Patent-derived scope data may inform civilian/industrial robotics, programmable-device engineering, and defensive cybersecurity architecture. It does not authorize weapon, targeting, fire-control, autonomous-engagement, munition, missile, offensive exploitation, credential theft, malware deployment, or unauthorized-access design. Patent presence also does not override product safety, export controls, certification, privacy, cybersecurity, or sector regulation.

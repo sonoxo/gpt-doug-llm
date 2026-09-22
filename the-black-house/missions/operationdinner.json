@@ -110,5 +110,57 @@
     "forkOwner": "sonoxo",
     "officialityRule": "deptofdefense namespace is verified organization-hosted source; sonoxo namespace is an independent fork",
     "operationalAuthority": "none"
+  },
+  "riskManagement": {
+    "profileId": "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1",
+    "humanOwner": "project_owner",
+    "riskLevel": "LOW",
+    "decision": "APPROVE",
+    "functions": {
+      "GOVERN": "SATISFIED",
+      "MAP": "SATISFIED",
+      "MEASURE": "SATISFIED",
+      "MANAGE": "SATISFIED"
+    },
+    "trustworthiness": [
+      "VALID_AND_RELIABLE",
+      "SAFE",
+      "SECURE_AND_RESILIENT",
+      "ACCOUNTABLE_AND_TRANSPARENT",
+      "EXPLAINABLE_AND_INTERPRETABLE",
+      "PRIVACY_ENHANCED",
+      "FAIR_WITH_HARMFUL_BIAS_MANAGED"
+    ],
+    "tevv": {
+      "planned": true,
+      "completed": true,
+      "evidenceRefs": [
+        "the-black-house/integrations/deptofdefense/operationdinner-fork-ecosystem.json",
+        "foundry/ontology/llms-at-dod-ontology.json",
+        "the-black-house/integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json",
+        "foundry/ontology/nrl-public-repository-ontology.json"
+      ]
+    },
+    "residualRisks": [
+      {
+        "description": "Public repository provenance can be misread as endorsement, operational authority, or transfer of upstream official status.",
+        "treatment": "MITIGATE",
+        "owner": "project_owner"
+      }
+    ],
+    "legalContext": [
+      "Public metadata collection only",
+      "Preserve upstream ownership, license, provenance, and officiality boundaries",
+      "No operational authority inferred from repository lineage"
+    ],
+    "thirdPartyComponents": [
+      "GitHub public metadata",
+      "deptofdefense public repositories",
+      "USNavalResearchLaboratory public repositories"
+    ],
+    "monitoringPlan": "Re-verify public repository lineage and metadata before future claims that depend on current state.",
+    "decommissionPlan": "Retain provenance and audit artifacts; mark stale snapshots superseded rather than silently rewriting historical evidence.",
+    "profileAppliedRetrospectively": true,
+    "lifecycleState": "COMPLETED"
   }
 }

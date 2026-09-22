@@ -1,0 +1,119 @@
+#!/bin/zsh
+set -eu
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+BIN="$HOME/.local/bin"
+STATE="$HOME/.gpt-doug"
+ZSHRC="$HOME/.zshrc"
+STAMP="$(date +%Y%m%d-%H%M%S)"
+BEGIN="# >>> GPT-DOUG HOME >>>"
+END="# <<< GPT-DOUG HOME <<<"
+
+cd "$ROOT" || {
+  echo "Missing repo: $ROOT"
+  exit 1
+}
+
+mkdir -p "$BIN" "$STATE"
+touch "$STATE/env"
+
+cp "$ZSHRC" "$ZSHRC.gptdoug-backup-$STAMP" 2>/dev/null || true
+
+cp "$ROOT/scripts/gptdoug-home" "$BIN/gptdoug-home"
+chmod +x "$BIN/gptdoug-home"
+
+cat > "$BIN/doug-on" <<'SH'
+#!/bin/zsh
+rm -f "$HOME/.gpt-doug/STOP"
+exec "$HOME/.local/bin/gptdoug-home"
+SH
+
+cat > "$BIN/doug-off" <<'SH'
+#!/bin/zsh
+mkdir -p "$HOME/.gpt-doug"
+touch "$HOME/.gpt-doug/STOP"
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+echo "GPT-DOUG HOME paused. Run: doug-on"
+SH
+
+chmod +x "$BIN/doug-on" "$BIN/doug-off"
+
+python3 - <<'PY'
+from pathlib import Path
+
+p = Path.home() / ".gpt-doug" / "env"
+defaults = {
+    "GPT_DOUG_VISUAL_FPS": "15",
+    "GPT_DOUG_VISUAL_COLS": "120",
+    "GPT_DOUG_COLOR_STEP": "8",
+    "GPT_DOUG_VISUAL_PRESET": "smooth",
+    "GPT_DOUG_VOICE_NAME": "Alex",
+}
+
+lines = p.read_text().splitlines() if p.exists() else []
+values = {}
+order = []
+
+for line in lines:
+    if "=" not in line or line.lstrip().startswith("#"):
+        continue
+    k, v = line.split("=", 1)
+    k = k.strip()
+    if k not in values:
+        order.append(k)
+    values[k] = v.strip()
+
+for k, v in defaults.items():
+    if k not in values:
+        order.append(k)
+        values[k] = v
+
+p.write_text("\n".join(f"{k}={values[k]}" for k in order) + "\n")
+PY
+
+touch "$ZSHRC"
+
+python3 - "$ZSHRC" "$BEGIN" "$END" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+begin = sys.argv[2]
+end = sys.argv[3]
+text = path.read_text()
+
+block = r'''
+# >>> GPT-DOUG HOME >>>
+# Safe autostart: interactive shells only, never recursive inside tmux,
+# never execs over zsh, and respects ~/.gpt-doug/STOP.
+if [[ -o interactive ]] && [[ -z "${TMUX:-}" ]] && [[ -x "$HOME/.local/bin/gptdoug-home" ]] && [[ ! -e "$HOME/.gpt-doug/STOP" ]]; then
+  "$HOME/.local/bin/gptdoug-home" </dev/tty >/dev/tty 2>&1 || true
+fi
+# <<< GPT-DOUG HOME <<<
+'''.strip() + "\n"
+
+if begin in text and end in text:
+    before = text.split(begin, 1)[0]
+    after = text.split(end, 1)[1]
+    text = before.rstrip() + "\n\n" + block + after.lstrip("\n")
+else:
+    text = text.rstrip() + "\n\n" + block
+
+path.write_text(text)
+PY
+
+rm -f "$STATE/STOP"
+
+echo
+echo "GPT-DOUG HOME INSTALLED"
+echo "Backup: $ZSHRC.gptdoug-backup-$STAMP"
+echo
+echo "Controls:"
+echo "  CTRL+C        kill GPT-Doug shell/session"
+echo "  doug-off      disable autostart immediately"
+echo "  doug-on       re-enable and launch"
+echo
+echo "Opening GPT-Doug HOME now..."
+echo
+
+exec "$BIN/gptdoug-home"

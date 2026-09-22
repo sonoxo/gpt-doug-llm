@@ -1,0 +1,27 @@
+{
+  "schema": "xunia-zyra.chaotic-good-gateway.v1",
+  "mode": "DEFENSIVE_BROWSER_GATEWAY",
+  "scope": "User-operated browser surfaces on explicitly allowlisted domains only",
+  "allowlist": [
+    "https://*.palantirfoundry.com/*",
+    "https://github.com/*",
+    "http://localhost/*",
+    "https://localhost/*"
+  ],
+  "controls": {
+    "local_only": true,
+    "remote_command_channel": false,
+    "external_page_exfiltration": false,
+    "default_write_state": "DISARMED",
+    "maximum_write_arm_seconds": 300,
+    "disarm_on_navigation": true,
+    "panic_stop": true,
+    "password_field_read": false,
+    "password_file_hidden_typing": false,
+    "cross_origin_form_programmatic_submit": false,
+    "programmatic_navigation_outside_allowlist": false,
+    "javascript_url_programmatic_click": false,
+    "audit_log_text_values": false
+  },
+  "statement": "This extension protects its scoped browser control surface; it does not claim control over or protection of the entire internet or third-party infrastructure."
+}

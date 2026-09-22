@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "id": "cdse-sa002-public-training",
+  "name": "CDSE SA002 Public Training Governance Mapping",
+  "mode": "reference_only",
+  "source": {
+    "publisher": "Defense Counterintelligence and Security Agency / Center for Development of Security Excellence",
+    "url": "https://www.cdse.edu/Training/eLearning/SA002-resources/",
+    "retrieved_scope": "public/unclassified resource hub",
+    "provenance_required": true
+  },
+  "ontology": {
+    "object_types": [
+      "PolicyAuthority",
+      "TrainingResource",
+      "SecurityRequirement",
+      "PersonnelRole",
+      "AccessAuthorization",
+      "InformationAsset",
+      "HandlingRule",
+      "SecurityEvent",
+      "ReportingRequirement",
+      "TrainingRequirement",
+      "EvidenceRecord"
+    ],
+    "relations": [
+      "PolicyAuthority PUBLISHES TrainingResource",
+      "TrainingResource REFERENCES SecurityRequirement",
+      "SecurityRequirement APPLIES_TO PersonnelRole",
+      "TrainingRequirement SATISFIED_BY EvidenceRecord",
+      "SecurityEvent TRIGGERS ReportingRequirement"
+    ]
+  },
+  "controls": {
+    "allow_public_source_ingestion": true,
+    "allow_training_qa": true,
+    "allow_requirement_mapping": true,
+    "allow_compliance_cross_reference": true,
+    "require_source_citation": true,
+    "require_human_review_for_material_actions": true,
+    "deny_classified_inference": true,
+    "deny_clearance_or_access_inference": true,
+    "deny_operational_access_procedures": true,
+    "deny_fabricated_authority": true
+  },
+  "authority_boundary": "This mapping is an independent software compliance/training reference. It does not confer government authorization, clearance, SAP access, endorsement, or operational authority."
+}

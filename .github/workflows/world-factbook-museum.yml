@@ -1,0 +1,69 @@
+name: World Factbook Museum Exhibit
+
+on:
+  pull_request:
+    paths:
+      - 'docs/world-factbook-archive/**'
+      - 'docs/index.html'
+      - '.github/workflows/world-factbook-museum.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/world-factbook-archive/**'
+      - 'docs/index.html'
+      - '.github/workflows/world-factbook-museum.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate exhibit files
+        run: |
+          set -euo pipefail
+          test -f docs/world-factbook-archive/index.html
+          test -f docs/world-factbook-archive/app.js
+          test -f docs/world-factbook-archive/styles.css
+          test -f docs/world-factbook-archive/lib/core.mjs
+          test -f docs/world-factbook-archive/data/archive.json
+          grep -q 'World Factbook Archive' docs/world-factbook-archive/index.html
+          grep -q "BASE='/world-factbook-archive/'" docs/world-factbook-archive/app.js
+          grep -q "fetch('./data/archive.json')" docs/world-factbook-archive/app.js
+          grep -q 'href="./world-factbook-archive/"' docs/index.html
+          grep -q 'Independent archive interface; no CIA affiliation implied.' docs/index.html
+
+      - name: JavaScript and data syntax
+        run: |
+          node --check docs/world-factbook-archive/app.js
+          node --check docs/world-factbook-archive/lib/core.mjs
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('docs/world-factbook-archive/data/archive.json').read_text())
+          assert data['meta']['coverage'] == '1990-2025'
+          assert data['meta']['editions'] == 36
+          assert len(data['yearCoverage']) == 36
+          assert any(e['slug'] == 'united-states' for e in data['entities'])
+          PY
+
+      - name: Static Pages smoke test
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8080 --directory docs >/tmp/factbook-http.log 2>&1 &
+          PID=$!
+          cleanup() { kill "$PID" 2>/dev/null || true; wait "$PID" 2>/dev/null || true; }
+          trap cleanup EXIT
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8080/world-factbook-archive/ >/tmp/factbook.html; then break; fi
+            sleep 0.2
+          done
+          grep -q 'World Factbook Archive' /tmp/factbook.html
+          curl -fsS http://127.0.0.1:8080/world-factbook-archive/app.js | grep -q 'hashchange'
+          curl -fsS http://127.0.0.1:8080/world-factbook-archive/data/archive.json | grep -q '1071603'
+          curl -fsS http://127.0.0.1:8080/ | grep -q 'World Factbook Archive'

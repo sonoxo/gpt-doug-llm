@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "objects": 34,
+  "links": 39,
+  "object_types": 14,
+  "link_types": 19,
+  "source_hash": "verified",
+  "negative_tests": [
+    {
+      "test": "Block unsupported membership confirmation",
+      "result": "pass"
+    },
+    {
+      "test": "Reject dangling relationship",
+      "result": "pass"
+    },
+    {
+      "test": "Reject incorrect endpoint type",
+      "result": "pass"
+    },
+    {
+      "test": "Require registration evidence",
+      "result": "pass"
+    },
+    {
+      "test": "Require submission receipt",
+      "result": "pass"
+    },
+    {
+      "test": "Require capability test evidence",
+      "result": "pass"
+    }
+  ],
+  "limits": "Structural checks do not authenticate documents, establish membership or replace live authorization."
+}

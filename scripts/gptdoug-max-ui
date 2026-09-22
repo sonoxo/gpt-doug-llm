@@ -1,0 +1,29 @@
+#!/bin/zsh
+set -eu
+
+CONFIG="$HOME/.gpt-doug/env"
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+cd "$ROOT"
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "GPT-DOUG MAX UI uses tmux to keep the live skin and command shell in separate PTYs."
+  echo "Install once: brew install tmux"
+  echo "Then run: scripts/gptdoug-max-ui"
+  exit 1
+fi
+
+SESSION="gptdoug-max"
+tmux kill-session -t "$SESSION" 2>/dev/null || true
+
+tmux new-session -d -s "$SESSION" -n doug -c "$ROOT" \
+  "python3 tools/gptdoug_max_visual.py"
+tmux split-window -v -p 28 -t "$SESSION":0 -c "$ROOT" \
+  "python3 gpt_doug_max.py"
+tmux select-pane -t "$SESSION":0.1
+exec tmux attach -t "$SESSION"

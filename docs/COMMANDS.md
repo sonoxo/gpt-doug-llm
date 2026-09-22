@@ -88,3 +88,9 @@ Then start with a planning mission before a write mission:
 | `python3 tools/validate_operationdinner.py` | Verify all OPERATIONDINNER fork lineages, coverage, bindings, and guardrails |
 | `python3 tools/validate_nrl_public_repository_ecosystem.py` | Verify the 58-repository NRL snapshot, ontology, and mission binding |
 | `python3 scripts/validate_black_house.py` | Verify the complete Black House control plane, including OPERATIONDINNER |
+
+## GPT-NEDU / Novice EDU
+
+`bash scripts/doug-max nedu` opens the beginner learning menu. Use `/nedu` in
+ZYRA chat, or `gpt-nedu` after package installation. Noninteractive actions:
+`lesson`, `demo`, `links`. Press `q` or Ctrl+C to return.

@@ -1,0 +1,124 @@
+#!/bin/zsh
+set -eu
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+BIN="$HOME/.local/bin"
+STATE="$HOME/.gpt-doug"
+ZSHRC="$HOME/.zshrc"
+STAMP="$(date +%Y%m%d-%H%M%S)"
+BEGIN="# >>> GPT-DOUG HOME >>>"
+END="# <<< GPT-DOUG HOME <<<"
+
+cd "$ROOT" || exit 1
+mkdir -p "$BIN" "$STATE"
+touch "$STATE/env" "$ZSHRC"
+
+if [[ -f "$BIN/gptdoug-home" ]]; then
+  cp "$BIN/gptdoug-home" "$BIN/gptdoug-home.backup-$STAMP"
+fi
+cp "$ROOT/scripts/gptdoug-home-v3" "$BIN/gptdoug-home"
+chmod +x "$BIN/gptdoug-home"
+
+python3 - <<'PY'
+from pathlib import Path
+p = Path.home() / ".gpt-doug" / "env"
+wanted = {
+    "GPT_DOUG_VISUAL_FPS": "15",
+    "GPT_DOUG_VISUAL_COLS": "120",
+    "GPT_DOUG_COLOR_STEP": "8",
+    "GPT_DOUG_MATRIX": "1",
+    "GPT_DOUG_MATRIX_FPS": "6",
+    "GPT_DOUG_VOICE_NAME": "Alex",
+}
+lines = p.read_text().splitlines() if p.exists() else []
+out = []
+seen = set()
+for line in lines:
+    if "=" not in line:
+        out.append(line)
+        continue
+    k = line.split("=", 1)[0].strip()
+    if k in wanted:
+        if k not in seen:
+            out.append(f"{k}={wanted[k]}")
+            seen.add(k)
+    else:
+        out.append(line)
+for k, v in wanted.items():
+    if k not in seen:
+        out.append(f"{k}={v}")
+p.write_text("\n".join(out).rstrip() + "\n")
+PY
+
+cat > "$BIN/doug-mode" <<'SH'
+#!/bin/zsh
+mkdir -p "$HOME/.gpt-doug"
+echo "${1:-auto}" > "$HOME/.gpt-doug/blackhouse-mode"
+SH
+chmod +x "$BIN/doug-mode"
+
+for mode in auto idle listen think talk act eureka swarm power error; do
+  cat > "$BIN/doug-$mode" <<SH
+#!/bin/zsh
+exec "$HOME/.local/bin/doug-mode" "$mode"
+SH
+  chmod +x "$BIN/doug-$mode"
+done
+
+cat > "$BIN/doug-say" <<'SH'
+#!/bin/zsh
+CONFIG="$HOME/.gpt-doug/env"
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+mkdir -p "$HOME/.gpt-doug"
+echo talk > "$HOME/.gpt-doug/blackhouse-mode"
+say -v "${GPT_DOUG_VOICE_NAME:-Alex}" "$*"
+echo auto > "$HOME/.gpt-doug/blackhouse-mode"
+SH
+chmod +x "$BIN/doug-say"
+
+cat > "$BIN/doug-on" <<'SH'
+#!/bin/zsh
+rm -f "$HOME/.gpt-doug/STOP"
+exec "$HOME/.local/bin/gptdoug-home"
+SH
+chmod +x "$BIN/doug-on"
+
+cat > "$BIN/doug-off" <<'SH'
+#!/bin/zsh
+mkdir -p "$HOME/.gpt-doug"
+touch "$HOME/.gpt-doug/STOP"
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
+echo "GPT-DOUG HOME paused. Run: doug-on"
+SH
+chmod +x "$BIN/doug-off"
+
+grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$ZSHRC" ||   echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$ZSHRC"
+
+if ! grep -qF "$BEGIN" "$ZSHRC"; then
+cat >> "$ZSHRC" <<'SH'
+
+# >>> GPT-DOUG HOME >>>
+if [[ -o interactive ]] && [[ -z "${TMUX:-}" ]] && [[ -x "$HOME/.local/bin/gptdoug-home" ]] && [[ ! -e "$HOME/.gpt-doug/STOP" ]]; then
+  "$HOME/.local/bin/gptdoug-home" </dev/tty >/dev/tty 2>&1 || true
+fi
+# <<< GPT-DOUG HOME <<<
+SH
+fi
+
+rm -f "$STATE/STOP"
+echo auto > "$STATE/blackhouse-mode"
+
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+tmux kill-session -t gptdoug-blackhouse 2>/dev/null || true
+
+echo "GPT-DOUG BLACK HOUSE V3 INSTALLED"
+echo "15 FPS // FULL-COLOR AVATAR // BINARY RAIN // MANNERISMS"
+echo "Commands: doug-auto doug-idle doug-listen doug-think doug-talk doug-eureka doug-swarm doug-power doug-say"
+echo
+
+exec "$BIN/gptdoug-home"

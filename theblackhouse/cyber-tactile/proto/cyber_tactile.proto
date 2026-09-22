@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package blackhouse.tactile.v1;
+
+message Vec3 { double x = 1; double y = 2; double z = 3; }
+
+enum ThreatKind {
+  THREAT_KIND_UNSPECIFIED = 0;
+  THREAT_KIND_DDOS_VOLUMETRIC = 1;
+  THREAT_KIND_PRIVILEGE_ESCALATION = 2;
+  THREAT_KIND_PORT_SWEEP = 3;
+  THREAT_KIND_MALWARE_EXECUTION = 4;
+}
+
+message ThreatTelemetry {
+  string event_id = 1;
+  ThreatKind kind = 2;
+  string source_asset = 3;
+  string target_asset = 4;
+  Vec3 source_position = 5;
+  Vec3 target_position = 6;
+  double cvss = 7;
+  double anomaly_confidence = 8;
+  uint64 bytes_per_second = 9;
+  uint64 observed_at_unix_ms = 10;
+  string gotham_target_rid = 11;
+  string ontology_entity_rid = 12;
+  string geotime_track_rid = 13;
+}
+
+message SpatialThreat {
+  string event_id = 1;
+  ThreatKind kind = 2;
+  string target_asset = 3;
+  Vec3 position = 4;
+  Vec3 direction = 5;
+  double severity = 6;
+  double confidence = 7;
+  string gotham_target_rid = 8;
+  string ontology_entity_rid = 9;
+  string geotime_track_rid = 10;
+}
+
+enum HapticPattern {
+  HAPTIC_PATTERN_UNSPECIFIED = 0;
+  HAPTIC_PATTERN_EXPANDING_RING = 1;
+  HAPTIC_PATTERN_RISING_COLUMN = 2;
+  HAPTIC_PATTERN_DIRECTIONAL_SWEEP = 3;
+  HAPTIC_PATTERN_SHARP_PULSE = 4;
+  HAPTIC_PATTERN_NEUTRAL_PULSE = 5;
+}
+
+message HapticEvent {
+  string event_id = 1;
+  Vec3 focal_point = 2;
+  HapticPattern pattern = 3;
+  double modulation_hz = 4;
+  double normalized_amplitude = 5;
+  double duty_cycle = 6;
+  uint64 generated_at_monotonic_ns = 7;
+}
+
+message LinkHealth { bool connected = 1; double jitter_ms = 2; bool token_valid = 3; }
+
+enum GestureKind {
+  GESTURE_KIND_UNSPECIFIED = 0;
+  GESTURE_KIND_PINCH = 1;
+  GESTURE_KIND_SQUEEZE = 2;
+  GESTURE_KIND_PRESS = 3;
+}
+
+message GestureEvent {
+  string event_id = 1;
+  GestureKind kind = 2;
+  string threat_event_id = 3;
+  string target_asset = 4;
+  bool deliberate_confirmation = 5;
+}
+
+message SecurityEnvelope {
+  string operator_id = 1;
+  bool mtls_verified = 2;
+  bool hardware_token_verified = 3;
+  bool pq_hybrid_channel_verified = 4;
+  bool operator_authorized = 5;
+  string pq_suite = 6;
+}
+
+message SecuredGesture { GestureEvent gesture = 1; SecurityEnvelope security = 2; }
+
+enum DefenseAction {
+  DEFENSE_ACTION_UNSPECIFIED = 0;
+  DEFENSE_ACTION_OPEN_INCIDENT = 1;
+  DEFENSE_ACTION_BLOCK_INDICATOR = 2;
+  DEFENSE_ACTION_ISOLATE_HOST = 3;
+  DEFENSE_ACTION_TERMINATE_PROCESS = 4;
+  DEFENSE_ACTION_REVOKE_SESSION = 5;
+  DEFENSE_ACTION_BLOCK_IP_RANGE = 6;
+}
+
+message ActionReceipt {
+  bool accepted = 1;
+  DefenseAction action = 2;
+  string threat_event_id = 3;
+  string target_asset = 4;
+  string operator_id = 5;
+  string reason = 6;
+  uint64 audit_sequence = 7;
+  string external_audit_id = 8;
+}
+
+message MappingAck { string event_id = 1; bool accepted = 2; }
+message HapticAck { string event_id = 1; bool actuated = 2; bool fail_passive = 3; }
+
+service TelemetryIngress { rpc StreamTelemetry(stream ThreatTelemetry) returns (stream MappingAck); }
+service HapticStream { rpc StreamHaptics(stream HapticEvent) returns (stream HapticAck); }
+service DefenseControl { rpc SubmitGesture(SecuredGesture) returns (ActionReceipt); }

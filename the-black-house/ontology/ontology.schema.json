@@ -4,10 +4,19 @@
   "title": "Black House Canonical Ontology",
   "type": "object",
   "additionalProperties": false,
-  "required": ["kernelVersion", "controlPlane", "objects", "relationships"],
+  "required": [
+    "kernelVersion",
+    "controlPlane",
+    "objects",
+    "relationships"
+  ],
   "properties": {
-    "kernelVersion": {"const": "3.0.0"},
-    "controlPlane": {"const": "THE_BLACK_HOUSE_V1"},
+    "kernelVersion": {
+      "const": "3.0.0"
+    },
+    "controlPlane": {
+      "const": "THE_BLACK_HOUSE_V1"
+    },
     "objects": {
       "type": "array",
       "items": {
@@ -31,7 +40,13 @@
           "Policy",
           "CredentialReference",
           "Artifact",
-          "IntelligenceBrief"
+          "IntelligenceBrief",
+          "RiskProfile",
+          "RiskAssessment",
+          "TEVVRecord",
+          "ResidualRisk",
+          "DecommissionPlan",
+          "RiskDecision"
         ]
       },
       "uniqueItems": true
@@ -52,7 +67,14 @@
           "RUNS_ON",
           "ROUTES_TO",
           "AUDITS",
-          "EVIDENCES"
+          "EVIDENCES",
+          "ASSESSES",
+          "MEASURES",
+          "MITIGATES",
+          "MONITORS",
+          "HAS_RESIDUAL_RISK",
+          "DECOMMISSIONS",
+          "CONFORMS_TO_PROFILE"
         ]
       },
       "uniqueItems": true
