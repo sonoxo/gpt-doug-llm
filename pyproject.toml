@@ -37,6 +37,7 @@ lint = ["ruff"]
 all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 
 [project.scripts]
+gpt-nedu = "gpt_nedu.cli:main"
 gpt-doug = "gpt_doug:main"
 gpt-doug-hivemind = "hivemind.cli:main"
 gpt-chaos = "gpt_chaos.cli:main"
@@ -52,7 +53,7 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix"]
+packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]

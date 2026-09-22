@@ -216,6 +216,13 @@ Public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, 
 
 ---
 
+## GPT-NEDU / Novice EDU
+
+The beginner education module inside GPT-Doug, ZYRA, and XUNIA.
+[Learning page](https://xunia.org/learn/nedu/) · [Source and launch guide](gpt_nedu/README.md).
+Run `bash scripts/doug-max nedu` or type `/nedu` in ZYRA chat.
+The browser page becomes available after the Pages deployment containing this module.
+
 ## Products
 
 | Product | What it does | Best fit | Readiness |

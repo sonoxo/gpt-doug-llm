@@ -26,14 +26,10 @@ fi
 
 first_arg_lc="$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')"
 case "$first_arg_lc" in
-  guardrails|galactic-guardrails|federation-guardrails)
+  nedu|gpt-nedu|novice|novice-edu)
     shift
-    if [[ $# -eq 0 ]]; then set -- status; fi
-    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m agents.galactic_guardrails --root "$ROOT" "$@"
-    ;;
-  compute-profile|compute|hardware-profile)
-    shift
-    exec python3 "$ROOT/sovereignty_performance.py" "$@"
+    cd "$ROOT"
+    exec python3 -m gpt_nedu "$@"
     ;;
   invention-lab)
     shift
