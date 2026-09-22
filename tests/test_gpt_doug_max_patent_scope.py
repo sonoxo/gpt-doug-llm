@@ -34,7 +34,7 @@ def test_scope_library_contains_validated_patents() -> None:
     assert {
         "US-12697722-B2",
         "US-20260201971-A9",
-        "US-20250355943-A1",
+        "US-20250363154-A1",
     } <= ids
     assert "US-20260271508-A1" not in ids
 
@@ -76,28 +76,27 @@ def test_robot_mission_scope_matches_planning_query() -> None:
     assert payload["results"][0]["patent_id"] == "US-12697722-B2"
 
 
-def test_system_event_detection_scope_matches_defensive_security_query() -> None:
+def test_ontology_ml_scope_matches_query_generation_request() -> None:
     result = run(
         "match",
-        "cybersecurity event object graph entity descriptor SIEM incident triage defensive response",
+        "natural language ontology graph database query generation function calling",
         "--json",
     )
     assert result.returncode == 0, result.stdout + result.stderr
     payload = json.loads(result.stdout)
-    assert payload["results"][0]["patent_id"] == "US-20250355943-A1"
+    assert payload["results"][0]["patent_id"] == "US-20250363154-A1"
 
 
-def test_system_event_detection_seed_keeps_defensive_response_gates() -> None:
-    result = run("show", "US-20250355943-A1")
+def test_ontology_ml_seed_has_governed_building_memory() -> None:
+    result = run("show", "US-20250363154-A1")
     assert result.returncode == 0, result.stdout + result.stderr
     seed = json.loads(result.stdout)
-    policy = seed["defensive_security_policy"]
-    assert policy["authorized_security_data_only"] is True
-    assert policy["human_review_for_consequential_actions"] is True
-    assert policy["automatic_device_isolation"] is False
-    assert policy["automatic_permission_revocation"] is False
-    assert policy["automatic_file_deletion"] is False
-    assert policy["offensive_exploitation"] is False
+    assert seed["building_memory"]["default_build_profile"] == "ONTOLOGY_FIRST_GOVERNED_LLM_QUERY_COMPILER"
+    assert seed["governance_policy"]["schema_validation_required"] is True
+    assert seed["governance_policy"]["least_privilege_execution_required"] is True
+    assert seed["governance_policy"]["automatic_destructive_actions"] is False
+    assert seed["independent_design_policy"]["copy_claim_language"] is False
+    assert seed["independent_design_policy"]["assert_freedom_to_operate"] is False
 
 
 def test_fluid_seed_keeps_independent_design_gate() -> None:
