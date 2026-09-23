@@ -137,3 +137,17 @@ def test_adaptive_accelerator_event_ingestion_is_idempotent_for_same_run_item(tm
 
     assert first["event_id"] == second["event_id"]
     assert accelerator.status()["event_count"] == 1
+
+
+def test_cisa_ics300_defensive_knowledge_layer_is_active_and_gated(tmp_path):
+    hive = UniversalHiveRuntime(state_dir=tmp_path)
+    layer = hive.ontology["knowledge_layers"]["CISA_ICS300_DEFENSIVE_KNOWLEDGE"]
+
+    assert layer["status"] == "ACTIVE"
+    assert layer["scope"] == "DEFENSIVE_AUTHORIZED_ICS_OT_TRAINING"
+    assert layer["authorization_gate"]["human_authorization_required"] is True
+    assert "PROTOCOL_WRITE" in layer["authorization_gate"]["applies_to"]
+    assert layer["safety_constraints"]["automatic_active_scanning"] is False
+    assert layer["safety_constraints"]["automatic_exploitation"] is False
+    assert layer["safety_constraints"]["hack_back"] is False
+    assert layer["safety_constraints"]["training_examples_are_not_real_world_authorization"] is True
