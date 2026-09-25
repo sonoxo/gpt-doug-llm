@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: opentofu/setup-opentofu@v1
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@v7
       - run: cp xunia-forge/.env.example xunia-forge/.env
       - run: docker compose -f xunia-forge/compose.yaml config -q
       - run: python3 -m py_compile xunia-forge/control-plane/app/main.py
