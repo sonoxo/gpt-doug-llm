@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
-from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field
 
@@ -11,8 +11,8 @@ from va3lm.mission_ledger import MissionLedger
 from va3lm.ontologi import OntologiEngine
 from va3lm.ontology import CONTROL_PLANE, KERNEL_VERSION
 from va3lm.planner import build_plan
-from va3lm.training_sources import SOURCE_ID, training_plan
 from va3lm.service_status import service_status
+from va3lm.training_sources import SOURCE_ID, training_plan
 
 MISSION_PROTOCOL = "black-house-mission-v1"
 ALLOWED_CLASSIFICATIONS = {"public", "internal", "restricted"}

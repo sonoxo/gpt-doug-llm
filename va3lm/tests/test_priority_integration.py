@@ -1,7 +1,7 @@
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 
 from va3lm.mission_ledger import MissionLedger
 from va3lm.rvia import MissionEnvelope, RVIARouter
