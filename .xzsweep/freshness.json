@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-24T07:50:17Z",
+  "cutoff_at": "2026-09-24T07:52:02Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -914,6 +914,17 @@
       "reviewed_at": "2026-09-25T00:11:35Z",
       "sha256": "fa581e0d239507dd2418b3a989cfb090164ee82b23f7aa6acc313ef860d7a0e2",
       "size": 374,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".xunia/flipper-zero/ontology.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-25T07:51:51Z",
+      "reviewed_at": null,
+      "sha256": "489de0eebbded3e77749b5d1b686322d6e3768d4188fff4a65b566587a860b2a",
+      "size": 3402,
       "validation_issues": [],
       "was_due": false
     },
@@ -4415,6 +4426,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "flipper_ontology.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-25T07:51:51Z",
+      "reviewed_at": null,
+      "sha256": "6f8d60ace9c5830a4af9a2744d511e6e563e45429aaf4f6b4cbcaac4deed248d",
+      "size": 15746,
+      "validation_issues": [],
+      "was_due": false
+    },
     "foundry/ontology/ghidra-defense-ontology.json": {
       "actions": [],
       "binary": false,
@@ -7762,11 +7784,11 @@
     "ontology.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-23T20:38:19Z",
-      "reviewed_at": "2026-09-25T00:11:35Z",
-      "sha256": "f4306bc992971a6538f1bf9b86b2bf5197e17f7f6bfa0dde982a523eafd3d894",
-      "size": 5691,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-25T07:51:51Z",
+      "reviewed_at": null,
+      "sha256": "7c0b33ddb8970f7041e6bb60ceed60d5dae28a014a7f2c96e419bc570b6a030d",
+      "size": 6510,
       "validation_issues": [],
       "was_due": false
     },
@@ -10638,6 +10660,17 @@
       "reviewed_at": "2026-09-25T00:11:35Z",
       "sha256": "ec56ea83c71fbde08478fd568a981ced42302dcd61c018d218f63ef119ff5980",
       "size": 1515,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_flipper_ontology.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-25T07:51:51Z",
+      "reviewed_at": null,
+      "sha256": "5987e66bfb27594e30e743e9cf3f80dd7dd6db418bfbd09b760c783c3c37c584",
+      "size": 4874,
       "validation_issues": [],
       "was_due": false
     },
@@ -16044,11 +16077,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-25T07:50:17Z",
+  "generated_at": "2026-09-25T07:52:02Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1458,
+  "tracked_files_reviewed": 1461,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
