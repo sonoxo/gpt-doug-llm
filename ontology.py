@@ -10,10 +10,12 @@ Stable interface over:
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent
+_GLOBAL_ONTOLOGY_PATH = _ROOT / "config" / "global-ontology.json"
 
 
 def _load_module(name: str, path: Path):
@@ -52,6 +54,19 @@ class Ontology:
     @staticmethod
     def valid_roles() -> set:
         return set(_task_graph.VALID_AGENT_ROLES)
+
+    @staticmethod
+    def global_ontology() -> dict:
+        """Return the shared, versioned global parent ontology."""
+        try:
+            return json.loads(_GLOBAL_ONTOLOGY_PATH.read_text())
+        except (OSError, json.JSONDecodeError):
+            return {}
+
+    @staticmethod
+    def global_domains() -> list:
+        """Return sorted global domain names available to all agent overlays."""
+        return sorted(Ontology.global_ontology().get("domains", {}).keys())
 
     @staticmethod
     def tasks() -> list:
@@ -122,7 +137,13 @@ class Ontology:
     def status() -> dict:
         core = _workers_ont.summary()
         core["arcade"] = _arcade_ont.bounty_balance()
-        core["flipper"] = _flipper_ont.runtime().summary()
+        global_ontology = Ontology.global_ontology()
+        core["global_ontology"] = {
+            "ontology_id": global_ontology.get("ontology_id"),
+            "schema_version": global_ontology.get("schema_version"),
+            "status": global_ontology.get("status"),
+            "domains": Ontology.global_domains(),
+        }
         return core
 
     @staticmethod
@@ -133,10 +154,13 @@ class Ontology:
     def display() -> str:
         s = _workers_ont.summary()
         b = _arcade_ont.bounty_balance()
-        f = _flipper_ont.runtime().summary()
+        g = Ontology.global_ontology()
+        domains = Ontology.global_domains()
         lines = [
             "ONTOLOGY // UNIFIED SEMANTIC MODEL",
-            "  Object types: Task, Result, KnowledgeEntry, ArcadeRun, BountyClaim, FlipperDevice, Asset, Authorization, TestSession, Observation, DigitalTwin, AuditEvent",
+            f"  Global parent: {g.get('ontology_id', 'UNAVAILABLE')} v{g.get('schema_version', '?')} [{g.get('status', 'UNKNOWN')}]",
+            f"  Global domains: {', '.join(domains) if domains else 'none'}",
+            "  Object types: Task, Result, KnowledgeEntry, ArcadeRun, BountyClaim",
             f"  Tasks: {s['object_counts']['Task']}",
             f"  Results: {s['object_counts']['Result']}",
             f"  Knowledge entries: {s['object_counts']['KnowledgeEntry']}",

@@ -4,7 +4,9 @@ from sovereignty_performance import (
     PerformancePolicy,
     TTLRUCache,
     choose_accelerator,
+    detect_quantum_adapters,
     hardware_profile,
+    runtime_report,
 )
 
 
@@ -42,6 +44,13 @@ class SovereigntyPerformanceTests(unittest.TestCase):
         self.assertGreaterEqual(profile.cpu_count, 1)
         self.assertIn("cpu", profile.accelerators)
         self.assertIn(profile.preferred_accelerator, profile.accelerators)
+        self.assertFalse(profile.quantum_hardware_proven)
+
+    def test_quantum_detection_never_proves_qpu_access(self):
+        self.assertIsInstance(detect_quantum_adapters(), tuple)
+        report = runtime_report()
+        self.assertFalse(report["quantum_truth"]["qpu_hardware_access_proven"])
+        self.assertIn("L4", report["memory_fabric"])
 
 
 if __name__ == "__main__":

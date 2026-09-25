@@ -1,0 +1,211 @@
+{
+  "status": "design_only_not_an_import_api_payload",
+  "object_types": [
+    {
+      "type": "Person",
+      "suggested_dataset": "neptune_person",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Organization",
+      "suggested_dataset": "neptune_organization",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Ecosystem",
+      "suggested_dataset": "neptune_ecosystem",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Platform",
+      "suggested_dataset": "neptune_platform",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Membership",
+      "suggested_dataset": "neptune_membership",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Event",
+      "suggested_dataset": "neptune_event",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Project",
+      "suggested_dataset": "neptune_project",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Capability",
+      "suggested_dataset": "neptune_capability",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Opportunity",
+      "suggested_dataset": "neptune_opportunity",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Submission",
+      "suggested_dataset": "neptune_submission",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Agreement",
+      "suggested_dataset": "neptune_agreement",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Evidence",
+      "suggested_dataset": "neptune_evidence",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Task",
+      "suggested_dataset": "neptune_task",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    },
+    {
+      "type": "Assertion",
+      "suggested_dataset": "neptune_assertion",
+      "primary_key": "id",
+      "properties": "Flatten properties into typed columns; source_ids is an array of evidence IDs."
+    }
+  ],
+  "link_types": [
+    {
+      "name": "profileOrganization",
+      "source": "Person",
+      "target": "Organization",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "operatesProject",
+      "source": "Organization",
+      "target": "Project",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "hasCapability",
+      "source": "Project",
+      "target": "Capability",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "integratesWith",
+      "source": "Project",
+      "target": "Project",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "membershipSubject",
+      "source": "Membership",
+      "target": "Organization",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "membershipEcosystem",
+      "source": "Membership",
+      "target": "Ecosystem",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "listedInEcosystem",
+      "source": "Event",
+      "target": "Ecosystem",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "ecosystemPlatform",
+      "source": "Ecosystem",
+      "target": "Platform",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "plansToPursue",
+      "source": "Organization",
+      "target": "Opportunity",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "submissionOpportunity",
+      "source": "Submission",
+      "target": "Opportunity",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "submissionRespondent",
+      "source": "Submission",
+      "target": "Organization",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "proposesProject",
+      "source": "Submission",
+      "target": "Project",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "agreementParty",
+      "source": "Agreement",
+      "target": "Organization",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "agreementOpportunity",
+      "source": "Agreement",
+      "target": "Opportunity",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "assignedTo",
+      "source": "Task",
+      "target": "Person",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "taskEvent",
+      "source": "Task",
+      "target": "Event",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "taskMembership",
+      "source": "Task",
+      "target": "Membership",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "assertionSubject",
+      "source": "Assertion",
+      "target": "Organization",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    },
+    {
+      "name": "assertionEcosystem",
+      "source": "Assertion",
+      "target": "Ecosystem",
+      "join": "source_id -> source primary key; target_id -> target primary key"
+    }
+  ],
+  "deployment_requirements": [
+    "Resolve the authorized Foundry project, ontology and dataset resources.",
+    "Create backing datasets and object/link types using the supported tools in that environment.",
+    "Implement action authorization, evidence review and audit storage before enabling actions.",
+    "Do not treat this mapping file as a working Foundry deployment or executable policy."
+  ]
+}

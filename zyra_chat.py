@@ -117,7 +117,7 @@ def show_dashboard(model, mode, laser, agent, heal_report=None):
     print(f"🤖 Agent Core: {agent_state} // checkpoints + rollback + hard budgets")
     print("🔒 Ontology MASTER LOCK: native // deterministic subagents + publish gate")
     print("🛡️ Repository-only autonomy // no arbitrary shell // no external targeting")
-    print("⌨️  /help /status /fleet /master-lock /xunia /heal /laser-test /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit\n")
+    print("⌨️  /help /nedu /status /fleet /master-lock /xunia /heal /laser-test /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit\n")
 
 
 def show_fleet():
@@ -197,8 +197,12 @@ def main():
 
         if command in {"/quit", "/exit"}:
             return 0
+        if command in {"/nedu", "/novice", "/gpt-nedu"}:
+            from gpt_nedu.cli import main as nedu_main
+            nedu_main([])
+            continue
         if command == "/help":
-            print("/status /fleet /master-lock /ontology-lock /xunia /heal /heal-status /laser-test /laser-status /laser-reset /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit")
+            print("/nedu /status /fleet /master-lock /ontology-lock /xunia /heal /heal-status /laser-test /laser-status /laser-reset /agent-test /agent-status /plan <goal> /do <goal> /evolve <goal> /mission-status /undo /fast /balanced /default-on /default-off /clear /quit")
             continue
         if command in {"/status", "/xunia", "/dashboard"}:
             show_dashboard(model, mode, laser, agent, heal_report)

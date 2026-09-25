@@ -35,6 +35,7 @@ REQUIRED_FILES = [
     BH / "od" / "od-plane.manifest.json",
     BH / "status" / "phases.json",
     BH / "governance" / "CONTROL-PLANE.md",
+    BH / "governance" / "nist-ai-rmf.profile.json",
     BH / "missions" / "operationdinner.json",
     BH / "integrations" / "deptofdefense" / "operationdinner-fork-ecosystem.json",
     ROOT / "foundry" / "ontology" / "llms-at-dod-ontology.json",
@@ -103,6 +104,7 @@ def main() -> None:
             "target",
             "classification",
             "approvalState",
+            "riskManagement",
             "evidence",
             "audit",
         }.issubset(mission_required),
@@ -110,7 +112,7 @@ def main() -> None:
     )
     mission_properties = set(mission["properties"])
     require(
-        {"mutation", "metadata", "requiredCapabilities", "allowedTools"}.issubset(
+        {"mutation", "metadata", "requiredCapabilities", "allowedTools", "riskManagement"}.issubset(
             mission_properties
         ),
         "mission routing fields are incomplete",
@@ -119,18 +121,28 @@ def main() -> None:
     router = load_json(BH / "missions" / "router.manifest.json")
     require(router["protocol"] == "black-house-mission-v1", "RVIA mission protocol mismatch")
     require(router["failClosed"] is True, "RVIA router must fail closed")
+    require(router.get("governanceProfile") == "the-black-house/governance/nist-ai-rmf.profile.json", "NIST AI RMF governance profile missing")
+    nist_policy = router.get("nistAiRmfPolicy", {})
+    require(nist_policy.get("profileId") == "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1", "NIST AI RMF profile id mismatch")
+    require(nist_policy.get("riskEnvelopeRequired") is True, "NIST risk envelope must be required")
+    require(nist_policy.get("criticalRiskDefault") == "HOLD", "critical risk must default to HOLD")
     require(
         {
             "RVIA",
             "IDENTITY",
             "SHADOW_GLASS",
             "ONTOLOGY_CONTEXT",
+            "NIST_GOVERN",
+            "NIST_MAP",
             "PLANNER",
+            "NIST_MEASURE",
             "ZYRA_AUTHORIZATION",
+            "NIST_MANAGE",
             "DISPATCH",
             "GLASS_ONION",
             "EVIDENCE",
             "AUDIT",
+            "NIST_MONITOR",
         }.issubset(set(router["stages"])),
         "RVIA routing stages are incomplete",
     )
@@ -162,6 +174,7 @@ def main() -> None:
             "BLACK_HOUSE_OD_PLANE",
             "OPERATIONDINNER",
             "NRL_PUBLIC_REPOSITORY_ECOSYSTEM",
+            "NIST_AI_RMF_PROFILE",
         }.issubset(binding_ids),
         "kernel consumer bindings are incomplete",
     )
@@ -178,13 +191,13 @@ def main() -> None:
         "ontology relationship vocabulary drifted from kernel",
     )
     require(
-        {"Mission", "Agent", "Repository", "Service", "Evidence", "Policy"}.issubset(
+        {"Mission", "Agent", "Repository", "Service", "Evidence", "Policy", "RiskProfile", "RiskAssessment", "TEVVRecord", "ResidualRisk", "DecommissionPlan", "RiskDecision"}.issubset(
             object_types
         ),
         "ontology object vocabulary is incomplete",
     )
     require(
-        {"EXECUTES", "PRODUCES", "GOVERNS", "IMPLEMENTS", "AUDITS"}.issubset(
+        {"EXECUTES", "PRODUCES", "GOVERNS", "IMPLEMENTS", "AUDITS", "ASSESSES", "MEASURES", "MITIGATES", "MONITORS", "DECOMMISSIONS", "CONFORMS_TO_PROFILE"}.issubset(
             relationship_types
         ),
         "ontology relationship vocabulary is incomplete",
@@ -262,6 +275,10 @@ def main() -> None:
         BH / "integrations" / "deptofdefense" / "operationdinner-fork-ecosystem.json"
     )
     operationdinner_mission = load_json(BH / "missions" / "operationdinner.json")
+    rmf = operationdinner_mission.get("riskManagement", {})
+    require(rmf.get("profileId") == "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1", "OPERATIONDINNER NIST profile missing")
+    require(rmf.get("decision") in {"APPROVE", "CONDITIONAL", "HOLD", "DENY", "BYPASS", "DECOMMISSION"}, "OPERATIONDINNER NIST decision invalid")
+    require(rmf.get("humanOwner"), "OPERATIONDINNER human risk owner missing")
     llms_at_dod = load_json(ROOT / "foundry" / "ontology" / "llms-at-dod-ontology.json")
     operationdinner_errors = validate_operationdinner(
         operationdinner, operationdinner_mission, llms_at_dod
@@ -296,6 +313,7 @@ def main() -> None:
     print("runtime_contract=BLACK_HOUSE_RUNTIME_V1 port=8088")
     print("phases=1-9 code_complete phase7_external_state=" + phases[7]["externalState"])
     print("phase9_od=PLAN_OR_SIMULATION_ONLY")
+    print("nist_ai_rmf=NIST_AI_RMF_1_0_XUNIA_PROFILE_V1 fail_closed=true")
     print(
         "operationdinner=PINNED_PUBLIC_METADATA "
         f"verified_forks={operationdinner['scope']['verifiedSonoxoForkCount']}"

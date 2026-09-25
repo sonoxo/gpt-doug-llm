@@ -1,0 +1,926 @@
+from __future__ import annotations
+
+import getpass
+import hashlib
+import json
+import os
+import pathlib
+import re
+import shutil
+import subprocess
+import sys
+import tempfile
+from datetime import datetime, timezone
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+STATE = pathlib.Path.home() / ".config" / "gpt-doug"
+
+ONTOLOGY = ROOT / "docs" / "maven-ontology" / "ontology.json"
+RELEASE = STATE / "palantir-maven-release-last.json"
+CONSUMER = STATE / "palantir-maven-consumer-last.json"
+BINDING = STATE / "palantir-maven-binding-last.json"
+
+PROJECT = ROOT / "integrations" / "foundry-maven-consumer"
+POM = PROJECT / "pom.xml"
+
+DEFAULT_HOST = "zyra.usw-17.palantirfoundry.com"
+DEFAULT_RID = "ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b"
+
+DEFAULT_URL = (
+    f"https://{DEFAULT_HOST}/artifacts/api/repositories/"
+    f"{DEFAULT_RID}/contents/release/maven"
+)
+
+BASE = os.getenv(
+    "PALANTIR_MAVEN_REPOSITORY_URL",
+    DEFAULT_URL,
+)
+
+REPO_ID = os.getenv(
+    "PALANTIR_MAVEN_REPOSITORY_ID",
+    "zyra-foundry-maven",
+)
+
+if not shutil.which("mvn"):
+    raise SystemExit("ERROR: Apache Maven not installed")
+
+release = json.loads(RELEASE.read_text())
+consumer = json.loads(CONSUMER.read_text())
+
+assert release.get("ok") is True
+assert consumer.get("ok") is True
+assert release["coordinates"] == consumer["coordinates"]
+assert release["integrity"]["jar_match"] is True
+assert consumer["resolution"]["jar_match"] is True
+
+coordinate = release["coordinates"]
+
+parts = coordinate.split(":", 2)
+
+if len(parts) != 3:
+    raise SystemExit(
+        f"ERROR: invalid Maven coordinate: {coordinate}"
+    )
+
+group, artifact, version = parts
+
+expected_sha = release["integrity"]["jar_sha256"]
+
+username = input(
+    "Maven username (ENTER if none): "
+).strip()
+
+token = getpass.getpass(
+    "Foundry Maven token (HIDDEN): "
+).strip()
+
+if not token:
+    raise SystemExit("ERROR: token required")
+
+PROJECT.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+pom_text = f"""<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.xunia</groupId>
+  <artifactId>gpt-doug-foundry-consumer</artifactId>
+  <version>1.0.0</version>
+
+  <name>GPT-DOUG Foundry Maven Consumer</name>
+
+  <repositories>
+    <repository>
+      <id>{REPO_ID}</id>
+      <url>{BASE}</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>{group}</groupId>
+      <artifactId>{artifact}</artifactId>
+      <version>{version}</version>
+    </dependency>
+  </dependencies>
+</project>
+"""
+
+if token in pom_text:
+    raise SystemExit(
+        "ERROR: credential unexpectedly present in POM"
+    )
+
+POM.write_text(pom_text)
+
+print()
+print("REAL MAVEN PROJECT CREATED")
+print("PROJECT    :", PROJECT)
+print("DEPENDENCY :", coordinate)
+
+with tempfile.TemporaryDirectory(
+    prefix="gpt-doug-maven-binding-"
+) as temp_name:
+
+    temp = pathlib.Path(temp_name)
+
+    settings = temp / "settings.xml"
+    local_repo = temp / "repository"
+    tree_file = temp / "dependency-tree.txt"
+
+    settings.write_text(
+        f"""<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
+  <servers>
+    <server>
+      <id>{REPO_ID}</id>
+      <username>${{env.PALANTIR_MAVEN_USERNAME}}</username>
+      <password>${{env.PALANTIR_MAVEN_TOKEN}}</password>
+    </server>
+  </servers>
+</settings>
+"""
+    )
+
+    settings.chmod(0o600)
+
+    env = os.environ.copy()
+
+    env[
+        "PALANTIR_MAVEN_USERNAME"
+    ] = username
+
+    env[
+        "PALANTIR_MAVEN_TOKEN"
+    ] = token
+
+    command = [
+        "mvn",
+        "-B",
+        "-q",
+        "-s",
+        str(settings),
+        f"-Dmaven.repo.local={local_repo}",
+        "org.apache.maven.plugins:"
+        "maven-dependency-plugin:"
+        "3.8.1:tree",
+        f"-Dincludes={group}:{artifact}",
+        "-DoutputType=text",
+        f"-DoutputFile={tree_file}",
+    ]
+
+    print()
+    print("RESOLVING REAL PROJECT DEPENDENCY...")
+
+    result = subprocess.run(
+        command,
+        cwd=PROJECT,
+        env=env,
+        text=True,
+        capture_output=True,
+    )
+
+    if result.returncode != 0:
+        print(result.stdout[-3000:])
+        print(result.stderr[-3000:])
+        raise SystemExit(
+            "ERROR: Maven dependency resolution failed"
+        )
+
+    if not tree_file.exists():
+        raise SystemExit(
+            "ERROR: dependency tree not generated"
+        )
+
+    tree = tree_file.read_text()
+
+    expected_marker = (
+        f"{group}:{artifact}:jar:{version}"
+    )
+
+    if expected_marker not in tree:
+        print(tree)
+        raise SystemExit(
+            "ERROR: exact dependency missing from Maven tree"
+        )
+
+    # -------------------------------------------------
+    # MATERIALIZE EXACT JAR
+    #
+    # dependency:tree proves the POM dependency graph,
+    # but Maven may resolve only descriptors/POMs.
+    # dependency:get forces the binary JAR into the
+    # isolated local Maven repository.
+    # -------------------------------------------------
+
+    get_command = [
+        "mvn",
+        "-B",
+        "-q",
+        "-s",
+        str(settings),
+        f"-Dmaven.repo.local={local_repo}",
+        "org.apache.maven.plugins:"
+        "maven-dependency-plugin:"
+        "3.8.1:get",
+        f"-Dartifact={group}:{artifact}:{version}:jar",
+        f"-DremoteRepositories={REPO_ID}::default::{BASE}",
+        "-Dtransitive=false",
+    ]
+
+    print(
+        "MATERIALIZING EXACT JAR..."
+    )
+
+    get_result = subprocess.run(
+        get_command,
+        cwd=PROJECT,
+        env=env,
+        text=True,
+        capture_output=True,
+    )
+
+    if get_result.returncode != 0:
+        print(
+            get_result.stdout[-3000:]
+        )
+
+        print(
+            get_result.stderr[-3000:]
+        )
+
+        raise SystemExit(
+            "ERROR: Maven dependency:get failed"
+        )
+
+    group_path = pathlib.Path(
+        *group.split(".")
+    )
+
+    resolved_jar = (
+        local_repo
+        / group_path
+        / artifact
+        / version
+        / f"{artifact}-{version}.jar"
+    )
+
+    if not resolved_jar.exists():
+        candidates = list(
+            local_repo.rglob(
+                f"{artifact}-{version}.jar"
+            )
+        )
+
+        if len(candidates) == 1:
+            resolved_jar = candidates[0]
+
+        elif not candidates:
+            print(
+                "EXPECTED JAR:",
+                resolved_jar,
+            )
+
+            print(
+                "MAVEN FILES:"
+            )
+
+            for candidate in sorted(
+                local_repo.rglob("*")
+            ):
+                if candidate.is_file():
+                    print(
+                        " ",
+                        candidate.relative_to(
+                            local_repo
+                        ),
+                    )
+
+            raise SystemExit(
+                "ERROR: dependency JAR still absent after dependency:get"
+            )
+
+        else:
+            print(
+                "JAR CANDIDATES:"
+            )
+
+            for candidate in candidates:
+                print(
+                    " ",
+                    candidate,
+                )
+
+            raise SystemExit(
+                "ERROR: multiple dependency JAR candidates"
+            )
+
+    h = hashlib.sha256()
+
+    with resolved_jar.open("rb") as stream:
+        for chunk in iter(
+            lambda: stream.read(
+                1024 * 1024
+            ),
+            b"",
+        ):
+            h.update(chunk)
+
+    actual_sha = h.hexdigest()
+
+    if actual_sha != expected_sha:
+        raise SystemExit(
+            "ERROR: Maven project dependency SHA mismatch"
+        )
+
+    tree_sha = hashlib.sha256(
+        tree.encode()
+    ).hexdigest()
+
+maven_version = subprocess.run(
+    ["mvn", "-version"],
+    text=True,
+    capture_output=True,
+    check=True,
+).stdout.splitlines()[0]
+
+git_sha = subprocess.run(
+    [
+        "git",
+        "rev-parse",
+        "HEAD",
+    ],
+    cwd=ROOT,
+    text=True,
+    capture_output=True,
+    check=True,
+).stdout.strip()
+
+binding = {
+    "schema":
+        "xunia.gpt-doug.maven-binding.v1",
+
+    "verifiedAt":
+        datetime.now(
+            timezone.utc
+        ).isoformat(),
+
+    "consumer": {
+        "id":
+            "system:gpt-doug-foundry-consumer",
+
+        "name":
+            "GPT-DOUG Foundry Maven Consumer",
+
+        "pom":
+            str(
+                POM.relative_to(
+                    ROOT
+                )
+            ),
+    },
+
+    "dependency": {
+        "coordinates":
+            coordinate,
+
+        "expectedJarSha256":
+            expected_sha,
+
+        "resolvedJarSha256":
+            actual_sha,
+
+        "jarMatch":
+            True,
+
+        "dependencyTreeSha256":
+            tree_sha,
+    },
+
+    "repositoryHost":
+        DEFAULT_HOST,
+
+    "mavenClient":
+        maven_version,
+
+    "gitCommit":
+        git_sha,
+
+    "credentialsStored":
+        False,
+
+    "credentialsPrinted":
+        False,
+
+    "ok":
+        True,
+}
+
+serialized = json.dumps(
+    binding,
+    indent=2,
+)
+
+if token in serialized:
+    raise SystemExit(
+        "ERROR: credential unexpectedly present in proof"
+    )
+
+BINDING.write_text(
+    serialized + "\n"
+)
+
+BINDING.chmod(0o600)
+
+ontology = json.loads(
+    ONTOLOGY.read_text()
+)
+
+nodes = ontology.setdefault(
+    "nodes",
+    []
+)
+
+links = ontology.setdefault(
+    "links",
+    []
+)
+
+relations = ontology.setdefault(
+    "relationTypes",
+    []
+)
+
+for relation in (
+    "USES",
+    "SUPPORTED_BY",
+    "DERIVED_FROM",
+):
+    if relation not in relations:
+        relations.append(
+            relation
+        )
+
+artifact_node = next(
+    (
+        node
+        for node in nodes
+        if node
+        .get(
+            "provenance",
+            {}
+        )
+        .get(
+            "exportId"
+        )
+        == coordinate
+    ),
+    None,
+)
+
+if artifact_node is None:
+    raise SystemExit(
+        "ERROR: verified Maven artifact is not in ontology"
+    )
+
+consumer_id = (
+    "system:gpt-doug-foundry-consumer"
+)
+
+slug = re.sub(
+    r"[^A-Za-z0-9._-]",
+    "-",
+    version,
+)
+
+evidence_id = (
+    f"maven:evidence:binding:{slug}"
+)
+
+seed = hashlib.sha256(
+    consumer_id.encode()
+).digest()
+
+lat = -45 + (
+    seed[0] / 255
+) * 90
+
+lon = -170 + (
+    seed[1] / 255
+) * 340
+
+consumer_node = {
+    "id":
+        consumer_id,
+
+    "label":
+        "GPT-DOUG Foundry Maven Consumer",
+
+    "objectType":
+        "System",
+
+    "type":
+        "system",
+
+    "lat":
+        round(
+            lat,
+            4,
+        ),
+
+    "lon":
+        round(
+            lon,
+            4,
+        ),
+
+    "status":
+        "verified",
+
+    "confidence":
+        1.0,
+
+    "desc":
+        (
+            "Real Maven project whose POM "
+            "declares and resolves the verified "
+            "GPT-DOUG Foundry Maven artifact."
+        ),
+
+    "provenance": {
+        "sourceSystem":
+            "Apache Maven Dependency Tree",
+
+        "sourceUri":
+            "file://integrations/"
+            "foundry-maven-consumer/pom.xml",
+
+        "generatedAt":
+            binding[
+                "verifiedAt"
+            ],
+
+        "syncMethod":
+            "maven-project-binding/1.0",
+
+        "upstream": {
+            "coordinate":
+                coordinate,
+
+            "jarSha256":
+                actual_sha,
+
+            "dependencyTreeSha256":
+                tree_sha,
+
+            "mavenClient":
+                maven_version,
+
+            "gitCommit":
+                git_sha,
+
+            "credentialsStored":
+                False,
+        },
+    },
+}
+
+evidence_node = {
+    "id":
+        evidence_id,
+
+    "label":
+        f"Maven Runtime Binding {version}",
+
+    "objectType":
+        "Evidence",
+
+    "type":
+        "knowledge",
+
+    "lat":
+        round(
+            lat + 3,
+            4,
+        ),
+
+    "lon":
+        round(
+            lon + 3,
+            4,
+        ),
+
+    "status":
+        "verified",
+
+    "confidence":
+        1.0,
+
+    "desc":
+        (
+            "Evidence that a real Maven project "
+            "resolved this exact Foundry artifact "
+            "and reproduced its expected SHA-256."
+        ),
+
+    "provenance": {
+        "sourceSystem":
+            "GPT-DOUG Maven Binding",
+
+        "sourceUri":
+            "proof://palantir-maven-binding-last",
+
+        "generatedAt":
+            binding[
+                "verifiedAt"
+            ],
+
+        "syncMethod":
+            "maven-project-binding-proof/1.0",
+
+        "upstream": {
+            "coordinate":
+                coordinate,
+
+            "jarSha256":
+                actual_sha,
+
+            "jarMatch":
+                True,
+
+            "dependencyTreeSha256":
+                tree_sha,
+        },
+    },
+}
+
+
+def upsert(node):
+    for index, current in enumerate(
+        nodes
+    ):
+        if (
+            current.get("id")
+            ==
+            node["id"]
+        ):
+            nodes[index] = node
+            return
+
+    nodes.append(node)
+
+
+upsert(
+    consumer_node
+)
+
+upsert(
+    evidence_node
+)
+
+maven_artifact_ids = {
+    n["id"]
+    for n in nodes
+    if n
+    .get(
+        "id",
+        ""
+    )
+    .startswith(
+        "maven:artifact:foundry:"
+    )
+}
+
+# Consumer points only to the exact currently bound version.
+links[:] = [
+    edge
+    for edge in links
+    if not (
+        len(edge) == 3
+        and
+        edge[0] == consumer_id
+        and
+        edge[2] == "USES"
+        and
+        edge[1] in maven_artifact_ids
+    )
+]
+
+required_edges = [
+    [
+        consumer_id,
+        artifact_node["id"],
+        "USES",
+    ],
+    [
+        consumer_id,
+        evidence_id,
+        "SUPPORTED_BY",
+    ],
+    [
+        evidence_id,
+        artifact_node["id"],
+        "DERIVED_FROM",
+    ],
+]
+
+for edge in required_edges:
+    if edge not in links:
+        links.append(edge)
+
+deduped = []
+seen = set()
+
+for edge in links:
+    key = tuple(edge)
+
+    if key in seen:
+        continue
+
+    seen.add(key)
+    deduped.append(edge)
+
+links[:] = deduped
+
+fingerprint = hashlib.sha256(
+    json.dumps(
+        {
+            "nodes":
+                nodes,
+
+            "links":
+                links,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+).hexdigest()
+
+live = (
+    ontology
+    .setdefault(
+        "meta",
+        {}
+    )
+    .setdefault(
+        "liveSync",
+        {}
+    )
+)
+
+live.update({
+    "mavenRuntimeBinding":
+        True,
+
+    "mavenRuntimeConsumer":
+        consumer_id,
+
+    "mavenRuntimeCoordinate":
+        coordinate,
+
+    "mavenRuntimeBindingVerifiedAt":
+        binding[
+            "verifiedAt"
+        ],
+
+    "graphFingerprint":
+        fingerprint,
+})
+
+ONTOLOGY.write_text(
+    json.dumps(
+        ontology,
+        indent=2,
+    )
+    +
+    "\n"
+)
+
+print()
+print(
+    "=============================================="
+)
+print(
+    "REAL MAVEN DEPENDENCY VERIFIED"
+)
+print(
+    "=============================================="
+)
+print(
+    "CONSUMER   :",
+    consumer_id,
+)
+print(
+    "USES       :",
+    coordinate,
+)
+print(
+    "JAR SHA256 :",
+    actual_sha,
+)
+print(
+    "SHA MATCH  : TRUE"
+)
+print(
+    "TREE SHA   :",
+    tree_sha,
+)
+print(
+    "TOKEN SAVED: FALSE"
+)
+print(
+    "=============================================="
+)
+
+# Recalculate operational impact using the repaired lineage engine.
+lineage_script = (
+    ROOT /
+    "scripts" /
+    "zyra-maven-lineage"
+)
+
+result = subprocess.run(
+    [
+        sys.executable,
+        str(
+            lineage_script
+        ),
+    ],
+    cwd=ROOT,
+)
+
+if result.returncode != 0:
+    raise SystemExit(
+        "ERROR: lineage recalculation failed"
+    )
+
+lineage = json.loads(
+    (
+        STATE /
+        "palantir-maven-lineage.json"
+    ).read_text()
+)
+
+latest = next(
+    (
+        item
+        for item in lineage[
+            "versions"
+        ]
+        if item[
+            "coordinate"
+        ] == coordinate
+    ),
+    None,
+)
+
+if latest is None:
+    raise SystemExit(
+        "ERROR: latest coordinate missing from lineage"
+    )
+
+impact = latest.get(
+    "operationalImpactObjects",
+    [],
+)
+
+if consumer_id not in impact:
+    raise SystemExit(
+        "ERROR: verified consumer not present in operational impact"
+    )
+
+print()
+print(
+    "=============================================="
+)
+print(
+    "ONTOLOGY IMPACT VERIFIED"
+)
+print(
+    "=============================================="
+)
+print(
+    "CURRENT VERSION :",
+    coordinate,
+)
+print(
+    "IMPACT COUNT    :",
+    latest[
+        "operationalImpactCount"
+    ],
+)
+print(
+    "IMPACT OBJECTS  :",
+    impact,
+)
+print(
+    "EXPECTED MINIMUM: 1"
+)
+print(
+    "=============================================="
+)

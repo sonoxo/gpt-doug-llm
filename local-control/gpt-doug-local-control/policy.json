@@ -1,0 +1,60 @@
+{
+  "name": "GPT-Doug MAXLLM XUNIA ZYRA Builder Control",
+  "version": "0.8.0",
+  "loopback_only": true,
+  "default_mode": "READ_ONLY",
+  "heartbeat_interval_seconds": 2,
+  "arm_ttl_seconds": 300,
+  "deny_paths": [
+    "~/.ssh",
+    "~/.gnupg",
+    "~/Library/Keychains",
+    "~/Library/Application Support/Google/Chrome/Default/Login Data",
+    "~/Library/Application Support/Google/Chrome/Default/Cookies",
+    "~/Library/Application Support/Google/Chrome/Default/Web Data",
+    "/Library/Keychains",
+    "/System",
+    "/private/var/db/dslocal/nodes/Default/users"
+  ],
+  "hdd_intel": {
+    "allowed_roots": ["~", "/Volumes"],
+    "max_files": 100000,
+    "max_workers": 32,
+    "default_workers": 8,
+    "default_max_files": 25000,
+    "content_indexing": false,
+    "cloud_egress": false
+  },
+  "capabilities": {
+    "read_file": "read",
+    "list_dir": "read",
+    "hdd_index": "read",
+    "hdd_search": "read",
+    "hdd_summary": "read",
+    "hdd_large_files": "read",
+    "hdd_recent": "read",
+    "hdd_duplicate_candidates": "read",
+    "open_app": "control",
+    "open_url": "control",
+    "screenshot": "read",
+    "type_text": "control",
+    "hotkey": "control",
+    "click": "control",
+    "write_file": "write",
+    "move_file": "write",
+    "trash_file": "write",
+    "run_command": "shell",
+    "workspace_status": "read",
+    "xunia_zyra_mission": "write"
+  },
+  "xunia_zyra_builder": {
+    "allowed_roots": ["~", "/Volumes"],
+    "max_steps": 12,
+    "max_seconds": 600,
+    "max_model_calls": 18,
+    "default_model": "gpt-xunia-agent",
+    "allow_push": false,
+    "allow_deploy": false,
+    "allow_secret_access": false
+  }
+}

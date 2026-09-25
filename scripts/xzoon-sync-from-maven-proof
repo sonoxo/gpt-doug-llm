@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+
+import hashlib
+import json
+import pathlib
+import re
+import sys
+
+HOME = pathlib.Path.home()
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+
+proof_path = HOME / ".config/gpt-doug/palantir-maven-release-last.json"
+ontology_path = ROOT / "docs/maven-ontology/ontology.json"
+
+if not proof_path.exists():
+    raise SystemExit("❌ Maven proof missing")
+
+if not ontology_path.exists():
+    raise SystemExit("❌ Maven ontology missing")
+
+proof = json.loads(proof_path.read_text())
+ontology = json.loads(ontology_path.read_text())
+
+checks = {
+    "overall": proof.get("ok") is True,
+    "pom_put": 200 <= proof.get("publish", {}).get("pom_status", 0) < 300,
+    "jar_put": 200 <= proof.get("publish", {}).get("jar_status", 0) < 300,
+    "pom_get": 200 <= proof.get("retrieve", {}).get("pom_status", 0) < 300,
+    "jar_get": 200 <= proof.get("retrieve", {}).get("jar_status", 0) < 300,
+    "pom_match": proof.get("integrity", {}).get("pom_match") is True,
+    "jar_match": proof.get("integrity", {}).get("jar_match") is True,
+}
+
+if not all(checks.values()):
+    raise SystemExit("❌ Maven proof is not cryptographically verified")
+
+coordinate = proof["coordinates"]
+version = coordinate.rsplit(":", 1)[-1]
+slug = re.sub(r"[^A-Za-z0-9._-]", "-", version)
+
+artifact_id = f"maven:artifact:foundry:{slug}"
+evidence_id = f"maven:evidence:foundry:{slug}"
+
+seed = hashlib.sha256(coordinate.encode()).digest()
+
+lat = -58 + (seed[0] / 255.0) * 116
+lon = -175 + (seed[1] / 255.0) * 350
+
+pub = proof["publish"]
+ret = proof["retrieve"]
+integrity = proof["integrity"]
+
+artifact = {
+    "id": artifact_id,
+    "label": f"Foundry Maven {version}",
+    "objectType": "Artifact",
+    "type": "knowledge",
+    "lat": round(lat, 4),
+    "lon": round(lon, 4),
+    "status": "verified",
+    "confidence": 1.0,
+    "desc": "Real Palantir Foundry Maven artifact verified by remote PUT, GET and SHA-256.",
+    "provenance": {
+        "sourceSystem": "Palantir Foundry Artifact Repository",
+        "sourceUri": f"foundry://{proof.get('host')}/{coordinate}",
+        "exportId": coordinate,
+        "generatedAt": proof.get("verified_at"),
+        "approvedBy": "gpt-doug-remote-roundtrip",
+        "approvedAt": proof.get("verified_at"),
+        "syncMethod": "foundry-maven-live/2.0",
+        "upstream": {
+            "gitCommit": proof.get("git_commit"),
+            "gitBranch": proof.get("git_branch"),
+            "pomPutStatus": pub["pom_status"],
+            "jarPutStatus": pub["jar_status"],
+            "pomGetStatus": ret["pom_status"],
+            "jarGetStatus": ret["jar_status"],
+            "pomSha256": integrity["pom_sha256"],
+            "jarSha256": integrity["jar_sha256"],
+            "pomMatch": integrity["pom_match"],
+            "jarMatch": integrity["jar_match"],
+        },
+    },
+}
+
+evidence = {
+    "id": evidence_id,
+    "label": f"SHA256 Proof {version}",
+    "objectType": "Evidence",
+    "type": "knowledge",
+    "lat": round(max(-70, min(70, lat + 9)), 4),
+    "lon": round(((lon + 20 + 180) % 360) - 180, 4),
+    "status": "verified",
+    "confidence": 1.0,
+    "desc": "Remote byte-integrity evidence for the Foundry Maven POM and JAR.",
+    "provenance": {
+        "sourceSystem": "GPT-DOUG Maven Verifier",
+        "sourceUri": f"proof://foundry-maven/{slug}",
+        "generatedAt": proof.get("verified_at"),
+        "syncMethod": "sha256-roundtrip/1.0",
+        "upstream": {
+            "coordinate": coordinate,
+            "pomSha256": integrity["pom_sha256"],
+            "jarSha256": integrity["jar_sha256"],
+            "pomMatch": integrity["pom_match"],
+            "jarMatch": integrity["jar_match"],
+        },
+    },
+}
+
+nodes = ontology.setdefault("nodes", [])
+links = ontology.setdefault("links", [])
+
+def upsert(node):
+    for i, current in enumerate(nodes):
+        if current.get("id") == node["id"]:
+            nodes[i] = node
+            return
+    nodes.append(node)
+
+upsert(artifact)
+upsert(evidence)
+
+for link in (
+    [artifact_id, evidence_id, "DERIVED_FROM"],
+    [artifact_id, "maven:source", "DERIVED_FROM"],
+    [evidence_id, "maven:source", "DERIVED_FROM"],
+):
+    if link not in links:
+        links.append(link)
+
+# Keep xZoon bounded while preserving recent verified Foundry history.
+release_nodes = [
+    n for n in nodes
+    if n.get("id", "").startswith(
+        ("maven:artifact:foundry:", "maven:evidence:foundry:")
+    )
+]
+
+if len(release_nodes) > 40:
+    keep_ids = {
+        n["id"]
+        for n in release_nodes[-40:]
+    }
+
+    nodes[:] = [
+        n for n in nodes
+        if not n.get("id", "").startswith(
+            ("maven:artifact:foundry:", "maven:evidence:foundry:")
+        )
+        or n["id"] in keep_ids
+    ]
+
+    active = {n["id"] for n in nodes}
+
+    links[:] = [
+        l for l in links
+        if l[0] in active and l[1] in active
+    ]
+
+meta = ontology.setdefault("meta", {})
+live = meta.setdefault("liveSync", {})
+
+live.update({
+    "version": "3.0",
+    "mode": "REAL_FOUNDRY_MAVEN",
+    "lastExportId": coordinate,
+    "lastSourceSystem": "Palantir Foundry Artifact Repository",
+    "lastSourceUri": f"foundry://{proof.get('host')}/{coordinate}",
+    "sourceGeneratedAt": proof.get("verified_at"),
+    "approvedBy": "remote-put-get-sha256",
+    "approvedAt": proof.get("verified_at"),
+    "remotePutVerified": True,
+    "remoteGetVerified": True,
+    "sha256Verified": True,
+})
+
+fingerprint = hashlib.sha256(
+    json.dumps(
+        {
+            "nodes": ontology["nodes"],
+            "links": ontology["links"],
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+).hexdigest()
+
+live["graphFingerprint"] = fingerprint
+
+payload = json.dumps(
+    ontology,
+    indent=2,
+    sort_keys=False,
+) + "\n"
+
+old = ontology_path.read_text()
+
+if payload != old:
+    ontology_path.write_text(payload)
+    changed = True
+else:
+    changed = False
+
+print("🟢 xZOON SYNC")
+print("📦", coordinate)
+print("🧠 NODE:", artifact_id)
+print("🔐 EVIDENCE:", evidence_id)
+print("#️⃣ GRAPH:", fingerprint)
+print("🔄 CHANGED:", changed)

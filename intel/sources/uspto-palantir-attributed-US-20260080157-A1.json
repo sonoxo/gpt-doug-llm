@@ -1,0 +1,73 @@
+{
+  "id": "uspto-palantir-attributed-US-20260080157-A1",
+  "type": "patent-publication-front-page-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "U.S. Patent Application Publication",
+  "source_kind": "user-supplied front-page image",
+  "captured": "2026-09-12",
+  "document_number": "US-20260080157-A1",
+  "publication_number_display": "US 2026/0080157 A1",
+  "publication_date": "2026-03-19",
+  "title": "SYSTEMS AND METHODS FOR USING GENERATIVE ARTIFICIAL INTELLIGENCE FOR DOCUMENT GENERATION",
+  "application_number": "18/906,433",
+  "filing_date": "2024-10-04",
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Applicant field printed on supplied USPTO publication front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "architecture_watch": {
+    "name": "generative-ai-evidence-routed-document-workflow",
+    "purpose": "Track high-level architecture around evidence extraction, document-type determination, route selection, generative document production, user workflow and feedback without copying claim language or implementation details.",
+    "diagram_components": [
+      "External system",
+      "Data connector",
+      "Documentation triggers",
+      "Requirements or criteria",
+      "Extract evidence",
+      "Evidence objects",
+      "Determine document types",
+      "Route for document generation",
+      "Generate documents",
+      "User-facing workflow",
+      "Feedback objects",
+      "Track user actions"
+    ],
+    "gpt_doug_mapping": [
+      "governed evidence ingestion",
+      "document-type ontology classification",
+      "route selection by policy",
+      "AI-assisted document generation",
+      "human review workflow",
+      "feedback and audit trail"
+    ],
+    "themes": [
+      "generative-ai",
+      "document-generation",
+      "evidence-extraction",
+      "workflow-orchestration",
+      "data-connectors",
+      "human-in-the-loop",
+      "audit"
+    ]
+  },
+  "confidence": {
+    "document_number": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "title": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "publication_date": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "applicant_attribution": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "architecture_mapping": "ENGINEERING_INFERENCE",
+    "claim_level_relevance": "UNASSESSED"
+  },
+  "controls": {
+    "treat_front_page_applicant_field_as_document_attribution": true,
+    "treat_applicant_attribution_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true
+  },
+  "notes": "Derived from a user-supplied USPTO publication front page. The Applicant field prints Palantir Technologies Inc. The architecture mapping is a high-level engineering inference from the supplied front page and diagram."
+}

@@ -1,0 +1,123 @@
+{
+  "ontology": "ZYRA_MSS_V1",
+  "name": "ZYRA Mission Support System",
+  "purpose": "Ontology-first mission support for defensive readiness, logistics, cyber resilience, evidence fusion, task coordination, software assurance, and human decision support.",
+  "mode": "HUMAN_AUTHORIZED_MISSION_SUPPORT",
+  "object_types": {
+    "MissionRequest": ["id", "objective", "priority", "classification", "requester", "created_at"],
+    "MissionPhase": ["id", "name", "status", "entry_criteria", "exit_criteria"],
+    "EvidenceObject": ["id", "source", "timestamp", "provenance", "confidence", "integrity_hash"],
+    "DataSource": ["id", "type", "owner", "trust_tier", "connectivity", "last_sync"],
+    "TaskObject": ["id", "title", "owner", "status", "dependencies", "due_at"],
+    "AssetState": ["id", "asset_type", "readiness", "location_scope", "health", "last_update"],
+    "ReadinessState": ["id", "domain", "status", "blocking_conditions", "evidence_refs"],
+    "RiskObject": ["id", "category", "severity", "likelihood", "impact", "mitigation_status"],
+    "AccessPolicy": ["id", "subject", "resource", "action", "decision", "reason"],
+    "ArtifactProof": ["coordinates", "publish_status", "retrieve_status", "sha256", "provenance", "verified_at"],
+    "AgentRecommendation": ["id", "agent_role", "summary", "confidence", "evidence_refs", "requires_human_approval"],
+    "AnalystDecision": ["id", "decision", "approver", "rationale", "timestamp"],
+    "AuditEvent": ["id", "actor", "action", "object_ref", "result", "timestamp"],
+    "SyncCheckpoint": ["id", "node", "version", "integrity_hash", "reconciled"],
+    "IncidentObject": ["id", "category", "severity", "status", "root_cause_summary", "recovery_plan"]
+  },
+  "link_types": [
+    {"from":"MissionRequest","to":"MissionPhase","type":"HAS_PHASE"},
+    {"from":"MissionPhase","to":"TaskObject","type":"REQUIRES_TASK"},
+    {"from":"TaskObject","to":"EvidenceObject","type":"SUPPORTED_BY"},
+    {"from":"EvidenceObject","to":"DataSource","type":"ORIGINATED_FROM"},
+    {"from":"TaskObject","to":"AssetState","type":"DEPENDS_ON"},
+    {"from":"AssetState","to":"ReadinessState","type":"CONTRIBUTES_TO"},
+    {"from":"RiskObject","to":"ReadinessState","type":"DEGRADES"},
+    {"from":"AccessPolicy","to":"TaskObject","type":"GOVERNS"},
+    {"from":"ArtifactProof","to":"ReadinessState","type":"SUPPLY_CHAIN_EVIDENCE_FOR"},
+    {"from":"AgentRecommendation","to":"EvidenceObject","type":"CITES"},
+    {"from":"AgentRecommendation","to":"AnalystDecision","type":"REQUIRES_DECISION"},
+    {"from":"AnalystDecision","to":"AuditEvent","type":"RECORDED_AS"},
+    {"from":"SyncCheckpoint","to":"DataSource","type":"RECONCILES"},
+    {"from":"IncidentObject","to":"RiskObject","type":"REALIZES_RISK"},
+    {"from":"IncidentObject","to":"TaskObject","type":"GENERATES_RECOVERY_TASK"}
+  ],
+  "logical_agent_fleet": {
+    "count": 100,
+    "execution_model": "virtual research and decision-support workers coordinated through bounded queues",
+    "network_concurrency_cap": 6,
+    "roles": {
+      "01-20": "source discovery and provenance",
+      "21-35": "ontology/entity normalization",
+      "36-50": "readiness and dependency analysis",
+      "51-60": "cyber defensive triage",
+      "61-70": "logistics and continuity analysis",
+      "71-80": "policy/access review",
+      "81-90": "software supply-chain and Maven verification",
+      "91-96": "incident/error analysis",
+      "97-99": "adversarial review of recommendations",
+      "100": "human-decision packet assembler"
+    },
+    "agent_authority": "RECOMMEND_ONLY",
+    "automatic_external_action": false
+  },
+  "control_plane": {
+    "policy_engine": "GLASS_ONION",
+    "software_assurance": "PALANTIR_MAVEN_PROVENANCE_GATE",
+    "runtime_supervisor": "GPT_REDPANDA_CPR",
+    "decision_boundary": "HUMAN_APPROVAL_REQUIRED",
+    "audit": "APPEND_ONLY_STRUCTURED_EVENTS",
+    "offline_mode": "CACHE_MINIMUM_NECESSARY_DATA_AND_RECONCILE"
+  },
+  "mission_support_domains": [
+    "readiness",
+    "logistics",
+    "maintenance",
+    "cyber-defense",
+    "communications-status",
+    "incident-response",
+    "software-assurance",
+    "data-governance",
+    "training",
+    "continuity-of-operations"
+  ],
+  "governed_actions": {
+    "ALLOW": [
+      "ingest_authorized_data",
+      "normalize_entities",
+      "correlate_evidence",
+      "score_readiness",
+      "generate_recommendations",
+      "generate_human_review_packets",
+      "verify_maven_artifacts",
+      "open_defensive_incidents",
+      "generate_recovery_tasks",
+      "run_non-destructive_simulation",
+      "record_audit_events"
+    ],
+    "REVIEW": [
+      "modify_access_policy",
+      "promote_software_release",
+      "change_operational_readiness_state",
+      "send_external_message",
+      "real_world_mobility_or_equipment_action",
+      "destructive_data_retention_action"
+    ],
+    "BLOCK": [
+      "autonomous_target_selection",
+      "weapons_release",
+      "weapon_or_drone_swarm_control",
+      "hostile_engagement",
+      "critical_infrastructure_disruption",
+      "unattended_real_world_vehicle_command",
+      "execute_unverified_artifact",
+      "bypass_human_authorization"
+    ]
+  },
+  "readiness_gate": [
+    "ontology_valid",
+    "authorized_data_sources_only",
+    "provenance_present",
+    "maven_artifact_integrity_verified",
+    "redpanda_cpr_pass",
+    "policy_checks_pass",
+    "audit_sink_available",
+    "human_decision_path_available"
+  ],
+  "patent_research_rule": "Use public patent material as architecture awareness and independent-design review input only. Do not copy claim language or treat patent metadata as legal clearance."
+}

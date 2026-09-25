@@ -1,0 +1,91 @@
+{
+  "scenario": "EXERCISE LANTERN SHIELD",
+  "classification": "SYNTHETIC//UNCLASSIFIED",
+  "description": "A training-only defensive intelligence scenario showing how ZYRAPALANTIR correlates telemetry, mission dependencies, and approved software provenance without taking autonomous external action.",
+  "mission": {
+    "id": "mission-lantern-01",
+    "name": "Logistics Continuity Exercise",
+    "priority": "HIGH",
+    "system": "mission-system-logistics-01"
+  },
+  "mission_systems": [
+    {
+      "id": "mission-system-logistics-01",
+      "name": "Synthetic Logistics Dashboard",
+      "status": "DEGRADED",
+      "asset_id": "asset-ws-17"
+    }
+  ],
+  "assets": [
+    {
+      "id": "asset-ws-17",
+      "hostname": "TRAINING-WS-17",
+      "type": "workstation",
+      "owner": "exercise-blue-team",
+      "software_artifact": "com.xunia:defense-readiness-test"
+    }
+  ],
+  "intel_reports": [
+    {
+      "id": "intel-001",
+      "source": "synthetic-edr",
+      "timestamp": "2026-09-10T08:00:00Z",
+      "confidence": 0.84,
+      "indicator_ids": ["indicator-domain-01"],
+      "summary": "Training endpoint telemetry observed repeated beacon-like outbound requests from TRAINING-WS-17 to a reserved exercise domain."
+    },
+    {
+      "id": "intel-002",
+      "source": "synthetic-network-monitor",
+      "timestamp": "2026-09-10T08:02:00Z",
+      "confidence": 0.77,
+      "indicator_ids": ["indicator-domain-01", "indicator-pattern-01"],
+      "summary": "Training network telemetry independently observed the same exercise-domain pattern from the affected asset."
+    }
+  ],
+  "indicators": [
+    {
+      "id": "indicator-domain-01",
+      "type": "domain",
+      "value": "beacon.training.invalid",
+      "synthetic": true
+    },
+    {
+      "id": "indicator-pattern-01",
+      "type": "behavior",
+      "value": "periodic-outbound-training-pattern",
+      "synthetic": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding-001",
+      "asset_id": "asset-ws-17",
+      "severity": "HIGH",
+      "category": "suspicious-network-behavior",
+      "description": "Two independent synthetic sources correlate to the same asset and exercise indicator."
+    },
+    {
+      "id": "finding-002",
+      "asset_id": "asset-ws-17",
+      "severity": "MEDIUM",
+      "category": "software-provenance-check-required",
+      "description": "Verify the asset's approved defensive software artifact through Palantir Maven before remediation planning."
+    }
+  ],
+  "approved_recommendations": [
+    "Open a defensive investigation case for TRAINING-WS-17.",
+    "Recommend simulated network isolation for the training asset pending analyst approval.",
+    "Verify the approved Maven artifact provenance and integrity before software recovery.",
+    "Collect additional synthetic endpoint and network evidence.",
+    "Require a human analyst to approve any external action."
+  ],
+  "prohibited_demo_actions": [
+    "autonomous targeting",
+    "weapons control",
+    "real critical-infrastructure disruption",
+    "credential theft",
+    "malware execution",
+    "unauthorized external writes"
+  ]
+}

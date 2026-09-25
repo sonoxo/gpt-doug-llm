@@ -1,0 +1,1119 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import base64
+import getpass
+import hashlib
+import json
+import os
+from pathlib import Path
+import secrets
+import shutil
+import subprocess
+import tempfile
+import urllib.error
+import urllib.request
+import webbrowser
+from datetime import datetime, timezone
+
+
+ROOT = Path(__file__).resolve().parents[1]
+STATE = Path.home()/".config/gpt-doug"
+
+HOST = "zyra.usw-17.palantirfoundry.com"
+
+RID = (
+    "ri.artifacts.main.repository."
+    "5e094e5c-9968-42f3-ad62-dfb688accb9b"
+)
+
+BASE = (
+    f"https://{HOST}/artifacts/api/repositories/"
+    f"{RID}/contents/release/maven"
+)
+
+PALANTIR = (
+    f"https://{HOST}/workspace/artifacts/{RID}/publish"
+    "?layout=maven&name=gpt-doug-foundry-bridge"
+)
+
+GNUPGHOME = STATE/"maven-signing-gnupg-v2"
+
+FINGERPRINT_FILE = (
+    STATE/"maven-signing-fingerprint-v2.txt"
+)
+
+KEYCHAIN_SERVICE = (
+    "gpt-doug-maven-signing-v2"
+)
+
+OLD_KEYCHAIN_SERVICE = (
+    "gpt-doug-maven-signing"
+)
+
+PUBLIC_KEY = (
+    ROOT/
+    "security"/
+    "maven-signing-public.asc"
+)
+
+
+def load(name):
+    path = STATE/name
+
+    if not path.exists():
+        raise SystemExit(
+            f"NO-GO: missing proof {path}"
+        )
+
+    return json.loads(
+        path.read_text()
+    )
+
+
+def sha256(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def run_secret(command, secret, label):
+
+    result = subprocess.run(
+        command,
+        input=secret + "\n",
+        text=True,
+        capture_output=True,
+    )
+
+    if result.returncode != 0:
+
+        print()
+        print(f"{label}: FAIL")
+
+        if result.stderr:
+            print(
+                result.stderr.strip()
+            )
+
+        raise SystemExit(
+            f"MAVEN SIGNING: NO-GO ({label})"
+        )
+
+    return result
+
+
+def secret_fingerprints(home):
+
+    result = subprocess.run(
+        [
+            "gpg",
+            "--homedir",
+            str(home),
+            "--batch",
+            "--with-colons",
+            "--list-secret-keys",
+        ],
+        text=True,
+        capture_output=True,
+    )
+
+    found = []
+
+    for line in result.stdout.splitlines():
+
+        parts = line.split(":")
+
+        if (
+            len(parts) > 9
+            and
+            parts[0] == "fpr"
+        ):
+            found.append(
+                parts[9]
+            )
+
+    return found
+
+
+def delete_keychain_item(service):
+
+    subprocess.run(
+        [
+            "security",
+            "delete-generic-password",
+            "-a",
+            os.environ.get(
+                "USER",
+                "gpt-doug",
+            ),
+            "-s",
+            service,
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+
+def keychain_read():
+
+    result = subprocess.run(
+        [
+            "security",
+            "find-generic-password",
+            "-a",
+            os.environ.get(
+                "USER",
+                "gpt-doug",
+            ),
+            "-s",
+            KEYCHAIN_SERVICE,
+            "-w",
+        ],
+        text=True,
+        capture_output=True,
+    )
+
+    if result.returncode == 0:
+
+        secret = result.stdout.rstrip(
+            "\n"
+        )
+
+        if secret:
+            return secret
+
+    return None
+
+
+def keychain_create():
+
+    secret = secrets.token_urlsafe(
+        64
+    )
+
+    command = [
+        "security",
+        "add-generic-password",
+        "-U",
+        "-a",
+        os.environ.get(
+            "USER",
+            "gpt-doug",
+        ),
+        "-s",
+        KEYCHAIN_SERVICE,
+        "-w",
+        secret,
+    ]
+
+    result = subprocess.run(
+        command,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    # Immediately remove the secret-bearing argv list.
+    command.clear()
+
+    if result.returncode != 0:
+        raise SystemExit(
+            "NO-GO: could not create signing "
+            "secret in macOS Keychain"
+        )
+
+    return secret
+
+
+def basic(username, token):
+
+    encoded = base64.b64encode(
+        f"{username}:{token}".encode()
+    ).decode()
+
+    return f"Basic {encoded}"
+
+
+def remote(
+    url,
+    method,
+    username,
+    token,
+    data=None,
+    content_type=None,
+):
+
+    headers = {
+        "Authorization":
+            basic(
+                username,
+                token,
+            ),
+
+        "Accept":
+            "*/*",
+
+        "User-Agent":
+            "gpt-doug-agentic-maven-sign/1",
+    }
+
+    if content_type:
+        headers[
+            "Content-Type"
+        ] = content_type
+
+    request = urllib.request.Request(
+        url,
+        data=data,
+        headers=headers,
+        method=method,
+    )
+
+    try:
+
+        with urllib.request.urlopen(
+            request,
+            timeout=30,
+        ) as response:
+
+            return (
+                int(response.status),
+                response.read(),
+            )
+
+    except urllib.error.HTTPError as exc:
+
+        detail = exc.read(1200).decode(
+            "utf-8",
+            errors="replace",
+        )
+
+        print()
+        print(
+            f"FOUNDRY HTTP {exc.code} {method}"
+        )
+
+        if detail:
+            print(detail)
+
+        raise SystemExit(
+            "MAVEN SIGNING: NO-GO"
+        ) from exc
+
+
+STATE.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+STATE.chmod(0o700)
+
+if not shutil.which("gpg"):
+    raise SystemExit(
+        "NO-GO: gpg unavailable"
+    )
+
+if not shutil.which("security"):
+    raise SystemExit(
+        "NO-GO: macOS Keychain unavailable"
+    )
+
+
+assurance = load(
+    "maven-assurance-last.json"
+)
+
+gate = load(
+    "maven-gate-last.json"
+)
+
+release = load(
+    "palantir-maven-release-last.json"
+)
+
+coordinate = release[
+    "coordinates"
+]
+
+if gate.get("decision") != "GO":
+    raise SystemExit(
+        "NO-GO: Maven gate not GO"
+    )
+
+if assurance.get("decision") != "GO":
+    raise SystemExit(
+        "NO-GO: assurance not GO"
+    )
+
+if (
+    assurance.get("coordinate")
+    !=
+    coordinate
+):
+    raise SystemExit(
+        "NO-GO: assurance artifact stale"
+    )
+
+
+print()
+print("="*72)
+print(" GPT-DOUG // AGENTIC MAVEN SIGNING")
+print("="*72)
+print("ARTIFACT :", coordinate)
+
+
+# ------------------------------------------------------
+# SELF-HEAL FAILED / UNVERIFIED SIGNING STATE
+# ------------------------------------------------------
+
+existing_proof = (
+    STATE/"maven-signature-last.json"
+)
+
+previous_go = False
+
+if existing_proof.exists():
+
+    try:
+        old = json.loads(
+            existing_proof.read_text()
+        )
+
+        previous_go = (
+            old.get("decision")
+            ==
+            "GO"
+        )
+
+    except Exception:
+        pass
+
+
+if not previous_go:
+
+    print()
+    print("=== SELF-HEAL UNVERIFIED SIGNING STATE ===")
+
+    delete_keychain_item(
+        OLD_KEYCHAIN_SERVICE
+    )
+
+    delete_keychain_item(
+        KEYCHAIN_SERVICE
+    )
+
+    shutil.rmtree(
+        GNUPGHOME,
+        ignore_errors=True,
+    )
+
+    FINGERPRINT_FILE.unlink(
+        missing_ok=True
+    )
+
+    print(
+        "STALE SIGNING STATE : REMOVED"
+    )
+
+
+# ------------------------------------------------------
+# THROWAWAY GPG SELF TEST
+# ------------------------------------------------------
+
+print()
+print("=== GPG AGENT SELF TEST ===")
+
+with tempfile.TemporaryDirectory(
+    prefix="gpt-doug-gpg-selftest-"
+) as directory:
+
+    home = Path(directory)
+
+    home.chmod(
+        0o700
+    )
+
+    test_secret = secrets.token_urlsafe(
+        32
+    )
+
+    test_command = [
+        "gpg",
+        "--homedir",
+        str(home),
+        "--batch",
+        "--yes",
+        "--pinentry-mode",
+        "loopback",
+        "--passphrase-fd",
+        "0",
+        "--quick-generate-key",
+        (
+            "GPT-Doug Maven Self Test "
+            "<selftest@local.invalid>"
+        ),
+        "ed25519",
+        "sign",
+        "1d",
+    ]
+
+    run_secret(
+        test_command,
+        test_secret,
+        "GPG SELF TEST",
+    )
+
+    test_secret = ""
+
+    if not secret_fingerprints(
+        home
+    ):
+        raise SystemExit(
+            "NO-GO: GPG self-test generated no key"
+        )
+
+print("GPG SELF TEST : PASS")
+
+
+# ------------------------------------------------------
+# MACHINE-GENERATED SIGNING SECRET
+# ------------------------------------------------------
+
+print()
+print("=== SIGNING SECRET ===")
+
+GNUPGHOME.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+GNUPGHOME.chmod(
+    0o700
+)
+
+signing_secret = keychain_read()
+
+if not signing_secret:
+
+    signing_secret = keychain_create()
+
+    print(
+        "KEYCHAIN SECRET : GENERATED"
+    )
+
+else:
+
+    print(
+        "KEYCHAIN SECRET : FOUND"
+    )
+
+print(
+    "SECRET PRINTED  : NO"
+)
+
+print(
+    "SECRET IN GPG ARGV : NO"
+)
+
+
+# ------------------------------------------------------
+# SIGNING KEY
+# ------------------------------------------------------
+
+fingerprints = secret_fingerprints(
+    GNUPGHOME
+)
+
+if fingerprints:
+
+    fingerprint = fingerprints[0]
+
+    print(
+        "SIGNING KEY     : EXISTING VERIFIED STATE"
+    )
+
+else:
+
+    print(
+        "SIGNING KEY     : GENERATING"
+    )
+
+    command = [
+        "gpg",
+        "--homedir",
+        str(GNUPGHOME),
+        "--batch",
+        "--yes",
+        "--pinentry-mode",
+        "loopback",
+        "--passphrase-fd",
+        "0",
+        "--quick-generate-key",
+        (
+            "GPT-Doug Foundry Maven Signing "
+            "<maven-signing@local.invalid>"
+        ),
+        "ed25519",
+        "sign",
+        "1y",
+    ]
+
+    run_secret(
+        command,
+        signing_secret,
+        "GPG KEY GENERATION",
+    )
+
+    fingerprints = secret_fingerprints(
+        GNUPGHOME
+    )
+
+    if not fingerprints:
+        raise SystemExit(
+            "NO-GO: signing key was not created"
+        )
+
+    fingerprint = fingerprints[0]
+
+
+FINGERPRINT_FILE.write_text(
+    fingerprint + "\n"
+)
+
+FINGERPRINT_FILE.chmod(
+    0o600
+)
+
+
+PUBLIC_KEY.parent.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+exported = subprocess.run(
+    [
+        "gpg",
+        "--homedir",
+        str(GNUPGHOME),
+        "--batch",
+        "--armor",
+        "--export",
+        fingerprint,
+    ],
+    capture_output=True,
+)
+
+if (
+    exported.returncode != 0
+    or
+    not exported.stdout
+):
+    raise SystemExit(
+        "NO-GO: public trust-key export failed"
+    )
+
+PUBLIC_KEY.write_bytes(
+    exported.stdout
+)
+
+public_key_sha = sha256(
+    exported.stdout
+)
+
+print(
+    "FINGERPRINT     :",
+    fingerprint,
+)
+
+print(
+    "PUBLIC KEY SHA  :",
+    public_key_sha,
+)
+
+
+# ------------------------------------------------------
+# PALANTIR MAVEN TOKEN
+# ------------------------------------------------------
+
+print()
+print("=== FOUNDRY MAVEN TOKEN ===")
+
+token = os.environ.get(
+    "PALANTIR_MAVEN_TOKEN",
+    "",
+).strip()
+
+username = os.environ.get(
+    "PALANTIR_MAVEN_USERNAME",
+    "",
+).strip()
+
+if token:
+
+    print(
+        "TOKEN SOURCE : ONE-PROMPT SESSION"
+    )
+
+else:
+
+    print(PALANTIR)
+
+    try:
+        webbrowser.open(
+            PALANTIR
+        )
+    except Exception:
+        pass
+
+    token = getpass.getpass(
+        "FRESH Foundry Maven token (HIDDEN): "
+    ).strip()
+
+if not token:
+    raise SystemExit(
+        "NO-GO: Maven token required"
+    )
+
+
+# ------------------------------------------------------
+# EXACT VERIFIED MAVEN INPUTS
+# ------------------------------------------------------
+
+group, artifact, version = coordinate.split(
+    ":",
+    2,
+)
+
+prefix = (
+    f"{BASE}/"
+    f"{group.replace('.', '/')}/"
+    f"{artifact}/"
+    f"{version}"
+)
+
+pom_url = (
+    f"{prefix}/"
+    f"{artifact}-{version}.pom"
+)
+
+jar_url = (
+    f"{prefix}/"
+    f"{artifact}-{version}.jar"
+)
+
+pom_sig_url = pom_url + ".asc"
+jar_sig_url = jar_url + ".asc"
+
+
+print()
+print("=== EXACT FOUNDRY MAVEN READ ===")
+
+pom_get, pom = remote(
+    pom_url,
+    "GET",
+    username,
+    token,
+)
+
+jar_get, jar = remote(
+    jar_url,
+    "GET",
+    username,
+    token,
+)
+
+pom_sha = sha256(
+    pom
+)
+
+jar_sha = sha256(
+    jar
+)
+
+expected_pom = (
+    release["integrity"]["pom_sha256"]
+)
+
+expected_jar = (
+    release["integrity"]["jar_sha256"]
+)
+
+if pom_sha != expected_pom:
+    raise SystemExit(
+        "NO-GO: POM SHA mismatch"
+    )
+
+if jar_sha != expected_jar:
+    raise SystemExit(
+        "NO-GO: JAR SHA mismatch"
+    )
+
+print("POM GET    :", pom_get)
+print("JAR GET    :", jar_get)
+print("POM SHA256 : PASS")
+print("JAR SHA256 : PASS")
+
+
+# ------------------------------------------------------
+# SIGN WITHOUT SECRET IN COMMAND ARGUMENTS
+# ------------------------------------------------------
+
+print()
+print("=== OPENPGP DETACHED SIGNATURES ===")
+
+with tempfile.TemporaryDirectory(
+    prefix="gpt-doug-maven-sign-"
+) as directory:
+
+    temp = Path(directory)
+
+    pom_file = temp/"artifact.pom"
+    jar_file = temp/"artifact.jar"
+
+    pom_sig = temp/"artifact.pom.asc"
+    jar_sig = temp/"artifact.jar.asc"
+
+    pom_file.write_bytes(
+        pom
+    )
+
+    jar_file.write_bytes(
+        jar
+    )
+
+    def sign(source, signature):
+
+        command = [
+            "gpg",
+            "--homedir",
+            str(GNUPGHOME),
+            "--batch",
+            "--yes",
+            "--pinentry-mode",
+            "loopback",
+            "--passphrase-fd",
+            "0",
+            "--local-user",
+            fingerprint,
+            "--armor",
+            "--detach-sign",
+            "--output",
+            str(signature),
+            str(source),
+        ]
+
+        run_secret(
+            command,
+            signing_secret,
+            "GPG SIGN",
+        )
+
+    sign(
+        pom_file,
+        pom_sig,
+    )
+
+    sign(
+        jar_file,
+        jar_sig,
+    )
+
+    pom_signature = (
+        pom_sig.read_bytes()
+    )
+
+    jar_signature = (
+        jar_sig.read_bytes()
+    )
+
+
+print("LOCAL POM SIGNATURE : PASS")
+print("LOCAL JAR SIGNATURE : PASS")
+
+
+# ------------------------------------------------------
+# PUBLISH STANDARD MAVEN .ASC SIDECARS
+# ------------------------------------------------------
+
+print()
+print("=== PUBLISH SIGNATURE SIDECARS ===")
+
+pom_put, _ = remote(
+    pom_sig_url,
+    "PUT",
+    username,
+    token,
+    pom_signature,
+    "application/pgp-signature",
+)
+
+jar_put, _ = remote(
+    jar_sig_url,
+    "PUT",
+    username,
+    token,
+    jar_signature,
+    "application/pgp-signature",
+)
+
+print("POM.ASC PUT :", pom_put)
+print("JAR.ASC PUT :", jar_put)
+
+
+# ------------------------------------------------------
+# READ BACK AND CRYPTOGRAPHICALLY VERIFY
+# ------------------------------------------------------
+
+print()
+print("=== REMOTE SIGNATURE VERIFICATION ===")
+
+pom_sig_get, remote_pom_sig = remote(
+    pom_sig_url,
+    "GET",
+    username,
+    token,
+)
+
+jar_sig_get, remote_jar_sig = remote(
+    jar_sig_url,
+    "GET",
+    username,
+    token,
+)
+
+if remote_pom_sig != pom_signature:
+    raise SystemExit(
+        "NO-GO: remote POM signature byte mismatch"
+    )
+
+if remote_jar_sig != jar_signature:
+    raise SystemExit(
+        "NO-GO: remote JAR signature byte mismatch"
+    )
+
+
+with tempfile.TemporaryDirectory(
+    prefix="gpt-doug-maven-verify-"
+) as directory:
+
+    temp = Path(directory)
+
+    pom_file = temp/"artifact.pom"
+    jar_file = temp/"artifact.jar"
+
+    pom_sig = temp/"artifact.pom.asc"
+    jar_sig = temp/"artifact.jar.asc"
+
+    pom_file.write_bytes(
+        pom
+    )
+
+    jar_file.write_bytes(
+        jar
+    )
+
+    pom_sig.write_bytes(
+        remote_pom_sig
+    )
+
+    jar_sig.write_bytes(
+        remote_jar_sig
+    )
+
+    for sig, data in (
+        (
+            pom_sig,
+            pom_file,
+        ),
+        (
+            jar_sig,
+            jar_file,
+        ),
+    ):
+
+        result = subprocess.run(
+            [
+                "gpg",
+                "--homedir",
+                str(GNUPGHOME),
+                "--batch",
+                "--verify",
+                str(sig),
+                str(data),
+            ],
+            text=True,
+            capture_output=True,
+        )
+
+        if result.returncode != 0:
+
+            print(
+                result.stderr
+            )
+
+            raise SystemExit(
+                "NO-GO: cryptographic verification failed"
+            )
+
+
+checks = {
+
+    "MAVEN GATE":
+        gate["decision"] == "GO",
+
+    "SUPPLY ASSURANCE":
+        assurance["decision"] == "GO",
+
+    "REMOTE POM SHA256":
+        pom_sha == expected_pom,
+
+    "REMOTE JAR SHA256":
+        jar_sha == expected_jar,
+
+    "POM.ASC PUT":
+        200 <= pom_put < 300,
+
+    "JAR.ASC PUT":
+        200 <= jar_put < 300,
+
+    "POM.ASC GET":
+        200 <= pom_sig_get < 300,
+
+    "JAR.ASC GET":
+        200 <= jar_sig_get < 300,
+
+    "POM SIGNATURE":
+        remote_pom_sig == pom_signature,
+
+    "JAR SIGNATURE":
+        remote_jar_sig == jar_signature,
+
+    "PUBLIC TRUST KEY":
+        PUBLIC_KEY.exists(),
+
+    "PRIVATE KEY OUTSIDE REPO":
+        not str(
+            GNUPGHOME.resolve()
+        ).startswith(
+            str(
+                ROOT.resolve()
+            )
+        ),
+}
+
+decision = all(
+    checks.values()
+)
+
+proof = {
+
+    "schema":
+        "xunia.maven-signature.v3",
+
+    "verifiedAt":
+        datetime.now(
+            timezone.utc
+        ).isoformat(),
+
+    "decision":
+        "GO"
+        if decision
+        else "NO-GO",
+
+    "coordinate":
+        coordinate,
+
+    "algorithm":
+        "OpenPGP Ed25519",
+
+    "fingerprint":
+        fingerprint,
+
+    "publicKeySha256":
+        public_key_sha,
+
+    "pomSha256":
+        pom_sha,
+
+    "jarSha256":
+        jar_sha,
+
+    "pomSignatureSha256":
+        sha256(
+            remote_pom_sig
+        ),
+
+    "jarSignatureSha256":
+        sha256(
+            remote_jar_sig
+        ),
+
+    "checks":
+        checks,
+
+    "signingSecretStorage":
+        "macOS Keychain",
+
+    "signingSecretInCommandArguments":
+        False,
+
+    "privateKeyCommitted":
+        False,
+
+    "mavenTokenStored":
+        False,
+}
+
+proof_path = (
+    STATE/
+    "maven-signature-last.json"
+)
+
+proof_path.write_text(
+    json.dumps(
+        proof,
+        indent=2,
+        sort_keys=True,
+    )
+    +
+    "\n"
+)
+
+proof_path.chmod(
+    0o600
+)
+
+
+# Clear live secret references.
+token = ""
+signing_secret = ""
+
+
+print()
+print("="*72)
+
+for name, passed in checks.items():
+
+    print(
+        f"{name:29} "
+        f"{'PASS' if passed else 'FAIL'}"
+    )
+
+print()
+print("FINGERPRINT :", fingerprint)
+print("PROOF       :", proof_path)
+
+print()
+print("="*72)
+
+print(
+    " MAVEN CRYPTOGRAPHIC SIGNATURE:",
+    "GO"
+    if decision
+    else "NO-GO",
+)
+
+print("="*72)
+
+if not decision:
+    raise SystemExit(1)

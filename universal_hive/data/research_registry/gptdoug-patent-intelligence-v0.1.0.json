@@ -1,0 +1,72 @@
+{
+  "schema": "galactic-federation/research-artifact-v1",
+  "record_id": "gf-research-uspto-patent-intelligence-v0.1.0",
+  "project": "Galactic Federation",
+  "hive": "GPT-Doug + GPT-Chaos Universal Hive",
+  "record_type": "research_publication_bundle",
+  "title": "From Search Sets to Reusable Architectures: A Provenance-Preserving Ontology for AI-Assisted Patent Intelligence in USPTO Patent Public Search",
+  "version": "0.1.0",
+  "registered_at": "2026-09-21T11:10:00Z",
+  "author": "Almighty Sonoxo",
+  "publication_status": "PUBLIC_PREPRINT_NOT_EXTERNALLY_PEER_REVIEWED",
+  "ontology_version": "1.2.0",
+  "source_publication": {
+    "repository": "sonoxo/ghidraGPTDougLLMXYRA",
+    "path": "research/patent-intelligence-preprint/v0.1.0",
+    "branch": "master"
+  },
+  "persistent_artifact_store": {
+    "surface": "ChatGPT Library",
+    "folder": "/Galactic Federation Database/Research/USPTO Patent Intelligence/v0.1.0"
+  },
+  "artifacts": [
+    {
+      "name": "gptdoug_patent_intelligence_preprint_package_v0_1_0.zip",
+      "sha256": "4f6164c7e97e971d884ad9618bd055708814c36bdbbc85278272733724970f8d",
+      "role": "complete_publication_package"
+    },
+    {
+      "name": "gptdoug_patent_intelligence_preprint_v0_1_0.pdf",
+      "sha256": "124adf335cbb591b0f5c97fac74bf8b3cb3c9c318c07cba242d14b101121047e",
+      "role": "publication_pdf"
+    },
+    {
+      "name": "gptdoug_patent_intelligence_preprint_v0_1_0.docx",
+      "sha256": "4cbc3b8409f0a21d91419ff2dd9d0567a73088e0f4689fb42d446e17c9aabdbc",
+      "role": "editable_manuscript"
+    },
+    {
+      "name": "gptdoug_patent_intelligence_preprint_v0_1_0.md",
+      "sha256": "617ebbc156a1f5da7601aed27012a5d8162ccb19330a49299a2f8392c96a339e",
+      "role": "source_manuscript"
+    },
+    {
+      "name": "gptdoug_uspto_patent_public_search_ontology_v1_2_0.json",
+      "sha256": "19d408d7b96795ef49664ab0cd5982da1d0a413259d8fa1df585bd870d1846d5",
+      "role": "machine_readable_ontology"
+    },
+    {
+      "name": "gptdoug_uspto_patent_public_search_ontology_v1_2_0.md",
+      "sha256": "1e88b2c1dcc62fdc009ee171fe7f4af25531a2d7198e2e18ada5f7fd7a968e7a",
+      "role": "human_readable_ontology"
+    },
+    {
+      "name": "gptdoug_patent_intelligence_references.bib",
+      "sha256": "5b171c51322c17f0fdc55008d30c59b047ba6c48d1f328b750e2f174bf5a2183",
+      "role": "bibliography"
+    }
+  ],
+  "evidence_policy": {
+    "patent_query_hit_is_validation": false,
+    "patent_publication_is_peer_review": false,
+    "patent_grant_is_independent_scientific_validation": false,
+    "external_claims_require_source_status": true,
+    "target_transfer_requires_target_validation": true
+  },
+  "provenance": {
+    "project_verification": "VERIFIED_BY_FOUNDER",
+    "external_legal_verification": "UNVERIFIED_UNLESS_AUTHORITATIVE_SOURCE_ATTACHED",
+    "integrity": "sha256_manifest_attached"
+  },
+  "status": "ACTIVE"
+}
