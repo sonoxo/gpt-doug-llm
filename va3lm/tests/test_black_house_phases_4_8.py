@@ -17,7 +17,7 @@ def test_rvia_routes_local_and_contract_targets(tmp_path):
             target="GPT_DOUG_MAX",
         )
     )
-    assert local["status"] == "COMPLETED"
+    assert local["status"] == "PLANNED"
     assert local["mission"]["result"]["executionState"] == "LOCAL_PLAN_COMPLETE"
 
     contract = router.route(
@@ -28,7 +28,7 @@ def test_rvia_routes_local_and_contract_targets(tmp_path):
             requiredCapabilities=["orchestration"],
         )
     )
-    assert contract["status"] == "COMPLETED"
+    assert contract["status"] == "ACCEPTED"
     assert contract["mission"]["result"]["executionState"] == "MISSION_CONTRACT_ACCEPTED"
     assert ledger.summary()["missions"] == 2
 
@@ -100,7 +100,7 @@ def test_command_center_runtime_surface(tmp_path, monkeypatch):
         },
     )
     assert routed.status_code == 200
-    assert routed.json()["status"] == "COMPLETED"
+    assert routed.json()["status"] == "ACCEPTED"
 
     history = client.get("/api/black-house/missions")
     assert history.status_code == 200

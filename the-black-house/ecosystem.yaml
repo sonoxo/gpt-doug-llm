@@ -10,6 +10,15 @@ governance:
   missionRouter: RVIA
   ontology: BLACK_HOUSE_ONTOLOGY_V1
 systems:
+  - id: XUNIA_CHAIN
+    repository: https://github.com/sonoxo/gpt-doug-llm
+    role: read_only_chain_health
+  - id: GEOVISION
+    repository: https://github.com/sonoxo/zyra
+    role: read_only_detector_status
+  - id: XUNIA_GLASS_ONION
+    repository: https://github.com/sonoxo/gods-eye-viewXUNIA
+    role: spatial_presentation_and_route_evidence
   - id: GPT_DOUG_LLM_MAX
     repository: https://github.com/sonoxo/gpt-doug-llm
     role: reasoning_planning_agent_runtime
@@ -32,6 +41,11 @@ systems:
     repository: https://github.com/sonoxo/zyra
     role: github_compute_registry_evidence_audit
 externalPlanes:
+  - id: SAFEHOUSE_EVERYDAYSPY_TRAINING_V1
+    codeState: registered_plan_adapter
+    liveState: training_execution_unverified
+    manifest: the-black-house/training/safehouse/safehouse.manifest.json
+    execution: planning_only
   - id: PALANTIR
     codeState: implemented
     liveState: tenant_unverified
