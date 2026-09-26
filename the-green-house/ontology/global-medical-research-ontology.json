@@ -1,0 +1,559 @@
+{
+  "schemaVersion": "1.0.0",
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "name": "Global Medical Research Ontology",
+  "version": "1.0.0",
+  "status": "DRAFT_IMPLEMENTED",
+  "parentLayer": "THE_GREEN_HOUSE_V1",
+  "mode": "OPEN_SCIENCE_EVIDENCE_FIRST",
+  "scope": {
+    "purpose": "Represent public and authorized medical-research evidence, studies, outputs, identifiers, provenance, and cross-source relationships without converting research records into patient-specific clinical decisions.",
+    "includedDomains": [
+      "biomedical_research",
+      "clinical_research",
+      "public_health_research",
+      "genomics",
+      "pharmacology",
+      "epidemiology",
+      "research_data",
+      "research_provenance"
+    ],
+    "excludedUses": [
+      "patient_specific_diagnosis",
+      "patient_specific_treatment",
+      "autonomous_clinical_decision_making",
+      "unconsented_personal_health_data_ingestion"
+    ]
+  },
+  "interoperabilityProfiles": {
+    "roCrate": {
+      "version": "1.3",
+      "role": "research-object packaging and provenance metadata"
+    },
+    "dataCiteMetadata": {
+      "version": "4.6",
+      "role": "persistent-identifier metadata for research outputs"
+    },
+    "oboFoundry": {
+      "role": "ontology engineering principles reference",
+      "membershipClaimed": false
+    }
+  },
+  "identifierSpaces": [
+    {
+      "id": "DOI",
+      "entityKinds": [
+        "Publication",
+        "Dataset",
+        "ResearchArtifact"
+      ]
+    },
+    {
+      "id": "PMID",
+      "entityKinds": [
+        "Publication"
+      ]
+    },
+    {
+      "id": "PMCID",
+      "entityKinds": [
+        "Publication",
+        "ResearchArtifact"
+      ]
+    },
+    {
+      "id": "NCT",
+      "entityKinds": [
+        "TrialRegistration",
+        "Study"
+      ]
+    },
+    {
+      "id": "ORCID",
+      "entityKinds": [
+        "Researcher"
+      ]
+    },
+    {
+      "id": "ROR",
+      "entityKinds": [
+        "ResearchOrganization"
+      ]
+    },
+    {
+      "id": "NCBI_GENE",
+      "entityKinds": [
+        "GeneOrProtein"
+      ]
+    },
+    {
+      "id": "NCBI_TAXONOMY",
+      "entityKinds": [
+        "Organism"
+      ]
+    },
+    {
+      "id": "ICD11",
+      "entityKinds": [
+        "DiseaseOrCondition"
+      ]
+    },
+    {
+      "id": "OBO_CURIE",
+      "entityKinds": [
+        "OntologyTerm"
+      ]
+    }
+  ],
+  "evidenceClasses": [
+    "SOURCE_STATEMENT",
+    "CURATED_DATABASE_RECORD",
+    "PRIMARY_STUDY",
+    "SYSTEMATIC_REVIEW",
+    "META_ANALYSIS",
+    "CONSENSUS_OR_GUIDELINE",
+    "REGULATORY_RECORD",
+    "RESEARCH_DATASET",
+    "COMPUTATIONAL_RESULT"
+  ],
+  "objectTypes": [
+    {
+      "id": "gmr.ResearchOrganization",
+      "properties": [
+        "id",
+        "name",
+        "organizationIdentifiers",
+        "countryOrRegion",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Researcher",
+      "properties": [
+        "id",
+        "displayName",
+        "orcid",
+        "affiliations",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Study",
+      "properties": [
+        "id",
+        "title",
+        "studyType",
+        "status",
+        "populationSummary",
+        "methodsSummary",
+        "startDate",
+        "completionDate",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.TrialRegistration",
+      "properties": [
+        "id",
+        "registry",
+        "registryId",
+        "studyId",
+        "status",
+        "firstPosted",
+        "lastUpdated",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Publication",
+      "properties": [
+        "id",
+        "title",
+        "publicationType",
+        "doi",
+        "pmid",
+        "pmcid",
+        "publishedAt",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Dataset",
+      "properties": [
+        "id",
+        "title",
+        "doi",
+        "version",
+        "license",
+        "repository",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.ResearchArtifact",
+      "properties": [
+        "id",
+        "artifactType",
+        "title",
+        "persistentId",
+        "version",
+        "license",
+        "contentHash",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.DiseaseOrCondition",
+      "properties": [
+        "id",
+        "label",
+        "identifiers",
+        "classificationVersion",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Intervention",
+      "properties": [
+        "id",
+        "label",
+        "interventionType",
+        "identifiers",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Biomarker",
+      "properties": [
+        "id",
+        "label",
+        "biologicalContext",
+        "identifiers",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.GeneOrProtein",
+      "properties": [
+        "id",
+        "symbol",
+        "name",
+        "identifiers",
+        "taxon",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.Organism",
+      "properties": [
+        "id",
+        "scientificName",
+        "taxonomyId",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.OntologyTerm",
+      "properties": [
+        "id",
+        "curie",
+        "label",
+        "ontology",
+        "version",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.FundingAward",
+      "properties": [
+        "id",
+        "funder",
+        "awardId",
+        "title",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.EvidenceAssertion",
+      "properties": [
+        "id",
+        "statement",
+        "evidenceClass",
+        "supportLevel",
+        "uncertainty",
+        "sourceRefs"
+      ]
+    },
+    {
+      "id": "gmr.ProvenanceRecord",
+      "properties": [
+        "id",
+        "sourceId",
+        "sourceUri",
+        "retrievedAt",
+        "version",
+        "license",
+        "contentHash",
+        "transformation",
+        "verificationState"
+      ]
+    }
+  ],
+  "linkTypes": [
+    {
+      "id": "gmr.AUTHORED_BY",
+      "from": [
+        "gmr.Publication",
+        "gmr.Dataset",
+        "gmr.ResearchArtifact"
+      ],
+      "to": [
+        "gmr.Researcher"
+      ]
+    },
+    {
+      "id": "gmr.AFFILIATED_WITH",
+      "from": [
+        "gmr.Researcher"
+      ],
+      "to": [
+        "gmr.ResearchOrganization"
+      ]
+    },
+    {
+      "id": "gmr.REGISTERS",
+      "from": [
+        "gmr.TrialRegistration"
+      ],
+      "to": [
+        "gmr.Study"
+      ]
+    },
+    {
+      "id": "gmr.REPORTS",
+      "from": [
+        "gmr.Publication",
+        "gmr.Dataset",
+        "gmr.ResearchArtifact"
+      ],
+      "to": [
+        "gmr.Study"
+      ]
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION",
+      "from": [
+        "gmr.Study"
+      ],
+      "to": [
+        "gmr.DiseaseOrCondition"
+      ]
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION",
+      "from": [
+        "gmr.Study"
+      ],
+      "to": [
+        "gmr.Intervention"
+      ]
+    },
+    {
+      "id": "gmr.MEASURES_BIOMARKER",
+      "from": [
+        "gmr.Study"
+      ],
+      "to": [
+        "gmr.Biomarker"
+      ]
+    },
+    {
+      "id": "gmr.ASSOCIATED_WITH_GENE",
+      "from": [
+        "gmr.Biomarker",
+        "gmr.DiseaseOrCondition"
+      ],
+      "to": [
+        "gmr.GeneOrProtein"
+      ]
+    },
+    {
+      "id": "gmr.USES_ONTOLOGY_TERM",
+      "from": [
+        "gmr.Study",
+        "gmr.Publication",
+        "gmr.Dataset",
+        "gmr.DiseaseOrCondition",
+        "gmr.Intervention",
+        "gmr.Biomarker"
+      ],
+      "to": [
+        "gmr.OntologyTerm"
+      ]
+    },
+    {
+      "id": "gmr.FUNDED_BY",
+      "from": [
+        "gmr.Study",
+        "gmr.ResearchArtifact"
+      ],
+      "to": [
+        "gmr.FundingAward"
+      ]
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION",
+      "from": [
+        "gmr.Study",
+        "gmr.Publication",
+        "gmr.Dataset",
+        "gmr.TrialRegistration",
+        "gmr.ResearchArtifact"
+      ],
+      "to": [
+        "gmr.EvidenceAssertion"
+      ]
+    },
+    {
+      "id": "gmr.PROVENANCE",
+      "from": [
+        "gmr.Study",
+        "gmr.TrialRegistration",
+        "gmr.Publication",
+        "gmr.Dataset",
+        "gmr.ResearchArtifact",
+        "gmr.EvidenceAssertion"
+      ],
+      "to": [
+        "gmr.ProvenanceRecord"
+      ]
+    }
+  ],
+  "provenanceContract": {
+    "requiredFields": [
+      "sourceId",
+      "sourceUri",
+      "retrievedAt",
+      "verificationState"
+    ],
+    "recommendedFields": [
+      "version",
+      "license",
+      "contentHash",
+      "transformation"
+    ],
+    "verificationStates": [
+      "UNVERIFIED",
+      "SOURCE_VERIFIED",
+      "CROSS_SOURCE_CORROBORATED",
+      "CONTRADICTED",
+      "RETRACTED_OR_WITHDRAWN"
+    ],
+    "rules": [
+      "Preserve the source record separately from transformed summaries.",
+      "A registry entry or publication is evidence of a reported research record, not proof that every scientific claim is true.",
+      "Retractions, withdrawals, corrections, and superseded versions must remain queryable and must not be silently overwritten.",
+      "Research evidence must retain source and retrieval time."
+    ]
+  },
+  "researchRecordContract": {
+    "required": [
+      "id",
+      "recordType",
+      "title",
+      "sourceRefs"
+    ],
+    "recommended": [
+      "persistentIdentifiers",
+      "version",
+      "license",
+      "createdAt",
+      "updatedAt",
+      "language",
+      "fundingRefs",
+      "relatedArtifacts"
+    ]
+  },
+  "actionTypes": [
+    {
+      "id": "gmr.INGEST_PUBLIC_RESEARCH_METADATA",
+      "requires": [
+        "sourceUri"
+      ],
+      "produces": [
+        "ProvenanceRecord"
+      ],
+      "guardrails": [
+        "public_or_authorized_source_only",
+        "preserve_provenance",
+        "no_patient_level_phi"
+      ]
+    },
+    {
+      "id": "gmr.NORMALIZE_RESEARCH_RECORD",
+      "requires": [
+        "ProvenanceRecord"
+      ],
+      "produces": [
+        "Study",
+        "Publication",
+        "Dataset",
+        "ResearchArtifact"
+      ],
+      "guardrails": [
+        "do_not_infer_missing_scientific_facts",
+        "retain_original_identifiers"
+      ]
+    },
+    {
+      "id": "gmr.LINK_IDENTIFIERS",
+      "requires": [
+        "sourceRefs"
+      ],
+      "produces": [
+        "typed_links"
+      ],
+      "guardrails": [
+        "exact_or_source_supported_mapping_only",
+        "record_mapping_provenance"
+      ]
+    },
+    {
+      "id": "gmr.SYNTHESIZE_EVIDENCE",
+      "requires": [
+        "EvidenceAssertion"
+      ],
+      "produces": [
+        "evidence_summary"
+      ],
+      "guardrails": [
+        "separate_observation_from_inference",
+        "state_uncertainty",
+        "no_patient_specific_medical_advice"
+      ]
+    },
+    {
+      "id": "gmr.MARK_RETRACTION_OR_WITHDRAWAL",
+      "requires": [
+        "authoritative_status_source"
+      ],
+      "produces": [
+        "verification_state_update"
+      ],
+      "guardrails": [
+        "preserve_prior_state",
+        "record_effective_date",
+        "never_delete_lineage"
+      ]
+    }
+  ],
+  "governance": {
+    "openScienceDefault": true,
+    "patientLevelDataDefault": "DENY",
+    "consequentialClinicalUse": "OUT_OF_SCOPE",
+    "sourceLicensesMustBeRespected": true,
+    "versioningRequired": true,
+    "provenanceRequired": true,
+    "humanReviewForOntologyTermChanges": true
+  }
+}
