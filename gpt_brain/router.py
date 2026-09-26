@@ -1,4 +1,4 @@
-from .models import AgentSpec
+from gpt_brain.models import AgentSpec
 
 
 AGENTS: dict[str, AgentSpec] = {
