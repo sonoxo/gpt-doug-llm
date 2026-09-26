@@ -44,6 +44,8 @@ class BrainRouter:
     }
 
     def route(self, task: str, max_agents: int = 4) -> list[AgentSpec]:
+        if max_agents < 1:
+            raise ValueError("max_agents must be at least 1")
         words = {w.strip(".,:;!?()[]{}\"'").lower() for w in task.split()}
         scored: list[tuple[int, str]] = []
         for name, keys in self.KEYWORDS.items():
