@@ -8,6 +8,7 @@ from flipper_ontology import (
     AuthorizationState,
     FlipperOntology,
 )
+from ontology import Ontology
 
 
 def build_authorized_runtime():
@@ -172,3 +173,11 @@ def test_physical_test_is_staged_and_never_actuated_by_ontology_runtime():
     assert result["decision"] == "STAGED"
     assert result["execution"] == "NO_PHYSICAL_ACTUATION"
     assert result["human_review_required"] is True
+
+
+def test_ontology_display_includes_flipper_summary_counts():
+    display = Ontology.display()
+
+    assert "Flipper devices:" in display
+    assert "Flipper test sessions:" in display
+    assert "Flipper digital twins:" in display

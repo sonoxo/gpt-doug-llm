@@ -154,6 +154,7 @@ class Ontology:
     def display() -> str:
         s = _workers_ont.summary()
         b = _arcade_ont.bounty_balance()
+        f = Ontology.flipper_status()
         g = Ontology.global_ontology()
         domains = Ontology.global_domains()
         lines = [
