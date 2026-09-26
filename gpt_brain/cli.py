@@ -12,7 +12,7 @@ from .status import build_status
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="GPT-Doug ontology-first brain kernel")
-    sub = parser.add_subparsers(dest="command", required=True)
+    sub = parser.add_subparsers(dest="command")
 
     run = sub.add_parser("run", help="run an ontology-first multi-agent task")
     run.add_argument("task", nargs="+", help="task text")
@@ -46,7 +46,7 @@ def main() -> int:
     args = build_parser().parse_args()
     memory = BrainMemory()
 
-    if args.command in {"status", "doctor"}:
+    if args.command in {None, "status", "doctor"}:
         payload = build_status()
         if args.command == "doctor":
             payload["doctor"] = {
