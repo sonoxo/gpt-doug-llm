@@ -176,8 +176,9 @@ def test_physical_test_is_staged_and_never_actuated_by_ontology_runtime():
 
 
 def test_ontology_display_includes_flipper_summary_counts():
+    status = Ontology.flipper_status()["object_counts"]
     display = Ontology.display()
 
-    assert "Flipper devices:" in display
-    assert "Flipper test sessions:" in display
-    assert "Flipper digital twins:" in display
+    assert f"Flipper devices: {status['FlipperDevice']}" in display
+    assert f"Flipper test sessions: {status['TestSession']}" in display
+    assert f"Flipper digital twins: {status['DigitalTwin']}" in display
