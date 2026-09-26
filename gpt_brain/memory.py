@@ -8,13 +8,23 @@ from typing import Any, Optional, Union
 
 _TOKEN = re.compile(r"[A-Za-z0-9_:-]{2,}")
 _SECRET = re.compile(
-    r"(?:sk-[A-Za-z0-9_-]{16,}|api[_-]?key\s*[:=]\s*[^\s]{12,}|password\s*[:=]\s*[^\s]{8,})",
+    r"(?:"
+    r"sk-[A-Za-z0-9_-]{16,}|"
+    r"gh[pousr]_[A-Za-z0-9_]{20,}|"
+    r"api[_-]?key\s*[:=]\s*[^\s]{12,}|"
+    r"password\s*[:=]\s*[^\s]{8,}|"
+    r"bearer\s+[A-Za-z0-9._~+/-]{16,}"
+    r")",
     re.IGNORECASE,
 )
 
 
 def _tokens(text: str) -> set[str]:
     return {m.group(0).lower() for m in _TOKEN.finditer(text or "")}
+
+
+def _contains_secret(value: str) -> bool:
+    return bool(_SECRET.search(value or ""))
 
 
 class BrainMemory:
@@ -44,7 +54,14 @@ class BrainMemory:
             raise ValueError("memory content must be non-empty")
         if not provenance or not provenance.strip():
             raise ValueError("memory provenance is required")
-        if _SECRET.search(content):
+
+        metadata = metadata or {}
+        metadata_text = json.dumps(metadata, ensure_ascii=False, default=str)
+        if (
+            _contains_secret(content)
+            or _contains_secret(provenance)
+            or _contains_secret(metadata_text)
+        ):
             raise ValueError("secret-like content is not permitted in brain memory")
 
         record = {
@@ -52,7 +69,7 @@ class BrainMemory:
             "kind": kind,
             "content": content.strip(),
             "provenance": provenance.strip(),
-            "metadata": metadata or {},
+            "metadata": metadata,
         }
         with self.path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
@@ -93,13 +110,17 @@ class BrainMemory:
     def ingest_transcript(self, text: str, *, provenance: str) -> int:
         """Import a transcript/export as bounded episodic chunks.
 
-        It understands common User/Assistant role markers and otherwise chunks
-        by paragraph. This supports behavioral clone seeding without scraping a
-        private ChatGPT URL or pretending to copy model weights.
+        All chunks are validated before the first write so a secret-like value
+        cannot leave a partially imported transcript behind.
         """
         text = (text or "").strip()
         if not text:
             return 0
+        if not provenance or not provenance.strip():
+            raise ValueError("memory provenance is required")
+        if _contains_secret(provenance):
+            raise ValueError("secret-like provenance is not permitted")
+
         role_re = re.compile(r"^(user|assistant|system)\s*:\s*", re.IGNORECASE)
         chunks: list[str] = []
         current: list[str] = []
@@ -113,14 +134,22 @@ class BrainMemory:
         if current:
             chunks.append("\n".join(current).strip())
         if len(chunks) == 1 and len(chunks[0]) > 6000:
-            paras = [p.strip() for p in re.split(r"\n\s*\n", chunks[0]) if p.strip()]
-            chunks = paras or chunks
+            paragraphs = [
+                paragraph.strip()
+                for paragraph in re.split(r"\n\s*\n", chunks[0])
+                if paragraph.strip()
+            ]
+            chunks = paragraphs or chunks
 
-        added = 0
-        for chunk in chunks:
-            if not chunk:
-                continue
-            compact = chunk[:6000]
-            self.add("episodic", compact, provenance=provenance, metadata={"imported": True})
-            added += 1
-        return added
+        prepared = [chunk[:6000] for chunk in chunks if chunk]
+        if any(_contains_secret(chunk) for chunk in prepared):
+            raise ValueError("secret-like content is not permitted in brain memory")
+
+        for chunk in prepared:
+            self.add(
+                "episodic",
+                chunk,
+                provenance=provenance,
+                metadata={"imported": True},
+            )
+        return len(prepared)
