@@ -60,6 +60,23 @@ jobs:
       - name: Run ontology standalone regression suite
         run: python3 tests/test_ontology_workers.py
 
+      - name: Validate GPT-Doug launcher syntax
+        run: bash -n scripts/doug-max
+
+      - name: Smoke-test offline brain status
+        run: |
+          PYTHONPATH=. python -m gpt_brain.cli status > /tmp/gpt-doug-brain-status.json
+          python - <<'PY'
+          import json
+          status = json.load(open('/tmp/gpt-doug-brain-status.json', encoding='utf-8'))
+          assert status['system'] == 'GPT-DOUG-BRAIN'
+          assert status['mode'] == 'MATRIX_COMMAND_CENTER'
+          assert 'readiness' in status
+          assert 'ontology' in status
+          assert 'provider' in status
+          print('GPT-DOUG BRAIN OFFLINE STATUS: GREEN')
+          PY
+
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v4
