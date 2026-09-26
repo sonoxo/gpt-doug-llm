@@ -138,3 +138,14 @@ def test_transcript_ingestion(tmp_path: Path):
     )
     assert count == 2
     assert len(memory.records()) == 2
+
+
+def test_transcript_secret_rejection_is_atomic(tmp_path: Path):
+    memory = BrainMemory(tmp_path / "memory.jsonl")
+    transcript = (
+        "User: keep this harmless context\n"
+        "Assistant: api_key=abcdefghijklmnop123456"
+    )
+    with pytest.raises(ValueError):
+        memory.ingest_transcript(transcript, provenance="chat-export")
+    assert memory.records() == []
