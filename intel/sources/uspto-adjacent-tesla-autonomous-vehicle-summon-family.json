@@ -1,0 +1,99 @@
+{
+  "id": "uspto-adjacent-tesla-autonomous-vehicle-summon-family",
+  "type": "exact-document-family-front-page-watch",
+  "authority": "United States Patent and Trademark Office",
+  "retrieved": "2026-09-12",
+  "evidence_basis": "User-supplied U.S. patent/publication front pages",
+  "company": "Tesla, Inc.",
+  "family_title": "AUTONOMOUS AND USER CONTROLLED VEHICLE SUMMON TO A TARGET",
+  "documents": [
+    {
+      "document_number": "US-20230176593-A1",
+      "publication_date": "2023-06-08",
+      "application_number": "18/166,565",
+      "filed": "2023-01-27",
+      "applicant": {
+        "name": "Tesla, Inc.",
+        "location": "Austin, TX (US)",
+        "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+      },
+      "relationship": "Continuation of application 16/272,273, filed 2019-02-11, now U.S. Patent 11,567,514",
+      "source_type": "publication-front-page"
+    },
+    {
+      "document_number": "US-11567514-B2",
+      "patent_date": "2023-01-31",
+      "application_number": "16/272,273",
+      "filed": "2019-02-11",
+      "applicant": {
+        "name": "Tesla, Inc.",
+        "location": "Austin, TX (US)",
+        "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+      },
+      "assignee": {
+        "name": "Tesla, Inc.",
+        "location": "Austin, TX (US)",
+        "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+      },
+      "prior_publication": "US-20200257317-A1",
+      "source_type": "patent-front-page"
+    },
+    {
+      "document_number": "US-20200257317-A1",
+      "publication_date": "2020-08-13",
+      "application_number": "16/272,273",
+      "filed": "2019-02-11",
+      "applicant": {
+        "name": "Tesla, Inc.",
+        "location": "Palo Alto, CA (US)",
+        "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+      },
+      "source_type": "publication-front-page"
+    }
+  ],
+  "visible_flow": [
+    "Receive Destination",
+    "Receive Vision Data",
+    "Determine Drivable Space",
+    "Generate Occupancy Grid",
+    "Determine Path Goal",
+    "Navigate To Path Goal",
+    "Check Arrival At Destination",
+    "Complete Summon"
+  ],
+  "architecture_watch": {
+    "name": "civilian-autonomous-mobility-perception-planning-execution-loop",
+    "themes": [
+      "autonomous-mobility",
+      "vision-perception",
+      "drivable-space-estimation",
+      "occupancy-grid",
+      "path-planning",
+      "goal-navigation",
+      "arrival-verification",
+      "human-initiated-vehicle-summon"
+    ],
+    "gpt_doug_mapping": [
+      "authorized destination request",
+      "sensor or vision evidence ingestion",
+      "environment-state estimation",
+      "non-geographic or simulated occupancy representation",
+      "route or path-goal planning",
+      "bounded navigation state machine",
+      "arrival/termination verification",
+      "human authorization and safe-stop controls"
+    ]
+  },
+  "controls": {
+    "research_and_prior_art_watch_only": true,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "treat_front_page_party_field_as_current_ownership_proof": false,
+    "allow_weapon_targeting_mapping": false,
+    "allow_hostile_engagement_mapping": false,
+    "allow_weapon_release_or_drone_swarm_control": false,
+    "allow_unattended_real_world_vehicle_command": false,
+    "require_human_authorization_for_any_real_world_mobility_action": true
+  },
+  "design_rule": "Use this family as adjacent public prior-art and civilian autonomy architecture awareness only. Preserve independent design evidence. Do not translate the patent's target/destination language into military targeting, hostile engagement, weapons control, drone-swarm control, or unattended real-world vehicle command."
+}

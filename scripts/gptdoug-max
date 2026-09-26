@@ -1,0 +1,14 @@
+#!/bin/zsh
+set -eu
+
+CONFIG="$HOME/.gpt-doug/env"
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+cd "$ROOT"
+PY="$(command -v python3 || command -v python)"
+exec "$PY" "$ROOT/gpt_doug_max.py" "$@"

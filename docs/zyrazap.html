@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="zyraZap for Mac: a XUNIA/ZYRA utility exhibit for safe developer-workstation cleanup with dry-run, allowlists, backup, and verification gates.">
+  <title>zyraZap for Mac · XUNIA Museum</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <link rel="stylesheet" href="./museum.css">
+  <script src="./zyra-shell-v2.js" defer></script>
+  <style>
+    .exhibit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:24px 0}.exhibit-card{padding:20px;border:1px solid rgba(70,243,255,.22);border-radius:18px;background:rgba(10,14,28,.72)}.exhibit-card h2,.exhibit-card h3{margin-top:0}.signal{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#46f3ff}.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:20px 0}.flow div{padding:14px;border:1px solid rgba(157,92,255,.28);border-radius:14px;background:rgba(157,92,255,.07)}.cta-row{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0}.cta-row a{display:inline-block;padding:11px 14px;border-radius:12px;border:1px solid rgba(70,243,255,.35);text-decoration:none}.guard{color:#a7ff83}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="zyra-hero" aria-labelledby="zyrazap-title">
+      <div class="zyra-eyebrow">XUNIA MUSEUM // FEATURED UTILITY EXHIBIT // ZYRA</div>
+      <h1 id="zyrazap-title">zyraZap for Mac</h1>
+      <p>A local Mac cleanup utility built from the real GPT-DOUG / ZYRA storage-recovery workflow: scan first, classify disposable data, preserve important large data, verify backups, and only then reclaim space.</p>
+      <div class="zyra-badges">
+        <span class="zyra-badge live">● PROTOTYPE v0.1.0</span>
+        <span class="zyra-badge">CHROME MV3</span>
+        <span class="zyra-badge">MAC NATIVE MESSAGING</span>
+        <span class="zyra-badge">DRY-RUN DEFAULT</span>
+        <span class="zyra-badge">ALLOWLIST ONLY</span>
+      </div>
+      <div class="cta-row">
+        <a href="../tools/zyrazap-mac/">Open source exhibit</a>
+        <a href="../tools/zyrazap-mac/README.md">Read implementation notes</a>
+        <a href="./index.html#museum">Return to Museum</a>
+      </div>
+    </section>
+
+    <section class="exhibit-grid" aria-label="zyraZap exhibit details">
+      <article class="exhibit-card"><div class="signal">01 // PURPOSE</div><h2>Clean “wack data” safely</h2><p>Targets known developer caches and logs that can grow into tens of gigabytes without blindly deleting user documents, browser profiles, photos, credentials, or arbitrary Application Support data.</p></article>
+      <article class="exhibit-card"><div class="signal">02 // CONTROL</div><h2>Browser UI, bounded helper</h2><p>The Chrome extension provides the dashboard. A local macOS Native Messaging helper performs filesystem inspection because Chrome extensions cannot directly manage arbitrary Mac paths.</p></article>
+      <article class="exhibit-card"><div class="signal">03 // SAFETY</div><h2>Fail closed</h2><p class="guard">No arbitrary shell-command input. Cleanup actions are explicit allowlisted operations, with dry-run enabled by default and home-directory deletion boundaries.</p></article>
+      <article class="exhibit-card"><div class="signal">04 // PROVENANCE</div><h2>Born from a live recovery</h2><p>The initial targets came from an actual Mac storage audit involving ZYRA SITL logs, Hugging Face caches, Claude VM bundles/caches, Cursor caches, and Codex runtime caches.</p></article>
+    </section>
+
+    <section class="motion-panel" aria-labelledby="flow-title">
+      <div class="motion-head"><h2 id="flow-title">zyraZap cleanup transaction</h2><span>BACKUP → VERIFY → ZAP</span></div>
+      <div class="flow">
+        <div><strong>01 SCAN</strong><br>Measure disk and allowlisted targets.</div>
+        <div><strong>02 CLASSIFY</strong><br>Separate regeneratable cache from preserve-first data.</div>
+        <div><strong>03 BACKUP</strong><br>Copy preserve-first targets to the selected external destination.</div>
+        <div><strong>04 VERIFY</strong><br>Compare source and backup before any destructive step.</div>
+        <div><strong>05 ZAP</strong><br>Remove only the selected allowlisted target.</div>
+        <div><strong>06 REPORT</strong><br>Show recovered space and operation evidence.</div>
+      </div>
+    </section>
+
+    <section class="exhibit-grid">
+      <article class="exhibit-card"><h3>Current targets</h3><p>ZYRA SITL logs · Hugging Face model cache · Claude VM bundles · Claude caches · Cursor caches · Codex runtime cache.</p></article>
+      <article class="exhibit-card"><h3>Next museum milestones</h3><p>Automatic external-drive detection, duplicate detection, DMG/ISO cleanup, npm/dev-cache profiles, restore-from-backup, signed/notarized helper packaging, and a richer “Wack Data” score.</p></article>
+    </section>
+
+    <footer class="zyra-footer">
+      <span>zyraZap is a XUNIA/ZYRA utility exhibit hosted inside the GPT-DOUG-LLM museum source tree.</span>
+      <span><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/tools/zyrazap-mac">GitHub source</a> · <a href="./index.html">XUNIA Museum + HQ</a></span>
+    </footer>
+  </main>
+</body>
+</html>

@@ -22,6 +22,11 @@
 <sub>Bounded agentic execution</sub>
 </td>
 <td align="center">
+<a href="https://github.com/sonoxo/gpt-doug-llm"><img width="210" src="docs/assets/insignia-gpt-doug-llm-max.svg" alt="GPT-Doug-LLM-Max project insignia" /></a><br />
+<strong><a href="docs/INSIGNIAS.md#gpt-doug-llm-max">GPT-DOUG-LLM-MAX</a></strong><br />
+<sub>Hybrid collective intelligence · people + agents + evidence</sub>
+</td>
+<td align="center">
 <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo"><img width="210" src="docs/assets/insignia-aeo.svg" alt="A.E.O. All Eyes Open RVIA-INTEL insignia" /></a><br />
 <strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo">A.E.O. // RVIA-INTEL</a></strong><br />
 <sub>All Eyes Open · provenance-first intelligence accountability</sub>
@@ -41,6 +46,7 @@
 
 **▶ PUBLIC RESILIENCE REFERENCE II — additional external architecture and infrastructure-protection reference**
 
+[![GPT-Doug-LLM-Max](https://img.shields.io/badge/GPT--DOUG--LLM--MAX-HYBRID%20INTELLIGENCE-d4af37?style=for-the-badge)](docs/INSIGNIAS.md#gpt-doug-llm-max)
 [![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
 [![A.E.O. Governance](https://img.shields.io/badge/A.E.O.-RVIA--INTEL-00bfff?style=for-the-badge)](rvia-intel/aeo/README.md)
 
@@ -209,6 +215,13 @@ Public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, 
 [Open SHADOW GLASS →](safety-shield/SHADOW_GLASS.md) · [Machine-readable ontology →](safety-shield/ontology/shadow-glass-palantir.json)
 
 ---
+
+## GPT-NEDU / Novice EDU
+
+The beginner education module inside GPT-Doug, ZYRA, and XUNIA.
+[Learning page](https://xunia.org/learn/nedu/) · [Source and launch guide](gpt_nedu/README.md).
+Run `bash scripts/doug-max nedu` or type `/nedu` in ZYRA chat.
+The browser page becomes available after the Pages deployment containing this module.
 
 ## Products
 
@@ -403,6 +416,50 @@ gpt-doug-llm/
 **ZYRA, GPT-DOUG-LLM, Wakeup3lm, NXYZ, SHADOW GLASS, GLASS ONION, The Black House, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, Neptune Shield, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
 
 ---
+
+## Invention Lab
+
+The [GPT-Doug Invention Lab](research_lab/README.md) contains
+four local research prototypes for evidence-bound admission, dependency-aware
+repair planning, offline reconciliation, and citation lineage. Run
+`bash scripts/doug-max invention-lab demo` for the synthetic end-to-end checks.
+These are experimental tools, not patentability findings or live execution gates.
+
+---
+
+## Visual GPT-Doug + Global Skill Lattice
+
+GPT-Doug now has a documented **local visual foundation** and a **lazy 100,000,000-address global skill lattice**.
+
+```text
+ONTOLOGY
+   ↓
+GENOME / PHENOTYPE
+   ↓
+EMBODIMENT
+   ↓
+HUD + MATRIX
+   ↓
+KNOWLEDGE + SKILLS + RESEARCH
+   ↓
+MAX CONTROL
+   ↓
+USER-AUTHORIZED ADMIN
+```
+
+The visual shell is documented separately from the canonical runtime so a HUD failure cannot overwrite the core. The skill lattice exposes exactly `100 × 100 × 100 × 100 = 100,000,000` deterministic workflow addresses across the global economy, AI infrastructure, public-sector operations, defensive intelligence, musicians, artists, developers, research, infrastructure, and the creative economy. It is **lazy and compositional**: GPT-Doug generates skill descriptors on demand instead of pretending to ship 100 million pretrained expert models or storing 100 million files.
+
+Quick checks:
+
+```bash
+python3 skills/global_skill_lattice.py count
+python3 skills/global_skill_lattice.py show 54217804
+python3 skills/global_skill_lattice.py search music release
+python3 skills/global_skill_lattice.py search ai-infrastructure reliability
+```
+
+Read: [GPT-Doug MAX Foundation](docs/GPTDOUG_MAX_FOUNDATION.md) · [Visual GPT-Doug](docs/VISUAL_GPTDOUG.md) · [Global Skill Lattice](docs/GLOBAL_SKILL_LATTICE.md)
+
 
 ## License
 

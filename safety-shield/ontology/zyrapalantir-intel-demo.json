@@ -1,0 +1,69 @@
+{
+  "ontology": "ZyraPalantirIntelDemo",
+  "version": "1.0.0",
+  "classification": "SYNTHETIC//UNCLASSIFIED",
+  "purpose": "Demonstrate defensive intelligence correlation, mission assurance, software provenance, and analyst decision support using synthetic data only.",
+  "mode": "DEFENSIVE_INTELLIGENCE_DEMO_ONLY",
+  "objectTypes": [
+    "Mission",
+    "MissionSystem",
+    "Asset",
+    "IntelReport",
+    "Indicator",
+    "SecurityFinding",
+    "SoftwareArtifact",
+    "AnalystAssessment",
+    "DefensiveRecommendation",
+    "AuditEvent"
+  ],
+  "linkTypes": [
+    "MissionDependsOnSystem",
+    "SystemRunsOnAsset",
+    "IntelReportContainsIndicator",
+    "IndicatorObservedOnAsset",
+    "FindingAffectsAsset",
+    "AssetUsesArtifact",
+    "AssessmentCorrelatesEvidence",
+    "AssessmentProducesRecommendation",
+    "RecommendationProtectsMission",
+    "AuditEventRecordsDecision"
+  ],
+  "decisionPolicy": {
+    "automaticExternalAction": false,
+    "humanReviewRequired": true,
+    "syntheticDataOnly": true,
+    "allowDefensiveRecommendations": true,
+    "allowCaseCreation": true,
+    "allowSimulatedIsolationRecommendation": true,
+    "allowArtifactVerification": true,
+    "allowReadOnlyCorrelation": true,
+    "autonomousTargeting": false,
+    "weaponsRelease": false,
+    "criticalInfrastructureDisruption": false
+  },
+  "evidenceRequirements": {
+    "minimumIndependentSignals": 2,
+    "recordSource": true,
+    "recordTimestamp": true,
+    "recordConfidence": true,
+    "recordArtifactProvenance": true,
+    "recordAnalystDecision": true
+  },
+  "milReadinessAlignment": {
+    "status": "ENGINEERING_ALIGNMENT_ONLY_NOT_CERTIFICATION",
+    "framework": "NIST SP 800-53 Rev. 5 / Release 5.2.0",
+    "families": [
+      "AC - Access Control",
+      "AU - Audit and Accountability",
+      "CA - Assessment, Authorization and Monitoring",
+      "CM - Configuration Management",
+      "IA - Identification and Authentication",
+      "IR - Incident Response",
+      "RA - Risk Assessment",
+      "SA - System and Services Acquisition",
+      "SC - System and Communications Protection",
+      "SI - System and Information Integrity",
+      "SR - Supply Chain Risk Management"
+    ]
+  }
+}

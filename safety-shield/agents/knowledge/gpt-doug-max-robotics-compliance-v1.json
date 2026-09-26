@@ -1,0 +1,95 @@
+{
+  "schema": "xunia.gpt-doug-max.robotics-compliance.v1",
+  "as_of": "2026-09-13",
+  "name": "GPT-DOUG-MAX Robotics and Programmable Device Compliance Registry",
+  "purpose": "Fail-closed preflight registry for patent-aware robotics and programmable-device schematic packages. This registry is a research and engineering aid, not legal advice or a declaration of conformity.",
+  "coverage_policy": {
+    "unknown_jurisdiction": "BLOCK_AND_REQUIRE_REVIEW",
+    "unknown_sector": "REQUIRE_REVIEW",
+    "official_source_recheck_before_release": true,
+    "legal_advice": false,
+    "freedom_to_operate_opinion": false,
+    "declaration_of_conformity": false,
+    "human_legal_review_required_for_commercial_release": true
+  },
+  "global_engineering_baseline": [
+    {"id": "ISO-12100", "type": "consensus_standard", "topic": "machinery risk assessment and risk reduction", "status": "APPLICABILITY_REVIEW"},
+    {"id": "ISO-10218-1/2", "type": "consensus_standard", "topic": "industrial robots and robot systems safety", "status": "APPLICABILITY_REVIEW"},
+    {"id": "ISO-TS-15066", "type": "consensus_standard", "topic": "collaborative robot operation", "status": "APPLICABILITY_REVIEW"},
+    {"id": "ISO-13849-1", "type": "consensus_standard", "topic": "safety-related control systems", "status": "APPLICABILITY_REVIEW"},
+    {"id": "IEC-60204-1", "type": "consensus_standard", "topic": "electrical equipment of machines", "status": "APPLICABILITY_REVIEW"},
+    {"id": "IEC-61508", "type": "consensus_standard", "topic": "functional safety of electrical/electronic/programmable electronic safety-related systems", "status": "APPLICABILITY_REVIEW"},
+    {"id": "IEC-62443", "type": "consensus_standard", "topic": "industrial automation and control system cybersecurity", "status": "APPLICABILITY_REVIEW"},
+    {"id": "ISO-13482", "type": "consensus_standard", "topic": "personal care robot safety", "status": "APPLICABILITY_REVIEW"}
+  ],
+  "jurisdictions": {
+    "US": {
+      "name": "United States",
+      "authorities": ["USPTO", "OSHA", "FCC", "NIST", "BIS", "CPSC", "FDA", "FAA", "NHTSA"],
+      "rules": [
+        {"id": "OSHA-29-CFR-1910.212", "type": "regulation", "trigger": "workplace machinery with mechanical hazards", "topic": "machine guarding", "source": "https://www.osha.gov/laws-regs/regulations/standardnumber/1910/1910.212", "status": "APPLICABILITY_REVIEW"},
+        {"id": "FCC-47-CFR-PART-15", "type": "regulation", "trigger": "intentional or unintentional radio-frequency emissions", "topic": "radio-frequency devices", "source": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-15", "status": "CONDITIONAL"},
+        {"id": "NIST-AI-RMF-1.0", "type": "voluntary_framework", "trigger": "AI-enabled design or operation", "topic": "AI risk management", "source": "https://www.nist.gov/itl/ai-risk-management-framework", "status": "CONDITIONAL"},
+        {"id": "EAR", "type": "export_control", "trigger": "export, reexport, transfer, controlled technology, encryption, or controlled destination/end use", "topic": "Export Administration Regulations", "source": "https://www.bis.gov/regulations/ear", "status": "CONDITIONAL_HUMAN_REVIEW"}
+      ]
+    },
+    "EU": {
+      "name": "European Union",
+      "authorities": ["European Commission", "national market-surveillance authorities", "notified bodies where required"],
+      "rules": [
+        {"id": "2006/42/EC", "type": "directive", "trigger": "machinery placed on the EU market before the Machinery Regulation transition completes", "topic": "Machinery Directive", "source": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006L0042", "status": "CURRENT_TRANSITION"},
+        {"id": "EU-2023/1230", "type": "regulation", "trigger": "machinery or related products", "topic": "Machinery Regulation", "source": "https://eur-lex.europa.eu/eli/reg/2023/1230/en", "status": "APPLIES_FROM_2027-01-20"},
+        {"id": "EU-2024/1689", "type": "regulation", "trigger": "AI system or AI-enabled safety component/product", "topic": "EU AI Act", "source": "https://eur-lex.europa.eu/eli/reg/2024/1689/en", "status": "PHASED_APPLICATION"},
+        {"id": "2014/53/EU", "type": "directive", "trigger": "radio equipment", "topic": "Radio Equipment Directive", "source": "https://eur-lex.europa.eu/eli/dir/2014/53/oj", "status": "CONDITIONAL"},
+        {"id": "2014/30/EU", "type": "directive", "trigger": "electromagnetic compatibility scope", "topic": "EMC Directive", "source": "https://eur-lex.europa.eu/eli/dir/2014/30/oj", "status": "CONDITIONAL"}
+      ]
+    },
+    "GB": {
+      "name": "Great Britain",
+      "authorities": ["Office for Product Safety and Standards", "HSE", "Ofcom", "sector regulators"],
+      "rules": [
+        {"id": "UK-SMSR-2008", "type": "regulation", "trigger": "machinery supplied in Great Britain", "topic": "Supply of Machinery (Safety) Regulations 2008", "source": "https://www.legislation.gov.uk/uksi/2008/1597/contents", "status": "APPLICABILITY_REVIEW"},
+        {"id": "UK-PRODUCT-MARKING", "type": "market_access", "trigger": "regulated manufactured goods placed on the GB market", "topic": "GB product marking and conformity route", "source": "https://www.gov.uk/guidance/placing-manufactured-goods-on-the-market-in-great-britain", "status": "VERIFY_CURRENT_RULES"}
+      ]
+    },
+    "CA": {
+      "name": "Canada",
+      "authorities": ["ISED", "Health Canada", "provincial workplace/electrical authorities", "Standards Council of Canada ecosystem"],
+      "rules": [
+        {"id": "CA-RADIO", "type": "regulatory_trigger", "trigger": "radio apparatus or wireless module", "topic": "ISED radio certification/licensing requirements", "source": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/en", "status": "CONDITIONAL_HUMAN_REVIEW"}
+      ]
+    },
+    "JP": {
+      "name": "Japan",
+      "authorities": ["METI", "MIC", "MHLW", "JPO"],
+      "rules": [
+        {"id": "JP-PSE", "type": "regulatory_trigger", "trigger": "electrical product within Electrical Appliances and Materials Safety Act scope", "topic": "PSE electrical product compliance", "source": "https://www.meti.go.jp/english/policy/economy/consumer/pse/", "status": "CONDITIONAL_HUMAN_REVIEW"},
+        {"id": "JP-RADIO", "type": "regulatory_trigger", "trigger": "wireless/radio equipment", "topic": "Radio Law technical conformity", "source": "https://www.tele.soumu.go.jp/e/index.htm", "status": "CONDITIONAL_HUMAN_REVIEW"}
+      ]
+    },
+    "AU": {
+      "name": "Australia",
+      "authorities": ["ACMA", "state and territory electrical-safety regulators", "Safe Work Australia ecosystem"],
+      "rules": [
+        {"id": "AU-RCM", "type": "market_access", "trigger": "electrical/electronic or radio product within applicable ACMA schemes", "topic": "Regulatory Compliance Mark", "source": "https://www.acma.gov.au/regulatory-compliance-mark-rcm", "status": "CONDITIONAL_HUMAN_REVIEW"}
+      ]
+    }
+  },
+  "sector_triggers": {
+    "wireless": {"review": ["radio certification", "spectrum rules", "EMC"]},
+    "ai": {"review": ["AI risk classification", "human oversight", "logging", "data governance", "post-market monitoring where applicable"]},
+    "medical": {"review": ["medical-device classification", "quality system", "clinical/safety evidence", "software lifecycle and cybersecurity"]},
+    "uas": {"review": ["aviation authority", "airworthiness/operational rules", "remote identification where applicable"]},
+    "road_vehicle": {"review": ["vehicle safety regulator", "functional safety", "cybersecurity", "homologation/type approval"]},
+    "consumer": {"review": ["consumer product safety", "battery/charger safety", "children/toy rules where applicable"]},
+    "critical_infrastructure": {"review": ["sector cybersecurity", "incident reporting", "supply-chain controls", "operator authorization"]}
+  },
+  "patent_offices": {
+    "USPTO": {"territory": "US", "source": "https://ppubs.uspto.gov/pubwebapp/"},
+    "WIPO_PCT": {"territory": "international filing system", "source": "https://patentscope.wipo.int/"},
+    "EPO": {"territory": "European patent system", "source": "https://worldwide.espacenet.com/"},
+    "JPO": {"territory": "JP", "source": "https://www.j-platpat.inpit.go.jp/"},
+    "CNIPA": {"territory": "CN", "source": "https://english.cnipa.gov.cn/"},
+    "KIPO": {"territory": "KR", "source": "https://www.kipo.go.kr/en/"}
+  }
+}

@@ -157,7 +157,7 @@ jobs:
         with:
           repository: sonoxo/xuniadao
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: yarn
@@ -175,8 +175,12 @@ jobs:
           if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
           if(kernel.controlPlaneRoot!==false||kernel.domainRoot!=='XUNIAverse') process.exit(1);
           if(mission.missionProtocol!=='black-house-mission-v1'||!mission.failClosed) process.exit(1);
+          const profile=require('./.xunia/nist-ai-rmf.json');
+          const PROFILE='NIST_AI_RMF_1_0_XUNIA_PROFILE_V1';
           if(!mission.acceptedTargets.includes('XUNIA')||mission.mutationAuthority!==false) process.exit(1);
-          console.log('XUNIA BLACK HOUSE + RVIA CONTRACT: GREEN');
+          if(profile.policyId!==PROFILE||runtime.governance?.profile!==PROFILE||mission.nistAiRmf?.profileId!==PROFILE) process.exit(1);
+          if(mission.nistAiRmf.criticalRiskDefault!=='HOLD'||profile.enforcement?.failClosed!==true) process.exit(1);
+          console.log('XUNIA BLACK HOUSE + RVIA + NIST AI RMF CONTRACT: GREEN');
           NODE
 
   zyra:
@@ -188,7 +192,7 @@ jobs:
         with:
           repository: sonoxo/zyra
           ref: main
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
           cache: npm
@@ -203,8 +207,12 @@ jobs:
           if(runtime.kernelVersion!=='3.0.0'||kernel.kernelVersion!=='3.0.0') process.exit(1);
           if(kernel.approvalAuthority!==true||mission.approvalAuthority!==true) process.exit(1);
           if(mission.missionProtocol!=='black-house-mission-v1'||!mission.failClosed) process.exit(1);
+          const profile=require('./.black-house/nist-ai-rmf.json');
+          const PROFILE='NIST_AI_RMF_1_0_XUNIA_PROFILE_V1';
           for(const target of ['ZYRA','NXYZ','ZYRA_CLOUD']) if(!mission.acceptedTargets.includes(target)) process.exit(1);
-          console.log('ZYRA / NXYZ / ZYRA CLOUD RVIA CONTRACT: GREEN');
+          if(profile.policyId!==PROFILE||runtime.governance?.profile!==PROFILE||mission.nistAiRmf?.profileId!==PROFILE) process.exit(1);
+          if(mission.nistAiRmf.criticalRiskDefault!=='HOLD'||profile.enforcement?.failClosed!==true) process.exit(1);
+          console.log('ZYRA / NXYZ / ZYRA CLOUD RVIA + NIST AI RMF CONTRACT: GREEN');
           NODE
       - run: npm test
       - run: npx tsx --test server/black-house-kernel.test.ts
@@ -230,8 +238,12 @@ jobs:
           const required=['tests','typecheck','dependency-audit','production-build'];
           for(const c of required) if(!r.requiredCapabilities.includes(c)) process.exit(1);
           if(mission.missionProtocol!=='black-house-mission-v1'||!mission.acceptedTargets.includes('AIP_REGISTRY')) process.exit(1);
+          const profile=require('./.black-house/nist-ai-rmf.json');
+          const PROFILE='NIST_AI_RMF_1_0_XUNIA_PROFILE_V1';
           if(mission.mutationAuthority!==false||!mission.failClosed) process.exit(1);
-          console.log('AIP SHARED QUALITY + RVIA CONTRACT: GREEN');
+          if(profile.policyId!==PROFILE||r.governance?.profile!==PROFILE||mission.nistAiRmf?.profileId!==PROFILE) process.exit(1);
+          if(mission.nistAiRmf.criticalRiskDefault!=='HOLD'||profile.enforcement?.failClosed!==true) process.exit(1);
+          console.log('AIP SHARED QUALITY + RVIA + NIST AI RMF CONTRACT: GREEN');
           NODE
       - name: Validate reusable gate capabilities
         run: |
@@ -274,6 +286,10 @@ jobs:
           const xuniaMission=require('./xunia/.black-house/mission-router.json');
           const zyraMission=require('./zyra/.black-house/mission-router.json');
           const aipMission=require('./aip/.black-house/mission-router.json');
+          const xuniaProfile=require('./xunia/.xunia/nist-ai-rmf.json');
+          const zyraProfile=require('./zyra/.black-house/nist-ai-rmf.json');
+          const aipProfile=require('./aip/.black-house/nist-ai-rmf.json');
+          const PROFILE='NIST_AI_RMF_1_0_XUNIA_PROFILE_V1';
           const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
           for(const [name,binding] of [['XUNIA',xunia],['ZYRA',zyra]]) {
             if(binding.kernelVersion!==canonical.kernelVersion) throw new Error(`${name} kernel version drift`);
@@ -282,13 +298,23 @@ jobs:
             if(!same(binding.relationshipTypes,canonical.relationshipTypes)) throw new Error(`${name} relationship vocabulary drift`);
           }
           if(aip.kernelVersion!==canonical.kernelVersion||aip.controlPlane!==canonical.controlPlane) throw new Error('AIP kernel drift');
+          for(const [name,profile] of [['XUNIA',xuniaProfile],['ZYRA',zyraProfile],['AIP',aipProfile]]) {
+            if(profile.policyId!==PROFILE) throw new Error(`${name} NIST AI RMF profile drift`);
+            if(profile.enforcement?.failClosed!==true) throw new Error(`${name} NIST AI RMF profile not fail closed`);
+          }
+          if(xunia.riskManagement?.profileId!==PROFILE) throw new Error('XUNIA kernel NIST profile drift');
+          if(zyra.riskManagement?.profileId!==PROFILE) throw new Error('ZYRA kernel NIST profile drift');
+          if(aip.governance?.profile!==PROFILE) throw new Error('AIP runtime NIST profile drift');
           for(const [name,binding] of [['XUNIA',xuniaMission],['ZYRA',zyraMission],['AIP',aipMission]]) {
             if(binding.controlPlane!==canonical.controlPlane) throw new Error(`${name} mission control-plane drift`);
             if(binding.kernelVersion!==canonical.kernelVersion) throw new Error(`${name} mission kernel drift`);
             if(binding.missionProtocol!==canonicalRouter.protocol) throw new Error(`${name} mission protocol drift`);
             if(binding.failClosed!==true) throw new Error(`${name} mission router is not fail closed`);
+            if(binding.nistAiRmf?.profileId!==PROFILE) throw new Error(`${name} mission NIST AI RMF profile drift`);
+            if(binding.nistAiRmf?.criticalRiskDefault!=='HOLD') throw new Error(`${name} mission critical-risk default drift`);
           }
-          console.log(`BLACK HOUSE KERNEL ${canonical.kernelVersion} + ${canonicalRouter.protocol}: COHERENCE GREEN`);
+          if(canonicalRouter.nistAiRmfPolicy?.profileId!==PROFILE) throw new Error('canonical NIST AI RMF profile drift');
+          console.log(`BLACK HOUSE KERNEL ${canonical.kernelVersion} + ${canonicalRouter.protocol} + ${PROFILE}: COHERENCE GREEN`);
           NODE
 
   telemetry:

@@ -1,0 +1,141 @@
+#!/usr/bin/env python3
+
+import hashlib
+import json
+import pathlib
+import re
+
+HOME=pathlib.Path.home()
+ROOT=pathlib.Path(__file__).resolve().parents[1]
+
+proof_path=HOME/".config/gpt-doug/palantir-maven-consumer-last.json"
+ontology_path=ROOT/"docs/maven-ontology/ontology.json"
+
+if not proof_path.exists():
+    raise SystemExit("ERROR: Maven consumer proof missing")
+
+proof=json.loads(proof_path.read_text())
+ontology=json.loads(ontology_path.read_text())
+
+if proof.get("ok") is not True:
+    raise SystemExit("ERROR: Maven consumer proof not verified")
+
+if proof.get("resolution",{}).get("jar_match") is not True:
+    raise SystemExit("ERROR: Maven consumer SHA mismatch")
+
+coordinate=proof["coordinates"]
+version=coordinate.rsplit(":",1)[-1]
+slug=re.sub(r"[^A-Za-z0-9._-]","-",version)
+
+nodes=ontology.setdefault("nodes",[])
+links=ontology.setdefault("links",[])
+
+artifact=None
+
+for node in nodes:
+    if node.get("provenance",{}).get("exportId")==coordinate:
+        artifact=node
+        break
+
+if artifact is None:
+    raise SystemExit(
+        "ERROR: release artifact not in xZOON; run xzoon-sync-from-maven-proof"
+    )
+
+evidence_id=f"maven:evidence:consumer:{slug}"
+
+seed=hashlib.sha256(
+    ("consumer:"+coordinate).encode()
+).digest()
+
+lat=-60+(seed[0]/255)*120
+lon=-175+(seed[1]/255)*350
+
+evidence={
+    "id":evidence_id,
+    "label":f"Maven Consumer Resolution {version}",
+    "objectType":"Evidence",
+    "type":"knowledge",
+    "lat":round(lat,4),
+    "lon":round(lon,4),
+    "status":"verified",
+    "confidence":1.0,
+    "desc":"Independent Apache Maven client resolved the Foundry-hosted artifact by Maven coordinates and reproduced the expected JAR SHA-256.",
+    "provenance":{
+        "sourceSystem":"Apache Maven Consumer Verification",
+        "sourceUri":f"proof://maven-consumer/{slug}",
+        "generatedAt":proof["verified_at"],
+        "syncMethod":"apache-maven-coordinate-resolution/1.0",
+        "upstream":{
+            "coordinate":coordinate,
+            "repositoryHost":proof["repository_host"],
+            "mavenClient":proof["maven_client"],
+            "resolved":proof["resolution"]["resolved"],
+            "jarSha256":proof["resolution"]["resolved_jar_sha256"],
+            "jarMatch":proof["resolution"]["jar_match"],
+            "credentialsStored":False
+        }
+    }
+}
+
+for i,current in enumerate(nodes):
+    if current.get("id")==evidence_id:
+        nodes[i]=evidence
+        break
+else:
+    nodes.append(evidence)
+
+for link in (
+    [artifact["id"],evidence_id,"SUPPORTED_BY"],
+    [evidence_id,"maven:source","DERIVED_FROM"],
+):
+    if link not in links:
+        links.append(link)
+
+payload_for_hash={
+    "nodes":nodes,
+    "links":links
+}
+
+fingerprint=hashlib.sha256(
+    json.dumps(
+        payload_for_hash,
+        sort_keys=True,
+        separators=(",",":")
+    ).encode()
+).hexdigest()
+
+live=ontology.setdefault(
+    "meta",{}
+).setdefault(
+    "liveSync",{}
+)
+
+live.update({
+    "mavenConsumerVerified":True,
+    "mavenConsumerCoordinates":coordinate,
+    "mavenConsumerVerifiedAt":proof["verified_at"],
+    "mavenConsumerClient":proof["maven_client"],
+    "graphFingerprint":fingerprint
+})
+
+new=json.dumps(
+    ontology,
+    indent=2,
+    sort_keys=False
+)+"\n"
+
+old=ontology_path.read_text()
+
+changed=new!=old
+
+if changed:
+    ontology_path.write_text(new)
+
+print("MAVEN CONSUMER -> xZOON")
+print("ARTIFACT :",artifact["id"])
+print("EVIDENCE :",evidence_id)
+print("SHA256   :",proof["resolution"]["resolved_jar_sha256"])
+print("MATCH    :",proof["resolution"]["jar_match"])
+print("GRAPH    :",fingerprint)
+print("CHANGED  :",changed)

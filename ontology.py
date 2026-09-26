@@ -5,14 +5,17 @@ Stable interface over:
 - workers/ontology_workers.py: Task/Result/KnowledgeEntry objects, links and actions.
 - workers/arcade_ontology.py: ArcadeRun/BountyClaim objects and XUNIA bounty actions.
 - reef_bridge.py: optional continual-learning lifecycle registration.
+- flipper_ontology.py: governed Flipper Zero edge-device and digital-twin ontology.
 """
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parent
+_GLOBAL_ONTOLOGY_PATH = _ROOT / "config" / "global-ontology.json"
 
 
 def _load_module(name: str, path: Path):
@@ -30,10 +33,11 @@ _task_graph = _load_module("task_graph", _ROOT / "agents" / "ontology.py")
 _workers_ont = _load_module("workers_ont", _ROOT / "workers" / "ontology_workers.py")
 _arcade_ont = _load_module("arcade_ont", _ROOT / "workers" / "arcade_ontology.py")
 _reef_bridge = _load_module("reef_bridge", _ROOT / "reef_bridge.py")
+_flipper_ont = _load_module("flipper_ont", _ROOT / "flipper_ontology.py")
 
 
 class Ontology:
-    """Unified ontology access for planning, workers, arcade bounties and Reef."""
+    """Unified ontology access for planning, workers, arcade, Reef, and Flipper."""
 
     @staticmethod
     def validate_plan(data: dict) -> dict:
@@ -50,6 +54,19 @@ class Ontology:
     @staticmethod
     def valid_roles() -> set:
         return set(_task_graph.VALID_AGENT_ROLES)
+
+    @staticmethod
+    def global_ontology() -> dict:
+        """Return the shared, versioned global parent ontology."""
+        try:
+            return json.loads(_GLOBAL_ONTOLOGY_PATH.read_text())
+        except (OSError, json.JSONDecodeError):
+            return {}
+
+    @staticmethod
+    def global_domains() -> list:
+        """Return sorted global domain names available to all agent overlays."""
+        return sorted(Ontology.global_ontology().get("domains", {}).keys())
 
     @staticmethod
     def tasks() -> list:
@@ -107,9 +124,26 @@ class Ontology:
         return _reef_bridge.ReefBridge(config)
 
     @staticmethod
+    def flipper():
+        """Return the governed process-local Flipper Zero ontology runtime."""
+        return _flipper_ont.runtime()
+
+    @staticmethod
+    def flipper_status() -> dict:
+        """Return Flipper ontology object counts and policy state."""
+        return _flipper_ont.runtime().summary()
+
+    @staticmethod
     def status() -> dict:
         core = _workers_ont.summary()
         core["arcade"] = _arcade_ont.bounty_balance()
+        global_ontology = Ontology.global_ontology()
+        core["global_ontology"] = {
+            "ontology_id": global_ontology.get("ontology_id"),
+            "schema_version": global_ontology.get("schema_version"),
+            "status": global_ontology.get("status"),
+            "domains": Ontology.global_domains(),
+        }
         return core
 
     @staticmethod
@@ -120,8 +154,13 @@ class Ontology:
     def display() -> str:
         s = _workers_ont.summary()
         b = _arcade_ont.bounty_balance()
+        f = Ontology.flipper_status()
+        g = Ontology.global_ontology()
+        domains = Ontology.global_domains()
         lines = [
             "ONTOLOGY // UNIFIED SEMANTIC MODEL",
+            f"  Global parent: {g.get('ontology_id', 'UNAVAILABLE')} v{g.get('schema_version', '?')} [{g.get('status', 'UNKNOWN')}]",
+            f"  Global domains: {', '.join(domains) if domains else 'none'}",
             "  Object types: Task, Result, KnowledgeEntry, ArcadeRun, BountyClaim",
             f"  Tasks: {s['object_counts']['Task']}",
             f"  Results: {s['object_counts']['Result']}",
@@ -129,8 +168,12 @@ class Ontology:
             f"  Active links: {s['link_count']}",
             f"  Arcade bounty claims: {b['claim_count']}",
             f"  Arcade XBC awarded: {b['awarded']}",
+            f"  Flipper devices: {f['object_counts']['FlipperDevice']}",
+            f"  Flipper test sessions: {f['object_counts']['TestSession']}",
+            f"  Flipper digital twins: {f['object_counts']['DigitalTwin']}",
             f"  Task-graph schema: {len(_task_graph.VALID_AGENT_ROLES)} agent roles",
-            "  Action types: SubmitTask (Zyra-gated), RecordArcadeRun",
+            "  Action types: SubmitTask (Zyra-gated), RecordArcadeRun, Flipper governed actions",
+            "  Flipper policy: deny-by-default; physical actuation staged only",
             "  Continual learning: Reef registered (Serve → Observe → Grow → Commit)",
         ]
         return "\n".join(lines)

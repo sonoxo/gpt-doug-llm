@@ -1,0 +1,52 @@
+#!/bin/zsh
+set -u
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+CONFIG="$HOME/.gpt-doug/env"
+STOP="$HOME/.gpt-doug/STOP"
+SESSION="gptdoug-max"
+
+mkdir -p "$HOME/.gpt-doug"
+
+if [[ -f "$STOP" ]]; then
+  echo "GPT-DOUG HOME is paused by $STOP"
+  echo "Run: doug-on"
+  exit 0
+fi
+
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
+export GPT_DOUG_VISUAL_FPS="${GPT_DOUG_VISUAL_FPS:-15}"
+export GPT_DOUG_VISUAL_COLS="${GPT_DOUG_VISUAL_COLS:-120}"
+export GPT_DOUG_COLOR_STEP="${GPT_DOUG_COLOR_STEP:-8}"
+export GPT_DOUG_VISUAL_PRESET="${GPT_DOUG_VISUAL_PRESET:-smooth}"
+export GPT_DOUG_VOICE_NAME="${GPT_DOUG_VOICE_NAME:-Alex}"
+
+cd "$ROOT" || {
+  echo "GPT-DOUG HOME: repo missing: $ROOT"
+  exit 1
+}
+
+if ! command -v tmux >/dev/null 2>&1; then
+  echo "GPT-DOUG HOME: tmux not installed; starting shell-only mode."
+  exec python3 "$ROOT/gpt_doug_max.py"
+fi
+
+if tmux has-session -t "$SESSION" 2>/dev/null; then
+  exec tmux attach-session -t "$SESSION"
+fi
+
+tmux new-session -d -s "$SESSION" -n doug -c "$ROOT"   "python3 tools/gptdoug_max_visual.py"
+
+tmux split-window -v -p 30 -t "$SESSION":0 -c "$ROOT"   "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
+
+tmux set-option -t "$SESSION" status off
+tmux set-option -t "$SESSION" mouse on
+tmux set-option -t "$SESSION" remain-on-exit off
+tmux select-pane -t "$SESSION":0.1
+
+exec tmux attach-session -t "$SESSION"

@@ -1,0 +1,448 @@
+from pathlib import Path
+from datetime import datetime, timezone
+import hashlib
+import json
+
+ROOT=Path.cwd()
+STATE=Path.home()/".config/gpt-doug"
+
+ontology_path=ROOT/"docs/maven-ontology/ontology.json"
+release_path=STATE/"palantir-maven-release-last.json"
+consumer_path=STATE/"palantir-maven-consumer-last.json"
+lineage_path=STATE/"palantir-maven-lineage.json"
+
+ontology=json.loads(ontology_path.read_text())
+release=json.loads(release_path.read_text())
+consumer=json.loads(consumer_path.read_text())
+
+assert release.get("ok") is True
+assert consumer.get("ok") is True
+assert release["coordinates"]==consumer["coordinates"]
+assert release["integrity"]["jar_match"] is True
+assert consumer["resolution"]["jar_match"] is True
+
+nodes=ontology.setdefault("nodes",[])
+links=ontology.setdefault("links",[])
+relations=ontology.setdefault("relationTypes",[])
+
+node_by_id={
+    n["id"]:n
+    for n in nodes
+}
+
+# -------------------------------------------------
+# REPAIR 1:
+# Consumer verification is Evidence, not a consumer.
+# Remove the incorrect CONSUMED_BY relation entirely.
+# -------------------------------------------------
+
+links[:]=[
+    e for e in links
+    if not (
+        len(e)==3 and
+        e[2]=="CONSUMED_BY"
+    )
+]
+
+relations[:]=[
+    r for r in relations
+    if r!="CONSUMED_BY"
+]
+
+for rel in (
+    "PREVIOUS_VERSION",
+    "CURRENT_VERSION",
+):
+    if rel not in relations:
+        relations.append(rel)
+
+# -------------------------------------------------
+# RELEASE ARTIFACTS
+# -------------------------------------------------
+
+artifacts=[
+    n for n in nodes
+    if n.get("id","").startswith(
+        "maven:artifact:foundry:"
+    )
+    and n.get(
+        "provenance",{}
+    ).get(
+        "exportId"
+    )
+]
+
+def ts(node):
+    value=node.get(
+        "provenance",{}
+    ).get(
+        "generatedAt",
+        ""
+    )
+
+    try:
+        return datetime.fromisoformat(
+            value.replace(
+                "Z",
+                "+00:00"
+            )
+        )
+    except Exception:
+        return datetime.min.replace(
+            tzinfo=timezone.utc
+        )
+
+artifacts.sort(key=ts)
+
+if not artifacts:
+    raise SystemExit(
+        "ERROR: no verified Foundry Maven artifacts"
+    )
+
+artifact_ids={
+    n["id"]
+    for n in artifacts
+}
+
+latest=artifacts[-1]
+
+train_id=(
+    "maven:release-train:"
+    "com.xunia:"
+    "gpt-doug-foundry-bridge"
+)
+
+# -------------------------------------------------
+# Remove old version edges only.
+# -------------------------------------------------
+
+links[:]=[
+    e for e in links
+    if not (
+        len(e)==3 and
+        e[2] in {
+            "PREVIOUS_VERSION",
+            "CURRENT_VERSION",
+        }
+    )
+]
+
+# -------------------------------------------------
+# Ensure release train membership.
+# -------------------------------------------------
+
+for artifact in artifacts:
+    edge=[
+        train_id,
+        artifact["id"],
+        "CONTAINS",
+    ]
+
+    if edge not in links:
+        links.append(edge)
+
+# Newer -> previous version.
+for i in range(
+    1,
+    len(artifacts)
+):
+    links.append([
+        artifacts[i]["id"],
+        artifacts[i-1]["id"],
+        "PREVIOUS_VERSION",
+    ])
+
+links.append([
+    train_id,
+    latest["id"],
+    "CURRENT_VERSION",
+])
+
+# -------------------------------------------------
+# De-duplicate graph.
+# -------------------------------------------------
+
+clean=[]
+seen=set()
+
+for edge in links:
+    key=tuple(edge)
+
+    if key in seen:
+        continue
+
+    seen.add(key)
+    clean.append(edge)
+
+links[:]=clean
+
+# -------------------------------------------------
+# REAL OPERATIONAL IMPACT
+#
+# Maven artifact -> application impact only when
+# explicit dependency semantics prove it.
+#
+# consumer USES artifact
+# consumer REQUIRES artifact
+# artifact FEEDS consumer
+# artifact PROVIDES consumer
+#
+# Evidence, Source, lineage and provenance do NOT
+# count as operational impact.
+# -------------------------------------------------
+
+def operational_impact(start):
+    visited={start}
+    queue=[start]
+    result=set()
+
+    while queue:
+        current=queue.pop(0)
+
+        for source,target,relation in links:
+
+            candidate=None
+
+            if (
+                relation in {
+                    "FEEDS",
+                    "PROVIDES",
+                }
+                and source==current
+            ):
+                candidate=target
+
+            elif (
+                relation in {
+                    "USES",
+                    "REQUIRES",
+                }
+                and target==current
+            ):
+                candidate=source
+
+            if not candidate:
+                continue
+
+            node=node_by_id.get(
+                candidate,
+                {}
+            )
+
+            object_type=node.get(
+                "objectType",
+                ""
+            )
+
+            if object_type in {
+                "Evidence",
+                "Source",
+            }:
+                continue
+
+            if candidate.startswith(
+                "maven:evidence:"
+            ):
+                continue
+
+            if candidate not in visited:
+                visited.add(candidate)
+                result.add(candidate)
+                queue.append(candidate)
+
+    return sorted(result)
+
+# -------------------------------------------------
+# Consumer evidence map.
+# -------------------------------------------------
+
+consumer_coordinates=set()
+
+for node in nodes:
+    if not node.get(
+        "id",
+        ""
+    ).startswith(
+        "maven:evidence:consumer:"
+    ):
+        continue
+
+    coordinate=(
+        node.get(
+            "provenance",{}
+        )
+        .get(
+            "upstream",{}
+        )
+        .get(
+            "coordinate"
+        )
+    )
+
+    if coordinate:
+        consumer_coordinates.add(
+            coordinate
+        )
+
+versions=[]
+
+for artifact in reversed(
+    artifacts
+):
+    coordinate=artifact[
+        "provenance"
+    ][
+        "exportId"
+    ]
+
+    upstream=artifact.get(
+        "provenance",{}
+    ).get(
+        "upstream",{}
+    )
+
+    impact=operational_impact(
+        artifact["id"]
+    )
+
+    versions.append({
+        "coordinate":
+            coordinate,
+
+        "nodeId":
+            artifact["id"],
+
+        "gitCommit":
+            upstream.get(
+                "gitCommit"
+            ),
+
+        "gitBranch":
+            upstream.get(
+                "gitBranch"
+            ),
+
+        "jarSha256":
+            upstream.get(
+                "jarSha256"
+            ),
+
+        "consumerVerified":
+            coordinate
+            in consumer_coordinates,
+
+        "operationalImpactCount":
+            len(impact),
+
+        "operationalImpactObjects":
+            impact,
+    })
+
+fingerprint=hashlib.sha256(
+    json.dumps(
+        {
+            "nodes":nodes,
+            "links":links,
+        },
+        sort_keys=True,
+        separators=(",",":"),
+    ).encode()
+).hexdigest()
+
+live=ontology.setdefault(
+    "meta",{}
+).setdefault(
+    "liveSync",{}
+)
+
+live.update({
+    "mavenLineageVersion":
+        "2.1",
+
+    "mavenReleaseCount":
+        len(artifacts),
+
+    "mavenLatestCoordinate":
+        latest[
+            "provenance"
+        ][
+            "exportId"
+        ],
+
+    "mavenLatestNode":
+        latest["id"],
+
+    "mavenVersionLineage":
+        True,
+
+    "mavenImpactSemantics":
+        "explicit-runtime-dependencies-only",
+
+    "mavenOperationalImpactCount":
+        versions[0][
+            "operationalImpactCount"
+        ],
+
+    "graphFingerprint":
+        fingerprint,
+})
+
+ontology_path.write_text(
+    json.dumps(
+        ontology,
+        indent=2,
+    )+"\n"
+)
+
+proof={
+    "schema":
+        "xunia.gpt-doug.maven-lineage.v2.1",
+
+    "generatedAt":
+        datetime.now(
+            timezone.utc
+        ).isoformat(),
+
+    "releaseCount":
+        len(versions),
+
+    "latestCoordinate":
+        versions[0][
+            "coordinate"
+        ],
+
+    "latestConsumerVerified":
+        versions[0][
+            "consumerVerified"
+        ],
+
+    "versions":
+        versions,
+
+    "graphFingerprint":
+        fingerprint,
+
+    "credentialsStored":
+        False,
+}
+
+lineage_path.write_text(
+    json.dumps(
+        proof,
+        indent=2,
+    )+"\n"
+)
+
+lineage_path.chmod(0o600)
+
+print()
+print("==============================================")
+print("MAVEN LINEAGE V2.1")
+print("==============================================")
+print("RELEASES          :",len(versions))
+print("CURRENT           :",versions[0]["coordinate"])
+print("CONSUMER VERIFIED :",versions[0]["consumerVerified"])
+print("OPERATIONAL IMPACT:",versions[0]["operationalImpactCount"])
+print("IMPACT OBJECTS    :",versions[0]["operationalImpactObjects"])
+print("GRAPH             :",fingerprint)
+print("==============================================")

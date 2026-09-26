@@ -1,0 +1,157 @@
+{
+  "ontology": "DefenseMavenActivation",
+  "version": "1.0.0",
+  "purpose": "Require authorized Palantir Foundry Maven artifacts as the governed software supply-chain source whenever the GPT-DOUG defensive runtime profile is activated.",
+  "mode": "DEFENSIVE_SOFTWARE_ACTIVATION_ONLY",
+  "objectTypes": [
+    "DefenseActivationProfile",
+    "DefenseSystem",
+    "ArtifactRepository",
+    "MavenArtifactSet",
+    "ArtifactVerificationPolicy",
+    "RuntimeAgent",
+    "OntologyLayer",
+    "ActivationEvent",
+    "RollbackPoint"
+  ],
+  "linkTypes": [
+    "ActivationEnablesDefenseSystem",
+    "ActivationRequiresArtifactSet",
+    "ArtifactSetResolvedFromRepository",
+    "ArtifactSetVerifiedByPolicy",
+    "RuntimeAgentExecutesActivation",
+    "ActivationObservedByOntology",
+    "ActivationCreatesRollbackPoint"
+  ],
+  "objects": [
+    {
+      "objectType": "DefenseActivationProfile",
+      "id": "xunia-defense-maven-gated",
+      "properties": {
+        "activationCommand": "defense activate",
+        "artifactSource": "PALANTIR_MAVEN_REQUIRED",
+        "failMode": "FAIL_CLOSED",
+        "requiresHumanAuthorization": true,
+        "requiresRepositoryReachability": true,
+        "requiresArtifactAllowlist": true,
+        "requiresChecksumOrSignature": true,
+        "requiresRollbackPoint": true,
+        "automaticPublishing": false
+      }
+    },
+    {
+      "objectType": "DefenseSystem",
+      "id": "gpt-doug-defensive-runtime",
+      "properties": {
+        "scope": "defensive cyber, monitoring, resilience, recovery, simulation, software assurance",
+        "externalWriteDefault": "DENY",
+        "realWorldWeaponsControl": "PROHIBITED",
+        "autonomousTargeting": "PROHIBITED",
+        "weaponsReleaseAuthority": "NONE"
+      }
+    },
+    {
+      "objectType": "ArtifactRepository",
+      "id": "palantir-foundry-maven",
+      "properties": {
+        "provider": "Palantir Foundry",
+        "repositoryType": "Maven",
+        "repositoryUrlVariable": "PALANTIR_MAVEN_REPOSITORY_URL",
+        "tokenVariable": "PALANTIR_MAVEN_TOKEN",
+        "secretStorage": "ENVIRONMENT_ONLY",
+        "transport": "HTTPS"
+      }
+    },
+    {
+      "objectType": "MavenArtifactSet",
+      "id": "xunia-defense-runtime-artifacts",
+      "properties": {
+        "selectionMode": "ALLOWLIST_ONLY",
+        "versionPolicy": "PINNED_OR_APPROVED_RANGE",
+        "snapshotPolicy": "DENY_BY_DEFAULT",
+        "requiredMetadata": ["groupId", "artifactId", "version", "checksumOrSignature", "sourceRepository"]
+      }
+    },
+    {
+      "objectType": "ArtifactVerificationPolicy",
+      "id": "glass-onion-defense-artifact-policy",
+      "properties": {
+        "verifyRepositoryHost": true,
+        "verifyHttps": true,
+        "verifyArtifactIdentity": true,
+        "verifyChecksumOrSignature": true,
+        "verifyAllowlist": true,
+        "verifyProvenance": true,
+        "denyUnverifiedArtifacts": true
+      }
+    },
+    {
+      "objectType": "RuntimeAgent",
+      "id": "gpt-redpanda-llm",
+      "properties": {
+        "role": "activation-supervisor-and-cpr",
+        "authority": "defensive-runtime-only"
+      }
+    },
+    {
+      "objectType": "OntologyLayer",
+      "id": "glass-onion",
+      "properties": {
+        "role": "provenance-observability-control-plane"
+      }
+    }
+  ],
+  "links": [
+    {
+      "linkType": "ActivationEnablesDefenseSystem",
+      "from": "DefenseActivationProfile:xunia-defense-maven-gated",
+      "to": "DefenseSystem:gpt-doug-defensive-runtime"
+    },
+    {
+      "linkType": "ActivationRequiresArtifactSet",
+      "from": "DefenseActivationProfile:xunia-defense-maven-gated",
+      "to": "MavenArtifactSet:xunia-defense-runtime-artifacts"
+    },
+    {
+      "linkType": "ArtifactSetResolvedFromRepository",
+      "from": "MavenArtifactSet:xunia-defense-runtime-artifacts",
+      "to": "ArtifactRepository:palantir-foundry-maven"
+    },
+    {
+      "linkType": "ArtifactSetVerifiedByPolicy",
+      "from": "MavenArtifactSet:xunia-defense-runtime-artifacts",
+      "to": "ArtifactVerificationPolicy:glass-onion-defense-artifact-policy"
+    },
+    {
+      "linkType": "RuntimeAgentExecutesActivation",
+      "from": "RuntimeAgent:gpt-redpanda-llm",
+      "to": "DefenseActivationProfile:xunia-defense-maven-gated"
+    },
+    {
+      "linkType": "ActivationObservedByOntology",
+      "from": "DefenseActivationProfile:xunia-defense-maven-gated",
+      "to": "OntologyLayer:glass-onion"
+    }
+  ],
+  "activationSequence": [
+    "validate local ontology",
+    "validate Palantir Maven configuration",
+    "probe authorized repository",
+    "resolve only allowlisted artifact coordinates",
+    "verify checksum/signature and provenance",
+    "create rollback point",
+    "activate defensive software profile",
+    "emit Glass Onion audit event"
+  ],
+  "guardrails": {
+    "createsPalantirEntitlement": false,
+    "storesCredentialsInGit": false,
+    "automaticArtifactPublishing": false,
+    "unverifiedArtifactExecution": false,
+    "autonomousTargeting": false,
+    "weaponsRelease": false,
+    "criticalInfrastructureDisruption": false,
+    "humanAuthorizationRequired": true,
+    "rollbackRequired": true
+  }
+}

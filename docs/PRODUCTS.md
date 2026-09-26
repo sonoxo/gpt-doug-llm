@@ -6,6 +6,7 @@ ZYRA is the product layer built on top of GPT-DOUG-LLM / NXYZ runtime components
 
 | Product | Buyer / user | Value | Current state |
 | --- | --- | --- | --- |
+| **[GPT-NEDU](../gpt_nedu/README.md)** | Beginners across GPT-Doug, ZYRA, and XUNIA | Source-grounded lessons, browser simulations, and isolated SQLite demonstration | **Implemented education module; Pages release required for new page** |
 | **ZYRA Core** | Developers, technical teams, AI builders | Bounded agentic coding with checkpoints, validation, rollback, policy gates, and local-first model support | **Implemented repository runtime** |
 | **Black House Studio / Orbit** | Developers building in a browser | Browser IDE, project collaboration, browser AI, and an Ollama-compatible Black House model bridge | **Owner-private Studio deployed; bridge and project memory available in source** |
 | **NXYZ Mouse Mic** | Foundry users, accessibility workflows, operators navigating dense web UIs | Voice/keyboard guidance that identifies, highlights, and activates visible controls with confirmation on high-impact actions | **v1.0.2 shipping candidate** |

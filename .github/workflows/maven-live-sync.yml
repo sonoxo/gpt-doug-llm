@@ -1,0 +1,172 @@
+name: Maven Live Sync
+
+on:
+  pull_request:
+    paths:
+      - "tools/maven_live_sync.py"
+      - "tests/test_maven_live_sync.py"
+      - ".github/workflows/maven-live-sync.yml"
+      - "maven-sync/**"
+      - "docs/maven-ontology/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "maven-sync/approved/*.json"
+  workflow_dispatch:
+    inputs:
+      export_path:
+        description: "Approved Maven/Foundry export path in the repository"
+        required: true
+        default: "maven-sync/approved/latest.json"
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maven-live-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    name: Maven sync contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Unit and governance tests
+        run: python -m pytest -q tests/test_maven_live_sync.py
+
+      - name: Validate example export without writes
+        run: |
+          python tools/maven_live_sync.py \
+            --input maven-sync/examples/approved-export.json \
+            --target docs/maven-ontology/ontology.json \
+            --audit /tmp/maven-sync-audit.json \
+            --check
+
+      - name: Diff hygiene
+        run: git diff --check
+
+  sync:
+    name: Publish approved Maven export
+    if: github.event_name != 'pull_request'
+    needs: contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Resolve approved exports
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          DISPATCH_PATH: ${{ inputs.export_path }}
+          EVENT_BEFORE: ${{ github.event.before }}
+          EVENT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          : > /tmp/maven_exports.txt
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            printf '%s\n' "$DISPATCH_PATH" >> /tmp/maven_exports.txt
+          else
+            git diff --name-only "$EVENT_BEFORE" "$EVENT_SHA" \
+              | grep -E '^maven-sync/approved/[^/]+\.json$' \
+              | sort -u >> /tmp/maven_exports.txt || true
+          fi
+          if [[ ! -s /tmp/maven_exports.txt ]]; then
+            echo "No approved Maven export files found in triggering change."
+            exit 1
+          fi
+          while IFS= read -r export_path; do
+            case "$export_path" in
+              maven-sync/approved/*.json) ;;
+              *) echo "Refusing path outside maven-sync/approved: $export_path"; exit 1 ;;
+            esac
+            [[ -f "$export_path" ]] || { echo "Missing export: $export_path"; exit 1; }
+          done < /tmp/maven_exports.txt
+
+      - name: Apply approved exports
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r export_path; do
+            echo "Syncing $export_path"
+            python tools/maven_live_sync.py \
+              --input "$export_path" \
+              --target docs/maven-ontology/ontology.json \
+              --audit docs/maven-ontology/sync-log.json
+          done < /tmp/maven_exports.txt
+
+      - name: Validate generated graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m json.tool docs/maven-ontology/ontology.json >/dev/null
+          python -m json.tool docs/maven-ontology/sync-log.json >/dev/null
+          git diff --check
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          graph = json.loads(Path('docs/maven-ontology/ontology.json').read_text())
+          ids = [node['id'] for node in graph['nodes']]
+          assert len(ids) == len(set(ids)), 'duplicate node ids'
+          id_set = set(ids)
+          for source, target, relation in graph['links']:
+              assert source in id_set, f'broken link source: {source}'
+              assert target in id_set, f'broken link target: {target}'
+              assert relation, 'empty relation'
+          governance = graph['governance']
+          assert governance['actionModes'] == ['recommend', 'simulate', 'approved']
+          assert governance['autonomousDisruptiveActions'] is False
+          print(f"validated {len(ids)} nodes / {len(graph['links'])} links")
+          PY
+
+      - name: Commit live Maven ontology update
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- docs/maven-ontology/ontology.json docs/maven-ontology/sync-log.json; then
+            echo "Approved export already represented; no commit needed."
+            exit 0
+          fi
+          git config user.name "maven-live-sync[bot]"
+          git config user.email "maven-live-sync[bot]@users.noreply.github.com"
+          git add docs/maven-ontology/ontology.json docs/maven-ontology/sync-log.json
+          git commit -m "sync(maven): ingest approved ontology export"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "Maven ontology live sync committed to main."
+              exit 0
+            fi
+            echo "Push race detected; rebasing onto latest main (attempt $attempt/3)."
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Unable to push Maven live sync after 3 attempts."
+          exit 1

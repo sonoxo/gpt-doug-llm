@@ -1,0 +1,70 @@
+#!/bin/sh
+set -eu
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+STATE_DIR="$HOME/.config/gpt-doug"
+LIVE_PID="$STATE_DIR/zyrapalantir-live.pid"
+DEFENSE_STATE="$STATE_DIR/defense-profile.json"
+
+printf '\n🎖️  ===============================================================\n'
+printf '🐼  ZYRAPALANTIR FIELD MEGA BOOT\n'
+printf '🛡️  DEFENSE → LIVE → FIELD OPS → HUMAN DECISION SUPPORT\n'
+printf '🎖️  ===============================================================\n'
+
+mkdir -p "$STATE_DIR"
+
+if ! python3 - "$DEFENSE_STATE" <<'PY' >/dev/null 2>&1
+import json, pathlib, sys
+p=pathlib.Path(sys.argv[1])
+try:
+    d=json.loads(p.read_text())
+except Exception:
+    raise SystemExit(1)
+raise SystemExit(0 if d.get('active') is True else 1)
+PY
+then
+  echo '🛡️  [1/4] Defensive profile inactive — activating...'
+  sh "$ROOT/scripts/defense" activate
+else
+  echo '✅ [1/4] Defensive profile already active'
+fi
+
+running=0
+if [ -f "$LIVE_PID" ]; then
+  pid="$(cat "$LIVE_PID" 2>/dev/null || true)"
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+    running=1
+    echo "✅ [2/4] ZYRAPALANTIR LIVE already running (PID $pid)"
+  fi
+fi
+
+if [ "$running" -eq 0 ]; then
+  echo '📡 [2/4] Starting ZYRAPALANTIR LIVE...'
+  sh "$ROOT/scripts/zyrapalantir" live-start
+fi
+
+echo '🧅 [3/4] Validating field-ops ontology...'
+python3 -m json.tool "$ROOT/safety-shield/ontology/zyrapalantir-field.json" >/dev/null
+echo '✅ Field policy valid'
+
+echo '🎖️  [4/4] Launching field-operations dashboard...'
+python3 "$ROOT/scripts/zyrapalantir_field.py" all
+
+printf '\n===============================================================\n'
+printf '🟢 ZYRAPALANTIR FIELD CONSOLE READY\n'
+printf '📡 LIVE MONITOR ............ RUNNING/REQUESTED\n'
+printf '🛡️  CYBER/READINESS ........ ACTIVE\n'
+printf '🧠 INTEL CORRELATION ....... READ-ONLY / AUTHORIZED INPUTS\n'
+printf '👤 HUMAN DECISION .......... REQUIRED\n'
+printf '⛔ AUTO EXTERNAL ACTION .... FALSE\n'
+printf '🎯 TARGETING CONTROL ....... FALSE\n'
+printf '🧨 WEAPONS CONTROL ......... FALSE\n'
+printf '===============================================================\n'
+printf 'Commands:\n'
+printf '  zyra-field status\n'
+printf '  zyra-field assets\n'
+printf '  zyra-field comms\n'
+printf '  zyra-field intel\n'
+printf '  zyra-field cyber\n'
+printf '  zyra-field incidents\n'
+printf '  zyra-field readiness\n'
+printf '  zyra-field all\n'
