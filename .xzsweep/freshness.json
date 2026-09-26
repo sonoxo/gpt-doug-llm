@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-25T00:27:10Z",
+  "cutoff_at": "2026-09-25T01:16:04Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -381,11 +381,11 @@
     ".github/workflows/gpt-doug-max-full-completion.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-23T09:49:35Z",
-      "reviewed_at": "2026-09-25T10:13:58Z",
-      "sha256": "ad8b569f3b46a060d42e349a5b468b99e528baf9d8d4ccd7baa1e5f07bda1a13",
-      "size": 20551,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "2446f7186e5df4d1381f4db4ddba13309d7cfe0fc4fe825735c7769e43907ad7",
+      "size": 20550,
       "validation_issues": [],
       "was_due": false
     },
@@ -689,11 +689,11 @@
     ".github/workflows/unified-tests.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T21:29:55Z",
-      "reviewed_at": "2026-09-26T00:25:11Z",
-      "sha256": "b41b806343f8b2edae8468330c4702d919296c21c8f328114b2a2a6691ac9f11",
-      "size": 2807,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "837778a46e67d81e8f3494f9fa6e2391462ac4aa5f1b9f3f513db3f387d35552",
+      "size": 4140,
       "validation_issues": [],
       "was_due": false
     },
@@ -2721,6 +2721,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/GPT_DOUG_BRAIN.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "92477623b1f1dde1eee46c357862822beaeaae629bc92e76f50da373fe0a23f1",
+      "size": 2761,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/GPT_DOUG_CLAWBOT_MODE.md": {
       "actions": [],
       "binary": false,
@@ -3297,9 +3308,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-26T00:25:09Z",
+      "git_touched_at": "2026-09-26T00:27:10Z",
       "reviewed_at": null,
-      "sha256": "d27af07b59bd4fc7f500c4242daff0cd6e197f0fdc04e9f817118be268222485",
+      "sha256": "e9abf4fd1a1064151f3b6dddb5458de4c852e7f1b409eb14eb6a56deba52fe05",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -4797,6 +4808,94 @@
       "reviewed_at": "2026-09-26T00:25:11Z",
       "sha256": "0f0c91b6d2b924f2f5074d05ac08ab7cc3803d28029ec589786f52114047737f",
       "size": 582,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "812dc4f1319fb4c2d3ccf3cfd42d97dc44f2a3b8eb9ee19758e9dd86fb41963e",
+      "size": 281,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "48f1e949240fdf18d13d91046f56821409371b9f37a99001d510f0b40eec2076",
+      "size": 3436,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/kernel.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "59cc935c22f078207dbac58856856adb38ce2aec0e8bf5ebe55a44cfaa10e4b4",
+      "size": 7125,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/memory.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "d383ce9fbe6c8255358e5e5f91e86bed21a0280b4483a4de93e8554c56a7a9f9",
+      "size": 5528,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/models.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "fae867facc66a1baa7ec18252a72b305382c3d0ef236d4b7f42f0110c72e243c",
+      "size": 721,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/ontology.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "08abbb2db9f4f439f08e86b09e6b424df57bf572c7b00efb35b15511a4b25139",
+      "size": 2003,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/router.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "ba94a99cd93ecdf2dc4e47d25e3d94efa38b99c67142d7cb8bc9db02dbde7196",
+      "size": 2911,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/status.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "435d4c7e05b9d98214b2d5d85e23be5b32c1d693884464ca4a9d04d1ebedb64f",
+      "size": 3193,
       "validation_issues": [],
       "was_due": false
     },
@@ -8136,11 +8235,11 @@
     "pyproject.toml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-22T15:33:37Z",
-      "reviewed_at": "2026-09-26T00:25:11Z",
-      "sha256": "46c753c96864d403c14968b6c137f5ebe2341e09b6b3b5c4bb373c4c391c0501",
-      "size": 2684,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "56483995ae6b18d5ced00f3b7b3b643b6c0a239af6cf62061c865637863e0dce",
+      "size": 2740,
       "validation_issues": [],
       "was_due": false
     },
@@ -9456,11 +9555,11 @@
     "scripts/doug-max": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-22T15:33:37Z",
-      "reviewed_at": "2026-09-26T00:25:11Z",
-      "sha256": "1e3d2a7b4e08ac3e683e969b6f738a193bd4e622462fd9772b96de6e78481ffe",
-      "size": 2636,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "630fe00954e809c07845f85393bf8c9fe4bf196eded02b80c3f178081cd3dcde",
+      "size": 4808,
       "validation_issues": [],
       "was_due": false
     },
@@ -10839,6 +10938,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_gpt_brain.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "697ccfa560f646840bc15d0e6c5674e80ddac2a03f53890cd1eacac25f59f876",
+      "size": 5425,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_gpt_doug_autonomy_prior_art.py": {
       "actions": [],
       "binary": false,
@@ -11832,11 +11942,11 @@
     "the-black-house/kernel/kernel.manifest.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-21T01:45:26Z",
-      "reviewed_at": "2026-09-25T10:13:58Z",
-      "sha256": "89ff32bf5c873352700656983e1e0bb08014355e6099ae403baa280b36f2b610",
-      "size": 4552,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-26T01:15:55Z",
+      "reviewed_at": null,
+      "sha256": "cd739a2bd8f193f98fd28638a8cb60d4939c3279c978816d13d0fe2b814bb902",
+      "size": 4743,
       "validation_issues": [],
       "was_due": false
     },
@@ -13769,9 +13879,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-26T00:25:13Z",
+      "git_touched_at": "2026-09-26T00:27:08Z",
       "reviewed_at": null,
-      "sha256": "dc61c4cd0a4e35199f77408cfafce781e6b123dae2047bdca80b84b33aad715c",
+      "sha256": "24932c4e16beb8aa28101554c7367bc1d32523d8ac1da9b78dd717eeee49381e",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -13791,9 +13901,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-25T07:52:06Z",
+      "git_touched_at": "2026-09-26T00:27:08Z",
       "reviewed_at": null,
-      "sha256": "8d3093e7524105b2ce5f6cbea275a788616f8fd0d86f39f408f0271993a1322c",
+      "sha256": "986bdde492bd02e5cc6989885d6b966c06210b6eaade6f3cde2b393977f92b91",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -16242,11 +16352,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-26T00:27:10Z",
+  "generated_at": "2026-09-26T01:16:04Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1476,
+  "tracked_files_reviewed": 1486,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
