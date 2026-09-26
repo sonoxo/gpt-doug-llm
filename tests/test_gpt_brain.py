@@ -31,6 +31,11 @@ def test_router_selects_builder_research_and_critic():
     assert "critic" in names
 
 
+def test_router_rejects_nonpositive_agent_limit():
+    with pytest.raises(ValueError):
+        BrainRouter().route("build", max_agents=0)
+
+
 def test_memory_roundtrip_and_recall(tmp_path: Path):
     memory = BrainMemory(tmp_path / "memory.jsonl")
     memory.add("semantic", "NF2 is linked to meningioma research", provenance="unit-test")
@@ -57,6 +62,12 @@ def test_ontology_search_returns_exact_paths(tmp_path: Path):
     )
 
 
+def test_missing_ontology_is_empty(tmp_path: Path):
+    ontology = OntologyIndex(tmp_path / "missing.json")
+    assert ontology.load() == {}
+    assert ontology.search("anything") == []
+
+
 def test_kernel_runs_specialists_and_archives_episode(tmp_path: Path):
     memory = BrainMemory(tmp_path / "memory.jsonl")
     ontology_path = tmp_path / "ontology.json"
@@ -73,6 +84,50 @@ def test_kernel_runs_specialists_and_archives_episode(tmp_path: Path):
     assert result.answer.startswith("Integrated answer")
     assert "critic" in result.agents
     assert memory.records()[-1]["provenance"].startswith("brain-run:")
+
+
+def test_kernel_survives_one_specialist_failure(tmp_path: Path):
+    def flaky_chat(messages, model, options):
+        if "evidence specialist" in messages[0]["content"]:
+            raise RuntimeError("simulated specialist outage")
+        return fake_chat(messages, model, options)
+
+    ontology_path = tmp_path / "ontology.json"
+    ontology_path.write_text(json.dumps({"domains": {"medical": {"focus": "cancer"}}}))
+    result = BrainKernel(
+        chat_fn=flaky_chat,
+        memory=BrainMemory(tmp_path / "memory.jsonl"),
+        ontology=OntologyIndex(ontology_path),
+    ).run("build medical cancer research ontology")
+
+    assert result.answer.startswith("Integrated answer")
+    assert any(item.startswith("specialist:research:failed:") for item in result.uncertainty)
+
+
+def test_memory_archive_failure_does_not_destroy_answer(tmp_path: Path):
+    class BrokenArchiveMemory(BrainMemory):
+        def add(self, *args, **kwargs):
+            raise OSError("simulated read-only memory")
+
+    ontology_path = tmp_path / "ontology.json"
+    ontology_path.write_text(json.dumps({"domains": {"medical": {"focus": "cancer"}}}))
+    result = BrainKernel(
+        chat_fn=fake_chat,
+        memory=BrokenArchiveMemory(tmp_path / "memory.jsonl"),
+        ontology=OntologyIndex(ontology_path),
+    ).run("build medical cancer research ontology")
+
+    assert result.answer.startswith("Integrated answer")
+    assert "memory_archive:failed:OSError" in result.uncertainty
+
+
+def test_empty_task_is_rejected(tmp_path: Path):
+    with pytest.raises(ValueError):
+        BrainKernel(
+            chat_fn=fake_chat,
+            memory=BrainMemory(tmp_path / "memory.jsonl"),
+            ontology=OntologyIndex(tmp_path / "missing.json"),
+        ).run("   ")
 
 
 def test_transcript_ingestion(tmp_path: Path):
