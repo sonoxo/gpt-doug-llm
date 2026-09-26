@@ -48,11 +48,18 @@ class BrainKernel:
         return llm_backend.chat_once(messages, model, options)
 
     def _call(self, system: str, user: str) -> str:
-        result = self.chat_fn(
-            [{"role": "system", "content": system}, {"role": "user", "content": user}],
-            self.config.model,
-            {"temperature": self.config.temperature},
-        )
+        try:
+            result = self.chat_fn(
+                [{"role": "system", "content": system}, {"role": "user", "content": user}],
+                self.config.model,
+                {"temperature": self.config.temperature},
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                f"brain provider call failed: {type(exc).__name__}"
+            ) from exc
+        if not isinstance(result, dict):
+            raise RuntimeError("brain provider returned an invalid response")
         if result.get("error"):
             raise RuntimeError(f"brain provider error: {result['error']}")
         content = str((result.get("message") or {}).get("content", "")).strip()
