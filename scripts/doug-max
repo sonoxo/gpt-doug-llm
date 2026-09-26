@@ -72,17 +72,30 @@ case "$first_arg_lc" in
     shift
     cd "$ROOT"
     if [[ $# -eq 0 ]]; then
-      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "status of the GPT-Doug brain" --json
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli status
     fi
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "$@"
     ;;
+  brain-doctor|doctor)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli doctor
+    ;;
   brain-json)
     shift
+    if [[ $# -eq 0 ]]; then
+      echo "usage: scripts/doug-max brain-json <task>" >&2
+      exit 2
+    fi
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "$@" --json
     ;;
   brain-recall)
     shift
+    if [[ $# -eq 0 ]]; then
+      echo "usage: scripts/doug-max brain-recall <query>" >&2
+      exit 2
+    fi
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli recall "$@"
     ;;
