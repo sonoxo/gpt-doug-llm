@@ -132,7 +132,7 @@ jobs:
                           'approvalState': 'PENDING_POLICY',
                       },
                   )
-                  assert mission['status'] == 'COMPLETED'
+                  assert mission['status'] == 'ACCEPTED'
                   assert mission['mission']['result']['executionState'] == (
                       'MISSION_CONTRACT_ACCEPTED'
                   )
