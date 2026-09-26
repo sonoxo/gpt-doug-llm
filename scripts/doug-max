@@ -68,6 +68,48 @@ case "$first_arg_lc" in
     fi
     exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" search "$*"
     ;;
+  brain)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "status of the GPT-Doug brain" --json
+    fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "$@"
+    ;;
+  brain-json)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "$@" --json
+    ;;
+  brain-recall)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli recall "$@"
+    ;;
+  clone|brain-clone)
+    shift
+    if [[ $# -lt 1 ]]; then
+      echo "usage: scripts/doug-max clone <chat-export.txt> [provenance]" >&2
+      exit 2
+    fi
+    source_file="$1"
+    provenance="${2:-user-authorized-transcript}"
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli ingest-clone "$source_file" --provenance "$provenance"
+    ;;
+  swarm|hivemind)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then
+      set -- "inspect the GPT-Doug ecosystem and propose the highest-value next build"
+    fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cli run "Use ontology, research, builder, and critic specialists in parallel. $*" --json
+    ;;
+  brain-status|matrix)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.status "$@"
+    ;;
   mss)
     shift
     exec python3 "$ROOT/scripts/zyra_mss.py" "$@"
