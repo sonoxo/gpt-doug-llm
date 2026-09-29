@@ -10,6 +10,10 @@
   const flipBtn=document.getElementById("cameraFlip");
   const filterBtn=document.getElementById("cameraFilter");
   const overlayBtn=document.getElementById("cameraOverlayToggle");
+  const head=bay.querySelector(".camera-bay-head");
+  const closeBtn=document.createElement("button");
+  closeBtn.id="cameraBayClose";closeBtn.type="button";closeBtn.textContent="CLOSE";closeBtn.className="camera-bay-close";
+  head?.appendChild(closeBtn);
   if(!bay||!video||!viewToggle) return;
 
   let stream=null;
@@ -24,6 +28,7 @@
   }
 
   function setOpen(open){
+    if(open) document.dispatchEvent(new CustomEvent("maven:camera-open"));
     bay.hidden=!open;
     simPanel?.classList.toggle("camera-open",open);
     viewToggle.classList.toggle("active",open);
@@ -91,6 +96,8 @@
   }
 
   viewToggle.addEventListener("click",()=>setOpen(bay.hidden));
+  closeBtn.addEventListener("click",()=>setOpen(false));
+  document.addEventListener("maven:drone-open",()=>setOpen(false));
   startBtn.addEventListener("click",startCamera);
   stopBtn.addEventListener("click",stopCamera);
   flipBtn.addEventListener("click",flipCamera);
