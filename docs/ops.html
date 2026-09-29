@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#05070b">
 <title>XUNIA Mission Ops</title>
 <style>
 :root{--bg:#05070b;--panel:#0b1118;--line:#243342;--ink:#eef8ff;--muted:#8da3b4;--cyan:#46f3ff;--lime:#a8ff60;--amber:#ffd36a;--red:#ff7474}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 body{background-image:radial-gradient(circle at 12% 8%,rgba(70,243,255,.07),transparent 28%),radial-gradient(circle at 86% 12%,rgba(157,92,255,.06),transparent 25%)}
-main{max-width:1400px;margin:0 auto;padding:26px 18px 70px}
+main{max-width:1400px;margin:0 auto;padding:26px max(18px,env(safe-area-inset-right)) calc(70px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
 header{display:flex;gap:18px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;border:1px solid rgba(70,243,255,.22);border-radius:22px;background:rgba(8,13,21,.9);padding:24px}
 .eyebrow{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em;color:var(--cyan)}
 h1{font-size:clamp(2rem,5vw,4.9rem);line-height:.95;margin:8px 0 10px;letter-spacing:-.05em}
 .lead{max-width:760px;color:#a8b8c6;line-height:1.6}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
-a.btn,button{border:1px solid #31475c;border-radius:11px;background:#0e1721;color:#eaffff;text-decoration:none;padding:9px 12px;font:750 12px system-ui;cursor:pointer}
+a.btn,button{border:1px solid #31475c;border-radius:11px;background:#0e1721;color:#eaffff;text-decoration:none;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;font:750 12px system-ui;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 a.btn.primary{background:var(--cyan);color:#041014;border-color:var(--cyan)}
 .badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .badge{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b8c8d4;background:#080d13}
@@ -30,7 +30,41 @@ a.btn.primary{background:var(--cyan);color:#041014;border-color:var(--cyan)}
 .meta{margin-top:12px;color:var(--muted);font:600 11px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word}
 .policy{margin-top:18px;border:1px solid rgba(255,211,106,.22);border-radius:16px;padding:16px;background:rgba(255,211,106,.035);color:#c9bea1;line-height:1.55;font-size:13px}
 #stamp{color:var(--muted);font:650 11px ui-monospace,SFMono-Regular,Menlo,monospace;margin:12px 2px}
-@media(max-width:760px){.summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  main{padding-top:max(16px,env(safe-area-inset-top))}
+  header{padding:18px;border-radius:18px}
+  .lead{font-size:14px}
+  .badges{justify-content:flex-start}
+  .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .actions a.btn,.actions button{width:100%}
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .stat{padding:14px}.stat strong{font-size:26px}
+  .grid{grid-template-columns:1fr}
+  .card{min-height:0}
+  .top{align-items:center}
+  #stamp{overflow-wrap:anywhere}
+}
+@media(max-width:440px){
+  h1{font-size:clamp(2.4rem,15vw,4rem)}
+  header{padding:15px}
+  .actions{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .badge{font-size:9px;padding:6px 8px}
+  .meta{font-size:10px}
+}
+@media(max-width:340px){
+  .summary{grid-template-columns:1fr}
+}
+@media(max-height:560px) and (orientation:landscape){
+  main{padding-top:10px}
+  header{padding:12px 16px}
+  h1{font-size:2.2rem}
+  .lead{font-size:12px;line-height:1.45}
+}
+@media(pointer:coarse){
+  a.btn,button{min-height:46px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
