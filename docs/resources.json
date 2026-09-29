@@ -10,28 +10,16 @@
   "items": [
     {
       "id": "gpt-doug-maven",
-      "name": "GPT-DOUG MAVEN",
-      "category": "Geospatial",
-      "type": "situational-awareness",
+      "name": "GPT-MAVEN OPS",
+      "category": "Operations + Geospatial",
+      "type": "unified-operations-surface",
       "access": "public",
       "free": true,
       "interactive": true,
       "url": "./maven.html",
       "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/robotics-intel-site",
-      "description": "GPT-DOUG MAVEN public situational-awareness surface with CesiumJS 1.145 3D globe + Leaflet 2D fallback, live public weather and earthquake feeds, HIVE/SWARM analytic overlays, mobile-adaptive controls, and explicit separation from targeting, fire control, and weapon actions.",
-      "engine": "CesiumJS 1.145 + Leaflet 1.9.4"
-    },
-    {
-      "id": "xunia-mission-ops",
-      "name": "XUNIA Mission Ops",
-      "category": "Observability",
-      "type": "live-dashboard",
-      "access": "public",
-      "free": true,
-      "interactive": true,
-      "url": "./ops.html",
-      "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/ops-api",
-      "description": "Live public endpoint health, latency, repository provenance and defensive operations status across XUNIA and GPT-DOUG services."
+      "description": "Unified GPT-MAVEN OPS surface combining CesiumJS 3D, Leaflet 2D, XUNIA service health, HIVE/SWARM analytics, public weather and earthquake data, public defense-acquisition intelligence, provenance, multilingual UI, and mobile-adaptive controls.",
+      "engine": "CesiumJS 1.145 + Leaflet 1.9.4 + XUNIA Ops API"
     },
     {
       "id": "gpt-nedu",
