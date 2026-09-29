@@ -71,7 +71,7 @@ a{color:var(--cyan)}
   flex:0 0 auto;min-height:36px;border:1px solid #4b3a20;border-radius:8px;background:#0c120d;color:#efd7a8;padding:6px 9px;font-size:9px;font-weight:850
 }
 .categories button.active{background:#ff9f1c;color:#180b00;border-color:#ffb84f}
-.searchbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:7px;border-bottom:1px solid rgba(93,58,18,.62)}
+.searchbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;padding:7px;border-bottom:1px solid rgba(93,58,18,.62)}
 .searchbar input{min-width:0;min-height:38px;border:1px solid #29422f;border-radius:8px;background:#071009;color:#fff;padding:7px 9px;font-size:12px}
 .searchbar button{min-height:38px;border:1px solid #5a3d18;border-radius:8px;background:#13170f;color:#ffd166;padding:7px 10px;font-size:9px;font-weight:900}
 .boundary{padding:6px 8px;border-bottom:1px solid #1d3725;color:#6ee7a1;font-size:8px;letter-spacing:.05em}
@@ -169,7 +169,7 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
       </div>
       <form class="searchbar" id="mediaSearch">
         <input id="mediaQuery" autocomplete="off" placeholder="Search public media">
-        <button type="submit">SEARCH</button>
+        <button type="submit">SEARCH</button><button type="button" id="mediaOpen">OPEN ↗</button>
       </form>
       <div class="boundary">PUBLIC MEDIA DISPLAY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
       <iframe id="mediaFrame" class="mediaframe" src="https://www.videosarena.com/" title="VideosArena public media" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
@@ -207,6 +207,7 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
     document.getElementById("mediaQuery").value=q;
     document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
   });
+  document.getElementById("mediaOpen").addEventListener("click",()=>window.open(document.getElementById("mediaFrame").src,"_blank","noopener"));
   document.getElementById("mediaSearch").addEventListener("submit",e=>{
     e.preventDefault();const q=document.getElementById("mediaQuery").value.trim();
     document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
