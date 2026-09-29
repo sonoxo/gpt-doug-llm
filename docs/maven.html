@@ -85,6 +85,7 @@ a{color:var(--blue)}
     <button class="modebtn" type="button" data-mode="2d">🗺 2D</button>
     <button class="modebtn" type="button" data-mode="ops">⚡ OPS</button>
     <button class="modebtn active" type="button" data-mode="broadcast">📡 TACTICAL</button>
+    <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
   </div>
@@ -99,7 +100,7 @@ a{color:var(--blue)}
 
 <main>
   <div class="viewerShell">
-    <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1" title="GPT-MAVEN Tactical Max synthetic scenario workspace" loading="eager" allow="fullscreen"></iframe>
+    <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1" title="GPT-MAVEN Tactical Max synthetic scenario workspace" loading="eager" allow="camera; fullscreen"></iframe>
   </div>
 
   <aside class="command-rail" id="commandRail" aria-label="GPT-MAVEN command rail">
@@ -196,6 +197,13 @@ function setMavenMode(mode){
   try{localStorage.setItem("xunia.maven.view",mode)}catch{}
 }
 document.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>setMavenMode(btn.dataset.mode)));
+
+function openArsenalWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-sim"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
+document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 try{
   const queryMode=new URLSearchParams(location.search).get("mode");
   const saved=localStorage.getItem("xunia.maven.view");
