@@ -1,0 +1,94 @@
+name: Defensive hardening gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hardening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate defensive hardening policy
+        run: python scripts/validate_defensive_hardening.py
+
+      - name: Compile defensive validators
+        run: |
+          python -m py_compile \
+            scripts/validate_defensive_hardening.py \
+            scripts/validate_infrastructure_resilience.py
+
+      - name: Reject dangerous workflow triggers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RIn --include='*.yml' --include='*.yaml' 'pull_request_target:' .github/workflows; then
+            echo "pull_request_target is not permitted by the defensive hardening gate."
+            exit 1
+          fi
+
+      - name: Reject broad workflow write permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE '^[[:space:]]*permissions:[[:space:]]*write-all[[:space:]]*$' .github/workflows; then
+            echo "write-all workflow permissions are forbidden."
+            exit 1
+          fi
+
+      - name: Check shell bootstrap anti-patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE --include='*.sh' --include='*.yml' --include='*.yaml' \
+            '(curl|wget)[^|]{0,200}\\|[[:space:]]*(sh|bash)' \
+            .github scripts safety-shield 2>/dev/null; then
+            echo "Remote pipe-to-shell bootstrap detected in protected paths."
+            exit 1
+          fi
+
+      - name: Verify policy files parse as JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in Path("safety-shield/policies").glob("*.json"):
+              json.loads(path.read_text(encoding="utf-8"))
+              print("OK", path)
+          PY
+
+      - name: Produce hardening evidence
+        run: |
+          mkdir -p artifacts
+          {
+            echo "branch=${GITHUB_REF_NAME}"
+            echo "sha=${GITHUB_SHA}"
+            echo "run_id=${GITHUB_RUN_ID}"
+            echo "event=${GITHUB_EVENT_NAME}"
+            date -u +"generated_at=%Y-%m-%dT%H:%M:%SZ"
+          } > artifacts/defensive-hardening-evidence.txt
+
+      - name: Upload hardening evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: defensive-hardening-evidence
+          path: artifacts/defensive-hardening-evidence.txt
+          if-no-files-found: error

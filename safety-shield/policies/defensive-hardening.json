@@ -1,0 +1,66 @@
+{
+  "schema": "black-house.defensive-hardening.v1",
+  "mode": "DEFENSIVE_HIGH_ASSURANCE",
+  "purpose": "Raise GPT-DOUG-LLM / XUNIA resilience against sophisticated external threats without offensive actions, unauthorized access, country-specific targeting, or autonomous real-world effects.",
+  "principles": [
+    "country-neutral defensive posture",
+    "least privilege",
+    "fail closed on unknown authorization or provenance",
+    "simulation before consequential changes",
+    "human approval for material external actions",
+    "reproducible builds and auditable evidence",
+    "rapid containment and verified rollback"
+  ],
+  "required_controls": [
+    "continuous integrity and dependency checks",
+    "source provenance and artifact traceability",
+    "secret exposure detection",
+    "workflow permission minimization",
+    "branch and release protection",
+    "sandboxed untrusted inputs",
+    "rate and resource containment",
+    "fault injection in non-production environments",
+    "tested backup and rollback procedures",
+    "tamper-evident security logging",
+    "human approval for material external actions",
+    "post-change verification",
+    "incident isolation and recovery playbooks"
+  ],
+  "prohibited": [
+    "malware deployment",
+    "credential theft",
+    "unauthorized persistence",
+    "destructive exploitation",
+    "offensive intrusion",
+    "real-world weapon control",
+    "automatic target generation",
+    "country-specific attack logic",
+    "bypassing authorization or safety controls"
+  ],
+  "autonomy_contract": {
+    "observe": "allowed when scoped and authorized",
+    "analyze": "allowed",
+    "simulate": "allowed in isolated non-production contexts",
+    "recommend": "allowed with evidence, confidence, and rollback plan",
+    "contain_local": "allowed only for explicitly governed local resources with audit evidence",
+    "mutate_material": "requires explicit human approval",
+    "dispatch_external_action": "disabled by default",
+    "offensive_action": "prohibited"
+  },
+  "evidence_requirements": [
+    "timestamp",
+    "source",
+    "scope",
+    "authorization context",
+    "verification status",
+    "change identifier",
+    "rollback identifier",
+    "post-change result"
+  ],
+  "review_states": {
+    "GREEN": "controls verified and evidence complete",
+    "AMBER": "degraded control or incomplete evidence; restrict mutation",
+    "RED": "integrity or authorization failure; freeze material mutation",
+    "BLACK": "trust boundary compromised; isolate affected route and recover"
+  }
+}
