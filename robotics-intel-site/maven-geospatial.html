@@ -48,6 +48,21 @@
     .progress{height:8px;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:#090d0a;margin:9px 0}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--lime));transition:width .25s ease}
     .task-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
     .mini{font-size:11px;color:var(--muted)}
+    .testrange{position:relative;height:190px;border:1px solid #3c2c17;border-radius:10px;overflow:hidden;background:
+      linear-gradient(rgba(118,212,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(118,212,255,.05) 1px,transparent 1px),
+      radial-gradient(circle at 50% 50%,rgba(118,212,255,.08),transparent 62%),#07100d;background-size:24px 24px,24px 24px,auto,auto}
+    .testrange:after{content:"SYNTHETIC COORDINATES // NO MAP LINK // NO EXTERNAL CONTROL";position:absolute;left:8px;bottom:6px;font-size:9px;color:var(--muted)}
+    .sim-drone{position:absolute;width:22px;height:22px;display:grid;place-items:center;font-size:18px;filter:drop-shadow(0 0 7px rgba(118,212,255,.8));transition:transform .15s linear}
+    .sim-drone:before{content:"◆";color:var(--blue)}
+    .sim-missile{position:absolute;width:34px;height:8px;border-radius:5px;background:linear-gradient(90deg,#ffd166,var(--accent));box-shadow:0 0 12px rgba(255,159,28,.7)}
+    .sim-missile:after{content:"";position:absolute;right:100%;top:2px;width:24px;height:4px;background:linear-gradient(90deg,transparent,rgba(255,209,102,.65))}
+    .sim-target{position:absolute;right:24px;top:72px;width:34px;height:34px;border:1px dashed var(--violet);border-radius:50%;display:grid;place-items:center;color:var(--violet);font-size:10px}
+    .sim-zone{position:absolute;left:18px;top:18px;width:96px;height:96px;border:1px solid rgba(85,242,194,.24);border-radius:50%}
+    .sim-zone:after{content:"DRONE TEST";position:absolute;left:16px;top:40px;font-size:9px;color:#55f2c2}
+    .sim-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:11px}
+    .sim-stats div{border:1px solid rgba(93,58,18,.55);padding:6px;border-radius:7px;color:var(--muted)}
+    .sim-stats b{float:right;color:var(--text)}
     @keyframes pulse{50%{opacity:.35;transform:scale(.7)}} @keyframes cellpulse{50%{transform:scale(.8);opacity:.75}} @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}} @keyframes sweep{to{transform:rotate(360deg)}} 
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
     @media(max-width:900px){body{overflow:auto}main{grid-template-columns:1fr;grid-template-rows:62vh auto}aside{border-left:0;border-top:1px solid var(--line)}#map{min-height:0}}
@@ -61,6 +76,7 @@
     <span class="pill">🐝 HIVE 100/100</span>
     <span class="pill">🕸️ SWARM ANALYTIC</span>
     <span class="pill ok" id="liveDataPill">◌ LIVE PUBLIC DATA</span>
+    <span class="pill">🧪 SYNTHETIC TEST RANGE</span>
     <span class="pill">⚡ TASK OPS READY</span>
     <span class="pill lock">🔒 PUBLIC + SIMULATION ONLY</span>
   </div>
@@ -75,6 +91,26 @@
         <div class="sweep"></div><div class="core">D</div><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
         <div class="core-caption">HIVE BUS // 100 PEERS // SIMULATED VISUAL TELEMETRY</div>
       </div>
+    </div>
+
+    <div class="card">
+      <h2>🧪 SYNTHETIC DRONE + MISSILE TEST RANGE</h2>
+      <div class="testrange" id="testRange" aria-label="Synthetic local-only drone and missile visual test range">
+        <div class="sim-zone"></div>
+        <div class="sim-target">TEST</div>
+      </div>
+      <div class="sim-stats">
+        <div>DRONES <b id="simDroneCount">0</b></div>
+        <div>MISSILE TESTS <b id="simMissileCount">0</b></div>
+        <div>EXTERNAL LINK <b>NONE</b></div>
+        <div>REAL TARGETING <b>OFF</b></div>
+      </div>
+      <div class="task-tools">
+        <button type="button" id="spawnDroneSim">◆ SPAWN DRONE SIM</button>
+        <button type="button" id="runMissileSim">➤ RUN MISSILE VISUAL TEST</button>
+        <button type="button" id="resetCombatSim">↺ RESET TEST RANGE</button>
+      </div>
+      <div class="mini">Local visual sandbox only: synthetic coordinates, no guidance logic, no real-world targeting, no vehicle or weapon connection.</div>
     </div>
 
     <div class="card">
@@ -278,6 +314,7 @@ event('HIVE synchronization healthy');
 event('Interactive TASK OPS online');
 event('Public layers ready; live feeds initializing');
 event('Swarm overlay parked OFF for clearer click access');
+event('Synthetic drone/missile test range ready // local visual sandbox only');
 event('Precise targeting and external action locked OFF');
 
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
@@ -320,6 +357,55 @@ document.getElementById('runAll').addEventListener('click',()=>{
   event('SAFE TASK CYCLE started');
 });
 document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicData();event('Manual public-data refresh requested')});
+
+const testRange=document.getElementById('testRange');
+let simDroneCount=0,simMissileCount=0;
+const droneNodes=[];
+function updateSimCounters(){
+  document.getElementById('simDroneCount').textContent=String(simDroneCount);
+  document.getElementById('simMissileCount').textContent=String(simMissileCount);
+}
+function spawnDroneSim(){
+  if(droneNodes.length>=8){event('TEST RANGE: drone sim limit reached');return;}
+  const d=document.createElement('div');
+  d.className='sim-drone';
+  const idx=droneNodes.length;
+  const left=28+(idx%4)*38,top=28+Math.floor(idx/4)*52;
+  d.style.left=left+'px';d.style.top=top+'px';
+  d.dataset.phase=String(idx*0.8);
+  testRange.appendChild(d);droneNodes.push(d);simDroneCount=droneNodes.length;updateSimCounters();
+  event('TEST RANGE: synthetic drone visual spawned');
+}
+function runMissileSim(){
+  const m=document.createElement('div');m.className='sim-missile';m.style.left='126px';m.style.top='84px';testRange.appendChild(m);
+  simMissileCount++;updateSimCounters();event('TEST RANGE: synthetic missile visual test started');
+  const start=performance.now(),duration=1800;
+  function step(now){
+    const p=Math.min(1,(now-start)/duration);
+    m.style.transform='translateX('+(p*155)+'px)';
+    if(p<1)requestAnimationFrame(step);else{
+      m.style.opacity='0';setTimeout(()=>m.remove(),250);
+      event('TEST RANGE: synthetic missile visual test complete');
+    }
+  }
+  requestAnimationFrame(step);
+}
+function resetCombatSim(){
+  droneNodes.splice(0).forEach(n=>n.remove());
+  testRange.querySelectorAll('.sim-missile').forEach(n=>n.remove());
+  simDroneCount=0;simMissileCount=0;updateSimCounters();event('TEST RANGE reset');
+}
+document.getElementById('spawnDroneSim').addEventListener('click',spawnDroneSim);
+document.getElementById('runMissileSim').addEventListener('click',runMissileSim);
+document.getElementById('resetCombatSim').addEventListener('click',resetCombatSim);
+setInterval(()=>{
+  const t=Date.now()/900;
+  droneNodes.forEach((d,i)=>{
+    const phase=t+Number(d.dataset.phase||0);
+    const x=Math.cos(phase)*9,y=Math.sin(phase*1.2)*7,rot=(phase*35)%360;
+    d.style.transform='translate('+x+'px,'+y+'px) rotate('+rot+'deg)';
+  });
+},120);
 
 setInterval(()=>{
   swarmMarkers.forEach((m,i)=>{
