@@ -65,7 +65,18 @@ a.btn.primary{background:var(--cyan);color:#041014;border-color:var(--cyan)}
   a.btn,button{min-height:46px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html.embedded header{display:none!important}
+html.embedded .xunia-i18n{display:none!important}
+html.embedded main{max-width:none;margin:0;padding:14px max(14px,env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+html.embedded .summary{margin-top:0}
+html.embedded .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+html.embedded .policy{margin-bottom:0}
 </style>
+<script>
+if(new URLSearchParams(location.search).get("embed")==="1"){
+  document.documentElement.classList.add("embedded");
+}
+</script>
 <script src="./xunia-i18n.js" defer></script>
 </head>
 <body>
