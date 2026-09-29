@@ -1,6 +1,16 @@
 const https = require("https");
 
+const agent = new https.Agent({
+  keepAlive: true,
+  keepAliveMsecs: 30000,
+  maxSockets: 8,
+  maxFreeSockets: 4,
+  timeout: 8000
+});
+
 let tokenCache = null;
+let tokenPromise = null;
+let statusCache = null;
 
 function cfg() {
   const hostname = String(process.env.PALANTIR_FOUNDRY_HOSTNAME || "").trim().replace(/\/+$/, "");
@@ -17,12 +27,12 @@ function configured(c = cfg()) {
   return Boolean(c.hostname && c.clientId && c.clientSecret && c.ontology);
 }
 
-function requestJson(urlString, { method = "GET", headers = {}, body = null, timeoutMs = 12000 } = {}) {
+function requestJson(urlString, { method = "GET", headers = {}, body = null, timeoutMs = 6500 } = {}) {
   return new Promise((resolve, reject) => {
     const url = new URL(urlString);
     if (url.protocol !== "https:") return reject(new Error("palantir_https_required"));
 
-    const req = https.request(url, { method, headers }, res => {
+    const req = https.request(url, { method, headers, agent }, res => {
       let raw = "";
       res.setEncoding("utf8");
       res.on("data", chunk => { raw += chunk; });
@@ -38,9 +48,7 @@ function requestJson(urlString, { method = "GET", headers = {}, body = null, tim
       });
     });
 
-    req.setTimeout(timeoutMs, () => {
-      req.destroy(new Error("palantir_timeout"));
-    });
+    req.setTimeout(timeoutMs, () => req.destroy(new Error("palantir_timeout")));
     req.on("error", reject);
     if (body) req.write(body);
     req.end();
@@ -50,29 +58,38 @@ function requestJson(urlString, { method = "GET", headers = {}, body = null, tim
 async function getToken(c = cfg()) {
   const now = Date.now();
   if (tokenCache && tokenCache.expiresAt > now + 60000) return tokenCache.accessToken;
+  if (tokenPromise) return tokenPromise;
 
-  const form = new URLSearchParams({
-    grant_type: "client_credentials",
-    client_id: c.clientId,
-    client_secret: c.clientSecret,
-    scope: c.scopes
-  }).toString();
+  tokenPromise = (async () => {
+    const form = new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: c.clientId,
+      client_secret: c.clientSecret,
+      scope: c.scopes
+    }).toString();
 
-  const data = await requestJson(c.hostname + "/multipass/api/oauth2/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Content-Length": Buffer.byteLength(form)
-    },
-    body: form
-  });
+    const data = await requestJson(c.hostname + "/multipass/api/oauth2/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Length": Buffer.byteLength(form)
+      },
+      body: form
+    });
 
-  if (!data || !data.access_token) throw new Error("palantir_token_missing");
-  tokenCache = {
-    accessToken: data.access_token,
-    expiresAt: now + Math.max(60, Number(data.expires_in || 300)) * 1000
-  };
-  return tokenCache.accessToken;
+    if (!data || !data.access_token) throw new Error("palantir_token_missing");
+    tokenCache = {
+      accessToken: data.access_token,
+      expiresAt: Date.now() + Math.max(60, Number(data.expires_in || 300)) * 1000
+    };
+    return tokenCache.accessToken;
+  })();
+
+  try {
+    return await tokenPromise;
+  } finally {
+    tokenPromise = null;
+  }
 }
 
 async function api(path, c = cfg()) {
@@ -85,8 +102,30 @@ async function api(path, c = cfg()) {
   });
 }
 
+async function freshStatus(c) {
+  const ontologyKey = encodeURIComponent(c.ontology);
+
+  const [objectTypes, actionTypes] = await Promise.all([
+    api("/api/v2/ontologies/" + ontologyKey + "/objectTypes?pageSize=500", c),
+    api("/api/v2/ontologies/" + ontologyKey + "/actionTypes?pageSize=500", c)
+  ]);
+
+  return {
+    configured: true,
+    connected: true,
+    mode: "READ_ONLY_CONNECTED",
+    ontology_bound: true,
+    object_type_count: Array.isArray(objectTypes && objectTypes.data) ? objectTypes.data.length : 0,
+    action_type_count: Array.isArray(actionTypes && actionTypes.data) ? actionTypes.data.length : 0,
+    scope: c.scopes,
+    checked_at: new Date().toISOString(),
+    cache_ttl_ms: 30000
+  };
+}
+
 async function status() {
   const c = cfg();
+
   if (!configured(c)) {
     return {
       configured: false,
@@ -104,29 +143,18 @@ async function status() {
     };
   }
 
+  const now = Date.now();
+  if (statusCache && statusCache.expiresAt > now) {
+    return { ...statusCache.payload, cache_hit: true };
+  }
+
   try {
-    const ontologyKey = encodeURIComponent(c.ontology);
-    const [ontologies, objectTypes, actionTypes] = await Promise.all([
-      api("/api/v2/ontologies", c),
-      api("/api/v2/ontologies/" + ontologyKey + "/objectTypes?pageSize=500", c),
-      api("/api/v2/ontologies/" + ontologyKey + "/actionTypes?pageSize=500", c)
-    ]);
-
-    const available = Array.isArray(ontologies && ontologies.data) ? ontologies.data : [];
-    const bound = available.some(o => o && (o.apiName === c.ontology || o.rid === c.ontology));
-
-    return {
-      configured: true,
-      connected: true,
-      mode: "READ_ONLY_CONNECTED",
-      ontology_bound: bound,
-      object_type_count: Array.isArray(objectTypes && objectTypes.data) ? objectTypes.data.length : 0,
-      action_type_count: Array.isArray(actionTypes && actionTypes.data) ? actionTypes.data.length : 0,
-      scope: c.scopes,
-      checked_at: new Date().toISOString()
-    };
+    const payload = await freshStatus(c);
+    statusCache = { payload, expiresAt: now + 30000 };
+    return { ...payload, cache_hit: false };
   } catch (err) {
-    return {
+    tokenCache = null;
+    const payload = {
       configured: true,
       connected: false,
       mode: "READ_ONLY_ERROR",
@@ -136,6 +164,8 @@ async function status() {
       error: String(err.message || err),
       checked_at: new Date().toISOString()
     };
+    statusCache = { payload, expiresAt: now + 5000 };
+    return { ...payload, cache_hit: false };
   }
 }
 
