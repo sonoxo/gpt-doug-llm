@@ -32,6 +32,8 @@ SEED="$ROOT/safety-shield/agents/knowledge/patents/us-12748837-b1-sensitive-memo
 SOURCE="$ROOT/intel/sources/2026-09-29-uspto-sensitive-memory-monitor.json"
 MATRIX="$ROOT/scripts/maven-matrix"
 PATENT_SCOPE="$ROOT/scripts/gpt_doug_max_patent_scope.py"
+CAPABILITIES="$ROOT/robotics-intel-site/maven-public-capabilities.json"
+EARTH_CSS="$ROOT/robotics-intel-site/maven-earth-observation.css"
 
 usage() {
   cat <<'EOF'
@@ -72,7 +74,7 @@ PY
 
 doctor() {
   fail=0
-  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE"; do
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS"; do
     if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
@@ -87,6 +89,18 @@ assert seed["independent_design_policy"]["assert_freedom_to_operate"] is False
 assert source["document"]["document_number"]=="US-12748837-B1"
 assert source["gpt_doug_maven_mapping"]["mode"]=="DEFENSIVE_SOFTWARE_ARCHITECTURE_WATCH_ONLY"
 print("✅ GPT-DOUG-MAVEN memory-guard provenance: GREEN")
+PY
+  python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+assert d["schema"]=="xunia.maven-si.public-capabilities.v1"
+assert d["controls"]["precise_targeting"] is False
+assert d["controls"]["weapon_control"] is False
+assert d["controls"]["public_environmental_awareness"] is True
+ids={x["id"] for x in d["sources"]}
+required={"openstreetmap","open_meteo","usgs_earthquakes","nasa_eonet","zoom_earth","nullschool_earth","nasa_worldview","local_simulation"}
+assert required <= ids
+print(f"✅ MAVEN SI public capability mesh: GREEN ({len(d['sources'])} sources/capability nodes)")
 PY
 }
 
@@ -110,18 +124,21 @@ case "$cmd" in
     fi
     ;;
   sources)
-    cat <<'EOF'
-🌍 GPT-DOUG-MAVEN // PUBLIC EARTH SOURCES
-  ZOOM EARTH      https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z
-                  near-real-time satellite/weather visualization
-  NULLSCHOOL      https://earth.nullschool.net/
-                  global wind/weather/ocean/chemistry/space-weather visualization
-  NASA WORLDVIEW  https://worldview.earthdata.nasa.gov/
-                  NASA Earth-observation imagery and layers
-
-Mode: public civilian/environmental situational awareness.
-No targeting, tracking of persons, weapon control, or kinetic execution.
-EOF
+    python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+print("🌍 GPT-DOUG-MAVEN // PUBLIC CAPABILITY MESH")
+print("="*58)
+for src in d["sources"]:
+    caps=", ".join(src.get("capabilities", []))
+    print(f"{src['name']}")
+    print(f"  type .... {src['type']}")
+    if src.get("url"): print(f"  url ..... {src['url']}")
+    print(f"  caps .... {caps}")
+print("\nMode:", d["mode"])
+print("Project API keys required by default mesh: NO")
+print("Targeting / weapons / kinetic execution: OFF")
+PY
     ;;
   status)
     echo "🧠 GPT-DOUG-MAVEN"
@@ -130,6 +147,16 @@ EOF
     echo "PATENT SEED ...... $SEED"
     echo "SOURCE ........... $SOURCE"
     echo "EARTH OBSERVATION  WIRED (Zoom Earth / Nullschool / NASA Worldview)"
+    if [ -f "$CAPABILITIES" ]; then
+      count="$(python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+print(len(json.loads(pathlib.Path(sys.argv[1]).read_text())["sources"]))
+PY
+)"
+      echo "PUBLIC CAP MESH .. $count nodes"
+    else
+      echo "PUBLIC CAP MESH .. MISSING"
+    fi
     [ -f "$SEED" ] && echo "MEMORY GUARD ..... WIRED" || echo "MEMORY GUARD ..... MISSING"
     sh "$MATRIX" status || true
     ;;
