@@ -4,6 +4,32 @@ const https = require("https");
 const PORT = Number(process.env.PORT || 10000);
 const translateCache = new Map();
 const translateRate = new Map();
+const trackingRate = new Map();
+
+const sensorPolicy = {
+  schema: "xunia.sensor-governance.v1",
+  namespace: "GALACTIC_FEDERATION.SENSOR_GOVERNANCE",
+  mode: "AUTHORIZED_SENSORS_ONLY",
+  public_ui_max_coordinate_decimals: 2,
+  allowed_object_types: new Set([
+    "infrastructure_asset",
+    "authorized_fleet_vehicle",
+    "environmental_sensor",
+    "weather_cell",
+    "public_event",
+    "synthetic_contact"
+  ]),
+  prohibited_object_types: new Set([
+    "person",
+    "face",
+    "biometric_identity",
+    "license_plate_owner",
+    "private_vehicle",
+    "private_residence",
+    "weapon_target",
+    "live_military_unit"
+  ])
+};
 
 const services = [
   { id: "maven", name: "GPT-DOUG MAVEN", url: "https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html" },
@@ -176,6 +202,110 @@ function rateLimit(req) {
   return entry.count <= limit;
 }
 
+function trackingRateLimit(req) {
+  const now = Date.now();
+  const windowMs = 60_000;
+  const limit = 30;
+  const key = String(req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown").split(",")[0].trim();
+  const entry = trackingRate.get(key);
+  if (!entry || now - entry.started >= windowMs) {
+    trackingRate.set(key, { started: now, count: 1 });
+    return true;
+  }
+  entry.count += 1;
+  return entry.count <= limit;
+}
+
+function roundCoord(value, decimals = 2) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  const factor = 10 ** decimals;
+  return Math.round(n * factor) / factor;
+}
+
+function sensorSchemaPayload() {
+  return {
+    schema: sensorPolicy.schema,
+    namespace: sensorPolicy.namespace,
+    mode: sensorPolicy.mode,
+    generated_at: new Date().toISOString(),
+    allowed_object_types: [...sensorPolicy.allowed_object_types],
+    prohibited_object_types: [...sensorPolicy.prohibited_object_types],
+    controls: {
+      explicit_authorization_required: true,
+      provenance_required: true,
+      public_ui_coarse_geolocation_only: true,
+      public_ui_max_coordinate_decimals: sensorPolicy.public_ui_max_coordinate_decimals,
+      facial_recognition: false,
+      biometric_identification: false,
+      license_plate_owner_lookup: false,
+      covert_person_tracking: false,
+      private_residence_monitoring: false,
+      weapon_targeting: false,
+      fire_control: false,
+      autonomous_external_action: false,
+      persisted_by_validation_endpoint: false
+    }
+  };
+}
+
+function validateTrackingPayload(body) {
+  const blockedKeys = [
+    "person_id","face_embedding","face_id","biometric_id","plate_text",
+    "plate_owner","private_residence_id","weapon_target_id","fire_control_id"
+  ];
+  for (const key of blockedKeys) {
+    if (body && Object.prototype.hasOwnProperty.call(body, key)) throw new Error("prohibited_field:" + key);
+  }
+
+  const sourceId = String(body.source_id || "").trim();
+  const objectType = String(body.object_type || "").trim();
+  const observedAt = String(body.observed_at || "").trim();
+  const authorizationScope = String(body.authorization_scope || "").trim();
+  const purpose = String(body.purpose || "").trim();
+
+  if (!sourceId || !objectType || !observedAt || !authorizationScope || !purpose) {
+    throw new Error("missing_required_field");
+  }
+  if (sensorPolicy.prohibited_object_types.has(objectType)) throw new Error("prohibited_object_type");
+  if (!sensorPolicy.allowed_object_types.has(objectType)) throw new Error("unsupported_object_type");
+  if (authorizationScope.toLowerCase() === "unknown" || authorizationScope.toLowerCase() === "none") {
+    throw new Error("authorization_scope_required");
+  }
+  if (Number.isNaN(Date.parse(observedAt))) throw new Error("invalid_observed_at");
+
+  let latitude = null;
+  let longitude = null;
+  if (body.latitude !== undefined || body.longitude !== undefined) {
+    latitude = Number(body.latitude);
+    longitude = Number(body.longitude);
+    if (!Number.isFinite(latitude) || latitude < -90 || latitude > 90) throw new Error("invalid_latitude");
+    if (!Number.isFinite(longitude) || longitude < -180 || longitude > 180) throw new Error("invalid_longitude");
+    latitude = roundCoord(latitude, sensorPolicy.public_ui_max_coordinate_decimals);
+    longitude = roundCoord(longitude, sensorPolicy.public_ui_max_coordinate_decimals);
+  }
+
+  let confidence = body.confidence === undefined ? null : Number(body.confidence);
+  if (confidence !== null && (!Number.isFinite(confidence) || confidence < 0 || confidence > 1)) {
+    throw new Error("invalid_confidence");
+  }
+
+  return {
+    schema: "xunia.tracking.observation.v1",
+    source_id: sourceId.slice(0, 160),
+    provider: String(body.provider || "xunia").slice(0, 80),
+    object_type: objectType,
+    observed_at: new Date(observedAt).toISOString(),
+    authorization_scope: authorizationScope.slice(0, 160),
+    purpose: purpose.slice(0, 240),
+    confidence,
+    latitude,
+    longitude,
+    provenance_url: typeof body.provenance_url === "string" ? body.provenance_url.slice(0, 500) : null,
+    public_precision: latitude === null ? "none" : sensorPolicy.public_ui_max_coordinate_decimals + "_decimals"
+  };
+}
+
 function validLanguage(tag) {
   return /^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})?$/.test(String(tag || ""));
 }
@@ -245,7 +375,7 @@ const server = http.createServer(async (req, res) => {
   const origin = corsOrigin(req);
 
   if (req.method === "OPTIONS") {
-    if (url.pathname === "/api/translate" && !origin) {
+    if ((url.pathname === "/api/translate" || url.pathname === "/api/tracking/validate") && !origin) {
       return send(res, 403, JSON.stringify({ error: "origin_not_allowed" }));
     }
     res.writeHead(204, {
@@ -271,6 +401,55 @@ const server = http.createServer(async (req, res) => {
     } catch (err) {
       return send(res, 500, JSON.stringify({ error: "status_failed", detail: String(err.message || err) }), "application/json; charset=utf-8", {
         "Access-Control-Allow-Origin": "*"
+      });
+    }
+  }
+
+  if (url.pathname === "/api/sensors/policy" && req.method === "GET") {
+    return send(res, 200, JSON.stringify(sensorSchemaPayload(), null, 2), "application/json; charset=utf-8", {
+      "Access-Control-Allow-Origin": "*"
+    });
+  }
+
+  if (url.pathname === "/api/tracking/schema" && req.method === "GET") {
+    return send(res, 200, JSON.stringify({
+      ...sensorSchemaPayload(),
+      observation_schema: {
+        required: ["source_id","object_type","observed_at","authorization_scope","purpose"],
+        optional: ["provider","confidence","latitude","longitude","provenance_url"],
+        validation_only: true,
+        persistence: false,
+        actionable: false
+      }
+    }, null, 2), "application/json; charset=utf-8", {
+      "Access-Control-Allow-Origin": "*"
+    });
+  }
+
+  if (url.pathname === "/api/tracking/validate" && req.method === "POST") {
+    if (!origin) return send(res, 403, JSON.stringify({ error: "origin_not_allowed" }));
+    if (!trackingRateLimit(req)) return send(res, 429, JSON.stringify({ error: "rate_limited" }), "application/json; charset=utf-8", {
+      "Access-Control-Allow-Origin": origin,
+      "Vary": "Origin"
+    });
+
+    try {
+      const body = await readJson(req, 12000);
+      const normalized = validateTrackingPayload(body);
+      return send(res, 200, JSON.stringify({
+        ok: true,
+        normalized,
+        persisted: false,
+        actionable: false,
+        policy: sensorPolicy.namespace
+      }, null, 2), "application/json; charset=utf-8", {
+        "Access-Control-Allow-Origin": origin,
+        "Vary": "Origin"
+      });
+    } catch (err) {
+      return send(res, 400, JSON.stringify({ error: String(err.message || err) }), "application/json; charset=utf-8", {
+        "Access-Control-Allow-Origin": origin,
+        "Vary": "Origin"
       });
     }
   }
@@ -305,7 +484,7 @@ const server = http.createServer(async (req, res) => {
 
   return send(res, 200, JSON.stringify({
     service: "XUNIA Ops API",
-    endpoints: ["/health", "/api/status", "/api/translate"],
+    endpoints: ["/health", "/api/status", "/api/sensors/policy", "/api/tracking/schema", "/api/tracking/validate", "/api/translate"],
     mode: "PUBLIC_DEFENSIVE_SITUATIONAL_AWARENESS"
   }, null, 2), "application/json; charset=utf-8", {
     "Access-Control-Allow-Origin": "*"
