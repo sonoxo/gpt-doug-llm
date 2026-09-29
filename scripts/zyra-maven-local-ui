@@ -21,10 +21,23 @@ copy_asset() {
 }
 
 copy_asset "maven-broadcast.html" "maven-videosarena.html"
-for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-gotham-sim.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js   maven-gotham-sim.js
+for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-gotham-sim.css   maven-ops-modes.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js   maven-gotham-sim.js   maven-ops-modes.js
 do
   copy_asset "$f" "$f"
 done
+
+# MAVEN_OPS_LOCAL_PATCH: keep the local Tactical page current without changing external-action boundaries.
+python3 - "$DEST/maven-videosarena.html" <<'PY'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1])
+s = p.read_text(encoding="utf-8")
+if "./maven-ops-modes.css" not in s:
+    s = s.replace("</head>", '<link rel="stylesheet" href="./maven-ops-modes.css">\n</head>')
+if "./maven-ops-modes.js" not in s:
+    s = s.replace("</body>", '<script src="./maven-ops-modes.js" defer></script>\n</body>')
+p.write_text(s, encoding="utf-8")
+PY
 
 cat > "$DEST/index.html" <<'EOF'
 <!doctype html>
