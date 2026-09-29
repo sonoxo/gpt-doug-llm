@@ -8,9 +8,13 @@
 <style>
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{margin:0;width:100%;height:100%;min-height:100svh;min-height:100dvh;overflow:hidden;background:#050704;color:#f1e4c8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 header{min-height:48px;display:flex;align-items:center;gap:10px;padding:max(8px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));border-bottom:1px solid #5d3a12;background:#090c08}
-.brand{color:#ff9f1c;font-weight:900;letter-spacing:.04em}.pill{border:1px solid #4a3a20;border-radius:999px;padding:5px 8px;font-size:10px}.ok{color:#d7ff64}.off{color:#8c9387}
+.brand{color:#ff9f1c;font-weight:900;letter-spacing:.04em}.blue{color:#76d4ff}.pill{border:1px solid #4a3a20;border-radius:999px;padding:5px 8px;font-size:10px}.ok{color:#d7ff64}.off{color:#8c9387}
 main{height:calc(100dvh - 48px);display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,340px)}
-iframe{width:100%;height:100%;border:0;background:#000}
+.viewerShell{position:relative;min-width:0;min-height:0}
+.modebar{position:absolute;z-index:25;left:10px;top:10px;display:flex;gap:6px;padding:5px;border:1px solid #4a351b;border-radius:12px;background:rgba(6,10,7,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.modebtn{border:1px solid #4a351b;border-radius:8px;background:#111712;color:#f1e4c8;padding:8px 10px;min-height:38px;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}
+.modebtn.active{background:#ff9f1c;color:#180b00;border-color:#ffb84f}
+iframe{width:100%;height:100%;border:0;background:#000;display:block}
 aside{border-left:1px solid #5d3a12;background:#090d0a;padding:10px;overflow:auto}
 .card{border:1px solid #4a351b;border-radius:11px;background:#0b100d;padding:11px;margin-bottom:9px}
 h2{margin:0 0 8px;font-size:13px;color:#ff9f1c}.metric{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin:6px 0;color:#bba98a}.metric b{color:#f1e4c8}
@@ -23,22 +27,22 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
   .brand{flex:0 0 auto;font-size:13px}
   .pill{flex:0 0 auto}
   main{display:block;height:auto;min-height:0}
-  iframe{display:block;height:calc(100dvh - 64px);min-height:560px;border-bottom:1px solid #5d3a12}
+  iframe{height:100%;min-height:0;border-bottom:1px solid #5d3a12}
   aside{display:block;border-left:0;border-top:1px solid #5d3a12;padding:12px max(12px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));overflow:visible}
   .card{padding:13px}
 }
 @media(max-width:540px){
-  iframe{height:calc(100dvh - 60px);min-height:520px}
+  .viewerShell{height:calc(100dvh - 60px);min-height:520px}
   .brand{font-size:12px}
   .pill{font-size:9px;padding:5px 7px}
   h2{font-size:12px}
   .metric,#svc{font-size:10px}
 }
 @media(max-width:380px){
-  iframe{height:calc(100dvh - 58px);min-height:500px}
+  .viewerShell{height:calc(100dvh - 58px);min-height:500px}
 }
 @media(max-height:560px) and (orientation:landscape){
-  iframe{height:76dvh;min-height:300px}
+  .viewerShell{height:76dvh;min-height:300px}
   aside{padding-top:8px}
 }
 @media(pointer:coarse){.btn{min-height:46px}}
@@ -49,16 +53,23 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <body>
 <header>
 <div class="brand">🛰 GPT-DOUG // MAVEN</div>
-<span class="pill ok">PUBLIC DATA LIVE</span>
+<span class="pill ok">PUBLIC DATA LIVE</span>\n<span class="pill blue">CESIUM 3D READY</span>
 <span class="pill">HIVE / SWARM ANALYSIS</span>
 <span class="pill off">PRECISE TARGETING OFF</span>
 <span class="pill off">WEAPON CONTROL OFF</span>
 </header>
 <main>
-<iframe src="https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html" title="GPT-DOUG MAVEN public geospatial dashboard" loading="eager" allow="fullscreen"></iframe>
+<div class="viewerShell">
+  <div class="modebar" data-no-translate="true">
+    <button class="modebtn active" type="button" data-mode="3d">🌍 3D CESIUM</button>
+    <button class="modebtn" type="button" data-mode="2d">🗺 2D MAP</button>
+  </div>
+  <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html" title="GPT-DOUG MAVEN Cesium 3D public situational-awareness dashboard" loading="eager" allow="fullscreen"></iframe>
+</div>
 <aside>
 <div class="card">
 <h2>LIVE XUNIA OPS</h2>
+<div class="metric"><span>VIEW ENGINE</span><b id="viewEngine">CESIUM 3D</b></div>
 <div class="metric"><span>REACHABLE</span><b id="reach">—</b></div>
 <div class="metric"><span>DEGRADED</span><b id="deg">—</b></div>
 <div class="metric"><span>MAIN SHA</span><b id="sha">—</b></div>
