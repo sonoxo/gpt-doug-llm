@@ -4,6 +4,7 @@
   const video=document.getElementById("mavenCamera");
   const status=document.getElementById("cameraStatus");
   const viewToggle=document.getElementById("cameraViewToggle");
+  const simPanel=bay.closest(".sim");
   const startBtn=document.getElementById("cameraStart");
   const stopBtn=document.getElementById("cameraStop");
   const flipBtn=document.getElementById("cameraFlip");
@@ -24,6 +25,7 @@
 
   function setOpen(open){
     bay.hidden=!open;
+    simPanel?.classList.toggle("camera-open",open);
     viewToggle.classList.toggle("active",open);
     viewToggle.textContent=open?"CAMERA VIEW ON":"CAMERA VIEW";
   }
