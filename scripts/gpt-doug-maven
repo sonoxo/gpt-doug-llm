@@ -34,15 +34,19 @@ MATRIX="$ROOT/scripts/maven-matrix"
 PATENT_SCOPE="$ROOT/scripts/gpt_doug_max_patent_scope.py"
 CAPABILITIES="$ROOT/robotics-intel-site/maven-public-capabilities.json"
 EARTH_CSS="$ROOT/robotics-intel-site/maven-earth-observation.css"
+DEFENSE_MANIFEST="$ROOT/the-black-house/kraken/us-defense-support.manifest.json"
+MISSION_WORKBENCH="$ROOT/agents/mission_support_workbench.py"
 
 usage() {
   cat <<'EOF'
-Usage: gpt-doug-maven [open|matrix|earth|sources|status|memory-guard|doctor|show-source]
+Usage: gpt-doug-maven [open|matrix|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
 
   open         Open the local MAVEN matrix
   matrix       Alias for open
   earth        Open the public Earth-observation stack
   sources      List the public Earth-observation portals
+  support      Activate non-kinetic Armed Forces support mode
+  support-doctor Validate defense-support manifest and workbench
   status       Show GPT-DOUG-MAVEN integration state
   memory-guard Show the independent defensive mapping derived from US-12748837-B1
   doctor       Validate the patent seed and local MAVEN launcher
@@ -74,7 +78,7 @@ PY
 
 doctor() {
   fail=0
-  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS"; do
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH"; do
     if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
@@ -140,6 +144,42 @@ print("Project API keys required by default mesh: NO")
 print("Targeting / weapons / kinetic execution: OFF")
 PY
     ;;
+  support)
+    echo "🛡️ GPT-DOUG-MAVEN // ARMED FORCES SUPPORT"
+    python3 - "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" <<'PY'
+import importlib.util, json, pathlib, sys
+manifest=json.loads(pathlib.Path(sys.argv[1]).read_text())
+spec=importlib.util.spec_from_file_location("mission_support_workbench", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+wb=mod.workbench_manifest()
+print("MODE .............", manifest["mode"])
+print("HUMAN AUTHORITY ..", manifest["humanAuthority"])
+print("WORKBENCH ........", wb["mode"])
+print("CAPABILITIES .....")
+for x in manifest["capabilities"]:
+    print("  •", x)
+print("CONTROL BOUNDARY . NON-KINETIC / DECISION SUPPORT / SIMULATION")
+print("WEAPON CONTROL ... OFF")
+print("TARGET SELECTION . OFF")
+print("KINETIC ACTION ... OFF")
+PY
+    sh "$MATRIX" open
+    ;;
+  support-doctor)
+    python3 - "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" <<'PY'
+import importlib.util, json, pathlib, sys
+m=json.loads(pathlib.Path(sys.argv[1]).read_text())
+assert m["humanAuthority"]=="REQUIRED"
+assert m["deploymentReadiness"]["operationalMilitarySystem"] is False
+assert all(m["prohibitedAutonomy"][k] is True for k in ["weaponControl","targetSelection","fireControl","kineticEngagement","lethalDecisionMaking"])
+spec=importlib.util.spec_from_file_location("mission_support_workbench", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+wb=mod.workbench_manifest()
+assert wb["controls"]["humanReviewRequired"] is True
+assert wb["controls"]["externalActuation"] is False
+print("✅ MAVEN ARMED FORCES SUPPORT DOCTOR: GREEN")
+PY
+    ;;
   status)
     echo "🧠 GPT-DOUG-MAVEN"
     echo "ROOT ............. $ROOT"
@@ -147,6 +187,7 @@ PY
     echo "PATENT SEED ...... $SEED"
     echo "SOURCE ........... $SOURCE"
     echo "EARTH OBSERVATION  WIRED (Zoom Earth / Nullschool / NASA Worldview)"
+    [ -f "$DEFENSE_MANIFEST" ] && echo "FORCES SUPPORT .... WIRED (non-kinetic)" || echo "FORCES SUPPORT .... MISSING"
     if [ -f "$CAPABILITIES" ]; then
       count="$(python3 - "$CAPABILITIES" <<'PY'
 import json, pathlib, sys
