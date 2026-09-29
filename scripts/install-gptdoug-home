@@ -65,11 +65,14 @@ SH
 
 chmod +x "$BIN/doug-on" "$BIN/doug-off"
 
-python3 - <<'PY'
+python3 - "$ROOT" <<'PY'
 from pathlib import Path
+import sys
 
+root = sys.argv[1]
 p = Path.home() / ".gpt-doug" / "env"
 defaults = {
+    "GPT_DOUG_ROOT": root,
     "GPT_DOUG_VISUAL_FPS": "15",
     "GPT_DOUG_VISUAL_COLS": "120",
     "GPT_DOUG_COLOR_STEP": "8",
