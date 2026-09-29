@@ -386,6 +386,17 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     document.querySelectorAll("[data-pane]").forEach(x=>x.classList.toggle("mobile-active",x.dataset.pane===pane));
   }));
 
+  window.addEventListener("message",evt=>{
+    if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
+    if(evt.data?.type!=="maven-ui") return;
+    if(evt.data.action==="open-sim"){
+      setPalantirWorkspace(false);
+      const simBtn=document.querySelector('[data-mobile-pane="sim"]');
+      if(matchMedia("(max-width:900px)").matches) simBtn?.click();
+      else document.querySelector('[data-pane="sim"]')?.scrollIntoView({block:"nearest",inline:"nearest"});
+    }
+  });
+
   function applyLiveSnapshot(d){
     if(!d||d.schema!=="xunia.maven.live.v1") return;
     const summary=d.ops?.summary||{};
