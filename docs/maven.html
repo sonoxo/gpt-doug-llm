@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070906">
+<title>XUNIA // GPT-MAVEN</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050704;color:#f1e4c8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{height:48px;display:flex;align-items:center;gap:12px;padding:0 12px;border-bottom:1px solid #5d3a12;background:#090c08}
+.brand{color:#ff9f1c;font-weight:900;letter-spacing:.04em}.pill{border:1px solid #4a3a20;border-radius:999px;padding:5px 8px;font-size:10px}.ok{color:#d7ff64}.off{color:#8c9387}
+main{height:calc(100% - 48px);display:grid;grid-template-columns:minmax(0,1fr) 330px}
+iframe{width:100%;height:100%;border:0;background:#000}
+aside{border-left:1px solid #5d3a12;background:#090d0a;padding:10px;overflow:auto}
+.card{border:1px solid #4a351b;border-radius:11px;background:#0b100d;padding:11px;margin-bottom:9px}
+h2{margin:0 0 8px;font-size:13px;color:#ff9f1c}.metric{display:flex;justify-content:space-between;gap:10px;font-size:11px;margin:6px 0;color:#bba98a}.metric b{color:#f1e4c8}
+a{color:#76d4ff}.btn{display:block;text-decoration:none;border:1px solid #4a351b;border-radius:8px;background:#111712;color:#f1e4c8;padding:8px;margin:5px 0}
+#svc{font-size:11px;line-height:1.55;color:#bba98a}.good{color:#d7ff64}.bad{color:#ff7b7b}
+@media(max-width:900px){main{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">🛰 GPT-DOUG // MAVEN</div>
+<span class="pill ok">PUBLIC DATA LIVE</span>
+<span class="pill">HIVE / SWARM ANALYSIS</span>
+<span class="pill off">PRECISE TARGETING OFF</span>
+<span class="pill off">WEAPON CONTROL OFF</span>
+</header>
+<main>
+<iframe src="https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html" title="GPT-DOUG MAVEN public geospatial dashboard"></iframe>
+<aside>
+<div class="card">
+<h2>LIVE XUNIA OPS</h2>
+<div class="metric"><span>REACHABLE</span><b id="reach">—</b></div>
+<div class="metric"><span>DEGRADED</span><b id="deg">—</b></div>
+<div class="metric"><span>MAIN SHA</span><b id="sha">—</b></div>
+<div id="svc">Connecting…</div>
+<a class="btn" href="./ops.html">Open Mission Ops →</a>
+</div>
+
+<div class="card">
+<h2>PUBLIC MEDIA / BROADCAST</h2>
+<a class="btn" target="_blank" rel="noopener" href="https://www.videosarena.com/">VideosArena public media ↗</a>
+<a class="btn" target="_blank" rel="noopener" href="https://www.gdeltproject.org/">GDELT public event/media data ↗</a>
+<a class="btn" target="_blank" rel="noopener" href="https://earthquake.usgs.gov/earthquakes/feed/">USGS earthquake feeds ↗</a>
+<a class="btn" target="_blank" rel="noopener" href="https://open-meteo.com/">Open-Meteo ↗</a>
+</div>
+
+<div class="card">
+<h2>BOUNDARY</h2>
+<div id="svc">Real/public information is for situational awareness and provenance-backed analysis. Synthetic training remains separate. No target generation, fire-control data, weapon cueing, or autonomous external action.</div>
+</div>
+</aside>
+</main>
+<script>
+async function status(){
+  try{
+    const r=await fetch("https://xunia-ops-api.onrender.com/api/status",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    document.querySelector("#reach").textContent=d.summary.reachable+"/"+d.summary.total;
+    document.querySelector("#deg").textContent=d.summary.degraded;
+    document.querySelector("#sha").textContent=d.repository.sha?d.repository.sha.slice(0,7):"—";
+    document.querySelector("#svc").innerHTML=d.services.map(s=>'<div class="'+(s.reachable?'good':'bad')+'">'+(s.reachable?'● ':'○ ')+s.name+' · '+s.http_status+' · '+s.latency_ms+'ms</div>').join("");
+  }catch(e){document.querySelector("#svc").textContent="Ops API warming/unavailable: "+e.message;}
+}
+status();setInterval(status,30000);
+</script>
+</body>
+</html>
