@@ -143,6 +143,7 @@
     }
   </style>
   <link rel="stylesheet" href="maven-geospatial-responsive.css">
+  <link rel="stylesheet" href="maven-earth-observation.css">
 </head>
 <body>
 <header>
@@ -287,6 +288,37 @@
       <button type="button" id="refreshLive">↻ REFRESH LIVE DATA</button>
     </div>
 
+    <div class="card earth-observation-card">
+      <h2>🌍 MAVEN SI // EARTH OBSERVATION</h2>
+      <div class="earth-observation-grid">
+        <a class="earth-source" href="https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🛰️</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">ZOOM EARTH</span>
+            <span class="earth-source-desc">Near-real-time satellite and civilian weather visualization.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+        <a class="earth-source" href="https://earth.nullschool.net/" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🌬️</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">NULLSCHOOL EARTH</span>
+            <span class="earth-source-desc">Global wind, weather, ocean, chemistry, particulate and space-weather views.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+        <a class="earth-source" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🌎</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">NASA WORLDVIEW</span>
+            <span class="earth-source-desc">NASA Earth-observation imagery and public environmental layers.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+      </div>
+      <div class="earth-observation-note">Public civilian/environmental situational awareness. External portals open in separate tabs so their native controls, attribution, terms and safety notices remain intact.</div>
+    </div>
+
     <div class="card">
       <h2>🧠 TASK OPS</h2>
       <div class="metric"><span>PROGRESS</span><b id="taskCount">0/5</b></div>
@@ -311,6 +343,7 @@
       <div class="metric"><span>VISIBLE CELLS</span><b id="cells">24</b></div>
       <div class="metric"><span>HIVE</span><b>SYNCED</b></div>
       <div class="metric"><span>PUBLIC DATA</span><b id="publicDataState">CONNECTING</b></div>
+      <div class="metric"><span>EARTH PORTALS</span><b>3 WIRED</b></div>
       <div class="metric"><span>LAST REFRESH</span><b id="lastRefresh">—</b></div>
       <div class="metric"><span>SWARM ROLE</span><b>ANALYSIS ONLY</b></div>
       <div class="metric"><span>PRECISE TARGETING</span><b>OFF</b></div>
@@ -569,6 +602,7 @@ event('Tactile control deck online');
 event('Interactive TASK OPS online');
 event('Public layers ready; live feeds initializing');
 event('Public world grid layer online');
+event('MAVEN SI Earth observation portals wired: Zoom Earth // Nullschool // NASA Worldview');
 event('Swarm overlay parked OFF for clearer click access');
 event('Synthetic drone/missile test range ready // local visual sandbox only');
 event('Precise targeting and external action locked OFF');
