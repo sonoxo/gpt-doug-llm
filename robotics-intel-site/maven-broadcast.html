@@ -62,11 +62,11 @@ a{color:var(--cyan)}
   min-height:40px;border:1px solid #5a3d18;border-radius:8px;background:#11140d;color:#f5ddaa;padding:7px;font-size:9px;font-weight:900
 }
 .simtools button.primary{background:#2d240c;color:#ffd166}
-.arsenal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 8px 8px}
+.arsenal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0 8px 8px}
 .arsenal button{min-height:40px;border:1px solid #314b37;border-radius:8px;background:linear-gradient(180deg,#0a130c,#071009);color:#d9f4df;padding:7px;font-size:9px;font-weight:900;letter-spacing:.03em}
 .arsenal button:hover{border-color:#5f986e;box-shadow:0 8px 20px rgba(0,0,0,.18)}
 .arsenal button:active{transform:scale(.985)}
-.arsenal .pulse{color:#ffd166}.arsenal .beam{color:#7ce7ff}.arsenal .intercept{color:#d7ff64}.arsenal .defense{color:#9fd7ff}
+.arsenal .pulse{color:#ffd166}.arsenal .beam{color:#7ce7ff}.arsenal .intercept{color:#d7ff64}.arsenal .defense{color:#9fd7ff}.arsenal .nova{color:#fff09a}.arsenal .meteor{color:#ff9866}.arsenal .ion{color:#9fe8ff}.arsenal .gravity{color:#c8a4ff}.arsenal .plasma{color:#ff8be8}.arsenal .shock{color:#87ffd1}
 .feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
 .feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
 .media{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr)}
@@ -129,6 +129,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   .mobile-dock button.active{background:#ff9f1c;color:#180b00}
   .mediaframe{padding-bottom:58px}
 }
+@media(max-width:520px){.arsenal{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){
   .brand{font-size:11px}.chip{font-size:8px}
   .stats{grid-template-columns:1fr 1fr}.simtools{grid-template-columns:1fr 1fr}
@@ -202,6 +203,12 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <button class="defense" type="button" data-sim-tool="decoy">◇ DECOY FIELD</button>
         <button class="defense" type="button" data-sim-tool="shield">⬡ SHIELD DOME</button>
         <button class="defense" type="button" data-sim-tool="net"># NET LOCK</button>
+        <button class="nova" type="button" data-sim-tool="nova">✹ NOVA BURST</button>
+        <button class="meteor" type="button" data-sim-tool="meteor">☄ METEOR IMPACT</button>
+        <button class="ion" type="button" data-sim-tool="ion">ϟ ION STORM</button>
+        <button class="gravity" type="button" data-sim-tool="gravity">◌ GRAVITY WELL</button>
+        <button class="plasma" type="button" data-sim-tool="plasma">╱ PLASMA LANCE</button>
+        <button class="shock" type="button" data-sim-tool="shock">◎ SHOCK RING</button>
       </div>
       <div class="feed" id="eventFeed" aria-live="polite"></div>
     </section>
@@ -418,9 +425,10 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   const autoEl=document.getElementById("autoState");
   const clockEl=document.getElementById("simClock");
   const feed=document.getElementById("eventFeed");
-  let resolved=0,auto=false,start=performance.now(),lastAuto=0,shieldUntil=0,slowUntil=0;
+  let resolved=0,auto=false,start=performance.now(),lastAuto=0,shieldUntil=0,slowUntil=0,gravityUntil=0;
   let contacts=[];
   let effects=[];
+  let particles=[];
 
   function id(){return "SIM-"+String(Math.floor(1000+Math.random()*8999))}
   function makeContact(extra={}){
@@ -437,6 +445,46 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   log("Synthetic scenario initialized",true);
   log("Real coordinates disabled",true);
   log("External action disabled",true);
+
+  function burstAt(x,y,count=34,color="#ffb21d",power=.00023){
+    const now=performance.now();
+    for(let i=0;i<count;i++){
+      const a=Math.random()*Math.PI*2;
+      const speed=power*(.35+Math.random()*.95);
+      particles.push({
+        x,y,
+        vx:Math.cos(a)*speed,
+        vy:Math.sin(a)*speed,
+        born:now,
+        life:520+Math.random()*780,
+        size:1.2+Math.random()*3.2,
+        color
+      });
+    }
+  }
+
+  function screenKick(intensity=6){
+    if(reduce||!canvas.animate) return;
+    canvas.animate(
+      [
+        {transform:"translate3d(0,0,0)"},
+        {transform:"translate3d("+intensity+"px,"+(-intensity*.55)+"px,0)"},
+        {transform:"translate3d("+(-intensity*.7)+"px,"+(intensity*.45)+"px,0)"},
+        {transform:"translate3d("+(intensity*.35)+"px,"+(-intensity*.2)+"px,0)"},
+        {transform:"translate3d(0,0,0)"}
+      ],
+      {duration:260,easing:"ease-out"}
+    );
+  }
+
+  function takeSynthetic(count=1){
+    const removed=[];
+    for(let i=contacts.length-1;i>=0 && removed.length<count;i--){
+      if(!contacts[i].decoy) removed.push(...contacts.splice(i,1));
+    }
+    resolved+=removed.length;
+    return removed;
+  }
 
   function useSimTool(tool){
     const now=performance.now();
@@ -461,6 +509,49 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       shieldUntil=Date.now()+6000;effects.push({type:"shield",t:now,d:6000,x:.5,y:.5});log("SHIELD DOME // synthetic protection field active",true);
     }else if(tool==="net"){
       slowUntil=Date.now()+6000;effects.push({type:"net",t:now,d:6000});log("NET LOCK // synthetic contacts slowed",true);
+    }else if(tool==="nova"){
+      const removed=takeSynthetic(3);
+      effects.push({type:"nova",t:now,d:1300,x:.5,y:.5});
+      burstAt(.5,.5,72,"#ffd166",.00034);
+      burstAt(.5,.5,36,"#ffffff",.00022);
+      screenKick(9);
+      log("NOVA BURST // "+removed.length+" synthetic contact"+(removed.length===1?"":"s")+" resolved",true);
+    }else if(tool==="meteor"){
+      const target=contacts.find(c=>!c.decoy)||{x:.62,y:.42,id:"EMPTY-ZONE"};
+      const idx=contacts.indexOf(target);
+      if(idx>=0){contacts.splice(idx,1);resolved++}
+      effects.push({type:"meteor",t:now,d:1500,target:{x:target.x,y:target.y}});
+      burstAt(target.x,target.y,58,"#ff9866",.00031);
+      screenKick(8);
+      log("METEOR IMPACT // "+target.id+" synthetic impact visual",true);
+    }else if(tool==="ion"){
+      slowUntil=Date.now()+8500;
+      effects.push({type:"ion",t:now,d:3000});
+      for(let i=0;i<6;i++) burstAt(.12+Math.random()*.76,.15+Math.random()*.7,10,"#9fe8ff",.00012);
+      screenKick(4);
+      log("ION STORM // synthetic field disruption active",true);
+    }else if(tool==="gravity"){
+      gravityUntil=Date.now()+7000;
+      effects.push({type:"gravity",t:now,d:7000,x:.5,y:.5});
+      log("GRAVITY WELL // synthetic contacts pulled to center",true);
+    }else if(tool==="plasma"){
+      const target=contacts.find(c=>!c.decoy)||{x:.72,y:.3,id:"EMPTY-ZONE"};
+      const idx=contacts.indexOf(target);
+      if(idx>=0){contacts.splice(idx,1);resolved++}
+      effects.push({type:"plasma",t:now,d:850,target:{x:target.x,y:target.y}});
+      burstAt(target.x,target.y,44,"#ff8be8",.00026);
+      screenKick(6);
+      log("PLASMA LANCE // "+target.id+" synthetic contact resolved",true);
+    }else if(tool==="shock"){
+      effects.push({type:"shock",t:now,d:1200,x:.5,y:.5});
+      burstAt(.5,.5,46,"#87ffd1",.0002);
+      for(const c of contacts){
+        const dx=c.x-.5,dy=c.y-.5,mag=Math.hypot(dx,dy)||1;
+        c.x=Math.min(.96,Math.max(.04,c.x+(dx/mag)*.06));
+        c.y=Math.min(.94,Math.max(.08,c.y+(dy/mag)*.06));
+      }
+      screenKick(5);
+      log("SHOCK RING // synthetic contacts displaced",true);
     }
   }
 
@@ -481,8 +572,15 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     ctx.fillStyle="#6ee7a1";ctx.font="10px monospace";ctx.fillText("SYNTHETIC SENSOR SPACE // GEO-LINK OFF",12,18);
 
     for(const c of contacts){
+      const dt=ts-(draw.last||ts);
       const speed=Date.now()<slowUntil?.25:1;
-      if(!reduce){c.x+=c.vx*(ts-(draw.last||ts))*speed;c.y+=c.vy*(ts-(draw.last||ts))*speed;}
+      if(!reduce){
+        c.x+=c.vx*dt*speed;c.y+=c.vy*dt*speed;
+        if(Date.now()<gravityUntil&&!c.decoy){
+          c.x+=(.5-c.x)*Math.min(.018,dt*.00065);
+          c.y+=(.5-c.y)*Math.min(.018,dt*.00065);
+        }
+      }
       if(c.x<.04||c.x>.96)c.vx*=-1;if(c.y<.08||c.y>.94)c.vy*=-1;
       const x=c.x*w,y=c.y*h,pulse=reduce?1:(1+Math.sin(ts*.003+c.phase)*.18);
       ctx.strokeStyle=c.decoy?"#7ce7ff":"#ffb21d";ctx.lineWidth=2;
@@ -508,9 +606,57 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         ctx.strokeStyle="rgba(124,231,255,.12)";ctx.lineWidth=1;
         for(let x=0;x<w;x+=24){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
         for(let y=0;y<h;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+      }else if(e.type==="nova"){
+        const r=p*Math.max(w,h)*.58;
+        ctx.globalAlpha=Math.max(0,1-p);
+        ctx.fillStyle="rgba(255,236,170,"+(0.38*(1-p))+")";ctx.beginPath();ctx.arc(e.x*w,e.y*h,22+80*Math.sin(Math.min(1,p)*Math.PI),0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle="#ffd166";ctx.lineWidth=5*(1-p)+1;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle="rgba(255,255,255,"+(1-p)+")";ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r*.64,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="meteor"){
+        const tx=e.target.x*w,ty=e.target.y*h;
+        const q=Math.min(1,p/0.72);
+        const x=w*.14+(tx-w*.14)*q,y=-20+(ty+20)*q;
+        ctx.strokeStyle="rgba(255,152,102,.78)";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(w*.14,-20);ctx.lineTo(x,y);ctx.stroke();
+        ctx.fillStyle="#fff4c7";ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+        if(p>.62){const ep=(p-.62)/.38;ctx.strokeStyle="rgba(255,152,102,"+(1-ep)+")";ctx.lineWidth=4;ctx.beginPath();ctx.arc(tx,ty,ep*Math.min(w,h)*.28,0,Math.PI*2);ctx.stroke()}
+      }else if(e.type==="ion"){
+        ctx.globalAlpha=.9*(1-p*.45);
+        for(let i=0;i<7;i++){
+          const y=h*(.12+i*.12),amp=14+10*Math.sin(ts*.004+i);
+          ctx.strokeStyle=i%2?"rgba(159,232,255,.5)":"rgba(124,231,255,.75)";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,y);
+          for(let x=0;x<=w;x+=22){ctx.lineTo(x,y+Math.sin(x*.055+ts*.01+i)*amp)}
+          ctx.stroke();
+        }
+      }else if(e.type==="gravity"){
+        const cx=e.x*w,cy=e.y*h;
+        for(let i=0;i<6;i++){
+          ctx.strokeStyle="rgba(200,164,255,"+(0.34-i*.04)+")";ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.ellipse(cx,cy,28+i*22,12+i*10,ts*.0006+i*.28,0,Math.PI*2);ctx.stroke();
+        }
+        ctx.fillStyle="rgba(200,164,255,.18)";ctx.beginPath();ctx.arc(cx,cy,18+4*Math.sin(ts*.008),0,Math.PI*2);ctx.fill();
+      }else if(e.type==="plasma"){
+        const tx=e.target.x*w,ty=e.target.y*h;
+        ctx.strokeStyle="rgba(255,139,232,"+(1-p*.35)+")";ctx.lineWidth=9-5*p;ctx.beginPath();ctx.moveTo(w*.5,h*.97);ctx.lineTo(tx,ty);ctx.stroke();
+        ctx.strokeStyle="rgba(255,255,255,"+(1-p)+")";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(w*.5,h*.97);ctx.lineTo(tx,ty);ctx.stroke();
+      }else if(e.type==="shock"){
+        const r=p*Math.max(w,h)*.52;
+        ctx.strokeStyle="rgba(135,255,209,"+(1-p)+")";ctx.lineWidth=5*(1-p)+1;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle="rgba(124,231,255,"+(.65*(1-p))+")";ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r*.78,0,Math.PI*2);ctx.stroke();
       }
       ctx.restore();
     }
+    particles=particles.filter(pt=>ts-pt.born<pt.life);
+    for(const pt of particles){
+      const age=ts-pt.born,life=Math.max(0,1-age/pt.life);
+      pt.x+=pt.vx*(draw.last?ts-draw.last:0);
+      pt.y+=pt.vy*(draw.last?ts-draw.last:0);
+      pt.vx*=.992;pt.vy*=.992;
+      ctx.globalAlpha=life;
+      ctx.fillStyle=pt.color;
+      ctx.beginPath();ctx.arc(pt.x*w,pt.y*h,pt.size*(.45+life),0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+
     if(Date.now()<shieldUntil){
       ctx.strokeStyle="rgba(156,255,170,.35)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(w*.5,h*.5,Math.min(w,h)*.23,0,Math.PI*2);ctx.stroke();
     }
@@ -534,7 +680,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     auto=!auto;autoEl.textContent=auto?"ON":"OFF";e.currentTarget.classList.toggle("primary",auto);log("Auto simulation "+(auto?"enabled":"disabled"),auto);
   });
   document.getElementById("resetSim").addEventListener("click",()=>{
-    contacts=[];for(let i=0;i<5;i++)contacts.push(makeContact());resolved=0;start=performance.now();log("Synthetic scenario reset",true);
+    contacts=[];effects=[];particles=[];shieldUntil=0;slowUntil=0;gravityUntil=0;for(let i=0;i<5;i++)contacts.push(makeContact());resolved=0;start=performance.now();log("Synthetic scenario reset",true);
   });
 
   if(!reduce){
