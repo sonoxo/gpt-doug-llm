@@ -262,9 +262,13 @@ function openGothamWorkspace(){
   setTimeout(send,350);
 }
 function openOpsProfile(action){
-  setMavenMode("broadcast");
-  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action},"https://gpt-doug-robotics-intel.onrender.com");
-  setTimeout(send,350);
+  const profile=action==="open-spec"?"spec":action==="open-def"?"def":"tac";
+  currentMode="opssim";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById(profile==="tac"?"tacOpsBtn":profile==="spec"?"specOpsBtn":"defOpsBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-ops-sim.html?profile="+profile;
+  frame.title="GPT-MAVEN synthetic operations simulation";
+  engineLabel.textContent=profile==="tac"?"TACTICAL SIM":profile==="spec"?"STEALTH SIM":"DEFENSE SIM";
 }
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
