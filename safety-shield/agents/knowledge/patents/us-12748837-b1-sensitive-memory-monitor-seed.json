@@ -1,0 +1,139 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-12748837-B1",
+  "title": "Efficient monitoring of memory regions containing sensitive artifacts",
+  "grant_date": "2026-09-29",
+  "application_number": "16/699,361",
+  "filed": "2019-11-29",
+  "assignee": "Amazon Technologies, Inc.",
+  "inventor": "Rene Ernesto Henriquez Garcia",
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_search_capture",
+      "source": "USPTO Patent Public Search 4.4.0",
+      "source_id": "uspto-user-capture-US-12748837-B1-2026-09-29",
+      "note": "Document metadata, abstract, detailed description excerpts, and claims were visible in the user-supplied capture."
+    },
+    {
+      "type": "official_identifier",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/pubwebapp/",
+      "lookup": "12748837"
+    }
+  ],
+  "classification_signals": [
+    "G06F21/554 security arrangements for protecting computers",
+    "G06N20/00 machine learning",
+    "G06F2221/034 security-related implementation detail"
+  ],
+  "scope_tags": [
+    "sensitive-memory-monitoring",
+    "protected-artifact-regions",
+    "security-rule-evaluation",
+    "access-mitigation",
+    "immutable-security-descriptors",
+    "secure-boot-configuration",
+    "approval-gated-mutation",
+    "audit-and-notification",
+    "shadow-copy-rollback",
+    "cpu-gpu-memory-security",
+    "firmware-and-key-protection",
+    "hardware-security-monitoring"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "computer security",
+      "hardware memory monitoring",
+      "firmware protection",
+      "cryptographic-key protection",
+      "virtualized compute security"
+    ],
+    "core_architecture": [
+      "compute engine",
+      "memory containing sensitive artifacts",
+      "sensitive region descriptors",
+      "access detection",
+      "security-rule evaluation",
+      "mitigation initiation",
+      "notification and audit",
+      "programmatic configuration interface"
+    ],
+    "control_loop": "identify protected region -> detect access -> evaluate rule -> allow/log, delay for approval, abort, or roll back -> persist audit evidence",
+    "device_scope": [
+      "CPU",
+      "GPU",
+      "system management processor",
+      "peripheral-card processor",
+      "ASIC",
+      "FPGA",
+      "CPLD",
+      "IoT or sensor processor"
+    ],
+    "gpt_doug_maven_independent_mapping": [
+      "treat signed runtime artifacts, credentials, policy files, and high-value configuration as protected artifacts",
+      "represent protection policy in a provenance-backed manifest",
+      "evaluate mutation policy at the software control plane before applying changes",
+      "use human approval for consequential writes",
+      "retain checkpoint or shadow state for rollback",
+      "emit audit records for both denied and permitted sensitive operations",
+      "keep detection, decision, mitigation, and audit components independently testable"
+    ]
+  },
+  "publicly_described_functional_concepts": [
+    "sensitive region descriptors populated with protected memory locations",
+    "security rules associated with protected regions",
+    "monitoring memory accesses from compute engines",
+    "blocking or aborting undesired memory accesses",
+    "delaying access while requesting programmatic approval",
+    "generating notifications and access logs",
+    "shadow-copy rollback of a disallowed change",
+    "showing monitoring configuration and statistics through programmatic interfaces",
+    "optional machine-learning or knowledge-base assistance for identifying regions to monitor"
+  ],
+  "claim_scope_signals": {
+    "status": "RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_theme": "hardware memory-monitor circuitry uses sensitive-region descriptors to detect protected-region accesses, evaluate security rules, and initiate mitigation operations",
+    "legal_scope_rule": "Controlling claims, prosecution history, legal status, and jurisdiction-specific law require human legal review before any infringement or freedom-to-operate conclusion."
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_SOFTWARE_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "implement GPT-DOUG-MAVEN protection as software policy, provenance, checkpointing, and runtime supervision rather than reproducing the claimed hardware monitor",
+    "use independently defined protected-artifact identities rather than physical memory address descriptors",
+    "use existing OS, container, filesystem, signing, and policy controls as independent enforcement mechanisms",
+    "separate read observability from write authorization",
+    "require explicit human approval for destructive or consequential artifact mutations",
+    "maintain versioned rollback state and tamper-evident audit history"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "protected artifact registry",
+      "policy descriptor store",
+      "access event collector",
+      "rule evaluation service",
+      "human approval gate",
+      "mutation executor",
+      "checkpoint and rollback store",
+      "audit and notification bus",
+      "Maven artifact-integrity verifier",
+      "runtime supervisor"
+    ],
+    "mandatory_safety_boundaries": [
+      "least privilege",
+      "fail closed on unknown protected-artifact policy",
+      "no secret values in logs",
+      "human approval for consequential writes",
+      "signed or hashed provenance for protected artifacts",
+      "rollback checkpoint before approved mutation",
+      "read-only inspection path by default",
+      "audit every policy decision affecting protected artifacts"
+    ]
+  }
+}
