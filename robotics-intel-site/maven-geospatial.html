@@ -274,6 +274,7 @@
 
     <div class="card">
       <h2>LAYERS</h2>
+      <button data-layer="worldGrid" class="active">🌐 WORLD GRID</button>
       <button data-layer="swarm">🐝 SWARM CELLS</button>
       <button data-layer="humanitarian" class="active">🧭 CIVIL/HUMANITARIAN</button>
       <button data-layer="weather" class="active">🌦 REGIONAL WEATHER</button>
@@ -351,6 +352,7 @@ const map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([49.0,31.0]
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
 const layers={
+  worldGrid:L.layerGroup().addTo(map),
   swarm:L.layerGroup(),
   humanitarian:L.layerGroup().addTo(map),
   weather:L.layerGroup().addTo(map),
@@ -359,6 +361,27 @@ const layers={
   public:L.layerGroup().addTo(map)
 };
 const views={global:[[20,0],2],europe:[[49,31],5],blacksea:[[43.5,34.5],5]};
+
+const worldGridCells=[];
+for(let lat=-60;lat<80;lat+=20){
+  for(let lon=-180;lon<180;lon+=20){
+    const bounds=[[lat,lon],[lat+20,lon+20]];
+    const cell=L.rectangle(bounds,{
+      color:"#55f2c2",
+      weight:.6,
+      opacity:.18,
+      fillColor:"#55f2c2",
+      fillOpacity:.018,
+      interactive:true
+    }).bindPopup(
+      "<b>PUBLIC WORLD GRID CELL</b><br>"+
+      lat+"° to "+(lat+20)+"° / "+lon+"° to "+(lon+20)+"°<br>"+
+      "Coarse aggregate situational-awareness bin"
+    );
+    cell.addTo(layers.worldGrid);
+    worldGridCells.push(cell);
+  }
+}
 
 const coarseCells=[
 [50.5,30.5],[49.5,28.5],[48.5,31.5],[47.5,33.5],[46.5,30.5],[51.5,34.5],
@@ -483,6 +506,7 @@ event('HIVE synchronization healthy');
 event('Tactile control deck online');
 event('Interactive TASK OPS online');
 event('Public layers ready; live feeds initializing');
+event('Public world grid layer online');
 event('Swarm overlay parked OFF for clearer click access');
 event('Synthetic drone/missile test range ready // local visual sandbox only');
 event('Precise targeting and external action locked OFF');
@@ -508,7 +532,7 @@ function completeTask(row){
   if(row.classList.contains('done')) return;
   const key=row.dataset.task;
   if(key==='layers'){
-    ['humanitarian','weather','liveWeather','earthquakes','public'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
+    ['worldGrid','humanitarian','weather','liveWeather','earthquakes','public'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
     document.querySelectorAll('[data-layer]').forEach(b=>{if(b.dataset.layer!=='swarm') b.classList.add('active')});
     event('TASK: public layers verified');
   }
@@ -536,7 +560,7 @@ function applyExternalCommand(message){
     event('External view: '+String(message.value).toUpperCase());
   }
   if(message.command==='layer'){
-    const keyMap={civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',swarm:'swarm'};
+    const keyMap={worldgrid:'worldGrid',civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',swarm:'swarm'};
     const key=keyMap[message.value];
     const layer=layers[key];
     if(layer){
