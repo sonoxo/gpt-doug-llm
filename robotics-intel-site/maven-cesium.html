@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+  <meta name="theme-color" content="#050807">
+  <meta name="description" content="GPT-DOUG MAVEN CesiumJS public situational-awareness globe with public weather, earthquake, and synthetic HIVE/SWARM overlays.">
+  <title>GPT-DOUG // MAVEN CESIUM 3D</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Widgets/widgets.css">
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Cesium.js"></script>
+  <script src="https://xunia.org/xunia-i18n.js" defer></script>
+
+  <style>
+    :root{
+      --bg:#050807;--panel:rgba(7,13,11,.93);--line:#5d3a12;--text:#f1e4c8;
+      --muted:#a99576;--accent:#ff9f1c;--lime:#d7ff64;--blue:#76d4ff;
+      --red:#ff6b6b;--violet:#b69cff;--glass:blur(18px) saturate(130%)
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    #cesiumContainer{position:absolute;inset:0}
+    .cesium-viewer-bottom{bottom:max(6px,env(safe-area-inset-bottom))}
+    .cesium-widget-credits{font-size:9px!important}
+    .cesium-viewer-toolbar{display:none!important}
+
+    .topbar{
+      position:fixed;z-index:1100;left:0;right:0;top:0;
+      min-height:52px;display:flex;align-items:center;gap:8px;
+      padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));
+      background:linear-gradient(90deg,rgba(5,8,7,.96),rgba(12,16,10,.94));
+      border-bottom:1px solid rgba(255,159,28,.3);
+      backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+      overflow-x:auto;white-space:nowrap;scrollbar-width:none
+    }
+    .topbar::-webkit-scrollbar{display:none}
+    .brand{font-weight:900;color:var(--accent);letter-spacing:.04em;flex:0 0 auto}
+    .pill{flex:0 0 auto;border:1px solid rgba(255,159,28,.35);border-radius:999px;padding:5px 8px;background:#0b100d;font-size:10px}
+    .ok{color:var(--lime)}.off{color:#8c9387}.blue{color:var(--blue)}
+
+    .hud{
+      position:fixed;z-index:1090;right:max(10px,env(safe-area-inset-right));top:64px;
+      width:min(360px,calc(100vw - 20px));max-height:calc(100dvh - 80px);
+      overflow:auto;padding:10px;border:1px solid rgba(255,159,28,.34);border-radius:16px;
+      background:var(--panel);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+      box-shadow:0 18px 60px rgba(0,0,0,.48)
+    }
+    .card{border:1px solid rgba(93,58,18,.78);border-radius:12px;background:linear-gradient(180deg,rgba(14,19,15,.95),rgba(7,10,8,.96));padding:11px;margin-bottom:9px}
+    h2{font-size:12px;margin:0 0 8px;color:var(--accent);letter-spacing:.06em}
+    button{
+      font:inherit;color:var(--text);background:#111711;border:1px solid #4b3a23;
+      min-height:42px;padding:8px 9px;border-radius:9px;cursor:pointer;margin:3px 2px;
+      touch-action:manipulation;-webkit-tap-highlight-color:transparent
+    }
+    button.active{background:var(--accent);color:#170b00;border-color:#ffb84f}
+    .metric{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);margin:6px 0}
+    .metric b{color:var(--text)}
+    .feed{font-size:10px;line-height:1.5;color:var(--muted);max-height:150px;overflow:auto}
+    .warn{font-size:10px;line-height:1.5;color:#d7c79f;border-left:3px solid #ffd166;padding-left:9px}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+    .d-civil{background:var(--blue)}.d-weather{background:#55f2c2}.d-quake{background:var(--red)}.d-swarm{background:var(--accent)}
+    .legend{font-size:10px;color:var(--muted);line-height:1.8}
+
+    .mobile-toggle{display:none}
+    .boot{
+      position:fixed;z-index:1300;inset:0;display:grid;place-items:center;background:#040705;color:var(--text)
+    }
+    .boot-box{width:min(520px,calc(100vw - 36px));border:1px solid #4d351b;border-radius:16px;padding:18px;background:#090d0a;box-shadow:0 20px 80px #000}
+    .boot-title{color:var(--accent);font-weight:900;margin-bottom:8px}
+    .boot-status{color:var(--muted);font-size:12px;line-height:1.55}
+    .error{color:#ff8f8f}
+
+    @media(max-width:900px){
+      .topbar{min-height:50px}
+      .brand{font-size:12px}
+      .pill{font-size:9px}
+      .hud{
+        left:8px;right:8px;top:auto;bottom:max(8px,env(safe-area-inset-bottom));
+        width:auto;max-height:min(74dvh,650px);
+        transform:translateY(calc(100% - 58px));transition:transform .22s ease;
+        border-radius:18px 18px 14px 14px;padding:8px 10px calc(10px + env(safe-area-inset-bottom))
+      }
+      .hud.open{transform:translateY(0)}
+      .mobile-toggle{
+        position:sticky;top:-8px;z-index:5;display:flex;width:100%;min-height:46px;
+        align-items:center;justify-content:center;margin:0 0 8px;border-radius:12px;
+        background:#111711;border:1px solid var(--line);font-weight:850
+      }
+      .mobile-toggle:before{
+        content:"";position:absolute;top:5px;width:42px;height:4px;border-radius:999px;background:#5a4b34
+      }
+      button{min-height:44px}
+      .cesium-widget-credits{max-width:55vw!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    }
+    @media(max-width:430px){
+      .hud{left:6px;right:6px}
+      .card{padding:10px}
+      .metric{font-size:10px}
+      .feed{max-height:130px}
+    }
+    @media(max-height:560px) and (orientation:landscape){
+      .hud{max-height:84dvh}
+    }
+    @media(prefers-reduced-motion:reduce){
+      *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer" aria-label="Cesium 3D public situational-awareness globe"></div>
+
+  <div class="topbar" data-no-translate="true">
+    <div class="brand">🌍 GPT-DOUG // MAVEN CESIUM 3D</div>
+    <span class="pill ok">● CESIUM 1.145</span>
+    <span class="pill blue">PUBLIC DATA</span>
+    <span class="pill">HIVE / SWARM ANALYTIC</span>
+    <span class="pill off">TARGETING OFF</span>
+    <span class="pill off">WEAPON CONTROL OFF</span>
+  </div>
+
+  <aside class="hud" id="hud">
+    <button class="mobile-toggle" id="hudToggle" type="button" aria-expanded="false">⌃ CONTROLS / STATUS</button>
+
+    <div class="card">
+      <h2>3D VIEW</h2>
+      <div class="row">
+        <button type="button" data-view="global">GLOBAL</button>
+        <button type="button" data-view="europe" class="active">EUROPE</button>
+        <button type="button" data-view="blacksea">BLACK SEA</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>PUBLIC + ANALYTIC LAYERS</h2>
+      <div class="row">
+        <button type="button" data-layer="civil" class="active">CIVIL</button>
+        <button type="button" data-layer="weather" class="active">WEATHER</button>
+        <button type="button" data-layer="quakes" class="active">EARTHQUAKES</button>
+        <button type="button" data-layer="swarm">SYNTHETIC HIVE</button>
+      </div>
+      <button type="button" id="refresh">↻ REFRESH PUBLIC DATA</button>
+    </div>
+
+    <div class="card">
+      <h2>CESIUM STATUS</h2>
+      <div class="metric"><span>ENGINE</span><b>CESIUMJS 1.145</b></div>
+      <div class="metric"><span>BASE IMAGERY</span><b>OPENSTREETMAP</b></div>
+      <div class="metric"><span>TERRAIN</span><b>WGS84 ELLIPSOID</b></div>
+      <div class="metric"><span>PUBLIC WEATHER</span><b id="weatherState">CONNECTING</b></div>
+      <div class="metric"><span>EARTHQUAKES</span><b id="quakeState">CONNECTING</b></div>
+      <div class="metric"><span>LAST REFRESH</span><b id="refreshTime">—</b></div>
+      <div class="metric"><span>PRECISE TARGETING</span><b>OFF</b></div>
+      <div class="metric"><span>EXTERNAL ACTION</span><b>OFF</b></div>
+    </div>
+
+    <div class="card legend">
+      <h2>LEGEND</h2>
+      <div><span class="dot d-civil"></span>Public civilian city reference</div>
+      <div><span class="dot d-weather"></span>Public weather observation</div>
+      <div><span class="dot d-quake"></span>USGS earthquake event</div>
+      <div><span class="dot d-swarm"></span>Synthetic coarse HIVE/SWARM cell</div>
+    </div>
+
+    <div class="card">
+      <h2>EVENT BUS</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <div class="card warn">
+      Public situational-awareness and synthetic visualization only. No live unit tracking, person tracking,
+      target selection, fire-control output, weapon cueing, strike recommendation, or autonomous external action.
+    </div>
+  </aside>
+
+  <div class="boot" id="boot">
+    <div class="boot-box">
+      <div class="boot-title">GPT-DOUG // CESIUM BOOT</div>
+      <div class="boot-status" id="bootStatus">Loading CesiumJS 1.145…</div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const feed = document.getElementById("feed");
+  const boot = document.getElementById("boot");
+  const bootStatus = document.getElementById("bootStatus");
+  const hud = document.getElementById("hud");
+  const hudToggle = document.getElementById("hudToggle");
+
+  function event(message){
+    const line = document.createElement("div");
+    line.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
+    feed.prepend(line);
+    while(feed.children.length > 20) feed.removeChild(feed.lastChild);
+  }
+
+  if(hud && hudToggle){
+    hudToggle.addEventListener("click", () => {
+      const open = !hud.classList.contains("open");
+      hud.classList.toggle("open", open);
+      hudToggle.setAttribute("aria-expanded", String(open));
+      hudToggle.textContent = open ? "⌄ CLOSE CONTROLS" : "⌃ CONTROLS / STATUS";
+    });
+  }
+
+  if(!window.Cesium){
+    bootStatus.innerHTML = '<span class="error">CesiumJS failed to load. Check network/CDN access.</span>';
+    return;
+  }
+
+  const mobile = matchMedia("(max-width: 900px)").matches;
+  const lowMemory = typeof navigator.deviceMemory === "number" && navigator.deviceMemory <= 4;
+
+  try{
+    const osm = new Cesium.OpenStreetMapImageryProvider({
+      url: "https://tile.openstreetmap.org/"
+    });
+
+    const viewer = new Cesium.Viewer("cesiumContainer", {
+      baseLayer: new Cesium.ImageryLayer(osm),
+      terrainProvider: new Cesium.EllipsoidTerrainProvider(),
+      animation: false,
+      timeline: false,
+      baseLayerPicker: false,
+      geocoder: false,
+      homeButton: false,
+      sceneModePicker: false,
+      navigationHelpButton: false,
+      fullscreenButton: false,
+      infoBox: true,
+      selectionIndicator: true,
+      requestRenderMode: true,
+      maximumRenderTimeChange: Infinity,
+      msaaSamples: mobile || lowMemory ? 1 : 4
+    });
+
+    viewer.scene.globe.depthTestAgainstTerrain = false;
+    viewer.scene.fog.enabled = true;
+    viewer.scene.highDynamicRange = false;
+    viewer.scene.requestRenderMode = true;
+    viewer.resolutionScale = mobile || lowMemory ? Math.min(window.devicePixelRatio || 1, 1.35) : Math.min(window.devicePixelRatio || 1, 1.75);
+
+    const civilDS = new Cesium.CustomDataSource("civil");
+    const weatherDS = new Cesium.CustomDataSource("weather");
+    const quakeDS = new Cesium.CustomDataSource("quakes");
+    const swarmDS = new Cesium.CustomDataSource("swarm");
+    viewer.dataSources.add(civilDS);
+    viewer.dataSources.add(weatherDS);
+    viewer.dataSources.add(quakeDS);
+    viewer.dataSources.add(swarmDS);
+
+    const civil = [
+      [30.5234,50.4501,"Kyiv"],[24.0297,49.8397,"Lviv"],[30.7233,46.4825,"Odesa"],
+      [26.1025,44.4268,"Bucharest"],[21.0122,52.2297,"Warsaw"],[28.8638,47.0105,"Chișinău"]
+    ];
+
+    civil.forEach(([lon,lat,name]) => {
+      civilDS.entities.add({
+        name,
+        position: Cesium.Cartesian3.fromDegrees(lon,lat,3000),
+        point: { pixelSize: 11, color: Cesium.Color.fromCssColorString("#76d4ff"), outlineColor: Cesium.Color.BLACK, outlineWidth: 2, disableDepthTestDistance: Number.POSITIVE_INFINITY },
+        label: {
+          text: name, font: "12px monospace", fillColor: Cesium.Color.WHITE,
+          showBackground: true, backgroundColor: Cesium.Color.fromCssColorString("#07100dcc"),
+          pixelOffset: new Cesium.Cartesian2(0,-20), disableDepthTestDistance: Number.POSITIVE_INFINITY
+        },
+        description: "<b>Public civilian city reference</b><br>No live person or unit tracking."
+      });
+    });
+
+    const cells = [
+      [30.5,50.5],[28.5,49.5],[31.5,48.5],[33.5,47.5],[30.5,46.5],[34.5,51.5],
+      [24.5,52.5],[24.5,50.5],[24.5,48.5],[26.5,44.5],[29.5,45.5],[33.5,44.5],
+      [36.5,42.5],[29.5,41.5],[28.5,43.5],[39.5,47.5],[27.5,53.5],[21.5,47.5]
+    ];
+    cells.forEach(([lon,lat],i) => {
+      swarmDS.entities.add({
+        name: "SYNTHETIC HIVE CELL " + String(i+1).padStart(2,"0"),
+        position: Cesium.Cartesian3.fromDegrees(lon,lat,90000),
+        point: { pixelSize: 8, color: Cesium.Color.fromCssColorString("#ff9f1c"), outlineColor: Cesium.Color.fromCssColorString("#ffd166"), outlineWidth: 1, disableDepthTestDistance: Number.POSITIVE_INFINITY },
+        description: "<b>Synthetic coarse regional analytic cell</b><br>No live track or target data."
+      });
+    });
+    swarmDS.show = false;
+
+    const views = {
+      global: {destination: Cesium.Cartesian3.fromDegrees(0,18,19000000)},
+      europe: {destination: Cesium.Cartesian3.fromDegrees(30.5,49.2,3600000)},
+      blacksea: {destination: Cesium.Cartesian3.fromDegrees(34.5,43.5,2500000)}
+    };
+
+    function fly(key){
+      viewer.camera.flyTo({...views[key], duration: mobile ? 0.6 : 1.2});
+      event("3D view: " + key.toUpperCase());
+    }
+
+    document.querySelectorAll("[data-view]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-view]").forEach(x => x.classList.remove("active"));
+        btn.classList.add("active");
+        fly(btn.dataset.view);
+      });
+    });
+
+    const layerMap = {civil:civilDS, weather:weatherDS, quakes:quakeDS, swarm:swarmDS};
+    document.querySelectorAll("[data-layer]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const ds = layerMap[btn.dataset.layer];
+        ds.show = !ds.show;
+        btn.classList.toggle("active", ds.show);
+        viewer.scene.requestRender();
+        event("Layer " + (ds.show ? "ON: " : "OFF: ") + btn.dataset.layer.toUpperCase());
+      });
+    });
+
+    async function fetchJson(url, timeout=9000){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      try{
+        const response = await fetch(url, {cache:"no-store", signal:controller.signal, headers:{Accept:"application/json"}});
+        if(!response.ok) throw new Error("HTTP " + response.status);
+        return await response.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    const weatherPoints = [
+      {name:"Warsaw",lat:52.2297,lon:21.0122},
+      {name:"Bucharest",lat:44.4268,lon:26.1025},
+      {name:"Chișinău",lat:47.0105,lon:28.8638}
+    ];
+
+    async function loadWeather(){
+      weatherDS.entities.removeAll();
+      let count = 0;
+      for(const p of weatherPoints){
+        try{
+          const url = "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(p.lat) +
+            "&longitude=" + encodeURIComponent(p.lon) +
+            "&current=temperature_2m,wind_speed_10m,weather_code&timezone=UTC";
+          const j = await fetchJson(url);
+          const c = j.current || {};
+          const temp = Number(c.temperature_2m);
+          const wind = Number(c.wind_speed_10m);
+          weatherDS.entities.add({
+            name: "LIVE WEATHER — " + p.name,
+            position: Cesium.Cartesian3.fromDegrees(p.lon,p.lat,16000),
+            point: {pixelSize:13,color:Cesium.Color.fromCssColorString("#55f2c2"),outlineColor:Cesium.Color.BLACK,outlineWidth:2,disableDepthTestDistance:Number.POSITIVE_INFINITY},
+            description:
+              "<b>Live public weather — " + p.name + "</b><br>" +
+              (Number.isFinite(temp) ? "Temperature: " + temp.toFixed(1) + " °C<br>" : "") +
+              (Number.isFinite(wind) ? "Wind: " + wind.toFixed(1) + " km/h<br>" : "") +
+              "Source: Open-Meteo"
+          });
+          count++;
+        }catch(err){ event("Weather error: " + p.name + " // " + err.message); }
+      }
+      document.getElementById("weatherState").textContent = count ? "LIVE " + count : "OFFLINE";
+      return count;
+    }
+
+    async function loadQuakes(){
+      quakeDS.entities.removeAll();
+      let count = 0;
+      try{
+        const j = await fetchJson("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson");
+        const rows = (j.features || []).filter(f => {
+          const q = f.geometry && f.geometry.coordinates;
+          if(!Array.isArray(q) || q.length < 2) return false;
+          const lon = Number(q[0]), lat = Number(q[1]);
+          return lat >= 35 && lat <= 60 && lon >= 10 && lon <= 50;
+        }).slice(0,30);
+
+        for(const f of rows){
+          const [lon,lat,depthKm] = f.geometry.coordinates.map(Number);
+          const mag = Number(f.properties && f.properties.mag);
+          const place = (f.properties && f.properties.place) || "Regional event";
+          const time = f.properties && f.properties.time ? new Date(f.properties.time).toLocaleString() : "Unknown time";
+          quakeDS.entities.add({
+            name: "USGS EARTHQUAKE",
+            position: Cesium.Cartesian3.fromDegrees(lon,lat,Math.max(5000,Math.abs(depthKm || 0)*1000)),
+            point: {
+              pixelSize: Math.max(9,Math.min(18,(Number.isFinite(mag)?mag:4)*2.2)),
+              color: Cesium.Color.fromCssColorString("#ff6b6b"),
+              outlineColor: Cesium.Color.WHITE.withAlpha(.6), outlineWidth:1,
+              disableDepthTestDistance:Number.POSITIVE_INFINITY
+            },
+            description: "<b>USGS public earthquake</b><br>Magnitude: " +
+              (Number.isFinite(mag) ? mag.toFixed(1) : "—") + "<br>" +
+              place + "<br>" + time
+          });
+        }
+        count = rows.length;
+      }catch(err){ event("Earthquake feed error: " + err.message); }
+      document.getElementById("quakeState").textContent = count ? "LIVE " + count : "NONE";
+      return count;
+    }
+
+    let busy = false;
+    async function refresh(){
+      if(busy) return;
+      busy = true;
+      document.getElementById("weatherState").textContent = "REFRESHING";
+      document.getElementById("quakeState").textContent = "REFRESHING";
+      try{
+        const [w,q] = await Promise.all([loadWeather(),loadQuakes()]);
+        document.getElementById("refreshTime").textContent = new Date().toLocaleTimeString();
+        event("Public data refreshed // weather " + w + " // earthquakes " + q);
+        viewer.scene.requestRender();
+      } finally {
+        busy = false;
+      }
+    }
+
+    document.getElementById("refresh").addEventListener("click", refresh);
+
+    viewer.scene.globe.tileLoadProgressEvent.addEventListener(remaining => {
+      if(remaining === 0) event("Cesium globe tiles settled");
+    });
+
+    fly("europe");
+    event("CesiumJS 1.145 initialized");
+    event("OpenStreetMap imagery online");
+    event("WGS84 ellipsoid terrain active");
+    event("Synthetic HIVE layer parked OFF");
+    event("Targeting and external action locked OFF");
+    refresh();
+    setInterval(refresh, 5 * 60 * 1000);
+
+    boot.remove();
+  }catch(err){
+    bootStatus.innerHTML = '<span class="error">Cesium initialization failed: ' +
+      String(err && err.message ? err.message : err) +
+      '</span><br><br>Use the 2D MAVEN fallback from xunia.org/maven.html.';
+  }
+})();
+</script>
+</body>
+</html>
