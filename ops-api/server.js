@@ -50,6 +50,13 @@ const allowedTranslateOrigins = new Set([
   "http://127.0.0.1"
 ]);
 
+const liveClients = new Set();
+let liveTimer = null;
+let liveSequence = 0;
+let liveCache = null;
+let previousLive = null;
+const LIVE_INTERVAL_MS = 15000;
+
 function probe(url, timeoutMs = 10000) {
   return new Promise(resolve => {
     const started = Date.now();
@@ -147,6 +154,146 @@ async function statusPayload() {
       public_and_authorized_sources_only: true
     }
   };
+}
+
+function compactPalantir(value) {
+  return {
+    configured: Boolean(value && value.configured),
+    connected: Boolean(value && value.connected),
+    mode: value && value.mode ? String(value.mode) : "UNAVAILABLE",
+    ontology_bound: Boolean(value && value.ontology_bound),
+    object_type_count: Number.isFinite(Number(value && value.object_type_count)) ? Number(value.object_type_count) : null,
+    action_type_count: Number.isFinite(Number(value && value.action_type_count)) ? Number(value.action_type_count) : null,
+    checked_at: value && value.checked_at ? value.checked_at : null
+  };
+}
+
+function compactQuakes(value) {
+  const features = Array.isArray(value && value.features) ? value.features : [];
+  return features.slice(0, 12).map(feature => {
+    const coords = feature && feature.geometry && Array.isArray(feature.geometry.coordinates)
+      ? feature.geometry.coordinates
+      : [];
+    const props = feature && feature.properties ? feature.properties : {};
+    return {
+      id: String(feature && feature.id || ""),
+      magnitude: Number.isFinite(Number(props.mag)) ? Number(props.mag) : null,
+      place: String(props.place || "Regional event").slice(0, 160),
+      observed_at: Number.isFinite(Number(props.time)) ? new Date(Number(props.time)).toISOString() : null,
+      latitude: Number.isFinite(Number(coords[1])) ? roundCoord(coords[1], 1) : null,
+      longitude: Number.isFinite(Number(coords[0])) ? roundCoord(coords[0], 1) : null,
+      depth_km: Number.isFinite(Number(coords[2])) ? Math.round(Number(coords[2])) : null
+    };
+  });
+}
+
+function deriveLiveEvents(next, prev) {
+  const events = [];
+  if (!prev) {
+    events.push({ type: "system", level: "info", message: "MAVEN live fabric initialized" });
+    return events;
+  }
+
+  const prevServices = new Map((prev.ops && prev.ops.services || []).map(x => [x.id, x]));
+  for (const svc of next.ops && next.ops.services || []) {
+    const before = prevServices.get(svc.id);
+    if (!before || before.reachable !== svc.reachable || before.http_status !== svc.http_status) {
+      events.push({
+        type: "service",
+        level: svc.reachable ? "good" : "warn",
+        message: svc.name + " " + (svc.reachable ? "reachable" : "degraded") + " · HTTP " + svc.http_status
+      });
+    }
+  }
+
+  if (
+    !prev.palantir ||
+    prev.palantir.connected !== next.palantir.connected ||
+    prev.palantir.mode !== next.palantir.mode ||
+    prev.palantir.ontology_bound !== next.palantir.ontology_bound
+  ) {
+    events.push({
+      type: "palantir",
+      level: next.palantir.connected ? "good" : "info",
+      message: "Palantir " + next.palantir.mode + (next.palantir.ontology_bound ? " · ontology bound" : "")
+    });
+  }
+
+  const prevQuakes = new Set((prev.earthquakes || []).map(x => x.id));
+  for (const quake of next.earthquakes || []) {
+    if (quake.id && !prevQuakes.has(quake.id)) {
+      events.push({
+        type: "earthquake",
+        level: "info",
+        message: "USGS M" + (quake.magnitude ?? "—") + " · " + quake.place
+      });
+    }
+  }
+  return events.slice(0, 12);
+}
+
+async function buildLiveSnapshot() {
+  const [ops, palantirRaw, quakeRaw] = await Promise.all([
+    statusPayload(),
+    getJson("https://xunia-palantir-bridge.onrender.com/api/status", 6500),
+    getJson("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson", 6500)
+  ]);
+
+  const snapshot = {
+    schema: "xunia.maven.live.v1",
+    sequence: ++liveSequence,
+    generated_at: new Date().toISOString(),
+    interval_ms: LIVE_INTERVAL_MS,
+    mode: "PUBLIC_DEFENSIVE_SITUATIONAL_AWARENESS",
+    ops,
+    palantir: compactPalantir(palantirRaw),
+    earthquakes: compactQuakes(quakeRaw),
+    events: [],
+    policy: {
+      public_and_authorized_sources_only: true,
+      public_geolocation_precision: "coarse",
+      person_tracking: false,
+      biometric_identification: false,
+      precise_targeting: false,
+      weapon_control: false,
+      autonomous_external_action: false
+    }
+  };
+  snapshot.events = deriveLiveEvents(snapshot, previousLive);
+  previousLive = snapshot;
+  liveCache = snapshot;
+  return snapshot;
+}
+
+function writeSse(res, eventName, payload) {
+  res.write("event: " + eventName + "\n");
+  res.write("data: " + JSON.stringify(payload) + "\n\n");
+}
+
+async function refreshLiveFabric() {
+  try {
+    const snapshot = await buildLiveSnapshot();
+    for (const res of liveClients) {
+      try { writeSse(res, "snapshot", snapshot); } catch {}
+    }
+  } catch (err) {
+    const payload = { generated_at: new Date().toISOString(), error: String(err.message || err) };
+    for (const res of liveClients) {
+      try { writeSse(res, "error", payload); } catch {}
+    }
+  }
+}
+
+function ensureLiveFabric() {
+  if (liveTimer) return;
+  refreshLiveFabric();
+  liveTimer = setInterval(refreshLiveFabric, LIVE_INTERVAL_MS);
+}
+
+function stopLiveFabricIfIdle() {
+  if (liveClients.size || !liveTimer) return;
+  clearInterval(liveTimer);
+  liveTimer = null;
 }
 
 function corsOrigin(req) {
@@ -405,6 +552,44 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (url.pathname === "/api/live" && req.method === "GET") {
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      "Connection": "keep-alive",
+      "Access-Control-Allow-Origin": "*",
+      "X-Accel-Buffering": "no"
+    });
+    res.write(": gpt-maven-live\n\n");
+    liveClients.add(res);
+    if (liveCache) writeSse(res, "snapshot", liveCache);
+    ensureLiveFabric();
+
+    const heartbeat = setInterval(() => {
+      try { res.write(": ping " + Date.now() + "\n\n"); } catch {}
+    }, 12000);
+
+    req.on("close", () => {
+      clearInterval(heartbeat);
+      liveClients.delete(res);
+      stopLiveFabricIfIdle();
+    });
+    return;
+  }
+
+  if (url.pathname === "/api/live/snapshot" && req.method === "GET") {
+    try {
+      const snapshot = liveCache || await buildLiveSnapshot();
+      return send(res, 200, JSON.stringify(snapshot, null, 2), "application/json; charset=utf-8", {
+        "Access-Control-Allow-Origin": "*"
+      });
+    } catch (err) {
+      return send(res, 503, JSON.stringify({ error: "live_snapshot_failed", detail: String(err.message || err) }), "application/json; charset=utf-8", {
+        "Access-Control-Allow-Origin": "*"
+      });
+    }
+  }
+
   if (url.pathname === "/api/sensors/policy" && req.method === "GET") {
     return send(res, 200, JSON.stringify(sensorSchemaPayload(), null, 2), "application/json; charset=utf-8", {
       "Access-Control-Allow-Origin": "*"
@@ -484,7 +669,7 @@ const server = http.createServer(async (req, res) => {
 
   return send(res, 200, JSON.stringify({
     service: "XUNIA Ops API",
-    endpoints: ["/health", "/api/status", "/api/sensors/policy", "/api/tracking/schema", "/api/tracking/validate", "/api/translate"],
+    endpoints: ["/health", "/api/status", "/api/live", "/api/live/snapshot", "/api/sensors/policy", "/api/tracking/schema", "/api/tracking/validate", "/api/translate"],
     mode: "PUBLIC_DEFENSIVE_SITUATIONAL_AWARENESS"
   }, null, 2), "application/json; charset=utf-8", {
     "Access-Control-Allow-Origin": "*"
