@@ -144,6 +144,7 @@
   </style>
   <link rel="stylesheet" href="maven-geospatial-responsive.css">
   <link rel="stylesheet" href="maven-earth-observation.css">
+  <link rel="stylesheet" href="maven-support-matrix.css">
 </head>
 <body>
 <header>
@@ -155,6 +156,7 @@
     <span class="pill ok" id="liveDataPill">◌ LIVE PUBLIC DATA</span>
     <span class="pill">🧪 SYNTHETIC TEST RANGE</span>
     <span class="pill">⚡ TASK OPS READY</span>
+    <span class="pill ok">🛡 SUPPORT READY</span>
     <span class="pill lock">🔒 PUBLIC + SIMULATION ONLY</span>
   </div>
 </header>
@@ -208,6 +210,39 @@
         <label class="rocker"><input type="checkbox" id="deckFxSwitch" checked><span>DECK FX</span></label>
       </div>
       <div class="deck-keys"><span class="keycap">+</span><span class="keycap">−</span> zoom · <span class="keycap">↑↓←→</span> pan · <span class="keycap">R</span> refresh · <span class="keycap">D</span> add sim · <span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">F</span> fly trainer</div>
+    </div>
+
+    <div class="card support-matrix-card">
+      <div class="support-matrix-head">
+        <h2>🛡 MAVEN SI SUPPORT MATRIX</h2>
+        <span class="support-matrix-badge">VISIBLE / READY</span>
+      </div>
+      <div class="support-matrix-grid">
+        <a class="support-action external" href="https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🛰️</span>SATELLITE</span>
+        </a>
+        <a class="support-action external" href="https://earth.nullschool.net/" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🌬️</span>GLOBAL WX</span>
+        </a>
+        <a class="support-action external" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🌎</span>NASA EARTH</span>
+        </a>
+        <button class="support-action humanitarian" type="button" data-support-action="humanitarian">
+          <span><span class="support-icon">🧭</span>SAR / HUMAN</span>
+        </button>
+        <button class="support-action" type="button" data-support-action="readiness">
+          <span><span class="support-icon">🛠️</span>LOGISTICS</span>
+        </button>
+        <a class="support-action defense" href="./maven-ops-sim.html?profile=def" target="_blank" rel="noopener">
+          <span><span class="support-icon">🔐</span>CYBER / DEF SIM</span>
+        </a>
+      </div>
+      <div class="support-matrix-state">
+        <div class="support-state"><span>HUMAN AUTHORITY</span><b>REQUIRED</b></div>
+        <div class="support-state lock"><span>WEAPON / TARGET CONTROL</span><b>OFF</b></div>
+        <div class="support-state"><span>PUBLIC DATA</span><b>ACTIVE</b></div>
+        <div class="support-state"><span>SUPPORT MODE</span><b>NON-KINETIC</b></div>
+      </div>
     </div>
 
     <div class="card">
@@ -612,6 +647,7 @@ event('Interactive TASK OPS online');
 event('Public layers ready; live feeds initializing');
 event('Public world grid layer online');
 event('MAVEN SI Earth observation portals wired: Zoom Earth // Nullschool // NASA Worldview');
+event('MAVEN SI support matrix visible: humanitarian // readiness // cyber-defense simulation');
 event('Swarm overlay parked OFF for clearer click access');
 event('Synthetic drone/missile test range ready // local visual sandbox only');
 event('Precise targeting and external action locked OFF');
@@ -656,6 +692,25 @@ document.getElementById('runAll').addEventListener('click',()=>{
   event('SAFE TASK CYCLE started');
 });
 document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicData();event('Manual public-data refresh requested')});
+
+document.querySelectorAll('[data-support-action]').forEach(btn=>btn.addEventListener('click',()=>{
+  const action=btn.dataset.supportAction;
+  if(action==='humanitarian'){
+    ['humanitarian','liveWeather','earthquakes','naturalEvents','public'].forEach(k=>{
+      if(layers[k]&&!map.hasLayer(layers[k])) map.addLayer(layers[k]);
+      const layerButton=document.querySelector('[data-layer="'+k+'"]');
+      if(layerButton) layerButton.classList.add('active');
+    });
+    map.setView(views.global[0],views.global[1]);
+    event('SUPPORT: humanitarian / SAR public layers activated');
+  }
+  if(action==='readiness'){
+    if(!map.hasLayer(layers.liveWeather)) map.addLayer(layers.liveWeather);
+    if(!map.hasLayer(layers.naturalEvents)) map.addLayer(layers.naturalEvents);
+    loadPublicData();
+    event('SUPPORT: logistics/readiness public environment refresh activated');
+  }
+}));
 
 function applyExternalCommand(message){
   if(!message||message.type!=='maven-command') return;
