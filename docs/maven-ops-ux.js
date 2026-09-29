@@ -4,6 +4,46 @@
   const rail=document.getElementById("commandRail");
   const railToggle=document.getElementById("opsRailToggle");
   const stateKey="xunia.maven.fold.v2";
+
+  if(rail && !document.getElementById("palantirBridgeCard")){
+    const card=document.createElement("div");
+    card.className="card";
+    card.id="palantirBridgeCard";
+    card.innerHTML=`
+      <h2>PALANTIR FOUNDRY BRIDGE</h2>
+      <div class="metric"><span>MODE</span><b id="palMode">CHECKING</b></div>
+      <div class="metric"><span>CONNECTED</span><b id="palConnected">—</b></div>
+      <div class="metric"><span>ONTOLOGY</span><b id="palOntology">—</b></div>
+      <div class="metric"><span>OBJECT TYPES</span><b id="palObjects">—</b></div>
+      <div class="metric"><span>ACTION TYPES</span><b id="palActions">—</b></div>
+      <div class="feed" id="palNote">Server-side Foundry bridge. Credentials remain outside the browser.</div>
+    `;
+    const firstCard=rail.querySelector(".card");
+    if(firstCard) firstCard.insertAdjacentElement("afterend",card);
+    else rail.appendChild(card);
+
+    const refreshPalantir=async()=>{
+      try{
+        const res=await fetch("https://xunia-palantir-bridge.onrender.com/api/status",{cache:"no-store"});
+        if(!res.ok) throw new Error("HTTP "+res.status);
+        const d=await res.json();
+        card.querySelector("#palMode").textContent=d.mode||"UNKNOWN";
+        card.querySelector("#palConnected").textContent=d.connected?"YES":"NO";
+        card.querySelector("#palOntology").textContent=d.ontology_bound?"BOUND":d.configured?"NOT FOUND":"WAITING FOR TENANT";
+        card.querySelector("#palObjects").textContent=d.object_type_count??"—";
+        card.querySelector("#palActions").textContent=d.action_type_count??"—";
+        card.querySelector("#palNote").textContent=d.connected
+          ?"Foundry OAuth connected. Only aggregate schema health is shown here."
+          :"Bridge is online; bind your Foundry hostname, client ID, client secret, and ontology in the Render service environment.";
+      }catch(err){
+        card.querySelector("#palMode").textContent="BRIDGE WARMING";
+        card.querySelector("#palConnected").textContent="NO";
+        card.querySelector("#palNote").textContent="Bridge unavailable or warming: "+err.message;
+      }
+    };
+    refreshPalantir();
+    setInterval(refreshPalantir,60000);
+  }
   let saved={};
   try{saved=JSON.parse(localStorage.getItem(stateKey)||"{}")}catch{}
 
