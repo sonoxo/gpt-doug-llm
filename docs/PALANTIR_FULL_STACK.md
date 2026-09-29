@@ -110,3 +110,33 @@ A green code status means the adapter, permission gate, tests, runtime routing a
 - Defense OSDK configuration never creates mission authority.
 - No autonomous local targeting-and-fires execution.
 - No Palantir entitlement, government affiliation, ATO, classification authority or certification is inferred from repository configuration.
+
+
+## Runtime environment lifecycle architecture watch
+
+The operator-supplied USPTO Patent Public Search record for **US-12748581-B2, _Systems and methods to automatically create runtime environments_** is retained as a provenance-aware architecture watch. The supplied detailed record identifies Palantir Technologies Inc. in Applicant and Assignee fields.
+
+The source-supported lifecycle is:
+
+```text
+environment request
+  -> environment metadata / ownership / template
+  -> manifest + resource configuration
+  -> backing cluster / node provisioning
+  -> software-product deployment
+  -> runtime operator state loop
+  -> deploy | upgrade | rollback
+  -> verification
+  -> expiration / destruction
+```
+
+The source also describes GUI inputs for environment name/description, owner/co-owner, template, release channels/overrides, expiration, node count and cost visibility; runtime-operator authentication; local/cloud node options; capacity gates; and cost/subscription-sensitive lifecycle decisions.
+
+**XUNIA / GPT-DOUG mapping:** versioned environment templates, manifest-driven isolated sandboxes, explicit ownership/provenance, runtime state observation, policy-gated upgrades/rollbacks, TTL cleanup, capacity/cost controls and human approval before consequential production changes.
+
+This is a **research and independent-design watch**, not a claim that Foundry/Apollo exposes this exact patent implementation to the configured tenant, and not legal or freedom-to-operate advice.
+
+Source objects:
+- `intel/sources/uspto-palantir-attributed-US-12748581-B2.json`
+- `intel/sources/uspto-palantir-maven-query-2026-09-29.json`
+- `intel/briefings/2026-09-29-uspto-palantir-runtime-environments.md`
