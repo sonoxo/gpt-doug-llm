@@ -85,6 +85,7 @@ a{color:var(--blue)}
   <div class="modebar" data-no-translate="true">
     <button class="modebtn" type="button" data-mode="3d">🌍 3D</button>
     <button class="modebtn" type="button" data-mode="2d">🗺 2D</button>
+    <button class="modebtn" id="worldGridBtn" type="button">🌐 WORLD GRID</button>
     <button class="modebtn" type="button" data-mode="ops">⚡ OPS</button>
     <button class="modebtn active" type="button" data-mode="broadcast">📡 TACTICAL</button>
     <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
@@ -121,6 +122,7 @@ a{color:var(--blue)}
         <button type="button" data-map-view="blacksea">BLACK SEA</button>
       </div>
       <div class="map-layer-grid" data-no-translate="true">
+        <button type="button" data-map-layer="worldgrid" class="active">WORLD GRID</button>
         <button type="button" data-map-layer="civil" class="active">CIVIL</button>
         <button type="button" data-map-layer="weather" class="active">WEATHER</button>
         <button type="button" data-map-layer="quakes" class="active">QUAKES</button>
@@ -233,6 +235,18 @@ function openDroneWorkspace(){
 }
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
+
+function openWorldGrid(){
+  setMavenMode("2d");
+  setTimeout(()=>{
+    postMapCommand("view","global");
+    postMapCommand("layer","worldgrid",true);
+    postMapCommand("layer","civil",true);
+    postMapCommand("layer","weather",true);
+    postMapCommand("layer","quakes",true);
+  },420);
+}
+document.getElementById("worldGridBtn")?.addEventListener("click",openWorldGrid);
 
 function openMilitaryEngagement(){
   const toggle=document.getElementById("opsRailToggle");
