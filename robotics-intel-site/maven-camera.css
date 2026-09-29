@@ -139,3 +139,22 @@
 @media(max-height:500px) and (orientation:landscape){
   .camera-stage{height:min(38vh,190px)}
 }
+
+.sim.camera-open{
+  grid-template-rows:auto auto minmax(150px,.72fr) minmax(170px,.8fr) auto auto minmax(80px,.3fr)!important;
+}
+@media(max-width:900px){
+  .sim.camera-open.mobile-active{
+    grid-template-rows:auto auto minmax(150px,.55fr) minmax(170px,.72fr) auto auto minmax(70px,.26fr)!important;
+  }
+}
+@media(max-width:430px){
+  .sim.camera-open.mobile-active{
+    grid-template-rows:auto auto minmax(130px,.48fr) minmax(160px,.7fr) auto auto minmax(62px,.22fr)!important;
+  }
+}
+@media(max-height:500px) and (orientation:landscape){
+  .sim.camera-open.mobile-active{
+    grid-template-rows:auto minmax(120px,.55fr) minmax(130px,.62fr) auto auto minmax(54px,.2fr)!important;
+  }
+}
