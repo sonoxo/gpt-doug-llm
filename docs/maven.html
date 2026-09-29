@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="./maven-live.css">
 <link rel="stylesheet" href="./maven-iphone16e.css">
 <link rel="stylesheet" href="./maven-layout-v2.css">
+<link rel="stylesheet" href="./maven-military.css">
 <style>
 :root{--bg:#050704;--panel:#090d0a;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--blue:#76d4ff}
 *{box-sizing:border-box}
@@ -89,6 +90,7 @@ a{color:var(--blue)}
     <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
     <button class="modebtn" id="droneModeBtn" type="button">🛸 DRONE SIM</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
+    <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
   </div>
   <span class="pill ok">PUBLIC DATA LIVE</span>
@@ -105,7 +107,12 @@ a{color:var(--blue)}
     <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1" title="GPT-MAVEN Tactical Max synthetic scenario workspace" loading="eager" allow="camera; fullscreen"></iframe>
   </div>
 
-  <button class="rail-scrim" id="railScrim" type="button" aria-label="Close panel"></button>\n  <aside class="command-rail" id="commandRail" aria-label="GPT-MAVEN command rail">\n    <div class="rail-head" data-no-translate="true">\n      <div><strong>CONTROL PANEL</strong><span>Workspace controls</span></div>\n      <div class="rail-head-actions"><button type="button" id="railCollapseAll">COLLAPSE</button><button type="button" id="commandRailClose">CLOSE</button></div>\n    </div>
+  <button class="rail-scrim" id="railScrim" type="button" aria-label="Close panel"></button>
+  <aside class="command-rail" id="commandRail" aria-label="GPT-MAVEN command rail">
+    <div class="rail-head" data-no-translate="true">
+      <div><strong>CONTROL PANEL</strong><span>Workspace controls</span></div>
+      <div class="rail-head-actions"><button type="button" id="railCollapseAll">COLLAPSE</button><button type="button" id="commandRailClose">CLOSE</button></div>
+    </div>
     <div class="card">
       <h2>MAP CONTROL</h2>
       <div class="map-control-grid" data-no-translate="true">
@@ -156,6 +163,13 @@ a{color:var(--blue)}
         <a href="./palantir-style-sensor-ontology.json" target="_blank" rel="noopener">ONTOLOGY ↗</a>
       </div>
       <div class="sensor-note" id="trackingContractResult">No camera credentials are stored in this public interface.</div>
+    </div>
+
+    <div class="card" id="militaryEngagementCard">
+      <h2>OFFICIAL MILITARY ENGAGEMENT</h2>
+      <div class="metric"><span>ACCESS MODE</span><b>PUBLIC OFFICIAL CHANNELS</b></div>
+      <div id="militaryEngagement" class="military-gateway">Loading official contact channels…</div>
+      <div class="military-boundary">Official public-affairs, outreach, recruiting/industry and public-inquiry channels only. No private personnel lookup, gated directory access, credential bypass, live personnel location, or operational-unit tracking.</div>
     </div>
 
     <div class="card">
@@ -219,6 +233,22 @@ function openDroneWorkspace(){
 }
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
+
+function openMilitaryEngagement(){
+  const toggle=document.getElementById("opsRailToggle");
+  const rail=document.getElementById("commandRail");
+  if(rail&&!rail.classList.contains("open")) toggle?.click();
+  setTimeout(()=>{
+    const card=document.getElementById("militaryEngagementCard");
+    card?.classList.remove("collapsed");
+    const head=card?.querySelector(".fold-head");
+    head?.setAttribute("aria-expanded","true");
+    const action=head?.querySelector(".fold-action");
+    if(action) action.textContent="CLOSE";
+    card?.scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  },120);
+}
+document.getElementById("militaryEngageBtn")?.addEventListener("click",openMilitaryEngagement);
 document.getElementById("openDroneRail")?.addEventListener("click",e=>{e.preventDefault();openDroneWorkspace();});
 try{
   const queryMode=new URLSearchParams(location.search).get("mode");
@@ -304,6 +334,26 @@ async function testTrackingContract(){
 }
 document.getElementById("testTrackingContract")?.addEventListener("click",testTrackingContract);
 
+async function loadMilitaryEngagement(){
+  const host=document.getElementById("militaryEngagement");
+  if(!host) return;
+  try{
+    const r=await fetch("./military-engagement.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    host.innerHTML=(d.channels||[]).map(x=>
+      '<article class="military-channel">'+
+      '<div class="military-meta"><b>'+x.service+'</b><span>'+x.type.replaceAll("_"," ")+'</span></div>'+
+      '<p>'+x.purpose+'</p>'+
+      '<div class="military-contact">'+x.contact+'</div>'+
+      '<a target="_blank" rel="noopener" href="'+x.url+'">OPEN OFFICIAL CHANNEL ↗</a>'+
+      '</article>'
+    ).join("");
+  }catch(e){
+    host.textContent="Official engagement directory unavailable: "+e.message;
+  }
+}
+
 async function loadDefenseIntel(){
   const intelBox=document.getElementById("defIntel");
   const contactsBox=document.getElementById("defContacts");
@@ -326,7 +376,7 @@ async function loadDefenseIntel(){
     contactsBox.textContent="Contact directory unavailable.";
   }
 }
-status();setInterval(status,30000);loadSensorGovernance();loadDefenseIntel();
+status();setInterval(status,30000);loadSensorGovernance();loadMilitaryEngagement();loadDefenseIntel();
 </script>
 <script src="./maven-live.js" defer></script>
 <script src="./maven-ops-ux.js" defer></script>
