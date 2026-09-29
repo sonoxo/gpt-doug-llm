@@ -143,6 +143,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 </style>
 <link rel="stylesheet" href="./maven-tactical.css">
 <link rel="stylesheet" href="./maven-iphone16e.css">
+<link rel="stylesheet" href="./maven-camera.css">
 <script>
 (() => {
   const params=new URLSearchParams(location.search);
@@ -186,7 +187,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     </section>
 
     <section class="panel sim" data-pane="sim">
-      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
+      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
       <div class="stats">
         <div class="stat">ACTIVE CONTACTS<b id="activeCount">5</b></div>
         <div class="stat">RESOLVED<b id="resolvedCount">0</b></div>
@@ -194,6 +195,25 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <div class="stat">SIM CLOCK<b id="simClock">00:00</b></div>
       </div>
       <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic scenario visualization"></canvas></div>
+      <section class="camera-bay" id="cameraBay" hidden aria-label="Local camera visual bay">
+        <div class="camera-bay-head">
+          <span>📷 LOCAL CAMERA VISUAL BAY</span><span class="spacer"></span><span class="camera-status" id="cameraStatus">CAMERA OFF</span>
+        </div>
+        <div class="camera-stage">
+          <video id="mavenCamera" class="camera-video" playsinline muted autoplay></video>
+          <div class="camera-overlay">
+            <div class="camera-readout"><strong>LOCAL PREVIEW</strong><span>VISUALS ONLY</span><span class="spacer"></span><span>NO DETECTION / NO UPLOAD</span></div>
+          </div>
+        </div>
+        <div class="camera-controls" data-no-translate="true">
+          <button id="cameraStart" type="button">CAMERA ON</button>
+          <button id="cameraFlip" type="button" disabled>FLIP</button>
+          <button id="cameraFilter" type="button">LOOK: CLEAN</button>
+          <button id="cameraOverlayToggle" type="button" class="active">HUD ON</button>
+          <button id="cameraStop" type="button" disabled>CAMERA OFF</button>
+        </div>
+        <div class="camera-note">DEVICE CAMERA STAYS LOCAL IN THE BROWSER. NO FACE RECOGNITION, OBJECT DETECTION, PERSON TRACKING, TARGET GENERATION, RECORDING, OR UPLOAD. SYNTHETIC ARSENAL REMAINS SEPARATE.</div>
+      </section>
       <div class="simtools" data-no-translate="true">
         <button class="primary" id="addContact" type="button">+ SYNTHETIC CONTACT</button>
         <button id="resolveContact" type="button">RESOLVE ONE</button>
@@ -694,5 +714,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 </script>
 <script src="./maven-tactical.js" defer></script>
 <script src="./maven-iphone16e.js" defer></script>
+<script src="./maven-camera.js" defer></script>
 </body>
 </html>
