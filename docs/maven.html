@@ -95,6 +95,7 @@ a{color:var(--blue)}
     <button class="modebtn" id="tacOpsBtn" type="button">🛰 TACTICAL SIM</button>
     <button class="modebtn" id="specOpsBtn" type="button">🕶 STEALTH SIM</button>
     <button class="modebtn" id="defOpsBtn" type="button">🛡 DEFENSE SIM</button>
+    <button class="modebtn" id="roverOpsBtn" type="button">🛞 ROVER OPS</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
@@ -276,6 +277,16 @@ document.getElementById("gothamSimBtn")?.addEventListener("click",openGothamWork
 document.getElementById("tacOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-tac"));
 document.getElementById("specOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-spec"));
 document.getElementById("defOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-def"));
+
+function openRoverOps(){
+  currentMode="rover";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById("roverOpsBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-rover-ops.html";
+  frame.title="GPT-MAVEN public and authorized rover operations hub";
+  engineLabel.textContent="ROVER OPS";
+}
+document.getElementById("roverOpsBtn")?.addEventListener("click",openRoverOps);
 
 function openWorldGrid(){
   setMavenMode("2d");
