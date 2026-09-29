@@ -23,19 +23,19 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
   .brand{flex:0 0 auto;font-size:13px}
   .pill{flex:0 0 auto}
   main{display:block;height:auto;min-height:0}
-  iframe{display:block;height:62dvh;min-height:420px;border-bottom:1px solid #5d3a12}
+  iframe{display:block;height:calc(100dvh - 64px);min-height:560px;border-bottom:1px solid #5d3a12}
   aside{display:block;border-left:0;border-top:1px solid #5d3a12;padding:12px max(12px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));overflow:visible}
   .card{padding:13px}
 }
 @media(max-width:540px){
-  iframe{height:58dvh;min-height:360px}
+  iframe{height:calc(100dvh - 60px);min-height:520px}
   .brand{font-size:12px}
   .pill{font-size:9px;padding:5px 7px}
   h2{font-size:12px}
   .metric,#svc{font-size:10px}
 }
 @media(max-width:380px){
-  iframe{height:55dvh;min-height:330px}
+  iframe{height:calc(100dvh - 58px);min-height:500px}
 }
 @media(max-height:560px) and (orientation:landscape){
   iframe{height:76dvh;min-height:300px}
@@ -44,7 +44,7 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 @media(pointer:coarse){.btn{min-height:46px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
-</head>
+<script src="./xunia-i18n.js" defer></script>\n</head>
 <body>
 <header>
 <div class="brand">🛰 GPT-DOUG // MAVEN</div>
