@@ -92,6 +92,9 @@ a{color:var(--blue)}
     <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
     <button class="modebtn" id="droneModeBtn" type="button">🛸 DRONE SIM</button>
     <button class="modebtn" id="gothamSimBtn" type="button">🎥 GOTHAM SIM</button>
+    <button class="modebtn" id="tacOpsBtn" type="button">🛰 TACTICAL SIM</button>
+    <button class="modebtn" id="specOpsBtn" type="button">🕶 STEALTH SIM</button>
+    <button class="modebtn" id="defOpsBtn" type="button">🛡 DEFENSE SIM</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
@@ -258,9 +261,17 @@ function openGothamWorkspace(){
   const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-gotham"},"https://gpt-doug-robotics-intel.onrender.com");
   setTimeout(send,350);
 }
+function openOpsProfile(action){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
 document.getElementById("gothamSimBtn")?.addEventListener("click",openGothamWorkspace);
+document.getElementById("tacOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-tac"));
+document.getElementById("specOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-spec"));
+document.getElementById("defOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-def"));
 
 function openWorldGrid(){
   setMavenMode("2d");
