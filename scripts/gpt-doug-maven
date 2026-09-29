@@ -1,7 +1,26 @@
 #!/bin/sh
 set -eu
 
-ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+resolve_root() {
+  script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+  script_root="$(CDPATH= cd -- "$script_dir/.." && pwd)"
+  for candidate in     "${GPT_DOUG_ROOT:-}"     "$script_root"     "$HOME/.config/gptdoug/src/gpt-doug-llm"     "$HOME/gpt-doug-llm"     "$HOME/Downloads/gpt-doug-llm"
+  do
+    [ -n "$candidate" ] || continue
+    if [ -f "$candidate/gpt_doug_max.py" ] && [ -f "$candidate/scripts/zyra-maven" ]; then
+      (CDPATH= cd -- "$candidate" && pwd)
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "❌ GPT-DOUG repository root not found." >&2
+  echo "Set GPT_DOUG_ROOT or restore ~/.config/gptdoug/src/gpt-doug-llm." >&2
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
 SEED="$ROOT/safety-shield/agents/knowledge/patents/us-12748837-b1-sensitive-memory-monitor-seed.json"
 SOURCE="$ROOT/intel/sources/2026-09-29-uspto-sensitive-memory-monitor.json"
 MATRIX="$ROOT/scripts/maven-matrix"
