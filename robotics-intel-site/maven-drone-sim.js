@@ -13,6 +13,10 @@
   const altEl=document.getElementById("droneAlt");
   const speedEl=document.getElementById("droneSpeed");
   const batteryEl=document.getElementById("droneBattery");
+  const head=bay.querySelector(".drone-head");
+  const closeBtn=document.createElement("button");
+  closeBtn.id="droneBayClose";closeBtn.type="button";closeBtn.textContent="CLOSE";closeBtn.className="drone-bay-close";
+  head?.appendChild(closeBtn);
   let mode="GROUND";
   let cockpit=false;
   let t0=performance.now();
@@ -33,6 +37,7 @@
   }));
 
   function setOpen(open){
+    if(open) document.dispatchEvent(new CustomEvent("maven:drone-open"));
     bay.hidden=!open;
     simPanel?.classList.toggle("drone-open",open);
     toggle.classList.toggle("active",open);
@@ -221,6 +226,8 @@
   }));
 
   toggle.addEventListener("click",()=>setOpen(bay.hidden));
+  closeBtn.addEventListener("click",()=>setOpen(false));
+  document.addEventListener("maven:camera-open",()=>setOpen(false));
 
   window.addEventListener("message",evt=>{
     if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
