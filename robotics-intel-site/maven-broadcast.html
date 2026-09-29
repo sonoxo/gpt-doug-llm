@@ -144,6 +144,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <link rel="stylesheet" href="./maven-tactical.css">
 <link rel="stylesheet" href="./maven-iphone16e.css">
 <link rel="stylesheet" href="./maven-camera.css">
+<link rel="stylesheet" href="./maven-drone-sim.css">
 <script>
 (() => {
   const params=new URLSearchParams(location.search);
@@ -187,7 +188,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     </section>
 
     <section class="panel sim" data-pane="sim">
-      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
+      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="drone-view-toggle" id="droneViewToggle" type="button">DRONE VIEW</button><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
       <div class="stats">
         <div class="stat">ACTIVE CONTACTS<b id="activeCount">5</b></div>
         <div class="stat">RESOLVED<b id="resolvedCount">0</b></div>
@@ -195,6 +196,30 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <div class="stat">SIM CLOCK<b id="simClock">00:00</b></div>
       </div>
       <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic scenario visualization"></canvas></div>
+      <section class="drone-bay" id="droneBay" hidden aria-label="Synthetic drone flight deck">
+        <div class="drone-head">
+          <span>🛸 SYNTHETIC DRONE FLIGHT DECK</span><span class="spacer"></span>
+          <span class="drone-chip live">VISUAL SIM</span><span class="drone-chip" id="droneMode">GROUND</span>
+        </div>
+        <div class="drone-stage">
+          <canvas id="droneCanvas" aria-label="Animated synthetic drone flight visualization"></canvas>
+          <div class="drone-hud" data-no-translate="true">
+            <div class="good">FLEET<b id="droneFleet">4</b></div>
+            <div class="info">AVG ALT<b id="droneAlt">0 m</b></div>
+            <div class="info">AVG SPEED<b id="droneSpeed">0 km/h</b></div>
+            <div class="good">AVG BATTERY<b id="droneBattery">96%</b></div>
+          </div>
+        </div>
+        <div class="drone-footer" data-no-translate="true">
+          <button class="amber" type="button" data-drone-mode="TAKEOFF">TAKEOFF</button>
+          <button class="cyan" type="button" data-drone-mode="ORBIT">ORBIT</button>
+          <button class="cyan" type="button" data-drone-mode="FORMATION">FORMATION</button>
+          <button type="button" data-drone-mode="COCKPIT">FPV</button>
+          <button type="button" data-drone-mode="HOME">HOME</button>
+          <button class="amber" type="button" data-drone-mode="LAND">LAND</button>
+        </div>
+        <div class="drone-note">SYNTHETIC DRONES ONLY · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO CAMERA-TO-DRONE CONTROL · NO TARGETING OR WEAPON CONTROL.</div>
+      </section>
       <section class="camera-bay" id="cameraBay" hidden aria-label="Local camera visual bay">
         <div class="camera-bay-head">
           <span>📷 LOCAL CAMERA VISUAL BAY</span><span class="spacer"></span><span class="camera-status" id="cameraStatus">CAMERA OFF</span>
@@ -389,7 +414,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   window.addEventListener("message",evt=>{
     if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
     if(evt.data?.type!=="maven-ui") return;
-    if(evt.data.action==="open-sim"){
+    if(evt.data.action==="open-sim"||evt.data.action==="open-drone"){
       setPalantirWorkspace(false);
       const simBtn=document.querySelector('[data-mobile-pane="sim"]');
       if(matchMedia("(max-width:900px)").matches) simBtn?.click();
@@ -726,5 +751,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <script src="./maven-tactical.js" defer></script>
 <script src="./maven-iphone16e.js" defer></script>
 <script src="./maven-camera.js" defer></script>
+<script src="./maven-drone-sim.js" defer></script>
 </body>
 </html>
