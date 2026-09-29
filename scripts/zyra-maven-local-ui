@@ -21,7 +21,7 @@ copy_asset() {
 }
 
 copy_asset "maven-broadcast.html" "maven-videosarena.html"
-for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js
+for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-gotham-sim.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js   maven-gotham-sim.js
 do
   copy_asset "$f" "$f"
 done
