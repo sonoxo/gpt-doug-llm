@@ -64,7 +64,7 @@ a{color:var(--cyan)}
 .simtools button.primary{background:#2d240c;color:#ffd166}
 .feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
 .feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
-.media{display:grid;grid-template-rows:auto auto auto minmax(0,1fr)}
+.media{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr)}
 .categories{display:flex;gap:5px;overflow-x:auto;padding:7px;border-bottom:1px solid rgba(93,58,18,.62);scrollbar-width:none}
 .categories::-webkit-scrollbar{display:none}
 .categories button{
@@ -76,7 +76,7 @@ a{color:var(--cyan)}
 .searchbar button{min-height:38px;border:1px solid #5a3d18;border-radius:8px;background:#13170f;color:#ffd166;padding:7px 10px;font-size:9px;font-weight:900}
 .boundary{padding:6px 8px;border-bottom:1px solid #1d3725;color:#6ee7a1;font-size:8px;letter-spacing:.05em}
 .mediaframe{width:100%;height:100%;border:0;background:#fff}
-.media-surface{position:relative;min-height:0;overflow:hidden}
+.media-surface{position:relative;min-height:0;height:100%;overflow:hidden;background:#050806}
 .directory{position:absolute;inset:0;display:none;overflow:auto;padding:10px;background:linear-gradient(180deg,#071009,#050806)}
 .directory.active{display:block}
 .directory-grid{display:grid;grid-template-columns:1fr;gap:8px}
@@ -91,6 +91,9 @@ a{color:var(--cyan)}
 html.embed .top{display:none}
 html.embed .shell{grid-template-rows:minmax(0,1fr)}
 html.embed .xunia-i18n{display:none!important}
+html.local-file .xunia-i18n{display:none!important}
+html.local-file .top{box-shadow:0 10px 36px rgba(0,0,0,.28)}
+html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 
 @media(max-width:1320px){
   .workspace{grid-template-columns:minmax(0,1.4fr) minmax(280px,.7fr)}
@@ -123,9 +126,19 @@ html.embed .xunia-i18n{display:none!important}
 }
 </style>
 <script>
-if(new URLSearchParams(location.search).get("embed")==="1"){document.documentElement.classList.add("embed")}
+(() => {
+  const params=new URLSearchParams(location.search);
+  if(params.get("embed")==="1") document.documentElement.classList.add("embed");
+  if(location.protocol==="file:"){
+    document.documentElement.classList.add("local-file");
+    return;
+  }
+  const i18n=document.createElement("script");
+  i18n.src="https://xunia.org/xunia-i18n.js";
+  i18n.defer=true;
+  document.head.appendChild(i18n);
+})();
 </script>
-<script src="https://xunia.org/xunia-i18n.js" defer></script>
 </head>
 <body>
 <div class="shell">
@@ -274,10 +287,13 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
     const mediaFrame=document.getElementById("mediaFrame");
     const cctv=document.getElementById("cctvDirectory");
     const usinfo=document.getElementById("usInfoDirectory");
-    mediaFrame.style.display=mode==="media"?"block":"none";
+    const isMedia=mode==="media";
+    mediaFrame.hidden=!isMedia;
+    mediaFrame.style.display=isMedia?"block":"none";
+    mediaFrame.style.height=isMedia?"100%":"0";
     cctv.classList.toggle("active",mode==="cctv");
     usinfo.classList.toggle("active",mode==="usinfo");
-    document.getElementById("mediaSearch").style.display=mode==="media"?"grid":"none";
+    document.getElementById("mediaSearch").style.display=isMedia?"grid":"none";
   }
   document.getElementById("categories").addEventListener("click",e=>{
     const btn=e.target.closest("button");if(!btn)return;
