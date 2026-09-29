@@ -16,7 +16,7 @@
     .brand{font-weight:900;letter-spacing:.05em;color:var(--accent);text-shadow:0 0 12px rgba(255,159,28,.4)}
     .status{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}.pill{border:1px solid var(--line);padding:5px 8px;border-radius:999px;background:#0c120d}
     .ok{color:var(--lime)}.lock{color:#ffd166}.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.6s ease-in-out infinite}
-    main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
+    main{display:grid;grid-template-columns:minmax(0,1fr) 440px;min-height:0}
     #map{height:100%;min-height:650px;background:#0b100c;filter:saturate(.9) contrast(1.03)}
     aside{border-left:1px solid var(--line);padding:14px;background:linear-gradient(180deg,#0e130f,#080b08);overflow:auto}
     .card{border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#0b100d,#090d0a);padding:12px;margin:0 0 10px;box-shadow:inset 0 0 18px rgba(255,159,28,.025)}
@@ -64,6 +64,29 @@
     .sim-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:11px}
     .sim-stats div{border:1px solid rgba(93,58,18,.55);padding:6px;border-radius:7px;color:var(--muted)}
     .sim-stats b{float:right;color:var(--text)}
+    .deck-card{position:relative;border-color:#7a4d17;background:linear-gradient(145deg,#15170f,#090c09 58%,#11120d);box-shadow:inset 0 1px rgba(255,255,255,.04),inset 0 -10px 26px rgba(0,0,0,.42),0 8px 22px rgba(0,0,0,.24)}
+    .deck-card:before,.deck-card:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c3a672,#49351f 55%,#14100b 58%);box-shadow:0 0 0 1px #000}
+    .deck-card:before{left:7px;top:7px}.deck-card:after{right:7px;top:7px}
+    .deck-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .deck-badge{font-size:9px;letter-spacing:.12em;border:1px solid #6d4b22;border-radius:4px;padding:3px 5px;color:#d4b98b;background:#0a0c09}
+    .deck-screen{border:1px solid #233c2b;border-radius:7px;background:radial-gradient(circle at 50% 0,rgba(215,255,100,.08),transparent 55%),#020806;padding:9px 10px;margin-bottom:9px;box-shadow:inset 0 0 18px rgba(84,255,148,.05)}
+    .deck-screen-top{display:flex;justify-content:space-between;gap:10px;color:#6ef0a2;font-size:10px;letter-spacing:.08em}
+    .deck-readout{margin-top:6px;min-height:30px;color:#c9ffda;font-size:11px;line-height:1.35;text-shadow:0 0 8px rgba(110,240,162,.22)}
+    .lamp-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:var(--muted)}
+    .lamp-item{display:flex;align-items:center;gap:4px}.lamp{width:7px;height:7px;border-radius:50%;background:#353b34;box-shadow:inset 0 0 2px #000}.lamp.on{background:var(--lime);box-shadow:0 0 8px rgba(215,255,100,.7)}.lamp.warn{background:#ffd166;box-shadow:0 0 8px rgba(255,209,102,.55)}
+    .deck-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:8px}
+    .deck-module{border:1px solid #3d3020;border-radius:8px;padding:8px;background:linear-gradient(180deg,#0d100d,#080a08);box-shadow:inset 0 1px rgba(255,255,255,.025)}
+    .deck-module h3{font-size:10px;letter-spacing:.1em;margin:0 0 7px;color:#b8a57f}
+    .deck-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+    .deck-btn{position:relative;min-height:34px;padding:6px 7px;margin:0;border-radius:7px;border:1px solid #4c3d28;background:linear-gradient(180deg,#20251e,#0c100d);box-shadow:0 3px 0 #050705,0 4px 8px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.07);font-size:10px;font-weight:800;letter-spacing:.04em;color:#e7dcc6;transform:translateY(0)}
+    .deck-btn:hover{transform:translateY(-1px);border-color:#8d642c}.deck-btn:active,.deck-btn.pressed{transform:translateY(3px);box-shadow:0 0 0 #050705,inset 0 2px 8px rgba(0,0,0,.6);background:linear-gradient(180deg,#0b0f0c,#171b15)}
+    .deck-btn.accent{border-color:#8f5818;color:#ffb84f}.deck-btn.green{border-color:#46652c;color:#d7ff64}.deck-btn.blue{border-color:#28566a;color:#8adfff}
+    .deck-fader{width:100%;accent-color:var(--accent);cursor:pointer}.fader-line{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px}
+    .rockers{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.rocker{display:flex;align-items:center;gap:7px;border:1px solid #3d3020;border-radius:7px;padding:7px;background:#090c09;font-size:10px;color:var(--muted);cursor:pointer}.rocker input{appearance:none;width:30px;height:16px;border:1px solid #5d4a2b;border-radius:3px;background:#171913;position:relative;cursor:pointer}.rocker input:after{content:"";position:absolute;top:2px;left:2px;width:11px;height:10px;border-radius:2px;background:#5d6257;box-shadow:0 1px 2px #000;transition:.12s}.rocker input:checked{background:#25340d;border-color:#748c35}.rocker input:checked:after{left:15px;background:var(--lime);box-shadow:0 0 7px rgba(215,255,100,.6)}
+    .vu{height:8px;border:1px solid #3d3020;border-radius:2px;background:#050705;overflow:hidden;margin-top:6px}.vu span{display:block;height:100%;width:12%;background:linear-gradient(90deg,#55f2c2,#d7ff64,#ffd166);transition:width .2s ease}
+    .deck-keys{margin-top:7px;font-size:9px;color:#817764}.keycap{display:inline-block;min-width:18px;padding:2px 4px;margin-right:3px;border:1px solid #4a4030;border-bottom-width:2px;border-radius:4px;background:#111410;color:#c5b89e;text-align:center}
+    body.deck-fx-off .visual-core *,body.deck-fx-off .cell{animation:none!important}
+    body.deck-fx-off .visual-core,body.deck-fx-off .cell,body.deck-fx-off .pulse-dot{filter:none!important;text-shadow:none!important;box-shadow:none!important}
     @keyframes pulse{50%{opacity:.35;transform:scale(.7)}} @keyframes cellpulse{50%{transform:scale(.8);opacity:.75}} @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}} @keyframes sweep{to{transform:rotate(360deg)}} 
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
     .mobile-sheet-toggle{display:none}
@@ -118,6 +141,54 @@
 <main>
   <div id="map"></div>
   <aside>
+    <div class="card deck-card">
+      <div class="deck-head">
+        <h2 style="margin:0">🎛 GPT-DOUG CONTROL DECK</h2>
+        <span class="deck-badge">TACTILE UI // v2</span>
+      </div>
+      <div class="deck-screen">
+        <div class="deck-screen-top"><span>DECK BUS ONLINE</span><span id="deckClock">--:--:--</span></div>
+        <div class="deck-readout" id="deckReadout">Booting tactile control surface…</div>
+        <div class="lamp-row">
+          <span class="lamp-item"><i class="lamp on" id="ledMap"></i>MAP</span>
+          <span class="lamp-item"><i class="lamp warn" id="ledData"></i>DATA</span>
+          <span class="lamp-item"><i class="lamp on" id="ledHive"></i>HIVE</span>
+          <span class="lamp-item"><i class="lamp" id="ledSim"></i>SIM</span>
+        </div>
+      </div>
+      <div class="deck-grid">
+        <div class="deck-module">
+          <h3>MAP DRIVE</h3>
+          <div class="deck-pad">
+            <button class="deck-btn blue" type="button" id="deckZoomOut">− ZOOM</button>
+            <button class="deck-btn" type="button" id="deckPanUp">▲ PAN</button>
+            <button class="deck-btn blue" type="button" id="deckZoomIn">+ ZOOM</button>
+            <button class="deck-btn" type="button" id="deckPanLeft">◀ PAN</button>
+            <button class="deck-btn accent" type="button" id="deckHome">⌂ HOME</button>
+            <button class="deck-btn" type="button" id="deckPanRight">PAN ▶</button>
+            <button class="deck-btn green" type="button" id="deckRefresh">↻ DATA</button>
+            <button class="deck-btn" type="button" id="deckPanDown">▼ PAN</button>
+            <button class="deck-btn green" type="button" id="deckTasks">▶ TASKS</button>
+          </div>
+        </div>
+        <div class="deck-module">
+          <h3>SIM RESPONSE</h3>
+          <input class="deck-fader" id="simTempo" type="range" min="50" max="180" value="100" step="10" aria-label="Synthetic simulation animation speed">
+          <div class="fader-line"><span>SOFT</span><b id="simTempoLabel">100%</b><span>FAST</span></div>
+          <div class="vu"><span id="deckLoad"></span></div>
+          <div class="task-tools">
+            <button class="deck-btn blue" type="button" id="deckDrone">◆ DRONE SIM</button>
+            <button class="deck-btn accent" type="button" id="deckMissile">➤ MISSILE FX</button>
+          </div>
+        </div>
+      </div>
+      <div class="rockers">
+        <label class="rocker"><input type="checkbox" id="swarmVisSwitch"><span>SWARM VIS</span></label>
+        <label class="rocker"><input type="checkbox" id="deckFxSwitch" checked><span>DECK FX</span></label>
+      </div>
+      <div class="deck-keys"><span class="keycap">+</span><span class="keycap">−</span> zoom · <span class="keycap">↑↓←→</span> pan · <span class="keycap">R</span> refresh · <span class="keycap">D</span> drone sim</div>
+    </div>
+
     <div class="card">
       <h2>⚡ SPACETRON VISUAL CORE</h2>
       <div class="visual-core" aria-label="Animated simulated HIVE and SWARM status visual">
@@ -345,9 +416,12 @@ async function loadPublicData(){
     document.getElementById('lastRefresh').textContent=stamp.toLocaleTimeString();
     state.textContent=(weatherCount>0||quakeCount>0)?'LIVE':'PARTIAL';
     pill.textContent=(weatherCount>0||quakeCount>0)?'● LIVE PUBLIC DATA':'◌ PUBLIC DATA PARTIAL';
+    const led=document.getElementById('ledData'); if(led) led.className='lamp '+((weatherCount>0||quakeCount>0)?'on':'warn');
     event('PUBLIC DATA refresh: weather '+weatherCount+' nodes // earthquakes '+quakeCount);
   }catch(e){
-    state.textContent='OFFLINE'; pill.textContent='○ PUBLIC DATA OFFLINE'; event('PUBLIC DATA refresh failed: '+e.message);
+    state.textContent='OFFLINE'; pill.textContent='○ PUBLIC DATA OFFLINE';
+    const led=document.getElementById('ledData'); if(led) led.className='lamp';
+    event('PUBLIC DATA refresh failed: '+e.message);
   }finally{ liveRefreshBusy=false; }
 }
 
@@ -355,9 +429,11 @@ function event(msg){
   const e=document.getElementById('feed'),t=new Date().toLocaleTimeString();
   const d=document.createElement('div'); d.textContent='['+t+'] '+msg; e.prepend(d);
   while(e.children.length>18)e.removeChild(e.lastChild);
+  const readout=document.getElementById('deckReadout'); if(readout) readout.textContent=msg;
 }
 event('MAVEN geospatial canvas initialized');
 event('HIVE synchronization healthy');
+event('Tactile control deck online');
 event('Interactive TASK OPS online');
 event('Public layers ready; live feeds initializing');
 event('Swarm overlay parked OFF for clearer click access');
@@ -406,11 +482,13 @@ document.getElementById('runAll').addEventListener('click',()=>{
 document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicData();event('Manual public-data refresh requested')});
 
 const testRange=document.getElementById('testRange');
-let simDroneCount=0,simMissileCount=0;
+let simDroneCount=0,simMissileCount=0,simTempo=1;
 const droneNodes=[];
 function updateSimCounters(){
   document.getElementById('simDroneCount').textContent=String(simDroneCount);
   document.getElementById('simMissileCount').textContent=String(simMissileCount);
+  const load=document.getElementById('deckLoad'); if(load) load.style.width=Math.min(100,12+(simDroneCount*9)+(simMissileCount*3))+'%';
+  const led=document.getElementById('ledSim'); if(led) led.className='lamp '+((simDroneCount||simMissileCount)?'on':'');
 }
 function spawnDroneSim(){
   if(droneNodes.length>=8){event('TEST RANGE: drone sim limit reached');return;}
@@ -426,7 +504,7 @@ function spawnDroneSim(){
 function runMissileSim(){
   const m=document.createElement('div');m.className='sim-missile';m.style.left='126px';m.style.top='84px';testRange.appendChild(m);
   simMissileCount++;updateSimCounters();event('TEST RANGE: synthetic missile visual test started');
-  const start=performance.now(),duration=1800;
+  const start=performance.now(),duration=1800/simTempo;
   function step(now){
     const p=Math.min(1,(now-start)/duration);
     m.style.transform='translateX('+(p*155)+'px)';
@@ -445,8 +523,46 @@ function resetCombatSim(){
 document.getElementById('spawnDroneSim').addEventListener('click',spawnDroneSim);
 document.getElementById('runMissileSim').addEventListener('click',runMissileSim);
 document.getElementById('resetCombatSim').addEventListener('click',resetCombatSim);
+
+function deckPress(id,fn){const b=document.getElementById(id);if(b)b.addEventListener('click',()=>{b.classList.add('pressed');setTimeout(()=>b.classList.remove('pressed'),110);fn();});}
+deckPress('deckZoomOut',()=>{map.zoomOut();event('DECK: map zoom out')});
+deckPress('deckZoomIn',()=>{map.zoomIn();event('DECK: map zoom in')});
+deckPress('deckHome',()=>{map.setView(views.europe[0],views.europe[1]);event('DECK: home view restored')});
+deckPress('deckPanUp',()=>{map.panBy([0,-120]);event('DECK: pan north')});
+deckPress('deckPanDown',()=>{map.panBy([0,120]);event('DECK: pan south')});
+deckPress('deckPanLeft',()=>{map.panBy([-120,0]);event('DECK: pan west')});
+deckPress('deckPanRight',()=>{map.panBy([120,0]);event('DECK: pan east')});
+deckPress('deckRefresh',()=>{loadPublicData();event('DECK: public data refresh requested')});
+deckPress('deckTasks',()=>{document.getElementById('runAll').click()});
+deckPress('deckDrone',spawnDroneSim);
+deckPress('deckMissile',runMissileSim);
+
+const tempo=document.getElementById('simTempo');
+tempo.addEventListener('input',()=>{simTempo=Math.max(.5,Math.min(1.8,Number(tempo.value)/100));document.getElementById('simTempoLabel').textContent=Math.round(simTempo*100)+'%';event('DECK: synthetic animation response '+Math.round(simTempo*100)+'%')});
+const swarmSwitch=document.getElementById('swarmVisSwitch');
+swarmSwitch.addEventListener('change',()=>{
+  if(swarmSwitch.checked){if(!map.hasLayer(layers.swarm))map.addLayer(layers.swarm)}else if(map.hasLayer(layers.swarm))map.removeLayer(layers.swarm);
+  const btn=document.querySelector('[data-layer="swarm"]'); if(btn)btn.classList.toggle('active',swarmSwitch.checked);
+  event('DECK: swarm visual '+(swarmSwitch.checked?'ON':'OFF'));
+});
+const fxSwitch=document.getElementById('deckFxSwitch');
+fxSwitch.addEventListener('change',()=>{document.body.classList.toggle('deck-fx-off',!fxSwitch.checked);event('DECK: visual feedback '+(fxSwitch.checked?'ON':'OFF'))});
+
+setInterval(()=>{const clock=document.getElementById('deckClock');if(clock)clock.textContent=new Date().toLocaleTimeString([], {hour12:false});},1000);
+document.addEventListener('keydown',e=>{
+  const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='textarea'||tag==='select')return;
+  if(e.key==='+'){map.zoomIn();event('KEY: zoom in')}
+  else if(e.key==='-'||e.key==='_'){map.zoomOut();event('KEY: zoom out')}
+  else if(e.key==='ArrowUp'){e.preventDefault();map.panBy([0,-120])}
+  else if(e.key==='ArrowDown'){e.preventDefault();map.panBy([0,120])}
+  else if(e.key==='ArrowLeft'){e.preventDefault();map.panBy([-120,0])}
+  else if(e.key==='ArrowRight'){e.preventDefault();map.panBy([120,0])}
+  else if(e.key.toLowerCase()==='r'){loadPublicData();event('KEY: public data refresh')}
+  else if(e.key.toLowerCase()==='d'){spawnDroneSim()}
+});
+
 setInterval(()=>{
-  const t=Date.now()/900;
+  const t=Date.now()/(900/simTempo);
   droneNodes.forEach((d,i)=>{
     const phase=t+Number(d.dataset.phase||0);
     const x=Math.cos(phase)*9,y=Math.sin(phase*1.2)*7,rot=(phase*35)%360;
