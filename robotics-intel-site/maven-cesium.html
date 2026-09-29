@@ -9,6 +9,11 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Widgets/widgets.css">
   <script src="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Cesium.js"></script>
+  <script>
+    if(new URLSearchParams(location.search).get("embed")==="1"){
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
   <script src="https://xunia.org/xunia-i18n.js" defer></script>
 
   <style>
@@ -62,6 +67,11 @@
     .d-civil{background:var(--blue)}.d-weather{background:#55f2c2}.d-quake{background:var(--red)}.d-swarm{background:var(--accent)}
     .legend{font-size:10px;color:var(--muted);line-height:1.8}
 
+    html.embedded .topbar{display:none!important}
+    html.embedded .hud{display:none!important}
+    html.embedded .xunia-i18n{display:none!important}
+    html.embedded #cesiumContainer{inset:0}
+    html.embedded .cesium-viewer-bottom{bottom:max(4px,env(safe-area-inset-bottom))}
     .mobile-toggle{display:none}
     .boot{
       position:fixed;z-index:1300;inset:0;display:grid;place-items:center;background:#040705;color:var(--text)
@@ -415,6 +425,25 @@
     }
 
     document.getElementById("refresh").addEventListener("click", refresh);
+
+    function applyExternalCommand(message){
+      if(!message || message.type!=="maven-command") return;
+      if(message.command==="view" && views[message.value]){
+        fly(message.value);
+      }
+      if(message.command==="layer" && layerMap[message.value]){
+        layerMap[message.value].show=Boolean(message.enabled);
+        document.querySelector('[data-layer="'+message.value+'"]')?.classList.toggle("active",Boolean(message.enabled));
+        viewer.scene.requestRender();
+        event("External layer "+(message.enabled?"ON: ":"OFF: ")+String(message.value).toUpperCase());
+      }
+      if(message.command==="refresh") refresh();
+    }
+
+    window.addEventListener("message", evt=>{
+      if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
+      applyExternalCommand(evt.data);
+    });
 
     viewer.scene.globe.tileLoadProgressEvent.addEventListener(remaining => {
       if(remaining === 0) event("Cesium globe tiles settled");
