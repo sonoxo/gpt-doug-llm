@@ -3,23 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="GPT-DOUG MAVEN geospatial swarm simulation using public geography and simulated analytic cells only.">
+  <meta name="description" content="GPT-DOUG MAVEN geospatial public-information simulation with animated HIVE/SWARM visuals and local task ops.">
   <title>GPT-DOUG // MAVEN GEOSPATIAL SWARM</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
-    :root{--bg:#070906;--panel:#0c110c;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--red:#ff6b6b;--blue:#76d4ff}
+    :root{--bg:#070906;--panel:#0c110c;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--red:#ff6b6b;--blue:#76d4ff;--violet:#b69cff;--pink:#ff4d8d}
     *{box-sizing:border-box} html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    body{display:grid;grid-template-rows:auto 1fr}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);background:#090c08}
-    .brand{font-weight:900;letter-spacing:.05em;color:var(--accent)}
+    body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 4px);mix-blend-mode:screen}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#090c08,#0e1009 55%,#0b0d09);box-shadow:0 0 24px rgba(255,159,28,.08)}
+    .brand{font-weight:900;letter-spacing:.05em;color:var(--accent);text-shadow:0 0 12px rgba(255,159,28,.4)}
     .status{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}.pill{border:1px solid var(--line);padding:5px 8px;border-radius:999px;background:#0c120d}
-    .ok{color:var(--lime)}.lock{color:#ffd166}
-    main{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:0}
-    #map{height:100%;min-height:650px;background:#0b100c}
+    .ok{color:var(--lime)}.lock{color:#ffd166}.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.6s ease-in-out infinite}
+    main{display:grid;grid-template-columns:minmax(0,1fr) 380px;min-height:0}
+    #map{height:100%;min-height:650px;background:#0b100c;filter:saturate(.9) contrast(1.03)}
     aside{border-left:1px solid var(--line);padding:14px;background:linear-gradient(180deg,#0e130f,#080b08);overflow:auto}
-    .card{border:1px solid var(--line);border-radius:10px;background:#0b100d;padding:12px;margin:0 0 10px}
-    h2{font-size:14px;margin:0 0 8px;color:var(--accent)}
-    button{font:inherit;color:var(--text);background:#101611;border:1px solid var(--line);padding:7px 9px;border-radius:8px;cursor:pointer;margin:3px 2px}
+    .card{border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#0b100d,#090d0a);padding:12px;margin:0 0 10px;box-shadow:inset 0 0 18px rgba(255,159,28,.025)}
+    h2{font-size:14px;margin:0 0 8px;color:var(--accent);letter-spacing:.04em}
+    button{font:inherit;color:var(--text);background:#101611;border:1px solid var(--line);padding:7px 9px;border-radius:8px;cursor:pointer;margin:3px 2px;transition:.15s ease}
+    button:hover{border-color:var(--accent);transform:translateY(-1px)}
+    button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
     button.active{background:var(--accent);color:#160b00}
     .metric{display:flex;justify-content:space-between;gap:10px;margin:6px 0;color:var(--muted);font-size:12px}.metric b{color:var(--text)}
     .feed{font-size:12px;line-height:1.55;color:var(--muted);max-height:230px;overflow:auto}
@@ -27,19 +30,37 @@
     .legend{font-size:12px;color:var(--muted)}.legend div{margin:5px 0}
     .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
     .swarmdot{background:var(--accent);box-shadow:0 0 12px rgba(255,159,28,.8)}
-    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:#b69cff}.camdot{background:#ff4d8d;box-shadow:0 0 12px rgba(255,77,141,.75)}
+    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:var(--violet)}.camdot{background:var(--pink);box-shadow:0 0 12px rgba(255,77,141,.75)}
     .leaflet-container{font-family:inherit}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0a100c;color:var(--text)}
-    .cell{width:17px;height:17px;border:1px solid var(--accent);background:rgba(255,159,28,.2);border-radius:50%;box-shadow:0 0 14px rgba(255,159,28,.7)}
-    @media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:65vh auto}aside{border-left:0;border-top:1px solid var(--line)}#map{min-height:0}}
+    .cell{width:17px;height:17px;border:1px solid var(--accent);background:rgba(255,159,28,.2);border-radius:50%;box-shadow:0 0 14px rgba(255,159,28,.7);animation:cellpulse 2s ease-in-out infinite}
+    .visual-core{position:relative;height:160px;border:1px solid #3c2c17;border-radius:10px;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(255,159,28,.08),transparent 55%),linear-gradient(180deg,#07110c,#090b09)}
+    .gridfx{position:absolute;inset:0;background-image:linear-gradient(rgba(215,255,100,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(215,255,100,.05) 1px,transparent 1px);background-size:20px 20px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent)}
+    .core{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-weight:900;box-shadow:0 0 25px rgba(255,159,28,.35);z-index:2}
+    .ring{position:absolute;left:50%;top:50%;border:1px solid rgba(118,212,255,.28);border-radius:50%;transform:translate(-50%,-50%);animation:spin 10s linear infinite}
+    .r1{width:76px;height:76px}.r2{width:116px;height:116px;animation-duration:16s;animation-direction:reverse}.r3{width:150px;height:150px;animation-duration:24s}
+    .orb{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime)}
+    .o1{left:50%;top:16px}.o2{right:28px;top:72px;background:var(--blue);box-shadow:0 0 12px var(--blue)}.o3{left:28px;top:96px;background:var(--violet);box-shadow:0 0 12px var(--violet)}.o4{left:80px;bottom:12px;background:var(--pink);box-shadow:0 0 12px var(--pink)}
+    .sweep{position:absolute;left:50%;top:50%;width:74px;height:2px;background:linear-gradient(90deg,var(--lime),transparent);transform-origin:0 50%;animation:sweep 4s linear infinite;opacity:.65}
+    .core-caption{position:absolute;left:8px;bottom:6px;font-size:10px;color:var(--muted)}
+    .task-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed rgba(93,58,18,.55);font-size:12px}
+    .task-row:last-child{border-bottom:0}.task-led{width:10px;height:10px;border-radius:50%;background:#4a4f46;box-shadow:0 0 0 transparent}.task-row.done .task-led{background:var(--lime);box-shadow:0 0 10px rgba(215,255,100,.65)}.task-row.done .task-name{text-decoration:line-through;color:#8b9583}
+    .task-btn{padding:4px 7px;font-size:11px;margin:0}
+    .progress{height:8px;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:#090d0a;margin:9px 0}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--lime));transition:width .25s ease}
+    .task-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .mini{font-size:11px;color:var(--muted)}
+    @keyframes pulse{50%{opacity:.35;transform:scale(.7)}} @keyframes cellpulse{50%{transform:scale(.8);opacity:.75}} @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}} @keyframes sweep{to{transform:rotate(360deg)}} 
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+    @media(max-width:900px){body{overflow:auto}main{grid-template-columns:1fr;grid-template-rows:62vh auto}aside{border-left:0;border-top:1px solid var(--line)}#map{min-height:0}}
   </style>
 </head>
 <body>
 <header>
   <div class="brand">🍂 GPT-DOUG // MAVEN GEOSPATIAL SWARM</div>
   <div class="status">
-    <span class="pill ok">● MAP ONLINE</span>
+    <span class="pill ok"><span class="pulse-dot"></span> MAP ONLINE</span>
     <span class="pill">🐝 HIVE 100/100</span>
     <span class="pill">🕸️ SWARM ANALYTIC</span>
+    <span class="pill">⚡ TASK OPS READY</span>
     <span class="pill lock">🔒 PUBLIC + SIMULATION ONLY</span>
   </div>
 </header>
@@ -47,19 +68,48 @@
   <div id="map"></div>
   <aside>
     <div class="card">
+      <h2>⚡ SPACETRON VISUAL CORE</h2>
+      <div class="visual-core" aria-label="Animated simulated HIVE and SWARM status visual">
+        <div class="gridfx"></div><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="sweep"></div><div class="core">D</div><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
+        <div class="core-caption">HIVE BUS // 100 PEERS // SIMULATED VISUAL TELEMETRY</div>
+      </div>
+    </div>
+
+    <div class="card">
       <h2>VIEW</h2>
       <button data-view="global">GLOBAL</button>
       <button data-view="europe" class="active">EASTERN EUROPE</button>
       <button data-view="blacksea">BLACK SEA</button>
     </div>
+
     <div class="card">
       <h2>LAYERS</h2>
-      <button data-layer="swarm" class="active">🐝 SWARM CELLS</button>
+      <button data-layer="swarm">🐝 SWARM CELLS</button>
       <button data-layer="humanitarian" class="active">🧭 CIVIL/HUMANITARIAN</button>
       <button data-layer="weather" class="active">🌦 WEATHER ZONES</button>
       <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>
       <button data-layer="cameras" class="active">📺 LIVE CIVILIAN CAMS</button>
     </div>
+
+    <div class="card">
+      <h2>🧠 TASK OPS</h2>
+      <div class="metric"><span>PROGRESS</span><b id="taskCount">0/5</b></div>
+      <div class="progress"><span id="taskBar"></span></div>
+      <div id="tasks">
+        <div class="task-row" data-task="layers"><span class="task-led"></span><span class="task-name">Verify public layers</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="views"><span class="task-led"></span><span class="task-name">Cycle map views</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="camera"><span class="task-led"></span><span class="task-name">Inspect civilian camera node</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="bus"><span class="task-led"></span><span class="task-name">Review event bus</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="backup"><span class="task-led"></span><span class="task-name">Confirm intel backup task</span><button class="task-btn" type="button">RUN</button></div>
+      </div>
+      <div class="task-tools">
+        <button type="button" id="runAll">▶ RUN SAFE TASK CYCLE</button>
+        <button type="button" id="resetTasks">↺ RESET</button>
+      </div>
+      <div class="mini" id="taskNote">Tasks operate only on this dashboard UI and public-information simulation state.</div>
+    </div>
+
     <div class="card">
       <h2>MAVEN STATUS</h2>
       <div class="metric"><span>MODE</span><b>GEO_SIMULATION</b></div>
@@ -70,6 +120,7 @@
       <div class="metric"><span>WEAPON CONTROL</span><b>OFF</b></div>
       <div class="metric"><span>EXTERNAL ACTION</span><b>OFF</b></div>
     </div>
+
     <div class="card legend">
       <h2>LEGEND</h2>
       <div><span class="dot swarmdot"></span>Simulated swarm analytic cell</div>
@@ -78,20 +129,22 @@
       <div><span class="dot pubdot"></span>Public-information reference</div>
       <div><span class="dot camdot"></span>Public civilian live camera link</div>
     </div>
+
     <div class="card">
       <h2>EVENT BUS</h2>
       <div class="feed" id="feed"></div>
     </div>
-    <div class="card warn">This page deliberately avoids live unit locations, person tracking, precise tactical coordinates, target selection, fire-control data, strike recommendations, and kinetic execution. The swarm cells are simulated coarse regional bins.</div>
+    <div class="card warn">This page avoids live unit locations, person tracking, precise tactical coordinates, target selection, fire-control data, strike recommendations, and kinetic execution. Swarm cells are simulated coarse regional bins.</div>
   </aside>
 </main>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([49.0,31.0],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
 const layers={
-  swarm:L.layerGroup().addTo(map),
+  swarm:L.layerGroup(),
   humanitarian:L.layerGroup().addTo(map),
   weather:L.layerGroup().addTo(map),
   public:L.layerGroup().addTo(map),
@@ -144,13 +197,13 @@ civilianCams.forEach(x=>{
 function event(msg){
   const e=document.getElementById('feed'),t=new Date().toLocaleTimeString();
   const d=document.createElement('div'); d.textContent='['+t+'] '+msg; e.prepend(d);
-  while(e.children.length>14)e.removeChild(e.lastChild);
+  while(e.children.length>18)e.removeChild(e.lastChild);
 }
 event('MAVEN geospatial canvas initialized');
 event('HIVE synchronization healthy');
-event('Swarm analytic cells loaded: 24');
+event('Interactive TASK OPS online');
 event('Public/civilian layers ready');
-event('Verified civilian live camera link loaded: Kyiv Maidan');
+event('Swarm overlay parked OFF for clearer click access');
 event('Precise targeting and external action locked OFF');
 
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
@@ -163,16 +216,44 @@ document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',
   else{map.addLayer(layer);b.classList.add('active');event('Layer ON: '+k.toUpperCase())}
 }));
 
+const taskRows=[...document.querySelectorAll('.task-row')];
+function updateTasks(){
+  const done=taskRows.filter(r=>r.classList.contains('done')).length;
+  document.getElementById('taskCount').textContent=done+'/'+taskRows.length;
+  document.getElementById('taskBar').style.width=((done/taskRows.length)*100)+'%';
+  document.getElementById('taskNote').textContent=done===taskRows.length?'✅ SAFE TASK CYCLE COMPLETE':'Tasks operate only on this dashboard UI and public-information simulation state.';
+}
+function completeTask(row){
+  if(row.classList.contains('done')) return;
+  const key=row.dataset.task;
+  if(key==='layers'){
+    ['humanitarian','weather','public','cameras'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
+    document.querySelectorAll('[data-layer]').forEach(b=>{if(b.dataset.layer!=='swarm') b.classList.add('active')});
+    event('TASK: public layers verified');
+  }
+  if(key==='views'){map.setView(views.blacksea[0],views.blacksea[1]);setTimeout(()=>map.setView(views.europe[0],views.europe[1]),450);event('TASK: map view cycle executed')}
+  if(key==='camera'){map.setView([50.4501,30.5234],7);event('TASK: civilian camera node centered')}
+  if(key==='bus'){event('TASK: event bus health check nominal')}
+  if(key==='backup'){event('TASK: backup confirmation checkpoint logged locally')}
+  row.classList.add('done'); row.querySelector('button').textContent='DONE'; updateTasks();
+}
+taskRows.forEach(row=>row.querySelector('button').addEventListener('click',()=>completeTask(row)));
+document.getElementById('resetTasks').addEventListener('click',()=>{
+  taskRows.forEach(r=>{r.classList.remove('done');r.querySelector('button').textContent='RUN'});updateTasks();event('TASK OPS reset');
+});
+document.getElementById('runAll').addEventListener('click',()=>{
+  taskRows.forEach((row,i)=>setTimeout(()=>completeTask(row),i*550));
+  event('SAFE TASK CYCLE started');
+});
+
 setInterval(()=>{
   swarmMarkers.forEach((m,i)=>{
-    const base=coarseCells[i];
-    const phase=(Date.now()/18000)+(i*0.7);
-    const lat=base[0]+Math.sin(phase)*0.08;
-    const lon=base[1]+Math.cos(phase*0.9)*0.12;
-    m.setLatLng([lat,lon]);
+    const base=coarseCells[i],phase=(Date.now()/18000)+(i*0.7);
+    m.setLatLng([base[0]+Math.sin(phase)*0.08,base[1]+Math.cos(phase*0.9)*0.12]);
   });
 },1200);
-setInterval(()=>event('Swarm heartbeat: 24 simulated analytic cells nominal'),12000);
+setInterval(()=>event('HIVE heartbeat: visual core nominal // public simulation only'),12000);
+updateTasks();
 </script>
 </body>
 </html>
