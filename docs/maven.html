@@ -169,6 +169,16 @@ a{color:var(--blue)}
       <div class="sensor-note" id="trackingContractResult">No camera credentials are stored in this public interface.</div>
     </div>
 
+    <div class="card" id="palantirIntelCard">
+      <h2>PALANTIR MAVEN INTEL</h2>
+      <div class="metric"><span>RUNTIME ENV WATCH</span><b>US-12748581-B2 LOADED</b></div>
+      <div class="metric"><span>ONTOLOGY</span><b>SYNCED</b></div>
+      <div class="metric"><span>MODE</span><b>PROVENANCE / INDEPENDENT DESIGN</b></div>
+      <a class="btn" href="#" id="openPalantirIntel">🔷 OPEN PALANTIR LIVE</a>
+      <a class="btn" href="./learn/palantir/" target="_blank" rel="noopener">🧠 OPEN PALANTIR LEARNING LAB ↗</a>
+      <div class="feed">Runtime-environment lifecycle intelligence is indexed into the USPTO watch ontology and ZYRAPALANTIR patent-intel CLI. Detailed patent material remains architecture-watch evidence, not an implementation specification.</div>
+    </div>
+
     <div class="card" id="militaryEngagementCard">
       <h2>OFFICIAL MILITARY ENGAGEMENT</h2>
       <div class="metric"><span>ACCESS MODE</span><b>PUBLIC OFFICIAL CHANNELS</b></div>
@@ -266,6 +276,7 @@ function openMilitaryEngagement(){
   },120);
 }
 document.getElementById("militaryEngageBtn")?.addEventListener("click",openMilitaryEngagement);
+document.getElementById("openPalantirIntel")?.addEventListener("click",e=>{e.preventDefault();setMavenMode("palantir");});
 document.getElementById("openDroneRail")?.addEventListener("click",e=>{e.preventDefault();openDroneWorkspace();});
 try{
   const queryMode=new URLSearchParams(location.search).get("mode");
