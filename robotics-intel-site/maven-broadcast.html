@@ -51,7 +51,7 @@ a{color:var(--cyan)}
   min-height:38px;border:1px solid #4a351b;border-radius:9px;background:rgba(9,13,10,.92);color:var(--text);padding:7px 9px;font-size:9px;font-weight:850;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
 }
 .map-overlay button.active{background:var(--accent);color:#1b0d00;border-color:#ffb84f}
-.sim{display:grid;grid-template-rows:auto auto minmax(220px,1fr) auto minmax(120px,.48fr)}
+.sim{display:grid;grid-template-rows:auto auto minmax(220px,1fr) auto auto minmax(110px,.44fr)}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}
 .stat{border:1px solid #26392c;border-radius:9px;padding:8px;background:#071008;font-size:9px;color:var(--muted)}
 .stat b{display:block;margin-top:3px;color:var(--lime);font-size:12px}
@@ -62,6 +62,11 @@ a{color:var(--cyan)}
   min-height:40px;border:1px solid #5a3d18;border-radius:8px;background:#11140d;color:#f5ddaa;padding:7px;font-size:9px;font-weight:900
 }
 .simtools button.primary{background:#2d240c;color:#ffd166}
+.arsenal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 8px 8px}
+.arsenal button{min-height:40px;border:1px solid #314b37;border-radius:8px;background:linear-gradient(180deg,#0a130c,#071009);color:#d9f4df;padding:7px;font-size:9px;font-weight:900;letter-spacing:.03em}
+.arsenal button:hover{border-color:#5f986e;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.arsenal button:active{transform:scale(.985)}
+.arsenal .pulse{color:#ffd166}.arsenal .beam{color:#7ce7ff}.arsenal .intercept{color:#d7ff64}.arsenal .defense{color:#9fd7ff}
 .feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
 .feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
 .media{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr)}
@@ -189,6 +194,14 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <button id="resolveContact" type="button">RESOLVE ONE</button>
         <button id="autoToggle" type="button">AUTO SIM</button>
         <button id="resetSim" type="button">RESET</button>
+      </div>
+      <div class="arsenal" data-no-translate="true" aria-label="Synthetic-only arsenal">
+        <button class="pulse" type="button" data-sim-tool="pulse">◉ ARC PULSE</button>
+        <button class="beam" type="button" data-sim-tool="beam">⌁ BEAM BURST</button>
+        <button class="intercept" type="button" data-sim-tool="intercept">△ INTERCEPTOR</button>
+        <button class="defense" type="button" data-sim-tool="decoy">◇ DECOY FIELD</button>
+        <button class="defense" type="button" data-sim-tool="shield">⬡ SHIELD DOME</button>
+        <button class="defense" type="button" data-sim-tool="net"># NET LOCK</button>
       </div>
       <div class="feed" id="eventFeed" aria-live="polite"></div>
     </section>
@@ -405,12 +418,13 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   const autoEl=document.getElementById("autoState");
   const clockEl=document.getElementById("simClock");
   const feed=document.getElementById("eventFeed");
-  let resolved=0,auto=false,start=performance.now(),lastAuto=0;
+  let resolved=0,auto=false,start=performance.now(),lastAuto=0,shieldUntil=0,slowUntil=0;
   let contacts=[];
+  let effects=[];
 
   function id(){return "SIM-"+String(Math.floor(1000+Math.random()*8999))}
-  function makeContact(){
-    return {id:id(),x:.08+Math.random()*.84,y:.12+Math.random()*.76,vx:(Math.random()-.5)*.000055,vy:(Math.random()-.5)*.000055,r:9+Math.random()*6,phase:Math.random()*Math.PI*2}
+  function makeContact(extra={}){
+    return {id:id(),x:.08+Math.random()*.84,y:.12+Math.random()*.76,vx:(Math.random()-.5)*.000055,vy:(Math.random()-.5)*.000055,r:9+Math.random()*6,phase:Math.random()*Math.PI*2,...extra}
   }
   for(let i=0;i<5;i++)contacts.push(makeContact());
 
@@ -423,6 +437,34 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   log("Synthetic scenario initialized",true);
   log("Real coordinates disabled",true);
   log("External action disabled",true);
+
+  function useSimTool(tool){
+    const now=performance.now();
+    if(tool==="pulse"){
+      effects.push({type:"pulse",t:now,d:900,x:.5,y:.5});
+      if(contacts.length){const c=contacts.shift();resolved++;log("ARC PULSE // "+c.id+" resolved in synthetic space",true)}
+      else log("ARC PULSE // no synthetic contacts");
+    }else if(tool==="beam"){
+      const c=contacts[0];
+      effects.push({type:"beam",t:now,d:620,target:c?{x:c.x,y:c.y}:{x:.5,y:.35}});
+      if(c){contacts.shift();resolved++;log("BEAM BURST // "+c.id+" resolved in synthetic space",true)}
+      else log("BEAM BURST // no synthetic contacts");
+    }else if(tool==="intercept"){
+      const c=contacts.pop();
+      effects.push({type:"intercept",t:now,d:900,target:c?{x:c.x,y:c.y}:{x:.65,y:.4}});
+      if(c){resolved++;log("INTERCEPTOR // "+c.id+" resolved in synthetic space",true)}
+      else log("INTERCEPTOR // no synthetic contacts");
+    }else if(tool==="decoy"){
+      const d=makeContact({id:"DECOY-"+String(Math.floor(100+Math.random()*899)),decoy:true,r:8});
+      contacts.push(d);effects.push({type:"decoy",t:now,d:1200,x:d.x,y:d.y});log("DECOY FIELD // synthetic decoy deployed",true);
+    }else if(tool==="shield"){
+      shieldUntil=Date.now()+6000;effects.push({type:"shield",t:now,d:6000,x:.5,y:.5});log("SHIELD DOME // synthetic protection field active",true);
+    }else if(tool==="net"){
+      slowUntil=Date.now()+6000;effects.push({type:"net",t:now,d:6000});log("NET LOCK // synthetic contacts slowed",true);
+    }
+  }
+
+  document.querySelectorAll("[data-sim-tool]").forEach(btn=>btn.addEventListener("click",()=>useSimTool(btn.dataset.simTool)));
 
   function resize(){
     const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,1.7);
@@ -439,15 +481,41 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     ctx.fillStyle="#6ee7a1";ctx.font="10px monospace";ctx.fillText("SYNTHETIC SENSOR SPACE // GEO-LINK OFF",12,18);
 
     for(const c of contacts){
-      if(!reduce){c.x+=c.vx*(ts-(draw.last||ts));c.y+=c.vy*(ts-(draw.last||ts));}
+      const speed=Date.now()<slowUntil?.25:1;
+      if(!reduce){c.x+=c.vx*(ts-(draw.last||ts))*speed;c.y+=c.vy*(ts-(draw.last||ts))*speed;}
       if(c.x<.04||c.x>.96)c.vx*=-1;if(c.y<.08||c.y>.94)c.vy*=-1;
       const x=c.x*w,y=c.y*h,pulse=reduce?1:(1+Math.sin(ts*.003+c.phase)*.18);
-      ctx.strokeStyle="#ffb21d";ctx.lineWidth=2;
+      ctx.strokeStyle=c.decoy?"#7ce7ff":"#ffb21d";ctx.lineWidth=2;
       ctx.beginPath();ctx.arc(x,y,c.r*pulse,0,Math.PI*2);ctx.stroke();
       ctx.beginPath();ctx.rect(x-c.r*1.4,y-c.r*1.4,c.r*2.8,c.r*2.8);ctx.stroke();
       ctx.fillStyle="#ffd166";ctx.font="9px monospace";ctx.fillText(c.id,x+c.r+6,y+3);
     }
-    draw.last=ts;activeEl.textContent=contacts.length;resolvedEl.textContent=resolved;
+    effects=effects.filter(e=>ts-e.t<e.d);
+    for(const e of effects){
+      const p=Math.max(0,Math.min(1,(ts-e.t)/e.d));
+      ctx.save();
+      if(e.type==="pulse"){
+        ctx.strokeStyle="rgba(255,209,102,"+(1-p)+")";ctx.lineWidth=3;ctx.beginPath();ctx.arc(e.x*w,e.y*h,p*Math.max(w,h)*.42,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="beam"){
+        const tx=e.target.x*w,ty=e.target.y*h;ctx.strokeStyle="rgba(124,231,255,"+(1-p*.55)+")";ctx.lineWidth=4-2*p;ctx.beginPath();ctx.moveTo(w*.5,h*.96);ctx.lineTo(tx,ty);ctx.stroke();
+      }else if(e.type==="intercept"){
+        const tx=e.target.x*w,ty=e.target.y*h;const x=w*.12+(tx-w*.12)*p,y=h*.9+(ty-h*.9)*p;ctx.fillStyle="#d7ff64";ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+      }else if(e.type==="decoy"){
+        ctx.strokeStyle="rgba(124,231,255,"+(1-p)+")";ctx.beginPath();ctx.arc(e.x*w,e.y*h,14+40*p,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="shield"){
+        ctx.strokeStyle="rgba(156,255,170,.45)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(w*.5,h*.5,Math.min(w,h)*.23*(.98+.02*Math.sin(ts*.006)),0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="net"){
+        ctx.strokeStyle="rgba(124,231,255,.12)";ctx.lineWidth=1;
+        for(let x=0;x<w;x+=24){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+        for(let y=0;y<h;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+      }
+      ctx.restore();
+    }
+    if(Date.now()<shieldUntil){
+      ctx.strokeStyle="rgba(156,255,170,.35)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(w*.5,h*.5,Math.min(w,h)*.23,0,Math.PI*2);ctx.stroke();
+    }
+
+    draw.last=ts;activeEl.textContent=contacts.filter(c=>!c.decoy).length;resolvedEl.textContent=resolved;
     const sec=Math.floor((performance.now()-start)/1000);clockEl.textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
     if(auto&&ts-lastAuto>4200){lastAuto=ts;if(Math.random()>.5&&contacts.length<9){contacts.push(makeContact());log("Auto-sim added synthetic contact")}else if(contacts.length>2){const c=contacts.shift();resolved++;log(c.id+" resolved by synthetic workflow",true)}}
     requestAnimationFrame(draw);
