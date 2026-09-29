@@ -91,6 +91,7 @@ a{color:var(--blue)}
     <button class="modebtn active" type="button" data-mode="broadcast">📡 TACTICAL</button>
     <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
     <button class="modebtn" id="droneModeBtn" type="button">🛸 DRONE SIM</button>
+    <button class="modebtn" id="gothamSimBtn" type="button">🎥 GOTHAM SIM</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
@@ -131,6 +132,13 @@ a{color:var(--blue)}
         <button type="button" data-map-layer="swarm">SYNTHETIC HIVE</button>
       </div>
       <button type="button" id="mapRefresh">↻ REFRESH PUBLIC DATA</button>
+    </div>
+
+    <div class="card">
+      <h2>GOTHAM TRAINING FEED</h2>
+      <div class="metric"><span>MODE</span><b>FICTIONAL / SIMULATED</b></div>
+      <a class="btn" href="#" id="openGothamRail">🎥 OPEN GOTHAM MULTI-CHANNEL FEED</a>
+      <div class="feed">Animated synthetic personnel across ALPHA, BRAVO, ROOFTOP, and STREETCAM channels. No real personnel or live unit tracking.</div>
     </div>
 
     <div class="card">
@@ -245,8 +253,14 @@ function openDroneWorkspace(){
   const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-drone"},"https://gpt-doug-robotics-intel.onrender.com");
   setTimeout(send,350);
 }
+function openGothamWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-gotham"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
 document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
+document.getElementById("gothamSimBtn")?.addEventListener("click",openGothamWorkspace);
 
 function openWorldGrid(){
   setMavenMode("2d");
@@ -278,6 +292,7 @@ function openMilitaryEngagement(){
 document.getElementById("militaryEngageBtn")?.addEventListener("click",openMilitaryEngagement);
 document.getElementById("openPalantirIntel")?.addEventListener("click",e=>{e.preventDefault();setMavenMode("palantir");});
 document.getElementById("openDroneRail")?.addEventListener("click",e=>{e.preventDefault();openDroneWorkspace();});
+document.getElementById("openGothamRail")?.addEventListener("click",e=>{e.preventDefault();openGothamWorkspace();});
 try{
   const queryMode=new URLSearchParams(location.search).get("mode");
   const saved=localStorage.getItem("xunia.maven.view");
