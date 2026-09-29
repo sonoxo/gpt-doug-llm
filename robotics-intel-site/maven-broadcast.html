@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#070906">
+<title>GPT-DOUG // MAVEN BROADCAST FUSION</title>
+<link rel="preconnect" href="https://gpt-doug-robotics-intel.onrender.com">
+<style>
+:root{
+  --bg:#050704;--panel:#090d0a;--panel2:#0c110d;--line:#5d3a12;--line2:#2d4d36;
+  --text:#f1e4c8;--muted:#ad9c7f;--accent:#ff9f1c;--lime:#d7ff64;--cyan:#7ce7ff;
+  --red:#ff6b6b;--shadow:0 22px 80px rgba(0,0,0,.55);--ease:cubic-bezier(.2,.78,.2,1)
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;min-height:100svh;min-height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,input{font:inherit}
+button{touch-action:manipulation}
+a{color:var(--cyan)}
+.shell{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:100dvh}
+.top{
+  min-height:52px;display:flex;align-items:center;gap:7px;padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) 7px max(9px,env(safe-area-inset-left));
+  border-bottom:1px solid rgba(255,159,28,.28);background:linear-gradient(90deg,rgba(7,10,7,.98),rgba(14,19,12,.96));overflow-x:auto;white-space:nowrap;scrollbar-width:none
+}
+.top::-webkit-scrollbar{display:none}
+.brand{font-weight:950;color:var(--accent);letter-spacing:.045em;flex:0 0 auto}
+.chip{flex:0 0 auto;border:1px solid #3b4f35;border-radius:999px;background:#0a100b;padding:5px 8px;font-size:9px}
+.chip.ok{color:var(--lime)}.chip.info{color:var(--cyan)}.chip.off{color:#90978b}.chip.warn{color:#ffd166}
+.workspace{
+  min-height:0;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.72fr) minmax(340px,.86fr);
+  gap:7px;padding:7px;background:
+    radial-gradient(circle at 20% 20%,rgba(255,159,28,.045),transparent 28%),
+    linear-gradient(180deg,#060906,#040604)
+}
+.panel{
+  position:relative;min-width:0;min-height:0;border:1px solid rgba(93,58,18,.85);border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(12,17,13,.97),rgba(7,10,8,.98));box-shadow:var(--shadow)
+}
+.panel-head{
+  min-height:40px;display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid rgba(93,58,18,.7);
+  background:rgba(8,12,9,.96);font-size:10px;font-weight:900;color:var(--accent);letter-spacing:.05em
+}
+.panel-head .spacer{flex:1}
+.panel-head .mini{font-size:9px;color:var(--muted);font-weight:700}
+.mapframe{width:100%;height:100%;border:0;background:#020403;display:block}
+.map-wrap{display:grid;grid-template-rows:auto minmax(0,1fr)}
+.map-overlay{
+  position:absolute;left:10px;bottom:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 20px)
+}
+.map-overlay button{
+  min-height:38px;border:1px solid #4a351b;border-radius:9px;background:rgba(9,13,10,.92);color:var(--text);padding:7px 9px;font-size:9px;font-weight:850;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
+}
+.map-overlay button.active{background:var(--accent);color:#1b0d00;border-color:#ffb84f}
+.sim{display:grid;grid-template-rows:auto auto minmax(220px,1fr) auto minmax(120px,.48fr)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}
+.stat{border:1px solid #26392c;border-radius:9px;padding:8px;background:#071008;font-size:9px;color:var(--muted)}
+.stat b{display:block;margin-top:3px;color:var(--lime);font-size:12px}
+.simboard{position:relative;margin:0 8px 8px;border:1px solid #234832;border-radius:10px;overflow:hidden;background:#041008}
+#simCanvas{display:block;width:100%;height:100%}
+.simtools{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 8px 8px}
+.simtools button{
+  min-height:40px;border:1px solid #5a3d18;border-radius:8px;background:#11140d;color:#f5ddaa;padding:7px;font-size:9px;font-weight:900
+}
+.simtools button.primary{background:#2d240c;color:#ffd166}
+.feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
+.feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
+.media{display:grid;grid-template-rows:auto auto auto minmax(0,1fr)}
+.categories{display:flex;gap:5px;overflow-x:auto;padding:7px;border-bottom:1px solid rgba(93,58,18,.62);scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.categories button{
+  flex:0 0 auto;min-height:36px;border:1px solid #4b3a20;border-radius:8px;background:#0c120d;color:#efd7a8;padding:6px 9px;font-size:9px;font-weight:850
+}
+.categories button.active{background:#ff9f1c;color:#180b00;border-color:#ffb84f}
+.searchbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;padding:7px;border-bottom:1px solid rgba(93,58,18,.62)}
+.searchbar input{min-width:0;min-height:38px;border:1px solid #29422f;border-radius:8px;background:#071009;color:#fff;padding:7px 9px;font-size:12px}
+.searchbar button{min-height:38px;border:1px solid #5a3d18;border-radius:8px;background:#13170f;color:#ffd166;padding:7px 10px;font-size:9px;font-weight:900}
+.boundary{padding:6px 8px;border-bottom:1px solid #1d3725;color:#6ee7a1;font-size:8px;letter-spacing:.05em}
+.mediaframe{width:100%;height:100%;border:0;background:#fff}
+.mobile-dock{display:none}
+.fold-toggle{display:none}
+html.embed .top{display:none}
+html.embed .shell{grid-template-rows:minmax(0,1fr)}
+html.embed .xunia-i18n{display:none!important}
+
+@media(max-width:1320px){
+  .workspace{grid-template-columns:minmax(0,1.4fr) minmax(280px,.7fr)}
+  .media{position:absolute;z-index:40;top:8px;right:8px;bottom:8px;width:min(480px,calc(100vw - 24px));transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .18s ease}
+  .media.open{transform:translateX(0);opacity:1;pointer-events:auto}
+  .fold-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid #4a351b;border-radius:8px;background:#101611;color:#ffd166;padding:6px 9px;font-size:9px;font-weight:900}
+}
+@media(max-width:900px){
+  .workspace{display:block;position:relative;padding:5px}
+  .panel{position:absolute;inset:5px;display:none}
+  .panel.mobile-active{display:grid}
+  .map-wrap.mobile-active{grid-template-rows:auto minmax(0,1fr)}
+  .sim.mobile-active{grid-template-rows:auto auto minmax(220px,1fr) auto minmax(120px,.44fr)}
+  .media.mobile-active{position:absolute;inset:5px;width:auto;transform:none;opacity:1;pointer-events:auto}
+  .mobile-dock{
+    position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));
+    display:flex;gap:5px;padding:5px;border:1px solid rgba(255,159,28,.36);border-radius:14px;background:rgba(5,8,6,.92);
+    box-shadow:0 18px 54px rgba(0,0,0,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+  }
+  .mobile-dock button{min-height:44px;border:1px solid #4a351b;border-radius:9px;background:#0e140f;color:#e9dcc4;padding:7px 10px;font-size:9px;font-weight:900}
+  .mobile-dock button.active{background:#ff9f1c;color:#180b00}
+  .mediaframe{padding-bottom:58px}
+}
+@media(max-width:430px){
+  .brand{font-size:11px}.chip{font-size:8px}
+  .stats{grid-template-columns:1fr 1fr}.simtools{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+</style>
+<script>
+if(new URLSearchParams(location.search).get("embed")==="1"){document.documentElement.classList.add("embed")}
+</script>
+<script src="https://xunia.org/xunia-i18n.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <div class="top" data-no-translate="true">
+    <div class="brand">📡 GPT-DOUG // MAVEN BROADCAST FUSION</div>
+    <span class="chip ok" id="opsChip">OPS CONNECTING</span>
+    <span class="chip info">PUBLIC MEDIA</span>
+    <span class="chip ok">HIVE MEDIA INDEXED</span>
+    <span class="chip warn">SYNTHETIC TRAINING</span>
+    <span class="chip off">MEDIA → TARGET LINK OFF</span>
+    <span class="chip off">EXTERNAL ACTION OFF</span>
+    <button class="fold-toggle" id="mediaToggle" type="button">MEDIA</button>
+  </div>
+
+  <main class="workspace">
+    <section class="panel map-wrap mobile-active" data-pane="map">
+      <div class="panel-head">
+        <span>🌍 GEOSPATIAL</span><span class="mini">PUBLIC / AUTHORIZED</span><span class="spacer"></span><span class="mini" id="mapState">2D LIVE</span>
+      </div>
+      <iframe id="mapFrame" class="mapframe" src="https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html?embed=1" title="GPT-MAVEN public geospatial map" loading="eager" allow="fullscreen"></iframe>
+      <div class="map-overlay" data-no-translate="true">
+        <button type="button" data-view="global">GLOBAL</button>
+        <button type="button" data-view="europe" class="active">EUROPE</button>
+        <button type="button" data-view="blacksea">BLACK SEA</button>
+        <button type="button" id="mapRefresh">↻ DATA</button>
+      </div>
+    </section>
+
+    <section class="panel sim" data-pane="sim">
+      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
+      <div class="stats">
+        <div class="stat">ACTIVE CONTACTS<b id="activeCount">5</b></div>
+        <div class="stat">RESOLVED<b id="resolvedCount">0</b></div>
+        <div class="stat">AUTO SIM<b id="autoState">OFF</b></div>
+        <div class="stat">SIM CLOCK<b id="simClock">00:00</b></div>
+      </div>
+      <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic scenario visualization"></canvas></div>
+      <div class="simtools" data-no-translate="true">
+        <button class="primary" id="addContact" type="button">+ SYNTHETIC CONTACT</button>
+        <button id="resolveContact" type="button">RESOLVE ONE</button>
+        <button id="autoToggle" type="button">AUTO SIM</button>
+        <button id="resetSim" type="button">RESET</button>
+      </div>
+      <div class="feed" id="eventFeed" aria-live="polite"></div>
+    </section>
+
+    <section class="panel media" id="mediaPanel" data-pane="media">
+      <div class="panel-head"><span>📺 PUBLIC MEDIA / BROADCAST</span><span class="spacer"></span><span class="mini">NO TARGET EXPORT</span></div>
+      <div class="categories" id="categories" data-no-translate="true">
+        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button>
+      </div>
+      <form class="searchbar" id="mediaSearch">
+        <input id="mediaQuery" autocomplete="off" placeholder="Search public media">
+        <button type="submit">SEARCH</button>
+      </form>
+      <div class="boundary">PUBLIC MEDIA DISPLAY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
+      <iframe id="mediaFrame" class="mediaframe" src="https://www.videosarena.com/" title="VideosArena public media" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </section>
+  </main>
+</div>
+
+<nav class="mobile-dock" data-no-translate="true" aria-label="Broadcast workspaces">
+  <button class="active" data-mobile-pane="map">🌍 MAP</button>
+  <button data-mobile-pane="sim">🧪 SIM</button>
+  <button data-mobile-pane="media">📺 MEDIA</button>
+</nav>
+
+<script>
+(() => {
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const frame=document.getElementById("mapFrame");
+  const mapOrigin="https://gpt-doug-robotics-intel.onrender.com";
+
+  function mapCmd(command,value){
+    frame.contentWindow?.postMessage({type:"maven-command",command,value},mapOrigin);
+  }
+  document.querySelectorAll("[data-view]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-view]").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");mapCmd("view",btn.dataset.view);
+  }));
+  document.getElementById("mapRefresh").addEventListener("click",()=>mapCmd("refresh"));
+
+  const media=document.getElementById("mediaPanel");
+  document.getElementById("mediaToggle")?.addEventListener("click",()=>media.classList.toggle("open"));
+  document.getElementById("categories").addEventListener("click",e=>{
+    const btn=e.target.closest("button[data-q]");if(!btn)return;
+    document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+    const q=btn.dataset.q||"";
+    document.getElementById("mediaQuery").value=q;
+    document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
+  });
+  document.getElementById("mediaSearch").addEventListener("submit",e=>{
+    e.preventDefault();const q=document.getElementById("mediaQuery").value.trim();
+    document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
+  });
+
+  document.querySelectorAll("[data-mobile-pane]").forEach(btn=>btn.addEventListener("click",()=>{
+    const pane=btn.dataset.mobilePane;
+    document.querySelectorAll("[data-mobile-pane]").forEach(x=>x.classList.toggle("active",x===btn));
+    document.querySelectorAll("[data-pane]").forEach(x=>x.classList.toggle("mobile-active",x.dataset.pane===pane));
+  }));
+
+  async function ops(){
+    try{
+      const r=await fetch("https://xunia-ops-api.onrender.com/api/status",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d=await r.json();
+      const c=document.getElementById("opsChip");
+      c.textContent="OPS "+d.summary.reachable+"/"+d.summary.total;
+      c.className="chip "+(d.summary.degraded?"warn":"ok");
+    }catch{
+      const c=document.getElementById("opsChip");c.textContent="OPS DEGRADED";c.className="chip warn";
+    }
+  }
+  ops();setInterval(ops,30000);
+
+  const canvas=document.getElementById("simCanvas");
+  const ctx=canvas.getContext("2d",{alpha:false});
+  const activeEl=document.getElementById("activeCount");
+  const resolvedEl=document.getElementById("resolvedCount");
+  const autoEl=document.getElementById("autoState");
+  const clockEl=document.getElementById("simClock");
+  const feed=document.getElementById("eventFeed");
+  let resolved=0,auto=false,start=performance.now(),lastAuto=0;
+  let contacts=[];
+
+  function id(){return "SIM-"+String(Math.floor(1000+Math.random()*8999))}
+  function makeContact(){
+    return {id:id(),x:.08+Math.random()*.84,y:.12+Math.random()*.76,vx:(Math.random()-.5)*.000055,vy:(Math.random()-.5)*.000055,r:9+Math.random()*6,phase:Math.random()*Math.PI*2}
+  }
+  for(let i=0;i<5;i++)contacts.push(makeContact());
+
+  function log(msg,good=false){
+    const row=document.createElement("div");
+    row.innerHTML='<span class="time">['+new Date().toLocaleTimeString()+']</span> <span class="'+(good?'good':'')+'"></span>';
+    row.querySelector("span:last-child").textContent=msg;
+    feed.prepend(row);while(feed.children.length>35)feed.removeChild(feed.lastChild);
+  }
+  log("Synthetic scenario initialized",true);
+  log("Real coordinates disabled",true);
+  log("External action disabled",true);
+
+  function resize(){
+    const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,1.7);
+    canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  new ResizeObserver(resize).observe(canvas);resize();
+
+  function draw(ts){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    ctx.fillStyle="#041008";ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle="rgba(90,255,150,.14)";ctx.lineWidth=1;
+    for(let x=0;x<w;x+=38){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+    for(let y=0;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+    ctx.fillStyle="#6ee7a1";ctx.font="10px monospace";ctx.fillText("SYNTHETIC SENSOR SPACE // GEO-LINK OFF",12,18);
+
+    for(const c of contacts){
+      if(!reduce){c.x+=c.vx*(ts-(draw.last||ts));c.y+=c.vy*(ts-(draw.last||ts));}
+      if(c.x<.04||c.x>.96)c.vx*=-1;if(c.y<.08||c.y>.94)c.vy*=-1;
+      const x=c.x*w,y=c.y*h,pulse=reduce?1:(1+Math.sin(ts*.003+c.phase)*.18);
+      ctx.strokeStyle="#ffb21d";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x,y,c.r*pulse,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.rect(x-c.r*1.4,y-c.r*1.4,c.r*2.8,c.r*2.8);ctx.stroke();
+      ctx.fillStyle="#ffd166";ctx.font="9px monospace";ctx.fillText(c.id,x+c.r+6,y+3);
+    }
+    draw.last=ts;activeEl.textContent=contacts.length;resolvedEl.textContent=resolved;
+    const sec=Math.floor((performance.now()-start)/1000);clockEl.textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
+    if(auto&&ts-lastAuto>4200){lastAuto=ts;if(Math.random()>.5&&contacts.length<9){contacts.push(makeContact());log("Auto-sim added synthetic contact")}else if(contacts.length>2){const c=contacts.shift();resolved++;log(c.id+" resolved by synthetic workflow",true)}}
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  document.getElementById("addContact").addEventListener("click",()=>{
+    if(contacts.length>=12){log("Synthetic contact cap reached");return}
+    const c=makeContact();contacts.push(c);log(c.id+" entered synthetic scenario");
+  });
+  document.getElementById("resolveContact").addEventListener("click",()=>{
+    if(!contacts.length){log("No active synthetic contacts");return}
+    const c=contacts.shift();resolved++;log(c.id+" resolved by synthetic workflow",true);
+  });
+  document.getElementById("autoToggle").addEventListener("click",e=>{
+    auto=!auto;autoEl.textContent=auto?"ON":"OFF";e.currentTarget.classList.toggle("primary",auto);log("Auto simulation "+(auto?"enabled":"disabled"),auto);
+  });
+  document.getElementById("resetSim").addEventListener("click",()=>{
+    contacts=[];for(let i=0;i<5;i++)contacts.push(makeContact());resolved=0;start=performance.now();log("Synthetic scenario reset",true);
+  });
+
+  if(!reduce){
+    document.querySelectorAll(".panel").forEach((p,i)=>p.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"translateY(0)"}],{duration:420+i*80,easing:"cubic-bezier(.2,.78,.2,1)",fill:"both"}));
+  }
+})();
+</script>
+</body>
+</html>
