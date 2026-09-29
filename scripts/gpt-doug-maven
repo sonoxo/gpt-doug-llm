@@ -1,6 +1,13 @@
 #!/bin/sh
 set -eu
 
+CONFIG="$HOME/.gpt-doug/env"
+if [ -f "$CONFIG" ]; then
+  set -a
+  . "$CONFIG"
+  set +a
+fi
+
 resolve_root() {
   script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
   script_root="$(CDPATH= cd -- "$script_dir/.." && pwd)"
