@@ -142,6 +142,7 @@
       .visual-core,.testrange{height:120px}
     }
   </style>
+  <link rel="stylesheet" href="maven-geospatial-responsive.css">
 </head>
 <body>
 <header>
@@ -158,7 +159,8 @@
 </header>
 <main>
   <div id="map"></div>
-  <aside>
+  <aside id="mobileSheet" aria-label="MAVEN controls and status">
+    <button class="mobile-sheet-toggle" id="mobileSheetToggle" type="button" aria-expanded="false" aria-controls="mobileSheet">⌃ CONTROLS / STATUS</button>
     <div class="card deck-card">
       <div class="deck-head">
         <h2 style="margin:0">🎛 GPT-DOUG CONTROL DECK</h2>
@@ -337,18 +339,46 @@
 <script>
 const mobileSheet=document.getElementById('mobileSheet');
 const mobileSheetToggle=document.getElementById('mobileSheetToggle');
+const mobileMedia=window.matchMedia('(max-width:900px)');
+let mapResizeTimer=0;
+const invalidateMapSoon=(delay=80)=>{
+  clearTimeout(mapResizeTimer);
+  mapResizeTimer=setTimeout(()=>map?.invalidateSize({pan:false}),delay);
+};
+let setMobileSheet=()=>{};
 if(mobileSheet&&mobileSheetToggle){
-  const setSheet=open=>{
-    mobileSheet.classList.toggle('open',open);
-    mobileSheetToggle.setAttribute('aria-expanded',String(open));
-    mobileSheetToggle.textContent=open?'⌄ CLOSE CONTROLS':'⌃ CONTROLS / STATUS';
-    setTimeout(()=>map.invalidateSize(),260);
+  setMobileSheet=open=>{
+    const next=Boolean(open&&mobileMedia.matches);
+    mobileSheet.classList.toggle('open',next);
+    document.body.classList.toggle('mobile-sheet-open',next);
+    mobileSheetToggle.setAttribute('aria-expanded',String(next));
+    mobileSheetToggle.textContent=next?'⌄ CLOSE CONTROLS':'⌃ CONTROLS / STATUS';
+    invalidateMapSoon(next?240:160);
   };
-  mobileSheetToggle.addEventListener('click',()=>setSheet(!mobileSheet.classList.contains('open')));
-  window.addEventListener('orientationchange',()=>setTimeout(()=>map.invalidateSize(),300));
-  window.addEventListener('resize',()=>setTimeout(()=>map.invalidateSize(),120));
+  mobileSheetToggle.addEventListener('click',()=>setMobileSheet(!mobileSheet.classList.contains('open')));
+  mobileSheet.addEventListener('transitionend',event=>{
+    if(event.propertyName==='transform') invalidateMapSoon(0);
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&mobileSheet.classList.contains('open')) setMobileSheet(false);
+  });
+  const syncResponsiveState=()=>{
+    if(!mobileMedia.matches) setMobileSheet(false);
+    invalidateMapSoon(120);
+  };
+  if(mobileMedia.addEventListener) mobileMedia.addEventListener('change',syncResponsiveState);
+  else mobileMedia.addListener?.(syncResponsiveState);
+  window.addEventListener('orientationchange',()=>invalidateMapSoon(260),{passive:true});
+  window.addEventListener('resize',()=>invalidateMapSoon(120),{passive:true});
+  window.visualViewport?.addEventListener('resize',()=>invalidateMapSoon(80),{passive:true});
 }
 const map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([49.0,31.0],5);
+map.on('click',()=>{
+  if(mobileMedia.matches&&mobileSheet?.classList.contains('open')) setMobileSheet(false);
+});
+if('ResizeObserver' in window){
+  new ResizeObserver(()=>invalidateMapSoon(40)).observe(document.getElementById('map'));
+}
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
 const layers={
