@@ -53,7 +53,8 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <body>
 <header>
 <div class="brand">🛰 GPT-DOUG // MAVEN</div>
-<span class="pill ok">PUBLIC DATA LIVE</span>\n<span class="pill blue">CESIUM 3D READY</span>
+<span class="pill ok">PUBLIC DATA LIVE</span>
+<span class="pill blue">CESIUM 3D READY</span>
 <span class="pill">HIVE / SWARM ANALYSIS</span>
 <span class="pill off">PRECISE TARGETING OFF</span>
 <span class="pill off">WEAPON CONTROL OFF</span>
@@ -92,6 +93,35 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 </aside>
 </main>
 <script>
+const MAVEN_VIEWS={
+  "3d":"https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html",
+  "2d":"https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html"
+};
+const frame=document.getElementById("mavenFrame");
+const engineLabel=document.getElementById("viewEngine");
+
+function setMavenMode(mode){
+  if(!MAVEN_VIEWS[mode]) mode="3d";
+  document.querySelectorAll("[data-mode]").forEach(btn=>{
+    btn.classList.toggle("active",btn.dataset.mode===mode);
+  });
+  frame.src=MAVEN_VIEWS[mode];
+  frame.title=mode==="3d"
+    ?"GPT-DOUG MAVEN Cesium 3D public situational-awareness dashboard"
+    :"GPT-DOUG MAVEN 2D public geospatial dashboard";
+  engineLabel.textContent=mode==="3d"?"CESIUM 3D":"LEAFLET 2D";
+  try{localStorage.setItem("xunia.maven.view",mode)}catch{}
+}
+
+document.querySelectorAll("[data-mode]").forEach(btn=>{
+  btn.addEventListener("click",()=>setMavenMode(btn.dataset.mode));
+});
+
+try{
+  const saved=localStorage.getItem("xunia.maven.view");
+  if(saved==="2d"||saved==="3d") setMavenMode(saved);
+}catch{}
+
 async function status(){
   try{
     const r=await fetch("https://xunia-ops-api.onrender.com/api/status",{cache:"no-store"});
