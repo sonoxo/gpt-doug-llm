@@ -3,7 +3,7 @@
   document.body.classList.add("ops-motion-on");
   const rail=document.getElementById("commandRail");
   const railToggle=document.getElementById("opsRailToggle");
-  const stateKey="xunia.maven.fold.v2";
+  const stateKey="xunia.maven.fold.v3";\n  const railClose=document.getElementById("commandRailClose");\n  const railScrim=document.getElementById("railScrim");\n  const railCollapseAll=document.getElementById("railCollapseAll");
 
   if(rail && !document.getElementById("palantirBridgeCard")){
     const card=document.createElement("div");
@@ -53,7 +53,7 @@
     const heading=card.querySelector(":scope > h2");
     if(!heading) return;
     const id=slug(heading.textContent,i);
-    const defaultOpen=/map control|live xunia ops/i.test(heading.textContent);
+    const defaultOpen=/map control/i.test(heading.textContent);
     const open=saved[id]===undefined?defaultOpen:saved[id]!==false;
 
     const inner=document.createElement("div");inner.className="fold-inner";
@@ -63,8 +63,9 @@
 
     const button=document.createElement("button");
     button.type="button";button.className="fold-head";button.setAttribute("aria-expanded",String(open));
-    button.innerHTML='<span class="fold-title"></span><span class="fold-chevron" aria-hidden="true">⌄</span>';
+    button.innerHTML='<span class="fold-title"></span><span class="fold-side"><span class="fold-action"></span><span class="fold-chevron" aria-hidden="true">⌄</span></span>';
     button.querySelector(".fold-title").textContent=heading.textContent;
+    button.querySelector(".fold-action").textContent=open?"CLOSE":"OPEN";
     heading.replaceWith(button);card.appendChild(body);
     card.dataset.foldId=id;
     if(!open) card.classList.add("collapsed");
@@ -72,24 +73,45 @@
     button.addEventListener("click",()=>{
       const collapsed=card.classList.toggle("collapsed");
       button.setAttribute("aria-expanded",String(!collapsed));
+      button.querySelector(".fold-action").textContent=collapsed?"OPEN":"CLOSE";
       saved[id]=!collapsed;
       try{localStorage.setItem(stateKey,JSON.stringify(saved))}catch{}
     });
   });
 
   function setRail(open){
+    if(!rail||!railToggle) return;
     rail.classList.toggle("open",open);
+    document.body.classList.toggle("rail-open",open);
+    rail.setAttribute("aria-hidden",String(!open));
     railToggle.setAttribute("aria-expanded",String(open));
-    railToggle.textContent=open?"✕ CLOSE":"☰ COMMAND";
-    try{localStorage.setItem("xunia.maven.commandRail",open?"1":"0")}catch{}
-    if(open&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
-      rail.animate([{opacity:.35,transform:matchMedia("(max-width:900px)").matches?"translateY(16px)":"translateX(16px)"},{opacity:1,transform:"translate(0,0)"}],{duration:260,easing:"cubic-bezier(.2,.78,.2,1)"});
+    railToggle.textContent=open?"✕ PANEL":"☰ PANEL";
+    railScrim?.classList.toggle("open",open);
+    if(open){
+      requestAnimationFrame(()=>railClose?.focus({preventScroll:true}));
+    }else if(document.activeElement===railClose){
+      railToggle.focus({preventScroll:true});
     }
   }
-  let initial=false;
-  try{initial=localStorage.getItem("xunia.maven.commandRail")==="1"}catch{}
+
+  const initial=new URLSearchParams(location.search).get("panel")==="open";
   setRail(initial);
-  railToggle.addEventListener("click",()=>setRail(!rail.classList.contains("open")));
+  railToggle?.addEventListener("click",()=>setRail(!rail.classList.contains("open")));
+  railClose?.addEventListener("click",()=>setRail(false));
+  railScrim?.addEventListener("click",()=>setRail(false));
+  railCollapseAll?.addEventListener("click",()=>{
+    document.querySelectorAll("#commandRail .card").forEach(card=>{
+      card.classList.add("collapsed");
+      const button=card.querySelector(".fold-head");
+      button?.setAttribute("aria-expanded","false");
+      const action=button?.querySelector(".fold-action");
+      if(action) action.textContent="OPEN";
+      const id=card.dataset.foldId;
+      if(id) saved[id]=false;
+    });
+    try{localStorage.setItem(stateKey,JSON.stringify(saved))}catch{}
+  });
+
   document.addEventListener("keydown",e=>{
     if(e.key==="Escape"&&rail.classList.contains("open")) setRail(false);
     if((e.key==="c"||e.key==="C")&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||"")) setRail(!rail.classList.contains("open"));
