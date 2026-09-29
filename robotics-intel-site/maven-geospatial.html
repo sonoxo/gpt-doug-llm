@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="GPT-DOUG MAVEN geospatial swarm simulation using public geography and simulated analytic cells only.">
+  <title>GPT-DOUG // MAVEN GEOSPATIAL SWARM</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root{--bg:#070906;--panel:#0c110c;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--red:#ff6b6b;--blue:#76d4ff}
+    *{box-sizing:border-box} html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    body{display:grid;grid-template-rows:auto 1fr}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);background:#090c08}
+    .brand{font-weight:900;letter-spacing:.05em;color:var(--accent)}
+    .status{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}.pill{border:1px solid var(--line);padding:5px 8px;border-radius:999px;background:#0c120d}
+    .ok{color:var(--lime)}.lock{color:#ffd166}
+    main{display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:0}
+    #map{height:100%;min-height:650px;background:#0b100c}
+    aside{border-left:1px solid var(--line);padding:14px;background:linear-gradient(180deg,#0e130f,#080b08);overflow:auto}
+    .card{border:1px solid var(--line);border-radius:10px;background:#0b100d;padding:12px;margin:0 0 10px}
+    h2{font-size:14px;margin:0 0 8px;color:var(--accent)}
+    button{font:inherit;color:var(--text);background:#101611;border:1px solid var(--line);padding:7px 9px;border-radius:8px;cursor:pointer;margin:3px 2px}
+    button.active{background:var(--accent);color:#160b00}
+    .metric{display:flex;justify-content:space-between;gap:10px;margin:6px 0;color:var(--muted);font-size:12px}.metric b{color:var(--text)}
+    .feed{font-size:12px;line-height:1.55;color:var(--muted);max-height:230px;overflow:auto}
+    .warn{border-left:3px solid #ffd166;padding-left:10px;color:#eadba9;font-size:12px}
+    .legend{font-size:12px;color:var(--muted)}.legend div{margin:5px 0}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+    .swarmdot{background:var(--accent);box-shadow:0 0 12px rgba(255,159,28,.8)}
+    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:#b69cff}
+    .leaflet-container{font-family:inherit}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0a100c;color:var(--text)}
+    .cell{width:17px;height:17px;border:1px solid var(--accent);background:rgba(255,159,28,.2);border-radius:50%;box-shadow:0 0 14px rgba(255,159,28,.7)}
+    @media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:65vh auto}aside{border-left:0;border-top:1px solid var(--line)}#map{min-height:0}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">🍂 GPT-DOUG // MAVEN GEOSPATIAL SWARM</div>
+  <div class="status">
+    <span class="pill ok">● MAP ONLINE</span>
+    <span class="pill">🐝 HIVE 100/100</span>
+    <span class="pill">🕸️ SWARM ANALYTIC</span>
+    <span class="pill lock">🔒 PUBLIC + SIMULATION ONLY</span>
+  </div>
+</header>
+<main>
+  <div id="map"></div>
+  <aside>
+    <div class="card">
+      <h2>VIEW</h2>
+      <button data-view="global">GLOBAL</button>
+      <button data-view="europe" class="active">EASTERN EUROPE</button>
+      <button data-view="blacksea">BLACK SEA</button>
+    </div>
+    <div class="card">
+      <h2>LAYERS</h2>
+      <button data-layer="swarm" class="active">🐝 SWARM CELLS</button>
+      <button data-layer="humanitarian" class="active">🧭 CIVIL/HUMANITARIAN</button>
+      <button data-layer="weather" class="active">🌦 WEATHER ZONES</button>
+      <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>
+    </div>
+    <div class="card">
+      <h2>MAVEN STATUS</h2>
+      <div class="metric"><span>MODE</span><b>GEO_SIMULATION</b></div>
+      <div class="metric"><span>VISIBLE CELLS</span><b id="cells">24</b></div>
+      <div class="metric"><span>HIVE</span><b>SYNCED</b></div>
+      <div class="metric"><span>SWARM ROLE</span><b>ANALYSIS ONLY</b></div>
+      <div class="metric"><span>PRECISE TARGETING</span><b>OFF</b></div>
+      <div class="metric"><span>WEAPON CONTROL</span><b>OFF</b></div>
+      <div class="metric"><span>EXTERNAL ACTION</span><b>OFF</b></div>
+    </div>
+    <div class="card legend">
+      <h2>LEGEND</h2>
+      <div><span class="dot swarmdot"></span>Simulated swarm analytic cell</div>
+      <div><span class="dot hmdot"></span>Civil / humanitarian reference</div>
+      <div><span class="dot wxdot"></span>Regional weather zone</div>
+      <div><span class="dot pubdot"></span>Public-information reference</div>
+    </div>
+    <div class="card">
+      <h2>EVENT BUS</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+    <div class="card warn">This page deliberately avoids live unit locations, person tracking, precise tactical coordinates, target selection, fire-control data, strike recommendations, and kinetic execution. The swarm cells are simulated coarse regional bins.</div>
+  </aside>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([49.0,31.0],5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+
+const layers={
+  swarm:L.layerGroup().addTo(map),
+  humanitarian:L.layerGroup().addTo(map),
+  weather:L.layerGroup().addTo(map),
+  public:L.layerGroup().addTo(map)
+};
+const views={global:[[20,0],2],europe:[[49,31],5],blacksea:[[43.5,34.5],5]};
+
+const coarseCells=[
+[50.5,30.5],[49.5,28.5],[48.5,31.5],[47.5,33.5],[46.5,30.5],[51.5,34.5],
+[52.5,24.5],[50.5,24.5],[48.5,24.5],[46.5,24.5],[44.5,26.5],[45.5,29.5],
+[44.5,33.5],[42.5,36.5],[41.5,29.5],[43.5,28.5],[47.5,39.5],[49.5,39.5],
+[51.5,39.5],[53.5,27.5],[54.5,25.5],[47.5,21.5],[49.5,21.5],[45.5,37.5]
+];
+const swarmMarkers=[];
+coarseCells.forEach((p,i)=>{
+  const icon=L.divIcon({className:'',html:'<div class="cell"></div>',iconSize:[17,17],iconAnchor:[8,8]});
+  const m=L.marker(p,{icon}).bindPopup('<b>SWARM ANALYTIC CELL '+String(i+1).padStart(2,'0')+'</b><br>Simulated coarse regional bin<br>No live track or targeting data');
+  m.addTo(layers.swarm); swarmMarkers.push(m);
+});
+
+const civil=[
+[50.4501,30.5234,'Kyiv — civilian city reference'],
+[49.8397,24.0297,'Lviv — civilian city reference'],
+[46.4825,30.7233,'Odesa — civilian city reference'],
+[44.4268,26.1025,'Bucharest — civilian city reference'],
+[52.2297,21.0122,'Warsaw — civilian city reference'],
+[47.0105,28.8638,'Chișinău — civilian city reference']
+];
+civil.forEach(x=>L.circleMarker([x[0],x[1]],{radius:6,color:'#76d4ff',weight:2,fillOpacity:.55}).bindPopup(x[2]).addTo(layers.humanitarian));
+
+const weather=[
+[48.7,32.0,'Central regional weather zone'],[45.0,34.0,'Black Sea weather zone'],[52.0,25.0,'Northwest regional weather zone']
+];
+weather.forEach(x=>L.circle([x[0],x[1]],{radius:180000,color:'#b69cff',weight:1,fillOpacity:.07}).bindPopup(x[2]+'<br>Illustrative regional overlay').addTo(layers.weather));
+
+const publicRefs=[
+[50.45,30.52,'PUBLIC INFO NODE — Kyiv region'],[46.48,30.72,'PUBLIC INFO NODE — Odesa region'],[44.43,26.10,'PUBLIC INFO NODE — Romania region'],[52.23,21.01,'PUBLIC INFO NODE — Poland region']
+];
+publicRefs.forEach(x=>L.circleMarker([x[0],x[1]],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.45}).bindPopup(x[2]+'<br>Public-information reference only').addTo(layers.public));
+
+function event(msg){
+  const e=document.getElementById('feed'),t=new Date().toLocaleTimeString();
+  const d=document.createElement('div'); d.textContent='['+t+'] '+msg; e.prepend(d);
+  while(e.children.length>14)e.removeChild(e.lastChild);
+}
+event('MAVEN geospatial canvas initialized');
+event('HIVE synchronization healthy');
+event('Swarm analytic cells loaded: 24');
+event('Public/civilian layers ready');
+event('Precise targeting and external action locked OFF');
+
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); const v=views[b.dataset.view]; map.setView(v[0],v[1]); event('View changed: '+b.dataset.view.toUpperCase());
+}));
+document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.layer,layer=layers[k];
+  if(map.hasLayer(layer)){map.removeLayer(layer);b.classList.remove('active');event('Layer OFF: '+k.toUpperCase())}
+  else{map.addLayer(layer);b.classList.add('active');event('Layer ON: '+k.toUpperCase())}
+}));
+
+setInterval(()=>{
+  swarmMarkers.forEach((m,i)=>{
+    const base=coarseCells[i];
+    const phase=(Date.now()/18000)+(i*0.7);
+    const lat=base[0]+Math.sin(phase)*0.08;
+    const lon=base[1]+Math.cos(phase*0.9)*0.12;
+    m.setLatLng([lat,lon]);
+  });
+},1200);
+setInterval(()=>event('Swarm heartbeat: 24 simulated analytic cells nominal'),12000);
+</script>
+</body>
+</html>
