@@ -76,6 +76,16 @@ a{color:var(--cyan)}
 .searchbar button{min-height:38px;border:1px solid #5a3d18;border-radius:8px;background:#13170f;color:#ffd166;padding:7px 10px;font-size:9px;font-weight:900}
 .boundary{padding:6px 8px;border-bottom:1px solid #1d3725;color:#6ee7a1;font-size:8px;letter-spacing:.05em}
 .mediaframe{width:100%;height:100%;border:0;background:#fff}
+.media-surface{position:relative;min-height:0;overflow:hidden}
+.directory{position:absolute;inset:0;display:none;overflow:auto;padding:10px;background:linear-gradient(180deg,#071009,#050806)}
+.directory.active{display:block}
+.directory-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.source-card{border:1px solid #284131;border-radius:10px;padding:10px;background:#081009}
+.source-card h3{margin:0 0 5px;font-size:11px;color:var(--lime)}
+.source-card p{margin:0 0 8px;font-size:9px;line-height:1.45;color:var(--muted)}
+.source-card .meta{font-size:8px;color:#6ee7a1;margin-bottom:7px}
+.source-card a{display:inline-flex;align-items:center;min-height:36px;border:1px solid #3b4d31;border-radius:8px;padding:6px 9px;text-decoration:none;font-size:9px;font-weight:900;background:#0d140f}
+.source-note{margin-top:8px;border-left:3px solid #ffd166;padding:8px 10px;background:#0f1008;color:#c9b991;font-size:9px;line-height:1.5}
 .mobile-dock{display:none}
 .fold-toggle{display:none}
 html.embed .top{display:none}
@@ -122,7 +132,7 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
   <div class="top" data-no-translate="true">
     <div class="brand">📡 GPT-DOUG // MAVEN BROADCAST FUSION</div>
     <span class="chip ok" id="opsChip">OPS CONNECTING</span>
-    <span class="chip info">PUBLIC MEDIA</span>
+    <span class="chip info">PUBLIC MEDIA</span><span class="chip info">PUBLIC CCTV DIRECTORY</span><span class="chip info">US PUBLIC INFO</span>
     <span class="chip ok">HIVE MEDIA INDEXED</span>
     <span class="chip warn">SYNTHETIC TRAINING</span>
     <span class="chip off">MEDIA → TARGET LINK OFF</span>
@@ -165,14 +175,74 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
     <section class="panel media" id="mediaPanel" data-pane="media">
       <div class="panel-head"><span>📺 PUBLIC MEDIA / BROADCAST</span><span class="spacer"></span><span class="mini">NO TARGET EXPORT</span></div>
       <div class="categories" id="categories" data-no-translate="true">
-        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button>
+        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button><button data-special="cctv">CCTV</button><button data-special="usinfo">US INFO</button>
       </div>
       <form class="searchbar" id="mediaSearch">
         <input id="mediaQuery" autocomplete="off" placeholder="Search public media">
         <button type="submit">SEARCH</button><button type="button" id="mediaOpen">OPEN ↗</button>
       </form>
       <div class="boundary">PUBLIC MEDIA DISPLAY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
-      <iframe id="mediaFrame" class="mediaframe" src="https://www.videosarena.com/" title="VideosArena public media" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      <div class="media-surface">
+        <iframe id="mediaFrame" class="mediaframe" src="https://www.videosarena.com/" title="VideosArena public media" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <section class="directory" id="cctvDirectory" aria-label="Public camera directory">
+          <div class="directory-grid">
+            <article class="source-card">
+              <div class="meta">OFFICIAL · VIRGINIA DEPARTMENT OF TRANSPORTATION</div>
+              <h3>VDOT 511 TRAFFIC CAMERAS</h3>
+              <p>Official Virginia road-conditions and traffic-camera portal. Use for public traffic situational awareness only.</p>
+              <a href="https://511.vdot.virginia.gov/" target="_blank" rel="noopener">OPEN 511 VIRGINIA ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">OFFICIAL · NATIONAL PARK SERVICE</div>
+              <h3>NPS PUBLIC WEBCAMS</h3>
+              <p>Government-operated park and wildlife webcams, including current-condition and live-stream views where available.</p>
+              <a href="https://www.nps.gov/nature/webcams.htm" target="_blank" rel="noopener">OPEN NPS WEBCAMS ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">OFFICIAL · NOAA / NESDIS</div>
+              <h3>GOES SATELLITE IMAGE VIEWER</h3>
+              <p>Public near-real-time satellite imagery and animations for weather and regional awareness.</p>
+              <a href="https://goes.noaa.gov/" target="_blank" rel="noopener">OPEN NOAA GOES ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">INTEGRATION STATUS · VDOT VIDEO</div>
+              <h3>DIRECT CAMERA API / STREAMS</h3>
+              <p>Not embedded in GPT-MAVEN yet. VDOT requires a user agreement before third-party integration of its 511 video feeds.</p>
+              <a href="https://www.vdot.virginia.gov/news-events/media/" target="_blank" rel="noopener">VIEW VDOT ACCESS PROCESS ↗</a>
+            </article>
+          </div>
+          <div class="source-note">PUBLIC CAMERA VIEWING ONLY · NO FACE RECOGNITION · NO PERSON TRACKING · NO TARGET EXPORT · NO WEAPON LINK</div>
+        </section>
+        <section class="directory" id="usInfoDirectory" aria-label="United States public information sources">
+          <div class="directory-grid">
+            <article class="source-card">
+              <div class="meta">PUBLIC U.S. INFORMATION</div>
+              <h3>AMERICA.GOV</h3>
+              <p>Added as a public U.S. information/reference source. GPT-MAVEN does not treat this as classified or operational intelligence.</p>
+              <a href="https://america.gov/" target="_blank" rel="noopener">OPEN AMERICA.GOV ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">OFFICIAL · U.S. GOVERNMENT</div>
+              <h3>USA.GOV</h3>
+              <p>Primary public portal for U.S. government services, agencies, programs, and information.</p>
+              <a href="https://www.usa.gov/" target="_blank" rel="noopener">OPEN USA.GOV ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">OFFICIAL · U.S. DEPARTMENT OF STATE</div>
+              <h3>STATE.GOV</h3>
+              <p>Public foreign-policy statements, releases, travel information, speeches, and department resources.</p>
+              <a href="https://www.state.gov/" target="_blank" rel="noopener">OPEN STATE.GOV ↗</a>
+            </article>
+            <article class="source-card">
+              <div class="meta">ARCHIVE · AMERICA.GOV STATIC PUBLICATIONS</div>
+              <h3>AMERICA.GOV STATIC ARCHIVE</h3>
+              <p>Publicly accessible archived publications hosted on the America.gov static domain.</p>
+              <a href="https://static.america.gov/" target="_blank" rel="noopener">OPEN STATIC ARCHIVE ↗</a>
+            </article>
+          </div>
+          <div class="source-note">PUBLIC / UNCLASSIFIED SOURCES ONLY · PROVENANCE REQUIRED · NO CLAIM OF GOVERNMENT AFFILIATION</div>
+        </section>
+      </div>
     </section>
   </main>
 </div>
@@ -200,9 +270,24 @@ if(new URLSearchParams(location.search).get("embed")==="1"){document.documentEle
 
   const media=document.getElementById("mediaPanel");
   document.getElementById("mediaToggle")?.addEventListener("click",()=>media.classList.toggle("open"));
+  function setMediaSurface(mode){
+    const mediaFrame=document.getElementById("mediaFrame");
+    const cctv=document.getElementById("cctvDirectory");
+    const usinfo=document.getElementById("usInfoDirectory");
+    mediaFrame.style.display=mode==="media"?"block":"none";
+    cctv.classList.toggle("active",mode==="cctv");
+    usinfo.classList.toggle("active",mode==="usinfo");
+    document.getElementById("mediaSearch").style.display=mode==="media"?"grid":"none";
+  }
   document.getElementById("categories").addEventListener("click",e=>{
-    const btn=e.target.closest("button[data-q]");if(!btn)return;
+    const btn=e.target.closest("button");if(!btn)return;
     document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+    if(btn.dataset.special){
+      setMediaSurface(btn.dataset.special);
+      document.getElementById("mediaQuery").value="";
+      return;
+    }
+    setMediaSurface("media");
     const q=btn.dataset.q||"";
     document.getElementById("mediaQuery").value=q;
     document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
