@@ -282,6 +282,7 @@
       <button data-layer="weather" class="active">🌦 REGIONAL WEATHER</button>
       <button data-layer="liveWeather" class="active">🌡 LIVE WEATHER</button>
       <button data-layer="earthquakes" class="active">🌎 EARTHQUAKES</button>
+      <button data-layer="naturalEvents" class="active">🛰 NASA EVENTS</button>
       <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>
       <button type="button" id="refreshLive">↻ REFRESH LIVE DATA</button>
     </div>
@@ -388,6 +389,7 @@ const layers={
   weather:L.layerGroup().addTo(map),
   liveWeather:L.layerGroup().addTo(map),
   earthquakes:L.layerGroup().addTo(map),
+  naturalEvents:L.layerGroup().addTo(map),
   public:L.layerGroup().addTo(map)
 };
 const views={global:[[20,0],2],europe:[[49,31],5],blacksea:[[43.5,34.5],5]};
@@ -447,9 +449,18 @@ const publicRefs=[
 publicRefs.forEach(x=>L.circleMarker([x[0],x[1]],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.45}).bindPopup(x[2]+'<br>Public-information reference only').addTo(layers.public));
 
 const safeWeatherPoints=[
-  {name:'Warsaw',lat:52.2297,lon:21.0122},
-  {name:'Bucharest',lat:44.4268,lon:26.1025},
-  {name:'Chișinău',lat:47.0105,lon:28.8638}
+  {name:'New York',lat:40.71,lon:-74.01},
+  {name:'Mexico City',lat:19.43,lon:-99.13},
+  {name:'São Paulo',lat:-23.55,lon:-46.63},
+  {name:'London',lat:51.51,lon:-0.13},
+  {name:'Cairo',lat:30.04,lon:31.24},
+  {name:'Nairobi',lat:-1.29,lon:36.82},
+  {name:'Cape Town',lat:-33.92,lon:18.42},
+  {name:'Mumbai',lat:19.08,lon:72.88},
+  {name:'Singapore',lat:1.35,lon:103.82},
+  {name:'Tokyo',lat:35.68,lon:139.69},
+  {name:'Sydney',lat:-33.87,lon:151.21},
+  {name:'Honolulu',lat:21.31,lon:-157.86}
 ];
 
 function esc(v){
@@ -489,10 +500,8 @@ async function loadEarthquakes(){
     const j=await fetchJson('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson');
     const features=(j.features||[]).filter(f=>{
       const q=f.geometry&&f.geometry.coordinates;
-      if(!Array.isArray(q)||q.length<2) return false;
-      const lon=Number(q[0]),lat=Number(q[1]);
-      return lat>=35&&lat<=60&&lon>=10&&lon<=50;
-    }).slice(0,30);
+      return Array.isArray(q)&&q.length>=2&&Number.isFinite(Number(q[0]))&&Number.isFinite(Number(q[1]));
+    }).slice(0,60);
     for(const f of features){
       const q=f.geometry.coordinates,lon=Number(q[0]),lat=Number(q[1]),mag=Number(f.properties&&f.properties.mag);
       const place=esc((f.properties&&f.properties.place)||'Regional event');
@@ -503,6 +512,29 @@ async function loadEarthquakes(){
     return features.length;
   }catch(e){ event('EARTHQUAKE feed error: '+e.message); return 0; }
 }
+async function loadNaturalEvents(){
+  layers.naturalEvents.clearLayers();
+  try{
+    const j=await fetchJson('https://eonet.gsfc.nasa.gov/api/v3/events/geojson?status=open&limit=100');
+    const features=(j.features||[]).slice(0,100);
+    let count=0;
+    for(const f of features){
+      const g=f.geometry||{};
+      let coords=null;
+      if(g.type==='Point'&&Array.isArray(g.coordinates)) coords=g.coordinates;
+      else if(g.type==='Polygon'&&Array.isArray(g.coordinates)&&Array.isArray(g.coordinates[0])&&Array.isArray(g.coordinates[0][0])) coords=g.coordinates[0][0];
+      if(!coords) continue;
+      const lon=Number(coords[0]),lat=Number(coords[1]);
+      if(!Number.isFinite(lat)||!Number.isFinite(lon)) continue;
+      const title=esc((f.properties&&f.properties.title)||'Open natural event');
+      L.circleMarker([lat,lon],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.26})
+        .bindPopup('<b>NASA EONET EVENT</b><br>'+title+'<br><small>Public natural-event information.</small>')
+        .addTo(layers.naturalEvents);
+      count++;
+    }
+    return count;
+  }catch(e){ event('NASA EONET feed error: '+e.message); return 0; }
+}
 let liveRefreshBusy=false;
 async function loadPublicData(){
   if(liveRefreshBusy) return;
@@ -511,13 +543,13 @@ async function loadPublicData(){
   const pill=document.getElementById('liveDataPill');
   state.textContent='REFRESHING'; pill.textContent='◌ LIVE PUBLIC DATA';
   try{
-    const [weatherCount,quakeCount]=await Promise.all([loadLiveWeather(),loadEarthquakes()]);
+    const [weatherCount,quakeCount,eventCount]=await Promise.all([loadLiveWeather(),loadEarthquakes(),loadNaturalEvents()]);
     const stamp=new Date();
     document.getElementById('lastRefresh').textContent=stamp.toLocaleTimeString();
-    state.textContent=(weatherCount>0||quakeCount>0)?'LIVE':'PARTIAL';
-    pill.textContent=(weatherCount>0||quakeCount>0)?'● LIVE PUBLIC DATA':'◌ PUBLIC DATA PARTIAL';
-    const led=document.getElementById('ledData'); if(led) led.className='lamp '+((weatherCount>0||quakeCount>0)?'on':'warn');
-    event('PUBLIC DATA refresh: weather '+weatherCount+' nodes // earthquakes '+quakeCount);
+    state.textContent=(weatherCount>0||quakeCount>0||eventCount>0)?'LIVE':'PARTIAL';
+    pill.textContent=(weatherCount>0||quakeCount>0||eventCount>0)?'● LIVE PUBLIC DATA':'◌ PUBLIC DATA PARTIAL';
+    const led=document.getElementById('ledData'); if(led) led.className='lamp '+((weatherCount>0||quakeCount>0||eventCount>0)?'on':'warn');
+    event('PUBLIC DATA refresh: weather '+weatherCount+' nodes // earthquakes '+quakeCount+' // NASA events '+eventCount);
   }catch(e){
     state.textContent='OFFLINE'; pill.textContent='○ PUBLIC DATA OFFLINE';
     const led=document.getElementById('ledData'); if(led) led.className='lamp';
@@ -562,7 +594,7 @@ function completeTask(row){
   if(row.classList.contains('done')) return;
   const key=row.dataset.task;
   if(key==='layers'){
-    ['worldGrid','humanitarian','weather','liveWeather','earthquakes','public'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
+    ['worldGrid','humanitarian','weather','liveWeather','earthquakes','naturalEvents','public'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
     document.querySelectorAll('[data-layer]').forEach(b=>{if(b.dataset.layer!=='swarm') b.classList.add('active')});
     event('TASK: public layers verified');
   }
@@ -590,7 +622,7 @@ function applyExternalCommand(message){
     event('External view: '+String(message.value).toUpperCase());
   }
   if(message.command==='layer'){
-    const keyMap={worldgrid:'worldGrid',civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',swarm:'swarm'};
+    const keyMap={worldgrid:'worldGrid',civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',events:'naturalEvents',swarm:'swarm'};
     const key=keyMap[message.value];
     const layer=layers[key];
     if(layer){
