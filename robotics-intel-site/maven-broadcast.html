@@ -145,6 +145,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <link rel="stylesheet" href="./maven-iphone16e.css">
 <link rel="stylesheet" href="./maven-camera.css">
 <link rel="stylesheet" href="./maven-drone-sim.css">
+<link rel="stylesheet" href="./maven-gotham-sim.css">
 <script>
 (() => {
   const params=new URLSearchParams(location.search);
@@ -265,7 +266,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     <section class="panel media" id="mediaPanel" data-pane="media">
       <div class="panel-head"><span>📺 PUBLIC MEDIA / BROADCAST</span><span class="spacer"></span><span class="mini">NO TARGET EXPORT</span></div>
       <div class="categories" id="categories" data-no-translate="true">
-        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button><button data-special="cctv">CCTV</button><button data-special="usinfo">US INFO</button>
+        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button><button data-special="cctv">CCTV</button><button data-special="gotham">GOTHAM SIM</button><button data-special="usinfo">US INFO</button>
       </div>
       <form class="searchbar" id="mediaSearch">
         <input id="mediaQuery" autocomplete="off" placeholder="Search public media">
@@ -303,6 +304,35 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
           </div>
           <div class="source-note">PUBLIC CAMERA VIEWING ONLY · NO FACE RECOGNITION · NO PERSON TRACKING · NO TARGET EXPORT · NO WEAPON LINK</div>
         </section>
+        <section class="gotham-bay" id="gothamBay" aria-label="Synthetic Gotham training feed">
+          <div class="gotham-head">
+            <span>🎥 GOTHAM // SYNTHETIC TRAINING FEED</span><span class="spacer"></span>
+            <span class="gotham-chip">FICTIONAL / SIMULATED</span>
+            <button class="gotham-close" id="gothamClose" type="button">CLOSE</button>
+          </div>
+          <div class="gotham-stage">
+            <canvas id="gothamCanvas" aria-label="Animated synthetic Gotham personnel visualization"></canvas>
+            <div class="gotham-scan"></div>
+            <div class="gotham-hud" data-no-translate="true">
+              <div class="good">ACTORS<b id="gothamActors">14</b></div>
+              <div class="info">CHANNEL<b id="gothamChannel">GOTHAM ALPHA</b></div>
+              <div class="info">SECTOR<b id="gothamSector">NARROWS</b></div>
+              <div class="warn">SIGNAL<b id="gothamSignal">SIM LIVE</b></div>
+            </div>
+            <div class="gotham-feedtag">SYNTHETIC ACTORS · NO REAL PERSONNEL · NO LIVE UNIT TRACKING</div>
+          </div>
+          <div class="gotham-controls" data-no-translate="true">
+            <button id="gothamPrev" type="button">◀ PREV</button>
+            <button data-gotham-channel="0" type="button">ALPHA</button>
+            <button data-gotham-channel="1" type="button">BRAVO</button>
+            <button data-gotham-channel="2" type="button">ROOFTOP</button>
+            <button data-gotham-channel="3" type="button">STREETCAM</button>
+            <button id="gothamNext" type="button">NEXT ▶</button>
+            <button id="gothamCine" class="active" type="button">CINEMATIC</button>
+            <button id="gothamPause" class="warn" type="button">HOLD</button>
+          </div>
+        </section>
+
         <section class="directory" id="usInfoDirectory" aria-label="United States public information sources">
           <div class="directory-grid">
             <article class="source-card">
@@ -368,12 +398,15 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     const mediaFrame=document.getElementById("mediaFrame");
     const cctv=document.getElementById("cctvDirectory");
     const usinfo=document.getElementById("usInfoDirectory");
+    const gotham=document.getElementById("gothamBay");
     const isMedia=mode==="media";
     mediaFrame.hidden=!isMedia;
     mediaFrame.style.display=isMedia?"block":"none";
     mediaFrame.style.height=isMedia?"100%":"0";
     cctv.classList.toggle("active",mode==="cctv");
     usinfo.classList.toggle("active",mode==="usinfo");
+    gotham?.classList.toggle("active",mode==="gotham");
+    if(mode==="gotham") document.dispatchEvent(new CustomEvent("maven:gotham-open"));
     document.getElementById("mediaSearch").style.display=isMedia?"grid":"none";
   }
   document.getElementById("categories").addEventListener("click",e=>{
@@ -752,5 +785,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <script src="./maven-iphone16e.js" defer></script>
 <script src="./maven-camera.js" defer></script>
 <script src="./maven-drone-sim.js" defer></script>
+<script src="./maven-gotham-sim.js" defer></script>
 </body>
 </html>
