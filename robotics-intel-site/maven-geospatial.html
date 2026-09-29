@@ -6,6 +6,11 @@
   <meta name="description" content="GPT-DOUG MAVEN geospatial public-information simulation with animated HIVE/SWARM visuals and local task ops.">
   <title>GPT-DOUG // MAVEN GEOSPATIAL SWARM</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script>
+    if(new URLSearchParams(location.search).get("embed")==="1"){
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
   <script src="https://xunia.org/xunia-i18n.js" defer></script>
   <style>
     :root{--bg:#070906;--panel:#0c110c;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--red:#ff6b6b;--blue:#76d4ff;--violet:#b69cff;--pink:#ff4d8d}
@@ -96,6 +101,12 @@
     body.deck-fx-off .visual-core,body.deck-fx-off .cell,body.deck-fx-off .pulse-dot{filter:none!important;text-shadow:none!important;box-shadow:none!important}
     @keyframes pulse{50%{opacity:.35;transform:scale(.7)}} @keyframes cellpulse{50%{transform:scale(.8);opacity:.75}} @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}} @keyframes sweep{to{transform:rotate(360deg)}} 
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+    html.embedded header{display:none!important}
+    html.embedded aside{display:none!important}
+    html.embedded .xunia-i18n{display:none!important}
+    html.embedded body{display:block!important;height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}
+    html.embedded main{display:block!important;position:relative!important;height:100dvh!important;min-height:0!important}
+    html.embedded #map{position:absolute!important;inset:0!important;height:100%!important;min-height:0!important}
     .mobile-sheet-toggle{display:none}
     @media(max-width:900px){
       html,body{height:100svh;height:100dvh;min-height:100svh;min-height:100dvh;overflow:hidden;-webkit-text-size-adjust:100%}
@@ -516,6 +527,33 @@ document.getElementById('runAll').addEventListener('click',()=>{
   event('SAFE TASK CYCLE started');
 });
 document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicData();event('Manual public-data refresh requested')});
+
+function applyExternalCommand(message){
+  if(!message||message.type!=='maven-command') return;
+  if(message.command==='view'&&views[message.value]){
+    const v=views[message.value];
+    map.setView(v[0],v[1]);
+    event('External view: '+String(message.value).toUpperCase());
+  }
+  if(message.command==='layer'){
+    const keyMap={civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',swarm:'swarm'};
+    const key=keyMap[message.value];
+    const layer=layers[key];
+    if(layer){
+      const enabled=Boolean(message.enabled);
+      if(enabled&&!map.hasLayer(layer)) map.addLayer(layer);
+      if(!enabled&&map.hasLayer(layer)) map.removeLayer(layer);
+      const button=document.querySelector('[data-layer="'+key+'"]');
+      if(button) button.classList.toggle('active',enabled);
+      event('External layer '+(enabled?'ON: ':'OFF: ')+key.toUpperCase());
+    }
+  }
+  if(message.command==='refresh') loadPublicData();
+}
+window.addEventListener('message',evt=>{
+  if(!['https://xunia.org','https://www.xunia.org'].includes(evt.origin)) return;
+  applyExternalCommand(evt.data);
+});
 
 const testRange=document.getElementById('testRange');
 let simDroneCount=0,simMissileCount=0,simTempo=1;
