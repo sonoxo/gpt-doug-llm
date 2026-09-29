@@ -1,0 +1,77 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+SRC="$ROOT/robotics-intel-site"
+DEST="$HOME/.gpt-doug/maven"
+PORT="${MAVEN_LOCAL_PORT:-8787}"
+PIDFILE="$DEST/.maven-http.pid"
+LOGFILE="$DEST/maven-local.log"
+STAMP="$(date +%Y%m%d-%H%M%S)"
+
+mkdir -p "$DEST/backups"
+
+copy_asset() {
+  src="$1"
+  dst="$2"
+  if [ -f "$DEST/$dst" ]; then
+    cp "$DEST/$dst" "$DEST/backups/$dst.$STAMP"
+  fi
+  cp "$SRC/$src" "$DEST/$dst"
+}
+
+copy_asset "maven-broadcast.html" "maven-videosarena.html"
+for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js
+do
+  copy_asset "$f" "$f"
+done
+
+cat > "$DEST/index.html" <<'EOF'
+<!doctype html>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=./maven-videosarena.html">
+<title>GPT-MAVEN LOCAL</title>
+<a href="./maven-videosarena.html">Open GPT-MAVEN</a>
+EOF
+
+if [ -f "$PIDFILE" ]; then
+  oldpid="$(cat "$PIDFILE" 2>/dev/null || true)"
+  if [ -n "$oldpid" ] && kill -0 "$oldpid" 2>/dev/null; then
+    kill "$oldpid" 2>/dev/null || true
+    i=0
+    while kill -0 "$oldpid" 2>/dev/null && [ "$i" -lt 20 ]; do
+      sleep 0.1
+      i=$((i+1))
+    done
+  fi
+  rm -f "$PIDFILE"
+fi
+
+nohup python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$DEST" >"$LOGFILE" 2>&1 &
+pid=$!
+printf '%s
+' "$pid" > "$PIDFILE"
+
+i=0
+while [ "$i" -lt 30 ]; do
+  if command -v curl >/dev/null 2>&1 && curl -fsS "http://127.0.0.1:$PORT/maven-videosarena.html" >/dev/null 2>&1; then
+    break
+  fi
+  if ! kill -0 "$pid" 2>/dev/null; then
+    echo "MAVEN local server failed. Recent log:" >&2
+    tail -n 40 "$LOGFILE" >&2 || true
+    exit 1
+  fi
+  sleep 0.2
+  i=$((i+1))
+done
+
+URL="http://127.0.0.1:$PORT/maven-videosarena.html?cb=$(date +%s)"
+echo "GPT-MAVEN LOCAL: $URL"
+echo "SOURCE: $SRC"
+echo "LOCAL:  $DEST"
+echo "PID:    $pid"
+
+if command -v open >/dev/null 2>&1; then
+  open "$URL"
+fi
