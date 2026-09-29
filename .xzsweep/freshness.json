@@ -1,11 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-28T05:29:31Z",
-  "due_files_reviewed": 2,
-  "due_paths": [
-    "intel/white-house/daily/2026-09-27.json",
-    "intel/white-house/daily/2026-09-27.md"
-  ],
+  "cutoff_at": "2026-09-28T05:30:50Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -7083,24 +7080,24 @@
     "intel/white-house/daily/2026-09-27.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-27T16:04:51Z",
       "reviewed_at": "2026-09-29T05:29:31Z",
       "sha256": "c742b8e843f472e5f70d6e7f0c5fdc220cfc414de46b8ee460471bc16fa62248",
       "size": 1128,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-27.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-27T16:04:51Z",
       "reviewed_at": "2026-09-29T05:29:31Z",
       "sha256": "b7d0b1e12c179949a6c48903ee6de9a088b073fcb506faa04cafacd27c9f8360",
       "size": 885,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-09-28.json": {
       "actions": [],
@@ -8789,10 +8786,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-29T05:29:22Z",
+      "git_touched_at": "2026-09-29T05:30:41Z",
       "reviewed_at": null,
-      "sha256": "4be431e35de8793af5a4fb9d26ae8254fc3086ff26c9224d6d68fc1350006683",
-      "size": 9235,
+      "sha256": "85a38e706b46592f36f1d8c39443858188eb28039f07bdfa175f01d3711d9942",
+      "size": 10021,
       "validation_issues": [],
       "was_due": false
     },
@@ -16564,7 +16561,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-29T05:29:31Z",
+  "generated_at": "2026-09-29T05:30:50Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
