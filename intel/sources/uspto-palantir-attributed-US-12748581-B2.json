@@ -1,0 +1,133 @@
+{
+  "id": "uspto-palantir-attributed-US-12748581-B2",
+  "type": "patent-public-search-detailed-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "United States Patent",
+  "source_kind": "user-supplied USPTO Patent Public Search text capture",
+  "captured": "2026-09-29",
+  "document_number": "US-12748581-B2",
+  "patent_number_display": "US 12,748,581 B2",
+  "patent_date": "2026-09-29",
+  "title": "SYSTEMS AND METHODS TO AUTOMATICALLY CREATE RUNTIME ENVIRONMENTS",
+  "application_number": "18/523278",
+  "filing_date": "2023-11-29",
+  "priority": "US 63/434,691 filed 2022-12-22",
+  "cpc": [
+    "G06F8/61"
+  ],
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Aventura, FL (US)",
+    "attribution_basis": "Applicant field visible in user-supplied USPTO Patent Public Search record",
+    "confidence": "HIGH_FROM_DOCUMENT_RECORD"
+  },
+  "assignee": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Aventura, FL (US)",
+    "attribution_basis": "Assignee field visible in user-supplied USPTO Patent Public Search record",
+    "confidence": "HIGH_FROM_DOCUMENT_RECORD"
+  },
+  "source_facts": {
+    "core_flow": [
+      "receive a request to create a runtime environment",
+      "automatically generate a cluster of nodes for containerized applications",
+      "apply a manifest containing runtime-environment configurations",
+      "provision hardware resources from resource configuration",
+      "deploy software products into the cluster"
+    ],
+    "lifecycle_and_ui": [
+      "environment identifier and description",
+      "owner and co-owner designation",
+      "template selection",
+      "release channel and override selection",
+      "expiration date",
+      "node-count selection",
+      "cost visibility",
+      "launch progress indicators",
+      "environment state visibility"
+    ],
+    "operator_loop": [
+      "runtime operator reports cluster state",
+      "software supply-chain service determines subsequent action",
+      "operator performs requested deployment or state change",
+      "software products may be upgraded or rolled back",
+      "environment may be automatically destroyed at expiration or after testing"
+    ],
+    "resource_and_security": [
+      "manifest can describe service and resource requirements",
+      "cluster may be local, cloud, physical or virtual",
+      "operator authentication can use generated security keys",
+      "resource availability can gate service execution",
+      "cost or subscription state can influence upgrade or scaling decisions"
+    ]
+  },
+  "architecture_watch": {
+    "name": "manifest-driven-ephemeral-runtime-environment-lifecycle",
+    "purpose": "Track high-level architecture for request-driven environment creation, manifest application, cluster provisioning, runtime-operator state loops, version lifecycle, expiration and cleanup without copying patent claim language or implementation details.",
+    "diagram_components": [
+      "Environment request",
+      "Environment metadata and ownership",
+      "Template or manifest",
+      "Backing cluster",
+      "Node and hardware resource configuration",
+      "Containerized software products",
+      "Runtime operator",
+      "Deployment management / software supply-chain service",
+      "State report",
+      "Upgrade / rollback decision",
+      "Expiration / cleanup",
+      "Cost / subscription gate"
+    ],
+    "gpt_doug_mapping": [
+      "versioned environment template catalog",
+      "manifest-driven local/cloud sandbox provisioning",
+      "environment ownership and provenance metadata",
+      "runtime health/state observer",
+      "policy-gated deploy upgrade rollback workflow",
+      "time-to-live and cleanup policy",
+      "resource-capacity and cost guard",
+      "human approval for consequential production changes"
+    ],
+    "themes": [
+      "runtime-environments",
+      "containers",
+      "cluster-provisioning",
+      "manifests",
+      "software-supply-chain",
+      "runtime-operator",
+      "upgrade-rollback",
+      "ephemeral-testing",
+      "resource-governance",
+      "cost-governance",
+      "provenance"
+    ]
+  },
+  "search_only_related_records": [
+    {
+      "document_number": "US-12743200-B1",
+      "title": "SYSTEM AND METHOD FOR VISUALIZING DYNAMIC DIAGRAMS REPRESENTING DATA STREAMING SYSTEM CONFIGURATION",
+      "note": "Palantir Technologies Inc. appears in the supplied search-results row. This supplemental search row was not treated as a substitute for a detailed document record."
+    },
+    {
+      "document_number": "US-D1146993-S",
+      "title": "DISPLAY SCREEN OR PORTION THEREOF WITH TRANSITIONAL GRAPHICAL USER INTERFACE",
+      "note": "Palantir Technologies Inc. appears in the supplied search-results row. This supplemental search row was not treated as a substitute for a detailed document record."
+    },
+    {
+      "document_number": "US-20260277907-A1",
+      "title": "AGENTIC ONTOLOGY FRAMEWORK",
+      "note": "Returned by the supplied `Palantir Maven` query. The supplied row does not support Palantir attribution; retained only as a keyword-adjacent architecture watch."
+    }
+  ],
+  "controls": {
+    "treat_document_applicant_field_as_document_attribution": true,
+    "treat_document_assignee_field_as_document_attribution": true,
+    "treat_search_row_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true
+  },
+  "notes": "Source-derived engineering intelligence only. Document-level party fields and high-level architecture patterns are retained with provenance; current ownership, validity, enforceability, infringement and freedom-to-operate conclusions are not inferred."
+}
