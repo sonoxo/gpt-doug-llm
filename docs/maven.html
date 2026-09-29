@@ -79,6 +79,7 @@ a{color:var(--blue)}
     <button class="modebtn active" type="button" data-mode="3d">🌍 3D</button>
     <button class="modebtn" type="button" data-mode="2d">🗺 2D</button>
     <button class="modebtn" type="button" data-mode="ops">⚡ OPS</button>
+    <button class="modebtn" type="button" data-mode="broadcast">📡 BROADCAST</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
   </div>
   <span class="pill ok">PUBLIC DATA LIVE</span>
@@ -170,7 +171,8 @@ a{color:var(--blue)}
 const MAVEN_VIEWS={
   "3d":"https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html?embed=1",
   "2d":"https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html?embed=1",
-  "ops":"./ops.html?embed=1"
+  "ops":"./ops.html?embed=1",
+  "broadcast":"https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1"
 };
 let currentMode="3d";
 const frame=document.getElementById("mavenFrame");
@@ -181,14 +183,14 @@ function setMavenMode(mode){
   currentMode=mode;
   document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
   frame.src=MAVEN_VIEWS[mode];
-  frame.title=mode==="3d"?"GPT-MAVEN Cesium 3D public situational-awareness dashboard":mode==="2d"?"GPT-MAVEN 2D public geospatial dashboard":"GPT-MAVEN operations wall";
-  engineLabel.textContent=mode==="3d"?"CESIUM 3D":mode==="2d"?"LEAFLET 2D":"OPS WALL";
+  frame.title=mode==="3d"?"GPT-MAVEN Cesium 3D public situational-awareness dashboard":mode==="2d"?"GPT-MAVEN 2D public geospatial dashboard":mode==="ops"?"GPT-MAVEN operations wall":"GPT-MAVEN Broadcast Fusion workspace";
+  engineLabel.textContent=mode==="3d"?"CESIUM 3D":mode==="2d"?"LEAFLET 2D":mode==="ops"?"OPS WALL":"BROADCAST FUSION";
   try{localStorage.setItem("xunia.maven.view",mode)}catch{}
 }
 document.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>setMavenMode(btn.dataset.mode)));
 try{
   const saved=localStorage.getItem("xunia.maven.view");
-  if(saved==="2d"||saved==="3d"||saved==="ops") setMavenMode(saved);
+  if(saved==="2d"||saved==="3d"||saved==="ops"||saved==="broadcast") setMavenMode(saved);
 }catch{}
 
 function postMapCommand(command,value,enabled){
