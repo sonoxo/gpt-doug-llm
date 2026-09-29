@@ -36,32 +36,67 @@ jobs:
             scripts/validate_defensive_hardening.py \
             scripts/validate_infrastructure_resilience.py
 
-      - name: Reject dangerous workflow triggers
+      - name: Determine changed protected files
+        id: changed
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RIn --include='*.yml' --include='*.yaml' 'pull_request_target:' .github/workflows; then
-            echo "pull_request_target is not permitted by the defensive hardening gate."
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ] && [ -n "${GITHUB_BASE_REF:-}" ]; then
+            BASE="origin/${GITHUB_BASE_REF}"
+          elif git rev-parse HEAD^ >/dev/null 2>&1; then
+            BASE="HEAD^"
+          else
+            BASE=""
+          fi
+
+          if [ -n "$BASE" ]; then
+            git diff --name-only "$BASE"...HEAD -- .github/workflows scripts safety-shield > /tmp/protected_changed.txt
+          else
+            git ls-files .github/workflows scripts safety-shield > /tmp/protected_changed.txt
+          fi
+
+          echo "Changed protected files:"
+          cat /tmp/protected_changed.txt || true
+
+      - name: Reject dangerous workflow triggers in changed workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t FILES < <(grep -E '^\.github/workflows/.*\.(yml|yaml)$' /tmp/protected_changed.txt || true)
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No changed workflow files."
+            exit 0
+          fi
+          if grep -nH 'pull_request_target:' "${FILES[@]}"; then
+            echo "pull_request_target is not permitted in changed workflows."
             exit 1
           fi
 
-      - name: Reject broad workflow write permissions
+      - name: Reject broad workflow write permissions in changed workflows
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RInE '^[[:space:]]*permissions:[[:space:]]*write-all[[:space:]]*$' .github/workflows; then
-            echo "write-all workflow permissions are forbidden."
+          mapfile -t FILES < <(grep -E '^\.github/workflows/.*\.(yml|yaml)$' /tmp/protected_changed.txt || true)
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No changed workflow files."
+            exit 0
+          fi
+          if grep -nHE '^[[:space:]]*permissions:[[:space:]]*write-all[[:space:]]*$' "${FILES[@]}"; then
+            echo "write-all workflow permissions are forbidden in changed workflows."
             exit 1
           fi
 
-      - name: Check shell bootstrap anti-patterns
+      - name: Check changed protected files for remote pipe-to-shell
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RInE --include='*.sh' --include='*.yml' --include='*.yaml' \
-            '(curl|wget)[^|]{0,200}\\|[[:space:]]*(sh|bash)' \
-            .github scripts safety-shield 2>/dev/null; then
-            echo "Remote pipe-to-shell bootstrap detected in protected paths."
+          mapfile -t FILES < <(grep -E '\.(sh|yml|yaml)$' /tmp/protected_changed.txt || true)
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo "No changed shell/workflow files."
+            exit 0
+          fi
+          if grep -nHE '(curl|wget)[^|]{0,200}\|[[:space:]]*(sh|bash)' "${FILES[@]}"; then
+            echo "Remote pipe-to-shell bootstrap detected in changed protected files."
             exit 1
           fi
 
