@@ -127,6 +127,7 @@ a{color:var(--blue)}
         <button type="button" data-map-layer="civil" class="active">CIVIL</button>
         <button type="button" data-map-layer="weather" class="active">WEATHER</button>
         <button type="button" data-map-layer="quakes" class="active">QUAKES</button>
+        <button type="button" data-map-layer="events" class="active">NASA EVENTS</button>
         <button type="button" data-map-layer="swarm">SYNTHETIC HIVE</button>
       </div>
       <button type="button" id="mapRefresh">↻ REFRESH PUBLIC DATA</button>
@@ -245,6 +246,7 @@ function openWorldGrid(){
     postMapCommand("layer","civil",true);
     postMapCommand("layer","weather",true);
     postMapCommand("layer","quakes",true);
+    postMapCommand("layer","events",true);
   },420);
 }
 document.getElementById("worldGridBtn")?.addEventListener("click",openWorldGrid);
