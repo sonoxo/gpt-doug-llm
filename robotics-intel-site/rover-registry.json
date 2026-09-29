@@ -1,0 +1,81 @@
+{
+  "schema": "xunia.maven.rover-registry.v1",
+  "updated_at": "2026-09-29",
+  "mode": "PUBLIC_AND_AUTHORIZED_ROVERS",
+  "policy": {
+    "public_mission_data": true,
+    "authorized_owner_fleet": true,
+    "unauthorized_control": false,
+    "command_write_default": false,
+    "human_approval_required_for_authorized_commands": true,
+    "provenance_required": true
+  },
+  "public_rovers": [
+    {
+      "id": "nasa-perseverance",
+      "agency": "NASA/JPL",
+      "name": "Perseverance",
+      "status": "ACTIVE_PUBLIC_MISSION",
+      "body": "Mars",
+      "mission_url": "https://science.nasa.gov/mission/mars-2020-perseverance/",
+      "imagery_url": "https://mars.nasa.gov/mars2020/multimedia/raw-images/",
+      "access": "PUBLIC_READ"
+    },
+    {
+      "id": "nasa-curiosity",
+      "agency": "NASA/JPL",
+      "name": "Curiosity",
+      "status": "ACTIVE_PUBLIC_MISSION",
+      "body": "Mars",
+      "mission_url": "https://science.nasa.gov/mission/msl-curiosity/",
+      "imagery_url": "https://mars.nasa.gov/msl/multimedia/raw-images/",
+      "access": "PUBLIC_READ"
+    },
+    {
+      "id": "nasa-sojourner",
+      "agency": "NASA/JPL",
+      "name": "Sojourner",
+      "status": "HISTORICAL",
+      "body": "Mars",
+      "mission_url": "https://science.nasa.gov/mission/mars-pathfinder/",
+      "access": "PUBLIC_ARCHIVE"
+    },
+    {
+      "id": "nasa-spirit",
+      "agency": "NASA/JPL",
+      "name": "Spirit",
+      "status": "HISTORICAL",
+      "body": "Mars",
+      "mission_url": "https://science.nasa.gov/mission/mer-spirit/",
+      "access": "PUBLIC_ARCHIVE"
+    },
+    {
+      "id": "nasa-opportunity",
+      "agency": "NASA/JPL",
+      "name": "Opportunity",
+      "status": "HISTORICAL",
+      "body": "Mars",
+      "mission_url": "https://science.nasa.gov/mission/mer-opportunity/",
+      "access": "PUBLIC_ARCHIVE"
+    }
+  ],
+  "authorized_connector": {
+    "status": "NOT_CONFIGURED",
+    "supported_modes": [
+      "TELEMETRY_READ",
+      "HEALTH_READ",
+      "CAMERA_READ",
+      "MISSION_QUEUE_READ",
+      "AUTHORIZED_COMMAND_PROPOSAL"
+    ],
+    "command_write": false,
+    "requirements": [
+      "operator proves ownership or authorization",
+      "documented rover API or SDK",
+      "credential reference stored outside public UI",
+      "command allowlist",
+      "human approval gate",
+      "audit log and rollback/failsafe procedure"
+    ]
+  }
+}
