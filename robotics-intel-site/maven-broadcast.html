@@ -453,6 +453,14 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       if(matchMedia("(max-width:900px)").matches) simBtn?.click();
       else document.querySelector('[data-pane="sim"]')?.scrollIntoView({block:"nearest",inline:"nearest"});
     }
+    if(evt.data.action==="open-gotham"){
+      setPalantirWorkspace(false);
+      const mediaBtn=document.querySelector('[data-mobile-pane="media"]');
+      if(matchMedia("(max-width:900px)").matches) mediaBtn?.click();
+      else media.classList.add("open");
+      setMediaSurface("gotham");
+      document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x.dataset.special==="gotham"));
+    }
   });
 
   function applyLiveSnapshot(d){
