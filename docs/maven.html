@@ -66,6 +66,7 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
   <div class="modebar" data-no-translate="true">
     <button class="modebtn active" type="button" data-mode="3d">🌍 3D CESIUM</button>
     <button class="modebtn" type="button" data-mode="2d">🗺 2D MAP</button>
+    <button class="modebtn" type="button" data-mode="ops">⚡ OPS WALL</button>
   </div>
   <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html" title="GPT-DOUG MAVEN Cesium 3D public situational-awareness dashboard" loading="eager" allow="fullscreen"></iframe>
 </div>
@@ -78,6 +79,18 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <div class="metric"><span>MAIN SHA</span><b id="sha">—</b></div>
 <div id="svc">Connecting…</div>
 <a class="btn" href="./ops.html">Open Mission Ops →</a>
+</div>
+
+
+<div class="card">
+<h2>PUBLIC DEFENSE ACQUISITION INTEL</h2>
+<div id="defIntelMeta" class="metric"><span>HANDLING</span><b>PUBLIC / UNCLASSIFIED</b></div>
+<div id="defIntel" class="feed">Loading public acquisition intelligence…</div>
+</div>
+
+<div class="card">
+<h2>PUBLIC RESEARCH CONTACTS</h2>
+<div id="defContacts" class="feed">Loading public engagement channels…</div>
 </div>
 
 <div class="card">
@@ -97,7 +110,8 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <script>
 const MAVEN_VIEWS={
   "3d":"https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html",
-  "2d":"https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html"
+  "2d":"https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html",
+  "ops":"./ops.html"
 };
 const frame=document.getElementById("mavenFrame");
 const engineLabel=document.getElementById("viewEngine");
@@ -111,7 +125,7 @@ function setMavenMode(mode){
   frame.title=mode==="3d"
     ?"GPT-DOUG MAVEN Cesium 3D public situational-awareness dashboard"
     :"GPT-DOUG MAVEN 2D public geospatial dashboard";
-  engineLabel.textContent=mode==="3d"?"CESIUM 3D":"LEAFLET 2D";
+  engineLabel.textContent=mode==="3d"?"CESIUM 3D":mode==="2d"?"LEAFLET 2D":"OPS WALL";
   try{localStorage.setItem("xunia.maven.view",mode)}catch{}
 }
 
@@ -121,7 +135,7 @@ document.querySelectorAll("[data-mode]").forEach(btn=>{
 
 try{
   const saved=localStorage.getItem("xunia.maven.view");
-  if(saved==="2d"||saved==="3d") setMavenMode(saved);
+  if(saved==="2d"||saved==="3d"||saved==="ops") setMavenMode(saved);
 }catch{}
 
 async function status(){
@@ -135,7 +149,30 @@ async function status(){
     document.querySelector("#svc").innerHTML=d.services.map(s=>'<div class="'+(s.reachable?'good':'bad')+'">'+(s.reachable?'● ':'○ ')+s.name+' · '+s.http_status+' · '+s.latency_ms+'ms</div>').join("");
   }catch(e){document.querySelector("#svc").textContent="Ops API warming/unavailable: "+e.message;}
 }
-status();setInterval(status,30000);
+async function loadDefenseIntel(){
+  const intelBox=document.getElementById("defIntel");
+  const contactsBox=document.getElementById("defContacts");
+  try{
+    const r=await fetch("./defense-public-intel.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    intelBox.innerHTML=(d.items||[]).map(item=>
+      '<div style="margin:0 0 10px;padding:8px;border:1px solid #2a3528;border-radius:8px;background:#080d0a">'+
+      '<b style="color:#d7ff64">'+item.category+'</b><br>'+
+      '<a target="_blank" rel="noopener" href="'+item.url+'">'+item.title+' ↗</a><br>'+
+      '<span>'+item.publisher+' · '+item.date+'</span><br>'+
+      '<span>'+item.summary+'</span></div>'
+    ).join("");
+    contactsBox.innerHTML=(d.public_contacts||[]).map(x=>
+      '<div style="margin:0 0 8px"><b>'+x.organization+'</b><br>'+x.purpose+
+      '<br><a href="mailto:'+x.email+'">'+x.email+'</a></div>'
+    ).join("");
+  }catch(e){
+    intelBox.textContent="Public-intel feed unavailable: "+e.message;
+    contactsBox.textContent="Contact directory unavailable.";
+  }
+}
+status();setInterval(status,30000);loadDefenseIntel();
 </script>
 </body>
 </html>
