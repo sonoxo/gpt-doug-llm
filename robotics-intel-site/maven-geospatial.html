@@ -64,6 +64,13 @@
     .sim-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:11px}
     .sim-stats div{border:1px solid rgba(93,58,18,.55);padding:6px;border-radius:7px;color:var(--muted)}
     .sim-stats b{float:right;color:var(--text)}
+    .flight-panel{margin-top:9px;border:1px solid #3d3020;border-radius:9px;padding:9px;background:linear-gradient(180deg,#0d120f,#070a08)}
+    .flight-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px}.flight-head b{font-size:10px;color:#8adfff;letter-spacing:.08em}.flight-head span{font-size:9px;color:var(--muted)}
+    .flight-telemetry{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}.flight-telemetry div{border:1px solid #2d4134;border-radius:5px;padding:5px;background:#040a07;color:#79e8a8;font-size:9px}.flight-telemetry b{display:block;color:#d8ffe5;font-size:12px;margin-top:2px}
+    .flight-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flight-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.flight-pad button{min-height:38px;margin:0}.flight-sliders{display:grid;gap:7px}.flight-sliders label{font-size:9px;color:var(--muted)}.flight-sliders input{width:100%;accent-color:var(--blue)}
+    .pilot-drone{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border:1px solid var(--blue);transform:translate(0,0) rotate(0deg);clip-path:polygon(50% 0,100% 100%,50% 72%,0 100%);background:rgba(118,212,255,.2);box-shadow:0 0 13px rgba(118,212,255,.8);z-index:6;transition:transform .12s linear}
+    .pilot-drone:after{content:"P";position:absolute;left:7px;top:8px;font-size:8px;color:#d9f5ff}
+    .traj-scope{margin-top:8px;border:1px solid #3d3020;border-radius:8px;background:#030806;padding:7px}.traj-scope svg{width:100%;height:120px;display:block}.traj-grid{stroke:#163023;stroke-width:.7}.traj-path{fill:none;stroke:#ffb84f;stroke-width:2;stroke-dasharray:5 5}.traj-dot{fill:#ffd166;filter:drop-shadow(0 0 4px #ff9f1c)}.traj-label{fill:#7a8f80;font-size:8px;font-family:ui-monospace,monospace}
     .deck-card{position:relative;border-color:#7a4d17;background:linear-gradient(145deg,#15170f,#090c09 58%,#11120d);box-shadow:inset 0 1px rgba(255,255,255,.04),inset 0 -10px 26px rgba(0,0,0,.42),0 8px 22px rgba(0,0,0,.24)}
     .deck-card:before,.deck-card:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c3a672,#49351f 55%,#14100b 58%);box-shadow:0 0 0 1px #000}
     .deck-card:before{left:7px;top:7px}.deck-card:after{right:7px;top:7px}
@@ -186,7 +193,7 @@
         <label class="rocker"><input type="checkbox" id="swarmVisSwitch"><span>SWARM VIS</span></label>
         <label class="rocker"><input type="checkbox" id="deckFxSwitch" checked><span>DECK FX</span></label>
       </div>
-      <div class="deck-keys"><span class="keycap">+</span><span class="keycap">−</span> zoom · <span class="keycap">↑↓←→</span> pan · <span class="keycap">R</span> refresh · <span class="keycap">D</span> drone sim</div>
+      <div class="deck-keys"><span class="keycap">+</span><span class="keycap">−</span> zoom · <span class="keycap">↑↓←→</span> pan · <span class="keycap">R</span> refresh · <span class="keycap">D</span> add sim · <span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">F</span> fly trainer</div>
     </div>
 
     <div class="card">
@@ -206,16 +213,45 @@
       </div>
       <div class="sim-stats">
         <div>DRONES <b id="simDroneCount">0</b></div>
-        <div>MISSILE TESTS <b id="simMissileCount">0</b></div>
+        <div>TRAJECTORY TESTS <b id="simMissileCount">0</b></div>
         <div>EXTERNAL LINK <b>NONE</b></div>
         <div>REAL TARGETING <b>OFF</b></div>
       </div>
+
+      <div class="flight-panel">
+        <div class="flight-head"><b>◆ VIRTUAL DRONE FLIGHT TRAINER</b><span>SYNTHETIC XY ONLY</span></div>
+        <div class="flight-telemetry">
+          <div>X<b id="pilotX">50</b></div><div>Y<b id="pilotY">50</b></div>
+          <div>ALT<b id="pilotAlt">50%</b></div><div>THR<b id="pilotThr">50%</b></div>
+        </div>
+        <div class="flight-controls">
+          <div class="flight-pad">
+            <span></span><button type="button" class="deck-btn" data-fly="up">▲</button><span></span>
+            <button type="button" class="deck-btn" data-fly="left">◀</button><button type="button" class="deck-btn blue" data-fly="hover">HOVER</button><button type="button" class="deck-btn" data-fly="right">▶</button>
+            <span></span><button type="button" class="deck-btn" data-fly="down">▼</button><span></span>
+          </div>
+          <div class="flight-sliders">
+            <label>ALTITUDE <input id="pilotAltSlider" type="range" min="0" max="100" value="50"></label>
+            <label>THROTTLE <input id="pilotThrSlider" type="range" min="0" max="100" value="50"></label>
+            <button type="button" class="deck-btn green" id="pilotReset">CENTER / RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="traj-scope">
+        <svg viewBox="0 0 320 120" role="img" aria-label="Synthetic trajectory animation scope">
+          <g class="traj-grid"><path d="M0 30H320M0 60H320M0 90H320M80 0V120M160 0V120M240 0V120"/></g>
+          <path id="trajPath" class="traj-path" d="M20 100 Q160 5 300 90"/>
+          <circle id="trajDot" class="traj-dot" cx="20" cy="100" r="4"/>
+          <text class="traj-label" x="8" y="114">SYNTHETIC X/Y TRAJECTORY — NOT GEOGRAPHIC</text>
+        </svg>
+      </div>
       <div class="task-tools">
-        <button type="button" id="spawnDroneSim">◆ SPAWN DRONE SIM</button>
-        <button type="button" id="runMissileSim">➤ RUN MISSILE VISUAL TEST</button>
+        <button type="button" id="spawnDroneSim">◆ ADD AUTONOMOUS VISUAL</button>
+        <button type="button" id="runMissileSim">➤ RUN SYNTHETIC TRAJECTORY</button>
         <button type="button" id="resetCombatSim">↺ RESET TEST RANGE</button>
       </div>
-      <div class="mini">Local visual sandbox only: synthetic coordinates, no guidance logic, no real-world targeting, no vehicle or weapon connection.</div>
+      <div class="mini">Training sandbox only. Flight controls move a virtual drone in a non-geographic grid. Trajectory animation is illustrative, not a real missile solution, guidance model, or live vehicle control.</div>
     </div>
 
     <div class="card">
@@ -484,6 +520,11 @@ document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicD
 const testRange=document.getElementById('testRange');
 let simDroneCount=0,simMissileCount=0,simTempo=1;
 const droneNodes=[];
+const pilot=document.createElement('div');
+pilot.className='pilot-drone';
+pilot.id='pilotDrone';
+testRange.appendChild(pilot);
+const pilotState={x:50,y:50,alt:50,thr:50,heading:0};
 function updateSimCounters(){
   document.getElementById('simDroneCount').textContent=String(simDroneCount);
   document.getElementById('simMissileCount').textContent=String(simMissileCount);
@@ -502,27 +543,56 @@ function spawnDroneSim(){
   event('TEST RANGE: synthetic drone visual spawned');
 }
 function runMissileSim(){
-  const m=document.createElement('div');m.className='sim-missile';m.style.left='126px';m.style.top='84px';testRange.appendChild(m);
-  simMissileCount++;updateSimCounters();event('TEST RANGE: synthetic missile visual test started');
-  const start=performance.now(),duration=1800/simTempo;
+  const path=document.getElementById('trajPath'),dot=document.getElementById('trajDot');
+  if(!path||!dot)return;
+  simMissileCount++;updateSimCounters();event('TEST RANGE: synthetic trajectory visual started');
+  const length=path.getTotalLength(),start=performance.now(),duration=2200/simTempo;
   function step(now){
-    const p=Math.min(1,(now-start)/duration);
-    m.style.transform='translateX('+(p*155)+'px)';
+    const p=Math.min(1,(now-start)/duration),pt=path.getPointAtLength(length*p);
+    dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);
     if(p<1)requestAnimationFrame(step);else{
-      m.style.opacity='0';setTimeout(()=>m.remove(),250);
-      event('TEST RANGE: synthetic missile visual test complete');
+      setTimeout(()=>{dot.setAttribute('cx','20');dot.setAttribute('cy','100')},350);
+      event('TEST RANGE: synthetic trajectory visual complete');
     }
   }
   requestAnimationFrame(step);
 }
+function renderPilot(){
+  const usableW=Math.max(80,testRange.clientWidth-50),usableH=Math.max(80,testRange.clientHeight-50);
+  const px=((pilotState.x/100)-.5)*usableW,py=((pilotState.y/100)-.5)*usableH;
+  pilot.style.transform='translate('+px+'px,'+py+'px) rotate('+pilotState.heading+'deg)';
+  document.getElementById('pilotX').textContent=Math.round(pilotState.x);
+  document.getElementById('pilotY').textContent=Math.round(pilotState.y);
+  document.getElementById('pilotAlt').textContent=Math.round(pilotState.alt)+'%';
+  document.getElementById('pilotThr').textContent=Math.round(pilotState.thr)+'%';
+}
+function flyVirtual(dir){
+  const step=4+pilotState.thr/25;
+  if(dir==='up'){pilotState.y=Math.max(4,pilotState.y-step);pilotState.heading=0}
+  if(dir==='right'){pilotState.x=Math.min(96,pilotState.x+step);pilotState.heading=90}
+  if(dir==='down'){pilotState.y=Math.min(96,pilotState.y+step);pilotState.heading=180}
+  if(dir==='left'){pilotState.x=Math.max(4,pilotState.x-step);pilotState.heading=270}
+  if(dir==='hover') pilotState.thr=40;
+  renderPilot();event('FLIGHT TRAINER: virtual drone '+dir.toUpperCase());
+}
+function resetPilot(){
+  Object.assign(pilotState,{x:50,y:50,alt:50,thr:50,heading:0});
+  document.getElementById('pilotAltSlider').value='50';document.getElementById('pilotThrSlider').value='50';renderPilot();
+  event('FLIGHT TRAINER: virtual drone centered');
+}
 function resetCombatSim(){
   droneNodes.splice(0).forEach(n=>n.remove());
-  testRange.querySelectorAll('.sim-missile').forEach(n=>n.remove());
-  simDroneCount=0;simMissileCount=0;updateSimCounters();event('TEST RANGE reset');
+  simDroneCount=0;simMissileCount=0;updateSimCounters();resetPilot();event('TEST RANGE reset');
 }
 document.getElementById('spawnDroneSim').addEventListener('click',spawnDroneSim);
 document.getElementById('runMissileSim').addEventListener('click',runMissileSim);
 document.getElementById('resetCombatSim').addEventListener('click',resetCombatSim);
+document.querySelectorAll('[data-fly]').forEach(b=>b.addEventListener('click',()=>flyVirtual(b.dataset.fly)));
+document.getElementById('pilotAltSlider').addEventListener('input',e=>{pilotState.alt=Number(e.target.value);renderPilot()});
+document.getElementById('pilotThrSlider').addEventListener('input',e=>{pilotState.thr=Number(e.target.value);renderPilot()});
+document.getElementById('pilotReset').addEventListener('click',resetPilot);
+window.addEventListener('resize',renderPilot);
+renderPilot();
 
 function deckPress(id,fn){const b=document.getElementById(id);if(b)b.addEventListener('click',()=>{b.classList.add('pressed');setTimeout(()=>b.classList.remove('pressed'),110);fn();});}
 deckPress('deckZoomOut',()=>{map.zoomOut();event('DECK: map zoom out')});
@@ -559,6 +629,11 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight'){e.preventDefault();map.panBy([120,0])}
   else if(e.key.toLowerCase()==='r'){loadPublicData();event('KEY: public data refresh')}
   else if(e.key.toLowerCase()==='d'){spawnDroneSim()}
+  else if(e.key.toLowerCase()==='w'){flyVirtual('up')}
+  else if(e.key.toLowerCase()==='s'){flyVirtual('down')}
+  else if(e.key.toLowerCase()==='a'){flyVirtual('left')}
+  else if(e.key.toLowerCase()==='f'){flyVirtual('right')}
+  else if(e.key===' '){e.preventDefault();flyVirtual('hover')}
 });
 
 setInterval(()=>{
