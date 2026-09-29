@@ -27,7 +27,7 @@
     .legend{font-size:12px;color:var(--muted)}.legend div{margin:5px 0}
     .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
     .swarmdot{background:var(--accent);box-shadow:0 0 12px rgba(255,159,28,.8)}
-    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:#b69cff}
+    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:#b69cff}.camdot{background:#ff4d8d;box-shadow:0 0 12px rgba(255,77,141,.75)}
     .leaflet-container{font-family:inherit}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0a100c;color:var(--text)}
     .cell{width:17px;height:17px;border:1px solid var(--accent);background:rgba(255,159,28,.2);border-radius:50%;box-shadow:0 0 14px rgba(255,159,28,.7)}
     @media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:65vh auto}aside{border-left:0;border-top:1px solid var(--line)}#map{min-height:0}}
@@ -57,7 +57,7 @@
       <button data-layer="swarm" class="active">🐝 SWARM CELLS</button>
       <button data-layer="humanitarian" class="active">🧭 CIVIL/HUMANITARIAN</button>
       <button data-layer="weather" class="active">🌦 WEATHER ZONES</button>
-      <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>
+      <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>\n      <button data-layer="cameras" class="active">📺 LIVE CIVILIAN CAMS</button>
     </div>
     <div class="card">
       <h2>MAVEN STATUS</h2>
@@ -74,7 +74,7 @@
       <div><span class="dot swarmdot"></span>Simulated swarm analytic cell</div>
       <div><span class="dot hmdot"></span>Civil / humanitarian reference</div>
       <div><span class="dot wxdot"></span>Regional weather zone</div>
-      <div><span class="dot pubdot"></span>Public-information reference</div>
+      <div><span class="dot pubdot"></span>Public-information reference</div>\n      <div><span class="dot camdot"></span>Public civilian live camera link</div>
     </div>
     <div class="card">
       <h2>EVENT BUS</h2>
@@ -129,6 +129,15 @@ const publicRefs=[
 ];
 publicRefs.forEach(x=>L.circleMarker([x[0],x[1]],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.45}).bindPopup(x[2]+'<br>Public-information reference only').addTo(layers.public));
 
+const civilianCams=[
+  [50.4501,30.5234,'KYIV // MAIDAN PUBLIC LIVE CAM','https://infoportal.kiev.ua/en/veb-kamera-kieva-onlajn/']
+];
+civilianCams.forEach(x=>{
+  const marker=L.circleMarker([x[0],x[1]],{radius:8,color:'#ff4d8d',weight:2,fillOpacity:.6});
+  marker.bindPopup('<b>'+x[2]+'</b><br>Public civilian webcam page.<br><a href="'+x[3]+'" target="_blank" rel="noreferrer">OPEN LIVE CAMERA ↗</a><br><small>No tactical/drone feed.</small>');
+  marker.addTo(layers.cameras);
+});
+
 function event(msg){
   const e=document.getElementById('feed'),t=new Date().toLocaleTimeString();
   const d=document.createElement('div'); d.textContent='['+t+'] '+msg; e.prepend(d);
@@ -137,7 +146,7 @@ function event(msg){
 event('MAVEN geospatial canvas initialized');
 event('HIVE synchronization healthy');
 event('Swarm analytic cells loaded: 24');
-event('Public/civilian layers ready');
+event('Public/civilian layers ready');\nevent('Verified civilian live camera link loaded: Kyiv Maidan');
 event('Precise targeting and external action locked OFF');
 
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
