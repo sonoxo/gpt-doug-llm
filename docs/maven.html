@@ -86,6 +86,7 @@ a{color:var(--blue)}
     <button class="modebtn" type="button" data-mode="ops">⚡ OPS</button>
     <button class="modebtn active" type="button" data-mode="broadcast">📡 TACTICAL</button>
     <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
+    <button class="modebtn" id="droneModeBtn" type="button">🛸 DRONE SIM</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
   </div>
@@ -118,6 +119,13 @@ a{color:var(--blue)}
         <button type="button" data-map-layer="swarm">SYNTHETIC HIVE</button>
       </div>
       <button type="button" id="mapRefresh">↻ REFRESH PUBLIC DATA</button>
+    </div>
+
+    <div class="card">
+      <h2>SYNTHETIC DRONE VISUALS</h2>
+      <div class="metric"><span>MODE</span><b>VISUAL SIM ONLY</b></div>
+      <a class="btn" href="#" id="openDroneRail">🛸 OPEN DRONE FLIGHT DECK</a>
+      <div class="feed">Four animated synthetic drones with TAKEOFF, ORBIT, FORMATION, FPV, HOME, and LAND visuals. No real drone link, telemetry, autopilot, targeting, or weapon control.</div>
     </div>
 
     <div class="card">
@@ -203,7 +211,14 @@ function openArsenalWorkspace(){
   const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-sim"},"https://gpt-doug-robotics-intel.onrender.com");
   setTimeout(send,350);
 }
+function openDroneWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-drone"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
 document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
+document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
+document.getElementById("openDroneRail")?.addEventListener("click",e=>{e.preventDefault();openDroneWorkspace();});
 try{
   const queryMode=new URLSearchParams(location.search).get("mode");
   const saved=localStorage.getItem("xunia.maven.view");
