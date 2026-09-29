@@ -35,10 +35,12 @@ PATENT_SCOPE="$ROOT/scripts/gpt_doug_max_patent_scope.py"
 
 usage() {
   cat <<'EOF'
-Usage: gpt-doug-maven [open|matrix|status|memory-guard|doctor|show-source]
+Usage: gpt-doug-maven [open|matrix|earth|sources|status|memory-guard|doctor|show-source]
 
   open         Open the local MAVEN matrix
   matrix       Alias for open
+  earth        Open the public Earth-observation stack
+  sources      List the public Earth-observation portals
   status       Show GPT-DOUG-MAVEN integration state
   memory-guard Show the independent defensive mapping derived from US-12748837-B1
   doctor       Validate the patent seed and local MAVEN launcher
@@ -93,12 +95,41 @@ case "$cmd" in
   open|matrix)
     exec sh "$MATRIX" open
     ;;
+  earth)
+    echo "🌍 GPT-DOUG-MAVEN // EARTH OBSERVATION STACK"
+    echo "Opening public civilian/environmental portals..."
+    if command -v open >/dev/null 2>&1; then
+      open "https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z"
+      open "https://earth.nullschool.net/"
+      open "https://worldview.earthdata.nasa.gov/"
+    else
+      printf '%s\n' \
+        "https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" \
+        "https://earth.nullschool.net/" \
+        "https://worldview.earthdata.nasa.gov/"
+    fi
+    ;;
+  sources)
+    cat <<'EOF'
+🌍 GPT-DOUG-MAVEN // PUBLIC EARTH SOURCES
+  ZOOM EARTH      https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z
+                  near-real-time satellite/weather visualization
+  NULLSCHOOL      https://earth.nullschool.net/
+                  global wind/weather/ocean/chemistry/space-weather visualization
+  NASA WORLDVIEW  https://worldview.earthdata.nasa.gov/
+                  NASA Earth-observation imagery and layers
+
+Mode: public civilian/environmental situational awareness.
+No targeting, tracking of persons, weapon control, or kinetic execution.
+EOF
+    ;;
   status)
     echo "🧠 GPT-DOUG-MAVEN"
     echo "ROOT ............. $ROOT"
     echo "MATRIX ........... $MATRIX"
     echo "PATENT SEED ...... $SEED"
     echo "SOURCE ........... $SOURCE"
+    echo "EARTH OBSERVATION  WIRED (Zoom Earth / Nullschool / NASA Worldview)"
     [ -f "$SEED" ] && echo "MEMORY GUARD ..... WIRED" || echo "MEMORY GUARD ..... MISSING"
     sh "$MATRIX" status || true
     ;;
