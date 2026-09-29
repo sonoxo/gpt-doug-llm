@@ -70,6 +70,7 @@ from pathlib import Path
 
 p = Path.home() / ".gpt-doug" / "env"
 defaults = {
+    "GPT_DOUG_ROOT": "$ROOT",
     "GPT_DOUG_VISUAL_FPS": "15",
     "GPT_DOUG_VISUAL_COLS": "120",
     "GPT_DOUG_COLOR_STEP": "8",
