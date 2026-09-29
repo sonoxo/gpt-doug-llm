@@ -58,6 +58,22 @@
   document.body.prepend(skip);
   document.documentElement.classList.add('zyra-shell-ready');
 
+  if (!document.querySelector('link[data-xunia-motion-style]')) {
+    const motionStyle = document.createElement('link');
+    motionStyle.rel = 'stylesheet';
+    motionStyle.href = `${base}xunia-motion.css`;
+    motionStyle.dataset.xuniaMotionStyle = '1';
+    document.head.append(motionStyle);
+  }
+
+  if (!document.querySelector('script[data-xunia-motion-loader]')) {
+    const motion = document.createElement('script');
+    motion.src = `${base}xunia-motion.js`;
+    motion.defer = true;
+    motion.dataset.xuniaMotionLoader = '1';
+    document.head.append(motion);
+  }
+
   if (!document.querySelector('script[data-xunia-i18n-loader]')) {
     const i18n = document.createElement('script');
     i18n.src = `${base}xunia-i18n.js`;
