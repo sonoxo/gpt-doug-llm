@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070906">
-<title>XUNIA // GPT-MAVEN</title>
+<title>XUNIA // GPT-MAVEN OPS</title>
+<link rel="stylesheet" href="./maven-ops-ux.css">
 <style>
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{margin:0;width:100%;height:100%;min-height:100svh;min-height:100dvh;overflow:hidden;background:#050704;color:#f1e4c8;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 header{min-height:48px;display:flex;align-items:center;gap:10px;padding:max(8px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 8px max(12px,env(safe-area-inset-left));border-bottom:1px solid #5d3a12;background:#090c08}
@@ -58,6 +59,7 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <span class="pill ok">PUBLIC DATA LIVE</span>
 <span class="pill blue">CESIUM 3D READY</span>
 <span class="pill">HIVE / SWARM ANALYSIS</span>
+<span class="pill blue">AUTHORIZED SENSOR FUSION</span>
 <span class="pill off">PRECISE TARGETING OFF</span>
 <span class="pill off">WEAPON CONTROL OFF</span>
 </header>
@@ -81,6 +83,26 @@ a{color:#76d4ff}.btn{display:flex;align-items:center;text-decoration:none;border
 <a class="btn" href="./ops.html">Open Mission Ops →</a>
 </div>
 
+
+
+<div class="card" id="sensorFusionCard">
+<h2>◉ AUTHORIZED SENSOR / CAMERA FUSION</h2>
+<div class="sensor-grid">
+  <div class="sensor-chip good">SENSOR POLICY<b id="sensorPolicyState">LOADING</b></div>
+  <div class="sensor-chip lock">FLOCK CONTRACT<b id="flockState">NOT CONNECTED</b></div>
+  <div class="sensor-chip good">TRACKING API<b>VALIDATE / NORMALIZE</b></div>
+  <div class="sensor-chip lock">PUBLIC GEO<b>COARSE ONLY</b></div>
+  <div class="sensor-chip lock">FACE / BIOMETRICS<b>OFF</b></div>
+  <div class="sensor-chip lock">PLATE OWNER LOOKUP<b>OFF</b></div>
+</div>
+<div class="sensor-note" id="sensorPolicyNote">Loading GALACTIC_FEDERATION.SENSOR_GOVERNANCE…</div>
+<div class="sensor-actions">
+  <button type="button" id="testTrackingContract">TEST SAFE TRACKING CONTRACT</button>
+  <a href="./sensor-policy.json" target="_blank" rel="noopener">SENSOR POLICY ↗</a>
+  <a href="./flock-camera-connector.json" target="_blank" rel="noopener">FLOCK CONTRACT ↗</a>
+</div>
+<div class="sensor-note" id="trackingContractResult">No camera credentials are stored in this public interface.</div>
+</div>
 
 <div class="card">
 <h2>PUBLIC DEFENSE ACQUISITION INTEL</h2>
@@ -149,6 +171,53 @@ async function status(){
     document.querySelector("#svc").innerHTML=d.services.map(s=>'<div class="'+(s.reachable?'good':'bad')+'">'+(s.reachable?'● ':'○ ')+s.name+' · '+s.http_status+' · '+s.latency_ms+'ms</div>').join("");
   }catch(e){document.querySelector("#svc").textContent="Ops API warming/unavailable: "+e.message;}
 }
+async function loadSensorGovernance(){
+  const policyState=document.getElementById("sensorPolicyState");
+  const flockState=document.getElementById("flockState");
+  const note=document.getElementById("sensorPolicyNote");
+  try{
+    const [policyRes,flockRes]=await Promise.all([
+      fetch("./sensor-policy.json",{cache:"no-store"}),
+      fetch("./flock-camera-connector.json",{cache:"no-store"})
+    ]);
+    if(!policyRes.ok||!flockRes.ok) throw new Error("policy fetch failed");
+    const policy=await policyRes.json();
+    const flock=await flockRes.json();
+    policyState.textContent=policy.mode||"AUTHORIZED";
+    flockState.textContent=flock.status||"READY";
+    note.textContent=policy.namespace+" // explicit authorization + provenance required // person, biometric, private-residence and weapon targeting disabled.";
+  }catch(e){
+    policyState.textContent="DEGRADED";
+    note.textContent="Sensor governance metadata unavailable: "+e.message;
+  }
+}
+
+async function testTrackingContract(){
+  const out=document.getElementById("trackingContractResult");
+  out.textContent="Validating synthetic observation…";
+  try{
+    const r=await fetch("https://xunia-ops-api.onrender.com/api/tracking/validate",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        source_id:"MAVEN-UI-SYNTHETIC",
+        object_type:"synthetic_contact",
+        observed_at:new Date().toISOString(),
+        authorization_scope:"synthetic_training",
+        purpose:"UI contract validation",
+        confidence:1
+      })
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||("HTTP "+r.status));
+    out.textContent="PASS // normalized="+data.normalized.object_type+" // persisted="+data.persisted+" // actionable="+data.actionable;
+  }catch(e){
+    out.textContent="VALIDATION ERROR // "+e.message;
+  }
+}
+
+document.getElementById("testTrackingContract")?.addEventListener("click",testTrackingContract);
+
 async function loadDefenseIntel(){
   const intelBox=document.getElementById("defIntel");
   const contactsBox=document.getElementById("defContacts");
@@ -172,7 +241,8 @@ async function loadDefenseIntel(){
     contactsBox.textContent="Contact directory unavailable.";
   }
 }
-status();setInterval(status,30000);loadDefenseIntel();
+status();setInterval(status,30000);loadSensorGovernance();loadDefenseIntel();
 </script>
+<script src="./maven-ops-ux.js" defer></script>
 </body>
 </html>
