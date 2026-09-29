@@ -35,6 +35,11 @@ doug-max patent-intel summary
 doug-max patent-search "access control"
 doug-max patent-corpus resume
 
+gpt-doug-maven status
+gpt-doug-maven memory-guard
+gpt-doug-maven doctor
+gpt-doug-maven open
+
 zyrapalantir patent-wire status
 zyrapalantir patent-wire doctor
 zyrapalantir mss patent-wiring
@@ -53,3 +58,19 @@ When `corpus.sqlite3` contains `documents_fts`, GPT-DOUG-MAX search uses the ful
 ## Decision boundary
 
 This fabric supports public patent research, architecture comparison, provenance, independent-design review, and human decision support. Search hits are not ownership proof. Document-front-page applicant/assignee fields remain document-level evidence only. Claim-level legal analysis, freedom-to-operate conclusions, consequential external actions, and destructive actions remain outside automatic execution and require appropriate human review.
+
+
+## GPT-DOUG-MAVEN sensitive-artifact guard
+
+US-12748837-B1 is represented as a provenance-preserving research seed for
+sensitive-artifact monitoring, security-rule evaluation, mitigation, approval,
+audit, notification, and rollback patterns.
+
+The MAVEN mapping is deliberately independent: it treats signed runtime
+artifacts, credentials, policy files, and critical configuration as protected
+software artifacts and uses software policy/provenance/checkpoint mechanisms.
+It does **not** claim to implement the patent's hardware memory-monitor
+circuitry, does not copy claim language, and makes no freedom-to-operate or
+infringement conclusion.
+
+Use `gpt-doug-maven memory-guard` to inspect the mapped controls.

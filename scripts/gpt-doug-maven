@@ -1,0 +1,96 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+SEED="$ROOT/safety-shield/agents/knowledge/patents/us-12748837-b1-sensitive-memory-monitor-seed.json"
+SOURCE="$ROOT/intel/sources/2026-09-29-uspto-sensitive-memory-monitor.json"
+MATRIX="$ROOT/scripts/maven-matrix"
+PATENT_SCOPE="$ROOT/scripts/gpt_doug_max_patent_scope.py"
+
+usage() {
+  cat <<'EOF'
+Usage: gpt-doug-maven [open|matrix|status|memory-guard|doctor|show-source]
+
+  open         Open the local MAVEN matrix
+  matrix       Alias for open
+  status       Show GPT-DOUG-MAVEN integration state
+  memory-guard Show the independent defensive mapping derived from US-12748837-B1
+  doctor       Validate the patent seed and local MAVEN launcher
+  show-source  Print the provenance-preserving source record
+EOF
+}
+
+print_guard() {
+  python3 - "$SEED" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+m=d["scope_model"]
+print("🛡️ GPT-DOUG-MAVEN // SENSITIVE ARTIFACT GUARD")
+print("================================================")
+print("Source patent ....", d["patent_id"])
+print("Source title .....", d["title"])
+print("Mode ............. INDEPENDENT_DEFENSIVE_SOFTWARE_MAPPING")
+print("Hardware clone ... false")
+print("Claim copying .... false")
+print("External action .. human-approved only")
+print("\nIndependent mapping:")
+for x in m["gpt_doug_maven_independent_mapping"]:
+    print("  •", x)
+print("\nMandatory boundaries:")
+for x in d["schematic_seed"]["mandatory_safety_boundaries"]:
+    print("  •", x)
+PY
+}
+
+doctor() {
+  fail=0
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE"; do
+    if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
+  done
+  if [ "$fail" -ne 0 ]; then return 1; fi
+  python3 "$PATENT_SCOPE" doctor
+  python3 - "$SEED" "$SOURCE" <<'PY'
+import json, pathlib, sys
+seed=json.loads(pathlib.Path(sys.argv[1]).read_text())
+source=json.loads(pathlib.Path(sys.argv[2]).read_text())
+assert seed["patent_id"]=="US-12748837-B1"
+assert seed["independent_design_policy"]["copy_claim_language"] is False
+assert seed["independent_design_policy"]["assert_freedom_to_operate"] is False
+assert source["document"]["document_number"]=="US-12748837-B1"
+assert source["gpt_doug_maven_mapping"]["mode"]=="DEFENSIVE_SOFTWARE_ARCHITECTURE_WATCH_ONLY"
+print("✅ GPT-DOUG-MAVEN memory-guard provenance: GREEN")
+PY
+}
+
+cmd="${1:-open}"
+case "$cmd" in
+  open|matrix)
+    exec sh "$MATRIX" open
+    ;;
+  status)
+    echo "🧠 GPT-DOUG-MAVEN"
+    echo "ROOT ............. $ROOT"
+    echo "MATRIX ........... $MATRIX"
+    echo "PATENT SEED ...... $SEED"
+    echo "SOURCE ........... $SOURCE"
+    [ -f "$SEED" ] && echo "MEMORY GUARD ..... WIRED" || echo "MEMORY GUARD ..... MISSING"
+    sh "$MATRIX" status || true
+    ;;
+  memory-guard)
+    print_guard
+    ;;
+  doctor)
+    doctor
+    ;;
+  show-source)
+    cat "$SOURCE"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    echo "❌ unknown gpt-doug-maven command: $cmd" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

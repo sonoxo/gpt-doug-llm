@@ -45,8 +45,9 @@ cp "$ZSHRC" "$ZSHRC.gptdoug-backup-$STAMP" 2>/dev/null || true
 
 cp "$ROOT/scripts/gptdoug-home" "$BIN/gptdoug-home"
 cp "$ROOT/scripts/maven-matrix" "$BIN/maven-matrix"
-chmod +x "$BIN/gptdoug-home" "$BIN/maven-matrix"
-ln -sf "$BIN/maven-matrix" "$BIN/gpt-maven"
+cp "$ROOT/scripts/gpt-doug-maven" "$BIN/gpt-doug-maven"
+chmod +x "$BIN/gptdoug-home" "$BIN/maven-matrix" "$BIN/gpt-doug-maven"
+ln -sf "$BIN/gpt-doug-maven" "$BIN/gpt-maven"
 
 cat > "$BIN/doug-on" <<'SH'
 #!/bin/zsh
