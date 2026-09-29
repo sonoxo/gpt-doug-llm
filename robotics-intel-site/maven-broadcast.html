@@ -144,7 +144,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <div class="shell">
   <div class="top" data-no-translate="true">
     <div class="brand">📡 GPT-DOUG // MAVEN BROADCAST FUSION</div>
-    <span class="chip ok" id="opsChip">OPS CONNECTING</span>
+    <span class="chip ok" id="opsChip">OPS CONNECTING</span><span class="chip info" id="palBroadcastChip">PALANTIR CHECKING</span>
     <span class="chip info">PUBLIC MEDIA</span><span class="chip info">PUBLIC CCTV DIRECTORY</span><span class="chip info">US PUBLIC INFO</span>
     <span class="chip ok">HIVE MEDIA INDEXED</span>
     <span class="chip warn">SYNTHETIC TRAINING</span>
@@ -332,7 +332,19 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       const c=document.getElementById("opsChip");c.textContent="OPS DEGRADED";c.className="chip warn";
     }
   }
-  ops();setInterval(ops,30000);
+  async function palantirBroadcastStatus(){
+    const chip=document.getElementById("palBroadcastChip");
+    try{
+      const r=await fetch("https://xunia-palantir-bridge.onrender.com/api/status",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d=await r.json();
+      chip.textContent=d.connected?(d.ontology_bound?"PALANTIR BOUND":"PALANTIR CONNECTED"):d.configured?"PALANTIR ERROR":"PALANTIR STANDBY";
+      chip.className="chip "+(d.connected?"ok":d.configured?"warn":"info");
+    }catch{
+      chip.textContent="PALANTIR DEGRADED";chip.className="chip warn";
+    }
+  }
+  ops();setInterval(ops,30000);palantirBroadcastStatus();setInterval(palantirBroadcastStatus,30000);
 
   const canvas=document.getElementById("simCanvas");
   const ctx=canvas.getContext("2d",{alpha:false});
