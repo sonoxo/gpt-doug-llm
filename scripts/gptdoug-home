@@ -1,7 +1,6 @@
 #!/bin/zsh
 set -u
 
-ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
 CONFIG="$HOME/.gpt-doug/env"
 STOP="$HOME/.gpt-doug/STOP"
 SESSION="gptdoug-max"
@@ -19,6 +18,33 @@ if [[ -f "$CONFIG" ]]; then
   source "$CONFIG"
   set +a
 fi
+
+resolve_root() {
+  local script_root="${0:A:h:h}"
+  local candidates=()
+  [[ -n "${GPT_DOUG_ROOT:-}" ]] && candidates+=("$GPT_DOUG_ROOT")
+  candidates+=(
+    "$script_root"
+    "$HOME/.config/gptdoug/src/gpt-doug-llm"
+    "$HOME/gpt-doug-llm"
+    "$HOME/Downloads/gpt-doug-llm"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "$candidate/gpt_doug_max.py" && -f "$candidate/scripts/zyra-maven" ]]; then
+      print -r -- "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "GPT-DOUG HOME: repository root not found."
+  echo "Set GPT_DOUG_ROOT or restore ~/.config/gptdoug/src/gpt-doug-llm."
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
 
 export GPT_DOUG_VISUAL_FPS="${GPT_DOUG_VISUAL_FPS:-15}"
 export GPT_DOUG_VISUAL_COLS="${GPT_DOUG_VISUAL_COLS:-120}"
@@ -40,9 +66,8 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
   exec tmux attach-session -t "$SESSION"
 fi
 
-tmux new-session -d -s "$SESSION" -n doug -c "$ROOT"   "python3 tools/gptdoug_max_visual.py"
-
-tmux split-window -v -p 30 -t "$SESSION":0 -c "$ROOT"   "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
+tmux new-session -d -s "$SESSION" -n doug -c "$ROOT" "python3 tools/gptdoug_max_visual.py"
+tmux split-window -v -p 30 -t "$SESSION":0 -c "$ROOT" "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
 
 tmux set-option -t "$SESSION" status off
 tmux set-option -t "$SESSION" mouse on
