@@ -1,0 +1,40 @@
+/* MAVEN // GOTHAM synthetic battle-feed visual deck */
+.gotham-bay{
+  position:absolute;
+  inset:0;
+  display:none;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  background:
+    radial-gradient(circle at 50% 12%,rgba(124,231,255,.08),transparent 34%),
+    linear-gradient(180deg,#020704,#010302);
+  z-index:8
+}
+.gotham-bay.active{display:grid}
+.gotham-head{
+  min-height:42px;display:flex;align-items:center;gap:7px;padding:7px 9px;
+  border-bottom:1px solid #294933;background:#061008;color:#82e8ff;
+  font-size:9px;font-weight:950;letter-spacing:.05em
+}
+.gotham-head .spacer{flex:1}
+.gotham-chip{border:1px solid #31523b;border-radius:999px;padding:4px 7px;background:#071009;color:#9cffaa;font-size:7px}
+.gotham-close{min-height:30px;border:1px solid #5d4727;border-radius:7px;background:#0b100c;color:#ffd166;padding:4px 8px;font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}
+.gotham-stage{position:relative;min-height:0;overflow:hidden;background:#020503}
+#gothamCanvas{width:100%;height:100%;display:block}
+.gotham-scan{position:absolute;inset:0;pointer-events:none;background:
+  repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 4px),
+  linear-gradient(90deg,transparent 49.85%,rgba(124,231,255,.07) 50%,transparent 50.15%)}
+.gotham-hud{position:absolute;top:8px;left:8px;right:8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;pointer-events:none}
+.gotham-hud div{border:1px solid rgba(69,116,81,.46);border-radius:7px;background:rgba(3,9,5,.78);padding:5px 6px;color:#789181;font-size:7px}
+.gotham-hud b{display:block;margin-top:2px;color:#eaf3eb;font-size:9px}
+.gotham-hud .good b{color:#9cffaa}.gotham-hud .info b{color:#82e8ff}.gotham-hud .warn b{color:#ffd166}
+.gotham-feedtag{position:absolute;left:9px;bottom:9px;border:1px solid #31523b;border-radius:6px;background:rgba(3,9,5,.82);padding:5px 7px;color:#82e8ff;font-size:7px;letter-spacing:.05em}
+.gotham-controls{display:flex;gap:5px;padding:6px;overflow-x:auto;scrollbar-width:none;border-top:1px solid #243d2b;background:#050a06}
+.gotham-controls::-webkit-scrollbar{display:none}
+.gotham-controls button{flex:0 0 auto;min-height:38px;border:1px solid #31523b;border-radius:8px;background:#071009;color:#dce9df;padding:6px 9px;font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}
+.gotham-controls button.active{background:#15331e;color:#d7ff64;border-color:#5f986e}
+.gotham-controls button.warn{color:#ffd166}
+@media(max-width:900px){
+  .gotham-hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .gotham-hud div:nth-child(n+3){display:none}
+  .gotham-controls button{min-height:44px}
+}
