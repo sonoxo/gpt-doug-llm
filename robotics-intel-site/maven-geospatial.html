@@ -551,7 +551,10 @@ function applyExternalCommand(message){
   if(message.command==='refresh') loadPublicData();
 }
 window.addEventListener('message',evt=>{
-  if(!['https://xunia.org','https://www.xunia.org'].includes(evt.origin)) return;
+  const embedded=new URLSearchParams(location.search).get('embed')==='1';
+  const trusted=['https://xunia.org','https://www.xunia.org'].includes(evt.origin);
+  const localParent=embedded&&evt.origin==='null';
+  if(!trusted&&!localParent) return;
   applyExternalCommand(evt.data);
 });
 
