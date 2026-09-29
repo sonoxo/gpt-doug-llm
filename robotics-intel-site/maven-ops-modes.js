@@ -173,6 +173,21 @@
     sim.scrollIntoView({block:"nearest",inline:"nearest"});
   }
 
+  const top=document.querySelector(".top");
+  if(top&&!document.getElementById("mavenTacOpsQuick")){
+    const defs=[
+      ["mavenTacOpsQuick","TACTICAL SIM","tac"],
+      ["mavenSpecOpsQuick","STEALTH SIM","spec"],
+      ["mavenDefOpsQuick","DEFENSE SIM","def"]
+    ];
+    defs.forEach(([id,label,next])=>{
+      const b=document.createElement("button");
+      b.id=id;b.type="button";b.className="chip";b.textContent=label;
+      b.addEventListener("click",()=>showSimAndMode(next));
+      top.appendChild(b);
+    });
+  }
+
   window.addEventListener("message",evt=>{
     if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
     if(evt.data?.type!=="maven-ui") return;
