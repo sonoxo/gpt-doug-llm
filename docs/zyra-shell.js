@@ -31,4 +31,12 @@
 
   document.body.prepend(bar);
   document.documentElement.classList.add('zyra-shell-ready');
+
+  if (!document.querySelector('script[data-xunia-i18n-loader]')) {
+    const i18n = document.createElement('script');
+    i18n.src = `${base}xunia-i18n.js`;
+    i18n.defer = true;
+    i18n.dataset.xuniaI18nLoader = '1';
+    document.head.append(i18n);
+  }
 })();
