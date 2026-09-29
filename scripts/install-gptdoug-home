@@ -1,7 +1,31 @@
 #!/bin/zsh
 set -eu
 
-ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+resolve_root() {
+  local script_root="${0:A:h:h}"
+  local candidates=()
+  [[ -n "${GPT_DOUG_ROOT:-}" ]] && candidates+=("$GPT_DOUG_ROOT")
+  candidates+=(
+    "$script_root"
+    "$HOME/.config/gptdoug/src/gpt-doug-llm"
+    "$HOME/gpt-doug-llm"
+    "$HOME/Downloads/gpt-doug-llm"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "$candidate/gpt_doug_max.py" && -f "$candidate/scripts/zyra-maven" ]]; then
+      print -r -- "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "GPT-DOUG installer: repository root not found."
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
 BIN="$HOME/.local/bin"
 STATE="$HOME/.gpt-doug"
 ZSHRC="$HOME/.zshrc"
@@ -20,7 +44,9 @@ touch "$STATE/env"
 cp "$ZSHRC" "$ZSHRC.gptdoug-backup-$STAMP" 2>/dev/null || true
 
 cp "$ROOT/scripts/gptdoug-home" "$BIN/gptdoug-home"
-chmod +x "$BIN/gptdoug-home"
+cp "$ROOT/scripts/maven-matrix" "$BIN/maven-matrix"
+chmod +x "$BIN/gptdoug-home" "$BIN/maven-matrix"
+ln -sf "$BIN/maven-matrix" "$BIN/gpt-maven"
 
 cat > "$BIN/doug-on" <<'SH'
 #!/bin/zsh
