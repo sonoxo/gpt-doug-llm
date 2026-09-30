@@ -1,8 +1,12 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-29T00:53:05Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-29T05:34:04Z",
+  "due_files_reviewed": 3,
+  "due_paths": [
+    "agency_cloud/requirements.txt",
+    "intel/white-house/daily/2026-09-27.json",
+    "intel/white-house/daily/2026-09-27.md"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1274,11 +1278,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-29T04:13:25Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-30T05:34:04Z",
       "sha256": "a541e41a588e0f4df1840d1dd3bcdae0b646d68d856a086da13bea566599f8c3",
       "size": 102,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "agency_cloud/security.py": {
       "actions": [],
@@ -3752,6 +3756,17 @@
       "reviewed_at": "2026-09-29T12:26:33Z",
       "sha256": "55a4c6e2e54e663a47e2b8d84030a0dafa8c32af937a5f04b8bf3171d1e93b20",
       "size": 9639,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/maven-clean.css": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-30T05:33:53Z",
+      "reviewed_at": null,
+      "sha256": "97b4f34295d70fd864f13c195468045512ba6cb5546353333eba43382e898291",
+      "size": 5508,
       "validation_issues": [],
       "was_due": false
     },
@@ -7379,22 +7394,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-27T16:04:51Z",
-      "reviewed_at": "2026-09-29T05:29:31Z",
+      "reviewed_at": "2026-09-30T05:34:04Z",
       "sha256": "c742b8e843f472e5f70d6e7f0c5fdc220cfc414de46b8ee460471bc16fa62248",
       "size": 1128,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-27.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-27T16:04:51Z",
-      "reviewed_at": "2026-09-29T05:29:31Z",
+      "reviewed_at": "2026-09-30T05:34:04Z",
       "sha256": "b7d0b1e12c179949a6c48903ee6de9a088b073fcb506faa04cafacd27c9f8360",
       "size": 885,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-09-28.json": {
       "actions": [],
@@ -17298,11 +17313,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-30T00:53:05Z",
+  "generated_at": "2026-09-30T05:34:04Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1572,
+  "tracked_files_reviewed": 1573,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
