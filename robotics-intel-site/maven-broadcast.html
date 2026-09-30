@@ -199,10 +199,10 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <div class="stat">SIM CLOCK<b id="simClock">00:00</b></div>
       </div>
       <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic scenario visualization"></canvas></div>
-      <section class="drone-bay" id="droneBay" hidden aria-label="Synthetic drone flight deck">
+      <section class="drone-bay" id="droneBay" hidden aria-label="DOUG-GPT-MAVEN synthetic drone system">
         <div class="drone-head">
-          <span>🛸 SYNTHETIC DRONE FLIGHT DECK</span><span class="spacer"></span>
-          <span class="drone-chip live">VISUAL SIM</span><span class="drone-chip" id="droneMode">GROUND</span>
+          <span>🛸 DOUG-GPT-MAVEN DRONE SYSTEM</span><span class="spacer"></span>
+          <span class="drone-chip live">SYSTEM ONLINE</span><span class="drone-chip" id="droneMission">SURVEY</span><span class="drone-chip" id="droneMode">GROUND</span>
         </div>
         <div class="drone-stage">
           <canvas id="droneCanvas" aria-label="Animated synthetic drone flight visualization"></canvas>
@@ -211,6 +211,10 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
             <div class="info">AVG ALT<b id="droneAlt">0 m</b></div>
             <div class="info">AVG SPEED<b id="droneSpeed">0 km/h</b></div>
             <div class="good">AVG BATTERY<b id="droneBattery">96%</b></div>
+            <div class="info">ANALYTICS<b id="droneAnalyticsState">IDLE</b></div>
+            <div class="info">ROI VIDEO<b id="droneVideoState">BACKGROUND SAVE</b></div>
+            <div class="good">EVENTS<b id="droneEventCount">0</b></div>
+            <div class="good">LINK<b>SIM / LOCAL</b></div>
           </div>
         </div>
         <div class="drone-footer" data-no-translate="true">
@@ -220,6 +224,26 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
           <button type="button" data-drone-mode="COCKPIT">FPV</button>
           <button type="button" data-drone-mode="HOME">HOME</button>
           <button class="amber" type="button" data-drone-mode="LAND">LAND</button>
+        </div>
+        <div class="drone-mission-panel" data-no-translate="true">
+          <div class="drone-mission-head">
+            <span>MISSION PROFILE</span>
+            <span>ANALYTICS PIPELINE: <b id="dronePipelineState">SEGMENT → CLASSIFY → TRACK → EVENT → HUMAN REVIEW</b></span>
+          </div>
+          <div class="drone-mission-grid">
+            <button type="button" data-drone-mission="SURVEY" class="active">SURVEY</button>
+            <button type="button" data-drone-mission="GRID_SCAN">GRID SCAN</button>
+            <button type="button" data-drone-mission="INFRA_INSPECT">INFRA INSPECT</button>
+            <button type="button" data-drone-mission="ENVIRONMENT_SCAN">ENVIRONMENT</button>
+            <button type="button" data-drone-mission="RTB">RTB</button>
+          </div>
+          <div class="drone-analytics-strip">
+            <span>SEGMENT <b id="droneSeg">READY</b></span>
+            <span>CLASSIFY <b id="droneClass">READY</b></span>
+            <span>TRACK <b id="droneTrack">READY</b></span>
+            <span>EVENT <b id="droneEvent">0</b></span>
+            <span>REVIEW <b>HUMAN</b></span>
+          </div>
         </div>
         <div class="drone-pilot" data-no-translate="true">
           <div class="drone-pilot-head">
@@ -243,7 +267,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
             <button type="button" id="droneClearPath">CLEAR</button>
           </div>
         </div>
-        <div class="drone-note">SYNTHETIC DRONES ONLY · NORMALIZED XYZ SPACE · RECORDED PATHS STAY IN-BROWSER · NO GPS ROUTE · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO CAMERA-TO-DRONE CONTROL · NO TARGETING OR WEAPON CONTROL.</div>
+        <div class="drone-note">DOUG-GPT-MAVEN DRONE SYSTEM · SYNTHETIC FLIGHT + AUTHORIZED OBSERVATION WORKFLOW · NORMALIZED XYZ SPACE · ANALYTICS: SEGMENT / CLASSIFY / TRACK / EVENT / HUMAN REVIEW · ROI VIDEO QUALITY SIMULATION · NO REAL GPS ROUTE · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO PERSON TRACKING · NO TARGET GENERATION · NO WEAPON CONTROL.</div>
       </section>
       <section class="camera-bay" id="cameraBay" hidden aria-label="Local camera visual bay">
         <div class="camera-bay-head">
