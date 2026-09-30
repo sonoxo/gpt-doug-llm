@@ -1,8 +1,10 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-29T14:40:11Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-09-29T16:13:09Z",
+  "due_files_reviewed": 1,
+  "due_paths": [
+    "ops-api/palantir-readonly.js"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -4122,10 +4124,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-09-30T14:32:30Z",
+      "git_touched_at": "2026-09-30T16:12:55Z",
       "reviewed_at": null,
-      "sha256": "fcd9526392da74b77c64b1a2259bc64a50912fb7dc450250496ea3d6008efad5",
-      "size": 4602,
+      "sha256": "caae163ef579968be0d80815feaacccc0dc3db802202e42c691ebe0220b8f3cf",
+      "size": 7118,
       "validation_issues": [],
       "was_due": false
     },
@@ -8534,11 +8536,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-09-29T14:51:17Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-09-30T16:13:09Z",
       "sha256": "7491fe278d2284ff3657507340630b8df84bc1b12254a7c238874cd909e67c4d",
       "size": 4900,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "ops-api/palantir-server.js": {
       "actions": [],
@@ -17573,7 +17575,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-30T14:40:11Z",
+  "generated_at": "2026-09-30T16:13:09Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
