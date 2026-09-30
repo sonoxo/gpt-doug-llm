@@ -49,8 +49,8 @@
     menu.appendChild(status);
 
     wrap.append(trigger,menu);
-    if(panelBtn) header.insertBefore(wrap,panelBtn);
-    else header.appendChild(wrap);
+    if(panelBtn) modebar.insertBefore(wrap,panelBtn);
+    else modebar.appendChild(wrap);
 
     function setOpen(open){
       menu.classList.toggle("open",open);
