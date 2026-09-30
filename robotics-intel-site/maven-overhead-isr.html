@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030604">
+<title>GPT-MAVEN // OVERHEAD ISR SIM</title>
+<link rel="stylesheet" href="./maven-overhead-isr.css">
+<link rel="stylesheet" href="./maven-clean.css">
+</head>
+<body class="clean-child">
+<div class="overhead-shell">
+  <header class="overhead-top">
+    <div class="overhead-brand">🛰 GPT-MAVEN // OVERHEAD ISR SIM</div>
+    <span class="overhead-chip good">EYES IN THE SKY</span>
+    <span class="overhead-chip info" id="sensorMode">EO DAY</span>
+    <span class="overhead-chip warn">REAL UAV CONTROL OFF</span>
+    <span class="overhead-chip warn">LIVE UNIT TRACKING OFF</span>
+  </header>
+  <main class="overhead-main">
+    <section class="overhead-stage">
+      <canvas id="overheadCanvas" aria-label="Synthetic overhead UAV visualization"></canvas>
+      <div class="overhead-hud" data-no-translate="true">
+        <div class="good">FEED<b>SIMULATED</b></div>
+        <div class="info">MODE<b id="sensorModeHud">OVERHEAD</b></div>
+        <div class="info">ZOOM<b id="zoomValue">1.0x</b></div>
+        <div class="good">SYN ACTORS<b id="actorCount">16</b></div>
+        <div class="info">GIMBAL<b>STABILIZED</b></div>
+      </div>
+      <div class="overhead-reticle"></div>
+      <div class="overhead-scan"></div>
+      <div class="overhead-boundary">SYNTHETIC OVERHEAD ISR + PUBLIC EARTH-OBSERVATION LINKS ONLY · NO REAL UAV TASKING · NO PERSONNEL TRACKING · NO TARGET DESIGNATION · NO FIRE CONTROL.</div>
+    </section>
+
+    <aside class="overhead-side">
+      <section class="overhead-section">
+        <h2>VIEW MODE</h2>
+        <div class="overhead-modes">
+          <button class="active" type="button" data-overhead-mode="eo">EO DAY</button>
+          <button type="button" data-overhead-mode="ir">IR SYNTH</button>
+          <button type="button" data-overhead-mode="sat">PUBLIC SAT</button>
+          <button class="active" id="toggleSweep" type="button">SCAN</button>
+        </div>
+      </section>
+
+      <section class="overhead-section">
+        <h2>CAMERA CONTROL</h2>
+        <div class="overhead-actions">
+          <button id="zoomIn" type="button">ZOOM +</button>
+          <button id="zoomOut" type="button">ZOOM −</button>
+          <button id="recenter" type="button">RECENTER</button>
+          <a href="./uav-overhead-connector.json" target="_blank" rel="noopener">AUTHORIZED CONNECTOR ↗</a>
+        </div>
+      </section>
+
+      <section class="overhead-section">
+        <h2>PUBLIC OVERHEAD SOURCES</h2>
+        <div class="overhead-actions">
+          <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener">NASA WORLDVIEW ↗</a>
+          <a href="https://zoom.earth/" target="_blank" rel="noopener">ZOOM EARTH ↗</a>
+          <a href="https://www.star.nesdis.noaa.gov/GOES/" target="_blank" rel="noopener">NOAA GOES ↗</a>
+          <a href="./maven-global-battle.html" target="_self">GLOBAL LIVE CONTEXT</a>
+        </div>
+      </section>
+
+      <div class="overhead-log" id="overheadLog"></div>
+    </aside>
+  </main>
+</div>
+<script src="./maven-overhead-isr.js" defer></script>
+</body>
+</html>
