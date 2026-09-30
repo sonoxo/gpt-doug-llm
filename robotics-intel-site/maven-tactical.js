@@ -71,7 +71,7 @@
   hotkeys.innerHTML=`
     <button type="button" data-hot="map">1 MAP</button>
     <button type="button" data-hot="sim">2 SIM</button>
-    <button type="button" data-hot="media">3 MEDIA</button>
+    <button type="button" data-hot="schematic">3 SCHEMATIC</button>
     <button type="button" data-hot="palantir">4 PAL</button>
     <button type="button" data-hot="sitrep">L SITREP</button>
     <button type="button" data-hot="palette">⌘K CMD</button>
@@ -193,7 +193,7 @@
   commands.push(
     {name:"Focus Map",hint:"1",run:()=>activatePane("map")},
     {name:"Focus Synthetic Lab",hint:"2",run:()=>activatePane("sim")},
-    {name:"Focus Public Media",hint:"3",run:()=>activatePane("media")},
+    {name:"Open Infrastructure Schematic",hint:"3",run:()=>document.getElementById("infraSchematicToggle")?.click()},
     {name:"Focus Palantir Live",hint:"4",run:()=>activatePane("palantir")},
     {name:"Open SITREP Event Bus",hint:"L",run:()=>log.classList.add("open")},
     {name:"Refresh Public Data",hint:"R",run:refreshPublic},
@@ -224,6 +224,7 @@
     const action=e.target.closest("button")?.dataset.hot;if(!action)return;
     if(action==="sitrep"){log.classList.toggle("open");return}
     if(action==="palette"){openPalette();return}
+    if(action==="schematic"){document.getElementById("infraSchematicToggle")?.click();return}
     activatePane(action);
   });
 
@@ -243,7 +244,7 @@
     if(typing)return;
     if(e.key==="1")activatePane("map");
     if(e.key==="2")activatePane("sim");
-    if(e.key==="3")activatePane("media");
+    if(e.key==="3")document.getElementById("infraSchematicToggle")?.click();
     if(e.key==="4")activatePane("palantir");
     if(e.key.toLowerCase()==="l")log.classList.toggle("open");
     if(e.key.toLowerCase()==="r")refreshPublic();
