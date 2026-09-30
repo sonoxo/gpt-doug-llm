@@ -29,7 +29,9 @@
 
   function setMode(next){
     mode=next;
-    document.getElementById("sensorMode").textContent=next==="eo"?"EO DAY":next==="ir"?"IR SYNTH":"PUBLIC SAT";
+    const label=next==="eo"?"EO DAY":next==="ir"?"IR SYNTH":"PUBLIC SAT";
+    document.getElementById("sensorMode").textContent=label;
+    const hud=document.getElementById("sensorModeHud"); if(hud) hud.textContent=label;
     document.querySelectorAll("[data-overhead-mode]").forEach(b=>b.classList.toggle("active",b.dataset.overheadMode===next));
     log("Overhead mode set to "+next.toUpperCase()+" (simulation/public context only)");
   }
