@@ -1,0 +1,49 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+SRC="$ROOT/robotics-intel-site"
+DEST="$HOME/.gpt-doug/maven"
+PORT="${MAVEN_LOCAL_PORT:-8787}"
+PIDFILE="$DEST/.maven-http.pid"
+LOGFILE="$DEST/maven-local.log"
+
+mkdir -p "$DEST"
+
+for asset in black-ops-nin9.html black-ops-nin9.css black-ops-nin9.js black-ops-nin9-manifest.json
+do
+  cp "$SRC/$asset" "$DEST/$asset"
+done
+
+server_ok=0
+if [ -f "$PIDFILE" ]; then
+  pid="$(cat "$PIDFILE" 2>/dev/null || true)"
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+    server_ok=1
+  fi
+fi
+
+if [ "$server_ok" -eq 0 ]; then
+  nohup python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$DEST" >"$LOGFILE" 2>&1 &
+  pid=$!
+  printf '%s\n' "$pid" > "$PIDFILE"
+fi
+
+tries=0
+while [ "$tries" -lt 30 ]; do
+  if command -v curl >/dev/null 2>&1 && curl -fsS "http://127.0.0.1:$PORT/black-ops-nin9.html" >/dev/null 2>&1; then
+    break
+  fi
+  sleep 0.2
+  tries=$((tries+1))
+done
+
+URL="http://127.0.0.1:$PORT/black-ops-nin9.html?cb=$(date +%s)"
+echo "BLACK OPS NIN9: $URL"
+echo "MODE: SYNTHETIC GAME ONLY"
+echo "SOURCE: $SRC"
+echo "LOCAL: $DEST"
+
+if command -v open >/dev/null 2>&1; then
+  open "$URL"
+fi
