@@ -147,7 +147,7 @@ case "$cmd" in
 import importlib.util, json, pathlib, sys
 knowledge=json.loads(pathlib.Path(sys.argv[1]).read_text())
 spec=importlib.util.spec_from_file_location("maven_gotham_mode", sys.argv[2])
-mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+mod=importlib.util.module_from_spec(spec); sys.modules[spec.name]=mod; spec.loader.exec_module(mod)
 manifest=mod.instrumentation_manifest()
 print("MODE .............", manifest["profile"])
 print("SOURCE WATCH .....", manifest["source_watch"])
