@@ -148,3 +148,55 @@ body.clean-child .boundary{
 @media(prefers-reduced-motion:reduce){
   body.clean-child *{transition:none!important}
 }
+
+
+/* Standalone child pages (Rover Ops / Ops Sim) */
+body.clean-child > header{
+  min-height:46px;
+  gap:6px;
+  padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left));
+  border-bottom:1px solid var(--clean-border);
+  background:rgba(4,8,5,.97);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+body.clean-child > header .brand{font-size:11px;color:#e8bd74}
+body.clean-child > header .chip{
+  border-color:var(--clean-border);
+  background:#071009;
+  color:#8c9d91;
+  padding:4px 7px;
+}
+body.clean-child .hud div{
+  border-color:var(--clean-border);
+  background:rgba(4,9,6,.80);
+}
+body.clean-child .controls button,
+body.clean-child .toolbar button{
+  border-color:var(--clean-border);
+  background:#08100a;
+  box-shadow:none;
+}
+body.clean-child .list .card{
+  border-color:var(--clean-border);
+  background:#071009;
+  box-shadow:none;
+}
+body.clean-child .list .card a{
+  border-color:var(--clean-border);
+  background:#0a100c;
+}
+body.clean-child .stage{
+  background:
+    radial-gradient(circle at 50% 35%,rgba(130,232,255,.035),transparent 32%),
+    repeating-linear-gradient(0deg,transparent 0 39px,rgba(156,255,170,.03) 40px),
+    repeating-linear-gradient(90deg,transparent 0 39px,rgba(156,255,170,.03) 40px),
+    #020604;
+}
+@media(max-width:900px){
+  body.clean-child > header{
+    min-height:44px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  body.clean-child > header::-webkit-scrollbar{display:none}
+}
