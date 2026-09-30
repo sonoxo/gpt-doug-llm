@@ -152,3 +152,69 @@
 }
 
 .drone-bay-close{margin-left:4px;min-height:28px;border:1px solid #4b5f4f;border-radius:7px;background:#081009;color:#ffd166;padding:4px 7px;font:850 7px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}
+
+
+/* Manual synthetic pilot + trajectory recorder */
+.drone-pilot{
+  border-top:1px solid rgba(69,116,81,.42);
+  background:#040a06;
+  padding:6px;
+}
+.drone-pilot-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-bottom:6px;
+  color:#82e8ff;
+  font-size:7px;
+  letter-spacing:.04em;
+}
+.drone-pilot-head b{color:#ffd166}
+.drone-pilot-grid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:5px;
+}
+.drone-pilot-grid button,
+.drone-trajectory-tools button{
+  min-height:34px;
+  border:1px solid rgba(69,116,81,.48);
+  border-radius:7px;
+  background:linear-gradient(180deg,#09120b,#050a06);
+  color:#dbe8dd;
+  padding:5px;
+  font:850 7px ui-monospace,SFMono-Regular,Menlo,monospace;
+  cursor:pointer;
+}
+.drone-pilot-grid button:hover,
+.drone-trajectory-tools button:hover{border-color:#6b9b78}
+.drone-trajectory-tools{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:5px;
+  margin-top:5px;
+}
+.drone-trajectory-tools button.active{
+  background:#2a2210;
+  color:#ffd166;
+  border-color:#8e6a2c;
+}
+@media(max-width:900px){
+  .drone-pilot-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .drone-trajectory-tools{
+    display:flex;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .drone-trajectory-tools::-webkit-scrollbar{display:none}
+  .drone-trajectory-tools button{flex:0 0 118px;min-height:42px}
+}
+@media(max-width:430px){
+  .drone-pilot-head{display:grid;grid-template-columns:1fr}
+  .drone-pilot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
