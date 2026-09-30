@@ -169,7 +169,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     <div class="brand">📡 GPT-DOUG // MAVEN TACTICAL MAX</div><span class="chip ok">TACTICAL MAX</span>
     <span class="chip ok" id="opsChip">OPS CONNECTING</span><span class="chip info" id="liveBusChip">LIVE BUS CONNECTING</span><span class="chip info" id="palBroadcastChip">PALANTIR CHECKING</span><button class="chip pal-mode-btn" id="palantirModeToggle" type="button">🔷 PALANTIR LIVE</button>
     <span class="chip info">PUBLIC MEDIA</span><span class="chip info">PUBLIC CCTV DIRECTORY</span><span class="chip info">US PUBLIC INFO</span>
-    <span class="chip ok">HIVE MEDIA INDEXED</span>
+    <span class="chip ok">HIVE MEDIA INDEXED</span><button class="chip pal-mode-btn" id="ecoFabricOpen" type="button">🌐 ECO FABRIC</button>
     <span class="chip warn">SYNTHETIC TRAINING</span>
     <span class="chip off">MEDIA → TARGET LINK OFF</span>
     <span class="chip off">EXTERNAL ACTION OFF</span>
@@ -460,6 +460,9 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     palantirModeToggle.textContent=on?"↩ FUSION":"🔷 PALANTIR LIVE";
   }
   palantirModeToggle.addEventListener("click",()=>setPalantirWorkspace(!workspace.classList.contains("palantir-mode")));
+  document.getElementById("ecoFabricOpen")?.addEventListener("click",()=>{
+    window.open("./maven-eco.html","_blank","noopener");
+  });
 
   const flightFocusToggle=document.getElementById("flightFocusToggle");
   function setFlightFocus(on){
