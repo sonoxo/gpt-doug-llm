@@ -219,7 +219,29 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
           <button type="button" data-drone-mode="HOME">HOME</button>
           <button class="amber" type="button" data-drone-mode="LAND">LAND</button>
         </div>
-        <div class="drone-note">SYNTHETIC DRONES ONLY · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO CAMERA-TO-DRONE CONTROL · NO TARGETING OR WEAPON CONTROL.</div>
+        <div class="drone-pilot" data-no-translate="true">
+          <div class="drone-pilot-head">
+            <span>🎮 MANUAL PILOT // SYNTHETIC XYZ</span>
+            <span>SELECTED <b id="droneSelected">SIM-DRONE-1</b></span>
+            <span>TRAJECTORY <b id="droneTrajectoryState">IDLE</b></span>
+          </div>
+          <div class="drone-pilot-grid">
+            <button type="button" data-drone-pilot="left">A / ◀</button>
+            <button type="button" data-drone-pilot="forward">W / ▲</button>
+            <button type="button" data-drone-pilot="right">D / ▶</button>
+            <button type="button" data-drone-pilot="back">S / ▼</button>
+            <button type="button" data-drone-pilot="up">E / ALT+</button>
+            <button type="button" data-drone-pilot="down">Q / ALT−</button>
+          </div>
+          <div class="drone-trajectory-tools">
+            <button type="button" id="droneSelectNext">NEXT DRONE</button>
+            <button type="button" id="droneRecordPath">RECORD PATH</button>
+            <button type="button" id="droneMarkWaypoint">MARK WAYPOINT</button>
+            <button type="button" id="droneReplayPath">REPLAY PATH</button>
+            <button type="button" id="droneClearPath">CLEAR</button>
+          </div>
+        </div>
+        <div class="drone-note">SYNTHETIC DRONES ONLY · NORMALIZED XYZ SPACE · RECORDED PATHS STAY IN-BROWSER · NO GPS ROUTE · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO CAMERA-TO-DRONE CONTROL · NO TARGETING OR WEAPON CONTROL.</div>
       </section>
       <section class="camera-bay" id="cameraBay" hidden aria-label="Local camera visual bay">
         <div class="camera-bay-head">
@@ -436,6 +458,22 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     palantirModeToggle.textContent=on?"↩ FUSION":"🔷 PALANTIR LIVE";
   }
   palantirModeToggle.addEventListener("click",()=>setPalantirWorkspace(!workspace.classList.contains("palantir-mode")));
+
+  const joinMode=new URLSearchParams(location.search).get("join");
+  if(joinMode==="1"||joinMode==="gotham-flight"){
+    window.addEventListener("load",()=>{
+      setPalantirWorkspace(false);
+      if(matchMedia("(max-width:900px)").matches){
+        document.querySelector('[data-mobile-pane="sim"]')?.click();
+      }else{
+        media.classList.add("open");
+      }
+      setMediaSurface("gotham");
+      document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x.dataset.special==="gotham"));
+      const droneToggle=document.getElementById("droneViewToggle");
+      if(droneToggle&&!droneToggle.classList.contains("active")) droneToggle.click();
+    },{once:true});
+  }
 
   document.querySelectorAll("[data-mobile-pane]").forEach(btn=>btn.addEventListener("click",()=>{
     const pane=btn.dataset.mobilePane;

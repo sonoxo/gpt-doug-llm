@@ -89,6 +89,6 @@ echo "SOURCE: $SRC"
 echo "LOCAL:  $DEST"
 echo "PID:    $pid"
 
-if command -v open >/dev/null 2>&1; then
+if [ "${MAVEN_LOCAL_NO_OPEN:-0}" != "1" ] && command -v open >/dev/null 2>&1; then
   open "$URL"
 fi
