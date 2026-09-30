@@ -97,6 +97,7 @@ a{color:var(--blue)}
     <button class="modebtn" id="specOpsBtn" type="button">🕶 STEALTH SIM</button>
     <button class="modebtn" id="defOpsBtn" type="button">🛡 DEFENSE SIM</button>
     <button class="modebtn" id="globalBattleBtn" type="button">🌎 GLOBAL BATTLE SIM</button>
+    <button class="modebtn" id="overheadIsrBtn" type="button">🛰 EYES SKY</button>
     <button class="modebtn" id="roverOpsBtn" type="button">🛞 ROVER OPS</button>
     <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
     <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
@@ -299,6 +300,16 @@ function openGlobalBattle(){
   engineLabel.textContent="GLOBAL BATTLE SIM";
 }
 document.getElementById("globalBattleBtn")?.addEventListener("click",openGlobalBattle);
+
+function openOverheadIsr(){
+  currentMode="overheadisr";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById("overheadIsrBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-overhead-isr.html";
+  frame.title="GPT-MAVEN synthetic overhead ISR and public earth observation";
+  engineLabel.textContent="OVERHEAD ISR SIM";
+}
+document.getElementById("overheadIsrBtn")?.addEventListener("click",openOverheadIsr);
 
 function openWorldGrid(){
   setMavenMode("2d");
