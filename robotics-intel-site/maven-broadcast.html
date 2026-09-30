@@ -314,16 +314,11 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     <section class="panel media" id="mediaPanel" data-pane="media">
       <div class="panel-head"><span>📺 PUBLIC MEDIA / BROADCAST</span><span class="spacer"></span><span class="mini">NO TARGET EXPORT</span></div>
       <div class="categories" id="categories" data-no-translate="true">
-        <button data-q="" class="active">HOME</button><button data-q="news">NEWS</button><button data-q="technology">TECH</button><button data-q="podcasts">PODCASTS</button><button data-q="music">MUSIC</button><button data-q="gaming">GAMING</button><button data-q="travel">TRAVEL</button><button data-q="howto">HOWTO</button><button data-special="cctv">CCTV</button><button data-special="gotham">GOTHAM SIM</button><button data-special="usinfo">US INFO</button>
+        <button data-special="cctv" class="active">CCTV</button><button data-special="gotham">GOTHAM SIM</button><button data-special="usinfo">US INFO</button>
       </div>
-      <form class="searchbar" id="mediaSearch">
-        <input id="mediaQuery" autocomplete="off" placeholder="Search public media">
-        <button type="submit">SEARCH</button><button type="button" id="mediaOpen">OPEN ↗</button>
-      </form>
-      <div class="boundary">PUBLIC MEDIA DISPLAY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
+      <div class="boundary">PUBLIC SOURCE DIRECTORY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
       <div class="media-surface">
-        <iframe id="mediaFrame" class="mediaframe" src="https://www.videosarena.com/" title="VideosArena public media" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        <section class="directory" id="cctvDirectory" aria-label="Public camera directory">
+        <section class="directory active" id="cctvDirectory" aria-label="Public camera directory">
           <div class="directory-grid">
             <article class="source-card">
               <div class="meta">OFFICIAL · VIRGINIA DEPARTMENT OF TRANSPORTATION</div>
@@ -443,37 +438,19 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   const media=document.getElementById("mediaPanel");
   document.getElementById("mediaToggle")?.addEventListener("click",()=>media.classList.toggle("open"));
   function setMediaSurface(mode){
-    const mediaFrame=document.getElementById("mediaFrame");
     const cctv=document.getElementById("cctvDirectory");
     const usinfo=document.getElementById("usInfoDirectory");
     const gotham=document.getElementById("gothamBay");
-    const isMedia=mode==="media";
-    mediaFrame.hidden=!isMedia;
-    mediaFrame.style.display=isMedia?"block":"none";
-    mediaFrame.style.height=isMedia?"100%":"0";
     cctv.classList.toggle("active",mode==="cctv");
     usinfo.classList.toggle("active",mode==="usinfo");
     gotham?.classList.toggle("active",mode==="gotham");
     if(mode==="gotham") document.dispatchEvent(new CustomEvent("maven:gotham-open"));
-    document.getElementById("mediaSearch").style.display=isMedia?"grid":"none";
   }
   document.getElementById("categories").addEventListener("click",e=>{
-    const btn=e.target.closest("button");if(!btn)return;
-    document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
-    if(btn.dataset.special){
-      setMediaSurface(btn.dataset.special);
-      document.getElementById("mediaQuery").value="";
-      return;
-    }
-    setMediaSurface("media");
-    const q=btn.dataset.q||"";
-    document.getElementById("mediaQuery").value=q;
-    document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
-  });
-  document.getElementById("mediaOpen").addEventListener("click",()=>window.open(document.getElementById("mediaFrame").src,"_blank","noopener"));
-  document.getElementById("mediaSearch").addEventListener("submit",e=>{
-    e.preventDefault();const q=document.getElementById("mediaQuery").value.trim();
-    document.getElementById("mediaFrame").src=q?"https://www.videosarena.com/?s="+encodeURIComponent(q):"https://www.videosarena.com/";
+    const btn=e.target.closest("button");if(!btn||!btn.dataset.special)return;
+    document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    setMediaSurface(btn.dataset.special);
   });
 
   const workspace=document.querySelector(".workspace");
