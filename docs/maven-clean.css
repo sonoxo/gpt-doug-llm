@@ -165,21 +165,17 @@ body.clean-ui .clean-primary-only{display:flex}
 @media(max-width:900px){
   body.clean-ui header{
     display:grid;
-    grid-template-columns:minmax(0,1fr) auto auto;
-    grid-template-areas:"brand more panel" "modes modes modes";
+    grid-template-columns:minmax(0,1fr);
     gap:5px;
   }
-  body.clean-ui .brand{grid-area:brand;overflow:hidden;text-overflow:ellipsis}
+  body.clean-ui .brand{overflow:hidden;text-overflow:ellipsis}
   body.clean-ui .modebar{
-    grid-area:modes;
     width:100%;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
     scrollbar-width:none;
   }
   body.clean-ui .modebar::-webkit-scrollbar{display:none}
-  body.clean-ui .clean-more-wrap{grid-area:more}
-  body.clean-ui #opsRailToggle{grid-area:panel}
   body.clean-ui main{height:calc(100dvh - 98px)}
   body.clean-ui .modebtn{min-height:42px}
   .clean-menu{position:fixed;top:auto;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));width:auto;max-height:66dvh}
