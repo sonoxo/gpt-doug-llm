@@ -1,0 +1,26 @@
+{
+  "schema": "xunia.maven.uav-overhead-connector.v1",
+  "mode": "AUTHORIZED_READ_ONLY_BY_DEFAULT",
+  "defaults": {
+    "telemetry_read": true,
+    "camera_read": true,
+    "gimbal_read": true,
+    "command_write": false,
+    "target_generation": false,
+    "fire_control": false,
+    "personnel_tracking": false,
+    "live_military_unit_tracking": false,
+    "human_approval_required": true,
+    "audit_required": true,
+    "fail_closed": true
+  },
+  "requirements": [
+    "operator proves ownership or explicit authorization",
+    "documented UAV API or SDK",
+    "credential reference stored outside public UI",
+    "geofence and emergency-stop behavior documented",
+    "camera/telemetry permissions separated from command permissions",
+    "human approval before any authorized movement command",
+    "append-only audit trail"
+  ]
+}
