@@ -36,13 +36,16 @@ CAPABILITIES="$ROOT/robotics-intel-site/maven-public-capabilities.json"
 EARTH_CSS="$ROOT/robotics-intel-site/maven-earth-observation.css"
 DEFENSE_MANIFEST="$ROOT/the-black-house/kraken/us-defense-support.manifest.json"
 MISSION_WORKBENCH="$ROOT/agents/mission_support_workbench.py"
+LOCAL_UI="$ROOT/scripts/zyra-maven-local-ui"
 
 usage() {
   cat <<'EOF'
-Usage: gpt-doug-maven [open|matrix|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
+Usage: gpt-doug-maven [open|matrix|join|flight|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
 
   open         Open the local MAVEN matrix
   matrix       Alias for open
+  join         Join GPT-DOUG + MAVEN + GOTHAM synthetic flight workspace
+  flight       Alias for join
   earth        Open the public Earth-observation stack
   sources      List the public Earth-observation portals
   support      Activate non-kinetic Armed Forces support mode
@@ -78,7 +81,7 @@ PY
 
 doctor() {
   fail=0
-  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH"; do
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI"; do
     if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
@@ -112,6 +115,23 @@ cmd="${1:-open}"
 case "$cmd" in
   open|matrix)
     exec sh "$MATRIX" open
+    ;;
+  join|flight)
+    echo "🛸 GPT-DOUG-LLM // MAVEN // GOTHAM JOIN"
+    echo "MODE ............. SYNTHETIC_FLIGHT_AND_TRAJECTORY"
+    echo "REAL DRONE LINK .. OFF"
+    echo "GEO ROUTE LINK ... OFF"
+    echo "TARGETING ........ OFF"
+    echo "EXTERNAL ACTION .. OFF"
+    MAVEN_LOCAL_NO_OPEN=1 sh "$LOCAL_UI"
+    port="${MAVEN_LOCAL_PORT:-8787}"
+    url="http://127.0.0.1:$port/maven-videosarena.html?join=gotham-flight&cb=$(date +%s)"
+    echo "JOIN URL ......... $url"
+    if command -v open >/dev/null 2>&1; then
+      open "$url"
+    else
+      printf '%s\n' "$url"
+    fi
     ;;
   earth)
     echo "🌍 GPT-DOUG-MAVEN // EARTH OBSERVATION STACK"
