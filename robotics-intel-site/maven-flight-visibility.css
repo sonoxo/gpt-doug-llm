@@ -1,0 +1,135 @@
+/* MAVEN flight visibility repair
+   Prevents the simulation viewport from being crushed by control rows and
+   adapts to the actual SIM panel width, not only the browser viewport. */
+
+.sim{
+  container-type:inline-size;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-gutter:stable;
+  grid-template-rows:auto auto minmax(320px,1fr) auto auto minmax(120px,.38fr)!important;
+}
+
+.simboard{
+  min-height:320px;
+}
+
+.sim.drone-open{
+  grid-template-rows:auto auto minmax(220px,.42fr) minmax(420px,1.15fr) auto auto minmax(96px,.24fr)!important;
+}
+
+.drone-stage{
+  min-height:320px;
+}
+
+/* Joined flight mode: prioritize the synthetic flight deck and keep it visible. */
+html.join-flight-mode .sim{
+  overflow:hidden;
+  grid-template-rows:auto minmax(0,1fr)!important;
+}
+
+html.join-flight-mode .sim > .stats,
+html.join-flight-mode .sim > .simboard,
+html.join-flight-mode .sim > .camera-bay,
+html.join-flight-mode .sim > .simtools,
+html.join-flight-mode .sim > .arsenal,
+html.join-flight-mode .sim > .feed{
+  display:none!important;
+}
+
+html.join-flight-mode .sim > .panel-head{
+  min-height:42px;
+}
+
+html.join-flight-mode #droneBay:not([hidden]){
+  min-height:0;
+  height:auto;
+  margin:8px;
+  display:grid!important;
+  grid-template-rows:auto minmax(360px,1fr) auto auto auto;
+  overflow:auto;
+}
+
+html.join-flight-mode #droneBay .drone-stage{
+  height:auto;
+  min-height:360px;
+}
+
+html.join-flight-mode #droneBay .drone-hud div{
+  font-size:8px;
+}
+
+html.join-flight-mode #droneBay .drone-hud b{
+  font-size:10px;
+}
+
+/* The center MAVEN column can be narrow even on a wide desktop.
+   Container queries make controls adapt to the panel itself. */
+@container (max-width:520px){
+  .simboard{min-height:280px}
+
+  .drone-footer{
+    display:flex;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .drone-footer::-webkit-scrollbar{display:none}
+  .drone-footer button{
+    flex:0 0 112px;
+    min-height:46px;
+    font-size:9px;
+  }
+
+  .drone-pilot-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .drone-pilot-grid button{
+    min-height:44px;
+    font-size:9px;
+  }
+
+  .drone-trajectory-tools{
+    display:flex;
+    overflow-x:auto;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .drone-trajectory-tools::-webkit-scrollbar{display:none}
+  .drone-trajectory-tools button{
+    flex:0 0 126px;
+    min-height:44px;
+    font-size:8px;
+  }
+
+  .arsenal{
+    display:flex!important;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .arsenal button{
+    flex:0 0 132px;
+  }
+
+  .simtools{
+    display:flex!important;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .simtools button{
+    flex:0 0 150px;
+  }
+}
+
+@container (max-width:360px){
+  .drone-pilot-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  html.join-flight-mode #droneBay:not([hidden]){
+    grid-template-rows:auto minmax(300px,1fr) auto auto auto;
+  }
+  html.join-flight-mode #droneBay .drone-stage{
+    min-height:300px;
+  }
+}

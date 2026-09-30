@@ -25,7 +25,7 @@ copy_asset "maven-ops-sim.html" "maven-ops-sim.html"
 copy_asset "maven-rover-ops.html" "maven-rover-ops.html"
 copy_asset "rover-registry.json" "rover-registry.json"
 copy_asset "rover-connector-contract.json" "rover-connector-contract.json"
-for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-gotham-sim.css   maven-ops-modes.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js   maven-gotham-sim.js   maven-ops-modes.js
+for f in   maven-tactical.css   maven-iphone16e.css   maven-camera.css   maven-drone-sim.css   maven-gotham-sim.css   maven-flight-visibility.css   maven-ops-modes.css   maven-tactical.js   maven-iphone16e.js   maven-camera.js   maven-drone-sim.js   maven-gotham-sim.js   maven-ops-modes.js
 do
   copy_asset "$f" "$f"
 done

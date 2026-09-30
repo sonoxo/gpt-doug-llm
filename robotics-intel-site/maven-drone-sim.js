@@ -469,6 +469,10 @@
   });
 
   toggle.addEventListener("click",()=>setOpen(bay.hidden));
+  document.addEventListener("maven:drone-request-open",()=>{
+    setOpen(true);
+    if(drones.every(d=>d.z<.02)) setMode("GROUND");
+  });
   closeBtn.addEventListener("click",()=>setOpen(false));
   document.addEventListener("maven:camera-open",()=>setOpen(false));
 
