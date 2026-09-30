@@ -133,3 +133,86 @@ html.join-flight-mode #droneBay .drone-hud b{
     min-height:300px;
   }
 }
+
+
+/* Flight focus: dedicate the full MAVEN workspace to the synthetic cockpit. */
+html.flight-focus-mode .workspace{
+  display:block!important;
+  position:relative!important;
+}
+
+html.flight-focus-mode .workspace > .map-wrap,
+html.flight-focus-mode .workspace > .media,
+html.flight-focus-mode .workspace > .palantir-pane{
+  display:none!important;
+}
+
+html.flight-focus-mode .workspace > .sim{
+  display:grid!important;
+  position:absolute!important;
+  inset:7px!important;
+  width:auto!important;
+  height:auto!important;
+  overflow:hidden!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+}
+
+html.flight-focus-mode .sim > .stats,
+html.flight-focus-mode .sim > .simboard,
+html.flight-focus-mode .sim > .camera-bay,
+html.flight-focus-mode .sim > .simtools,
+html.flight-focus-mode .sim > .arsenal,
+html.flight-focus-mode .sim > .feed{
+  display:none!important;
+}
+
+html.flight-focus-mode #droneBay:not([hidden]){
+  display:grid!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:8px!important;
+  overflow:auto!important;
+  grid-template-rows:auto minmax(420px,1fr) auto auto auto!important;
+}
+
+html.flight-focus-mode #droneBay .drone-stage{
+  height:auto!important;
+  min-height:420px!important;
+}
+
+/* Joined desktop mode: make flight + Gotham the two primary surfaces. */
+@media(min-width:901px){
+  html.join-flight-mode:not(.flight-focus-mode) .workspace{
+    grid-template-columns:minmax(520px,1.55fr) minmax(360px,.85fr)!important;
+  }
+
+  html.join-flight-mode:not(.flight-focus-mode) .workspace > .map-wrap{
+    display:none!important;
+  }
+
+  html.join-flight-mode:not(.flight-focus-mode) .workspace > .sim{
+    grid-column:1!important;
+  }
+
+  html.join-flight-mode:not(.flight-focus-mode) .workspace > .media{
+    display:grid!important;
+    position:relative!important;
+    grid-column:2!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:auto!important;
+    transform:none!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+}
+
+@container (max-width:520px){
+  html.flight-focus-mode #droneBay:not([hidden]){
+    grid-template-rows:auto minmax(340px,1fr) auto auto auto!important;
+  }
+  html.flight-focus-mode #droneBay .drone-stage{
+    min-height:340px!important;
+  }
+}
