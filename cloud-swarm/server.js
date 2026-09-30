@@ -14,6 +14,34 @@ let state = {
   lastRunAt: null,
 };
 
+function lightforceState() {
+  const active = Number(state.activeWorkers || 0);
+  const queued = Number(state.queuedTasks || 0);
+  if (queued > MAX_WORKERS * 8) return "CRITICAL";
+  const ratio = MAX_WORKERS ? active / MAX_WORKERS : 0;
+  if (ratio >= 0.85) return "HOT";
+  if (ratio >= 0.50) return "WARM";
+  if (ratio > 0) return "COOL";
+  return "COLD";
+}
+
+function telemetry() {
+  const totalMem = os.totalmem();
+  const freeMem = os.freemem();
+  return {
+    uptime_seconds: Math.round(process.uptime()),
+    host_cpus: os.cpus().length,
+    load_average: os.loadavg().map(v => Number(v.toFixed(2))),
+    memory: {
+      total_mb: Math.round(totalMem / 1048576),
+      free_mb: Math.round(freeMem / 1048576),
+      used_percent: totalMem ? Number((((totalMem - freeMem) / totalMem) * 100).toFixed(1)) : 0
+    },
+    worker_utilization_percent: MAX_WORKERS ? Number(((state.activeWorkers / MAX_WORKERS) * 100).toFixed(1)) : 0,
+    lightforce: lightforceState()
+  };
+}
+
 function send(res, code, obj) {
   const body = JSON.stringify(obj, null, 2);
   res.writeHead(code, {
@@ -77,6 +105,7 @@ const server = http.createServer(async (req, res) => {
       authority: AUTHORITY,
       host_cpus: os.cpus().length,
       max_real_workers: MAX_WORKERS,
+      telemetry: telemetry(),
       virtual_namespace: { prefix: "gpt-doug", start: "00", end: VIRTUAL_END },
       autonomous_replication: false
     });
@@ -88,7 +117,8 @@ const server = http.createServer(async (req, res) => {
       max_real_workers: MAX_WORKERS,
       virtual_agents: "gpt-doug00..gpt-doug" + VIRTUAL_END,
       mode: "VIRTUAL_NAMESPACE_REAL_BOUNDED_WORKERS",
-      authority: AUTHORITY
+      authority: AUTHORITY,
+      telemetry: telemetry()
     });
   }
 
