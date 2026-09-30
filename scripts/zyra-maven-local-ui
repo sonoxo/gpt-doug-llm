@@ -24,6 +24,7 @@ copy_asset() {
 copy_asset "maven-broadcast.html" "maven-videosarena.html"
 copy_asset "maven-ops-sim.html" "maven-ops-sim.html"
 copy_asset "maven-rover-ops.html" "maven-rover-ops.html"
+copy_asset "maven-eco.html" "maven-eco.html"
 copy_asset "maven-global-battle.html" "maven-global-battle.html"
 copy_asset "rover-registry.json" "rover-registry.json"
 copy_asset "rover-connector-contract.json" "rover-connector-contract.json"
@@ -44,6 +45,8 @@ if "./maven-ops-modes.js" not in s:
     s = s.replace("</body>", '<script src="./maven-ops-modes.js" defer></script>\n</body>')
 p.write_text(s, encoding="utf-8")
 PY
+
+python3 "$ROOT/scripts/maven-eco-fabric.py" snapshot --out "$DEST/eco-runtime.json"
 
 cat > "$DEST/index.html" <<'EOF'
 <!doctype html>
