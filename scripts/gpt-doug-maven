@@ -133,7 +133,7 @@ case "$cmd" in
     MAVEN_LOCAL_NO_OPEN=1 sh "$LOCAL_UI"
     portfile="$HOME/.gpt-doug/maven/.maven-http.port"
     port="$(cat "$portfile" 2>/dev/null || printf '%s' "${MAVEN_LOCAL_PORT:-8787}")"
-    url="http://127.0.0.1:$port/maven-videosarena.html?join=gotham-flight&cb=$(date +%s)"
+    url="http://127.0.0.1:$port/maven-broadcast.html?join=gotham-flight&cb=$(date +%s)"
     echo "JOIN URL ......... $url"
     if command -v open >/dev/null 2>&1; then
       open "$url"
