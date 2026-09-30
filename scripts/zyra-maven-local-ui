@@ -21,7 +21,7 @@ copy_asset() {
   cp "$SRC/$src" "$DEST/$dst"
 }
 
-copy_asset "maven-broadcast.html" "maven-videosarena.html"
+copy_asset "maven-broadcast.html" "maven-broadcast.html"
 copy_asset "maven-ops-sim.html" "maven-ops-sim.html"
 copy_asset "maven-rover-ops.html" "maven-rover-ops.html"
 copy_asset "maven-eco.html" "maven-eco.html"
@@ -36,7 +36,7 @@ do
 done
 
 # MAVEN_OPS_LOCAL_PATCH: keep the local Tactical page current without changing external-action boundaries.
-python3 - "$DEST/maven-videosarena.html" <<'PY'
+python3 - "$DEST/maven-broadcast.html" <<'PY'
 from pathlib import Path
 import sys
 p = Path(sys.argv[1])
@@ -53,9 +53,9 @@ python3 "$ROOT/scripts/maven-eco-fabric.py" snapshot --out "$DEST/eco-runtime.js
 cat > "$DEST/index.html" <<'EOF'
 <!doctype html>
 <meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=./maven-videosarena.html">
+<meta http-equiv="refresh" content="0; url=./maven-broadcast.html">
 <title>GPT-MAVEN LOCAL</title>
-<a href="./maven-videosarena.html">Open GPT-MAVEN</a>
+<a href="./maven-broadcast.html">Open GPT-MAVEN</a>
 EOF
 
 if [ -f "$PIDFILE" ]; then
@@ -100,7 +100,7 @@ printf '%s
 
 i=0
 while [ "$i" -lt 30 ]; do
-  if command -v curl >/dev/null 2>&1 && curl -fsS "http://127.0.0.1:$PORT/maven-videosarena.html" >/dev/null 2>&1; then
+  if command -v curl >/dev/null 2>&1 && curl -fsS "http://127.0.0.1:$PORT/maven-broadcast.html" >/dev/null 2>&1; then
     break
   fi
   if ! kill -0 "$pid" 2>/dev/null; then
@@ -112,7 +112,7 @@ while [ "$i" -lt 30 ]; do
   i=$((i+1))
 done
 
-URL="http://127.0.0.1:$PORT/maven-videosarena.html?cb=$(date +%s)"
+URL="http://127.0.0.1:$PORT/maven-broadcast.html?cb=$(date +%s)"
 echo "GPT-MAVEN LOCAL: $URL"
 echo "BLACK OPS NIN9: http://127.0.0.1:$PORT/black-ops-nin9.html?cb=$(date +%s)"
 echo "SOURCE: $SRC"
