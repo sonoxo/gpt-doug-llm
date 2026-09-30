@@ -56,6 +56,7 @@ let liveSequence = 0;
 let liveCache = null;
 let previousLive = null;
 const LIVE_INTERVAL_MS = 15000;
+const UKRAINEALARM_API_KEY = String(process.env.UKRAINEALARM_API_KEY || "").trim();
 
 function probe(url, timeoutMs = 10000) {
   return new Promise(resolve => {
@@ -117,6 +118,61 @@ function getJson(url, timeoutMs = 10000, headers = {}) {
     req.setTimeout(timeoutMs, () => { req.destroy(); resolve(null); });
     req.on("error", () => resolve(null));
   });
+}
+
+
+function getAuthorizedJson(url, token, timeoutMs = 10000) {
+  return new Promise(resolve => {
+    const req = https.get(url, {
+      headers: {
+        "User-Agent": "XUNIA-Civil-Alerts/1.0",
+        "Accept": "application/json",
+        "Authorization": token
+      }
+    }, res => {
+      let body = "";
+      res.setEncoding("utf8");
+      res.on("data", chunk => { body += chunk; });
+      res.on("end", () => {
+        let data = null;
+        try { data = JSON.parse(body); } catch {}
+        resolve({ status: Number(res.statusCode || 0), data });
+      });
+    });
+    req.setTimeout(timeoutMs, () => { req.destroy(); resolve({ status: 0, data: null }); });
+    req.on("error", () => resolve({ status: 0, data: null }));
+  });
+}
+
+function summarizeCivilAlerts(data) {
+  const rows = Array.isArray(data) ? data : [];
+  return rows.slice(0, 80).map(item => ({
+    region_name: String(item.regionName || item.region_name || item.name || "Region").slice(0, 120),
+    region_type: String(item.regionType || item.region_type || "").slice(0, 80),
+    active_alerts: Array.isArray(item.activeAlerts) ? item.activeAlerts.map(a => ({
+      type: String(a.type || a.alertType || "alert").slice(0, 80),
+      last_update: a.lastUpdate || a.last_update || null
+    })) : []
+  }));
+}
+
+async function ukraineCivilAlertSummary() {
+  if (!UKRAINEALARM_API_KEY) return { ok: false, error: "not_configured" };
+  const upstream = await getAuthorizedJson(
+    "https://api.ukrainealarm.com/api/v3/alerts",
+    UKRAINEALARM_API_KEY
+  );
+  if (upstream.status < 200 || upstream.status >= 300 || upstream.data === null) {
+    return { ok: false, error: "upstream_unavailable", upstream_status: upstream.status };
+  }
+  const regions = summarizeCivilAlerts(upstream.data);
+  return {
+    ok: true,
+    source: "UkraineAlarm",
+    generated_at: new Date().toISOString(),
+    mode: "PUBLIC_CIVIL_DEFENSE_ALERT_SUMMARY",
+    regions
+  };
 }
 
 async function statusPayload() {
@@ -540,6 +596,13 @@ const server = http.createServer(async (req, res) => {
     });
   }
 
+  if (url.pathname === "/api/qntmcia/ukraine/civil-alerts" && req.method === "GET") {
+    const payload = await ukraineCivilAlertSummary();
+    return send(res, payload.ok ? 200 : 503, JSON.stringify(payload, null, 2), "application/json; charset=utf-8", {
+      "Access-Control-Allow-Origin": "*"
+    });
+  }
+
   if (url.pathname === "/api/status" && req.method === "GET") {
     try {
       return send(res, 200, JSON.stringify(await statusPayload(), null, 2), "application/json; charset=utf-8", {
@@ -669,7 +732,7 @@ const server = http.createServer(async (req, res) => {
 
   return send(res, 200, JSON.stringify({
     service: "XUNIA Ops API",
-    endpoints: ["/health", "/api/status", "/api/live", "/api/live/snapshot", "/api/sensors/policy", "/api/tracking/schema", "/api/tracking/validate", "/api/translate"],
+    endpoints: ["/health", "/api/status", "/api/live", "/api/live/snapshot", "/api/qntmcia/ukraine/civil-alerts", "/api/sensors/policy", "/api/tracking/schema", "/api/tracking/validate", "/api/translate"],
     mode: "PUBLIC_DEFENSIVE_SITUATIONAL_AWARENESS"
   }, null, 2), "application/json; charset=utf-8", {
     "Access-Control-Allow-Origin": "*"
