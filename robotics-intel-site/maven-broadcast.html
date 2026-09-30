@@ -146,6 +146,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <link rel="stylesheet" href="./maven-camera.css">
 <link rel="stylesheet" href="./maven-drone-sim.css">
 <link rel="stylesheet" href="./maven-gotham-sim.css">
+<link rel="stylesheet" href="./maven-flight-visibility.css">
 <script>
 (() => {
   const params=new URLSearchParams(location.search);
@@ -461,7 +462,8 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 
   const joinMode=new URLSearchParams(location.search).get("join");
   if(joinMode==="1"||joinMode==="gotham-flight"){
-    window.addEventListener("load",()=>{
+    document.documentElement.classList.add("join-flight-mode");
+    const activateJoinedFlight=()=>{
       setPalantirWorkspace(false);
       if(matchMedia("(max-width:900px)").matches){
         document.querySelector('[data-mobile-pane="sim"]')?.click();
@@ -470,9 +472,22 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       }
       setMediaSurface("gotham");
       document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x.dataset.special==="gotham"));
-      const droneToggle=document.getElementById("droneViewToggle");
-      if(droneToggle&&!droneToggle.classList.contains("active")) droneToggle.click();
-    },{once:true});
+
+      const bay=document.getElementById("droneBay");
+      const sim=document.querySelector('[data-pane="sim"]');
+      const toggle=document.getElementById("droneViewToggle");
+      if(bay) bay.hidden=false;
+      sim?.classList.add("drone-open");
+      toggle?.classList.add("active");
+      if(toggle) toggle.textContent="DRONE VIEW ON";
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
+    };
+    if(document.readyState==="loading"){
+      document.addEventListener("DOMContentLoaded",()=>setTimeout(activateJoinedFlight,0),{once:true});
+    }else{
+      setTimeout(activateJoinedFlight,0);
+    }
+    window.addEventListener("load",activateJoinedFlight,{once:true});
   }
 
   document.querySelectorAll("[data-mobile-pane]").forEach(btn=>btn.addEventListener("click",()=>{
