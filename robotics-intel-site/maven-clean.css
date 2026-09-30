@@ -200,3 +200,33 @@ body.clean-child .stage{
   }
   body.clean-child > header::-webkit-scrollbar{display:none}
 }
+
+
+/* Geospatial workspace cleanup */
+body.clean-child aside{
+  border-left:1px solid var(--clean-border);
+  background:linear-gradient(180deg,#071009,#040705);
+}
+body.clean-child aside .card{
+  border-color:var(--clean-border);
+  background:#071009;
+  box-shadow:none;
+  border-radius:9px;
+}
+body.clean-child aside .card h2{color:#d9b66d}
+body.clean-child aside button{
+  border-color:var(--clean-border);
+  background:#09100b;
+  color:#b9c6bc;
+  box-shadow:none;
+}
+body.clean-child aside button.active{
+  background:#172117;
+  color:#ffd089;
+  border-color:rgba(255,159,28,.3);
+}
+body.clean-child .earth-source{
+  border-color:var(--clean-border)!important;
+  background:#08100a!important;
+  box-shadow:none!important;
+}
