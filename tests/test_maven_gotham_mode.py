@@ -2,8 +2,11 @@ from maven_gotham_mode import (
     ARTILLERY_MODE,
     GOTHAM_INVARIANTS,
     GOTHAM_PROFILE,
+    INSTRUMENTATION_PROFILE,
     build_analytic_salvo,
     consequence_envelope,
+    instrumentation_manifest,
+    normalize_field_instrumentation,
 )
 
 
@@ -45,3 +48,39 @@ def test_safety_invariants_are_explicit():
     assert "NO_FIRE_CONTROL_OR_FIRING_SOLUTIONS" in GOTHAM_INVARIANTS
     assert "NO_KINETIC_STRIKE_EXECUTION" in GOTHAM_INVARIANTS
     assert "NO_PERSON_LEVEL_TARGET_RANKING" in GOTHAM_INVARIANTS
+
+
+
+def test_safe_instrumentation_manifest_is_non_kinetic():
+    manifest = instrumentation_manifest()
+    assert manifest["profile"] == INSTRUMENTATION_PROFILE
+    assert manifest["external_actuation"] is False
+    assert "ballistic solution" in manifest["blocked_outputs"]
+    assert "target designation" in manifest["blocked_outputs"]
+
+
+def test_field_instrumentation_normalizes_benign_telemetry():
+    packet = normalize_field_instrumentation(
+        {
+            "packet_id": "field-1",
+            "sensor_id": "weather-node-a",
+            "calibration_state": "green",
+            "environment": {"temperature_c": 22.4, "wind_speed_mps": 3.1},
+            "orientation": {"roll_deg": 0.2, "pitch_deg": 1.1},
+            "platform_health": {"battery_pct": 88},
+            "camera_state": {"status": "READY"},
+            "provenance": {"source": "SIMULATED"},
+        }
+    )
+    assert packet.calibration_state == "GREEN"
+    assert packet.execution == "READ_ONLY_ANALYTICS"
+    assert packet.environment["temperature_c"] == 22.4
+
+
+def test_field_instrumentation_rejects_weapon_or_target_fields():
+    try:
+        normalize_field_instrumentation({"weapon": {"status": "ready"}})
+    except ValueError as exc:
+        assert "blocked instrumentation fields" in str(exc)
+    else:
+        raise AssertionError("weapon telemetry must be rejected")
