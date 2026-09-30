@@ -25,6 +25,15 @@
       <p class="hq-note">QNTMCIA is designed for openly available, lawful information sources. It does not provide access to restricted military networks, private surveillance systems, tactical command-and-control systems, targeting systems, or non-public feeds.</p>
     </section>
 
+    <section class="museum-map" aria-labelledby="ukraine-alerts-title">
+      <div class="museum-map-head">
+        <div><div class="zyra-eyebrow">CIVIL DEFENSE</div><h2 id="ukraine-alerts-title">Ukraine Civil Alerts</h2></div>
+        <p id="ukraineAlertStatus">Connecting to UkraineAlarm…</p>
+      </div>
+      <div id="ukraineAlertGrid" class="department-grid" aria-live="polite"></div>
+      <p class="hq-note">Source: UkraineAlarm API. This panel is limited to public civil-defense alert summaries and intentionally omits tactical tracking, coordinates, restricted feeds, and operational control.</p>
+    </section>
+
     <section class="zyra-grid" aria-label="QNTMCIA public-source launch surfaces">
       <a class="zyra-card" href="https://globe.adsbexchange.com/" target="_blank" rel="noopener noreferrer">
         <span class="arrow" aria-hidden="true">↗</span><div class="kicker">PUBLIC AVIATION</div><h2>ADS-B Exchange Globe</h2><p>Open aircraft-broadcast visualization for publicly visible ADS-B traffic.</p>
@@ -58,6 +67,37 @@
         <div class="flow-step"><strong>05 BOUND</strong><span>No restricted or control access</span></div>
       </div>
     </section>
+
+    <script>
+    (async () => {
+      const status = document.getElementById("ukraineAlertStatus");
+      const grid = document.getElementById("ukraineAlertGrid");
+      try {
+        const res = await fetch("https://xunia-ops-api.onrender.com/api/qntmcia/ukraine/civil-alerts", {cache:"no-store"});
+        const payload = await res.json();
+        if (!res.ok || !payload.ok) throw new Error(payload.error || "alert service unavailable");
+        const regions = Array.isArray(payload.regions) ? payload.regions : [];
+        const active = regions.filter(r => Array.isArray(r.active_alerts) && r.active_alerts.length);
+        status.textContent = active.length + " regions currently reporting active civil alerts";
+        grid.innerHTML = active.length
+          ? active.map(r => {
+              const alerts = r.active_alerts.map(a => {
+                const when = a.last_update ? new Date(a.last_update).toLocaleString() : "time unavailable";
+                return "<li><strong>" + escapeHtml(a.type) + "</strong> · " + escapeHtml(when) + "</li>";
+              }).join("");
+              return '<article class="repo-card"><div class="repo-card-head"><div><div class="repo-language">UKRAINEALARM</div><h3>' +
+                escapeHtml(r.region_name) + '</h3></div></div><ul>' + alerts + '</ul></article>';
+            }).join("")
+          : '<article class="repo-card"><h3>No active civil alerts returned</h3><p>Source responded successfully.</p></article>';
+      } catch (err) {
+        status.textContent = "Civil-alert feed unavailable";
+        grid.innerHTML = '<article class="repo-card"><h3>Feed unavailable</h3><p>' + escapeHtml(String(err.message || err)) + '</p></article>';
+      }
+      function escapeHtml(v) {
+        return String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+      }
+    })();
+    </script>
 
     <footer class="zyra-footer">
       <span>QNTMCIA · XUNIA public-source awareness exhibit.</span>
