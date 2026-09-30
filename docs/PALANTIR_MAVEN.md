@@ -90,3 +90,36 @@ GPT-REDPANDA ───┘                        │
 ```
 
 Publishing remains explicit and human-authorized. Secrets remain environment-only.
+
+
+## Safe field instrumentation architecture watch
+
+The operator-supplied USPTO record **US-20230058539-A1** is retained as a systems-architecture watch only. The reusable pattern is limited to generic instrumentation concepts: multi-sensor fusion, sensor calibration, separation of edge/device firmware from the operator application, environmental context enrichment, compact live dashboards, adapter-based connectivity, and local/cloud archival.
+
+GPT-DOUG / MAVEN / GOTHAM maps that source to:
+
+```text
+AUTHORIZED_OR_SIMULATED_SENSORS
+  -> CALIBRATION_AND_HEALTH_CHECK
+  -> EDGE_FIRMWARE_OR_DEVICE_ADAPTER
+  -> NORMALIZED_TELEMETRY_VECTOR
+  -> ENVIRONMENTAL_CONTEXT
+  -> MAVEN_FUSION
+  -> GOTHAM_SIMULATION_VIEW
+  -> HUMAN_REVIEW
+  -> LOCAL_AND_CLOUD_ARCHIVE
+```
+
+Weapon-specific trajectory calculation, projectile sensing, aiming correction, target designation, fire-control cues and weapon commands are not imported.
+
+Local inspection:
+
+```bash
+gpt-doug-maven gotham-intel
+pytest -q tests/test_maven_gotham_mode.py
+```
+
+Knowledge/provenance:
+- `intel/sources/uspto-US-20230058539-A1.json`
+- `safety-shield/agents/knowledge/gpt-doug-maven-gotham-instrumentation-v1.json`
+- `intel/briefings/2026-09-30-gpt-doug-maven-gotham-instrumentation.md`
