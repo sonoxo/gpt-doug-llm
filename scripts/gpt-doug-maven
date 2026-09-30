@@ -38,15 +38,18 @@ DEFENSE_MANIFEST="$ROOT/the-black-house/kraken/us-defense-support.manifest.json"
 MISSION_WORKBENCH="$ROOT/agents/mission_support_workbench.py"
 LOCAL_UI="$ROOT/scripts/zyra-maven-local-ui"
 ECO_FABRIC="$ROOT/scripts/maven-eco-fabric.py"
+GOTHAM_INSTRUMENTATION="$ROOT/safety-shield/agents/knowledge/gpt-doug-maven-gotham-instrumentation-v1.json"
+GOTHAM_MODE="$ROOT/maven_gotham_mode.py"
 
 usage() {
   cat <<'EOF'
-Usage: gpt-doug-maven [open|matrix|join|flight|eco|eco-doctor|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
+Usage: gpt-doug-maven [open|matrix|join|flight|gotham-intel|eco|eco-doctor|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
 
   open         Open the local MAVEN matrix
   matrix       Alias for open
   join         Join GPT-DOUG + MAVEN + GOTHAM synthetic flight workspace
   flight       Alias for join
+  gotham-intel Show the safe GPT-DOUG + MAVEN + GOTHAM instrumentation architecture
   eco          Open the MAVEN ECO FABRIC runtime dashboard
   eco-doctor   Validate the ecosystem runtime fabric
   earth        Open the public Earth-observation stack
@@ -84,7 +87,7 @@ PY
 
 doctor() {
   fail=0
-  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI" "$ECO_FABRIC"; do
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI" "$ECO_FABRIC" "$GOTHAM_INSTRUMENTATION" "$GOTHAM_MODE"; do
     if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
@@ -137,6 +140,32 @@ case "$cmd" in
     else
       printf '%s\n' "$url"
     fi
+    ;;
+  gotham-intel)
+    echo "🧠 GPT-DOUG // MAVEN // GOTHAM INSTRUMENTATION"
+    python3 - "$GOTHAM_INSTRUMENTATION" "$GOTHAM_MODE" <<'PY'
+import importlib.util, json, pathlib, sys
+knowledge=json.loads(pathlib.Path(sys.argv[1]).read_text())
+spec=importlib.util.spec_from_file_location("maven_gotham_mode", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+manifest=mod.instrumentation_manifest()
+print("MODE .............", manifest["profile"])
+print("SOURCE WATCH .....", manifest["source_watch"])
+print("PIPELINE .........")
+for step in manifest["pipeline"]:
+    print("  ->", step)
+print("REUSABLE .........")
+for item in manifest["reusable_patterns"]:
+    print("  •", item)
+print("BOUNDARIES .......")
+for item in manifest["blocked_outputs"]:
+    print("  ✕", item)
+print("EXTERNAL ACTION ..", manifest["external_actuation"])
+print("KNOWLEDGE FILE ...", sys.argv[1])
+assert knowledge["controls"]["weapon_control"] is False
+assert knowledge["controls"]["fire_control"] is False
+assert knowledge["controls"]["target_generation"] is False
+PY
     ;;
   eco)
     echo "🌐 GPT-DOUG-MAVEN // ECO FABRIC"
