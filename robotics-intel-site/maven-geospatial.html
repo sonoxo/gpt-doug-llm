@@ -108,6 +108,57 @@
     html.embedded body{display:block!important;height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}
     html.embedded main{display:block!important;position:relative!important;height:100dvh!important;min-height:0!important}
     html.embedded #map{position:absolute!important;inset:0!important;height:100%!important;min-height:0!important}
+    .infra-schematic{
+      position:absolute;inset:10px;z-index:700;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+      border:1px solid rgba(111,220,255,.72);border-radius:12px;overflow:hidden;
+      background:#06141a;color:#d9f8ff;box-shadow:0 24px 80px rgba(0,0,0,.72),inset 0 0 70px rgba(64,198,255,.05)
+    }
+    .infra-schematic[hidden]{display:none!important}
+    .infra-schematic-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 11px;border-bottom:1px solid rgba(111,220,255,.32);background:#071b22}
+    .infra-schematic-title{font-weight:950;letter-spacing:.08em;color:#8deaff}
+    .infra-schematic-head .spacer{flex:1}
+    .infra-schematic-head button{margin:0;border-color:#28576a;background:#07151b;color:#bdefff}
+    .infra-schematic-head button.active{background:#8deaff;color:#031015}
+    .infra-schematic-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 250px}
+    .infra-blueprint{position:relative;min-height:0;background:
+      linear-gradient(rgba(111,220,255,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(111,220,255,.055) 1px,transparent 1px),
+      linear-gradient(rgba(111,220,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(111,220,255,.022) 1px,transparent 1px),#06141a;
+      background-size:40px 40px,40px 40px,8px 8px,8px 8px;overflow:hidden
+    }
+    .infra-blueprint svg{width:100%;height:100%;display:block}
+    .infra-side{border-left:1px solid rgba(111,220,255,.28);padding:10px;overflow:auto;background:#071116}
+    .infra-side h3{margin:0 0 8px;color:#8deaff;font-size:11px;letter-spacing:.08em}
+    .infra-kpi{border:1px solid rgba(111,220,255,.24);border-radius:7px;padding:7px;margin-bottom:7px;color:#88aab2;font-size:9px}
+    .infra-kpi b{display:block;color:#e5fbff;margin-top:3px;font-size:11px}
+    .infra-legend{font-size:9px;line-height:1.6;color:#94adb4}
+    .infra-legend span{display:inline-block;width:10px;height:3px;margin-right:6px;vertical-align:middle}
+    .infra-note{padding:7px 10px;border-top:1px solid rgba(111,220,255,.28);font-size:9px;color:#85a7af;background:#071116}
+    .infra-line{fill:none;stroke:#7fe8ff;stroke-width:2}
+    .infra-road{fill:none;stroke:#9db0b4;stroke-width:13;stroke-linecap:round;opacity:.44}
+    .infra-water{fill:#0a3040;stroke:#56d9ff;stroke-width:2}
+    .infra-building{fill:rgba(121,231,255,.06);stroke:#8deaff;stroke-width:2}
+    .infra-future{fill:rgba(163,255,129,.07);stroke:#9dff88;stroke-width:2}
+    .infra-utility{fill:none;stroke:#ffd166;stroke-width:2;stroke-dasharray:8 6}
+    .infra-comms{fill:none;stroke:#c7a5ff;stroke-width:2;stroke-dasharray:3 5}
+    .infra-waterline{fill:none;stroke:#69d8ff;stroke-width:3;stroke-dasharray:12 5}
+    .infra-label{fill:#d9f8ff;font:700 14px ui-monospace,monospace}
+    .infra-small{fill:#78aab5;font:700 10px ui-monospace,monospace}
+    .infra-phase{fill:#9dff88;font:800 11px ui-monospace,monospace}
+    .infra-schematic[data-view="pre"] .future-layer,
+    .infra-schematic[data-view="pre"] .systems-layer{display:none}
+    .infra-schematic[data-view="future"] .pre-layer,
+    .infra-schematic[data-view="future"] .systems-layer{display:none}
+    .infra-schematic[data-view="systems"] .phase-layer{opacity:.22}
+    .infra-schematic[data-view="phases"] .systems-layer{opacity:.18}
+    @media(max-width:900px){
+      .infra-schematic{inset:5px 5px 70px}
+      .infra-schematic-body{grid-template-columns:1fr}
+      .infra-side{display:none}
+      .infra-schematic-head{gap:5px;padding:7px}
+      .infra-schematic-head button{font-size:9px;padding:5px 7px}
+    }
     .mobile-sheet-toggle{display:none}
     @media(max-width:900px){
       html,body{height:100svh;height:100dvh;min-height:100svh;min-height:100dvh;overflow:hidden;-webkit-text-size-adjust:100%}
@@ -163,6 +214,108 @@
 </header>
 <main>
   <div id="map"></div>
+  <section class="infra-schematic" id="infraSchematic" data-view="future" hidden aria-label="Synthetic infrastructure schematic">
+    <div class="infra-schematic-head" data-no-translate="true">
+      <span class="infra-schematic-title">⌗ MAVEN INFRA SCHEMATIC // SYNTHETIC SITE</span>
+      <span class="spacer"></span>
+      <button type="button" data-infra-view="pre">PRE-CONSTRUCTION</button>
+      <button type="button" data-infra-view="future" class="active">FUTURE FACILITY</button>
+      <button type="button" data-infra-view="phases">PHASES</button>
+      <button type="button" data-infra-view="systems">SYSTEMS</button>
+      <button type="button" id="infraSchematicClose">CLOSE</button>
+    </div>
+    <div class="infra-schematic-body">
+      <div class="infra-blueprint">
+        <svg viewBox="0 0 1000 640" role="img" aria-label="Generic synthetic infrastructure blueprint with buildings, roads and utility systems">
+          <defs>
+            <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="12" stroke="#73dff8" stroke-opacity=".16" stroke-width="3"/>
+            </pattern>
+          </defs>
+          <g class="base-layer">
+            <text class="infra-label" x="38" y="42">N ↑</text>
+            <text class="infra-small" x="38" y="62">SYNTHETIC CIVIC INFRASTRUCTURE TRAINING SITE // NOT GEOGRAPHIC</text>
+            <path class="infra-road" d="M90 520 C240 465 385 475 520 520 S790 585 930 535"/>
+            <path class="infra-water" d="M35 95 H965 V220 H35 Z"/>
+            <text class="infra-small" x="52" y="118">WATER / TRANSPORT CORRIDOR</text>
+            <path class="infra-line" d="M120 158 H865"/>
+            <path class="infra-line" d="M120 177 H865"/>
+            <rect class="infra-building pre-layer" x="90" y="280" width="160" height="92"/>
+            <text class="infra-label pre-layer" x="115" y="326">LEGACY FACILITY</text>
+            <rect class="infra-building pre-layer" x="315" y="300" width="125" height="70"/>
+            <text class="infra-small pre-layer" x="338" y="337">OLD SUPPORT</text>
+          </g>
+
+          <g class="future-layer">
+            <rect class="infra-future" x="85" y="260" width="210" height="120"/>
+            <text class="infra-label" x="118" y="310">CONTROL / ADMIN</text>
+            <text class="infra-small" x="118" y="334">GENERIC BUILDING FOOTPRINT</text>
+
+            <rect class="infra-future" x="345" y="255" width="165" height="126"/>
+            <text class="infra-label" x="374" y="307">PUMP / WATER</text>
+            <text class="infra-small" x="374" y="330">PROCESS SUPPORT</text>
+
+            <rect class="infra-future" x="560" y="270" width="175" height="106"/>
+            <text class="infra-label" x="588" y="315">POWER / MEP</text>
+            <text class="infra-small" x="588" y="338">UTILITY BUILDING</text>
+
+            <rect class="infra-future" x="785" y="285" width="125" height="88"/>
+            <text class="infra-label" x="807" y="327">MAINT</text>
+            <text class="infra-small" x="807" y="348">SUPPORT</text>
+
+            <rect x="265" y="125" width="470" height="58" fill="url(#hatch)" stroke="#9dff88" stroke-width="2"/>
+            <text class="infra-label" x="382" y="160">LINEAR INFRASTRUCTURE CORRIDOR</text>
+          </g>
+
+          <g class="phase-layer">
+            <path class="infra-line" d="M100 430 H900"/>
+            <circle cx="150" cy="430" r="8" fill="#9dff88"/><text class="infra-phase" x="125" y="458">P1 SITE</text>
+            <circle cx="330" cy="430" r="8" fill="#9dff88"/><text class="infra-phase" x="300" y="458">P2 CIVIL</text>
+            <circle cx="510" cy="430" r="8" fill="#ffd166"/><text class="infra-phase" x="475" y="458">P3 STRUCT</text>
+            <circle cx="690" cy="430" r="8" fill="#8deaff"/><text class="infra-phase" x="660" y="458">P4 MEP</text>
+            <circle cx="870" cy="430" r="8" fill="#c7a5ff"/><text class="infra-phase" x="830" y="458">P5 COMM</text>
+          </g>
+
+          <g class="systems-layer">
+            <path class="infra-utility" d="M650 378 V500 H210"/>
+            <text class="infra-small" x="420" y="493">POWER DISTRIBUTION</text>
+            <path class="infra-comms" d="M170 380 V550 H835 V373"/>
+            <text class="infra-small" x="510" y="570">COMMUNICATIONS / DATA</text>
+            <path class="infra-waterline" d="M420 380 V405 H80 V220"/>
+            <text class="infra-small" x="90" y="400">WATER / DRAINAGE</text>
+
+            <g transform="translate(740 38)">
+              <rect class="infra-building" x="0" y="0" width="220" height="175"/>
+              <text class="infra-small" x="12" y="20">GENERIC BUILDING PLAN</text>
+              <path class="infra-line" d="M12 38 H208 V160 H12 Z M94 38 V160 M12 100 H208"/>
+              <text class="infra-small" x="28" y="72">CONTROL</text>
+              <text class="infra-small" x="116" y="72">ELECTRICAL</text>
+              <text class="infra-small" x="32" y="134">MECHANICAL</text>
+              <text class="infra-small" x="118" y="134">SERVICE</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <aside class="infra-side">
+        <h3>SCHEMATIC STATUS</h3>
+        <div class="infra-kpi">MODE<b>SYNTHETIC / GENERIC</b></div>
+        <div class="infra-kpi">GEOGRAPHIC LINK<b>NONE</b></div>
+        <div class="infra-kpi">FACILITY IDENTITY<b>FICTIONAL</b></div>
+        <div class="infra-kpi">DESIGN LANGUAGE<b>PUBLIC PROJECT UPDATE</b></div>
+        <h3>LEGEND</h3>
+        <div class="infra-legend">
+          <div><span style="background:#8deaff"></span>Existing / civil structure</div>
+          <div><span style="background:#9dff88"></span>Future facility footprint</div>
+          <div><span style="background:#ffd166"></span>Power / utility routing</div>
+          <div><span style="background:#c7a5ff"></span>Communications / data</div>
+          <div><span style="background:#69d8ff"></span>Water / drainage</div>
+        </div>
+        <h3 style="margin-top:12px">WORKFLOW</h3>
+        <div class="infra-legend">PRE-CONSTRUCTION → FUTURE FACILITY → PHASED WORK → SYSTEMS OVERLAY → HUMAN REVIEW</div>
+      </aside>
+    </div>
+    <div class="infra-note">Inspired by public engineering project-update conventions from your Drive reference. This view is synthetic and intentionally excludes real sensitive floorplans, access points, vulnerabilities, or targeting data.</div>
+  </section>
   <aside id="mobileSheet" aria-label="MAVEN controls and status">
     <button class="mobile-sheet-toggle" id="mobileSheetToggle" type="button" aria-expanded="false" aria-controls="mobileSheet">⌃ CONTROLS / STATUS</button>
     <div class="card deck-card">
@@ -714,6 +867,18 @@ document.querySelectorAll('[data-support-action]').forEach(btn=>btn.addEventList
   }
 }));
 
+const infraSchematic=document.getElementById('infraSchematic');
+function setInfraSchematic(open,view){
+  if(!infraSchematic) return;
+  if(view) infraSchematic.dataset.view=view;
+  infraSchematic.hidden=!open;
+  document.querySelectorAll('[data-infra-view]').forEach(b=>b.classList.toggle('active',b.dataset.infraView===infraSchematic.dataset.view));
+  if(open) event('INFRA SCHEMATIC opened: '+String(infraSchematic.dataset.view||'future').toUpperCase());
+  else event('INFRA SCHEMATIC closed');
+}
+document.querySelectorAll('[data-infra-view]').forEach(b=>b.addEventListener('click',()=>setInfraSchematic(true,b.dataset.infraView)));
+document.getElementById('infraSchematicClose')?.addEventListener('click',()=>setInfraSchematic(false));
+
 function applyExternalCommand(message){
   if(!message||message.type!=='maven-command') return;
   if(message.command==='view'&&views[message.value]){
@@ -735,6 +900,10 @@ function applyExternalCommand(message){
     }
   }
   if(message.command==='refresh') loadPublicData();
+  if(message.command==='schematic'){
+    const next=message.value==='close'?false:message.value==='open'?true:infraSchematic?.hidden;
+    setInfraSchematic(Boolean(next),message.view||infraSchematic?.dataset.view||'future');
+  }
 }
 window.addEventListener('message',evt=>{
   const embedded=new URLSearchParams(location.search).get('embed')==='1';
