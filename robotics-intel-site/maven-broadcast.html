@@ -157,6 +157,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
         <button type="button" data-view="europe" class="active">EUROPE</button>
         <button type="button" data-view="blacksea">BLACK SEA</button>
         <button type="button" id="mapRefresh">↻ DATA</button>
+        <button type="button" id="infraSchematicToggle">⌗ SCHEMATIC</button>
       </div>
     </section>
 
@@ -307,6 +308,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     btn.classList.add("active");mapCmd("view",btn.dataset.view);
   }));
   document.getElementById("mapRefresh").addEventListener("click",()=>mapCmd("refresh"));
+  document.getElementById("infraSchematicToggle")?.addEventListener("click",()=>mapCmd("schematic","toggle"));
 
   const workspace=document.querySelector(".workspace");
   const palantirModeToggle=document.getElementById("palantirModeToggle");
