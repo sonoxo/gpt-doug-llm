@@ -190,7 +190,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     </section>
 
     <section class="panel sim" data-pane="sim">
-      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="drone-view-toggle" id="droneViewToggle" type="button">DRONE VIEW</button><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
+      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="drone-view-toggle" id="droneViewToggle" type="button">DRONE VIEW</button><button class="drone-view-toggle" id="flightFocusToggle" type="button">FLIGHT FOCUS</button><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
       <div class="stats">
         <div class="stat">ACTIVE CONTACTS<b id="activeCount">5</b></div>
         <div class="stat">RESOLVED<b id="resolvedCount">0</b></div>
@@ -459,6 +459,37 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     palantirModeToggle.textContent=on?"↩ FUSION":"🔷 PALANTIR LIVE";
   }
   palantirModeToggle.addEventListener("click",()=>setPalantirWorkspace(!workspace.classList.contains("palantir-mode")));
+
+  const flightFocusToggle=document.getElementById("flightFocusToggle");
+  function setFlightFocus(on){
+    document.documentElement.classList.toggle("flight-focus-mode",on);
+    flightFocusToggle?.classList.toggle("active",on);
+    if(flightFocusToggle) flightFocusToggle.textContent=on?"EXIT FOCUS":"FLIGHT FOCUS";
+
+    if(on){
+      setPalantirWorkspace(false);
+      const bay=document.getElementById("droneBay");
+      const sim=document.querySelector('[data-pane="sim"]');
+      const droneToggle=document.getElementById("droneViewToggle");
+      if(bay) bay.hidden=false;
+      sim?.classList.add("drone-open","mobile-active");
+      droneToggle?.classList.add("active");
+      if(droneToggle) droneToggle.textContent="DRONE VIEW ON";
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
+      requestAnimationFrame(()=>document.getElementById("droneCanvas")?.scrollIntoView({block:"center"}));
+    }
+  }
+  flightFocusToggle?.addEventListener("click",()=>setFlightFocus(!document.documentElement.classList.contains("flight-focus-mode")));
+  addEventListener("keydown",event=>{
+    const tag=(event.target?.tagName||"").toLowerCase();
+    if(tag==="input"||tag==="textarea"||tag==="select") return;
+    if(event.key.toLowerCase()==="f"){
+      event.preventDefault();
+      setFlightFocus(!document.documentElement.classList.contains("flight-focus-mode"));
+    }else if(event.key==="Escape"&&document.documentElement.classList.contains("flight-focus-mode")){
+      setFlightFocus(false);
+    }
+  });
 
   const joinMode=new URLSearchParams(location.search).get("join");
   if(joinMode==="1"||joinMode==="gotham-flight"){
