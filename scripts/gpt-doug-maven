@@ -89,6 +89,7 @@ doctor() {
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
   python3 "$PATENT_SCOPE" doctor
+  python3 "$ECO_FABRIC" doctor
   python3 - "$SEED" "$SOURCE" <<'PY'
 import json, pathlib, sys
 seed=json.loads(pathlib.Path(sys.argv[1]).read_text())
