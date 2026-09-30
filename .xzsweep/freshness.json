@@ -1,10 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-09-29T16:13:09Z",
-  "due_files_reviewed": 1,
-  "due_paths": [
-    "ops-api/palantir-readonly.js"
-  ],
+  "cutoff_at": "2026-09-29T16:16:31Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -2214,6 +2212,17 @@
       "reviewed_at": "2026-09-30T14:32:42Z",
       "sha256": "a0cc062baf72fafc9873c688fd7b32920993573ac7abe6fd648697b866c50c7d",
       "size": 9224,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "cloud-swarm/server.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-30T16:16:20Z",
+      "reviewed_at": null,
+      "sha256": "2087c0391d26ba7eebea173ba577911eb963285f56b473617a8326999984c3c7",
+      "size": 3464,
       "validation_issues": [],
       "was_due": false
     },
@@ -8534,13 +8543,13 @@
     "ops-api/palantir-readonly.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-29T14:51:17Z",
       "reviewed_at": "2026-09-30T16:13:09Z",
       "sha256": "7491fe278d2284ff3657507340630b8df84bc1b12254a7c238874cd909e67c4d",
       "size": 4900,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ops-api/palantir-server.js": {
       "actions": [],
@@ -17575,11 +17584,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-09-30T16:13:09Z",
+  "generated_at": "2026-09-30T16:16:31Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1597,
+  "tracked_files_reviewed": 1598,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
