@@ -218,3 +218,66 @@
   .drone-pilot-head{display:grid;grid-template-columns:1fr}
   .drone-pilot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+
+/* DOUG-GPT-MAVEN mission + analytics */
+.drone-mission-panel{
+  border-top:1px solid rgba(69,116,81,.42);
+  border-bottom:1px solid rgba(69,116,81,.42);
+  background:linear-gradient(180deg,rgba(5,14,8,.98),rgba(3,9,5,.98));
+  padding:7px
+}
+.drone-mission-head{
+  display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  color:#8fa99a;font:800 7px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em
+}
+.drone-mission-head b{color:#82e8ff;font-weight:900}
+.drone-mission-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
+.drone-mission-grid button{
+  min-height:34px;border:1px solid rgba(69,116,81,.52);border-radius:7px;
+  background:#081009;color:#cfe3d4;padding:5px;
+  font:850 7px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer
+}
+.drone-mission-grid button.active{color:#061008;background:#9cffaa;border-color:#9cffaa}
+.drone-analytics-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
+.drone-analytics-strip span{
+  border:1px solid rgba(70,118,82,.36);border-radius:7px;background:#050c07;
+  color:#748b7a;padding:5px;font:750 6px ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.drone-analytics-strip b{display:block;margin-top:2px;color:#dff2e2;font-size:7px}
+.drone-stage.maven-scan-active::before{
+  content:"";position:absolute;z-index:2;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,transparent 0%,rgba(130,232,255,.14) 49%,rgba(156,255,170,.22) 50%,transparent 52%),
+    repeating-linear-gradient(0deg,rgba(130,232,255,.025) 0 1px,transparent 1px 9px);
+  animation:mavenDroneScan 2.2s linear infinite
+}
+.drone-stage.maven-scan-active::after{
+  content:"MAVEN ANALYTICS // SYNTHETIC ROI";position:absolute;z-index:4;right:10px;bottom:9px;
+  color:#9cffaa;background:rgba(2,8,4,.74);border:1px solid rgba(156,255,170,.28);
+  border-radius:6px;padding:4px 6px;font:800 6px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em
+}
+.drone-roi-layer{position:absolute;z-index:3;inset:0;pointer-events:none;overflow:hidden}
+.drone-roi{
+  position:absolute;width:58px;height:42px;border:1px solid rgba(130,232,255,.72);
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 0 14px rgba(130,232,255,.12);
+  border-radius:4px;opacity:.78;animation:mavenRoiPulse 1.6s ease-in-out infinite
+}
+.drone-roi::before{
+  content:attr(data-label);position:absolute;left:-1px;top:-14px;
+  color:#82e8ff;background:rgba(2,8,4,.86);padding:2px 4px;border-radius:3px;
+  font:800 5px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap
+}
+.drone-roi.r1{left:18%;top:52%}.drone-roi.r2{left:62%;top:38%;animation-delay:.4s}.drone-roi.r3{left:45%;top:66%;animation-delay:.8s}
+@keyframes mavenDroneScan{0%{background-position:0 -240px,0 0}100%{background-position:0 240px,0 0}}
+@keyframes mavenRoiPulse{0%,100%{opacity:.42;transform:scale(.98)}50%{opacity:.95;transform:scale(1.02)}}
+@media(max-width:900px){
+  .drone-mission-grid{display:flex;overflow-x:auto;scrollbar-width:none}
+  .drone-mission-grid::-webkit-scrollbar{display:none}
+  .drone-mission-grid button{flex:0 0 104px}
+  .drone-analytics-strip{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:430px){
+  .drone-analytics-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .drone-mission-head{display:grid;grid-template-columns:1fr}
+}
