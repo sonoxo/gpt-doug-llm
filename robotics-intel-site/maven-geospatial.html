@@ -6,6 +6,7 @@
   <meta name="description" content="GPT-DOUG MAVEN geospatial public-information simulation with animated HIVE/SWARM visuals and local task ops.">
   <title>GPT-DOUG // MAVEN GEOSPATIAL SWARM</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./maven-clean.css">
   <script>
     if(new URLSearchParams(location.search).get("embed")==="1"){
       document.documentElement.classList.add("embedded");
@@ -881,5 +882,6 @@ setInterval(loadPublicData,10*60*1000);
 updateTasks();
 loadPublicData();
 </script>
+<script src="./maven-clean.js" defer></script>
 </body>
 </html>
