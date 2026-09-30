@@ -30,7 +30,7 @@ a{color:var(--cyan)}
 .chip{flex:0 0 auto;border:1px solid #3b4f35;border-radius:999px;background:#0a100b;padding:5px 8px;font-size:9px}
 .chip.ok{color:var(--lime)}.chip.info{color:var(--cyan)}.chip.off{color:#90978b}.chip.warn{color:#ffd166}
 .workspace{
-  min-height:0;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.72fr) minmax(340px,.86fr);
+  min-height:0;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(520px,.92fr);
   gap:7px;padding:7px;background:
     radial-gradient(circle at 20% 20%,rgba(255,159,28,.045),transparent 28%),
     linear-gradient(180deg,#060906,#040604)
@@ -54,7 +54,7 @@ a{color:var(--cyan)}
   min-height:38px;border:1px solid #4a351b;border-radius:9px;background:rgba(9,13,10,.92);color:var(--text);padding:7px 9px;font-size:9px;font-weight:850;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
 }
 .map-overlay button.active{background:var(--accent);color:#1b0d00;border-color:#ffb84f}
-.sim{display:grid;grid-template-rows:auto auto minmax(220px,1fr) auto auto minmax(110px,.44fr)}
+.sim{display:grid;grid-template-rows:auto auto minmax(300px,1.15fr) auto auto minmax(140px,.52fr)}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}
 .stat{border:1px solid #26392c;border-radius:9px;padding:8px;background:#071008;font-size:9px;color:var(--muted)}
 .stat b{display:block;margin-top:3px;color:var(--lime);font-size:12px}
@@ -72,28 +72,6 @@ a{color:var(--cyan)}
 .arsenal .pulse{color:#ffd166}.arsenal .beam{color:#7ce7ff}.arsenal .intercept{color:#d7ff64}.arsenal .defense{color:#9fd7ff}.arsenal .nova{color:#fff09a}.arsenal .meteor{color:#ff9866}.arsenal .ion{color:#9fe8ff}.arsenal .gravity{color:#c8a4ff}.arsenal .plasma{color:#ff8be8}.arsenal .shock{color:#87ffd1}
 .feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
 .feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
-.media{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr)}
-.categories{display:flex;gap:5px;overflow-x:auto;padding:7px;border-bottom:1px solid rgba(93,58,18,.62);scrollbar-width:none}
-.categories::-webkit-scrollbar{display:none}
-.categories button{
-  flex:0 0 auto;min-height:36px;border:1px solid #4b3a20;border-radius:8px;background:#0c120d;color:#efd7a8;padding:6px 9px;font-size:9px;font-weight:850
-}
-.categories button.active{background:#ff9f1c;color:#180b00;border-color:#ffb84f}
-.searchbar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;padding:7px;border-bottom:1px solid rgba(93,58,18,.62)}
-.searchbar input{min-width:0;min-height:38px;border:1px solid #29422f;border-radius:8px;background:#071009;color:#fff;padding:7px 9px;font-size:12px}
-.searchbar button{min-height:38px;border:1px solid #5a3d18;border-radius:8px;background:#13170f;color:#ffd166;padding:7px 10px;font-size:9px;font-weight:900}
-.boundary{padding:6px 8px;border-bottom:1px solid #1d3725;color:#6ee7a1;font-size:8px;letter-spacing:.05em}
-.mediaframe{width:100%;height:100%;border:0;background:#fff}
-.media-surface{position:relative;min-height:0;height:100%;overflow:hidden;background:#050806}
-.directory{position:absolute;inset:0;display:none;overflow:auto;padding:10px;background:linear-gradient(180deg,#071009,#050806)}
-.directory.active{display:block}
-.directory-grid{display:grid;grid-template-columns:1fr;gap:8px}
-.source-card{border:1px solid #284131;border-radius:10px;padding:10px;background:#081009}
-.source-card h3{margin:0 0 5px;font-size:11px;color:var(--lime)}
-.source-card p{margin:0 0 8px;font-size:9px;line-height:1.45;color:var(--muted)}
-.source-card .meta{font-size:8px;color:#6ee7a1;margin-bottom:7px}
-.source-card a{display:inline-flex;align-items:center;min-height:36px;border:1px solid #3b4d31;border-radius:8px;padding:6px 9px;text-decoration:none;font-size:9px;font-weight:900;background:#0d140f}
-.source-note{margin-top:8px;border-left:3px solid #ffd166;padding:8px 10px;background:#0f1008;color:#c9b991;font-size:9px;line-height:1.5}
 .palantir-pane{display:none;position:relative}
 .palantir-pane iframe{width:100%;height:100%;border:0;background:#020403;display:block}
 .workspace.palantir-mode{display:block;position:relative}
@@ -111,10 +89,7 @@ html.local-file .top{box-shadow:0 10px 36px rgba(0,0,0,.28)}
 html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 
 @media(max-width:1320px){
-  .workspace{grid-template-columns:minmax(0,1.4fr) minmax(280px,.7fr)}
-  .media{position:absolute;z-index:40;top:8px;right:8px;bottom:8px;width:min(480px,calc(100vw - 24px));transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .18s ease}
-  .media.open{transform:translateX(0);opacity:1;pointer-events:auto}
-  .fold-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:36px;border:1px solid #4a351b;border-radius:8px;background:#101611;color:#ffd166;padding:6px 9px;font-size:9px;font-weight:900}
+  .workspace{grid-template-columns:minmax(0,1.04fr) minmax(420px,.96fr)}
 }
 @media(max-width:900px){
   .workspace{display:block;position:relative;padding:5px}
@@ -122,7 +97,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   .panel.mobile-active{display:grid}
   .map-wrap.mobile-active{grid-template-rows:auto minmax(0,1fr)}
   .sim.mobile-active{grid-template-rows:auto auto minmax(220px,1fr) auto minmax(120px,.44fr)}
-  .media.mobile-active{position:absolute;inset:5px;width:auto;transform:none;opacity:1;pointer-events:auto}
   .mobile-dock{
     position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));
     display:flex;gap:5px;padding:5px;border:1px solid rgba(255,159,28,.36);border-radius:14px;background:rgba(5,8,6,.92);
@@ -130,7 +104,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   }
   .mobile-dock button{min-height:44px;border:1px solid #4a351b;border-radius:9px;background:#0e140f;color:#e9dcc4;padding:7px 10px;font-size:9px;font-weight:900}
   .mobile-dock button.active{background:#ff9f1c;color:#180b00}
-  .mediaframe{padding-bottom:58px}
 }
 @media(max-width:520px){.arsenal{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:430px){
@@ -168,12 +141,9 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
   <div class="top" data-no-translate="true">
     <div class="brand">📡 DOUG-GPT-MAVEN // DRONE + OPS</div><span class="chip ok">TACTICAL MAX</span>
     <span class="chip ok" id="opsChip">OPS CONNECTING</span><span class="chip info" id="liveBusChip">LIVE BUS CONNECTING</span><span class="chip info" id="palBroadcastChip">PALANTIR CHECKING</span><button class="chip pal-mode-btn" id="palantirModeToggle" type="button">🔷 PALANTIR LIVE</button>
-    <span class="chip info">PUBLIC MEDIA</span><span class="chip info">PUBLIC CCTV DIRECTORY</span><span class="chip info">US PUBLIC INFO</span>
-    <span class="chip ok">HIVE MEDIA INDEXED</span><button class="chip pal-mode-btn" id="ecoFabricOpen" type="button">🌐 ECO FABRIC</button>
+    <button class="chip pal-mode-btn" id="ecoFabricOpen" type="button">🌐 ECO FABRIC</button>
     <span class="chip warn">SYNTHETIC TRAINING</span>
-    <span class="chip off">MEDIA → TARGET LINK OFF</span>
     <span class="chip off">EXTERNAL ACTION OFF</span>
-    <button class="fold-toggle" id="mediaToggle" type="button">MEDIA</button>
   </div>
 
   <main class="workspace">
@@ -311,103 +281,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       <div class="feed" id="eventFeed" aria-live="polite"></div>
     </section>
 
-    <section class="panel media" id="mediaPanel" data-pane="media">
-      <div class="panel-head"><span>📺 PUBLIC MEDIA / BROADCAST</span><span class="spacer"></span><span class="mini">NO TARGET EXPORT</span></div>
-      <div class="categories" id="categories" data-no-translate="true">
-        <button data-special="cctv" class="active">CCTV</button><button data-special="gotham">GOTHAM SIM</button><button data-special="usinfo">US INFO</button>
-      </div>
-      <div class="boundary">PUBLIC SOURCE DIRECTORY • SOURCE VIEWING ONLY • NO TARGET EXPORT • NO WEAPON LINK</div>
-      <div class="media-surface">
-        <section class="directory active" id="cctvDirectory" aria-label="Public camera directory">
-          <div class="directory-grid">
-            <article class="source-card">
-              <div class="meta">OFFICIAL · VIRGINIA DEPARTMENT OF TRANSPORTATION</div>
-              <h3>VDOT 511 TRAFFIC CAMERAS</h3>
-              <p>Official Virginia road-conditions and traffic-camera portal. Use for public traffic situational awareness only.</p>
-              <a href="https://511.vdot.virginia.gov/" target="_blank" rel="noopener">OPEN 511 VIRGINIA ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">OFFICIAL · NATIONAL PARK SERVICE</div>
-              <h3>NPS PUBLIC WEBCAMS</h3>
-              <p>Government-operated park and wildlife webcams, including current-condition and live-stream views where available.</p>
-              <a href="https://www.nps.gov/nature/webcams.htm" target="_blank" rel="noopener">OPEN NPS WEBCAMS ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">OFFICIAL · NOAA / NESDIS</div>
-              <h3>GOES SATELLITE IMAGE VIEWER</h3>
-              <p>Public near-real-time satellite imagery and animations for weather and regional awareness.</p>
-              <a href="https://goes.noaa.gov/" target="_blank" rel="noopener">OPEN NOAA GOES ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">INTEGRATION STATUS · VDOT VIDEO</div>
-              <h3>DIRECT CAMERA API / STREAMS</h3>
-              <p>Not embedded in GPT-MAVEN yet. VDOT requires a user agreement before third-party integration of its 511 video feeds.</p>
-              <a href="https://www.vdot.virginia.gov/news-events/media/" target="_blank" rel="noopener">VIEW VDOT ACCESS PROCESS ↗</a>
-            </article>
-          </div>
-          <div class="source-note">PUBLIC CAMERA VIEWING ONLY · NO FACE RECOGNITION · NO PERSON TRACKING · NO TARGET EXPORT · NO WEAPON LINK</div>
-        </section>
-        <section class="gotham-bay" id="gothamBay" aria-label="Synthetic Gotham training feed">
-          <div class="gotham-head">
-            <span>🎥 GOTHAM // SYNTHETIC TRAINING FEED</span><span class="spacer"></span>
-            <span class="gotham-chip">FICTIONAL / SIMULATED</span>
-            <button class="gotham-close" id="gothamClose" type="button">CLOSE</button>
-          </div>
-          <div class="gotham-stage">
-            <canvas id="gothamCanvas" aria-label="Animated synthetic Gotham personnel visualization"></canvas>
-            <div class="gotham-scan"></div>
-            <div class="gotham-hud" data-no-translate="true">
-              <div class="good">ACTORS<b id="gothamActors">14</b></div>
-              <div class="info">CHANNEL<b id="gothamChannel">GOTHAM ALPHA</b></div>
-              <div class="info">SECTOR<b id="gothamSector">NARROWS</b></div>
-              <div class="warn">SIGNAL<b id="gothamSignal">SIM LIVE</b></div>
-            </div>
-            <div class="gotham-feedtag">SYNTHETIC ACTORS · NO REAL PERSONNEL · NO LIVE UNIT TRACKING</div>
-          </div>
-          <div class="gotham-controls" data-no-translate="true">
-            <button id="gothamPrev" type="button">◀ PREV</button>
-            <button data-gotham-channel="0" type="button">ALPHA</button>
-            <button data-gotham-channel="1" type="button">BRAVO</button>
-            <button data-gotham-channel="2" type="button">ROOFTOP</button>
-            <button data-gotham-channel="3" type="button">STREETCAM</button>
-            <button id="gothamNext" type="button">NEXT ▶</button>
-            <button id="gothamCine" class="active" type="button">CINEMATIC</button>
-            <button id="gothamPause" class="warn" type="button">HOLD</button>
-          </div>
-        </section>
-
-        <section class="directory" id="usInfoDirectory" aria-label="United States public information sources">
-          <div class="directory-grid">
-            <article class="source-card">
-              <div class="meta">PUBLIC U.S. INFORMATION</div>
-              <h3>AMERICA.GOV</h3>
-              <p>Added as a public U.S. information/reference source. GPT-MAVEN does not treat this as classified or operational intelligence.</p>
-              <a href="https://america.gov/" target="_blank" rel="noopener">OPEN AMERICA.GOV ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">OFFICIAL · U.S. GOVERNMENT</div>
-              <h3>USA.GOV</h3>
-              <p>Primary public portal for U.S. government services, agencies, programs, and information.</p>
-              <a href="https://www.usa.gov/" target="_blank" rel="noopener">OPEN USA.GOV ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">OFFICIAL · U.S. DEPARTMENT OF STATE</div>
-              <h3>STATE.GOV</h3>
-              <p>Public foreign-policy statements, releases, travel information, speeches, and department resources.</p>
-              <a href="https://www.state.gov/" target="_blank" rel="noopener">OPEN STATE.GOV ↗</a>
-            </article>
-            <article class="source-card">
-              <div class="meta">ARCHIVE · AMERICA.GOV STATIC PUBLICATIONS</div>
-              <h3>AMERICA.GOV STATIC ARCHIVE</h3>
-              <p>Publicly accessible archived publications hosted on the America.gov static domain.</p>
-              <a href="https://static.america.gov/" target="_blank" rel="noopener">OPEN STATIC ARCHIVE ↗</a>
-            </article>
-          </div>
-          <div class="source-note">PUBLIC / UNCLASSIFIED SOURCES ONLY · PROVENANCE REQUIRED · NO CLAIM OF GOVERNMENT AFFILIATION</div>
-        </section>
-      </div>
-    </section>
-
     <section class="panel palantir-pane" data-pane="palantir">
       <iframe src="https://gpt-doug-robotics-intel.onrender.com/maven-palantir.html?embed=1" title="GPT-MAVEN Palantir live ontology workspace" loading="lazy"></iframe>
     </section>
@@ -417,7 +290,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
 <nav class="mobile-dock" data-no-translate="true" aria-label="Broadcast workspaces">
   <button class="active" data-mobile-pane="map">🌍 MAP</button>
   <button data-mobile-pane="sim">🧪 SIM</button>
-  <button data-mobile-pane="media">📺 MEDIA</button><button data-mobile-pane="palantir">🔷 PALANTIR</button>
+  <button data-mobile-pane="palantir">🔷 PALANTIR</button>
 </nav>
 
 <script>
@@ -434,24 +307,6 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     btn.classList.add("active");mapCmd("view",btn.dataset.view);
   }));
   document.getElementById("mapRefresh").addEventListener("click",()=>mapCmd("refresh"));
-
-  const media=document.getElementById("mediaPanel");
-  document.getElementById("mediaToggle")?.addEventListener("click",()=>media.classList.toggle("open"));
-  function setMediaSurface(mode){
-    const cctv=document.getElementById("cctvDirectory");
-    const usinfo=document.getElementById("usInfoDirectory");
-    const gotham=document.getElementById("gothamBay");
-    cctv.classList.toggle("active",mode==="cctv");
-    usinfo.classList.toggle("active",mode==="usinfo");
-    gotham?.classList.toggle("active",mode==="gotham");
-    if(mode==="gotham") document.dispatchEvent(new CustomEvent("maven:gotham-open"));
-  }
-  document.getElementById("categories").addEventListener("click",e=>{
-    const btn=e.target.closest("button");if(!btn||!btn.dataset.special)return;
-    document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));
-    btn.classList.add("active");
-    setMediaSurface(btn.dataset.special);
-  });
 
   const workspace=document.querySelector(".workspace");
   const palantirModeToggle=document.getElementById("palantirModeToggle");
@@ -503,11 +358,7 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
       setPalantirWorkspace(false);
       if(matchMedia("(max-width:900px)").matches){
         document.querySelector('[data-mobile-pane="sim"]')?.click();
-      }else{
-        media.classList.add("open");
       }
-      setMediaSurface("gotham");
-      document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x.dataset.special==="gotham"));
 
       const bay=document.getElementById("droneBay");
       const sim=document.querySelector('[data-pane="sim"]');
@@ -544,11 +395,10 @@ html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
     }
     if(evt.data.action==="open-gotham"){
       setPalantirWorkspace(false);
-      const mediaBtn=document.querySelector('[data-mobile-pane="media"]');
-      if(matchMedia("(max-width:900px)").matches) mediaBtn?.click();
-      else media.classList.add("open");
-      setMediaSurface("gotham");
-      document.querySelectorAll("#categories button").forEach(x=>x.classList.toggle("active",x.dataset.special==="gotham"));
+      const simBtn=document.querySelector('[data-mobile-pane="sim"]');
+      if(matchMedia("(max-width:900px)").matches) simBtn?.click();
+      else document.querySelector('[data-pane="sim"]')?.scrollIntoView({block:"nearest",inline:"nearest"});
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
     }
   });
 
