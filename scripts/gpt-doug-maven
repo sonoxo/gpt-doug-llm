@@ -37,15 +37,18 @@ EARTH_CSS="$ROOT/robotics-intel-site/maven-earth-observation.css"
 DEFENSE_MANIFEST="$ROOT/the-black-house/kraken/us-defense-support.manifest.json"
 MISSION_WORKBENCH="$ROOT/agents/mission_support_workbench.py"
 LOCAL_UI="$ROOT/scripts/zyra-maven-local-ui"
+ECO_FABRIC="$ROOT/scripts/maven-eco-fabric.py"
 
 usage() {
   cat <<'EOF'
-Usage: gpt-doug-maven [open|matrix|join|flight|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
+Usage: gpt-doug-maven [open|matrix|join|flight|eco|eco-doctor|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
 
   open         Open the local MAVEN matrix
   matrix       Alias for open
   join         Join GPT-DOUG + MAVEN + GOTHAM synthetic flight workspace
   flight       Alias for join
+  eco          Open the MAVEN ECO FABRIC runtime dashboard
+  eco-doctor   Validate the ecosystem runtime fabric
   earth        Open the public Earth-observation stack
   sources      List the public Earth-observation portals
   support      Activate non-kinetic Armed Forces support mode
@@ -81,11 +84,12 @@ PY
 
 doctor() {
   fail=0
-  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI"; do
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI" "$ECO_FABRIC"; do
     if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
   done
   if [ "$fail" -ne 0 ]; then return 1; fi
   python3 "$PATENT_SCOPE" doctor
+  python3 "$ECO_FABRIC" doctor
   python3 - "$SEED" "$SOURCE" <<'PY'
 import json, pathlib, sys
 seed=json.loads(pathlib.Path(sys.argv[1]).read_text())
@@ -133,6 +137,23 @@ case "$cmd" in
     else
       printf '%s\n' "$url"
     fi
+    ;;
+  eco)
+    echo "🌐 GPT-DOUG-MAVEN // ECO FABRIC"
+    python3 "$ECO_FABRIC" doctor
+    MAVEN_LOCAL_NO_OPEN=1 sh "$LOCAL_UI"
+    portfile="$HOME/.gpt-doug/maven/.maven-http.port"
+    port="$(cat "$portfile" 2>/dev/null || printf '%s' "${MAVEN_LOCAL_PORT:-8787}")"
+    url="http://127.0.0.1:$port/maven-eco.html?cb=$(date +%s)"
+    echo "ECO URL .......... $url"
+    if command -v open >/dev/null 2>&1; then
+      open "$url"
+    else
+      printf '%s\n' "$url"
+    fi
+    ;;
+  eco-doctor)
+    python3 "$ECO_FABRIC" doctor
     ;;
   earth)
     echo "🌍 GPT-DOUG-MAVEN // EARTH OBSERVATION STACK"
@@ -207,6 +228,7 @@ PY
     echo "MATRIX ........... $MATRIX"
     echo "PATENT SEED ...... $SEED"
     echo "SOURCE ........... $SOURCE"
+    echo "ECO FABRIC ........ WIRED (runtime registry + capability probes)"
     echo "EARTH OBSERVATION  WIRED (Zoom Earth / Nullschool / NASA Worldview)"
     [ -f "$DEFENSE_MANIFEST" ] && echo "FORCES SUPPORT .... WIRED (non-kinetic)" || echo "FORCES SUPPORT .... MISSING"
     if [ -f "$CAPABILITIES" ]; then
