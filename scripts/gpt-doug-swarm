@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BIN_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+SWARM="$BIN_DIR/gpt-swarm"
+ACTION="${1:-live}"
+
+if [ ! -x "$SWARM" ]; then
+  SWARM="$HOME/.local/bin/gpt-swarm"
+fi
+
+maven_visual() {
+  if command -v gpt-zyra >/dev/null 2>&1; then
+    exec gpt-zyra visual
+  fi
+
+  local repo="${GPTDOUG_HOME:-$HOME/.config/gptdoug/src/gpt-doug-llm}"
+  if [ -x "$repo/scripts/zyra-maven" ]; then
+    exec "$repo/scripts/zyra-maven" visual
+  fi
+
+  printf '%s\n' "[GPT-DOUG-SWARM] ZYRA/MAVEN visual launcher not found." >&2
+  printf '%s\n' "Expected: gpt-zyra in PATH or $repo/scripts/zyra-maven" >&2
+  exit 127
+}
+
+case "$ACTION" in
+  maven|zyra|intel)
+    maven_visual
+    ;;
+  help|-h|--help)
+    cat <<'EOF'
+gpt-doug-swarm              Launch GPT-DOUG 100-HIVE swarm visual
+gpt-doug-swarm live         Same as default
+gpt-doug-swarm on           Enable swarm state
+gpt-doug-swarm pulse        Trigger Light Force pulse
+gpt-doug-swarm status       Show swarm state
+gpt-doug-swarm off          Disable swarm state
+gpt-doug-swarm maven        Open ZYRA / MAVEN visual intelligence console
+gpt-doug-swarm zyra         Alias for maven
+gpt-doug-swarm intel        Alias for maven
+
+MAVEN remains a local, human-controlled intelligence/ontology view.
+This launcher does not provide access to private military feeds, targeting,
+weapon control, or autonomous real-world vehicle tasking.
+EOF
+    ;;
+  *)
+    if [ ! -x "$SWARM" ]; then
+      printf '%s\n' "[GPT-DOUG-SWARM] gpt-swarm runtime is not installed." >&2
+      exit 127
+    fi
+    exec "$SWARM" "$@"
+    ;;
+esac
