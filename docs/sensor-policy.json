@@ -1,0 +1,47 @@
+{
+  "schema": "xunia.sensor-governance.v1",
+  "namespace": "GALACTIC_FEDERATION.SENSOR_GOVERNANCE",
+  "mode": "AUTHORIZED_SENSORS_ONLY",
+  "purpose": "Defensive situational awareness, infrastructure monitoring, public-safety research, authorized fleet operations, and synthetic training.",
+  "allowed_object_types": [
+    "infrastructure_asset",
+    "authorized_fleet_vehicle",
+    "environmental_sensor",
+    "weather_cell",
+    "public_event",
+    "synthetic_contact"
+  ],
+  "prohibited_object_types": [
+    "person",
+    "face",
+    "biometric_identity",
+    "license_plate_owner",
+    "private_vehicle",
+    "private_residence",
+    "weapon_target",
+    "live_military_unit"
+  ],
+  "required_fields": [
+    "source_id",
+    "object_type",
+    "observed_at",
+    "authorization_scope",
+    "purpose"
+  ],
+  "controls": {
+    "explicit_authorization_required": true,
+    "public_ui_coarse_geolocation_only": true,
+    "public_ui_max_coordinate_decimals": 2,
+    "facial_recognition": false,
+    "biometric_identification": false,
+    "license_plate_owner_lookup": false,
+    "covert_person_tracking": false,
+    "private_residence_monitoring": false,
+    "weapon_targeting": false,
+    "fire_control": false,
+    "autonomous_external_action": false,
+    "raw_frame_persistence_public_ui": false,
+    "provenance_required": true,
+    "human_review_for_material_actions": true
+  }
+}

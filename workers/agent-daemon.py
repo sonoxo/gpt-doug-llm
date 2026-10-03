@@ -10,18 +10,19 @@ Task file format:
   {"id": "<string>", "prompt": "<string>"}
 """
 import json
+import os
 import re
 import shutil
 import subprocess
+import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from workers import zyra_guard
 from workers import ontology_workers as ontology
+from workers import zyra_guard
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
@@ -29,6 +30,7 @@ CLAIMED_DIR = ROOT / "xuni-workers" / "claimed"
 PROCESSED_DIR = ROOT / "xuni-workers" / "processed"
 RESULTS_DIR = ROOT / "xuni-workers" / "results"
 CONTEXT_LOG = ROOT / "xuni-workers" / "live" / "context.jsonl"
+TELEMETRY_LOG = ROOT / "xuni-workers" / "live" / "agent-telemetry.jsonl"
 CONTEXT_WINDOW = 5
 KNOWLEDGE_MATCHES = 3
 POLL_SECONDS = 0.5
@@ -39,6 +41,17 @@ WORKER_COUNT = 4
 # CONTEXT_LOG appends must stay serialized across threads, or two workers
 # finishing at once could interleave/corrupt writes to the same file.
 _context_lock = threading.Lock()
+_telemetry_lock = threading.Lock()
+
+
+def _append_telemetry(record: dict) -> None:
+    TELEMETRY_LOG.parent.mkdir(parents=True, exist_ok=True)
+    payload = dict(record)
+    payload.setdefault("ts", time.time())
+    payload.setdefault("pid", os.getpid())
+    with _telemetry_lock:
+        with TELEMETRY_LOG.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
 
 def _relevant_knowledge(prompt: str) -> str:
@@ -197,6 +210,14 @@ def run_task(task_path: Path):
     allowed, reason = zyra_guard.review(task)
     if not allowed:
         print(f"[blocked] {task_id}: zyra rejected task ({reason})", flush=True)
+        _append_telemetry(
+            {
+                "type": "task_result",
+                "task_id": task_id,
+                "state": "BLOCK",
+                "reason": reason,
+            }
+        )
         blocked_result = {"id": task_id, "prompt": prompt, "blocked_by": "zyra", "reason": reason}
         blocked_result["explain"] = _explain(blocked_result)
         (RESULTS_DIR / f"{task_id}.json").write_text(json.dumps(blocked_result, indent=2))
@@ -205,6 +226,14 @@ def run_task(task_path: Path):
 
     print(f"[run] {task_id}: zyra cleared, dispatching to doug agent", flush=True)
     started = time.time()
+    _append_telemetry(
+        {
+            "type": "task_start",
+            "task_id": task_id,
+            "state": "RUN",
+            "started_at": started,
+        }
+    )
     context_prefix = _recent_context()
     knowledge_prefix = _relevant_knowledge(prompt)
     full_prompt = context_prefix + knowledge_prefix + prompt
@@ -257,6 +286,17 @@ def run_task(task_path: Path):
 
     result["explain"] = _explain(result)
     print(f"[explain] {task_id}: {result['explain']}", flush=True)
+    final_state = "DONE" if result.get("returncode") == 0 else "FAIL"
+    _append_telemetry(
+        {
+            "type": "task_result",
+            "task_id": task_id,
+            "state": final_state,
+            "duration_seconds": result.get("duration_seconds"),
+            "attempts": result.get("attempts"),
+            "returncode": result.get("returncode"),
+        }
+    )
 
     # Always retire the task file, even on failure — a task must never be
     # left to retry forever and crash-loop the daemon.

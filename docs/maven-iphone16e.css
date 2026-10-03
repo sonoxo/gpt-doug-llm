@@ -1,0 +1,121 @@
+/* iPhone 16e / compact iOS completion layer */
+:root{
+  --maven-app-h:100dvh;
+  --maven-header-h:56px;
+  --maven-safe-bottom:env(safe-area-inset-bottom,0px);
+  --maven-safe-top:env(safe-area-inset-top,0px);
+}
+html,body{overscroll-behavior:none}
+body{-webkit-tap-highlight-color:transparent}
+button,a{touch-action:manipulation}
+main{height:calc(var(--maven-app-h) - var(--maven-header-h))}
+
+@media(max-width:430px) and (orientation:portrait){
+  header{
+    min-height:0;
+    height:auto;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"brand command" "modes modes";
+    align-items:center;
+    gap:5px 7px;
+    padding:max(7px,var(--maven-safe-top)) 7px 6px;
+    overflow:visible;
+    background:rgba(4,9,6,.97);
+    backdrop-filter:blur(18px) saturate(120%);
+    -webkit-backdrop-filter:blur(18px) saturate(120%);
+  }
+  .brand{
+    grid-area:brand;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:11px;
+    line-height:1.1;
+  }
+  .modebar{
+    grid-area:modes;
+    width:100%;
+    min-width:0;
+    display:flex;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    gap:5px;
+    padding:4px;
+    border-radius:10px;
+    scrollbar-width:none;
+  }
+  .modebar::-webkit-scrollbar{display:none}
+  .modebtn{
+    flex:0 0 auto;
+    min-height:44px;
+    padding:7px 10px;
+    border-radius:9px;
+    font-size:9px;
+  }
+  .modebtn.command{
+    grid-area:command;
+    min-height:38px;
+    padding:6px 9px;
+  }
+  .pill{display:none!important}
+  main{min-height:0}
+  .viewerShell{inset:0}
+  .command-rail{
+    position:absolute;
+    top:auto;
+    left:5px;
+    right:5px;
+    bottom:max(5px,var(--maven-safe-bottom));
+    width:auto;
+    max-height:min(74vh,calc(var(--maven-app-h) - var(--maven-header-h) - 12px));
+    padding:8px;
+    border-radius:16px;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    transform:translate3d(0,calc(100% + 18px),0);
+    will-change:transform,opacity;
+  }
+  .command-rail.open{transform:translate3d(0,0,0)}
+  .card{padding:9px;border-radius:10px}
+  h2{font-size:11px}
+  .metric,#svc,#boundary,.feed{font-size:10px}
+  .btn,
+  .map-control-grid button,
+  .map-layer-grid button,
+  #mapRefresh,
+  .sensor-actions button,
+  .sensor-actions a{min-height:44px}
+  .map-control-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .map-layer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+  iframe{transform:translateZ(0)}
+}
+
+@media(max-height:500px) and (orientation:landscape){
+  header{
+    min-height:46px;
+    height:46px;
+    padding:4px max(8px,env(safe-area-inset-right)) 4px max(8px,env(safe-area-inset-left));
+    gap:5px;
+  }
+  .brand{font-size:10px}
+  .modebar{padding:2px}
+  .modebtn{min-height:36px;padding:5px 8px;font-size:8px}
+  .pill{display:none!important}
+  main{height:calc(var(--maven-app-h) - 46px)}
+  .command-rail{
+    top:5px;
+    bottom:5px;
+    right:max(5px,env(safe-area-inset-right));
+    left:auto;
+    width:min(360px,62vw);
+    max-height:none;
+    transform:translate3d(calc(100% + 18px),0,0);
+  }
+  .command-rail.open{transform:translate3d(0,0,0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .command-rail{transition:none!important}
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.xunia</groupId>
+  <artifactId>gpt-doug-foundry-consumer</artifactId>
+  <version>1.0.0</version>
+
+  <name>GPT-DOUG Foundry Maven Consumer</name>
+
+  <repositories>
+    <repository>
+      <id>zyra-foundry-maven</id>
+      <url>https://zyra.usw-17.palantirfoundry.com/artifacts/api/repositories/ri.artifacts.main.repository.5e094e5c-9968-42f3-ad62-dfb688accb9b/contents/release/maven</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.xunia</groupId>
+      <artifactId>gpt-doug-foundry-bridge</artifactId>
+      <version>1.2.0-maven-f4a1710eef-20260911092350</version>
+    </dependency>
+  </dependencies>
+</project>

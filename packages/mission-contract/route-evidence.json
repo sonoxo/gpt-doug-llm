@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "xunia.route-evidence/v1",
+  "type": "RouteEvidence",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "kernelVersion": "3.0.0",
+  "source": "RVIA",
+  "executionVerified": false,
+  "statuses": [
+    "PLANNED",
+    "ACCEPTED",
+    "HOLD",
+    "REJECTED",
+    "DENIED",
+    "APPROVAL_REQUIRED",
+    "ADAPTER_UNAVAILABLE",
+    "FAILED"
+  ],
+  "requiredStrings": [
+    "missionId",
+    "target",
+    "executionState",
+    "observedAt"
+  ],
+  "note": "A route receipt records dispatch state, not proof of external execution or source authentication."
+}

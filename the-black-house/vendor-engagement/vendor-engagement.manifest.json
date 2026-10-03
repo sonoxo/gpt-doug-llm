@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "controlPlane": "THE_BLACK_HOUSE_V1",
+  "capabilityId": "VENDOR_ENGAGEMENT_ROUTER_V1",
+  "purpose": "Route vendor and acquisition communications to the smallest appropriate contact role using ontology-style intent and lifecycle context.",
+  "publicRepositoryBoundary": {
+    "hardcodeContactAddresses": false,
+    "contactResolution": "Resolve addresses at runtime from a current authorized directory, opportunity record, or private configuration.",
+    "sensitiveMaterial": "Do not place classified, CUI, procurement-sensitive, credential, or private-vault material into outbound low-side communications."
+  },
+  "routingPrinciples": [
+    "Opportunity-specific questions route to the named opportunity POC before broad outreach channels.",
+    "Use the narrowest role that matches the communication intent.",
+    "Do not mass-mail every available contact with the same message.",
+    "Preserve source provenance for every resolved address and role.",
+    "Pricing, terms acceptance, legal commitments, certifications, and representations require authorized human/business approval.",
+    "Outbound content must remain appropriate for the destination channel and handling level.",
+    "A directory entry provides a communication path; it does not create external authorization, award status, clearance, or affiliation."
+  ],
+  "contactRoles": [
+    {"id":"OPPORTUNITY_POC","priority":100,"intents":["submission","receipt","solicitation","deadline","evaluation","correction","opportunity_question"],"scope":"single opportunity or solicitation"},
+    {"id":"TECHNICAL_OUTREACH","priority":80,"intents":["technical_capability","ai","science_technology","prototype_alignment"],"scope":"technical capability and mission-fit outreach"},
+    {"id":"ACQUISITION_STRATEGY","priority":80,"intents":["acquisition_pathway","contracting_strategy","prototype_ot","procurement_process"],"scope":"acquisition strategy and contracting pathway"},
+    {"id":"DIGITAL_FUTURES","priority":70,"intents":["digital_innovation","future_ai","software_platform","digital_capability"],"scope":"future digital and software capability engagement"},
+    {"id":"STRATEGIC_VENDOR_MANAGEMENT","priority":70,"intents":["vendor_relationship","vendor_account","strategic_vendor","portfolio_relationship"],"scope":"vendor relationship and account-level management"},
+    {"id":"RESEARCH_COLLABORATION","priority":60,"intents":["crada","research_collaboration","cooperative_research"],"scope":"research collaboration mechanisms"},
+    {"id":"PARTNERSHIP_INTERMEDIARY","priority":50,"intents":["partnership_intermediary","ecosystem_partner","technology_scouting"],"scope":"external partnership-intermediary routing"},
+    {"id":"CLEARANCE_DIVISION","priority":90,"intents":["personnel_clearance","sci","eligibility","personnel_security"],"scope":"personnel security and access eligibility"},
+    {"id":"INDUSTRIAL_SECURITY","priority":90,"intents":["industrial_security","facility_security","foci","security_guidance"],"scope":"contractor industrial security support"},
+    {"id":"CONTRACT_PROPERTY_MANAGEMENT","priority":90,"intents":["government_property","gfp","cap","property_reporting","asset_disposition"],"scope":"post-award government property management"}
+  ],
+  "requiredEvidence": ["intent","lifecycle_stage","contact_role","address_source","address_source_timestamp_or_version","message_handling_level","approval_state_when_required"]
+}

@@ -19,6 +19,36 @@ This directory is the canonical map for the multi-repository XUNIA / GPT-DOUG-LL
 
 Machine-readable source of truth: [`registry.v4.json`](registry.v4.json).
 
+## Internal divisions
+
+### CHAOTIC GOOD DVSN
+
+`divisions/chaotic-good/` is the Black House experimental R&D division for unconventional but lawful AI, ontology, simulation, adversarial evaluation, failure-mode discovery, rapid prototyping, and reproducibility work.
+
+It is **not** an independent authority plane. Work begins in sandbox/simulation, preserves source and evidence state, and must pass ZYRA security/approval boundaries plus human review before consequential release or transfer into a canonical ecosystem component.
+
+Canonical loop:
+
+```text
+WILD IDEA
+   ↓
+HYPOTHESIS
+   ↓
+SOURCE + EVIDENCE CHECK
+   ↓
+SANDBOX / SIMULATION
+   ↓
+ADVERSARIAL TEST
+   ↓
+ZYRA SECURITY + APPROVAL GATE
+   ↓
+MEASURED PROTOTYPE
+   ↓
+HUMAN REVIEW
+   ↓
+CONTROLLED RELEASE OR RETIREMENT
+```
+
 ## Six AI layers
 
 The ecosystem retains the six-layer architecture contract already enforced by [`config/ai-layer-manifest.json`](../config/ai-layer-manifest.json):

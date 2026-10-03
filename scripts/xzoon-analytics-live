@@ -1,0 +1,175 @@
+#!/bin/sh
+set -eu
+
+ROOT="$HOME/gpt-doug-llm"
+STATE="$HOME/.config/gpt-doug"
+SITE="$STATE/xzoon-analytics-live"
+REPO="${XZOON_GITHUB_REPO:-sonoxo/gpt-doug-llm}"
+
+mkdir -p "$STATE"
+chmod 700 "$STATE"
+
+safe_kill() {
+    file="$1"
+    pattern="$2"
+
+    [ -f "$file" ] || return 0
+
+    pid="$(
+        cat "$file" \
+        2>/dev/null || true
+    )"
+
+    [ -n "$pid" ] || return 0
+
+    if kill -0 "$pid" \
+        2>/dev/null
+    then
+        command="$(
+            ps -p "$pid" \
+                -o command= \
+                2>/dev/null || true
+        )"
+
+        case "$command" in
+            *"$pattern"*)
+                kill "$pid" \
+                    2>/dev/null || true
+                ;;
+        esac
+    fi
+}
+
+safe_kill \
+    "$STATE/xzoon-analytics-http.pid" \
+    "xzoon_control_server.py"
+
+safe_kill \
+    "$STATE/xzoon-analytics-history.pid" \
+    "xzoon_history_export.py"
+
+safe_kill \
+    "$STATE/xzoon-analytics-github.pid" \
+    "xzoon_github_live.py"
+
+sleep 1
+
+rm -rf "$SITE"
+
+mkdir -p "$SITE"
+
+cp -R \
+    "$ROOT/docs/." \
+    "$SITE/"
+
+cp \
+    "$ROOT/docs/maven-ontology/ontology.json" \
+    "$SITE/maven-ontology/ontology.base.json"
+
+if [ -f \
+    "$ROOT/tools/xzoon_github_live.py" \
+]; then
+
+    nohup python3 \
+        "$ROOT/tools/xzoon_github_live.py" \
+        --repo "$REPO" \
+        --site "$SITE" \
+        --interval 10 \
+        >"/tmp/xzoon-analytics-github.log" \
+        2>&1 &
+
+    GITHUB_PID=$!
+
+    echo "$GITHUB_PID" \
+        > "$STATE/xzoon-analytics-github.pid"
+
+    echo "GITHUB WATCHER : $GITHUB_PID"
+
+else
+
+    cat > \
+      "$SITE/planet-xzoon/github-live.json" <<EOF
+{
+  "repository": "$REPO",
+  "status": "watcher-unavailable"
+}
+EOF
+
+fi
+
+nohup python3 \
+    "$ROOT/tools/xzoon_history_export.py" \
+    --out "$SITE/planet-xzoon/history.json" \
+    --current "$SITE/maven-ontology/ontology.json" \
+    --limit 80 \
+    --watch 10 \
+    >"/tmp/xzoon-analytics-history.log" \
+    2>&1 &
+
+HISTORY_PID=$!
+
+echo "$HISTORY_PID" \
+    > "$STATE/xzoon-analytics-history.pid"
+
+PORT=8930
+
+while lsof \
+    -nP \
+    -iTCP:"$PORT" \
+    -sTCP:LISTEN \
+    >/dev/null 2>&1
+do
+    PORT=$((PORT + 1))
+done
+
+nohup python3 \
+    "$ROOT/tools/xzoon_control_server.py" \
+    --site "$SITE" \
+    --port "$PORT" \
+    >"/tmp/xzoon-analytics-http.log" \
+    2>&1 &
+
+HTTP_PID=$!
+
+echo "$HTTP_PID" \
+    > "$STATE/xzoon-analytics-http.pid"
+
+echo "$PORT" \
+    > "$STATE/xzoon-analytics-http.port"
+
+sleep 3
+
+URL="http://127.0.0.1:${PORT}/planet-xzoon/?analytics=$(date +%s)"
+
+curl -fsS \
+    "http://127.0.0.1:${PORT}/xzoon-api/health" \
+    >/dev/null
+
+curl -fsS \
+    "http://127.0.0.1:${PORT}/planet-xzoon/history.json" \
+    >/dev/null
+
+curl -fsS \
+    "$URL" \
+    >/dev/null
+
+open "$URL"
+
+echo
+echo '========================================================'
+echo 'PLANET xZOON ADVANCED ANALYTICS ONLINE'
+echo "URL          : $URL"
+echo "HTTP PID     : $HTTP_PID"
+echo "HISTORY PID  : $HISTORY_PID"
+echo 'LINEAGE      : ENABLED'
+echo 'IMPACT       : ENABLED'
+echo 'TIME TRAVEL  : ENABLED'
+echo 'DRIFT        : ENABLED'
+echo 'QUALITY      : ENABLED'
+echo 'CLUSTERS     : ENABLED'
+echo 'SEMANTIC     : ENABLED'
+echo 'WHAT-IF      : ENABLED'
+echo 'INSPECTOR    : ENABLED'
+echo 'ACTIONS      : GOVERNED / ALLOWLISTED'
+echo 'REMOTE WRITE : LOCKED'
+echo '========================================================'

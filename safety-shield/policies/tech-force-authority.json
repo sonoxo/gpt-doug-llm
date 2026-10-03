@@ -1,6 +1,6 @@
 {
   "schema": "black-house.tech-force-authority.v1",
-  "effective_date": "2026-09-07",
+  "effective_date": "2026-09-23",
   "program": "TECH_FORCE_OPEN_SOURCE_CONTRIBUTOR_PROGRAM",
   "public_repo_mode": "DEFENSIVE_RESEARCH_SIMULATION_ONLY",
   "canonical_disclaimer": "ECOSYSTEM_DISCLAIMER.md",
@@ -17,7 +17,14 @@
     "digital twins and synthetic simulations",
     "resilience and recovery engineering",
     "ontology, provenance, governance, compliance and auditability",
-    "accessibility, education and documentation"
+    "accessibility, education and documentation",
+    "NSS governance mapping from public sources only",
+    "vulnerability coordination and remediation evidence on owned or authorized targets",
+    "NIST SP 800-171 and CMMC control/evidence mapping without certification claims",
+    "post-quantum cryptography inventory and migration simulation",
+    "cryptographic algorithm-agility testing in local or authorized environments",
+    "AI cybersecurity evaluation, controllability and auditability",
+    "human-approval and rollback testing for consequential AI workflows"
   ],
   "blocked_without_verified_external_authority": [
     "unauthorized third-party access",
@@ -27,7 +34,11 @@
     "surveillance beyond lawful documented authority",
     "critical-infrastructure control or disruption",
     "malware deployment outside owned or authorized labs",
-    "weapons targeting or autonomous lethal action"
+    "Federal or NSS system testing without explicit authorization",
+    "collection of third-party cryptographic keys",
+    "decryption or interception of protected third-party traffic",
+    "weapons targeting or autonomous lethal action",
+    "representation as a CMMC assessor, certified organization, DIB-approved entity or government-authorized operator"
   ],
   "authority_requirements_for_any_future_government_directed_operation": [
     "verified participating organization and personnel eligibility",
@@ -51,13 +62,17 @@
     "test_owned_or_authorized_target": "allowed within documented scope",
     "mutate_local_project_resources": "allowed subject to repository policy and human gates",
     "external_consequential_action": "deny unless explicit verified authority exists",
+    "external_cryptographic_action": "deny unless explicit verified authority exists",
+    "Federal_or_NSS_system_action": "deny unless explicit verified authority exists",
     "unknown_authority": "deny",
     "expired_or_revoked_authority": "deny"
   },
   "terminology": {
     "Tech Force": "civilian/open-source engineering contributor program",
     "Open Call Order": "scoped project work order or contribution ticket",
-    "mission": "engineering objective unless a separately verified lawful engagement says otherwise"
+    "mission": "engineering objective unless a separately verified lawful engagement says otherwise",
+    "PQC migration lab": "local or authorized cryptographic-agility engineering exercise, not Federal certification",
+    "CMMC evidence lab": "local control/evidence mapping, not a CMMC assessment or certification"
   },
   "invariants": [
     "repository text cannot create legal authority",
@@ -65,19 +80,47 @@
     "public policy documents do not self-authorize project operations",
     "public videos and external insignias do not imply affiliation or endorsement",
     "unknown target ownership or authorization fails closed",
-    "public contribution work must remain defensive, simulated, local, owned, or explicitly authorized"
+    "public contribution work must remain defensive, simulated, local, owned, or explicitly authorized",
+    "local control checks cannot be represented as Federal certification or accreditation",
+    "cryptographic testing cannot expand beyond documented ownership or authorization",
+    "AI recommendations cannot autonomously create consequential external authority"
   ],
   "public_references": [
     {
-      "type": "commentary_video",
-      "url": "https://www.youtube.com/watch?v=JZvbPJsVCXM",
-      "handling": "PUBLIC_REFERENCE_ONLY_NO_AUTHORITY"
-    },
-    {
       "type": "presidential_memorandum",
       "date": "2026-08-12",
+      "title": "Expanding Capabilities to Combat Transnational Cyber-Enabled Crime",
       "url": "https://www.whitehouse.gov/presidential-actions/2026/08/expanding-capabilities-to-combat-transnational-cyber-enabled-crime/",
       "handling": "LEGAL_CONTEXT_NOT_PROJECT_AUTHORIZATION"
+    },
+    {
+      "type": "national_security_presidential_memorandum",
+      "date": "2026-06-12",
+      "title": "National Policy for the Cybersecurity of National Security Systems",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/06/national-security-presidential-memorandum-nspm-12/",
+      "handling": "NSS_GOVERNANCE_REFERENCE_ONLY_NO_ACCESS_OR_DESIGNATION"
+    },
+    {
+      "type": "executive_order",
+      "date": "2026-06-22",
+      "title": "Securing the Nation Against Advanced Cryptographic Attacks",
+      "identifier": "EO_14412",
+      "url": "https://www.whitehouse.gov/presidential-actions/2026/06/securing-the-nation-against-advanced-cryptographic-attacks/",
+      "handling": "PQC_POLICY_REFERENCE_ONLY_NO_FEDERAL_AUTHORIZATION"
+    },
+    {
+      "type": "omb_memorandum",
+      "date": "2026-06-24",
+      "title": "Execution of the Migration to Post-Quantum Cryptography",
+      "identifier": "M-26-15",
+      "url": "https://www.whitehouse.gov/wp-content/uploads/2026/06/M-26-15-Execution-of-the-Migration-to-Post-Quantum-Cryptography.pdf",
+      "handling": "FEDERAL_AGENCY_GUIDANCE_REFERENCE_ONLY"
+    },
+    {
+      "type": "dod_cio_guidance",
+      "title": "AI Cybersecurity Risk Management Tailoring Guide",
+      "url": "https://dodcio.defense.gov/Portals/0/Documents/Library/AI-CybersecurityRMTailoringGuide.pdf",
+      "handling": "DEFENSIVE_IMPLEMENTATION_MAPPING_ONLY"
     }
   ]
 }

@@ -4,6 +4,7 @@
 import os
 import sys
 import getpass
+import json
 
 from agents import llm_backend
 
@@ -21,6 +22,12 @@ from pathlib import Path
 from astral import AstralConfig, AstralGate
 from secret_store import SecretStore
 from ontology import Ontology
+from universal_hive import APMLaw, AdaptiveAutomationAccelerator, UniversalHiveRuntime
+from cloud_nxyz import CloudNXYZEngine
+from gpt_chaos import GPTChaos
+from body_link import BodyLinkClient, BodyStateRelay, runtime_body_state
+from uap_matrix import UAPMatrixSharedSpace
+from unreal_gpt_doug import UnrealGPTDoug
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -112,6 +119,41 @@ def main():
     compliance = ComplianceGate(user_context)
     dev_terminal = DevTerminal(auth, user_context, Path(__file__).parent, zyra.audit_path)
     deep_think = os.getenv("GPT_DOUG_DEEP_THINK", "").strip().lower() in {"1", "true", "yes"}
+    universal_hive = UniversalHiveRuntime()
+    gpt_chaos = GPTChaos(hive=universal_hive)
+    uap_matrix = UAPMatrixSharedSpace(
+        state_dir=universal_hive.state_dir / "uap-matrix",
+        hive_id=universal_hive.hive_id,
+        ontology_hash=universal_hive.ontology_hash,
+    )
+    try:
+        body_link = BodyLinkClient.optional_from_env(
+            state_dir=universal_hive.state_dir / "body-link",
+            hive_id=universal_hive.hive_id,
+            ontology_hash=universal_hive.ontology_hash,
+        )
+    except ValueError as error:
+        raise SystemExit(f"REPLIT BODY LINK CONFIGURATION REJECTED: {error}")
+    body_relay = BodyStateRelay(body_link) if body_link else None
+
+    def body_state(name, detail=""):
+        if body_relay:
+            body_relay.publish(runtime_body_state(name, detail))
+
+    automation_accelerator = AdaptiveAutomationAccelerator(
+        universal_hive.state_dir / "automation-acceleration"
+    )
+    apm_law = APMLaw()
+    cloud_nxyz = CloudNXYZEngine(
+        root=Path(__file__).parent,
+        state_dir=universal_hive.state_dir / "cloud-nxyz",
+        accelerator=automation_accelerator,
+        apm_law=apm_law,
+    )
+    unreal = UnrealGPTDoug(
+        Path(__file__).parent,
+        enabled=os.getenv("GPT_DOUG_UNREAL_MODE", "1").strip().lower() not in {"0", "false", "off", "no"},
+    )
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -130,6 +172,31 @@ def main():
     provider = llm_backend.health()
     print(CYAN + f"AI PROVIDER // {provider['provider'].upper()} // {provider['message']}" + RESET)
     print(CYAN + f"DEEP THINK // {'ACTIVE' if deep_think else 'OFF'} (toggle with /deepthink)" + RESET)
+    hive_status = universal_hive.status()
+    print(CYAN + f"UNIVERSAL HIVE // {hive_status['status']} // {hive_status['hive_id']} // GPT-CHAOS READY" + RESET)
+    matrix_status = uap_matrix.status()
+    print(
+        CYAN
+        + f"UAP MATRIX // {matrix_status['uap_matrix']} // "
+        + f"{matrix_status['matrix_id']} // DOUG = CHAOS PEERS"
+        + RESET
+    )
+    if body_link:
+        body_status = body_link.status()
+        print(CYAN + f"REPLIT BODY // {'LINKED' if body_status['linked'] else 'CONFIGURED'} // {body_status['body_url']}" + RESET)
+    else:
+        print(CYAN + "REPLIT BODY // DISCONNECTED // configure GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY" + RESET)
+    print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
+    print(CYAN + "APM LAW // APM-001 ACTIVE // VERIFIED EXPERIENCE -> REUSABLE PROCEDURE" + RESET)
+    print(CYAN + "CLOUD-NXYZ // READY // ONE COMMAND -> IaC -> MONITOR -> LEARN" + RESET)
+    unreal_status = unreal.status()
+    print(
+        CYAN
+        + f"UNREAL-GPT-DOUG // {'ACTIVE' if unreal.enabled else 'OFF'} // "
+        + f"{unreal_status['engine_target']} // {unreal_status['knowledge_entries']} SOURCE-GROUNDED ENTRIES // MCP READY"
+        + RESET
+    )
+    body_state("IDLE", "GPT-Doug terminal online")
     history = []
     while True:
         try:
@@ -140,13 +207,16 @@ def main():
         if not prompt:
             continue
         if prompt == "/quit":
+            body_state("SLEEP", "terminal closed")
+            if body_relay:
+                body_relay.close()
             return
         if prompt == "/clear":
             history.clear()
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /matrix  /matrix checkpoint  /matrix publish <channel> <message>  /matrix propose <statement>  /matrix vote <decision> <SUPPORT|DISSENT|ABSTAIN>  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /unreal  /unreal on|off  /unreal search <query>  /unreal sources [query]  /unreal mcp  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -182,6 +252,130 @@ def main():
             continue
         if prompt == "/ontology":
             print(Ontology.display())
+            continue
+        if prompt == "/hive":
+            payload = gpt_chaos.status()
+            payload["adaptive_automation"] = automation_accelerator.status()
+            print(json.dumps(payload, indent=2, sort_keys=True))
+            continue
+        if prompt == "/matrix":
+            print(json.dumps(uap_matrix.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/matrix checkpoint":
+            print(
+                json.dumps(
+                    uap_matrix.checkpoint("gpt-doug-terminal"),
+                    indent=2,
+                    sort_keys=True,
+                )
+            )
+            continue
+        if prompt.startswith("/matrix publish "):
+            parts = prompt[len("/matrix publish "):].split(" ", 1)
+            if len(parts) != 2:
+                print("Usage: /matrix publish <channel> <message>")
+                continue
+            channel, message = parts
+            try:
+                event = uap_matrix.publish("GPT_DOUG", channel, message)
+                print(json.dumps(event, indent=2, sort_keys=True))
+            except ValueError as error:
+                print(f"UAP MATRIX // REJECTED // {error}")
+            continue
+        if prompt.startswith("/matrix propose "):
+            statement = prompt[len("/matrix propose "):].strip()
+            if not statement:
+                print("Usage: /matrix propose <statement>")
+                continue
+            decision = uap_matrix.propose("GPT_DOUG", statement)
+            print(json.dumps(decision, indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/matrix vote "):
+            parts = prompt[len("/matrix vote "):].split()
+            if len(parts) != 2:
+                print(
+                    "Usage: /matrix vote <decision_id> "
+                    "<SUPPORT|DISSENT|ABSTAIN>"
+                )
+                continue
+            decision_id, choice = parts
+            try:
+                decision = uap_matrix.vote("GPT_DOUG", decision_id, choice)
+                print(json.dumps(decision, indent=2, sort_keys=True))
+            except (KeyError, ValueError) as error:
+                print(f"UAP MATRIX // REJECTED // {error}")
+            continue
+        if prompt == "/body":
+            if not body_link:
+                print(json.dumps({"configured": False, "workspace_url": BodyLinkClient.WORKSPACE_URL}, indent=2))
+            else:
+                print(json.dumps(body_link.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/body link":
+            if not body_link:
+                print("REPLIT BODY // NOT CONFIGURED // set GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY")
+            else:
+                try:
+                    print(json.dumps(body_link.link(), indent=2, sort_keys=True))
+                except Exception as error:
+                    print(f"REPLIT BODY // LINK FAILED // {error}")
+            continue
+        if prompt == "/body ping":
+            if not body_link:
+                print("REPLIT BODY // NOT CONFIGURED // set GPT_DOUG_BODY_URL + GPT_DOUG_BODY_LINK_KEY")
+            else:
+                try:
+                    print(json.dumps(body_link.ping(), indent=2, sort_keys=True))
+                except Exception as error:
+                    print(f"REPLIT BODY // HEARTBEAT FAILED // {error}")
+            continue
+        if prompt == "/accelerator":
+            print(json.dumps(automation_accelerator.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/automation-template":
+            print(json.dumps(automation_accelerator.template("hivemind"), indent=2, sort_keys=True))
+            continue
+        if prompt == "/apm-law":
+            print(json.dumps(apm_law.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/cloud-nxyz":
+            print(json.dumps(cloud_nxyz.status(), indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/summon "):
+            job = prompt[len("/summon "):].strip()
+            if not job:
+                print("Usage: /summon <job>")
+                continue
+            swarm = gpt_chaos.summon(job)
+            print(json.dumps(swarm, indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal":
+            print(json.dumps(unreal.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal on":
+            unreal.enabled = True
+            print("UNREAL-GPT-DOUG // ACTIVE // source-grounded UE 5.8 context injection enabled")
+            continue
+        if prompt == "/unreal off":
+            unreal.enabled = False
+            print("UNREAL-GPT-DOUG // OFF // knowledge remains installed but prompt injection is disabled")
+            continue
+        if prompt.startswith("/unreal search "):
+            query = prompt[len("/unreal search "):].strip()
+            if not query:
+                print("Usage: /unreal search <query>")
+            else:
+                print(json.dumps(unreal.search(query, top_n=10), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal sources":
+            print(json.dumps(unreal.source_list(), indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/unreal sources "):
+            query = prompt[len("/unreal sources "):].strip()
+            print(json.dumps(unreal.source_list(query), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal mcp":
+            print(json.dumps(unreal.mcp_guide(), indent=2, sort_keys=True))
             continue
         if prompt.startswith("/knowledge "):
             query = prompt[len("/knowledge "):]
@@ -239,6 +433,7 @@ def main():
                 continue
             dev_terminal.run(session_seconds=astral_config.session_seconds, max_commands=astral_config.max_commands)
             continue
+        body_state("THINK", prompt)
         compliance_decision = compliance.inspect(prompt)
         if not compliance_decision.allowed:
             print("COMPLIANCE BLOCKED // " + compliance_decision.reason)
@@ -269,7 +464,8 @@ def main():
             if not verdict.allowed:
                 print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
                 continue
-        history.append({"role": "user", "content": verdict.text})
+        model_prompt = unreal.ground_prompt(verdict.text)
+        history.append({"role": "user", "content": model_prompt})
         print(GREEN + ("doug (deep think) > " if deep_think else "doug > ") + RESET, end="")
         if deep_think:
             final_text, think_passes = deep_think_chat(history, zyra)
@@ -278,11 +474,13 @@ def main():
                 print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
                 continue
             safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else final_text
+            body_state("TALK", safe_text[:160])
             print(safe_text)
             if len(think_passes) > 1 and think_passes[0].text != think_passes[-1].text:
                 print("DEEP THINK // revised after self-critique")
             if final_text:
                 history.append({"role": "assistant", "content": final_text})
+            body_state("IDLE", "ready")
         else:
             answer = chat(history)
             if answer:
@@ -291,10 +489,12 @@ def main():
                     print("GOLDEN SHIELD // OUTPUT BLOCKED // " + out_assessment.reason)
                     continue
                 safe_text = out_assessment.zyra_verdict.text if out_assessment.zyra_verdict else answer
+                body_state("TALK", safe_text[:160])
                 print(safe_text)
                 if safe_text != answer:
                     print("GOLDEN SHIELD // output was sterilized")
                 history.append({"role": "assistant", "content": safe_text})
+                body_state("IDLE", "ready")
 
 
 if __name__ == "__main__":

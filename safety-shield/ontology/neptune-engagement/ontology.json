@@ -1,0 +1,265 @@
+{
+  "name": "GPT-DOUG Xunia Neptune SHIELD Engagement Ontology",
+  "version": "1.0.0",
+  "as_of": "2026-09-16",
+  "deployment_status": "local_design_not_deployed",
+  "object_types": {
+    "Person": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name"
+      ]
+    },
+    "Organization": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name"
+      ]
+    },
+    "Ecosystem": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name"
+      ]
+    },
+    "Platform": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name"
+      ]
+    },
+    "Membership": {
+      "primary_key": "id",
+      "required_properties": [
+        "status",
+        "member_role",
+        "verification_status"
+      ]
+    },
+    "Event": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "start_date",
+        "registration_status"
+      ]
+    },
+    "Project": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "maturity"
+      ]
+    },
+    "Capability": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "readiness"
+      ]
+    },
+    "Opportunity": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "notice_type",
+        "solicitation_number",
+        "status"
+      ]
+    },
+    "Submission": {
+      "primary_key": "id",
+      "required_properties": [
+        "status",
+        "submitted_at"
+      ]
+    },
+    "Agreement": {
+      "primary_key": "id",
+      "required_properties": [
+        "agreement_type",
+        "status",
+        "award_number"
+      ]
+    },
+    "Evidence": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "source_kind",
+        "supports",
+        "captured_date"
+      ]
+    },
+    "Task": {
+      "primary_key": "id",
+      "required_properties": [
+        "display_name",
+        "status",
+        "due_date"
+      ]
+    },
+    "Assertion": {
+      "primary_key": "id",
+      "required_properties": [
+        "statement",
+        "verification_status"
+      ]
+    }
+  },
+  "link_types": {
+    "profileOrganization": {
+      "source_type": "Person",
+      "target_type": "Organization"
+    },
+    "operatesProject": {
+      "source_type": "Organization",
+      "target_type": "Project"
+    },
+    "hasCapability": {
+      "source_type": "Project",
+      "target_type": "Capability"
+    },
+    "integratesWith": {
+      "source_type": "Project",
+      "target_type": "Project"
+    },
+    "membershipSubject": {
+      "source_type": "Membership",
+      "target_type": "Organization"
+    },
+    "membershipEcosystem": {
+      "source_type": "Membership",
+      "target_type": "Ecosystem"
+    },
+    "listedInEcosystem": {
+      "source_type": "Event",
+      "target_type": "Ecosystem"
+    },
+    "ecosystemPlatform": {
+      "source_type": "Ecosystem",
+      "target_type": "Platform"
+    },
+    "plansToPursue": {
+      "source_type": "Organization",
+      "target_type": "Opportunity"
+    },
+    "submissionOpportunity": {
+      "source_type": "Submission",
+      "target_type": "Opportunity"
+    },
+    "submissionRespondent": {
+      "source_type": "Submission",
+      "target_type": "Organization"
+    },
+    "proposesProject": {
+      "source_type": "Submission",
+      "target_type": "Project"
+    },
+    "agreementParty": {
+      "source_type": "Agreement",
+      "target_type": "Organization"
+    },
+    "agreementOpportunity": {
+      "source_type": "Agreement",
+      "target_type": "Opportunity"
+    },
+    "assignedTo": {
+      "source_type": "Task",
+      "target_type": "Person"
+    },
+    "taskEvent": {
+      "source_type": "Task",
+      "target_type": "Event"
+    },
+    "taskMembership": {
+      "source_type": "Task",
+      "target_type": "Membership"
+    },
+    "assertionSubject": {
+      "source_type": "Assertion",
+      "target_type": "Organization"
+    },
+    "assertionEcosystem": {
+      "source_type": "Assertion",
+      "target_type": "Ecosystem"
+    }
+  },
+  "common_fields": [
+    "id",
+    "type",
+    "properties",
+    "source_ids"
+  ],
+  "link_fields": [
+    "id",
+    "type",
+    "source_id",
+    "target_id",
+    "relationship_status",
+    "evidence_ids"
+  ],
+  "enums": {
+    "verification_status": [
+      "user_reported",
+      "document_supported",
+      "independently_verified",
+      "unverified"
+    ],
+    "maturity": [
+      "development",
+      "proposed",
+      "prototype",
+      "operational"
+    ],
+    "readiness": [
+      "proposed",
+      "implemented_unverified",
+      "tested",
+      "operational"
+    ],
+    "membership_status": [
+      "joined_user_reported",
+      "pending",
+      "confirmed",
+      "inactive"
+    ],
+    "registration_status": [
+      "not_recorded",
+      "registered",
+      "attended",
+      "cancelled"
+    ],
+    "relationship_status": [
+      "document_supported",
+      "user_reported",
+      "proposed"
+    ],
+    "submission_status": [
+      "draft",
+      "submitted",
+      "withdrawn",
+      "selected",
+      "not_selected"
+    ],
+    "agreement_status": [
+      "proposed",
+      "signed",
+      "awarded",
+      "terminated"
+    ],
+    "task_status": [
+      "open",
+      "in_progress",
+      "done",
+      "blocked"
+    ]
+  },
+  "invariants": [
+    "Membership does not imply contract award, security clearance, endorsement or formal partnership.",
+    "An event listing does not imply registration or attendance.",
+    "A capability design does not establish implemented functionality.",
+    "Public opportunity visibility does not establish eligibility.",
+    "No automatic government affiliation propagation through ecosystem links."
+  ]
+}

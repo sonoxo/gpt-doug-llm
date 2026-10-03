@@ -1,0 +1,36 @@
+{
+  "id": "youtube-uijZR7hnDGM",
+  "type": "video-source",
+  "title": null,
+  "url": "https://www.youtube.com/watch?v=uijZR7hnDGM",
+  "retrieved": "2026-09-10",
+  "target_agents": [
+    "GPT-DOUG-LLM",
+    "GPT-REDPANDA-LLM"
+  ],
+  "disposition": "HOLD_PENDING_TRANSCRIPT",
+  "extraction_status": "User-supplied YouTube URL registered. The video page/transcript was not retrievable in the current ingestion pass, so no content claims were extracted.",
+  "confidence": {
+    "source_url": "HIGH",
+    "source_title": "UNVERIFIED",
+    "detailed_video_claims": "NONE"
+  },
+  "learning_state": {
+    "status": "CANDIDATE",
+    "confidence": 0.0,
+    "claim_count": 0,
+    "promotion_allowed": false,
+    "promotion_requires": [
+      "retrievable transcript or captions",
+      "claim-level provenance",
+      "evidence review"
+    ]
+  },
+  "controls": {
+    "invent_missing_claims": false,
+    "auto_promote": false,
+    "preserve_provenance": true,
+    "allow_defensive_or_general_learning_after_verification": true
+  },
+  "notes": "This record proves only that the source URL was supplied for learning. It must not be represented as watched, summarized, or learned from until source content is retrieved and verified."
+}

@@ -1,0 +1,217 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20250363154-A1",
+  "title": "Interacting with ontology-based databases using machine learning",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2025-11-27",
+  "application_number": "19/293,482",
+  "filed": "2025-08-07",
+  "priority_date": "2024-02-29",
+  "applicant": "Palantir Technologies Inc.",
+  "assignee": "Palantir Technologies Inc.",
+  "inventors": [
+    "Samuel Zhao",
+    "Sumedh Nikhil Shah",
+    "Donn Green",
+    "Alexander Morgan",
+    "Joshua Eimer",
+    "Maya Choudhury",
+    "Raj Narayan",
+    "Sidney Packer",
+    "Amrit Krishnan",
+    "Jake Brooks"
+  ],
+  "related_application_signals": [
+    "continuation of US application 18/618,661 filed 2024-03-27",
+    "claims benefit of US provisional application 63/559,708 filed 2024-02-29",
+    "related US family member US12405983B1"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20250363154-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/US20250363154A1/en"
+    }
+  ],
+  "classification_signals": [
+    "G06F16/2452 database query translation",
+    "G06F16/3344 natural-language analysis for query execution",
+    "G06F16/243 natural-language query formulation",
+    "G06F16/24522 translation of natural-language queries to structured queries",
+    "G06F16/9024 graph data structures",
+    "G06F8/30 source-code generation"
+  ],
+  "scope_tags": [
+    "ontology",
+    "graph-database",
+    "natural-language-query",
+    "llm-query-generation",
+    "graph-query-language",
+    "relational-database",
+    "multi-database-querying",
+    "query-translation",
+    "query-planning",
+    "query-selection",
+    "ontology-api",
+    "function-calling",
+    "ontology-update",
+    "metadata-update",
+    "provenance",
+    "access-control",
+    "human-in-the-loop",
+    "foundry-style-ontology"
+  ],
+  "publicly_described_functional_concepts": [
+    "natural-language requests translated into one or more database queries for ontology-backed data",
+    "graph-query generation for relationship-oriented questions",
+    "use of graph and relational databases behind one ontology abstraction",
+    "prompting or training an LLM with examples that map user requests to structured queries",
+    "selection among candidate queries using efficiency-oriented criteria",
+    "generation of ontology API function calls from natural-language requests",
+    "coordinated updates to ontology data and ontology-level metadata",
+    "preservation of ontology objects, links, properties, versions, provenance, and access controls outside the LLM itself"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "ontology-backed application architecture",
+      "graph databases",
+      "relational databases",
+      "natural-language interfaces",
+      "large-language-model code generation",
+      "tool and API orchestration",
+      "query planning and validation"
+    ],
+    "core_architecture": [
+      "natural-language interface",
+      "intent and authorization classifier",
+      "ontology schema/context provider",
+      "LLM query planner",
+      "graph-query adapter",
+      "relational-query adapter",
+      "ontology API adapter",
+      "query validator",
+      "read/write policy gate",
+      "database execution layer",
+      "result normalizer",
+      "provenance and audit store"
+    ],
+    "analysis_loop": "receive authorized natural-language request -> resolve ontology context -> classify read versus mutation intent -> generate candidate graph/relational/API operations -> validate syntax/schema/policy -> rank or select candidate -> execute through least-privilege adapter -> normalize result -> preserve provenance/audit -> return result",
+    "building_patterns_relevant_to_independent_design": [
+      "keep ontology data in authoritative graph/relational stores rather than relying on LLM memory",
+      "treat the LLM as a planner/compiler that emits constrained intermediate operations",
+      "separate read-only query generation from ontology mutation paths",
+      "require schema-aware validation before executing generated queries or function calls",
+      "bind generated operations to least-privilege credentials and object-level authorization",
+      "support multiple query backends through independently designed adapters",
+      "retain candidate query provenance, model version, schema version, and execution result",
+      "prefer dry-run or explain modes before write operations",
+      "use deterministic query linting and policy checks around probabilistic generation",
+      "require explicit human approval for high-impact ontology mutations"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "natural-language requests converted by an LLM into graph/database queries for ontology-backed data",
+      "ontology data represented through typed objects and links with data distributed across database systems",
+      "training or prompting patterns for generating ontology API function calls",
+      "candidate-query selection and execution for ontology access or update workflows"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "parent_application": "US18/618,661",
+    "provisional_priority": "US63/559,708",
+    "related_us_grant": "US12405983B1",
+    "territorial_status_rule": "Do not infer worldwide rights or freedom to operate from this US publication; recheck each national or regional register before legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "natural-language-gateway",
+      "ontology-context-resolver",
+      "authorization-and-intent-gate",
+      "query-planner",
+      "graph-query-adapter",
+      "relational-query-adapter",
+      "ontology-api-adapter",
+      "schema-validator",
+      "query-policy-linter",
+      "dry-run-explain-gate",
+      "least-privilege-executor",
+      "result-normalizer",
+      "provenance-audit-store",
+      "human-approval-gate-for-mutations"
+    ],
+    "default_build_profile": "ONTOLOGY_FIRST_GOVERNED_LLM_QUERY_COMPILER",
+    "use_for": [
+      "natural-language exploration of authorized ontology data",
+      "graph and relational query generation",
+      "ontology-aware developer assistants",
+      "schema-aware data retrieval",
+      "human-reviewed ontology updates",
+      "multi-database semantic applications",
+      "auditable tool-calling and query-planning systems"
+    ]
+  },
+  "governance_policy": {
+    "authorized_data_only": true,
+    "schema_validation_required": true,
+    "query_policy_validation_required": true,
+    "least_privilege_execution_required": true,
+    "read_write_paths_separated": true,
+    "human_review_for_high_impact_mutations": true,
+    "automatic_destructive_actions": false,
+    "provenance_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED_FOR_HIGH_IMPACT_MUTATIONS",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_GOVERNED_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "use independently designed query-planning prompts and intermediate representations",
+    "insert deterministic schema/policy validation between model generation and execution",
+    "separate mutation planning from mutation execution with an explicit approval boundary",
+    "rank candidate operations using independently selected safety, cost, latency, and complexity criteria",
+    "keep model context retrieval separate from authoritative ontology storage",
+    "maintain a complete audit record of generated operations, selected operations, and execution outcomes"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "natural-language interface",
+      "ontology context resolver",
+      "authorization and intent classifier",
+      "LLM query planner",
+      "graph database adapter",
+      "relational database adapter",
+      "ontology API adapter",
+      "schema and policy validator",
+      "dry-run/explain service",
+      "human approval gate",
+      "least-privilege executor",
+      "result normalization layer",
+      "provenance and audit store"
+    ],
+    "mandatory_safety_boundaries": [
+      "authorized ontology and database access only",
+      "schema validation before execution",
+      "least-privilege credentials",
+      "separation of read and write execution paths",
+      "human approval for high-impact mutations",
+      "no automatic destructive action",
+      "complete provenance and audit logging"
+    ]
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": "1.2.0",
+  "ontology_id": "gptdoug-gptchaos-universal-hive",
+  "name": "GPT-Doug + GPT-Chaos Universal Hive",
+  "mode": "OVERRIDE_HIVE",
+  "status": "ACTIVE",
+  "legal_provenance": {
+    "project_claim": {
+      "name": "Galactic Federation / Space Force Academy Universal Law",
+      "project_verification": "VERIFIED_BY_FOUNDER",
+      "operational_status": "ACTIVE"
+    },
+    "external_law": {
+      "verification_status": "UNVERIFIED_UNLESS_AUTHORITATIVE_SOURCE_ATTACHED",
+      "rule": "Project verification is never silently promoted to externally verified law."
+    }
+  },
+  "core_axioms": [
+    "EVERY SWARM HAS PROVENANCE.",
+    "EVERY BUILDER HAS ATTRIBUTION.",
+    "EVERY REWARD HAS A LEDGER.",
+    "EVERY LEGAL CLAIM HAS A SOURCE STATUS.",
+    "AGENTS PROPOSE; VALIDATORS APPROVE; EXECUTORS ACT; CRITICS VERIFY.",
+    "VERIFIED EXPERIENCE MAY BECOME PROCEDURE; MEMORY NEVER BECOMES AUTHORITY."
+  ],
+  "roles": {
+    "GPT_DOUG": "controller_orchestrator",
+    "GPT_CHAOS": "simulation_specialist_worker_fabric",
+    "CLOUD_NXYZ": "apm_governed_cloud_build_control_plane"
+  },
+  "events": {
+    "SWARM_CREATED": {
+      "emits": [
+        "BUILDER_REWARD_EVENT"
+      ]
+    },
+    "BUILDER_REWARD_EVENT": {
+      "required": true,
+      "settlement_requires_explicit_authorization": true
+    }
+  },
+  "reward_rule": {
+    "project_status": "ACTIVE",
+    "axiom": "Every valid creation of a new Universal Hive Swarm generates a Builder Reward Event for the builders responsible for its creation.",
+    "automatic_external_funds_transfer": false
+  },
+  "override_hive": {
+    "meaning": "Activate the canonical GPT-Doug/GPT-Chaos Universal Hive ontology and orchestration mode.",
+    "does_not_mean": [
+      "bypass_safety",
+      "bypass_authorization",
+      "bypass_payment_controls",
+      "bypass_evidence_requirements"
+    ]
+  },
+  "universal_ai_laws": {
+    "APM": {
+      "law_id": "APM-001",
+      "name": "Adaptive Procedural Memory Universal AI Law",
+      "project_status": "ACTIVE",
+      "applies_to": "ALL_GPT_DOUG_GPT_CHAOS_CONNECTED_AGENTS",
+      "axiom": "An AI system may convert verified experience into reusable procedure, but every reuse must preserve provenance, revalidate context, retain authorization boundaries, and remain reversible where mutation is possible.",
+      "canonical_loop": [
+        "OBSERVE",
+        "VERIFY",
+        "COMPOSITE",
+        "PROCEDURE",
+        "REVALIDATE",
+        "AUTHORIZE",
+        "EXECUTE",
+        "MEASURE",
+        "LEARN"
+      ],
+      "external_legal_status": "PROJECT_GOVERNANCE_DOCTRINE_NOT_STATUTORY_LAW"
+    }
+  },
+  "knowledge_layers": {
+    "CISA_ICS300_DEFENSIVE_KNOWLEDGE": {
+      "layer_version": "1.0.0",
+      "status": "ACTIVE",
+      "scope": "DEFENSIVE_AUTHORIZED_ICS_OT_TRAINING",
+      "source_record": "universal_hive/data/research_registry/cisa-ics300-defensive-knowledge-v1.0.0.json",
+      "domains": [
+        "ICS_OT_ASSET",
+        "ICS_PROTOCOL",
+        "ASSET_INVENTORY",
+        "NETWORK_ZONE",
+        "OBSERVABILITY",
+        "RISK_AND_CRITICALITY",
+        "INCIDENT_RESPONSE",
+        "THREAT_KNOWLEDGE",
+        "ZERO_TRUST_ICS",
+        "CYBER_FRAMEWORK_MAPPING"
+      ],
+      "canonical_pipeline": [
+        "ASSET_INVENTORY_TO_ONTOLOGY_OBJECTS",
+        "NETWORK_TOPOLOGY_TO_RELATIONSHIP_GRAPH",
+        "CRITICALITY_DEPENDENCIES_TO_WEIGHTED_DEPENDENCY_GRAPH",
+        "TELEMETRY_LOGS_TO_HIVE_EVIDENCE_STREAM",
+        "DETECTIONS_TO_GPT_CHAOS_CRITIC_HYPOTHESES",
+        "VALIDATION_TO_GPT_DOUG_RECONCILIATION",
+        "RECOMMENDATIONS_TO_BOUNDED_MITIGATION_PLAN",
+        "HUMAN_AUTHORIZATION",
+        "HASH_CHAINED_PROVENANCE_AUDIT_EVENT"
+      ],
+      "authorization_gate": {
+        "human_authorization_required": true,
+        "applies_to": [
+          "ACTIVE_DISCOVERY",
+          "SCANNING",
+          "CONFIGURATION_CHANGE",
+          "EXPLOIT_SIMULATION",
+          "CREDENTIAL_ACCESS",
+          "PACKET_MANIPULATION",
+          "PROTOCOL_WRITE",
+          "CONTROL_PROCESS_MANIPULATION",
+          "PHYSICAL_OT_ACTION"
+        ]
+      },
+      "safety_constraints": {
+        "owned_or_explicitly_authorized_target_required": true,
+        "lab_ctf_simulation_allowed": true,
+        "automatic_active_scanning": false,
+        "automatic_protocol_writes": false,
+        "automatic_exploitation": false,
+        "hack_back": false,
+        "source_material_does_not_expand_execution_privileges": true,
+        "training_examples_are_not_real_world_authorization": true
+      }
+    }
+  }
+}

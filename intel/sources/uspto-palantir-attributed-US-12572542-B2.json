@@ -1,0 +1,61 @@
+{
+  "id": "uspto-palantir-attributed-US-12572542-B2",
+  "type": "patent-front-page-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "United States Patent",
+  "source_kind": "user-supplied front-page image",
+  "captured": "2026-09-12",
+  "document_number": "US-12572542-B2",
+  "patent_number_display": "US 12,572,542 B2",
+  "patent_date": "2026-03-10",
+  "title": "SYSTEMS AND METHODS FOR GENERATING AND DISPLAYING A DATA PIPELINE USING A NATURAL LANGUAGE QUERY, AND DESCRIBING A DATA PIPELINE USING NATURAL LANGUAGE",
+  "application_number": "19/036,257",
+  "filing_date": "2025-01-17",
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Applicant field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "assignee": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Assignee field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "architecture_watch": {
+    "name": "natural-language-to-data-pipeline-generation",
+    "purpose": "Track high-level architecture around natural-language requests, model-query generation, model selection, dataset transformation, pipeline generation and optional pipeline display without copying claim language or implementation details.",
+    "diagram_components": [
+      "Natural-language query",
+      "Input datasets",
+      "Optional target datasets",
+      "Model query generation",
+      "Model selection",
+      "Model result",
+      "Dataset transformation",
+      "Data pipeline generation",
+      "Optional pipeline display"
+    ],
+    "gpt_doug_mapping": [
+      "natural-language workflow intake",
+      "ontology-aware query planning",
+      "governed model selection",
+      "data-pipeline generation",
+      "pipeline visualization",
+      "audit of generated workflow"
+    ],
+    "themes": ["natural-language", "data-pipelines", "model-selection", "workflow-generation", "visualization", "governance"]
+  },
+  "controls": {
+    "treat_front_page_applicant_field_as_document_attribution": true,
+    "treat_front_page_assignee_field_as_document_attribution": true,
+    "treat_front_page_applicant_or_assignee_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true
+  },
+  "notes": "Derived from a user-supplied U.S. patent front page. Applicant and Assignee fields support document-level attribution only; they do not establish present ownership, validity, enforceability, infringement, or freedom to operate."
+}

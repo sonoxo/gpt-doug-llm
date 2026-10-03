@@ -1,0 +1,145 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20260263586-A1",
+  "title": "Influenza B virus mutants and uses therefor",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2026-09-10",
+  "application_number": "19/277,715",
+  "filed": "2025-07-23",
+  "applicant": "FluGen, Inc.",
+  "assignee": "FluGen, Inc.",
+  "inventors": [
+    "Michael J. Moser",
+    "Yasuko Hatta",
+    "Pamuk Bilsel"
+  ],
+  "related_application_signals": [
+    "division of US application 18/074,220 filed 2022-12-02, reported on the front page as US Patent 12,390,519",
+    "related divisional lineage includes application 16/488,913 from PCT/US2018/019690",
+    "provisional application 62/463,994 filed 2017-02-27"
+  ],
+  "source_provenance": [
+    {
+      "type": "official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20260263586-A1?source=US-PGPUB",
+      "note": "Ephemeral request-token parameters are intentionally not persisted. Official front page and claims were reviewed for high-level scope only."
+    }
+  ],
+  "classification_signals": [
+    "A61K 39/145 influenza-virus antigen or vaccine compositions",
+    "A61K 39/39 immunologic adjuvant/composition context",
+    "C07K 14/005 viral proteins",
+    "C12N 7/00 viruses and viral compositions"
+  ],
+  "scope_tags": [
+    "influenza-b",
+    "vaccine",
+    "immunogenic-composition",
+    "viral-mutant",
+    "bm2-protein",
+    "recombinant-virus",
+    "host-cell-system",
+    "viral-propagation",
+    "vaccination-method",
+    "biologics-manufacturing",
+    "public-health"
+  ],
+  "publicly_described_functional_concepts": [
+    "mutant influenza B virus constructs described for immunogenic and vaccine-related use",
+    "mutant BM2-related viral functionality as a central technical theme",
+    "immunogenic compositions containing or derived from mutant influenza viruses",
+    "host-cell systems described for producing or propagating recombinant influenza viruses",
+    "vaccination-related methods and compositions",
+    "sequence-listed biological constructs are present in the publication but are intentionally not stored in this scope seed"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "virology",
+      "vaccines and immunology",
+      "recombinant biological systems",
+      "biologics manufacturing",
+      "public-health biotechnology"
+    ],
+    "core_architecture": [
+      "influenza-virus construct",
+      "BM2-related viral component",
+      "immunogenic composition",
+      "host-cell production context",
+      "vaccine or vaccination context"
+    ],
+    "research_abstraction": "public patent landscape for influenza B mutant vaccine concepts and host-cell production systems; operational pathogen-engineering details are excluded",
+    "device_patterns_relevant_to_independent_design": [
+      "non-operational provenance tracking for biological patent families",
+      "separation of public-health/vaccine concept indexing from wet-lab execution",
+      "regulatory and biosafety review gates for biological products",
+      "sequence data and experimental procedures excluded from automated engineering synthesis"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "recombinant influenza virus production and host-cell system themes",
+      "influenza B mutant/BM2-related biological construct themes",
+      "immunogenic composition and vaccination-use themes"
+    ],
+    "operational_details_redacted": true,
+    "sequence_level_details_redacted": true,
+    "legal_scope_rule": "Patent scope depends on the controlling claims, prosecution history, legal status, and jurisdiction. This record is a non-operational research abstraction only."
+  },
+  "scope_usage_policy": {
+    "patent_landscape_research": true,
+    "public_health_context": true,
+    "legal_and_regulatory_mapping": true,
+    "high_level_vaccine_concept_summary": true,
+    "engineering_pattern_generation": false,
+    "sequence_retrieval_or_design": false,
+    "mutation_design_or_optimization": false,
+    "virus_rescue_or_propagation_protocol_generation": false,
+    "wet_lab_parameterization": false,
+    "virulence_or_transmissibility_optimization": false
+  },
+  "safety_scope": {
+    "classification": "RESTRICTED_BIOLOGICAL_PATHOGEN_ENGINEERING",
+    "sequence_data_stored": false,
+    "wet_lab_protocols_stored": false,
+    "operational_propagation_parameters_stored": false,
+    "actionable_mutation_map_stored": false,
+    "allowed_output_level": "HIGH_LEVEL_NON_OPERATIONAL",
+    "human_biosafety_review_required_for_experimental_use": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_FOR_NON_OPERATIONAL_PATENT_RESEARCH_ONLY"
+  },
+  "design_divergence_defaults": [
+    "do not ingest or reproduce nucleotide or amino-acid sequence listings into the engineering scope library",
+    "do not convert claims or examples into executable wet-lab procedures",
+    "separate patent-landscape retrieval from biological experimentation",
+    "require biosafety, regulatory, clinical, and legal review for any experimental or product-development use",
+    "maintain provenance showing that the patent was used only as high-level public prior-art evidence"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "public patent evidence store",
+      "high-level vaccine concept index",
+      "patent-family and legal-status review",
+      "biosafety and regulatory review gate",
+      "non-operational research summary"
+    ],
+    "mandatory_safety_boundaries": [
+      "no biological sequence export",
+      "no executable pathogen-engineering workflow",
+      "no mutation optimization",
+      "no culture, rescue, propagation, or transfection parameterization",
+      "no virulence or transmissibility enhancement",
+      "human biosafety review for experimental use"
+    ]
+  }
+}

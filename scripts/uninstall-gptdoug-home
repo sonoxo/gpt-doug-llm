@@ -1,0 +1,33 @@
+#!/bin/zsh
+set -eu
+
+ZSHRC="$HOME/.zshrc"
+BEGIN="# >>> GPT-DOUG HOME >>>"
+END="# <<< GPT-DOUG HOME <<<"
+
+tmux kill-session -t gptdoug-max 2>/dev/null || true
+mkdir -p "$HOME/.gpt-doug"
+touch "$HOME/.gpt-doug/STOP"
+
+python3 - "$ZSHRC" "$BEGIN" "$END" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+begin = sys.argv[2]
+end = sys.argv[3]
+
+if not path.exists():
+    raise SystemExit(0)
+
+text = path.read_text()
+if begin in text and end in text:
+    before = text.split(begin, 1)[0]
+    after = text.split(end, 1)[1]
+    path.write_text((before.rstrip() + "\n\n" + after.lstrip("\n")).rstrip() + "\n")
+PY
+
+rm -f "$HOME/.local/bin/gptdoug-home" "$HOME/.local/bin/doug-on" "$HOME/.local/bin/doug-off"
+
+echo "GPT-DOUG HOME autostart removed."
+echo "Your ~/.gpt-doug/env settings and zshrc backups were preserved."

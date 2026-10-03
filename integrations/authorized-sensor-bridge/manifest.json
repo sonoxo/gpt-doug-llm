@@ -1,0 +1,24 @@
+{
+  "capabilities": [
+    "explicit-sensor-registration",
+    "health-telemetry",
+    "ontology-metadata-export",
+    "maven-packaging"
+  ],
+  "classification": "operator-authorized-only",
+  "credentials_in_artifact": false,
+  "id": "authorized-sensor-bridge",
+  "name": "Authorized Sensor Bridge",
+  "prohibited_capabilities": [
+    "network-discovery",
+    "credential-storage",
+    "video-content-capture",
+    "person-identification",
+    "targeting",
+    "autonomous-tasking"
+  ],
+  "requires_explicit_authorization": true,
+  "runtime_state": "~/.config/gpt-doug/authorized-sensors-last.json",
+  "schema": "xunia.maven.integration.v1",
+  "version": "1.0.0"
+}

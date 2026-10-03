@@ -1,0 +1,64 @@
+{
+  "id": "uspto-palantir-attributed-US-12487876-B2",
+  "type": "patent-front-page-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "United States Patent",
+  "source_kind": "user-supplied front-page image",
+  "captured": "2026-09-12",
+  "document_number": "US-12487876-B2",
+  "patent_number_display": "US 12,487,876 B2",
+  "patent_date": "2025-12-02",
+  "title": "LANGUAGE MODEL ASSISTED ERROR ANALYSIS SYSTEM",
+  "application_number": "18/735,057",
+  "filing_date": "2024-06-05",
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Applicant field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "assignee": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Assignee field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "architecture_watch": {
+    "name": "language-model-assisted-error-analysis",
+    "purpose": "Track high-level architecture around error-message intake, context generation, prompt generation, language-model analysis and human-readable remediation suggestions without copying claim language or implementation details.",
+    "diagram_components": [
+      "Error message",
+      "Context generation module",
+      "Documents",
+      "Code",
+      "Error-message context",
+      "Other information",
+      "Prompt generation module",
+      "Instructions",
+      "Prompt",
+      "Language model",
+      "Explanation and suggested fix"
+    ],
+    "gpt_doug_mapping": [
+      "diagnostic event intake",
+      "context assembly",
+      "prompt construction",
+      "LLM-assisted root-cause analysis",
+      "remediation recommendation",
+      "human verification before changes"
+    ],
+    "themes": ["language-models", "error-analysis", "diagnostics", "context-generation", "remediation", "human-in-the-loop"]
+  },
+  "controls": {
+    "treat_front_page_applicant_field_as_document_attribution": true,
+    "treat_front_page_assignee_field_as_document_attribution": true,
+    "treat_front_page_applicant_or_assignee_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true,
+    "automatic_remediation": false
+  },
+  "notes": "Derived from a user-supplied U.S. patent front page. Applicant and Assignee fields support document-level attribution only; remediation recommendations remain human-reviewed."
+}

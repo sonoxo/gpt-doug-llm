@@ -1,0 +1,40 @@
+{
+  "schema": "xunia.maven.world-grid.v1",
+  "mode": "PUBLIC_NON_PERSONAL_WORLD_GRID",
+  "purpose": "Global public situational awareness using coarse, non-personal, provenance-backed observations.",
+  "allowed_layers": [
+    "global_grid_cells",
+    "public_weather",
+    "earthquakes",
+    "public_natural_events",
+    "public_infrastructure_status",
+    "authorized_fleet_aggregate",
+    "public_transit_aggregate",
+    "commercial_mobility_aggregate"
+  ],
+  "controls": {
+    "coarse_geolocation_only": true,
+    "max_public_coordinate_decimals": 2,
+    "identifiers_suppressed": true,
+    "individual_tracking": false,
+    "private_data": false,
+    "provenance_required": true
+  },
+  "public_sources": [
+    {
+      "name": "Open-Meteo",
+      "purpose": "Broad public weather observations",
+      "url": "https://open-meteo.com/"
+    },
+    {
+      "name": "USGS Earthquake Hazards Program",
+      "purpose": "Public earthquake observations",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/"
+    },
+    {
+      "name": "NASA EONET",
+      "purpose": "Public natural-event observations",
+      "url": "https://eonet.gsfc.nasa.gov/"
+    }
+  ]
+}

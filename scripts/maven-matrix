@@ -1,0 +1,198 @@
+#!/bin/sh
+set -eu
+
+CONFIG="$HOME/.gpt-doug/env"
+if [ -f "$CONFIG" ]; then
+  set -a
+  . "$CONFIG"
+  set +a
+fi
+
+resolve_root() {
+  script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+  script_root="$(CDPATH= cd -- "$script_dir/.." && pwd)"
+  for candidate in     "${GPT_DOUG_ROOT:-}"     "$script_root"     "$HOME/.config/gptdoug/src/gpt-doug-llm"     "$HOME/gpt-doug-llm"     "$HOME/Downloads/gpt-doug-llm"
+  do
+    [ -n "$candidate" ] || continue
+    if [ -f "$candidate/gpt_doug_max.py" ] && [ -f "$candidate/scripts/zyra-maven" ]; then
+      (CDPATH= cd -- "$candidate" && pwd)
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "❌ GPT-DOUG repository root not found." >&2
+  echo "Set GPT_DOUG_ROOT or restore ~/.config/gptdoug/src/gpt-doug-llm." >&2
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
+SITE="$ROOT/robotics-intel-site"
+STATE="$HOME/.config/gpt-doug/maven-matrix"
+PREFERRED_PORT="${MAVEN_GEO_PORT:-8765}"
+PIDFILE="$STATE/http.pid"
+PORTFILE="$STATE/http.port"
+LOGFILE="$STATE/http.log"
+
+mkdir -p "$STATE"
+
+usage() {
+  cat <<'EOF'
+Usage: maven-matrix [open|start|status|stop|path]
+
+  open    Start the local MAVEN geospatial site if needed and open it
+  start   Start the local site without opening a browser
+  status  Show root, server PID/port, and endpoint health
+  stop    Stop the local server started by this launcher
+  path    Print the resolved GPT-DOUG repository root
+EOF
+}
+
+server_running() {
+  [ -f "$PIDFILE" ] || return 1
+  pid="$(cat "$PIDFILE" 2>/dev/null || true)"
+  [ -n "$pid" ] || return 1
+  kill -0 "$pid" 2>/dev/null
+}
+
+pick_port() {
+  python3 - "$PREFERRED_PORT" <<'PY'
+import socket, sys
+start = int(sys.argv[1])
+for port in range(start, start + 20):
+    with socket.socket() as sock:
+        try:
+            sock.bind(("127.0.0.1", port))
+        except OSError:
+            continue
+        print(port)
+        raise SystemExit(0)
+raise SystemExit("no free local MAVEN port found")
+PY
+}
+
+health_url() {
+  port="$(cat "$PORTFILE" 2>/dev/null || true)"
+  [ -n "$port" ] || return 1
+  printf 'http://127.0.0.1:%s/maven-geospatial.html' "$port"
+}
+
+stop_server() {
+  if server_running; then
+    pid="$(cat "$PIDFILE")"
+    kill "$pid" 2>/dev/null || true
+    i=0
+    while kill -0 "$pid" 2>/dev/null && [ "$i" -lt 30 ]; do
+      sleep 0.1
+      i=$((i + 1))
+    done
+  fi
+  rm -f "$PIDFILE" "$PORTFILE"
+}
+
+start_server() {
+  [ -f "$SITE/maven-geospatial.html" ] || {
+    echo "❌ MAVEN geospatial page missing: $SITE/maven-geospatial.html" >&2
+    exit 1
+  }
+
+  if server_running; then
+    url="$(health_url || true)"
+    if [ -n "$url" ] && command -v curl >/dev/null 2>&1 && curl -fsS "$url" >/dev/null 2>&1; then
+      printf '%s
+' "$url"
+      return 0
+    fi
+    stop_server
+  fi
+
+  port="$(pick_port)"
+  : > "$LOGFILE"
+  chmod 600 "$LOGFILE"
+  nohup python3 -m http.server "$port" --bind 127.0.0.1 --directory "$SITE" >"$LOGFILE" 2>&1 &
+  pid=$!
+  printf '%s
+' "$pid" > "$PIDFILE"
+  printf '%s
+' "$port" > "$PORTFILE"
+  chmod 600 "$PIDFILE" "$PORTFILE"
+
+  url="http://127.0.0.1:$port/maven-geospatial.html"
+  i=0
+  while [ "$i" -lt 40 ]; do
+    if command -v curl >/dev/null 2>&1 && curl -fsS "$url" >/dev/null 2>&1; then
+      printf '%s
+' "$url"
+      return 0
+    fi
+    if ! kill -0 "$pid" 2>/dev/null; then
+      echo "❌ MAVEN local server exited. Recent log:" >&2
+      tail -n 40 "$LOGFILE" >&2 || true
+      rm -f "$PIDFILE" "$PORTFILE"
+      exit 1
+    fi
+    sleep 0.15
+    i=$((i + 1))
+  done
+
+  echo "❌ MAVEN endpoint did not become healthy: $url" >&2
+  tail -n 40 "$LOGFILE" >&2 || true
+  exit 1
+}
+
+cmd="${1:-open}"
+case "$cmd" in
+  open)
+    url="$(start_server)"
+    final="$url?cb=$(date +%s)"
+    echo "🛰️ MAVEN MATRIX ONLINE"
+    echo "ROOT: $ROOT"
+    echo "SITE: $SITE"
+    echo "URL:  $final"
+    if command -v open >/dev/null 2>&1; then
+      open "$final"
+    else
+      printf '%s
+' "$final"
+    fi
+    ;;
+  start)
+    url="$(start_server)"
+    echo "🟢 MAVEN local server running"
+    echo "ROOT: $ROOT"
+    echo "URL:  $url"
+    ;;
+  status)
+    echo "🌳 GPT-DOUG ROOT: $ROOT"
+    echo "🗺️ MAVEN SITE:    $SITE"
+    if server_running; then
+      url="$(health_url || true)"
+      echo "🟢 SERVER PID:    $(cat "$PIDFILE")"
+      echo "🌐 URL:           $url"
+      if [ -n "$url" ] && command -v curl >/dev/null 2>&1 && curl -fsS "$url" >/dev/null 2>&1; then
+        echo "✅ ENDPOINT:      HEALTHY"
+      else
+        echo "⚠️ ENDPOINT:      NOT RESPONDING"
+      fi
+    else
+      echo "⚫ SERVER:        STOPPED"
+    fi
+    ;;
+  stop)
+    stop_server
+    echo "⚫ MAVEN local server stopped"
+    ;;
+  path)
+    printf '%s
+' "$ROOT"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    echo "❌ Unknown command: $cmd" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

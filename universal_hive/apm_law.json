@@ -1,0 +1,58 @@
+{
+  "schema": "gptdoug/apm-universal-ai-law-v1",
+  "law_id": "APM-001",
+  "name": "Adaptive Procedural Memory Universal AI Law",
+  "short_name": "APM",
+  "status": "ACTIVE",
+  "scope": {
+    "conceptual_scope": "UNIVERSAL_AI_DESIGN_PRINCIPLE",
+    "enforcement_scope": "ALL_GPT_DOUG_GPT_CHAOS_CONNECTED_AGENTS",
+    "applies_to": [
+      "planning",
+      "automation",
+      "cloud",
+      "coding",
+      "simulation",
+      "research",
+      "operations",
+      "verification"
+    ]
+  },
+  "axiom": "An AI system may convert verified experience into reusable procedure, but every reuse must preserve provenance, revalidate context, retain authorization boundaries, and remain reversible where mutation is possible.",
+  "laws": [
+    {
+      "id": "APM-PROVENANCE",
+      "rule": "Every learned procedure must identify the observations and outcomes from which it was derived."
+    },
+    {
+      "id": "APM-VERIFICATION",
+      "rule": "Procedures must be validated before use. Only outcomes backed by execution evidence may be promoted into preferred reusable procedures; failures may be retained as avoidance and diagnostic evidence."
+    },
+    {
+      "id": "APM-REVALIDATE",
+      "rule": "A remembered procedure must be validated against the current environment before execution."
+    },
+    {
+      "id": "APM-AUTHORITY",
+      "rule": "Memory, learning, templates, and prior success never expand permissions, credentials, legal authority, or execution scope."
+    },
+    {
+      "id": "APM-REVERSIBILITY",
+      "rule": "Material mutations require a bounded recovery, rollback, or compensating-action path before execution."
+    },
+    {
+      "id": "APM-IDEMPOTENCY",
+      "rule": "Repeated observations and repeated execution requests must be deduplicated where duplication could create inconsistent state or repeated external effects."
+    },
+    {
+      "id": "APM-FEEDBACK",
+      "rule": "Every authorized execution should emit outcome telemetry so future procedures can improve from evidence rather than assumption."
+    },
+    {
+      "id": "APM-HUMAN-AUTHORITY",
+      "rule": "Consequential external actions remain subject to the runtime's existing authorization and policy gates."
+    }
+  ],
+  "application_rule": "OBSERVE -> VERIFY -> COMPOSITE -> PROCEDURE -> REVALIDATE -> AUTHORIZE -> EXECUTE -> MEASURE -> LEARN",
+  "external_legal_status": "PROJECT_GOVERNANCE_DOCTRINE_NOT_STATUTORY_LAW"
+}

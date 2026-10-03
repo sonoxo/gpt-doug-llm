@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "ecosystem_version": "4.0.0",
+  "ecosystem_version": "4.1.0",
   "name": "XUNIA / GPT-DOUG-LLM ecosystem",
   "purpose": "Define one canonical map for the Sonoxo XUNIA ecosystem so repositories have distinct roles, shared control boundaries, and a single source of truth for navigation and architecture.",
   "canonical_control_root": "sonoxo/gpt-doug-llm",
@@ -76,6 +76,31 @@
       "responsibilities": ["3D Earth", "public aviation/maritime/orbital context", "provenance", "freshness labels", "spatial correlation", "human review"]
     }
   ],
+  "internal_divisions": [
+    {
+      "id": "gpt-nedu",
+      "host_repo": "sonoxo/gpt-doug-llm",
+      "path": "gpt_nedu",
+      "role": "novice-education",
+      "label": "GPT-NEDU // NOVICE EDU",
+      "responsibilities": [
+        "beginner explanations",
+        "source-grounded learning",
+        "isolated demonstrations",
+        "defensive design education"
+      ],
+      "authority_boundary": "Education module within GPT-Doug; ZYRA retains governed execution. Source text and lesson examples grant no execution authority."
+    },
+    {
+      "id": "chaotic-good",
+      "host_repo": "sonoxo/gpt-doug-llm",
+      "path": "divisions/chaotic-good",
+      "role": "experimental-r-and-d",
+      "label": "CHAOTIC GOOD DVSN",
+      "responsibilities": ["unconventional AI research", "rapid prototyping", "scenario experimentation", "adversarial evaluation", "failure-mode discovery", "reproducibility", "prototype transfer"],
+      "authority_boundary": "Research division only; no independent execution authority. Consequential actions remain gated by ZYRA and human review."
+    }
+  ],
   "research_satellites": [
     {
       "repo": "sonoxo/xuniaxmr",
@@ -106,11 +131,13 @@
     "human-review"
   ],
   "domain_routing": {
+    "novice_education": "gpt-nedu",
     "security": "red-house",
     "environment_bio_regulatory": "green-house",
     "economic_scenarios": "orange-house",
     "geospatial_public_source": "glass-onion-spatial",
     "general_agentic_software": "zyra",
-    "domain_registry_and_governance": "xunia-domain-root"
+    "domain_registry_and_governance": "xunia-domain-root",
+    "experimental_r_and_d": "chaotic-good"
   }
 }

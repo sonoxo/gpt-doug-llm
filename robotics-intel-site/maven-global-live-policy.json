@@ -1,0 +1,51 @@
+{
+  "schema": "xunia.maven.global-live-context.v1",
+  "mode": "LIVE_PUBLIC_READ_ONLY_CONTEXT",
+  "updated_at": "2026-09-30",
+  "sources": [
+    {
+      "name": "Open-Meteo Weather API",
+      "domain": "AIR_ENVIRONMENT",
+      "endpoint": "https://api.open-meteo.com/v1/forecast",
+      "fields": [
+        "temperature_2m",
+        "wind_speed_10m",
+        "wind_direction_10m"
+      ]
+    },
+    {
+      "name": "USGS GeoJSON Earthquake Feed",
+      "domain": "LAND_HAZARDS",
+      "endpoint": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
+    },
+    {
+      "name": "NASA EONET v3",
+      "domain": "LAND_NATURAL_EVENTS",
+      "endpoint": "https://eonet.gsfc.nasa.gov/api/v3/events/geojson?status=open&limit=80"
+    },
+    {
+      "name": "Open-Meteo Marine API",
+      "domain": "SEA_ENVIRONMENT",
+      "endpoint": "https://marine-api.open-meteo.com/v1/marine",
+      "fields": [
+        "wave_height",
+        "sea_surface_temperature",
+        "ocean_current_velocity",
+        "ocean_current_direction"
+      ]
+    }
+  ],
+  "controls": {
+    "public_data_only": true,
+    "coarse_display_coordinates": true,
+    "display_coordinate_precision_decimals": 1,
+    "read_only": true,
+    "live_personnel_tracking": false,
+    "live_military_unit_tracking": false,
+    "target_generation": false,
+    "target_export": false,
+    "fire_control": false,
+    "external_weapon_control": false,
+    "synthetic_effects_can_consume_live_markers": false
+  }
+}

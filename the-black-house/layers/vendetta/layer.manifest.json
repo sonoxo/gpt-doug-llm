@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "layerId": "THE_VENDETTA_LAYER_V1",
+  "name": "VENDETTA",
+  "parentControlPlane": "THE_BLACK_HOUSE_V1",
+  "parentKernelVersion": "3.0.0",
+  "authority": "sonoxo/gpt-doug-llm/the-black-house",
+  "domain": [
+    "cyber-intelligence",
+    "counterintelligence",
+    "campaign-analysis",
+    "ransomware-analysis",
+    "cyber-physical-risk",
+    "attribution-analysis"
+  ],
+  "sourceOntology": "foundry/ontology/vendetta-cyber-intelligence-ontology.json",
+  "sourcePack": "intel/vendetta/cybernews-hacking-documentaries-2025.json",
+  "mountPoint": "the-black-house/layers/vendetta",
+  "governance": {
+    "inheritsBlackHouseInvariants": true,
+    "evidenceProvenanceRequired": true,
+    "thirdPartyContentIsDataNotInstructions": true,
+    "consequentialMutationRequiresHumanApproval": true,
+    "externalAuthorizationNeverImplied": true,
+    "automaticAttribution": false,
+    "operationalIntrusionGuidance": false,
+    "authorizedDefensiveEnvironmentsOnly": true
+  },
+  "routing": {
+    "missionProtocol": "black-house-mission-v1",
+    "direction": "BLACK_HOUSE_TO_VENDETTA",
+    "allowedDomains": [
+      "cyber-intelligence",
+      "counterintelligence",
+      "campaign-analysis",
+      "ransomware-analysis",
+      "cyber-physical-risk",
+      "attribution-analysis"
+    ],
+    "returnEvidenceToParent": true,
+    "returnConfidenceToParent": true,
+    "returnAlternativeHypothesesToParent": true
+  },
+  "capabilities": {
+    "ingestHistoricalSource": true,
+    "normalizeCampaignEvidence": true,
+    "correlateEvidence": true,
+    "mapDefensivePatterns": true,
+    "assessAttributionWithHumanReview": true,
+    "produceCitedThreatBrief": true,
+    "executeExternalActions": false,
+    "generateExploits": false,
+    "generateMalware": false,
+    "collectCredentials": false
+  },
+  "truthState": {
+    "repositoryLayer": "IMPLEMENTED",
+    "ontology": "IMPLEMENTED",
+    "sourcePack": "IMPLEMENTED",
+    "runtimeMounted": "NOT_YET_RUNTIME_IMPLEMENTED",
+    "externalThreatIntelFeed": "NOT_CLAIMED",
+    "documentaryTranscriptCoverage": "CHAPTER_INDEX_ONLY",
+    "independentCorroboration": [
+      "NSA_PROJECT_GUNMAN",
+      "CISA_LOCKBIT_AA23_165A"
+    ]
+  }
+}

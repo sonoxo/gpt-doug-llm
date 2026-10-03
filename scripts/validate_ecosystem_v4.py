@@ -39,8 +39,8 @@ def main() -> None:
     registry = json.loads(REGISTRY.read_text())
     ai = json.loads(AI_MANIFEST.read_text())
 
-    if registry.get("ecosystem_version") != "4.0.0":
-        fail("ecosystem_version must be 4.0.0")
+    if registry.get("ecosystem_version") != "4.1.0":
+        fail("ecosystem_version must be 4.1.0")
     if registry.get("canonical_control_root") != "sonoxo/gpt-doug-llm":
         fail("canonical control root drifted")
     if registry.get("canonical_hub") != "sonoxo/xuniahub":
@@ -74,7 +74,8 @@ def main() -> None:
             fail(f"missing architecture boundary containing: {phrase}")
 
     routing = registry.get("domain_routing", {})
-    known = EXPECTED_PLANES
+    internal_division_ids = {division.get("id") for division in registry.get("internal_divisions", [])}
+    known = EXPECTED_PLANES | internal_division_ids
     for domain, target in routing.items():
         if target not in known:
             fail(f"domain route {domain!r} points to unknown plane {target!r}")

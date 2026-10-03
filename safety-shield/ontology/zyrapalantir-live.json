@@ -1,0 +1,61 @@
+{
+  "ontology": "ZYRAPALANTIRLive",
+  "version": "1.0.0",
+  "mode": "DEFENSIVE_MONITORING_ONLY",
+  "purpose": "Govern persistent defensive monitoring, readiness verification, analyst alerting, and audit evidence for ZYRAPALANTIR live mode.",
+  "objectTypes": [
+    "LiveRuntime",
+    "TelemetrySource",
+    "SecurityFinding",
+    "ReadinessGate",
+    "AnalystAlert",
+    "AuditEvent"
+  ],
+  "links": [
+    "LiveRuntime MONITORS TelemetrySource",
+    "TelemetrySource PRODUCES SecurityFinding",
+    "LiveRuntime CHECKS ReadinessGate",
+    "SecurityFinding MAY_TRIGGER AnalystAlert",
+    "LiveRuntime EMITS AuditEvent"
+  ],
+  "controls": {
+    "defaultScanMode": "internal",
+    "nonInternalScopeRequiresExplicitAuthorizationAck": true,
+    "automaticExternalAction": false,
+    "artifactExecutionFromMonitor": false,
+    "weaponsControl": false,
+    "autonomousTargeting": false,
+    "criticalInfrastructureControl": false,
+    "humanApprovalRequiredForExternalAction": true,
+    "auditLogRequired": true,
+    "localStatePermissions": "0600",
+    "criticalAlertThresholdCycles": 1,
+    "highAlertThresholdCycles": 3,
+    "mavenHealthGate": "required-at-startup-and-periodic",
+    "redpandaCprGate": "required-at-startup-and-periodic"
+  },
+  "runtime": {
+    "defaultIntervalSeconds": 60,
+    "defaultScanMode": "internal",
+    "mavenHealthEveryCycles": 5,
+    "redpandaCprEveryCycles": 10,
+    "readinessOnGateFailure": "DEGRADED_MONITORING_CONTINUES",
+    "credentialStorage": "environment-only",
+    "statePath": "~/.config/gpt-doug/zyrapalantir-live-state.json",
+    "auditPath": "~/.config/gpt-doug/zyrapalantir-live-audit.jsonl"
+  },
+  "severityPolicy": {
+    "CRITICAL": "alert immediately",
+    "HIGH": "alert after three consecutive matching cycles",
+    "MEDIUM": "log and monitor",
+    "LOW": "log and monitor"
+  },
+  "guardrails": [
+    "Monitor only authorized systems and data sources.",
+    "Do not store Palantir Maven credentials in repository files or audit records.",
+    "Do not execute artifacts retrieved for provenance verification.",
+    "Do not automatically isolate, block, modify, disable, or disrupt external systems.",
+    "Do not perform autonomous targeting, weapons control, weapons release, or critical-infrastructure disruption.",
+    "Escalate consequential remediation to an authorized human operator."
+  ]
+}

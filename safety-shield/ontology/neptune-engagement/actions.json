@@ -1,0 +1,82 @@
+{
+  "implementation_status": "specification_only",
+  "actions": [
+    {
+      "name": "recordMembershipEvidence",
+      "inputs": [
+        "membership_id",
+        "member_entity_id",
+        "confirmation_evidence_id",
+        "effective_date"
+      ],
+      "role": "owner_or_reviewer",
+      "preconditions": [
+        "Evidence explicitly confirms the member entity and ecosystem",
+        "Reviewer records decision and evidence reference"
+      ],
+      "effect": "Set confirmed only following evidence review; append audit record"
+    },
+    {
+      "name": "recordEventRegistration",
+      "inputs": [
+        "event_id",
+        "confirmation_evidence_id"
+      ],
+      "role": "owner_or_reviewer",
+      "preconditions": [
+        "Registration confirmation names attendee and event"
+      ],
+      "effect": "Set registered; do not infer attendance"
+    },
+    {
+      "name": "recordSubmission",
+      "inputs": [
+        "submission_id",
+        "portal_receipt_evidence_id",
+        "submitted_at"
+      ],
+      "role": "owner_or_reviewer",
+      "preconditions": [
+        "Receipt identifies opportunity and respondent"
+      ],
+      "effect": "Set submitted; retain document version"
+    },
+    {
+      "name": "recordAgreement",
+      "inputs": [
+        "agreement_id",
+        "executed_document_evidence_id",
+        "parties",
+        "agreement_type"
+      ],
+      "role": "owner_or_reviewer",
+      "preconditions": [
+        "Executed document establishes parties, type and effective date"
+      ],
+      "effect": "Create agreement; award numbers only for actual awards"
+    },
+    {
+      "name": "promoteCapabilityReadiness",
+      "inputs": [
+        "capability_id",
+        "test_report_evidence_id",
+        "release_reference"
+      ],
+      "role": "technical_reviewer",
+      "preconditions": [
+        "Results identify tested release, test scope and observed outcomes"
+      ],
+      "effect": "Update tested status; do not infer accreditation"
+    }
+  ],
+  "audit_fields": [
+    "actor_id",
+    "action",
+    "object_id",
+    "timestamp_utc",
+    "before",
+    "after",
+    "evidence_ids",
+    "review_decision"
+  ]
+}

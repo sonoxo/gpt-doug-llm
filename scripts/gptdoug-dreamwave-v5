@@ -1,0 +1,74 @@
+#!/bin/zsh
+set -u
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+CONFIG="$HOME/.gpt-doug/env"
+SESSION="gptdoug-dreamwave"
+
+mkdir -p "$HOME/.gpt-doug"
+
+if [[ -f "$CONFIG" ]]; then
+  set -a
+  source "$CONFIG"
+  set +a
+fi
+
+export GPT_DOUG_VISUAL_FPS="${GPT_DOUG_VISUAL_FPS:-15}"
+export GPT_DOUG_VISUAL_COLS="${GPT_DOUG_VISUAL_COLS:-132}"
+export GPT_DOUG_COLOR_STEP="${GPT_DOUG_COLOR_STEP:-8}"
+export GPT_DOUG_MATRIX="${GPT_DOUG_MATRIX:-1}"
+export GPT_DOUG_MATRIX_FPS="${GPT_DOUG_MATRIX_FPS:-5}"
+export GPT_DOUG_BRIGHTNESS="${GPT_DOUG_BRIGHTNESS:-1.25}"
+export GPT_DOUG_SATURATION="${GPT_DOUG_SATURATION:-1.24}"
+export GPT_DOUG_SHARPNESS="${GPT_DOUG_SHARPNESS:-1.15}"
+
+cd "$ROOT" || exit 1
+
+command -v tmux >/dev/null 2>&1 || {
+  echo "tmux required: brew install tmux"
+  exit 1
+}
+
+printf '\033]0;GPT-DOUG // DREAMWAVE UNIX\007'
+
+for old in gptdoug-dreamwave gptdoug-vaporwave gptdoug-supreme gptdoug-max gptdoug-blackhouse; do
+  tmux kill-session -t "$old" 2>/dev/null || true
+done
+
+echo auto > "$HOME/.gpt-doug/blackhouse-mode"
+
+# Large living avatar.
+tmux new-session -d -s "$SESSION" -n "DREAMWAVE" -c "$ROOT" \
+  "python3 tools/gptdoug_supreme_visual_v4.py"
+
+# Right-side NeonOps panel.
+tmux split-window -h -p 29 -t "$SESSION":0.0 -c "$ROOT" \
+  "python3 tools/gptdoug_neonops_v5.py"
+
+# Bottom-left agentic terminal.
+tmux select-pane -t "$SESSION":0.0
+tmux split-window -v -p 35 -t "$SESSION":0.0 -c "$ROOT" \
+  "python3 gpt_doug_max.py; tmux kill-session -t $SESSION 2>/dev/null || true"
+
+# Styling.
+tmux set-option -t "$SESSION" status on
+tmux set-option -t "$SESSION" status-position top
+tmux set-option -t "$SESSION" status-style "bg=#080313,fg=#e8dcff"
+tmux set-option -t "$SESSION" status-left-length 100
+tmux set-option -t "$SESSION" status-right-length 100
+tmux set-option -t "$SESSION" status-left '#[fg=#ff5f57]● #[fg=#febc2e]● #[fg=#28c840]●  #[fg=#00eaff,bold]GPT-DOUG #[fg=#ff45dd]// DREAMWAVE UNIX #[fg=#9d7cff]// XUNIA+ZYRA'
+tmux set-option -t "$SESSION" status-right '#[fg=#ff45dd]✦ NEON #[fg=#00eaff]◆ LIVE #[fg=#50ffaa]● LOCAL #[fg=#ba70ff]∞ '
+tmux set-option -t "$SESSION" pane-border-style "fg=#38204f"
+tmux set-option -t "$SESSION" pane-active-border-style "fg=#ff45dd"
+tmux set-option -t "$SESSION" pane-border-status top
+tmux set-option -t "$SESSION" pane-border-format '#[fg=#ff45dd]✦ #[fg=#00eaff,bold]#{pane_title} '
+tmux set-option -t "$SESSION" mouse on
+tmux set-option -t "$SESSION" escape-time 0
+tmux set-option -t "$SESSION" remain-on-exit off
+
+tmux select-pane -t "$SESSION":0.0 -T "🤖 GPT-DOUG // LIVING VISUAL CORTEX"
+tmux select-pane -t "$SESSION":0.1 -T "🌴 NEONOPS // XUNIA + ZYRA"
+tmux select-pane -t "$SESSION":0.2 -T "⌨ GPT-DOUG // AGENTIC TERMINAL"
+tmux select-pane -t "$SESSION":0.2
+
+exec tmux attach-session -t "$SESSION"

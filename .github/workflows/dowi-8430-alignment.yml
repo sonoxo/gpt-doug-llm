@@ -1,0 +1,31 @@
+name: DoWI 8430.01 Alignment Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  alignment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate local accelerated mission software alignment
+        run: python scripts/validate_dowi_8430_alignment.py
+
+      - name: Alignment boundary
+        run: |
+          echo "Local engineering alignment check only."
+          echo "No government approval, certification, accreditation, endorsement, contract status, or authorization is asserted."

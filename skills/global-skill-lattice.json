@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "skillId": "GPTDOUG_GLOBAL_SKILL_LATTICE",
+  "name": "GPT-Doug Global Skill Lattice",
+  "runtime": "skills/global_skill_lattice.py",
+  "executionPolicy": "ONTOLOGY_GROUNDED_POLICY_BOUNDED",
+  "cardinality": 100000000,
+  "materialization": "LAZY_DETERMINISTIC_ON_DEMAND",
+  "axes": {
+    "sectors": 100,
+    "capabilities": 100,
+    "workflows": 100,
+    "deliveryModes": 100
+  },
+  "missionDomains": [
+    "global-economy",
+    "ai-infrastructure",
+    "public-sector",
+    "defensive-intelligence",
+    "music",
+    "arts",
+    "software-development",
+    "education-research",
+    "climate-infrastructure",
+    "creative-economy"
+  ],
+  "truthState": {
+    "addressableSkillDescriptors": 100000000,
+    "pretrainedIndependentExpertModels": false,
+    "externalAuthorityGranted": false
+  }
+}

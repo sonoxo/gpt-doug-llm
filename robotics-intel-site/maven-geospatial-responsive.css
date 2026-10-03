@@ -1,0 +1,346 @@
+/* MAVEN geospatial responsive reliability layer
+   Keeps the map usable first, then progressively exposes the control deck. */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  min-width: 0;
+  overscroll-behavior: none;
+}
+
+header,
+main,
+#map,
+aside,
+.card,
+.deck-grid,
+.deck-module,
+.flight-panel {
+  min-width: 0;
+}
+
+main {
+  width: 100%;
+  overflow: hidden;
+  grid-template-columns: minmax(0, 1fr) clamp(360px, 30vw, 440px);
+}
+
+#map {
+  width: 100%;
+}
+
+aside {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+.core-caption,
+.deck-readout,
+.mini,
+.warn,
+.feed,
+.metric span,
+.metric b,
+.task-name {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1180px) and (min-width: 901px) {
+  main {
+    grid-template-columns: minmax(0, 1fr) 380px;
+  }
+
+  aside {
+    padding: 10px;
+  }
+
+  .deck-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .brand {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .status::-webkit-scrollbar {
+    display: none;
+  }
+
+  main {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  #map {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  aside {
+    box-sizing: border-box;
+    left: max(8px, env(safe-area-inset-left));
+    right: max(8px, env(safe-area-inset-right));
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    max-width: none;
+    max-height: min(76dvh, calc(100dvh - 82px));
+    padding: 8px 10px calc(12px + env(safe-area-inset-bottom));
+    transform: translate3d(0, calc(100% - 58px), 0);
+    will-change: transform;
+    contain: layout paint;
+  }
+
+  aside.open {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .mobile-sheet-toggle {
+    position: sticky;
+    top: -8px;
+    z-index: 8;
+  }
+
+  body.mobile-sheet-open .leaflet-control-container {
+    visibility: hidden;
+  }
+
+  .card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .deck-grid,
+  .flight-controls {
+    min-width: 0;
+  }
+
+  .leaflet-bottom {
+    bottom: 62px;
+  }
+
+  .leaflet-control-attribution {
+    max-width: min(72vw, 420px);
+    white-space: normal;
+  }
+}
+
+@media (max-width: 620px) {
+  .deck-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-telemetry {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rockers {
+    grid-template-columns: 1fr;
+  }
+
+  .task-row {
+    grid-template-columns: 14px minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+
+  .task-tools {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .task-tools button {
+    width: 100%;
+    margin: 0;
+  }
+
+  .deck-pad {
+    gap: 6px;
+  }
+
+  .deck-btn,
+  button {
+    white-space: normal;
+  }
+
+  .visual-core {
+    height: 132px;
+  }
+
+  .testrange {
+    height: 154px;
+  }
+
+  .core-caption {
+    right: 8px;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 430px) {
+  header {
+    padding-left: max(8px, env(safe-area-inset-left));
+    padding-right: max(8px, env(safe-area-inset-right));
+  }
+
+  .status {
+    gap: 5px;
+  }
+
+  .pill {
+    font-size: 8px;
+    padding: 4px 6px;
+  }
+
+  aside {
+    left: max(5px, env(safe-area-inset-left));
+    right: max(5px, env(safe-area-inset-right));
+    bottom: max(5px, env(safe-area-inset-bottom));
+    max-height: min(80dvh, calc(100dvh - 64px));
+    border-radius: 14px 14px 10px 10px;
+  }
+
+  .card {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .deck-head {
+    align-items: flex-start;
+  }
+
+  .deck-badge {
+    flex: 0 0 auto;
+    font-size: 8px;
+  }
+
+  .deck-pad {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .deck-btn {
+    min-width: 0;
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 9px;
+  }
+
+  .sim-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .leaflet-control-attribution {
+    font-size: 8px;
+    max-width: 68vw;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand {
+    font-size: 10px;
+  }
+
+  .deck-pad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .flight-telemetry,
+  .sim-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .task-row {
+    grid-template-columns: 12px minmax(0, 1fr);
+  }
+
+  .task-row .task-btn {
+    grid-column: 2;
+    width: 100%;
+  }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  header {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .status {
+    overflow-x: auto;
+  }
+
+  aside {
+    max-height: calc(100dvh - 12px);
+    bottom: 6px;
+  }
+
+  .visual-core,
+  .testrange {
+    height: 112px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  aside {
+    transition: none !important;
+  }
+}

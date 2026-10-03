@@ -241,6 +241,8 @@ GET  /black-house
 | **AIP quality plane** | `.black-house/runtime.json` + `.black-house/mission-router.json` | reusable CI/security quality plane |
 | **Palantir adapters** | authorized external adapter | optional tenant execution after verification |
 | **Black House O/D Plane** | `od/od-plane.manifest.json` | governed offense emulation + defensive planning; simulation only |
+| **OPERATIONDINNER** | `integrations/deptofdefense/operationdinner-fork-ecosystem.json` | pinned public repository lineage and ontology context; no execution |
+| **NRL public repository ecosystem** | `integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json` | 58-repository pinned metadata catalog; per-repository review before use |
 
 ## Canonical files
 
@@ -258,6 +260,9 @@ GET  /black-house
 - `telemetry/telemetry.schema.json` — live fleet telemetry contract.
 - `integrations/palantir/status.schema.json` — Palantir verification truth-state contract.
 - `od/od-plane.manifest.json` — Phase 9 O/D simulation contract.
+- `missions/operationdinner.json` — bounded public-metadata mission envelope.
+- `integrations/deptofdefense/operationdinner-fork-ecosystem.json` — pinned DoD-source fork graph.
+- `integrations/naval-research-laboratory/nrl-public-repository-ecosystem.json` — pinned NRL public-repository catalog.
 - `status/phases.json` — phases 1–9 implementation state.
 - `governance/CONTROL-PLANE.md` — execution and authority boundary.
 

@@ -1,0 +1,438 @@
+[
+  {
+    "id": "evidence.portal",
+    "type": "Evidence",
+    "properties": {
+      "display_name": "User-supplied CFIC portal export",
+      "source_kind": "user_supplied_portal_export",
+      "supports": [
+        "Profile displays Douglas Brown, Xunia, CEO",
+        "Four event titles, dates and ecosystem labels"
+      ],
+      "captured_date": "2026-09-16",
+      "sha256": "3d212c6f4b5309cd866894dcd12345ddf0dff84697cea1f69d2996ed67634049",
+      "local_file": "source_portal_export.md"
+    },
+    "source_ids": []
+  },
+  {
+    "id": "evidence.statement",
+    "type": "Evidence",
+    "properties": {
+      "display_name": "User membership confirmation",
+      "source_kind": "user_statement",
+      "supports": [
+        "User reports being officially in with Neptune SHIELD"
+      ],
+      "captured_date": "2026-09-16",
+      "quote": "gpt-doug-llm create an ontology ! were officially in now with neptune shied"
+    },
+    "source_ids": []
+  },
+  {
+    "id": "evidence.context",
+    "type": "Evidence",
+    "properties": {
+      "display_name": "Earlier conversation and proposal draft",
+      "source_kind": "conversation_context",
+      "supports": [
+        "24k-Media Productions profile and UEI",
+        "Ecosystem names and intended architecture",
+        "ICAM proposal is a draft"
+      ],
+      "captured_date": "2026-09-16"
+    },
+    "source_ids": []
+  },
+  {
+    "id": "evidence.design",
+    "type": "Evidence",
+    "properties": {
+      "display_name": "Ontology design decisions",
+      "source_kind": "design_proposal",
+      "supports": [
+        "Proposed integrations, capabilities and follow-up tasks"
+      ],
+      "captured_date": "2026-09-16"
+    },
+    "source_ids": []
+  },
+  {
+    "id": "person.douglas",
+    "type": "Person",
+    "properties": {
+      "display_name": "Douglas Brown",
+      "profile_role": "CEO"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "org.xunia",
+    "type": "Organization",
+    "properties": {
+      "display_name": "Xunia",
+      "legal_entity_status": "not_established_by_source"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "org.24k",
+    "type": "Organization",
+    "properties": {
+      "display_name": "24k-Media Productions",
+      "reported_uei": "STXJUM7D6FK1",
+      "uei_verification_status": "conflicting_attribution_requires_verification",
+      "uei_conflict_note": "Existing safety-shield/ontology/neptune-shield-vendor-ecosystem.json attributes the same UEI to Neptune Shield. Do not use for entity matching until authoritative records resolve the conflict."
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "platform.ratio",
+    "type": "Platform",
+    "properties": {
+      "display_name": "Ratio Exchange"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "eco.neptune",
+    "type": "Ecosystem",
+    "properties": {
+      "display_name": "Neptune SHIELD"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "eco.cfic",
+    "type": "Ecosystem",
+    "properties": {
+      "display_name": "Cyber Fusion Innovation Center"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "eco.ratio",
+    "type": "Ecosystem",
+    "properties": {
+      "display_name": "Ratio Marketplace"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "eco.cbf",
+    "type": "Ecosystem",
+    "properties": {
+      "display_name": "Cyber Bytes Foundation"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "eco.sofwerx",
+    "type": "Ecosystem",
+    "properties": {
+      "display_name": "SOFWERX"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "membership.neptune",
+    "type": "Membership",
+    "properties": {
+      "status": "joined_user_reported",
+      "member_role": "not_specified",
+      "verification_status": "user_reported",
+      "reported_date": "2026-09-16",
+      "member_since": null,
+      "subject_basis": "Xunia selected from portal profile; organization-level membership scope needs confirmation",
+      "official_confirmation_reference": null
+    },
+    "source_ids": [
+      "evidence.statement",
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "assertion.cfic",
+    "type": "Assertion",
+    "properties": {
+      "statement": "Supplied export displays the CFIC portal with the Douglas Brown / Xunia profile; formal membership status is not stated.",
+      "verification_status": "document_supported"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "event.roundtable",
+    "type": "Event",
+    "properties": {
+      "display_name": "Transatlantic Partnerships Business Roundtable",
+      "start_date": "2026-09-29",
+      "start_time": null,
+      "timezone": null,
+      "registration_status": "not_recorded",
+      "source_url": "https://go.ratio.exchange/exchange/events/event.cfm?i=95C9F32D0A009CD608CCD434BFC62B996564F0E8367B718A385D324C01ACBD26",
+      "live_status": "not_rechecked"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "event.fathomwerx",
+    "type": "Event",
+    "properties": {
+      "display_name": "FATHOMWERX SUMMIT 2026",
+      "start_date": "2026-10-14",
+      "start_time": null,
+      "timezone": null,
+      "registration_status": "not_recorded",
+      "source_url": "https://go.ratio.exchange/exchange/events/event.cfm?i=DF8094983757A505E485FC680C9304C94D6040259FD03CB8A1D65F4F3993FF93",
+      "live_status": "not_rechecked"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "event.cmmc",
+    "type": "Event",
+    "properties": {
+      "display_name": "CMMC Roundtable and Panel Discussion",
+      "start_date": "2026-10-20",
+      "start_time": null,
+      "timezone": null,
+      "registration_status": "not_recorded",
+      "source_url": "https://go.ratio.exchange/exchange/events/event.cfm?i=A2875CE4D4E3BAA9F8C14063FBC99E912BCA0EDAC939F70E83F086096615EB4B",
+      "live_status": "not_rechecked"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "event.osbp",
+    "type": "Event",
+    "properties": {
+      "display_name": "Office of Small Business Programs Networking Event 2026",
+      "start_date": "2026-11-05",
+      "start_time": null,
+      "timezone": null,
+      "registration_status": "not_recorded",
+      "source_url": "https://go.ratio.exchange/exchange/events/event.cfm?i=28EDC9E8F6F2FC31124EBE3596E9356A3E10781DDB3DA1F1A3B6EE8C04AF4A75",
+      "live_status": "not_rechecked"
+    },
+    "source_ids": [
+      "evidence.portal"
+    ]
+  },
+  {
+    "id": "project.zyra",
+    "type": "Project",
+    "properties": {
+      "display_name": "Zyra",
+      "maturity": "development",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "project.xunia",
+    "type": "Project",
+    "properties": {
+      "display_name": "Xunia ontology layer",
+      "maturity": "development",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "project.doug",
+    "type": "Project",
+    "properties": {
+      "display_name": "GPT-DOUG",
+      "maturity": "development",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "project.greenhouse",
+    "type": "Project",
+    "properties": {
+      "display_name": "THEGREENHOUSE",
+      "maturity": "proposed",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "project.icam",
+    "type": "Project",
+    "properties": {
+      "display_name": "Governed Identity Service ICAM prototype",
+      "maturity": "proposed",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "project.foundry",
+    "type": "Project",
+    "properties": {
+      "display_name": "Optional Palantir Foundry adapter",
+      "maturity": "proposed",
+      "deployment_status": "not_verified"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "cap.identity",
+    "type": "Capability",
+    "properties": {
+      "display_name": "Identity lifecycle management",
+      "readiness": "proposed",
+      "test_evidence": null
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "cap.audit",
+    "type": "Capability",
+    "properties": {
+      "display_name": "Audit and evidence organization",
+      "readiness": "proposed",
+      "test_evidence": null
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "cap.ai",
+    "type": "Capability",
+    "properties": {
+      "display_name": "AI-assisted administrative workflows",
+      "readiness": "proposed",
+      "test_evidence": null
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "cap.sandbox",
+    "type": "Capability",
+    "properties": {
+      "display_name": "Controlled policy testing",
+      "readiness": "proposed",
+      "test_evidence": null
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "opp.icam",
+    "type": "Opportunity",
+    "properties": {
+      "display_name": "ICAM SaaS Prototype OT",
+      "notice_type": "solicitation",
+      "solicitation_number": "56000026R0267",
+      "status": "open_in_supplied_snapshot",
+      "response_due": "2026-10-06T12:00:00-04:00",
+      "question_due": "2026-09-22T12:00:00-04:00",
+      "issuer_name": "Central Intelligence Agency",
+      "deadline_basis": "Portal Eastern Time; PDF cover says EST; confirm ambiguity with issuer",
+      "live_status": "not_rechecked"
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "submission.icam",
+    "type": "Submission",
+    "properties": {
+      "status": "draft",
+      "submitted_at": null,
+      "document_name": "24k_ICAM_White_Paper_Draft.docx",
+      "planning_estimate_usd": 600000,
+      "price_approved": false
+    },
+    "source_ids": [
+      "evidence.context"
+    ]
+  },
+  {
+    "id": "task.confirm",
+    "type": "Task",
+    "properties": {
+      "display_name": "Record Neptune membership confirmation and member entity",
+      "status": "open",
+      "due_date": null,
+      "priority": "high"
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "task.roundtable",
+    "type": "Task",
+    "properties": {
+      "display_name": "Review roundtable details and registration requirements",
+      "status": "open",
+      "due_date": null,
+      "priority": "normal"
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  },
+  {
+    "id": "task.prepare",
+    "type": "Task",
+    "properties": {
+      "display_name": "Prepare a short ecosystem introduction for the roundtable",
+      "status": "open",
+      "due_date": null,
+      "priority": "normal"
+    },
+    "source_ids": [
+      "evidence.design"
+    ]
+  }
+]

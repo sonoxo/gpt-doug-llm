@@ -1,0 +1,25 @@
+{
+  "schema": "xunia.mil-readiness.control-profile.v1",
+  "framework": "NIST SP 800-53 Rev. 5 / Release 5.2.0",
+  "status": "ENGINEERING_ALIGNMENT_NOT_AUTHORIZATION",
+  "scope": "ZYRAPALANTIR defensive software, synthetic intelligence demo, Glass Onion ontology, GPT-REDPANDA CPR, Palantir Maven supply-chain verification",
+  "families": {
+    "AC": {"name": "Access Control", "status": "planned", "nextEvidence": ["RBAC matrix", "least-privilege tests", "privileged-action approval records"]},
+    "AU": {"name": "Audit and Accountability", "status": "partial", "currentEvidence": ["local defense-profile state", "synthetic intel demo audit record"], "nextEvidence": ["centralized tamper-evident logging", "time synchronization", "actor identity"]},
+    "CA": {"name": "Assessment, Authorization and Monitoring", "status": "partial", "currentEvidence": ["defense doctor", "GPT-REDPANDA CPR"], "nextEvidence": ["assessment plan", "continuous monitoring strategy", "POA&M workflow"]},
+    "CM": {"name": "Configuration Management", "status": "partial", "currentEvidence": ["Git version control", "ontology validation", "Maven pinned artifact coordinates"], "nextEvidence": ["approved baseline", "drift detection", "change approval workflow"]},
+    "IA": {"name": "Identification and Authentication", "status": "partial", "currentEvidence": ["short-lived Palantir Maven token"], "nextEvidence": ["enterprise IdP", "MFA", "service identities", "credential rotation evidence"]},
+    "IR": {"name": "Incident Response", "status": "demo", "currentEvidence": ["synthetic defensive recommendations"], "nextEvidence": ["case workflow", "escalation matrix", "incident-response exercises"]},
+    "RA": {"name": "Risk Assessment", "status": "demo", "currentEvidence": ["severity", "confidence", "mission dependency correlation"], "nextEvidence": ["formal risk register", "mission impact methodology", "risk acceptance workflow"]},
+    "SA": {"name": "System and Services Acquisition", "status": "partial", "currentEvidence": ["Palantir Maven approved repository", "artifact round-trip verification"], "nextEvidence": ["secure SDLC evidence", "SBOM", "signed release policy", "dependency review"]},
+    "SC": {"name": "System and Communications Protection", "status": "partial", "currentEvidence": ["HTTPS repository transport", "host pinning"], "nextEvidence": ["network segmentation", "approved cryptography evidence", "boundary protection design"]},
+    "SI": {"name": "System and Information Integrity", "status": "partial", "currentEvidence": ["SHA-256 artifact identity verification", "ontology validation"], "nextEvidence": ["malware scanning", "vulnerability remediation SLAs", "integrity monitoring"]},
+    "SR": {"name": "Supply Chain Risk Management", "status": "partial", "currentEvidence": ["Palantir Maven repository", "artifact provenance requirement", "allowlist policy"], "nextEvidence": ["SBOM", "signature verification", "supplier risk records", "provenance attestation"]}
+  },
+  "authorization": {
+    "atoGranted": false,
+    "militaryCertificationClaimed": false,
+    "classifiedOperationsApproved": false,
+    "authorizingOfficialDecisionRequired": true
+  }
+}

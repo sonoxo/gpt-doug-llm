@@ -1,0 +1,77 @@
+{
+  "id": "uspto-palantir-attributed-US-12591555-B2",
+  "type": "patent-front-page-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "United States Patent",
+  "source_kind": "user-supplied front-page image",
+  "captured": "2026-09-12",
+  "document_number": "US-12591555-B2",
+  "patent_number_display": "US 12,591,555 B2",
+  "patent_date": "2026-03-31",
+  "title": "SYSTEM AND METHODS FOR LIVE DATA MIGRATION",
+  "application_number": "18/809,197",
+  "filing_date": "2024-08-19",
+  "prior_publication": {
+    "document_number": "US-20240411734-A1",
+    "publication_date": "2024-12-12"
+  },
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Applicant field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "assignee": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Assignee field printed on supplied U.S. patent front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "architecture_watch": {
+    "name": "live-data-migration-and-consistency",
+    "purpose": "Track high-level architecture around live table migration, query-aware transfer, update/delete handling, source/destination synchronization and service continuity without copying claim language or implementation details.",
+    "diagram_components": [
+      "User query or application",
+      "Network",
+      "Computing system",
+      "Source database",
+      "Destination database",
+      "Live migration flow"
+    ],
+    "gpt_doug_mapping": [
+      "NXYZ/ZYRA data migration planning",
+      "replication and synchronization",
+      "rollback-aware migration",
+      "continuity monitoring",
+      "audit of migration state"
+    ],
+    "themes": [
+      "live-data-migration",
+      "replication",
+      "synchronization",
+      "database",
+      "resilience",
+      "service-continuity"
+    ]
+  },
+  "confidence": {
+    "document_number": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "title": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "patent_date": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "applicant_attribution": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "assignee_attribution": "HIGH_FROM_DOCUMENT_FRONT_PAGE",
+    "architecture_mapping": "ENGINEERING_INFERENCE",
+    "claim_level_relevance": "UNASSESSED"
+  },
+  "controls": {
+    "treat_front_page_applicant_field_as_document_attribution": true,
+    "treat_front_page_assignee_field_as_document_attribution": true,
+    "treat_assignee_attribution_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true
+  },
+  "notes": "Derived from a user-supplied U.S. patent front page. The document prints Palantir Technologies Inc. in both Applicant and Assignee fields. This is document-level attribution and does not establish current assignment status, validity, enforceability, infringement, or freedom to operate."
+}

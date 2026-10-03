@@ -31,10 +31,13 @@ class HardwareProfile:
     memory_bytes: int | None
     accelerators: tuple[str, ...]
     preferred_accelerator: str
+    quantum_adapters: tuple[str, ...]
+    quantum_hardware_proven: bool
 
     def to_dict(self) -> dict[str, object]:
         result = asdict(self)
         result["accelerators"] = list(self.accelerators)
+        result["quantum_adapters"] = list(self.quantum_adapters)
         return result
 
 
@@ -162,6 +165,27 @@ def detect_accelerators() -> tuple[str, ...]:
     return tuple(dict.fromkeys(found))
 
 
+
+def detect_quantum_adapters() -> tuple[str, ...]:
+    """Detect optional quantum SDK adapters without claiming QPU access.
+
+    Package presence only means a local SDK/simulator integration may be
+    available. Remote provider credentials, backend availability, queue state,
+    and real QPU execution must be proven independently at runtime.
+    """
+    adapters: list[str] = []
+    candidates = (
+        ("qiskit", "qiskit"),
+        ("cirq", "cirq"),
+        ("braket", "amazon-braket-sdk"),
+        ("pennylane", "pennylane"),
+    )
+    for module_name, label in candidates:
+        if importlib.util.find_spec(module_name) is not None:
+            adapters.append(label)
+    return tuple(adapters)
+
+
 def choose_accelerator(
     available: Iterable[str],
     preferred: Iterable[str] = ("cuda", "mps", "mlx", "cpu"),
@@ -176,6 +200,7 @@ def choose_accelerator(
 def hardware_profile(policy: PerformancePolicy | None = None) -> HardwareProfile:
     policy = policy or PerformancePolicy.from_environment()
     accelerators = detect_accelerators()
+    quantum_adapters = detect_quantum_adapters()
     return HardwareProfile(
         system=platform.system(),
         machine=platform.machine(),
@@ -183,6 +208,8 @@ def hardware_profile(policy: PerformancePolicy | None = None) -> HardwareProfile
         memory_bytes=_memory_bytes(),
         accelerators=accelerators,
         preferred_accelerator=choose_accelerator(accelerators, policy.preferred_accelerators),
+        quantum_adapters=quantum_adapters,
+        quantum_hardware_proven=False,
     )
 
 
@@ -218,6 +245,18 @@ def runtime_report(run_benchmark: bool = False) -> dict[str, object]:
         },
         "hardware": profile.to_dict(),
         "memory_authority": "Ontology/governed source remains authoritative; local cache is disposable",
+        "memory_fabric": {
+            "L0": "current bounded request/context",
+            "L1": "TTL/LRU process cache",
+            "L2": "local persisted indexes/checkpoints",
+            "L3": "governed ontology/evidence source of truth",
+            "L4": "external authoritative sources referenced by provenance/permalink"
+        },
+        "quantum_truth": {
+            "sdk_adapters_detected": list(profile.quantum_adapters),
+            "qpu_hardware_access_proven": profile.quantum_hardware_proven,
+            "rule": "SDK presence or a quantum label does not prove access to quantum hardware"
+        },
         "palantir_infrastructure_controlled": False,
     }
     if run_benchmark:

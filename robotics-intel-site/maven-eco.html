@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#040805">
+<title>GPT-DOUG // MAVEN ECO FABRIC</title>
+<style>
+:root{--bg:#030604;--panel:#08100b;--panel2:#0b1510;--line:#2d5a3a;--text:#eef7ef;--muted:#8ca090;--lime:#b9ff72;--cyan:#7ce7ff;--amber:#ffbd52}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+body{padding:10px;background:radial-gradient(circle at 20% 0,rgba(124,231,255,.07),transparent 30%),var(--bg)}
+header{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:10px;background:#061009;position:sticky;top:8px;z-index:5}
+.brand{color:var(--amber);font-weight:950}.chip{border:1px solid #365841;border-radius:999px;padding:4px 7px;font-size:9px}.ok{color:var(--lime)}.info{color:var(--cyan)}.spacer{flex:1}
+main{display:grid;gap:10px;margin-top:10px}
+.summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.kpi,.card{border:1px solid #24432f;border-radius:10px;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:9px}
+.kpi{color:var(--muted);font-size:9px}.kpi b{display:block;margin-top:4px;color:var(--lime);font-size:15px}
+h2{margin:0 0 8px;color:var(--cyan);font-size:12px}.planes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.plane{border:1px solid #284936;border-radius:9px;padding:8px;background:#07100a}.plane h3{margin:0 0 4px;color:#e9ffe9;font-size:10px}.plane .meta{color:var(--amber);font-size:8px}.plane p{color:var(--muted);font-size:8px;line-height:1.45}
+.integrations{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.integration{border:1px solid #233d2d;border-radius:8px;padding:7px;background:#060d08;font-size:8px}.integration b{display:block;color:#eaf7ec;font-size:9px}.integration .yes{color:var(--lime)}.integration .no{color:#ff8d8d}
+.routes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.route{display:flex;justify-content:space-between;gap:8px;border:1px solid #243d2d;border-radius:7px;padding:7px;font-size:8px;color:var(--muted)}.route b{color:#dcecdf}
+.rules{margin:0;padding-left:18px;color:var(--muted);font-size:9px;line-height:1.6}
+#error{display:none;border:1px solid #7c3434;color:#ffb0b0;background:#170707;border-radius:10px;padding:10px}
+@media(max-width:1000px){.summary{grid-template-columns:repeat(3,1fr)}.planes,.integrations{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.summary{grid-template-columns:repeat(2,1fr)}.planes,.integrations,.routes{grid-template-columns:1fr}header{position:static}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">🌐 GPT-DOUG // MAVEN ECO FABRIC</div>
+  <span class="chip ok" id="runtime">CONNECTING</span>
+  <span class="chip info" id="version">ECOSYSTEM —</span>
+  <span class="spacer"></span>
+  <span class="chip">LOCAL RUNTIME SNAPSHOT</span>
+  <span class="chip">HUMAN-GOVERNED</span>
+</header>
+<div id="error"></div>
+<main>
+  <section class="summary" id="summary"></section>
+  <section class="card"><h2>CORE PLANES</h2><div class="planes" id="planes"></div></section>
+  <section class="card"><h2>CAPABILITY / INTEGRATION FABRIC</h2><div class="integrations" id="integrations"></div></section>
+  <section class="card"><h2>DOMAIN ROUTING</h2><div class="routes" id="routes"></div></section>
+  <section class="card"><h2>ARCHITECTURE GUARDRAILS</h2><ul class="rules" id="rules"></ul></section>
+</main>
+<script>
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+async function boot(){
+  try{
+    const r=await fetch("./eco-runtime.json?cb="+Date.now(),{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    document.getElementById("runtime").textContent="RUNTIME "+d.summary.runtime_state;
+    document.getElementById("version").textContent="ECOSYSTEM "+d.ecosystem.version;
+    const metrics=[
+      ["CORE PLANES",d.summary.core_planes],
+      ["AI LAYERS",d.summary.ai_layers],
+      ["INTEGRATIONS",d.summary.integrations_available+"/"+d.summary.integrations_total],
+      ["DIVISIONS",d.summary.internal_divisions],
+      ["SATELLITES",d.summary.research_satellites],
+      ["CONTROL","HUMAN"]
+    ];
+    document.getElementById("summary").innerHTML=metrics.map(([k,v])=>'<div class="kpi">'+esc(k)+'<b>'+esc(v)+'</b></div>').join("");
+    document.getElementById("planes").innerHTML=d.planes.map(p=>'<article class="plane"><h3>'+esc(p.label)+'</h3><div class="meta">'+esc(p.role)+' · '+esc(p.state)+'</div><p>'+esc(p.repo)+'</p><p>'+esc((p.responsibilities||[]).join(" · "))+'</p></article>').join("");
+    document.getElementById("integrations").innerHTML=d.integrations.map(x=>'<article class="integration"><b>'+esc(x.slug)+'</b><span class="'+(x.available?'yes':'no')+'">'+(x.available?'● AVAILABLE':'○ UNAVAILABLE')+'</span><div>'+esc(x.stage)+' · '+esc(x.repository)+'</div><div>'+esc(x.detail)+'</div></article>').join("");
+    document.getElementById("routes").innerHTML=Object.entries(d.domain_routing).map(([a,b])=>'<div class="route"><span>'+esc(a)+'</span><b>→ '+esc(b)+'</b></div>').join("");
+    document.getElementById("rules").innerHTML=d.architecture_rules.map(x=>'<li>'+esc(x)+'</li>').join("");
+  }catch(e){
+    const box=document.getElementById("error");box.style.display="block";box.textContent="ECO FABRIC LOAD FAILED: "+e.message;
+  }
+}
+boot();
+</script>
+</body>
+</html>

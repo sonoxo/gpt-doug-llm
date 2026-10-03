@@ -1,0 +1,83 @@
+{
+  "id": "GPTDOUG-CHAOS-SEI-AAFLearning-2026-09-21",
+  "version": "1.0.0",
+  "status": "PROPOSED_PROJECT_LEARNING",
+  "sources": [
+    {
+      "id": "CMU-SEI-2018-SR-013",
+      "title": "DoD Developer's Guidebook for Software Assurance",
+      "url": "https://www.sei.cmu.edu/documents/1949/2018_003_001_538761.pdf",
+      "evidenceDepth": "FULL_TEXT_VERIFIED",
+      "publicationDate": "2018-12",
+      "officialPolicyClaim": false
+    },
+    {
+      "id": "AAF-QUICK-REF-v3.8-2026-04-13",
+      "title": "Adaptive Acquisition Framework Quick Reference Card",
+      "url": "https://www.waru.edu/sites/default/files/2026-04/DoD%20AAF%20Quick%20Ref%20--v.3.8%2C%2013%20April%202026.pdf",
+      "evidenceDepth": "EXACT_PDF_FETCH_BLOCKED",
+      "corroboratedByOfficialPublicAAFMaterials": true,
+      "versionSpecificClaimsPromoted": false
+    }
+  ],
+  "gptDoug": {
+    "missionFirstAssurance": true,
+    "lifecycleAssurance": true,
+    "failSafeDefaults": true,
+    "completeMediation": true,
+    "leastPrivilege": true,
+    "separationOfPrivilege": true,
+    "goalQuestionMetric": true,
+    "layeredAnalysis": true,
+    "supplyChainProvenance": true,
+    "missionRiskModel": true,
+    "negativeTesting": true,
+    "sustainmentContinuity": true,
+    "evolvingThreatModel": true,
+    "aafPathwayAsOntologyObject": true,
+    "pathwayTransitionsAreExplicit": true,
+    "cybersecurityContinuousAcrossLifecycle": true,
+    "rapidSoftwareIterationDoesNotBypassControls": true
+  },
+  "gptChaos": {
+    "independentCritic": true,
+    "challengeUnprovenDependencies": true,
+    "challengeMetricValidity": true,
+    "challengeSupplyChainProvenance": true,
+    "challengeMissingNegativeTests": true,
+    "challengeResidualRiskOwnership": true,
+    "challengeStaleThreatModels": true,
+    "noSelfAuthorizedExceptions": true
+  },
+  "ontologyTypes": [
+    "AcquisitionMission",
+    "AcquisitionPathway",
+    "DecisionAuthority",
+    "TransitionPoint",
+    "InformationRequirement",
+    "StatutoryRequirement",
+    "RegulatoryRequirement",
+    "SecurityRequirement",
+    "AssurancePlan",
+    "ProgramProtectionArtifact",
+    "SoftwareComponent",
+    "SupplyChainEvidence",
+    "VerificationEvidence",
+    "ValidationEvidence",
+    "NegativeTest",
+    "MetricDefinition",
+    "RiskFinding",
+    "ResidualRisk",
+    "SustainmentEvent",
+    "ThreatModelVersion",
+    "RecoveryPlan"
+  ],
+  "controls": {
+    "exactSourceDepthRequiredForVersionSpecificClaim": true,
+    "currentPolicyVerificationRequired": true,
+    "silentSelfModification": false,
+    "humanAuthorityPreserved": true,
+    "provenanceRequired": true,
+    "rollbackRequiredForProjectLearning": true
+  }
+}

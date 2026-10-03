@@ -1,0 +1,54 @@
+{
+  "knowledge_id": "palantir-aipcon11-patterns-2026-09",
+  "version": "1.0.0",
+  "source_tier": "MIXED_SECONDARY_PLUS_FIRST_PARTY_CORROBORATION",
+  "captured": "2026-09-12",
+  "sources": [
+    "intel/briefings/2026-09-11-rosenblatt-palantir-aipcon11.md",
+    "intel/sources/rosenblatt-palantir-aipcon11-2026-09-11.json"
+  ],
+  "promoted_patterns": {
+    "operational_command_center": {
+      "principle": "Combine ontology-backed entities, current/historical state, provenance, AI reasoning, human review, workflow actions and measured outcomes.",
+      "xunia_mapping": ["Xuniaverse", "MMGIS", "Glass Onion", "RVIA"]
+    },
+    "best_fit_model_routing": {
+      "principle": "Route models by measured task fitness, policy boundary, quality, cost and latency rather than by brand or model size.",
+      "steps": [
+        "classify task",
+        "apply data and policy boundary",
+        "select eval dataset",
+        "benchmark candidate models",
+        "score quality/cost/latency/security",
+        "route best-fit model",
+        "monitor outcome",
+        "re-evaluate"
+      ]
+    },
+    "spatial_supply_chain_ontology": {
+      "entities": ["Facility", "Supplier", "Component", "System", "Shipment", "Route", "Risk", "Decision", "Evidence"],
+      "relations": [
+        "Facility produces Component",
+        "Component required_by System",
+        "Supplier ships Component",
+        "Shipment travels_on Route",
+        "Route intersects RiskZone",
+        "Risk affects Facility/Route/Supplier",
+        "Decision changes Plan",
+        "Evidence supports Decision"
+      ]
+    },
+    "deployment_as_capability": {
+      "principle": "Treat deployment capacity, migration, partner implementation, operator adoption, governance and value realization as first-class system objects."
+    }
+  },
+  "hard_boundaries": [
+    "analyst opinion is not verified fact",
+    "customer benchmark is not a universal model law",
+    "public procurement is not operational authorization",
+    "public research does not imply vendor partnership, endorsement or proprietary access",
+    "no targeting, fire-control, weapon employment, aimpoint or engagement logic is promoted by this knowledge item"
+  ],
+  "disposition": "ACTIVE_REFERENCE_PATTERN",
+  "confidence": "HIGH_FOR_CORROBORATED_ARCHITECTURE_PATTERNS"
+}

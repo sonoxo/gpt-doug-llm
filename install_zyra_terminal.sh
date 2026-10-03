@@ -22,6 +22,24 @@ exec "$ROOT/scripts/doug-max" "\$@"
 EOF
 chmod +x "$HOME/.local/bin/doug-max" "$ROOT/scripts/doug-max"
 
+cat > "$HOME/.local/bin/defense" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/defense" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/defense"
+
+cat > "$HOME/.local/bin/zyrapalantir" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/zyrapalantir" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/zyrapalantir"
+
+cat > "$HOME/.local/bin/activate" <<EOF
+#!/bin/sh
+exec sh "$ROOT/scripts/activate" "\$@"
+EOF
+chmod +x "$HOME/.local/bin/activate"
+
 ZSHRC="$HOME/.zshrc"
 BACKUP=""
 if [ -f "$ZSHRC" ]; then
@@ -35,7 +53,6 @@ import re, sys
 path = Path(sys.argv[1])
 text = path.read_text() if path.exists() else ''
 
-# Remove only our previous managed block.
 start = '# >>> GPT-DOUG ZYRA TERMINAL >>>'
 end = '# <<< GPT-DOUG ZYRA TERMINAL <<<'
 if start in text and end in text:
@@ -43,8 +60,7 @@ if start in text and end in text:
     _, after = rest.split(end, 1)
     text = before.rstrip() + '\n' + after.lstrip()
 
-# Repair the known zsh alias/function collision without deleting unrelated user commands.
-known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra'}
+known = {'doug', 'doug-voice', 'doug-max', 'doug-status', 'doug-market', 'zyra', 'defense', 'zyrapalantir', 'activate'}
 aliases = set()
 out = []
 for line in text.splitlines():
@@ -69,9 +85,14 @@ export PATH="$HOME/.local/bin:$PATH"
 '''
 
 managed = f'''{start}
-# Prefer the managed launchers over stale aliases/functions from older installs.
 unalias doug-max 2>/dev/null || true
 unfunction doug-max 2>/dev/null || true
+unalias defense 2>/dev/null || true
+unfunction defense 2>/dev/null || true
+unalias zyrapalantir 2>/dev/null || true
+unfunction zyrapalantir 2>/dev/null || true
+unalias activate 2>/dev/null || true
+unfunction activate 2>/dev/null || true
 if [[ -o interactive && -t 0 && -f "$HOME/.config/gpt-doug/zyra-autostart" && -z "${{ZYRA_ACTIVE:-}}" ]]; then
   "$HOME/.local/bin/zyra"
 fi
@@ -96,4 +117,14 @@ echo 'ZYRA terminal launcher repaired and upgraded.'
 echo 'Launcher: ~/.local/bin/zyra'
 echo 'MAX one-prompt launcher: ~/.local/bin/doug-max'
 echo 'Market terminal: ~/.local/bin/doug-market'
-echo 'Start now: ~/.local/bin/zyra'
+echo 'Defense terminal: ~/.local/bin/defense'
+echo 'ZYRAPALANTIR terminal: ~/.local/bin/zyrapalantir'
+echo 'Live service start: activate zyrapalantir live'
+echo 'Live foreground:    zyrapalantir live'
+echo 'Live status:        zyrapalantir live-status'
+echo 'Live logs:          zyrapalantir live-log'
+echo 'Live stop:          zyrapalantir live-stop'
+echo 'One live cycle:     zyrapalantir live-once'
+echo 'Demo command:       activate zyrapalantir demo'
+echo 'Start defense:      defense activate'
+echo 'Start ZYRA now:     ~/.local/bin/zyra'

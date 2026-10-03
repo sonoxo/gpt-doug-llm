@@ -1,0 +1,131 @@
+[
+  {
+    "id": "981358b2-3fa1-4304-ad0a-b688cd9de9a0",
+    "created_at": "2026-09-07T22:32:50.513175+00:00",
+    "metadata": {},
+    "name": "Synthetic Range Alpha",
+    "purpose": "training",
+    "simulation_only": true,
+    "type": "Mission"
+  },
+  {
+    "id": "a2a8e2ce-2e33-4505-a5b8-d7075b9c7258",
+    "created_at": "2026-09-07T22:32:50.513358+00:00",
+    "metadata": {},
+    "label": "SIM-TRACK-01",
+    "classification": "unknown",
+    "confidence": 0.91,
+    "simulated": true,
+    "observation_ids": [],
+    "type": "Track"
+  },
+  {
+    "id": "3b8c3f10-1624-43fd-841f-bee6b0f2becd",
+    "created_at": "2026-09-07T22:32:50.513366+00:00",
+    "metadata": {},
+    "track_id": "a2a8e2ce-2e33-4505-a5b8-d7075b9c7258",
+    "label": "synthetic-object-01",
+    "synthetic": true,
+    "type": "SimulatedTarget"
+  },
+  {
+    "id": "72646e4b-5a11-4ca5-ac2b-11d1031fe956",
+    "created_at": "2026-09-07T22:32:50.513372+00:00",
+    "metadata": {},
+    "name": "Synthetic Effector Model",
+    "capabilities": {
+      "effect_model": "abstract"
+    },
+    "simulation_only": true,
+    "has_actuation_interface": false,
+    "type": "WeaponSystemModel"
+  },
+  {
+    "id": "7a292a5e-3b0a-4ad1-a7ac-9d833eef0c44",
+    "created_at": "2026-09-07T22:32:50.513377+00:00",
+    "metadata": {},
+    "display_name": "range-controller",
+    "role": "simulation_authority",
+    "type": "HumanAuthority"
+  },
+  {
+    "id": "0ac88d2b-17dc-4ed0-b30d-a4980cbf8c01",
+    "created_at": "2026-09-07T22:32:50.513383+00:00",
+    "metadata": {},
+    "mission_id": "981358b2-3fa1-4304-ad0a-b688cd9de9a0",
+    "simulated_target_id": "3b8c3f10-1624-43fd-841f-bee6b0f2becd",
+    "weapon_system_model_id": "72646e4b-5a11-4ca5-ac2b-11d1031fe956",
+    "recommendation": "run synthetic effect model",
+    "rationale": "training-only evaluation inside a closed simulation",
+    "confidence": 0.84,
+    "advisory_only": true,
+    "type": "EngagementRecommendation"
+  },
+  {
+    "id": "55c94125-c87f-478c-8d38-6f18806f80c3",
+    "created_at": "2026-09-07T22:32:50.513395+00:00",
+    "metadata": {},
+    "actor": "ZYRA",
+    "action": "recommendation_created",
+    "object_id": "0ac88d2b-17dc-4ed0-b30d-a4980cbf8c01",
+    "details": {
+      "target_id": "3b8c3f10-1624-43fd-841f-bee6b0f2becd"
+    },
+    "type": "AuditEvent"
+  },
+  {
+    "id": "75b438ac-d485-41f6-a16d-9934684cd13a",
+    "created_at": "2026-09-07T22:32:50.513399+00:00",
+    "metadata": {},
+    "recommendation_id": "0ac88d2b-17dc-4ed0-b30d-a4980cbf8c01",
+    "requested_action": "run_simulated_effect",
+    "simulation_only": true,
+    "type": "AuthorizationRequest"
+  },
+  {
+    "id": "a35fc9ee-5151-42b3-bf13-796800741aac",
+    "created_at": "2026-09-07T22:32:50.513404+00:00",
+    "metadata": {},
+    "actor": "ZYRA",
+    "action": "authorization_requested",
+    "object_id": "75b438ac-d485-41f6-a16d-9934684cd13a",
+    "details": {
+      "recommendation_id": "0ac88d2b-17dc-4ed0-b30d-a4980cbf8c01"
+    },
+    "type": "AuditEvent"
+  },
+  {
+    "id": "fba6242b-e15c-455a-bc5a-54d4f54a66c3",
+    "created_at": "2026-09-07T22:32:50.513408+00:00",
+    "metadata": {},
+    "request_id": "75b438ac-d485-41f6-a16d-9934684cd13a",
+    "authority_id": "7a292a5e-3b0a-4ad1-a7ac-9d833eef0c44",
+    "decision": "approve_simulation",
+    "reason": "approved for synthetic range run",
+    "type": "HumanAuthorization"
+  },
+  {
+    "id": "10407fd0-90ee-4216-9f6f-50993553124e",
+    "created_at": "2026-09-07T22:32:50.513417+00:00",
+    "metadata": {},
+    "recommendation_id": "0ac88d2b-17dc-4ed0-b30d-a4980cbf8c01",
+    "result": {
+      "mode": "simulation_only",
+      "outcome": "synthetic_effect_computed",
+      "confidence_score": 84.0,
+      "real_world_actuation": false
+    },
+    "synthetic": true,
+    "type": "EffectSimulation"
+  },
+  {
+    "id": "f3365cd4-af2a-4263-bc8c-96e712095ea5",
+    "created_at": "2026-09-07T22:32:50.513422+00:00",
+    "metadata": {},
+    "actor": "range-controller",
+    "action": "simulation_effect_executed",
+    "object_id": "10407fd0-90ee-4216-9f6f-50993553124e",
+    "details": {},
+    "type": "AuditEvent"
+  }
+]

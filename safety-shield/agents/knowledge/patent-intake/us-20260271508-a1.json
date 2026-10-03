@@ -1,0 +1,45 @@
+{
+  "schema": "xunia.patent-intake.v1",
+  "patent_id": "US-20260271508-A1",
+  "source": {
+    "authority": "USPTO Patent Public Search",
+    "collection": "US-PGPUB",
+    "stable_pdf_url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/20260271508",
+    "user_supplied_url_had_ephemeral_request_token": true,
+    "request_token_persisted": false
+  },
+  "intake_status": "PENDING_SCOPE_EXTRACTION",
+  "verification": {
+    "identifier_normalized": true,
+    "official_document_text_retrieved": false,
+    "title_verified": false,
+    "abstract_verified": false,
+    "claims_verified": false,
+    "cpc_verified": false,
+    "inventors_verified": false,
+    "assignee_verified": false
+  },
+  "scope_policy": {
+    "infer_scope_without_document": false,
+    "promote_to_validated_scope_seed_only_after_source_review": true,
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true
+  },
+  "promotion_requirements": [
+    "retrieve official or provenance-equivalent patent text",
+    "verify title, abstract, bibliographic metadata, CPC/IPC classifications, and claims",
+    "extract technical-domain and functional-concept scope",
+    "separate disclosure-level concepts from claim-scope signals",
+    "map patent family and territorial status without assuming global scope",
+    "classify safety-sensitive subject matter before enabling any schematic synthesis",
+    "create validated xunia.patent-robotics.seed.v1 record",
+    "run doug-max patent-scope doctor"
+  ],
+  "notes": [
+    "This intake record intentionally contains no technical scope guesses because the official PDF/text was not retrievable in the current execution environment.",
+    "The patent remains visible to GPT-DOUG-MAX as pending evidence, not as validated engineering knowledge."
+  ]
+}

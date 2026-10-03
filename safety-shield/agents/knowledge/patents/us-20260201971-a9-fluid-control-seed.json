@@ -1,0 +1,167 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20260201971-A9",
+  "title": "Fluid control assembly and system",
+  "document_type": "US patent application publication",
+  "kind_code": "A9",
+  "publication_date": "2026-07-16",
+  "application_number": "17/276,460",
+  "filed": "2019-09-14",
+  "priority_date": "2018-09-14",
+  "inventors": [
+    "Tristan Herrmann",
+    "Jason Stoller",
+    "Ben Schlipf"
+  ],
+  "family_assignee_reported": "Precision Planting LLC",
+  "official_front_page_status": "REVERIFY_A9_FRONT_PAGE_BEFORE_LEGAL_USE",
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20260201971-A9?source=US-PGPUB",
+      "note": "Request-token parameters are intentionally not persisted. Re-fetch from USPTO by publication number."
+    },
+    {
+      "type": "patent_family_reference",
+      "source": "Google Patents",
+      "url": "https://patents.google.com/patent/WO2020056395A1/en",
+      "family_publication": "WO2020056395A1"
+    },
+    {
+      "type": "earlier_us_publication_reference",
+      "source": "USPTO/Justia mirror",
+      "publication": "US20220030757A1",
+      "url": "https://patents.justia.com/patent/20220030757"
+    }
+  ],
+  "classification_signals": [
+    "F15B fluid-pressure systems and actuators",
+    "F15B11 pressure-responsive actuator control",
+    "A01C agricultural planting implements"
+  ],
+  "scope_tags": [
+    "fluid-control",
+    "pneumatics",
+    "hydraulics",
+    "pressure-control",
+    "closed-loop-control",
+    "normally-closed-valves",
+    "supply-valve",
+    "exhaust-valve",
+    "pressure-sensor",
+    "actuator",
+    "dual-circuit-actuation",
+    "agricultural-implements",
+    "downforce-control",
+    "row-cleaner",
+    "trench-closing",
+    "airbag-actuator",
+    "fluid-cylinder"
+  ],
+  "publicly_described_functional_concepts": [
+    "a fluid source feeding a control assembly through a supply port",
+    "a normally closed supply valve that opens under controller command",
+    "a normally closed exhaust valve that opens under controller command",
+    "an outlet port coupled to a fluid-powered actuator",
+    "pressure sensing at or in communication with the outlet path",
+    "controller logic that adds fluid when measured pressure is below a selected threshold",
+    "controller logic that exhausts fluid when measured pressure is above a selected threshold",
+    "single- and dual-circuit arrangements for applying or relieving actuator force",
+    "applications to agricultural tool force control including downforce, row-cleaner, and trench-closing functions",
+    "airbag and fluid-cylinder actuator embodiments"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "fluid power",
+      "electromechanical control",
+      "sensor-feedback control",
+      "agricultural automation"
+    ],
+    "core_architecture": [
+      "fluid source",
+      "supply path",
+      "normally closed supply valve",
+      "actuator outlet path",
+      "pressure sensor",
+      "normally closed exhaust valve",
+      "controller",
+      "fluid actuator"
+    ],
+    "control_loop": "measure outlet/actuator pressure -> compare to selected pressure band -> command supply or exhaust valve -> change actuator force/pressure -> measure again",
+    "device_patterns_relevant_to_independent_design": [
+      "fail-closed valve defaults",
+      "pressure-feedback actuator regulation",
+      "separate fill and vent paths",
+      "dual-direction fluid actuation",
+      "sensor-supervised force control",
+      "bounded threshold-based control with explicit safe-state handling"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "FAMILY_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "source_family": [
+      "WO2020056395A1",
+      "US20220030757A1"
+    ],
+    "independent_claim_themes": [
+      "a fluid control assembly combining normally closed supply and exhaust valves, defined housing passages/ports, and a pressure-sensor port associated with an outlet",
+      "a fluid system using the control assembly, a controller, a pressure sensor, a fluid source, and an actuator that applies force to an agricultural tool",
+      "multi-path embodiments coordinating supply/exhaust operation for lift/down or pressure increase/decrease behavior"
+    ],
+    "a9_claim_set_warning": "The A9 publication may contain corrections or republication differences. Re-fetch and compare the official A9 claims before any claim-element analysis.",
+    "legal_scope_rule": "Patent scope is determined jurisdiction-by-jurisdiction from the controlling claims, prosecution history, legal status, and applicable law; this record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "pct": "WO2020056395A1",
+    "earlier_us_publication": "US20220030757A1",
+    "known_family_examples": [
+      "EP3850223B1",
+      "AU2019340697B2",
+      "CN112703322B",
+      "CA3110509A1",
+      "BR112021004591B1"
+    ],
+    "territorial_status_rule": "Do not infer global patent scope from one family member. Recheck each national/regional register before legal or commercial decisions."
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "HUMAN_APPROVAL_REQUIRED",
+    "default_pattern": "USE_PUBLIC_CONCEPTS_AS_PRIOR_ART_SIGNAL_AND_GENERATE_INDEPENDENT_ARCHITECTURE"
+  },
+  "design_divergence_defaults": [
+    "treat threshold values and control policies as independently selected engineering parameters",
+    "separate safety supervision from normal pressure-control logic",
+    "provide an explicit de-energized or pressure-relief safe state based on the product hazard analysis",
+    "use independently designed valve topology, manifold geometry, sensor placement, and diagnostics",
+    "maintain provenance showing which public patent concepts informed each design decision",
+    "require claim-level review before commercializing a design that maps closely to a live family member"
+  ],
+  "schematic_seed": {
+    "modules": [
+      "fluid source",
+      "input protection and regulator",
+      "normally closed supply valve",
+      "actuator outlet manifold",
+      "pressure sensor",
+      "normally closed exhaust valve",
+      "safety-supervised controller",
+      "fluid actuator",
+      "manual override or safe-state path",
+      "telemetry and audit"
+    ],
+    "mandatory_safety_boundaries": [
+      "pressure and energy limits derived from component ratings",
+      "manual override or safe-state transition",
+      "watchdog and bounded command timeout",
+      "independent hazard review for stored pneumatic or hydraulic energy",
+      "fault detection for sensor plausibility and stuck-valve conditions",
+      "least-privilege actuator control",
+      "audit log for configuration and control-policy changes"
+    ]
+  }
+}

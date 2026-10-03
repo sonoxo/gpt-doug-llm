@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+  <meta name="description" content="GPT-DOUG MAVEN geospatial public-information simulation with animated HIVE/SWARM visuals and local task ops.">
+  <title>GPT-DOUG // MAVEN GEOSPATIAL SWARM</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="./maven-clean.css">
+  <script>
+    if(new URLSearchParams(location.search).get("embed")==="1"){
+      document.documentElement.classList.add("embedded");
+    }
+  </script>
+  <script src="https://xunia.org/xunia-i18n.js" defer></script>
+  <style>
+    :root{--bg:#070906;--panel:#0c110c;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--red:#ff6b6b;--blue:#76d4ff;--violet:#b69cff;--pink:#ff4d8d}
+    *{box-sizing:border-box} html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    body{display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(180deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 4px);mix-blend-mode:screen}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,#090c08,#0e1009 55%,#0b0d09);box-shadow:0 0 24px rgba(255,159,28,.08)}
+    .brand{font-weight:900;letter-spacing:.05em;color:var(--accent);text-shadow:0 0 12px rgba(255,159,28,.4)}
+    .status{display:flex;gap:8px;flex-wrap:wrap;font-size:12px}.pill{border:1px solid var(--line);padding:5px 8px;border-radius:999px;background:#0c120d}
+    .ok{color:var(--lime)}.lock{color:#ffd166}.pulse-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);animation:pulse 1.6s ease-in-out infinite}
+    main{display:grid;grid-template-columns:minmax(0,1fr) 440px;min-height:0}
+    #map{height:100%;min-height:650px;background:#0b100c;filter:saturate(.9) contrast(1.03)}
+    aside{border-left:1px solid var(--line);padding:14px;background:linear-gradient(180deg,#0e130f,#080b08);overflow:auto}
+    .card{border:1px solid var(--line);border-radius:10px;background:linear-gradient(180deg,#0b100d,#090d0a);padding:12px;margin:0 0 10px;box-shadow:inset 0 0 18px rgba(255,159,28,.025)}
+    h2{font-size:14px;margin:0 0 8px;color:var(--accent);letter-spacing:.04em}
+    button{font:inherit;color:var(--text);background:#101611;border:1px solid var(--line);padding:7px 9px;border-radius:8px;cursor:pointer;margin:3px 2px;transition:.15s ease}
+    button:hover{border-color:var(--accent);transform:translateY(-1px)}
+    button:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+    button.active{background:var(--accent);color:#160b00}
+    .metric{display:flex;justify-content:space-between;gap:10px;margin:6px 0;color:var(--muted);font-size:12px}.metric b{color:var(--text)}
+    .feed{font-size:12px;line-height:1.55;color:var(--muted);max-height:230px;overflow:auto}
+    .warn{border-left:3px solid #ffd166;padding-left:10px;color:#eadba9;font-size:12px}
+    .legend{font-size:12px;color:var(--muted)}.legend div{margin:5px 0}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+    .swarmdot{background:var(--accent);box-shadow:0 0 12px rgba(255,159,28,.8)}
+    .hmdot{background:var(--blue)}.pubdot{background:var(--lime)}.wxdot{background:var(--violet)}.livedot{background:#55f2c2;box-shadow:0 0 12px rgba(85,242,194,.7)}.quakedot{background:var(--red);box-shadow:0 0 12px rgba(255,107,107,.7)}
+    .leaflet-container{font-family:inherit}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0a100c;color:var(--text)}
+    .cell{width:17px;height:17px;border:1px solid var(--accent);background:rgba(255,159,28,.2);border-radius:50%;box-shadow:0 0 14px rgba(255,159,28,.7);animation:cellpulse 2s ease-in-out infinite}
+    .visual-core{position:relative;height:160px;border:1px solid #3c2c17;border-radius:10px;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(255,159,28,.08),transparent 55%),linear-gradient(180deg,#07110c,#090b09)}
+    .gridfx{position:absolute;inset:0;background-image:linear-gradient(rgba(215,255,100,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(215,255,100,.05) 1px,transparent 1px);background-size:20px 20px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent)}
+    .core{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-weight:900;box-shadow:0 0 25px rgba(255,159,28,.35);z-index:2}
+    .ring{position:absolute;left:50%;top:50%;border:1px solid rgba(118,212,255,.28);border-radius:50%;transform:translate(-50%,-50%);animation:spin 10s linear infinite}
+    .r1{width:76px;height:76px}.r2{width:116px;height:116px;animation-duration:16s;animation-direction:reverse}.r3{width:150px;height:150px;animation-duration:24s}
+    .orb{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px var(--lime)}
+    .o1{left:50%;top:16px}.o2{right:28px;top:72px;background:var(--blue);box-shadow:0 0 12px var(--blue)}.o3{left:28px;top:96px;background:var(--violet);box-shadow:0 0 12px var(--violet)}.o4{left:80px;bottom:12px;background:var(--pink);box-shadow:0 0 12px var(--pink)}
+    .sweep{position:absolute;left:50%;top:50%;width:74px;height:2px;background:linear-gradient(90deg,var(--lime),transparent);transform-origin:0 50%;animation:sweep 4s linear infinite;opacity:.65}
+    .core-caption{position:absolute;left:8px;bottom:6px;font-size:10px;color:var(--muted)}
+    .task-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed rgba(93,58,18,.55);font-size:12px}
+    .task-row:last-child{border-bottom:0}.task-led{width:10px;height:10px;border-radius:50%;background:#4a4f46;box-shadow:0 0 0 transparent}.task-row.done .task-led{background:var(--lime);box-shadow:0 0 10px rgba(215,255,100,.65)}.task-row.done .task-name{text-decoration:line-through;color:#8b9583}
+    .task-btn{padding:4px 7px;font-size:11px;margin:0}
+    .progress{height:8px;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:#090d0a;margin:9px 0}.progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--lime));transition:width .25s ease}
+    .task-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .mini{font-size:11px;color:var(--muted)}
+    .testrange{position:relative;height:190px;border:1px solid #3c2c17;border-radius:10px;overflow:hidden;background:
+      linear-gradient(rgba(118,212,255,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(118,212,255,.05) 1px,transparent 1px),
+      radial-gradient(circle at 50% 50%,rgba(118,212,255,.08),transparent 62%),#07100d;background-size:24px 24px,24px 24px,auto,auto}
+    .testrange:after{content:"SYNTHETIC COORDINATES // NO MAP LINK // NO EXTERNAL CONTROL";position:absolute;left:8px;bottom:6px;font-size:9px;color:var(--muted)}
+    .sim-drone{position:absolute;width:22px;height:22px;display:grid;place-items:center;font-size:18px;filter:drop-shadow(0 0 7px rgba(118,212,255,.8));transition:transform .15s linear}
+    .sim-drone:before{content:"◆";color:var(--blue)}
+    .sim-missile{position:absolute;width:34px;height:8px;border-radius:5px;background:linear-gradient(90deg,#ffd166,var(--accent));box-shadow:0 0 12px rgba(255,159,28,.7)}
+    .sim-missile:after{content:"";position:absolute;right:100%;top:2px;width:24px;height:4px;background:linear-gradient(90deg,transparent,rgba(255,209,102,.65))}
+    .sim-target{position:absolute;right:24px;top:72px;width:34px;height:34px;border:1px dashed var(--violet);border-radius:50%;display:grid;place-items:center;color:var(--violet);font-size:10px}
+    .sim-zone{position:absolute;left:18px;top:18px;width:96px;height:96px;border:1px solid rgba(85,242,194,.24);border-radius:50%}
+    .sim-zone:after{content:"DRONE TEST";position:absolute;left:16px;top:40px;font-size:9px;color:#55f2c2}
+    .sim-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:11px}
+    .sim-stats div{border:1px solid rgba(93,58,18,.55);padding:6px;border-radius:7px;color:var(--muted)}
+    .sim-stats b{float:right;color:var(--text)}
+    .flight-panel{margin-top:9px;border:1px solid #3d3020;border-radius:9px;padding:9px;background:linear-gradient(180deg,#0d120f,#070a08)}
+    .flight-head{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:7px}.flight-head b{font-size:10px;color:#8adfff;letter-spacing:.08em}.flight-head span{font-size:9px;color:var(--muted)}
+    .flight-telemetry{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:8px}.flight-telemetry div{border:1px solid #2d4134;border-radius:5px;padding:5px;background:#040a07;color:#79e8a8;font-size:9px}.flight-telemetry b{display:block;color:#d8ffe5;font-size:12px;margin-top:2px}
+    .flight-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flight-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.flight-pad button{min-height:38px;margin:0}.flight-sliders{display:grid;gap:7px}.flight-sliders label{font-size:9px;color:var(--muted)}.flight-sliders input{width:100%;accent-color:var(--blue)}
+    .pilot-drone{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border:1px solid var(--blue);transform:translate(0,0) rotate(0deg);clip-path:polygon(50% 0,100% 100%,50% 72%,0 100%);background:rgba(118,212,255,.2);box-shadow:0 0 13px rgba(118,212,255,.8);z-index:6;transition:transform .12s linear}
+    .pilot-drone:after{content:"P";position:absolute;left:7px;top:8px;font-size:8px;color:#d9f5ff}
+    .traj-scope{margin-top:8px;border:1px solid #3d3020;border-radius:8px;background:#030806;padding:7px}.traj-scope svg{width:100%;height:120px;display:block}.traj-grid{stroke:#163023;stroke-width:.7}.traj-path{fill:none;stroke:#ffb84f;stroke-width:2;stroke-dasharray:5 5}.traj-dot{fill:#ffd166;filter:drop-shadow(0 0 4px #ff9f1c)}.traj-label{fill:#7a8f80;font-size:8px;font-family:ui-monospace,monospace}
+    .deck-card{position:relative;border-color:#7a4d17;background:linear-gradient(145deg,#15170f,#090c09 58%,#11120d);box-shadow:inset 0 1px rgba(255,255,255,.04),inset 0 -10px 26px rgba(0,0,0,.42),0 8px 22px rgba(0,0,0,.24)}
+    .deck-card:before,.deck-card:after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#c3a672,#49351f 55%,#14100b 58%);box-shadow:0 0 0 1px #000}
+    .deck-card:before{left:7px;top:7px}.deck-card:after{right:7px;top:7px}
+    .deck-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+    .deck-badge{font-size:9px;letter-spacing:.12em;border:1px solid #6d4b22;border-radius:4px;padding:3px 5px;color:#d4b98b;background:#0a0c09}
+    .deck-screen{border:1px solid #233c2b;border-radius:7px;background:radial-gradient(circle at 50% 0,rgba(215,255,100,.08),transparent 55%),#020806;padding:9px 10px;margin-bottom:9px;box-shadow:inset 0 0 18px rgba(84,255,148,.05)}
+    .deck-screen-top{display:flex;justify-content:space-between;gap:10px;color:#6ef0a2;font-size:10px;letter-spacing:.08em}
+    .deck-readout{margin-top:6px;min-height:30px;color:#c9ffda;font-size:11px;line-height:1.35;text-shadow:0 0 8px rgba(110,240,162,.22)}
+    .lamp-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:7px;font-size:9px;color:var(--muted)}
+    .lamp-item{display:flex;align-items:center;gap:4px}.lamp{width:7px;height:7px;border-radius:50%;background:#353b34;box-shadow:inset 0 0 2px #000}.lamp.on{background:var(--lime);box-shadow:0 0 8px rgba(215,255,100,.7)}.lamp.warn{background:#ffd166;box-shadow:0 0 8px rgba(255,209,102,.55)}
+    .deck-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:8px}
+    .deck-module{border:1px solid #3d3020;border-radius:8px;padding:8px;background:linear-gradient(180deg,#0d100d,#080a08);box-shadow:inset 0 1px rgba(255,255,255,.025)}
+    .deck-module h3{font-size:10px;letter-spacing:.1em;margin:0 0 7px;color:#b8a57f}
+    .deck-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+    .deck-btn{position:relative;min-height:34px;padding:6px 7px;margin:0;border-radius:7px;border:1px solid #4c3d28;background:linear-gradient(180deg,#20251e,#0c100d);box-shadow:0 3px 0 #050705,0 4px 8px rgba(0,0,0,.35),inset 0 1px rgba(255,255,255,.07);font-size:10px;font-weight:800;letter-spacing:.04em;color:#e7dcc6;transform:translateY(0)}
+    .deck-btn:hover{transform:translateY(-1px);border-color:#8d642c}.deck-btn:active,.deck-btn.pressed{transform:translateY(3px);box-shadow:0 0 0 #050705,inset 0 2px 8px rgba(0,0,0,.6);background:linear-gradient(180deg,#0b0f0c,#171b15)}
+    .deck-btn.accent{border-color:#8f5818;color:#ffb84f}.deck-btn.green{border-color:#46652c;color:#d7ff64}.deck-btn.blue{border-color:#28566a;color:#8adfff}
+    .deck-fader{width:100%;accent-color:var(--accent);cursor:pointer}.fader-line{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px}
+    .rockers{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.rocker{display:flex;align-items:center;gap:7px;border:1px solid #3d3020;border-radius:7px;padding:7px;background:#090c09;font-size:10px;color:var(--muted);cursor:pointer}.rocker input{appearance:none;width:30px;height:16px;border:1px solid #5d4a2b;border-radius:3px;background:#171913;position:relative;cursor:pointer}.rocker input:after{content:"";position:absolute;top:2px;left:2px;width:11px;height:10px;border-radius:2px;background:#5d6257;box-shadow:0 1px 2px #000;transition:.12s}.rocker input:checked{background:#25340d;border-color:#748c35}.rocker input:checked:after{left:15px;background:var(--lime);box-shadow:0 0 7px rgba(215,255,100,.6)}
+    .vu{height:8px;border:1px solid #3d3020;border-radius:2px;background:#050705;overflow:hidden;margin-top:6px}.vu span{display:block;height:100%;width:12%;background:linear-gradient(90deg,#55f2c2,#d7ff64,#ffd166);transition:width .2s ease}
+    .deck-keys{margin-top:7px;font-size:9px;color:#817764}.keycap{display:inline-block;min-width:18px;padding:2px 4px;margin-right:3px;border:1px solid #4a4030;border-bottom-width:2px;border-radius:4px;background:#111410;color:#c5b89e;text-align:center}
+    body.deck-fx-off .visual-core *,body.deck-fx-off .cell{animation:none!important}
+    body.deck-fx-off .visual-core,body.deck-fx-off .cell,body.deck-fx-off .pulse-dot{filter:none!important;text-shadow:none!important;box-shadow:none!important}
+    @keyframes pulse{50%{opacity:.35;transform:scale(.7)}} @keyframes cellpulse{50%{transform:scale(.8);opacity:.75}} @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}} @keyframes sweep{to{transform:rotate(360deg)}} 
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+    html.embedded header{display:none!important}
+    html.embedded aside{display:none!important}
+    html.embedded .xunia-i18n{display:none!important}
+    html.embedded body{display:block!important;height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}
+    html.embedded main{display:block!important;position:relative!important;height:100dvh!important;min-height:0!important}
+    html.embedded #map{position:absolute!important;inset:0!important;height:100%!important;min-height:0!important}
+    .infra-schematic{
+      position:absolute;inset:10px;z-index:700;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+      border:1px solid rgba(111,220,255,.72);border-radius:12px;overflow:hidden;
+      background:#06141a;color:#d9f8ff;box-shadow:0 24px 80px rgba(0,0,0,.72),inset 0 0 70px rgba(64,198,255,.05)
+    }
+    .infra-schematic[hidden]{display:none!important}
+    .infra-schematic-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 11px;border-bottom:1px solid rgba(111,220,255,.32);background:#071b22}
+    .infra-schematic-title{font-weight:950;letter-spacing:.08em;color:#8deaff}
+    .infra-schematic-head .spacer{flex:1}
+    .infra-schematic-head button{margin:0;border-color:#28576a;background:#07151b;color:#bdefff}
+    .infra-schematic-head button.active{background:#8deaff;color:#031015}
+    .infra-schematic-body{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 250px}
+    .infra-blueprint{position:relative;min-height:0;background:
+      linear-gradient(rgba(111,220,255,.055) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(111,220,255,.055) 1px,transparent 1px),
+      linear-gradient(rgba(111,220,255,.022) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(111,220,255,.022) 1px,transparent 1px),#06141a;
+      background-size:40px 40px,40px 40px,8px 8px,8px 8px;overflow:hidden
+    }
+    .infra-blueprint svg{width:100%;height:100%;display:block}
+    .infra-side{border-left:1px solid rgba(111,220,255,.28);padding:10px;overflow:auto;background:#071116}
+    .infra-side h3{margin:0 0 8px;color:#8deaff;font-size:11px;letter-spacing:.08em}
+    .infra-kpi{border:1px solid rgba(111,220,255,.24);border-radius:7px;padding:7px;margin-bottom:7px;color:#88aab2;font-size:9px}
+    .infra-kpi b{display:block;color:#e5fbff;margin-top:3px;font-size:11px}
+    .infra-legend{font-size:9px;line-height:1.6;color:#94adb4}
+    .infra-legend span{display:inline-block;width:10px;height:3px;margin-right:6px;vertical-align:middle}
+    .infra-note{padding:7px 10px;border-top:1px solid rgba(111,220,255,.28);font-size:9px;color:#85a7af;background:#071116}
+    .infra-line{fill:none;stroke:#7fe8ff;stroke-width:2}
+    .infra-road{fill:none;stroke:#9db0b4;stroke-width:13;stroke-linecap:round;opacity:.44}
+    .infra-water{fill:#0a3040;stroke:#56d9ff;stroke-width:2}
+    .infra-building{fill:rgba(121,231,255,.06);stroke:#8deaff;stroke-width:2}
+    .infra-future{fill:rgba(163,255,129,.07);stroke:#9dff88;stroke-width:2}
+    .infra-utility{fill:none;stroke:#ffd166;stroke-width:2;stroke-dasharray:8 6}
+    .infra-comms{fill:none;stroke:#c7a5ff;stroke-width:2;stroke-dasharray:3 5}
+    .infra-waterline{fill:none;stroke:#69d8ff;stroke-width:3;stroke-dasharray:12 5}
+    .infra-label{fill:#d9f8ff;font:700 14px ui-monospace,monospace}
+    .infra-small{fill:#78aab5;font:700 10px ui-monospace,monospace}
+    .infra-phase{fill:#9dff88;font:800 11px ui-monospace,monospace}
+    .infra-schematic[data-view="pre"] .future-layer,
+    .infra-schematic[data-view="pre"] .systems-layer{display:none}
+    .infra-schematic[data-view="future"] .pre-layer,
+    .infra-schematic[data-view="future"] .systems-layer{display:none}
+    .infra-schematic[data-view="systems"] .phase-layer{opacity:.22}
+    .infra-schematic[data-view="phases"] .systems-layer{opacity:.18}
+    @media(max-width:900px){
+      .infra-schematic{inset:5px 5px 70px}
+      .infra-schematic-body{grid-template-columns:1fr}
+      .infra-side{display:none}
+      .infra-schematic-head{gap:5px;padding:7px}
+      .infra-schematic-head button{font-size:9px;padding:5px 7px}
+    }
+    .mobile-sheet-toggle{display:none}
+    @media(max-width:900px){
+      html,body{height:100svh;height:100dvh;min-height:100svh;min-height:100dvh;overflow:hidden;-webkit-text-size-adjust:100%}
+      body{display:grid;grid-template-rows:auto minmax(0,1fr)}
+      header{min-width:0;justify-content:flex-start;gap:10px;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+      header::-webkit-scrollbar{display:none}
+      .brand{flex:0 0 auto;font-size:12px;white-space:nowrap}
+      .status{flex:0 0 auto;flex-wrap:nowrap;min-width:max-content;font-size:10px}
+      .pill{white-space:nowrap;padding:5px 7px}
+      main{display:block;position:relative;min-height:0;height:100%}
+      #map{position:absolute;inset:0;height:100%;min-height:0}
+      aside{position:absolute;z-index:1001;left:8px;right:8px;bottom:max(8px,env(safe-area-inset-bottom));max-height:min(72dvh,640px);padding:8px 10px calc(12px + env(safe-area-inset-bottom));overflow:auto;border:1px solid rgba(255,159,28,.38);border-radius:18px 18px 14px 14px;background:rgba(8,12,9,.94);box-shadow:0 -18px 60px rgba(0,0,0,.62);backdrop-filter:blur(18px) saturate(120%);-webkit-backdrop-filter:blur(18px) saturate(120%);transform:translateY(calc(100% - 58px));transition:transform .22s ease}
+      aside.open{transform:translateY(0)}
+      .mobile-sheet-toggle{position:sticky;top:-8px;z-index:4;display:flex;width:100%;min-height:46px;align-items:center;justify-content:center;gap:8px;margin:0 0 8px;border-radius:12px;background:#111711;color:var(--text);border:1px solid var(--line);font-size:12px;font-weight:800;touch-action:manipulation}
+      .mobile-sheet-toggle:before{content:"";width:42px;height:4px;border-radius:999px;background:#5b5038;position:absolute;top:5px}
+      .card{padding:12px;border-radius:14px}
+      button{min-height:44px;padding:9px 10px;touch-action:manipulation}
+      .task-btn{min-height:40px}
+      .leaflet-control-zoom a{width:44px!important;height:44px!important;line-height:44px!important;font-size:22px!important}
+      .leaflet-bottom{bottom:58px}
+    }
+    @media(max-width:430px){
+      .brand{font-size:11px}
+      .status{font-size:9px}
+      .visual-core{height:140px}
+      .testrange{height:165px}
+      .sim-stats{grid-template-columns:1fr}
+      .metric{font-size:11px}
+      .feed{max-height:180px}
+    }
+    @media(max-height:560px) and (orientation:landscape){
+      aside{max-height:82dvh}
+      .visual-core,.testrange{height:120px}
+    }
+  </style>
+  <link rel="stylesheet" href="maven-geospatial-responsive.css">
+  <link rel="stylesheet" href="maven-earth-observation.css">
+  <link rel="stylesheet" href="maven-support-matrix.css">
+</head>
+<body>
+<header>
+  <div class="brand">🍂 GPT-DOUG // MAVEN GEOSPATIAL SWARM</div>
+  <div class="status">
+    <span class="pill ok"><span class="pulse-dot"></span> MAP ONLINE</span>
+    <span class="pill">🐝 HIVE 100/100</span>
+    <span class="pill">🕸️ SWARM ANALYTIC</span>
+    <span class="pill ok" id="liveDataPill">◌ LIVE PUBLIC DATA</span>
+    <span class="pill">🧪 SYNTHETIC TEST RANGE</span>
+    <span class="pill">⚡ TASK OPS READY</span>
+    <span class="pill ok">🛡 SUPPORT READY</span>
+    <span class="pill lock">🔒 PUBLIC + SIMULATION ONLY</span>
+  </div>
+</header>
+<main>
+  <div id="map"></div>
+  <section class="infra-schematic" id="infraSchematic" data-view="future" hidden aria-label="Synthetic infrastructure schematic">
+    <div class="infra-schematic-head" data-no-translate="true">
+      <span class="infra-schematic-title">⌗ MAVEN INFRA SCHEMATIC // SYNTHETIC SITE</span>
+      <span class="spacer"></span>
+      <button type="button" data-infra-view="pre">PRE-CONSTRUCTION</button>
+      <button type="button" data-infra-view="future" class="active">FUTURE FACILITY</button>
+      <button type="button" data-infra-view="phases">PHASES</button>
+      <button type="button" data-infra-view="systems">SYSTEMS</button>
+      <button type="button" id="infraSchematicClose">CLOSE</button>
+    </div>
+    <div class="infra-schematic-body">
+      <div class="infra-blueprint">
+        <svg viewBox="0 0 1000 640" role="img" aria-label="Generic synthetic infrastructure blueprint with buildings, roads and utility systems">
+          <defs>
+            <pattern id="hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="0" y1="0" x2="0" y2="12" stroke="#73dff8" stroke-opacity=".16" stroke-width="3"/>
+            </pattern>
+          </defs>
+          <g class="base-layer">
+            <text class="infra-label" x="38" y="42">N ↑</text>
+            <text class="infra-small" x="38" y="62">SYNTHETIC CIVIC INFRASTRUCTURE TRAINING SITE // NOT GEOGRAPHIC</text>
+            <path class="infra-road" d="M90 520 C240 465 385 475 520 520 S790 585 930 535"/>
+            <path class="infra-water" d="M35 95 H965 V220 H35 Z"/>
+            <text class="infra-small" x="52" y="118">WATER / TRANSPORT CORRIDOR</text>
+            <path class="infra-line" d="M120 158 H865"/>
+            <path class="infra-line" d="M120 177 H865"/>
+            <rect class="infra-building pre-layer" x="90" y="280" width="160" height="92"/>
+            <text class="infra-label pre-layer" x="115" y="326">LEGACY FACILITY</text>
+            <rect class="infra-building pre-layer" x="315" y="300" width="125" height="70"/>
+            <text class="infra-small pre-layer" x="338" y="337">OLD SUPPORT</text>
+          </g>
+
+          <g class="future-layer">
+            <rect class="infra-future" x="85" y="260" width="210" height="120"/>
+            <text class="infra-label" x="118" y="310">CONTROL / ADMIN</text>
+            <text class="infra-small" x="118" y="334">GENERIC BUILDING FOOTPRINT</text>
+
+            <rect class="infra-future" x="345" y="255" width="165" height="126"/>
+            <text class="infra-label" x="374" y="307">PUMP / WATER</text>
+            <text class="infra-small" x="374" y="330">PROCESS SUPPORT</text>
+
+            <rect class="infra-future" x="560" y="270" width="175" height="106"/>
+            <text class="infra-label" x="588" y="315">POWER / MEP</text>
+            <text class="infra-small" x="588" y="338">UTILITY BUILDING</text>
+
+            <rect class="infra-future" x="785" y="285" width="125" height="88"/>
+            <text class="infra-label" x="807" y="327">MAINT</text>
+            <text class="infra-small" x="807" y="348">SUPPORT</text>
+
+            <rect x="265" y="125" width="470" height="58" fill="url(#hatch)" stroke="#9dff88" stroke-width="2"/>
+            <text class="infra-label" x="382" y="160">LINEAR INFRASTRUCTURE CORRIDOR</text>
+          </g>
+
+          <g class="phase-layer">
+            <path class="infra-line" d="M100 430 H900"/>
+            <circle cx="150" cy="430" r="8" fill="#9dff88"/><text class="infra-phase" x="125" y="458">P1 SITE</text>
+            <circle cx="330" cy="430" r="8" fill="#9dff88"/><text class="infra-phase" x="300" y="458">P2 CIVIL</text>
+            <circle cx="510" cy="430" r="8" fill="#ffd166"/><text class="infra-phase" x="475" y="458">P3 STRUCT</text>
+            <circle cx="690" cy="430" r="8" fill="#8deaff"/><text class="infra-phase" x="660" y="458">P4 MEP</text>
+            <circle cx="870" cy="430" r="8" fill="#c7a5ff"/><text class="infra-phase" x="830" y="458">P5 COMM</text>
+          </g>
+
+          <g class="systems-layer">
+            <path class="infra-utility" d="M650 378 V500 H210"/>
+            <text class="infra-small" x="420" y="493">POWER DISTRIBUTION</text>
+            <path class="infra-comms" d="M170 380 V550 H835 V373"/>
+            <text class="infra-small" x="510" y="570">COMMUNICATIONS / DATA</text>
+            <path class="infra-waterline" d="M420 380 V405 H80 V220"/>
+            <text class="infra-small" x="90" y="400">WATER / DRAINAGE</text>
+
+            <g transform="translate(740 38)">
+              <rect class="infra-building" x="0" y="0" width="220" height="175"/>
+              <text class="infra-small" x="12" y="20">GENERIC BUILDING PLAN</text>
+              <path class="infra-line" d="M12 38 H208 V160 H12 Z M94 38 V160 M12 100 H208"/>
+              <text class="infra-small" x="28" y="72">CONTROL</text>
+              <text class="infra-small" x="116" y="72">ELECTRICAL</text>
+              <text class="infra-small" x="32" y="134">MECHANICAL</text>
+              <text class="infra-small" x="118" y="134">SERVICE</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <aside class="infra-side">
+        <h3>SCHEMATIC STATUS</h3>
+        <div class="infra-kpi">MODE<b>SYNTHETIC / GENERIC</b></div>
+        <div class="infra-kpi">GEOGRAPHIC LINK<b>NONE</b></div>
+        <div class="infra-kpi">FACILITY IDENTITY<b>FICTIONAL</b></div>
+        <div class="infra-kpi">DESIGN LANGUAGE<b>PUBLIC PROJECT UPDATE</b></div>
+        <h3>LEGEND</h3>
+        <div class="infra-legend">
+          <div><span style="background:#8deaff"></span>Existing / civil structure</div>
+          <div><span style="background:#9dff88"></span>Future facility footprint</div>
+          <div><span style="background:#ffd166"></span>Power / utility routing</div>
+          <div><span style="background:#c7a5ff"></span>Communications / data</div>
+          <div><span style="background:#69d8ff"></span>Water / drainage</div>
+        </div>
+        <h3 style="margin-top:12px">WORKFLOW</h3>
+        <div class="infra-legend">PRE-CONSTRUCTION → FUTURE FACILITY → PHASED WORK → SYSTEMS OVERLAY → HUMAN REVIEW</div>
+      </aside>
+    </div>
+    <div class="infra-note">Inspired by public engineering project-update conventions from your Drive reference. This view is synthetic and intentionally excludes real sensitive floorplans, access points, vulnerabilities, or targeting data.</div>
+  </section>
+  <aside id="mobileSheet" aria-label="MAVEN controls and status">
+    <button class="mobile-sheet-toggle" id="mobileSheetToggle" type="button" aria-expanded="false" aria-controls="mobileSheet">⌃ CONTROLS / STATUS</button>
+    <div class="card deck-card">
+      <div class="deck-head">
+        <h2 style="margin:0">🎛 GPT-DOUG CONTROL DECK</h2>
+        <span class="deck-badge">TACTILE UI // v2</span>
+      </div>
+      <div class="deck-screen">
+        <div class="deck-screen-top"><span>DECK BUS ONLINE</span><span id="deckClock">--:--:--</span></div>
+        <div class="deck-readout" id="deckReadout">Booting tactile control surface…</div>
+        <div class="lamp-row">
+          <span class="lamp-item"><i class="lamp on" id="ledMap"></i>MAP</span>
+          <span class="lamp-item"><i class="lamp warn" id="ledData"></i>DATA</span>
+          <span class="lamp-item"><i class="lamp on" id="ledHive"></i>HIVE</span>
+          <span class="lamp-item"><i class="lamp" id="ledSim"></i>SIM</span>
+        </div>
+      </div>
+      <div class="deck-grid">
+        <div class="deck-module">
+          <h3>MAP DRIVE</h3>
+          <div class="deck-pad">
+            <button class="deck-btn blue" type="button" id="deckZoomOut">− ZOOM</button>
+            <button class="deck-btn" type="button" id="deckPanUp">▲ PAN</button>
+            <button class="deck-btn blue" type="button" id="deckZoomIn">+ ZOOM</button>
+            <button class="deck-btn" type="button" id="deckPanLeft">◀ PAN</button>
+            <button class="deck-btn accent" type="button" id="deckHome">⌂ HOME</button>
+            <button class="deck-btn" type="button" id="deckPanRight">PAN ▶</button>
+            <button class="deck-btn green" type="button" id="deckRefresh">↻ DATA</button>
+            <button class="deck-btn" type="button" id="deckPanDown">▼ PAN</button>
+            <button class="deck-btn green" type="button" id="deckTasks">▶ TASKS</button>
+          </div>
+        </div>
+        <div class="deck-module">
+          <h3>SIM RESPONSE</h3>
+          <input class="deck-fader" id="simTempo" type="range" min="50" max="180" value="100" step="10" aria-label="Synthetic simulation animation speed">
+          <div class="fader-line"><span>SOFT</span><b id="simTempoLabel">100%</b><span>FAST</span></div>
+          <div class="vu"><span id="deckLoad"></span></div>
+          <div class="task-tools">
+            <button class="deck-btn blue" type="button" id="deckDrone">◆ DRONE SIM</button>
+            <button class="deck-btn accent" type="button" id="deckMissile">➤ MISSILE FX</button>
+          </div>
+        </div>
+      </div>
+      <div class="rockers">
+        <label class="rocker"><input type="checkbox" id="swarmVisSwitch"><span>SWARM VIS</span></label>
+        <label class="rocker"><input type="checkbox" id="deckFxSwitch" checked><span>DECK FX</span></label>
+      </div>
+      <div class="deck-keys"><span class="keycap">+</span><span class="keycap">−</span> zoom · <span class="keycap">↑↓←→</span> pan · <span class="keycap">R</span> refresh · <span class="keycap">D</span> add sim · <span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">F</span> fly trainer</div>
+    </div>
+
+    <div class="card support-matrix-card">
+      <div class="support-matrix-head">
+        <h2>🛡 MAVEN SI SUPPORT MATRIX</h2>
+        <span class="support-matrix-badge">VISIBLE / READY</span>
+      </div>
+      <div class="support-matrix-grid">
+        <a class="support-action external" href="https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🛰️</span>SATELLITE</span>
+        </a>
+        <a class="support-action external" href="https://earth.nullschool.net/" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🌬️</span>GLOBAL WX</span>
+        </a>
+        <a class="support-action external" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+          <span><span class="support-icon">🌎</span>NASA EARTH</span>
+        </a>
+        <button class="support-action humanitarian" type="button" data-support-action="humanitarian">
+          <span><span class="support-icon">🧭</span>SAR / HUMAN</span>
+        </button>
+        <button class="support-action" type="button" data-support-action="readiness">
+          <span><span class="support-icon">🛠️</span>LOGISTICS</span>
+        </button>
+        <a class="support-action defense" href="./maven-ops-sim.html?profile=def" target="_blank" rel="noopener">
+          <span><span class="support-icon">🔐</span>CYBER / DEF SIM</span>
+        </a>
+      </div>
+      <div class="support-matrix-state">
+        <div class="support-state"><span>HUMAN AUTHORITY</span><b>REQUIRED</b></div>
+        <div class="support-state lock"><span>WEAPON / TARGET CONTROL</span><b>OFF</b></div>
+        <div class="support-state"><span>PUBLIC DATA</span><b>ACTIVE</b></div>
+        <div class="support-state"><span>SUPPORT MODE</span><b>NON-KINETIC</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>⚡ SPACETRON VISUAL CORE</h2>
+      <div class="visual-core" aria-label="Animated simulated HIVE and SWARM status visual">
+        <div class="gridfx"></div><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="sweep"></div><div class="core">D</div><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
+        <div class="core-caption">HIVE BUS // 100 PEERS // SIMULATED VISUAL TELEMETRY</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧪 SYNTHETIC DRONE + MISSILE TEST RANGE</h2>
+      <div class="testrange" id="testRange" aria-label="Synthetic local-only drone and missile visual test range">
+        <div class="sim-zone"></div>
+        <div class="sim-target">TEST</div>
+      </div>
+      <div class="sim-stats">
+        <div>DRONES <b id="simDroneCount">0</b></div>
+        <div>TRAJECTORY TESTS <b id="simMissileCount">0</b></div>
+        <div>EXTERNAL LINK <b>NONE</b></div>
+        <div>REAL TARGETING <b>OFF</b></div>
+      </div>
+
+      <div class="flight-panel">
+        <div class="flight-head"><b>◆ VIRTUAL DRONE FLIGHT TRAINER</b><span>SYNTHETIC XY ONLY</span></div>
+        <div class="flight-telemetry">
+          <div>X<b id="pilotX">50</b></div><div>Y<b id="pilotY">50</b></div>
+          <div>ALT<b id="pilotAlt">50%</b></div><div>THR<b id="pilotThr">50%</b></div>
+        </div>
+        <div class="flight-controls">
+          <div class="flight-pad">
+            <span></span><button type="button" class="deck-btn" data-fly="up">▲</button><span></span>
+            <button type="button" class="deck-btn" data-fly="left">◀</button><button type="button" class="deck-btn blue" data-fly="hover">HOVER</button><button type="button" class="deck-btn" data-fly="right">▶</button>
+            <span></span><button type="button" class="deck-btn" data-fly="down">▼</button><span></span>
+          </div>
+          <div class="flight-sliders">
+            <label>ALTITUDE <input id="pilotAltSlider" type="range" min="0" max="100" value="50"></label>
+            <label>THROTTLE <input id="pilotThrSlider" type="range" min="0" max="100" value="50"></label>
+            <button type="button" class="deck-btn green" id="pilotReset">CENTER / RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="traj-scope">
+        <svg viewBox="0 0 320 120" role="img" aria-label="Synthetic trajectory animation scope">
+          <g class="traj-grid"><path d="M0 30H320M0 60H320M0 90H320M80 0V120M160 0V120M240 0V120"/></g>
+          <path id="trajPath" class="traj-path" d="M20 100 Q160 5 300 90"/>
+          <circle id="trajDot" class="traj-dot" cx="20" cy="100" r="4"/>
+          <text class="traj-label" x="8" y="114">SYNTHETIC X/Y TRAJECTORY — NOT GEOGRAPHIC</text>
+        </svg>
+      </div>
+      <div class="task-tools">
+        <button type="button" id="spawnDroneSim">◆ ADD AUTONOMOUS VISUAL</button>
+        <button type="button" id="runMissileSim">➤ RUN SYNTHETIC TRAJECTORY</button>
+        <button type="button" id="resetCombatSim">↺ RESET TEST RANGE</button>
+      </div>
+      <div class="mini">Training sandbox only. Flight controls move a virtual drone in a non-geographic grid. Trajectory animation is illustrative, not a real missile solution, guidance model, or live vehicle control.</div>
+    </div>
+
+    <div class="card">
+      <h2>🧭 MAVEN MODE DECK</h2>
+      <a href="./maven-ops-sim.html?profile=tac" style="text-decoration:none"><button type="button">🛰 TACTICAL SIM</button></a>
+      <a href="./maven-ops-sim.html?profile=spec" style="text-decoration:none"><button type="button">🕶 STEALTH SIM</button></a>
+      <a href="./maven-ops-sim.html?profile=def" style="text-decoration:none"><button type="button">🛡 DEFENSE SIM</button></a>
+      <a href="./maven-rover-ops.html" style="text-decoration:none"><button type="button">🛞 ROVER OPS</button></a>
+      <a href="./maven-global-battle.html" style="text-decoration:none"><button type="button">🌎 GLOBAL BATTLE SIM</button></a>
+      <div class="mini">Dedicated synthetic operations workspace. Public map data stays separated from simulation effects and external action.</div>
+    </div>
+
+    <div class="card">
+      <h2>VIEW</h2>
+      <button data-view="global">GLOBAL</button>
+      <button data-view="europe" class="active">EASTERN EUROPE</button>
+      <button data-view="blacksea">BLACK SEA</button>
+    </div>
+
+    <div class="card">
+      <h2>LAYERS</h2>
+      <button data-layer="worldGrid" class="active">🌐 WORLD GRID</button>
+      <button data-layer="swarm">🐝 SWARM CELLS</button>
+      <button data-layer="humanitarian" class="active">🧭 CIVIL/HUMANITARIAN</button>
+      <button data-layer="weather" class="active">🌦 REGIONAL WEATHER</button>
+      <button data-layer="liveWeather" class="active">🌡 LIVE WEATHER</button>
+      <button data-layer="earthquakes" class="active">🌎 EARTHQUAKES</button>
+      <button data-layer="naturalEvents" class="active">🛰 NASA EVENTS</button>
+      <button data-layer="public" class="active">📡 PUBLIC EVENTS</button>
+      <button type="button" id="refreshLive">↻ REFRESH LIVE DATA</button>
+    </div>
+
+    <div class="card earth-observation-card">
+      <h2>🌍 MAVEN SI // EARTH OBSERVATION</h2>
+      <div class="earth-observation-grid">
+        <a class="earth-source" href="https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🛰️</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">ZOOM EARTH</span>
+            <span class="earth-source-desc">Near-real-time satellite and civilian weather visualization.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+        <a class="earth-source" href="https://earth.nullschool.net/" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🌬️</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">NULLSCHOOL EARTH</span>
+            <span class="earth-source-desc">Global wind, weather, ocean, chemistry, particulate and space-weather views.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+        <a class="earth-source" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+          <span class="earth-source-icon">🌎</span>
+          <span class="earth-source-copy">
+            <span class="earth-source-name">NASA WORLDVIEW</span>
+            <span class="earth-source-desc">NASA Earth-observation imagery and public environmental layers.</span>
+          </span>
+          <span class="earth-source-open">OPEN ↗</span>
+        </a>
+      </div>
+      <div class="earth-observation-note">Public civilian/environmental situational awareness. External portals open in separate tabs so their native controls, attribution, terms and safety notices remain intact.</div>
+    </div>
+
+    <div class="card">
+      <h2>🧠 TASK OPS</h2>
+      <div class="metric"><span>PROGRESS</span><b id="taskCount">0/5</b></div>
+      <div class="progress"><span id="taskBar"></span></div>
+      <div id="tasks">
+        <div class="task-row" data-task="layers"><span class="task-led"></span><span class="task-name">Verify public layers</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="views"><span class="task-led"></span><span class="task-name">Cycle map views</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="refresh"><span class="task-led"></span><span class="task-name">Refresh public data feeds</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="bus"><span class="task-led"></span><span class="task-name">Review event bus</span><button class="task-btn" type="button">RUN</button></div>
+        <div class="task-row" data-task="backup"><span class="task-led"></span><span class="task-name">Confirm intel backup task</span><button class="task-btn" type="button">RUN</button></div>
+      </div>
+      <div class="task-tools">
+        <button type="button" id="runAll">▶ RUN SAFE TASK CYCLE</button>
+        <button type="button" id="resetTasks">↺ RESET</button>
+      </div>
+      <div class="mini" id="taskNote">Tasks operate only on this dashboard UI and public-information simulation state.</div>
+    </div>
+
+    <div class="card">
+      <h2>MAVEN STATUS</h2>
+      <div class="metric"><span>MODE</span><b>GEO_SIMULATION</b></div>
+      <div class="metric"><span>VISIBLE CELLS</span><b id="cells">24</b></div>
+      <div class="metric"><span>HIVE</span><b>SYNCED</b></div>
+      <div class="metric"><span>PUBLIC DATA</span><b id="publicDataState">CONNECTING</b></div>
+      <div class="metric"><span>EARTH PORTALS</span><b>3 WIRED</b></div>
+      <div class="metric"><span>LAST REFRESH</span><b id="lastRefresh">—</b></div>
+      <div class="metric"><span>SWARM ROLE</span><b>ANALYSIS ONLY</b></div>
+      <div class="metric"><span>PRECISE TARGETING</span><b>OFF</b></div>
+      <div class="metric"><span>WEAPON CONTROL</span><b>OFF</b></div>
+      <div class="metric"><span>EXTERNAL ACTION</span><b>OFF</b></div>
+    </div>
+
+    <div class="card legend">
+      <h2>LEGEND</h2>
+      <div><span class="dot swarmdot"></span>Simulated swarm analytic cell</div>
+      <div><span class="dot hmdot"></span>Civil / humanitarian reference</div>
+      <div><span class="dot wxdot"></span>Regional weather zone</div>
+      <div><span class="dot livedot"></span>Live public weather observation</div>
+      <div><span class="dot quakedot"></span>USGS earthquake event</div>
+      <div><span class="dot pubdot"></span>Public-information reference</div>
+    </div>
+
+    <div class="card">
+      <h2>EVENT BUS</h2>
+      <div class="feed" id="feed"></div>
+    </div>
+    <div class="card warn">This page avoids live unit locations, person tracking, precise tactical coordinates, target selection, fire-control data, strike recommendations, and kinetic execution. Swarm cells are simulated coarse regional bins.</div>
+  </aside>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const mobileSheet=document.getElementById('mobileSheet');
+const mobileSheetToggle=document.getElementById('mobileSheetToggle');
+const mobileMedia=window.matchMedia('(max-width:900px)');
+let mapResizeTimer=0;
+const invalidateMapSoon=(delay=80)=>{
+  clearTimeout(mapResizeTimer);
+  mapResizeTimer=setTimeout(()=>map?.invalidateSize({pan:false}),delay);
+};
+let setMobileSheet=()=>{};
+if(mobileSheet&&mobileSheetToggle){
+  setMobileSheet=open=>{
+    const next=Boolean(open&&mobileMedia.matches);
+    mobileSheet.classList.toggle('open',next);
+    document.body.classList.toggle('mobile-sheet-open',next);
+    mobileSheetToggle.setAttribute('aria-expanded',String(next));
+    mobileSheetToggle.textContent=next?'⌄ CLOSE CONTROLS':'⌃ CONTROLS / STATUS';
+    invalidateMapSoon(next?240:160);
+  };
+  mobileSheetToggle.addEventListener('click',()=>setMobileSheet(!mobileSheet.classList.contains('open')));
+  mobileSheet.addEventListener('transitionend',event=>{
+    if(event.propertyName==='transform') invalidateMapSoon(0);
+  });
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&mobileSheet.classList.contains('open')) setMobileSheet(false);
+  });
+  const syncResponsiveState=()=>{
+    if(!mobileMedia.matches) setMobileSheet(false);
+    invalidateMapSoon(120);
+  };
+  if(mobileMedia.addEventListener) mobileMedia.addEventListener('change',syncResponsiveState);
+  else mobileMedia.addListener?.(syncResponsiveState);
+  window.addEventListener('orientationchange',()=>invalidateMapSoon(260),{passive:true});
+  window.addEventListener('resize',()=>invalidateMapSoon(120),{passive:true});
+  window.visualViewport?.addEventListener('resize',()=>invalidateMapSoon(80),{passive:true});
+}
+const map=L.map('map',{worldCopyJump:true,zoomControl:true}).setView([49.0,31.0],5);
+map.on('click',()=>{
+  if(mobileMedia.matches&&mobileSheet?.classList.contains('open')) setMobileSheet(false);
+});
+if('ResizeObserver' in window){
+  new ResizeObserver(()=>invalidateMapSoon(40)).observe(document.getElementById('map'));
+}
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:10,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+
+const layers={
+  worldGrid:L.layerGroup().addTo(map),
+  swarm:L.layerGroup(),
+  humanitarian:L.layerGroup().addTo(map),
+  weather:L.layerGroup().addTo(map),
+  liveWeather:L.layerGroup().addTo(map),
+  earthquakes:L.layerGroup().addTo(map),
+  naturalEvents:L.layerGroup().addTo(map),
+  public:L.layerGroup().addTo(map)
+};
+const views={global:[[20,0],2],europe:[[49,31],5],blacksea:[[43.5,34.5],5]};
+
+const worldGridCells=[];
+for(let lat=-60;lat<80;lat+=20){
+  for(let lon=-180;lon<180;lon+=20){
+    const bounds=[[lat,lon],[lat+20,lon+20]];
+    const cell=L.rectangle(bounds,{
+      color:"#55f2c2",
+      weight:.6,
+      opacity:.18,
+      fillColor:"#55f2c2",
+      fillOpacity:.018,
+      interactive:true
+    }).bindPopup(
+      "<b>PUBLIC WORLD GRID CELL</b><br>"+
+      lat+"° to "+(lat+20)+"° / "+lon+"° to "+(lon+20)+"°<br>"+
+      "Coarse aggregate situational-awareness bin"
+    );
+    cell.addTo(layers.worldGrid);
+    worldGridCells.push(cell);
+  }
+}
+
+const coarseCells=[
+[50.5,30.5],[49.5,28.5],[48.5,31.5],[47.5,33.5],[46.5,30.5],[51.5,34.5],
+[52.5,24.5],[50.5,24.5],[48.5,24.5],[46.5,24.5],[44.5,26.5],[45.5,29.5],
+[44.5,33.5],[42.5,36.5],[41.5,29.5],[43.5,28.5],[47.5,39.5],[49.5,39.5],
+[51.5,39.5],[53.5,27.5],[54.5,25.5],[47.5,21.5],[49.5,21.5],[45.5,37.5]
+];
+const swarmMarkers=[];
+coarseCells.forEach((p,i)=>{
+  const icon=L.divIcon({className:'',html:'<div class="cell"></div>',iconSize:[17,17],iconAnchor:[8,8]});
+  const m=L.marker(p,{icon}).bindPopup('<b>SWARM ANALYTIC CELL '+String(i+1).padStart(2,'0')+'</b><br>Simulated coarse regional bin<br>No live track or targeting data');
+  m.addTo(layers.swarm); swarmMarkers.push(m);
+});
+
+const civil=[
+[50.4501,30.5234,'Kyiv — civilian city reference'],
+[49.8397,24.0297,'Lviv — civilian city reference'],
+[46.4825,30.7233,'Odesa — civilian city reference'],
+[44.4268,26.1025,'Bucharest — civilian city reference'],
+[52.2297,21.0122,'Warsaw — civilian city reference'],
+[47.0105,28.8638,'Chișinău — civilian city reference']
+];
+civil.forEach(x=>L.circleMarker([x[0],x[1]],{radius:6,color:'#76d4ff',weight:2,fillOpacity:.55}).bindPopup(x[2]).addTo(layers.humanitarian));
+
+const weather=[
+[48.7,32.0,'Central regional weather zone'],[45.0,34.0,'Black Sea weather zone'],[52.0,25.0,'Northwest regional weather zone']
+];
+weather.forEach(x=>L.circle([x[0],x[1]],{radius:180000,color:'#b69cff',weight:1,fillOpacity:.07}).bindPopup(x[2]+'<br>Illustrative regional overlay').addTo(layers.weather));
+
+const publicRefs=[
+[50.45,30.52,'PUBLIC INFO NODE — Kyiv region'],[46.48,30.72,'PUBLIC INFO NODE — Odesa region'],[44.43,26.10,'PUBLIC INFO NODE — Romania region'],[52.23,21.01,'PUBLIC INFO NODE — Poland region']
+];
+publicRefs.forEach(x=>L.circleMarker([x[0],x[1]],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.45}).bindPopup(x[2]+'<br>Public-information reference only').addTo(layers.public));
+
+const safeWeatherPoints=[
+  {name:'New York',lat:40.71,lon:-74.01},
+  {name:'Mexico City',lat:19.43,lon:-99.13},
+  {name:'São Paulo',lat:-23.55,lon:-46.63},
+  {name:'London',lat:51.51,lon:-0.13},
+  {name:'Cairo',lat:30.04,lon:31.24},
+  {name:'Nairobi',lat:-1.29,lon:36.82},
+  {name:'Cape Town',lat:-33.92,lon:18.42},
+  {name:'Mumbai',lat:19.08,lon:72.88},
+  {name:'Singapore',lat:1.35,lon:103.82},
+  {name:'Tokyo',lat:35.68,lon:139.69},
+  {name:'Sydney',lat:-33.87,lon:151.21},
+  {name:'Honolulu',lat:21.31,lon:-157.86}
+];
+
+function esc(v){
+  return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+async function fetchJson(url,timeoutMs=9000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const r=await fetch(url,{cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  } finally { clearTimeout(timer); }
+}
+async function loadLiveWeather(){
+  layers.liveWeather.clearLayers();
+  let ok=0;
+  for(const p of safeWeatherPoints){
+    try{
+      const u='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(p.lat)+'&longitude='+encodeURIComponent(p.lon)+'&current=temperature_2m,wind_speed_10m,weather_code&timezone=UTC';
+      const j=await fetchJson(u);
+      const cur=j.current||{};
+      const temp=Number(cur.temperature_2m), wind=Number(cur.wind_speed_10m);
+      const popup='<b>LIVE PUBLIC WEATHER — '+esc(p.name)+'</b><br>'+
+        (Number.isFinite(temp)?'Temperature: '+temp.toFixed(1)+' °C<br>':'')+
+        (Number.isFinite(wind)?'Wind: '+wind.toFixed(1)+' km/h<br>':'')+
+        'Source: Open-Meteo • broad civilian city reference';
+      L.circleMarker([p.lat,p.lon],{radius:8,color:'#55f2c2',weight:2,fillOpacity:.45}).bindPopup(popup).addTo(layers.liveWeather);
+      ok++;
+    }catch(e){ event('LIVE WEATHER error: '+p.name+' // '+e.message); }
+  }
+  return ok;
+}
+async function loadEarthquakes(){
+  layers.earthquakes.clearLayers();
+  try{
+    const j=await fetchJson('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson');
+    const features=(j.features||[]).filter(f=>{
+      const q=f.geometry&&f.geometry.coordinates;
+      return Array.isArray(q)&&q.length>=2&&Number.isFinite(Number(q[0]))&&Number.isFinite(Number(q[1]));
+    }).slice(0,60);
+    for(const f of features){
+      const q=f.geometry.coordinates,lon=Number(q[0]),lat=Number(q[1]),mag=Number(f.properties&&f.properties.mag);
+      const place=esc((f.properties&&f.properties.place)||'Regional event');
+      const when=f.properties&&f.properties.time?new Date(f.properties.time).toLocaleString():'Unknown time';
+      const popup='<b>USGS EARTHQUAKE</b><br>Magnitude: '+(Number.isFinite(mag)?mag.toFixed(1):'—')+'<br>'+place+'<br>'+esc(when)+'<br><small>Public hazard information only.</small>';
+      L.circleMarker([lat,lon],{radius:Math.max(5,Math.min(11,(Number.isFinite(mag)?mag:4)*1.5)),color:'#ff6b6b',weight:2,fillOpacity:.28}).bindPopup(popup).addTo(layers.earthquakes);
+    }
+    return features.length;
+  }catch(e){ event('EARTHQUAKE feed error: '+e.message); return 0; }
+}
+async function loadNaturalEvents(){
+  layers.naturalEvents.clearLayers();
+  try{
+    const j=await fetchJson('https://eonet.gsfc.nasa.gov/api/v3/events/geojson?status=open&limit=100');
+    const features=(j.features||[]).slice(0,100);
+    let count=0;
+    for(const f of features){
+      const g=f.geometry||{};
+      let coords=null;
+      if(g.type==='Point'&&Array.isArray(g.coordinates)) coords=g.coordinates;
+      else if(g.type==='Polygon'&&Array.isArray(g.coordinates)&&Array.isArray(g.coordinates[0])&&Array.isArray(g.coordinates[0][0])) coords=g.coordinates[0][0];
+      if(!coords) continue;
+      const lon=Number(coords[0]),lat=Number(coords[1]);
+      if(!Number.isFinite(lat)||!Number.isFinite(lon)) continue;
+      const title=esc((f.properties&&f.properties.title)||'Open natural event');
+      L.circleMarker([lat,lon],{radius:5,color:'#d7ff64',weight:2,fillOpacity:.26})
+        .bindPopup('<b>NASA EONET EVENT</b><br>'+title+'<br><small>Public natural-event information.</small>')
+        .addTo(layers.naturalEvents);
+      count++;
+    }
+    return count;
+  }catch(e){ event('NASA EONET feed error: '+e.message); return 0; }
+}
+let liveRefreshBusy=false;
+async function loadPublicData(){
+  if(liveRefreshBusy) return;
+  liveRefreshBusy=true;
+  const state=document.getElementById('publicDataState');
+  const pill=document.getElementById('liveDataPill');
+  state.textContent='REFRESHING'; pill.textContent='◌ LIVE PUBLIC DATA';
+  try{
+    const [weatherCount,quakeCount,eventCount]=await Promise.all([loadLiveWeather(),loadEarthquakes(),loadNaturalEvents()]);
+    const stamp=new Date();
+    document.getElementById('lastRefresh').textContent=stamp.toLocaleTimeString();
+    state.textContent=(weatherCount>0||quakeCount>0||eventCount>0)?'LIVE':'PARTIAL';
+    pill.textContent=(weatherCount>0||quakeCount>0||eventCount>0)?'● LIVE PUBLIC DATA':'◌ PUBLIC DATA PARTIAL';
+    const led=document.getElementById('ledData'); if(led) led.className='lamp '+((weatherCount>0||quakeCount>0||eventCount>0)?'on':'warn');
+    event('PUBLIC DATA refresh: weather '+weatherCount+' nodes // earthquakes '+quakeCount+' // NASA events '+eventCount);
+  }catch(e){
+    state.textContent='OFFLINE'; pill.textContent='○ PUBLIC DATA OFFLINE';
+    const led=document.getElementById('ledData'); if(led) led.className='lamp';
+    event('PUBLIC DATA refresh failed: '+e.message);
+  }finally{ liveRefreshBusy=false; }
+}
+
+function event(msg){
+  const e=document.getElementById('feed'),t=new Date().toLocaleTimeString();
+  const d=document.createElement('div'); d.textContent='['+t+'] '+msg; e.prepend(d);
+  while(e.children.length>18)e.removeChild(e.lastChild);
+  const readout=document.getElementById('deckReadout'); if(readout) readout.textContent=msg;
+}
+event('MAVEN geospatial canvas initialized');
+event('HIVE synchronization healthy');
+event('Tactile control deck online');
+event('Interactive TASK OPS online');
+event('Public layers ready; live feeds initializing');
+event('Public world grid layer online');
+event('MAVEN SI Earth observation portals wired: Zoom Earth // Nullschool // NASA Worldview');
+event('MAVEN SI support matrix visible: humanitarian // readiness // cyber-defense simulation');
+event('Swarm overlay parked OFF for clearer click access');
+event('Synthetic drone/missile test range ready // local visual sandbox only');
+event('Precise targeting and external action locked OFF');
+
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); const v=views[b.dataset.view]; map.setView(v[0],v[1]); event('View changed: '+b.dataset.view.toUpperCase());
+}));
+document.querySelectorAll('[data-layer]').forEach(b=>b.addEventListener('click',()=>{
+  const k=b.dataset.layer,layer=layers[k];
+  if(map.hasLayer(layer)){map.removeLayer(layer);b.classList.remove('active');event('Layer OFF: '+k.toUpperCase())}
+  else{map.addLayer(layer);b.classList.add('active');event('Layer ON: '+k.toUpperCase())}
+}));
+
+const taskRows=[...document.querySelectorAll('.task-row')];
+function updateTasks(){
+  const done=taskRows.filter(r=>r.classList.contains('done')).length;
+  document.getElementById('taskCount').textContent=done+'/'+taskRows.length;
+  document.getElementById('taskBar').style.width=((done/taskRows.length)*100)+'%';
+  document.getElementById('taskNote').textContent=done===taskRows.length?'✅ SAFE TASK CYCLE COMPLETE':'Tasks operate only on this dashboard UI and public-information simulation state.';
+}
+function completeTask(row){
+  if(row.classList.contains('done')) return;
+  const key=row.dataset.task;
+  if(key==='layers'){
+    ['worldGrid','humanitarian','weather','liveWeather','earthquakes','naturalEvents','public'].forEach(k=>{if(!map.hasLayer(layers[k])) map.addLayer(layers[k])});
+    document.querySelectorAll('[data-layer]').forEach(b=>{if(b.dataset.layer!=='swarm') b.classList.add('active')});
+    event('TASK: public layers verified');
+  }
+  if(key==='views'){map.setView(views.blacksea[0],views.blacksea[1]);setTimeout(()=>map.setView(views.europe[0],views.europe[1]),450);event('TASK: map view cycle executed')}
+  if(key==='refresh'){loadPublicData();event('TASK: live public-data refresh requested')}
+  if(key==='bus'){event('TASK: event bus health check nominal')}
+  if(key==='backup'){event('TASK: backup confirmation checkpoint logged locally')}
+  row.classList.add('done'); row.querySelector('button').textContent='DONE'; updateTasks();
+}
+taskRows.forEach(row=>row.querySelector('button').addEventListener('click',()=>completeTask(row)));
+document.getElementById('resetTasks').addEventListener('click',()=>{
+  taskRows.forEach(r=>{r.classList.remove('done');r.querySelector('button').textContent='RUN'});updateTasks();event('TASK OPS reset');
+});
+document.getElementById('runAll').addEventListener('click',()=>{
+  taskRows.forEach((row,i)=>setTimeout(()=>completeTask(row),i*550));
+  event('SAFE TASK CYCLE started');
+});
+document.getElementById('refreshLive').addEventListener('click',()=>{loadPublicData();event('Manual public-data refresh requested')});
+
+document.querySelectorAll('[data-support-action]').forEach(btn=>btn.addEventListener('click',()=>{
+  const action=btn.dataset.supportAction;
+  if(action==='humanitarian'){
+    ['humanitarian','liveWeather','earthquakes','naturalEvents','public'].forEach(k=>{
+      if(layers[k]&&!map.hasLayer(layers[k])) map.addLayer(layers[k]);
+      const layerButton=document.querySelector('[data-layer="'+k+'"]');
+      if(layerButton) layerButton.classList.add('active');
+    });
+    map.setView(views.global[0],views.global[1]);
+    event('SUPPORT: humanitarian / SAR public layers activated');
+  }
+  if(action==='readiness'){
+    if(!map.hasLayer(layers.liveWeather)) map.addLayer(layers.liveWeather);
+    if(!map.hasLayer(layers.naturalEvents)) map.addLayer(layers.naturalEvents);
+    loadPublicData();
+    event('SUPPORT: logistics/readiness public environment refresh activated');
+  }
+}));
+
+const infraSchematic=document.getElementById('infraSchematic');
+function setInfraSchematic(open,view){
+  if(!infraSchematic) return;
+  if(view) infraSchematic.dataset.view=view;
+  infraSchematic.hidden=!open;
+  document.querySelectorAll('[data-infra-view]').forEach(b=>b.classList.toggle('active',b.dataset.infraView===infraSchematic.dataset.view));
+  if(open) event('INFRA SCHEMATIC opened: '+String(infraSchematic.dataset.view||'future').toUpperCase());
+  else event('INFRA SCHEMATIC closed');
+}
+document.querySelectorAll('[data-infra-view]').forEach(b=>b.addEventListener('click',()=>setInfraSchematic(true,b.dataset.infraView)));
+document.getElementById('infraSchematicClose')?.addEventListener('click',()=>setInfraSchematic(false));
+
+function applyExternalCommand(message){
+  if(!message||message.type!=='maven-command') return;
+  if(message.command==='view'&&views[message.value]){
+    const v=views[message.value];
+    map.setView(v[0],v[1]);
+    event('External view: '+String(message.value).toUpperCase());
+  }
+  if(message.command==='layer'){
+    const keyMap={worldgrid:'worldGrid',civil:'humanitarian',weather:'liveWeather',quakes:'earthquakes',events:'naturalEvents',swarm:'swarm'};
+    const key=keyMap[message.value];
+    const layer=layers[key];
+    if(layer){
+      const enabled=Boolean(message.enabled);
+      if(enabled&&!map.hasLayer(layer)) map.addLayer(layer);
+      if(!enabled&&map.hasLayer(layer)) map.removeLayer(layer);
+      const button=document.querySelector('[data-layer="'+key+'"]');
+      if(button) button.classList.toggle('active',enabled);
+      event('External layer '+(enabled?'ON: ':'OFF: ')+key.toUpperCase());
+    }
+  }
+  if(message.command==='refresh') loadPublicData();
+  if(message.command==='schematic'){
+    const next=message.value==='close'?false:message.value==='open'?true:infraSchematic?.hidden;
+    setInfraSchematic(Boolean(next),message.view||infraSchematic?.dataset.view||'future');
+  }
+}
+window.addEventListener('message',evt=>{
+  const embedded=new URLSearchParams(location.search).get('embed')==='1';
+  const trusted=['https://xunia.org','https://www.xunia.org'].includes(evt.origin);
+  const localParent=embedded&&evt.origin==='null';
+  if(!trusted&&!localParent) return;
+  applyExternalCommand(evt.data);
+});
+
+const testRange=document.getElementById('testRange');
+let simDroneCount=0,simMissileCount=0,simTempo=1;
+const droneNodes=[];
+const pilot=document.createElement('div');
+pilot.className='pilot-drone';
+pilot.id='pilotDrone';
+testRange.appendChild(pilot);
+const pilotState={x:50,y:50,alt:50,thr:50,heading:0};
+function updateSimCounters(){
+  document.getElementById('simDroneCount').textContent=String(simDroneCount);
+  document.getElementById('simMissileCount').textContent=String(simMissileCount);
+  const load=document.getElementById('deckLoad'); if(load) load.style.width=Math.min(100,12+(simDroneCount*9)+(simMissileCount*3))+'%';
+  const led=document.getElementById('ledSim'); if(led) led.className='lamp '+((simDroneCount||simMissileCount)?'on':'');
+}
+function spawnDroneSim(){
+  if(droneNodes.length>=8){event('TEST RANGE: drone sim limit reached');return;}
+  const d=document.createElement('div');
+  d.className='sim-drone';
+  const idx=droneNodes.length;
+  const left=28+(idx%4)*38,top=28+Math.floor(idx/4)*52;
+  d.style.left=left+'px';d.style.top=top+'px';
+  d.dataset.phase=String(idx*0.8);
+  testRange.appendChild(d);droneNodes.push(d);simDroneCount=droneNodes.length;updateSimCounters();
+  event('TEST RANGE: synthetic drone visual spawned');
+}
+function runMissileSim(){
+  const path=document.getElementById('trajPath'),dot=document.getElementById('trajDot');
+  if(!path||!dot)return;
+  simMissileCount++;updateSimCounters();event('TEST RANGE: synthetic trajectory visual started');
+  const length=path.getTotalLength(),start=performance.now(),duration=2200/simTempo;
+  function step(now){
+    const p=Math.min(1,(now-start)/duration),pt=path.getPointAtLength(length*p);
+    dot.setAttribute('cx',pt.x);dot.setAttribute('cy',pt.y);
+    if(p<1)requestAnimationFrame(step);else{
+      setTimeout(()=>{dot.setAttribute('cx','20');dot.setAttribute('cy','100')},350);
+      event('TEST RANGE: synthetic trajectory visual complete');
+    }
+  }
+  requestAnimationFrame(step);
+}
+function renderPilot(){
+  const usableW=Math.max(80,testRange.clientWidth-50),usableH=Math.max(80,testRange.clientHeight-50);
+  const px=((pilotState.x/100)-.5)*usableW,py=((pilotState.y/100)-.5)*usableH;
+  pilot.style.transform='translate('+px+'px,'+py+'px) rotate('+pilotState.heading+'deg)';
+  document.getElementById('pilotX').textContent=Math.round(pilotState.x);
+  document.getElementById('pilotY').textContent=Math.round(pilotState.y);
+  document.getElementById('pilotAlt').textContent=Math.round(pilotState.alt)+'%';
+  document.getElementById('pilotThr').textContent=Math.round(pilotState.thr)+'%';
+}
+function flyVirtual(dir){
+  const step=4+pilotState.thr/25;
+  if(dir==='up'){pilotState.y=Math.max(4,pilotState.y-step);pilotState.heading=0}
+  if(dir==='right'){pilotState.x=Math.min(96,pilotState.x+step);pilotState.heading=90}
+  if(dir==='down'){pilotState.y=Math.min(96,pilotState.y+step);pilotState.heading=180}
+  if(dir==='left'){pilotState.x=Math.max(4,pilotState.x-step);pilotState.heading=270}
+  if(dir==='hover') pilotState.thr=40;
+  renderPilot();event('FLIGHT TRAINER: virtual drone '+dir.toUpperCase());
+}
+function resetPilot(){
+  Object.assign(pilotState,{x:50,y:50,alt:50,thr:50,heading:0});
+  document.getElementById('pilotAltSlider').value='50';document.getElementById('pilotThrSlider').value='50';renderPilot();
+  event('FLIGHT TRAINER: virtual drone centered');
+}
+function resetCombatSim(){
+  droneNodes.splice(0).forEach(n=>n.remove());
+  simDroneCount=0;simMissileCount=0;updateSimCounters();resetPilot();event('TEST RANGE reset');
+}
+document.getElementById('spawnDroneSim').addEventListener('click',spawnDroneSim);
+document.getElementById('runMissileSim').addEventListener('click',runMissileSim);
+document.getElementById('resetCombatSim').addEventListener('click',resetCombatSim);
+document.querySelectorAll('[data-fly]').forEach(b=>b.addEventListener('click',()=>flyVirtual(b.dataset.fly)));
+document.getElementById('pilotAltSlider').addEventListener('input',e=>{pilotState.alt=Number(e.target.value);renderPilot()});
+document.getElementById('pilotThrSlider').addEventListener('input',e=>{pilotState.thr=Number(e.target.value);renderPilot()});
+document.getElementById('pilotReset').addEventListener('click',resetPilot);
+window.addEventListener('resize',renderPilot);
+renderPilot();
+
+function deckPress(id,fn){const b=document.getElementById(id);if(b)b.addEventListener('click',()=>{b.classList.add('pressed');setTimeout(()=>b.classList.remove('pressed'),110);fn();});}
+deckPress('deckZoomOut',()=>{map.zoomOut();event('DECK: map zoom out')});
+deckPress('deckZoomIn',()=>{map.zoomIn();event('DECK: map zoom in')});
+deckPress('deckHome',()=>{map.setView(views.europe[0],views.europe[1]);event('DECK: home view restored')});
+deckPress('deckPanUp',()=>{map.panBy([0,-120]);event('DECK: pan north')});
+deckPress('deckPanDown',()=>{map.panBy([0,120]);event('DECK: pan south')});
+deckPress('deckPanLeft',()=>{map.panBy([-120,0]);event('DECK: pan west')});
+deckPress('deckPanRight',()=>{map.panBy([120,0]);event('DECK: pan east')});
+deckPress('deckRefresh',()=>{loadPublicData();event('DECK: public data refresh requested')});
+deckPress('deckTasks',()=>{document.getElementById('runAll').click()});
+deckPress('deckDrone',spawnDroneSim);
+deckPress('deckMissile',runMissileSim);
+
+const tempo=document.getElementById('simTempo');
+tempo.addEventListener('input',()=>{simTempo=Math.max(.5,Math.min(1.8,Number(tempo.value)/100));document.getElementById('simTempoLabel').textContent=Math.round(simTempo*100)+'%';event('DECK: synthetic animation response '+Math.round(simTempo*100)+'%')});
+const swarmSwitch=document.getElementById('swarmVisSwitch');
+swarmSwitch.addEventListener('change',()=>{
+  if(swarmSwitch.checked){if(!map.hasLayer(layers.swarm))map.addLayer(layers.swarm)}else if(map.hasLayer(layers.swarm))map.removeLayer(layers.swarm);
+  const btn=document.querySelector('[data-layer="swarm"]'); if(btn)btn.classList.toggle('active',swarmSwitch.checked);
+  event('DECK: swarm visual '+(swarmSwitch.checked?'ON':'OFF'));
+});
+const fxSwitch=document.getElementById('deckFxSwitch');
+fxSwitch.addEventListener('change',()=>{document.body.classList.toggle('deck-fx-off',!fxSwitch.checked);event('DECK: visual feedback '+(fxSwitch.checked?'ON':'OFF'))});
+
+setInterval(()=>{const clock=document.getElementById('deckClock');if(clock)clock.textContent=new Date().toLocaleTimeString([], {hour12:false});},1000);
+document.addEventListener('keydown',e=>{
+  const tag=(e.target&&e.target.tagName||'').toLowerCase(); if(tag==='input'||tag==='textarea'||tag==='select')return;
+  if(e.key==='+'){map.zoomIn();event('KEY: zoom in')}
+  else if(e.key==='-'||e.key==='_'){map.zoomOut();event('KEY: zoom out')}
+  else if(e.key==='ArrowUp'){e.preventDefault();map.panBy([0,-120])}
+  else if(e.key==='ArrowDown'){e.preventDefault();map.panBy([0,120])}
+  else if(e.key==='ArrowLeft'){e.preventDefault();map.panBy([-120,0])}
+  else if(e.key==='ArrowRight'){e.preventDefault();map.panBy([120,0])}
+  else if(e.key.toLowerCase()==='r'){loadPublicData();event('KEY: public data refresh')}
+  else if(e.key.toLowerCase()==='d'){spawnDroneSim()}
+  else if(e.key.toLowerCase()==='w'){flyVirtual('up')}
+  else if(e.key.toLowerCase()==='s'){flyVirtual('down')}
+  else if(e.key.toLowerCase()==='a'){flyVirtual('left')}
+  else if(e.key.toLowerCase()==='f'){flyVirtual('right')}
+  else if(e.key===' '){e.preventDefault();flyVirtual('hover')}
+});
+
+setInterval(()=>{
+  const t=Date.now()/(900/simTempo);
+  droneNodes.forEach((d,i)=>{
+    const phase=t+Number(d.dataset.phase||0);
+    const x=Math.cos(phase)*9,y=Math.sin(phase*1.2)*7,rot=(phase*35)%360;
+    d.style.transform='translate('+x+'px,'+y+'px) rotate('+rot+'deg)';
+  });
+},120);
+
+setInterval(()=>{
+  swarmMarkers.forEach((m,i)=>{
+    const base=coarseCells[i],phase=(Date.now()/18000)+(i*0.7);
+    m.setLatLng([base[0]+Math.sin(phase)*0.08,base[1]+Math.cos(phase*0.9)*0.12]);
+  });
+},1200);
+setInterval(()=>event('HIVE heartbeat: visual core nominal // public-data layer healthy'),12000);
+setInterval(loadPublicData,10*60*1000);
+updateTasks();
+loadPublicData();
+</script>
+<script src="./maven-clean.js" defer></script>
+</body>
+</html>

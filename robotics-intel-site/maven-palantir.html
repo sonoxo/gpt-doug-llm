@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#070906">
+<title>GPT-MAVEN // PALANTIR LIVE</title>
+<style>
+:root{--bg:#050704;--panel:#080d09;--line:#29452f;--accent:#7ce7ff;--lime:#d7ff64;--gold:#ffb21d;--text:#e8eee8;--muted:#8ca092;--warn:#ffd166}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;min-height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;-webkit-text-size-adjust:100%}
+body{display:grid;grid-template-rows:auto minmax(0,1fr)}
+.top{min-height:50px;display:flex;align-items:center;gap:7px;padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) 7px max(9px,env(safe-area-inset-left));border-bottom:1px solid #27402d;background:#071009;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.top::-webkit-scrollbar{display:none}.brand{color:var(--accent);font-weight:950}.chip{flex:0 0 auto;border:1px solid #29452f;border-radius:999px;padding:5px 8px;background:#071109;font-size:9px}.ok{color:var(--lime)}.info{color:var(--accent)}.warn{color:var(--warn)}.off{color:#8b958e}
+.workspace{min-height:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,.7fr);gap:7px;padding:7px}
+.panel{min-height:0;border:1px solid #29452f;border-radius:14px;background:linear-gradient(180deg,#08100a,#050806);overflow:hidden;box-shadow:0 22px 70px rgba(0,0,0,.46)}
+.graph-panel{position:relative}.graph-head{position:absolute;z-index:4;left:10px;top:10px;right:10px;display:flex;gap:6px;align-items:center;pointer-events:none}
+.graph-head .badge{pointer-events:auto;border:1px solid #31523b;border-radius:999px;background:rgba(5,10,7,.88);padding:6px 9px;font-size:9px;color:#b8cabd;backdrop-filter:blur(12px)}
+#graph{width:100%;height:100%;display:block;background:radial-gradient(circle at 50% 45%,rgba(124,231,255,.06),transparent 32%),linear-gradient(180deg,#040806,#020503)}
+.side{min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:7px;background:transparent;border:0;box-shadow:none;overflow:visible}
+.card{border:1px solid #29452f;border-radius:12px;background:#071009;padding:10px;overflow:hidden}
+.card h2{margin:0 0 8px;color:var(--accent);font-size:11px;letter-spacing:.05em}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:6px}.kpi{border:1px solid #223829;border-radius:9px;padding:8px;background:#050a06;color:var(--muted);font-size:8px}.kpi b{display:block;margin-top:3px;color:var(--text);font-size:11px}.kpi.good b{color:var(--lime)}.kpi.info b{color:var(--accent)}.kpi.warn b{color:var(--warn)}
+.timeline{min-height:0;overflow:auto;display:grid;align-content:start;gap:5px}.event{border-left:3px solid #31523b;background:#050906;padding:7px;color:#aebbae;font-size:9px;line-height:1.4}.event.good{border-left-color:var(--lime)}.event.info{border-left-color:var(--accent)}.event.warn{border-left-color:#ff8d6b}.event time{color:#617467;margin-right:5px}
+.policy{font-size:8px;line-height:1.5;color:#748579}.pulse{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warn);margin-right:5px}.pulse.live{background:var(--lime);box-shadow:0 0 0 0 rgba(215,255,100,.35);animation:pulse 1.8s ease-out infinite}@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(215,255,100,0)}}
+html.embed .top{display:none}html.embed body{grid-template-rows:minmax(0,1fr)}
+@media(max-width:900px){.workspace{display:block;position:relative;padding:5px}.graph-panel{position:absolute;inset:5px}.side{position:absolute;z-index:7;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));max-height:62dvh;display:block;overflow:auto;border:1px solid #29452f;border-radius:16px;background:rgba(5,9,6,.94);padding:7px;backdrop-filter:blur(16px)}.side .card{margin-bottom:7px}.kpis{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.pulse.live{animation:none!important}}
+</style>
+<script>
+if(new URLSearchParams(location.search).get("embed")==="1") document.documentElement.classList.add("embed");
+</script>
+</head>
+<body>
+<div class="top" data-no-translate="true">
+  <div class="brand">🔷 GPT-MAVEN // PALANTIR LIVE</div>
+  <span class="chip info"><span class="pulse" id="livePulse"></span><span id="streamChip">CONNECTING</span></span>
+  <span class="chip" id="palChip">FOUNDRY CHECKING</span>
+  <span class="chip ok">ONTOLOGY VIEW</span>
+  <span class="chip off">WRITEBACK OFF</span>
+  <span class="chip off">TARGETING OFF</span>
+</div>
+
+<main class="workspace">
+  <section class="panel graph-panel">
+    <div class="graph-head" data-no-translate="true">
+      <span class="badge">AGENT</span><span class="badge">SOURCE</span><span class="badge">OBSERVATION</span><span class="badge">TASK</span><span class="badge">DECISION</span><span class="badge">SERVICE</span>
+    </div>
+    <canvas id="graph" aria-label="Live Palantir-style ontology graph"></canvas>
+  </section>
+
+  <aside class="side">
+    <section class="card">
+      <h2>FOUNDRY BRIDGE</h2>
+      <div class="kpis">
+        <div class="kpi info">MODE<b id="palMode">CHECKING</b></div>
+        <div class="kpi">CONNECTED<b id="palConnected">—</b></div>
+        <div class="kpi info">ONTOLOGY<b id="palOntology">—</b></div>
+        <div class="kpi good">OBJECT TYPES<b id="palObjects">—</b></div>
+        <div class="kpi good">ACTION TYPES<b id="palActions">—</b></div>
+        <div class="kpi">CACHE<b id="palCache">—</b></div>
+      </div>
+      <div class="policy" id="palNote">Server-side OAuth bridge. Tenant credentials are never exposed in the browser.</div>
+    </section>
+
+    <section class="card">
+      <h2>MAVEN LIVE FABRIC</h2>
+      <div class="kpis">
+        <div class="kpi good">OPS<b id="opsReach">—</b></div>
+        <div class="kpi info">SEQUENCE<b id="seq">—</b></div>
+        <div class="kpi">FRESHNESS<b id="age">—</b></div>
+        <div class="kpi info">USGS<b id="quakes">—</b></div>
+      </div>
+      <div class="policy">PUBLIC / AUTHORIZED SOURCES · COARSE PUBLIC GEO · NO PERSON TRACKING · NO TARGETING · NO WEAPON CONTROL</div>
+    </section>
+
+    <section class="card timeline" id="timeline">
+      <h2>LIVE EVENT BUS</h2>
+    </section>
+  </aside>
+</main>
+
+<script>
+(() => {
+  const OPS="https://xunia-ops-api.onrender.com";
+  const PAL="https://xunia-palantir-bridge.onrender.com/api/status";
+  const canvas=document.getElementById("graph"),ctx=canvas.getContext("2d");
+  let dpr=1,w=0,h=0,lastGenerated=0,lastSnap=null,phase=0;
+  const events=[];
+
+  const nodes=[
+    {id:"DOUG",type:"AGENT",x:.16,y:.24,c:"#ffb21d"},
+    {id:"CHAOS",type:"AGENT",x:.16,y:.52,c:"#ffb21d"},
+    {id:"HIVE",type:"AGENT",x:.16,y:.78,c:"#d7ff64"},
+    {id:"SOURCE",type:"SOURCE",x:.40,y:.18,c:"#7ce7ff"},
+    {id:"OBS",type:"OBSERVATION",x:.47,y:.45,c:"#7ce7ff"},
+    {id:"TASK",type:"TASK",x:.68,y:.30,c:"#d7ff64"},
+    {id:"DECISION",type:"DECISION",x:.76,y:.56,c:"#d7ff64"},
+    {id:"SERVICE",type:"SERVICE",x:.50,y:.78,c:"#a995ff"}
+  ];
+  const links=[["DOUG","TASK"],["CHAOS","OBS"],["HIVE","OBS"],["SOURCE","OBS"],["OBS","TASK"],["TASK","DECISION"],["SERVICE","OBS"],["DECISION","DOUG"]];
+
+  function resize(){
+    const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.6);w=r.width;h=r.height;
+    canvas.width=Math.max(1,Math.round(w*dpr));canvas.height=Math.max(1,Math.round(h*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  new ResizeObserver(resize).observe(canvas);resize();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle="rgba(100,220,160,.07)";ctx.lineWidth=1;
+    for(let x=0;x<w;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+    for(let y=0;y<h;y+=48){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+
+    const map=new Map(nodes.map(n=>[n.id,n]));
+    for(const [a,b] of links){
+      const n1=map.get(a),n2=map.get(b);if(!n1||!n2)continue;
+      const x1=n1.x*w,y1=n1.y*h,x2=n2.x*w,y2=n2.y*h;
+      ctx.strokeStyle="rgba(124,231,255,.22)";ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+      const t=(Math.sin(phase*.025+(x1+y1)*.001)+1)/2;const px=x1+(x2-x1)*t,py=y1+(y2-y1)*t;
+      ctx.fillStyle="rgba(215,255,100,.78)";ctx.beginPath();ctx.arc(px,py,2.2,0,Math.PI*2);ctx.fill();
+    }
+
+    for(const n of nodes){
+      const x=n.x*w,y=n.y*h,r=10+(Math.sin(phase*.035+n.x*9)+1)*1.6;
+      ctx.fillStyle="#050806";ctx.strokeStyle=n.c;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle=n.c;ctx.font="700 10px monospace";ctx.fillText(n.id,x+r+7,y+3);
+      ctx.fillStyle="#6f8576";ctx.font="8px monospace";ctx.fillText(n.type,x+r+7,y+14);
+    }
+    phase++;requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  function txt(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+  function addEvent(evt,at){
+    if(!evt||!evt.message)return;
+    const key=(evt.type||"")+"|"+evt.message;
+    if(events.some(x=>x.key===key))return;
+    events.unshift({key,evt,at});if(events.length>30)events.length=30;
+    const host=document.getElementById("timeline");
+    host.querySelectorAll(".event").forEach(x=>x.remove());
+    for(const item of events.slice(0,18)){
+      const row=document.createElement("div");row.className="event "+(item.evt.level||"info");
+      const time=document.createElement("time");time.textContent=new Date(item.at||Date.now()).toLocaleTimeString();
+      row.appendChild(time);row.appendChild(document.createTextNode(item.evt.message));host.appendChild(row);
+    }
+  }
+
+  function apply(s){
+    if(!s||s.schema!=="xunia.maven.live.v1")return;
+    lastSnap=s;lastGenerated=Date.parse(s.generated_at)||Date.now();
+    txt("seq","#"+s.sequence);txt("opsReach",(s.ops?.summary?.reachable??"—")+"/"+(s.ops?.summary?.total??"—"));
+    txt("quakes",String((s.earthquakes||[]).length));
+    const p=s.palantir||{};txt("palMode",p.mode||"UNKNOWN");txt("palConnected",p.connected?"YES":"NO");txt("palOntology",p.ontology_bound?"BOUND":p.configured?"NOT FOUND":"WAITING");
+    txt("palObjects",p.object_type_count??"—");txt("palActions",p.action_type_count??"—");txt("streamChip","LIVE #"+s.sequence);
+    document.getElementById("livePulse").classList.add("live");document.getElementById("palChip").textContent=p.connected?"FOUNDRY CONNECTED":p.configured?"FOUNDRY ERROR":"FOUNDRY STANDBY";
+    for(const e of s.events||[])addEvent(e,s.generated_at);
+    if(events.length===0)addEvent({type:"system",level:"good",message:"MAVEN live fabric synchronized"},s.generated_at);
+  }
+
+  async function pollPal(){
+    try{
+      const r=await fetch(PAL,{cache:"no-store"});const p=await r.json();
+      txt("palMode",p.mode||"UNKNOWN");txt("palConnected",p.connected?"YES":"NO");txt("palOntology",p.ontology_bound?"BOUND":p.configured?"NOT FOUND":"WAITING");
+      txt("palObjects",p.object_type_count??"—");txt("palActions",p.action_type_count??"—");txt("palCache",p.cache_hit===true?"HIT":p.cache_hit===false?"MISS":"—");
+      txt("palNote",p.connected?"Foundry OAuth connected. Aggregate schema health is live.":"Bridge online; bind Foundry tenant credentials server-side to activate the ontology connection.");
+    }catch(e){txt("palNote","Bridge unavailable or warming: "+e.message)}
+  }
+
+  if("EventSource" in window){
+    const es=new EventSource(OPS+"/api/live");
+    es.addEventListener("snapshot",e=>{try{apply(JSON.parse(e.data))}catch{}});
+    es.addEventListener("error",()=>{txt("streamChip","DEGRADED");document.getElementById("livePulse").classList.remove("live")});
+  }else{
+    setInterval(async()=>{try{const r=await fetch(OPS+"/api/live/snapshot",{cache:"no-store"});apply(await r.json())}catch{}},15000);
+  }
+  pollPal();setInterval(pollPal,30000);
+  setInterval(()=>{txt("age",lastGenerated?Math.max(0,Math.floor((Date.now()-lastGenerated)/1000))+"s":"—")},1000);
+})();
+</script>
+</body>
+</html>
