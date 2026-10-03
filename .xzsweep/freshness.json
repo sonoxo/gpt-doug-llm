@@ -1,9 +1,12 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-02T07:00:28Z",
-  "due_files_reviewed": 1,
+  "cutoff_at": "2026-10-02T07:03:28Z",
+  "due_files_reviewed": 4,
   "due_paths": [
-    ".github/workflows/xunia-zyra-contract.yml"
+    ".github/workflows/xunia-forge.yml",
+    ".gitignore",
+    "agents/glassonion_private_vault.py",
+    "agents/tests/test_glassonion_private_vault.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -559,10 +562,10 @@
     ".github/workflows/pages-museum-hq.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-21T03:59:16Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "4d0c7387dc098857bee70c94a93b592d60ebe4d47f36b9209f916aff41307875",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-03T07:03:07Z",
+      "reviewed_at": null,
+      "sha256": "5d09bc4cb7d0abd64643ad4601b9ff33afeaa1b439dd3bf5aa6e95a3379631b5",
       "size": 11232,
       "validation_issues": [],
       "was_due": false
@@ -834,13 +837,13 @@
     ".github/workflows/xunia-forge.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T16:44:01Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "01671bdc1a4883079ccd6e7b4c26d4f11dee67580d2d807221ae0504432921d5",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-25T00:23:56Z",
+      "reviewed_at": "2026-10-03T07:03:28Z",
+      "sha256": "90ef4dce35c3c530f1445d7e0bd7b08de51bb93aec808dad393d106eb14f8ec1",
       "size": 848,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/xunia-platform.yml": {
       "actions": [],
@@ -867,13 +870,13 @@
     ".github/workflows/xunia-zyra-contract.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-28T04:38:12Z",
       "reviewed_at": "2026-10-03T07:00:28Z",
       "sha256": "a998f55485d88c9ee11572454e27606b565e6626bb935ea6df9b8bd5b83ecf1a",
       "size": 2036,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/xzsweep.yml": {
       "actions": [],
@@ -911,13 +914,13 @@
     ".gitignore": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:54:20Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "15d57af36ffc581e179e2681e03b270b5473aaff814673414cc89b760912ea96",
-      "size": 438,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-08T21:06:47Z",
+      "reviewed_at": "2026-10-03T07:03:28Z",
+      "sha256": "154b8d0412beb28e58e1d46b11da5ee8b12a118d0a3d426f9894ed70f9815f83",
+      "size": 579,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".gitmodules": {
       "actions": [],
@@ -1546,6 +1549,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/glassonion_private_vault.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-08T21:06:42Z",
+      "reviewed_at": "2026-10-03T07:03:28Z",
+      "sha256": "540277afbfbcd6a1ed359c595896bab0ae6603d95665ce9184cb00f6225d5567",
+      "size": 7339,
+      "validation_issues": [],
+      "was_due": true
+    },
     "agents/gov_intel_compliance_fleet.py": {
       "actions": [],
       "binary": false,
@@ -1809,6 +1823,17 @@
       "size": 2577,
       "validation_issues": [],
       "was_due": false
+    },
+    "agents/tests/test_glassonion_private_vault.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-08T21:06:59Z",
+      "reviewed_at": "2026-10-03T07:03:28Z",
+      "sha256": "93df5225e05de3d48f8ba612a2fbe8dc0b1b93cb590b4bd72a7805d4d8d43559",
+      "size": 3133,
+      "validation_issues": [],
+      "was_due": true
     },
     "agents/tests/test_gov_intel_compliance_fleet.py": {
       "actions": [],
@@ -3398,9 +3423,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-03T06:58:49Z",
+      "git_touched_at": "2026-10-03T07:01:06Z",
       "reviewed_at": null,
-      "sha256": "4b2aef41d806559ae5ef7ecf8b24bb6a9bfbc6ee54ef778efdd3a4fa8d45a53a",
+      "sha256": "d9967b6b7c6ea5ac1f3e78959d5fd7c55171c38bf5b807f9a74d38e3b8341f77",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -15278,9 +15303,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-03T06:58:45Z",
+      "git_touched_at": "2026-10-03T07:01:10Z",
       "reviewed_at": null,
-      "sha256": "136233c3cb36dad823307709188730d70fe3c92eeb06ef54fada6b907b674c07",
+      "sha256": "7b6a4e7f046e1224d933cfbd49697ca2d39b75864adaedb297d60bd61070ea08",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -17751,11 +17776,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-03T07:00:28Z",
+  "generated_at": "2026-10-03T07:03:28Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1613,
+  "tracked_files_reviewed": 1615,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
