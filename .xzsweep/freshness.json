@@ -1,10 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-02T06:56:41Z",
-  "due_files_reviewed": 1,
-  "due_paths": [
-    "scripts/gpt-doug-swarm"
-  ],
+  "cutoff_at": "2026-10-02T06:58:47Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -295,10 +293,10 @@
     ".github/workflows/docker-publish.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-25T07:37:55Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "c84ae15d65d5f704be58941b6a1a1a5baec6cf1a7f9468cd5fd6afd7820451fd",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-03T06:58:36Z",
+      "reviewed_at": null,
+      "sha256": "00345029e3c3d0c112aa5f8a251c4bfc339b59cd44fa1715fa4bc8a277dae86d",
       "size": 1144,
       "validation_issues": [],
       "was_due": false
@@ -438,10 +436,10 @@
     ".github/workflows/grimthebuilder-image.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-25T07:37:55Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "ecb914756939ac345064479b75573dfac290f07bc486fefee8f557b5110f7f1a",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-03T06:58:36Z",
+      "reviewed_at": null,
+      "sha256": "b9d9e3b9b7fbbdd139bd08587fa029789a4437c0ab5e96d31dd16481f53b1a8c",
       "size": 5278,
       "validation_issues": [],
       "was_due": false
@@ -10888,13 +10886,13 @@
     "scripts/gpt-doug-swarm": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-09-29T03:18:49Z",
       "reviewed_at": "2026-10-03T06:56:41Z",
       "sha256": "f1e6d629d62b2034159f4afabc9ce86f17701fe2245f03dd8a57c874ce76723b",
       "size": 1586,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/gpt-swarm": {
       "actions": [],
@@ -17751,7 +17749,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-03T06:56:41Z",
+  "generated_at": "2026-10-03T06:58:47Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
