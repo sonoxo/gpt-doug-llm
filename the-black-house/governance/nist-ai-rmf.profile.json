@@ -1,0 +1,119 @@
+{
+  "policyId": "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1",
+  "profileVersion": "1.0.0",
+  "status": "ADOPTED_INTERNAL_PROFILE",
+  "source": {
+    "framework": "NIST AI 100-1",
+    "title": "Artificial Intelligence Risk Management Framework (AI RMF 1.0)",
+    "publisher": "National Institute of Standards and Technology",
+    "basis": "NIST AI RMF 1.0 plus NIST AI RMF Playbook",
+    "note": "Internal implementation profile. Adoption does not imply NIST certification, endorsement, or legal compliance."
+  },
+  "scope": {
+    "githubOwner": "sonoxo",
+    "repositoryPattern": "github.com/sonoxo/*",
+    "canonicalControlPlane": "sonoxo/gpt-doug-llm/the-black-house",
+    "domainRoot": "sonoxo/xuniadao",
+    "appliesTo": [
+      "Black House governed missions",
+      "XUNIA participating AI runtimes",
+      "registered agents, models, services, repositories, tools, and third-party AI components"
+    ]
+  },
+  "functions": {
+    "GOVERN": {
+      "crossCutting": true,
+      "requirements": [
+        "document roles and human accountability",
+        "document applicable legal and regulatory context",
+        "maintain AI system inventory",
+        "define risk tolerance and escalation",
+        "maintain monitoring and incident response",
+        "maintain third-party risk controls",
+        "maintain decommissioning procedures"
+      ]
+    },
+    "MAP": {
+      "requirements": [
+        "document intended purpose and context of use",
+        "identify affected actors and dependencies",
+        "record assumptions, limitations, benefits, harms, and human oversight",
+        "identify third-party components and supply-chain risks",
+        "define risk likelihood and impact"
+      ]
+    },
+    "MEASURE": {
+      "requirements": [
+        "define metrics and thresholds",
+        "perform testing, evaluation, verification, and validation",
+        "record evidence and known measurement limits",
+        "prefer independent review for high-risk decisions",
+        "monitor drift, incidents, security, bias, and reliability"
+      ]
+    },
+    "MANAGE": {
+      "requirements": [
+        "prioritize risk by impact and likelihood",
+        "choose and document mitigate, transfer, avoid, or accept treatment",
+        "document residual risk",
+        "support approve, conditional, hold, deny, bypass, rollback, and decommission decisions",
+        "preserve evidence for incident and forensic review"
+      ]
+    }
+  },
+  "trustworthinessCharacteristics": [
+    "VALID_AND_RELIABLE",
+    "SAFE",
+    "SECURE_AND_RESILIENT",
+    "ACCOUNTABLE_AND_TRANSPARENT",
+    "EXPLAINABLE_AND_INTERPRETABLE",
+    "PRIVACY_ENHANCED",
+    "FAIR_WITH_HARMFUL_BIAS_MANAGED"
+  ],
+  "riskLevels": [
+    "NEGLIGIBLE",
+    "LOW",
+    "MODERATE",
+    "HIGH",
+    "CRITICAL"
+  ],
+  "decisions": [
+    "APPROVE",
+    "CONDITIONAL",
+    "HOLD",
+    "DENY",
+    "BYPASS",
+    "DECOMMISSION"
+  ],
+  "treatments": [
+    "MITIGATE",
+    "TRANSFER",
+    "AVOID",
+    "ACCEPT"
+  ],
+  "lifecycleStates": [
+    "DESIGN",
+    "TEST",
+    "DEPLOY",
+    "MONITOR",
+    "INCIDENT",
+    "RECOVER",
+    "COMPLETED",
+    "DECOMMISSIONED"
+  ],
+  "enforcement": {
+    "failClosed": true,
+    "missionRiskEnvelopeRequired": true,
+    "humanOwnerRequired": true,
+    "riskDecisionRequiredBeforeDispatch": true,
+    "tevvRequiredBeforeGreen": true,
+    "evidenceRequiredForApproval": true,
+    "residualRiskDisclosureRequired": true,
+    "highRiskHumanReviewRequired": true,
+    "criticalRiskDispatchDefault": "HOLD",
+    "decommissionPathRequired": true,
+    "thirdPartyInventoryRequired": true,
+    "legalContextMustBeDocumented": true,
+    "noCertificationClaim": true
+  }
+}

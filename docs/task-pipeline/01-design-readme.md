@@ -44,6 +44,22 @@ The README design should feel like the terminal: high-signal, playful, technical
 - **Binary art rule:** use `0` and `1` as structural texture around headings/diagrams; never obscure commands or documentation.
 - **Tone:** operational, technical, fun, no fake status claims.
 
+## Kraken mission profiles
+
+### U.S. Defense Mission Support
+
+Kraken includes a governed **U.S. Defense Mission Support** software profile for authorized research, training, cyber defense, logistics, readiness, resilience, digital-twin simulation, sensor fusion, and human decision support.
+
+Machine-readable contract:
+
+`the-black-house/kraken/us-defense-support.manifest.json`
+
+Documentation:
+
+`docs/KRAKEN_US_DEFENSE_SUPPORT.md`
+
+This profile does not provide autonomous weapon control, lethal target selection, fire control, autonomous kinetic engagement, or real-world attack execution. Human authority and evidence/audit controls remain mandatory.
+
 ## README information architecture
 
 1. **Hero / identity**

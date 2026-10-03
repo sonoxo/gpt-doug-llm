@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="GPT-DOUG Robotics Intel Lab: low-cost robotics build planning, open-source software, patent intelligence, and safety-first prototyping.">
+  <title>GPT-DOUG Robotics Intel Lab</title>
+  <style>
+    :root{
+      --bg:#07100c;--panel:#0d1712;--panel2:#101e17;--text:#ecfff5;--muted:#9fb9ab;
+      --line:#1f4b36;--accent:#5dff9a;--accent2:#7bdcff;--warn:#ffd166;--danger:#ff7b7b;
+      --shadow:0 18px 50px rgba(0,0,0,.34)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:
+      radial-gradient(circle at 10% 10%,rgba(93,255,154,.09),transparent 30%),
+      radial-gradient(circle at 90% 20%,rgba(123,220,255,.07),transparent 28%),
+      var(--bg);color:var(--text);font:16px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    a{color:var(--accent2)}
+    .wrap{width:min(1180px,92vw);margin:auto}
+    nav{position:sticky;top:0;z-index:20;background:rgba(7,16,12,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    nav .wrap{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:12px 0}
+    .brand{font-weight:800;letter-spacing:.04em;color:var(--accent)}
+    .navlinks{display:flex;gap:14px;flex-wrap:wrap;font-size:13px}
+    header{padding:78px 0 50px}
+    .eyebrow{color:var(--accent);font-size:13px;letter-spacing:.13em;text-transform:uppercase}
+    h1{font-size:clamp(38px,7vw,82px);line-height:.98;margin:14px 0 18px;max-width:1000px}
+    h2{font-size:clamp(26px,4vw,42px);margin:0 0 18px}
+    h3{margin:0 0 8px}
+    p{color:var(--muted)}
+    .lead{font-size:clamp(17px,2.2vw,22px);max-width:900px}
+    .status{display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#09140f;color:#caffdf}
+    .dot{width:9px;height:9px;background:var(--accent);border-radius:50%;box-shadow:0 0 18px var(--accent)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .btn{display:inline-block;text-decoration:none;border-radius:10px;padding:11px 15px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:700}
+    .btn.primary{background:var(--accent);color:#06120b;border-color:var(--accent)}
+    section{padding:56px 0;border-top:1px solid rgba(31,75,54,.55)}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{grid-column:span 4;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+    .card.wide{grid-column:span 6}
+    .card.full{grid-column:1/-1}
+    .tag{display:inline-block;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;margin:2px 4px 2px 0;color:#cbe9d8}
+    .price{font-size:28px;color:var(--accent);font-weight:800;margin:10px 0 4px}
+    .note{font-size:13px;color:#aac2b4}
+    table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}
+    th,td{text-align:left;padding:12px;border-bottom:1px solid #183a2b;vertical-align:top}
+    th{color:#d7ffe6;background:#0c1a13}
+    td{color:#b6cbbf}
+    code{color:#d6ffe5;background:#07100c;border:1px solid #1b3b2d;border-radius:6px;padding:2px 5px}
+    .warning{border-left:4px solid var(--warn);padding:12px 16px;background:rgba(255,209,102,.07);color:#f5e7b9;border-radius:8px}
+    .danger{border-left:4px solid var(--danger);padding:12px 16px;background:rgba(255,123,123,.06);color:#ffd4d4;border-radius:8px}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+    button.filter{font:inherit;border:1px solid var(--line);background:#0a1510;color:#dffff0;border-radius:999px;padding:7px 11px;cursor:pointer}
+    button.filter.active{background:var(--accent);color:#041109}
+    .patent{transition:.2s ease}
+    .patent.hide{display:none}
+    footer{padding:40px 0 70px;color:#789486;font-size:13px}
+    @media(max-width:860px){.card,.card.wide{grid-column:1/-1}.navlinks{display:none}header{padding-top:48px}}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <div class="brand">[ GPT-DOUG // ROBOTICS INTEL ]</div>
+    <div class="navlinks">
+      <a href="#build">BUILD</a><a href="#stack">STACK</a><a href="#patents">PATENTS</a><a href="#safety">SAFETY</a><a href="#sources">SOURCES</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap">
+  <div class="status"><span class="dot"></span> RESEARCH NODE ONLINE</div>
+  <div class="eyebrow">OPEN • LOW-COST • PROVENANCE-FIRST • SAFETY-GATED</div>
+  <h1>Robotics Intel Lab</h1>
+  <p class="lead">A practical public notebook for building affordable robots, choosing an open software stack, tracking robotics patents by subsystem, and turning research into testable prototypes without pretending a patent search grants permission to practice protected claims.</p>
+  <div class="actions">
+    <a class="btn primary" href="#build">Choose a build path</a>
+    <a class="btn" href="https://www.youtube.com/shorts/wklw8Bsi6UY" target="_blank" rel="noreferrer">Open reference Short ↗</a>
+    <a class="btn" href="https://ppubs.uspto.gov/pubwebapp/" target="_blank" rel="noreferrer">USPTO Patent Public Search ↗</a>
+  </div>
+</header>
+
+<section id="build">
+  <div class="wrap">
+    <div class="eyebrow">01 // WHAT TO CREATE</div>
+    <h2>Start with the smallest robot that proves the behavior.</h2>
+    <p>The linked Short could not be programmatically verified from this build node, so this site does not invent the exact model. These three paths cover the most common low-cost embodiments and let the software/intelligence stack stay reusable.</p>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">BEST FIRST BUILD</span><span class="tag">6–7 DOF</span>
+        <h3>Desktop manipulation arm</h3>
+        <div class="price">≈ $240–$380*</div>
+        <p>3D-printed structure, serial-bus servos, USB servo controller, 12 V supply, gripper, camera, and a Linux or Mac development machine.</p>
+        <p class="note">*Reference range from the open AM-ARM project for follower / leader+follower configurations; sourcing changes over time.</p>
+        <a href="https://github.com/liyiteng/AM-ARM" target="_blank" rel="noreferrer">AM-ARM reference ↗</a>
+      </article>
+      <article class="card">
+        <span class="tag">OPEN ROBOT LEARNING</span><span class="tag">LEADER/FOLLOWER</span>
+        <h3>SO-101 class arm</h3>
+        <div class="price">BOM-driven</div>
+        <p>Six bus servos per arm, servo adapters, 3D-printed components, camera(s), power supplies, and LeRobot for teleoperation, dataset capture, and learned policies.</p>
+        <a href="https://huggingface.co/docs/lerobot/so101" target="_blank" rel="noreferrer">Official SO-101 guide ↗</a>
+      </article>
+      <article class="card">
+        <span class="tag">ADVANCED</span><span class="tag">BIPED</span>
+        <h3>Open humanoid</h3>
+        <div class="price">≈ $2,500*</div>
+        <p>A research-scale biped using 3D-printed parts, off-the-shelf components, control/runtime tooling, identification, simulation and training environments.</p>
+        <p class="note">*Published 2026 project estimate; shipping, taxes and sourcing can change the total.</p>
+        <a href="https://huggingface.co/blog/VirgileBatto/lerobot-humanoid" target="_blank" rel="noreferrer">LeRobot Humanoid ↗</a>
+      </article>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <article class="card wide">
+        <h3>Minimum hardware checklist</h3>
+        <p><span class="tag">actuators</span><span class="tag">motor/servo bus</span><span class="tag">regulated PSU</span><span class="tag">fuse</span><span class="tag">E-stop</span><span class="tag">USB/serial adapter</span><span class="tag">camera</span><span class="tag">IMU optional</span><span class="tag">3D-printed/CNC frame</span><span class="tag">fasteners + bearings</span></p>
+        <p>For a first prototype, prioritize reliable joint sensing and safe power distribution over expensive AI compute.</p>
+      </article>
+      <article class="card wide">
+        <h3>Recommended compute split</h3>
+        <p><strong>Mac:</strong> development, dataset review, UI, model experimentation.</p>
+        <p><strong>Robot-side Linux:</strong> real-time-ish device access, ROS 2 nodes, ros2_control, cameras, motor buses and safety interlocks.</p>
+        <p><strong>Optional accelerator:</strong> only add a GPU/edge board when your vision or policy model actually needs it.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="eyebrow">02 // FREE SOFTWARE STACK</div>
+    <h2>Build the brain from open, replaceable layers.</h2>
+    <div class="grid">
+      <article class="card"><h3>ROS 2</h3><p>Messaging, nodes, transforms, services and ecosystem integration.</p><a href="https://docs.ros.org/" target="_blank" rel="noreferrer">Docs ↗</a></article>
+      <article class="card"><h3>ros2_control</h3><p>Hardware interfaces, controllers and a clean boundary between robot devices and higher-level software.</p><a href="https://control.ros.org/" target="_blank" rel="noreferrer">Docs ↗</a></article>
+      <article class="card"><h3>LeRobot</h3><p>Python-native real-robot control, synchronized datasets, imitation learning and vision-language-action policies.</p><a href="https://huggingface.co/docs/lerobot/main/index" target="_blank" rel="noreferrer">Docs ↗</a></article>
+      <article class="card"><h3>MoveIt 2</h3><p>Motion planning, collision checking and manipulator workflows.</p><a href="https://moveit.picknik.ai/" target="_blank" rel="noreferrer">Docs ↗</a></article>
+      <article class="card"><h3>Gazebo</h3><p>Simulation before risking hardware. Validate geometry, sensors and control loops first.</p><a href="https://gazebosim.org/docs/" target="_blank" rel="noreferrer">Docs ↗</a></article>
+      <article class="card"><h3>OpenCV + Python</h3><p>Low-cost visual perception, calibration, marker tracking and prototyping.</p><a href="https://opencv.org/" target="_blank" rel="noreferrer">OpenCV ↗</a></article>
+    </div>
+    <div class="warning" style="margin-top:18px">
+      <strong>ROS release choice:</strong> ROS 2 Jazzy is supported through May 2029 and is a strong long-lived baseline. Kilted is newer but reaches end of support in November 2026. For a fresh hardware project, prefer support lifetime over novelty unless you need a Kilted-specific feature.
+    </div>
+  </div>
+</section>
+
+<section id="patents">
+  <div class="wrap">
+    <div class="eyebrow">03 // PATENT INTELLIGENCE</div>
+    <h2>Learn by subsystem, not by copying claims.</h2>
+    <p>Use patent publications as architecture signals: identify the problem, inputs, control loop, sensing, actuation, verification and failure handling. Preserve the publication number and assignee. Then independently design your implementation and run a real freedom-to-operate review before commercialization.</p>
+    <div class="filters">
+      <button class="filter active" data-filter="all">ALL</button>
+      <button class="filter" data-filter="manipulation">MANIPULATION</button>
+      <button class="filter" data-filter="mobility">MOBILITY</button>
+      <button class="filter" data-filter="vision">VISION/AI</button>
+      <button class="filter" data-filter="compute">COMPUTE</button>
+    </div>
+    <div class="grid" id="patentGrid">
+      <article class="card patent" data-kind="manipulation">
+        <div class="eyebrow">US 12741816 B1 • 2026-09-22</div><h3>Robotic tool / compartment picking</h3>
+        <p><strong>Assignee:</strong> Amazon Technologies, Inc.</p>
+        <p><strong>Research lesson:</strong> treat storage geometry, end-effector choice, perception and pick verification as one coordinated task pipeline.</p>
+      </article>
+      <article class="card patent" data-kind="mobility">
+        <div class="eyebrow">US 12741708 B1 • 2026-09-22</div><h3>Collaborative robots</h3>
+        <p><strong>Assignee:</strong> Collaborative Robotics</p>
+        <p><strong>Research lesson:</strong> study mobile-manipulator embodiment, locomotion/manipulation coordination and human-shared workspace constraints.</p>
+      </article>
+      <article class="card patent" data-kind="vision">
+        <div class="eyebrow">US 12743663 B1 • 2026-09-22</div><h3>Visual surroundings for autonomous object operation</h3>
+        <p><strong>Assignee:</strong> listed inventor publication record</p>
+        <p><strong>Research lesson:</strong> separate perception, learned representation, decision policy and action validation so each can be tested independently.</p>
+      </article>
+      <article class="card patent" data-kind="compute">
+        <div class="eyebrow">US 12743250 B1 • 2026-09-22</div><h3>Reduced-latency floating-point addition</h3>
+        <p><strong>Assignee:</strong> Marvell Asia Pte Ltd</p>
+        <p><strong>Research lesson:</strong> robotics performance can be limited by arithmetic/dataflow latency; parallel accumulation is an architecture topic, not just a model topic.</p>
+      </article>
+      <article class="card patent" data-kind="manipulation">
+        <div class="eyebrow">US 12744434 B1 • 2026-09-22</div><h3>Preload force optimization</h3>
+        <p><strong>Assignee:</strong> Apple Inc.</p>
+        <p><strong>Research lesson:</strong> mechanical preload, bearings, sensing and actuator stability belong in the robotics intelligence map because precision depends on mechanics.</p>
+      </article>
+      <article class="card patent" data-kind="vision">
+        <div class="eyebrow">CPC B25J + ADJACENT CLASSES</div><h3>Coverage map</h3>
+        <p><span class="tag">B25J manipulators</span><span class="tag">B62D57 walking/mobile structures</span><span class="tag">B65G47/90-91 pick/place</span><span class="tag">G05D control</span><span class="tag">G06V vision</span><span class="tag">G06N machine learning</span></p>
+        <p>Use these as search lanes, then follow citations and patent families to widen coverage.</p>
+        <a href="https://www.uspto.gov/web/patents/classification/cpc/html/cpc-B25J.html" target="_blank" rel="noreferrer">USPTO B25J scheme ↗</a>
+      </article>
+    </div>
+    <div class="danger" style="margin-top:18px">
+      <strong>IP boundary:</strong> A patent publication is not an open-source license. “Learning” means studying disclosed concepts, provenance and design tradeoffs. It does not establish ownership, validity, non-infringement or freedom to operate.
+    </div>
+  </div>
+</section>
+
+<section id="intel">
+  <div class="wrap">
+    <div class="eyebrow">04 // GPT-DOUG INTEL UPGRADE</div>
+    <h2>Canonical research record</h2>
+    <table>
+      <thead><tr><th>Field</th><th>Store</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>publication_id</code></td><td>Patent/publication number</td><td>Exact provenance</td></tr>
+        <tr><td><code>family_id</code></td><td>Family / related filings</td><td>Avoid treating one filing as the whole invention family</td></tr>
+        <tr><td><code>assignee</code></td><td>Named record owner at publication</td><td>Source context</td></tr>
+        <tr><td><code>subsystem</code></td><td>Manipulation / mobility / sensing / control / compute / HRI</td><td>Searchable ontology</td></tr>
+        <tr><td><code>architecture_lesson</code></td><td>High-level generalized insight</td><td>Reusable learning without copying claim language</td></tr>
+        <tr><td><code>evidence_links</code></td><td>USPTO / paper / repo / datasheet</td><td>Verification</td></tr>
+        <tr><td><code>ip_status</code></td><td>Research-only / review-needed</td><td>Prevents “published = free to use” mistakes</td></tr>
+        <tr><td><code>prototype_test</code></td><td>Simulation / bench / low-speed hardware</td><td>Convert reading into measured engineering</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="safety">
+  <div class="wrap">
+    <div class="eyebrow">05 // HARDWARE SAFETY GATE</div>
+    <h2>Power and motion only after the stop path works.</h2>
+    <div class="grid">
+      <article class="card wide"><h3>Before motion</h3><p>Mechanical stop clearance • correct voltage/polarity • current-limited bench testing • physical E-stop • low torque/speed limits • no loose clothing/cables near joints • stable base.</p></article>
+      <article class="card wide"><h3>Before autonomy</h3><p>Joint limits • watchdog timeout • comms-loss stop behavior • collision envelope • supervised test area • logging • reproducible reset/recovery procedure.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="eyebrow">06 // REPUTABLE FREE RESOURCES</div>
+    <h2>Primary-source links</h2>
+    <div class="grid">
+      <article class="card wide"><h3>Robotics</h3>
+        <p><a href="https://docs.ros.org/" target="_blank" rel="noreferrer">ROS 2 docs</a> ·
+        <a href="https://control.ros.org/" target="_blank" rel="noreferrer">ros2_control</a> ·
+        <a href="https://huggingface.co/docs/lerobot/main/index" target="_blank" rel="noreferrer">LeRobot</a> ·
+        <a href="https://moveit.picknik.ai/" target="_blank" rel="noreferrer">MoveIt 2</a> ·
+        <a href="https://gazebosim.org/docs/" target="_blank" rel="noreferrer">Gazebo</a></p>
+      </article>
+      <article class="card wide"><h3>Patents + hosting</h3>
+        <p><a href="https://ppubs.uspto.gov/pubwebapp/" target="_blank" rel="noreferrer">USPTO Patent Public Search</a> ·
+        <a href="https://www.uspto.gov/web/patents/classification/cpc/html/cpc-B25J.html" target="_blank" rel="noreferrer">USPTO CPC B25J</a> ·
+        <a href="https://render.com/docs/static-sites" target="_blank" rel="noreferrer">Render static hosting</a> ·
+        <a href="https://docs.github.com/en/pages" target="_blank" rel="noreferrer">GitHub Pages</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div>[GPTDOUG // MATRIX_LINK ACTIVE // ROBOTICS INTEL v1]</div>
+  <p>Research notebook, not legal advice or a substitute for manufacturer safety documentation. Estimated prices are planning references, not quotes.</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.filter').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.filter').forEach(function(x){x.classList.remove('active')});
+      btn.classList.add('active');
+      var f = btn.dataset.filter;
+      document.querySelectorAll('.patent').forEach(function(card){
+        card.classList.toggle('hide', f !== 'all' && card.dataset.kind !== f);
+      });
+    });
+  });
+</script>
+</body>
+</html>

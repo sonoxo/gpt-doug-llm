@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070b">
+<title>XUNIA Mission Ops</title>
+<style>
+:root{--bg:#05070b;--panel:#0b1118;--line:#243342;--ink:#eef8ff;--muted:#8da3b4;--cyan:#46f3ff;--lime:#a8ff60;--amber:#ffd36a;--red:#ff7474}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background-image:radial-gradient(circle at 12% 8%,rgba(70,243,255,.07),transparent 28%),radial-gradient(circle at 86% 12%,rgba(157,92,255,.06),transparent 25%)}
+main{max-width:1400px;margin:0 auto;padding:26px max(18px,env(safe-area-inset-right)) calc(70px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+header{display:flex;gap:18px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;border:1px solid rgba(70,243,255,.22);border-radius:22px;background:rgba(8,13,21,.9);padding:24px}
+.eyebrow{font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em;color:var(--cyan)}
+h1{font-size:clamp(2rem,5vw,4.9rem);line-height:.95;margin:8px 0 10px;letter-spacing:-.05em}
+.lead{max-width:760px;color:#a8b8c6;line-height:1.6}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+a.btn,button{border:1px solid #31475c;border-radius:11px;background:#0e1721;color:#eaffff;text-decoration:none;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;font:750 12px system-ui;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+a.btn.primary{background:var(--cyan);color:#041014;border-color:var(--cyan)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.badge{border:1px solid var(--line);border-radius:999px;padding:7px 10px;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;color:#b8c8d4;background:#080d13}
+.badge.ok{color:var(--lime);border-color:rgba(168,255,96,.3)}.badge.warn{color:var(--amber)}.badge.off{color:#87919a}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.stat{padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.stat strong{display:block;font-size:30px;color:var(--cyan)}.stat span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:17px;background:linear-gradient(180deg,#0c131c,#070b11);padding:16px;min-height:170px}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.card h2{font-size:16px;margin:0 0 7px}.state{font:900 10px ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:999px;padding:5px 8px;border:1px solid var(--line)}
+.state.online{color:var(--lime);border-color:rgba(168,255,96,.3)}.state.down{color:var(--red);border-color:rgba(255,116,116,.3)}.state.wait{color:var(--amber)}
+.meta{margin-top:12px;color:var(--muted);font:600 11px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-word}
+.policy{margin-top:18px;border:1px solid rgba(255,211,106,.22);border-radius:16px;padding:16px;background:rgba(255,211,106,.035);color:#c9bea1;line-height:1.55;font-size:13px}
+#stamp{color:var(--muted);font:650 11px ui-monospace,SFMono-Regular,Menlo,monospace;margin:12px 2px}
+@media(max-width:760px){
+  main{padding-top:max(16px,env(safe-area-inset-top))}
+  header{padding:18px;border-radius:18px}
+  .lead{font-size:14px}
+  .badges{justify-content:flex-start}
+  .actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .actions a.btn,.actions button{width:100%}
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .stat{padding:14px}.stat strong{font-size:26px}
+  .grid{grid-template-columns:1fr}
+  .card{min-height:0}
+  .top{align-items:center}
+  #stamp{overflow-wrap:anywhere}
+}
+@media(max-width:440px){
+  h1{font-size:clamp(2.4rem,15vw,4rem)}
+  header{padding:15px}
+  .actions{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .badge{font-size:9px;padding:6px 8px}
+  .meta{font-size:10px}
+}
+@media(max-width:340px){
+  .summary{grid-template-columns:1fr}
+}
+@media(max-height:560px) and (orientation:landscape){
+  main{padding-top:10px}
+  header{padding:12px 16px}
+  h1{font-size:2.2rem}
+  .lead{font-size:12px;line-height:1.45}
+}
+@media(pointer:coarse){
+  a.btn,button{min-height:46px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html.embedded header{display:none!important}
+html.embedded .xunia-i18n{display:none!important}
+html.embedded main{max-width:none;margin:0;padding:14px max(14px,env(safe-area-inset-right)) calc(22px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+html.embedded .summary{margin-top:0}
+html.embedded .grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+html.embedded .policy{margin-bottom:0}
+</style>
+<script>
+if(new URLSearchParams(location.search).get("embed")==="1"){
+  document.documentElement.classList.add("embedded");
+}
+</script>
+<script src="./xunia-i18n.js" defer></script>
+</head>
+<body>
+<main>
+<header>
+<div>
+<div class="eyebrow">XUNIA // LIVE OPERATIONS // PUBLIC + DEFENSIVE</div>
+<h1>Mission Ops</h1>
+<div class="lead">A real service-health and provenance surface for XUNIA, GPT-DOUG, HIVE/SWARM infrastructure, and MAVEN public situational-awareness systems. Status is measured from live public endpoints and clearly separated from synthetic simulation.</div>
+<div class="actions">
+<a class="btn primary" href="./maven.html">Open GPT-MAVEN →</a>
+<a class="btn" href="./status.html">Build status</a>
+<a class="btn" href="./metrics.html">Metrics</a>
+<a class="btn" href="./hive.html">HIVE</a>
+<button id="refresh" type="button">Refresh now</button>
+</div>
+</div>
+<div class="badges">
+<span class="badge ok">● LIVE HEALTH</span>
+<span class="badge">PROVENANCE</span>
+<span class="badge">PUBLIC SOURCES</span>
+<span class="badge off">TARGETING OFF</span>
+<span class="badge off">WEAPON CONTROL OFF</span>
+</div>
+</header>
+
+<section class="summary" aria-label="Operations summary">
+<div class="stat"><strong id="reachable">—</strong><span>reachable</span></div>
+<div class="stat"><strong id="total">—</strong><span>monitored</span></div>
+<div class="stat"><strong id="degraded">—</strong><span>degraded</span></div>
+<div class="stat"><strong id="sha">—</strong><span>main commit</span></div>
+</section>
+
+<div id="stamp">Connecting to XUNIA Ops API…</div>
+<section id="services" class="grid" aria-live="polite"></section>
+
+<div class="policy"><strong>Operational boundary:</strong> this page monitors XUNIA-owned/public endpoints and public-information systems. It does not expose precise unit locations, target generation, weapon cueing, fire control, or autonomous external action.</div>
+</main>
+
+<script>
+const API = "https://xunia-ops-api.onrender.com/api/status";
+const container = document.querySelector("#services");
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+async function load(){
+  document.querySelector("#stamp").textContent = "Refreshing live endpoints…";
+  try{
+    const controller = new AbortController();
+    const timer = setTimeout(()=>controller.abort(), 25000);
+    const res = await fetch(API,{cache:"no-store",signal:controller.signal});
+    clearTimeout(timer);
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+
+    document.querySelector("#reachable").textContent = data.summary.reachable;
+    document.querySelector("#total").textContent = data.summary.total;
+    document.querySelector("#degraded").textContent = data.summary.degraded;
+    document.querySelector("#sha").textContent = data.repository.sha ? data.repository.sha.slice(0,7) : "—";
+    document.querySelector("#stamp").textContent = "Measured "+new Date(data.generated_at).toLocaleString()+" · API: "+API;
+
+    container.innerHTML = data.services.map(s=>`
+      <article class="card">
+        <div class="top">
+          <div><h2>${esc(s.name)}</h2><div class="meta">${esc(s.id)}</div></div>
+          <span class="state ${s.reachable?"online":"down"}">${s.reachable?"REACHABLE":"DEGRADED"}</span>
+        </div>
+        <div class="meta">
+          HTTP: ${esc(s.http_status || "—")}<br>
+          LATENCY: ${esc(s.latency_ms)} ms<br>
+          SOURCE: ${esc(s.url)}
+          ${s.error ? "<br>DETAIL: "+esc(s.error) : ""}
+        </div>
+        <div class="actions"><a class="btn" target="_blank" rel="noopener" href="${esc(s.url)}">Open source ↗</a></div>
+      </article>`).join("");
+  }catch(err){
+    document.querySelector("#stamp").textContent = "Ops API unavailable or warming: "+err.message;
+    container.innerHTML = '<article class="card"><div class="top"><h2>Ops API warming</h2><span class="state wait">WAIT</span></div><div class="meta">Render free services can cold-start. Retry in a few seconds.</div></article>';
+  }
+}
+
+document.querySelector("#refresh").addEventListener("click",load);
+load();
+setInterval(load,30000);
+</script>
+</body>
+</html>

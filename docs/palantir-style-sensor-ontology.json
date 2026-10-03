@@ -1,0 +1,60 @@
+{
+  "schema": "xunia.palantir-style.sensor-ontology.v1",
+  "namespace": "GALACTIC_FEDERATION.OPERATIONS_ONTOLOGY",
+  "affiliation": "Independent architecture pattern; no Palantir affiliation or endorsement.",
+  "purpose": "Authorized defensive sensor fusion, infrastructure observability, provenance, incident analysis, and synthetic training.",
+  "object_types": [
+    "CAMERA",
+    "SENSOR",
+    "AUTHORIZED_ASSET",
+    "AUTHORIZED_FLEET_VEHICLE",
+    "INFRASTRUCTURE",
+    "PUBLIC_EVENT",
+    "WEATHER_CELL",
+    "OBSERVATION",
+    "SOURCE",
+    "CLAIM",
+    "EVIDENCE",
+    "INCIDENT",
+    "TASK",
+    "DECISION",
+    "SYNTHETIC_CONTACT"
+  ],
+  "link_types": [
+    "OBSERVES",
+    "DERIVED_FROM",
+    "SUPPORTED_BY",
+    "VERIFIED_BY",
+    "AFFECTS",
+    "ASSIGNED_TO",
+    "LOCATED_IN",
+    "VERSION_OF",
+    "SUPERSEDES",
+    "RELATED_TO"
+  ],
+  "required_provenance": [
+    "source_id",
+    "source_type",
+    "observed_at",
+    "retrieved_at",
+    "authorization_scope",
+    "purpose",
+    "verification_status"
+  ],
+  "forbidden_object_types": [
+    "PERSON",
+    "FACE",
+    "BIOMETRIC_IDENTITY",
+    "LICENSE_PLATE_OWNER",
+    "PRIVATE_RESIDENCE",
+    "WEAPON_TARGET",
+    "LIVE_MILITARY_UNIT"
+  ],
+  "policy_binding": "GALACTIC_FEDERATION.SENSOR_GOVERNANCE",
+  "public_view": {
+    "coarse_geolocation_only": true,
+    "precise_targeting": false,
+    "weapon_control": false,
+    "autonomous_external_action": false
+  }
+}

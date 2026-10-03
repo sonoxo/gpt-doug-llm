@@ -1,7 +1,7 @@
 {
   "controlPlane": "THE_BLACK_HOUSE_V1",
   "kernelVersion": "3.0.0",
-  "updatedFor": "phases-4-8-completion",
+  "updatedFor": "phases-4-9-completion",
   "phases": [
     {"phase": 1, "name": "Foundation CI Stabilization", "codeState": "COMPLETE"},
     {"phase": 2, "name": "Black House Control Plane Root", "codeState": "COMPLETE"},
@@ -16,6 +16,13 @@
       "externalState": "LIVE_TENANT_UNVERIFIED",
       "rule": "Never mark CONNECTED until an authorized tenant probe succeeds."
     },
-    {"phase": 8, "name": "Black House Command Center", "codeState": "COMPLETE"}
+    {"phase": 8, "name": "Black House Command Center", "codeState": "COMPLETE"},
+    {
+      "phase": 9,
+      "name": "Offense/Defense Simulation Plane",
+      "codeState": "COMPLETE",
+      "executionState": "PLAN_OR_SIMULATION_ONLY",
+      "rule": "Offense is authorized lab emulation only; external mutation requires explicit approval and a separate authorized executor."
+    }
   ]
 }

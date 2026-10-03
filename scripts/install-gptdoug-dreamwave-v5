@@ -1,0 +1,68 @@
+#!/bin/zsh
+set -eu
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+BIN="$HOME/.local/bin"
+STATE="$HOME/.gpt-doug"
+
+cd "$ROOT" || exit 1
+mkdir -p "$BIN" "$STATE"
+touch "$STATE/env"
+
+python3 -m py_compile tools/gptdoug_neonops_v5.py
+
+cat > "$BIN/doug-dreamwave" <<'SH'
+#!/bin/zsh
+exec "$HOME/gpt-doug-llm/scripts/gptdoug-dreamwave-v5"
+SH
+chmod +x "$BIN/doug-dreamwave"
+
+if [[ -x "$BIN/gptdoug-home" ]]; then
+  cp "$BIN/gptdoug-home" "$BIN/gptdoug-home.pre-dreamwave-$(date +%Y%m%d-%H%M%S)"
+fi
+
+cat > "$BIN/gptdoug-home" <<'SH'
+#!/bin/zsh
+exec "$HOME/gpt-doug-llm/scripts/gptdoug-dreamwave-v5"
+SH
+chmod +x "$BIN/gptdoug-home"
+
+python3 - <<'PY'
+from pathlib import Path
+p = Path.home() / ".gpt-doug" / "env"
+wanted = {
+    "GPT_DOUG_VISUAL_FPS": "15",
+    "GPT_DOUG_VISUAL_COLS": "132",
+    "GPT_DOUG_COLOR_STEP": "8",
+    "GPT_DOUG_MATRIX": "1",
+    "GPT_DOUG_MATRIX_FPS": "5",
+    "GPT_DOUG_BRIGHTNESS": "1.25",
+    "GPT_DOUG_SATURATION": "1.24",
+    "GPT_DOUG_SHARPNESS": "1.15",
+}
+old = p.read_text().splitlines() if p.exists() else []
+out, seen = [], set()
+for line in old:
+    if "=" not in line:
+        out.append(line)
+        continue
+    key = line.split("=", 1)[0].strip()
+    if key in wanted:
+        if key not in seen:
+            out.append(f"{key}={wanted[key]}")
+            seen.add(key)
+    else:
+        out.append(line)
+for key, value in wanted.items():
+    if key not in seen:
+        out.append(f"{key}={value}")
+p.write_text("\n".join(out).rstrip() + "\n")
+PY
+
+rm -f "$STATE/STOP"
+echo auto > "$STATE/blackhouse-mode"
+
+echo "GPT-DOUG DREAMWAVE V5 INSTALLED"
+echo "Command: doug-dreamwave"
+echo
+exec "$BIN/doug-dreamwave"

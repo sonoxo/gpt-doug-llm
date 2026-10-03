@@ -1,0 +1,248 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "XUNIAVERSE_GLOBAL",
+  "status": "ACTIVE",
+  "scope": {
+    "role": "Shared parent ontology for GPT-DOUG and peer agents",
+    "inheritance": "GLOBAL_BASE_THEN_AGENT_OVERLAY",
+    "change_policy": "EXTEND_OR_VERSION_DO_NOT_SILENTLY_REPLACE",
+    "visual_rule": "Embodiment and HUD read the ontology; they do not replace the governed core."
+  },
+  "canonical_pipeline": [
+    "ONTOLOGY",
+    "GENOME_PHENOTYPE",
+    "EMBODIMENT",
+    "HUD_MATRIX",
+    "KNOWLEDGE_SKILLS_RESEARCH",
+    "MAX_CONTROL",
+    "USER_AUTHORIZED_ADMIN"
+  ],
+  "cross_domain_record": {
+    "required": ["id", "domain", "source", "retrieved_at"],
+    "recommended": [
+      "version",
+      "valid_from",
+      "valid_to",
+      "geography",
+      "language_tag",
+      "currency_code",
+      "unit",
+      "methodology",
+      "license",
+      "confidence",
+      "revision_status"
+    ]
+  },
+  "domains": {
+    "global_languages": {
+      "purpose": "Represent human language, script, region, locale, translation and transliteration without treating one language or culture as the default.",
+      "identifiers": ["BCP47_LANGUAGE_TAG", "ISO_639_WHERE_APPLICABLE", "SCRIPT", "REGION", "LOCALE"],
+      "capabilities": [
+        "language_detection",
+        "translation",
+        "transliteration",
+        "script_awareness",
+        "locale_formatting",
+        "multilingual_retrieval",
+        "terminology_alignment"
+      ],
+      "rules": [
+        "Preserve source language and translation provenance.",
+        "Distinguish language from script, region and locale.",
+        "Do not infer ethnicity, nationality or identity from language alone."
+      ],
+      "authoritative_sources": [
+        {
+          "name": "IETF_BCP_47",
+          "url": "https://www.rfc-editor.org/info/bcp47/"
+        }
+      ]
+    },
+    "global_money": {
+      "purpose": "Represent currencies, monetary units, exchange-rate observations and settlement references with timestamps and provenance.",
+      "identifiers": ["ISO_4217_ALPHA", "ISO_4217_NUMERIC", "MINOR_UNIT"],
+      "asset_classes": ["fiat_currency", "fund", "precious_metal_code", "digital_asset_reference"],
+      "exchange_rate_record": [
+        "base_asset",
+        "quote_asset",
+        "rate",
+        "timestamp",
+        "source",
+        "market_or_method"
+      ],
+      "rules": [
+        "Never treat an exchange rate as timeless.",
+        "Separate price observation from payment authorization.",
+        "No autonomous unrestricted spend keys or automatic money movement.",
+        "External settlement requires an explicit authorized signer boundary."
+      ],
+      "project_settlement_boundary": {
+        "value_layer": "MONERO_WHEN_EXPLICITLY_USED_BY_THE_PROJECT",
+        "knowledge_layer": "OFF_CHAIN_HASHED_RECEIPTS",
+        "human_authorization_required": true
+      },
+      "authoritative_sources": [
+        {
+          "name": "ISO_4217",
+          "url": "https://www.iso.org/iso-4217-currency-codes.html"
+        }
+      ]
+    },
+    "global_economics": {
+      "purpose": "Model economic indicators as versioned observations tied to geography, period, unit, methodology and source.",
+      "indicator_dimensions": [
+        "geography",
+        "period",
+        "frequency",
+        "unit",
+        "currency_basis",
+        "price_basis",
+        "population_basis",
+        "source",
+        "methodology",
+        "revision_status"
+      ],
+      "topics": [
+        "gdp",
+        "inflation",
+        "employment",
+        "trade",
+        "debt",
+        "poverty",
+        "income",
+        "population",
+        "productivity",
+        "energy",
+        "development",
+        "financial_conditions"
+      ],
+      "rules": [
+        "Keep nominal and real measures distinct.",
+        "Keep stock and flow measures distinct.",
+        "Keep national estimates and harmonized international estimates distinguishable.",
+        "Store release and revision dates where available."
+      ],
+      "authoritative_sources": [
+        {
+          "name": "WORLD_BANK_INDICATORS_V2",
+          "url": "https://datahelpdesk.worldbank.org/knowledgebase/articles/889392"
+        },
+        {
+          "name": "IMF_SDMX_APIS",
+          "url": "https://data.imf.org/en/Resource-Pages/IMF-API"
+        }
+      ]
+    },
+    "global_biology": {
+      "purpose": "Represent organisms, genes, molecular entities and biological evidence with explicit identifiers and provenance.",
+      "object_types": [
+        "organism",
+        "taxon",
+        "gene",
+        "protein",
+        "sequence",
+        "pathway",
+        "phenotype",
+        "publication",
+        "evidence"
+      ],
+      "rules": [
+        "Distinguish curated database records from primary scientific evidence.",
+        "Preserve species/taxon context for gene and protein records.",
+        "Do not convert population or molecular associations into individual medical diagnoses."
+      ],
+      "authoritative_sources": [
+        {
+          "name": "NCBI_TAXONOMY",
+          "url": "https://www.ncbi.nlm.nih.gov/taxonomy"
+        },
+        {
+          "name": "NCBI_GENE",
+          "url": "https://www.ncbi.nlm.nih.gov/gene"
+        }
+      ]
+    },
+    "global_health": {
+      "purpose": "Represent public-health, health-system and clinical-classification knowledge with source, jurisdiction, version and time context.",
+      "classification_types": [
+        "ICD_11",
+        "ICF",
+        "ICHI",
+        "public_health_indicator"
+      ],
+      "health_system_building_blocks": [
+        "service_delivery",
+        "health_workforce",
+        "health_information_systems",
+        "medical_products_vaccines_technologies",
+        "financing",
+        "leadership_governance"
+      ],
+      "rules": [
+        "Population statistics are not individual diagnoses.",
+        "Clinical classifications do not replace clinical judgment.",
+        "Personal health data requires explicit authorization and appropriate privacy controls.",
+        "Attach version, jurisdiction and date to health classifications and indicators."
+      ],
+      "authoritative_sources": [
+        {
+          "name": "WHO_FAMILY_OF_CLASSIFICATIONS",
+          "url": "https://www.who.int/standards/classifications/"
+        },
+        {
+          "name": "WHO_GLOBAL_HEALTH_OBSERVATORY",
+          "url": "https://www.who.int/data/gho"
+        }
+      ]
+    },
+    "health_infrastructure": {
+      "purpose": "Model the capacity and resilience of health-service infrastructure from facility to national level.",
+      "object_types": [
+        "hospital",
+        "health_post",
+        "health_centre",
+        "district_rural_hospital",
+        "provincial_hospital",
+        "specialized_hospital",
+        "laboratory",
+        "pharmacy",
+        "supply_chain_node",
+        "health_information_system"
+      ],
+      "measure_types": [
+        "facility_count",
+        "facility_density_per_100k",
+        "beds",
+        "workforce",
+        "service_availability",
+        "supply_availability",
+        "information_system_capacity",
+        "resilience_indicator"
+      ],
+      "rules": [
+        "Keep facility counts and population-normalized densities distinct.",
+        "Preserve public/private provider type when the source supports it.",
+        "Do not expose sensitive operational or personal data by default."
+      ],
+      "authoritative_sources": [
+        {
+          "name": "WHO_GHO_HEALTH_INFRASTRUCTURE",
+          "url": "https://www.who.int/data/gho/data/themes/topics/topic-details/GHO/health-infrastructure"
+        },
+        {
+          "name": "WHO_HEALTH_SYSTEM_BUILDING_BLOCKS",
+          "url": "https://www.who.int/publications/b/31426"
+        }
+      ]
+    }
+  },
+  "governance": {
+    "provenance_required": true,
+    "versioning_required": true,
+    "human_authorization_for_external_side_effects": true,
+    "bounded_execution": true,
+    "rollback_and_validation": true,
+    "project_verification": "VERIFIED_BY_FOUNDER_WHEN_EXPLICITLY_MARKED",
+    "external_legal_verification": "UNVERIFIED_UNLESS_AUTHORITATIVE_SOURCE_ATTACHED"
+  }
+}

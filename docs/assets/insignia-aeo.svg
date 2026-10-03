@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">A.E.O. — All Eyes Open — RVIA-INTEL insignia</title>
+  <desc id="desc">Original dark intelligence-style emblem with a shield, eye, seven stars, radar lines, and A.E.O. lettering.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="68%">
+      <stop offset="0" stop-color="#0b2436"/>
+      <stop offset="0.58" stop-color="#06111d"/>
+      <stop offset="1" stop-color="#02060b"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0" stop-color="#7f8d99"/>
+      <stop offset="0.5" stop-color="#eef5fb"/>
+      <stop offset="1" stop-color="#768793"/>
+    </linearGradient>
+    <radialGradient id="iris" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#00131d"/>
+      <stop offset="0.35" stop-color="#00b7ff"/>
+      <stop offset="0.72" stop-color="#0070b8"/>
+      <stop offset="1" stop-color="#8edcff"/>
+    </radialGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="640" height="640" rx="32" fill="url(#bg)"/>
+  <circle cx="320" cy="320" r="292" fill="none" stroke="url(#metal)" stroke-width="10"/>
+  <circle cx="320" cy="320" r="272" fill="none" stroke="#00bfff" stroke-width="3" opacity=".75"/>
+  <circle cx="320" cy="320" r="250" fill="none" stroke="#27465b" stroke-width="2"/>
+
+  <path d="M320 86 L485 158 L462 420 Q420 505 320 556 Q220 505 178 420 L155 158 Z" fill="#071421" stroke="url(#metal)" stroke-width="8"/>
+  <path d="M320 102 L469 168 L447 410 Q406 486 320 534 Q234 486 193 410 L171 168 Z" fill="none" stroke="#00bfff" stroke-width="2" opacity=".7"/>
+
+  <g fill="url(#metal)" opacity=".95">
+    <text x="190" y="170" font-size="28">★</text><text x="228" y="147" font-size="28">★</text>
+    <text x="270" y="132" font-size="28">★</text><text x="310" y="126" font-size="32">★</text>
+    <text x="355" y="132" font-size="28">★</text><text x="397" y="147" font-size="28">★</text>
+    <text x="435" y="170" font-size="28">★</text>
+  </g>
+
+  <g opacity=".6" stroke="#00bfff" fill="none">
+    <circle cx="320" cy="257" r="108"/>
+    <circle cx="320" cy="257" r="78"/>
+    <line x1="185" y1="257" x2="455" y2="257"/>
+    <line x1="320" y1="143" x2="320" y2="371"/>
+    <path d="M320 257 L432 184" stroke-width="4" filter="url(#glow)"/>
+  </g>
+
+  <g>
+    <path d="M205 257 Q320 166 435 257 Q320 348 205 257Z" fill="#02080e" stroke="url(#metal)" stroke-width="7"/>
+    <ellipse cx="320" cy="257" rx="58" ry="58" fill="url(#iris)" stroke="#d9f4ff" stroke-width="3" filter="url(#glow)"/>
+    <circle cx="320" cy="257" r="22" fill="#02060b"/>
+    <circle cx="340" cy="236" r="8" fill="#ffffff" opacity=".95"/>
+  </g>
+
+  <g fill="none" stroke="url(#metal)" stroke-width="8" stroke-linecap="round" opacity=".9">
+    <path d="M155 246 Q125 300 151 367 Q163 400 190 428"/>
+    <path d="M485 246 Q515 300 489 367 Q477 400 450 428"/>
+  </g>
+
+  <text x="320" y="405" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="70" font-weight="700" letter-spacing="8" fill="url(#metal)">A.E.O.</text>
+  <line x1="205" y1="430" x2="435" y2="430" stroke="#00bfff" stroke-width="2"/>
+  <text x="320" y="459" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" letter-spacing="6" fill="#d9f4ff">ALL EYES OPEN</text>
+  <text x="320" y="495" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="700" letter-spacing="5" fill="#9adfff">RVIA-INTEL</text>
+
+  <text x="320" y="592" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="13" letter-spacing="3" fill="#8ddcff">OBSERVE • ANALYZE • VALIDATE • PROTECT • INFORM</text>
+</svg>

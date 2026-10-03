@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "policy_id": "DOWI-8430.01-AMS",
+  "name": "DoWI 8430.01 Accelerated Mission Software Alignment Profile",
+  "mode": "local_alignment_only",
+  "authority_boundary": "This file defines a repository-local engineering alignment profile only. It does not assert government approval, certification, accreditation, endorsement, contract status, or authorization.",
+  "controls": [
+    {
+      "id": "AMS-01",
+      "title": "Mission scope grounding",
+      "requirement": "Changes must be grounded in repository scope, provenance, and intended mission outcome."
+    },
+    {
+      "id": "AMS-02",
+      "title": "Reuse before rebuild",
+      "requirement": "Existing internal, open-source, COTS, SaaS, and prior ecosystem capabilities must be considered before introducing new implementation."
+    },
+    {
+      "id": "AMS-03",
+      "title": "Small testable implementation",
+      "requirement": "Changes should be delivered as small, auditable, testable increments."
+    },
+    {
+      "id": "AMS-04",
+      "title": "Parallel verification",
+      "requirement": "Testing, static analysis, dependency audit, secret scanning, and provenance validation must be part of verification."
+    },
+    {
+      "id": "AMS-05",
+      "title": "Evidence generation",
+      "requirement": "Execution should preserve test results, SBOM output, provenance, build logs, and rollback evidence."
+    },
+    {
+      "id": "AMS-06",
+      "title": "Human approval for consequential change",
+      "requirement": "Material external or production changes require explicit scope and human approval."
+    },
+    {
+      "id": "AMS-07",
+      "title": "Fail-closed boundaries",
+      "requirement": "Unknown authority, missing scope, missing provenance, and required test failures must fail closed."
+    },
+    {
+      "id": "AMS-08",
+      "title": "Bounded language",
+      "requirement": "Outputs may claim alignment checks and implementation mapping only, never government endorsement or authorization without separate verifiable authority."
+    }
+  ]
+}

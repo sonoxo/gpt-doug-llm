@@ -42,6 +42,7 @@ Collector: [`scripts/white_house_daily.py`](../scripts/white_house_daily.py)
 
 | Date | Source | Topic | State | Brief |
 | --- | --- | --- | --- | --- |
+| 2026-09-07 | YouTube `OqmJb826mY4` | GPT-REDPANDA defensive networking intelligence: protocols, subnetting, traffic evidence, segmentation, governed lab actions | `MEDIUM / KEEP_WITH_GAPS` | [`Open brief`](./briefings/2026-09-07-redpanda-networking-ethical-hackers.md) |
 | 2026-09-06 | CrowdStrike + Cyber Security News | SafeMind paired-agent cyber-defense harness; red/blue closed loop; bounded Black House mapping | `VERY HIGH / REFERENCE_PATTERN_ACTIVE` | [`Open brief`](./briefings/2026-09-06-crowdstrike-safemind-agentic-defense.md) |
 | 2026-09-03 | freeCodeCamp.org `ug8W0sFiVJo` | Kali/Linux, scoped Nmap, wireless-security defense, Wireshark | `HIGH / AUTHORIZED-LAB` | [`Open brief`](./briefings/2026-09-03-freecodecamp-ethical-hacking-course.md) |
 | 2026-09-02 | Basis Points / Chad Wahlquist `egr-UDWLZPI` | Institutional sovereignty, Ontology, model portability, FDE, agentic AI | `HIGH CONFIDENCE / PR-READY` | [`Open dossier`](./briefings/2026-09-02-palantir-basis-points-institutional-sovereignty.md) |
@@ -49,6 +50,7 @@ Collector: [`scripts/white_house_daily.py`](../scripts/white_house_daily.py)
 
 ## Machine-readable sources
 
+- [`youtube-OqmJb826mY4.json`](./sources/youtube-OqmJb826mY4.json)
 - [`crowdstrike-safemind-2026-09-06.json`](./sources/crowdstrike-safemind-2026-09-06.json)
 - [`youtube-ug8W0sFiVJo.json`](./sources/youtube-ug8W0sFiVJo.json)
 - [`youtube-egr-UDWLZPI.json`](./sources/youtube-egr-UDWLZPI.json)
@@ -85,6 +87,8 @@ The Black House cyber-learning subsystem converts public cybersecurity material 
 - [`Evals`](../training/black-house-cyber/EVALS.md)
 - [`Learning ontology`](../safety-shield/agents/knowledge/black-house-ethical-hacking-course-ontology.json)
 - [`Learning validator`](../scripts/validate_black_house_cyber_learning.py)
+- [`RedPanda network ontology`](../safety-shield/agents/knowledge/redpanda-network-intel-v1.json)
+- [`RedPanda network validator`](../scripts/validate_redpanda_network_intel.py)
 
 ## Palantir-associated research standard
 

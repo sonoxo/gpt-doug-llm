@@ -1,0 +1,41 @@
+name: Tech Force Authority Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ECOSYSTEM_DISCLAIMER.md"
+      - "TECH_FORCE_OPEN_CALL.md"
+      - "CONTRIBUTORS_WANTED.md"
+      - "safety-shield/policies/tech-force-authority.json"
+      - "scripts/validate_tech_force_authority.py"
+      - ".github/workflows/tech-force-authority-gate.yml"
+  pull_request:
+    paths:
+      - "ECOSYSTEM_DISCLAIMER.md"
+      - "TECH_FORCE_OPEN_CALL.md"
+      - "CONTRIBUTORS_WANTED.md"
+      - "safety-shield/policies/tech-force-authority.json"
+      - "scripts/validate_tech_force_authority.py"
+      - ".github/workflows/tech-force-authority-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  authority-policy-integrity:
+    name: Validate fail-closed authority boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate Tech Force authority policy
+        run: python scripts/validate_tech_force_authority.py

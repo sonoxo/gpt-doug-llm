@@ -1,0 +1,193 @@
+{
+  "schema": "galactic-federation/research-artifact-v1",
+  "record_id": "gf-research-cisa-ics300-defensive-knowledge-v1.0.0",
+  "project": "Galactic Federation",
+  "hive": "GPT-Doug + GPT-Chaos Universal Hive",
+  "record_type": "training_knowledge_layer",
+  "title": "CISA Industrial Control Systems Cybersecurity Training - 300 Defensive Knowledge Layer",
+  "version": "1.0.0",
+  "registered_at": "2026-09-23T11:07:00Z",
+  "registered_by": "Almighty Sonoxo",
+  "transformation": "GPT-DOUG ontology normalization with GPT-CHAOS defensive critic mapping",
+  "ontology_version": "1.2.0",
+  "source_publication": {
+    "title": "Industrial Control Systems Cybersecurity Training - 300 Trainee Guide",
+    "source_type": "user_provided_training_guide",
+    "source_url": "https://cdn5.dcbstatic.com/files/i/c/ics_training_docebosaas_com/1790175600/XF281aJ93_4tyZUToJvgDg/scorm/363b14098281869479bf0c74fe7eb15d155c093ef0da6f3cd3077fe8749251ff/story_content/external_files/300_R01M00_Trainee%20Guide_final.pdf",
+    "provenance_status": "SOURCE_URL_PRESERVED"
+  },
+  "scope": {
+    "purpose": "defensive and authorized ICS/OT cybersecurity training architecture",
+    "real_world_authorization_inferred_from_training_material": false,
+    "source_material_expands_execution_privileges": false
+  },
+  "domains": {
+    "ICS_OT_ASSET": [
+      "PLC",
+      "RTU",
+      "DCS",
+      "HMI",
+      "historian",
+      "engineering_workstation",
+      "network_device",
+      "safety_auxiliary_system"
+    ],
+    "ICS_PROTOCOL": [
+      "Modbus",
+      "DNP3",
+      "EtherNet_IP_CIP",
+      "S7comm",
+      "ICCP_TASE_2",
+      "similar_industrial_protocols"
+    ],
+    "ASSET_INVENTORY": [
+      "hardware",
+      "software",
+      "firmware",
+      "version",
+      "vendor",
+      "location",
+      "owner",
+      "criticality",
+      "dependencies",
+      "lifecycle_state"
+    ],
+    "NETWORK_ZONE": [
+      "Enterprise_IT",
+      "Corporate_DMZ",
+      "ICS_DMZ",
+      "OT_Control",
+      "Safety",
+      "Remote_Access",
+      "Vendor_Access",
+      "Management_Logging"
+    ],
+    "OBSERVABILITY": [
+      "passive_discovery",
+      "approved_active_discovery",
+      "packet_capture",
+      "IDS_NIDS_HIDS",
+      "centralized_logging_SIEM",
+      "asset_process_baselines",
+      "anomaly_detection",
+      "change_monitoring"
+    ],
+    "RISK_AND_CRITICALITY": [
+      "business_process_function",
+      "auxiliary_dependency",
+      "critical_data_path",
+      "safety_impact",
+      "availability_impact",
+      "integrity_impact",
+      "confidentiality_impact",
+      "likelihood",
+      "consequence",
+      "mitigation"
+    ],
+    "INCIDENT_RESPONSE": [
+      "preparation",
+      "detection_analysis",
+      "containment",
+      "eradication",
+      "recovery",
+      "lessons_learned"
+    ],
+    "THREAT_KNOWLEDGE": [
+      "adversary_lifecycle",
+      "TTP_awareness",
+      "detection",
+      "simulation",
+      "threat_modeling",
+      "purple_team_CTF_lab",
+      "defensive_control_mapping"
+    ],
+    "ZERO_TRUST_ICS": [
+      "identity",
+      "device",
+      "workload",
+      "data",
+      "network",
+      "incremental_operational_validation",
+      "safety_validation"
+    ],
+    "CYBER_FRAMEWORK_MAPPING": [
+      "CISA_oriented_controls",
+      "NIST_oriented_controls",
+      "cybersecurity_performance_goals",
+      "defensive_maturity_objectives"
+    ]
+  },
+  "defensive_principles": {
+    "segmentation": "prefer explicit trust boundaries and least privilege",
+    "allowed_flows": "prefer allow-listed flows where operationally appropriate",
+    "monitoring": "favor passive observation before approved active techniques",
+    "incident_response": "prepare -> detect/analyze -> contain -> eradicate -> recover -> lessons learned",
+    "hack_back": false
+  },
+  "canonical_mapping": [
+    [
+      "asset_inventory",
+      "ontology_objects"
+    ],
+    [
+      "network_topology",
+      "relationship_graph"
+    ],
+    [
+      "criticality_dependencies",
+      "weighted_dependency_graph"
+    ],
+    [
+      "telemetry_logs",
+      "HIVE_evidence_stream"
+    ],
+    [
+      "detections",
+      "GPT_CHAOS_critic_hypotheses"
+    ],
+    [
+      "validation",
+      "GPT_DOUG_reconciliation_verifier"
+    ],
+    [
+      "recommendations",
+      "bounded_mitigation_plan"
+    ],
+    [
+      "active_action",
+      "human_authorization_gate"
+    ],
+    [
+      "result",
+      "hash_chained_provenance_audit_event"
+    ]
+  ],
+  "authorization_policy": {
+    "human_authorization_required_before": [
+      "active_discovery",
+      "scanning",
+      "configuration_change",
+      "exploit_simulation",
+      "credential_access",
+      "packet_manipulation",
+      "protocol_write",
+      "control_process_manipulation",
+      "physical_OT_action"
+    ],
+    "allowed_target_contexts": [
+      "owned_system",
+      "explicitly_authorized_system",
+      "designated_CTF",
+      "designated_lab",
+      "simulation"
+    ],
+    "automatic_real_world_action": false
+  },
+  "provenance": {
+    "project_verification": "VERIFIED_BY_FOUNDER",
+    "source_status": "USER_PROVIDED_TRAINING_GUIDE",
+    "training_examples_status": "DESCRIPTIVE_NOT_AUTHORIZATION",
+    "integrity_policy": "preserve source URL and ontology version in HIVE records"
+  },
+  "status": "ACTIVE"
+}

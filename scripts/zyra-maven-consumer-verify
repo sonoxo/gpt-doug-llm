@@ -1,0 +1,188 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+STATE="$HOME/.config/gpt-doug"
+
+RELEASE_PROOF="$STATE/palantir-maven-release-last.json"
+CONSUMER_PROOF="$STATE/palantir-maven-consumer-last.json"
+
+BASE="${PALANTIR_MAVEN_REPOSITORY_URL:-}"
+REPO_ID="${PALANTIR_MAVEN_REPOSITORY_ID:-zyra-foundry-maven}"
+USERNAME="${PALANTIR_MAVEN_USERNAME:-}"
+TOKEN="${PALANTIR_MAVEN_TOKEN:-}"
+
+[ -f "$RELEASE_PROOF" ] || {
+    echo 'ERROR: release proof missing' >&2
+    exit 1
+}
+
+[ -n "$BASE" ] || {
+    echo 'ERROR: PALANTIR_MAVEN_REPOSITORY_URL missing' >&2
+    exit 1
+}
+
+[ -n "$TOKEN" ] || {
+    echo 'ERROR: PALANTIR_MAVEN_TOKEN missing' >&2
+    exit 1
+}
+
+command -v mvn >/dev/null 2>&1 || {
+    echo 'ERROR: mvn command unavailable' >&2
+    exit 1
+}
+
+COORD="$(
+python3 - "$RELEASE_PROOF" <<'PY'
+import json,sys
+d=json.load(open(sys.argv[1]))
+assert d["ok"] is True
+print(d["coordinates"])
+PY
+)"
+
+EXPECTED_SHA="$(
+python3 - "$RELEASE_PROOF" <<'PY'
+import json,sys
+d=json.load(open(sys.argv[1]))
+print(d["integrity"]["jar_sha256"])
+PY
+)"
+
+GROUP="${COORD%%:*}"
+REST="${COORD#*:}"
+ARTIFACT="${REST%%:*}"
+VERSION="${REST#*:}"
+
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/gpt-doug-maven-consumer.XXXXXX")"
+
+cleanup() {
+    rm -rf "$TMP"
+}
+
+trap cleanup EXIT INT TERM
+
+chmod 700 "$TMP"
+
+cat > "$TMP/settings.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
+  <servers>
+    <server>
+      <id>${REPO_ID}</id>
+      <username>\${env.PALANTIR_MAVEN_USERNAME}</username>
+      <password>\${env.PALANTIR_MAVEN_TOKEN}</password>
+    </server>
+  </servers>
+</settings>
+EOF
+
+chmod 600 "$TMP/settings.xml"
+
+export PALANTIR_MAVEN_USERNAME="$USERNAME"
+export PALANTIR_MAVEN_TOKEN="$TOKEN"
+
+echo
+echo '============================================'
+echo 'APACHE MAVEN CONSUMER TEST'
+echo "COORDINATE : $COORD"
+echo "REPOSITORY : $REPO_ID"
+echo 'TOKEN      : HIDDEN'
+echo 'CACHE      : EPHEMERAL'
+echo '============================================'
+echo
+
+mvn \
+    -B \
+    -q \
+    -s "$TMP/settings.xml" \
+    -Dmaven.repo.local="$TMP/repository" \
+    org.apache.maven.plugins:maven-dependency-plugin:3.8.1:get \
+    "-Dartifact=${GROUP}:${ARTIFACT}:${VERSION}:jar" \
+    "-DremoteRepositories=${REPO_ID}::default::${BASE}" \
+    -Dtransitive=false
+
+GROUP_PATH="$(printf '%s' "$GROUP" | tr '.' '/')"
+
+RESOLVED="$TMP/repository/$GROUP_PATH/$ARTIFACT/$VERSION/$ARTIFACT-$VERSION.jar"
+
+[ -f "$RESOLVED" ] || {
+    echo 'ERROR: Maven did not resolve artifact into local repository'
+    exit 1
+}
+
+ACTUAL_SHA="$(
+python3 - "$RESOLVED" <<'PY'
+import hashlib,sys
+p=sys.argv[1]
+h=hashlib.sha256()
+with open(p,"rb") as f:
+    for chunk in iter(lambda:f.read(1024*1024),b""):
+        h.update(chunk)
+print(h.hexdigest())
+PY
+)"
+
+if [ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]; then
+    echo 'ERROR: consumer-resolved JAR hash mismatch'
+    echo "EXPECTED: $EXPECTED_SHA"
+    echo "ACTUAL  : $ACTUAL_SHA"
+    exit 1
+fi
+
+MAVEN_VERSION="$(
+mvn -version |
+head -n 1 |
+sed 's/[[:space:]]*$//'
+)"
+
+python3 - \
+    "$CONSUMER_PROOF" \
+    "$COORD" \
+    "$BASE" \
+    "$EXPECTED_SHA" \
+    "$ACTUAL_SHA" \
+    "$MAVEN_VERSION" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from urllib.parse import urlparse
+
+out,coord,url,expected,actual,maven=sys.argv[1:]
+
+proof={
+    "schema":"xunia.gpt-doug.maven-consumer-proof.v1",
+    "ok": expected == actual,
+    "verified_at":datetime.now(timezone.utc).isoformat(),
+    "coordinates":coord,
+    "repository_host":urlparse(url).hostname,
+    "maven_client":maven,
+    "resolution":{
+        "resolved":True,
+        "expected_jar_sha256":expected,
+        "resolved_jar_sha256":actual,
+        "jar_match":expected == actual
+    },
+    "credentials_printed":False,
+    "credentials_stored":False
+}
+
+with open(out,"w") as f:
+    json.dump(proof,f,indent=2,sort_keys=True)
+    f.write("\n")
+
+os.chmod(out,0o600)
+
+print()
+print("=== MAVEN CONSUMER PROOF ===")
+print("COORDINATES :",coord)
+print("CLIENT      :",maven)
+print("RESOLVED    : TRUE")
+print("SHA256      :",actual)
+print("SHA MATCH   :",expected == actual)
+print("PROOF       :",out)
+PY
+
+echo
+echo 'REAL APACHE MAVEN CONSUMER RESOLUTION VERIFIED'

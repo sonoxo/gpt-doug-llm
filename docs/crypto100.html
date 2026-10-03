@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="XUNIA Crypto 100 Hive: live top-100 market-cap research surface coordinated by GPT-Doug, GPT-Chaos, and the Universal Hive. Research and visualization only; no trading signals.">
+  <title>Crypto 100 Hive // XUNIAverse</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <script src="./zyra-shell-v2.js" defer></script>
+  <style>
+    :root{--amber:#ffbd7a}
+    .head{margin-bottom:22px}.head h1{font-size:clamp(38px,7vw,76px)!important;line-height:.94;margin:8px 0 14px!important;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent!important}
+    .head p{max-width:960px;color:var(--dim);line-height:1.7;font-size:15px}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.badge{font-size:10px;font-weight:900;letter-spacing:.11em;border:1px solid #30355d;border-radius:999px;padding:7px 10px;background:#0c1024;color:#cfd8ff}.badge.cyan{color:var(--cyan);border-color:rgba(70,243,255,.3)}.badge.violet{color:#caa9ff;border-color:rgba(157,92,255,.35)}.badge.lime{color:var(--lime);border-color:rgba(168,255,96,.3)}.badge.warn{color:var(--amber);border-color:rgba(255,189,122,.35)}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}.stat{border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(180deg,rgba(12,15,34,.98),rgba(6,7,20,.98))}.stat strong{display:block;font-size:clamp(28px,5vw,48px);line-height:1;color:#fff}.stat span{display:block;margin-top:7px;color:var(--dim);font-size:10px;letter-spacing:.07em;text-transform:uppercase}
+    .truth{border:1px solid rgba(255,189,122,.3);border-radius:18px;background:rgba(255,189,122,.05);padding:16px 18px;color:#d9dbe8;line-height:1.65;font-size:13px}.truth strong{color:var(--amber)}
+    .panel{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(11,13,29,.98),rgba(5,6,18,.98));padding:clamp(16px,3vw,28px);box-shadow:0 24px 80px #0007}.panel h2{margin:0 0 8px;font-size:14px;letter-spacing:.12em;text-transform:uppercase}.panel>.sub{margin:0 0 18px;color:var(--dim);font-size:12px;line-height:1.65}
+    .swarm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.swarm{border:1px solid #2c3155;border-radius:14px;padding:13px;background:#080a19}.swarm b{display:block;font-size:11px;color:#eef4ff}.swarm span{display:block;margin-top:5px;color:var(--dim);font-size:10px;line-height:1.45}
+    .pipeline{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.step{position:relative;border:1px solid #30365d;border-radius:14px;padding:13px;background:#080a19;min-height:94px}.step b{display:block;font-size:10px;color:var(--cyan);letter-spacing:.06em}.step span{display:block;margin-top:7px;color:var(--dim);font-size:10px;line-height:1.4}.step::after{content:"→";position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:#69739b;font-weight:900}.step:last-child::after{display:none}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.controls input,.controls select,.controls button{border:1px solid #30365d;border-radius:12px;background:#080b1d;color:#e8f2ff;padding:10px 12px;font:inherit}.controls input{flex:1;min-width:220px}.controls button{cursor:pointer;font-weight:900;color:var(--cyan)}.status{font-size:10px;color:var(--dim);letter-spacing:.07em;text-transform:uppercase}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.coin{border:1px solid #2c3155;border-radius:18px;padding:15px;background:linear-gradient(145deg,#0c1024,#060817);min-width:0}.coin-head{display:flex;gap:12px;align-items:center}.orb{width:42px;height:42px;border-radius:50%;flex:0 0 42px;box-shadow:0 0 24px rgba(70,243,255,.1);border:1px solid #ffffff22}.coin h3{margin:0;font-size:16px}.coin .symbol{color:var(--dim);font-size:10px;font-weight:900;letter-spacing:.09em}.rank{margin-left:auto;font-size:10px;color:var(--cyan);font-weight:900}.numbers{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:13px}.metric{border:1px solid #242a48;border-radius:10px;padding:8px;background:#070919}.metric span{display:block;color:var(--dim);font-size:9px;text-transform:uppercase;letter-spacing:.06em}.metric strong{display:block;margin-top:4px;font-size:11px;color:#eef4ff;overflow:hidden;text-overflow:ellipsis}.peerbox{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.peer{border:1px solid #293053;border-radius:10px;padding:9px}.peer b{font-size:9px;letter-spacing:.07em}.peer.doug b{color:var(--cyan)}.peer.chaos b{color:#caa9ff}.peer p{margin:5px 0 0;color:var(--dim);font-size:9px;line-height:1.45}.coin a{display:inline-block;margin-top:10px;color:var(--cyan);font-size:9px;font-weight:900;text-decoration:none}
+    .schema{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.slot{border:1px solid #293053;border-radius:12px;padding:12px;background:#070919}.slot code{color:var(--lime);font-size:10px}.slot p{margin:6px 0 0;color:var(--dim);font-size:10px;line-height:1.45}
+    .nav{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}.nav a{display:inline-flex;border:1px solid #30365d;border-radius:12px;padding:9px 12px;background:#0b0e20;color:#dce7ff;text-decoration:none;font-size:11px;font-weight:900}.nav a:hover{border-color:var(--cyan);color:var(--cyan)}
+    .empty{grid-column:1/-1;border:1px dashed #343a5f;border-radius:16px;padding:20px;color:var(--dim);text-align:center}
+    @media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.swarm-grid{grid-template-columns:repeat(2,1fr)}.pipeline{grid-template-columns:repeat(3,1fr)}.step::after{display:none}.schema{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){.stats,.grid,.swarm-grid,.pipeline,.schema{grid-template-columns:1fr}.peerbox{grid-template-columns:1fr}.panel{border-radius:18px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="head">
+      <div class="zyra-eyebrow">XUNIA // UNIVERSAL HIVE // CRYPTO 100</div>
+      <h1>100 asset hives. GPT-Doug synthesizes. GPT-Chaos challenges.</h1>
+      <p>A live research and visualization surface for the top 100 cryptocurrencies by market capitalization. The ranking is fetched at runtime so a changing market does not become frozen ontology. Each asset gets a structured hive record; specialist swarms collect descriptive evidence; GPT-Doug reconciles the current picture; GPT-Chaos asks what could make that picture incomplete or wrong.</p>
+      <div class="badges">
+        <span class="badge cyan">100 DYNAMIC ASSET HIVES</span>
+        <span class="badge violet">GPT-DOUG = GPT-CHAOS PEERS</span>
+        <span class="badge lime">EVIDENCE BEFORE CANONICAL</span>
+        <span class="badge">LIVE MARKET-CAP UNIVERSE</span>
+        <span class="badge warn">NO BUY / SELL SIGNALS</span>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><strong>100</strong><span>live market-cap asset hives</span></article>
+      <article class="stat"><strong>800</strong><span>per-asset specialist swarm roles</span></article>
+      <article class="stat"><strong>198</strong><span>shared comparative + macro swarms</span></article>
+      <article class="stat"><strong>999</strong><span>master reconciliation swarm</span></article>
+    </section>
+
+    <aside class="truth"><strong>Research boundary:</strong> this is a descriptive intelligence surface, not financial advice, portfolio management, an execution engine, or a price-prediction system. Market rankings and prices can change quickly. Every asset-specific conclusion should preserve its source and timestamp.</aside>
+
+    <section class="panel">
+      <h2>Patent-inspired representation pipeline</h2>
+      <p class="sub">Generalized from text/embedding/model/render concepts into a crypto research representation. XUNIA is not claiming that this browser page runs NeRFs or trains a hypernetwork.</p>
+      <div class="pipeline">
+        <div class="step"><b>01 · INGEST</b><span>Market data, protocol metadata, docs, governance, security and on-chain evidence.</span></div>
+        <div class="step"><b>02 · NORMALIZE</b><span>Canonical asset identity, rank, symbol, network, category, timestamp and provenance.</span></div>
+        <div class="step"><b>03 · VECTORIZE</b><span>Build a structured feature vector/embedding for comparison and downstream representation.</span></div>
+        <div class="step"><b>04 · REPRESENT</b><span>Create the asset hive state and deterministic visual identity from verified features.</span></div>
+        <div class="step"><b>05 · DOUG/CHAOS</b><span>Doug synthesizes evidence; Chaos generates counterexamples and missing-data questions.</span></div>
+        <div class="step"><b>06 · VERIFY</b><span>Reconcile source disagreement, preserve uncertainty, version the result, then publish.</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>999-swarm allocation</h2>
+      <p class="sub">Eight specialist roles × 100 assets = 800 per-asset roles. Another 198 logical swarms compare categories, correlations, infrastructure and systemic conditions. Swarm 999 reconciles.</p>
+      <div class="swarm-grid">
+        <div class="swarm"><b>MARKET DATA</b><span>Rank, price, market cap, volume, supply and snapshot timestamps.</span></div>
+        <div class="swarm"><b>PROTOCOL + TOKENOMICS</b><span>Consensus, issuance, burns, staking, utility, vesting and supply mechanics.</span></div>
+        <div class="swarm"><b>SECURITY</b><span>Audits, incidents, bridge/custody dependencies, validator assumptions and known risks.</span></div>
+        <div class="swarm"><b>ON-CHAIN + LIQUIDITY</b><span>Network activity, exchange depth, flows and observable usage where sourced.</span></div>
+        <div class="swarm"><b>GOVERNANCE</b><span>Admin keys, voting systems, upgrade authority, treasury and concentration questions.</span></div>
+        <div class="swarm"><b>ECOSYSTEM</b><span>Applications, integrations, developer activity, infrastructure and dependency graph.</span></div>
+        <div class="swarm"><b>NEWS + EVENTS</b><span>Timestamped releases, incidents, governance events and other material public changes.</span></div>
+        <div class="swarm"><b>REPRESENTATION</b><span>Convert verified features into the XUNIA asset-hive visualization and comparison schema.</span></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="live-title">
+      <h2 id="live-title">Live top-100 hive surface</h2>
+      <p class="sub">Primary runtime feed: CoinGecko public markets endpoint. This page deliberately fails visibly instead of silently presenting stale rankings when the feed is unavailable.</p>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search name or symbol…" autocomplete="off" aria-label="Search crypto assets">
+        <select id="filter" aria-label="Filter assets">
+          <option value="all">All 100 assets</option>
+          <option value="positive">24h positive</option>
+          <option value="negative">24h negative</option>
+          <option value="stable">Near $1 price</option>
+        </select>
+        <button id="refresh" type="button">REFRESH</button>
+        <span id="status" class="status">WAITING FOR LIVE FEED</span>
+      </div>
+      <div id="grid" class="grid" aria-live="polite"><div class="empty">Loading live top-100 market-cap universe…</div></div>
+    </section>
+
+    <section class="panel">
+      <h2>Asset hive contract</h2>
+      <p class="sub">The market snapshot is only one layer. Deeper research workers can extend each namespace without overwriting provenance or uncertainty.</p>
+      <div class="schema">
+        <div class="slot"><code>identity</code><p>Provider ID, symbol, name, network/category aliases.</p></div>
+        <div class="slot"><code>market_snapshot</code><p>Rank, price, market cap, volume, supply, change windows and timestamp.</p></div>
+        <div class="slot"><code>protocol</code><p>Consensus, architecture, issuance, utility and technical dependencies.</p></div>
+        <div class="slot"><code>security</code><p>Audits, incidents, upgrade controls, bridges, custody and threat assumptions.</p></div>
+        <div class="slot"><code>governance</code><p>Decision rights, admin authority, voting, treasury and concentration evidence.</p></div>
+        <div class="slot"><code>ecosystem</code><p>Applications, integrations, developer signals and dependency graph.</p></div>
+        <div class="slot"><code>doug_synthesis</code><p>Compact evidence-grounded state summary with confidence and unresolved gaps.</p></div>
+        <div class="slot"><code>chaos_challenges</code><p>Counterexamples, source conflicts, missing evidence and assumptions to retest.</p></div>
+        <div class="slot"><code>provenance</code><p>Source URLs, retrieval times, versions, transformations and verification status.</p></div>
+      </div>
+    </section>
+
+    <nav class="nav">
+      <a href="./index.html">← XUNIA HQ</a>
+      <a href="./hive.html">Universal Hive ↗</a>
+      <a href="./pipeline.html">Agent Pipeline ↗</a>
+      <a href="./status.html">Build Evidence ↗</a>
+    </nav>
+  </main>
+
+  <script>
+    const endpoint = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h,7d';
+    const grid = document.getElementById('grid');
+    const statusEl = document.getElementById('status');
+    const searchEl = document.getElementById('search');
+    const filterEl = document.getElementById('filter');
+    let assets = [];
+
+    const money = (v) => {
+      if (v == null || !Number.isFinite(Number(v))) return '—';
+      const n = Number(v);
+      if (Math.abs(n) >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+      if (Math.abs(n) >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+      if (Math.abs(n) >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+      if (Math.abs(n) >= 1) return '$' + n.toLocaleString(undefined,{maximumFractionDigits:4});
+      return '$' + n.toLocaleString(undefined,{maximumSignificantDigits:5});
+    };
+    const pct = (v) => v == null ? '—' : (Number(v) >= 0 ? '+' : '') + Number(v).toFixed(2) + '%';
+    const hash = (s) => [...s].reduce((a,c)=>((a<<5)-a+c.charCodeAt(0))|0,0);
+    const orbStyle = (coin) => {
+      const h = Math.abs(hash(coin.id)) % 360;
+      const h2 = (h + 85) % 360;
+      return 'background:radial-gradient(circle at 32% 28%,hsl('+h+' 95% 82%),hsl('+h+' 90% 52%) 32%,hsl('+h2+' 82% 35%) 66%,#02030a 100%)';
+    };
+    const liquidity = (coin) => coin.market_cap && coin.total_volume ? ((coin.total_volume / coin.market_cap) * 100).toFixed(2) + '%' : '—';
+
+    function chaosProbe(coin){
+      const c = Number(coin.price_change_percentage_24h);
+      if (Number.isFinite(c) && Math.abs(c) >= 10) return 'Large 24h move: re-check event, liquidity, supply and source agreement before inferring a cause.';
+      if (coin.current_price > 0.97 && coin.current_price < 1.03) return 'Near-$1 price alone does not prove peg quality; verify reserves, redemption path, issuer/custody and depeg history.';
+      return 'Challenge rank stability, supply changes, governance assumptions, security dependencies and data-source agreement.';
+    }
+
+    function render(){
+      const q = searchEl.value.trim().toLowerCase();
+      const mode = filterEl.value;
+      const rows = assets.filter(c => {
+        const match = !q || c.name.toLowerCase().includes(q) || c.symbol.toLowerCase().includes(q);
+        if (!match) return false;
+        const d = Number(c.price_change_percentage_24h);
+        if (mode === 'positive') return Number.isFinite(d) && d > 0;
+        if (mode === 'negative') return Number.isFinite(d) && d < 0;
+        if (mode === 'stable') return c.current_price > 0.97 && c.current_price < 1.03;
+        return true;
+      });
+      if (!rows.length){
+        grid.innerHTML = '<div class="empty">No assets match this filter.</div>';
+        return;
+      }
+      grid.innerHTML = rows.map(c => `
+        <article class="coin">
+          <div class="coin-head">
+            <div class="orb" style="${orbStyle(c)}" aria-hidden="true"></div>
+            <div><h3>${c.name}</h3><div class="symbol">${c.symbol.toUpperCase()}</div></div>
+            <div class="rank">#${c.market_cap_rank ?? '—'}</div>
+          </div>
+          <div class="numbers">
+            <div class="metric"><span>Price</span><strong>${money(c.current_price)}</strong></div>
+            <div class="metric"><span>Market cap</span><strong>${money(c.market_cap)}</strong></div>
+            <div class="metric"><span>24h</span><strong>${pct(c.price_change_percentage_24h)}</strong></div>
+            <div class="metric"><span>Volume / cap</span><strong>${liquidity(c)}</strong></div>
+          </div>
+          <div class="peerbox">
+            <div class="peer doug"><b>GPT-DOUG</b><p>Current descriptive snapshot: rank #${c.market_cap_rank ?? '—'}, cap ${money(c.market_cap)}, 24h change ${pct(c.price_change_percentage_24h)}.</p></div>
+            <div class="peer chaos"><b>GPT-CHAOS</b><p>${chaosProbe(c)}</p></div>
+          </div>
+          <a href="https://www.coingecko.com/en/coins/${encodeURIComponent(c.id)}" target="_blank" rel="noopener noreferrer">SOURCE PROFILE ↗</a>
+        </article>`).join('');
+    }
+
+    async function load(){
+      statusEl.textContent = 'SYNCING LIVE MARKET-CAP UNIVERSE…';
+      grid.innerHTML = '<div class="empty">Summoning 100 asset hives from the live market feed…</div>';
+      try{
+        const res = await fetch(endpoint,{headers:{'accept':'application/json'}});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        const data = await res.json();
+        if(!Array.isArray(data) || !data.length) throw new Error('Empty response');
+        assets = data.slice(0,100);
+        statusEl.textContent = 'LIVE · '+assets.length+' HIVES · '+new Date().toLocaleString();
+        render();
+      }catch(err){
+        assets = [];
+        statusEl.textContent = 'LIVE FEED UNAVAILABLE · '+String(err.message || err);
+        grid.innerHTML = '<div class="empty">The live market feed could not be loaded. XUNIA is not substituting an old ranking. Use REFRESH to retry.</div>';
+      }
+    }
+
+    searchEl.addEventListener('input', render);
+    filterEl.addEventListener('change', render);
+    document.getElementById('refresh').addEventListener('click', load);
+    load();
+  </script>
+</body>
+</html>

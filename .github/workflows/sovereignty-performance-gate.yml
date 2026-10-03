@@ -1,0 +1,54 @@
+name: Sovereignty Performance Gate
+
+on:
+  push:
+    paths:
+      - "sovereignty_performance.py"
+      - "tests/test_sovereignty_performance.py"
+      - "safety-shield/agents/knowledge/palantir-stack-v1.json"
+      - "docs/PALANTIR_SOVEREIGNTY_PERFORMANCE.md"
+      - ".github/workflows/sovereignty-performance-gate.yml"
+  pull_request:
+    paths:
+      - "sovereignty_performance.py"
+      - "tests/test_sovereignty_performance.py"
+      - "safety-shield/agents/knowledge/palantir-stack-v1.json"
+      - "docs/PALANTIR_SOVEREIGNTY_PERFORMANCE.md"
+      - ".github/workflows/sovereignty-performance-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile runtime
+        run: python -m py_compile sovereignty_performance.py
+
+      - name: Validate knowledge base JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("safety-shield/agents/knowledge/palantir-stack-v1.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          assert data["version"] >= "1.2.0"
+          assert len(data["sovereignty_reference_model"]["layers_bottom_to_top"]) == 7
+          for key in ("memory", "compute", "gpu", "speed"):
+              assert key in data["performance_overlay"]
+          assert data["local_implementation"]["sovereignty_performance_runtime"] == "sovereignty_performance.py"
+          print("knowledge base valid")
+          PY
+
+      - name: Run sovereignty performance tests
+        run: python -m unittest tests.test_sovereignty_performance -v
+
+      - name: Generate runtime profile
+        run: python sovereignty_performance.py --benchmark

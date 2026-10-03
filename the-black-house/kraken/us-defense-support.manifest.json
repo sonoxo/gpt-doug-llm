@@ -1,0 +1,55 @@
+{
+  "id": "KRAKEN_US_DEFENSE_SUPPORT_V1",
+  "name": "Kraken U.S. Defense Mission Support Profile",
+  "purpose": "Agentic decision-support, readiness, cyber defense, logistics, training, simulation, sensor-fusion, resilience, and mission-assurance support for authorized U.S. defense contexts.",
+  "governedBy": "THE_BLACK_HOUSE_V1",
+  "mode": "DECISION_SUPPORT_AND_SIMULATION",
+  "humanAuthority": "REQUIRED",
+  "capabilities": [
+    "multi_source_sensor_fusion",
+    "situational_awareness",
+    "mission_planning_support",
+    "cyber_defense",
+    "incident_response",
+    "logistics_and_readiness",
+    "communications_resilience",
+    "training_and_wargaming",
+    "digital_twin_simulation",
+    "course_of_action_comparison",
+    "evidence_and_audit"
+  ],
+  "controlLoop": [
+    "SENSE",
+    "TRANSPORT",
+    "FUSE",
+    "ASSESS",
+    "PLAN",
+    "SIMULATE",
+    "DEFEND",
+    "VERIFY",
+    "EVIDENCE"
+  ],
+  "prohibitedAutonomy": {
+    "weaponControl": true,
+    "targetSelection": true,
+    "fireControl": true,
+    "kineticEngagement": true,
+    "lethalDecisionMaking": true,
+    "autonomousExternalAttack": true,
+    "criticalInfrastructureDisruption": true
+  },
+  "governance": {
+    "explicitAuthorizationRequired": true,
+    "humanInTheLoop": true,
+    "humanOnTheLoopIsNotSufficientForLethalActions": true,
+    "allConsequentialActionsAudited": true,
+    "externalExecutionNeverImplied": true,
+    "failClosedOnUnknownScope": true
+  },
+  "deploymentReadiness": {
+    "prototype": true,
+    "operationalMilitarySystem": false,
+    "governmentAccreditation": false,
+    "authorityToOperate": false
+  }
+}

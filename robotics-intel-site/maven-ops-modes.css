@@ -1,0 +1,46 @@
+/* MAVEN synthetic TAC / SPEC / DEFENSIVE OPS modes */
+.ops-modebar{
+  display:flex;gap:5px;overflow-x:auto;padding:0 8px 8px;scrollbar-width:none
+}
+.ops-modebar::-webkit-scrollbar{display:none}
+.ops-modebar button{
+  flex:0 0 auto;min-height:36px;border:1px solid #31523b;border-radius:8px;background:#071009;color:#dbe8dd;
+  padding:6px 9px;font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer;touch-action:manipulation
+}
+.ops-modebar button.active{background:#17321f;border-color:#5f986e;color:#d7ff64}
+.ops-modebar button.tac{color:#82e8ff}.ops-modebar button.spec{color:#c8a4ff}.ops-modebar button.def{color:#9cffaa}
+
+.ops-hud{
+  margin:0 8px 8px;border:1px solid #294933;border-radius:9px;background:#050a06;padding:7px;display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:5px
+}
+.ops-hud div{border:1px solid #223827;border-radius:7px;background:#061008;padding:6px;color:#789181;font-size:7px}
+.ops-hud b{display:block;margin-top:2px;color:#eaf3eb;font-size:9px}
+.ops-hud .good b{color:#9cffaa}.ops-hud .info b{color:#82e8ff}.ops-hud .warn b{color:#ffd166}
+
+.ops-overlay{position:absolute;inset:0;pointer-events:none;z-index:6;width:100%;height:100%}
+.simboard.ops-tac{box-shadow:inset 0 0 42px rgba(124,231,255,.06)}
+.simboard.ops-spec{box-shadow:inset 0 0 52px rgba(200,164,255,.07)}
+.simboard.ops-def{box-shadow:inset 0 0 54px rgba(156,255,170,.08)}
+
+.ops-arsenal{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0 8px 8px
+}
+.ops-arsenal button{
+  min-height:40px;border:1px solid #314b37;border-radius:8px;background:linear-gradient(180deg,#0a130c,#071009);
+  color:#d9f4df;padding:7px;font-size:8px;font-weight:900;letter-spacing:.03em;cursor:pointer
+}
+.ops-arsenal button:hover{border-color:#5f986e;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.ops-arsenal .def{color:#9cffaa}.ops-arsenal .sig{color:#82e8ff}.ops-arsenal .fx{color:#ffd166}.ops-arsenal .spec{color:#c8a4ff}
+.ops-mode-note{padding:0 8px 8px;color:#6f8976;font-size:7px;line-height:1.45}
+
+@media(max-width:900px){
+  .ops-hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ops-arsenal{display:flex;overflow-x:auto;scrollbar-width:none}
+  .ops-arsenal::-webkit-scrollbar{display:none}
+  .ops-arsenal button{flex:0 0 132px;min-height:44px}
+  .ops-modebar button{min-height:44px}
+}
+@media(max-width:430px){
+  .ops-hud div:nth-child(n+3){display:none}
+}

@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from unreal_gpt_doug import UnrealGPTDoug
+
+def main() -> int:
+    p = argparse.ArgumentParser(prog="gpt-unreal", description="UNREAL-GPT-DOUG // source-grounded UE 5.8 knowledge controller")
+    sub = p.add_subparsers(dest="command")
+    sub.add_parser("status")
+    s = sub.add_parser("search")
+    s.add_argument("query", nargs="+")
+    src = sub.add_parser("sources")
+    src.add_argument("query", nargs="*")
+    sub.add_parser("mcp")
+    args = p.parse_args()
+    unreal = UnrealGPTDoug()
+    if args.command in (None, "status"):
+        payload = unreal.status()
+    elif args.command == "search":
+        payload = unreal.search(" ".join(args.query), top_n=10)
+    elif args.command == "sources":
+        payload = unreal.source_list(" ".join(args.query))
+    elif args.command == "mcp":
+        payload = unreal.mcp_guide()
+    else:
+        p.error("unknown command")
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,125 @@
+apiVersion: blackhouse.zyra/v1
+kind: DefenseOntologyContract
+metadata:
+  name: cyber-defense-tactile-projection
+  purpose: >-
+    Declarative contract for the Gotham/Foundry ontology entities consumed by the
+    Cyber Defense Tactile Projection Remote System. Generate the enrollment-specific
+    Defense OSDK in Developer Console from these API names.
+  safetyBoundary: >-
+    Cyber mitigations only. Target Workbench and geotime references are contextual
+    read/display bindings and MUST NOT be used for kinetic aimpoint, weapon-release,
+    fire-control, or autonomous engagement effects.
+
+objectTypes:
+  - apiName: CyberThreatVector
+    primaryKey: eventId
+    titleProperty: targetAsset
+    properties:
+      eventId: string
+      threatKind: string
+      sourceAsset: string
+      targetAsset: string
+      x: double
+      y: double
+      z: double
+      severity: double
+      anomalyConfidence: double
+      cvss: double
+      bytesPerSecond: long
+      modulationHz: double
+      normalizedAmplitude: double
+      dutyCycle: double
+      observedAtUnixMs: long
+      gothamTargetRid: string
+      geotimeTrackRid: string
+      lifecycleState: string
+      provenance: string
+
+  - apiName: SpatialHapticNode
+    primaryKey: nodeId
+    titleProperty: nodeId
+    properties:
+      nodeId: string
+      x: double
+      y: double
+      z: double
+      deviceClass: string
+      safetyProfileId: string
+      maxModulationHz: double
+      maxNormalizedAmplitude: double
+      maxDutyCycle: double
+      armed: boolean
+      lastHealthAtUnixMs: long
+
+  - apiName: DefenseOperatorAction
+    primaryKey: gestureId
+    titleProperty: requestedAction
+    properties:
+      gestureId: string
+      gesture: string
+      threatEventId: string
+      targetAsset: string
+      operatorId: string
+      requestedAction: string
+      accepted: boolean
+      decisionReason: string
+      externalAuditId: string
+      observedAtUnixMs: long
+
+linkTypes:
+  - apiName: ThreatProjectedAtNode
+    from: CyberThreatVector
+    to: SpatialHapticNode
+    cardinality: many-to-one
+  - apiName: ActionRespondsToThreat
+    from: DefenseOperatorAction
+    to: CyberThreatVector
+    cardinality: many-to-one
+
+actions:
+  - apiName: upsertCyberThreatVector
+    generatedPythonName: upsert_cyber_threat_vector
+    effect: add-or-update CyberThreatVector and optional haptic-node link
+  - apiName: recordDefenseOperatorAction
+    generatedPythonName: record_defense_operator_action
+    effect: append DefenseOperatorAction audit object
+  - apiName: isolateHost
+    generatedPythonName: isolate_host
+    effect: invoke an approved endpoint-isolation integration
+    requires: [operator-confirmation, rbac:cyber-response.isolate-host, audit]
+  - apiName: revokeSession
+    generatedPythonName: revoke_session
+    effect: revoke an approved identity/session through a scoped identity integration
+    requires: [operator-confirmation, rbac:cyber-response.revoke-session, audit]
+  - apiName: blockIPRange
+    generatedPythonName: block_ip_range
+    effect: request a bounded firewall/SOAR block for an approved source indicator
+    requires: [operator-confirmation, rbac:cyber-response.block-ip-range, audit]
+  - apiName: terminateProcess
+    generatedPythonName: terminate_process
+    effect: request process termination through an approved EDR endpoint action
+    requires: [operator-confirmation, rbac:cyber-response.terminate-process, audit]
+  - apiName: openIncident
+    generatedPythonName: open_incident
+    effect: create or update incident/COA workflow state
+
+security:
+  oauthScopes: [api:ontologies-read, api:ontologies-write]
+  serviceIdentity: confidential-client-service-user
+  transport: [TLS, mTLS-at-edge-gateway]
+  authorization: [least-privilege, dynamic-rbac, action-submission-criteria]
+  audit: [append-only-operator-action, external-action-id, threat-event-id, operator-id]
+  accreditation: >-
+    This contract supplies technical controls but does not itself establish IL5/IL6 accreditation;
+    deployment must use an appropriately accredited Palantir enrollment, network, identities, devices,
+    logging, key management, and operating procedures.
+
+runtime:
+  edgeHotPath:
+    deadlineMs: 5
+    palantirNetworkCallAllowed: false
+  circuitBreaker:
+    maxJitterMs: 15
+    tripOnTokenFailure: true
+    autoRearm: false

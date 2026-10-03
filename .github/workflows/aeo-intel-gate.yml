@@ -1,0 +1,25 @@
+name: A.E.O. Intel Gate
+
+on:
+  push:
+    paths:
+      - 'rvia-intel/aeo/**'
+      - '.github/workflows/aeo-intel-gate.yml'
+  pull_request:
+    paths:
+      - 'rvia-intel/aeo/**'
+      - '.github/workflows/aeo-intel-gate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate A.E.O. ontology and source doctrine
+        run: python rvia-intel/aeo/scripts/validate_aeo.py

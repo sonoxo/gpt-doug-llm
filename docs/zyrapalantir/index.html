@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#050708" />
+  <meta name="description" content="ZYRAPALANTIR synthetic critical-infrastructure resilience command center." />
+  <title>ZYRAPALANTIR // Resilience Command</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-cluster">
+        <button class="icon-button hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+        <div class="brand-mark" aria-hidden="true">
+          <span class="brand-node n1"></span><span class="brand-node n2"></span><span class="brand-node n3"></span>
+          <span class="brand-link l1"></span><span class="brand-link l2"></span>
+        </div>
+        <div>
+          <div class="eyebrow">GPT-ZYRA-PALANTIR</div>
+          <div class="brand-name">ZYRAPALANTIR</div>
+        </div>
+      </div>
+
+      <div class="mission-title">
+        <span class="mission-kicker">RESILIENCE COMMAND</span>
+        <span class="mission-name">SYNTHETIC INFRASTRUCTURE DIGITAL TWIN</span>
+      </div>
+
+      <div class="top-actions">
+        <div class="status-pill safe"><span class="pulse-dot"></span> SIMULATION ONLY</div>
+        <button class="icon-button" id="helpButton" aria-label="Help">?</button>
+        <button class="avatar" aria-label="Operator profile">ZY</button>
+      </div>
+    </header>
+
+    <aside class="left-rail">
+      <nav class="rail-nav" aria-label="Mission views">
+        <button class="rail-item active" data-view="operations"><span class="rail-icon">⌖</span><span>Operations</span></button>
+        <button class="rail-item" data-view="ontology"><span class="rail-icon">◈</span><span>Ontology</span></button>
+        <button class="rail-item" data-view="incidents"><span class="rail-icon">△</span><span>Incidents</span></button>
+        <button class="rail-item" data-view="automation"><span class="rail-icon">⟲</span><span>Automate</span></button>
+        <button class="rail-item" data-view="audit"><span class="rail-icon">≡</span><span>Audit</span></button>
+      </nav>
+      <div class="rail-bottom">
+        <button class="rail-item compact"><span class="rail-icon">⚙</span><span>Settings</span></button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <section class="map-stage" aria-label="Synthetic digital twin map">
+        <div class="map-toolbar glass">
+          <button class="tool-button active">Twin Map</button>
+          <button class="tool-button">Dependency Graph</button>
+          <button class="tool-button">Telemetry</button>
+          <span class="toolbar-separator"></span>
+          <button class="tool-button icon-only" aria-label="Fit view">⌗</button>
+        </div>
+
+        <div class="map-badge glass"><span class="pulse-dot"></span> ZYRAPALANTIR / LIVE MODEL</div>
+
+        <div class="map-grid"></div>
+        <div class="terrain-glow terrain-a"></div>
+        <div class="terrain-glow terrain-b"></div>
+
+        <svg class="dependency-layer" viewBox="0 0 1200 760" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="flow" x1="0" x2="1">
+              <stop offset="0%" stop-color="#70a5ff" stop-opacity=".2" />
+              <stop offset="50%" stop-color="#b8c9ff" stop-opacity=".9" />
+              <stop offset="100%" stop-color="#70a5ff" stop-opacity=".2" />
+            </linearGradient>
+            <filter id="softGlow">
+              <feGaussianBlur stdDeviation="2.4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <path class="flow-line" d="M205 475 C340 310 430 300 555 390" />
+          <path class="flow-line" d="M555 390 C690 420 770 315 905 285" />
+          <path class="flow-line" d="M555 390 C690 510 785 535 930 525" />
+          <path class="flow-line" d="M905 285 C990 335 1010 410 930 525" />
+          <path class="flow-line dim" d="M205 475 C405 610 680 640 930 525" />
+        </svg>
+
+        <div class="map-node power" style="--x:17%;--y:63%" data-node="power-primary" data-domain="POWER_SIM" data-state="HEALTHY" data-detail="Synthetic primary generation + substation twin">
+          <div class="node-pulse"></div><div class="node-core">P</div><div class="node-label"><b>POWER-PRIMARY</b><span>POWER_SIM</span></div>
+        </div>
+        <div class="map-node water" style="--x:46%;--y:51%" data-node="water-plant-02" data-domain="WATER_SIM" data-state="HEALTHY" data-detail="Treatment and distribution digital twin">
+          <div class="node-pulse"></div><div class="node-core">W</div><div class="node-label"><b>WATER-PLANT-02</b><span>WATER_SIM</span></div>
+        </div>
+        <div class="map-node traffic" style="--x:76%;--y:37%" data-node="traffic-grid-07" data-domain="TRAFFIC_SIM" data-state="HEALTHY" data-detail="Synthetic intersection and corridor network">
+          <div class="node-pulse"></div><div class="node-core">T</div><div class="node-label"><b>TRAFFIC-GRID-07</b><span>TRAFFIC_SIM</span></div>
+        </div>
+        <div class="map-node ems critical" style="--x:79%;--y:69%" data-node="ems-hospital-a" data-domain="EMS_SIM" data-state="PROTECTED" data-detail="Life-safety digital twin with protected dependency policy">
+          <div class="node-pulse"></div><div class="node-core">E</div><div class="node-label"><b>EMS-HOSPITAL-A</b><span>EMS_SIM · LIFE SAFETY</span></div>
+        </div>
+
+        <div class="map-coordinates">38.03° N&nbsp;&nbsp; 77.47° W &nbsp;·&nbsp; SYNTHETIC REGION</div>
+
+        <div class="scenario-dock glass">
+          <div class="dock-title">EXERCISE INJECT</div>
+          <button data-scenario="power">Power Cascade</button>
+          <button data-scenario="water">Water Stress</button>
+          <button data-scenario="traffic">Traffic Degrade</button>
+          <button data-scenario="ems">EMS Surge</button>
+          <button class="reset" data-scenario="reset">Reset</button>
+        </div>
+      </section>
+
+      <aside class="intel-panel">
+        <section class="panel-header">
+          <div>
+            <div class="eyebrow">OPERATIONAL INTELLIGENCE</div>
+            <h1>System Overview</h1>
+          </div>
+          <button class="icon-button">•••</button>
+        </section>
+
+        <section class="metric-grid">
+          <article class="metric-card"><span>ASSETS</span><strong id="assetCount">07</strong><small>synthetic domains</small></article>
+          <article class="metric-card"><span>INCIDENTS</span><strong id="incidentCount">00</strong><small>active exercises</small></article>
+          <article class="metric-card"><span>HEALTH</span><strong id="healthScore">99.7%</strong><small>model confidence</small></article>
+          <article class="metric-card"><span>ACTIONS</span><strong id="actionCount">12</strong><small>allowlisted</small></article>
+        </section>
+
+        <section class="panel-section">
+          <div class="section-title"><span>Selected Object</span><span class="micro-status">ONTOLOGY</span></div>
+          <article class="object-card" id="objectCard">
+            <div class="object-icon">P</div>
+            <div class="object-copy">
+              <strong id="objectName">POWER-PRIMARY</strong>
+              <span id="objectDomain">POWER_SIM</span>
+              <p id="objectDetail">Synthetic primary generation + substation twin</p>
+            </div>
+            <div class="state-badge" id="objectState">HEALTHY</div>
+          </article>
+          <div class="property-table">
+            <div><span>Mode</span><b>SIMULATION_ONLY</b></div>
+            <div><span>Human approval</span><b>REQUIRED</b></div>
+            <div><span>Outbound actuation</span><b>DISABLED</b></div>
+            <div><span>Audit</span><b>ENABLED</b></div>
+          </div>
+        </section>
+
+        <section class="panel-section dependencies-section">
+          <div class="section-title"><span>Dependency Health</span><span class="micro-status">4 LINKS</span></div>
+          <div class="dependency-row"><span><i class="dot power-dot"></i> Power → Water</span><b class="ok">NOMINAL</b></div>
+          <div class="dependency-row"><span><i class="dot water-dot"></i> Water → EMS</span><b class="ok">NOMINAL</b></div>
+          <div class="dependency-row"><span><i class="dot traffic-dot"></i> Traffic → EMS route</span><b class="ok">NOMINAL</b></div>
+          <div class="dependency-row"><span><i class="dot ems-dot"></i> EMS life safety</span><b class="protected">PROTECTED</b></div>
+        </section>
+
+        <section class="panel-section aip-section">
+          <div class="section-title"><span>AIP Recommendation</span><span class="micro-status aip">AIP</span></div>
+          <div class="aip-card" id="aipCard">
+            <div class="aip-symbol">✦</div>
+            <p>No active synthetic incident. Digital-twin graph is stable and all life-safety dependencies are protected.</p>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="timeline-panel">
+      <div class="timeline-header">
+        <div><span class="eyebrow">AUDIT STREAM</span><b>Exercise Timeline</b></div>
+        <div class="timeline-actions"><span id="clock">00:00:00Z</span><button id="clearLog">Clear</button></div>
+      </div>
+      <div class="timeline-track" id="timelineTrack">
+        <div class="timeline-event"><span class="time">T+00:00</span><i></i><div><b>ZYRAPALANTIR ONLINE</b><span>Ontology graph initialized · outbound actuation disabled</span></div></div>
+        <div class="timeline-event"><span class="time">T+00:01</span><i></i><div><b>POLICY ENVELOPE VERIFIED</b><span>Human approval + synthetic-only constraints loaded</span></div></div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="modal-backdrop" id="helpModal" hidden>
+    <div class="modal glass">
+      <button class="modal-close" id="closeHelp">×</button>
+      <div class="eyebrow">ZYRAPALANTIR</div>
+      <h2>Resilience Command</h2>
+      <p>This interface is a synthetic digital-twin exercise environment inspired by dense operational command software. Scenario controls only change local simulation state.</p>
+      <div class="property-table">
+        <div><span>Real infrastructure writes</span><b>BLOCKED</b></div>
+        <div><span>PLC / SCADA control</span><b>BLOCKED</b></div>
+        <div><span>Emergency service control</span><b>BLOCKED</b></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

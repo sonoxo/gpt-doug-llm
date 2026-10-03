@@ -12,10 +12,12 @@ on:
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
 
 concurrency:
   group: nxyz-agentic-upgrade-${{ github.ref }}
@@ -23,7 +25,9 @@ concurrency:
 
 jobs:
   control-plane-health:
-    if: github.event_name != 'pull_request' || github.actor != 'dependabot[bot]'
+    if: github.event_name != 'pull_request_target' && (github.event_name != 'pull_request' || github.actor != 'dependabot[bot]')
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     env:
       NXYZ_WEBHOOK_URL: ${{ secrets.NXYZ_WEBHOOK_URL }}
@@ -49,12 +53,15 @@ jobs:
           retention-days: 14
 
   dependabot-auto-merge:
-    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    if: github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Read Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Enable guarded auto-merge for patch/minor updates

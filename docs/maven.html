@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#070906">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>XUNIA // DOUG-GPT-MAVEN</title>
+<link rel="stylesheet" href="./maven-ops-ux.css">
+<link rel="stylesheet" href="./maven-live.css">
+<link rel="stylesheet" href="./maven-iphone16e.css">
+<link rel="stylesheet" href="./maven-layout-v2.css">
+<link rel="stylesheet" href="./maven-military.css">
+<link rel="stylesheet" href="./maven-resilience.css">
+<link rel="stylesheet" href="./maven-clean.css">
+<style>
+:root{--bg:#050704;--panel:#090d0a;--line:#5d3a12;--text:#f1e4c8;--muted:#bba98a;--accent:#ff9f1c;--lime:#d7ff64;--blue:#76d4ff}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{margin:0;width:100%;height:100%;min-height:100svh;min-height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{
+  min-height:56px;display:flex;align-items:center;gap:8px;
+  padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));
+  border-bottom:1px solid rgba(255,159,28,.28);background:rgba(7,10,7,.96);
+  box-shadow:0 8px 28px rgba(0,0,0,.24);overflow-x:auto;white-space:nowrap;scrollbar-width:none
+}
+header::-webkit-scrollbar{display:none}
+.brand{flex:0 0 auto;color:var(--accent);font-weight:950;letter-spacing:.04em;font-size:13px}
+.modebar{flex:0 0 auto;display:flex;gap:5px;padding:4px;border:1px solid #4a351b;border-radius:11px;background:#080d09}
+.modebtn{border:1px solid #4a351b;border-radius:8px;background:#101611;color:var(--text);padding:7px 9px;min-height:38px;font:850 10px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer;touch-action:manipulation}
+.modebtn.active{background:var(--accent);color:#180b00;border-color:#ffb84f}
+.modebtn.command{border-color:#365243;color:#d7ff64}
+.pill{flex:0 0 auto;border:1px solid #4a3a20;border-radius:999px;padding:5px 8px;font-size:9px;background:#090e0a}.ok{color:var(--lime)}.off{color:#8c9387}.blue{color:var(--blue)}
+main{position:relative;height:calc(100dvh - 56px);min-height:0}
+.viewerShell{position:absolute;inset:0;min-width:0;min-height:0;background:#020403}
+iframe{width:100%;height:100%;border:0;background:#020403;display:block}
+.command-rail{
+  position:absolute;z-index:70;top:8px;right:max(8px,env(safe-area-inset-right));bottom:max(8px,env(safe-area-inset-bottom));
+  width:min(380px,calc(100vw - 24px));padding:9px;overflow:auto;
+  border:1px solid rgba(255,159,28,.34);border-radius:18px;
+  background:rgba(7,11,8,.96);box-shadow:0 24px 80px rgba(0,0,0,.55);
+  backdrop-filter:blur(20px) saturate(125%);-webkit-backdrop-filter:blur(20px) saturate(125%);
+  transform:translateX(calc(100% + 24px));opacity:0;pointer-events:none;
+  transition:transform .34s cubic-bezier(.2,.78,.2,1),opacity .18s ease
+}
+.command-rail.open{transform:translateX(0);opacity:1;pointer-events:auto}
+.card{border:1px solid #4a351b;border-radius:12px;background:linear-gradient(180deg,#0b100d,#080c09);padding:10px;margin-bottom:8px}
+h2{margin:0 0 8px;font-size:12px;color:var(--accent)}
+.metric{display:flex;justify-content:space-between;gap:10px;font-size:10px;margin:6px 0;color:var(--muted)}.metric b{color:var(--text)}
+a{color:var(--blue)}
+.btn{display:flex;align-items:center;text-decoration:none;border:1px solid #4a351b;border-radius:8px;background:#111712;color:var(--text);padding:9px;margin:6px 0;min-height:42px;touch-action:manipulation}
+#svc,#boundary,.feed{font-size:10px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}.good{color:var(--lime)}.bad{color:#ff7b7b}
+.map-control-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.map-control-grid button{margin:0;min-height:42px}
+.map-layer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:7px}.map-layer-grid button{margin:0;min-height:40px}
+.map-control-grid button,.map-layer-grid button,#mapRefresh{
+  border:1px solid #4a351b;border-radius:8px;background:#101611;color:#e9ddc7;padding:8px;font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer
+}
+.map-control-grid button.active,.map-layer-grid button.active{background:#ff9f1c;color:#180b00;border-color:#ffb84f}
+#mapRefresh{width:100%;margin-top:7px}
+@media(max-width:900px){
+  header{min-height:54px}
+  .brand{font-size:12px}
+  .pill{display:none}
+  main{height:calc(100dvh - 54px)}
+  .command-rail{
+    top:auto;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));width:auto;max-height:min(76dvh,680px);
+    transform:translateY(calc(100% + 18px))
+  }
+  .command-rail.open{transform:translateY(0)}
+  .modebtn{min-height:44px}
+}
+@media(max-width:430px){
+  .brand{font-size:11px}
+  .modebtn{padding:7px 8px;font-size:9px}
+  .command-rail{left:5px;right:5px}
+  .map-control-grid{grid-template-columns:1fr 1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<script src="./xunia-i18n.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="brand">🛰 DOUG-GPT-MAVEN</div>
+  <div class="modebar" data-no-translate="true">
+    <button class="modebtn" type="button" data-mode="3d">🌍 3D</button>
+    <button class="modebtn" type="button" data-mode="2d">🗺 2D</button>
+    <button class="modebtn" id="worldGridBtn" type="button">🌐 WORLD GRID</button>
+    <button class="modebtn" type="button" data-mode="ops">⚡ OPS</button>
+    <button class="modebtn active" type="button" data-mode="broadcast">📡 TACTICAL</button>
+    <button class="modebtn" id="arsenalModeBtn" type="button">⚡ ARSENAL</button>
+    <button class="modebtn" id="droneModeBtn" type="button">🛸 MAVEN DRONE</button>
+    <button class="modebtn" id="gothamSimBtn" type="button">🎥 GOTHAM SIM</button>
+    <button class="modebtn" id="tacOpsBtn" type="button">🛰 TACTICAL SIM</button>
+    <button class="modebtn" id="specOpsBtn" type="button">🕶 STEALTH SIM</button>
+    <button class="modebtn" id="defOpsBtn" type="button">🛡 DEFENSE SIM</button>
+    <button class="modebtn" id="globalBattleBtn" type="button">🌎 GLOBAL BATTLE SIM</button>
+    <button class="modebtn" id="overheadIsrBtn" type="button">🛰 EYES SKY</button>
+    <button class="modebtn" id="roverOpsBtn" type="button">🛞 ROVER OPS</button>
+    <button class="modebtn" type="button" data-mode="palantir">🔷 PALANTIR</button>
+    <button class="modebtn" id="militaryEngageBtn" type="button">🎖 MIL ENGAGE</button>
+    <button class="modebtn command" id="opsRailToggle" type="button" aria-expanded="false">☰ COMMAND</button>
+  </div>
+  <span class="pill ok">PUBLIC DATA LIVE</span>
+  <span class="pill blue">CESIUM READY</span>
+  <span class="pill">HIVE / SWARM ANALYSIS</span>
+  <span class="pill ok">SYNTHETIC ARSENAL LIVE</span>
+  <span class="pill blue">AUTHORIZED SENSOR FUSION</span>
+  <span class="pill off">TARGETING OFF</span>
+  <span class="pill off">WEAPON CONTROL OFF</span>
+</header>
+
+<main>
+  <div class="viewerShell">
+    <iframe id="mavenFrame" src="https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1" title="GPT-MAVEN Tactical Max synthetic scenario workspace" loading="eager" allow="camera; fullscreen"></iframe>
+  </div>
+
+  <button class="rail-scrim" id="railScrim" type="button" aria-label="Close panel"></button>
+  <aside class="command-rail" id="commandRail" aria-label="GPT-MAVEN command rail">
+    <div class="rail-head" data-no-translate="true">
+      <div><strong>CONTROL PANEL</strong><span>Workspace controls</span></div>
+      <div class="rail-head-actions"><button type="button" id="railCollapseAll">COLLAPSE</button><button type="button" id="commandRailClose">CLOSE</button></div>
+    </div>
+    <div class="card">
+      <h2>MAP CONTROL</h2>
+      <div class="map-control-grid" data-no-translate="true">
+        <button type="button" data-map-view="global">GLOBAL</button>
+        <button type="button" data-map-view="europe" class="active">EUROPE</button>
+        <button type="button" data-map-view="blacksea">BLACK SEA</button>
+      </div>
+      <div class="map-layer-grid" data-no-translate="true">
+        <button type="button" data-map-layer="worldgrid" class="active">WORLD GRID</button>
+        <button type="button" data-map-layer="civil" class="active">CIVIL</button>
+        <button type="button" data-map-layer="weather" class="active">WEATHER</button>
+        <button type="button" data-map-layer="quakes" class="active">QUAKES</button>
+        <button type="button" data-map-layer="events" class="active">NASA EVENTS</button>
+        <button type="button" data-map-layer="swarm">SYNTHETIC HIVE</button>
+      </div>
+      <button type="button" id="mapRefresh">↻ REFRESH PUBLIC DATA</button>
+    </div>
+
+    <div class="card">
+      <h2>GOTHAM TRAINING FEED</h2>
+      <div class="metric"><span>MODE</span><b>FICTIONAL / SIMULATED</b></div>
+      <a class="btn" href="#" id="openGothamRail">🎥 OPEN GOTHAM MULTI-CHANNEL FEED</a>
+      <div class="feed">Animated synthetic personnel across ALPHA, BRAVO, ROOFTOP, and STREETCAM channels. No real personnel or live unit tracking.</div>
+    </div>
+
+    <div class="card">
+      <h2>SYNTHETIC DRONE VISUALS</h2>
+      <div class="metric"><span>MODE</span><b>VISUAL SIM ONLY</b></div>
+      <a class="btn" href="#" id="openDroneRail">🛸 OPEN DRONE FLIGHT DECK</a>
+      <div class="feed">Four animated synthetic drones with TAKEOFF, ORBIT, FORMATION, FPV, HOME, and LAND visuals. No real drone link, telemetry, autopilot, targeting, or weapon control.</div>
+    </div>
+
+    <div class="card">
+      <h2>LIVE XUNIA OPS</h2>
+      <div class="metric"><span>VIEW ENGINE</span><b id="viewEngine">CESIUM 3D</b></div>
+      <div class="metric"><span>REACHABLE</span><b id="reach">—</b></div>
+      <div class="metric"><span>DEGRADED</span><b id="deg">—</b></div>
+      <div class="metric"><span>MAIN SHA</span><b id="sha">—</b></div>
+      <div id="svc">Connecting…</div>
+    </div>
+
+    <div class="card" id="sensorFusionCard">
+      <h2>◉ AUTHORIZED SENSOR / CAMERA FUSION</h2>
+      <div class="sensor-grid">
+        <div class="sensor-chip good">SENSOR POLICY<b id="sensorPolicyState">LOADING</b></div>
+        <div class="sensor-chip lock">FLOCK CONTRACT<b id="flockState">NOT CONNECTED</b></div>
+        <div class="sensor-chip good">TRACKING API<b>VALIDATE / NORMALIZE</b></div>
+        <div class="sensor-chip lock">PUBLIC GEO<b>COARSE ONLY</b></div>
+        <div class="sensor-chip lock">FACE / BIOMETRICS<b>OFF</b></div>
+        <div class="sensor-chip lock">PLATE OWNER LOOKUP<b>OFF</b></div>
+      </div>
+      <div class="sensor-note" id="sensorPolicyNote">Loading GALACTIC_FEDERATION.SENSOR_GOVERNANCE…</div>
+      <div class="sensor-actions">
+        <button type="button" id="testTrackingContract">TEST SAFE TRACKING CONTRACT</button>
+        <a href="./sensor-policy.json" target="_blank" rel="noopener">SENSOR POLICY ↗</a>
+        <a href="./flock-camera-connector.json" target="_blank" rel="noopener">FLOCK CONTRACT ↗</a>
+        <a href="./palantir-style-sensor-ontology.json" target="_blank" rel="noopener">ONTOLOGY ↗</a>
+      </div>
+      <div class="sensor-note" id="trackingContractResult">No camera credentials are stored in this public interface.</div>
+    </div>
+
+    <div class="card" id="palantirIntelCard">
+      <h2>PALANTIR MAVEN INTEL</h2>
+      <div class="metric"><span>RUNTIME ENV WATCH</span><b>US-12748581-B2 LOADED</b></div>
+      <div class="metric"><span>ONTOLOGY</span><b>SYNCED</b></div>
+      <div class="metric"><span>MODE</span><b>PROVENANCE / INDEPENDENT DESIGN</b></div>
+      <a class="btn" href="#" id="openPalantirIntel">🔷 OPEN PALANTIR LIVE</a>
+      <a class="btn" href="./learn/palantir/" target="_blank" rel="noopener">🧠 OPEN PALANTIR LEARNING LAB ↗</a>
+      <div class="feed">Runtime-environment lifecycle intelligence is indexed into the USPTO watch ontology and ZYRAPALANTIR patent-intel CLI. Detailed patent material remains architecture-watch evidence, not an implementation specification.</div>
+    </div>
+
+    <div class="card" id="militaryEngagementCard">
+      <h2>OFFICIAL MILITARY ENGAGEMENT</h2>
+      <div class="metric"><span>ACCESS MODE</span><b>PUBLIC OFFICIAL CHANNELS</b></div>
+      <div id="militaryEngagement" class="military-gateway">Loading official contact channels…</div>
+      <div class="military-boundary">Official public-affairs, outreach, recruiting/industry and public-inquiry channels only. No private personnel lookup, gated directory access, credential bypass, live personnel location, or operational-unit tracking.</div>
+    </div>
+
+    <div class="card">
+      <h2>PUBLIC DEFENSE ACQUISITION INTEL</h2>
+      <div class="metric"><span>HANDLING</span><b>PUBLIC / UNCLASSIFIED</b></div>
+      <div id="defIntel" class="feed">Loading public acquisition intelligence…</div>
+    </div>
+
+    <div class="card">
+      <h2>PUBLIC RESEARCH CONTACTS</h2>
+      <div id="defContacts" class="feed">Loading public engagement channels…</div>
+    </div>
+
+    <div class="card">
+      <h2>BOUNDARY</h2>
+      <div id="boundary">Public/authorized information is for situational awareness and provenance-backed analysis. Synthetic training remains separate. No target generation, fire-control data, weapon cueing, person tracking, or autonomous external action.</div>
+    </div>
+  </aside>
+</main>
+
+<script>
+const MAVEN_VIEWS={
+  "3d":"https://gpt-doug-robotics-intel.onrender.com/maven-cesium.html?embed=1",
+  "2d":"https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html?embed=1",
+  "ops":"./ops.html?embed=1",
+  "broadcast":"https://gpt-doug-robotics-intel.onrender.com/maven-broadcast.html?embed=1",
+  "palantir":"https://gpt-doug-robotics-intel.onrender.com/maven-palantir.html?embed=1"
+};
+let currentMode="broadcast";
+const frame=document.getElementById("mavenFrame");
+const engineLabel=document.getElementById("viewEngine");
+
+function setMavenMode(mode){
+  if(!MAVEN_VIEWS[mode]) mode="broadcast";
+  currentMode=mode;
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.toggle("active",btn.dataset.mode===mode));
+  frame.src=MAVEN_VIEWS[mode];
+  frame.title=mode==="3d"?"GPT-MAVEN Cesium 3D public situational-awareness dashboard":mode==="2d"?"GPT-MAVEN 2D public geospatial dashboard":mode==="ops"?"GPT-MAVEN operations wall":mode==="broadcast"?"GPT-MAVEN Broadcast Fusion workspace":"GPT-MAVEN Palantir live ontology workspace";
+  engineLabel.textContent=mode==="3d"?"CESIUM 3D":mode==="2d"?"LEAFLET 2D":mode==="ops"?"OPS WALL":mode==="broadcast"?"BROADCAST FUSION":"PALANTIR LIVE";
+  try{localStorage.setItem("xunia.maven.view",mode)}catch{}
+}
+document.querySelectorAll("[data-mode]").forEach(btn=>btn.addEventListener("click",()=>setMavenMode(btn.dataset.mode)));
+
+function openArsenalWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-sim"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
+function openDroneWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-drone"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
+function openGothamWorkspace(){
+  setMavenMode("broadcast");
+  const send=()=>frame.contentWindow?.postMessage({type:"maven-ui",action:"open-gotham"},"https://gpt-doug-robotics-intel.onrender.com");
+  setTimeout(send,350);
+}
+function openOpsProfile(action){
+  const profile=action==="open-spec"?"spec":action==="open-def"?"def":"tac";
+  currentMode="opssim";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById(profile==="tac"?"tacOpsBtn":profile==="spec"?"specOpsBtn":"defOpsBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-ops-sim.html?profile="+profile;
+  frame.title="GPT-MAVEN synthetic operations simulation";
+  engineLabel.textContent=profile==="tac"?"TACTICAL SIM":profile==="spec"?"STEALTH SIM":"DEFENSE SIM";
+}
+document.getElementById("arsenalModeBtn")?.addEventListener("click",openArsenalWorkspace);
+document.getElementById("droneModeBtn")?.addEventListener("click",openDroneWorkspace);
+document.getElementById("gothamSimBtn")?.addEventListener("click",openGothamWorkspace);
+document.getElementById("tacOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-tac"));
+document.getElementById("specOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-spec"));
+document.getElementById("defOpsBtn")?.addEventListener("click",()=>openOpsProfile("open-def"));
+
+function openRoverOps(){
+  currentMode="rover";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById("roverOpsBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-rover-ops.html";
+  frame.title="GPT-MAVEN public and authorized rover operations hub";
+  engineLabel.textContent="ROVER OPS";
+}
+document.getElementById("roverOpsBtn")?.addEventListener("click",openRoverOps);
+
+function openGlobalBattle(){
+  currentMode="globalbattle";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById("globalBattleBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-global-battle.html";
+  frame.title="GPT-MAVEN synthetic global land air sea defense and offense simulation";
+  engineLabel.textContent="GLOBAL BATTLE SIM";
+}
+document.getElementById("globalBattleBtn")?.addEventListener("click",openGlobalBattle);
+
+function openOverheadIsr(){
+  currentMode="overheadisr";
+  document.querySelectorAll("[data-mode]").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById("overheadIsrBtn")?.classList.add("active");
+  frame.src="https://gpt-doug-robotics-intel.onrender.com/maven-overhead-isr.html";
+  frame.title="GPT-MAVEN synthetic overhead ISR and public earth observation";
+  engineLabel.textContent="OVERHEAD ISR SIM";
+}
+document.getElementById("overheadIsrBtn")?.addEventListener("click",openOverheadIsr);
+
+function openWorldGrid(){
+  setMavenMode("2d");
+  setTimeout(()=>{
+    postMapCommand("view","global");
+    postMapCommand("layer","worldgrid",true);
+    postMapCommand("layer","civil",true);
+    postMapCommand("layer","weather",true);
+    postMapCommand("layer","quakes",true);
+    postMapCommand("layer","events",true);
+  },420);
+}
+document.getElementById("worldGridBtn")?.addEventListener("click",openWorldGrid);
+
+function openMilitaryEngagement(){
+  const toggle=document.getElementById("opsRailToggle");
+  const rail=document.getElementById("commandRail");
+  if(rail&&!rail.classList.contains("open")) toggle?.click();
+  setTimeout(()=>{
+    const card=document.getElementById("militaryEngagementCard");
+    card?.classList.remove("collapsed");
+    const head=card?.querySelector(".fold-head");
+    head?.setAttribute("aria-expanded","true");
+    const action=head?.querySelector(".fold-action");
+    if(action) action.textContent="CLOSE";
+    card?.scrollIntoView({block:"nearest",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  },120);
+}
+document.getElementById("militaryEngageBtn")?.addEventListener("click",openMilitaryEngagement);
+document.getElementById("openPalantirIntel")?.addEventListener("click",e=>{e.preventDefault();setMavenMode("palantir");});
+document.getElementById("openDroneRail")?.addEventListener("click",e=>{e.preventDefault();openDroneWorkspace();});
+document.getElementById("openGothamRail")?.addEventListener("click",e=>{e.preventDefault();openGothamWorkspace();});
+try{
+  const queryMode=new URLSearchParams(location.search).get("mode");
+  const saved=localStorage.getItem("xunia.maven.view");
+  if(queryMode&&MAVEN_VIEWS[queryMode]) setMavenMode(queryMode);
+  else if(saved==="2d"||saved==="3d"||saved==="ops"||saved==="broadcast"||saved==="palantir") setMavenMode(saved);
+  else setMavenMode("broadcast");
+}catch{setMavenMode("broadcast")}
+
+function postMapCommand(command,value,enabled){
+  if(currentMode!=="3d"&&currentMode!=="2d") return;
+  const target=new URL(MAVEN_VIEWS[currentMode],location.href).origin;
+  frame.contentWindow?.postMessage({type:"maven-command",command,value,enabled},target);
+}
+document.querySelectorAll("[data-map-view]").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll("[data-map-view]").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  postMapCommand("view",btn.dataset.mapView);
+}));
+document.querySelectorAll("[data-map-layer]").forEach(btn=>btn.addEventListener("click",()=>{
+  const enabled=btn.classList.toggle("active");
+  postMapCommand("layer",btn.dataset.mapLayer,enabled);
+}));
+document.getElementById("mapRefresh").addEventListener("click",()=>postMapCommand("refresh"));
+frame.addEventListener("load",()=>{
+  if(currentMode!=="3d"&&currentMode!=="2d") return;
+  setTimeout(()=>{
+    const view=document.querySelector("[data-map-view].active")?.dataset.mapView||"europe";
+    postMapCommand("view",view);
+    document.querySelectorAll("[data-map-layer]").forEach(btn=>postMapCommand("layer",btn.dataset.mapLayer,btn.classList.contains("active")));
+  },300);
+});
+
+async function status(){
+  try{
+    const r=await fetch("https://xunia-ops-api.onrender.com/api/status",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    document.querySelector("#reach").textContent=d.summary.reachable+"/"+d.summary.total;
+    document.querySelector("#deg").textContent=d.summary.degraded;
+    document.querySelector("#sha").textContent=d.repository.sha?d.repository.sha.slice(0,7):"—";
+    document.querySelector("#svc").innerHTML=d.services.map(s=>'<div class="'+(s.reachable?'good':'bad')+'">'+(s.reachable?'● ':'○ ')+s.name+' · '+s.http_status+' · '+s.latency_ms+'ms</div>').join("");
+  }catch(e){document.querySelector("#svc").textContent="Ops API warming/unavailable: "+e.message;}
+}
+
+async function loadSensorGovernance(){
+  const policyState=document.getElementById("sensorPolicyState");
+  const flockState=document.getElementById("flockState");
+  const note=document.getElementById("sensorPolicyNote");
+  try{
+    const [policyRes,flockRes]=await Promise.all([
+      fetch("./sensor-policy.json",{cache:"no-store"}),
+      fetch("./flock-camera-connector.json",{cache:"no-store"})
+    ]);
+    if(!policyRes.ok||!flockRes.ok) throw new Error("policy fetch failed");
+    const policy=await policyRes.json();
+    const flock=await flockRes.json();
+    policyState.textContent=policy.mode||"AUTHORIZED";
+    flockState.textContent=flock.status||"READY";
+    note.textContent=policy.namespace+" // explicit authorization + provenance required // person, biometric, private-residence and weapon targeting disabled.";
+  }catch(e){
+    policyState.textContent="DEGRADED";
+    note.textContent="Sensor governance metadata unavailable: "+e.message;
+  }
+}
+
+async function testTrackingContract(){
+  const out=document.getElementById("trackingContractResult");
+  out.textContent="Validating synthetic observation…";
+  try{
+    const r=await fetch("https://xunia-ops-api.onrender.com/api/tracking/validate",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        source_id:"MAVEN-UI-SYNTHETIC",object_type:"synthetic_contact",
+        observed_at:new Date().toISOString(),authorization_scope:"synthetic_training",
+        purpose:"UI contract validation",confidence:1
+      })
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||("HTTP "+r.status));
+    out.textContent="PASS // normalized="+data.normalized.object_type+" // persisted="+data.persisted+" // actionable="+data.actionable;
+  }catch(e){out.textContent="VALIDATION ERROR // "+e.message;}
+}
+document.getElementById("testTrackingContract")?.addEventListener("click",testTrackingContract);
+
+async function loadMilitaryEngagement(){
+  const host=document.getElementById("militaryEngagement");
+  if(!host) return;
+  try{
+    const r=await fetch("./military-engagement.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    host.innerHTML=(d.channels||[]).map(x=>
+      '<article class="military-channel">'+
+      '<div class="military-meta"><b>'+x.service+'</b><span>'+x.type.replaceAll("_"," ")+'</span></div>'+
+      '<p>'+x.purpose+'</p>'+
+      '<div class="military-contact">'+x.contact+'</div>'+
+      '<a target="_blank" rel="noopener" href="'+x.url+'">OPEN OFFICIAL CHANNEL ↗</a>'+
+      '</article>'
+    ).join("");
+  }catch(e){
+    host.textContent="Official engagement directory unavailable: "+e.message;
+  }
+}
+
+async function loadDefenseIntel(){
+  const intelBox=document.getElementById("defIntel");
+  const contactsBox=document.getElementById("defContacts");
+  try{
+    const r=await fetch("./defense-public-intel.json",{cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d=await r.json();
+    intelBox.innerHTML=(d.items||[]).map(item=>
+      '<div style="margin:0 0 9px;padding:8px;border:1px solid #2a3528;border-radius:8px;background:#080d0a">'+
+      '<b style="color:#d7ff64">'+item.category+'</b><br>'+
+      '<a target="_blank" rel="noopener" href="'+item.url+'">'+item.title+' ↗</a><br>'+
+      '<span>'+item.publisher+' · '+item.date+'</span></div>'
+    ).join("");
+    contactsBox.innerHTML=(d.public_contacts||[]).map(x=>
+      '<div style="margin:0 0 8px"><b>'+x.organization+'</b><br>'+x.purpose+
+      '<br><a href="mailto:'+x.email+'">'+x.email+'</a></div>'
+    ).join("");
+  }catch(e){
+    intelBox.textContent="Public-intel feed unavailable: "+e.message;
+    contactsBox.textContent="Contact directory unavailable.";
+  }
+}
+status();setInterval(status,30000);loadSensorGovernance();loadMilitaryEngagement();loadDefenseIntel();
+</script>
+<script src="./maven-live.js" defer></script>
+<script src="./maven-ops-ux.js" defer></script>
+<script src="./maven-iphone16e.js" defer></script>
+<script src="./maven-resilience.js" defer></script>
+<script src="./maven-clean.js" defer></script>
+</body>
+</html>

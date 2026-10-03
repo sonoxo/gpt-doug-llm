@@ -1,0 +1,129 @@
+{
+  "id": "GPTDOUG-PATENT-LEARNING-2026-09-17-AUTONOMOUS-BATCH",
+  "version": "1.0.0",
+  "source": {
+    "primary": "USPTO Patent Public Search",
+    "url": "https://ppubs.uspto.gov/pubwebapp/",
+    "publicationDate": "2026-09-17"
+  },
+  "doctrine": {
+    "selfLearningMeans": "source-grounded candidate generation followed by critique, sandbox, TEVV, human-approved promotion, monitoring, and rollback",
+    "silentSelfModification": false,
+    "titleOnlyPromotion": false,
+    "externalPatentPermissionAssumed": false,
+    "provenanceRequired": true,
+    "humanAuthorityPreserved": true,
+    "weaponsOperationalizationBlocked": true,
+    "physicalAutonomySimulationFirst": true
+  },
+  "publications": [
+    {
+      "publication": "US20260280758A1",
+      "title": "Dynamic code block bundle interleaving",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260279020A1",
+      "title": "System and method for generating AI training image data for autonomous driving",
+      "evidenceDepth": "ABSTRACT",
+      "status": "CANDIDATE_SIM_ONLY"
+    },
+    {
+      "publication": "US20260279077A1",
+      "title": "Electronic device and method of operating the same",
+      "evidenceDepth": "ABSTRACT",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260281456A1",
+      "title": "Image encoding/decoding method and device, and recording medium on which bitstream is stored",
+      "evidenceDepth": "METADATA",
+      "status": "RESEARCH_QUEUE"
+    },
+    {
+      "publication": "US20260280121A1",
+      "title": "Antenna device",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "RESEARCH_ONLY"
+    },
+    {
+      "publication": "US20260274292A1",
+      "title": "Autonomous driving vehicle",
+      "evidenceDepth": "ABSTRACT_SUMMARY",
+      "status": "SIMULATION_ONLY"
+    },
+    {
+      "publication": "US20260276397A1",
+      "title": "Generating drivable paths for lanes",
+      "evidenceDepth": "METADATA",
+      "status": "RESEARCH_QUEUE"
+    },
+    {
+      "publication": "US20260278446A1",
+      "title": "Systems, methods, and computer program products for hybrid quantum-classical control of an artificially intelligent entity",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260277242A1",
+      "title": "Last-mile delivery robot and method",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "SIMULATION_ONLY"
+    },
+    {
+      "publication": "US20260277241A1",
+      "title": "Parcel delivery method, using a delivery van and at least one delivery robot",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "SIMULATION_ONLY"
+    },
+    {
+      "publication": "US20260277568A1",
+      "title": "Accessing memory using memory accelerators",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260277787A1",
+      "title": "Generating data structures to use memory accelerators",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260277569A1",
+      "title": "Tile program optimization using sub-tiles",
+      "evidenceDepth": "ABSTRACT",
+      "status": "CANDIDATE"
+    },
+    {
+      "publication": "US20260276358A1",
+      "title": "Safety device and method for weapons",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "SAFETY_PATTERN_ONLY"
+    },
+    {
+      "publication": "US20260277170A1",
+      "title": "Systems and methods for an automation ecosystem",
+      "evidenceDepth": "ABSTRACT_DESCRIPTION",
+      "status": "CANDIDATE"
+    }
+  ],
+  "promotedPatterns": [
+    "prediction_error_threshold_escalation",
+    "resource_aware_task_chunking",
+    "typed_memory_transfer_intent",
+    "distributed_automation_routine_identity",
+    "post_execution_status_convergence",
+    "visual_object_continuity_for_qa",
+    "simulation_first_physical_autonomy",
+    "generic_multi_condition_fail_safe_interlocks"
+  ],
+  "excludedPatterns": [
+    "weapon_actuation",
+    "payload_triggering",
+    "targeting",
+    "detonator_control",
+    "autonomous_kinetic_authority",
+    "live_vehicle_control_without_independent_safety_case"
+  ]
+}

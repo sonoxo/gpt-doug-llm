@@ -144,6 +144,11 @@ case "$MODE" in
   cpr)
     exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/redpanda_agent.py" --cpr-now "$@"
     ;;
+  cpr-palantir)
+    REPO_ROOT="${1:-$PWD}"
+    if [[ $# -gt 0 ]]; then shift; fi
+    exec "$PYTHON_BIN" "$NODE/GPT-REDPANDA/palantir_cpr_probe.py" --repo-root "$REPO_ROOT" "$@"
+    ;;
   open)
     portal_ready || start_desktop_service
     open_portal
@@ -158,7 +163,7 @@ case "$MODE" in
     if [[ -f "$NODE/.redpanda/status.json" ]]; then cat "$NODE/.redpanda/status.json"; elif fallback_running; then echo '{"state":"starting","service":"fallback","runtime":"GPT-REDPANDA-LLM","core":"GPT-DOUG-LLM"}'; else echo '{"state":"unknown","runtime":"GPT-REDPANDA-LLM","core":"GPT-DOUG-LLM"}'; fi
     ;;
   *)
-    echo "Usage: redpanda-node {run|open|files|zfi|status|agentic-cpr-status|cpr|mobile|desktop|stop}" >&2
+    echo "Usage: redpanda-node {run|open|files|zfi|status|agentic-cpr-status|cpr|cpr-palantir|mobile|desktop|stop}" >&2
     exit 2
     ;;
 esac

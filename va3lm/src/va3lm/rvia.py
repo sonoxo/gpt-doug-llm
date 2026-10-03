@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
 from va3lm.mission_ledger import MissionLedger
+from va3lm.ontologi import OntologiEngine
 from va3lm.ontology import CONTROL_PLANE, KERNEL_VERSION
 from va3lm.planner import build_plan
+from va3lm.service_status import service_status
+from va3lm.training_sources import SOURCE_ID, training_plan
 
 MISSION_PROTOCOL = "black-house-mission-v1"
 ALLOWED_CLASSIFICATIONS = {"public", "internal", "restricted"}
@@ -22,13 +26,19 @@ ALLOWED_APPROVAL_STATES = {
 }
 
 CORE_TARGETS: dict[str, dict[str, Any]] = {
+    "XUNIA_CHAIN": {"mode": "read-only-status", "capabilities": {"status"}},
+    "GEOVISION": {"mode": "read-only-status", "capabilities": {"status"}},
+    SOURCE_ID: {
+        "mode": "registered-training-plan",
+        "capabilities": {"planning", "ontology", "training"},
+    },
     "GPT_DOUG_MAX": {
         "mode": "local-planner",
         "capabilities": {"reasoning", "planning", "evidence"},
     },
     "VIRGINIA": {
         "mode": "local-runtime",
-        "capabilities": {"reasoning", "planning", "coding", "evidence"},
+        "capabilities": {"reasoning", "planning", "coding", "evidence", "ontology", "ontologi", "seed-memory"},
     },
     "WAKEUP3LM": {
         "mode": "local-ontology-runtime",
@@ -85,6 +95,7 @@ class RVIARouter:
 
     def __init__(self, ledger: MissionLedger | None = None) -> None:
         self.ledger = ledger or MissionLedger()
+        self.ontologi = OntologiEngine.load_default()
         self.handlers: dict[str, Handler] = {}
         self.register_handler("GPT_DOUG_MAX", self._planner_handler)
         self.register_handler("VIRGINIA", self._planner_handler)
@@ -92,6 +103,9 @@ class RVIARouter:
         for target in ("ZYRA", "XUNIA", "NXYZ", "ZYRA_CLOUD", "AIP_REGISTRY"):
             self.register_handler(target, self._contract_handler)
         self.register_handler("PALANTIR", self._palantir_handler)
+        self.register_handler(SOURCE_ID, lambda mission: training_plan())
+        for target in ("XUNIA_CHAIN", "GEOVISION"):
+            self.register_handler(target, lambda mission: service_status(mission.target))
 
     def register_handler(self, target: str, handler: Handler) -> None:
         if target not in CORE_TARGETS:
@@ -110,6 +124,7 @@ class RVIARouter:
                 "IDENTITY",
                 "SHADOW_GLASS",
                 "ONTOLOGY_CONTEXT",
+                "ONTOLOGI_SEED_CONTEXT",
                 "PLANNER",
                 "ZYRA_AUTHORIZATION",
                 "DISPATCH",
@@ -127,11 +142,17 @@ class RVIARouter:
         }
 
     def route(self, mission: MissionEnvelope) -> dict[str, Any]:
+        rejection = self._validate(mission)
+        if rejection is not None:
+            # Record the rejection, not unvalidated request content.
+            mission = MissionEnvelope(
+                missionId=mission.missionId, requestedBy="rejected-request",
+                intent="Request rejected before ingestion", target=mission.target,
+            )
         envelope = mission.model_dump()
         self.ledger.create(envelope)
         self._audit(mission, "RVIA_RECEIVED", "RVIA", {"protocol": MISSION_PROTOCOL})
 
-        rejection = self._validate(mission)
         if rejection is not None:
             return self._finish(mission, "REJECTED", rejection)
 
@@ -146,6 +167,18 @@ class RVIARouter:
             "ONTOLOGY_CONTEXT",
             "THE_BLACK_HOUSE",
             {"kernelVersion": KERNEL_VERSION, "target": mission.target},
+        )
+        seed_context = self.ontologi.context(mission.intent)
+        self._audit(
+            mission,
+            "ONTOLOGI_SEED_CONTEXT",
+            "VIRGINIA",
+            {
+                "language": seed_context["language"],
+                "version": seed_context["version"],
+                "seedIds": [seed["id"] for seed in seed_context["seeds"]],
+                "candidateKnowledgePresent": seed_context["candidateKnowledgePresent"],
+            },
         )
 
         if mission.mutation and mission.approvalState != "APPROVED":
@@ -185,11 +218,25 @@ class RVIARouter:
                 {"accepted": False, "reason": "No registered runtime adapter."},
             )
 
-        result = handler(mission)
-        status = "COMPLETED" if result.get("accepted") else "HOLD"
+        try:
+            result = handler(mission)
+        except Exception:
+            return self._finish(mission, "FAILED", {
+                "accepted": False, "executionState": "ADAPTER_FAILED",
+                "reason": "Adapter failed; consult operator logs without exposing input content.",
+            })
+        # Receipt of a contract is not proof that the remote service executed it.
+        state = result.get("executionState")
+        status = "HOLD"
+        if result.get("accepted"):
+            status = "PLANNED" if state == "LOCAL_PLAN_COMPLETE" else "ACCEPTED"
         return self._finish(mission, status, result)
 
     def _validate(self, mission: MissionEnvelope) -> dict[str, Any] | None:
+        if mission.target in ("XUNIA_CHAIN", "GEOVISION") and mission.mutation:
+            return {"accepted": False, "reason": "Service status adapters do not support mutations."}
+        if mission.target == SOURCE_ID and (mission.classification != "public" or mission.mutation):
+            return {"accepted": False, "reason": "Training adapter supports public planning only."}
         if mission.classification not in ALLOWED_CLASSIFICATIONS:
             return {
                 "accepted": False,
@@ -219,6 +266,7 @@ class RVIARouter:
             "target": mission.target,
             "adapterMode": CORE_TARGETS[mission.target]["mode"],
             "executionState": "LOCAL_PLAN_COMPLETE",
+            "ontologiContext": self.ontologi.context(mission.intent),
             "plan": plan,
         }
 
@@ -274,12 +322,17 @@ class RVIARouter:
     ) -> dict[str, Any]:
         mission.result = result
         evidence = {
+            "schemaVersion": "xunia.route-evidence/v1",
             "type": "RouteEvidence",
             "missionId": mission.missionId,
             "target": mission.target,
             "status": status,
             "controlPlane": CONTROL_PLANE,
             "kernelVersion": KERNEL_VERSION,
+            "executionState": result.get("executionState", "NOT_EXECUTED"),
+            "executionVerified": False,
+            "observedAt": datetime.now(timezone.utc).isoformat(),
+            "source": "RVIA",
         }
         mission.evidence.append(evidence)
         self._audit(mission, "GLASS_ONION_EVIDENCE", "GLASS_ONION", evidence)

@@ -3,28 +3,66 @@
   "controlPlane": "THE_BLACK_HOUSE_V1",
   "kernelVersion": "3.0.0",
   "failClosed": true,
+  "governanceProfile": "the-black-house/governance/nist-ai-rmf.profile.json",
   "stages": [
     "RVIA",
     "IDENTITY",
+    "NIST_GOVERN",
     "SHADOW_GLASS",
     "ONTOLOGY_CONTEXT",
+    "NIST_MAP",
     "PLANNER",
+    "NIST_MEASURE",
     "ZYRA_AUTHORIZATION",
+    "NIST_MANAGE",
     "DISPATCH",
     "GLASS_ONION",
     "EVIDENCE",
-    "AUDIT"
+    "AUDIT",
+    "NIST_MONITOR"
   ],
   "targets": {
-    "GPT_DOUG_MAX": {"mode": "local-planner"},
-    "VIRGINIA": {"mode": "local-runtime"},
-    "WAKEUP3LM": {"mode": "local-ontology-runtime"},
-    "ZYRA": {"mode": "contract-adapter"},
-    "XUNIA": {"mode": "contract-adapter"},
-    "NXYZ": {"mode": "contract-adapter"},
-    "ZYRA_CLOUD": {"mode": "contract-adapter"},
-    "AIP_REGISTRY": {"mode": "contract-adapter"},
-    "PALANTIR": {"mode": "authorized-external-adapter"}
+    "GPT_DOUG_MAX": {
+      "mode": "local-planner"
+    },
+    "VIRGINIA": {
+      "mode": "local-runtime"
+    },
+    "WAKEUP3LM": {
+      "mode": "local-ontology-runtime"
+    },
+    "ZYRA": {
+      "mode": "contract-adapter"
+    },
+    "XUNIA": {
+      "mode": "contract-adapter"
+    },
+    "NXYZ": {
+      "mode": "contract-adapter"
+    },
+    "ZYRA_CLOUD": {
+      "mode": "contract-adapter"
+    },
+    "AIP_REGISTRY": {
+      "mode": "contract-adapter"
+    },
+    "PALANTIR": {
+      "mode": "authorized-external-adapter"
+    }
+  },
+  "nistAiRmfPolicy": {
+    "profileId": "NIST_AI_RMF_1_0_XUNIA_PROFILE_V1",
+    "riskEnvelopeRequired": true,
+    "humanOwnerRequired": true,
+    "mapBeforePlan": true,
+    "measureBeforeAuthorization": true,
+    "manageBeforeDispatch": true,
+    "monitorAfterDispatch": true,
+    "evidenceRequiredForApproval": true,
+    "highRiskHumanReviewRequired": true,
+    "criticalRiskDefault": "HOLD",
+    "decommissionPathRequired": true,
+    "noNistCertificationClaim": true
   },
   "mutationPolicy": {
     "requiresZyraApproval": true,

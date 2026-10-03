@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050807">
+<title>BLACK OPS NIN9 // ZyraOS</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./black-ops-nin9.css">
+</head>
+<body>
+<div id="boot" class="boot">
+  <div class="boot-grid"></div>
+  <div class="boot-card">
+    <div class="eyebrow">ZYRAOS // GPT-APOCALYPSE</div>
+    <h1>BLACK OPS <span>NIN9</span></h1>
+    <p>ORIGINAL SYNTHETIC TACTICAL GAME SYSTEM</p>
+    <div id="bootText" class="boot-text">Mounting simulation...</div>
+    <div class="boot-bar"><i id="bootBar"></i></div>
+    <button id="enter" disabled>ENTER NIN9</button>
+    <small>Public basemap + synthetic game units only. No live unit feeds or real-world weapon control.</small>
+  </div>
+</div>
+
+<div id="shell" class="shell" aria-hidden="true">
+<header>
+  <div class="brand"><b>BLACK OPS NIN9</b><span>ZYRAOS // APOCALYPSE GAME LAYER</span></div>
+  <div class="stats">
+    <div><small>MISSION</small><b>NIGHTGRID</b></div>
+    <div><small>WAVE</small><b id="wave">0/5</b></div>
+    <div><small>SCORE</small><b id="score">000000</b></div>
+    <div><small>SUPER INTEL</small><b class="green">ONLINE</b></div>
+    <div><small>MODE</small><b class="amber">SYNTHETIC</b></div>
+  </div>
+</header>
+
+<main>
+  <div id="map"></div>
+  <div class="vignette"></div><div class="scan"></div>
+
+  <section class="card mission">
+    <div class="eyebrow">MISSION DIRECTIVE</div>
+    <h2>DEFEND THE GRID</h2>
+    <p>Keep at least two control nodes online through five synthetic waves.</p>
+    <div class="bar"><i id="missionBar"></i></div>
+    <div class="row"><span>NODES ONLINE</span><b id="nodes">3/3</b></div>
+    <div class="row"><span>HOSTILES</span><b id="hostiles">0</b></div>
+    <div class="row"><span>COMBO</span><b id="combo">x1</b></div>
+  </section>
+
+  <section class="card intel">
+    <div class="eyebrow">SUPER INTEL DIRECTOR</div>
+    <div class="row"><span>THREAT</span><b id="threat">CALM</b></div>
+    <div class="row"><span>ROUTING</span><b id="routing">BALANCED</b></div>
+    <div class="row"><span>FPS</span><b id="fps">60</b></div>
+    <div class="row"><span>ARENA</span><b id="arenaName">ARCTIC RIDGE</b></div>
+  </section>
+
+  <section id="targetCard" class="card target">
+    <div class="eyebrow">SYNTHETIC CONTACT</div>
+    <h3 id="targetName">NO CONTACT SELECTED</h3>
+    <div class="bar hp"><i id="targetHp"></i></div>
+    <div class="row"><span id="targetClass">--</span><b id="targetState">--</b></div>
+  </section>
+
+  <section class="card wing">
+    <div class="row strong"><span>WING-01 // NIN9</span><b id="integrity">100%</b></div>
+    <div class="bar"><i id="integrityBar"></i></div>
+    <div class="row"><span>ENERGY</span><b id="energy">100</b></div>
+    <div class="bar energy"><i id="energyBar"></i></div>
+    <small>WASD move // SHIFT boost // SPACE tactical ping</small>
+  </section>
+
+  <section class="card feed">
+    <div class="eyebrow">NIN9 BATTLE FEED</div>
+    <div id="feed"></div>
+  </section>
+
+  <section class="card arena">
+    <label for="arenaSelect">TRAINING ARENA</label>
+    <select id="arenaSelect">
+      <option value="arctic">ARCTIC RIDGE</option>
+      <option value="desert">RED DESERT</option>
+      <option value="alpine">ALPINE SECTOR</option>
+      <option value="pacific">PACIFIC GRID</option>
+    </select>
+    <button id="reset">RESET MISSION</button>
+  </section>
+
+  <section class="abilities">
+    <button data-a="pulse"><kbd>1</kbd><b>ARC PULSE</b><small>close contacts</small><i></i></button>
+    <button data-a="shield"><kbd>2</kbd><b>SHIELD DOME</b><small>reinforce node</small><i></i></button>
+    <button data-a="decoy"><kbd>3</kbd><b>DECOY SWARM</b><small>redirect routing</small><i></i></button>
+    <button data-a="repair"><kbd>4</kbd><b>REPAIR FIELD</b><small>restore nodes</small><i></i></button>
+    <button data-a="nova" class="ultimate"><kbd>Q</kbd><b>NOVA BURST</b><small>full-game effect</small><i></i></button>
+  </section>
+
+  <button id="pause" class="pause">PAUSE</button>
+  <div class="stamp">GAME SIMULATION // PUBLIC BASEMAP // SYNTHETIC UNITS ONLY</div>
+
+  <div id="end" class="end" aria-hidden="true">
+    <div class="end-card">
+      <div class="eyebrow">NIN9 MISSION STATUS</div>
+      <h2 id="endTitle">GRID SECURED</h2>
+      <p id="endBody"></p>
+      <b id="endScore">SCORE 000000</b>
+      <button id="again">RUN AGAIN</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="./black-ops-nin9.js"></script>
+</body>
+</html>

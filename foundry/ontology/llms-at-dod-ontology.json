@@ -1,0 +1,585 @@
+{
+  "name": "GPT-DOUG LLMs-at-DoD Public Reference Ontology",
+  "version": "1.0.0",
+  "mode": "PUBLIC_UNCLASSIFIED_REFERENCE_ONLY",
+  "purpose": "Represent the public sonoxo/LLMs-at-DoD fork as a provenance-linked reference graph for GPT-DOUG without executing its notebooks, ingesting classified data, or implying government affiliation, authorization, or endorsement.",
+  "sourceSnapshot": {
+    "observedRepository": {
+      "fullName": "sonoxo/LLMs-at-DoD",
+      "url": "https://github.com/sonoxo/LLMs-at-DoD",
+      "role": "OBSERVED_FORK"
+    },
+    "upstreamRepository": {
+      "fullName": "deptofdefense/LLMs-at-DoD",
+      "url": "https://github.com/deptofdefense/LLMs-at-DoD",
+      "role": "UPSTREAM_SOURCE",
+      "archivedAtObservation": true
+    },
+    "forkLineage": {
+      "isFork": true,
+      "parent": "deptofdefense/LLMs-at-DoD"
+    },
+    "commit": {
+      "sha": "fc90483ae3a2db48d46eb3231eccf691cec6d346",
+      "committedAt": "2024-08-22T13:44:15Z",
+      "subject": "Update README.md"
+    },
+    "metadataObservedOn": "2026-09-07",
+    "evidenceArtifacts": [
+      {
+        "artifactId": "source-readme",
+        "path": "README.md",
+        "mediaType": "text/markdown",
+        "gitBlobSha": "6acdd4900f53832cc3ba4a865ae9aa73e4d680fb",
+        "sha256": "6143d734f6752530c984b3736ed98f61d086ea3dc6822e8cac34cfdd03ec583f",
+        "cellCount": 0
+      },
+      {
+        "artifactId": "source-open-source-getting-started",
+        "path": "tutorials/Open_Source_LLMs_Getting_Started.ipynb",
+        "mediaType": "application/x-ipynb+json",
+        "gitBlobSha": "809b754a165d2045d120d46a04c407b572d60a8e",
+        "sha256": "1f454d9d248d66171b82ad990c3c8a9e95bd659841187111a940f7193cb5c66b",
+        "cellCount": 16
+      },
+      {
+        "artifactId": "source-chatting-with-docs",
+        "path": "tutorials/Chatting with your Docs.ipynb",
+        "mediaType": "application/x-ipynb+json",
+        "gitBlobSha": "4ba5f0f3056d4a4dd4ffb768e3d829e6f5e7a8c8",
+        "sha256": "ceb75388e853dbbe88d331574cbaf5d2a842f4d0ddf6e2cc46b4749aa39232c1",
+        "cellCount": 32
+      },
+      {
+        "artifactId": "source-axon-fine-tune",
+        "path": "axon/axon-fine-tune.ipynb",
+        "mediaType": "application/x-ipynb+json",
+        "gitBlobSha": "5b15046c6ebe9126da2f518dcccc336f3ceaf5bb",
+        "sha256": "6ddc87c39d5fd28271c75cbe411d5d4d37a2b16bd7a33f4aeaf491c6ff282d67",
+        "cellCount": 41
+      },
+      {
+        "artifactId": "source-scrape-docs",
+        "path": "axon/scrape_docs_gen_dataset.ipynb",
+        "mediaType": "application/x-ipynb+json",
+        "gitBlobSha": "722c5e36e5dfecb30a9fc8d0d84a2d512996338b",
+        "sha256": "b4a1699ec6e8156e32e88b3ea5f18a0dff0badd879bab20a7c169666ed373d1c",
+        "cellCount": 17
+      }
+    ],
+    "semanticCoverage": {
+      "includedArtifacts": 5,
+      "excludedBinaryArtifacts": [
+        "LLM_USGOVT.png",
+        "axon/axon-logo.png"
+      ],
+      "exclusionReason": "Binary images were not required to model the repository's executable tutorial workflows."
+    }
+  },
+  "interpretationRules": {
+    "sourceClaims": "ATTRIBUTE_NOT_ADOPT",
+    "structuralMappings": "DERIVED_FROM_CITED_SOURCE",
+    "forkLineage": "DISTINGUISH_OBSERVED_FORK_FROM_UPSTREAM",
+    "governmentStatus": "NEVER_INFER",
+    "operationalAuthority": "NONE"
+  },
+  "objectTypes": [
+    {
+      "apiName": "SourceRepository",
+      "primaryKey": "repositoryId",
+      "properties": {
+        "repositoryId": "string",
+        "fullName": "string",
+        "url": "string",
+        "role": "string",
+        "archivedAtObservation": "boolean",
+        "observationDate": "date"
+      }
+    },
+    {
+      "apiName": "SourceArtifact",
+      "primaryKey": "artifactId",
+      "properties": {
+        "artifactId": "string",
+        "path": "string",
+        "mediaType": "string",
+        "gitBlobSha": "string",
+        "sha256": "string",
+        "cellCount": "integer"
+      }
+    },
+    {
+      "apiName": "Tutorial",
+      "primaryKey": "tutorialId",
+      "properties": {
+        "tutorialId": "string",
+        "title": "string",
+        "goal": "string",
+        "environment": "string",
+        "dataClassification": "string"
+      }
+    },
+    {
+      "apiName": "Workflow",
+      "primaryKey": "workflowId",
+      "properties": {
+        "workflowId": "string",
+        "name": "string",
+        "operation": "string",
+        "executionBoundary": "string",
+        "output": "string"
+      }
+    },
+    {
+      "apiName": "ModelArtifact",
+      "primaryKey": "modelId",
+      "properties": {
+        "modelId": "string",
+        "name": "string",
+        "provider": "string",
+        "role": "string",
+        "reference": "string"
+      }
+    },
+    {
+      "apiName": "Framework",
+      "primaryKey": "frameworkId",
+      "properties": {
+        "frameworkId": "string",
+        "name": "string",
+        "role": "string"
+      }
+    },
+    {
+      "apiName": "Dataset",
+      "primaryKey": "datasetId",
+      "properties": {
+        "datasetId": "string",
+        "name": "string",
+        "format": "string",
+        "role": "string",
+        "reference": "string"
+      }
+    },
+    {
+      "apiName": "PolicyDocument",
+      "primaryKey": "documentId",
+      "properties": {
+        "documentId": "string",
+        "title": "string",
+        "issuedDate": "date",
+        "sourceUrl": "string",
+        "classificationScope": "string"
+      }
+    },
+    {
+      "apiName": "Organization",
+      "primaryKey": "organizationId",
+      "properties": {
+        "organizationId": "string",
+        "name": "string",
+        "role": "string",
+        "claimNature": "string"
+      }
+    },
+    {
+      "apiName": "SafetyConstraint",
+      "primaryKey": "constraintId",
+      "properties": {
+        "constraintId": "string",
+        "name": "string",
+        "rule": "string",
+        "scope": "string"
+      }
+    }
+  ],
+  "linkTypes": [
+    {"apiName": "RepositoryForksRepository", "from": "SourceRepository", "to": "SourceRepository"},
+    {"apiName": "RepositoryContainsArtifact", "from": "SourceRepository", "to": "SourceArtifact"},
+    {"apiName": "ArtifactDefinesTutorial", "from": "SourceArtifact", "to": "Tutorial"},
+    {"apiName": "ArtifactDefinesWorkflow", "from": "SourceArtifact", "to": "Workflow"},
+    {"apiName": "TutorialImplementsWorkflow", "from": "Tutorial", "to": "Workflow"},
+    {"apiName": "TutorialAttributedToOrganization", "from": "Tutorial", "to": "Organization"},
+    {"apiName": "TutorialMentionsOrganization", "from": "Tutorial", "to": "Organization"},
+    {"apiName": "OrganizationLeadsOrganization", "from": "Organization", "to": "Organization"},
+    {"apiName": "WorkflowUsesFramework", "from": "Workflow", "to": "Framework"},
+    {"apiName": "WorkflowUsesModel", "from": "Workflow", "to": "ModelArtifact"},
+    {"apiName": "WorkflowReadsDataset", "from": "Workflow", "to": "Dataset"},
+    {"apiName": "WorkflowReadsPolicyDocument", "from": "Workflow", "to": "PolicyDocument"},
+    {"apiName": "WorkflowProducesDataset", "from": "Workflow", "to": "Dataset"},
+    {"apiName": "WorkflowProducesModel", "from": "Workflow", "to": "ModelArtifact"},
+    {"apiName": "WorkflowGovernedByConstraint", "from": "Workflow", "to": "SafetyConstraint"}
+  ],
+  "evidence": [
+    {"evidenceId": "ev-repository-observed", "sourceKind": "repository_metadata", "sourceId": "observedRepository", "locator": {"field": "fullName"}, "claimNature": "observed_metadata"},
+    {"evidenceId": "ev-repository-upstream", "sourceKind": "repository_metadata", "sourceId": "upstreamRepository", "locator": {"field": "fullName"}, "claimNature": "observed_metadata"},
+    {"evidenceId": "ev-source-commit", "sourceKind": "repository_metadata", "sourceId": "commit", "locator": {"field": "sha"}, "claimNature": "observed_metadata"},
+    {"evidenceId": "ev-readme-about", "sourceKind": "tracked_file", "sourceId": "source-readme", "locator": {"section": "About this repository"}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-readme-tutorials", "sourceKind": "tracked_file", "sourceId": "source-readme", "locator": {"section": "Tutorials"}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-readme-task-force-lima", "sourceKind": "tracked_file", "sourceId": "source-readme", "locator": {"section": "Task Force Lima"}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-readme-maintainer", "sourceKind": "tracked_file", "sourceId": "source-readme", "locator": {"section": "final paragraph"}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-open-0", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [0]}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-open-7", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [7]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-open-9", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [9]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-open-10", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [10]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-open-12", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [12]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-open-14-15", "sourceKind": "tracked_file", "sourceId": "source-open-source-getting-started", "locator": {"cells": [14, 15]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-0", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [0]}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-rag-2", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [2]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-8-9", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [8, 9]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-13", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [13]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-16-18", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [16, 18]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-20-22", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [20, 21, 22]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-25-26", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [25, 26]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-rag-28-30", "sourceKind": "tracked_file", "sourceId": "source-chatting-with-docs", "locator": {"cells": [28, 29, 30]}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-axon-0", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [0]}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-axon-5", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [5]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-9", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [9]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-12-13", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [12, 13]}, "claimNature": "notebook_authored_claim"},
+    {"evidenceId": "ev-axon-17", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [17]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-19", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [19]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-21-23", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [21, 23]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-28-30", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [28, 29, 30]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-axon-35-38", "sourceKind": "tracked_file", "sourceId": "source-axon-fine-tune", "locator": {"cells": [35, 36, 38]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-scrape-0-1", "sourceKind": "tracked_file", "sourceId": "source-scrape-docs", "locator": {"cells": [0, 1]}, "claimNature": "source_statement"},
+    {"evidenceId": "ev-scrape-2-4", "sourceKind": "tracked_file", "sourceId": "source-scrape-docs", "locator": {"cells": [2, 4]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-scrape-7", "sourceKind": "tracked_file", "sourceId": "source-scrape-docs", "locator": {"cells": [7]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-scrape-9", "sourceKind": "tracked_file", "sourceId": "source-scrape-docs", "locator": {"cells": [9]}, "claimNature": "source_code"},
+    {"evidenceId": "ev-scrape-11-16", "sourceKind": "tracked_file", "sourceId": "source-scrape-docs", "locator": {"cells": [11, 12, 13, 16]}, "claimNature": "source_code"}
+  ],
+  "objects": [
+    {
+      "id": "repo-sonoxo-llms-at-dod",
+      "type": "SourceRepository",
+      "properties": {"repositoryId": "repo-sonoxo-llms-at-dod", "fullName": "sonoxo/LLMs-at-DoD", "url": "https://github.com/sonoxo/LLMs-at-DoD", "role": "OBSERVED_FORK", "archivedAtObservation": false, "observationDate": "2026-09-07"},
+      "evidenceIds": ["ev-repository-observed", "ev-readme-about"]
+    },
+    {
+      "id": "repo-deptofdefense-llms-at-dod",
+      "type": "SourceRepository",
+      "properties": {"repositoryId": "repo-deptofdefense-llms-at-dod", "fullName": "deptofdefense/LLMs-at-DoD", "url": "https://github.com/deptofdefense/LLMs-at-DoD", "role": "UPSTREAM_SOURCE", "archivedAtObservation": true, "observationDate": "2026-09-07"},
+      "evidenceIds": ["ev-repository-upstream"]
+    },
+    {
+      "id": "source-readme",
+      "type": "SourceArtifact",
+      "properties": {"artifactId": "source-readme", "path": "README.md", "mediaType": "text/markdown", "gitBlobSha": "6acdd4900f53832cc3ba4a865ae9aa73e4d680fb", "sha256": "6143d734f6752530c984b3736ed98f61d086ea3dc6822e8cac34cfdd03ec583f", "cellCount": 0},
+      "evidenceIds": ["ev-source-commit"]
+    },
+    {
+      "id": "source-open-source-getting-started",
+      "type": "SourceArtifact",
+      "properties": {"artifactId": "source-open-source-getting-started", "path": "tutorials/Open_Source_LLMs_Getting_Started.ipynb", "mediaType": "application/x-ipynb+json", "gitBlobSha": "809b754a165d2045d120d46a04c407b572d60a8e", "sha256": "1f454d9d248d66171b82ad990c3c8a9e95bd659841187111a940f7193cb5c66b", "cellCount": 16},
+      "evidenceIds": ["ev-source-commit"]
+    },
+    {
+      "id": "source-chatting-with-docs",
+      "type": "SourceArtifact",
+      "properties": {"artifactId": "source-chatting-with-docs", "path": "tutorials/Chatting with your Docs.ipynb", "mediaType": "application/x-ipynb+json", "gitBlobSha": "4ba5f0f3056d4a4dd4ffb768e3d829e6f5e7a8c8", "sha256": "ceb75388e853dbbe88d331574cbaf5d2a842f4d0ddf6e2cc46b4749aa39232c1", "cellCount": 32},
+      "evidenceIds": ["ev-source-commit"]
+    },
+    {
+      "id": "source-axon-fine-tune",
+      "type": "SourceArtifact",
+      "properties": {"artifactId": "source-axon-fine-tune", "path": "axon/axon-fine-tune.ipynb", "mediaType": "application/x-ipynb+json", "gitBlobSha": "5b15046c6ebe9126da2f518dcccc336f3ceaf5bb", "sha256": "6ddc87c39d5fd28271c75cbe411d5d4d37a2b16bd7a33f4aeaf491c6ff282d67", "cellCount": 41},
+      "evidenceIds": ["ev-source-commit"]
+    },
+    {
+      "id": "source-scrape-docs",
+      "type": "SourceArtifact",
+      "properties": {"artifactId": "source-scrape-docs", "path": "axon/scrape_docs_gen_dataset.ipynb", "mediaType": "application/x-ipynb+json", "gitBlobSha": "722c5e36e5dfecb30a9fc8d0d84a2d512996338b", "sha256": "b4a1699ec6e8156e32e88b3ea5f18a0dff0badd879bab20a7c169666ed373d1c", "cellCount": 17},
+      "evidenceIds": ["ev-source-commit"]
+    },
+    {
+      "id": "tutorial-open-source-getting-started",
+      "type": "Tutorial",
+      "properties": {"tutorialId": "tutorial-open-source-getting-started", "title": "Open Source LLMs: Getting Started", "goal": "Generate text with selectable open model artifacts", "environment": "Google Colab GPU runtime", "dataClassification": "PUBLIC_TUTORIAL"},
+      "evidenceIds": ["ev-readme-tutorials", "ev-open-0"]
+    },
+    {
+      "id": "tutorial-chatting-with-docs",
+      "type": "Tutorial",
+      "properties": {"tutorialId": "tutorial-chatting-with-docs", "title": "Chatting with your Data: From RAG(s) to Riches", "goal": "Query unclassified DoD policy documents with retrieval-augmented generation", "environment": "Google Colab GPU runtime", "dataClassification": "UNCLASSIFIED_ONLY"},
+      "evidenceIds": ["ev-readme-tutorials", "ev-rag-0"]
+    },
+    {
+      "id": "tutorial-axon-fine-tuning",
+      "type": "Tutorial",
+      "properties": {"tutorialId": "tutorial-axon-fine-tuning", "title": "Axon Fine-Tuning", "goal": "Fine-tune Mistral 7B Instruct with QLoRA and supervised fine-tuning", "environment": "Notebook GPU runtime", "dataClassification": "UNCLASSIFIED_SOURCE_CLAIM"},
+      "evidenceIds": ["ev-axon-0", "ev-axon-12-13"]
+    },
+    {
+      "id": "tutorial-document-scrape-synthetic-data",
+      "type": "Tutorial",
+      "properties": {"tutorialId": "tutorial-document-scrape-synthetic-data", "title": "Document Scraping and Synthetic Data Generation", "goal": "Collect unclassified DoD issuances and derive a question-answer dataset", "environment": "Python notebook with network access", "dataClassification": "UNCLASSIFIED_ONLY"},
+      "evidenceIds": ["ev-scrape-0-1"]
+    },
+    {
+      "id": "workflow-local-gguf-inference",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-local-gguf-inference", "name": "Local GGUF inference", "operation": "Download a selected GGUF model and stream generated text through llama.cpp", "executionBoundary": "REFERENCE_ONLY_NOT_EXECUTED_BY_ONTOLOGY", "output": "generated text"},
+      "evidenceIds": ["ev-open-9", "ev-open-10", "ev-open-12", "ev-open-14-15"]
+    },
+    {
+      "id": "workflow-policy-rag",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-policy-rag", "name": "Policy document RAG", "operation": "Download, parse, embed, index, persist, and query unclassified policy PDFs", "executionBoundary": "REFERENCE_ONLY_NOT_EXECUTED_BY_ONTOLOGY", "output": "retrieval-grounded response and persisted index"},
+      "evidenceIds": ["ev-rag-16-18", "ev-rag-20-22", "ev-rag-25-26"]
+    },
+    {
+      "id": "workflow-policy-document-scrape",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-policy-document-scrape", "name": "Policy document scrape", "operation": "Discover and download public DoD issuance PDFs and extract their text", "executionBoundary": "REFERENCE_ONLY_NETWORK_OPERATION", "output": "local PDF and extracted-text corpus"},
+      "evidenceIds": ["ev-scrape-2-4", "ev-scrape-7"]
+    },
+    {
+      "id": "workflow-synthetic-policy-qa",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-synthetic-policy-qa", "name": "Synthetic policy question-answer generation", "operation": "Submit extracted document text to the referenced model and transform JSON responses", "executionBoundary": "REFERENCE_ONLY_EXTERNAL_API_OPERATION", "output": "documents.json question-answer dataset"},
+      "evidenceIds": ["ev-scrape-9", "ev-scrape-11-16"]
+    },
+    {
+      "id": "workflow-axon-qlora-sft",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-axon-qlora-sft", "name": "Axon QLoRA supervised fine-tuning", "operation": "Load a 4-bit base model, configure LoRA adapters, train, and save output", "executionBoundary": "REFERENCE_ONLY_GPU_TRAINING_OPERATION", "output": "fine-tuned adapter artifacts"},
+      "evidenceIds": ["ev-axon-19", "ev-axon-21-23", "ev-axon-28-30"]
+    },
+    {
+      "id": "workflow-axon-merge-export",
+      "type": "Workflow",
+      "properties": {"workflowId": "workflow-axon-merge-export", "name": "Axon adapter merge and export", "operation": "Merge trained adapters into the base model and optionally publish through an authenticated provider", "executionBoundary": "REFERENCE_ONLY_PUBLISHING_OPERATION", "output": "merged Axon model"},
+      "evidenceIds": ["ev-axon-35-38"]
+    },
+    {
+      "id": "model-mistral-7b-instruct-gguf",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-mistral-7b-instruct-gguf", "name": "Mistral-7B-Instruct-v0.1 GGUF", "provider": "TheBloke", "role": "selectable inference model", "reference": "TheBloke/Mistral-7B-Instruct-v0.1-GGUF:mistral-7b-instruct-v0.1.Q4_K_M.gguf"},
+      "evidenceIds": ["ev-open-9"]
+    },
+    {
+      "id": "model-mistral-7b-openorca-gguf",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-mistral-7b-openorca-gguf", "name": "Mistral-7B-OpenOrca GGUF", "provider": "TheBloke", "role": "selectable inference and RAG model", "reference": "TheBloke/Mistral-7B-OpenOrca-GGUF:mistral-7b-openorca.Q5_K_M.gguf"},
+      "evidenceIds": ["ev-open-9", "ev-rag-8-9"]
+    },
+    {
+      "id": "model-llama-2-13b-chat-gguf",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-llama-2-13b-chat-gguf", "name": "Llama-2-13B-Chat GGUF", "provider": "TheBloke", "role": "selectable inference model", "reference": "TheBloke/Llama-2-13B-chat-GGUF:llama-2-13b-chat.Q4_K_S.gguf"},
+      "evidenceIds": ["ev-open-9"]
+    },
+    {
+      "id": "model-mistral-7b-instruct-base",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-mistral-7b-instruct-base", "name": "Mistral-7B-Instruct-v0.1", "provider": "mistralai", "role": "fine-tuning base model", "reference": "mistralai/Mistral-7B-Instruct-v0.1"},
+      "evidenceIds": ["ev-axon-19"]
+    },
+    {
+      "id": "model-axon-7b-policy-v0-2",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-axon-7b-policy-v0-2", "name": "axon-7b-policy-v0.2", "provider": "notebook-defined output", "role": "fine-tuned and merged output model", "reference": "axon-7b-policy-v0.2"},
+      "evidenceIds": ["ev-axon-19", "ev-axon-35-38"]
+    },
+    {
+      "id": "model-gpt-4-1106-preview",
+      "type": "ModelArtifact",
+      "properties": {"modelId": "model-gpt-4-1106-preview", "name": "gpt-4-1106-preview", "provider": "OpenAI", "role": "synthetic question-answer generation model", "reference": "OpenAI API model identifier"},
+      "evidenceIds": ["ev-scrape-9"]
+    },
+    {
+      "id": "framework-huggingface-hub",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-huggingface-hub", "name": "huggingface-hub", "role": "model artifact download"},
+      "evidenceIds": ["ev-open-7", "ev-open-10"]
+    },
+    {
+      "id": "framework-llama-cpp-python",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-llama-cpp-python", "name": "llama-cpp-python", "role": "GGUF inference runtime"},
+      "evidenceIds": ["ev-open-7", "ev-open-12", "ev-rag-2"]
+    },
+    {
+      "id": "framework-llama-index",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-llama-index", "name": "LlamaIndex", "role": "document loading, embeddings, vector index, and query engine"},
+      "evidenceIds": ["ev-rag-2", "ev-rag-13", "ev-rag-20-22"]
+    },
+    {
+      "id": "framework-gradio",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-gradio", "name": "Gradio", "role": "chat user interface and optional public sharing"},
+      "evidenceIds": ["ev-rag-28-30"]
+    },
+    {
+      "id": "framework-transformers",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-transformers", "name": "Transformers", "role": "model and tokenizer loading"},
+      "evidenceIds": ["ev-axon-5", "ev-axon-21-23"]
+    },
+    {
+      "id": "framework-peft",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-peft", "name": "PEFT", "role": "LoRA adapter configuration and merge"},
+      "evidenceIds": ["ev-axon-5", "ev-axon-21-23", "ev-axon-35-38"]
+    },
+    {
+      "id": "framework-trl",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-trl", "name": "TRL", "role": "supervised fine-tuning trainer"},
+      "evidenceIds": ["ev-axon-5", "ev-axon-28-30"]
+    },
+    {
+      "id": "framework-bitsandbytes",
+      "type": "Framework",
+      "properties": {"frameworkId": "framework-bitsandbytes", "name": "bitsandbytes", "role": "4-bit NF4 quantization"},
+      "evidenceIds": ["ev-axon-5", "ev-axon-21-23"]
+    },
+    {
+      "id": "dataset-cdao-dod-policy-qa",
+      "type": "Dataset",
+      "properties": {"datasetId": "dataset-cdao-dod-policy-qa", "name": "DoD Policy QA", "format": "Hugging Face dataset", "role": "fine-tuning dataset reference", "reference": "CDAO/dod-policy-qa"},
+      "evidenceIds": ["ev-axon-9"]
+    },
+    {
+      "id": "dataset-training-json",
+      "type": "Dataset",
+      "properties": {"datasetId": "dataset-training-json", "name": "training_dataset.json", "format": "JSON", "role": "local fine-tuning input", "reference": "training_dataset.json"},
+      "evidenceIds": ["ev-axon-17"]
+    },
+    {
+      "id": "dataset-scraped-dod-issuances",
+      "type": "Dataset",
+      "properties": {"datasetId": "dataset-scraped-dod-issuances", "name": "Scraped DoD issuance corpus", "format": "PDF and extracted text", "role": "synthetic-data source corpus", "reference": "public WHS DoD issuances page"},
+      "evidenceIds": ["ev-scrape-2-4", "ev-scrape-7"]
+    },
+    {
+      "id": "dataset-synthetic-documents-json",
+      "type": "Dataset",
+      "properties": {"datasetId": "dataset-synthetic-documents-json", "name": "documents.json", "format": "JSON", "role": "generated policy question-answer records", "reference": "documents.json"},
+      "evidenceIds": ["ev-scrape-9", "ev-scrape-11-16"]
+    },
+    {
+      "id": "policy-dodi-5030-07",
+      "type": "PolicyDocument",
+      "properties": {"documentId": "policy-dodi-5030-07", "title": "DoDI 5030.07 Coordination of Significant Litigation and Other Matters Involving the Department of Justice", "issuedDate": "2023-10-12", "sourceUrl": "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/503007p.pdf", "classificationScope": "UNCLASSIFIED_TUTORIAL_SOURCE"},
+      "evidenceIds": ["ev-rag-16-18"]
+    },
+    {
+      "id": "policy-dodi-6055-15",
+      "type": "PolicyDocument",
+      "properties": {"documentId": "policy-dodi-6055-15", "title": "DoDI 6055.15 DoD Laser Protection Program for Military Lasers", "issuedDate": "2023-08-25", "sourceUrl": "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodi/605515p.pdf", "classificationScope": "UNCLASSIFIED_TUTORIAL_SOURCE"},
+      "evidenceIds": ["ev-rag-16-18"]
+    },
+    {
+      "id": "organization-defense-digital-service",
+      "type": "Organization",
+      "properties": {"organizationId": "organization-defense-digital-service", "name": "Defense Digital Service", "role": "repository maintainer and notebook attribution", "claimNature": "SOURCE_ATTRIBUTED"},
+      "evidenceIds": ["ev-readme-maintainer", "ev-open-0", "ev-rag-0", "ev-axon-0", "ev-scrape-0-1"]
+    },
+    {
+      "id": "organization-cdao",
+      "type": "Organization",
+      "properties": {"organizationId": "organization-cdao", "name": "Chief Digital and Artificial Intelligence Office", "role": "Task Force Lima lead named by README and Axon notebook claim", "claimNature": "SOURCE_ATTRIBUTED"},
+      "evidenceIds": ["ev-readme-task-force-lima", "ev-axon-12-13"]
+    },
+    {
+      "id": "organization-task-force-lima",
+      "type": "Organization",
+      "properties": {"organizationId": "organization-task-force-lima", "name": "Task Force Lima", "role": "generative AI task force described by source", "claimNature": "SOURCE_ATTRIBUTED"},
+      "evidenceIds": ["ev-readme-task-force-lima", "ev-axon-12-13"]
+    },
+    {
+      "id": "constraint-unclassified-only",
+      "type": "SafetyConstraint",
+      "properties": {"constraintId": "constraint-unclassified-only", "name": "Unclassified data only", "rule": "Use only unclassified documents in the demonstrated Colab workflow", "scope": "policy RAG tutorial"},
+      "evidenceIds": ["ev-rag-0"]
+    },
+    {
+      "id": "constraint-gradio-sharing",
+      "type": "SafetyConstraint",
+      "properties": {"constraintId": "constraint-gradio-sharing", "name": "Disable public Gradio sharing above unclassified", "rule": "The notebook directs share=False for material above unclassified", "scope": "Gradio chat interface"},
+      "evidenceIds": ["ev-rag-28-30"]
+    }
+  ],
+  "links": [
+    {"id": "link-fork-lineage", "type": "RepositoryForksRepository", "from": "repo-sonoxo-llms-at-dod", "to": "repo-deptofdefense-llms-at-dod", "evidenceIds": ["ev-repository-observed", "ev-repository-upstream"]},
+    {"id": "link-repo-readme", "type": "RepositoryContainsArtifact", "from": "repo-sonoxo-llms-at-dod", "to": "source-readme", "evidenceIds": ["ev-source-commit"]},
+    {"id": "link-repo-open-source", "type": "RepositoryContainsArtifact", "from": "repo-sonoxo-llms-at-dod", "to": "source-open-source-getting-started", "evidenceIds": ["ev-source-commit"]},
+    {"id": "link-repo-rag", "type": "RepositoryContainsArtifact", "from": "repo-sonoxo-llms-at-dod", "to": "source-chatting-with-docs", "evidenceIds": ["ev-source-commit"]},
+    {"id": "link-repo-axon", "type": "RepositoryContainsArtifact", "from": "repo-sonoxo-llms-at-dod", "to": "source-axon-fine-tune", "evidenceIds": ["ev-source-commit"]},
+    {"id": "link-repo-scrape", "type": "RepositoryContainsArtifact", "from": "repo-sonoxo-llms-at-dod", "to": "source-scrape-docs", "evidenceIds": ["ev-source-commit"]},
+    {"id": "link-open-artifact-tutorial", "type": "ArtifactDefinesTutorial", "from": "source-open-source-getting-started", "to": "tutorial-open-source-getting-started", "evidenceIds": ["ev-open-0"]},
+    {"id": "link-rag-artifact-tutorial", "type": "ArtifactDefinesTutorial", "from": "source-chatting-with-docs", "to": "tutorial-chatting-with-docs", "evidenceIds": ["ev-rag-0"]},
+    {"id": "link-axon-artifact-tutorial", "type": "ArtifactDefinesTutorial", "from": "source-axon-fine-tune", "to": "tutorial-axon-fine-tuning", "evidenceIds": ["ev-axon-0"]},
+    {"id": "link-scrape-artifact-tutorial", "type": "ArtifactDefinesTutorial", "from": "source-scrape-docs", "to": "tutorial-document-scrape-synthetic-data", "evidenceIds": ["ev-scrape-0-1"]},
+    {"id": "link-open-artifact-workflow", "type": "ArtifactDefinesWorkflow", "from": "source-open-source-getting-started", "to": "workflow-local-gguf-inference", "evidenceIds": ["ev-open-9", "ev-open-12"]},
+    {"id": "link-rag-artifact-workflow", "type": "ArtifactDefinesWorkflow", "from": "source-chatting-with-docs", "to": "workflow-policy-rag", "evidenceIds": ["ev-rag-20-22"]},
+    {"id": "link-scrape-artifact-workflow", "type": "ArtifactDefinesWorkflow", "from": "source-scrape-docs", "to": "workflow-policy-document-scrape", "evidenceIds": ["ev-scrape-2-4"]},
+    {"id": "link-synthetic-artifact-workflow", "type": "ArtifactDefinesWorkflow", "from": "source-scrape-docs", "to": "workflow-synthetic-policy-qa", "evidenceIds": ["ev-scrape-9"]},
+    {"id": "link-axon-artifact-training", "type": "ArtifactDefinesWorkflow", "from": "source-axon-fine-tune", "to": "workflow-axon-qlora-sft", "evidenceIds": ["ev-axon-21-23", "ev-axon-28-30"]},
+    {"id": "link-axon-artifact-merge", "type": "ArtifactDefinesWorkflow", "from": "source-axon-fine-tune", "to": "workflow-axon-merge-export", "evidenceIds": ["ev-axon-35-38"]},
+    {"id": "link-open-tutorial-workflow", "type": "TutorialImplementsWorkflow", "from": "tutorial-open-source-getting-started", "to": "workflow-local-gguf-inference", "evidenceIds": ["ev-open-0", "ev-open-14-15"]},
+    {"id": "link-rag-tutorial-workflow", "type": "TutorialImplementsWorkflow", "from": "tutorial-chatting-with-docs", "to": "workflow-policy-rag", "evidenceIds": ["ev-rag-0", "ev-rag-25-26"]},
+    {"id": "link-scrape-tutorial-workflow", "type": "TutorialImplementsWorkflow", "from": "tutorial-document-scrape-synthetic-data", "to": "workflow-policy-document-scrape", "evidenceIds": ["ev-scrape-0-1", "ev-scrape-2-4"]},
+    {"id": "link-synthetic-tutorial-workflow", "type": "TutorialImplementsWorkflow", "from": "tutorial-document-scrape-synthetic-data", "to": "workflow-synthetic-policy-qa", "evidenceIds": ["ev-scrape-0-1", "ev-scrape-9"]},
+    {"id": "link-axon-tutorial-training", "type": "TutorialImplementsWorkflow", "from": "tutorial-axon-fine-tuning", "to": "workflow-axon-qlora-sft", "evidenceIds": ["ev-axon-0", "ev-axon-28-30"]},
+    {"id": "link-axon-tutorial-merge", "type": "TutorialImplementsWorkflow", "from": "tutorial-axon-fine-tuning", "to": "workflow-axon-merge-export", "evidenceIds": ["ev-axon-0", "ev-axon-35-38"]},
+    {"id": "link-open-attribution", "type": "TutorialAttributedToOrganization", "from": "tutorial-open-source-getting-started", "to": "organization-defense-digital-service", "evidenceIds": ["ev-open-0"]},
+    {"id": "link-rag-attribution", "type": "TutorialAttributedToOrganization", "from": "tutorial-chatting-with-docs", "to": "organization-defense-digital-service", "evidenceIds": ["ev-rag-0"]},
+    {"id": "link-axon-attribution", "type": "TutorialAttributedToOrganization", "from": "tutorial-axon-fine-tuning", "to": "organization-defense-digital-service", "evidenceIds": ["ev-axon-0"]},
+    {"id": "link-scrape-attribution", "type": "TutorialAttributedToOrganization", "from": "tutorial-document-scrape-synthetic-data", "to": "organization-defense-digital-service", "evidenceIds": ["ev-scrape-0-1"]},
+    {"id": "link-axon-mentions-cdao", "type": "TutorialMentionsOrganization", "from": "tutorial-axon-fine-tuning", "to": "organization-cdao", "evidenceIds": ["ev-axon-12-13"]},
+    {"id": "link-axon-mentions-task-force-lima", "type": "TutorialMentionsOrganization", "from": "tutorial-axon-fine-tuning", "to": "organization-task-force-lima", "evidenceIds": ["ev-axon-12-13"]},
+    {"id": "link-cdao-leads-task-force-lima", "type": "OrganizationLeadsOrganization", "from": "organization-cdao", "to": "organization-task-force-lima", "evidenceIds": ["ev-readme-task-force-lima"]},
+    {"id": "link-local-uses-huggingface", "type": "WorkflowUsesFramework", "from": "workflow-local-gguf-inference", "to": "framework-huggingface-hub", "evidenceIds": ["ev-open-7", "ev-open-10"]},
+    {"id": "link-local-uses-llama-cpp", "type": "WorkflowUsesFramework", "from": "workflow-local-gguf-inference", "to": "framework-llama-cpp-python", "evidenceIds": ["ev-open-7", "ev-open-12"]},
+    {"id": "link-local-uses-mistral-instruct", "type": "WorkflowUsesModel", "from": "workflow-local-gguf-inference", "to": "model-mistral-7b-instruct-gguf", "evidenceIds": ["ev-open-9"]},
+    {"id": "link-local-uses-openorca", "type": "WorkflowUsesModel", "from": "workflow-local-gguf-inference", "to": "model-mistral-7b-openorca-gguf", "evidenceIds": ["ev-open-9"]},
+    {"id": "link-local-uses-llama2", "type": "WorkflowUsesModel", "from": "workflow-local-gguf-inference", "to": "model-llama-2-13b-chat-gguf", "evidenceIds": ["ev-open-9"]},
+    {"id": "link-rag-uses-llama-index", "type": "WorkflowUsesFramework", "from": "workflow-policy-rag", "to": "framework-llama-index", "evidenceIds": ["ev-rag-2", "ev-rag-20-22"]},
+    {"id": "link-rag-uses-llama-cpp", "type": "WorkflowUsesFramework", "from": "workflow-policy-rag", "to": "framework-llama-cpp-python", "evidenceIds": ["ev-rag-2", "ev-rag-8-9"]},
+    {"id": "link-rag-uses-gradio", "type": "WorkflowUsesFramework", "from": "workflow-policy-rag", "to": "framework-gradio", "evidenceIds": ["ev-rag-28-30"]},
+    {"id": "link-rag-uses-openorca", "type": "WorkflowUsesModel", "from": "workflow-policy-rag", "to": "model-mistral-7b-openorca-gguf", "evidenceIds": ["ev-rag-8-9"]},
+    {"id": "link-rag-reads-5030", "type": "WorkflowReadsPolicyDocument", "from": "workflow-policy-rag", "to": "policy-dodi-5030-07", "evidenceIds": ["ev-rag-16-18"]},
+    {"id": "link-rag-reads-6055", "type": "WorkflowReadsPolicyDocument", "from": "workflow-policy-rag", "to": "policy-dodi-6055-15", "evidenceIds": ["ev-rag-16-18"]},
+    {"id": "link-rag-unclassified", "type": "WorkflowGovernedByConstraint", "from": "workflow-policy-rag", "to": "constraint-unclassified-only", "evidenceIds": ["ev-rag-0"]},
+    {"id": "link-rag-gradio-sharing", "type": "WorkflowGovernedByConstraint", "from": "workflow-policy-rag", "to": "constraint-gradio-sharing", "evidenceIds": ["ev-rag-28-30"]},
+    {"id": "link-scrape-produces-corpus", "type": "WorkflowProducesDataset", "from": "workflow-policy-document-scrape", "to": "dataset-scraped-dod-issuances", "evidenceIds": ["ev-scrape-2-4", "ev-scrape-7"]},
+    {"id": "link-synthetic-reads-corpus", "type": "WorkflowReadsDataset", "from": "workflow-synthetic-policy-qa", "to": "dataset-scraped-dod-issuances", "evidenceIds": ["ev-scrape-7", "ev-scrape-9"]},
+    {"id": "link-synthetic-uses-gpt4", "type": "WorkflowUsesModel", "from": "workflow-synthetic-policy-qa", "to": "model-gpt-4-1106-preview", "evidenceIds": ["ev-scrape-9"]},
+    {"id": "link-synthetic-produces-documents", "type": "WorkflowProducesDataset", "from": "workflow-synthetic-policy-qa", "to": "dataset-synthetic-documents-json", "evidenceIds": ["ev-scrape-11-16"]},
+    {"id": "link-training-uses-transformers", "type": "WorkflowUsesFramework", "from": "workflow-axon-qlora-sft", "to": "framework-transformers", "evidenceIds": ["ev-axon-5", "ev-axon-21-23"]},
+    {"id": "link-training-uses-peft", "type": "WorkflowUsesFramework", "from": "workflow-axon-qlora-sft", "to": "framework-peft", "evidenceIds": ["ev-axon-5", "ev-axon-21-23"]},
+    {"id": "link-training-uses-trl", "type": "WorkflowUsesFramework", "from": "workflow-axon-qlora-sft", "to": "framework-trl", "evidenceIds": ["ev-axon-5", "ev-axon-28-30"]},
+    {"id": "link-training-uses-bitsandbytes", "type": "WorkflowUsesFramework", "from": "workflow-axon-qlora-sft", "to": "framework-bitsandbytes", "evidenceIds": ["ev-axon-5", "ev-axon-21-23"]},
+    {"id": "link-training-uses-base", "type": "WorkflowUsesModel", "from": "workflow-axon-qlora-sft", "to": "model-mistral-7b-instruct-base", "evidenceIds": ["ev-axon-19", "ev-axon-21-23"]},
+    {"id": "link-training-reads-cdao", "type": "WorkflowReadsDataset", "from": "workflow-axon-qlora-sft", "to": "dataset-cdao-dod-policy-qa", "evidenceIds": ["ev-axon-9"]},
+    {"id": "link-training-reads-json", "type": "WorkflowReadsDataset", "from": "workflow-axon-qlora-sft", "to": "dataset-training-json", "evidenceIds": ["ev-axon-17"]},
+    {"id": "link-merge-uses-transformers", "type": "WorkflowUsesFramework", "from": "workflow-axon-merge-export", "to": "framework-transformers", "evidenceIds": ["ev-axon-35-38"]},
+    {"id": "link-merge-uses-peft", "type": "WorkflowUsesFramework", "from": "workflow-axon-merge-export", "to": "framework-peft", "evidenceIds": ["ev-axon-35-38"]},
+    {"id": "link-merge-uses-base", "type": "WorkflowUsesModel", "from": "workflow-axon-merge-export", "to": "model-mistral-7b-instruct-base", "evidenceIds": ["ev-axon-35-38"]},
+    {"id": "link-merge-produces-axon", "type": "WorkflowProducesModel", "from": "workflow-axon-merge-export", "to": "model-axon-7b-policy-v0-2", "evidenceIds": ["ev-axon-35-38"]}
+  ],
+  "actions": [
+    {"apiName": "queryReferenceGraph", "objectType": "SourceRepository", "effect": "Return ontology objects and cited evidence without contacting the source repository", "readOnly": true, "externalMutation": false, "networkEgress": false, "requiresHumanReview": false},
+    {"apiName": "verifySourceSnapshot", "objectType": "SourceArtifact", "effect": "Compare a user-supplied local checkout with the pinned commit and artifact digests", "readOnly": true, "externalMutation": false, "networkEgress": false, "requiresHumanReview": false},
+    {"apiName": "proposeSourceRefresh", "objectType": "SourceRepository", "effect": "Create a local review proposal for a new pinned source snapshot; do not replace the accepted ontology", "readOnly": false, "externalMutation": false, "networkEgress": false, "requiresHumanReview": true}
+  ],
+  "guardrails": {
+    "publicUnclassifiedSourcesOnly": true,
+    "classifiedDataIngestion": false,
+    "credentialStorage": false,
+    "sourceCodeExecution": "prohibited_by_ontology",
+    "autonomousExternalFetch": false,
+    "autonomousModelTraining": false,
+    "autonomousModelPublishing": false,
+    "humanReviewForRefresh": true,
+    "sourceClaimsRemainAttributed": true,
+    "governmentAffiliationInferred": false,
+    "governmentAuthorizationInferred": false,
+    "officialEndorsementInferred": false,
+    "networkEgress": "deny_by_default",
+    "externalMutation": "prohibited",
+    "operationalAuthority": "none"
+  }
+}

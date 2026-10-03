@@ -1,9 +1,9 @@
 {
   "framework": "ZYRA GOVERNMENT INTELLIGENCE READINESS COMMAND",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "jurisdiction": "VIRGINIA_AND_FEDERAL",
   "mode": "EVIDENCE_DRIVEN_NO_SELF_CERTIFICATION",
-  "commandDoctrine": "Compliance is an evidence state, not a branding claim. ZYRA may report implemented controls, missing evidence, conditional applicability, and external authorization requirements. ZYRA must not self-declare FedRAMP authorization, CJIS acceptance, FIPS validation, CUI authorization, or Commonwealth approval.",
+  "commandDoctrine": "Compliance is an evidence state, not a branding claim. ZYRA may report implemented controls, missing evidence, conditional applicability, and external authorization requirements. ZYRA must not self-declare FedRAMP authorization, CJIS acceptance, FIPS validation, CUI authorization, Commonwealth approval, or generic NIST compliance without scoped evidence.",
   "baselines": [
     {
       "id": "VIRGINIA_SEC530_01_2",
@@ -34,9 +34,19 @@
       "id": "NIST_SP_800_53_REV5",
       "authority": "NIST",
       "title": "Security and Privacy Controls for Information Systems and Organizations",
-      "source": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+      "release": "5.2.0",
+      "normativeSource": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+      "currentReferenceCatalog": "https://csrc.nist.gov/projects/cprt/catalog",
+      "downloads": "https://csrc.nist.gov/projects/risk-management/sp800-53-controls/downloads",
+      "assessmentSource": "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final",
+      "baselineSource": "https://csrc.nist.gov/pubs/sp/800/53/b/upd1/final",
+      "catalogArtifact": "intel/compliance/nist-800-53-rev5-control-catalog.md",
+      "profileArtifact": "intel/compliance/nist-800-53-rev5-profiles.json",
+      "operatorUIReference": "compliance.gov EdgeScan Controls Catalog and Profile Controls screenshots supplied 2026-09-06",
       "applicability": "CONTROL_CATALOG_AND_BASELINE_FOUNDATION",
-      "families": ["AC","AT","AU","CA","CM","CP","IA","IR","MA","MP","PE","PL","PM","PS","PT","RA","SA","SC","SI","SR"]
+      "profiles": ["LOW", "MODERATE", "HIGH", "PRIVACY"],
+      "families": ["AC", "AT", "AU", "CA", "CM", "CP", "IA", "IR", "MA", "MP", "PE", "PL", "PM", "PS", "PT", "RA", "SA", "SC", "SI", "SR"],
+      "statusRule": "CATALOG_OR_PROFILE_MEMBERSHIP_DOES_NOT_EQUAL_IMPLEMENTATION_ASSESSMENT_OR_AUTHORIZATION"
     },
     {
       "id": "FEDRAMP_REV5_2026",
@@ -106,17 +116,22 @@
     "intel/compliance/configuration-management-plan.md",
     "intel/compliance/contingency-plan.md",
     "intel/compliance/cryptography-and-key-management-plan.md",
-    "intel/compliance/ai-governance-plan.md"
+    "intel/compliance/ai-governance-plan.md",
+    "intel/compliance/nist-800-53-rev5-control-catalog.md",
+    "intel/compliance/nist-800-53-rev5-profiles.json"
   ],
   "commandStates": [
     "IMPLEMENTED_EVIDENCE_PRESENT",
     "PARTIAL_EVIDENCE",
     "DEPLOYMENT_EVIDENCE_REQUIRED",
     "EXTERNAL_AUTHORIZATION_REQUIRED",
-    "NOT_APPLICABLE_BY_DECLARED_SCOPE"
+    "NOT_APPLICABLE_BY_DECLARED_SCOPE",
+    "SOURCE_GAP"
   ],
   "prohibitions": [
     "Do not label the ecosystem government compliant without naming the exact applicable baseline and evidence state.",
+    "Do not label the ecosystem NIST compliant without a selected and tailored control set plus implementation and assessment evidence.",
+    "Do not infer Low, Moderate, High, or Privacy profile selection from a UI screenshot alone.",
     "Do not label the ecosystem FedRAMP authorized without authorization evidence.",
     "Do not label cryptography FIPS validated without a CMVP-validated module or validated inherited service and runtime evidence.",
     "Do not label the ecosystem CJIS accepted without the applicable criminal-justice authority and audit evidence.",

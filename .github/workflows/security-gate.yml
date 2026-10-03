@@ -23,6 +23,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: NIST SP 800-53 Rev. 5 profile compliance gate
+        run: python agents/nist_profile_compliance_gate.py
+
       - name: ZYRA Agent Core native self-test
         run: python zyra_agent.py --self-test
 

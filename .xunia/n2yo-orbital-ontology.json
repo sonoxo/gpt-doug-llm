@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "id": "xunia.live.orbital.n2yo.v1",
+  "title": "XUNIA N2YO Live Orbital Ontology",
+  "version": "1.0.0",
+  "provider": {
+    "id": "n2yo",
+    "domain": "orbital",
+    "credential": "N2YO_API_KEY",
+    "preferredGateway": "XUNIA_N2YO_PROXY_URL",
+    "credentialExposure": "server-only"
+  },
+  "identity": {
+    "primaryKey": "noradId",
+    "rules": [
+      "Use the numeric NORAD Catalog ID for N2YO requests.",
+      "Do not use Alpha-5 identifiers from TLE text as API object identifiers."
+    ]
+  },
+  "objectTypes": {
+    "OrbitalObject": {
+      "primaryKey": "noradId",
+      "properties": {
+        "noradId": "integer",
+        "name": "string",
+        "internationalDesignator": "string|null",
+        "launchDate": "date|null",
+        "category": "string|null",
+        "provider": "n2yo",
+        "domain": "orbital"
+      }
+    },
+    "OrbitalPosition": {
+      "properties": {
+        "noradId": "integer",
+        "timestamp": "unix-seconds",
+        "latitudeDeg": "number",
+        "longitudeDeg": "number",
+        "altitudeKm": "number",
+        "azimuthDeg": "number|null",
+        "elevationDeg": "number|null",
+        "rightAscensionDeg": "number|null",
+        "declinationDeg": "number|null"
+      },
+      "links": {
+        "object": "OrbitalObject.noradId"
+      }
+    },
+    "TLE": {
+      "properties": {
+        "noradId": "integer",
+        "name": "string",
+        "twoLineElements": "string",
+        "fetchedAt": "date-time"
+      },
+      "links": {
+        "object": "OrbitalObject.noradId"
+      }
+    },
+    "PassPrediction": {
+      "properties": {
+        "noradId": "integer",
+        "passType": "visual|radio",
+        "startUTC": "unix-seconds",
+        "maxUTC": "unix-seconds",
+        "endUTC": "unix-seconds",
+        "startAzimuthDeg": "number|null",
+        "maxAzimuthDeg": "number|null",
+        "endAzimuthDeg": "number|null",
+        "maxElevationDeg": "number|null",
+        "magnitude": "number|null",
+        "durationSeconds": "integer|null"
+      },
+      "links": {
+        "object": "OrbitalObject.noradId"
+      }
+    },
+    "Observer": {
+      "properties": {
+        "latitudeDeg": "number[-90,90]",
+        "longitudeDeg": "number[-180,180]",
+        "altitudeM": "number"
+      },
+      "privacy": "request-scoped; do not persist precise user location by default"
+    }
+  },
+  "representations": {
+    "raw": "N2YO JSON",
+    "geojson": "RFC 7946-compatible geometry with altitude as a third coordinate in meters",
+    "czml": "Cesium time-dynamic orbital path",
+    "sse": "text/event-stream; event name=position"
+  },
+  "gatewayRoutes": {
+    "health": "/api/n2yo/health",
+    "tle": "/api/n2yo/tle/{noradId}",
+    "positions": "/api/n2yo/positions/{noradId}",
+    "positionsGeoJSON": "/api/n2yo/positions/{noradId}/geojson",
+    "positionsCZML": "/api/n2yo/positions/{noradId}/czml",
+    "visualPasses": "/api/n2yo/visualpasses/{noradId}",
+    "radioPasses": "/api/n2yo/radiopasses/{noradId}",
+    "above": "/api/n2yo/above",
+    "aboveGeoJSON": "/api/n2yo/above/geojson",
+    "stream": "/api/n2yo/stream/{noradId}"
+  },
+  "quotaPolicy": {
+    "architecture": "single upstream gateway + cache + fanout",
+    "localSafetyBudgetsPerRollingHour": {
+      "tle": 950,
+      "positions": 950,
+      "visualpasses": 90,
+      "radiopasses": 90,
+      "above": 90
+    },
+    "positionWindowSeconds": 300
+  },
+  "governance": {
+    "allowed": [
+      "satellite visualization",
+      "orbit and ground-track display",
+      "pass prediction",
+      "radio/visual observation planning",
+      "science and educational telemetry",
+      "live geospatial dashboards"
+    ],
+    "notes": [
+      "Orbital data is a distinct telemetry domain; do not label satellite tracks as ADS-B aircraft tracks.",
+      "Keep provider credentials out of client-side bundles.",
+      "Cache and fan out position windows instead of polling N2YO every animation frame."
+    ]
+  }
+}

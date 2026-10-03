@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0.0",
+  "integration_id": "reef-continual-learning",
+  "name": "Reef Continual Learning",
+  "status": "adapter_ready",
+  "upstream": {
+    "repository": "https://github.com/Human-Agent-Society/reef",
+    "license": "Apache-2.0",
+    "source_ref_verified": "bea406927d5d168d62122a005673d7e5f558af7e"
+  },
+  "runtime": {
+    "mode": "external_service_bridge",
+    "gpt_doug_python": ">=3.9",
+    "reef_python": ">=3.10",
+    "default_base_url": "http://127.0.0.1:8901",
+    "environment": [
+      "REEF_BASE_URL",
+      "REEF_TOKEN",
+      "REEF_SCENARIO",
+      "REEF_TIMEOUT"
+    ]
+  },
+  "lifecycle": [
+    {
+      "order": 1,
+      "stage": "serve",
+      "description": "Route provider-compatible inference through Reef and retain the interaction receipt."
+    },
+    {
+      "order": 2,
+      "stage": "observe",
+      "description": "Attach score and/or structured feedback to recorded interaction receipts."
+    },
+    {
+      "order": 3,
+      "stage": "grow",
+      "description": "Allow the configured Reef recipe to produce candidate harness or weight updates from eligible records."
+    },
+    {
+      "order": 4,
+      "stage": "commit",
+      "description": "Allow Reef selection policy to publish accepted updates into version history."
+    }
+  ],
+  "ontology": {
+    "object_types": [
+      "AgentInteraction",
+      "FeedbackReport",
+      "LearningCandidate",
+      "ArtifactVersion"
+    ],
+    "link_types": [
+      "evaluates",
+      "derived_from",
+      "commits"
+    ],
+    "action_types": [
+      "ReefInfer",
+      "ReefReportFeedback"
+    ],
+    "existing_type_mapping": {
+      "Task": "AgentInteraction",
+      "Result": "FeedbackReport",
+      "KnowledgeEntry": "ArtifactVersion"
+    }
+  },
+  "governance": {
+    "vendored_upstream_code": false,
+    "automatic_model_or_harness_promotion": false,
+    "promotion_authority": "reef_selection_policy",
+    "proof_required": [
+      "interaction_receipt",
+      "feedback_reference",
+      "version_or_candidate_provenance"
+    ]
+  }
+}

@@ -12,6 +12,7 @@ from palantir_bridge import DougPalantirBridge
 from palantir_foundry import FoundryError
 from palantir_stack import PalantirStack
 from palantir_tenant_probe import PalantirTenantProbe
+from zyrapalantir import ZyraPalantirBackbone
 
 
 @dataclass
@@ -40,6 +41,9 @@ def handle_palantir_command(
             True,
             _dump(PalantirStack(bridge.foundry if bridge else None).status()),
         )
+    if raw in {"zyrapalantir", "zyrapalantir status", "zyra-backbone"}:
+        backbone = ZyraPalantirBackbone(foundry=bridge.foundry if bridge else None)
+        return PalantirCommandResult(True, _dump(backbone.status()))
     if raw in {"compliance", "federal", "rmf"}:
         return PalantirCommandResult(
             True,
@@ -55,7 +59,7 @@ def handle_palantir_command(
             handled=True,
             output=(
                 "PALANTIR // NOT CONFIGURED // set FOUNDRY_BASE_URL and authorized credentials // "
-                "use /palantir stack, /palantir compliance, or /palantir probe to inspect readiness"
+                "use /palantir stack, /palantir zyrapalantir, /palantir compliance, or /palantir probe to inspect readiness"
             ),
         )
 
@@ -158,7 +162,7 @@ def handle_palantir_command(
             )
 
         raise FoundryError(
-            "commands: status | stack | platform | compliance | federal | rmf | probe | probe-model | ontologies | query-types | aip-logic | aip-chat | object-types | objects | get | search | ask | action"
+            "commands: status | stack | platform | zyrapalantir | compliance | federal | rmf | probe | probe-model | ontologies | query-types | aip-logic | aip-chat | object-types | objects | get | search | ask | action"
         )
     except (FoundryError, ValueError) as error:
         return PalantirCommandResult(True, f"PALANTIR ERROR // {error}")

@@ -1,0 +1,175 @@
+{
+  "schema": "xunia.patent-robotics.seed.v1",
+  "patent_id": "US-20260269089-A1",
+  "title": "Fusion Capacitor",
+  "document_type": "US patent application publication",
+  "kind_code": "A1",
+  "publication_date": "2026-09-10",
+  "application_number": "19/063,392",
+  "filed": "2025-03-04",
+  "applicant": "John Kissane",
+  "inventors": [
+    "John Kissane"
+  ],
+  "source_provenance": [
+    {
+      "type": "user_supplied_official_pdf",
+      "source": "USPTO Patent Public Search",
+      "url": "https://ppubs.uspto.gov/api/pdf/downloadPdf/US-20260269089-A1?source=US-PGPUB",
+      "note": "Official publication reviewed on 2026-09-13. Ephemeral request-token parameters are intentionally not persisted."
+    },
+    {
+      "type": "public_readable_mirror",
+      "source": "Justia Patents",
+      "url": "https://patents.justia.com/patent/20260269089"
+    }
+  ],
+  "classification_signals": [
+    "G21B 3/00 nuclear fusion reactors",
+    "G21G 1/12 nuclear reactions or transmutations using charged particle irradiation"
+  ],
+  "scope_tags": [
+    "fusion-energy",
+    "plasma-concept",
+    "electric-field-ionization",
+    "laser-heating",
+    "capacitor-field",
+    "conceptual-reactor",
+    "power-cutoff",
+    "high-energy-physics",
+    "speculative-physics",
+    "scientific-validation-required",
+    "research-only"
+  ],
+  "publicly_described_functional_concepts": [
+    "placing a flame or weakly ionized gas region between capacitor plates",
+    "applying an electric field with the stated intent of increasing ionization",
+    "applying laser energy with the stated intent of increasing particle temperature",
+    "treating the flame, capacitor field, and laser as independently switchable inputs",
+    "using shutdown of one or more external energy inputs as the proposed stop mechanism"
+  ],
+  "scope_model": {
+    "technical_domain": [
+      "conceptual nuclear-fusion energy systems",
+      "plasma ionization",
+      "electric-field interaction with ionized gases",
+      "laser energy deposition",
+      "high-energy system safety review"
+    ],
+    "core_architecture": [
+      "gas or flame region",
+      "electric-field source",
+      "laser energy source",
+      "independent power controls",
+      "diagnostic and scientific-validation layer",
+      "hazard and containment review"
+    ],
+    "analysis_loop": "capture disclosed concept -> separate stated mechanism from established physics -> test assumptions against fusion temperature, density, confinement, fuel, and energy-gain requirements -> reject unsupported physical conclusions -> retain provenance as prior-art evidence -> require expert review before any physical experimentation",
+    "building_patterns_relevant_to_independent_design": [
+      "treat patent publication as prior-art evidence rather than proof of operability",
+      "separate source-stated mechanisms from independently verified scientific facts",
+      "require quantitative plasma temperature, density, confinement, fuel, reaction-rate, and energy-gain models before considering a fusion concept viable",
+      "use simulation and literature validation before physical prototyping",
+      "keep high-voltage, high-power laser, radiation, and plasma experimentation outside autonomous build workflows",
+      "require qualified human safety and scientific review for consequential high-energy work"
+    ]
+  },
+  "scientific_assessment": {
+    "status": "SOURCE_VERIFIED_TECHNICAL_FEASIBILITY_NOT_VALIDATED",
+    "confidence": "LOW",
+    "key_issues": [
+      "the disclosure appears to compare flame temperature with the Sun's visible-surface temperature rather than the approximately 15 million degree Celsius fusion core",
+      "terrestrial deuterium-tritium fusion typically requires plasma temperatures on the order of 100 to 150 million degrees Celsius together with sufficient density and confinement",
+      "electron removal or ionization alone does not establish the kinetic energy, collision rate, fuel composition, density, or confinement required for useful fusion",
+      "the disclosure does not provide a quantified Lawson-style density-confinement analysis, fusion power balance, Q value, reaction-rate model, or net-energy calculation",
+      "the assertion that the apparatus lacks explosive or radiological hazards is not established by the publication and must not be treated as a safety conclusion"
+    ],
+    "reference_facts": [
+      "NASA reports the Sun's core at about 15 million degrees Celsius and its visible photosphere at about 5,500 degrees Celsius",
+      "ITER describes laboratory deuterium-tritium fusion at approximately 150 million degrees Celsius",
+      "fusion viability depends on temperature plus sufficient fuel density and energy confinement, not temperature alone"
+    ]
+  },
+  "claim_scope_signals": {
+    "status": "HIGH_LEVEL_RESEARCH_SUMMARY_NOT_CLAIM_CONSTRUCTION",
+    "independent_claim_themes": [
+      "a proposed fusion method combining a flame or ionized gas region, a capacitor-derived electric field, and laser heating",
+      "independent external energy inputs are presented as a means to start or stop the proposed apparatus"
+    ],
+    "legal_scope_rule": "Patent scope depends on controlling claims, prosecution history, legal status, and jurisdiction. This record is an engineering research abstraction only."
+  },
+  "family_signals": {
+    "territorial_status_rule": "Do not infer worldwide rights, validity, operability, or freedom to operate from this US publication; recheck official registers and prosecution history for legal or commercial decisions."
+  },
+  "building_memory": {
+    "safe_reference_architecture": [
+      "patent-provenance-ingest",
+      "physics-claim-extractor",
+      "fusion-requirements-validator",
+      "energy-balance-model-check",
+      "hazard-screen",
+      "expert-review-gate"
+    ],
+    "default_build_profile": "FUSION_CONCEPT_RESEARCH_ONLY",
+    "use_for": [
+      "prior-art tracking",
+      "fusion-concept literature comparison",
+      "scientific claim validation",
+      "ontology tagging for plasma and energy research",
+      "non-operational simulation and feasibility screening"
+    ],
+    "do_not_use_for": [
+      "automatic physical construction",
+      "high-voltage apparatus instructions",
+      "high-power laser construction or alignment instructions",
+      "reactor commissioning",
+      "radiation-producing experiments"
+    ]
+  },
+  "energy_safety_policy": {
+    "research_and_simulation_only_by_default": true,
+    "qualified_expert_review_required_for_physical_experiment": true,
+    "high_voltage_build_instructions": false,
+    "high_power_laser_build_instructions": false,
+    "reactor_build_instructions": false,
+    "radiation_producing_experiment_instructions": false,
+    "automatic_hardware_execution": false,
+    "provenance_required": true,
+    "audit_logging_required": true
+  },
+  "independent_design_policy": {
+    "copy_claim_language": false,
+    "copy_figures_or_drawings": false,
+    "assert_freedom_to_operate": false,
+    "claim_element_mapping_requires_human_review": true,
+    "commercial_release_requires_patent_counsel_review": true,
+    "default_execution_gate": "RESEARCH_ONLY_UNTIL_SCIENTIFIC_AND_SAFETY_REVIEW",
+    "default_pattern": "USE_PUBLIC_DISCLOSURE_AS_PRIOR_ART_SIGNAL_AND_INDEPENDENTLY_VALIDATE_THE_PHYSICS"
+  },
+  "design_divergence_defaults": [
+    "do not assume patent publication means the disclosed apparatus is scientifically demonstrated or enabled",
+    "model fusion feasibility from first principles and established plasma-physics constraints",
+    "prefer established magnetic-confinement or inertial-confinement literature for comparison baselines",
+    "keep physical high-energy implementation outside autonomous agent execution"
+  ],
+  "schematic_seed": {
+    "mode": "NON_OPERATIONAL_RESEARCH_PIPELINE_ONLY",
+    "modules": [
+      "source provenance",
+      "mechanism extraction",
+      "plasma-physics requirement checker",
+      "temperature-density-confinement model",
+      "energy-gain sanity check",
+      "hazard review",
+      "expert approval gate"
+    ],
+    "mandatory_safety_boundaries": [
+      "no autonomous high-voltage hardware build",
+      "no autonomous high-power laser build",
+      "no radiation-producing experiment",
+      "no reactor construction instructions",
+      "simulation and literature validation first",
+      "qualified human review before any physical experiment"
+    ]
+  }
+}

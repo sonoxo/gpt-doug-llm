@@ -1,0 +1,20 @@
+{
+  "schema": "gpt-doug-hivemind/integrations-v1",
+  "upstreams": [
+    {"slug":"hermes-agent","repo":"NousResearch/hermes-agent","stage":"execute"},
+    {"slug":"openspec","repo":"Fission-AI/OpenSpec","stage":"define"},
+    {"slug":"caveman","repo":"JuliusBrussee/caveman","stage":"compress"},
+    {"slug":"scrapling","repo":"D4Vinci/Scrapling","stage":"collect"},
+    {"slug":"docling","repo":"docling-project/docling","stage":"parse"},
+    {"slug":"pageindex","repo":"VectifyAI/PageIndex","stage":"retrieve"},
+    {"slug":"mem0","repo":"mem0ai/mem0","stage":"remember"},
+    {"slug":"headroom","repo":"headroomlabs-ai/headroom","stage":"compress"},
+    {"slug":"daytona","repo":"daytonaio/daytona","stage":"execute","mode":"legacy_optional"},
+    {"slug":"trendradar","repo":"sansan0/TrendRadar","stage":"watch"},
+    {"slug":"fabric","repo":"danielmiessler/Fabric","stage":"define"},
+    {"slug":"spec-kit","repo":"github/spec-kit","stage":"define"},
+    {"slug":"hyperframes","repo":"heygen-com/hyperframes","stage":"ship"},
+    {"slug":"openmontage","repo":"calesthio/OpenMontage","stage":"ship"},
+    {"slug":"ai-engineering-hub","repo":"patchy631/ai-engineering-hub","stage":"define","mode":"reference"}
+  ]
+}

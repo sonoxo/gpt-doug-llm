@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "xunia-arcade-bounty-ontology",
+  "name": "XUNIA Arcade Bounty Ontology",
+  "status": "ACTIVE_LOCAL_BRIDGE",
+  "currency": {
+    "unit": "XBC",
+    "name": "XUNIA Bounty Credits",
+    "cash_value": null,
+    "redeemable": false
+  },
+  "object_types": [
+    {
+      "id": "ArcadeRun",
+      "properties": ["receipt_id", "game_id", "milestone_id", "metrics", "created_at", "source", "trust_level", "ontology_execution"]
+    },
+    {
+      "id": "BountyClaim",
+      "properties": ["claim_id", "receipt_id", "game_id", "milestone_id", "reward", "status", "redeemable", "trust_level", "ontology_execution"]
+    }
+  ],
+  "link_types": [
+    {"id": "awarded_for", "from": "BountyClaim", "to": "ArcadeRun"},
+    {"id": "executes", "from": "ArcadeRun", "to": "OntologyFunction"}
+  ],
+  "action_types": [
+    {
+      "id": "RecordArcadeRun",
+      "handler": "workers.arcade_ontology.record_arcade_run_action",
+      "effect": "Validate milestone, execute bounded ontology function, persist ArcadeRun and BountyClaim."
+    }
+  ],
+  "bounties": [
+    {"game_id": "pulse-flight", "milestone_id": "pulse-knowledge-lock-v1", "reward_xbc": 25, "rule": "score >= 50 AND streak_peak >= 3", "ontology_function": "task_knowledge"},
+    {"game_id": "grid-drop", "milestone_id": "grid-snapshot-v1", "reward_xbc": 50, "rule": "charged >= 25", "ontology_function": "snapshot"},
+    {"game_id": "nova-tycoon", "milestone_id": "nova-status-v1", "reward_xbc": 50, "rule": "level >= 3", "ontology_function": "status"},
+    {"game_id": "orbit-runner", "milestone_id": "orbit-link-traverse-v1", "reward_xbc": 50, "rule": "stars >= 3", "ontology_function": "task_result"},
+    {"game_id": "signal-match", "milestone_id": "signal-knowledge-audit-v1", "reward_xbc": 50, "rule": "score >= 50 AND misses <= 3", "ontology_function": "knowledge"}
+  ],
+  "governance": {
+    "browser_receipts": "client-attested",
+    "daily_frontend_award_limit_xbc": 225,
+    "backend_auto_task_submission": false,
+    "note": "Arcade actions are bounded to read/audit/snapshot ontology functions. Gameplay does not auto-submit arbitrary daemon tasks."
+  }
+}

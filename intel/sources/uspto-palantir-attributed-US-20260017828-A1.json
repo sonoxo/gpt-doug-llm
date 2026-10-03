@@ -1,0 +1,53 @@
+{
+  "id": "uspto-palantir-attributed-US-20260017828-A1",
+  "type": "patent-publication-front-page-record",
+  "authority": "United States Patent and Trademark Office",
+  "service": "U.S. Patent Application Publication",
+  "source_kind": "user-supplied front-page image",
+  "captured": "2026-09-12",
+  "document_number": "US-20260017828-A1",
+  "publication_number_display": "US 2026/0017828 A1",
+  "publication_date": "2026-01-15",
+  "title": "SYNCHRONISING DATASETS UPDATES",
+  "application_number": "19/332,049",
+  "filing_date": "2025-09-18",
+  "applicant": {
+    "name": "Palantir Technologies Inc.",
+    "location": "Denver, CO (US)",
+    "attribution_basis": "Applicant field printed on supplied USPTO publication front page",
+    "confidence": "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+  },
+  "architecture_watch": {
+    "name": "branch-aware-dataset-update-synchronization",
+    "purpose": "Track high-level architecture around branch-specific scripts, dataset synchronization, permissioning, resource databases and merge-aware update flows without copying claimed implementation details.",
+    "diagram_components": [
+      "Data processing platform",
+      "Application servers",
+      "Client device",
+      "Network",
+      "Network-based permissioning system",
+      "Database server",
+      "Resource database",
+      "Branch-aware update flow"
+    ],
+    "gpt_doug_mapping": [
+      "dataset synchronization",
+      "branch-aware workflow state",
+      "permission-gated updates",
+      "replication consistency checks",
+      "merge verification",
+      "audit of synchronized changes"
+    ],
+    "themes": ["dataset-synchronization", "branching", "permissioning", "replication", "data-resilience", "governance"]
+  },
+  "controls": {
+    "treat_front_page_applicant_field_as_document_attribution": true,
+    "treat_applicant_attribution_as_current_ownership_or_enforceability_proof": false,
+    "claim_freedom_to_operate": false,
+    "claim_non_infringement": false,
+    "copy_claimed_implementation_without_review": false,
+    "high_level_architecture_comparison": true,
+    "human_legal_review_for_claim_level_analysis": true
+  },
+  "notes": "Derived from a user-supplied USPTO publication front page. Applicant attribution is document-level evidence only."
+}

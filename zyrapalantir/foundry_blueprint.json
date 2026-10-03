@@ -1,0 +1,106 @@
+{
+  "name": "ZYRAPALANTIR Palantir Backbone Blueprint",
+  "version": "1.0.0",
+  "deployment_state": "BLUEPRINT_READY_REQUIRES_AUTHORIZED_FOUNDRY_TENANT",
+  "division": "GPT-ZYRA-PALANTIR",
+  "codename": "ZYRAPALANTIR",
+  "platform_planes": {
+    "Foundry": "governed synthetic telemetry, transforms, lineage and datasets",
+    "Ontology": "canonical digital-twin objects, links, interfaces, actions and functions",
+    "AIP": "incident reasoning and recommendation over authorized synthetic ontology context",
+    "Automate": "conditions and staged effects for human-reviewed simulation workflows",
+    "Workshop_OSDK": "operator command-center applications over the governed ontology",
+    "Apollo": "governed deployment and release lifecycle"
+  },
+  "ontology": {
+    "environment_variable": "ZYRAPALANTIR_ONTOLOGY",
+    "object_types": [
+      "ZyraDivision",
+      "ZyraInfrastructureDomain",
+      "ZyraDigitalTwinAsset",
+      "ZyraDependency",
+      "ZyraSyntheticSensor",
+      "ZyraSyntheticAlert",
+      "ZyraIncident",
+      "ZyraSafetyEnvelope",
+      "ZyraFailoverResource",
+      "ZyraRecoveryStep",
+      "ZyraAuditEvent"
+    ],
+    "link_types": [
+      "DivisionOwnsDomain",
+      "DomainContainsAsset",
+      "AssetDependsOnAsset",
+      "SensorObservesAsset",
+      "AlertAffectsAsset",
+      "IncidentContainsAlert",
+      "IncidentThreatensDependency",
+      "AssetHasFailover",
+      "ActionProducesAuditEvent"
+    ],
+    "interfaces": [
+      "SyntheticOperationalAsset",
+      "AuditableExerciseEntity"
+    ]
+  },
+  "functions": [
+    {
+      "api_name": "zyraAssessSyntheticIncident",
+      "purpose": "calculate synthetic dependency impact and life-safety preservation recommendations",
+      "writes": false
+    },
+    {
+      "api_name": "zyraVerifySyntheticRecovery",
+      "purpose": "verify that simulated dependencies are restored and audit evidence is complete",
+      "writes": false
+    },
+    {
+      "api_name": "zyraStageSyntheticRecoveryPlan",
+      "purpose": "produce staged Ontology edits for operator review inside an authorized simulation ontology",
+      "writes": "STAGED_ONLY"
+    }
+  ],
+  "actions": {
+    "execution_policy": "HUMAN_REVIEW_REQUIRED",
+    "allowed": [
+      "DECLARE_EXERCISE",
+      "ACKNOWLEDGE_INCIDENT",
+      "ISOLATE_SIMULATED_NODE",
+      "ENTER_SIMULATED_SAFE_STATE",
+      "PRESERVE_LIFE_SAFETY_SERVICE",
+      "ACTIVATE_SIMULATED_FAILOVER",
+      "REROUTE_SIMULATED_EMS",
+      "ROLLBACK_SIMULATION_ACTION",
+      "RESTORE_SIMULATED_SERVICE",
+      "VERIFY_RECOVERY",
+      "CLOSE_EXERCISE"
+    ],
+    "backbone_executes_actions": false
+  },
+  "automate": {
+    "recommended_mode": "AIP_LOGIC_STAGED_WRITES",
+    "example_conditions": [
+      "new synthetic high-severity alert",
+      "synthetic dependency health changes",
+      "scheduled resilience exercise checkpoint"
+    ],
+    "effects": [
+      "stage simulation action for operator review",
+      "create synthetic incident object",
+      "send platform notification",
+      "run read-only verification function"
+    ]
+  },
+  "safety_envelope": {
+    "synthetic_telemetry_only": true,
+    "real_infrastructure_write_access": false,
+    "real_scada_control": false,
+    "real_plc_control": false,
+    "real_traffic_control": false,
+    "real_emergency_service_control": false,
+    "outbound_actuation": false,
+    "arbitrary_foundry_action_execution": false,
+    "human_review_required": true,
+    "audit_required": true
+  }
+}

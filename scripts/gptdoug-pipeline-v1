@@ -1,0 +1,44 @@
+#!/bin/zsh
+set -u
+
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+STATE="$HOME/.gpt-doug"
+ENVFILE="$STATE/env"
+LOG="$STATE/pipeline.log"
+
+mkdir -p "$STATE"
+cd "$ROOT" || exit 1
+
+if [[ -n "${TMUX:-}" ]]; then
+  echo "GPT-Doug pipeline should start outside tmux. Detach first: CTRL+B then D"
+  exit 1
+fi
+
+if [[ -f "$ENVFILE" ]]; then
+  set -a
+  source "$ENVFILE"
+  set +a
+fi
+
+{
+  echo
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] GPT-Doug pipeline start"
+} >> "$LOG"
+
+# 1. Classic boot screen.
+python3 tools/gptdoug_boot_classic.py || exit $?
+
+# 2. One bounded local runtime repair pass.
+if [[ -f "$ROOT/zyra_self_heal.py" ]]; then
+  python3 "$ROOT/zyra_self_heal.py" >> "$LOG" 2>&1 || true
+fi
+
+# 3. Verify the master directive exists. The shell can still run without it.
+if [[ -f "$STATE/GOD_PROMPT.md" ]]; then
+  echo "[$(date '+%H:%M:%S')] master prompt: loaded" >> "$LOG"
+else
+  echo "[$(date '+%H:%M:%S')] master prompt: missing" >> "$LOG"
+fi
+
+# 4. Hand off to the living Dreamwave command center.
+exec "$ROOT/scripts/gptdoug-dreamwave-v5"

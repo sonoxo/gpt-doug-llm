@@ -1,0 +1,29 @@
+#!/bin/zsh
+set -eu
+ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+BIN="$HOME/.local/bin"
+STATE="$HOME/.gpt-doug"
+
+cd "$ROOT" || exit 1
+mkdir -p "$BIN" "$STATE"
+
+python3 -m py_compile tools/gptdoug_matrix_boot_v7.py tools/gptdoug_matrixops_v7.py
+chmod +x tools/gptdoug_matrix_boot_v7.py tools/gptdoug_matrixops_v7.py scripts/gptdoug-matrixwalk-v7
+
+cat > "$BIN/doug-matrixwalk" <<'SH'
+#!/bin/zsh
+exec "$HOME/gpt-doug-llm/scripts/gptdoug-matrixwalk-v7"
+SH
+chmod +x "$BIN/doug-matrixwalk"
+
+cat > "$BIN/doug-matrixboot" <<'SH'
+#!/bin/zsh
+exec python3 "$HOME/gpt-doug-llm/tools/gptdoug_matrix_boot_v7.py"
+SH
+chmod +x "$BIN/doug-matrixboot"
+
+echo "GPT-DOUG MATRIX WALK V7 INSTALLED"
+echo "  doug-matrixboot"
+echo "  doug-matrixwalk"
+echo
+exec "$BIN/doug-matrixwalk"

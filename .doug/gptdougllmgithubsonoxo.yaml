@@ -1,0 +1,102 @@
+# gptdougllmgithubsonoxo
+# Governed Sonoxo accelerated-software recipe.
+# Public-policy alignment only; this file creates no government authority,
+# certification, accreditation, endorsement, contract status, or access.
+
+recipe: gptdougllmgithubsonoxo
+version: 1
+mode: accelerated-mission-software
+
+principles:
+  - continuous_feedback
+  - optimize_flow
+  - security_and_quality_built_in
+  - automate_repeatable_evidence
+  - architecture_for_evolution
+  - reuse_before_rebuild
+  - human_accountability
+
+pipeline:
+  - id: ground
+    action: ground_change_in_ontology
+    requires:
+      - mission
+      - source_provenance
+      - repository_scope
+
+  - id: reuse
+    action: evaluate_existing_capability
+    inspect:
+      - internal_components
+      - approved_open_source
+      - cots
+      - saas
+    output: reuse_decision
+
+  - id: build
+    action: implement_small_testable_change
+    ai_generated_code: unverified_until_validated
+
+  - id: verify
+    parallel:
+      - unit_tests
+      - integration_tests
+      - static_analysis
+      - dependency_audit
+      - secret_scan
+      - provenance_check
+
+  - id: evidence
+    produce:
+      - test_results
+      - cyclonedx_sbom
+      - source_provenance
+      - build_logs
+      - rollback_plan
+
+  - id: consequential_gate
+    when: material_external_or_production_change
+    require:
+      - explicit_scope
+      - verified_authority
+      - human_approval
+
+  - id: release
+    action: deploy_only_after_required_gates_pass
+    preserve:
+      - approval_record
+      - evidence_bundle
+      - artifact_identity
+
+  - id: feedback
+    collect:
+      - runtime_telemetry
+      - operator_feedback
+      - incidents
+      - after_action_findings
+    route_back_to: ground
+
+language_policy:
+  allowed_claims:
+    - alignment_check_passed
+    - implementation_mapping
+    - evidence_generated
+    - local_controls_passed
+  prohibited_without_external_verifiable_authority:
+    - government_approved
+    - government_certified
+    - government_accredited
+    - government_endorsed
+    - official_government_system
+
+fail_closed:
+  - missing_scope
+  - missing_provenance
+  - unknown_authority
+  - required_test_failure
+  - consequential_change_without_human_approval
+
+references:
+  - safety-shield/policies/dowi-8430-01.json
+  - ECOSYSTEM_DISCLAIMER.md
+  - .github/workflows/security-gate.yml

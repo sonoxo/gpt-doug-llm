@@ -1,0 +1,23 @@
+{
+  "schema": "xunia.maven.rover-connector.v1",
+  "status": "TEMPLATE",
+  "defaults": {
+    "telemetry_read": true,
+    "health_read": true,
+    "camera_read": true,
+    "command_write": false,
+    "human_approval_required": true,
+    "audit_required": true,
+    "fail_closed": true
+  },
+  "fields": {
+    "rover_id": "required",
+    "operator_authorization": "required",
+    "endpoint": "required",
+    "auth_ref": "required_secret_reference",
+    "capabilities": "allowlisted",
+    "rate_limit": "required",
+    "emergency_stop": "required_for_command_write",
+    "audit_sink": "required_for_command_write"
+  }
+}

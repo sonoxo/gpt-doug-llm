@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "maven-export/1.0",
+  "source": {
+    "system": "Palantir Maven",
+    "exportId": "example-export-001",
+    "uri": "palantir://example/maven/ontology/example-export-001",
+    "generatedAt": "2026-09-10T15:00:00Z"
+  },
+  "approval": {
+    "status": "approved",
+    "scope": "ontology-sync",
+    "approvedBy": "example-governance-operator",
+    "approvedAt": "2026-09-10T15:01:00Z"
+  },
+  "nodes": [
+    {
+      "id": "maven:mission:example",
+      "label": "Example Mission",
+      "objectType": "Mission",
+      "type": "governance",
+      "status": "candidate",
+      "confidence": 0.7,
+      "desc": "Example bounded mission exported from Maven."
+    },
+    {
+      "id": "maven:approval:example",
+      "label": "Example Approval",
+      "objectType": "Approval",
+      "type": "governance",
+      "status": "verified",
+      "confidence": 0.95
+    },
+    {
+      "id": "maven:action:example",
+      "label": "Example Governed Action",
+      "objectType": "Action",
+      "type": "agent",
+      "status": "candidate",
+      "confidence": 0.6,
+      "mode": "approved",
+      "approvalId": "maven:approval:example"
+    }
+  ],
+  "links": [
+    [
+      "maven:mission:example",
+      "maven:action:example",
+      "RECOMMENDS"
+    ],
+    [
+      "maven:action:example",
+      "maven:approval:example",
+      "REQUIRES"
+    ]
+  ]
+}

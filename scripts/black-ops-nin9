@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+DEST="$HOME/.gpt-doug/maven"
+
+MAVEN_LOCAL_NO_OPEN=1 sh "$ROOT/scripts/zyra-maven-local-ui"
+
+PORTFILE="$DEST/.maven-http.port"
+if [ ! -f "$PORTFILE" ]; then
+  echo "BLACK OPS NIN9: MAVEN port file missing" >&2
+  exit 1
+fi
+
+PORT="$(cat "$PORTFILE")"
+URL="http://127.0.0.1:$PORT/black-ops-nin9.html?cb=$(date +%s)"
+
+echo "BLACK OPS NIN9: $URL"
+echo "MODE: SYNTHETIC GAME ONLY"
+
+if command -v open >/dev/null 2>&1; then
+  open "$URL"
+fi

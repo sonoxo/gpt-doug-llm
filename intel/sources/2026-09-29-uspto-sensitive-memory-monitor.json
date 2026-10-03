@@ -1,0 +1,52 @@
+{
+  "schema": "xunia.uspto.user-capture.v1",
+  "source_id": "uspto-user-capture-US-12748837-B1-2026-09-29",
+  "authority": "USPTO Patent Public Search",
+  "ui_version": "4.4.0",
+  "captured_at": "2026-09-29",
+  "capture_basis": "user-supplied Patent Public Search text",
+  "document": {
+    "document_number": "US-12748837-B1",
+    "patent_number": "12748837",
+    "title": "Efficient monitoring of memory regions containing sensitive artifacts",
+    "published": "2026-09-29",
+    "application_number": "16/699361",
+    "filed": "2019-11-29",
+    "inventor": "Rene Ernesto Henriquez Garcia",
+    "assignee": "Amazon Technologies, Inc.",
+    "classification_signals": [
+      "G06F21/554",
+      "G06N20/00",
+      "G06F2221/034"
+    ]
+  },
+  "source_supported_architecture_signals": [
+    "sensitive-region descriptors identify memory regions containing security-sensitive artifacts",
+    "a hardware memory monitor detects accesses directed to protected regions",
+    "security rules are evaluated against detected accesses",
+    "mitigation operations can include aborting, delaying, notifying, approval gating, logging, shutdown, or rollback using a shadow copy",
+    "descriptors may be populated during trusted initialization and can be protected from later modification",
+    "monitoring can apply to CPU, GPU, management processors, peripheral processors, ASICs, FPGAs, CPLDs, IoT devices, and sensors",
+    "programmatic interfaces can configure protected regions, security rules, mitigation operations, monitoring state, logs, configuration, and statistics",
+    "machine-learning models or knowledge bases may assist identification of regions that benefit from monitoring"
+  ],
+  "gpt_doug_maven_mapping": {
+    "mode": "DEFENSIVE_SOFTWARE_ARCHITECTURE_WATCH_ONLY",
+    "patterns": [
+      "protected-artifact manifest for secrets, policy files, signed runtime artifacts, and critical configuration",
+      "policy evaluation before or immediately after sensitive artifact access",
+      "fail-closed write protection for immutable or approval-gated artifacts",
+      "notification and audit for permitted but sensitive access",
+      "human approval for consequential mutation",
+      "shadow-copy or checkpoint rollback for rejected changes",
+      "tamper-evident provenance for configuration changes",
+      "separate detection, rule evaluation, mitigation, and audit planes"
+    ],
+    "not_claimed": [
+      "no assertion that GPT-DOUG implements the patented hardware memory monitor",
+      "no claim copying",
+      "no freedom-to-operate conclusion",
+      "no legal conclusion"
+    ]
+  }
+}

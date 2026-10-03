@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "arsenalId": "VENDETTA_DEFENSIVE_ARSENAL_V1",
+  "layerId": "VENDETTA",
+  "parentControlPlane": "THE_BLACK_HOUSE_V1",
+  "mode": "DEFENSIVE_ONLY",
+  "description": "A non-destructive cyber-defense arsenal for detection, deception-aware analysis, evidence preservation, containment planning, recovery planning, and sandboxed adversary simulation.",
+  "weapons": [
+    {
+      "id": "WATCHTOWER",
+      "type": "DETECTION",
+      "purpose": "Score synthetic or supplied security events for defensive triage.",
+      "externalEffect": false
+    },
+    {
+      "id": "MIRROR",
+      "type": "ADVERSARY_EMULATION",
+      "purpose": "Generate synthetic attack-pattern events in an offline sandbox for testing detections.",
+      "externalEffect": false
+    },
+    {
+      "id": "BLACKBOX",
+      "type": "EVIDENCE_PRESERVATION",
+      "purpose": "Hash local evidence artifacts and produce provenance records.",
+      "externalEffect": false
+    },
+    {
+      "id": "AIRLOCK",
+      "type": "CONTAINMENT_PLANNING",
+      "purpose": "Generate human-reviewable containment steps without executing them.",
+      "externalEffect": false
+    },
+    {
+      "id": "REWIND",
+      "type": "RECOVERY_PLANNING",
+      "purpose": "Generate rollback and recovery checklists without mutating systems.",
+      "externalEffect": false
+    }
+  ],
+  "guardrails": {
+    "exploitGeneration": false,
+    "malwareGeneration": false,
+    "credentialCollection": false,
+    "destructiveActions": false,
+    "remoteCommandExecution": false,
+    "targetSelection": false,
+    "externalNetworkActions": false,
+    "automaticContainment": false,
+    "humanApprovalForConsequentialActions": true,
+    "sandboxedSimulationOnly": true,
+    "evidenceProvenanceRequired": true
+  },
+  "runtime": {
+    "entrypoint": "the-black-house/layers/vendetta/defensive_arsenal.py",
+    "networkRequired": false,
+    "stdlibOnly": true
+  }
+}

@@ -1,7 +1,7 @@
 {
   "knowledge_id": "palantir-stack-v1",
-  "version": "1.1.0",
-  "updated": "2026-09-06",
+  "version": "1.2.0",
+  "updated": "2026-09-07",
   "applies_to": [
     "GPT-DOUG-LLM",
     "Virginia-LLM",
@@ -15,7 +15,7 @@
     "TheOrangeHouse",
     "HOLO Forge"
   ],
-  "purpose": "Provider-aligned routing contract for Palantir Foundry, Ontology, AIP, Gotham, Defense OSDK, Automate, Apollo and JupyterLab Code Workspaces across the XUNIA / ZYRA ecosystem.",
+  "purpose": "Provider-aligned routing contract for Palantir Foundry, Ontology, AIP, Gotham, Defense OSDK, Automate, Apollo and JupyterLab Code Workspaces across the XUNIA / ZYRA ecosystem, extended with a sovereignty-oriented memory/compute/GPU/performance model.",
   "platform_model": {
     "Foundry": {
       "role": "governed ingestion, transforms, datasets, lineage and application data substrate",
@@ -99,29 +99,139 @@
       ]
     }
   },
+  "sovereignty_reference_model": {
+    "source": "operator-supplied Palantir-branded sovereignty architecture visual",
+    "interpretation_rule": "Use the visual as an architecture reference for GPT-DOUG. Do not treat visual labels alone as proof of tenant capability, licensing, deployment, or control over Palantir infrastructure.",
+    "layers_bottom_to_top": [
+      {
+        "name": "Data Sovereignty",
+        "gpt_doug_mapping": "governed datasets, durable evidence, lineage, retention, source ownership"
+      },
+      {
+        "name": "Compute & Logic Sovereignty",
+        "gpt_doug_mapping": "local CPU/GPU routing, bounded functions, deterministic transforms, workload policy"
+      },
+      {
+        "name": "Model Sovereignty",
+        "gpt_doug_mapping": "provider-neutral model routing, open/closed model choice, version/eval provenance"
+      },
+      {
+        "name": "Semantic Sovereignty",
+        "gpt_doug_mapping": "Ontology objects, links, properties, entity identity and shared meaning"
+      },
+      {
+        "name": "Kinetic Sovereignty",
+        "gpt_doug_mapping": "Actions and effects remain explicitly permissioned, observable, reviewable and reversible where possible"
+      },
+      {
+        "name": "Application Sovereignty",
+        "gpt_doug_mapping": "operator-owned applications and browser/OSDK clients using governed interfaces"
+      },
+      {
+        "name": "Knowledge Sovereignty",
+        "gpt_doug_mapping": "information -> reasoning -> action -> consequences with provenance and feedback converted back into governed knowledge"
+      }
+    ],
+    "knowledge_cycle": [
+      "information",
+      "reasoning",
+      "action",
+      "consequences",
+      "feedback-to-knowledge"
+    ]
+  },
+  "performance_overlay": {
+    "memory": {
+      "goal": "fast recall without allowing cache state to become authority",
+      "tiers": [
+        "L0 current request/context",
+        "L1 bounded in-process TTL/LRU cache",
+        "L2 local persisted indexes/checkpoints where explicitly enabled",
+        "L3 governed Ontology/dataset/evidence source of truth"
+      ],
+      "rules": [
+        "cache may accelerate reads but never silently override authoritative governed state",
+        "cache entries are disposable and bounded",
+        "provenance survives cache hits",
+        "sensitive data follows the source system's authorization and retention requirements"
+      ]
+    },
+    "compute": {
+      "goal": "route each workload to the least expensive capable compute path",
+      "local_backends": [
+        "cpu",
+        "cuda when runtime-available",
+        "mps when runtime-available",
+        "mlx on supported Apple-silicon environments when installed"
+      ],
+      "rules": [
+        "detect capability at runtime instead of assuming a GPU exists",
+        "keep a CPU fallback",
+        "bound concurrency to available local CPU capacity",
+        "do not represent local hardware detection as control of Foundry compute"
+      ]
+    },
+    "gpu": {
+      "goal": "accelerate model/tensor workloads only when the installed runtime can actually use the device",
+      "priority": [
+        "cuda",
+        "mps",
+        "mlx",
+        "cpu"
+      ],
+      "measurement": [
+        "backend availability",
+        "model-specific tokens-per-second when a model runner is attached",
+        "memory pressure",
+        "fallback rate"
+      ]
+    },
+    "speed": {
+      "goal": "reduce repeated work before adding hardware",
+      "mechanisms": [
+        "TTL/LRU caching for repeat knowledge and Ontology reads",
+        "bounded concurrency",
+        "batching where API/model semantics permit",
+        "request deduplication",
+        "lazy loading",
+        "local hardware profiling",
+        "repeatable benchmark snapshots",
+        "network round-trip and API latency telemetry"
+      ],
+      "truthfulness_rule": "A microbenchmark is only a local regression signal. Do not equate it with model tokens/second, Foundry performance, or GPU throughput."
+    }
+  },
   "ecosystem_layers": {
     "01-data-plane": [
       "Foundry"
     ],
-    "02-semantic-operational-plane": [
+    "02-compute-logic-plane": [
+      "local bounded compute",
+      "Foundry transforms/functions when authorized"
+    ],
+    "03-model-plane": [
+      "AIP",
+      "approved local model runtimes"
+    ],
+    "04-semantic-operational-plane": [
       "Ontology"
     ],
-    "03-reasoning-plane": [
+    "05-reasoning-plane": [
       "AIP"
     ],
-    "04-mission-operational-picture": [
+    "06-mission-operational-picture": [
       "Gotham"
     ],
-    "05-typed-application-plane": [
+    "07-typed-application-plane": [
       "Defense OSDK"
     ],
-    "06-workflow-plane": [
+    "08-workflow-plane": [
       "Automate"
     ],
-    "07-engineering-analysis-plane": [
+    "09-engineering-analysis-plane": [
       "JupyterLab"
     ],
-    "08-release-deployment-plane": [
+    "10-release-deployment-plane": [
       "Apollo"
     ],
     "cross-cutting": [
@@ -131,29 +241,36 @@
       "provenance",
       "audit",
       "human review",
-      "rollback"
+      "rollback",
+      "performance telemetry",
+      "bounded memory/cache"
     ]
   },
   "routing_policy": [
     "Use Foundry for governed ingestion, transforms, lineage and application data.",
     "Use AIP for model-assisted reasoning and agent workflows.",
     "Use the Ontology as the governed operational source of truth rather than unmanaged agent memory.",
+    "Use local cache only as a disposable acceleration layer; invalidate or refresh it when authoritative state changes.",
+    "Detect CPU/GPU capability at runtime and keep a CPU fallback instead of assuming accelerator availability.",
     "Use Gotham only for data and workflows exposed to the authorized Gotham enrollment.",
     "Use Defense OSDK only through tenant-generated typed clients and the invoking identity's permissions.",
     "Do not expose autonomous local targeting-and-fires execution; represent such data only where authorized for read-only context, simulation or review.",
     "Use Automate for bounded event/time workflows; stage consequential effects for human review where policy requires.",
     "Use Apollo for governed software delivery, never as ambient remote execution authority.",
     "Use JupyterLab Code Workspaces for exploratory analysis, model development and notebook-based Ontology work.",
-    "Re-authorize every cross-plane action and preserve identity, markings, provenance and audit logs."
+    "Re-authorize every cross-plane action and preserve identity, markings, provenance and audit logs.",
+    "Measure speed with workload-specific evidence; never infer Foundry or GPU performance from a generic local benchmark."
   ],
   "local_implementation": {
     "foundry_client": "palantir_foundry.py",
     "defense_osdk_contract": "palantir_defense_osdk.py",
     "terminal_bridge": "palantir_terminal.py",
     "capability_registry": "palantir_stack.py",
+    "sovereignty_performance_runtime": "sovereignty_performance.py",
+    "performance_command": "python sovereignty_performance.py --benchmark",
     "command": "/palantir stack"
   },
-  "truthfulness_rule": "Configuration flags describe intended integration only. They never imply Palantir licensing, enrollment, entitlement, credentials, connectivity, government affiliation, mission authority or weapons-release authority.",
+  "truthfulness_rule": "Configuration flags, architecture mappings, local accelerator detection and benchmark results describe intended integration or local runtime state only. They never imply Palantir licensing, enrollment, entitlement, credentials, connectivity, government affiliation, mission authority, weapons-release authority, control of Palantir infrastructure, or a performance guarantee.",
   "terminology": {
     "jupiter": "Normalized to JupyterLab because current Palantir documentation exposes JupyterLab through Code Workspaces; no Palantir product named Jupiter was verified."
   },

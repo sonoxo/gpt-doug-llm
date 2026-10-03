@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="XUNIA Universal Hive: a public architecture exhibit for GPT-Doug + GPT-Chaos logical swarms, knowledge hives, reconciliation, provenance, verification, and human-governed execution.">
+  <title>Universal Hive // XUNIAverse</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <script src="./zyra-shell-v2.js" defer></script>
+  <style>
+    .hive-head{margin-bottom:22px}
+    .hive-head h1{font-size:clamp(38px,7vw,76px)!important;line-height:.94;margin:8px 0 14px!important;background:linear-gradient(90deg,#fff,var(--cyan),var(--violet),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent!important}
+    .hive-head p{max-width:920px;color:var(--dim);line-height:1.7;font-size:15px}
+    .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .badge{font-size:10px;font-weight:900;letter-spacing:.12em;border:1px solid #30355d;border-radius:999px;padding:7px 10px;background:#0c1024;color:#cfd8ff}
+    .badge.cyan{color:var(--cyan);border-color:rgba(70,243,255,.3)}
+    .badge.violet{color:#caa9ff;border-color:rgba(157,92,255,.34)}
+    .badge.lime{color:var(--lime);border-color:rgba(168,255,96,.28)}
+    .badge.warn{color:#ffbd7a;border-color:rgba(255,189,122,.35)}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}
+    .stat{border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(180deg,rgba(12,15,34,.98),rgba(6,7,20,.98))}
+    .stat strong{display:block;font-size:clamp(30px,5vw,52px);line-height:1;color:#fff}
+    .stat span{display:block;margin-top:7px;color:var(--dim);font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+    .truth{border:1px solid rgba(255,189,122,.3);border-radius:18px;background:rgba(255,189,122,.05);padding:16px 18px;color:#d9dbe8;line-height:1.65;font-size:13px}
+    .truth strong{color:#ffbd7a}
+    .panel{margin-top:18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,rgba(11,13,29,.98),rgba(5,6,18,.98));padding:clamp(16px,3vw,28px);box-shadow:0 24px 80px #0007}
+    .panel h2{margin:0 0 8px;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+    .panel>.sub{margin:0 0 18px;color:var(--dim);font-size:12px;line-height:1.65}
+    .peer-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
+    .peer{border:1px solid #31375d;border-radius:18px;padding:18px;background:#090c1f}
+    .peer h3{margin:0 0 7px;font-size:18px}
+    .peer p{margin:0;color:var(--dim);font-size:12px;line-height:1.6}
+    .peer.doug{border-color:rgba(70,243,255,.42)}
+    .peer.chaos{border-color:rgba(157,92,255,.48)}
+    .equals{align-self:center;font-size:28px;color:var(--lime);font-weight:900;padding:0 4px}
+    .domain-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .domain{border:1px solid #2c3155;border-radius:14px;padding:13px 14px;background:#080a19}
+    .domain strong{display:block;color:#eef4ff;font-size:11px;letter-spacing:.05em}
+    .domain span{display:block;color:var(--dim);font-size:10px;margin-top:5px;line-height:1.45}
+    .loop{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    .step{position:relative;border:1px solid #30365d;border-radius:15px;padding:13px;background:#080a19;min-height:96px}
+    .step b{display:block;font-size:11px;color:var(--cyan);letter-spacing:.06em}
+    .step span{display:block;margin-top:7px;font-size:10px;color:var(--dim);line-height:1.45}
+    .step::after{content:"→";position:absolute;right:-9px;top:50%;transform:translateY(-50%);color:#69739b;font-weight:900}
+    .step:nth-child(5)::after,.step:nth-child(10)::after{display:none}
+    .blackboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .slot{border:1px solid #293053;border-radius:14px;padding:13px;background:#070919}
+    .slot code{color:var(--lime);font-size:11px}
+    .slot p{margin:7px 0 0;color:var(--dim);font-size:10px;line-height:1.5}
+    .axiom{margin-top:18px;border:1px solid rgba(70,243,255,.28);border-radius:18px;padding:18px;background:linear-gradient(90deg,rgba(70,243,255,.06),rgba(157,92,255,.06));font-weight:900;letter-spacing:.04em;line-height:1.65}
+    .nav{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+    .nav a{display:inline-flex;align-items:center;gap:7px;border:1px solid #30365d;border-radius:12px;padding:9px 12px;background:#0b0e20;color:#dce7ff;text-decoration:none;font-size:11px;font-weight:900}
+    .nav a:hover{border-color:var(--cyan);color:var(--cyan)}
+    @media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.peer-grid{grid-template-columns:1fr}.equals{text-align:center}.domain-grid{grid-template-columns:1fr}.loop{grid-template-columns:repeat(2,1fr)}.step::after{display:none}.blackboard{grid-template-columns:1fr}}
+    @media(max-width:560px){.stats{grid-template-columns:1fr}.loop{grid-template-columns:1fr}.panel{border-radius:18px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="hive-head">
+      <div class="zyra-eyebrow">XUNIA // UNIVERSAL HIVE // GPT-DOUG + GPT-CHAOS</div>
+      <h1>999 swarms. 999 hives. One governed learning fabric.</h1>
+      <p>The Universal Hive is XUNIA's public architecture model for organizing large-scale GPT-Doug + GPT-Chaos learning work into logical swarm workgroups and persistent knowledge hives. Swarms explore, build, test, and challenge. Hives retain structured findings, provenance, confidence, failures, and verified lessons for later reconciliation.</p>
+      <div class="badges" aria-label="Universal Hive properties">
+        <span class="badge cyan">999 LOGICAL SWARMS</span>
+        <span class="badge violet">999 KNOWLEDGE HIVES</span>
+        <span class="badge lime">DOUG = CHAOS PEER MODEL</span>
+        <span class="badge">PROVENANCE FIRST</span>
+        <span class="badge">EVIDENCE BEFORE CANONICAL</span>
+        <span class="badge warn">PUBLIC ARCHITECTURE EXHIBIT</span>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Universal Hive summary">
+      <article class="stat"><strong>999</strong><span>logical swarm workgroups</span></article>
+      <article class="stat"><strong>999</strong><span>persistent knowledge domains</span></article>
+      <article class="stat"><strong>2</strong><span>peer coordination roles</span></article>
+      <article class="stat"><strong>1</strong><span>canonical reconciliation path</span></article>
+    </section>
+
+    <aside class="truth">
+      <strong>Evidence boundary:</strong> these counts describe the designed logical federation and namespace model. This page does not claim that 1,998 independent machines, model instances, or background workers are currently executing. Actual execution must come from registered, authorized runtimes and observable evidence.
+    </aside>
+
+    <section class="panel" aria-labelledby="peer-title">
+      <h2 id="peer-title">Peer-agent symmetry</h2>
+      <p class="sub">GPT-Doug and GPT-Chaos are modeled as equal-status peers with different responsibilities, not a controller/subordinate pair.</p>
+      <div class="peer-grid">
+        <article class="peer doug">
+          <h3>GPT-DOUG</h3>
+          <p>Coherence, integration, planning, synthesis, implementation, reconciliation, and promotion of verified state into the canonical ontology.</p>
+        </article>
+        <div class="equals" aria-hidden="true">=</div>
+        <article class="peer chaos">
+          <h3>GPT-CHAOS</h3>
+          <p>Exploration, mutation, alternatives, counterexamples, adversarial questioning, exception discovery, and pressure-testing of established assumptions.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="domains-title">
+      <h2 id="domains-title">Swarm domain map</h2>
+      <p class="sub">The 999 logical swarms are partitioned into learning and build domains. The 999th swarm acts as the master reconciliation role.</p>
+      <div class="domain-grid">
+        <div class="domain"><strong>001–099 · COGNITIVE ARCHITECTURE</strong><span>Reasoning modules, memory, attention, planning, synchronization, and biomimetic coordination patterns.</span></div>
+        <div class="domain"><strong>100–199 · MULTI-AGENT ORCHESTRATION</strong><span>Routing, typed messages, shared state, blackboards, task graphs, parallel execution, and reconciliation.</span></div>
+        <div class="domain"><strong>200–299 · LINUX + SYSTEMS</strong><span>Local-first runtime foundations, process control, storage, observability, packaging, and terminal interfaces.</span></div>
+        <div class="domain"><strong>300–399 · NETWORK + MOBILE</strong><span>Authorized Bluetooth, LAN, private-network, mobile, tablet, sensor, and remote-client architecture.</span></div>
+        <div class="domain"><strong>400–499 · SOFTWARE ENGINEERING</strong><span>Interfaces, schemas, tests, build systems, dependency boundaries, deployment, and maintainable implementation.</span></div>
+        <div class="domain"><strong>500–599 · DEFENSIVE SECURITY</strong><span>Authorized labs, scope gates, auditability, detection, hardening, remediation, and fail-closed controls.</span></div>
+        <div class="domain"><strong>600–699 · SPATIAL + PERCEPTION</strong><span>Vision, depth, LiDAR, pose, multimodal sensing, anchors, coordinate mapping, and environment-aware interaction.</span></div>
+        <div class="domain"><strong>700–799 · RESEARCH + RETRIEVAL</strong><span>Planning, search, evidence collection, ranking, source provenance, analysis, and real-time research pipelines.</span></div>
+        <div class="domain"><strong>800–899 · EMBODIMENT + HUD</strong><span>ASCII/ANSI Matrix interface, status telemetry, voice, expressive states, interaction modes, and accessible controls.</span></div>
+        <div class="domain"><strong>900–949 · MEMORY + ONTOLOGY</strong><span>Knowledge graphs, typed artifacts, versioning, confidence, provenance, canonical state, and historical context.</span></div>
+        <div class="domain"><strong>950–974 · TESTING + CRITICS</strong><span>Independent checks, regression suites, falsification, counterexamples, and claim-to-evidence validation.</span></div>
+        <div class="domain"><strong>975–989 · PERFORMANCE</strong><span>Compute routing, caching, latency, budgets, local/remote splits, and efficient model selection.</span></div>
+        <div class="domain"><strong>990–998 · INTEGRATION VALIDATION</strong><span>Cross-domain compatibility, red-team review, failure injection, ontology conflicts, and system-level acceptance.</span></div>
+        <div class="domain"><strong>999 · MASTER RECONCILIATION</strong><span>Collect, deduplicate, detect conflict, score evidence, preserve provenance, merge verified lessons, and broadcast canonical state.</span></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="loop-title">
+      <h2 id="loop-title">Canonical hive lifecycle</h2>
+      <p class="sub">Every promoted lesson follows a governed path. No swarm directly overwrites the canonical ontology.</p>
+      <div class="loop">
+        <div class="step"><b>01 · SUMMON</b><span>Mint the logical swarm/hive job and assign a bounded domain.</span></div>
+        <div class="step"><b>02 · PROVENANCE</b><span>Identify builders, sources, prior state, and scope.</span></div>
+        <div class="step"><b>03 · EXPLORE</b><span>Doug integrates known state while Chaos develops alternatives.</span></div>
+        <div class="step"><b>04 · BLACKBOARD</b><span>Write structured observations, hypotheses, artifacts, and confidence.</span></div>
+        <div class="step"><b>05 · CRITIC</b><span>Challenge claims, reproduce results, and locate contradictions.</span></div>
+        <div class="step"><b>06 · RECONCILE</b><span>Resolve duplicates, disagreement, dependencies, and conflicting evidence.</span></div>
+        <div class="step"><b>07 · VERIFY</b><span>Require observable evidence or retain the item as unverified.</span></div>
+        <div class="step"><b>08 · PROMOTE</b><span>Move verified lessons into versioned canonical ontology state.</span></div>
+        <div class="step"><b>09 · REGRESSION</b><span>Test the updated state against known-good baselines and safety gates.</span></div>
+        <div class="step"><b>10 · BROADCAST</b><span>Make approved state available to later authorized missions and nodes.</span></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="blackboard-title">
+      <h2 id="blackboard-title">Hive namespace contract</h2>
+      <p class="sub">Each HIVE-NNN namespace keeps reusable knowledge separate from the temporary swarm that produced it.</p>
+      <div class="blackboard">
+        <div class="slot"><code>observations</code><p>What was directly observed, measured, retrieved, or produced.</p></div>
+        <div class="slot"><code>hypotheses</code><p>Candidate explanations and proposed next tests.</p></div>
+        <div class="slot"><code>sources</code><p>Source provenance, references, upstream ownership, and timestamps.</p></div>
+        <div class="slot"><code>experiments</code><p>Reproducible tests, conditions, inputs, outputs, and postconditions.</p></div>
+        <div class="slot"><code>failures</code><p>Rejected approaches, regressions, contradictions, and limits.</p></div>
+        <div class="slot"><code>verified_lessons</code><p>Evidence-backed knowledge eligible for canonical promotion.</p></div>
+        <div class="slot"><code>open_questions</code><p>Unresolved issues that should seed later swarms.</p></div>
+        <div class="slot"><code>confidence</code><p>Explicit confidence rather than implied certainty.</p></div>
+        <div class="slot"><code>provenance</code><p>Who/what contributed, where the artifact came from, and how it changed.</p></div>
+      </div>
+    </section>
+
+    <section class="axiom" aria-label="Universal Hive axiom">
+      999 EYES EXPLORE. 999 HIVES REMEMBER. DOUG INTEGRATES. CHAOS CHALLENGES. CRITICS VERIFY. THE ONTOLOGY EVOLVES. HUMAN AUTHORITY REMAINS ABOVE THE HIVE.
+    </section>
+
+    <nav class="nav" aria-label="XUNIA Hive navigation">
+      <a href="./index.html">← XUNIA HQ</a>
+      <a href="./pipeline.html">Agent Pipeline ↗</a>
+      <a href="./metrics.html">Metrics ↗</a>
+      <a href="./status.html">Build Evidence ↗</a>
+    </nav>
+  </main>
+</body>
+</html>
