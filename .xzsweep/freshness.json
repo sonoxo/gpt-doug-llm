@@ -1,8 +1,10 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-02T06:58:47Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-10-02T07:00:28Z",
+  "due_files_reviewed": 1,
+  "due_paths": [
+    ".github/workflows/xunia-zyra-contract.yml"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -865,13 +867,13 @@
     ".github/workflows/xunia-zyra-contract.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-26T00:26:58Z",
-      "reviewed_at": "2026-10-02T11:08:23Z",
-      "sha256": "fbf49bbde8840785f03b9a078c039e98d00cad21146fe5db01e21caa560528ed",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-09-28T04:38:12Z",
+      "reviewed_at": "2026-10-03T07:00:28Z",
+      "sha256": "a998f55485d88c9ee11572454e27606b565e6626bb935ea6df9b8bd5b83ecf1a",
       "size": 2036,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/xzsweep.yml": {
       "actions": [],
@@ -3395,10 +3397,10 @@
     "docs/assets/ecosystem-flow.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-30T05:56:40Z",
-      "reviewed_at": "2026-10-03T06:53:28Z",
-      "sha256": "7ab550ee7c394281516a24d7786796262916664f8feee4e52a276cbf4f68c8b5",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-03T06:58:49Z",
+      "reviewed_at": null,
+      "sha256": "4b2aef41d806559ae5ef7ecf8b24bb6a9bfbc6ee54ef778efdd3a4fa8d45a53a",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -15275,10 +15277,10 @@
     "wakeup3lm/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-30T05:44:35Z",
-      "reviewed_at": "2026-10-03T06:53:28Z",
-      "sha256": "64752b4c7df808e87cc23a569155c6c8a68f9005d779976e960b09e681c7c331",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-03T06:58:45Z",
+      "reviewed_at": null,
+      "sha256": "136233c3cb36dad823307709188730d70fe3c92eeb06ef54fada6b907b674c07",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -17749,7 +17751,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-03T06:58:47Z",
+  "generated_at": "2026-10-03T07:00:28Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
