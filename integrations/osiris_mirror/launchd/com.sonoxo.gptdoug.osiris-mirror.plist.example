@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.sonoxo.gptdoug.osiris-mirror</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>__REPO__/integrations/osiris_mirror/osiris_mirror.py</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>OSIRIS_BASE_URL</key><string>http://127.0.0.1:3000</string>
+    <key>OSIRIS_MIRROR_MIN_INTERVAL</key><string>30</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/tmp/gpt-doug-osiris-mirror.log</string>
+  <key>StandardErrorPath</key><string>/tmp/gpt-doug-osiris-mirror.err</string>
+</dict>
+</plist>
