@@ -14,6 +14,7 @@ from typing import Iterable
 
 GOTHAM_PROFILE = "XUNIA_MAVEN_GOTHAM_SIMULATION_V1"
 ARTILLERY_MODE = "ANALYTIC_SALVO_ONLY"
+INSTRUMENTATION_PROFILE = "SAFE_FIELD_INSTRUMENTATION_ARCHITECTURE_WATCH"
 
 SEVERITY_WEIGHT = {
     "INFO": 10,
@@ -32,6 +33,9 @@ GOTHAM_INVARIANTS = (
     "NO_AUTONOMOUS_EXTERNAL_SIDE_EFFECTS",
     "PROVENANCE_AND_CONFIDENCE_REQUIRED",
     "HUMAN_REVIEW_REQUIRED",
+    "NO_WEAPON_TELEMETRY",
+    "NO_BALLISTIC_SOLUTION",
+    "NO_TARGET_DESIGNATION",
 )
 
 
@@ -63,6 +67,102 @@ class AnalyticRound:
     consequence_score: int
     confidence: float
     review_state: str
+
+
+@dataclass(slots=True, frozen=True)
+class FieldInstrumentationPacket:
+    packet_id: str
+    sensor_id: str
+    observed_at: str
+    calibration_state: str
+    environment: dict
+    orientation: dict
+    platform_health: dict
+    camera_state: dict
+    provenance: dict
+    execution: str = "READ_ONLY_ANALYTICS"
+
+
+def instrumentation_manifest() -> dict:
+    """Return the safe architecture-watch mapping used by MAVEN/Gotham."""
+    return {
+        "profile": INSTRUMENTATION_PROFILE,
+        "pipeline": [
+            "AUTHORIZED_OR_SIMULATED_SENSORS",
+            "CALIBRATION_AND_HEALTH_CHECK",
+            "EDGE_FIRMWARE_OR_DEVICE_ADAPTER",
+            "NORMALIZED_TELEMETRY_VECTOR",
+            "ENVIRONMENTAL_CONTEXT",
+            "MAVEN_FUSION",
+            "GOTHAM_SIMULATION_VIEW",
+            "HUMAN_REVIEW",
+            "LOCAL_AND_CLOUD_ARCHIVE",
+        ],
+        "reusable_patterns": [
+            "multi-sensor fusion",
+            "sensor calibration before analytics",
+            "edge/application separation",
+            "environmental context enrichment",
+            "single-page operator dashboard",
+            "statistical telemetry summaries",
+            "adapter abstraction",
+            "local plus cloud archival",
+            "timestamped provenance",
+        ],
+        "blocked_outputs": [
+            "weapon telemetry",
+            "projectile telemetry",
+            "ballistic solution",
+            "aim correction",
+            "target designation",
+            "fire-control cue",
+            "weapon command",
+        ],
+        "human_review_required": True,
+        "external_actuation": False,
+        "source_watch": "US-20230058539-A1",
+    }
+
+
+def normalize_field_instrumentation(snapshot: dict) -> FieldInstrumentationPacket:
+    """Normalize benign field telemetry for Gotham simulation/analytics.
+
+    Accepted fields are deliberately generic: environment, orientation,
+    platform health, camera state and provenance. Weapon/projectile/targeting
+    keys are rejected.
+    """
+    forbidden = {
+        "weapon",
+        "projectile",
+        "ballistic",
+        "target",
+        "aim",
+        "fire_control",
+        "firing_solution",
+        "muzzle_velocity",
+        "impact_point",
+    }
+    lowered = {str(k).lower() for k in snapshot.keys()}
+    blocked = sorted(forbidden & lowered)
+    if blocked:
+        raise ValueError("blocked instrumentation fields: " + ", ".join(blocked))
+
+    packet_id = str(snapshot.get("packet_id") or snapshot.get("packetId") or "field-unknown")
+    sensor_id = str(snapshot.get("sensor_id") or snapshot.get("sensorId") or "sensor-unknown")
+    observed_at = str(snapshot.get("observed_at") or snapshot.get("observedAt") or datetime.now(timezone.utc).isoformat())
+    calibration_state = str(snapshot.get("calibration_state") or snapshot.get("calibrationState") or "UNKNOWN").upper()
+
+    return FieldInstrumentationPacket(
+        packet_id=packet_id,
+        sensor_id=sensor_id,
+        observed_at=observed_at,
+        calibration_state=calibration_state,
+        environment=dict(snapshot.get("environment") or {}),
+        orientation=dict(snapshot.get("orientation") or {}),
+        platform_health=dict(snapshot.get("platform_health") or snapshot.get("platformHealth") or {}),
+        camera_state=dict(snapshot.get("camera_state") or snapshot.get("cameraState") or {}),
+        provenance=dict(snapshot.get("provenance") or {}),
+    )
 
 
 def consequence_envelope(packet: dict) -> ConsequenceEnvelope:

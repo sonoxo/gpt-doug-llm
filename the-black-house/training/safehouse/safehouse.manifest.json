@@ -11,11 +11,18 @@
   },
   "integration": {
     "primaryConsumer": "RVIA",
-    "secondaryConsumers": ["GPT_DOUG_MAX", "XUNIA", "ZYRA"],
+    "secondaryConsumers": [
+      "GPT_DOUG_MAX",
+      "XUNIA",
+      "ZYRA"
+    ],
     "mode": "TRAINING_AND_SIMULATION_ONLY",
     "ingestPolicy": "Only public, user-authorized, licensed, or explicitly provided training materials may be ingested.",
     "credentialPolicy": "Do not store Safehouse credentials, session cookies, invite tokens, or account secrets in the repository.",
-    "classificationBoundary": "Do not ingest classified, CUI, need-to-know, stolen, or access-controlled government material unless explicitly authorized and handled in an approved environment."
+    "classificationBoundary": "Only public training material is supported. Classified, CUI, need-to-know, stolen, and access-controlled government material must not be ingested.",
+    "allowedClassifications": [
+      "public"
+    ]
   },
   "ontology": {
     "objectTypes": [
@@ -38,7 +45,28 @@
       "DERIVED_FROM",
       "ASSESSED_WITH",
       "REVIEWED_BY"
-    ]
+    ],
+    "objectTypeMap": {
+      "TrainingSource": "Source",
+      "Instructor": "User",
+      "CourseModule": "Resource",
+      "Scenario": "Mission",
+      "Task": "Action",
+      "EvidenceArtifact": "Evidence",
+      "AnalyticJudgment": "Decision",
+      "ConfidenceAssessment": "Decision",
+      "SourceProvenance": "Source"
+    },
+    "relationshipMap": {
+      "INSTRUCTS": "PRODUCES",
+      "CONTAINS": "USES",
+      "PRESENTS_SCENARIO": "PRODUCES",
+      "REQUIRES_TASK": "USES",
+      "SUPPORTED_BY": "EVIDENCES",
+      "DERIVED_FROM": "DERIVED_FROM",
+      "ASSESSED_WITH": "USES",
+      "REVIEWED_BY": "AUDITS"
+    }
   },
   "rviaPipeline": [
     "INGEST_PUBLIC_OR_USER_AUTHORIZED_TRAINING",

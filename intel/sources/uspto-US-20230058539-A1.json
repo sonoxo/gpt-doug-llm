@@ -1,0 +1,46 @@
+{
+  "id": "uspto-US-20230058539-A1",
+  "authority": "United States Patent and Trademark Office",
+  "source_kind": "user-supplied USPTO Patent Public Search text capture",
+  "captured": "2026-09-30",
+  "document_number": "US-20230058539-A1",
+  "title": "FIREARMS INSTRUMENTING SYSTEM INTEGRATING DISTINCT MEASUREMENTS THAT INFLUENCES THE BALISTIC TRAJECTORY AND ITS CORRESPONDING DATA RETRIEVAL",
+  "publication_date": "2023-02-23",
+  "applicant_or_assignee_from_supplied_record": [
+    "Ortega; Carlos Maria",
+    "Ponsiglione Rios; Giosue Martin"
+  ],
+  "source_supported_architecture": {
+    "measurement_fusion": [
+      "multiple sensor inputs are collected by a microprocessor",
+      "sensor calibration is part of the measurement pipeline",
+      "environmental data can be requested from weather sources",
+      "local application software presents fused data in a single operator interface"
+    ],
+    "software_split": [
+      "embedded or resident firmware performs measurement and calibration functions",
+      "a separate application layer handles user interaction, external data access and storage"
+    ],
+    "connectivity_and_storage": [
+      "wired and wireless interfaces connect sensors and peripherals to the application",
+      "camera and environmental data can be integrated",
+      "records can be stored locally and in cloud storage"
+    ],
+    "user_experience": [
+      "single-page operational dashboard",
+      "live telemetry presentation",
+      "statistical summaries",
+      "time-stamped records for later analysis"
+    ]
+  },
+  "excluded_from_gpt_doug_maven_gotham_injection": [
+    "weapon aiming correction",
+    "ballistic trajectory solution",
+    "projectile or muzzle instrumentation implementation",
+    "impact detection for targeting",
+    "fire-control data",
+    "target designation",
+    "weapon actuation"
+  ],
+  "safe_reuse_rule": "Only the generic instrumentation architecture is retained: calibration, sensor fusion, edge/application separation, environmental context, operator UI, provenance, and local/cloud archival. Weapon-specific calculations and actuation are excluded."
+}

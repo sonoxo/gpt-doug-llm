@@ -1,0 +1,87 @@
+/* MAVEN SI visible support matrix
+   Keeps the newly wired public/non-kinetic capabilities above the fold. */
+.support-matrix-card{
+  border-color:#355b42;
+  background:
+    radial-gradient(circle at 85% 8%,rgba(85,242,194,.08),transparent 34%),
+    linear-gradient(180deg,#09130e,#080c09);
+}
+.support-matrix-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+.support-matrix-head h2{margin:0;color:#8fffb5}
+.support-matrix-badge{
+  flex:0 0 auto;
+  padding:3px 6px;
+  border:1px solid #3d6b4a;
+  border-radius:999px;
+  color:#aef9c4;
+  background:#071009;
+  font-size:8px;
+  letter-spacing:.08em;
+}
+.support-matrix-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;
+}
+.support-action{
+  display:grid;
+  place-items:center;
+  min-height:52px;
+  margin:0;
+  padding:7px 5px;
+  border:1px solid #31513c;
+  border-radius:8px;
+  background:linear-gradient(180deg,#101a13,#09100b);
+  color:#dff7e6;
+  text-align:center;
+  text-decoration:none;
+  font-size:9px;
+  font-weight:800;
+  line-height:1.2;
+  letter-spacing:.025em;
+}
+.support-action:hover{
+  border-color:#55f2c2;
+  transform:translateY(-1px);
+}
+.support-action .support-icon{
+  display:block;
+  margin-bottom:3px;
+  font-size:16px;
+}
+.support-action.external{border-color:#28566a;color:#d9f5ff}
+.support-action.defense{border-color:#6d5d2b;color:#ffe59a}
+.support-action.humanitarian{border-color:#446c77;color:#b9ecff}
+.support-matrix-state{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  margin-top:7px;
+}
+.support-state{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  border:1px solid #26382c;
+  border-radius:6px;
+  padding:5px 6px;
+  background:#050a07;
+  color:var(--muted);
+  font-size:8px;
+}
+.support-state b{color:#bfffd0}
+.support-state.lock b{color:#ffd166}
+@media(max-width:1180px) and (min-width:901px){
+  .support-matrix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:430px){
+  .support-matrix-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .support-matrix-state{grid-template-columns:1fr}
+}

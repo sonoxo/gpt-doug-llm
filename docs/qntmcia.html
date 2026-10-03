@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050510">
+  <meta name="description" content="QNTMCIA: XUNIA public-source global awareness exhibit for openly available aviation, Earth observation, weather, traffic-camera, and released-media resources.">
+  <title>QNTMCIA // XUNIA</title>
+  <link rel="stylesheet" href="./zyra-theme.css">
+  <link rel="stylesheet" href="./museum.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="zyra-hero" aria-labelledby="qntmcia-title">
+      <div class="zyra-eyebrow">XUNIA // QNTMCIA // PUBLIC OSINT</div>
+      <h1 id="qntmcia-title">QNTMCIA</h1>
+      <p><strong>Quantum Networked Tactical-Mesh Cognitive Intelligence Architecture</strong> is a public-source situational-awareness exhibit inside XUNIA.</p>
+      <div class="zyra-badges" aria-label="QNTMCIA guardrails">
+        <span class="zyra-badge live">● PUBLIC SOURCES</span>
+        <span class="zyra-badge">HUMAN FIRST</span>
+        <span class="zyra-badge">OBSERVE ONLY</span>
+        <span class="zyra-badge">NO RESTRICTED FEEDS</span>
+        <span class="zyra-badge">NO WEAPONS CONTROL</span>
+      </div>
+      <p class="hq-note">QNTMCIA is designed for openly available, lawful information sources. It does not provide access to restricted military networks, private surveillance systems, tactical command-and-control systems, targeting systems, or non-public feeds.</p>
+    </section>
+
+    <section class="museum-map" aria-labelledby="ukraine-alerts-title">
+      <div class="museum-map-head">
+        <div><div class="zyra-eyebrow">CIVIL DEFENSE</div><h2 id="ukraine-alerts-title">Ukraine Civil Alerts</h2></div>
+        <p id="ukraineAlertStatus">Connecting to UkraineAlarm…</p>
+      </div>
+      <div id="ukraineAlertGrid" class="department-grid" aria-live="polite"></div>
+      <p class="hq-note">Source: UkraineAlarm API. This panel is limited to public civil-defense alert summaries and intentionally omits tactical tracking, coordinates, restricted feeds, and operational control.</p>
+    </section>
+
+    <section class="zyra-grid" aria-label="QNTMCIA public-source launch surfaces">
+      <a class="zyra-card" href="https://globe.adsbexchange.com/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">PUBLIC AVIATION</div><h2>ADS-B Exchange Globe</h2><p>Open aircraft-broadcast visualization for publicly visible ADS-B traffic.</p>
+      </a>
+      <a class="zyra-card" href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">EARTH OBSERVATION</div><h2>NASA Worldview</h2><p>Near-real-time public Earth-observation imagery and environmental layers.</p>
+      </a>
+      <a class="zyra-card" href="https://earth.nullschool.net/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">ATMOSPHERE</div><h2>Earth Nullschool</h2><p>Public global weather, wind, ocean, and atmospheric visualization.</p>
+      </a>
+      <a class="zyra-card" href="https://zoom.earth/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">WEATHER SATELLITE</div><h2>Zoom Earth</h2><p>Public satellite and weather imagery for global environmental awareness.</p>
+      </a>
+      <a class="zyra-card" href="https://511.vdot.virginia.gov/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">PUBLIC TRANSPORTATION</div><h2>VDOT 511</h2><p>Public roadway, incident, and transportation-camera information published by Virginia.</p>
+      </a>
+      <a class="zyra-card" href="https://www.dvidshub.net/" target="_blank" rel="noopener noreferrer">
+        <span class="arrow" aria-hidden="true">↗</span><div class="kicker">RELEASED MEDIA</div><h2>DVIDS</h2><p>Officially released U.S. military photos, video, news, and public webcasts.</p>
+      </a>
+    </section>
+
+    <section class="museum-map" aria-labelledby="qntmcia-rules-title">
+      <div class="museum-map-head">
+        <div><div class="zyra-eyebrow">BOUNDARIES</div><h2 id="qntmcia-rules-title">Public-awareness operating model</h2></div>
+      </div>
+      <div class="hq-flow">
+        <div class="flow-step"><strong>01 SOURCE</strong><span>Publicly accessible source</span></div>
+        <div class="flow-step"><strong>02 VERIFY</strong><span>Check provenance and freshness</span></div>
+        <div class="flow-step"><strong>03 DISPLAY</strong><span>Present observational context</span></div>
+        <div class="flow-step"><strong>04 ATTRIBUTE</strong><span>Preserve source ownership</span></div>
+        <div class="flow-step"><strong>05 BOUND</strong><span>No restricted or control access</span></div>
+      </div>
+    </section>
+
+    <script>
+    (async () => {
+      const status = document.getElementById("ukraineAlertStatus");
+      const grid = document.getElementById("ukraineAlertGrid");
+      try {
+        const res = await fetch("https://xunia-ops-api.onrender.com/api/qntmcia/ukraine/civil-alerts", {cache:"no-store"});
+        const payload = await res.json();
+        if (!res.ok || !payload.ok) throw new Error(payload.error || "alert service unavailable");
+        const regions = Array.isArray(payload.regions) ? payload.regions : [];
+        const active = regions.filter(r => Array.isArray(r.active_alerts) && r.active_alerts.length);
+        status.textContent = active.length + " regions currently reporting active civil alerts";
+        grid.innerHTML = active.length
+          ? active.map(r => {
+              const alerts = r.active_alerts.map(a => {
+                const when = a.last_update ? new Date(a.last_update).toLocaleString() : "time unavailable";
+                return "<li><strong>" + escapeHtml(a.type) + "</strong> · " + escapeHtml(when) + "</li>";
+              }).join("");
+              return '<article class="repo-card"><div class="repo-card-head"><div><div class="repo-language">UKRAINEALARM</div><h3>' +
+                escapeHtml(r.region_name) + '</h3></div></div><ul>' + alerts + '</ul></article>';
+            }).join("")
+          : '<article class="repo-card"><h3>No active civil alerts returned</h3><p>Source responded successfully.</p></article>';
+      } catch (err) {
+        status.textContent = "Civil-alert feed unavailable";
+        grid.innerHTML = '<article class="repo-card"><h3>Feed unavailable</h3><p>' + escapeHtml(String(err.message || err)) + '</p></article>';
+      }
+      function escapeHtml(v) {
+        return String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+      }
+    })();
+    </script>
+
+    <footer class="zyra-footer">
+      <span>QNTMCIA · XUNIA public-source awareness exhibit.</span>
+      <span><a href="./index.html">← Return to XUNIA Museum + HQ</a></span>
+    </footer>
+  </main>
+</body>
+</html>

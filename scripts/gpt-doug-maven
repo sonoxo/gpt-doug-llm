@@ -1,0 +1,293 @@
+#!/bin/sh
+set -eu
+
+CONFIG="$HOME/.gpt-doug/env"
+if [ -f "$CONFIG" ]; then
+  set -a
+  . "$CONFIG"
+  set +a
+fi
+
+resolve_root() {
+  script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+  script_root="$(CDPATH= cd -- "$script_dir/.." && pwd)"
+  for candidate in     "${GPT_DOUG_ROOT:-}"     "$script_root"     "$HOME/.config/gptdoug/src/gpt-doug-llm"     "$HOME/gpt-doug-llm"     "$HOME/Downloads/gpt-doug-llm"
+  do
+    [ -n "$candidate" ] || continue
+    if [ -f "$candidate/gpt_doug_max.py" ] && [ -f "$candidate/scripts/zyra-maven" ]; then
+      (CDPATH= cd -- "$candidate" && pwd)
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "❌ GPT-DOUG repository root not found." >&2
+  echo "Set GPT_DOUG_ROOT or restore ~/.config/gptdoug/src/gpt-doug-llm." >&2
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
+SEED="$ROOT/safety-shield/agents/knowledge/patents/us-12748837-b1-sensitive-memory-monitor-seed.json"
+SOURCE="$ROOT/intel/sources/2026-09-29-uspto-sensitive-memory-monitor.json"
+MATRIX="$ROOT/scripts/maven-matrix"
+PATENT_SCOPE="$ROOT/scripts/gpt_doug_max_patent_scope.py"
+CAPABILITIES="$ROOT/robotics-intel-site/maven-public-capabilities.json"
+EARTH_CSS="$ROOT/robotics-intel-site/maven-earth-observation.css"
+DEFENSE_MANIFEST="$ROOT/the-black-house/kraken/us-defense-support.manifest.json"
+MISSION_WORKBENCH="$ROOT/agents/mission_support_workbench.py"
+LOCAL_UI="$ROOT/scripts/zyra-maven-local-ui"
+ECO_FABRIC="$ROOT/scripts/maven-eco-fabric.py"
+GOTHAM_INSTRUMENTATION="$ROOT/safety-shield/agents/knowledge/gpt-doug-maven-gotham-instrumentation-v1.json"
+GOTHAM_MODE="$ROOT/maven_gotham_mode.py"
+
+usage() {
+  cat <<'EOF'
+Usage: gpt-doug-maven [open|matrix|join|flight|gotham-intel|eco|eco-doctor|earth|sources|support|support-doctor|status|memory-guard|doctor|show-source]
+
+  open         Open the local MAVEN matrix
+  matrix       Alias for open
+  join         Join GPT-DOUG + MAVEN + GOTHAM synthetic flight workspace
+  flight       Alias for join
+  gotham-intel Show the safe GPT-DOUG + MAVEN + GOTHAM instrumentation architecture
+  eco          Open the MAVEN ECO FABRIC runtime dashboard
+  eco-doctor   Validate the ecosystem runtime fabric
+  earth        Open the public Earth-observation stack
+  sources      List the public Earth-observation portals
+  support      Activate non-kinetic Armed Forces support mode
+  support-doctor Validate defense-support manifest and workbench
+  status       Show GPT-DOUG-MAVEN integration state
+  memory-guard Show the independent defensive mapping derived from US-12748837-B1
+  doctor       Validate the patent seed and local MAVEN launcher
+  show-source  Print the provenance-preserving source record
+EOF
+}
+
+print_guard() {
+  python3 - "$SEED" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+m=d["scope_model"]
+print("🛡️ GPT-DOUG-MAVEN // SENSITIVE ARTIFACT GUARD")
+print("================================================")
+print("Source patent ....", d["patent_id"])
+print("Source title .....", d["title"])
+print("Mode ............. INDEPENDENT_DEFENSIVE_SOFTWARE_MAPPING")
+print("Hardware clone ... false")
+print("Claim copying .... false")
+print("External action .. human-approved only")
+print("\nIndependent mapping:")
+for x in m["gpt_doug_maven_independent_mapping"]:
+    print("  •", x)
+print("\nMandatory boundaries:")
+for x in d["schematic_seed"]["mandatory_safety_boundaries"]:
+    print("  •", x)
+PY
+}
+
+doctor() {
+  fail=0
+  for path in "$SEED" "$SOURCE" "$MATRIX" "$PATENT_SCOPE" "$CAPABILITIES" "$EARTH_CSS" "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" "$LOCAL_UI" "$ECO_FABRIC" "$GOTHAM_INSTRUMENTATION" "$GOTHAM_MODE"; do
+    if [ -e "$path" ]; then echo "✅ $path"; else echo "❌ missing: $path"; fail=1; fi
+  done
+  if [ "$fail" -ne 0 ]; then return 1; fi
+  python3 "$PATENT_SCOPE" doctor
+  python3 "$ECO_FABRIC" doctor
+  python3 - "$SEED" "$SOURCE" <<'PY'
+import json, pathlib, sys
+seed=json.loads(pathlib.Path(sys.argv[1]).read_text())
+source=json.loads(pathlib.Path(sys.argv[2]).read_text())
+assert seed["patent_id"]=="US-12748837-B1"
+assert seed["independent_design_policy"]["copy_claim_language"] is False
+assert seed["independent_design_policy"]["assert_freedom_to_operate"] is False
+assert source["document"]["document_number"]=="US-12748837-B1"
+assert source["gpt_doug_maven_mapping"]["mode"]=="DEFENSIVE_SOFTWARE_ARCHITECTURE_WATCH_ONLY"
+print("✅ GPT-DOUG-MAVEN memory-guard provenance: GREEN")
+PY
+  python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+assert d["schema"]=="xunia.maven-si.public-capabilities.v1"
+assert d["controls"]["precise_targeting"] is False
+assert d["controls"]["weapon_control"] is False
+assert d["controls"]["public_environmental_awareness"] is True
+ids={x["id"] for x in d["sources"]}
+required={"openstreetmap","open_meteo","usgs_earthquakes","nasa_eonet","zoom_earth","nullschool_earth","nasa_worldview","local_simulation"}
+assert required <= ids
+print(f"✅ MAVEN SI public capability mesh: GREEN ({len(d['sources'])} sources/capability nodes)")
+PY
+}
+
+cmd="${1:-open}"
+case "$cmd" in
+  open|matrix)
+    exec sh "$MATRIX" open
+    ;;
+  join|flight)
+    echo "🛸 GPT-DOUG-LLM // MAVEN // GOTHAM JOIN"
+    echo "MODE ............. SYNTHETIC_FLIGHT_AND_TRAJECTORY"
+    echo "REAL DRONE LINK .. OFF"
+    echo "GEO ROUTE LINK ... OFF"
+    echo "TARGETING ........ OFF"
+    echo "EXTERNAL ACTION .. OFF"
+    MAVEN_LOCAL_NO_OPEN=1 sh "$LOCAL_UI"
+    portfile="$HOME/.gpt-doug/maven/.maven-http.port"
+    port="$(cat "$portfile" 2>/dev/null || printf '%s' "${MAVEN_LOCAL_PORT:-8787}")"
+    url="http://127.0.0.1:$port/maven-broadcast.html?join=gotham-flight&cb=$(date +%s)"
+    echo "JOIN URL ......... $url"
+    if command -v open >/dev/null 2>&1; then
+      open "$url"
+    else
+      printf '%s\n' "$url"
+    fi
+    ;;
+  gotham-intel)
+    echo "🧠 GPT-DOUG // MAVEN // GOTHAM INSTRUMENTATION"
+    python3 - "$GOTHAM_INSTRUMENTATION" "$GOTHAM_MODE" <<'PY'
+import importlib.util, json, pathlib, sys
+knowledge=json.loads(pathlib.Path(sys.argv[1]).read_text())
+spec=importlib.util.spec_from_file_location("maven_gotham_mode", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); sys.modules[spec.name]=mod; spec.loader.exec_module(mod)
+manifest=mod.instrumentation_manifest()
+print("MODE .............", manifest["profile"])
+print("SOURCE WATCH .....", manifest["source_watch"])
+print("PIPELINE .........")
+for step in manifest["pipeline"]:
+    print("  ->", step)
+print("REUSABLE .........")
+for item in manifest["reusable_patterns"]:
+    print("  •", item)
+print("BOUNDARIES .......")
+for item in manifest["blocked_outputs"]:
+    print("  ✕", item)
+print("EXTERNAL ACTION ..", manifest["external_actuation"])
+print("KNOWLEDGE FILE ...", sys.argv[1])
+assert knowledge["controls"]["weapon_control"] is False
+assert knowledge["controls"]["fire_control"] is False
+assert knowledge["controls"]["target_generation"] is False
+PY
+    ;;
+  eco)
+    echo "🌐 GPT-DOUG-MAVEN // ECO FABRIC"
+    python3 "$ECO_FABRIC" doctor
+    MAVEN_LOCAL_NO_OPEN=1 sh "$LOCAL_UI"
+    portfile="$HOME/.gpt-doug/maven/.maven-http.port"
+    port="$(cat "$portfile" 2>/dev/null || printf '%s' "${MAVEN_LOCAL_PORT:-8787}")"
+    url="http://127.0.0.1:$port/maven-eco.html?cb=$(date +%s)"
+    echo "ECO URL .......... $url"
+    if command -v open >/dev/null 2>&1; then
+      open "$url"
+    else
+      printf '%s\n' "$url"
+    fi
+    ;;
+  eco-doctor)
+    python3 "$ECO_FABRIC" doctor
+    ;;
+  earth)
+    echo "🌍 GPT-DOUG-MAVEN // EARTH OBSERVATION STACK"
+    echo "Opening public civilian/environmental portals..."
+    if command -v open >/dev/null 2>&1; then
+      open "https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z"
+      open "https://earth.nullschool.net/"
+      open "https://worldview.earthdata.nasa.gov/"
+    else
+      printf '%s\n' \
+        "https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z" \
+        "https://earth.nullschool.net/" \
+        "https://worldview.earthdata.nasa.gov/"
+    fi
+    ;;
+  sources)
+    python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+d=json.loads(pathlib.Path(sys.argv[1]).read_text())
+print("🌍 GPT-DOUG-MAVEN // PUBLIC CAPABILITY MESH")
+print("="*58)
+for src in d["sources"]:
+    caps=", ".join(src.get("capabilities", []))
+    print(f"{src['name']}")
+    print(f"  type .... {src['type']}")
+    if src.get("url"): print(f"  url ..... {src['url']}")
+    print(f"  caps .... {caps}")
+print("\nMode:", d["mode"])
+print("Project API keys required by default mesh: NO")
+print("Targeting / weapons / kinetic execution: OFF")
+PY
+    ;;
+  support)
+    echo "🛡️ GPT-DOUG-MAVEN // ARMED FORCES SUPPORT"
+    python3 - "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" <<'PY'
+import importlib.util, json, pathlib, sys
+manifest=json.loads(pathlib.Path(sys.argv[1]).read_text())
+spec=importlib.util.spec_from_file_location("mission_support_workbench", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+wb=mod.workbench_manifest()
+print("MODE .............", manifest["mode"])
+print("HUMAN AUTHORITY ..", manifest["humanAuthority"])
+print("WORKBENCH ........", wb["mode"])
+print("CAPABILITIES .....")
+for x in manifest["capabilities"]:
+    print("  •", x)
+print("CONTROL BOUNDARY . NON-KINETIC / DECISION SUPPORT / SIMULATION")
+print("WEAPON CONTROL ... OFF")
+print("TARGET SELECTION . OFF")
+print("KINETIC ACTION ... OFF")
+PY
+    sh "$MATRIX" open
+    ;;
+  support-doctor)
+    python3 - "$DEFENSE_MANIFEST" "$MISSION_WORKBENCH" <<'PY'
+import importlib.util, json, pathlib, sys
+m=json.loads(pathlib.Path(sys.argv[1]).read_text())
+assert m["humanAuthority"]=="REQUIRED"
+assert m["deploymentReadiness"]["operationalMilitarySystem"] is False
+assert all(m["prohibitedAutonomy"][k] is True for k in ["weaponControl","targetSelection","fireControl","kineticEngagement","lethalDecisionMaking"])
+spec=importlib.util.spec_from_file_location("mission_support_workbench", sys.argv[2])
+mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+wb=mod.workbench_manifest()
+assert wb["controls"]["humanReviewRequired"] is True
+assert wb["controls"]["externalActuation"] is False
+print("✅ MAVEN ARMED FORCES SUPPORT DOCTOR: GREEN")
+PY
+    ;;
+  status)
+    echo "🧠 GPT-DOUG-MAVEN"
+    echo "ROOT ............. $ROOT"
+    echo "MATRIX ........... $MATRIX"
+    echo "PATENT SEED ...... $SEED"
+    echo "SOURCE ........... $SOURCE"
+    echo "ECO FABRIC ........ WIRED (runtime registry + capability probes)"
+    echo "EARTH OBSERVATION  WIRED (Zoom Earth / Nullschool / NASA Worldview)"
+    [ -f "$DEFENSE_MANIFEST" ] && echo "FORCES SUPPORT .... WIRED (non-kinetic)" || echo "FORCES SUPPORT .... MISSING"
+    if [ -f "$CAPABILITIES" ]; then
+      count="$(python3 - "$CAPABILITIES" <<'PY'
+import json, pathlib, sys
+print(len(json.loads(pathlib.Path(sys.argv[1]).read_text())["sources"]))
+PY
+)"
+      echo "PUBLIC CAP MESH .. $count nodes"
+    else
+      echo "PUBLIC CAP MESH .. MISSING"
+    fi
+    [ -f "$SEED" ] && echo "MEMORY GUARD ..... WIRED" || echo "MEMORY GUARD ..... MISSING"
+    sh "$MATRIX" status || true
+    ;;
+  memory-guard)
+    print_guard
+    ;;
+  doctor)
+    doctor
+    ;;
+  show-source)
+    cat "$SOURCE"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    echo "❌ unknown gpt-doug-maven command: $cmd" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030604">
+<title>GPT-MAVEN // ROVER OPS</title>
+<link rel="stylesheet" href="./maven-clean.css">
+<style>
+:root{--bg:#020503;--panel:#061008;--line:#294933;--text:#edf6ef;--muted:#819487;--lime:#9cffaa;--cyan:#82e8ff;--amber:#ffd166}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+body{display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+header{display:flex;align-items:center;gap:7px;min-height:48px;padding:7px max(8px,env(safe-area-inset-right)) 7px max(8px,env(safe-area-inset-left));border-bottom:1px solid var(--line);background:#050a06;overflow-x:auto;white-space:nowrap}
+.brand{color:var(--cyan);font-weight:950}.chip{border:1px solid #31523b;border-radius:999px;background:#071009;color:#a7b8ac;padding:5px 8px;font-size:8px}.chip.ok{color:var(--lime)}.chip.warn{color:var(--amber)}
+main{min-height:0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.7fr);gap:7px;padding:7px}
+.panel{min-height:0;border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#061008,#030604);overflow:hidden}
+.panel-head{min-height:38px;display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid var(--line);color:var(--amber);font-size:9px;font-weight:900}
+.panel-head .spacer{flex:1}
+.stage{position:relative;height:100%;min-height:320px;overflow:hidden;background:
+radial-gradient(circle at 50% 35%,rgba(130,232,255,.06),transparent 32%),
+repeating-linear-gradient(0deg,transparent 0 35px,rgba(156,255,170,.045) 36px),
+repeating-linear-gradient(90deg,transparent 0 35px,rgba(156,255,170,.045) 36px),#020604}
+#roverCanvas{width:100%;height:100%;display:block}
+.hud{position:absolute;top:8px;left:8px;right:8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;pointer-events:none}
+.hud div{border:1px solid #294933;border-radius:7px;background:rgba(3,9,5,.82);padding:5px 6px;color:#789181;font-size:7px}.hud b{display:block;margin-top:2px;color:#eaf3eb;font-size:9px}.hud .good b{color:var(--lime)}.hud .info b{color:var(--cyan)}
+.controls{position:absolute;left:8px;bottom:8px;display:grid;grid-template-columns:repeat(3,54px);gap:5px}
+.controls button,.toolbar button{min-height:42px;border:1px solid #31523b;border-radius:8px;background:#071009;color:#dce9df;padding:6px;font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer}.controls button.active,.toolbar button.active{background:#16321f;color:var(--lime)}
+.controls .blank{visibility:hidden}
+.side{display:grid;grid-template-rows:auto auto minmax(0,1fr)}
+.toolbar{display:flex;gap:5px;overflow-x:auto;padding:7px;border-bottom:1px solid var(--line);scrollbar-width:none}.toolbar button{flex:0 0 auto}
+.list{overflow:auto;padding:8px}.card{border:1px solid #263a2b;border-radius:9px;background:#050a06;padding:9px;margin-bottom:7px}.card h3{margin:0 0 5px;color:var(--lime);font-size:10px}.card p{margin:0 0 7px;color:var(--muted);font-size:8px;line-height:1.45}.meta{display:flex;gap:6px;flex-wrap:wrap;color:#789181;font-size:7px;margin-bottom:6px}.card a{display:inline-flex;align-items:center;min-height:36px;border:1px solid #31523b;border-radius:8px;background:#08110a;color:#dff2e4;padding:6px 8px;text-decoration:none;font-size:8px;font-weight:850;margin-right:5px;margin-top:4px}
+.boundary{padding:8px;border-top:1px solid var(--line);background:#050a06;color:#8a9a8f;font-size:8px;line-height:1.45}
+@media(max-width:900px){main{display:block;position:relative}.panel{position:absolute;inset:5px}.side{display:none}.hud{grid-template-columns:repeat(2,minmax(0,1fr))}.hud div:nth-child(n+3){display:none}}
+</style>
+</head>
+<body>
+<header data-no-translate="true">
+  <div class="brand">🛞 GPT-MAVEN // ROVER OPS</div>
+  <span class="chip ok">PUBLIC ROVERS INDEXED</span>
+  <span class="chip">AUTHORIZED FLEET CONNECTOR READY</span>
+  <span class="chip warn">COMMAND WRITE OFF</span>
+</header>
+<main>
+  <section class="panel">
+    <div class="panel-head"><span>ROVER SIMULATION DECK</span><span class="spacer"></span><span>LOCAL VISUAL SIM</span></div>
+    <div class="stage">
+      <canvas id="roverCanvas" aria-label="Synthetic rover simulation"></canvas>
+      <div class="hud" data-no-translate="true">
+        <div class="good">ROVER<b id="roverName">SIM-ROVER-01</b></div>
+        <div class="info">HEADING<b id="heading">000°</b></div>
+        <div class="info">SPEED<b id="speed">0.0 m/s</b></div>
+        <div class="good">BATTERY<b id="battery">100%</b></div>
+      </div>
+      <div class="controls" data-no-translate="true">
+        <span class="blank"></span><button data-drive="forward">▲</button><span class="blank"></span>
+        <button data-drive="left">◀</button><button data-drive="stop">■</button><button data-drive="right">▶</button>
+        <span class="blank"></span><button data-drive="reverse">▼</button><span class="blank"></span>
+      </div>
+    </div>
+  </section>
+  <section class="panel side">
+    <div class="panel-head"><span>ROVER DIRECTORY</span><span class="spacer"></span><span id="roverCount">—</span></div>
+    <div class="toolbar" data-no-translate="true">
+      <button class="active" data-filter="all">ALL</button>
+      <button data-filter="active">ACTIVE</button>
+      <button data-filter="archive">ARCHIVE</button>
+      <button data-filter="authorized">AUTHORIZED</button>
+    </div>
+    <div class="list" id="roverList">Loading rover registry…</div>
+    <div class="boundary">PUBLIC mission data and operator-authorized rover integrations only. No takeover of third-party rovers. Command writes stay off until an owner-authorized connector, allowlist, human approval gate, failsafe, and audit path are configured.</div>
+  </section>
+</main>
+<script>
+(() => {
+  const canvas=document.getElementById("roverCanvas"),ctx=canvas.getContext("2d");
+  let w=1,h=1,dpr=1,last=performance.now(),x=.5,y=.58,ang=-Math.PI/2,speed=0,battery=100,drive="stop";
+  function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.6);w=Math.max(1,r.width);h=Math.max(1,r.height);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
+  new ResizeObserver(resize).observe(canvas);
+  function update(dt){
+    const turn=1.45*dt/1000,acc=.55*dt/1000;
+    if(drive==="left") ang-=turn;
+    if(drive==="right") ang+=turn;
+    if(drive==="forward") speed=Math.min(1.6,speed+acc);
+    else if(drive==="reverse") speed=Math.max(-.8,speed-acc);
+    else speed*=Math.pow(.2,dt/1000);
+    x+=Math.cos(ang)*speed*dt/1000*.09;y+=Math.sin(ang)*speed*dt/1000*.09;
+    x=Math.max(.06,Math.min(.94,x));y=Math.max(.16,Math.min(.9,y));
+    if(Math.abs(speed)>.03) battery=Math.max(12,battery-dt*.00002);
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    ctx.strokeStyle="rgba(130,232,255,.06)";for(let xx=0;xx<w;xx+=42){ctx.beginPath();ctx.moveTo(xx,0);ctx.lineTo(xx,h);ctx.stroke()}for(let yy=0;yy<h;yy+=42){ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(w,yy);ctx.stroke()}
+    const px=x*w,py=y*h;ctx.save();ctx.translate(px,py);ctx.rotate(ang);
+    ctx.fillStyle="#17321f";ctx.strokeStyle="#9cffaa";ctx.lineWidth=1.4;ctx.fillRect(-14,-10,28,20);ctx.strokeRect(-14,-10,28,20);
+    ctx.fillStyle="#82e8ff";ctx.fillRect(4,-4,13,8);ctx.strokeStyle="#82e8ff";ctx.beginPath();ctx.moveTo(10,-4);ctx.lineTo(18,-12);ctx.stroke();
+    ctx.fillStyle="#d7ff64";for(const wy of [-12,12])for(const wx of [-10,10]){ctx.beginPath();ctx.arc(wx,wy,4,0,Math.PI*2);ctx.fill()}
+    ctx.restore();
+    document.getElementById("heading").textContent=String((Math.round((ang*180/Math.PI+360)%360))).padStart(3,"0")+"°";
+    document.getElementById("speed").textContent=Math.abs(speed).toFixed(1)+" m/s";
+    document.getElementById("battery").textContent=Math.round(battery)+"%";
+  }
+  function frame(ts){const dt=Math.min(40,ts-last);last=ts;update(dt);draw();requestAnimationFrame(frame)}
+  document.querySelectorAll("[data-drive]").forEach(b=>b.addEventListener("click",()=>{drive=b.dataset.drive;document.querySelectorAll("[data-drive]").forEach(x=>x.classList.toggle("active",x===b));if(drive==="stop")speed=0}));
+  async function load(){
+    const host=document.getElementById("roverList");
+    try{
+      const r=await fetch("./rover-registry.json",{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);const d=await r.json();
+      const rows=[...(d.public_rovers||[])];
+      document.getElementById("roverCount").textContent=rows.length+" PUBLIC";
+      host.innerHTML=rows.map(v=>'<article class="card" data-state="'+(v.status.startsWith("ACTIVE")?"active":"archive")+'"><h3>'+v.name+'</h3><div class="meta"><span>'+v.agency+'</span><span>'+v.body+'</span><span>'+v.status+'</span></div><p>'+v.access.replaceAll("_"," ")+'</p><a target="_blank" rel="noopener" href="'+v.mission_url+'">MISSION ↗</a>'+(v.imagery_url?'<a target="_blank" rel="noopener" href="'+v.imagery_url+'">IMAGES ↗</a>':'')+'</article>'+
+      '').join("")+
+      '<article class="card" data-state="authorized"><h3>AUTHORIZED FLEET CONNECTOR</h3><div class="meta"><span>'+d.authorized_connector.status+'</span></div><p>Connect rovers you own or are authorized to operate using the connector contract. Telemetry and camera reads can be enabled separately from command writes.</p><a target="_blank" rel="noopener" href="./rover-connector-contract.json">CONNECTOR CONTRACT ↗</a></article>';
+    }catch(e){host.textContent="Rover registry unavailable: "+e.message}
+  }
+  document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",()=>{const f=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll("#roverList .card").forEach(card=>card.style.display=f==="all"||card.dataset.state===f?"block":"none")}));
+  resize();load();requestAnimationFrame(frame);
+})();
+</script>
+<script src="./maven-clean.js" defer></script>
+</body>
+</html>

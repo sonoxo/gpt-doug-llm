@@ -1,0 +1,76 @@
+
+:root{--x-motion:cubic-bezier(.2,.78,.2,1)}
+html.motion-ready .zyra-card,
+html.motion-ready .motion-panel,
+html.motion-ready .overall,
+html.motion-ready .panel,
+html.motion-ready .tile{
+  will-change:transform,opacity;
+}
+.xunia-nav-toggle{
+  display:none;
+  min-height:44px;
+  border:1px solid rgba(70,243,255,.28);
+  border-radius:12px;
+  background:#0d1024;
+  color:#eff7ff;
+  padding:8px 12px;
+  font:850 11px Inter,system-ui,sans-serif;
+  touch-action:manipulation;
+}
+.xunia-sitebar nav{
+  transform-origin:top center;
+  transition:max-height .38s var(--x-motion),opacity .22s ease,transform .38s var(--x-motion);
+}
+html.motion-ready .xunia-sitebar{
+  transition:background .25s ease,border-color .25s ease,box-shadow .35s var(--x-motion);
+}
+html.motion-ready .xunia-sitebar:hover{
+  border-bottom-color:rgba(70,243,255,.28);
+  box-shadow:0 16px 48px rgba(0,0,0,.22);
+}
+html.motion-ready a,
+html.motion-ready button{
+  transition:transform .14s ease,filter .18s ease,border-color .18s ease,background .18s ease;
+}
+html.motion-ready a:active,
+html.motion-ready button:active{transform:scale(.985)}
+.xunia-motion-pulse{
+  position:fixed;
+  pointer-events:none;
+  z-index:9997;
+  width:14px;height:14px;
+  margin:-7px 0 0 -7px;
+  border:1px solid rgba(70,243,255,.7);
+  border-radius:50%;
+  animation:xunia-touch-pulse .48s ease-out forwards;
+}
+@keyframes xunia-touch-pulse{
+  from{opacity:.8;transform:scale(.4)}
+  to{opacity:0;transform:scale(3.2)}
+}
+@media(max-width:820px){
+  .xunia-sitebar{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important}
+  .xunia-nav-toggle{display:inline-flex;align-items:center;justify-content:center}
+  .xunia-sitebar nav{
+    grid-column:1 / -1;
+    width:100%;
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(-8px);
+    flex-wrap:nowrap!important;
+    justify-content:flex-start!important;
+  }
+  .xunia-sitebar.nav-open nav{
+    max-height:64vh;
+    opacity:1;
+    transform:translateY(0);
+    overflow:auto;
+    padding-top:8px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .xunia-sitebar nav,html.motion-ready a,html.motion-ready button{transition:none!important}
+  .xunia-motion-pulse{display:none!important}
+}

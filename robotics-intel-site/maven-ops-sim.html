@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030604">
+<title>GPT-MAVEN // OPERATIONS SIMULATION</title>
+<link rel="stylesheet" href="./maven-tactical.css">
+<link rel="stylesheet" href="./maven-iphone16e.css">
+<link rel="stylesheet" href="./maven-ops-modes.css">
+<link rel="stylesheet" href="./maven-clean.css">
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020503;color:#eef7ef;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}
+.shell{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.top{min-height:48px;display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid #294933;background:#050a06;overflow-x:auto;white-space:nowrap}
+.brand{color:#82e8ff;font-weight:950}.chip{border:1px solid #31523b;border-radius:999px;padding:4px 7px;background:#071009;color:#9cffaa;font-size:8px}
+.workspace{min-height:0;padding:7px}
+.sim{height:100%;display:grid;grid-template-rows:auto auto auto minmax(220px,1fr) auto auto;gap:0;border:1px solid #294933;border-radius:12px;background:#040806;overflow:hidden}
+.panel-head{min-height:38px;display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid #294933;background:#061008;color:#ffb21d;font-size:9px;font-weight:900}
+.panel-head .spacer{flex:1}.panel-head .mini{color:#7e9183;font-size:8px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;padding:8px}
+.stat{border:1px solid #26392c;border-radius:8px;background:#071008;padding:7px;color:#7c9181;font-size:8px}.stat b{display:block;margin-top:2px;color:#d7ff64;font-size:10px}
+.simboard{position:relative;margin:0 8px 8px;border:1px solid #31583d;border-radius:8px;overflow:hidden;background:
+radial-gradient(circle at 50% 45%,rgba(124,231,255,.04),transparent 34%),
+repeating-linear-gradient(0deg,transparent 0 31px,rgba(110,231,161,.045) 32px),
+repeating-linear-gradient(90deg,transparent 0 31px,rgba(110,231,161,.045) 32px),#020604}
+#simCanvas{width:100%;height:100%;display:block}
+.arsenal{display:none}
+.feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:8px;background:#060a07;color:#98aa9c;overflow:auto;min-height:70px;font-size:8px;line-height:1.4}
+.boundary{padding:7px 9px;border-top:1px solid #294933;background:#050a06;color:#7c9181;font-size:8px}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.top .chip:nth-of-type(n+4){display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top" data-no-translate="true">
+    <div class="brand">🛰 GPT-MAVEN // OPERATIONS SIMULATION</div>
+    <span class="chip">TACTICAL SIM</span>
+    <span class="chip">STEALTH SIM</span>
+    <span class="chip">DEFENSE SIM</span>
+    <span class="chip">EXTERNAL ACTION OFF</span>
+  </div>
+  <main class="workspace">
+    <section class="sim mobile-active" data-pane="sim">
+      <div class="panel-head"><span>SIMULATION CONTROL</span><span class="spacer"></span><span class="mini">SYNTHETIC SPACE ONLY</span></div>
+      <div class="stats">
+        <div class="stat">SIM STATE<b>ONLINE</b></div>
+        <div class="stat">REAL TARGETING<b>OFF</b></div>
+        <div class="stat">REAL WEAPON LINK<b>OFF</b></div>
+        <div class="stat">DEFENSIVE TRAINING<b>READY</b></div>
+      </div>
+      <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic operations visualization"></canvas></div>
+      <div class="arsenal" aria-hidden="true"></div>
+      <div class="feed" id="eventFeed" aria-live="polite"></div>
+      <div class="boundary">FICTIONAL / SYNTHETIC TRAINING EFFECTS ONLY · NO REAL TARGETING · NO FIRE CONTROL · NO EXTERNAL WEAPON, VEHICLE, OR PERSONNEL CONTROL.</div>
+    </section>
+  </main>
+</div>
+<script>
+(() => {
+  const c=document.getElementById("simCanvas"),x=c.getContext("2d");let w=1,h=1,dpr=1,t=0;
+  function resize(){const r=c.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.5);w=Math.max(1,r.width);h=Math.max(1,r.height);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);x.setTransform(dpr,0,0,dpr,0,0)}
+  new ResizeObserver(resize).observe(c);
+  function frame(ts){t=ts*.001;x.clearRect(0,0,w,h);x.strokeStyle="rgba(124,231,255,.12)";x.lineWidth=1;
+    for(let i=0;i<8;i++){const a=t*.18+i*Math.PI/4,rx=w*.18+Math.sin(t*.2+i)*18,ry=h*.22;const px=w*.5+Math.cos(a)*rx,py=h*.52+Math.sin(a)*ry;
+      x.beginPath();x.arc(px,py,4,0,Math.PI*2);x.stroke();x.fillStyle="#82e8ff";x.font="7px monospace";x.fillText("SIM-"+String(i+1).padStart(2,"0"),px+7,py-5)}
+    requestAnimationFrame(frame)}
+  resize();requestAnimationFrame(frame);
+})();
+</script>
+<script src="./maven-ops-modes.js" defer></script>
+<script src="./maven-clean.js" defer></script>
+<script>
+addEventListener("DOMContentLoaded",()=>{
+  const profile=new URLSearchParams(location.search).get("profile");
+  const map={tac:"tac",spec:"spec",def:"def"};
+  if(map[profile]) setTimeout(()=>document.querySelector('[data-ops-mode="'+map[profile]+'"]')?.click(),120);
+});
+</script>
+</body>
+</html>

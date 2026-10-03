@@ -2,7 +2,7 @@
 
 **Status:** OPEN  
 **Issued:** 2026-09-23  
-**Program type:** Civilian/open-source engineering contributor program  
+**Program type:** civilian/open-source engineering contributor program  
 **Authority boundary:** See [ECOSYSTEM_DISCLAIMER.md](ECOSYSTEM_DISCLAIMER.md)
 
 > **Tech Force is not a military unit or government program. Open Call Orders are scoped engineering work orders, not military orders or authorization to access third-party systems.**

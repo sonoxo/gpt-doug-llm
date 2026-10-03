@@ -20,6 +20,8 @@ MAVEN = ROOT / "redpanda-desktop" / "palantir-maven"
 ROBOTICS_LAB = ROOT / "scripts" / "gpt_doug_max_robotics_lab.py"
 ROBOTICS_REGISTRY = ROOT / "safety-shield" / "agents" / "knowledge" / "gpt-doug-max-robotics-compliance-v1.json"
 ROBOTICS_PATENT_SEED = ROOT / "safety-shield" / "agents" / "knowledge" / "patents" / "us-12697722-b2-robot-mission-seed.json"
+SENSITIVE_MEMORY_SEED = ROOT / "safety-shield" / "agents" / "knowledge" / "patents" / "us-12748837-b1-sensitive-memory-monitor-seed.json"
+GPT_DOUG_MAVEN = ROOT / "scripts" / "gpt-doug-maven"
 CORPUS = Path.home() / ".config" / "gpt-doug" / "zyra-mss-uspto-palantir"
 
 
@@ -104,6 +106,8 @@ def doctor() -> int:
         ROBOTICS_LAB,
         ROBOTICS_REGISTRY,
         ROBOTICS_PATENT_SEED,
+        SENSITIVE_MEMORY_SEED,
+        GPT_DOUG_MAVEN,
     ]
     for path in required_files:
         if not path.exists():
@@ -144,6 +148,12 @@ def doctor() -> int:
             errors.append("US-12697722-B2 patent seed missing or mismatched")
         if seed.get("independent_design_policy", {}).get("copy_claim_language") is not False:
             errors.append("patent seed must prohibit automatic claim copying")
+        memory_seed = load(SENSITIVE_MEMORY_SEED)
+        if memory_seed.get("patent_id") != "US-12748837-B1":
+            errors.append("US-12748837-B1 sensitive-memory patent seed missing or mismatched")
+        policy = memory_seed.get("independent_design_policy", {})
+        if policy.get("copy_claim_language") is not False or policy.get("assert_freedom_to_operate") is not False:
+            errors.append("sensitive-memory seed must preserve independent-design and FTO guards")
 
     if errors:
         print("❌ GPT-DOUG-MAX PATENT WIRING DOCTOR FAILED")
@@ -160,6 +170,7 @@ def doctor() -> int:
     print("   Robotics lab .... wired")
     print("   Compliance ...... fail-closed")
     print("   Patent boundary . enforced")
+    print("   MAVEN mem guard . wired")
     print("   GLASS ONION ..... wired")
     print("   Maven ........... wired")
     print("   REDPANDA CPR .... wired")

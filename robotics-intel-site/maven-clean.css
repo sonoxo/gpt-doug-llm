@@ -1,0 +1,232 @@
+/* MAVEN child-app clean UI layer */
+:root{
+  --clean-border:rgba(132,161,139,.20);
+  --clean-border-strong:rgba(124,231,255,.24);
+  --clean-surface:#061008;
+  --clean-surface-2:#09110a;
+  --clean-text:#eef5ef;
+  --clean-muted:#809087;
+}
+body.clean-child{
+  background:
+    radial-gradient(circle at 18% 10%,rgba(124,231,255,.025),transparent 28%),
+    linear-gradient(180deg,#030604,#010302);
+}
+body.clean-child .top{
+  min-height:46px;
+  gap:6px;
+  padding:6px 8px;
+  border-bottom:1px solid var(--clean-border);
+  background:rgba(4,8,5,.97);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+  overflow:visible;
+}
+body.clean-child .brand{font-size:11px;color:#e8bd74;letter-spacing:.035em}
+body.clean-child .top > span.chip{
+  border-color:var(--clean-border);
+  background:#071009;
+  color:#84968a;
+  padding:4px 7px;
+}
+body.clean-child .top > button.chip,
+body.clean-child .fold-toggle{
+  min-height:34px;
+  border-color:var(--clean-border);
+  background:#08100a;
+  color:#cbd7cd;
+  padding:5px 8px;
+}
+body.clean-child .top > button.chip:hover,
+body.clean-child .fold-toggle:hover{background:#111a13;border-color:var(--clean-border-strong)}
+
+body.clean-child .workspace{gap:6px;padding:6px}
+body.clean-child .panel{
+  border-color:var(--clean-border)!important;
+  border-radius:10px!important;
+  background:linear-gradient(180deg,rgba(6,13,8,.94),rgba(3,8,5,.97))!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.20)!important;
+  transform:none!important;
+}
+body.clean-child .panel:hover{transform:none!important;box-shadow:0 10px 30px rgba(0,0,0,.20)!important}
+body.clean-child .panel-head{
+  min-height:36px;
+  padding:6px 8px;
+  border-bottom-color:var(--clean-border);
+  color:#d9b66d;
+}
+body.clean-child .panel-head .mini{color:#74877a}
+body.clean-child .tactical-strip{
+  margin:0 6px 6px;
+  border-color:var(--clean-border);
+  border-radius:10px;
+  background:#050a06;
+  box-shadow:none;
+}
+body.clean-child .tac-kpi,
+body.clean-child .stat,
+body.clean-child .source-card{
+  border-color:var(--clean-border);
+  background:#071009;
+  box-shadow:none;
+}
+body.clean-child .tac-kpi:hover,
+body.clean-child .stat:hover,
+body.clean-child .source-card:hover{transform:none!important}
+
+body.clean-child .categories{
+  display:flex;
+  gap:4px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+body.clean-child .categories::-webkit-scrollbar{display:none}
+body.clean-child .categories button{
+  flex:0 0 auto;
+  min-height:34px;
+  border-color:transparent;
+  background:transparent;
+  color:#87988c;
+}
+body.clean-child .categories button.active{
+  background:#121b13;
+  border-color:var(--clean-border);
+  color:#dce8df;
+}
+body.clean-child .map-overlay{
+  gap:4px;
+  padding:5px;
+  border-radius:9px;
+  background:rgba(4,9,6,.88);
+  backdrop-filter:blur(12px);
+}
+body.clean-child .map-overlay button,
+body.clean-child .simtools button,
+body.clean-child .arsenal button,
+body.clean-child .ops-modebar button,
+body.clean-child .ops-arsenal button{
+  border-color:var(--clean-border);
+  background:#08100a;
+  box-shadow:none;
+}
+body.clean-child .arsenal,
+body.clean-child .ops-arsenal{gap:5px}
+body.clean-child .feed{
+  border-color:var(--clean-border);
+  background:#050a06;
+}
+body.clean-child .boundary{
+  border-color:var(--clean-border);
+  background:#050a06;
+  color:#718279;
+}
+
+/* Compact status tray: keep three live signals visible, move the rest into STATUS. */
+.clean-child-status-wrap{position:relative;flex:0 0 auto}
+.clean-child-status-trigger{
+  min-height:34px;border:1px solid var(--clean-border);border-radius:8px;background:#08100a;color:#b8c6bc;
+  padding:5px 8px;font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;cursor:pointer
+}
+.clean-child-status{
+  position:absolute;z-index:110;top:calc(100% + 7px);right:0;width:min(310px,calc(100vw - 18px));max-height:65dvh;overflow:auto;
+  display:none;gap:5px;padding:7px;border:1px solid var(--clean-border);border-radius:11px;background:rgba(5,9,6,.99);
+  box-shadow:0 20px 58px rgba(0,0,0,.48)
+}
+.clean-child-status.open{display:grid}
+.clean-child-status .chip{display:flex!important;justify-content:space-between;min-height:30px;align-items:center}
+
+@media(max-width:900px){
+  body.clean-child .top{overflow-x:auto;overflow-y:visible;scrollbar-width:none}
+  body.clean-child .top::-webkit-scrollbar{display:none}
+  body.clean-child .workspace{padding:4px;gap:4px}
+  body.clean-child .panel{border-radius:9px!important}
+}
+@media(max-width:430px){
+  body.clean-child .brand{font-size:10px}
+  body.clean-child .top > #opsChip,
+  body.clean-child .top > #palBroadcastChip{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  body.clean-child *{transition:none!important}
+}
+
+
+/* Standalone child pages (Rover Ops / Ops Sim) */
+body.clean-child > header{
+  min-height:46px;
+  gap:6px;
+  padding:6px max(8px,env(safe-area-inset-right)) 6px max(8px,env(safe-area-inset-left));
+  border-bottom:1px solid var(--clean-border);
+  background:rgba(4,8,5,.97);
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+body.clean-child > header .brand{font-size:11px;color:#e8bd74}
+body.clean-child > header .chip{
+  border-color:var(--clean-border);
+  background:#071009;
+  color:#8c9d91;
+  padding:4px 7px;
+}
+body.clean-child .hud div{
+  border-color:var(--clean-border);
+  background:rgba(4,9,6,.80);
+}
+body.clean-child .controls button,
+body.clean-child .toolbar button{
+  border-color:var(--clean-border);
+  background:#08100a;
+  box-shadow:none;
+}
+body.clean-child .list .card{
+  border-color:var(--clean-border);
+  background:#071009;
+  box-shadow:none;
+}
+body.clean-child .list .card a{
+  border-color:var(--clean-border);
+  background:#0a100c;
+}
+body.clean-child .stage{
+  background:
+    radial-gradient(circle at 50% 35%,rgba(130,232,255,.035),transparent 32%),
+    repeating-linear-gradient(0deg,transparent 0 39px,rgba(156,255,170,.03) 40px),
+    repeating-linear-gradient(90deg,transparent 0 39px,rgba(156,255,170,.03) 40px),
+    #020604;
+}
+@media(max-width:900px){
+  body.clean-child > header{
+    min-height:44px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  body.clean-child > header::-webkit-scrollbar{display:none}
+}
+
+
+/* Geospatial workspace cleanup */
+body.clean-child aside{
+  border-left:1px solid var(--clean-border);
+  background:linear-gradient(180deg,#071009,#040705);
+}
+body.clean-child aside .card{
+  border-color:var(--clean-border);
+  background:#071009;
+  box-shadow:none;
+  border-radius:9px;
+}
+body.clean-child aside .card h2{color:#d9b66d}
+body.clean-child aside button{
+  border-color:var(--clean-border);
+  background:#09100b;
+  color:#b9c6bc;
+  box-shadow:none;
+}
+body.clean-child aside button.active{
+  background:#172117;
+  color:#ffd089;
+  border-color:rgba(255,159,28,.3);
+}
+body.clean-child .earth-source{
+  border-color:var(--clean-border)!important;
+  background:#08100a!important;
+  box-shadow:none!important;
+}
