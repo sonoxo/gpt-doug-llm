@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // EAGLE EYE REAL-LIFE AR SIM</title>
+<meta name="theme-color" content="#030603">
+<style>
+:root{--g:#8cff9f;--g2:#2d6f3f;--bg:#030603;--txt:#ddffe5;--warn:#ffd36a;--red:#ff6f6f;--blue:#75d4ff}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#020402}
+#scene{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 38%,rgba(0,0,0,.25) 70%,rgba(0,0,0,.72) 100%)}
+.top{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;gap:12px;padding:10px 12px;background:linear-gradient(#031007db,transparent);z-index:5}
+.brand{font-weight:900;letter-spacing:.08em}.brand b{color:var(--g)}.sub{font-size:9px;color:#a7c7ae}.status{font-size:10px;text-align:right}
+.pill{border:1px solid var(--g2);border-radius:999px;padding:3px 6px;color:var(--g);display:inline-block;margin-left:4px;background:#06100a99}
+.left,.right{position:absolute;top:72px;bottom:58px;width:260px;z-index:6;display:flex;flex-direction:column;gap:8px}
+.left{left:10px}.right{right:10px}
+.card{border:1px solid #285038;background:#06100ac7;backdrop-filter:blur(8px);border-radius:8px;padding:9px;font-size:10px;box-shadow:0 12px 34px #0004}
+.card h3{font-size:10px;color:var(--g);margin:0 0 7px;letter-spacing:.12em}.row{display:flex;justify-content:space-between;gap:8px;line-height:1.5}.muted{color:#8eaa94}.warn{color:var(--warn)}.blue{color:var(--blue)}
+button{font:inherit;background:#0a1a10;color:var(--txt);border:1px solid #376947;border-radius:6px;padding:8px;cursor:pointer;width:100%;margin:3px 0;text-align:left}button:hover,button.active{border-color:var(--g);color:var(--g)}
+.center{position:absolute;left:50%;top:50%;width:150px;height:150px;transform:translate(-50%,-50%);z-index:4;pointer-events:none}
+.ring{position:absolute;inset:15px;border:1px solid #8cff9f66;border-radius:50%}.cross:before,.cross:after{content:"";position:absolute;background:#8cff9f99}.cross:before{left:0;right:0;top:50%;height:1px}.cross:after{top:0;bottom:0;left:50%;width:1px}
+.compass{position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:5;width:min(620px,70vw);height:28px;border-top:1px solid #315c40;border-bottom:1px solid #315c40;background:#06100a77;overflow:hidden;font-size:10px;color:#bfffc9;display:flex;justify-content:center;align-items:center;letter-spacing:.3em}
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:8px 11px;background:linear-gradient(transparent,#031007ef);font-size:9px}
+.timeline{max-height:150px;overflow:auto}.log{border-left:2px solid #285038;padding-left:6px;margin:5px 0;line-height:1.35}
+.sensorbar{height:5px;background:#102216;border-radius:99px;overflow:hidden;margin-top:4px}.sensorbar i{display:block;height:100%;background:var(--g)}
+.overlayNotice{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);z-index:8;background:#07100ae8;border:1px solid #376947;border-radius:7px;padding:7px 9px;font-size:9px;max-width:70vw;text-align:center}
+.contact{position:absolute;width:26px;height:26px;border:1px solid var(--warn);border-radius:50%;box-shadow:0 0 16px #ffd36a66}.contact:before,.contact:after{content:"";position:absolute;background:var(--warn)}.contact:before{width:34px;height:1px;left:-5px;top:12px}.contact:after{height:34px;width:1px;left:12px;top:-5px}
+.tag{position:absolute;color:var(--warn);font-size:9px;white-space:nowrap;transform:translate(-50%,-28px);text-shadow:0 1px 2px #000}
+@media(max-width:900px){.left,.right{width:180px;top:86px}.right{display:none}.left .desktopOnly{display:none}.compass{top:74px}.overlayNotice{max-width:92vw}.top{font-size:11px}}
+</style>
+</head>
+<body>
+<video id="cam" autoplay playsinline muted></video>
+<canvas id="scene"></canvas>
+<div class="vignette"></div>
+<div class="top">
+  <div class="brand">🦅 GPT-DOUG // <b>EAGLE EYE REAL-LIFE SIM</b><div class="sub">LOCAL CAMERA PASSTHROUGH + SYNTHETIC AR OBJECTS • NO RECORDING</div></div>
+  <div class="status"><span class="pill" id="camState">CAMERA OFF</span><span class="pill">HUMAN-FIRST</span><br><span id="clock">--:--:--</span></div>
+</div>
+<div class="compass" id="compass">W  •  NW  •  N  •  NE  •  E</div>
+
+<div class="left">
+  <div class="card">
+    <h3>VISOR CONTROL</h3>
+    <button id="cameraBtn">◎ ENABLE CAMERA PASSTHROUGH</button>
+    <button id="orientationBtn">◈ ENABLE DEVICE ORIENTATION</button>
+    <button id="spawnBtn">+ SPAWN SYNTHETIC CONTACT</button>
+    <button id="clearBtn">× CLEAR SYNTHETIC CONTACTS</button>
+    <button id="nightBtn">☾ NIGHT-VISION VISUAL MODE</button>
+  </div>
+  <div class="card desktopOnly">
+    <h3>SENSOR FUSION</h3>
+    <div class="row"><span>Visual confidence</span><b id="vis">94%</b></div><div class="sensorbar"><i id="visb" style="width:94%"></i></div>
+    <div class="row"><span>Audio direction</span><b>SIM</b></div><div class="sensorbar"><i style="width:82%"></i></div>
+    <div class="row"><span>RF awareness</span><b>SIM</b></div><div class="sensorbar"><i style="width:73%"></i></div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="card">
+    <h3>SIMULATED PLATFORM LINKS</h3>
+    <div class="row"><span>UAS-01</span><b class="blue">SIM ONLINE</b></div>
+    <div class="row"><span>UGV-02</span><b class="blue">SIM ONLINE</b></div>
+    <div class="row"><span>Mesh</span><b>98%</b></div>
+  </div>
+  <div class="card">
+    <h3>MISSION BOARD</h3>
+    <div class="row"><span>Mode</span><b>TRAINING</b></div>
+    <div class="row"><span>Contacts</span><b id="contactCount">0</b></div>
+    <div class="row"><span>Heading</span><b id="heading">000°</b></div>
+    <div class="row"><span>Pitch</span><b id="pitch">0°</b></div>
+  </div>
+  <div class="card">
+    <h3>EVENT STREAM</h3><div class="timeline" id="log"></div>
+  </div>
+</div>
+
+<div class="center"><div class="ring"></div><div class="cross"></div></div>
+<div class="overlayNotice">This demo overlays synthetic training cues on your own camera locally in the browser. It does not identify people, record video, acquire real targets, or control weapons.</div>
+<div class="bottom"><span>NIST AI RMF / TEVV MODE</span><span class="warn">SYNTHETIC CONTACTS ONLY</span><span style="text-align:right">EAGLE EYE // GPT-DOUG</span></div>
+
+<script>
+const cam=document.getElementById('cam'),canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+let stream=null,night=false,heading=0,pitch=0,contacts=[];
+function resize(){canvas.width=innerWidth*devicePixelRatio;canvas.height=innerHeight*devicePixelRatio}addEventListener('resize',resize);resize();
+function log(msg){const d=document.createElement('div');d.className='log';d.textContent=new Date().toLocaleTimeString()+'  '+msg;document.getElementById('log').prepend(d);while(document.getElementById('log').children.length>12)document.getElementById('log').lastChild.remove()}
+async function camera(){
+  try{
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;cam.srcObject=null;document.getElementById('camState').textContent='CAMERA OFF';log('Camera passthrough stopped');return}
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    cam.srcObject=stream;document.getElementById('camState').textContent='CAMERA LIVE';log('Local camera passthrough enabled');
+  }catch(e){log('Camera unavailable: '+e.message)}
+}
+function orientHandler(e){heading=(360-(e.alpha||0))%360;pitch=Math.max(-90,Math.min(90,e.beta||0));document.getElementById('heading').textContent=String(Math.round(heading)).padStart(3,'0')+'°';document.getElementById('pitch').textContent=Math.round(pitch)+'°';document.getElementById('compass').textContent='HDG '+String(Math.round(heading)).padStart(3,'0')+'°   •   '+bearingName(heading)}
+function bearingName(h){return['N','NE','E','SE','S','SW','W','NW'][Math.round(h/45)%8]}
+async function orientation(){
+  try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){const p=await DeviceOrientationEvent.requestPermission();if(p!=='granted')throw Error('permission denied')}addEventListener('deviceorientation',orientHandler);log('Device orientation enabled')}catch(e){log('Orientation unavailable: '+e.message)}
+}
+function spawn(){contacts.push({x:.15+Math.random()*.7,y:.2+Math.random()*.55,id:'SIM-'+String(contacts.length+1).padStart(2,'0'),phase:Math.random()*6.28});document.getElementById('contactCount').textContent=contacts.length;log('Synthetic contact '+contacts.at(-1).id+' spawned')}
+function clearContacts(){contacts=[];document.getElementById('contactCount').textContent='0';log('Synthetic contacts cleared')}
+function draw(){
+  const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);
+  if(night){ctx.fillStyle='rgba(20,120,45,.16)';ctx.fillRect(0,0,w,h)}
+  ctx.lineWidth=1*devicePixelRatio;ctx.strokeStyle='rgba(140,255,159,.28)';
+  for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(i*w/8,0);ctx.lineTo(i*w/8,h);ctx.stroke()}
+  for(let i=1;i<6;i++){ctx.beginPath();ctx.moveTo(0,i*h/6);ctx.lineTo(w,i*h/6);ctx.stroke()}
+  contacts.forEach((c,i)=>{c.phase+=.01;const px=(c.x+.02*Math.sin(c.phase))*w,py=(c.y+.015*Math.cos(c.phase*.8))*h;ctx.strokeStyle='#ffd36a';ctx.beginPath();ctx.arc(px,py,15*devicePixelRatio,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(px-22*devicePixelRatio,py);ctx.lineTo(px+22*devicePixelRatio,py);ctx.moveTo(px,py-22*devicePixelRatio);ctx.lineTo(px,py+22*devicePixelRatio);ctx.stroke();ctx.fillStyle='#ffd36a';ctx.font=(10*devicePixelRatio)+'px monospace';ctx.fillText(c.id+' • SYNTHETIC',px+18*devicePixelRatio,py-18*devicePixelRatio)});
+  requestAnimationFrame(draw)
+}
+document.getElementById('cameraBtn').onclick=camera;document.getElementById('orientationBtn').onclick=orientation;document.getElementById('spawnBtn').onclick=spawn;document.getElementById('clearBtn').onclick=clearContacts;document.getElementById('nightBtn').onclick=()=>{night=!night;document.body.style.filter=night?'sepia(.15) saturate(1.5) hue-rotate(65deg)':'none';log('Night-vision visual mode '+(night?'enabled':'disabled'))};
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString();const v=(92+Math.random()*6).toFixed(1);document.getElementById('vis').textContent=v+'%';document.getElementById('visb').style.width=v+'%'},1000);
+log('Real-life AR simulator initialized');draw();
+</script>
+</body></html>
