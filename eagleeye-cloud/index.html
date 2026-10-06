@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>GPT-DOUG // EAGLE EYE GUARDIAN</title>
+<meta name="theme-color" content="#050806" />
+<link rel="preconnect" href="https://unpkg.com">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--bg:#050806;--panel:#0a100cdd;--line:#24452f;--text:#d9ffe1;--muted:#82a58d;--accent:#8cff9f;--warn:#ffd36a;--bad:#ff6b6b;--glass:rgba(10,16,12,.82)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;height:100%}
+body{overflow:hidden}.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;background:radial-gradient(circle at 60% -10%,#18351f 0,#08110b 32%,#050806 60%)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:#060b08ee;backdrop-filter:blur(10px)}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:.08em}.eagle{font-size:22px}.online{color:var(--accent)}.sub{font-size:11px;color:var(--muted)}
+.status{display:flex;gap:12px;font-size:12px;align-items:center}.dot{width:8px;height:8px;border-radius:99px;background:var(--accent);box-shadow:0 0 12px var(--accent);display:inline-block;margin-right:6px}
+main{display:grid;grid-template-columns:280px minmax(0,1fr) 320px;min-height:0}
+.panel{background:var(--glass);backdrop-filter:blur(12px);padding:12px;overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:12px;color:var(--accent);letter-spacing:.14em;margin:7px 0 10px}.card{border:1px solid var(--line);background:#07100a;padding:10px;margin-bottom:9px;border-radius:7px}
+.kpi{display:flex;justify-content:space-between;gap:8px;font-size:12px}.kpi strong{color:var(--accent)}.small{font-size:11px;color:var(--muted);line-height:1.45}
+button{width:100%;background:#0c1a10;border:1px solid #366846;color:var(--text);padding:9px 10px;border-radius:6px;font:inherit;cursor:pointer;margin:4px 0;text-align:left}
+button:hover{background:#122719;border-color:var(--accent)}button.active{box-shadow:inset 3px 0 var(--accent);color:var(--accent)}
+.viewport{position:relative;min-width:0;min-height:0}.map{position:absolute;inset:0}.hud{position:absolute;inset:0;pointer-events:none;z-index:500;background:linear-gradient(90deg,rgba(9,20,12,.18),transparent 14%,transparent 86%,rgba(9,20,12,.18))}
+.reticle{position:absolute;left:50%;top:50%;width:90px;height:90px;transform:translate(-50%,-50%);border:1px solid #8cff9f66;border-radius:50%}.reticle:before,.reticle:after{content:"";position:absolute;background:#8cff9f99}.reticle:before{width:120px;height:1px;left:-15px;top:44px}.reticle:after{height:120px;width:1px;top:-15px;left:44px}
+.badge{position:absolute;left:12px;top:12px;background:#07100acc;border:1px solid var(--line);padding:7px 9px;border-radius:6px;font-size:11px}.sim{color:var(--warn)}
+.toast{position:absolute;right:12px;bottom:12px;background:#07100acc;border:1px solid var(--line);padding:9px 11px;border-radius:6px;font-size:11px;max-width:320px}
+.log{font-size:11px;line-height:1.55;border-left:2px solid var(--line);padding-left:9px;margin:8px 0}.log b{color:var(--accent)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+footer{display:flex;justify-content:space-between;padding:7px 12px;border-top:1px solid var(--line);background:#060b08;font-size:10px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.meter{height:5px;background:#102116;border-radius:99px;overflow:hidden;margin-top:6px}.meter>i{display:block;height:100%;background:var(--accent)}
+@media(max-width:900px){main{grid-template-columns:1fr}.left,.right{display:none}.viewport{display:block}.status .hide-mobile{display:none}}
+.leaflet-container{background:#030604;filter:saturate(.6) brightness(.72) contrast(1.15)}.leaflet-control-attribution{background:#07100acc!important;color:#78947f!important}.leaflet-control-attribution a{color:#8cff9f!important}
+.marker-core{width:16px;height:16px;border-radius:50%;border:2px solid #baffc4;background:#1f8b39;box-shadow:0 0 15px #69ff82}.marker-watch{width:13px;height:13px;transform:rotate(45deg);border:2px solid #ffe79a;background:#886f22;box-shadow:0 0 12px #ffd36a}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><span class="eagle">🦅</span><div>GPT-DOUG // EAGLE EYE <span class="online">GUARDIAN</span><div class="sub">DEFENSIVE SITUATIONAL AWARENESS // CLOUD SIMULATION</div></div></div>
+  <div class="status"><span><i class="dot"></i>ONLINE</span><span class="hide-mobile">HIVE 999</span><span id="clock">--:--:--</span></div>
+</header>
+<main>
+  <aside class="panel left">
+    <h2>GUARDIAN CONTROL</h2>
+    <div class="card"><div class="kpi"><span>Runtime</span><strong id="runtime">00:00:00</strong></div><div class="kpi"><span>Mode</span><strong>SIMULATION</strong></div><div class="kpi"><span>Authority</span><strong>HUMAN-FIRST</strong></div></div>
+    <button class="active" data-layer="all">◉ ALL LAYERS</button>
+    <button data-layer="sensors">◈ SENSOR NODES</button>
+    <button data-layer="events">△ EVENTS</button>
+    <button id="recenter">⌖ RECENTER</button>
+    <button id="inject">⚡ INJECT SYNTHETIC EVENT</button>
+    <h2>RESILIENCE</h2>
+    <div class="card"><div class="kpi"><span>Sensor mesh</span><strong id="mesh">98%</strong></div><div class="meter"><i id="meshbar" style="width:98%"></i></div></div>
+    <div class="card"><div class="kpi"><span>Comms integrity</span><strong id="comms">96%</strong></div><div class="meter"><i id="commsbar" style="width:96%"></i></div></div>
+    <div class="card small">No weapon control, targeting, strike planning, private surveillance, or unauthorized access. Public/synthetic inputs only.</div>
+  </aside>
+  <section class="viewport">
+    <div id="map" class="map"></div>
+    <div class="hud">
+      <div class="badge"><b>EAGLE EYE // PRIMARY VIEW</b><br><span class="sim">SIMULATED SENSOR FUSION</span></div>
+      <div class="reticle"></div>
+      <div class="toast" id="toast">Guardian ready. Synthetic telemetry stream active.</div>
+    </div>
+  </section>
+  <aside class="panel right">
+    <h2>LIVE SYSTEM STATE</h2>
+    <div class="grid">
+      <div class="card"><div class="small">NODES</div><div style="font-size:24px" id="nodes">24</div></div>
+      <div class="card"><div class="small">EVENTS</div><div style="font-size:24px" id="events">3</div></div>
+    </div>
+    <div class="card"><div class="kpi"><span>Fusion confidence</span><strong id="confidence">93.4%</strong></div><div class="meter"><i id="confbar" style="width:93.4%"></i></div></div>
+    <h2>EVENT TIMELINE</h2>
+    <div id="timeline">
+      <div class="log"><b>INIT</b> Guardian cloud runtime initialized.</div>
+      <div class="log"><b>FUSION</b> Synthetic sensor mesh synchronized.</div>
+      <div class="log"><span class="warn">WATCH</span> Environmental anomaly under review.</div>
+    </div>
+    <h2>ONTOLOGY</h2>
+    <div class="card small">Guardian → SensorMesh → TelemetryFrame → HazardDetection → Assessment → Protect/Contain/Recover → Audit</div>
+  </aside>
+</main>
+<footer><span>GPT-DOUG // THE GUARDIAN // EAGLE EYE</span><span>FREE STATIC CLOUD BUILD • v1.0</span></footer>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const start=Date.now(); const center=[37.5407,-77.4360];
+const map=L.map('map',{zoomControl:true,attributionControl:true}).setView(center,5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+const sensorLayer=L.layerGroup().addTo(map), eventLayer=L.layerGroup().addTo(map);
+function icon(cls){return L.divIcon({className:'',html:'<div class="'+cls+'"></div>',iconSize:[16,16],iconAnchor:[8,8]})}
+const sensorPts=[[37.54,-77.43],[38.90,-77.03],[36.85,-76.28],[35.22,-80.84],[39.29,-76.61],[40.71,-74.00],[33.75,-84.39],[32.78,-79.93]];
+sensorPts.forEach((p,i)=>L.marker(p,{icon:icon('marker-core')}).bindTooltip('SENSOR-'+String(i+1).padStart(2,'0')+' • SYNTHETIC').addTo(sensorLayer));
+const events=[[37.9,-76.8,'Weather anomaly'],[36.5,-78.9,'Comms degradation'],[39.6,-75.9,'Infrastructure watch']];
+events.forEach((e,i)=>L.marker([e[0],e[1]],{icon:icon('marker-watch')}).bindTooltip('EVENT-'+(i+1)+' • '+e[2]+' • SIMULATED').addTo(eventLayer));
+document.getElementById('recenter').onclick=()=>map.flyTo(center,5);
+document.getElementById('inject').onclick=()=>{
+ const b=map.getBounds(), lat=b.getSouth()+Math.random()*(b.getNorth()-b.getSouth()), lng=b.getWest()+Math.random()*(b.getEast()-b.getWest());
+ L.marker([lat,lng],{icon:icon('marker-watch')}).bindTooltip('SYNTHETIC EVENT').addTo(eventLayer);
+ const n=+document.getElementById('events').textContent+1; document.getElementById('events').textContent=n;
+ const d=document.createElement('div'); d.className='log'; d.innerHTML='<span class="warn">INJECT</span> Synthetic anomaly created for resilience testing.'; document.getElementById('timeline').prepend(d);
+ document.getElementById('toast').textContent='Synthetic event injected. Guardian assessment pipeline engaged.';
+};
+document.querySelectorAll('[data-layer]').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('[data-layer]').forEach(x=>x.classList.remove('active')); btn.classList.add('active');
+ const m=btn.dataset.layer;
+ if(m==='all'||m==='sensors') map.addLayer(sensorLayer); else map.removeLayer(sensorLayer);
+ if(m==='all'||m==='events') map.addLayer(eventLayer); else map.removeLayer(eventLayer);
+});
+setInterval(()=>{
+ const d=new Date(); document.getElementById('clock').textContent=d.toLocaleTimeString();
+ const s=Math.floor((Date.now()-start)/1000), h=String(Math.floor(s/3600)).padStart(2,'0'), m=String(Math.floor((s%3600)/60)).padStart(2,'0'), x=String(s%60).padStart(2,'0');
+ document.getElementById('runtime').textContent=h+':'+m+':'+x;
+ const conf=(92+Math.random()*5).toFixed(1); document.getElementById('confidence').textContent=conf+'%'; document.getElementById('confbar').style.width=conf+'%';
+},1000);
+</script>
+</body></html>
