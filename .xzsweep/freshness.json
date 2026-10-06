@@ -1,12 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-05T11:32:46Z",
-  "due_files_reviewed": 3,
-  "due_paths": [
-    "agency_cloud/requirements.txt",
-    "free-video-studio/requirements.txt",
-    "zyra-defense/requirements.txt"
-  ],
+  "cutoff_at": "2026-10-05T11:34:33Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1276,13 +1272,13 @@
     "agency_cloud/requirements.txt": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-05T04:35:11Z",
       "reviewed_at": "2026-10-06T11:32:46Z",
       "sha256": "8f83f146d3e999c3be6ed57ae187e4f582a3b3db65bbef2a97bcaf0ecae2e131",
       "size": 102,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "agency_cloud/security.py": {
       "actions": [],
@@ -3421,10 +3417,10 @@
     "docs/assets/ecosystem-flow.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-03T07:06:01Z",
-      "reviewed_at": "2026-10-05T12:19:08Z",
-      "sha256": "c54e06db7d7c017e634e51042555bab38227b76cfc55d457ea8e1d9fa8b3d4fa",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-06T11:32:48Z",
+      "reviewed_at": null,
+      "sha256": "c42bc0bf59483872331e87d37046391c331b12fb0d61359e02b912d61eb4e720",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -5226,12 +5222,12 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-05T04:35:30Z",
-      "reviewed_at": "2026-10-06T11:32:46Z",
-      "sha256": "b6b35c9e93bb87f6c55779664cf1e5decad64058880c23bf3852c53803c5d5fb",
+      "git_touched_at": "2026-10-06T04:15:56Z",
+      "reviewed_at": null,
+      "sha256": "586d8a52db65f65fbb70e76c99b67cc438fd721513a1f6c600f9a21227eadb24",
       "size": 18,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "free-video-studio/run.sh": {
       "actions": [],
@@ -15620,10 +15616,10 @@
     "wakeup3lm/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-03T07:05:57Z",
-      "reviewed_at": "2026-10-05T12:19:08Z",
-      "sha256": "5b286ec9e1120de6a75e922871846a766f5073aa270e61124376b14e936c35e7",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-06T11:32:45Z",
+      "reviewed_at": null,
+      "sha256": "4a8167802d3790cf38e3f1c244b7417204db3f3fa5a25c098bd1b34df0a1b707",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -17644,13 +17640,13 @@
     "zyra-defense/requirements.txt": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-05T04:35:11Z",
       "reviewed_at": "2026-10-06T11:32:46Z",
       "sha256": "29ca3860f4ec8e0e744f55910abbd9d567b24e8fec76664e5d39081d0cd00280",
       "size": 20,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra-defense/tests/test_safety.py": {
       "actions": [],
@@ -18094,7 +18090,7 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-06T11:32:46Z",
+  "generated_at": "2026-10-06T11:34:33Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
