@@ -1,0 +1,94 @@
+{
+  "schema": "gpt-doug.sonoxo-stack.v1",
+  "authority": "HUMAN_FIRST",
+  "generated_from": [
+    "sonoxo/strix",
+    "sonoxo/screenpipe",
+    "666ghj/MiroFish",
+    "getzep/graphiti",
+    "sonoxo/cua"
+  ],
+  "systems": [
+    {
+      "id": "github",
+      "name": "SONOXO GITHUB",
+      "role": "source-control + system inventory",
+      "mode": "public metadata"
+    },
+    {
+      "id": "screenpipe",
+      "name": "SCREENPIPE",
+      "role": "local multimodal activity timeline",
+      "mode": "local-first / user-owned data"
+    },
+    {
+      "id": "graphiti",
+      "name": "GRAPHITI",
+      "role": "temporal knowledge/context graph",
+      "mode": "memory + provenance"
+    },
+    {
+      "id": "mirofish",
+      "name": "MIROFISH",
+      "role": "multi-agent scenario simulation",
+      "mode": "sandbox simulation"
+    },
+    {
+      "id": "cua",
+      "name": "CUA",
+      "role": "computer-use environments and evaluation",
+      "mode": "human-approved sandbox execution"
+    },
+    {
+      "id": "strix",
+      "name": "STRIX",
+      "role": "authorized application security validation",
+      "mode": "defensive findings only in this dashboard"
+    }
+  ],
+  "flows": [
+    [
+      "github",
+      "graphiti",
+      "repository metadata + project events"
+    ],
+    [
+      "screenpipe",
+      "graphiti",
+      "user-approved local observations"
+    ],
+    [
+      "graphiti",
+      "mirofish",
+      "sanitized temporal context"
+    ],
+    [
+      "mirofish",
+      "cua",
+      "simulation/evaluation tasks"
+    ],
+    [
+      "cua",
+      "github",
+      "human-approved developer workflows"
+    ],
+    [
+      "strix",
+      "github",
+      "defensive findings + remediation references"
+    ],
+    [
+      "strix",
+      "graphiti",
+      "security findings provenance"
+    ]
+  ],
+  "blocked": [
+    "automatic exploitation",
+    "credential harvesting",
+    "private-person surveillance",
+    "weapon control",
+    "target selection",
+    "unapproved computer actions"
+  ]
+}
