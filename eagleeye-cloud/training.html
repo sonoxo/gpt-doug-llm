@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GPT-DOUG // EAGLE EYE TRAINING RANGE</title>
+<style>
+html,body{margin:0;height:100%;background:#050805;color:#dfffe6;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}.app{height:100%;display:grid;grid-template-rows:auto 1fr auto}.top{padding:12px 14px;border-bottom:1px solid #24452f;background:#07100b}.top b{color:#8cff9f}.sub{font-size:11px;color:#89a78f}
+main{display:grid;grid-template-columns:280px 1fr 320px;min-height:0}.panel{padding:12px;background:#08110c;overflow:auto}.left{border-right:1px solid #24452f}.right{border-left:1px solid #24452f}.stage{position:relative;overflow:hidden;background:radial-gradient(circle at center,#14331d 0,#08110b 42%,#030503 100%)}
+canvas{width:100%;height:100%;display:block}.card{border:1px solid #24452f;background:#0a150e;padding:9px;margin-bottom:8px;border-radius:7px}.k{font-size:11px;color:#8cff9f;letter-spacing:.12em;margin:8px 0}.small{font-size:10px;color:#8fa892;line-height:1.45}.row{display:flex;justify-content:space-between;font-size:11px;gap:8px}.num{font-size:22px}
+button{width:100%;padding:8px;margin:3px 0;background:#0c1b11;color:#e6ffeb;border:1px solid #376947;border-radius:6px;font:inherit;cursor:pointer}button:hover{border-color:#8cff9f;color:#8cff9f}
+.log{font-size:10px;border-left:2px solid #24452f;padding-left:7px;margin:6px 0}.safe{color:#ffd36a}.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;top:10px;left:10px;border:1px solid #376947;background:#07100bdd;padding:7px;font-size:10px}.footer{padding:7px 12px;border-top:1px solid #24452f;color:#89a78f;font-size:9px;background:#07100b}
+@media(max-width:900px){main{grid-template-columns:1fr}.left,.right{display:none}}
+</style></head>
+<body><div class="app">
+<div class="top"><div><b>🦅 GPT-DOUG // EAGLE EYE TRAINING RANGE</b></div><div class="sub">REAL-TIME SYNTHETIC BATTLEFIELD INTELLIGENCE SIMULATION • NO LIVE TARGETING</div></div>
+<main>
+<aside class="panel left">
+<div class="k">SCENARIO CONTROL</div>
+<button id="spawn">+ SPAWN SYNTHETIC UNIT</button>
+<button id="incident">⚡ INJECT SYNTHETIC INCIDENT</button>
+<button id="reset">↺ RESET RANGE</button>
+<div class="k">SIMULATION MODE</div>
+<div class="card small">All units, ISR tracks, strike events, targeting cues, and troop movements are synthetic training entities generated inside this browser. No live military feeds or real targets are used.</div>
+<div class="k">SAFE LIVE CONTEXT</div>
+<div class="card small">Use Eagle Eye Global Fusion for public earthquakes, weather, natural hazards, space weather, and defensive cyber intelligence. This training page keeps battlefield functions fictional.</div>
+</aside>
+<section class="stage"><canvas id="c"></canvas><div class="hud"><div class="badge">SIM RANGE // <span class="safe">SYNTHETIC ONLY</span><br>Tick <span id="tick">0</span></div></div></section>
+<aside class="panel right">
+<div class="k">RANGE STATE</div>
+<div class="card"><div class="row"><span>Units</span><b id="units">12</b></div><div class="row"><span>ISR tracks</span><b id="tracks">4</b></div><div class="row"><span>Incidents</span><b id="incs">0</b></div><div class="row"><span>Confidence</span><b id="conf">92%</b></div></div>
+<div class="k">EVENT STREAM</div><div id="log"></div>
+</aside>
+</main><div class="footer">GPT-DOUG • HUMAN-FIRST • TRAINING / ANALYSIS ONLY • NO WEAPON CONTROL • NO REAL TARGETING</div>
+</div>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');let tick=0,incs=0;
+let units=Array.from({length:12},(_,i)=>({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0008,vy:(Math.random()-.5)*.0008,t:i%2}));
+let tracks=Array.from({length:4},()=>({x:Math.random(),y:Math.random(),a:Math.random()*6.28}));
+function size(){c.width=c.clientWidth*devicePixelRatio;c.height=c.clientHeight*devicePixelRatio}addEventListener('resize',size);size();
+function addLog(s){let d=document.createElement('div');d.className='log';d.textContent=new Date().toLocaleTimeString()+' '+s;document.getElementById('log').prepend(d);while(document.getElementById('log').children.length>14)document.getElementById('log').lastChild.remove()}
+function draw(){tick++;document.getElementById('tick').textContent=tick;x.clearRect(0,0,c.width,c.height);
+x.strokeStyle='#173d24';x.lineWidth=1;for(let i=0;i<20;i++){x.beginPath();x.moveTo(i*c.width/20,0);x.lineTo(i*c.width/20,c.height);x.stroke()}for(let j=0;j<12;j++){x.beginPath();x.moveTo(0,j*c.height/12);x.lineTo(c.width,j*c.height/12);x.stroke()}
+units.forEach(u=>{u.x+=u.vx;u.y+=u.vy;if(u.x<0||u.x>1)u.vx*=-1;if(u.y<0||u.y>1)u.vy*=-1;let px=u.x*c.width,py=u.y*c.height;x.fillStyle=u.t?'#ffd36a':'#8cff9f';x.fillRect(px-5,py-5,10,10);x.strokeStyle='#dfffe6';x.strokeRect(px-8,py-8,16,16)});
+tracks.forEach(t=>{t.a+=.002;t.x=.5+.36*Math.cos(t.a);t.y=.5+.25*Math.sin(t.a*1.2);let px=t.x*c.width,py=t.y*c.height;x.strokeStyle='#7fd7ff';x.beginPath();x.arc(px,py,10,0,Math.PI*2);x.stroke();x.beginPath();x.moveTo(px-16,py);x.lineTo(px+16,py);x.moveTo(px,py-16);x.lineTo(px,py+16);x.stroke()});
+document.getElementById('conf').textContent=(90+Math.random()*7).toFixed(1)+'%';requestAnimationFrame(draw)}
+document.getElementById('spawn').onclick=()=>{units.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0008,vy:(Math.random()-.5)*.0008,t:Math.random()>.5?1:0});document.getElementById('units').textContent=units.length;addLog('Synthetic unit spawned')};
+document.getElementById('incident').onclick=()=>{incs++;document.getElementById('incs').textContent=incs;addLog('Synthetic incident injected for analysis')};
+document.getElementById('reset').onclick=()=>location.reload();addLog('Training range initialized');draw();
+</script></body></html>
