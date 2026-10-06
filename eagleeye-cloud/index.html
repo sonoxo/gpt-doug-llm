@@ -32,6 +32,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <h2>DEFENSIVE CYBER DATA</h2>
 <button id="cyberBtn">⚠ CISA KEV • ACTIVE EXPLOITATION</button>
 <button id="nistBtn">◇ NIST AIRC • AI RMF GOVERNANCE</button>
+<button id="nist100Btn">▣ NIST AI 100-1 • RMF 1.0 PDF</button>
 <button id="refresh">↻ REFRESH ALL LIVE FEEDS</button>
 <button id="world">◎ GLOBAL VIEW</button>
 <h2>FEED STATUS</h2>
@@ -58,6 +59,13 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
   <div class="cyberItem"><b>AI RMF PLAYBOOK</b><p>Suggested actions and documentation practices mapped to AI RMF outcomes.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN PLAYBOOK</a></div></div>
   <div class="cyberItem"><b>USE CASES + CROSSWALKS</b><p>Reference implementations and mappings to other governance frameworks.</p><div class="meta"><a href="https://airc.nist.gov/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN AIRC RESOURCE CENTER</a></div></div>
   <div class="cyberItem"><b>EAGLE EYE GOVERNANCE GATE</b><p>Human-first authorization • source provenance • uncertainty labeling • audit trail • defensive-use boundary • no autonomous weapon control.</p><div class="meta">STATUS: ENABLED</div></div>
+<div id="nist100Drawer" class="cyberDrawer">
+  <div class="row"><b class="ok">NIST AI 100-1 // AI RMF 1.0</b><button id="closeNist100" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div>
+  <div class="small">January 2023 • NIST Artificial Intelligence Risk Management Framework (AI RMF 1.0). Eagle Eye uses this as a governance reference, not as an authorization to exceed law, policy, or human approval.</div>
+  <div class="cyberItem"><b>CORE FUNCTIONS</b><p>GOVERN • MAP • MEASURE • MANAGE</p><div class="meta">Govern is cross-cutting across the other functions.</div></div>
+  <div class="cyberItem"><b>TRUSTWORTHINESS CHARACTERISTICS</b><p>Valid & Reliable • Safe • Secure & Resilient • Accountable & Transparent • Explainable & Interpretable • Privacy-Enhanced • Fair with harmful bias managed.</p></div>
+  <div class="cyberItem"><b>EAGLE EYE APPLICATION</b><p>Source provenance • confidence/uncertainty labeling • human authorization • audit trail • resilience checks • privacy boundaries • documented risk decisions.</p></div>
+  <div class="cyberItem"><b>OFFICIAL PUBLICATION</b><p>NIST AI 100-1, Artificial Intelligence Risk Management Framework (AI RMF 1.0).</p><div class="meta"><a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN OFFICIAL NIST PDF</a></div></div>
 </div>
 </section>
 
@@ -78,7 +86,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <h2>EVENT STREAM</h2><div id="timeline"><div class="log"><b>BOOT</b> Eagle Eye fusion runtime initialized.</div></div>
 </aside>
 </main>
-<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • NIST AIRC • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
+<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • NIST AIRC • NIST AI 100-1 • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://unpkg.com/satellite.js@5.0.0/dist/satellite.min.js"></script>
@@ -125,6 +133,6 @@ function updateFusion(){$('fusionBox').innerHTML='<b>Current public-signal pictu
 async function weather(){const c=map.getCenter();try{stat('s-weather','LOAD','warn');const d=await json('https://api.open-meteo.com/v1/forecast?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+'&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&timezone=auto');const w=d.current||{};$('weatherBox').innerHTML='<b>Open-Meteo current</b><br>'+c.lat.toFixed(3)+', '+c.lng.toFixed(3)+'<br>'+esc(w.temperature_2m)+'°C • RH '+esc(w.relative_humidity_2m)+'%<br>Wind '+esc(w.wind_speed_10m)+' km/h @ '+esc(w.wind_direction_10m)+'°<br>Precip '+esc(w.precipitation)+' mm<br>'+esc(w.time||'');stat('s-weather','LIVE')}catch(e){stat('s-weather','ERROR','err');$('weatherBox').textContent=e.message}}
 async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textContent='SYNCING';await Promise.allSettled([loadUSGS(),loadEONET(),loadSat(),loadRadar(),loadKp(),loadKEV()]);updateFusion();$('fresh').textContent='SYNC '+new Date().toLocaleTimeString();$('toast').textContent='Public cyber + physical feeds synchronized.';refreshing=false}
 document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggle;active[k]=!active[k];b.classList.toggle('active',active[k]);active[k]?layers[k].addTo(map):map.removeLayer(layers[k])});
-$('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
+$('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('nist100Btn').onclick=()=>{$('nist100Drawer').classList.add('open');log('NIST AI 100-1','AI RMF 1.0 framework loaded into governance view.')};$('closeNist100').onclick=()=>{$('nist100Drawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat()},1000);setInterval(refresh,60000);refresh();
 </script></body></html>
