@@ -1,0 +1,17 @@
+services:
+  api:
+    build: ./backend
+    environment:
+      - PORT=8787
+      - WEB_ORIGIN=http://localhost:4173
+      - SIMULATION_ONLY=true
+    ports:
+      - "8787:8787"
+  web:
+    build: ./frontend
+    environment:
+      - VITE_API_BASE=http://localhost:8787
+    ports:
+      - "4173:4173"
+    depends_on:
+      - api
