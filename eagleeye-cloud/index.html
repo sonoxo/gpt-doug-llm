@@ -33,6 +33,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <button id="cyberBtn">⚠ CISA KEV • ACTIVE EXPLOITATION</button>
 <button id="nistBtn">◇ NIST AIRC • AI RMF GOVERNANCE</button>
 <button id="nist100Btn">▣ NIST AI 100-1 • RMF 1.0 PDF</button>
+<button id="aircPlusBtn">⬡ AIRC+ • TEVV / PROFILES / METROLOGY</button>
 <button id="refresh">↻ REFRESH ALL LIVE FEEDS</button>
 <button id="world">◎ GLOBAL VIEW</button>
 <h2>FEED STATUS</h2>
@@ -44,6 +45,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <div class="src"><span>NOAA space weather</span><span class="pill" id="s-kp">WAIT</span></div>
 <div class="src"><span>CISA KEV catalog</span><span class="pill" id="s-kev">WAIT</span></div>
 <div class="src"><span>NIST AIRC / AI RMF</span><span class="pill ok" id="s-nist">LINKED</span></div>
+<div class="src"><span>AIRC TEVV / Metrology</span><span class="pill ok" id="s-aircplus">ENABLED</span></div>
 </div>
 <div class="card small">This platform fuses public defensive cyber intelligence with public physical hazard/event data. It does not expose private-person tracking, covert surveillance, weapon control, target selection, or strike planning.</div>
 </aside>
@@ -67,6 +69,18 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
   <div class="cyberItem"><b>EAGLE EYE APPLICATION</b><p>Source provenance • confidence/uncertainty labeling • human authorization • audit trail • resilience checks • privacy boundaries • documented risk decisions.</p></div>
   <div class="cyberItem"><b>OFFICIAL PUBLICATION</b><p>NIST AI 100-1, Artificial Intelligence Risk Management Framework (AI RMF 1.0).</p><div class="meta"><a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN OFFICIAL NIST PDF</a></div></div>
 </div>
+<div id="aircPlusDrawer" class="cyberDrawer">
+  <div class="row"><b class="ok">AIRC+ // GPT-DOUG TRUSTWORTHY AI CONTROL PLANE</b><button id="closeAircPlus" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div>
+  <div class="small">Enhanced from the NIST AI Resource Center for operationalizing AI RMF and supporting testing, evaluation, verification, and validation (TEVV).</div>
+  <div class="cyberItem"><b>GOVERNANCE ROUTER</b><p>Route every AI-assisted decision through GOVERN → MAP → MEASURE → MANAGE, with explicit human authorization for consequential actions.</p></div>
+  <div class="cyberItem"><b>TEVV GATE</b><p>Before an AI output is trusted, record source provenance, test scope, expected behavior, observed behavior, confidence, failure conditions, and verification status.</p><div class="meta">TEST • EVALUATE • VERIFY • VALIDATE</div></div>
+  <div class="cyberItem"><b>PROFILE LAYER</b><p>Apply task-specific AI RMF profiles for the actual use case rather than treating all models and deployments as equivalent.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/airmf-profiles/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN NIST AI RMF PROFILES</a></div></div>
+  <div class="cyberItem"><b>USE-CASE EVIDENCE</b><p>Compare Eagle Eye controls against public examples of organizations applying the AI RMF.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/use-cases/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN USE CASES</a></div></div>
+  <div class="cyberItem"><b>CROSSWALK ENGINE</b><p>Map Eagle Eye controls to other governance frameworks rather than duplicating controls or creating conflicting policy layers.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/crosswalks/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN CROSSWALKS</a></div></div>
+  <div class="cyberItem"><b>AI METROLOGY</b><p>Track measurable system qualities and evaluation metrics instead of relying on subjective claims that an AI system is “safe” or “accurate.”</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/ai-metrology/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN AI METROLOGY</a></div></div>
+  <div class="cyberItem"><b>SECURE DEVELOPMENT</b><p>Pair AI risk management with secure software-development practices, vulnerability management, rollback, audit, and dependency controls.</p></div>
+  <div class="cyberItem"><b>GPT-DOUG ENHANCED LOOP</b><p>OBSERVE → RETRIEVE → MODEL → HYPOTHESIZE → SIMULATE → TEVV → CRITIQUE → RISK MAP → HUMAN/POLICY GATE → VERSIONED MEMORY → AUDIT.</p><div class="meta">AIRC-ALIGNED CONTROL LOOP</div></div>
+</div>
 </section>
 
 <aside class="panel right">
@@ -79,14 +93,14 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <div class="card"><div class="small">KEV ADDED ≤30D</div><div class="num" id="kevRecent">—</div></div>
 <div class="card"><div class="small">PLANETARY Kp</div><div class="num" id="kp">—</div></div>
 </div>
-<h2>NIST AI RMF GATE</h2><div class="card small"><b class="ok">GOVERN • MAP • MEASURE • MANAGE</b><br>AI outputs remain advisory, source-labeled, uncertainty-aware, and subject to human authorization and audit.</div>
+<h2>NIST AI RMF GATE</h2><div class="card small"><b class="ok">GOVERN • MAP • MEASURE • MANAGE</b><br>AI outputs remain advisory, source-labeled, uncertainty-aware, and subject to human authorization and audit.<br><br><b class="blue">TEVV:</b> Test • Evaluate • Verify • Validate before trust.</div>
 <h2>CYBER ↔ PHYSICAL CORRELATION</h2>
 <div class="card small" id="fusionBox">Correlation engine waiting for feeds. Correlation is informational only and never claims causation without evidence.</div>
 <h2>SELECTED / WEATHER</h2><div class="card small" id="weatherBox">Center the map anywhere, then select Weather at map center.</div>
 <h2>EVENT STREAM</h2><div id="timeline"><div class="log"><b>BOOT</b> Eagle Eye fusion runtime initialized.</div></div>
 </aside>
 </main>
-<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • NIST AIRC • NIST AI 100-1 • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
+<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • NIST AIRC • NIST AI 100-1 • AIRC TEVV • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://unpkg.com/satellite.js@5.0.0/dist/satellite.min.js"></script>
@@ -133,6 +147,6 @@ function updateFusion(){$('fusionBox').innerHTML='<b>Current public-signal pictu
 async function weather(){const c=map.getCenter();try{stat('s-weather','LOAD','warn');const d=await json('https://api.open-meteo.com/v1/forecast?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+'&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&timezone=auto');const w=d.current||{};$('weatherBox').innerHTML='<b>Open-Meteo current</b><br>'+c.lat.toFixed(3)+', '+c.lng.toFixed(3)+'<br>'+esc(w.temperature_2m)+'°C • RH '+esc(w.relative_humidity_2m)+'%<br>Wind '+esc(w.wind_speed_10m)+' km/h @ '+esc(w.wind_direction_10m)+'°<br>Precip '+esc(w.precipitation)+' mm<br>'+esc(w.time||'');stat('s-weather','LIVE')}catch(e){stat('s-weather','ERROR','err');$('weatherBox').textContent=e.message}}
 async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textContent='SYNCING';await Promise.allSettled([loadUSGS(),loadEONET(),loadSat(),loadRadar(),loadKp(),loadKEV()]);updateFusion();$('fresh').textContent='SYNC '+new Date().toLocaleTimeString();$('toast').textContent='Public cyber + physical feeds synchronized.';refreshing=false}
 document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggle;active[k]=!active[k];b.classList.toggle('active',active[k]);active[k]?layers[k].addTo(map):map.removeLayer(layers[k])});
-$('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('nist100Btn').onclick=()=>{$('nist100Drawer').classList.add('open');log('NIST AI 100-1','AI RMF 1.0 framework loaded into governance view.')};$('closeNist100').onclick=()=>{$('nist100Drawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
+$('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('nist100Btn').onclick=()=>{$('nist100Drawer').classList.add('open');log('NIST AI 100-1','AI RMF 1.0 framework loaded into governance view.')};$('closeNist100').onclick=()=>{$('nist100Drawer').classList.remove('open')};$('aircPlusBtn').onclick=()=>{$('aircPlusDrawer').classList.add('open');log('AIRC+','TEVV, profiles, crosswalks, and metrology controls opened.')};$('closeAircPlus').onclick=()=>{$('aircPlusDrawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat()},1000);setInterval(refresh,60000);refresh();
 </script></body></html>
