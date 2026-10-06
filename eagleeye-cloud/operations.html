@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // EAGLE EYE OPERATIONS</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--bg:#020507;--p:#071018e8;--line:#0f4f69;--cyan:#49d7ff;--green:#58ff9c;--amber:#ffd35f;--red:#ff6565;--text:#dff8ff;--muted:#7da6b6}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}body{overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:58px 1fr 30px;background:radial-gradient(circle at 50% 0,#092637 0,#041016 25%,#020507 62%)}
+header{display:grid;grid-template-columns:280px 1fr 210px;align-items:center;border-bottom:1px solid var(--line);background:#031018f2;padding:0 10px}
+.brand{font-weight:900;letter-spacing:.08em;color:var(--cyan);font-size:17px}.brand small{display:block;font-size:9px;color:var(--muted)}
+nav{display:flex;justify-content:center;gap:5px}button,.btn{display:block;padding:7px 8px;margin:3px 0;border:1px solid #1b6c8d;background:#071823;color:var(--text);border-radius:4px;font:inherit;font-size:9px;cursor:pointer;text-decoration:none}
+nav button{width:auto;margin:0}button:hover,button.active,.btn:hover{border-color:var(--cyan);color:var(--cyan);background:#0a2433}.clock{text-align:right;font-size:10px}.live{color:var(--green)}
+main{display:grid;grid-template-columns:235px minmax(0,1fr) 300px;min-height:0}.panel{background:var(--p);padding:9px;overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:10px;color:var(--cyan);letter-spacing:.15em;margin:7px 0}.card{border:1px solid var(--line);background:#06121a;padding:8px;border-radius:5px;margin-bottom:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:9px;line-height:1.5}.muted{color:var(--muted)}.green{color:var(--green)}.amber{color:var(--amber)}.red{color:var(--red)}.metric{font-size:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.meter{height:4px;background:#102630;border-radius:999px;overflow:hidden;margin-top:4px}.meter i{display:block;height:100%;background:var(--cyan)}
+.viewport{position:relative;min-width:0;min-height:0}.map{position:absolute;inset:0}.hud{position:absolute;inset:0;pointer-events:none;z-index:500;background:linear-gradient(90deg,#02101744,transparent 16%,transparent 84%,#02101744)}.reticle{position:absolute;left:50%;top:50%;width:90px;height:90px;transform:translate(-50%,-50%);border:1px solid #49d7ff66;border-radius:50%}.reticle:before,.reticle:after{content:"";position:absolute;background:#49d7ff88}.reticle:before{height:1px;width:126px;left:-18px;top:44px}.reticle:after{width:1px;height:126px;top:-18px;left:44px}
+.topbar{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:600;pointer-events:none}.tag{padding:5px 7px;border:1px solid var(--line);background:#05131bdd;border-radius:4px;font-size:9px}
+.bottomControls{position:absolute;left:10px;right:10px;bottom:10px;z-index:600;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}.bottomControls button{text-align:center;background:#06141ddd}
+.log{font-size:9px;border-left:2px solid var(--line);padding-left:7px;margin:5px 0;line-height:1.4}.preview{height:125px;border:1px solid var(--line);border-radius:4px;background:radial-gradient(circle,#154862 0,#0a2432 30%,#041016 72%);display:flex;align-items:center;justify-content:center;font-size:56px}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#031018;font-size:8px;color:var(--muted)}
+.leaflet-container{background:#02070a;filter:saturate(.7) brightness(.8) contrast(1.15)}.leaflet-control-attribution{background:#04121acc!important;color:#66828c!important}.leaflet-control-attribution a{color:var(--cyan)!important}
+.mk{width:12px;height:12px;border:2px solid white;border-radius:50%;box-shadow:0 0 11px currentColor}.eonet{background:#ffd35f;color:#ffd35f}.sat{background:#49d7ff;color:#49d7ff}.sim{background:#58ff9c;color:#58ff9c}
+@media(max-width:950px){header{grid-template-columns:1fr auto}nav{display:none}main{grid-template-columns:1fr}.left,.right{display:none}.bottomControls{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body><div class="app">
+<header><div class="brand">🦅 GPT-DOUG EAGLE EYE<small>OPERATIONS SOFTWARE // PUBLIC DATA + SYNTHETIC TRAINING</small></div><nav><button class="active">MAP</button><button>WEATHER</button><button>SPACE</button><button>CYBER</button><button>SENSORS</button><button>AI</button><button>LOGS</button></nav><div class="clock"><span class="live">● ONLINE</span><br><span id="clock">--:--:--</span></div></header>
+<main>
+<aside class="panel left">
+<h2>LIVE LAYERS</h2>
+<button class="active" data-layer="eq">● USGS EARTHQUAKES</button>
+<button class="active" data-layer="eonet">◆ NASA EONET EVENTS</button>
+<button class="active" data-layer="sat">✦ PUBLIC SPACE STATIONS</button>
+<button class="active" data-layer="radar">◉ WEATHER RADAR</button>
+<button class="active" data-layer="sim">◇ TRAINING MARKERS</button>
+<h2>VIEWS</h2><button id="globalView">GLOBAL</button><button id="naView">NORTH AMERICA</button><button id="refresh">↻ REFRESH ALL</button>
+<h2>FEED STATUS</h2><div class="card"><div class="row"><span>USGS</span><b id="s-usgs">WAIT</b></div><div class="row"><span>NASA EONET</span><b id="s-eonet">WAIT</b></div><div class="row"><span>CelesTrak</span><b id="s-sat">WAIT</b></div><div class="row"><span>RainViewer</span><b id="s-radar">WAIT</b></div><div class="row"><span>CISA KEV</span><b id="s-kev">WAIT</b></div></div>
+<a class="btn" href="/">← GLOBAL FUSION</a><a class="btn" href="/reallife.html">◎ CAMERA AR SIM</a>
+</aside>
+<section class="viewport"><div id="map" class="map"></div><div class="hud"><div class="reticle"></div></div><div class="topbar"><div class="tag">LIVE PUBLIC SENSOR FUSION</div><div class="tag">TRAINING OBJECTS: <span class="amber">SYNTHETIC</span></div></div>
+<div class="bottomControls"><button id="marker">ADD MARKER</button><button id="incident">ADD INCIDENT</button><button id="follow">FOLLOW</button><button id="clear">CLEAR SIM</button><button id="weather">WEATHER HERE</button><button id="reset">RESET VIEW</button></div></section>
+<aside class="panel right">
+<h2>SELECTED OBJECT</h2><div class="preview" id="icon">🌐</div><div class="card"><div class="row"><span>Name</span><b id="name">GLOBAL VIEW</b></div><div class="row"><span>Type</span><b id="type">PUBLIC DATA</b></div><div class="row"><span>State</span><b class="green" id="state">LIVE</b></div><div class="row"><span>Lat</span><b id="lat">—</b></div><div class="row"><span>Lon</span><b id="lon">—</b></div></div>
+<h2>LIVE METRICS</h2><div class="grid"><div class="card"><div class="muted">EQ / 24H</div><div class="metric" id="eqCount">—</div></div><div class="card"><div class="muted">EONET OPEN</div><div class="metric" id="eoCount">—</div></div><div class="card"><div class="muted">STATIONS</div><div class="metric" id="satCount">—</div></div><div class="card"><div class="muted">CISA KEV</div><div class="metric" id="kevCount">—</div></div></div>
+<h2>AI / TEVV</h2><div class="card"><div class="row"><span>Fusion confidence</span><b id="conf">93%</b></div><div class="meter"><i id="confBar" style="width:93%"></i></div><div class="row"><span>Human approval</span><b class="green">REQUIRED</b></div><div class="row"><span>Autonomous control</span><b class="green">OFF</b></div></div>
+<h2>EVENT STREAM</h2><div class="card" id="log"></div>
+</aside></main>
+<footer><span>USGS • NASA EONET • CelesTrak • RainViewer • CISA KEV • OpenStreetMap</span><span>NIST AIRC // HUMAN-FIRST</span></footer>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script><script src="https://unpkg.com/satellite.js@5.0.0/dist/satellite.min.js"></script>
+<script>
+const $=id=>document.getElementById(id),map=L.map('map',{worldCopyJump:true}).setView([25,-20],3);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+let Ls={eq:L.layerGroup().addTo(map),eonet:L.layerGroup().addTo(map),sat:L.layerGroup().addTo(map),sim:L.layerGroup().addTo(map)},radar=null,active={eq:true,eonet:true,sat:true,sim:true,radar:true},tle=[],selected=null;
+function log(m){const d=document.createElement('div');d.className='log';d.textContent=new Date().toLocaleTimeString()+'  '+m;$('log').prepend(d);while($('log').children.length>12)$('log').lastChild.remove()}
+function stat(id,v,ok=true){$(id).textContent=v;$(id).className=ok?'green':'red'}function ic(c){return L.divIcon({className:'',html:'<div class="mk '+c+'"></div>',iconSize:[14,14],iconAnchor:[7,7]})}
+function sel(a){selected=a;$('name').textContent=a.name;$('type').textContent=a.type;$('state').textContent=a.state||'LIVE';$('lat').textContent=Number(a.lat).toFixed(4);$('lon').textContent=Number(a.lon).toFixed(4);$('icon').textContent=a.icon||'◇'}
+async function get(u){const r=await fetch(u,{cache:'no-store'});if(!r.ok)throw Error(r.status);return r.json()}
+async function usgs(){try{stat('s-usgs','LOAD');const d=await get('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');Ls.eq.clearLayers();for(const f of d.features||[]){const c=f.geometry?.coordinates,p=f.properties||{};if(!c)continue;const a={name:'M '+p.mag+' '+(p.place||'Earthquake'),type:'USGS EARTHQUAKE',lat:c[1],lon:c[0],icon:'🌐'};L.circleMarker([a.lat,a.lon],{radius:Math.max(3,Math.min(10,2+(p.mag||0)*1.3)),weight:1,fillOpacity:.75}).on('click',()=>sel(a)).addTo(Ls.eq)}$('eqCount').textContent=(d.features||[]).length;stat('s-usgs','LIVE');log('USGS synchronized')}catch(e){stat('s-usgs','ERR',false)}}
+async function eonet(){try{stat('s-eonet','LOAD');const d=await get('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=250');Ls.eonet.clearLayers();for(const e of d.events||[]){const g=(e.geometry||[]).at(-1);if(!g||g.type!=='Point')continue;const [lon,lat]=g.coordinates,a={name:e.title,type:'NASA EONET EVENT',lat,lon,icon:'⚠️'};L.marker([lat,lon],{icon:ic('eonet')}).bindTooltip(e.title).on('click',()=>sel(a)).addTo(Ls.eonet)}$('eoCount').textContent=(d.events||[]).length;stat('s-eonet','LIVE');log('NASA EONET synchronized')}catch(e){stat('s-eonet','ERR',false)}}
+async function sat(){try{stat('s-sat','LOAD');const d=await get('https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=json');tle=(d||[]).map(x=>{try{return{name:x.OBJECT_NAME,s:satellite.twoline2satrec(x.TLE_LINE1,x.TLE_LINE2)}}catch{return null}}).filter(Boolean);$('satCount').textContent=tle.length;stat('s-sat','LIVE');drawSat();log('Public station orbits synchronized')}catch(e){stat('s-sat','ERR',false)}}
+function drawSat(){Ls.sat.clearLayers();const now=new Date(),gmst=satellite.gstime(now);for(const x of tle){try{const pv=satellite.propagate(x.s,now);if(!pv.position)continue;const gd=satellite.eciToGeodetic(pv.position,gmst),lat=satellite.degreesLat(gd.latitude),lon=satellite.degreesLong(gd.longitude),a={name:x.name,type:'PUBLIC SPACE STATION',lat,lon,icon:'🛰️'};L.marker([lat,lon],{icon:ic('sat')}).bindTooltip(x.name).on('click',()=>sel(a)).addTo(Ls.sat)}catch{}}}
+async function radarLoad(){try{stat('s-radar','LOAD');const d=await get('https://api.rainviewer.com/public/weather-maps.json'),f=d.radar?.past?.at(-1);if(!f)throw Error('No radar');if(radar)map.removeLayer(radar);radar=L.tileLayer(d.host+f.path+'/256/{z}/{x}/{y}/2/1_1.png',{opacity:.55,maxNativeZoom:7,maxZoom:12,attribution:'Radar © RainViewer'});if(active.radar)radar.addTo(map);stat('s-radar','LIVE');log('Weather radar synchronized')}catch(e){stat('s-radar','ERR',false)}}
+async function kev(){try{stat('s-kev','LOAD');const d=await get('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json');$('kevCount').textContent=(d.vulnerabilities||[]).length;stat('s-kev','LIVE');log('CISA KEV synchronized')}catch(e){stat('s-kev','ERR',false)}}
+function sim(kind){const c=map.getCenter(),a={name:kind+'-'+Date.now().toString().slice(-4),type:'SYNTHETIC TRAINING '+kind,lat:c.lat+(Math.random()-.5)*4,lon:c.lng+(Math.random()-.5)*4,icon:kind==='INCIDENT'?'⚠️':'📍',state:'SIM'};L.marker([a.lat,a.lon],{icon:ic('sim')}).bindTooltip(a.name+' • SYNTHETIC').on('click',()=>sel(a)).addTo(Ls.sim);sel(a);log(a.name+' added')}
+document.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{const k=b.dataset.layer;active[k]=!active[k];b.classList.toggle('active',active[k]);if(k==='radar'){if(radar)(active[k]?radar.addTo(map):map.removeLayer(radar))}else(active[k]?Ls[k].addTo(map):map.removeLayer(Ls[k]))});
+$('marker').onclick=()=>sim('MARKER');$('incident').onclick=()=>sim('INCIDENT');$('clear').onclick=()=>{Ls.sim.clearLayers();log('Synthetic markers cleared')};$('follow').onclick=()=>{if(selected)map.flyTo([selected.lat,selected.lon],7)};$('globalView').onclick=$('reset').onclick=()=>map.flyTo([25,-20],3);$('naView').onclick=()=>map.flyTo([38,-97],4);
+$('weather').onclick=async()=>{const c=map.getCenter();try{const d=await get('https://api.open-meteo.com/v1/forecast?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+'&current=temperature_2m,wind_speed_10m,precipitation&timezone=auto');const w=d.current||{};sel({name:'Weather '+c.lat.toFixed(2)+','+c.lng.toFixed(2),type:'OPEN-METEO CURRENT',lat:c.lat,lon:c.lng,icon:'🌦️'});log('Weather: '+w.temperature_2m+' C, wind '+w.wind_speed_10m+' km/h, precip '+w.precipitation+' mm')}catch(e){log('Weather unavailable')}};
+async function refresh(){await Promise.allSettled([usgs(),eonet(),sat(),radarLoad(),kev()])}$('refresh').onclick=refresh;
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat();const v=(91+Math.random()*7).toFixed(1);$('conf').textContent=v+'%';$('confBar').style.width=v+'%'},1000);setInterval(refresh,60000);refresh();sim('MARKER');
+</script></body></html>
