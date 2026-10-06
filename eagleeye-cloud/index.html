@@ -27,7 +27,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <h2>PUBLIC PHYSICAL DATA</h2>
 <button class="active" data-toggle="earthquakes">● USGS EARTHQUAKES</button>
 <button class="active" data-toggle="eonet">◆ NASA EONET EVENTS</button>
-<button class="active" data-toggle="satellites">✦ CELESTRAK SPACE STATIONS</button>
+<button class="active" data-toggle="satellites">✦ CELESTRAK SPACE STATIONS</button>\n<button class="active" data-toggle="radar">◉ LIVE WEATHER RADAR • RAINVIEWER</button>
 <button id="weather">☁ WEATHER AT MAP CENTER</button>
 <h2>DEFENSIVE CYBER DATA</h2>
 <button id="cyberBtn">⚠ CISA KEV • ACTIVE EXPLOITATION</button>
@@ -37,7 +37,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <div class="card">
 <div class="src"><span>USGS earthquakes</span><span class="pill" id="s-usgs">WAIT</span></div>
 <div class="src"><span>NASA EONET</span><span class="pill" id="s-eonet">WAIT</span></div>
-<div class="src"><span>CelesTrak stations</span><span class="pill" id="s-sat">WAIT</span></div>
+<div class="src"><span>CelesTrak stations</span><span class="pill" id="s-sat">WAIT</span></div>\n<div class="src"><span>RainViewer weather radar</span><span class="pill" id="s-radar">WAIT</span></div>
 <div class="src"><span>Open-Meteo weather</span><span class="pill" id="s-weather">READY</span></div>
 <div class="src"><span>NOAA space weather</span><span class="pill" id="s-kp">WAIT</span></div>
 <div class="src"><span>CISA KEV catalog</span><span class="pill" id="s-kev">WAIT</span></div>
@@ -67,14 +67,14 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <h2>EVENT STREAM</h2><div id="timeline"><div class="log"><b>BOOT</b> Eagle Eye fusion runtime initialized.</div></div>
 </aside>
 </main>
-<footer><span>USGS • NASA EONET • CelesTrak • Open-Meteo • NOAA SWPC • CISA KEV • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
+<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script src="https://unpkg.com/satellite.js@5.0.0/dist/satellite.min.js"></script>
 <script>
 const $=id=>document.getElementById(id), map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([20,0],2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-const layers={earthquakes:L.layerGroup().addTo(map),eonet:L.layerGroup().addTo(map),satellites:L.layerGroup().addTo(map)},active={earthquakes:true,eonet:true,satellites:true};
+const layers={earthquakes:L.layerGroup().addTo(map),eonet:L.layerGroup().addTo(map),satellites:L.layerGroup().addTo(map),radar:L.layerGroup().addTo(map)},active={earthquakes:true,eonet:true,satellites:true,radar:true};
 let tle=[],refreshing=false,last={eq:0,eo:0,kev:0,kevRecent:0};
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function stat(id,v,cls='ok'){$(id).textContent=v;$(id).className='pill '+cls}
@@ -85,11 +85,34 @@ async function loadUSGS(){try{stat('s-usgs','LOAD','warn');const d=await json('h
 async function loadEONET(){try{stat('s-eonet','LOAD','warn');const d=await json('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=250');layers.eonet.clearLayers();for(const e of d.events||[]){const g=(e.geometry||[]).at(-1);if(!g||g.type!=='Point')continue;const [lng,lat]=g.coordinates;L.marker([lat,lng],{icon:icon('eo')}).bindPopup('<b>NASA EONET</b><br>'+esc(e.title)+'<br>'+esc((e.categories||[]).map(x=>x.title).join(', '))).addTo(layers.eonet)}last.eo=(d.events||[]).length;$('eoCount').textContent=last.eo;stat('s-eonet','LIVE');log('EONET','Synchronized '+last.eo+' open natural events.')}catch(e){stat('s-eonet','ERROR','err');log('EONET',e.message,'err')}}
 async function loadSat(){try{stat('s-sat','LOAD','warn');const d=await json('https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=json');tle=(d||[]).map(x=>{try{return{name:x.OBJECT_NAME,s:satellite.twoline2satrec(x.TLE_LINE1,x.TLE_LINE2)}}catch{return null}}).filter(Boolean);$('satCount').textContent=tle.length;stat('s-sat','LIVE');drawSat();log('SPACE','Synchronized public orbital elements for '+tle.length+' space stations.')}catch(e){stat('s-sat','ERROR','err');log('SPACE',e.message,'err')}}
 function drawSat(){layers.satellites.clearLayers();const now=new Date(),gmst=satellite.gstime(now);for(const x of tle){try{const pv=satellite.propagate(x.s,now);if(!pv.position)continue;const gd=satellite.eciToGeodetic(pv.position,gmst),lat=satellite.degreesLat(gd.latitude),lng=satellite.degreesLong(gd.longitude);L.marker([lat,lng],{icon:icon('sat')}).bindTooltip(esc(x.name)+' • '+Math.round(gd.height)+' km • PUBLIC ORBIT').addTo(layers.satellites)}catch{}}}
+
+async function loadRadar(){
+  try{
+    stat('s-radar','LOAD','warn');
+    const d=await json('https://api.rainviewer.com/public/weather-maps.json');
+    const frames=d.radar&&d.radar.past?d.radar.past:[];
+    if(!frames.length) throw Error('No radar frames');
+    const frame=frames[frames.length-1];
+    if(layers.radar && map.hasLayer(layers.radar)) map.removeLayer(layers.radar);
+    layers.radar=L.tileLayer(d.host+frame.path+'/256/{z}/{x}/{y}/2/1_1.png',{
+      tileSize:256,opacity:.58,maxNativeZoom:7,maxZoom:12,
+      attribution:'Weather radar © RainViewer'
+    });
+    if(active.radar) layers.radar.addTo(map);
+    stat('s-radar','LIVE');
+    const when=new Date(frame.time*1000);
+    log('RADAR','RainViewer precipitation radar loaded • '+when.toLocaleString());
+  }catch(e){
+    stat('s-radar','ERROR','err');
+    log('RADAR',e.message,'err');
+  }
+}
+
 async function loadKp(){try{stat('s-kp','LOAD','warn');const d=await json('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');const r=d[d.length-1];$('kp').textContent=r?Number(r[1]).toFixed(1):'—';stat('s-kp','LIVE')}catch(e){stat('s-kp','ERROR','err')}}
 async function loadKEV(){try{stat('s-kev','LOAD','warn');const d=await json('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json');const v=d.vulnerabilities||[];last.kev=v.length;const cutoff=Date.now()-30*864e5,recent=v.filter(x=>Date.parse(x.dateAdded)>=cutoff);last.kevRecent=recent.length;$('kevCount').textContent=v.length;$('kevRecent').textContent=recent.length;stat('s-kev','LIVE');$('kevList').innerHTML=v.slice().sort((a,b)=>String(b.dateAdded).localeCompare(String(a.dateAdded))).slice(0,25).map(x=>'<div class="cyberItem"><b>'+esc(x.cveID)+' • '+esc(x.vendorProject)+' '+esc(x.product)+'</b><p>'+esc(x.vulnerabilityName)+'</p><div class="meta">Added '+esc(x.dateAdded)+' • Due '+esc(x.dueDate||'n/a')+' • Ransomware: '+esc(x.knownRansomwareCampaignUse||'Unknown')+'</div></div>').join('');log('CISA KEV','Loaded '+v.length+' known exploited vulnerabilities; '+recent.length+' added in the last 30 days.');updateFusion()}catch(e){stat('s-kev','ERROR','err');log('CISA KEV',e.message,'err')}}
 function updateFusion(){$('fusionBox').innerHTML='<b>Current public-signal picture</b><br>'+last.kevRecent+' KEV entries added in the last 30 days • '+last.eq+' earthquakes in the last day • '+last.eo+' open NASA natural events.<br><br><span class="warn">No causal claim:</span> Eagle Eye places cyber and physical indicators in the same operating picture for defensive awareness only.'}
 async function weather(){const c=map.getCenter();try{stat('s-weather','LOAD','warn');const d=await json('https://api.open-meteo.com/v1/forecast?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+'&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&timezone=auto');const w=d.current||{};$('weatherBox').innerHTML='<b>Open-Meteo current</b><br>'+c.lat.toFixed(3)+', '+c.lng.toFixed(3)+'<br>'+esc(w.temperature_2m)+'°C • RH '+esc(w.relative_humidity_2m)+'%<br>Wind '+esc(w.wind_speed_10m)+' km/h @ '+esc(w.wind_direction_10m)+'°<br>Precip '+esc(w.precipitation)+' mm<br>'+esc(w.time||'');stat('s-weather','LIVE')}catch(e){stat('s-weather','ERROR','err');$('weatherBox').textContent=e.message}}
-async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textContent='SYNCING';await Promise.allSettled([loadUSGS(),loadEONET(),loadSat(),loadKp(),loadKEV()]);updateFusion();$('fresh').textContent='SYNC '+new Date().toLocaleTimeString();$('toast').textContent='Public cyber + physical feeds synchronized.';refreshing=false}
+async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textContent='SYNCING';await Promise.allSettled([loadUSGS(),loadEONET(),loadSat(),loadRadar(),loadKp(),loadKEV()]);updateFusion();$('fresh').textContent='SYNC '+new Date().toLocaleTimeString();$('toast').textContent='Public cyber + physical feeds synchronized.';refreshing=false}
 document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggle;active[k]=!active[k];b.classList.toggle('active',active[k]);active[k]?layers[k].addTo(map):map.removeLayer(layers[k])});
 $('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat()},1000);setInterval(refresh,60000);refresh();
