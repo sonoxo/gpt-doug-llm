@@ -1,0 +1,42 @@
+{
+  "system": "THE GUARDIAN",
+  "eyes": 100,
+  "authority": "HUMAN_FIRST",
+  "decision_loop": [
+    "OBSERVE",
+    "NORMALIZE",
+    "CORRELATE",
+    "SCORE",
+    "PREDICT",
+    "EXPLAIN",
+    "RECOMMEND",
+    "HUMAN_GATE",
+    "LOG"
+  ],
+  "automatic_low_risk_actions": [
+    "rate_limit",
+    "software_isolation",
+    "health_check",
+    "simulator_failover",
+    "stale_feed_disable"
+  ],
+  "human_approval_required": [
+    "device_shutdown",
+    "robot_motion_change",
+    "network_disconnect",
+    "facility_state_change",
+    "external_notification"
+  ],
+  "blocked": [
+    "weapon_control",
+    "ballistic_solution",
+    "target_selection",
+    "strike_planning",
+    "payload_release",
+    "face_recognition",
+    "cross_camera_person_tracking",
+    "private_space_surveillance",
+    "access_control_bypass",
+    "destructive_cyber_action"
+  ]
+}
