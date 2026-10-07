@@ -1,0 +1,107 @@
+{
+  "schema": "gpt-doug.govsec-ai-baseline.v1",
+  "name": "GPT-DOUG Government / National Security AI Baseline",
+  "purpose": "Engineering control map and evidence checklist. This is not a certification, authorization to operate, CMMC assessment, FedRAMP authorization, or classified-system approval.",
+  "authority": "HUMAN_FIRST",
+  "data_classes": ["PUBLIC", "FCI", "CUI", "NSS", "CLASSIFIED"],
+  "profiles": [
+    {
+      "id": "nist-ai-rmf",
+      "name": "NIST AI RMF 1.0",
+      "scope": "AI risk governance, mapping, measurement, and management",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "evidence": ["ai-system-card", "risk-register", "tevv-plan", "human-oversight-record"]
+    },
+    {
+      "id": "nist-ai-600-1",
+      "name": "NIST AI 600-1 Generative AI Profile",
+      "scope": "Generative AI risk profile",
+      "url": "https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence",
+      "evidence": ["model-provenance", "content-risk-review", "evaluation-results", "incident-process"]
+    },
+    {
+      "id": "nist-ssdf",
+      "name": "NIST SP 800-218 SSDF + SP 800-218A",
+      "scope": "Secure software development and AI-specific software development practices",
+      "url": "https://csrc.nist.gov/projects/ssdf",
+      "evidence": ["sbom", "dependency-lock", "secure-build", "vulnerability-management", "release-provenance"]
+    },
+    {
+      "id": "nist-800-53",
+      "name": "NIST SP 800-53 Rev. 5 / 800-53A",
+      "scope": "Federal security/privacy controls and assessment procedures",
+      "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/final",
+      "evidence": ["control-matrix", "assessment-plan", "assessment-results", "poam"]
+    },
+    {
+      "id": "cui-800-171",
+      "name": "NIST SP 800-171",
+      "scope": "Protection of CUI in nonfederal systems; contract requirements control the applicable revision",
+      "url": "https://csrc.nist.gov/pubs/sp/800/171/r3/final",
+      "evidence": ["ssp", "cui-boundary", "access-control", "audit-evidence", "incident-response", "poam"]
+    },
+    {
+      "id": "cmmc",
+      "name": "DoD CMMC / 32 CFR Part 170",
+      "scope": "DoD contractor assurance for FCI/CUI",
+      "url": "https://dodcio.defense.gov/CMMC/",
+      "evidence": ["scope", "assessment-evidence", "affirmation", "supplier-flowdown"]
+    },
+    {
+      "id": "dfars",
+      "name": "DFARS 252.204-7012 / 7019 / 7020 / 7021 / 7025",
+      "scope": "Defense-contract cybersecurity clauses; applicability is contract-specific",
+      "url": "https://www.acquisition.gov/dfars/part-252-solicitation-provisions-and-contract-clauses",
+      "evidence": ["contract-clause-matrix", "incident-plan", "assessment-status", "flowdown-record"]
+    },
+    {
+      "id": "dod-zero-trust",
+      "name": "DoD Zero Trust Strategy",
+      "scope": "Identity, device, application/workload, data, network/environment, automation/orchestration, visibility/analytics",
+      "url": "https://dodcio.defense.gov/Zero-Trust/",
+      "evidence": ["identity-policy", "least-privilege", "segmentation", "device-posture", "telemetry", "continuous-authorization"]
+    },
+    {
+      "id": "disa-stig",
+      "name": "DISA STIG / SRG",
+      "scope": "Configuration hardening for applicable technologies",
+      "url": "https://public.cyber.mil/stigs/",
+      "evidence": ["stig-applicability", "checklist", "exceptions", "remediation-record"]
+    },
+    {
+      "id": "fips-140-3",
+      "name": "FIPS 140-3",
+      "scope": "Validated cryptographic modules for applicable federal use",
+      "url": "https://csrc.nist.gov/pubs/fips/140-3/final",
+      "evidence": ["crypto-inventory", "cmvp-validation", "key-management-design"]
+    },
+    {
+      "id": "fedramp-cloud",
+      "name": "FedRAMP + DoD Cloud SRG",
+      "scope": "Cloud authorization baseline plus DoD impact-level requirements where applicable",
+      "url": "https://www.fedramp.gov/",
+      "evidence": ["cloud-boundary", "provider-authorization", "shared-responsibility", "impact-level"]
+    },
+    {
+      "id": "nss",
+      "name": "National Security Systems Overlay",
+      "scope": "CNSS/NSA/DoD requirements are mission, classification, and authorization-boundary specific",
+      "url": "https://www.cnss.gov/",
+      "evidence": ["system-categorization", "control-overlay", "authorizing-official-record", "approved-crypto", "classified-handling-plan"]
+    },
+    {
+      "id": "dod-rai",
+      "name": "DoD Responsible AI",
+      "scope": "Responsible, governed, accountable AI development and use",
+      "url": "https://www.ai.mil/Initiatives/About/Resources/Pathway-to-AI-Readiness/Responsible-AI/",
+      "evidence": ["rai-assessment", "accountability-owner", "limitations", "tevv-results", "human-oversight"]
+    }
+  ],
+  "blocked_claims": [
+    "Do not label a system CMMC certified unless a valid required assessment/status exists.",
+    "Do not label a system FedRAMP authorized unless the specific service/authorization exists.",
+    "Do not label a system FIPS compliant based only on use of AES/SHA; validation applies to cryptographic modules.",
+    "Do not claim ATO/RMF authorization without the responsible Authorizing Official decision.",
+    "Do not place classified information in this public repository or public demo environment."
+  ]
+}
