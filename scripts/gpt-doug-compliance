@@ -37,6 +37,25 @@ print("Boundary:", d.get("implementationBoundary"))
 print("Allowed:", ", ".join(d.get("allowed",[])))'
 }
 
+freshness(){
+  curl -fsS "$CORE_URL/api/v1/compliance/catalog" |
+  python3 -c 'import json,sys
+from datetime import date
+d=json.load(sys.stdin)
+reviewed=d.get("reviewedAt","")
+try:
+    reviewed_date=date.fromisoformat(reviewed)
+    age=(date.today()-reviewed_date).days
+except Exception:
+    age=99999
+print("GPT-DOUG // STANDARDS FRESHNESS")
+print("Reviewed:", reviewed or "UNKNOWN")
+print("Age days:", age)
+print("State:", "CURRENT_REVIEW_WINDOW" if age <= 30 else "REVIEW_REQUIRED")
+if age > 30:
+    print("Action: human compliance owner should re-verify versions against official sources.")'
+}
+
 posture(){
   [ -n "$TOKEN" ] || { say "Set GPTDOUG_AUDITOR_TOKEN to query protected posture."; exit 2; }
   curl -fsS -H "Authorization: Bearer $TOKEN" "$CORE_URL/api/v1/compliance/posture" |
@@ -69,10 +88,11 @@ case "${1:-status}" in
   status) status ;;
   catalog|standards) catalog ;;
   policy|influence) policy ;;
+  freshness|drift) freshness ;;
   posture|scan) posture ;;
   *)
     cat <<EOF
-Usage: gpt-doug-compliance [status|catalog|policy|posture]
+Usage: gpt-doug-compliance [status|catalog|policy|freshness|posture]
 
 Environment:
   GPTDOUG_CORE_URL=$CORE_URL
