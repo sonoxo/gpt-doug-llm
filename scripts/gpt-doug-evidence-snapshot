@@ -1,7 +1,41 @@
 #!/bin/sh
 set -eu
 
-ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+resolve_repo_root(){
+  SOURCE="$0"
+  while [ -L "$SOURCE" ]; do
+    DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    LINK="$(readlink "$SOURCE")"
+    case "$LINK" in
+      /*) SOURCE="$LINK" ;;
+      *) SOURCE="$DIR/$LINK" ;;
+    esac
+  done
+  SCRIPT_DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  CANDIDATE="$(CDPATH= cd -P -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+  if [ -d "$CANDIDATE/.git" ]; then
+    printf '%s\n' "$CANDIDATE"
+    return 0
+  fi
+  if [ -n "${GPTDOUG_HOME:-}" ] && [ -d "$GPTDOUG_HOME/.git" ]; then
+    printf '%s\n' "$GPTDOUG_HOME"
+    return 0
+  fi
+  if [ -d "$HOME/gpt-doug-llm/.git" ]; then
+    printf '%s\n' "$HOME/gpt-doug-llm"
+    return 0
+  fi
+  return 1
+}
+
+ROOT="$(resolve_repo_root)" || {
+  echo "ERROR: GPT-DOUG repo not found. Expected this script inside the repo or ~/gpt-doug-llm." >&2
+  exit 1
+}
+if [ -n "${GPTDOUG_HOME:-}" ] && [ "$GPTDOUG_HOME" != "$ROOT" ]; then
+  printf '[WARN] Ignoring stale GPTDOUG_HOME=%s; using %s\n' "$GPTDOUG_HOME" "$ROOT" >&2
+}
+
 CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
 OUT_DIR="${GPTDOUG_EVIDENCE_DIR:-$ROOT/.gpt-doug/evidence}"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
