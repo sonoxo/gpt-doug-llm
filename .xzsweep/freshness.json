@@ -1,12 +1,8 @@
 {
-  "content_repairs": 1,
-  "cutoff_at": "2026-10-06T19:08:12Z",
-  "due_files_reviewed": 3,
-  "due_paths": [
-    "eagleeye-cloud/operations.html",
-    "intel/white-house/daily/2026-10-06.json",
-    "intel/white-house/daily/2026-10-06.md"
-  ],
+  "content_repairs": 0,
+  "cutoff_at": "2026-10-06T19:57:57Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -143,11 +139,11 @@
     ".github/workflows/agency-cloud.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-03T07:04:48Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "4c089b38b5f5187b7890b4fdf98085043e22c84ac095728066d2b49d37f32314",
-      "size": 2239,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:39:13Z",
+      "reviewed_at": null,
+      "sha256": "87b0507d4427dd8dc6c782c0a8badf0975a597dfb49e9007b408ad3678379925",
+      "size": 2863,
       "validation_issues": [],
       "was_due": false
     },
@@ -1042,6 +1038,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "GLOBAL_INTEL_BENCHMARK.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:52:41Z",
+      "reviewed_at": null,
+      "sha256": "f44d56d94437d752ac6220128a41d8a68c16248e45e2da4d2d56bc24a86db90d",
+      "size": 2374,
+      "validation_issues": [],
+      "was_due": false
+    },
     "GOVSEC_AI_BASELINE.md": {
       "actions": [],
       "binary": false,
@@ -1108,6 +1115,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "PLATFORM_INTEGRATION.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:18:38Z",
+      "reviewed_at": null,
+      "sha256": "fd048dc612edf1c2918bc07dbd70ad387fb79e9b62a7030e7c52f4e4e880db2c",
+      "size": 3403,
+      "validation_issues": [],
+      "was_due": false
+    },
     "README.md": {
       "actions": [],
       "binary": false,
@@ -1122,11 +1140,11 @@
     "SECURITY.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-15T23:25:27Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "1612daa89c3db783eb2a9f32f3738e81709555f9c5016f54f4907e9d338c4761",
-      "size": 2211,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:37:43Z",
+      "reviewed_at": null,
+      "sha256": "88664d9f27ca36ccf7ba17cf1effe219f93440c5abff012667ffbf2e69254251",
+      "size": 7068,
       "validation_issues": [],
       "was_due": false
     },
@@ -1177,11 +1195,11 @@
     "agency_cloud/.env.example": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:52:26Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "9c8f8b55481376f7ba88c13781fc76c7dd56d995b08275af3a75fa51ca05e958",
-      "size": 720,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:12:39Z",
+      "reviewed_at": null,
+      "sha256": "a315200f40184ccdd2b1c8715e239ac4427209a769e4d2fe6656949bc40f49ac",
+      "size": 865,
       "validation_issues": [],
       "was_due": false
     },
@@ -1218,36 +1236,69 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agency_cloud/advisory.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:43:38Z",
+      "reviewed_at": null,
+      "sha256": "d0044c07f4d47c1116faed338672e21a5a0d98af2606b0e2cd1cc3ca6c8f71b0",
+      "size": 4918,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agency_cloud/app.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T10:00:09Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "98f1377cc5484457529f8c65827432833b5ae0e3b98d2006fe34a0fdf7d7c6ff",
-      "size": 15539,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:29:05Z",
+      "reviewed_at": null,
+      "sha256": "270690e33e07e5ed3f008eb31b663466b345304617d81f82aeaf41f2bcf5510c",
+      "size": 28876,
       "validation_issues": [],
       "was_due": false
     },
     "agency_cloud/audit.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T10:05:23Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "69a23d209794ad6a081a37b569a8ad6761c7fa3626ecae047bd354f64e869b7c",
-      "size": 2969,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:55:46Z",
+      "reviewed_at": null,
+      "sha256": "8ba4ef1e259480cbcb54fea832d4b041a05835c3251769b2f0b13a1bff958a5b",
+      "size": 3033,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/bioinformatics.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:13:51Z",
+      "reviewed_at": null,
+      "sha256": "d0fcc3b06da46991b128acc77f174e7fc4b23821aa9743a8be3d91a08e2a6e4d",
+      "size": 10435,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/compliance.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:58:26Z",
+      "reviewed_at": null,
+      "sha256": "84979fa060aa774b6b16445788e1a4c71b6d0b80fc124ff92f542558d4a773f1",
+      "size": 9823,
       "validation_issues": [],
       "was_due": false
     },
     "agency_cloud/config.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:46:38Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "e503af2649efcbafc032b96f99e4c6726ba695811689afd4d83385e47d42e2e7",
-      "size": 2402,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:11:08Z",
+      "reviewed_at": null,
+      "sha256": "24e8f058c92ab8b3a46a0be1602db3403c63cb129380f2240fe47e003cf054e9",
+      "size": 2694,
       "validation_issues": [],
       "was_due": false
     },
@@ -1273,6 +1324,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agency_cloud/global_compliance.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:38:19Z",
+      "reviewed_at": null,
+      "sha256": "ef921b1eaf25424662af0d613253376cf44e29c9e6278d7e7c3358a31da9c8a0",
+      "size": 21611,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/global_intel.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:53:15Z",
+      "reviewed_at": null,
+      "sha256": "a3db8fa0b7325b6b45012c8c593a9885b12645108a2d07b029e9a0314251689a",
+      "size": 18785,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agency_cloud/integrations.py": {
       "actions": [],
       "binary": false,
@@ -1287,11 +1360,33 @@
     "agency_cloud/models.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:57:37Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "fdc2e4020b90ad1f43bda0de54865817010ad79f888f34c3a6872e0a3b572883",
-      "size": 6773,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:47:20Z",
+      "reviewed_at": null,
+      "sha256": "3d19bb0e09291f35cbf87e7503dd45eacb4fad8750d9cb7979b5bb84c637defc",
+      "size": 8040,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/platform.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:15:10Z",
+      "reviewed_at": null,
+      "sha256": "5db7bddc218f068ed92e5eba53eff6a5b5e92889cd0f83569201816e3ac3aeb9",
+      "size": 4551,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/realtime.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:10:22Z",
+      "reviewed_at": null,
+      "sha256": "6aed40a2c362ac8320bf270ca9daab2126603b8249b169de1f4b82baabd09c0d",
+      "size": 1694,
       "validation_issues": [],
       "was_due": false
     },
@@ -1320,11 +1415,11 @@
     "agency_cloud/service.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T10:06:03Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "899c273b522f135bfa5541e43dde3340807d545d4c5076037d7b17371aa36b4f",
-      "size": 14372,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:11:00Z",
+      "reviewed_at": null,
+      "sha256": "2200b5e9804a791f9715877997d869714ae0e448735c363cf3cd305ba872fe61",
+      "size": 18073,
       "validation_issues": [],
       "was_due": false
     },
@@ -1339,14 +1434,58 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agency_cloud/static/bioinformatics-fusion.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:14:59Z",
+      "reviewed_at": null,
+      "sha256": "893e3e07f3a7bbb03c2c046cc606eefc0666800e5a9d95a0a31c87277e7aa1ad",
+      "size": 12554,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/director-command.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:02:36Z",
+      "reviewed_at": null,
+      "sha256": "6702ac318dc93c84b14d7bfea241c8adee6cf149cb29c4e8f922a1a958375a93",
+      "size": 12516,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/global-compliance.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:35:39Z",
+      "reviewed_at": null,
+      "sha256": "590812e4f42319d5d2b581e95f8b2f69fc5a36659708a54638ae38b9324f463d",
+      "size": 9049,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/global-intel.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:51:13Z",
+      "reviewed_at": null,
+      "sha256": "2a9dd2aad34775cd6cc6bb50081d3b1511b209e3b9fec56582bc671fffa9d3bb",
+      "size": 12083,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agency_cloud/static/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:50:44Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "c6d91d90d2b4945868dec04e06c56e72401fc7a3db5421a4d9df11abf1ad3de5",
-      "size": 6836,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:15:55Z",
+      "reviewed_at": null,
+      "sha256": "5322f6e646c5cbced24fe9366b5bb865c47dab6ad24ab0ee25dd95eff1cb5152",
+      "size": 7272,
       "validation_issues": [],
       "was_due": false
     },
@@ -1375,22 +1514,22 @@
     "agency_cloud/tests/test_security.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:53:15Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "05e5aa6a7935c62061469dc266f039c6b153eefe048b9f7237a82a325a45dfbb",
-      "size": 943,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:12:08Z",
+      "reviewed_at": null,
+      "sha256": "2ee47facb71ee719162e64835694b8595bfcbd52eea2767ac4c2e1073fa81534",
+      "size": 994,
       "validation_issues": [],
       "was_due": false
     },
     "agency_cloud/tests/test_service.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-27T09:53:05Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "a46eb4f6a3858b5f04073bf66cf0f231d2c5360871baf32ffadad8e8ca991fa8",
-      "size": 4177,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:15:26Z",
+      "reviewed_at": null,
+      "sha256": "b6fdcd3e6d6f403e8edc47cf962b8502dcb356292c6f0206479bee876ad00d2d",
+      "size": 15122,
       "validation_issues": [],
       "was_due": false
     },
@@ -2337,6 +2476,50 @@
       "reviewed_at": "2026-10-07T11:33:45Z",
       "sha256": "e0d226d505c70e769406c5dc3ffd5aab3044bac76b71a7a3a4872295e8d2b28e",
       "size": 4835,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "compliance/GLOBAL_ENGINEERING_BASELINE_2027.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:36:28Z",
+      "reviewed_at": null,
+      "sha256": "9c2b8c3233b406295021745a3e38de302910458d0b282043ec6344a3d0f14260",
+      "size": 8501,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "compliance/GLOBAL_INCIDENT_MATRIX.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:36:31Z",
+      "reviewed_at": null,
+      "sha256": "cd9a4c3ea676ab7cc54afac7de4b14f18f817eb6ab4b77a5d5a3778459407f78",
+      "size": 3811,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "compliance/USA_ENGINEERING_BASELINE_2026.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:04:52Z",
+      "reviewed_at": null,
+      "sha256": "4a10104352f35dac1b06f1a617168be3b163fe8086de6272fbbe23553d2cd9f5",
+      "size": 1330,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "compliance/control-evidence-matrix.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:01:50Z",
+      "reviewed_at": null,
+      "sha256": "989bc3e67874d62b94d2ea94532ffc14d02efb40217a305e2ad2cfa1800e8153",
+      "size": 2807,
       "validation_issues": [],
       "was_due": false
     },
@@ -3454,10 +3637,10 @@
     "docs/assets/ecosystem-flow.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-06T11:32:48Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "c42bc0bf59483872331e87d37046391c331b12fb0d61359e02b912d61eb4e720",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:08:16Z",
+      "reviewed_at": null,
+      "sha256": "b729902051d2450770c2c3233e19835b160810304239b75ca3096d1f87416ee8",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -4749,14 +4932,36 @@
       "validation_issues": [],
       "was_due": false
     },
+    "eagleeye-cloud/compliance-command.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:00:01Z",
+      "reviewed_at": null,
+      "sha256": "f64bde8136f137718daa44a6666e1c4d996efc0a32b4d21320e85d6bed8453dc",
+      "size": 10271,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "eagleeye-cloud/core-client.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:47:43Z",
+      "reviewed_at": null,
+      "sha256": "bc55e89d26d6b76b60f10aa9532475ae4429b7e0dda21de93441ed3fdc6e2567",
+      "size": 3853,
+      "validation_issues": [],
+      "was_due": false
+    },
     "eagleeye-cloud/dots-neural-lab.html": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T11:32:41Z",
+      "git_touched_at": "2026-10-07T17:19:11Z",
       "reviewed_at": null,
-      "sha256": "a596bb055772740ce8c4910de25ceffd577933d374ede84f2c49645499e31591",
-      "size": 21316,
+      "sha256": "ef28b484ae755ed9cb717a27c80f925e10c080c2f00c7d20b7048f0ec9fd552e",
+      "size": 21357,
       "validation_issues": [],
       "was_due": false
     },
@@ -4764,10 +4969,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T11:32:32Z",
+      "git_touched_at": "2026-10-07T17:15:34Z",
       "reviewed_at": null,
-      "sha256": "5b356df10db140052185d57569e8cd9af21671db0036041b9bd8ce355a7f6f00",
-      "size": 25258,
+      "sha256": "796e620aa65f4b3b238144703f6f0db00be3317229b35e96ca9257f5096cbfb5",
+      "size": 25299,
       "validation_issues": [],
       "was_due": false
     },
@@ -4794,17 +4999,15 @@
       "was_due": false
     },
     "eagleeye-cloud/operations.html": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-06T18:55:36Z",
+      "git_touched_at": "2026-10-07T19:08:53Z",
       "reviewed_at": "2026-10-07T19:08:12Z",
       "sha256": "3a66b34dbf97283e6cccda139f68f370556d8dd8a2029485c3d981f0c133aae2",
       "size": 14150,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "eagleeye-cloud/organoid-intelligence-lab.html": {
       "actions": [],
@@ -4832,10 +5035,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T11:32:17Z",
+      "git_touched_at": "2026-10-07T17:15:10Z",
       "reviewed_at": null,
-      "sha256": "55041ceef0ebfc5ba340cca4d23d9e0e0f2943a02ef23ab858da36689bf75bc1",
-      "size": 12413,
+      "sha256": "5b2fb80839cf46d06e4060fb097b190829c1a59ba5f0b6d5f8f84eb550546097",
+      "size": 48845,
       "validation_issues": [],
       "was_due": false
     },
@@ -8142,24 +8345,24 @@
     "intel/white-house/daily/2026-10-06.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-06T17:38:30Z",
       "reviewed_at": "2026-10-07T19:08:12Z",
       "sha256": "90364723afed829f56589aa82430fefe0aefbbb1eef95b5eb0d047ca57f18704",
       "size": 9690,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-06.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-06T17:38:30Z",
       "reviewed_at": "2026-10-07T19:08:12Z",
       "sha256": "27c9c087929812bc01f7aeb37fde9b33aca41089c45c961b9346d732f56fd698",
       "size": 3426,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-07.json": {
       "actions": [],
@@ -8660,10 +8863,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T19:06:43Z",
+      "git_touched_at": "2026-10-07T19:17:55Z",
       "reviewed_at": null,
-      "sha256": "7925170fef3b900a62209742f86fa4717484e6024c53c3b5a072c42baf2dcf21",
-      "size": 11847,
+      "sha256": "eeb903d5ab93019afb7d4010be795e1fe1daf8878dc85aede2bbe689b0af57a4",
+      "size": 11244,
       "validation_issues": [],
       "was_due": false
     },
@@ -9665,6 +9868,17 @@
       "reviewed_at": "2026-10-07T11:33:45Z",
       "sha256": "90bc09984e96e82a71164c2e1f7688fa6342c676452d7ead1f64874e596f9101",
       "size": 10131,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "render.platform.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:13:18Z",
+      "reviewed_at": null,
+      "sha256": "eaaa4fc0a9c67ddb25fdfd2634055bdc2541e512797b0d1d627f43cb2215e860",
+      "size": 1555,
       "validation_issues": [],
       "was_due": false
     },
@@ -11417,6 +11631,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/gpt-doug-all": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:41:07Z",
+      "reviewed_at": null,
+      "sha256": "f5e58b140061e1a26002c72b078763dbdc31ed6d70970ed3de0352a48d05b997",
+      "size": 5193,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/gpt-doug-biochip": {
       "actions": [],
       "binary": false,
@@ -11425,6 +11650,50 @@
       "reviewed_at": null,
       "sha256": "904242131845e16c7b7406d6fcd89c6ddda63957a334b22bdd24b3c8b85a6838",
       "size": 3257,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-biofusion": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:16:25Z",
+      "reviewed_at": null,
+      "sha256": "6658ddacac468447b1854063126db3675c323e91419a25f5ccd2dbc838ba3a5e",
+      "size": 1046,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-compliance": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:34:57Z",
+      "reviewed_at": null,
+      "sha256": "29cbf4daa3d3deb15879787e6b664a2441d786a7f56c8a7ae50a6db32df84abd",
+      "size": 5813,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-evidence-snapshot": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:41:14Z",
+      "reviewed_at": null,
+      "sha256": "42645fdbbfa5f4de7e20125ad1d5e67dd41976c32e0def9a8ecc2977a8311cb5",
+      "size": 3793,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-global-intel": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:51:53Z",
+      "reviewed_at": null,
+      "sha256": "6fcaa53b5ee5cc1ec9879b3c656d1b4ad66bc4a9b3b35f19d2e85ca52fcfec54",
+      "size": 1254,
       "validation_issues": [],
       "was_due": false
     },
@@ -11461,6 +11730,39 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/gpt-doug-platform": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:41:03Z",
+      "reviewed_at": null,
+      "sha256": "7f14a12680fbad7b0083240ef3b60395fb9cc5fae4c4cfaa594479e525050fbd",
+      "size": 3889,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-platform-doctor": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:16:44Z",
+      "reviewed_at": null,
+      "sha256": "b884923dff7cb79f38b51dd656c1bc8a17b4eb29e60c15615432f3a897615b69",
+      "size": 1768,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-platform-smoke": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T17:19:39Z",
+      "reviewed_at": null,
+      "sha256": "708f72785c331ccb347cded8cc50bdddb1fee0f18dd9ed4d44327cf3194f5822",
+      "size": 2064,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/gpt-doug-pocket-install.sh": {
       "actions": [],
       "binary": false,
@@ -11483,6 +11785,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/gpt-doug-regulatory-watch": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:39:57Z",
+      "reviewed_at": null,
+      "sha256": "e6ed29ac60313a46112f450fb07e4312bfe8bf7483402d7a7721efab96eec3dc",
+      "size": 4573,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/gpt-doug-swarm": {
       "actions": [],
       "binary": false,
@@ -11491,6 +11804,17 @@
       "reviewed_at": "2026-10-07T11:33:45Z",
       "sha256": "f1e6d629d62b2034159f4afabc9ce86f17701fe2245f03dd8a57c874ce76723b",
       "size": 1586,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-sync-repair": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:41:11Z",
+      "reviewed_at": null,
+      "sha256": "8ededddf9895700a98d3f6e068759edde3ad9cae837159786d1474415369118b",
+      "size": 3124,
       "validation_issues": [],
       "was_due": false
     },
@@ -11700,6 +12024,17 @@
       "reviewed_at": null,
       "sha256": "9ed2015ba09870f50e0bb4c2f0969a5d41e0f8093c8e038870780c3aca77ef01",
       "size": 584,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/install-gpt-doug-platform": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:40:58Z",
+      "reviewed_at": null,
+      "sha256": "ceabdd785f8b208b3d2c87927542c54cfec9ba29c6be51f9a29810d32ef9306c",
+      "size": 3626,
       "validation_issues": [],
       "was_due": false
     },
@@ -15897,10 +16232,10 @@
     "wakeup3lm/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-06T11:32:45Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "4a8167802d3790cf38e3f1c244b7417204db3f3fa5a25c098bd1b34df0a1b707",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:08:12Z",
+      "reviewed_at": null,
+      "sha256": "9029d1310849d5832e0c2204b8a45417c32ea1dd4669b1362b83aea60e74afc6",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18371,13 +18706,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-07T19:08:12Z",
+  "generated_at": "2026-10-07T19:57:57Z",
   "mode": "apply",
-  "repaired_paths": [
-    "eagleeye-cloud/operations.html"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1669,
+  "tracked_files_reviewed": 1700,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
