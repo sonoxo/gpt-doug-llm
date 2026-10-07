@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+SRC="$ROOT/scripts/gpt-doug-govsec"
+BIN_DIR="$HOME/.local/bin"
+BIN="$BIN_DIR/gpt-doug-govsec"
+
+[ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
+mkdir -p "$BIN_DIR"
+chmod +x "$SRC"
+ln -sf "$SRC" "$BIN"
+
+case ":${PATH}:" in
+  *":$BIN_DIR:"*) ;;
+  *)
+    RC="$HOME/.zshrc"
+    [ -f "$RC" ] || touch "$RC"
+    printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$RC"
+    ;;
+esac
+
+echo "Installed: $BIN"
+echo "Launch:    gpt-doug-govsec"
+echo "Scan:      gpt-doug-govsec scan"
+echo "Standards: gpt-doug-govsec standards"
