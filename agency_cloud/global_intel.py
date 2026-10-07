@@ -15,6 +15,13 @@ from typing import Callable, Final
 CACHE_TTL_SECONDS: Final = 300
 HTTP_TIMEOUT_SECONDS: Final = 8
 USER_AGENT: Final = "GPT-DOUG-Global-Intel/1.0 (+public-source; read-only)"
+ALLOWED_SOURCE_HOSTS: Final = {
+    "earthquake.usgs.gov",
+    "eonet.gsfc.nasa.gov",
+    "services.swpc.noaa.gov",
+    "www.cisa.gov",
+    "api.worldbank.org",
+}
 
 SAFE_INTEL_POLICY: Final = {
     "mode": "PUBLIC_STRATEGIC_ONLY",
@@ -117,6 +124,9 @@ def _parse_iso(value: object) -> datetime | None:
 
 
 def _fetch_json(url: str) -> tuple[object, int]:
+    parts = urllib.parse.urlsplit(url)
+    if parts.scheme != "https" or parts.hostname not in ALLOWED_SOURCE_HOSTS:
+        raise ValueError("source URL is outside the approved HTTPS allowlist")
     request = urllib.request.Request(
         url,
         headers={
@@ -125,7 +135,9 @@ def _fetch_json(url: str) -> tuple[object, int]:
         },
     )
     started = time.perf_counter()
-    with urllib.request.urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
+    with urllib.request.urlopen(  # nosec B310 - HTTPS host allowlist validated above
+        request, timeout=HTTP_TIMEOUT_SECONDS
+    ) as response:
         payload = response.read(6 * 1024 * 1024)
     elapsed_ms = int((time.perf_counter() - started) * 1000)
     return json.loads(payload.decode("utf-8")), elapsed_ms
