@@ -14,7 +14,9 @@ GENESIS_HASH = "0" * 64
 
 
 def _canonical_payload(value: dict) -> bytes:
-    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode(
+        "utf-8"
+    )
 
 
 def _event_hash(key: str, envelope: dict) -> str:
@@ -39,7 +41,9 @@ def append_event(
     object_id: str,
     payload: dict | None = None,
 ) -> AuditEvent:
-    previous = session.scalar(select(AuditEvent).order_by(AuditEvent.created_at.desc(), AuditEvent.id.desc()).limit(1))
+    previous = session.scalar(
+        select(AuditEvent).order_by(AuditEvent.created_at.desc(), AuditEvent.id.desc()).limit(1)
+    )
     prev_hash = previous.event_hash if previous else GENESIS_HASH
     created_at = datetime.now(timezone.utc)
     event_id = new_id("audit")
@@ -72,7 +76,11 @@ def append_event(
 
 
 def verify_chain(session: Session, *, audit_key: str) -> tuple[bool, str]:
-    events = list(session.scalars(select(AuditEvent).order_by(AuditEvent.created_at.asc(), AuditEvent.id.asc())))
+    events = list(
+        session.scalars(
+            select(AuditEvent).order_by(AuditEvent.created_at.asc(), AuditEvent.id.asc())
+        )
+    )
     expected_prev = GENESIS_HASH
     for event in events:
         if event.prev_hash != expected_prev:
