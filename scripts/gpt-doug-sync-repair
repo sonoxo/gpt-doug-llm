@@ -1,0 +1,64 @@
+#!/bin/sh
+set -eu
+
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+BRANCH="${GPTDOUG_BRANCH:-cloud/eagleeye-free}"
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+BACKUP="$ROOT/.gpt-doug/repair/$STAMP"
+
+cd "$ROOT"
+mkdir -p "$BACKUP"
+
+printf '%s
+' "GPT-DOUG // SAFE SYNC REPAIR"
+printf '%s
+' "Repo:   $ROOT"
+printf '%s
+' "Branch: $BRANCH"
+printf '%s
+' "Backup: $BACKUP"
+printf '%s
+' "------------------------------------------------------------"
+
+git fetch origin
+git switch "$BRANCH"
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  git status --short > "$BACKUP/status.txt"
+  git diff > "$BACKUP/worktree.patch" || true
+  git diff --cached > "$BACKUP/index.patch" || true
+  printf '[BACKUP] local changes saved as patches
+'
+fi
+
+for path in   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform
+do
+  if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
+    git restore --source=HEAD --staged --worktree "$path" 2>/dev/null ||       git checkout -- "$path"
+  fi
+done
+
+git pull --ff-only origin "$BRANCH"
+
+chmod +x   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform
+
+./scripts/install-gpt-doug-platform
+
+printf '%s
+' "------------------------------------------------------------"
+./scripts/gpt-doug-compliance status
+./scripts/gpt-doug-compliance global
+./scripts/gpt-doug-compliance horizon
+
+printf '%s
+' "------------------------------------------------------------"
+printf '%s
+' "[PASS] GPT-DOUG sync repair complete"
+printf '%s
+' "Local backup preserved at: $BACKUP"
+printf '%s
+' "Run next:"
+printf '%s
+' "  gpt-doug-regulatory-watch"
+printf '%s
+' "  gpt-doug-evidence-snapshot"
