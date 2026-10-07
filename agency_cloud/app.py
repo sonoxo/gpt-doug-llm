@@ -24,7 +24,10 @@ from agency_cloud.advisory import (
     list_advisories,
 )
 from agency_cloud.audit import verify_chain
-from agency_cloud.compliance import catalog as compliance_catalog, posture as compliance_posture
+from agency_cloud.compliance import (
+    catalog as compliance_catalog,
+    posture as compliance_posture,
+)
 from agency_cloud.config import load_settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
 from agency_cloud.integrations import (
@@ -36,7 +39,12 @@ from agency_cloud.integrations import (
     ontology_query,
     ontology_status,
 )
-from agency_cloud.platform import ONTOLOGY_SCHEMA, PLATFORM_MANIFEST, PUBLIC_EVENT_CLASSES, SOURCE_REGISTRY
+from agency_cloud.platform import (
+    ONTOLOGY_SCHEMA,
+    PLATFORM_MANIFEST,
+    PUBLIC_EVENT_CLASSES,
+    SOURCE_REGISTRY,
+)
 from agency_cloud.realtime import event_hub
 from agency_cloud.security import (
     AuthenticationError,
@@ -253,7 +261,15 @@ def readyz():
 @app.get("/metrics", response_class=PlainTextResponse)
 def metrics():
     with session_factory() as session:
-        from agency_cloud.models import Alert, AuditEvent, Case, IntelRecord, PlatformEvent, Report, Workspace
+        from agency_cloud.models import (
+            Alert,
+            AuditEvent,
+            Case,
+            IntelRecord,
+            PlatformEvent,
+            Report,
+            Workspace,
+        )
         counts = {
             "workspaces": session.scalar(select(func.count()).select_from(Workspace)) or 0,
             "cases": session.scalar(select(func.count()).select_from(Case)) or 0,
