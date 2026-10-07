@@ -50,6 +50,20 @@ def build_parser() -> argparse.ArgumentParser:
     warhawk_run.add_argument("--repo", default=".")
     warhawk_run.add_argument("--workers", type=int, default=6)
     warhawk_run.add_argument("--execute", action="store_true")
+
+    godseye = sub.add_parser("godseye", help="read-only GoDsEye fusion and provenance queries")
+    godseye_sub = godseye.add_subparsers(dest="godseye_command", required=True)
+    godseye_sub.add_parser("status", help="show fused subsystem status")
+    godseye_sub.add_parser("sources", help="show fused source provenance")
+    godseye_query = godseye_sub.add_parser("query", help="query fused read-only context")
+    godseye_query.add_argument("question", nargs="+")
+
+    planetary = sub.add_parser("planetary", help="XUNIA/MMGIS planetary context and bounded planning")
+    planetary_sub = planetary.add_subparsers(dest="planetary_command", required=True)
+    planetary_sub.add_parser("status", help="show planetary integration status")
+    planetary_sub.add_parser("layers", help="show planetary source layers")
+    planetary_plan_cmd = planetary_sub.add_parser("plan", help="build a bounded planetary mission plan")
+    planetary_plan_cmd.add_argument("mission", nargs="+")
     return parser
 
 
@@ -79,11 +93,59 @@ def _run_warhawk(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_godseye(args: argparse.Namespace) -> int:
+    try:
+        if args.godseye_command == "status":
+            from godseye.fusion import collect_snapshot
+
+            payload = collect_snapshot().to_dict()
+        elif args.godseye_command == "sources":
+            from godseye.fusion import collect_snapshot, snapshot_sources
+
+            snapshot = collect_snapshot()
+            payload = {
+                "schema": "gpt-doug.godseye-sources.v1",
+                "sources": snapshot_sources(snapshot),
+            }
+        else:
+            from godseye.query import GoDsEyeQueryEngine
+
+            payload = GoDsEyeQueryEngine().query(" ".join(args.question))
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        return _error("godseye_run_failed", str(exc))
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 3 if payload.get("status") == "BLOCKED" else 0
+
+
+def _run_planetary(args: argparse.Namespace) -> int:
+    try:
+        from godseye.planetary import planetary_layers, planetary_plan, planetary_status
+
+        if args.planetary_command == "status":
+            payload = planetary_status()
+        elif args.planetary_command == "layers":
+            status = planetary_status()
+            payload = {
+                "schema": "gpt-doug.planetary-layers.v1",
+                "layers": planetary_layers(status),
+            }
+        else:
+            payload = planetary_plan(" ".join(args.mission))
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        return _error("planetary_run_failed", str(exc))
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 0
+
+
 def main() -> int:
     args = build_parser().parse_args()
 
     if args.command == "warhawk":
         return _run_warhawk(args)
+    if args.command == "godseye":
+        return _run_godseye(args)
+    if args.command == "planetary":
+        return _run_planetary(args)
 
     memory = BrainMemory()
 

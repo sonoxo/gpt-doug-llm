@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+case "$0" in
+  */*) SCRIPT_DIR=$(CDPATH= cd -- "${0%/*}" && pwd -P) ;;
+  *) SCRIPT_DIR=$(pwd -P) ;;
+esac
+ROOT=$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd -P)
+cd "$ROOT"
+
+if [ -x "$ROOT/.venv/bin/python" ]; then
+  exec "$ROOT/.venv/bin/python" -m gpt_brain.cli "$@"
+fi
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 -m gpt_brain.cli "$@"
+fi
+
+printf '%s\n' 'ERROR: python3 is required to run GPT-Doug.' >&2
+exit 127
