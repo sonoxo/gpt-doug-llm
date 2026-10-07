@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from agency_cloud.advisory import create_advisory, decide_advisory, list_advisories
 from agency_cloud.audit import verify_chain
+from agency_cloud.bioinformatics import build_fusion, bioinformatics_catalog
 from agency_cloud.compliance import posture
 from agency_cloud.config import Settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
@@ -334,3 +335,72 @@ def test_global_intel_benchmark_uses_public_safe_sources():
     assert result["benchmark"]["overallScore"] >= 80
     assert result["signals"]["cisa-kev"]["catalogSize"] == 1
     assert any(point["category"] == "EARTHQUAKE" for point in result["mapPoints"])
+
+
+
+def test_bioinformatics_fusion_separates_real_reference_from_simulated_chip():
+    def fake_fetch(url: str, expected_format: str):
+        if "rest.ensembl.org" in url:
+            return ({"release": 115, "version": "15.10"}, 80)
+        if "reactome.org" in url:
+            return ("97", 90)
+        if "data.rcsb.org" in url and "4HHB" in url:
+            return (
+                {
+                    "rcsb_id": "4HHB",
+                    "struct": {"title": "HEMOGLOBIN"},
+                    "rcsb_entry_info": {
+                        "resolution_combined": [1.74],
+                        "polymer_entity_count": 2,
+                        "nonpolymer_entity_count": 1,
+                    },
+                    "exptl": [{"method": "X-RAY DIFFRACTION"}],
+                },
+                100,
+            )
+        if "data.rcsb.org" in url and "1CRN" in url:
+            return (
+                {
+                    "rcsb_id": "1CRN",
+                    "struct": {"title": "CRAMBIN"},
+                    "rcsb_entry_info": {
+                        "resolution_combined": [1.5],
+                        "polymer_entity_count": 1,
+                        "nonpolymer_entity_count": 0,
+                    },
+                    "exptl": [{"method": "X-RAY DIFFRACTION"}],
+                },
+                110,
+            )
+        if "europepmc" in url:
+            return (
+                {
+                    "hitCount": 12345,
+                    "resultList": {
+                        "result": [
+                            {
+                                "title": "Synthetic biochip reference paper",
+                                "journalTitle": "Test Journal",
+                                "pubYear": "2026",
+                            }
+                        ]
+                    },
+                },
+                120,
+            )
+        raise AssertionError(url)
+
+    catalog = bioinformatics_catalog()
+    result = build_fusion(fake_fetch)
+
+    assert catalog["policy"]["mode"] == "PUBLIC_REFERENCE_PLUS_SYNTHETIC_BIOCHIP"
+    assert "implant control" in catalog["policy"]["blocked"]
+    assert result["schema"] == "gpt-doug.bioinformatics-fusion.v1"
+    assert result["summary"]["sourceCount"] == 5
+    assert result["summary"]["onlineSources"] == 5
+    assert result["summary"]["realReferenceLayer"] is True
+    assert result["summary"]["realDeviceControl"] is False
+    assert result["summary"]["biochipNodes"] == 64
+    assert result["biochip"]["mode"] == "DIGITAL_TWIN_SIMULATION"
+    assert all(node["simulated"] is True for node in result["biochip"]["nodes"])
+    assert result["sources"][0]["status"] == "ONLINE"
