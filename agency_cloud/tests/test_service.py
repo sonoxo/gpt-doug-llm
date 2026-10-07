@@ -24,6 +24,7 @@ def settings_for(tmp_path: Path) -> Settings:
         allow_demo_auth=False,
         repo_root=tmp_path,
         default_workspace_name="Test Command",
+        cors_origins=("https://example.invalid",),
     )
 
 
@@ -81,7 +82,7 @@ def test_full_intelligence_business_flow(tmp_path: Path):
         )
 
         status = service.status(workspace.id)
-        assert status["counts"] == {"cases": 1, "intel": 1, "reports": 1, "alerts": 1}
+        assert status["counts"] == {"cases": 1, "intel": 1, "reports": 1, "alerts": 1, "events": 0}
         assert status["auditChain"]["valid"] is True
         assert len(intel.source_digest) == 64
         assert service.list_reports(workspace.id, client_visible_only=True)[0].status == "FINAL"
@@ -112,3 +113,49 @@ def test_audit_chain_detects_tampering(tmp_path: Path):
         valid, message = verify_chain(session, audit_key=settings.audit_key)
         assert valid is False
         assert "mismatch" in message
+
+
+
+def test_platform_event_fabric_persists_and_filters_public_classes(tmp_path: Path):
+    settings = settings_for(tmp_path)
+    engine = build_engine(settings)
+    create_schema(engine)
+    factory = build_session_factory(engine)
+
+    with factory() as session:
+        service = IntelligenceService(session, settings)
+        workspace = service.bootstrap()
+
+        public = service.create_platform_event(
+            workspace_id=workspace.id,
+            actor="analyst-test",
+            event_type="SENSOR_HEALTH",
+            entity_kind="sensor",
+            object_id="sensor-01",
+            title="Sensor healthy",
+            summary="Synthetic sensor heartbeat.",
+            classification="SIMULATION",
+            source_id="platform-sim",
+            provenance_locator="test:platform-sim",
+            confidence=0.96,
+            payload={"status": "healthy"},
+        )
+        service.create_platform_event(
+            workspace_id=workspace.id,
+            actor="analyst-test",
+            event_type="BUSINESS_SIGNAL",
+            entity_kind="event",
+            object_id="signal-01",
+            title="Private business signal",
+            summary="Confidential test event.",
+            classification="BUSINESS_CONFIDENTIAL",
+            source_id="operator",
+            provenance_locator="test:operator",
+            confidence=0.9,
+            payload={},
+        )
+
+        assert service.list_platform_events(workspace.id)[0].id != ""
+        public_events = service.list_public_platform_events()
+        assert [item.id for item in public_events] == [public.id]
+        assert service.status(workspace.id)["counts"]["events"] == 2
