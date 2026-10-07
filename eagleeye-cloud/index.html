@@ -49,7 +49,7 @@ footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;bord
 <div class="src"><span>AIRC TEVV / Metrology</span><span class="pill ok" id="s-aircplus">ENABLED</span></div>
 </div>
 <div class="card small">This platform fuses public defensive cyber intelligence with public physical hazard/event data. It does not expose private-person tracking, covert surveillance, weapon control, target selection, or strike planning.</div>
-<a class="btn" href="/organoid-intelligence-lab.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#160b20;border:1px solid #6f3b82;border-radius:6px;color:#ffd6f2;font:inherit;font-size:10px;text-align:left;text-decoration:none">🧠 ORGANOID INTELLIGENCE LAB</a>\n</aside>
+<a class="btn" href="/organoid-intelligence-lab.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#160b20;border:1px solid #6f3b82;border-radius:6px;color:#ffd6f2;font:inherit;font-size:10px;text-align:left;text-decoration:none">🧠 ORGANOID INTELLIGENCE LAB</a>\n<a class="btn" href="/quantum-security-fusion.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#071725;border:1px solid #2d6b86;border-radius:6px;color:#c8f3ff;font:inherit;font-size:10px;text-align:left;text-decoration:none">◈ QUANTUM SECURITY FUSION</a>\n</aside>
 
 <section class="viewport">
 <div id="map" class="map"></div>
@@ -150,4 +150,4 @@ async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textCon
 document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggle;active[k]=!active[k];b.classList.toggle('active',active[k]);active[k]?layers[k].addTo(map):map.removeLayer(layers[k])});
 $('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('nist100Btn').onclick=()=>{$('nist100Drawer').classList.add('open');log('NIST AI 100-1','AI RMF 1.0 framework loaded into governance view.')};$('closeNist100').onclick=()=>{$('nist100Drawer').classList.remove('open')};$('aircPlusBtn').onclick=()=>{$('aircPlusDrawer').classList.add('open');log('AIRC+','TEVV, profiles, crosswalks, and metrology controls opened.')};$('closeAircPlus').onclick=()=>{$('aircPlusDrawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat()},1000);setInterval(refresh,60000);refresh();
-</script></body></html>
+</script><script src="/quantum-renderer.js"></script>\n</body></html>
