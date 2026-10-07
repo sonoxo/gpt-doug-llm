@@ -19,6 +19,7 @@ def settings() -> Settings:
         allow_demo_auth=False,
         repo_root=Path("."),
         default_workspace_name="Test",
+        cors_origins=("https://example.invalid",),
     )
 
 
