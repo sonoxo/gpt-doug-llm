@@ -315,8 +315,21 @@ const views={
 };
 
 function setView(v){
+ if(!views[v])return;
  view=v;const d=views[v];camera.position.set(...d.p);camera.lookAt(...d.t);$('viewName').textContent=d.name;
+ const show={
+  body:['cranial','thoracic','spine','arms','legs'],
+  cranial:['cranial','spine'],
+  thoracic:['thoracic','spine'],
+  spine:['spine'],
+  arms:['arms','thoracic','spine'],
+  legs:['legs','spine']
+ }[v];
+ Object.entries(groups).forEach(([name,g])=>g.visible=show.includes(name));
+ pelvis.visible=(v==='body'||v==='legs'||v==='spine');
+ buses.forEach((b,i)=>{b.visible=v==='body'||v==='spine'||(v==='arms'&&(i===1||i===2||i===0))||(v==='legs'&&(i===3||i===4||i===0))||(v==='cranial'&&i===0)||(v==='thoracic'&&i===0)});
  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+ agentLog('VIEW',d.name+' active.');
 }
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
 
@@ -354,7 +367,24 @@ function runSequence(){
  if($('humanGate').textContent==='AWAITING APPROVAL'){ $('humanGate').textContent='APPROVED';$('humanGate').className='ok';sequenceIndex++;agentLog('HUMAN GATE','Human approval recorded for synthetic response.')}
  if(sequenceIndex>=sequence.length)sequenceIndex=0;
  sequenceRunning=true;$('seqState').textContent='RUNNING';renderSequence();
- clearInterval(sequenceTimer);sequenceTimer=markDiag('diagBoot',true,'READY');runSelfTest();
+ clearInterval(sequenceTimer);sequenceTimer=window.GPT_DOUG={
+ setView,selectChip,explode,runSequence,sequenceStep,stopSequence,runSelfTest,
+ pulse:()=>{pulse=1},
+ reset:()=>document.getElementById('reset').click(),
+ status:()=>({view,selected,sequenceRunning,sequenceIndex,rotating,exploded})
+};
+addEventListener('keydown',e=>{
+ if(e.target&&/input|textarea|select/i.test(e.target.tagName))return;
+ const map={'1':'body','2':'cranial','3':'thoracic','4':'spine','5':'arms','6':'legs'};
+ if(map[e.key])setView(map[e.key]);
+ if(e.key.toLowerCase()==='p')pulse=1;
+ if(e.key.toLowerCase()==='x')document.getElementById('explode').click();
+ if(e.key.toLowerCase()==='r')document.getElementById('rotate').click();
+ if(e.key.toLowerCase()==='t')runSelfTest();
+});
+markDiag('diagBoot',true,'READY');
+const bootOk=runSelfTest();
+if(new URLSearchParams(location.search).get('selftest')==='1'){agentLog('BOOT',bootOk?'Automatic end-to-end self-test passed.':'Automatic end-to-end self-test needs review.')}
 setInterval(()=>{if(sequenceRunning)sequenceStep()},950)
 }
 function stopSequence(){sequenceRunning=false;clearInterval(sequenceTimer);$('seqState').textContent='STOPPED';renderSequence();agentLog('STOP','Agentic sequence stopped by operator.')}
@@ -389,14 +419,30 @@ $('sequenceStop').onclick=stopSequence;
 function markDiag(id,ok,msg){const el=$(id);el.textContent=msg;el.className=ok?'pass':'fail';return ok}
 function runSelfTest(){
  const results=[];
- results.push(markDiag('diag3d',!!renderer?.getContext?.(),'PASS'));
- results.push(markDiag('diagViews',document.querySelectorAll('[data-view]').length===6,'6/6'));
- results.push(markDiag('diagChips',document.querySelectorAll('[data-chip]').length===6,'6/6'));
- results.push(markDiag('diagAgents',sequence.length===8&&document.querySelectorAll('[data-agent]').length===8,'8/8'));
+ let rendererOk=false;try{rendererOk=!!renderer.getContext()&&renderer.domElement===canvas}catch{}
+ results.push(markDiag('diag3d',rendererOk,rendererOk?'PASS':'FAIL'));
+
+ let viewsOk=false;try{
+  const names=Object.keys(views);viewsOk=names.length===6&&document.querySelectorAll('[data-view]').length===6;
+  if(viewsOk){names.forEach(setView);setView('body')}
+ }catch{viewsOk=false}
+ results.push(markDiag('diagViews',viewsOk,viewsOk?'6/6':'FAIL'));
+
+ let chipsOk=false;try{
+  const ids=[...document.querySelectorAll('[data-chip]')].map(x=>x.dataset.chip);
+  chipsOk=ids.length===6; if(chipsOk){ids.forEach(selectChip);selected='brain';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.chip==='brain'));setView('body')}
+ }catch{chipsOk=false}
+ results.push(markDiag('diagChips',chipsOk,chipsOk?'6/6':'FAIL'));
+
+ let controlsOk=false;try{explode(true);explode(false);pulse=.2;rotating=false;rotating=true;controlsOk=true}catch{}
+ results.push(markDiag('diagAgents',sequence.length===8&&document.querySelectorAll('[data-agent]').length===8&&controlsOk,'8/8'));
+
  let exportOk=false;try{exportOk=typeof Blob==='function'&&typeof URL.createObjectURL==='function'}catch{}
  results.push(markDiag('diagExport',exportOk,exportOk?'PASS':'FAIL'));
+
  const nav=[...document.querySelectorAll('a.btn')],navOk=nav.length>=3&&nav.every(a=>a.getAttribute('href'));
- results.push(markDiag('diagNav',navOk,navOk?nav.length+'/ '+nav.length:'FAIL'));
+ results.push(markDiag('diagNav',navOk,navOk?nav.length+'/'+nav.length:'FAIL'));
+
  const passed=results.filter(Boolean).length,total=results.length;
  markDiag('diagTotal',passed===total,passed+'/'+total+' PASS');
  markDiag('diagBoot',passed===total,passed===total?'READY':'REVIEW');
