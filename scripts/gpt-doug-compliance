@@ -1,0 +1,85 @@
+#!/bin/sh
+set -eu
+
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+TOKEN="${GPTDOUG_AUDITOR_TOKEN:-}"
+WORKSPACE="${GPTDOUG_WORKSPACE_ID:-}"
+
+say(){ printf '%s\n' "$*"; }
+need(){ command -v "$1" >/dev/null 2>&1 || { say "ERROR: $1 is required" >&2; exit 1; }; }
+need curl
+need python3
+
+catalog(){
+  curl -fsS "$CORE_URL/api/v1/compliance/catalog" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // U.S. COMPLIANCE CATALOG")
+print("Reviewed:", d.get("reviewedAt"))
+print("Mode:", d.get("operatingPrinciple",{}).get("mode"))
+print("Rule:", d.get("operatingPrinciple",{}).get("rule"))
+print("")
+for s in d.get("standards",[]):
+    print("[%-28s] %-48s %s" % (s.get("id",""), s.get("name",""), s.get("version","")))
+print("")
+print(d.get("disclaimer",""))'
+}
+
+policy(){
+  curl -fsS "$CORE_URL/api/v1/advisory/policy" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // ADVISORY AUTHORITY")
+print("Mode:", d.get("mode"))
+print("Human authority:", d.get("humanAuthority"))
+print("Autonomous execution:", d.get("autonomousExecution"))
+print("Boundary:", d.get("implementationBoundary"))
+print("Allowed:", ", ".join(d.get("allowed",[])))'
+}
+
+posture(){
+  [ -n "$TOKEN" ] || { say "Set GPTDOUG_AUDITOR_TOKEN to query protected posture."; exit 2; }
+  curl -fsS -H "Authorization: Bearer $TOKEN" "$CORE_URL/api/v1/compliance/posture" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // COMPLIANCE ENGINEERING POSTURE")
+print(d.get("claim",""))
+print("Reviewed:", d.get("reviewedAt"))
+print("Counts:", d.get("counts"))
+print("")
+for c in d.get("checks",[]):
+    print("[%s] %s :: %s" % (c.get("status"), c.get("id"), c.get("title")))
+    print("    "+c.get("detail",""))'
+}
+
+status(){
+  curl -fsS "$CORE_URL/api/v1/platform/manifest" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+p=d.get("operatingPolicy",{})
+print("Core:", d.get("service"))
+print("Environment:", d.get("environment"))
+print("Authority:", d.get("authority"))
+print("Operating mode:", p.get("mode"))
+print("Autonomous execution:", p.get("autonomousExecution"))
+print("Realtime connections:", d.get("realtimeConnections"))'
+}
+
+case "${1:-status}" in
+  status) status ;;
+  catalog|standards) catalog ;;
+  policy|influence) policy ;;
+  posture|scan) posture ;;
+  *)
+    cat <<EOF
+Usage: gpt-doug-compliance [status|catalog|policy|posture]
+
+Environment:
+  GPTDOUG_CORE_URL=$CORE_URL
+  GPTDOUG_AUDITOR_TOKEN=<protected token for posture>
+
+This shell is advisory-only. It reads posture and evidence; it does not execute
+consequential system changes or claim external certification/authorization.
+EOF
+    ;;
+esac
