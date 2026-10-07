@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // USA Compliance Command</title>
+<meta name="theme-color" content="#030711">
+<style>
+:root{--bg:#030711;--panel:#07111d;--line:#193652;--cyan:#65ddff;--green:#67ffb0;--gold:#ffd36c;--red:#ff7183;--violet:#a982ff;--white:#eef7ff;--muted:#8298aa}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--white);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{min-height:100vh;background:radial-gradient(circle at 50% -10%,#132847 0,#07111f 35%,#030711 72%)}
+header{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:minmax(250px,1fr) auto;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:#030711ee;backdrop-filter:blur(14px)}
+.brand{font-weight:900;color:var(--cyan);font-size:17px;letter-spacing:.08em}.brand small{display:block;margin-top:4px;color:var(--muted);font-size:8px;letter-spacing:.06em}
+.status{font-size:8px;text-align:right;line-height:1.6}.ok{color:var(--green)}.warn{color:var(--gold)}.bad{color:var(--red)}
+main{max-width:1500px;margin:auto;padding:12px;display:grid;grid-template-columns:290px minmax(0,1fr) 340px;gap:10px}
+.panel{border:1px solid var(--line);border-radius:8px;background:#06101ad9;box-shadow:0 10px 35px #0008;overflow:hidden}.panel h2{margin:0;padding:9px 10px;border-bottom:1px solid var(--line);font-size:9px;color:var(--cyan);letter-spacing:.14em;background:#091522}.pad{padding:9px}
+.card{border:1px solid #16334f;border-radius:6px;background:#08131f;padding:8px;margin:7px 0}.row{display:flex;justify-content:space-between;gap:10px;font-size:8px;line-height:1.55;color:var(--muted)}.row b{color:#fff;text-align:right}
+.mode{font-size:19px;font-weight:900;color:var(--green);letter-spacing:.08em}.rule{font-size:8px;color:#b8cad8;line-height:1.6;margin-top:6px}
+.badge{display:inline-block;padding:3px 6px;border:1px solid #315474;border-radius:999px;font-size:6px;margin:2px}.badge.pass{border-color:#2d745a;color:var(--green)}.badge.ext{border-color:#765f28;color:var(--gold)}.badge.gap{border-color:#78414b;color:var(--red)}
+.std{padding:8px;border-bottom:1px solid #122a40;cursor:pointer}.std:hover{background:#0a1927}.std b{display:block;font-size:8px}.std span{font-size:6px;color:var(--muted)}.std em{font-style:normal;font-size:6px;color:var(--green)}
+.matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.metric{padding:11px;border:1px solid #173753;border-radius:7px;background:#07121f;text-align:center}.metric strong{display:block;font-size:22px;color:var(--cyan)}.metric span{font-size:7px;color:var(--muted)}
+.flow{display:flex;flex-wrap:wrap;gap:5px;align-items:center}.flow i{font-style:normal;padding:5px 7px;border:1px solid #294d6b;border-radius:4px;font-size:7px;background:#081725}.flow .arrow{border:0;color:#4f7796;background:none;padding:0}
+.table{width:100%;border-collapse:collapse;font-size:7px}.table td,.table th{border-bottom:1px solid #153048;padding:7px 5px;text-align:left}.table th{color:var(--cyan);font-weight:700}.table td{color:#b3c5d3}.table .status-pass{color:var(--green)}.table .status-gap{color:var(--red)}.table .status-external{color:var(--gold)}
+.log{max-height:240px;overflow:auto}.event{padding:6px;border-left:2px solid #2c5879;margin:5px 0;background:#071522;font-size:7px;color:#99adbd;line-height:1.45}
+button,a.btn{display:block;width:100%;padding:7px 8px;margin:4px 0;border:1px solid #315171;border-radius:5px;background:#071522;color:#fff;text-decoration:none;font:inherit;font-size:8px;cursor:pointer}button:hover,a.btn:hover{border-color:var(--cyan);background:#0a2131}
+.notice{padding:10px;border:1px solid #6d5828;background:#181407;border-radius:7px;color:#f6dda0;font-size:7px;line-height:1.55}
+footer{padding:9px 14px;border-top:1px solid var(--line);font-size:7px;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+@media(max-width:1050px){main{grid-template-columns:1fr}.status{display:none}.matrix{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">⬡ GPT-DOUG // USA COMPLIANCE COMMAND<small>NATIONAL ENGINEERING READINESS • EVIDENCE • HUMAN AUTHORITY • ADVISORY-ONLY AI</small></div>
+<div class="status"><span id="coreState" class="warn">● CONNECTING CORE</span><br><span id="reviewed">REVIEWED —</span><br><span>NO CERTIFICATION CLAIM IMPLIED</span></div>
+</header>
+<main>
+<section class="panel">
+<h2>AUTHORITY MODEL</h2>
+<div class="pad">
+<div class="card"><div class="mode" id="mode">ADVISORY_ONLY</div><div class="rule" id="rule">AI analyzes, compares, recommends, prioritizes, and explains. Human authorities decide. Authorized external systems implement.</div></div>
+<div class="row"><span>Human authority</span><b id="human">TRUE</b></div>
+<div class="row"><span>Autonomous execution</span><b id="auto">FALSE</b></div>
+<div class="row"><span>Action surface</span><b>NONE</b></div>
+<div class="notice" style="margin-top:9px">This console measures engineering evidence. It cannot grant CMMC status, FedRAMP authorization, FIPS validation, RMF/ATO approval, CUI enclave approval, or NSS/classified authorization.</div>
+<h2 style="margin:12px -9px 0">PLATFORM LINKS</h2>
+<a class="btn" href="/quantum-security-fusion.html">◈ SECURITY FUSION</a>
+<a class="btn" href="/sonoxo-systems.html">⬢ SYSTEM MATRIX</a>
+<a class="btn" href="/">← EAGLE EYE</a>
+<button id="refresh">↻ REFRESH EVIDENCE</button>
+</div>
+</section>
+
+<section class="panel">
+<h2>USA ENGINEERING BASELINE</h2>
+<div class="pad">
+<div class="matrix">
+<div class="metric"><strong id="stdCount">0</strong><span>STANDARD PROFILES</span></div>
+<div class="metric"><strong id="currentCount">0</strong><span>CURRENT / TRACKED</span></div>
+<div class="metric"><strong id="externalCount">4</strong><span>EXTERNAL DETERMINATIONS</span></div>
+</div>
+<div class="card">
+<div class="flow"><i>NIST CSF</i><span class="arrow">→</span><i>AI RMF</i><span class="arrow">→</span><i>SSDF</i><span class="arrow">→</span><i>800-53 / 171</i><span class="arrow">→</span><i>ZERO TRUST</i><span class="arrow">→</span><i>ASSESS</i><span class="arrow">→</span><i>HUMAN DECISION</i></div>
+</div>
+<div id="standards"></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>READINESS / EVIDENCE</h2>
+<div class="pad">
+<div class="card">
+<div class="row"><span>Core</span><b id="coreUrl">—</b></div>
+<div class="row"><span>Compliance API</span><b id="apiState">CONNECTING</b></div>
+<div class="row"><span>Realtime</span><b id="wsState">—</b></div>
+<div class="row"><span>Data boundary</span><b>PUBLIC / TRAINING / SIM</b></div>
+</div>
+<table class="table">
+<thead><tr><th>CONTROL</th><th>ENGINEERING STATE</th></tr></thead>
+<tbody>
+<tr><td>Human authority</td><td class="status-pass">ENFORCED IN POLICY</td></tr>
+<tr><td>Audit integrity</td><td>HASH-CHAINED EVIDENCE</td></tr>
+<tr><td>Public stream boundary</td><td class="status-pass">PUBLIC/TRAINING/SIM</td></tr>
+<tr><td>OIDC / MFA</td><td class="status-gap">REMAINING TARGET</td></tr>
+<tr><td>Durable cloud Postgres</td><td class="status-gap">REMAINING TARGET</td></tr>
+<tr><td>CMMC / FedRAMP / FIPS / ATO</td><td class="status-external">EXTERNAL DETERMINATION</td></tr>
+</tbody>
+</table>
+<h2 style="margin:12px -9px 0">EVIDENCE STREAM</h2>
+<div class="log" id="events"><div class="event">Compliance command initialized.</div></div>
+</div>
+</section>
+</main>
+<footer><span>GPT-DOUG // ENGINEERING READINESS</span><span>HUMAN-FIRST • ADVISORY-ONLY • NO AUTONOMOUS CONSEQUENTIAL EXECUTION</span><span id="clock">—</span></footer>
+<script>
+const $=id=>document.getElementById(id);
+const CORE=(localStorage.getItem('gpt_doug_core_url')||'https://gpt-doug-platform-core.onrender.com').replace(/\/$/,'');
+$('coreUrl').textContent=CORE.replace(/^https?:\/\//,'');
+function log(m){const d=document.createElement('div');d.className='event';d.textContent=new Date().toISOString().slice(11,19)+'Z  '+m;$('events').prepend(d);while($('events').children.length>18)$('events').lastChild.remove()}
+function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+async function get(path){const r=await fetch(CORE+path,{cache:'no-store'});if(!r.ok)throw new Error(path+' HTTP '+r.status);return r.json()}
+async function refresh(){
+ $('coreState').textContent='● CONNECTING CORE';$('coreState').className='warn';$('apiState').textContent='CONNECTING';
+ try{
+   const [manifest,catalog,policy]=await Promise.all([get('/api/v1/platform/manifest'),get('/api/v1/compliance/catalog'),get('/api/v1/advisory/policy')]);
+   $('coreState').textContent='● CORE CONNECTED';$('coreState').className='ok';$('apiState').textContent='ONLINE';
+   $('reviewed').textContent='REVIEWED '+(catalog.reviewedAt||'—');
+   $('mode').textContent=policy.mode||'ADVISORY_ONLY';$('human').textContent=String(policy.humanAuthority).toUpperCase();$('auto').textContent=String(policy.autonomousExecution).toUpperCase();
+   $('rule').textContent=catalog.operatingPrinciple?.rule||policy.implementationBoundary||'Human authority retained.';
+   const standards=catalog.standards||[];$('stdCount').textContent=standards.length;$('currentCount').textContent=standards.filter(x=>String(x.status).startsWith('CURRENT')).length;
+   $('wsState').textContent=(manifest.realtimeConnections??0)+' CONNECTED';
+   $('standards').innerHTML=standards.map(s=>'<div class="std"><b>'+esc(s.name)+'</b><span>'+esc(s.authority)+' • '+esc(s.version)+'</span><br><em>'+esc(s.status)+'</em></div>').join('');
+   log('US compliance catalog synchronized: '+standards.length+' tracked profiles');
+   log('Authority policy: '+(policy.mode||'ADVISORY_ONLY')+' / human='+policy.humanAuthority+' / autonomous='+policy.autonomousExecution);
+ }catch(e){$('coreState').textContent='● CORE DEGRADED';$('coreState').className='bad';$('apiState').textContent='UNAVAILABLE';log('Core sync failed: '+e.message)}
+}
+$('refresh').onclick=refresh;setInterval(()=>{$('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z'},1000);refresh();
+</script>
+<script src="/core-client.js"></script>
+</body></html>
