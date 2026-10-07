@@ -32,6 +32,8 @@ fetch "/api/v1/compliance/global" "compliance-catalog-global.json"
 fetch "/api/v1/compliance/horizon/2027" "compliance-horizon-2027.json"
 fetch "/api/v1/advisory/policy" "advisory-policy.json"
 fetch "/api/v1/public/events?limit=25" "public-event-sample.json"
+fetch "/api/v1/intel/global/sources" "global-intel-sources.json"
+fetch "/api/v1/intel/global/benchmark" "global-intel-benchmark.json"
 
 if [ -d "$ROOT/.git" ]; then
   (
