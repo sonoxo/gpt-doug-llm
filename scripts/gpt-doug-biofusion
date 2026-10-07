@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eu
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
+
+curl -fsS "$CORE_URL/api/v1/bioinformatics/fusion" |
+python3 -c 'import json,sys
+d=json.load(sys.stdin)
+s=d.get("summary",{})
+print("GPT-DOUG // GLOBAL BIOINFORMATICS FUSION")
+print("Generated:", d.get("generatedAt"))
+print("Sources:", s.get("onlineSources"), "/", s.get("sourceCount"), "online")
+print("Biochip nodes:", s.get("biochipNodes"))
+print("Real reference layer:", s.get("realReferenceLayer"))
+print("Real device control:", s.get("realDeviceControl"))
+print("")
+for src in d.get("sources",[]):
+    print("[%-9s] %-22s %-38s %s" % (
+        src.get("status",""),
+        src.get("domain",""),
+        src.get("name",""),
+        src.get("latencyMs"),
+    ))
+    if src.get("data"):
+        print("   ", json.dumps(src.get("data"), sort_keys=True))
+print("")
+print(d.get("claim",""))'
