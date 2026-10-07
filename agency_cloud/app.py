@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import asyncio
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.staticfiles import StaticFiles
@@ -26,6 +28,8 @@ from agency_cloud.integrations import (
     ontology_query,
     ontology_status,
 )
+from agency_cloud.platform import ONTOLOGY_SCHEMA, PLATFORM_MANIFEST, PUBLIC_EVENT_CLASSES, SOURCE_REGISTRY
+from agency_cloud.realtime import event_hub
 from agency_cloud.security import (
     AuthenticationError,
     AuthorizationError,
@@ -58,6 +62,13 @@ app = FastAPI(
         "Not a government agency and does not confer governmental authority."
     ),
     lifespan=lifespan,
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=list(settings.cors_origins),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Zyra-Workspace"],
 )
 app.mount("/assets", StaticFiles(directory=static_dir), name="assets")
 
@@ -104,6 +115,19 @@ class AlertCreate(BaseModel):
 
 class QueryRequest(BaseModel):
     question: str = Field(min_length=2, max_length=4000)
+
+
+class PlatformEventCreate(BaseModel):
+    event_type: str = Field(min_length=2, max_length=64)
+    entity_kind: str = Field(default="event", min_length=1, max_length=64)
+    object_id: str = Field(default="", max_length=128)
+    title: str = Field(min_length=2, max_length=280)
+    summary: str = Field(default="", max_length=20000)
+    classification: str = Field(default="SIMULATION", min_length=2, max_length=48)
+    source_id: str = Field(min_length=1, max_length=160)
+    provenance_locator: str = Field(min_length=1, max_length=500)
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    payload: dict = Field(default_factory=dict)
 
 
 def get_session():
@@ -473,3 +497,114 @@ def api_glassonion_query(
         return {"result": glassonion_query(settings, payload.question)}
     except IntelligenceIntegrationError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+
+
+@app.get("/api/v1/platform/manifest")
+def platform_manifest():
+    return {
+        **PLATFORM_MANIFEST,
+        "realtimeConnections": event_hub.connection_count,
+        "service": settings.service_name,
+        "environment": settings.environment,
+    }
+
+
+@app.get("/api/v1/ontology/schema")
+def ontology_schema():
+    return ONTOLOGY_SCHEMA
+
+
+@app.get("/api/v1/sources")
+def source_registry():
+    return {"sources": SOURCE_REGISTRY}
+
+
+@app.get("/api/v1/public/events")
+def public_events(
+    session: Annotated[Session, Depends(get_session)],
+    limit: int = 50,
+):
+    events = _service(session).list_public_platform_events(limit=limit)
+    return {
+        "classes": sorted(PUBLIC_EVENT_CLASSES),
+        "events": [_row(item) for item in events],
+    }
+
+
+@app.get("/api/v1/events")
+def platform_events(
+    workspace_id: Annotated[str, Depends(get_workspace_header)],
+    principal: Annotated[Principal, Depends(get_principal)],
+    session: Annotated[Session, Depends(get_session)],
+    limit: int = 100,
+):
+    _guard(principal, "director", "analyst", "auditor")
+    try:
+        return [_row(item) for item in _service(session).list_platform_events(workspace_id, limit=limit)]
+    except IntelligenceServiceError as exc:
+        raise _service_error(exc) from exc
+
+
+@app.post("/api/v1/events", status_code=201)
+async def create_platform_event(
+    payload: PlatformEventCreate,
+    workspace_id: Annotated[str, Depends(get_workspace_header)],
+    principal: Annotated[Principal, Depends(get_principal)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    _guard(principal, "director", "analyst")
+    try:
+        item = _service(session).create_platform_event(
+            workspace_id=workspace_id,
+            actor=principal.subject,
+            event_type=payload.event_type,
+            entity_kind=payload.entity_kind,
+            object_id=payload.object_id,
+            title=payload.title,
+            summary=payload.summary,
+            classification=payload.classification,
+            source_id=payload.source_id,
+            provenance_locator=payload.provenance_locator,
+            confidence=payload.confidence,
+            payload=payload.payload,
+        )
+    except IntelligenceServiceError as exc:
+        raise _service_error(exc) from exc
+
+    event = _row(item)
+    if item.classification in PUBLIC_EVENT_CLASSES:
+        await event_hub.broadcast({"type": "platform_event", "event": event})
+    return event
+
+
+@app.websocket("/ws/v1/events")
+async def public_event_stream(websocket: WebSocket):
+    await event_hub.connect(websocket)
+    try:
+        with session_factory() as session:
+            history = [
+                _row(item)
+                for item in _service(session).list_public_platform_events(limit=25)
+            ]
+        await websocket.send_json(
+            {
+                "type": "platform_snapshot",
+                "ontologyVersion": ONTOLOGY_SCHEMA["version"],
+                "events": history,
+                "publicClasses": sorted(PUBLIC_EVENT_CLASSES),
+            }
+        )
+        while True:
+            await asyncio.sleep(10)
+            await websocket.send_json(
+                {
+                    "type": "heartbeat",
+                    "service": settings.service_name,
+                    "ontologyVersion": ONTOLOGY_SCHEMA["version"],
+                    "connections": event_hub.connection_count,
+                }
+            )
+    except Exception:
+        pass
+    finally:
+        await event_hub.disconnect(websocket)
