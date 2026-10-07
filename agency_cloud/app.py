@@ -16,7 +16,15 @@ from sqlalchemy import func, inspect, select, text
 from sqlalchemy.orm import Session
 
 from agency_cloud import __version__
+from agency_cloud.advisory import (
+    AdvisoryError,
+    advisory_policy,
+    create_advisory,
+    decide_advisory,
+    list_advisories,
+)
 from agency_cloud.audit import verify_chain
+from agency_cloud.compliance import catalog as compliance_catalog, posture as compliance_posture
 from agency_cloud.config import load_settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
 from agency_cloud.integrations import (
@@ -140,6 +148,19 @@ class PlatformEventCreate(BaseModel):
     provenance_locator: str = Field(min_length=1, max_length=500)
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     payload: dict = Field(default_factory=dict)
+
+
+class AdvisoryCreate(BaseModel):
+    objective: str = Field(min_length=2, max_length=280)
+    recommendation: str = Field(min_length=2, max_length=40000)
+    rationale: str = Field(default="", max_length=40000)
+    risk_level: str = Field(default="MEDIUM", max_length=16)
+    evidence_refs: list[str] = Field(default_factory=list, max_length=64)
+
+
+class AdvisoryDecision(BaseModel):
+    decision: str = Field(min_length=2, max_length=48)
+    note: str = Field(default="", max_length=20000)
 
 
 def get_session():
@@ -675,3 +696,89 @@ async def public_event_stream(websocket: WebSocket):
         pass
     finally:
         await event_hub.disconnect(websocket)
+
+
+@app.get("/api/v1/compliance/catalog")
+def api_compliance_catalog():
+    return compliance_catalog()
+
+
+@app.get("/api/v1/compliance/posture")
+def api_compliance_posture(
+    principal: Annotated[Principal, Depends(get_principal)],
+):
+    _guard(principal, "director", "auditor")
+    return compliance_posture(settings)
+
+
+@app.get("/api/v1/advisory/policy")
+def api_advisory_policy():
+    return advisory_policy()
+
+
+@app.get("/api/v1/advisories")
+def api_advisories(
+    workspace_id: Annotated[str, Depends(get_workspace_header)],
+    principal: Annotated[Principal, Depends(get_principal)],
+    session: Annotated[Session, Depends(get_session)],
+    limit: int = 100,
+):
+    _guard(principal, "director", "analyst", "auditor")
+    _service(session).get_workspace(workspace_id)
+    return [_row(item) for item in list_advisories(session, workspace_id, limit=limit)]
+
+
+@app.post("/api/v1/advisories", status_code=201)
+def api_create_advisory(
+    payload: AdvisoryCreate,
+    workspace_id: Annotated[str, Depends(get_workspace_header)],
+    principal: Annotated[Principal, Depends(get_principal)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    _guard(principal, "director", "analyst")
+    _service(session).get_workspace(workspace_id)
+    try:
+        item = create_advisory(
+            session,
+            settings,
+            workspace_id=workspace_id,
+            actor=principal.subject,
+            objective=payload.objective,
+            recommendation=payload.recommendation,
+            rationale=payload.rationale,
+            risk_level=payload.risk_level,
+            evidence_refs=payload.evidence_refs,
+        )
+        result = _row(item)
+        result["executionAllowed"] = False
+        result["requiresHumanDecision"] = True
+        return result
+    except AdvisoryError as exc:
+        raise _service_error(exc) from exc
+
+
+@app.post("/api/v1/advisories/{advisory_id}/decision")
+def api_decide_advisory(
+    advisory_id: str,
+    payload: AdvisoryDecision,
+    workspace_id: Annotated[str, Depends(get_workspace_header)],
+    principal: Annotated[Principal, Depends(get_principal)],
+    session: Annotated[Session, Depends(get_session)],
+):
+    _guard(principal, "director")
+    _service(session).get_workspace(workspace_id)
+    try:
+        item = decide_advisory(
+            session,
+            settings,
+            workspace_id=workspace_id,
+            actor=principal.subject,
+            advisory_id=advisory_id,
+            decision=payload.decision,
+            note=payload.note,
+        )
+        result = _row(item)
+        result["executionPerformed"] = False
+        return result
+    except AdvisoryError as exc:
+        raise _service_error(exc) from exc
