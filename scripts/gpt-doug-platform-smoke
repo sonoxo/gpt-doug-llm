@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+CORE_URL="${GPTDOUG_CORE_URL:-http://127.0.0.1:8090}"
+DIRECTOR_TOKEN="${GPTDOUG_DIRECTOR_TOKEN:-director-demo}"
+ANALYST_TOKEN="${GPTDOUG_ANALYST_TOKEN:-analyst-demo}"
+
+command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
+
+printf '%s\n' "GPT-DOUG // END-TO-END EVENT SMOKE TEST"
+
+WORKSPACES="$(curl -fsS -H "Authorization: Bearer $DIRECTOR_TOKEN" "$CORE_URL/api/v1/workspaces")"
+WORKSPACE_ID="$(printf '%s' "$WORKSPACES" | python3 -c 'import json,sys; rows=json.load(sys.stdin); print(rows[0]["id"] if rows else "")')"
+[ -n "$WORKSPACE_ID" ] || { echo "[FAIL] no workspace" >&2; exit 1; }
+echo "[PASS] workspace $WORKSPACE_ID"
+
+PAYLOAD='{"event_type":"SYSTEM_HEALTH","entity_kind":"sensor","object_id":"smoke-01","title":"GPT-DOUG end-to-end smoke event","summary":"Synthetic integration test event.","classification":"SIMULATION","source_id":"platform-sim","provenance_locator":"smoke:test","confidence":0.99,"payload":{"status":"healthy","layer":"sensors"}}'
+
+EVENT="$(curl -fsS -X POST   -H "Authorization: Bearer $ANALYST_TOKEN"   -H "X-Zyra-Workspace: $WORKSPACE_ID"   -H "Content-Type: application/json"   --data "$PAYLOAD"   "$CORE_URL/api/v1/events")"
+
+EVENT_ID="$(printf '%s' "$EVENT" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')"
+[ -n "$EVENT_ID" ] || { echo "[FAIL] event was not created" >&2; exit 1; }
+echo "[PASS] created $EVENT_ID"
+
+PUBLIC="$(curl -fsS "$CORE_URL/api/v1/public/events?limit=25")"
+FOUND="$(printf '%s' "$PUBLIC" | EVENT_ID="$EVENT_ID" python3 -c 'import json,os,sys; rows=json.load(sys.stdin).get("events",[]); print("yes" if any(x.get("id")==os.environ["EVENT_ID"] for x in rows) else "no")')"
+[ "$FOUND" = "yes" ] || { echo "[FAIL] event missing from public history" >&2; exit 1; }
+echo "[PASS] durable public event history"
+echo "[PASS] REST ingest -> persistence -> public history"
+echo "Open the Fusion UI; core-client.js will also receive this event over the shared public stream."
