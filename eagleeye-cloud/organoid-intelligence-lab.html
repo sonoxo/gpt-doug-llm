@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // ORGANOID INTELLIGENCE LAB</title>
+<meta name="theme-color" content="#07030e">
+<style>
+:root{--bg:#04020a;--panel:#0b0715e9;--line:#3a2452;--pink:#ff68c6;--violet:#a77bff;--cyan:#62dcff;--green:#62ffaf;--gold:#ffd46a;--red:#ff6675;--text:#f7efff;--muted:#9a89aa}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:900;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);opacity:.35}
+.app{height:100vh;display:grid;grid-template-rows:70px 1fr 30px;background:radial-gradient(circle at 50% -20%,#2a113e 0,#0d0718 38%,#04020a 72%)}
+header{display:grid;grid-template-columns:360px 1fr 280px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#080411f4}
+.brand{font-weight:900;letter-spacing:.08em;color:var(--pink);font-size:17px}.brand small{display:block;color:var(--muted);font-size:8px;margin-top:4px}
+.pipeline{display:flex;justify-content:center;gap:5px;align-items:center;overflow:hidden}.pipe{border:1px solid #4b2d6d;background:#100820;padding:5px 7px;border-radius:4px;font-size:7px;color:#e9dbff}.arrow{color:#7652a3}
+.status{text-align:right;font-size:8px;line-height:1.5}.ok{color:var(--green)}.warn{color:var(--gold)}.cyan{color:var(--cyan)}
+main{display:grid;grid-template-columns:270px minmax(0,1fr) 340px;min-height:0}.panel{background:var(--panel);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:9px;color:var(--pink);letter-spacing:.14em;margin:7px 0}.card{border:1px solid #39234f;background:#0c0717;border-radius:6px;padding:8px;margin-bottom:7px}.small{font-size:8px;line-height:1.5;color:var(--muted)}.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.55}.metric{font-size:22px;color:#fff}
+button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #51336f;background:#100820;color:var(--text);font:inherit;font-size:8px;text-decoration:none;text-align:left;cursor:pointer;border-radius:4px}button:hover,.btn:hover,button.active{border-color:var(--pink);color:#fff;background:#1a0c2b}
+.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#160c25 0,#090511 53%,#030207 100%);overflow:hidden}
+#bio{position:absolute;inset:0;width:100%;height:100%}.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;left:12px;top:12px;border:1px solid var(--line);background:#080412dc;border-radius:5px;padding:7px 9px;font-size:8px}.timeline{position:absolute;left:10%;right:10%;bottom:16px;border:1px solid #43295f;background:#090516df;padding:8px;border-radius:5px;pointer-events:auto}.track{height:5px;background:#24142f;border-radius:99px;overflow:hidden}.track i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--pink),var(--gold));width:35%}.timelineLabels{display:flex;justify-content:space-between;font-size:6px;color:var(--muted);margin-top:5px}
+.ringLabel{position:absolute;font-size:7px;color:#d5bded;text-shadow:0 0 7px #000}.l1{left:8%;top:25%}.l2{right:8%;top:25%}.l3{left:9%;bottom:27%}.l4{right:9%;bottom:27%}
+.gate{border-left:3px solid var(--green);padding-left:7px;margin:6px 0;font-size:8px;line-height:1.4}.gate.warn{border-left-color:var(--gold)}.gate.block{border-left-color:var(--red)}
+.source{border:1px solid #332146;background:#0a0712;padding:7px;margin:5px 0}.source b{font-size:8px;color:#fff}.source div{font-size:7px;color:var(--muted);margin-top:3px;line-height:1.4}
+footer{display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-top:1px solid var(--line);background:#080411;color:var(--muted);font-size:7px}
+@media(max-width:960px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+</style>
+</head>
+<body><div class="app">
+<header>
+<div class="brand">🧠 GPT-DOUG // ORGANOID INTELLIGENCE LAB<small>DIGITAL TWIN • RESEARCH GOVERNANCE • ELECTROPHYSIOLOGY DATA • HUMAN-FIRST</small></div>
+<div class="pipeline"><span class="pipe">PROVENANCE</span><span class="arrow">→</span><span class="pipe">QC</span><span class="arrow">→</span><span class="pipe">ORGANOID MODEL</span><span class="arrow">→</span><span class="pipe">MEA / IMAGING</span><span class="arrow">→</span><span class="pipe">DIGITAL TWIN</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
+<div class="status"><span class="ok">● RESEARCH SIM ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">NO WET-LAB RECIPE EXECUTION</span></div>
+</header>
+<main>
+<aside class="panel left">
+<h2>PROGRAM PHASES</h2>
+<button class="active" data-phase="0">01 • LITERATURE + OVERSIGHT</button>
+<button data-phase="1">02 • CELL SOURCE + QC</button>
+<button data-phase="2">03 • ORGANOID MODEL</button>
+<button data-phase="3">04 • IMAGING + ELECTROPHYSIOLOGY</button>
+<button data-phase="4">05 • DIGITAL TWIN + ML</button>
+<button data-phase="5">06 • TEVV + REPRODUCIBILITY</button>
+
+<h2>MODEL CONTROLS</h2>
+<button id="pulse">✦ SIMULATE ACTIVITY BURST</button>
+<button id="rotate">↻ TOGGLE ROTATION</button>
+<button id="reset">◎ RESET DIGITAL TWIN</button>
+<button id="snapshot">▣ EXPORT METADATA SNAPSHOT</button>
+
+<h2>GOVERNANCE</h2>
+<div class="card small">This interface models research state and data flow. Actual cell culture should use approved institutional SOPs, qualified personnel, documented cell provenance, and applicable stem-cell oversight.</div>
+<a class="btn" href="/">← EAGLE EYE GLOBAL FUSION</a>
+<a class="btn" href="/dots-neural-lab.html">◈ GPT-DOTS NEURAL LAB</a>
+</aside>
+
+<section class="stage">
+<canvas id="bio"></canvas>
+<div class="hud">
+<div class="badge"><b class="cyan">DIGITAL ORGANOID TWIN</b><br><span id="phaseName">LITERATURE + OVERSIGHT</span><br><span class="ok">SIMULATED BIOLOGICAL STATE</span></div>
+<div class="ringLabel l1">MORPHOLOGY</div><div class="ringLabel l2">ELECTROPHYSIOLOGY</div><div class="ringLabel l3">PROVENANCE</div><div class="ringLabel l4">MODEL / TEVV</div>
+<div class="timeline"><div class="row"><span>RESEARCH PROGRAM MATURITY</span><b id="maturity">35%</b></div><div class="track"><i id="maturityBar"></i></div><div class="timelineLabels"><span>OVERSIGHT</span><span>QC</span><span>MODEL</span><span>INTERFACE</span><span>DIGITAL TWIN</span><span>TEVV</span></div></div>
+</div>
+</section>
+
+<aside class="panel right">
+<h2>PROJECT STATE</h2>
+<div class="card">
+<div class="row"><span>Model ID</span><b>OI-DT-001</b></div>
+<div class="row"><span>Biological input</span><b class="warn">NOT CONNECTED</b></div>
+<div class="row"><span>Data mode</span><b class="ok">SYNTHETIC</b></div>
+<div class="row"><span>Human approval</span><b class="ok">REQUIRED</b></div>
+<div class="row"><span>Audit</span><b class="ok">ENABLED</b></div>
+</div>
+
+<h2>QUALITY / TEVV GATES</h2>
+<div class="gate">SOURCE PROVENANCE • REQUIRED</div>
+<div class="gate">IDENTITY / INTEGRITY QC • REQUIRED</div>
+<div class="gate">REPLICATE + BATCH TRACKING • REQUIRED</div>
+<div class="gate warn">BIOLOGICAL INTERFACE • PARTNER LAB</div>
+<div class="gate">UNCERTAINTY + DRIFT • REQUIRED</div>
+<div class="gate block">UNREVIEWED WET-LAB AUTOMATION • BLOCKED</div>
+
+<h2>SIMULATED SIGNALS</h2>
+<div class="card">
+<div class="row"><span>Network activity</span><b id="activity">42%</b></div>
+<div class="row"><span>Signal coherence</span><b id="coherence">88%</b></div>
+<div class="row"><span>Morphology score</span><b id="morph">91%</b></div>
+<div class="row"><span>Reproducibility</span><b id="repro">84%</b></div>
+<div class="row"><span>Uncertainty</span><b id="uncertainty">12%</b></div>
+</div>
+
+<h2>RESEARCH SOURCES</h2>
+<div class="source"><b>ISSCR Standards</b><div>Stem-cell identity, culture integrity, genomic characterization, reproducibility and model-system reporting.</div></div>
+<div class="source"><b>ISSCR Guidelines</b><div>Ethical oversight and transparency for stem-cell and organoid research.</div></div>
+<div class="source"><b>Organoid Intelligence Roadmap</b><div>Neural organoids + electrophysiology + imaging + AI for emerging biological-computing research.</div></div>
+<div class="source"><b>FinalSpark</b><div>Public research updates on neural organoids, neuroplatforms and digital-twin work.</div></div>
+</aside>
+</main>
+<footer><span>GPT-DOUG // ORGANOID INTELLIGENCE RESEARCH STACK</span><span>SOFTWARE + GOVERNANCE + DATA MODEL • NOT A LAB PROTOCOL</span><span>HUMAN-FIRST • PROVENANCE • TEVV</span></footer>
+</div>
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.180.0/build/three.module.js';
+const $=id=>document.getElementById(id),canvas=$('bio');
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,1,.1,100),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));camera.position.set(0,.4,5.6);camera.lookAt(0,0,0);
+scene.add(new THREE.AmbientLight(0x8d64ff,1.4));const key=new THREE.PointLight(0xff79c6,22,12);key.position.set(3,3,4);scene.add(key);
+const group=new THREE.Group();scene.add(group);
+const count=6200,pos=new Float32Array(count*3),col=new Float32Array(count*3),c1=new THREE.Color('#875dff'),c2=new THREE.Color('#ff68c6'),c3=new THREE.Color('#ffd46a');
+for(let i=0;i<count;i++){
+ const u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1),r=.92+Math.random()*.32+.08*Math.sin(u*6+v*5);
+ const x=r*Math.sin(v)*Math.cos(u)*1.12,y=r*Math.cos(v)*.94,z=r*Math.sin(v)*Math.sin(u);
+ pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z;
+ const t=(y+1.3)/2.6,cc=t>.68?c2.clone().lerp(c3,(t-.68)/.32):c1.clone().lerp(c2,t/.68);
+ col[i*3]=cc.r;col[i*3+1]=cc.g;col[i*3+2]=cc.b;
+}
+const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+const mat=new THREE.PointsMaterial({size:.023,vertexColors:true,transparent:true,opacity:.9});const cloud=new THREE.Points(geo,mat);group.add(cloud);
+for(let i=0;i<4;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.35+i*.19,.009,8,96),new THREE.MeshBasicMaterial({color:i%2?0xff68c6:0x7b5cff,transparent:true,opacity:.22}));ring.rotation.x=Math.PI/2;ring.rotation.y=.3*i;group.add(ring)}
+let rotate=true,pulse=0,phase=0;
+const phases=['LITERATURE + OVERSIGHT','CELL SOURCE + QC','ORGANOID MODEL','IMAGING + ELECTROPHYSIOLOGY','DIGITAL TWIN + ML','TEVV + REPRODUCIBILITY'];
+function resize(){const r=canvas.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix()}addEventListener('resize',resize);
+function loop(){resize();if(rotate)group.rotation.y+=.0018;group.rotation.x=Math.sin(performance.now()/3300)*.07;pulse*=.965;mat.size=.023+pulse*.012;renderer.render(scene,camera);requestAnimationFrame(loop)}loop();
+document.querySelectorAll('[data-phase]').forEach(b=>b.onclick=()=>{phase=Number(b.dataset.phase);document.querySelectorAll('[data-phase]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('phaseName').textContent=phases[phase];const m=15+phase*16;$('maturity').textContent=m+'%';$('maturityBar').style.width=m+'%'});
+$('pulse').onclick=()=>pulse=1;$('rotate').onclick=()=>rotate=!rotate;$('reset').onclick=()=>{group.rotation.set(0,0,0);pulse=.4;phase=0;document.querySelector('[data-phase="0"]').click()};
+$('snapshot').onclick=()=>{const data={schema:'gpt-doug.organoid-digital-twin.v1',created:new Date().toISOString(),phase:phases[phase],mode:'synthetic',human_approval:'required',wet_lab_protocols:'not_embedded'};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-organoid-snapshot.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('activity').textContent=Math.round(38+Math.random()*18+pulse*25)+'%';$('coherence').textContent=Math.round(84+Math.random()*10)+'%';$('morph').textContent=Math.round(88+Math.random()*7)+'%';$('repro').textContent=Math.round(80+Math.random()*10)+'%';$('uncertainty').textContent=Math.round(8+Math.random()*8)+'%'},1000);
+</script></body></html>
