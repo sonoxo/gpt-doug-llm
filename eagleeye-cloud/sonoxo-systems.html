@@ -139,4 +139,4 @@ canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect(),x
 canvas.addEventListener('click',()=>{if(hover?.repo){const r=repos.find(x=>x.full_name===hover.repo);if(r)selectRepo(r)}});
 setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString(),1000);resize();loadRepos();
 </script>
-</body></html>
+<script src="/quantum-renderer.js"></script>\n</body></html>
