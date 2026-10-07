@@ -38,6 +38,15 @@ button:hover,.btn:hover,button.active{border-color:var(--pink);background:#1a0e2
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.metric{font-size:18px;color:#fff}
 .chip{border:1px solid #38294e;background:#0c0816;padding:7px;margin:5px 0;border-radius:5px;cursor:pointer}.chip:hover,.chip.sel{border-color:var(--cyan);box-shadow:inset 0 0 16px #5cddff10}.chipTop{display:flex;justify-content:space-between;font-size:8px}.chipTop b{color:var(--cyan)}.chipMeta{font-size:7px;color:var(--muted);margin-top:3px;line-height:1.45}
 .gate{border-left:3px solid var(--green);padding-left:7px;margin:6px 0;font-size:8px;line-height:1.4}.gate.warn{border-left-color:var(--gold)}.gate.block{border-left-color:var(--red)}
+.seqWrap{border:1px solid #3b2852;background:#0a0714;border-radius:6px;padding:7px;margin:6px 0}
+.seqRail{display:flex;gap:3px;align-items:center;overflow:hidden}
+.seqNode{flex:1;min-width:0;border:1px solid #3c2a51;background:#0c0816;border-radius:4px;padding:5px 3px;text-align:center;font-size:6px;color:#8f82a1;transition:.2s}
+.seqNode.active{color:#fff;border-color:var(--pink);background:#21102f;box-shadow:0 0 16px #ff63c833 inset,0 0 10px #ff63c822}
+.seqNode.done{color:var(--green);border-color:#2d6650}
+.formula{font-size:7px;line-height:1.45;color:#cdbedf;background:#06040c;border:1px solid #2f213f;border-radius:4px;padding:6px;margin-top:5px;white-space:normal}
+.agentGrid{display:grid;grid-template-columns:1fr 1fr;gap:5px}.agent{border:1px solid #39284f;background:#0c0816;padding:6px;border-radius:4px;font-size:7px}.agent b{display:block;color:var(--cyan);margin-bottom:2px}.agent span{color:var(--muted)}
+.agent.active{border-color:var(--pink);box-shadow:0 0 14px #ff63c822}.agent.active b{color:var(--pink)}
+.eventlog{max-height:128px;overflow:auto;border:1px solid #2f2140;background:#07040d;padding:6px;border-radius:4px}.ev{border-left:2px solid #5f3d82;padding-left:6px;margin:4px 0;font-size:7px;color:#a89ab9}.ev b{color:#eee3ff}
 footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#070411;color:var(--muted);font-size:7px}
 @media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
 </style>
@@ -66,6 +75,9 @@ footer{display:flex;justify-content:space-between;align-items:center;padding:0 1
 <button id="rotate">↻ TOGGLE ROTATION</button>
 <button id="reset">◎ RESET DIGITAL TWIN</button>
 <button id="snapshot">▣ EXPORT SYSTEM SNAPSHOT</button>
+<button id="sequenceRun">▶ RUN AGENTIC SEQUENCE</button>
+<button id="sequenceStep">→ STEP SEQUENCE</button>
+<button id="sequenceStop">■ STOP SEQUENCE</button>
 
 <h2>ROBOTIC ANATOMY</h2>
 <div class="card small">
@@ -114,6 +126,29 @@ The body is modeled as a synthetic cyber-biological digital twin: a cranial orga
 <div class="card"><div class="small">THERMAL LOAD</div><div class="metric" id="thermal">41°C</div></div>
 <div class="card"><div class="small">SIGNAL INTEGRITY</div><div class="metric" id="integrity">96%</div></div>
 </div>
+
+<h2>AGENTIC FORMULATION ENGINE</h2>
+<div class="seqWrap">
+  <div class="row"><span>Sequence</span><b id="seqName" class="cyan">BIOCHIP HOMEOSTASIS</b></div>
+  <div class="seqRail" id="seqRail"></div>
+  <div class="formula" id="formulaText">STATE = f(sensor confidence, signal integrity, thermal load, task context, TEVV status)</div>
+</div>
+<div class="agentGrid" id="agentGrid">
+  <div class="agent" data-agent="observe"><b>OBSERVER</b><span>collect synthetic telemetry</span></div>
+  <div class="agent" data-agent="fuse"><b>FUSION</b><span>combine anatomy state</span></div>
+  <div class="agent" data-agent="model"><b>MODELER</b><span>estimate latent state</span></div>
+  <div class="agent" data-agent="simulate"><b>SIMULATOR</b><span>test candidate response</span></div>
+  <div class="agent" data-agent="tev"><b>TEVV</b><span>validate confidence / drift</span></div>
+  <div class="agent" data-agent="gate"><b>HUMAN GATE</b><span>approve consequential change</span></div>
+  <div class="agent" data-agent="apply"><b>ACTUATOR-SIM</b><span>apply digital-twin response</span></div>
+  <div class="agent" data-agent="audit"><b>AUDITOR</b><span>version + provenance log</span></div>
+</div>
+<div class="card" style="margin-top:6px">
+  <div class="row"><span>Sequence state</span><b id="seqState">IDLE</b></div>
+  <div class="row"><span>Decision confidence</span><b id="seqConfidence">—</b></div>
+  <div class="row"><span>Human gate</span><b class="ok" id="humanGate">REQUIRED</b></div>
+</div>
+<div class="eventlog" id="agentLog"><div class="ev"><b>READY</b> Agentic sequencer initialized.</div></div>
 
 <h2>TEVV / SAFETY GATES</h2>
 <div class="gate">CELL / SOURCE PROVENANCE • REQUIRED</div>
@@ -237,6 +272,17 @@ const anatomyBase={};
 for(const [k,g] of Object.entries(groups)){anatomyBase[k]=g.position.clone()}
 
 let rotating=true,exploded=false,pulse=0,selected='brain',view='body';
+let sequenceRunning=false,sequenceIndex=0,sequenceTimer=null;
+const sequence=[
+ {id:'observe',label:'OBSERVE',formula:'O = normalize(telemetry + provenance + synthetic sensor state)'},
+ {id:'fuse',label:'FUSE',formula:'F = weighted fusion(O, signal integrity, uncertainty)'},
+ {id:'model',label:'MODEL',formula:'M = estimate_state(F, anatomy context, history)'},
+ {id:'simulate',label:'SIM',formula:'S = compare(candidate responses inside the digital twin)'},
+ {id:'tev',label:'TEVV',formula:'V = validate(S, controls, drift, reproducibility, constraints)'},
+ {id:'gate',label:'HUMAN',formula:'G = require human authorization for consequential state changes'},
+ {id:'apply',label:'APPLY-SIM',formula:'A = apply approved response to synthetic anatomy only'},
+ {id:'audit',label:'AUDIT',formula:'L = version(state, evidence, confidence, approval, outcome)'}
+];
 const views={
  body:{p:[0,.4,8.7],t:[0,-.35,0],name:'FULL ROBOTIC ANATOMY'},
  cranial:{p:[0,2.65,3.2],t:[0,2.55,0],name:'CRANIAL BIOCORE'},
@@ -260,6 +306,35 @@ function explode(on){
  groups.arms.position.x=0; groups.arms.position.z=on?.25:0;
  groups.legs.position.y=on?-.2:0; groups.legs.position.z=on?.25:0;
 }
+function renderSequence(){
+ const rail=$('seqRail');rail.innerHTML='';
+ sequence.forEach((q,i)=>{const d=document.createElement('div');d.className='seqNode'+(i<sequenceIndex?' done':i===sequenceIndex&&sequenceRunning?' active':'');d.textContent=q.label;rail.appendChild(d)});
+ document.querySelectorAll('.agent').forEach(a=>a.classList.toggle('active',sequenceRunning&&a.dataset.agent===sequence[Math.min(sequenceIndex,sequence.length-1)]?.id));
+ if(sequenceIndex<sequence.length)$('formulaText').textContent=sequence[sequenceIndex].formula;
+}
+function agentLog(title,msg){const d=document.createElement('div');d.className='ev';d.innerHTML='<b>'+title+'</b> '+msg;$('agentLog').prepend(d);while($('agentLog').children.length>16)$('agentLog').lastChild.remove()}
+function sequenceStep(){
+ if(sequenceIndex>=sequence.length){sequenceRunning=false;$('seqState').textContent='COMPLETE';renderSequence();agentLog('COMPLETE','Sequence closed with versioned audit record.');return}
+ const q=sequence[sequenceIndex];
+ $('seqState').textContent=q.label;
+ const confidence=Math.round(86+Math.random()*12);$('seqConfidence').textContent=confidence+'%';
+ if(q.id==='observe'){pulse=.35;agentLog('OBSERVER','Synthetic anatomy telemetry captured.')}
+ if(q.id==='fuse'){pulse=.5;agentLog('FUSION','Biochip, bus, thermal, and motion-state features fused.')}
+ if(q.id==='model'){pulse=.65;agentLog('MODELER','Latent body-state estimate updated.')}
+ if(q.id==='simulate'){pulse=1;agentLog('SIMULATOR','Candidate response evaluated in digital twin.')}
+ if(q.id==='tev'){agentLog('TEVV','Constraints, uncertainty, drift, and reproducibility checked.')}
+ if(q.id==='gate'){sequenceRunning=false;$('humanGate').textContent='AWAITING APPROVAL';$('humanGate').className='warn';agentLog('HUMAN GATE','Sequence paused before consequential change.');renderSequence();return}
+ if(q.id==='apply'){pulse=1;agentLog('ACTUATOR-SIM','Approved response applied to simulation only.')}
+ if(q.id==='audit'){agentLog('AUDITOR','State, confidence, provenance, and outcome versioned.')}
+ sequenceIndex++;renderSequence();
+}
+function runSequence(){
+ if($('humanGate').textContent==='AWAITING APPROVAL'){ $('humanGate').textContent='APPROVED';$('humanGate').className='ok';sequenceIndex++;agentLog('HUMAN GATE','Human approval recorded for synthetic response.')}
+ if(sequenceIndex>=sequence.length)sequenceIndex=0;
+ sequenceRunning=true;$('seqState').textContent='RUNNING';renderSequence();
+ clearInterval(sequenceTimer);sequenceTimer=setInterval(()=>{if(sequenceRunning)sequenceStep()},950)
+}
+function stopSequence(){sequenceRunning=false;clearInterval(sequenceTimer);$('seqState').textContent='STOPPED';renderSequence();agentLog('STOP','Agentic sequence stopped by operator.')}
 function selectChip(id){
  selected=id;document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.chip===id));
  if(id==='brain')setView('cranial');if(id==='cervical'||id==='lumbar')setView('spine');if(id==='thoracic')setView('thoracic');if(id==='arms')setView('arms');if(id==='legs')setView('legs');
@@ -279,12 +354,16 @@ function loop(){
 }
 loop();setView('body');
 
+renderSequence();
+$('sequenceRun').onclick=runSequence;
+$('sequenceStep').onclick=()=>{if($('humanGate').textContent==='AWAITING APPROVAL'){ $('humanGate').textContent='APPROVED';$('humanGate').className='ok';sequenceIndex++;agentLog('HUMAN GATE','Manual approval recorded for synthetic sequence.');renderSequence();return} sequenceRunning=true;sequenceStep();sequenceRunning=false;renderSequence()};
+$('sequenceStop').onclick=stopSequence;
 $('pulse').onclick=()=>pulse=1;
 $('explode').onclick=()=>{explode(!exploded);$('explode').textContent=exploded?'◇ COLLAPSE ANATOMY':'◇ EXPLODE ANATOMY'};
 $('rotate').onclick=()=>rotating=!rotating;
-$('reset').onclick=()=>{anatomy.rotation.set(0,0,0);explode(false);rotating=true;setView('body');selectChip('brain');pulse=.5;$('explode').textContent='◇ EXPLODE ANATOMY'};
+$('reset').onclick=()=>{anatomy.rotation.set(0,0,0);explode(false);rotating=true;setView('body');selectChip('brain');pulse=.5;$('explode').textContent='◇ EXPLODE ANATOMY';sequenceRunning=false;clearInterval(sequenceTimer);sequenceIndex=0;$('seqState').textContent='IDLE';$('seqConfidence').textContent='—';$('humanGate').textContent='REQUIRED';$('humanGate').className='ok';renderSequence();agentLog('RESET','Digital twin and agentic sequence reset.')};
 $('snapshot').onclick=()=>{
- const data={schema:'gpt-doug.robotic-biochip-anatomy.v2',created:new Date().toISOString(),view,selected_biochip:selected,architecture:'synthetic bio-hybrid digital twin',nodes:['BC-01 cranial biocore','NB-02 cervical bridge','BC-03 thoracic array','NB-04 lumbar controller','IO-05 arm biochips','IO-06 leg biochips'],human_approval:'required',wet_lab_protocols:'not_embedded'};
+ const data={schema:'gpt-doug.robotic-biochip-anatomy.v2',created:new Date().toISOString(),view,selected_biochip:selected,architecture:'synthetic bio-hybrid digital twin',nodes:['BC-01 cranial biocore','NB-02 cervical bridge','BC-03 thoracic array','NB-04 lumbar controller','IO-05 arm biochips','IO-06 leg biochips'],human_approval:'required',wet_lab_protocols:'not_embedded',agentic_sequence:sequence.map(x=>x.label),agentic_sequence_state:$('seqState').textContent};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-robotic-biochip-anatomy.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
 };
 
