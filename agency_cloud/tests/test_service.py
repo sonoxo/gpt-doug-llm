@@ -16,6 +16,7 @@ from agency_cloud.global_compliance import (
     horizon_2027,
     jurisdiction_profile,
 )
+from agency_cloud.global_intel import build_benchmark, source_catalog
 from agency_cloud.models import AuditEvent
 from agency_cloud.service import IntelligenceService, IntelligenceServiceError
 
@@ -259,3 +260,77 @@ def test_global_compliance_catalog_and_2027_horizon(tmp_path: Path):
     assert "AI" in profile["requiredEngineeringDomains"]
     assert posture_result["schema"] == "gpt-doug.global-posture.v1"
     assert posture_result["counts"]["EXTERNAL"] >= 1
+
+
+
+def test_global_intel_benchmark_uses_public_safe_sources():
+    now = "2026-10-07T18:00:00+00:00"
+
+    def fake_fetch(url: str):
+        if "earthquake.usgs.gov" in url:
+            return (
+                {
+                    "metadata": {"generated": 1791396000000},
+                    "features": [
+                        {
+                            "properties": {"mag": 5.2, "place": "Synthetic Test Quake"},
+                            "geometry": {"coordinates": [10.0, 20.0, 5.0]},
+                        }
+                    ],
+                },
+                100,
+            )
+        if "eonet.gsfc.nasa.gov" in url:
+            return (
+                {
+                    "events": [
+                        {
+                            "title": "Synthetic Wildfire",
+                            "categories": [{"title": "Wildfires"}],
+                            "geometry": [{"date": now, "coordinates": [30.0, 40.0]}],
+                        }
+                    ]
+                },
+                120,
+            )
+        if "services.swpc.noaa.gov" in url:
+            return ([["time_tag", "Kp"], [now, "4.0"]], 90)
+        if "cisa.gov" in url:
+            return (
+                {
+                    "vulnerabilities": [
+                        {
+                            "dateAdded": "2026-10-07",
+                            "knownRansomwareCampaignUse": "Known",
+                        }
+                    ]
+                },
+                130,
+            )
+        if "api.worldbank.org" in url:
+            return (
+                [
+                    {"page": 1},
+                    [
+                        {
+                            "date": "2025",
+                            "value": 68.5,
+                            "indicator": {"value": "Individuals using the Internet (% of population)"},
+                        }
+                    ],
+                ],
+                110,
+            )
+        raise AssertionError(url)
+
+    catalog = source_catalog()
+    result = build_benchmark(fake_fetch)
+
+    assert catalog["policy"]["mode"] == "PUBLIC_STRATEGIC_ONLY"
+    assert "weapon targeting" in catalog["policy"]["blocked"]
+    assert result["schema"] == "gpt-doug.global-intel-benchmark.v1"
+    assert result["benchmark"]["sourceCount"] == 5
+    assert result["benchmark"]["onlineSources"] == 5
+    assert result["benchmark"]["overallScore"] >= 80
+    assert result["signals"]["cisa-kev"]["catalogSize"] == 1
+    assert any(point["category"] == "EARTHQUAKE" for point in result["mapPoints"])
