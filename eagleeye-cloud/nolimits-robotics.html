@@ -211,5 +211,5 @@ function pollGamepad(){const g=navigator.getGamepads?navigator.getGamepads()[0]:
 setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString();const b=93+Math.random()*4,s=94+Math.random()*5,a=91+Math.random()*7,temp=39+Math.random()*6;document.getElementById('battery').textContent=b.toFixed(0)+'%';document.getElementById('stability').textContent=s.toFixed(0)+'%';document.getElementById('thermal').textContent=temp.toFixed(0)+'°C';document.getElementById('bal').textContent=s.toFixed(1)+'%';document.getElementById('balBar').style.width=s+'%';document.getElementById('sync').textContent=a.toFixed(1)+'%';document.getElementById('syncBar').style.width=a+'%'},1000);
 log('No-Limits robotics simulator initialized');
 </script>
-</body>
+<script src="/quantum-renderer.js"></script>\n</body>
 </html>
