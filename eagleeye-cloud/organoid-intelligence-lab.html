@@ -2,126 +2,296 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GPT-DOUG // ORGANOID INTELLIGENCE LAB</title>
-<meta name="theme-color" content="#07030e">
+<title>GPT-DOUG // ROBOTIC BIOCHIP ANATOMY LAB</title>
+<meta name="theme-color" content="#05030b">
 <style>
-:root{--bg:#04020a;--panel:#0b0715e9;--line:#3a2452;--pink:#ff68c6;--violet:#a77bff;--cyan:#62dcff;--green:#62ffaf;--gold:#ffd46a;--red:#ff6675;--text:#f7efff;--muted:#9a89aa}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+:root{
+ --bg:#030208;--panel:#090713ed;--panel2:#0d0a19;--line:#34254d;
+ --pink:#ff63c8;--violet:#9b73ff;--cyan:#5cddff;--green:#63ffb0;
+ --gold:#ffd66c;--red:#ff6676;--white:#f8f3ff;--muted:#9589a8;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--white);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
 body:before{content:"";position:fixed;inset:0;z-index:900;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);opacity:.35}
-.app{height:100vh;display:grid;grid-template-rows:70px 1fr 30px;background:radial-gradient(circle at 50% -20%,#2a113e 0,#0d0718 38%,#04020a 72%)}
-header{display:grid;grid-template-columns:360px 1fr 280px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#080411f4}
-.brand{font-weight:900;letter-spacing:.08em;color:var(--pink);font-size:17px}.brand small{display:block;color:var(--muted);font-size:8px;margin-top:4px}
-.pipeline{display:flex;justify-content:center;gap:5px;align-items:center;overflow:hidden}.pipe{border:1px solid #4b2d6d;background:#100820;padding:5px 7px;border-radius:4px;font-size:7px;color:#e9dbff}.arrow{color:#7652a3}
-.status{text-align:right;font-size:8px;line-height:1.5}.ok{color:var(--green)}.warn{color:var(--gold)}.cyan{color:var(--cyan)}
-main{display:grid;grid-template-columns:270px minmax(0,1fr) 340px;min-height:0}.panel{background:var(--panel);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
-h2{font-size:9px;color:var(--pink);letter-spacing:.14em;margin:7px 0}.card{border:1px solid #39234f;background:#0c0717;border-radius:6px;padding:8px;margin-bottom:7px}.small{font-size:8px;line-height:1.5;color:var(--muted)}.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.55}.metric{font-size:22px;color:#fff}
-button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #51336f;background:#100820;color:var(--text);font:inherit;font-size:8px;text-decoration:none;text-align:left;cursor:pointer;border-radius:4px}button:hover,.btn:hover,button.active{border-color:var(--pink);color:#fff;background:#1a0c2b}
-.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#160c25 0,#090511 53%,#030207 100%);overflow:hidden}
-#bio{position:absolute;inset:0;width:100%;height:100%}.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;left:12px;top:12px;border:1px solid var(--line);background:#080412dc;border-radius:5px;padding:7px 9px;font-size:8px}.timeline{position:absolute;left:10%;right:10%;bottom:16px;border:1px solid #43295f;background:#090516df;padding:8px;border-radius:5px;pointer-events:auto}.track{height:5px;background:#24142f;border-radius:99px;overflow:hidden}.track i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--pink),var(--gold));width:35%}.timelineLabels{display:flex;justify-content:space-between;font-size:6px;color:var(--muted);margin-top:5px}
-.ringLabel{position:absolute;font-size:7px;color:#d5bded;text-shadow:0 0 7px #000}.l1{left:8%;top:25%}.l2{right:8%;top:25%}.l3{left:9%;bottom:27%}.l4{right:9%;bottom:27%}
+.app{height:100vh;display:grid;grid-template-rows:72px 1fr 30px;background:radial-gradient(circle at 50% -18%,#27113b 0,#0c0718 35%,#030208 70%)}
+header{display:grid;grid-template-columns:380px 1fr 300px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#070411f5}
+.brand{font-weight:900;letter-spacing:.075em;color:var(--pink);font-size:17px;line-height:1.1}.brand small{display:block;color:var(--muted);font-size:8px;margin-top:5px;letter-spacing:.11em}
+.pipeline{display:flex;align-items:center;justify-content:center;gap:5px;overflow:hidden;white-space:nowrap}.pipe{padding:5px 7px;border:1px solid #4c3567;background:#0f0a1c;border-radius:4px;font-size:7px;color:#e9ddff}.arrow{color:#7f64a4}
+.status{text-align:right;font-size:8px;line-height:1.55}.ok{color:var(--green)}.warn{color:var(--gold)}.cyan{color:var(--cyan)}.red{color:var(--red)}
+main{display:grid;grid-template-columns:285px minmax(0,1fr) 360px;min-height:0}
+.panel{background:var(--panel);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:9px;color:var(--pink);letter-spacing:.14em;margin:7px 0}
+.card{border:1px solid #392950;background:#0b0815;border-radius:6px;padding:8px;margin-bottom:7px}.small{font-size:8px;line-height:1.52;color:var(--muted)}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.55}.row b{color:#fff}
+button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #4e376b;background:#0f0a1c;color:var(--white);font:inherit;font-size:8px;text-decoration:none;text-align:left;cursor:pointer;border-radius:4px}
+button:hover,.btn:hover,button.active{border-color:var(--pink);background:#1a0e2a;color:#fff}
+.stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:radial-gradient(circle at 50% 45%,#1a0e29 0,#090611 48%,#020105 100%)}
+#anatomy{position:absolute;inset:0;width:100%;height:100%}
+.hud{position:absolute;inset:0;pointer-events:none}
+.badge{position:absolute;left:12px;top:12px;padding:7px 9px;border:1px solid var(--line);background:#080512dc;border-radius:5px;font-size:8px}
+.modeBox{position:absolute;right:12px;top:12px;border:1px solid var(--line);background:#080512dc;border-radius:5px;padding:7px 9px;font-size:8px;text-align:right}
+.scan{position:absolute;left:50%;top:50%;width:245px;height:470px;transform:translate(-50%,-50%);border:1px solid #9b73ff22;border-radius:46% 46% 20% 20% / 18% 18% 12% 12%;box-shadow:0 0 42px #ff63c811 inset,0 0 40px #6b4fff0d}
+.scan:before,.scan:after{content:"";position:absolute;background:#5cddff38}.scan:before{left:-50px;right:-50px;top:50%;height:1px}.scan:after{top:-45px;bottom:-45px;left:50%;width:1px}
+.label{position:absolute;font-size:7px;color:#cfbfe1;text-shadow:0 0 7px #000}.lbrain{left:13%;top:15%}.lneck{right:12%;top:25%}.lthorax{left:11%;top:41%}.lspine{right:11%;top:49%}.larm{left:8%;top:62%}.lleg{right:9%;top:72%}
+.bottomHud{position:absolute;left:9%;right:9%;bottom:14px;border:1px solid #432d5e;background:#090516e6;border-radius:5px;padding:7px;pointer-events:auto}
+.bus{height:6px;background:#24152e;border-radius:99px;overflow:hidden;position:relative}.bus i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink),var(--gold));box-shadow:0 0 14px #ff63c866}
+.busLabels{display:flex;justify-content:space-between;margin-top:5px;font-size:6px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.metric{font-size:18px;color:#fff}
+.chip{border:1px solid #38294e;background:#0c0816;padding:7px;margin:5px 0;border-radius:5px;cursor:pointer}.chip:hover,.chip.sel{border-color:var(--cyan);box-shadow:inset 0 0 16px #5cddff10}.chipTop{display:flex;justify-content:space-between;font-size:8px}.chipTop b{color:var(--cyan)}.chipMeta{font-size:7px;color:var(--muted);margin-top:3px;line-height:1.45}
 .gate{border-left:3px solid var(--green);padding-left:7px;margin:6px 0;font-size:8px;line-height:1.4}.gate.warn{border-left-color:var(--gold)}.gate.block{border-left-color:var(--red)}
-.source{border:1px solid #332146;background:#0a0712;padding:7px;margin:5px 0}.source b{font-size:8px;color:#fff}.source div{font-size:7px;color:var(--muted);margin-top:3px;line-height:1.4}
-footer{display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-top:1px solid var(--line);background:#080411;color:var(--muted);font-size:7px}
-@media(max-width:960px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#070411;color:var(--muted);font-size:7px}
+@media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
 </style>
 </head>
-<body><div class="app">
+<body>
+<div class="app">
 <header>
-<div class="brand">🧠 GPT-DOUG // ORGANOID INTELLIGENCE LAB<small>DIGITAL TWIN • RESEARCH GOVERNANCE • ELECTROPHYSIOLOGY DATA • HUMAN-FIRST</small></div>
-<div class="pipeline"><span class="pipe">PROVENANCE</span><span class="arrow">→</span><span class="pipe">QC</span><span class="arrow">→</span><span class="pipe">ORGANOID MODEL</span><span class="arrow">→</span><span class="pipe">MEA / IMAGING</span><span class="arrow">→</span><span class="pipe">DIGITAL TWIN</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
-<div class="status"><span class="ok">● RESEARCH SIM ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">NO WET-LAB RECIPE EXECUTION</span></div>
+<div class="brand">🧠⚙ GPT-DOUG // ROBOTIC BIOCHIP ANATOMY LAB<small>ORGANOID BIOCORE • ROBOTIC ANATOMY • NEURAL BUS • SENSOR-MOTOR DIGITAL TWIN</small></div>
+<div class="pipeline"><span class="pipe">BIOCORE</span><span class="arrow">→</span><span class="pipe">BIOCHIP ARRAY</span><span class="arrow">→</span><span class="pipe">NEURAL BUS</span><span class="arrow">→</span><span class="pipe">SPINE CONTROLLER</span><span class="arrow">→</span><span class="pipe">LIMB I/O</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
+<div class="status"><span class="ok">● DIGITAL ANATOMY ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">SYNTHETIC BIOCHIP MODEL</span></div>
 </header>
+
 <main>
 <aside class="panel left">
-<h2>PROGRAM PHASES</h2>
-<button class="active" data-phase="0">01 • LITERATURE + OVERSIGHT</button>
-<button data-phase="1">02 • CELL SOURCE + QC</button>
-<button data-phase="2">03 • ORGANOID MODEL</button>
-<button data-phase="3">04 • IMAGING + ELECTROPHYSIOLOGY</button>
-<button data-phase="4">05 • DIGITAL TWIN + ML</button>
-<button data-phase="5">06 • TEVV + REPRODUCIBILITY</button>
+<h2>ANATOMY VIEWS</h2>
+<button class="active" data-view="body">01 • FULL ROBOTIC ANATOMY</button>
+<button data-view="cranial">02 • CRANIAL BIOCORE</button>
+<button data-view="thoracic">03 • THORACIC BIOCHIP BAY</button>
+<button data-view="spine">04 • SPINAL NEURAL BUS</button>
+<button data-view="arms">05 • ARM SENSOR-MOTOR BUS</button>
+<button data-view="legs">06 • LEG CONTROL BUS</button>
 
 <h2>MODEL CONTROLS</h2>
-<button id="pulse">✦ SIMULATE ACTIVITY BURST</button>
+<button id="pulse">✦ PULSE NEURAL BUS</button>
+<button id="explode">◇ EXPLODE ANATOMY</button>
 <button id="rotate">↻ TOGGLE ROTATION</button>
 <button id="reset">◎ RESET DIGITAL TWIN</button>
-<button id="snapshot">▣ EXPORT METADATA SNAPSHOT</button>
+<button id="snapshot">▣ EXPORT SYSTEM SNAPSHOT</button>
 
-<h2>GOVERNANCE</h2>
-<div class="card small">This interface models research state and data flow. Actual cell culture should use approved institutional SOPs, qualified personnel, documented cell provenance, and applicable stem-cell oversight.</div>
+<h2>ROBOTIC ANATOMY</h2>
+<div class="card small">
+The body is modeled as a synthetic cyber-biological digital twin: a cranial organoid biocore interfaces with modular electronic biochips, a protected spinal data bus, and limb sensor/motor controllers. No real implant, fabrication, culture, or stimulation recipe is embedded.
+</div>
+<a class="btn" href="/nolimits-robotics.html">🤖 OPEN ROBOTICS DIGITAL TWIN</a>
+<a class="btn" href="/dots-neural-lab.html">◈ OPEN GPT-DOTS NEURAL LAB</a>
 <a class="btn" href="/">← EAGLE EYE GLOBAL FUSION</a>
-<a class="btn" href="/dots-neural-lab.html">◈ GPT-DOTS NEURAL LAB</a>
 </aside>
 
 <section class="stage">
-<canvas id="bio"></canvas>
+<canvas id="anatomy"></canvas>
 <div class="hud">
-<div class="badge"><b class="cyan">DIGITAL ORGANOID TWIN</b><br><span id="phaseName">LITERATURE + OVERSIGHT</span><br><span class="ok">SIMULATED BIOLOGICAL STATE</span></div>
-<div class="ringLabel l1">MORPHOLOGY</div><div class="ringLabel l2">ELECTROPHYSIOLOGY</div><div class="ringLabel l3">PROVENANCE</div><div class="ringLabel l4">MODEL / TEVV</div>
-<div class="timeline"><div class="row"><span>RESEARCH PROGRAM MATURITY</span><b id="maturity">35%</b></div><div class="track"><i id="maturityBar"></i></div><div class="timelineLabels"><span>OVERSIGHT</span><span>QC</span><span>MODEL</span><span>INTERFACE</span><span>DIGITAL TWIN</span><span>TEVV</span></div></div>
+<div class="badge"><b class="cyan">ROBOTIC BIOCHIP DIGITAL TWIN</b><br><span id="viewName">FULL ROBOTIC ANATOMY</span><br><span class="ok">SIMULATED SIGNAL PATHS ACTIVE</span></div>
+<div class="modeBox">ARCHITECTURE: <b>BIO-HYBRID</b><br>CONTROL: <b class="ok">HUMAN-FIRST</b><br>WET-LAB: <b class="warn">NOT CONNECTED</b></div>
+<div class="scan"></div>
+<div class="label lbrain">CRANIAL BIOCORE / ORGANOID POD</div>
+<div class="label lneck">CERVICAL SIGNAL BRIDGE</div>
+<div class="label lthorax">THORACIC BIOCHIP ARRAY</div>
+<div class="label lspine">SPINAL NEURAL BACKPLANE</div>
+<div class="label larm">UPPER-LIMB SENSOR / MOTOR I/O</div>
+<div class="label lleg">LOWER-LIMB GAIT / BALANCE I/O</div>
+<div class="bottomHud">
+<div class="row"><span>NEURAL BUS COHERENCE</span><b id="coherence">93%</b></div>
+<div class="bus"><i id="busBar"></i></div>
+<div class="busLabels"><span>BIOCORE</span><span>CERVICAL</span><span>THORACIC</span><span>LUMBAR</span><span>ARMS</span><span>LEGS</span></div>
+</div>
 </div>
 </section>
 
 <aside class="panel right">
-<h2>PROJECT STATE</h2>
-<div class="card">
-<div class="row"><span>Model ID</span><b>OI-DT-001</b></div>
-<div class="row"><span>Biological input</span><b class="warn">NOT CONNECTED</b></div>
-<div class="row"><span>Data mode</span><b class="ok">SYNTHETIC</b></div>
-<div class="row"><span>Human approval</span><b class="ok">REQUIRED</b></div>
-<div class="row"><span>Audit</span><b class="ok">ENABLED</b></div>
+<h2>BIOCHIP NODES</h2>
+<div id="chipList">
+<div class="chip sel" data-chip="brain"><div class="chipTop"><b>BC-01 // CRANIAL BIOCORE</b><span class="ok">ONLINE</span></div><div class="chipMeta">Synthetic organoid-interface pod • neural feature extraction • provenance tracked</div></div>
+<div class="chip" data-chip="cervical"><div class="chipTop"><b>NB-02 // CERVICAL BRIDGE</b><span class="ok">ONLINE</span></div><div class="chipMeta">Signal conditioning • isolation • cranial ↔ spinal routing</div></div>
+<div class="chip" data-chip="thoracic"><div class="chipTop"><b>BC-03 // THORACIC ARRAY</b><span class="ok">ONLINE</span></div><div class="chipMeta">Sensor fusion • telemetry aggregation • power supervision</div></div>
+<div class="chip" data-chip="lumbar"><div class="chipTop"><b>NB-04 // LUMBAR CONTROLLER</b><span class="ok">ONLINE</span></div><div class="chipMeta">Gait-state fusion • balance telemetry • lower-body bus routing</div></div>
+<div class="chip" data-chip="arms"><div class="chipTop"><b>IO-05 // ARM BIOCHIPS</b><span class="ok">ONLINE</span></div><div class="chipMeta">Tactile/position sensor inputs • actuator command simulation</div></div>
+<div class="chip" data-chip="legs"><div class="chipTop"><b>IO-06 // LEG BIOCHIPS</b><span class="ok">ONLINE</span></div><div class="chipMeta">Foot-pressure/pose telemetry • motor-state simulation</div></div>
 </div>
 
-<h2>QUALITY / TEVV GATES</h2>
-<div class="gate">SOURCE PROVENANCE • REQUIRED</div>
-<div class="gate">IDENTITY / INTEGRITY QC • REQUIRED</div>
-<div class="gate">REPLICATE + BATCH TRACKING • REQUIRED</div>
-<div class="gate warn">BIOLOGICAL INTERFACE • PARTNER LAB</div>
-<div class="gate">UNCERTAINTY + DRIFT • REQUIRED</div>
+<h2>ANATOMY TELEMETRY</h2>
+<div class="grid2">
+<div class="card"><div class="small">BIOCORE ACTIVITY</div><div class="metric" id="activity">46%</div></div>
+<div class="card"><div class="small">BUS LATENCY</div><div class="metric" id="latency">2.8 ms</div></div>
+<div class="card"><div class="small">THERMAL LOAD</div><div class="metric" id="thermal">41°C</div></div>
+<div class="card"><div class="small">SIGNAL INTEGRITY</div><div class="metric" id="integrity">96%</div></div>
+</div>
+
+<h2>TEVV / SAFETY GATES</h2>
+<div class="gate">CELL / SOURCE PROVENANCE • REQUIRED</div>
+<div class="gate">BIOCHIP SIGNAL TRACEABILITY • REQUIRED</div>
+<div class="gate">SENSOR-MOTOR COMMAND AUDIT • REQUIRED</div>
+<div class="gate warn">REAL BIOLOGICAL INTERFACE • PARTNER LAB ONLY</div>
+<div class="gate">HUMAN AUTHORIZATION • REQUIRED</div>
 <div class="gate block">UNREVIEWED WET-LAB AUTOMATION • BLOCKED</div>
-
-<h2>SIMULATED SIGNALS</h2>
-<div class="card">
-<div class="row"><span>Network activity</span><b id="activity">42%</b></div>
-<div class="row"><span>Signal coherence</span><b id="coherence">88%</b></div>
-<div class="row"><span>Morphology score</span><b id="morph">91%</b></div>
-<div class="row"><span>Reproducibility</span><b id="repro">84%</b></div>
-<div class="row"><span>Uncertainty</span><b id="uncertainty">12%</b></div>
-</div>
-
-<h2>RESEARCH SOURCES</h2>
-<div class="source"><b>ISSCR Standards</b><div>Stem-cell identity, culture integrity, genomic characterization, reproducibility and model-system reporting.</div></div>
-<div class="source"><b>ISSCR Guidelines</b><div>Ethical oversight and transparency for stem-cell and organoid research.</div></div>
-<div class="source"><b>Organoid Intelligence Roadmap</b><div>Neural organoids + electrophysiology + imaging + AI for emerging biological-computing research.</div></div>
-<div class="source"><b>FinalSpark</b><div>Public research updates on neural organoids, neuroplatforms and digital-twin work.</div></div>
 </aside>
 </main>
-<footer><span>GPT-DOUG // ORGANOID INTELLIGENCE RESEARCH STACK</span><span>SOFTWARE + GOVERNANCE + DATA MODEL • NOT A LAB PROTOCOL</span><span>HUMAN-FIRST • PROVENANCE • TEVV</span></footer>
+
+<footer><span>GPT-DOUG // ROBOTIC BIOCHIP ANATOMY STACK</span><span>ORGANOID DIGITAL TWIN + ROBOTIC CONTROL ARCHITECTURE • NO LAB PROTOCOL</span><span>HUMAN-FIRST • PROVENANCE • TEVV</span></footer>
 </div>
+
 <script type="module">
 import * as THREE from 'https://unpkg.com/three@0.180.0/build/three.module.js';
-const $=id=>document.getElementById(id),canvas=$('bio');
-const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,1,.1,100),renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));camera.position.set(0,.4,5.6);camera.lookAt(0,0,0);
-scene.add(new THREE.AmbientLight(0x8d64ff,1.4));const key=new THREE.PointLight(0xff79c6,22,12);key.position.set(3,3,4);scene.add(key);
-const group=new THREE.Group();scene.add(group);
-const count=6200,pos=new Float32Array(count*3),col=new Float32Array(count*3),c1=new THREE.Color('#875dff'),c2=new THREE.Color('#ff68c6'),c3=new THREE.Color('#ffd46a');
-for(let i=0;i<count;i++){
- const u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1),r=.92+Math.random()*.32+.08*Math.sin(u*6+v*5);
- const x=r*Math.sin(v)*Math.cos(u)*1.12,y=r*Math.cos(v)*.94,z=r*Math.sin(v)*Math.sin(u);
- pos[i*3]=x;pos[i*3+1]=y;pos[i*3+2]=z;
- const t=(y+1.3)/2.6,cc=t>.68?c2.clone().lerp(c3,(t-.68)/.32):c1.clone().lerp(c2,t/.68);
- col[i*3]=cc.r;col[i*3+1]=cc.g;col[i*3+2]=cc.b;
+
+const $=id=>document.getElementById(id),canvas=$('anatomy');
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(46,1,.1,100);
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));camera.position.set(0,.5,8.7);camera.lookAt(0,0,0);
+
+scene.add(new THREE.HemisphereLight(0x9e7cff,0x050208,1.9));
+const key=new THREE.PointLight(0xff6ac9,35,20);key.position.set(4,5,5);scene.add(key);
+const fill=new THREE.PointLight(0x55ddff,28,18);fill.position.set(-4,1,3);scene.add(fill);
+
+const anatomy=new THREE.Group();scene.add(anatomy);
+const metal=new THREE.MeshStandardMaterial({color:0x202835,metalness:.9,roughness:.25});
+const dark=new THREE.MeshStandardMaterial({color:0x090d13,metalness:.72,roughness:.38});
+const bone=new THREE.MeshStandardMaterial({color:0x52606a,metalness:.65,roughness:.3});
+const cyan=new THREE.MeshStandardMaterial({color:0x5cddff,emissive:0x0aa8c9,emissiveIntensity:2.3,metalness:.55,roughness:.14});
+const pink=new THREE.MeshStandardMaterial({color:0xff63c8,emissive:0xa41475,emissiveIntensity:2.4,metalness:.42,roughness:.18});
+const violet=new THREE.MeshStandardMaterial({color:0x9b73ff,emissive:0x5c2fff,emissiveIntensity:1.8,metalness:.5,roughness:.2});
+const gold=new THREE.MeshStandardMaterial({color:0xffd66c,emissive:0xa15d00,emissiveIntensity:1.7,metalness:.55,roughness:.18});
+const bioMat=new THREE.PointsMaterial({size:.038,vertexColors:true,transparent:true,opacity:.95});
+
+function box(w,h,d,m=metal){const x=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);x.castShadow=true;return x}
+function cyl(r,h,m=bone){const x=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,18),m);x.castShadow=true;return x}
+function sphere(r,m=metal){const x=new THREE.Mesh(new THREE.SphereGeometry(r,24,18),m);x.castShadow=true;return x}
+function joint(x,y,z,r=.13){const j=sphere(r,cyan);j.position.set(x,y,z);anatomy.add(j);return j}
+function chip(x,y,z,m=violet,sx=.34,sy=.16,sz=.09){const c=box(sx,sy,sz,m);c.position.set(x,y,z);anatomy.add(c);return c}
+
+const groups={cranial:new THREE.Group(),thoracic:new THREE.Group(),spine:new THREE.Group(),arms:new THREE.Group(),legs:new THREE.Group()};
+Object.values(groups).forEach(g=>anatomy.add(g));
+
+// head shell and organoid biocore
+const skull=box(.9,.82,.78,dark);skull.position.set(0,2.72,0);groups.cranial.add(skull);
+const visor=box(.66,.18,.05,cyan);visor.position.set(0,2.76,.415);groups.cranial.add(visor);
+
+const pc=2800,p=new Float32Array(pc*3),co=new Float32Array(pc*3),c1=new THREE.Color('#8d66ff'),c2=new THREE.Color('#ff63c8'),c3=new THREE.Color('#ffd66c');
+for(let i=0;i<pc;i++){
+ const u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1),r=.28+Math.random()*.11+.025*Math.sin(u*7+v*5);
+ const x=r*Math.sin(v)*Math.cos(u)*1.2,y=r*Math.cos(v)*.9,z=r*Math.sin(v)*Math.sin(u);
+ p[i*3]=x;p[i*3+1]=y;p[i*3+2]=z;
+ const t=(y+.4)/.8,cc=t>.65?c2.clone().lerp(c3,(t-.65)/.35):c1.clone().lerp(c2,t/.65);co[i*3]=cc.r;co[i*3+1]=cc.g;co[i*3+2]=cc.b;
 }
-const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
-const mat=new THREE.PointsMaterial({size:.023,vertexColors:true,transparent:true,opacity:.9});const cloud=new THREE.Points(geo,mat);group.add(cloud);
-for(let i=0;i<4;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.35+i*.19,.009,8,96),new THREE.MeshBasicMaterial({color:i%2?0xff68c6:0x7b5cff,transparent:true,opacity:.22}));ring.rotation.x=Math.PI/2;ring.rotation.y=.3*i;group.add(ring)}
-let rotate=true,pulse=0,phase=0;
-const phases=['LITERATURE + OVERSIGHT','CELL SOURCE + QC','ORGANOID MODEL','IMAGING + ELECTROPHYSIOLOGY','DIGITAL TWIN + ML','TEVV + REPRODUCIBILITY'];
+const bg=new THREE.BufferGeometry();bg.setAttribute('position',new THREE.BufferAttribute(p,3));bg.setAttribute('color',new THREE.BufferAttribute(co,3));
+const biocore=new THREE.Points(bg,bioMat);biocore.position.set(0,2.73,.03);groups.cranial.add(biocore);
+const bioRing=new THREE.Mesh(new THREE.TorusGeometry(.45,.012,8,72),new THREE.MeshBasicMaterial({color:0xff63c8,transparent:true,opacity:.5}));bioRing.position.set(0,2.73,0);bioRing.rotation.x=Math.PI/2;groups.cranial.add(bioRing);
+
+// neck bridge
+for(let i=0;i<4;i++){const v=cyl(.12,.22,i%2?cyan:bone);v.position.set(0,2.15-i*.19,0);groups.spine.add(v)}
+chip(0,2.23,.16,cyan,.42,.14,.08);
+
+// thorax + ribs + biochips
+const sternum=box(.28,1.25,.34,dark);sternum.position.set(0,.95,0);groups.thoracic.add(sternum);
+for(let i=0;i<6;i++){
+ const y=1.5-i*.2;
+ const rib=new THREE.Mesh(new THREE.TorusGeometry(.72-i*.035,.025,8,48,Math.PI),bone);rib.position.set(0,y,0);rib.rotation.z=Math.PI/2;rib.rotation.y=Math.PI/2;groups.thoracic.add(rib);
+ const rib2=rib.clone();rib2.rotation.y=-Math.PI/2;groups.thoracic.add(rib2);
+}
+const core=box(.78,.46,.38,metal);core.position.set(0,1.15,.16);groups.thoracic.add(core);
+for(let i=0;i<4;i++){const c=chip(-.27+i*.18,1.17,.39,i%2?pink:violet,.14,.12,.045);groups.thoracic.add(c)}
+const power=chip(0,.73,.28,gold,.58,.2,.09);groups.thoracic.add(power);
+
+// spine / backplane
+for(let i=0;i<17;i++){
+ const y=1.95-i*.22;
+ const v=box(.22,.14,.22,i%4===0?cyan:bone);v.position.set(0,y,-.16);groups.spine.add(v);
+ if(i%3===0){const c=chip(.22,y,-.12,i%2?violet:pink,.16,.09,.06);groups.spine.add(c)}
+}
+const lumbar=chip(0,-1.34,.05,cyan,.5,.22,.11);groups.spine.add(lumbar);
+
+// pelvis
+const pelvis=box(1.02,.38,.55,dark);pelvis.position.set(0,-1.18,0);anatomy.add(pelvis);
+
+// shoulders/arms
+function arm(side){
+ const sx=side; joint(.77*sx,1.63,0,.15);
+ const upper=cyl(.15,1.1,metal);upper.position.set(1.23*sx,1.4,0);upper.rotation.z=Math.PI/2;groups.arms.add(upper);
+ joint(1.72*sx,1.4,0,.13);
+ const lower=cyl(.13,.95,dark);lower.position.set(2.13*sx,1.4,0);lower.rotation.z=Math.PI/2;groups.arms.add(lower);
+ const hand=box(.28,.3,.28,metal);hand.position.set(2.65*sx,1.4,0);groups.arms.add(hand);
+ const c1=chip(1.15*sx,1.55,.18,cyan,.24,.12,.06),c2=chip(2.05*sx,1.55,.18,pink,.22,.11,.06);groups.arms.add(c1,c2)
+}
+arm(-1);arm(1);
+
+// hips/legs
+function leg(side){
+ const sx=side;joint(.38*sx,-1.34,0,.16);
+ const thigh=cyl(.18,1.18,metal);thigh.position.set(.38*sx,-1.93,0);groups.legs.add(thigh);
+ joint(.38*sx,-2.56,0,.15);
+ const shin=cyl(.15,1.13,dark);shin.position.set(.38*sx,-3.12,0);groups.legs.add(shin);
+ const foot=box(.38,.22,.72,metal);foot.position.set(.38*sx,-3.72,.17);groups.legs.add(foot);
+ const c1=chip(.58*sx,-1.93,.17,violet,.18,.13,.06),c2=chip(.58*sx,-3.08,.17,cyan,.18,.13,.06);groups.legs.add(c1,c2)
+}
+leg(-1);leg(1);
+
+// neural bus lines
+const busMat=new THREE.LineBasicMaterial({color:0x5cddff,transparent:true,opacity:.75});
+function line(points){const g=new THREE.BufferGeometry().setFromPoints(points.map(q=>new THREE.Vector3(...q)));const l=new THREE.Line(g,busMat);anatomy.add(l);return l}
+const buses=[
+ line([[0,2.45,.2],[0,1.7,.2],[0,.7,.2],[0,-.8,.2],[0,-1.35,.2]]),
+ line([[0,1.45,.2],[-1.7,1.45,.2],[-2.5,1.45,.2]]),
+ line([[0,1.45,.2],[1.7,1.45,.2],[2.5,1.45,.2]]),
+ line([[0,-1.15,.2],[-.38,-2.5,.2],[-.38,-3.5,.2]]),
+ line([[0,-1.15,.2],[.38,-2.5,.2],[.38,-3.5,.2]])
+];
+
+const anatomyBase={};
+for(const [k,g] of Object.entries(groups)){anatomyBase[k]=g.position.clone()}
+
+let rotating=true,exploded=false,pulse=0,selected='brain',view='body';
+const views={
+ body:{p:[0,.4,8.7],t:[0,-.35,0],name:'FULL ROBOTIC ANATOMY'},
+ cranial:{p:[0,2.65,3.2],t:[0,2.55,0],name:'CRANIAL BIOCORE'},
+ thoracic:{p:[0,.95,4.0],t:[0,.85,0],name:'THORACIC BIOCHIP BAY'},
+ spine:{p:[2.7,.2,3.2],t:[0,.2,-.1],name:'SPINAL NEURAL BUS'},
+ arms:{p:[0,1.35,6.2],t:[0,1.35,0],name:'ARM SENSOR-MOTOR BUS'},
+ legs:{p:[0,-2.45,5.0],t:[0,-2.45,0],name:'LEG CONTROL BUS'}
+};
+
+function setView(v){
+ view=v;const d=views[v];camera.position.set(...d.p);camera.lookAt(...d.t);$('viewName').textContent=d.name;
+ document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.view));
+
+function explode(on){
+ exploded=on;
+ groups.cranial.position.y=on?.55:0;
+ groups.thoracic.position.z=on?.45:0;
+ groups.spine.position.z=on?-.5:0;
+ groups.arms.position.x=0; groups.arms.position.z=on?.25:0;
+ groups.legs.position.y=on?-.2:0; groups.legs.position.z=on?.25:0;
+}
+function selectChip(id){
+ selected=id;document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.chip===id));
+ if(id==='brain')setView('cranial');if(id==='cervical'||id==='lumbar')setView('spine');if(id==='thoracic')setView('thoracic');if(id==='arms')setView('arms');if(id==='legs')setView('legs');
+ pulse=1;
+}
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>selectChip(c.dataset.chip));
+
 function resize(){const r=canvas.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix()}addEventListener('resize',resize);
-function loop(){resize();if(rotate)group.rotation.y+=.0018;group.rotation.x=Math.sin(performance.now()/3300)*.07;pulse*=.965;mat.size=.023+pulse*.012;renderer.render(scene,camera);requestAnimationFrame(loop)}loop();
-document.querySelectorAll('[data-phase]').forEach(b=>b.onclick=()=>{phase=Number(b.dataset.phase);document.querySelectorAll('[data-phase]').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('phaseName').textContent=phases[phase];const m=15+phase*16;$('maturity').textContent=m+'%';$('maturityBar').style.width=m+'%'});
-$('pulse').onclick=()=>pulse=1;$('rotate').onclick=()=>rotate=!rotate;$('reset').onclick=()=>{group.rotation.set(0,0,0);pulse=.4;phase=0;document.querySelector('[data-phase="0"]').click()};
-$('snapshot').onclick=()=>{const data={schema:'gpt-doug.organoid-digital-twin.v1',created:new Date().toISOString(),phase:phases[phase],mode:'synthetic',human_approval:'required',wet_lab_protocols:'not_embedded'};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-organoid-snapshot.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
-setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('activity').textContent=Math.round(38+Math.random()*18+pulse*25)+'%';$('coherence').textContent=Math.round(84+Math.random()*10)+'%';$('morph').textContent=Math.round(88+Math.random()*7)+'%';$('repro').textContent=Math.round(80+Math.random()*10)+'%';$('uncertainty').textContent=Math.round(8+Math.random()*8)+'%'},1000);
-</script></body></html>
+function loop(){
+ resize();
+ if(rotating&&view==='body')anatomy.rotation.y+=.0012;
+ anatomy.rotation.x=Math.sin(performance.now()/4200)*.025;
+ pulse*=.965;bioMat.size=.038+pulse*.026;
+ busMat.opacity=.5+.45*Math.abs(Math.sin(performance.now()/600+pulse*2));
+ bioRing.rotation.z+=.003;bioRing.material.opacity=.35+pulse*.45;
+ renderer.render(scene,camera);requestAnimationFrame(loop)
+}
+loop();setView('body');
+
+$('pulse').onclick=()=>pulse=1;
+$('explode').onclick=()=>{explode(!exploded);$('explode').textContent=exploded?'◇ COLLAPSE ANATOMY':'◇ EXPLODE ANATOMY'};
+$('rotate').onclick=()=>rotating=!rotating;
+$('reset').onclick=()=>{anatomy.rotation.set(0,0,0);explode(false);rotating=true;setView('body');selectChip('brain');pulse=.5;$('explode').textContent='◇ EXPLODE ANATOMY'};
+$('snapshot').onclick=()=>{
+ const data={schema:'gpt-doug.robotic-biochip-anatomy.v2',created:new Date().toISOString(),view,selected_biochip:selected,architecture:'synthetic bio-hybrid digital twin',nodes:['BC-01 cranial biocore','NB-02 cervical bridge','BC-03 thoracic array','NB-04 lumbar controller','IO-05 arm biochips','IO-06 leg biochips'],human_approval:'required',wet_lab_protocols:'not_embedded'};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-robotic-biochip-anatomy.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+};
+
+setInterval(()=>{
+ $('clock').textContent=new Date().toLocaleTimeString();
+ const activity=Math.round(40+Math.random()*20+pulse*24),coh=Math.round(89+Math.random()*8),lat=(2.1+Math.random()*1.6).toFixed(1),temp=Math.round(38+Math.random()*7),integrity=Math.round(93+Math.random()*6);
+ $('activity').textContent=activity+'%';$('coherence').textContent=coh+'%';$('latency').textContent=lat+' ms';$('thermal').textContent=temp+'°C';$('integrity').textContent=integrity+'%';$('busBar').style.width=coh+'%';
+},1000);
+</script>
+</body></html>
