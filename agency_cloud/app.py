@@ -8,11 +8,11 @@ from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
-from sqlalchemy import inspect
+from sqlalchemy import func, inspect, select, text
 from sqlalchemy.orm import Session
 
 from agency_cloud import __version__
@@ -70,6 +70,18 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-Zyra-Workspace"],
 )
+@app.middleware("http")
+async def security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+    response.headers["X-Frame-Options"] = "DENY"
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
+
 app.mount("/assets", StaticFiles(directory=static_dir), name="assets")
 
 
@@ -195,6 +207,61 @@ def healthz():
         "version": __version__,
         "legalStatus": "PRIVATE INTELLIGENCE COMPANY — NOT A GOVERNMENT AGENCY",
     }
+
+
+@app.get("/readyz")
+def readyz():
+    try:
+        with session_factory() as session:
+            session.execute(text("SELECT 1"))
+            audit_ok, audit_message = verify_chain(session, audit_key=settings.audit_key)
+        if not audit_ok:
+            raise HTTPException(status_code=503, detail={"database": "ok", "audit": audit_message})
+        return {
+            "status": "ready",
+            "database": "ok",
+            "audit": audit_message,
+            "realtimeConnections": event_hub.connection_count,
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail=f"readiness failure: {exc}") from exc
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+def metrics():
+    with session_factory() as session:
+        from agency_cloud.models import Alert, AuditEvent, Case, IntelRecord, PlatformEvent, Report
+        counts = {
+            "workspaces": session.scalar(select(func.count()).select_from(__import__("agency_cloud.models", fromlist=["Workspace"]).Workspace)) or 0,
+            "cases": session.scalar(select(func.count()).select_from(Case)) or 0,
+            "intel": session.scalar(select(func.count()).select_from(IntelRecord)) or 0,
+            "reports": session.scalar(select(func.count()).select_from(Report)) or 0,
+            "alerts": session.scalar(select(func.count()).select_from(Alert)) or 0,
+            "events": session.scalar(select(func.count()).select_from(PlatformEvent)) or 0,
+            "audit": session.scalar(select(func.count()).select_from(AuditEvent)) or 0,
+        }
+        audit_ok, _ = verify_chain(session, audit_key=settings.audit_key)
+
+    lines = [
+        "# HELP gpt_doug_core_info GPT-DOUG core platform identity.",
+        "# TYPE gpt_doug_core_info gauge",
+        'gpt_doug_core_info{service="' + settings.service_name.replace('"', "") + '"} 1',
+        "# HELP gpt_doug_realtime_connections Current public realtime client count.",
+        "# TYPE gpt_doug_realtime_connections gauge",
+        f"gpt_doug_realtime_connections {event_hub.connection_count}",
+        "# HELP gpt_doug_audit_chain_valid Whether the audit chain verifies.",
+        "# TYPE gpt_doug_audit_chain_valid gauge",
+        f"gpt_doug_audit_chain_valid {1 if audit_ok else 0}",
+    ]
+    for name, value in counts.items():
+        lines.extend([
+            f"# HELP gpt_doug_{name}_total Persisted GPT-DOUG {name} count.",
+            f"# TYPE gpt_doug_{name}_total gauge",
+            f"gpt_doug_{name}_total {value}",
+        ])
+    return "\n".join(lines) + "\n"
 
 
 @app.get("/api/v1/meta")
