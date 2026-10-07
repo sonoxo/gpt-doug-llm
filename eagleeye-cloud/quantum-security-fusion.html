@@ -1,112 +1,485 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GPT-DOUG // QUANTUM SECURITY FUSION</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // INTERACTIVE SECURITY DATA FUSION</title>
 <meta name="theme-color" content="#02060b">
 <style>
-:root{--bg:#020509;--p:#071019e9;--line:#1a536c;--cyan:#58ddff;--green:#64ffab;--amber:#ffd365;--red:#ff6978;--violet:#a779ff;--pink:#ff68cb;--text:#e8fbff;--muted:#7f9eaa}
-*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
-.app{height:100vh;display:grid;grid-template-rows:68px 1fr 30px;background:radial-gradient(circle at 50% -20%,#12324a 0,#06101a 34%,#020509 70%)}
-header{display:grid;grid-template-columns:410px 1fr 290px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#031018f4}
-.brand{font-weight:900;color:var(--cyan);font-size:17px;letter-spacing:.07em}.brand small{display:block;font-size:8px;color:var(--muted);margin-top:4px}
-.pipeline{display:flex;justify-content:center;gap:5px;overflow:hidden}.pipe{font-size:7px;padding:5px 7px;border:1px solid #20556b;background:#071a24;border-radius:4px}.arrow{color:#46768a}
-.status{text-align:right;font-size:8px;line-height:1.5}.ok{color:var(--green)}.warn{color:var(--amber)}
-main{display:grid;grid-template-columns:270px minmax(0,1fr) 350px;min-height:0}.panel{background:var(--p);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
-h2{font-size:9px;color:var(--cyan);letter-spacing:.14em;margin:7px 0}.card{border:1px solid #16455b;background:#06141d;border-radius:5px;padding:8px;margin-bottom:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.5;color:var(--muted)}.row b{color:#fff}
-button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #23617a;background:#071923;color:var(--text);font:inherit;font-size:8px;text-decoration:none;text-align:left;border-radius:4px;cursor:pointer}button:hover,button.active,.btn:hover{border-color:var(--cyan);color:#fff;background:#0a2634}
-.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#0a2433 0,#06111a 48%,#020609 100%);overflow:hidden}
-#field{position:absolute;inset:0;width:100%;height:100%}.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;left:12px;top:12px;border:1px solid var(--line);background:#04131cdd;padding:7px 9px;border-radius:5px;font-size:8px}
-.legend{position:absolute;left:12px;bottom:12px;border:1px solid var(--line);background:#04131cdd;padding:7px 9px;border-radius:5px;font-size:7px;line-height:1.55}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
-.metric{font-size:22px}.layer{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:6px;border:1px solid #143c4f;background:#06131c;padding:6px;margin:4px 0;border-radius:4px;cursor:pointer}.layer.active{border-color:#4bcbe9;background:#09202b}.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 10px currentColor}.layer b{font-size:8px}.layer span{font-size:7px;color:var(--muted)}
-.spider{height:220px;border:1px solid #15465c;border-radius:5px;overflow:hidden;background:#030b11}#spider{width:100%;height:100%;display:block}
+:root{
+ --bg:#020509;--panel:#061018ef;--panel2:#081722;--line:#194f66;--cyan:#58ddff;
+ --green:#64ffab;--amber:#ffd365;--red:#ff6978;--violet:#a779ff;--pink:#ff68cb;
+ --blue:#8db8ff;--white:#eefbff;--muted:#7897a4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:var(--white);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:900;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);opacity:.32}
+.app{height:100vh;display:grid;grid-template-rows:70px 1fr 30px;background:radial-gradient(circle at 50% -18%,#103247 0,#061019 36%,#020509 72%)}
+header{display:grid;grid-template-columns:390px 1fr 300px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#031018f5}
+.brand{font-weight:900;color:var(--cyan);font-size:17px;letter-spacing:.07em}.brand small{display:block;color:var(--muted);font-size:8px;margin-top:4px;letter-spacing:.11em}
+.pipeline{display:flex;align-items:center;justify-content:center;gap:5px;overflow:hidden;white-space:nowrap}.pipe{font-size:7px;padding:5px 7px;border:1px solid #20556b;background:#071a24;border-radius:4px}.arrow{color:#4b788b}
+.status{text-align:right;font-size:8px;line-height:1.5}.ok{color:var(--green)}.warn{color:var(--amber)}.bad{color:var(--red)}
+main{display:grid;grid-template-columns:295px minmax(0,1fr) 380px;min-height:0}
+.panel{background:var(--panel);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:9px;color:var(--cyan);letter-spacing:.14em;margin:7px 0}
+.card{border:1px solid #15455a;background:#06131c;border-radius:6px;padding:8px;margin-bottom:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.55;color:var(--muted)}.row b{color:#fff}
+button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #23617a;background:#071923;color:var(--white);font:inherit;font-size:8px;text-decoration:none;text-align:left;border-radius:4px;cursor:pointer}
+button:hover,button.active,.btn:hover{border-color:var(--cyan);background:#0a2634;color:#fff}
+.toolbar{display:grid;grid-template-columns:1fr 1fr;gap:4px}.toolbar button{margin:0}
+.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#0b2736 0,#06121b 48%,#020609 100%);overflow:hidden;touch-action:none}
+#field{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;left:12px;top:12px;border:1px solid var(--line);background:#04131cde;padding:7px 9px;border-radius:5px;font-size:8px}
+.legend{position:absolute;left:12px;bottom:12px;border:1px solid var(--line);background:#04131cde;padding:7px 9px;border-radius:5px;font-size:7px;line-height:1.55}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.coords{position:absolute;right:12px;bottom:12px;border:1px solid var(--line);background:#04131cde;padding:7px 9px;border-radius:5px;font-size:7px;text-align:right}
+.layer{display:grid;grid-template-columns:20px minmax(0,1fr) 42px;align-items:center;gap:6px;border:1px solid #143c4f;background:#06131c;padding:6px;margin:4px 0;border-radius:4px;cursor:pointer}
+.layer:hover,.layer.selected{border-color:#4bcbe9}.layer.off{opacity:.42}.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 9px currentColor}.layer b{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.layer span{font-size:6px;color:var(--muted)}.layer .toggle{font-size:7px;text-align:right;color:var(--green)}
+.layer.off .toggle{color:var(--red)}
+.opacityLine{display:grid;grid-template-columns:72px 1fr 30px;gap:6px;align-items:center;font-size:7px;color:var(--muted);margin:5px 0}.opacityLine input{width:100%;accent-color:var(--cyan)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:7px}.tabs button{margin:0;text-align:center;padding:6px 2px}.tabPane{display:none}.tabPane.active{display:block}
+.spider{height:245px;border:1px solid #15465c;border-radius:5px;overflow:hidden;background:#030b11}#spider{width:100%;height:100%;display:block;cursor:pointer}
+.timeline{height:6px;background:#102832;border-radius:99px;overflow:hidden;margin:6px 0}.timeline i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));width:100%}
+.range{width:100%;accent-color:var(--cyan)}
+.sourceTag{display:inline-block;padding:2px 5px;border:1px solid #2e6173;border-radius:999px;font-size:6px;color:#afddeb;margin:2px 2px 0 0}
 .event{border-left:2px solid #205f79;padding-left:6px;margin:5px 0;font-size:7px;color:var(--muted);line-height:1.4}
+.check{display:flex;justify-content:space-between;gap:8px;font-size:7px;line-height:1.65}.check b.pass{color:var(--green)}.check b.warn{color:var(--amber)}.check b.fail{color:var(--red)}
+.mobileTools{display:none;gap:4px}.mobileTools button{width:auto;margin:0;padding:5px 7px}
 footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#031018;color:var(--muted);font-size:7px}
-@media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+@media(max-width:980px){
+ header{grid-template-columns:1fr auto}.pipeline,.status{display:none}.mobileTools{display:flex}
+ main{grid-template-columns:1fr}.panel.left,.panel.right{display:block;position:fixed;z-index:1200;top:70px;bottom:30px;width:min(90vw,390px);transition:transform .22s ease;box-shadow:0 20px 70px #000d}
+ .panel.left{left:0;transform:translateX(-105%)}.panel.right{right:0;transform:translateX(105%)}
+ .panel.mobileOpen{transform:translateX(0)}.stage{grid-column:1}
+}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-<div class="brand">◈ GPT-DOUG // QUANTUM SECURITY FUSION<small>CLEAR VISUAL DATA LAYERS • QUANTUM-INSPIRED RENDERING • DEFENSIVE / SYNTHETIC</small></div>
-<div class="pipeline"><span class="pipe">INGEST</span><span class="arrow">→</span><span class="pipe">NORMALIZE</span><span class="arrow">→</span><span class="pipe">FUSE</span><span class="arrow">→</span><span class="pipe">PHASE SPACE</span><span class="arrow">→</span><span class="pipe">UNCERTAINTY</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
-<div class="status"><span class="ok">● RENDER STACK ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">QUANTUM-INSPIRED • CLASSICAL GPU</span></div>
+  <div class="brand">◈ GPT-DOUG // INTERACTIVE SECURITY DATA FUSION<small>18 VISUAL LAYERS • DATA SPIDER • REPLAY • PROVENANCE • TEVV • QUANTUM-INSPIRED CLARITY</small></div>
+  <div class="pipeline"><span class="pipe">INGEST</span><span class="arrow">→</span><span class="pipe">NORMALIZE</span><span class="arrow">→</span><span class="pipe">GRAPH</span><span class="arrow">→</span><span class="pipe">FUSE</span><span class="arrow">→</span><span class="pipe">SIMULATE</span><span class="arrow">→</span><span class="pipe">TEVV</span><span class="arrow">→</span><span class="pipe">AUDIT</span></div>
+  <div class="status"><span class="ok">● INTERACTIVE STACK ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">DEFENSIVE / PUBLIC / SYNTHETIC</span></div>
+  <div class="mobileTools"><button id="openLayers">☰ LAYERS</button><button id="openInspector">⚙ INSPECT</button></div>
 </header>
+
 <main>
 <aside class="panel left">
-<h2>VISUAL DATA LAYERS</h2>
-<div id="layers"></div>
-<h2>RENDER CONTROLS</h2>
-<button id="pulse">✦ PHASE PULSE</button>
-<button id="focus">◎ FOCUS SELECTED LAYER</button>
-<button id="clarity">◇ HIGH CLARITY</button>
-<button id="reset">↺ RESET FIELD</button>
-<a class="btn" href="/operations-v2.html">🦅 OPTICAL COMMAND</a>
-<a class="btn" href="/dots-neural-lab.html">◈ GPT-DOTS</a>
-<a class="btn" href="/airborne-mesh-sim.html">🕷 DATA SPIDER / MESH</a>
+  <h2>VISUAL DATA LAYERS // 18</h2>
+  <div id="layers"></div>
+
+  <h2>SELECTED LAYER</h2>
+  <div class="card">
+    <div class="row"><span>Layer</span><b id="layerName">EARTH / TERRAIN</b></div>
+    <div class="row"><span>Mode</span><b id="layerMode">PUBLIC / SCHEMATIC</b></div>
+    <div class="row"><span>Objects</span><b id="layerObjects">0</b></div>
+    <div class="opacityLine"><span>Opacity</span><input id="layerOpacity" type="range" min="10" max="100" value="100"><b id="layerOpacityValue">100%</b></div>
+    <div class="opacityLine"><span>Density</span><input id="layerDensity" type="range" min="1" max="5" value="3"><b id="layerDensityValue">3</b></div>
+  </div>
+
+  <h2>GLOBAL CONTROLS</h2>
+  <div class="toolbar">
+    <button id="allOn">ALL ON</button><button id="allOff">ALL OFF</button>
+    <button id="isolate">ISOLATE</button><button id="fit">FIT VIEW</button>
+    <button id="clarity">HIGH CLARITY</button><button id="pulse">PHASE PULSE</button>
+    <button id="incident">+ INCIDENT</button><button id="failover">FAILOVER SIM</button>
+    <button id="selfTest">SELF TEST</button><button id="reset">RESET ALL</button>
+  </div>
+
+  <h2>LINKED SYSTEMS</h2>
+  <a class="btn" href="/operations-v2.html">🦅 OPTICAL COMMAND</a>
+  <a class="btn" href="/airborne-mesh-sim.html">🕷 AIRBORNE MESH / DATA SPIDER</a>
+  <a class="btn" href="/dots-neural-lab.html">◈ GPT-DOTS NEURAL LAB</a>
+  <a class="btn" href="/organoid-intelligence-lab.html">🧠 BIOCHIP ANATOMY</a>
 </aside>
+
 <section class="stage">
-<canvas id="field"></canvas>
-<div class="hud">
-<div class="badge"><b style="color:var(--cyan)">MULTI-LAYER QUANTUM-INSPIRED FUSION</b><br><span id="focusName">ALL LAYERS</span><br><span class="ok">SYNTHETIC + DEFENSIVE VISUAL MODEL</span></div>
-<div class="legend">
-<i style="background:#58ddff"></i>SENSORS / COMMS &nbsp;
-<i style="background:#64ffab"></i>HEALTHY / AVAILABLE &nbsp;
-<i style="background:#ffd365"></i>HAZARD / DEGRADED<br>
-<i style="background:#ff6978"></i>INCIDENT / UNAVAILABLE &nbsp;
-<i style="background:#a779ff"></i>AI CORRELATION / UNCERTAINTY
-</div>
-</div>
+  <canvas id="field"></canvas>
+  <div class="hud">
+    <div class="badge"><b style="color:var(--cyan)">MULTI-LAYER FUSION FIELD</b><br><span id="focusName">ALL ACTIVE LAYERS</span><br><span class="ok" id="fieldState">CLICK OBJECTS • DRAG TO PAN • WHEEL TO ZOOM</span></div>
+    <div class="legend">
+      <i style="background:#58ddff"></i>SENSORS / COMMS &nbsp;
+      <i style="background:#64ffab"></i>HEALTH / INFRA &nbsp;
+      <i style="background:#ffd365"></i>HAZARD / DEGRADED<br>
+      <i style="background:#ff6978"></i>INCIDENT &nbsp;
+      <i style="background:#a779ff"></i>AI / GRAPH &nbsp;
+      <i style="background:#fff"></i>PROVENANCE / VERIFIED
+    </div>
+    <div class="coords"><span id="zoomLabel">ZOOM 1.00×</span><br><span id="panLabel">PAN 0, 0</span><br><span id="timeLabel">T+100</span></div>
+  </div>
 </section>
+
 <aside class="panel right">
-<h2>FUSION METRICS</h2>
-<div class="card"><div class="row"><span>Coherence</span><b id="coh" class="ok">92%</b></div><div class="row"><span>Uncertainty</span><b id="unc">12%</b></div><div class="row"><span>Active layers</span><b id="activeCount">0</b></div><div class="row"><span>Nodes</span><b id="nodeCount">0</b></div><div class="row"><span>Edges</span><b id="edgeCount">0</b></div></div>
-<h2>VISUAL DATA SPIDER</h2>
-<div class="spider"><canvas id="spider"></canvas></div>
-<div class="card" style="margin-top:7px"><div class="row"><span>Selected</span><b id="selectedNode">FUSION CORE</b></div><div class="row"><span>Source</span><b id="sourceNode">SYNTHETIC</b></div><div class="row"><span>Confidence</span><b id="confidence">94%</b></div><div class="row"><span>Freshness</span><b id="freshness">LIVE SIM</b></div></div>
-<h2>EVENT STREAM</h2>
-<div class="card" id="events"><div class="event">Quantum-inspired fusion renderer initialized.</div></div>
+  <div class="tabs">
+    <button class="active" data-tab="inspect">INSPECT</button>
+    <button data-tab="spiderPane">SPIDER</button>
+    <button data-tab="replay">REPLAY</button>
+    <button data-tab="tev">TEVV</button>
+  </div>
+
+  <div id="inspect" class="tabPane active">
+    <h2>FUSION METRICS</h2>
+    <div class="card">
+      <div class="row"><span>Coherence</span><b id="coh" class="ok">92%</b></div>
+      <div class="row"><span>Uncertainty</span><b id="unc">12%</b></div>
+      <div class="row"><span>Active layers</span><b id="activeCount">18</b></div>
+      <div class="row"><span>Visible objects</span><b id="nodeCount">0</b></div>
+      <div class="row"><span>Relationships</span><b id="edgeCount">0</b></div>
+    </div>
+
+    <h2>SELECTED OBJECT</h2>
+    <div class="card">
+      <div class="row"><span>ID</span><b id="selectedNode">FUSION-CORE</b></div>
+      <div class="row"><span>Layer</span><b id="selectedLayer">AI FUSION</b></div>
+      <div class="row"><span>Status</span><b id="selectedStatus" class="ok">HEALTHY</b></div>
+      <div class="row"><span>Confidence</span><b id="confidence">94%</b></div>
+      <div class="row"><span>Freshness</span><b id="freshness">LIVE SIM</b></div>
+      <div class="row"><span>Source</span><b id="sourceNode">SYNTHETIC</b></div>
+      <div class="row"><span>Dependencies</span><b id="dependencyCount">0</b></div>
+      <div id="sourceTags" style="margin-top:5px"></div>
+    </div>
+
+    <h2>OBJECT ACTIONS</h2>
+    <div class="toolbar">
+      <button id="centerSelected">CENTER</button>
+      <button id="traceSelected">TRACE GRAPH</button>
+      <button id="degradeSelected">SIM DEGRADE</button>
+      <button id="restoreSelected">SIM RESTORE</button>
+    </div>
+
+    <h2>EVENT STREAM</h2>
+    <div class="card" id="events"><div class="event">Interactive 18-layer fusion field initialized.</div></div>
+  </div>
+
+  <div id="spiderPane" class="tabPane">
+    <h2>VISUAL DATA SPIDER</h2>
+    <div class="spider"><canvas id="spider"></canvas></div>
+    <div class="card" style="margin-top:7px">
+      <div class="row"><span>Graph hubs</span><b id="spiderHubs">18</b></div>
+      <div class="row"><span>Visible edges</span><b id="spiderEdges">0</b></div>
+      <div class="row"><span>Selected trace</span><b id="spiderTrace">NONE</b></div>
+    </div>
+    <div class="card" style="font-size:7px;color:var(--muted);line-height:1.55">Click a layer hub in the spider to select that layer. The center hub represents the fused control plane. Tracing an object highlights its dependency path.</div>
+  </div>
+
+  <div id="replay" class="tabPane">
+    <h2>REPLAY / FORENSICS</h2>
+    <div class="card">
+      <div class="row"><span>Timeline</span><b id="replayValue">T+100</b></div>
+      <input id="replaySlider" class="range" type="range" min="0" max="100" value="100">
+      <div class="timeline"><i id="timelineBar"></i></div>
+      <div class="row"><span>Mode</span><b id="replayMode">LIVE SIM</b></div>
+    </div>
+    <div class="toolbar">
+      <button id="rewind">◀ -10</button><button id="forward">+10 ▶</button>
+      <button id="playReplay">▶ PLAY</button><button id="liveReplay">● LIVE</button>
+    </div>
+    <h2>FORENSIC STATE</h2>
+    <div class="card">
+      <div class="row"><span>Objects visible</span><b id="historyNodes">0</b></div>
+      <div class="row"><span>Incident markers</span><b id="historyIncidents">0</b></div>
+      <div class="row"><span>Replay confidence</span><b id="historyConfidence">—</b></div>
+    </div>
+  </div>
+
+  <div id="tev" class="tabPane">
+    <h2>TEVV / GOVERNANCE</h2>
+    <div class="card" id="tevChecks">
+      <div class="check"><span>Layer provenance</span><b id="tevProv" class="pass">PASS</b></div>
+      <div class="check"><span>Confidence labels</span><b id="tevConf" class="pass">PASS</b></div>
+      <div class="check"><span>Freshness metadata</span><b id="tevFresh" class="pass">PASS</b></div>
+      <div class="check"><span>Human gate</span><b id="tevHuman" class="warn">REQUIRED</b></div>
+      <div class="check"><span>Weapon control</span><b class="pass">BLOCKED</b></div>
+      <div class="check"><span>Target selection</span><b class="pass">BLOCKED</b></div>
+    </div>
+    <div class="toolbar">
+      <button id="runTev">RUN TEVV</button><button id="approveGate">HUMAN APPROVE</button>
+      <button id="revokeGate">REVOKE</button><button id="exportAudit">EXPORT AUDIT</button>
+    </div>
+
+    <h2>UI SELF TEST</h2>
+    <div class="card">
+      <div class="check"><span>18 layer controls</span><b id="testLayers">—</b></div>
+      <div class="check"><span>Field canvas</span><b id="testField">—</b></div>
+      <div class="check"><span>Spider canvas</span><b id="testSpider">—</b></div>
+      <div class="check"><span>Tabs</span><b id="testTabs">—</b></div>
+      <div class="check"><span>Replay</span><b id="testReplay">—</b></div>
+      <div class="check"><span>Total</span><b id="testTotal">—</b></div>
+    </div>
+  </div>
 </aside>
 </main>
-<footer><span>GPT-DOUG // CLEAR VISUAL SECURITY DATA FUSION</span><span>NO CLAIM OF QUANTUM HARDWARE • CLASSICAL RENDERER USING QUANTUM-INSPIRED VISUAL METAPHORS</span><span>HUMAN-FIRST • TEVV • PROVENANCE</span></footer>
+
+<footer><span>GPT-DOUG // INTERACTIVE DEFENSIVE SECURITY DATA FUSION</span><span>PUBLIC / AUTHORIZED / SYNTHETIC LAYERS • NO WEAPON CONTROL OR TARGETING</span><span>QUANTUM-INSPIRED CLASSICAL RENDERING • HUMAN-FIRST</span></footer>
 </div>
+
 <script>
-const $=id=>document.getElementById(id),field=$('field'),ctx=field.getContext('2d'),spider=$('spider'),sx=spider.getContext('2d');
+const $=id=>document.getElementById(id);
+const field=$('field'),ctx=field.getContext('2d');
+const spider=$('spider'),sx=spider.getContext('2d');
+
 const layerDefs=[
- ['terrain','EARTH / TERRAIN','#5cddff'],['infra','CRITICAL INFRASTRUCTURE','#64ffab'],['perimeters','SECURITY PERIMETERS','#ffd365'],
- ['sensors','SENSOR MESH','#5cddff'],['comms','COMMUNICATIONS MESH','#5cddff'],['air','AIRSPACE AWARENESS','#8db8ff'],
- ['maritime','MARITIME AWARENESS','#62d9ff'],['space','SPACE / ORBIT','#c18cff'],['weather','WEATHER / ENVIRONMENT','#ffd365'],
- ['cyber','CYBER DEFENSE','#ff68cb'],['robots','ROBOTIC DIGITAL TWINS','#64ffab'],['incidents','INCIDENTS','#ff6978'],
- ['resilience','RESILIENCE / FAILOVER','#64ffab'],['ai','AI FUSION / UNCERTAINTY','#a779ff'],['spider','DATA SPIDER','#a779ff'],
- ['provenance','PROVENANCE','#ffffff'],['governance','TEVV / GOVERNANCE','#ffd365'],['replay','REPLAY / FORENSICS','#8c9aa5']
+ {id:'terrain',name:'EARTH / TERRAIN',color:'#58ddff',mode:'PUBLIC / SCHEMATIC',source:'PUBLIC GEO',shape:'contour'},
+ {id:'infra',name:'CRITICAL INFRASTRUCTURE',color:'#64ffab',mode:'PUBLIC / SYNTHETIC',source:'PUBLIC + SIM',shape:'square'},
+ {id:'perimeters',name:'SECURITY PERIMETERS',color:'#ffd365',mode:'AUTHORIZED / SYNTHETIC',source:'USER / SIM',shape:'ring'},
+ {id:'sensors',name:'SENSOR MESH',color:'#58ddff',mode:'AUTHORIZED / SYNTHETIC',source:'DEVICE / SIM',shape:'circle'},
+ {id:'comms',name:'COMMUNICATIONS MESH',color:'#58ddff',mode:'AUTHORIZED / SYNTHETIC',source:'NETWORK / SIM',shape:'circle'},
+ {id:'air',name:'AIRSPACE AWARENESS',color:'#8db8ff',mode:'PUBLIC / SYNTHETIC',source:'PUBLIC / SIM',shape:'triangle'},
+ {id:'maritime',name:'MARITIME AWARENESS',color:'#62d9ff',mode:'PUBLIC / SYNTHETIC',source:'PUBLIC / SIM',shape:'diamond'},
+ {id:'space',name:'SPACE / ORBIT',color:'#c18cff',mode:'PUBLIC / SYNTHETIC',source:'PUBLIC / SIM',shape:'star'},
+ {id:'weather',name:'WEATHER / ENVIRONMENT',color:'#ffd365',mode:'PUBLIC / SYNTHETIC',source:'PUBLIC / SIM',shape:'cloud'},
+ {id:'cyber',name:'CYBER DEFENSE',color:'#ff68cb',mode:'DEFENSIVE / SYNTHETIC',source:'SECURITY / SIM',shape:'hex'},
+ {id:'robots',name:'ROBOTIC DIGITAL TWINS',color:'#64ffab',mode:'AUTHORIZED / SYNTHETIC',source:'ROBOT / SIM',shape:'triangle'},
+ {id:'incidents',name:'INCIDENTS',color:'#ff6978',mode:'PUBLIC / SYNTHETIC',source:'ALERT / SIM',shape:'cross'},
+ {id:'resilience',name:'RESILIENCE / FAILOVER',color:'#64ffab',mode:'SIMULATION',source:'SIMULATION',shape:'diamond'},
+ {id:'ai',name:'AI FUSION / UNCERTAINTY',color:'#a779ff',mode:'DERIVED / SYNTHETIC',source:'AI / SIM',shape:'hex'},
+ {id:'spider',name:'DATA SPIDER',color:'#a779ff',mode:'GRAPH / SYNTHETIC',source:'GRAPH',shape:'circle'},
+ {id:'provenance',name:'PROVENANCE',color:'#ffffff',mode:'AUDIT METADATA',source:'AUDIT',shape:'square'},
+ {id:'governance',name:'TEVV / GOVERNANCE',color:'#ffd365',mode:'POLICY / AUDIT',source:'GOVERNANCE',shape:'ring'},
+ {id:'replay',name:'REPLAY / FORENSICS',color:'#8c9aa5',mode:'HISTORICAL / SYNTHETIC',source:'EVENT STORE',shape:'square'}
 ];
-let state={pulse:0,focus:null,clarity:false,nodes:[],edges:[]};
-const colors={};
-for(const [id,name,color] of layerDefs){colors[id]=color;const d=document.createElement('div');d.className='layer active';d.dataset.layer=id;d.innerHTML='<i class="dot" style="color:'+color+';background:'+color+'"></i><div><b>'+name+'</b><br><span>ACTIVE</span></div><b>●</b>';d.onclick=()=>{d.classList.toggle('active');build();log(name+' '+(d.classList.contains('active')?'enabled':'disabled'))};$('layers').appendChild(d)}
-function fit(c){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);c.width=r.width*d;c.height=r.height*d;c.getContext('2d').setTransform(d,0,0,d,0,0);return r}
-function hex(h,a){const x=h.replace('#','');const r=parseInt(x.slice(0,2),16),g=parseInt(x.slice(2,4),16),b=parseInt(x.slice(4,6),16);return 'rgba('+r+','+g+','+b+','+a+')'}
-function activeIds(){return [...document.querySelectorAll('.layer.active')].map(x=>x.dataset.layer)}
-function build(){
- const ids=activeIds(),r=field.getBoundingClientRect();state.nodes=[];state.edges=[];
- ids.forEach((id,i)=>{const count=2+(i%3);for(let j=0;j<count;j++)state.nodes.push({id:id+'-'+j,layer:id,x:r.width*(.12+Math.random()*.76),y:r.height*(.12+Math.random()*.76),p:Math.random()*Math.PI*2})});
- for(let i=0;i<state.nodes.length;i++){for(let j=i+1;j<Math.min(state.nodes.length,i+6);j++){if(Math.random()<.34)state.edges.push([i,j])}}
- $('activeCount').textContent=ids.length;$('nodeCount').textContent=state.nodes.length;$('edgeCount').textContent=state.edges.length
+
+const state={
+  active:new Set(layerDefs.map(x=>x.id)),
+  opacity:Object.fromEntries(layerDefs.map(x=>[x.id,1])),
+  density:Object.fromEntries(layerDefs.map(x=>[x.id,3])),
+  layer:'terrain',nodes:[],edges:[],selected:null,trace:false,
+  panX:0,panY:0,zoom:1,pulse:0,clarity:false,time:100,replayTimer:null,
+  humanApproved:false,incidents:[],eventSeq:0
+};
+
+const colors=Object.fromEntries(layerDefs.map(x=>[x.id,x.color]));
+const layerMap=Object.fromEntries(layerDefs.map(x=>[x.id,x]));
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function log(msg){const d=document.createElement('div');d.className='event';d.textContent=new Date().toLocaleTimeString()+'  '+msg;$('events').prepend(d);while($('events').children.length>18)$('events').lastChild.remove()}
+function fit(c){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);c.getContext('2d').setTransform(d,0,0,d,0,0);return r}
+function rgba(hex,a){const x=hex.replace('#',''),r=parseInt(x.slice(0,2),16),g=parseInt(x.slice(2,4),16),b=parseInt(x.slice(4,6),16);return 'rgba('+r+','+g+','+b+','+a+')'}
+function rand(a,b){return a+Math.random()*(b-a)}
+function activeDefs(){return layerDefs.filter(x=>state.active.has(x.id))}
+function worldToScreen(n,w,h){return{x:(n.x+state.panX)*state.zoom+w/2*(1-state.zoom),y:(n.y+state.panY)*state.zoom+h/2*(1-state.zoom)}}
+function screenToWorld(x,y,w,h){return{x:(x-w/2*(1-state.zoom))/state.zoom-state.panX,y:(y-h/2*(1-state.zoom))/state.zoom-state.panY}}
+
+function buildLayerList(){
+ const root=$('layers');root.innerHTML='';
+ layerDefs.forEach(def=>{
+   const d=document.createElement('div');d.className='layer'+(state.active.has(def.id)?'':' off')+(state.layer===def.id?' selected':'');d.dataset.layer=def.id;
+   d.innerHTML='<i class="dot" style="color:'+def.color+';background:'+def.color+'"></i><div><b>'+esc(def.name)+'</b><br><span>'+esc(def.mode)+'</span></div><div class="toggle">'+(state.active.has(def.id)?'ON':'OFF')+'</div>';
+   d.addEventListener('click',e=>{
+     if(e.shiftKey){toggleLayer(def.id);return}
+     state.layer=def.id;updateLayerInspector();buildLayerList();
+   });
+   d.addEventListener('dblclick',()=>toggleLayer(def.id));
+   root.appendChild(d);
+ });
 }
-function draw(){
- const r=fit(field),w=r.width,h=r.height;ctx.clearRect(0,0,w,h);state.pulse*=.96;
- ctx.lineWidth=.6;
- for(let x=0;x<w;x+=55){ctx.strokeStyle='rgba(80,190,220,.035)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
- for(let y=0;y<h;y+=55){ctx.strokeStyle='rgba(80,190,220,.035)';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- for(const [a,b] of state.edges){const A=state.nodes[a],B=state.nodes[b];if(!A||!B)continue;if(state.focus&&A.layer!==state.focus&&B.layer!==state.focus)continue;ctx.strokeStyle=hex(colors[A.layer]||'#5cddff',.08+(state.pulse*.08));ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}
+
+function toggleLayer(id,force){
+ const on=force===undefined?!state.active.has(id):!!force;
+ on?state.active.add(id):state.active.delete(id);
+ if(!on&&state.selected?.layer===id)state.selected=null;
+ rebuildScene();buildLayerList();updateLayerInspector();updateSelected();
+ log(layerMap[id].name+' '+(on?'enabled':'disabled'));
+}
+
+function updateLayerInspector(){
+ const def=layerMap[state.layer];$('layerName').textContent=def.name;$('layerMode').textContent=def.mode;
+ $('layerOpacity').value=Math.round(state.opacity[def.id]*100);$('layerOpacityValue').textContent=Math.round(state.opacity[def.id]*100)+'%';
+ $('layerDensity').value=state.density[def.id];$('layerDensityValue').textContent=state.density[def.id];
+ $('layerObjects').textContent=state.nodes.filter(n=>n.layer===def.id).length;
+}
+
+function makeNode(def,index,count,w,h){
+ const a=(index/count)*Math.PI*2+layerDefs.indexOf(def)*.31;
+ const ring=.16+(layerDefs.indexOf(def)%5)*.055;
+ const x=w*(.5+Math.cos(a)*ring)+rand(-26,26);
+ const y=h*(.5+Math.sin(a)*ring*.8)+rand(-20,20);
+ const status=Math.random()<.08?'DEGRADED':'HEALTHY';
+ return {
+   id:def.id.toUpperCase()+'-'+String(index+1).padStart(2,'0'),layer:def.id,x,y,
+   status,confidence:Math.round(rand(82,99)),freshness:Math.round(rand(1,90)),
+   source:def.source,phase:rand(0,Math.PI*2),born:Math.floor(rand(0,65)),
+   provenance:'SRC-'+def.id.toUpperCase()+'-'+Math.floor(rand(100,999)),
+   note:def.name+' synthetic/public defensive visualization object'
+ };
+}
+
+function rebuildScene(){
+ const r=field.getBoundingClientRect(),w=Math.max(400,r.width),h=Math.max(400,r.height);
+ state.nodes=[];state.edges=[];
+ for(const def of activeDefs()){
+   const count=2+state.density[def.id]*2;
+   for(let i=0;i<count;i++)state.nodes.push(makeNode(def,i,count,w,h));
+ }
+ state.incidents.forEach((n,i)=>{if(state.active.has('incidents'))state.nodes.push({...n,id:'INCIDENT-X'+(i+1)})});
+ for(let i=0;i<state.nodes.length;i++){
+   for(let j=i+1;j<Math.min(state.nodes.length,i+9);j++){
+     const A=state.nodes[i],B=state.nodes[j];
+     const related=A.layer===B.layer||Math.random()<.16;
+     if(related)state.edges.push({a:i,b:j,kind:A.layer===B.layer?'intra':'cross',confidence:Math.round(rand(75,99))});
+   }
+ }
+ if(state.selected){
+   state.selected=state.nodes.find(n=>n.id===state.selected.id)||null;
+ }
+ updateMetrics();updateLayerInspector();updateSelected();
+}
+
+function drawShape(c,n,x,y,size,color,alpha){
+ c.save();c.translate(x,y);c.strokeStyle=rgba(color,alpha);c.fillStyle=rgba(color,alpha);c.lineWidth=1.1;
+ const shape=layerMap[n.layer].shape;
+ if(shape==='square'){c.fillRect(-size,-size,size*2,size*2)}
+ else if(shape==='triangle'){c.beginPath();c.moveTo(0,-size*1.3);c.lineTo(size*1.2,size);c.lineTo(-size*1.2,size);c.closePath();c.fill()}
+ else if(shape==='diamond'){c.beginPath();c.moveTo(0,-size*1.3);c.lineTo(size*1.3,0);c.lineTo(0,size*1.3);c.lineTo(-size*1.3,0);c.closePath();c.fill()}
+ else if(shape==='hex'){c.beginPath();for(let i=0;i<6;i++){const a=i*Math.PI/3;c.lineTo(Math.cos(a)*size*1.25,Math.sin(a)*size*1.25)}c.closePath();c.fill()}
+ else if(shape==='ring'){c.beginPath();c.arc(0,0,size*1.35,0,Math.PI*2);c.stroke();c.beginPath();c.arc(0,0,size*.45,0,Math.PI*2);c.fill()}
+ else if(shape==='cross'){c.fillRect(-size*.25,-size,size*.5,size*2);c.fillRect(-size,-size*.25,size*2,size*.5)}
+ else if(shape==='star'){c.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,r=i%2?size*.5:size*1.3;c.lineTo(Math.cos(a)*r,Math.sin(a)*r)}c.closePath();c.fill()}
+ else if(shape==='cloud'){for(let i=0;i<3;i++){c.beginPath();c.arc((i-1)*size*.65,(i%2)*-size*.25,size*.65,0,Math.PI*2);c.fill()}}
+ else if(shape==='contour'){c.beginPath();c.arc(0,0,size*1.6,0,Math.PI*2);c.stroke();c.beginPath();c.arc(0,0,size*.8,0,Math.PI*2);c.stroke()}
+ else{c.beginPath();c.arc(0,0,size,0,Math.PI*2);c.fill()}
+ c.restore();
+}
+
+function drawField(){
+ const r=fit(field),w=r.width,h=r.height;ctx.clearRect(0,0,w,h);
+ ctx.save();
+ if(state.clarity){ctx.filter='contrast(1.14) saturate(1.08) brightness(1.05)'}
+ for(let x=0;x<w;x+=50){ctx.strokeStyle='rgba(88,221,255,.032)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+ for(let y=0;y<h;y+=50){ctx.strokeStyle='rgba(88,221,255,.032)';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+
+ const visible=state.nodes.filter(n=>n.born<=state.time&&state.active.has(n.layer));
+ const indexMap=new Map(state.nodes.map((n,i)=>[i,n]));
+ for(const e of state.edges){
+   const A=indexMap.get(e.a),B=indexMap.get(e.b);if(!A||!B||A.born>state.time||B.born>state.time)continue;
+   if(!state.active.has(A.layer)||!state.active.has(B.layer))continue;
+   if(state.trace&&state.selected&&A.id!==state.selected.id&&B.id!==state.selected.id)continue;
+   const a=worldToScreen(A,w,h),b=worldToScreen(B,w,h);
+   const op=.045+.10*Math.min(state.opacity[A.layer],state.opacity[B.layer])+state.pulse*.06;
+   ctx.strokeStyle=rgba(colors[A.layer],op);ctx.lineWidth=e.kind==='cross'?.65:1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+ }
  const t=performance.now();
- for(const n of state.nodes){if(state.focus&&n.layer!==state.focus)continue;const rr=3+2*Math.sin(n.p+t*.002)+state.pulse*3;ctx.fillStyle=hex(colors[n.layer]||'#fff',.9);ctx.beginPath();ctx.arc(n.x,n.y,rr,0,Math.PI*2);ctx.fill();ctx.strokeStyle=hex(colors[n.layer]||'#fff',.16);ctx.beginPath();ctx.arc(n.x,n.y,rr*3,0,Math.PI*2);ctx.stroke()}
- drawSpider();requestAnimationFrame(draw)
+ for(const n of visible){
+   const p=worldToScreen(n,w,h),op=state.opacity[n.layer],sel=state.selected?.id===n.id;
+   const size=(sel?6:3.7)+(Math.sin(n.phase+t*.002)+1)*.7+state.pulse*2;
+   if(n.status==='DEGRADED'){ctx.strokeStyle='rgba(255,105,120,.34)';ctx.beginPath();ctx.arc(p.x,p.y,size*3.2,0,Math.PI*2);ctx.stroke()}
+   drawShape(ctx,n,p.x,p.y,size,n.status==='DEGRADED'?'#ff6978':colors[n.layer],Math.max(.18,op));
+   if(sel){ctx.strokeStyle='#fff';ctx.setLineDash([3,3]);ctx.beginPath();ctx.arc(p.x,p.y,size*3.2,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#eafcff';ctx.font='8px ui-monospace';ctx.fillText(n.id,p.x+10,p.y-10)}
+ }
+ ctx.restore();state.pulse*=.965;
+ $('zoomLabel').textContent='ZOOM '+state.zoom.toFixed(2)+'×';$('panLabel').textContent='PAN '+Math.round(state.panX)+', '+Math.round(state.panY);$('timeLabel').textContent='T+'+state.time;
+ requestAnimationFrame(drawField);
 }
-function drawSpider(){const r=fit(spider),w=r.width,h=r.height;sx.clearRect(0,0,w,h);const ids=activeIds(),cx=w/2,cy=h/2,rad=Math.min(w,h)*.35;const pts=[{id:'core',x:cx,y:cy,color:'#ffffff'}];ids.forEach((id,i)=>{const a=i/Math.max(1,ids.length)*Math.PI*2;pts.push({id,x:cx+Math.cos(a)*rad,y:cy+Math.sin(a)*rad,color:colors[id]})});for(let i=1;i<pts.length;i++){sx.strokeStyle=hex(pts[i].color,.35);sx.beginPath();sx.moveTo(cx,cy);sx.lineTo(pts[i].x,pts[i].y);sx.stroke()}for(const p of pts){sx.fillStyle=p.color;sx.beginPath();sx.arc(p.x,p.y,p.id==='core'?7:4,0,Math.PI*2);sx.fill();if(p.id!=='core'){sx.fillStyle='#91a7b0';sx.font='7px ui-monospace';sx.fillText(p.id,p.x+6,p.y-4)}}}
-function log(m){const d=document.createElement('div');d.className='event';d.textContent=new Date().toLocaleTimeString()+'  '+m;$('events').prepend(d);while($('events').children.length>12)$('events').lastChild.remove()}
-$('pulse').onclick=()=>{state.pulse=1;log('Phase pulse applied')};$('focus').onclick=()=>{const ids=activeIds();state.focus=ids[(ids.indexOf(state.focus)+1)%ids.length]||null;$('focusName').textContent=state.focus?layerDefs.find(x=>x[0]===state.focus)[1]:'ALL LAYERS';log('Focus '+$('focusName').textContent)};$('clarity').onclick=()=>{state.clarity=!state.clarity;field.style.filter=state.clarity?'contrast(1.18) saturate(1.1) brightness(1.08)':'none';log('High clarity '+(state.clarity?'enabled':'disabled'))};$('reset').onclick=()=>{state.focus=null;$('focusName').textContent='ALL LAYERS';build();log('Fusion field reset')};
-setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('coh').textContent=Math.round(89+Math.random()*8)+'%';$('unc').textContent=Math.round(8+Math.random()*9)+'%';$('confidence').textContent=Math.round(90+Math.random()*8)+'%'},1000);
-addEventListener('resize',build);build();draw();
+
+function updateMetrics(){
+ const visible=state.nodes.filter(n=>n.born<=state.time&&state.active.has(n.layer));
+ const visibleIds=new Set(visible.map(n=>n.id));
+ const edges=state.edges.filter(e=>visibleIds.has(state.nodes[e.a]?.id)&&visibleIds.has(state.nodes[e.b]?.id));
+ $('activeCount').textContent=state.active.size;$('nodeCount').textContent=visible.length;$('edgeCount').textContent=edges.length;
+ $('spiderHubs').textContent=state.active.size;$('spiderEdges').textContent=edges.length;$('historyNodes').textContent=visible.length;
+ $('historyIncidents').textContent=visible.filter(n=>n.layer==='incidents').length;$('historyConfidence').textContent=Math.round(84+state.time*.12)+'%';
+}
+
+function updateSelected(){
+ const n=state.selected;
+ if(!n){$('selectedNode').textContent='FUSION-CORE';$('selectedLayer').textContent='AI FUSION';$('selectedStatus').textContent='HEALTHY';$('selectedStatus').className='ok';$('confidence').textContent='94%';$('freshness').textContent='LIVE SIM';$('sourceNode').textContent='SYNTHETIC';$('dependencyCount').textContent='0';$('sourceTags').innerHTML='<span class="sourceTag">FUSED</span><span class="sourceTag">AUDITED</span>';return}
+ $('selectedNode').textContent=n.id;$('selectedLayer').textContent=layerMap[n.layer].name;$('selectedStatus').textContent=n.status;$('selectedStatus').className=n.status==='HEALTHY'?'ok':'bad';$('confidence').textContent=n.confidence+'%';$('freshness').textContent=n.freshness+'s';$('sourceNode').textContent=n.source;
+ const idx=state.nodes.indexOf(n),deps=state.edges.filter(e=>e.a===idx||e.b===idx).length;$('dependencyCount').textContent=deps;
+ $('sourceTags').innerHTML='<span class="sourceTag">'+esc(n.provenance)+'</span><span class="sourceTag">'+esc(layerMap[n.layer].mode)+'</span>';
+ $('spiderTrace').textContent=state.trace?n.id:'NONE';
+}
+
+function selectNearest(clientX,clientY){
+ const r=field.getBoundingClientRect(),x=clientX-r.left,y=clientY-r.top,w=r.width,h=r.height;
+ let best=null,dist=18;
+ for(const n of state.nodes){if(n.born>state.time||!state.active.has(n.layer))continue;const p=worldToScreen(n,w,h),d=Math.hypot(x-p.x,y-p.y);if(d<dist){dist=d;best=n}}
+ if(best){state.selected=best;state.layer=best.layer;updateSelected();updateLayerInspector();buildLayerList();log('Selected '+best.id)}
+}
+
+let dragging=false,lastX=0,lastY=0,dragMoved=false;
+field.addEventListener('pointerdown',e=>{dragging=true;dragMoved=false;lastX=e.clientX;lastY=e.clientY;field.setPointerCapture?.(e.pointerId)});
+field.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;if(Math.abs(dx)+Math.abs(dy)>2)dragMoved=true;state.panX+=dx/state.zoom;state.panY+=dy/state.zoom;lastX=e.clientX;lastY=e.clientY});
+field.addEventListener('pointerup',e=>{if(!dragMoved)selectNearest(e.clientX,e.clientY);dragging=false});
+field.addEventListener('pointercancel',()=>dragging=false);
+field.addEventListener('wheel',e=>{e.preventDefault();const old=state.zoom;state.zoom=Math.max(.45,Math.min(3.5,state.zoom*(e.deltaY<0?1.12:.89)));const r=field.getBoundingClientRect(),sx=e.clientX-r.left,sy=e.clientY-r.top;const before=screenToWorld(sx,sy,r.width,r.height);state.panX+=(before.x-(sx-r.width/2*(1-state.zoom))/state.zoom)*.8;state.panY+=(before.y-(sy-r.height/2*(1-state.zoom))/state.zoom)*.8},{passive:false});
+
+function drawSpider(){
+ const r=fit(spider),w=r.width,h=r.height;sx.clearRect(0,0,w,h);const defs=activeDefs(),cx=w/2,cy=h/2,rad=Math.min(w,h)*.36;
+ const hubs=[{id:'core',x:cx,y:cy,color:'#fff'}];
+ defs.forEach((d,i)=>{const a=i/Math.max(1,defs.length)*Math.PI*2-Math.PI/2;hubs.push({id:d.id,x:cx+Math.cos(a)*rad,y:cy+Math.sin(a)*rad,color:d.color})});
+ for(let i=1;i<hubs.length;i++){sx.strokeStyle=rgba(hubs[i].color,.28);sx.beginPath();sx.moveTo(cx,cy);sx.lineTo(hubs[i].x,hubs[i].y);sx.stroke()}
+ if(state.trace&&state.selected){const h=hubs.find(x=>x.id===state.selected.layer);if(h){sx.strokeStyle='#fff';sx.lineWidth=2;sx.beginPath();sx.moveTo(cx,cy);sx.lineTo(h.x,h.y);sx.stroke();sx.lineWidth=1}}
+ for(const h0 of hubs){sx.fillStyle=h0.color;sx.beginPath();sx.arc(h0.x,h0.y,h0.id==='core'?7:5,0,Math.PI*2);sx.fill();if(h0.id!=='core'){sx.fillStyle='#8ca6b2';sx.font='7px ui-monospace';sx.fillText(h0.id,h0.x+7,h0.y-5)}}
+ requestAnimationFrame(drawSpider);
+}
+
+spider.addEventListener('click',e=>{const r=spider.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,defs=activeDefs(),cx=r.width/2,cy=r.height/2,rad=Math.min(r.width,r.height)*.36;let best=null,bd=14;defs.forEach((d,i)=>{const a=i/Math.max(1,defs.length)*Math.PI*2-Math.PI/2,hx=cx+Math.cos(a)*rad,hy=cy+Math.sin(a)*rad,dist=Math.hypot(x-hx,y-hy);if(dist<bd){bd=dist;best=d}});if(best){state.layer=best.id;updateLayerInspector();buildLayerList();log('Spider selected '+best.name)}});
+
+$('layerOpacity').addEventListener('input',e=>{state.opacity[state.layer]=Number(e.target.value)/100;$('layerOpacityValue').textContent=e.target.value+'%'});
+$('layerDensity').addEventListener('input',e=>{state.density[state.layer]=Number(e.target.value);$('layerDensityValue').textContent=e.target.value;rebuildScene()});
+
+$('allOn').onclick=()=>{layerDefs.forEach(d=>state.active.add(d.id));rebuildScene();buildLayerList();log('All 18 layers enabled')};
+$('allOff').onclick=()=>{state.active.clear();state.selected=null;rebuildScene();buildLayerList();log('All visual layers disabled')};
+$('isolate').onclick=()=>{state.active=new Set([state.layer]);rebuildScene();buildLayerList();$('focusName').textContent=layerMap[state.layer].name;log('Isolated '+layerMap[state.layer].name)};
+$('fit').onclick=()=>{state.panX=0;state.panY=0;state.zoom=1;$('focusName').textContent='ALL ACTIVE LAYERS';log('Viewport fitted')};
+$('clarity').onclick=()=>{state.clarity=!state.clarity;log('High clarity '+(state.clarity?'enabled':'disabled'))};
+$('pulse').onclick=()=>{state.pulse=1;if(window.GPT_QUANTUM_VIS)GPT_QUANTUM_VIS.setIntensity(.85);log('Quantum-inspired phase pulse')};
+$('incident').onclick=()=>{const r=field.getBoundingClientRect();const n={layer:'incidents',x:r.width*.5+rand(-150,150),y:r.height*.5+rand(-100,100),status:'DEGRADED',confidence:Math.round(rand(82,96)),freshness:0,source:'SYNTHETIC INCIDENT',phase:0,born:state.time,provenance:'OPERATOR-SIM-'+(++state.eventSeq),note:'Operator-injected synthetic incident'};state.incidents.push(n);state.active.add('incidents');rebuildScene();buildLayerList();log('Synthetic incident injected')};
+$('failover').onclick=()=>{const candidates=state.nodes.filter(n=>['infra','comms','sensors','resilience'].includes(n.layer)&&n.born<=state.time);if(candidates.length){const n=candidates[Math.floor(Math.random()*candidates.length)];n.status='DEGRADED';state.selected=n;state.trace=true;updateSelected();log('Failover simulation: '+n.id+' degraded; alternate relationships highlighted')}}; 
+$('reset').onclick=()=>{state.active=new Set(layerDefs.map(x=>x.id));state.opacity=Object.fromEntries(layerDefs.map(x=>[x.id,1]));state.density=Object.fromEntries(layerDefs.map(x=>[x.id,3]));state.layer='terrain';state.selected=null;state.trace=false;state.panX=0;state.panY=0;state.zoom=1;state.time=100;state.incidents=[];state.humanApproved=false;clearInterval(state.replayTimer);rebuildScene();buildLayerList();updateReplay();updateTev();log('Full interactive fusion stack reset')};
+
+$('centerSelected').onclick=()=>{if(!state.selected)return;const r=field.getBoundingClientRect();state.panX=(r.width/2-state.selected.x);state.panY=(r.height/2-state.selected.y);state.zoom=Math.max(state.zoom,1.45);log('Centered '+state.selected.id)};
+$('traceSelected').onclick=()=>{state.trace=!state.trace;updateSelected();log('Dependency trace '+(state.trace?'enabled':'disabled'))};
+$('degradeSelected').onclick=()=>{if(!state.selected)return;state.selected.status='DEGRADED';updateSelected();log(state.selected.id+' degraded in simulation')};
+$('restoreSelected').onclick=()=>{if(!state.selected)return;state.selected.status='HEALTHY';updateSelected();log(state.selected.id+' restored in simulation')};
+
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.tabPane').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
+
+function updateReplay(){
+ $('replaySlider').value=state.time;$('replayValue').textContent='T+'+state.time;$('timeLabel').textContent='T+'+state.time;$('timelineBar').style.width=state.time+'%';$('replayMode').textContent=state.time===100?'LIVE SIM':'FORENSIC REPLAY';updateMetrics()
+}
+$('replaySlider').oninput=e=>{state.time=Number(e.target.value);updateReplay()};
+$('rewind').onclick=()=>{state.time=Math.max(0,state.time-10);updateReplay()};
+$('forward').onclick=()=>{state.time=Math.min(100,state.time+10);updateReplay()};
+$('liveReplay').onclick=()=>{clearInterval(state.replayTimer);state.time=100;updateReplay();log('Replay returned to live synthetic state')};
+$('playReplay').onclick=()=>{clearInterval(state.replayTimer);if(state.time>=100)state.time=0;state.replayTimer=setInterval(()=>{state.time++;updateReplay();if(state.time>=100)clearInterval(state.replayTimer)},120);log('Forensic replay started')};
+
+function updateTev(){
+ $('tevHuman').textContent=state.humanApproved?'APPROVED':'REQUIRED';$('tevHuman').className=state.humanApproved?'pass':'warn';
+}
+$('runTev').onclick=()=>{const allProv=state.nodes.every(n=>n.provenance),allConf=state.nodes.every(n=>Number.isFinite(n.confidence)),allFresh=state.nodes.every(n=>Number.isFinite(n.freshness));[['tevProv',allProv],['tevConf',allConf],['tevFresh',allFresh]].forEach(([id,ok])=>{const e=$(id);e.textContent=ok?'PASS':'REVIEW';e.className=ok?'pass':'fail'});log('TEVV metadata validation complete')};
+$('approveGate').onclick=()=>{state.humanApproved=true;updateTev();log('Human governance gate approved for simulation')};
+$('revokeGate').onclick=()=>{state.humanApproved=false;updateTev();log('Human governance approval revoked')};
+$('exportAudit').onclick=()=>{const data={schema:'gpt-doug.interactive-security-fusion.v1',created:new Date().toISOString(),active_layers:[...state.active],selected:state.selected?.id||null,time:state.time,human_approved:state.humanApproved,objects:state.nodes.map(n=>({id:n.id,layer:n.layer,status:n.status,confidence:n.confidence,source:n.source,provenance:n.provenance})),blocked:['weapon_control','target_selection','strike_planning','payload_release']};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-security-fusion-audit.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);log('Audit snapshot exported')};
+
+function runSelfTest(){
+ const checks=[
+   ['testLayers',document.querySelectorAll('.layer').length===18,'18/18'],
+   ['testField',!!field.getContext('2d'),'PASS'],
+   ['testSpider',!!spider.getContext('2d'),'PASS'],
+   ['testTabs',document.querySelectorAll('[data-tab]').length===4,'4/4'],
+   ['testReplay',!!$('replaySlider')&&typeof updateReplay==='function','PASS']
+ ];
+ let pass=0;checks.forEach(([id,ok,label])=>{const e=$(id);e.textContent=ok?label:'FAIL';e.className=ok?'pass':'fail';if(ok)pass++});$('testTotal').textContent=pass+'/'+checks.length+' PASS';$('testTotal').className=pass===checks.length?'pass':'fail';log('UI self-test '+pass+'/'+checks.length+' passed');return pass===checks.length
+}
+$('selfTest').onclick=()=>{document.querySelector('[data-tab="tev"]').click();runSelfTest()};
+
+$('openLayers').onclick=()=>{document.querySelector('.panel.left').classList.toggle('mobileOpen');document.querySelector('.panel.right').classList.remove('mobileOpen')};
+$('openInspector').onclick=()=>{document.querySelector('.panel.right').classList.toggle('mobileOpen');document.querySelector('.panel.left').classList.remove('mobileOpen')};
+
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('coh').textContent=Math.round(88+Math.random()*9)+'%';$('unc').textContent=Math.round(7+Math.random()*11)+'%'},1000);
+addEventListener('resize',()=>rebuildScene());
+
+window.GPT_FUSION={
+ state,layerDefs,toggleLayer,rebuildScene,runSelfTest,
+ selectLayer(id){if(layerMap[id]){state.layer=id;updateLayerInspector();buildLayerList()}},
+ allOn(){layerDefs.forEach(d=>state.active.add(d.id));rebuildScene();buildLayerList()},
+ isolate(id){if(layerMap[id]){state.layer=id;state.active=new Set([id]);rebuildScene();buildLayerList()}},
+ injectIncident(){document.getElementById('incident').click()},
+ failover(){document.getElementById('failover').click()},
+ status(){return{active_layers:[...state.active],nodes:state.nodes.length,edges:state.edges.length,selected:state.selected?.id||null,time:state.time,humanApproved:state.humanApproved}}
+};
+
+buildLayerList();rebuildScene();updateLayerInspector();updateReplay();updateTev();runSelfTest();drawField();drawSpider();
 </script>
 <script src="/quantum-renderer.js"></script>
-</body></html>
+</body>
+</html>
