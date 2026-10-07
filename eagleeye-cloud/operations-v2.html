@@ -100,4 +100,4 @@ $('globalBtn').onclick=()=>map.flyTo({center:[0,20],zoom:1.8,pitch:18});$('weath
 map.on('mousemove',e=>{$('cursorCoord').textContent='LAT '+e.lngLat.lat.toFixed(3)+'° / LON '+e.lngLat.lng.toFixed(3)+'°'});map.on('move',()=>{$('heading').textContent=String(Math.round((map.getBearing()+360)%360)).padStart(3,'0')+'°';$('zoomText').textContent=map.getZoom().toFixed(1);$('altVal').innerHTML='ALT<br>'+Math.round(12+map.getZoom()*8);$('spdVal').innerHTML='SPD<br>'+Math.round(Math.abs(map.getBearing())*.4)});
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat();countTracks()},3000);setInterval(refresh,60000);map.on('load',()=>{refresh();addSynthetic('MARKER');addSynthetic('MARKER')});
 </script>
-</body></html>
+<script src="/quantum-renderer.js"></script>\n</body></html>
