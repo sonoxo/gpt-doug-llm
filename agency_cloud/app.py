@@ -30,6 +30,12 @@ from agency_cloud.compliance import (
 )
 from agency_cloud.config import load_settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
+from agency_cloud.global_compliance import (
+    global_catalog,
+    global_posture,
+    horizon_2027,
+    jurisdiction_profile,
+)
 from agency_cloud.integrations import (
     IntelligenceIntegrationError,
     glassonion_query,
@@ -226,6 +232,11 @@ def _service_error(exc: Exception) -> HTTPException:
 @app.get("/")
 def dashboard():
     return FileResponse(static_dir / "index.html")
+
+
+@app.get("/global-compliance")
+def global_compliance_dashboard():
+    return FileResponse(static_dir / "global-compliance.html")
 
 
 @app.get("/healthz")
@@ -720,12 +731,36 @@ def api_compliance_catalog():
     return compliance_catalog()
 
 
+@app.get("/api/v1/compliance/global")
+def api_global_compliance_catalog():
+    return global_catalog()
+
+
+@app.get("/api/v1/compliance/horizon/2027")
+def api_compliance_horizon_2027():
+    return horizon_2027()
+
+
+@app.get("/api/v1/compliance/jurisdictions")
+def api_compliance_jurisdictions(regions: str = "GLOBAL,US,EU,UK"):
+    requested = [item.strip() for item in regions.split(",") if item.strip()]
+    return jurisdiction_profile(requested)
+
+
 @app.get("/api/v1/compliance/posture")
 def api_compliance_posture(
     principal: Annotated[Principal, Depends(get_principal)],
 ):
     _guard(principal, "director", "auditor")
     return compliance_posture(settings)
+
+
+@app.get("/api/v1/compliance/global/posture")
+def api_global_compliance_posture(
+    principal: Annotated[Principal, Depends(get_principal)],
+):
+    _guard(principal, "director", "auditor")
+    return global_posture(settings)
 
 
 @app.get("/api/v1/advisory/policy")
