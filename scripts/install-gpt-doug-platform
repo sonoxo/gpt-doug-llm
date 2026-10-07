@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+SRC="$ROOT/scripts/gpt-doug-platform"
+BIN_DIR="$HOME/.local/bin"
+BIN="$BIN_DIR/gpt-doug-platform"
+[ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
+mkdir -p "$BIN_DIR"
+chmod +x "$SRC"
+ln -sf "$SRC" "$BIN"
+case ":${PATH}:" in *":$BIN_DIR:"*) ;; *) printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc" ;; esac
+echo "Installed: $BIN"
+echo "Run: gpt-doug-platform"
