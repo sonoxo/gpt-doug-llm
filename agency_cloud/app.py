@@ -591,6 +591,7 @@ def api_glassonion_query(
 def platform_manifest():
     return {
         **PLATFORM_MANIFEST,
+        "operatingPolicy": advisory_policy(),
         "realtimeConnections": event_hub.connection_count,
         "service": settings.service_name,
         "environment": settings.environment,
