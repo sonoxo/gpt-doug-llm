@@ -271,7 +271,7 @@ const state={
   density:Object.fromEntries(layerDefs.map(x=>[x.id,3])),
   layer:'terrain',nodes:[],edges:[],selected:null,trace:false,
   panX:0,panY:0,zoom:1,pulse:0,clarity:false,time:100,replayTimer:null,
-  humanApproved:false,incidents:[],eventSeq:0,
+  humanApproved:false,incidents:[],eventSeq:0,remoteNodes:[],
   impact:new Map(),impactOrigin:null,impactDepth:0,latticeMode:'CASCADE'
 };
 
@@ -339,6 +339,7 @@ function rebuildScene(){
    for(let i=0;i<count;i++)state.nodes.push(makeNode(def,i,count,w,h));
  }
  state.incidents.forEach((n,i)=>{if(state.active.has('incidents'))state.nodes.push({...n,id:'INCIDENT-X'+(i+1)})});
+ state.remoteNodes.forEach(n=>{if(state.active.has(n.layer))state.nodes.push({...n})});
  for(let i=0;i<state.nodes.length;i++){
    for(let j=i+1;j<Math.min(state.nodes.length,i+9);j++){
      const A=state.nodes[i],B=state.nodes[j];
@@ -581,6 +582,57 @@ $('openInspector').onclick=()=>{document.querySelector('.panel.right').classList
 setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('coh').textContent=Math.round(88+Math.random()*9)+'%';$('unc').textContent=Math.round(7+Math.random()*11)+'%'},1000);
 addEventListener('resize',()=>rebuildScene());
 
+
+function layerForCoreEvent(evt){
+ const explicit=evt?.payload?.layer;
+ if(explicit&&layerMap[explicit])return explicit;
+ const kind=String(evt?.entity_kind||'').toLowerCase();
+ const type=String(evt?.event_type||'').toUpperCase();
+ if(kind==='sensor')return 'sensors';
+ if(kind==='robot')return 'robots';
+ if(kind==='asset')return 'infra';
+ if(kind==='alert'||type.includes('ALERT')||type.includes('INCIDENT'))return 'incidents';
+ if(type.includes('CYBER'))return 'cyber';
+ if(type.includes('SPACE')||type.includes('ORBIT'))return 'space';
+ if(type.includes('WEATHER')||type.includes('EARTHQUAKE')||type.includes('FIRE'))return 'weather';
+ return 'provenance';
+}
+function coreNode(evt){
+ const r=field.getBoundingClientRect(),id=String(evt.id||('CORE-'+Date.now()));
+ let h=2166136261;for(let i=0;i<id.length;i++){h^=id.charCodeAt(i);h=Math.imul(h,16777619)}
+ const ux=((h>>>0)%1000)/1000,uy=(((h>>>10)>>>0)%1000)/1000;
+ return {
+  id,layer:layerForCoreEvent(evt),
+  x:r.width*(.12+ux*.76),y:r.height*(.12+uy*.76),
+  status:String(evt?.payload?.status||'HEALTHY').toUpperCase()==='DEGRADED'?'DEGRADED':'HEALTHY',
+  confidence:Math.round(Number(evt.confidence??.9)*100),
+  freshness:0,source:String(evt.source_id||'GPT-DOUG CORE'),
+  phase:0,born:state.time,provenance:String(evt.provenance_locator||'core:event'),
+  note:String(evt.title||evt.event_type||'Core platform event')
+ };
+}
+function ingestCoreEvent(evt){
+ const n=coreNode(evt);
+ const i=state.remoteNodes.findIndex(x=>x.id===n.id);
+ if(i>=0)state.remoteNodes[i]=n;else state.remoteNodes.unshift(n);
+ state.remoteNodes=state.remoteNodes.slice(0,120);
+ rebuildScene();
+ log('CORE '+n.layer.toUpperCase()+' • '+n.note);
+}
+window.addEventListener('gpt-doug-core:snapshot',e=>{
+ const events=e.detail?.events||[];
+ state.remoteNodes=events.map(coreNode).slice(0,120);
+ rebuildScene();
+ log('CORE snapshot synchronized: '+state.remoteNodes.length+' public/simulation events');
+});
+window.addEventListener('gpt-doug-core:event',e=>ingestCoreEvent(e.detail||{}));
+window.addEventListener('gpt-doug-core:status',e=>{
+ const st=e.detail||{},online=!!st.connected;
+ $('fieldState').textContent=online?'CORE CONNECTED • CLICK OBJECTS • DRAG TO PAN • WHEEL TO ZOOM':'CORE DEGRADED • LOCAL VISUAL MODE';
+ $('fieldState').className=online?'ok':'bad';
+ if(st.lastError) log('CORE '+st.lastError);
+});
+
 window.GPT_FUSION={
  state,layerDefs,toggleLayer,rebuildScene,runSelfTest,
  selectLayer(id){if(layerMap[id]){state.layer=id;updateLayerInspector();buildLayerList()}},
@@ -595,6 +647,7 @@ window.GPT_FUSION={
 
 buildLayerList();rebuildScene();updateLayerInspector();updateReplay();updateTev();updateImpactUI();runSelfTest();drawField();drawSpider();drawLattice();
 </script>
+<script src="/core-client.js"></script>
 <script src="/quantum-renderer.js"></script>
 </body>
 </html>
