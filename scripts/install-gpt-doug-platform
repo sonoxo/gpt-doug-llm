@@ -8,6 +8,7 @@ COMPLIANCE_SRC="$ROOT/scripts/gpt-doug-compliance"
 EVIDENCE_SRC="$ROOT/scripts/gpt-doug-evidence-snapshot"
 REGWATCH_SRC="$ROOT/scripts/gpt-doug-regulatory-watch"
 SYNC_REPAIR_SRC="$ROOT/scripts/gpt-doug-sync-repair"
+GLOBAL_INTEL_SRC="$ROOT/scripts/gpt-doug-global-intel"
 BIN_DIR="$HOME/.local/bin"
 BIN="$BIN_DIR/gpt-doug-platform"
 DOCTOR_BIN="$BIN_DIR/gpt-doug-platform-doctor"
@@ -16,6 +17,7 @@ COMPLIANCE_BIN="$BIN_DIR/gpt-doug-compliance"
 EVIDENCE_BIN="$BIN_DIR/gpt-doug-evidence-snapshot"
 REGWATCH_BIN="$BIN_DIR/gpt-doug-regulatory-watch"
 SYNC_REPAIR_BIN="$BIN_DIR/gpt-doug-sync-repair"
+GLOBAL_INTEL_BIN="$BIN_DIR/gpt-doug-global-intel"
 [ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$BIN_DIR"
 chmod +x "$SRC"
@@ -44,6 +46,10 @@ if [ -f "$SYNC_REPAIR_SRC" ]; then
   chmod +x "$SYNC_REPAIR_SRC"
   ln -sf "$SYNC_REPAIR_SRC" "$SYNC_REPAIR_BIN"
 fi
+if [ -f "$GLOBAL_INTEL_SRC" ]; then
+  chmod +x "$GLOBAL_INTEL_SRC"
+  ln -sf "$GLOBAL_INTEL_SRC" "$GLOBAL_INTEL_BIN"
+fi
 case ":${PATH}:" in *":$BIN_DIR:"*) ;; *) printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc" ;; esac
 echo "Installed: $BIN"
 echo "Run:    gpt-doug-platform"
@@ -53,3 +59,4 @@ echo "Compliance: gpt-doug-compliance"
 echo "Evidence:   gpt-doug-evidence-snapshot"
 echo "Reg watch:  gpt-doug-regulatory-watch"
 echo "Sync repair: gpt-doug-sync-repair"
+echo "Global intel: gpt-doug-global-intel"
