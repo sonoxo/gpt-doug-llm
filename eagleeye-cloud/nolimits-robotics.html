@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // NO-LIMITS ROBOTICS SIM</title>
+<meta name="theme-color" content="#02070b">
+<style>
+:root{--bg:#020508;--panel:#071019ee;--line:#174f68;--cyan:#43d9ff;--green:#5bff9d;--amber:#ffd25d;--red:#ff6b6b;--text:#e6fbff;--muted:#7d9eaa}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:64px 1fr 30px;background:radial-gradient(circle at 50% -10%,#123246 0,#051018 32%,#020508 65%)}
+header{display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#031018f4}
+.brand{font-weight:900;color:var(--cyan);letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:9px;margin-top:3px}.status{font-size:9px;text-align:right}
+main{display:grid;grid-template-columns:250px 1fr 320px;min-height:0}.panel{background:var(--panel);backdrop-filter:blur(10px);overflow:auto;padding:10px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:10px;color:var(--cyan);letter-spacing:.14em;margin:6px 0}.card{border:1px solid var(--line);background:#07141d;padding:9px;border-radius:5px;margin-bottom:8px}.row{display:flex;justify-content:space-between;gap:8px;font-size:9px;line-height:1.55}.muted{color:var(--muted)}.green{color:var(--green)}.amber{color:var(--amber)}
+button,.btn{display:block;width:100%;padding:8px;margin:3px 0;border:1px solid #246984;background:#081923;color:var(--text);font:inherit;font-size:9px;border-radius:4px;cursor:pointer;text-decoration:none;text-align:left}button:hover,button.active,.btn:hover{border-color:var(--cyan);color:var(--cyan);background:#0a2532}
+.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#102734 0,#061118 45%,#020609 100%)}
+#view{position:absolute;inset:0}.diag{position:absolute;left:12px;bottom:76px;z-index:6;border:1px solid var(--line);background:#04121bdd;padding:7px 9px;font-size:8px;line-height:1.5;max-width:300px}.diag b{color:var(--cyan)}.hud{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#02101855,transparent 12%,transparent 88%,#02101855)}
+.reticle{position:absolute;left:50%;top:50%;width:120px;height:120px;transform:translate(-50%,-50%);border:1px solid #43d9ff55;border-radius:50%}.reticle:before,.reticle:after{content:"";position:absolute;background:#43d9ff88}.reticle:before{left:-20px;right:-20px;top:59px;height:1px}.reticle:after{top:-20px;bottom:-20px;left:59px;width:1px}
+.label{position:absolute;top:12px;left:12px;border:1px solid var(--line);background:#04121bdd;padding:6px 8px;font-size:9px}.label2{position:absolute;top:12px;right:12px;border:1px solid var(--line);background:#04121bdd;padding:6px 8px;font-size:9px;text-align:right}
+.controls{position:absolute;left:12%;right:12%;bottom:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:5px;z-index:5}.controls button{text-align:center;background:#071823dd}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.metric{font-size:22px}.meter{height:5px;background:#102630;border-radius:99px;overflow:hidden;margin-top:4px}.meter i{display:block;height:100%;background:var(--cyan)}
+.log{font-size:9px;border-left:2px solid var(--line);padding-left:7px;margin:6px 0;line-height:1.4}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#031018;font-size:8px;color:var(--muted)}
+@media(max-width:900px){main{grid-template-columns:1fr}.left,.right{display:none}.controls{left:6px;right:6px;grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">🦅 GPT-DOUG // NO-LIMITS ROBOTICS SIM<small>AI-CONCEPT INSPIRED • INTERACTIVE DIGITAL TWIN • NON-WEAPONIZED</small></div>
+  <div class="status"><span class="green">● SYSTEM ONLINE</span><br><span id="clock">--:--:--</span></div>
+</header>
+<main>
+<aside class="panel left">
+  <h2>ROBOT CONFIGURATION</h2>
+  <button class="active" id="humanoid">HUMANOID FRAME</button>
+  <button id="exo">EXOSKELETON MODE</button>
+  <button id="scout">SCOUT ROBOT MODE</button>
+  <h2>ACTUATION</h2>
+  <button id="walk">START WALK CYCLE</button>
+  <button id="wave">ARM MOTION TEST</button>
+  <button id="balance">BALANCE TEST</button>
+  <button id="reset">RESET POSE</button>
+  <h2>SIMULATION SYSTEMS</h2>
+  <button id="obstacles">TOGGLE OBSTACLE COURSE</button>
+  <button id="fov">TOGGLE SENSOR FOV</button>
+  <button id="trail">TOGGLE REPLAY TRAIL</button>
+  <button id="autobal">AUTO-BALANCE ASSIST</button>
+  <button id="save">SAVE STATE</button>
+  <button id="load">LOAD STATE</button>
+  <button id="export">EXPORT RUN LOG</button>
+  <h2>SENSOR SUITE</h2>
+  <div class="card"><div class="row"><span>Vision</span><b class="green">SIM ONLINE</b></div><div class="row"><span>Depth</span><b class="green">SIM ONLINE</b></div><div class="row"><span>IMU</span><b class="green">SIM ONLINE</b></div><div class="row"><span>Proximity</span><b class="green">SIM ONLINE</b></div></div>
+  <a class="btn" href="/operations-v2.html">← EAGLE EYE OPTICAL COMMAND</a>
+</aside>
+
+<section class="stage">
+  <div id="view"></div><div class="diag"><b>LIVE SIM DIAGNOSTICS</b><br><span id="diagText">Awaiting motion input…</span></div>
+  <div class="hud"><div class="reticle"></div><div class="label">ROBOT DIGITAL TWIN<br><span class="green">SIMULATION ACTIVE</span></div><div class="label2">HUMAN-FIRST<br>NIST / TEVV</div></div>
+  <div class="controls">
+    <button id="camFront">FRONT</button><button id="camSide">SIDE</button><button id="camTop">TOP</button><button id="camOrbit">ORBIT</button><button id="freeze">FREEZE</button><button id="pulse">POWER TEST</button>
+  </div>
+</section>
+
+<aside class="panel right">
+  <h2>PLATFORM STATE</h2>
+  <div class="grid">
+    <div class="card"><div class="muted">JOINTS</div><div class="metric">22</div></div>
+    <div class="card"><div class="muted">BATTERY</div><div class="metric" id="battery">94%</div></div>
+    <div class="card"><div class="muted">STABILITY</div><div class="metric" id="stability">98%</div></div>
+    <div class="card"><div class="muted">THERMAL</div><div class="metric" id="thermal">42°C</div></div>
+  </div>
+  <h2>MOTION HEALTH</h2>
+  <div class="card"><div class="row"><span>Balance confidence</span><b id="bal">96%</b></div><div class="meter"><i id="balBar" style="width:96%"></i></div><div class="row"><span>Actuator sync</span><b id="sync">93%</b></div><div class="meter"><i id="syncBar" style="width:93%"></i></div></div>
+  <h2>INPUT / CONTROL</h2>
+  <div class="card">
+    <div class="row"><span>Keyboard</span><b class="green">WASD + SPACE</b></div>
+    <div class="row"><span>Gamepad</span><b id="padState">WAITING</b></div>
+    <div class="row"><span>Replay samples</span><b id="samples">0</b></div>
+    <div class="row"><span>Obstacle alerts</span><b id="avoid">0</b></div>
+  </div>
+  <h2>BODY MAP</h2>
+  <div class="card"><div class="row"><span>Head</span><b class="green">OK</b></div><div class="row"><span>Torso</span><b class="green">OK</b></div><div class="row"><span>Arms</span><b class="green">OK</b></div><div class="row"><span>Legs</span><b class="green">OK</b></div><div class="row"><span>Power core</span><b class="green">OK</b></div></div>
+  <h2>EVENT STREAM</h2>
+  <div class="card" id="log"></div>
+</aside>
+</main>
+<footer><span>GPT-DOUG ROBOTICS LAB // DIGITAL TWIN</span><span>SAFE SIMULATION • NO WEAPON CONTROL</span></footer>
+</div>
+
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.180.0/build/three.module.js';
+
+const mount=document.getElementById('view');
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x020609,8,28);
+const camera=new THREE.PerspectiveCamera(50,1,.1,100);
+camera.position.set(0,2.6,7.5);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(mount.clientWidth,mount.clientHeight);
+renderer.shadowMap.enabled=true;
+mount.appendChild(renderer.domElement);
+
+const hemi=new THREE.HemisphereLight(0x7fdfff,0x081018,2.2);scene.add(hemi);
+const key=new THREE.DirectionalLight(0x9fe8ff,3);key.position.set(4,7,4);key.castShadow=true;scene.add(key);
+const rim=new THREE.PointLight(0x22c6ff,35,14);rim.position.set(-3,3,-2);scene.add(rim);
+
+const floor=new THREE.Mesh(new THREE.CircleGeometry(8,64),new THREE.MeshStandardMaterial({color:0x051018,metalness:.45,roughness:.78}));
+floor.rotation.x=-Math.PI/2;floor.position.y=-2.05;floor.receiveShadow=true;scene.add(floor);
+const ring=new THREE.Mesh(new THREE.RingGeometry(2.7,2.74,96),new THREE.MeshBasicMaterial({color:0x2ad5ff,transparent:true,opacity:.38,side:THREE.DoubleSide}));
+ring.rotation.x=-Math.PI/2;ring.position.y=-2.03;scene.add(ring);
+
+const robot=new THREE.Group();scene.add(robot);
+const mat=new THREE.MeshStandardMaterial({color:0x26343b,metalness:.85,roughness:.28});
+const dark=new THREE.MeshStandardMaterial({color:0x0a1014,metalness:.65,roughness:.4});
+const glow=new THREE.MeshStandardMaterial({color:0x38d8ff,emissive:0x0aa5d0,emissiveIntensity:2.5,metalness:.6,roughness:.15});
+
+function box(w,h,d,m=mat){const x=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);x.castShadow=true;return x}
+function cyl(r,h,m=mat){const x=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,16),m);x.castShadow=true;return x}
+function joint(x,y,z,s=.16){const j=new THREE.Mesh(new THREE.SphereGeometry(s,16,12),glow);j.position.set(x,y,z);robot.add(j);return j}
+
+const torso=box(1.25,1.55,.72);torso.position.y=.3;robot.add(torso);
+const chest=box(.82,.32,.82,glow);chest.position.set(0,.55,.05);robot.add(chest);
+const neck=cyl(.16,.3,dark);neck.position.y=1.25;robot.add(neck);
+const head=box(.64,.62,.62);head.position.y=1.72;robot.add(head);
+const visor=box(.48,.18,.05,glow);visor.position.set(0,1.78,.335);robot.add(visor);
+const pelvis=box(.85,.42,.58,dark);pelvis.position.y=-.72;robot.add(pelvis);
+
+const limbs={};
+function limb(name,side){
+ const sx=side;
+ const shoulder=joint(.82*sx,.78,0,.18);
+ const upper=new THREE.Group();upper.position.set(.82*sx,.72,0);robot.add(upper);
+ const ua=cyl(.16,.95);ua.rotation.z=Math.PI/2;ua.position.x=.45*sx;upper.add(ua);
+ const elbow=joint(1.28*sx,.72,0,.15);
+ const lower=new THREE.Group();lower.position.set(1.28*sx,.72,0);robot.add(lower);
+ const la=cyl(.14,.88,dark);la.rotation.z=Math.PI/2;la.position.x=.42*sx;lower.add(la);
+ const hand=box(.25,.28,.28);hand.position.set(1.76*sx,.72,0);robot.add(hand);
+ const hip=joint(.34*sx,-.78,0,.17);
+ const thigh=new THREE.Group();thigh.position.set(.34*sx,-.82,0);robot.add(thigh);
+ const th=cyl(.2,1.15);th.position.y=-.56;thigh.add(th);
+ const knee=joint(.34*sx,-1.42,0,.17);
+ const shin=new THREE.Group();shin.position.set(.34*sx,-1.42,0);robot.add(shin);
+ const sh=cyl(.17,1.06,dark);sh.position.y=-.5;shin.add(sh);
+ const foot=box(.42,.22,.72);foot.position.set(.34*sx,-2.0,.16);robot.add(foot);
+ limbs[name]={upper,lower,thigh,shin,side:sx};
+}
+limb('L',-1);limb('R',1);
+
+for(let i=0;i<5;i++){const p=new THREE.Mesh(new THREE.TorusGeometry(2.9+i*.22,.012,8,64),new THREE.MeshBasicMaterial({color:0x155873,transparent:true,opacity:.24}));p.rotation.x=Math.PI/2;p.position.y=-2.02;scene.add(p)}
+const obstacleGroup=new THREE.Group();scene.add(obstacleGroup);
+for(let i=0;i<14;i++){const o=box(.45+Math.random()*.5,.5+Math.random()*1.5,.45+Math.random()*.5,dark);o.position.set((Math.random()-.5)*10,-1.7,(Math.random()-.5)*10);obstacleGroup.add(o)}
+const fovMesh=new THREE.Mesh(new THREE.ConeGeometry(1.55,4.6,40,1,true),new THREE.MeshBasicMaterial({color:0x43d9ff,transparent:true,opacity:.08,wireframe:true,side:THREE.DoubleSide}));fovMesh.rotation.x=-Math.PI/2;fovMesh.position.set(0,1.55,2.5);scene.add(fovMesh);
+const trailGeo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-1.98,0),new THREE.Vector3(.01,-1.98,.01)]);const trailLine=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color:0x43d9ff,transparent:true,opacity:.65}));scene.add(trailLine);
+
+let mode='idle',frozen=false,t=0,orbit=true;
+let autoBalance=false,showObstacles=true,showFov=true,showTrail=true,avoidCount=0;
+let velocity=new THREE.Vector3(),yaw=0,replay=[],trailPts=[];
+const keys={};
+function log(m){const d=document.createElement('div');d.className='log';d.textContent=new Date().toLocaleTimeString()+'  '+m;document.getElementById('log').prepend(d);while(document.getElementById('log').children.length>12)document.getElementById('log').lastChild.remove()}
+function resetPose(){mode='idle';velocity.set(0,0,0);Object.values(limbs).forEach(l=>{l.upper.rotation.set(0,0,0);l.lower.rotation.set(0,0,0);l.thigh.rotation.set(0,0,0);l.shin.rotation.set(0,0,0)});robot.rotation.set(0,yaw,0);log('Pose reset')}
+function updateTrail(){if(!showTrail)return;trailPts.push(new THREE.Vector3(robot.position.x,-1.98,robot.position.z));if(trailPts.length>240)trailPts.shift();if(trailPts.length>1)trailLine.geometry.setFromPoints(trailPts);document.getElementById('samples').textContent=replay.length}
+function obstacleAvoid(){let near=false;for(const o of obstacleGroup.children){const dx=robot.position.x-o.position.x,dz=robot.position.z-o.position.z;if(Math.hypot(dx,dz)<1.0){near=true;velocity.x+=dx*.018;velocity.z+=dz*.018;avoidCount++;break}}document.getElementById('avoid').textContent=avoidCount;return near}
+function record(){replay.push({t:Date.now(),x:robot.position.x,z:robot.position.z,yaw,mode});if(replay.length>1200)replay.shift()}
+function setDiag(msg){document.getElementById('diagText').textContent=msg}
+function animate(){
+ requestAnimationFrame(animate); if(!frozen){t+=.02;
+  const forward=(keys['w']||keys['arrowup']?1:0)-(keys['s']||keys['arrowdown']?1:0),turn=(keys['d']||keys['arrowright']?1:0)-(keys['a']||keys['arrowleft']?1:0);
+  yaw-=turn*.028;robot.rotation.y=yaw;if(forward){velocity.x+=Math.sin(yaw)*forward*.006;velocity.z+=Math.cos(yaw)*forward*.006;mode='walk'}
+  velocity.multiplyScalar(.94);robot.position.x+=velocity.x;robot.position.z+=velocity.z;const avoided=obstacleAvoid();
+  if(autoBalance){robot.rotation.z*=.82;robot.rotation.x*=.82}
+  updateTrail();record();setDiag('POS '+robot.position.x.toFixed(2)+', '+robot.position.z.toFixed(2)+' | YAW '+(yaw*57.2958).toFixed(1)+'° | SPEED '+Math.hypot(velocity.x,velocity.z).toFixed(3)+(avoided?' | AVOIDANCE ACTIVE':''));
+  if(mode==='walk'){limbs.L.thigh.rotation.x=Math.sin(t*3)*.55;limbs.R.thigh.rotation.x=-Math.sin(t*3)*.55;limbs.L.shin.rotation.x=Math.max(0,-Math.sin(t*3))*.6;limbs.R.shin.rotation.x=Math.max(0,Math.sin(t*3))*.6;limbs.L.upper.rotation.x=-Math.sin(t*3)*.35;limbs.R.upper.rotation.x=Math.sin(t*3)*.35}
+  if(mode==='wave'){limbs.R.upper.rotation.z=-1.0;limbs.R.lower.rotation.z=-.7+Math.sin(t*5)*.35}
+  if(mode==='balance'){robot.rotation.z=Math.sin(t*2)*.08;robot.rotation.x=Math.sin(t*1.4)*.04}
+  if(orbit){camera.position.x=Math.sin(t*.12)*7.5;camera.position.z=Math.cos(t*.12)*7.5;camera.lookAt(0,0,0)}
+  ring.rotation.z+=.002;
+ }
+ renderer.render(scene,camera);
+}
+animate();
+
+function resize(){const w=mount.clientWidth,h=mount.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h)}addEventListener('resize',resize);resize();
+document.getElementById('walk').onclick=()=>{mode='walk';log('Walk cycle started')};
+document.getElementById('wave').onclick=()=>{mode='wave';log('Arm motion test started')};
+document.getElementById('balance').onclick=()=>{mode='balance';log('Balance test started')};
+document.getElementById('reset').onclick=resetPose;
+document.getElementById('camFront').onclick=()=>{orbit=false;camera.position.set(0,2.3,7.5);camera.lookAt(0,0,0);log('Front camera')};
+document.getElementById('camSide').onclick=()=>{orbit=false;camera.position.set(7.5,2.3,0);camera.lookAt(0,0,0);log('Side camera')};
+document.getElementById('camTop').onclick=()=>{orbit=false;camera.position.set(0,9,.1);camera.lookAt(0,0,0);log('Top camera')};
+document.getElementById('camOrbit').onclick=()=>{orbit=true;log('Orbit camera enabled')};
+document.getElementById('freeze').onclick=()=>{frozen=!frozen;log(frozen?'Simulation frozen':'Simulation resumed')};
+document.getElementById('pulse').onclick=()=>{chest.material.emissiveIntensity=5;setTimeout(()=>chest.material.emissiveIntensity=2.5,500);log('Power-system pulse test')};
+document.getElementById('humanoid').onclick=()=>{robot.scale.set(1,1,1);log('Humanoid frame selected')};
+document.getElementById('exo').onclick=()=>{robot.scale.set(1.12,1.03,1.12);log('Exoskeleton proportions loaded')};
+document.getElementById('scout').onclick=()=>{robot.scale.set(.82,.78,.82);log('Scout robot proportions loaded')};
+document.getElementById('obstacles').onclick=()=>{showObstacles=!showObstacles;obstacleGroup.visible=showObstacles;log('Obstacle course '+(showObstacles?'enabled':'hidden'))};
+document.getElementById('fov').onclick=()=>{showFov=!showFov;fovMesh.visible=showFov;log('Sensor FOV '+(showFov?'enabled':'hidden'))};
+document.getElementById('trail').onclick=()=>{showTrail=!showTrail;trailLine.visible=showTrail;log('Replay trail '+(showTrail?'enabled':'hidden'))};
+document.getElementById('autobal').onclick=()=>{autoBalance=!autoBalance;log('Auto-balance assist '+(autoBalance?'enabled':'disabled'))};
+document.getElementById('save').onclick=()=>{localStorage.setItem('gptDougRobotState',JSON.stringify({x:robot.position.x,z:robot.position.z,yaw,mode,scale:robot.scale.x}));log('Simulator state saved locally')};
+document.getElementById('load').onclick=()=>{try{const a=JSON.parse(localStorage.getItem('gptDougRobotState'));if(a){robot.position.x=a.x||0;robot.position.z=a.z||0;yaw=a.yaw||0;mode=a.mode||'idle';robot.scale.setScalar(a.scale||1);log('Simulator state restored')}}catch(e){log('Saved state unavailable')}};
+document.getElementById('export').onclick=()=>{const blob=new Blob([JSON.stringify({created:new Date().toISOString(),samples:replay},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-robotics-run.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);log('Run log exported')};
+addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key===' '){mode=mode==='walk'?'idle':'walk';e.preventDefault()}});
+addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+window.addEventListener('gamepadconnected',e=>{document.getElementById('padState').textContent='CONNECTED';document.getElementById('padState').className='green';log('Gamepad connected: '+e.gamepad.id)});
+window.addEventListener('gamepaddisconnected',()=>{document.getElementById('padState').textContent='WAITING';document.getElementById('padState').className='';log('Gamepad disconnected')});
+function pollGamepad(){const g=navigator.getGamepads?navigator.getGamepads()[0]:null;if(g&&!frozen){const ax=g.axes[0]||0,ay=g.axes[1]||0;yaw-=ax*.035;robot.rotation.y=yaw;if(Math.abs(ay)>.12){velocity.x+=Math.sin(yaw)*(-ay)*.008;velocity.z+=Math.cos(yaw)*(-ay)*.008;mode='walk'}}requestAnimationFrame(pollGamepad)}pollGamepad();
+
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString();const b=93+Math.random()*4,s=94+Math.random()*5,a=91+Math.random()*7,temp=39+Math.random()*6;document.getElementById('battery').textContent=b.toFixed(0)+'%';document.getElementById('stability').textContent=s.toFixed(0)+'%';document.getElementById('thermal').textContent=temp.toFixed(0)+'°C';document.getElementById('bal').textContent=s.toFixed(1)+'%';document.getElementById('balBar').style.width=s+'%';document.getElementById('sync').textContent=a.toFixed(1)+'%';document.getElementById('syncBar').style.width=a+'%'},1000);
+log('No-Limits robotics simulator initialized');
+</script>
+<script src="/quantum-renderer.js"></script>\n</body>
+</html>

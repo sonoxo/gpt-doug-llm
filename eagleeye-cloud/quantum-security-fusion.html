@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // QUANTUM SECURITY FUSION</title>
+<meta name="theme-color" content="#02060b">
+<style>
+:root{--bg:#020509;--p:#071019e9;--line:#1a536c;--cyan:#58ddff;--green:#64ffab;--amber:#ffd365;--red:#ff6978;--violet:#a779ff;--pink:#ff68cb;--text:#e8fbff;--muted:#7f9eaa}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:68px 1fr 30px;background:radial-gradient(circle at 50% -20%,#12324a 0,#06101a 34%,#020509 70%)}
+header{display:grid;grid-template-columns:410px 1fr 290px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#031018f4}
+.brand{font-weight:900;color:var(--cyan);font-size:17px;letter-spacing:.07em}.brand small{display:block;font-size:8px;color:var(--muted);margin-top:4px}
+.pipeline{display:flex;justify-content:center;gap:5px;overflow:hidden}.pipe{font-size:7px;padding:5px 7px;border:1px solid #20556b;background:#071a24;border-radius:4px}.arrow{color:#46768a}
+.status{text-align:right;font-size:8px;line-height:1.5}.ok{color:var(--green)}.warn{color:var(--amber)}
+main{display:grid;grid-template-columns:270px minmax(0,1fr) 350px;min-height:0}.panel{background:var(--p);backdrop-filter:blur(12px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:9px;color:var(--cyan);letter-spacing:.14em;margin:7px 0}.card{border:1px solid #16455b;background:#06141d;border-radius:5px;padding:8px;margin-bottom:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:8px;line-height:1.5;color:var(--muted)}.row b{color:#fff}
+button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #23617a;background:#071923;color:var(--text);font:inherit;font-size:8px;text-decoration:none;text-align:left;border-radius:4px;cursor:pointer}button:hover,button.active,.btn:hover{border-color:var(--cyan);color:#fff;background:#0a2634}
+.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#0a2433 0,#06111a 48%,#020609 100%);overflow:hidden}
+#field{position:absolute;inset:0;width:100%;height:100%}.hud{position:absolute;inset:0;pointer-events:none}.badge{position:absolute;left:12px;top:12px;border:1px solid var(--line);background:#04131cdd;padding:7px 9px;border-radius:5px;font-size:8px}
+.legend{position:absolute;left:12px;bottom:12px;border:1px solid var(--line);background:#04131cdd;padding:7px 9px;border-radius:5px;font-size:7px;line-height:1.55}.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.metric{font-size:22px}.layer{display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:6px;border:1px solid #143c4f;background:#06131c;padding:6px;margin:4px 0;border-radius:4px;cursor:pointer}.layer.active{border-color:#4bcbe9;background:#09202b}.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 10px currentColor}.layer b{font-size:8px}.layer span{font-size:7px;color:var(--muted)}
+.spider{height:220px;border:1px solid #15465c;border-radius:5px;overflow:hidden;background:#030b11}#spider{width:100%;height:100%;display:block}
+.event{border-left:2px solid #205f79;padding-left:6px;margin:5px 0;font-size:7px;color:var(--muted);line-height:1.4}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#031018;color:var(--muted);font-size:7px}
+@media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="brand">◈ GPT-DOUG // QUANTUM SECURITY FUSION<small>CLEAR VISUAL DATA LAYERS • QUANTUM-INSPIRED RENDERING • DEFENSIVE / SYNTHETIC</small></div>
+<div class="pipeline"><span class="pipe">INGEST</span><span class="arrow">→</span><span class="pipe">NORMALIZE</span><span class="arrow">→</span><span class="pipe">FUSE</span><span class="arrow">→</span><span class="pipe">PHASE SPACE</span><span class="arrow">→</span><span class="pipe">UNCERTAINTY</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
+<div class="status"><span class="ok">● RENDER STACK ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">QUANTUM-INSPIRED • CLASSICAL GPU</span></div>
+</header>
+<main>
+<aside class="panel left">
+<h2>VISUAL DATA LAYERS</h2>
+<div id="layers"></div>
+<h2>RENDER CONTROLS</h2>
+<button id="pulse">✦ PHASE PULSE</button>
+<button id="focus">◎ FOCUS SELECTED LAYER</button>
+<button id="clarity">◇ HIGH CLARITY</button>
+<button id="reset">↺ RESET FIELD</button>
+<a class="btn" href="/operations-v2.html">🦅 OPTICAL COMMAND</a>
+<a class="btn" href="/dots-neural-lab.html">◈ GPT-DOTS</a>
+<a class="btn" href="/airborne-mesh-sim.html">🕷 DATA SPIDER / MESH</a>
+</aside>
+<section class="stage">
+<canvas id="field"></canvas>
+<div class="hud">
+<div class="badge"><b style="color:var(--cyan)">MULTI-LAYER QUANTUM-INSPIRED FUSION</b><br><span id="focusName">ALL LAYERS</span><br><span class="ok">SYNTHETIC + DEFENSIVE VISUAL MODEL</span></div>
+<div class="legend">
+<i style="background:#58ddff"></i>SENSORS / COMMS &nbsp;
+<i style="background:#64ffab"></i>HEALTHY / AVAILABLE &nbsp;
+<i style="background:#ffd365"></i>HAZARD / DEGRADED<br>
+<i style="background:#ff6978"></i>INCIDENT / UNAVAILABLE &nbsp;
+<i style="background:#a779ff"></i>AI CORRELATION / UNCERTAINTY
+</div>
+</div>
+</section>
+<aside class="panel right">
+<h2>FUSION METRICS</h2>
+<div class="card"><div class="row"><span>Coherence</span><b id="coh" class="ok">92%</b></div><div class="row"><span>Uncertainty</span><b id="unc">12%</b></div><div class="row"><span>Active layers</span><b id="activeCount">0</b></div><div class="row"><span>Nodes</span><b id="nodeCount">0</b></div><div class="row"><span>Edges</span><b id="edgeCount">0</b></div></div>
+<h2>VISUAL DATA SPIDER</h2>
+<div class="spider"><canvas id="spider"></canvas></div>
+<div class="card" style="margin-top:7px"><div class="row"><span>Selected</span><b id="selectedNode">FUSION CORE</b></div><div class="row"><span>Source</span><b id="sourceNode">SYNTHETIC</b></div><div class="row"><span>Confidence</span><b id="confidence">94%</b></div><div class="row"><span>Freshness</span><b id="freshness">LIVE SIM</b></div></div>
+<h2>EVENT STREAM</h2>
+<div class="card" id="events"><div class="event">Quantum-inspired fusion renderer initialized.</div></div>
+</aside>
+</main>
+<footer><span>GPT-DOUG // CLEAR VISUAL SECURITY DATA FUSION</span><span>NO CLAIM OF QUANTUM HARDWARE • CLASSICAL RENDERER USING QUANTUM-INSPIRED VISUAL METAPHORS</span><span>HUMAN-FIRST • TEVV • PROVENANCE</span></footer>
+</div>
+<script>
+const $=id=>document.getElementById(id),field=$('field'),ctx=field.getContext('2d'),spider=$('spider'),sx=spider.getContext('2d');
+const layerDefs=[
+ ['terrain','EARTH / TERRAIN','#5cddff'],['infra','CRITICAL INFRASTRUCTURE','#64ffab'],['perimeters','SECURITY PERIMETERS','#ffd365'],
+ ['sensors','SENSOR MESH','#5cddff'],['comms','COMMUNICATIONS MESH','#5cddff'],['air','AIRSPACE AWARENESS','#8db8ff'],
+ ['maritime','MARITIME AWARENESS','#62d9ff'],['space','SPACE / ORBIT','#c18cff'],['weather','WEATHER / ENVIRONMENT','#ffd365'],
+ ['cyber','CYBER DEFENSE','#ff68cb'],['robots','ROBOTIC DIGITAL TWINS','#64ffab'],['incidents','INCIDENTS','#ff6978'],
+ ['resilience','RESILIENCE / FAILOVER','#64ffab'],['ai','AI FUSION / UNCERTAINTY','#a779ff'],['spider','DATA SPIDER','#a779ff'],
+ ['provenance','PROVENANCE','#ffffff'],['governance','TEVV / GOVERNANCE','#ffd365'],['replay','REPLAY / FORENSICS','#8c9aa5']
+];
+let state={pulse:0,focus:null,clarity:false,nodes:[],edges:[]};
+const colors={};
+for(const [id,name,color] of layerDefs){colors[id]=color;const d=document.createElement('div');d.className='layer active';d.dataset.layer=id;d.innerHTML='<i class="dot" style="color:'+color+';background:'+color+'"></i><div><b>'+name+'</b><br><span>ACTIVE</span></div><b>●</b>';d.onclick=()=>{d.classList.toggle('active');build();log(name+' '+(d.classList.contains('active')?'enabled':'disabled'))};$('layers').appendChild(d)}
+function fit(c){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);c.width=r.width*d;c.height=r.height*d;c.getContext('2d').setTransform(d,0,0,d,0,0);return r}
+function hex(h,a){const x=h.replace('#','');const r=parseInt(x.slice(0,2),16),g=parseInt(x.slice(2,4),16),b=parseInt(x.slice(4,6),16);return 'rgba('+r+','+g+','+b+','+a+')'}
+function activeIds(){return [...document.querySelectorAll('.layer.active')].map(x=>x.dataset.layer)}
+function build(){
+ const ids=activeIds(),r=field.getBoundingClientRect();state.nodes=[];state.edges=[];
+ ids.forEach((id,i)=>{const count=2+(i%3);for(let j=0;j<count;j++)state.nodes.push({id:id+'-'+j,layer:id,x:r.width*(.12+Math.random()*.76),y:r.height*(.12+Math.random()*.76),p:Math.random()*Math.PI*2})});
+ for(let i=0;i<state.nodes.length;i++){for(let j=i+1;j<Math.min(state.nodes.length,i+6);j++){if(Math.random()<.34)state.edges.push([i,j])}}
+ $('activeCount').textContent=ids.length;$('nodeCount').textContent=state.nodes.length;$('edgeCount').textContent=state.edges.length
+}
+function draw(){
+ const r=fit(field),w=r.width,h=r.height;ctx.clearRect(0,0,w,h);state.pulse*=.96;
+ ctx.lineWidth=.6;
+ for(let x=0;x<w;x+=55){ctx.strokeStyle='rgba(80,190,220,.035)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+ for(let y=0;y<h;y+=55){ctx.strokeStyle='rgba(80,190,220,.035)';ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+ for(const [a,b] of state.edges){const A=state.nodes[a],B=state.nodes[b];if(!A||!B)continue;if(state.focus&&A.layer!==state.focus&&B.layer!==state.focus)continue;ctx.strokeStyle=hex(colors[A.layer]||'#5cddff',.08+(state.pulse*.08));ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.stroke()}
+ const t=performance.now();
+ for(const n of state.nodes){if(state.focus&&n.layer!==state.focus)continue;const rr=3+2*Math.sin(n.p+t*.002)+state.pulse*3;ctx.fillStyle=hex(colors[n.layer]||'#fff',.9);ctx.beginPath();ctx.arc(n.x,n.y,rr,0,Math.PI*2);ctx.fill();ctx.strokeStyle=hex(colors[n.layer]||'#fff',.16);ctx.beginPath();ctx.arc(n.x,n.y,rr*3,0,Math.PI*2);ctx.stroke()}
+ drawSpider();requestAnimationFrame(draw)
+}
+function drawSpider(){const r=fit(spider),w=r.width,h=r.height;sx.clearRect(0,0,w,h);const ids=activeIds(),cx=w/2,cy=h/2,rad=Math.min(w,h)*.35;const pts=[{id:'core',x:cx,y:cy,color:'#ffffff'}];ids.forEach((id,i)=>{const a=i/Math.max(1,ids.length)*Math.PI*2;pts.push({id,x:cx+Math.cos(a)*rad,y:cy+Math.sin(a)*rad,color:colors[id]})});for(let i=1;i<pts.length;i++){sx.strokeStyle=hex(pts[i].color,.35);sx.beginPath();sx.moveTo(cx,cy);sx.lineTo(pts[i].x,pts[i].y);sx.stroke()}for(const p of pts){sx.fillStyle=p.color;sx.beginPath();sx.arc(p.x,p.y,p.id==='core'?7:4,0,Math.PI*2);sx.fill();if(p.id!=='core'){sx.fillStyle='#91a7b0';sx.font='7px ui-monospace';sx.fillText(p.id,p.x+6,p.y-4)}}}
+function log(m){const d=document.createElement('div');d.className='event';d.textContent=new Date().toLocaleTimeString()+'  '+m;$('events').prepend(d);while($('events').children.length>12)$('events').lastChild.remove()}
+$('pulse').onclick=()=>{state.pulse=1;log('Phase pulse applied')};$('focus').onclick=()=>{const ids=activeIds();state.focus=ids[(ids.indexOf(state.focus)+1)%ids.length]||null;$('focusName').textContent=state.focus?layerDefs.find(x=>x[0]===state.focus)[1]:'ALL LAYERS';log('Focus '+$('focusName').textContent)};$('clarity').onclick=()=>{state.clarity=!state.clarity;field.style.filter=state.clarity?'contrast(1.18) saturate(1.1) brightness(1.08)':'none';log('High clarity '+(state.clarity?'enabled':'disabled'))};$('reset').onclick=()=>{state.focus=null;$('focusName').textContent='ALL LAYERS';build();log('Fusion field reset')};
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();$('coh').textContent=Math.round(89+Math.random()*8)+'%';$('unc').textContent=Math.round(8+Math.random()*9)+'%';$('confidence').textContent=Math.round(90+Math.random()*8)+'%'},1000);
+addEventListener('resize',build);build();draw();
+</script>
+<script src="/quantum-renderer.js"></script>
+</body></html>

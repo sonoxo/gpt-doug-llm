@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // EAGLE EYE SHOGGOTH DEFENSE</title>
+<meta name="theme-color" content="#030603">
+<style>
+:root{--bg:#030603;--p:#07100bdc;--line:#274831;--t:#dcffe4;--m:#86a990;--g:#8cff9f;--w:#ffd36a;--r:#ff7676;--b:#75d4ff}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--t);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+body{overflow:hidden}.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;background:radial-gradient(circle at 50% -10%,#15341d 0,#07100a 34%,#030603 65%)}
+header{padding:10px 13px;border-bottom:1px solid var(--line);background:#050a07f2;display:flex;justify-content:space-between;gap:12px;align-items:center}.brand{font-weight:900;letter-spacing:.08em}.brand b{color:var(--g)}.sub{font-size:9px;color:var(--m)}.status{font-size:10px;text-align:right}.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 6px;margin-left:4px;color:var(--g)}
+main{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;min-height:0}.panel{padding:11px;background:var(--p);overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}.center{padding:12px;overflow:auto}
+h2{font-size:10px;letter-spacing:.14em;color:var(--g);margin:7px 0 8px}.card{border:1px solid var(--line);background:#08140c;padding:9px;border-radius:7px;margin-bottom:8px}.small{font-size:9.5px;color:var(--m);line-height:1.48}.row{display:flex;justify-content:space-between;gap:8px;font-size:10px;line-height:1.55}.num{font-size:22px}.ok{color:var(--g)}.warn{color:var(--w)}.err{color:var(--r)}.blue{color:var(--b)}
+button,a.btn{display:block;width:100%;padding:8px 9px;margin:3px 0;background:#0b1910;border:1px solid #376947;border-radius:6px;color:var(--t);font:inherit;font-size:10px;text-align:left;cursor:pointer;text-decoration:none}button:hover,a.btn:hover{color:var(--g);border-color:var(--g);background:#112619}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.tech{border-left:3px solid var(--w)}.tech b{font-size:10px}.tech p{font-size:9px;color:var(--m);line-height:1.45;margin:5px 0}
+.timeline{max-height:300px;overflow:auto}.log{border-left:2px solid var(--line);padding-left:7px;margin:6px 0;font-size:9px;line-height:1.45}.commit{padding:7px;border-bottom:1px solid #17301f;font-size:9px}.commit b{color:var(--b)}.flow{font-size:10px;line-height:1.8;color:#c8efcf}.flow span{color:var(--g)}
+footer{padding:6px 11px;border-top:1px solid var(--line);background:#050a07;color:var(--m);font-size:8.5px;display:flex;justify-content:space-between;gap:8px}
+@media(max-width:900px){main{grid-template-columns:1fr}.left,.right{display:none}.center{padding:9px}}
+</style></head>
+<body><div class="app">
+<header><div class="brand">🦅 GPT-DOUG // <b>EAGLE EYE SHOGGOTH DEFENSE</b><div class="sub">LIVE REPOSITORY INTELLIGENCE • DEFENSIVE ANALYSIS • NO PAYLOAD GENERATION</div></div><div class="status"><span class="pill" id="repoState">SYNCING</span><span class="pill">NIST / TEVV</span><br><span id="clock">--:--:--</span></div></header>
+<main>
+<aside class="panel left">
+<h2>CONTROL</h2>
+<button id="refresh">↻ REFRESH SHOGGOTH INTEL</button>
+<a class="btn" href="https://github.com/sonoxo/Shoggoth" target="_blank" rel="noopener">↗ OPEN SHOGGOTH REPOSITORY</a>
+<a class="btn" href="/">← EAGLE EYE GLOBAL FUSION</a>
+<h2>DEFENSIVE POLICY</h2>
+<div class="card small">GPT-Doug is linked to Shoggoth as a defensive intelligence source only. This bridge does not compile, encrypt, obfuscate, generate, or execute shellcode/PE/COFF payloads.</div>
+<h2>REPO STATE</h2>
+<div class="card">
+<div class="row"><span>Default branch</span><b id="branch">—</b></div>
+<div class="row"><span>Visibility</span><b id="visibility">—</b></div>
+<div class="row"><span>Open issues</span><b id="issues">—</b></div>
+<div class="row"><span>Last push</span><b id="pushed">—</b></div>
+</div>
+</aside>
+
+<section class="center">
+<h2>SHOGGOTH TECHNIQUE MAP</h2>
+<div class="grid">
+<div class="card tech"><b>POLYMORPHIC TRANSFORMATION</b><p>Repository documentation describes dynamically varied output and generated instructions. Eagle Eye treats this as an evasion-analysis signal.</p></div>
+<div class="card tech"><b>RUNTIME DECRYPTION</b><p>Encrypted payload material is described as being decrypted during execution. Defensive focus: memory behavior and execution transitions rather than static signatures alone.</p></div>
+<div class="card tech"><b>RC4 + GENERATED BLOCK OPERATIONS</b><p>Documented encryption layers motivate entropy, memory, and behavior-based detection instead of assuming stable byte patterns.</p></div>
+<div class="card tech"><b>GARBAGE INSTRUCTION GENERATION</b><p>Dead or semantically neutral instruction insertion is treated as an obfuscation indicator requiring normalization-aware analysis.</p></div>
+<div class="card tech"><b>PE / COFF LOADERS</b><p>Repository documents position-independent loader paths for PE and COFF inputs. Eagle Eye flags loader-style behavior for defensive review.</p></div>
+<div class="card tech"><b>ASMJIT CODE GENERATION</b><p>Runtime machine-code generation is mapped to memory-protection and execution telemetry for defensive hunting.</p></div>
+</div>
+
+<h2>GPT-DOUG DEFENSIVE PIPELINE</h2>
+<div class="card flow">
+<span>OBSERVE</span> repository change → <span>CLASSIFY</span> technique → <span>MAP</span> behavior → <span>TEVV</span> detection hypothesis → <span>VERIFY</span> evidence → <span>HUMAN GATE</span> → <span>AUDIT</span>
+</div>
+
+<h2>LATEST SHOGGOTH COMMITS</h2>
+<div class="card" id="commits"><div class="small">Loading public GitHub commit metadata…</div></div>
+
+<h2>DEFENSIVE ANALYSIS NOTES</h2>
+<div class="card small">
+Static signatures can be fragile against polymorphism. Eagle Eye prioritizes provenance, memory/execution transitions, anomalous code generation, loader behavior, and repeatable sandbox observations. Any detection hypothesis should be validated against benign software to manage false positives.
+</div>
+</section>
+
+<aside class="panel right">
+<h2>LIVE DEFENSE STATUS</h2>
+<div class="card"><div class="row"><span>Repository bridge</span><b class="ok" id="bridge">INIT</b></div><div class="row"><span>Payload execution</span><b class="ok">BLOCKED</b></div><div class="row"><span>Payload generation</span><b class="ok">BLOCKED</b></div><div class="row"><span>Defensive analysis</span><b class="ok">ENABLED</b></div></div>
+<h2>WATCHLIST</h2>
+<div class="card small" id="watch">
+• loader changes<br>• encryption/obfuscation changes<br>• executable-memory behavior<br>• dynamic code generation<br>• new file formats / architecture support<br>• detection-evasion claims
+</div>
+<h2>EVENT STREAM</h2><div class="card timeline" id="log"></div>
+<h2>NIST GATE</h2><div class="card small"><b class="ok">GOVERN • MAP • MEASURE • MANAGE</b><br>All conclusions remain source-labeled, uncertainty-aware, reviewable, and human-authorized.</div>
+</aside>
+</main>
+<footer><span>Source: github.com/sonoxo/Shoggoth • public repository metadata only</span><span>GPT-DOUG // HUMAN-FIRST DEFENSIVE BRIDGE</span></footer>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function log(m){const d=document.createElement('div');d.className='log';d.textContent=new Date().toLocaleTimeString()+'  '+m;$('log').prepend(d);while($('log').children.length>14)$('log').lastChild.remove()}
+async function get(url){const r=await fetch(url,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!r.ok)throw Error('GitHub '+r.status);return r.json()}
+async function refresh(){
+ try{
+  $('repoState').textContent='SYNCING';$('bridge').textContent='SYNCING';
+  const [repo,commits]=await Promise.all([
+   get('https://api.github.com/repos/sonoxo/Shoggoth'),
+   get('https://api.github.com/repos/sonoxo/Shoggoth/commits?per_page=8')
+  ]);
+  $('branch').textContent=repo.default_branch||'—';$('visibility').textContent=repo.visibility||'—';$('issues').textContent=repo.open_issues_count??'—';$('pushed').textContent=repo.pushed_at?new Date(repo.pushed_at).toLocaleString():'—';
+  $('commits').innerHTML=(commits||[]).map(c=>'<div class="commit"><b>'+esc((c.sha||'').slice(0,8))+'</b> '+esc((c.commit&&c.commit.message||'').split('\n')[0])+'<br><span class="small">'+esc(c.commit&&c.commit.author&&c.commit.author.date?new Date(c.commit.author.date).toLocaleString():'')+'</span></div>').join('')||'<div class="small">No commit metadata returned.</div>';
+  $('repoState').textContent='LIVE';$('bridge').textContent='LIVE';log('Shoggoth repository metadata synchronized');
+ }catch(e){$('repoState').textContent='ERROR';$('bridge').textContent='ERROR';log('Repository sync failed: '+e.message)}
+}
+$('refresh').onclick=refresh;setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString()},1000);setInterval(refresh,120000);log('Defensive Shoggoth bridge initialized');refresh();
+</script><script src="/quantum-renderer.js"></script>\n</body></html>

@@ -1,0 +1,351 @@
+#!/bin/sh
+set -eu
+
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+BASELINE="$ROOT/compliance/govsec-ai-baseline.json"
+STATE_DIR="$ROOT/.govsec"
+REPORT_DIR="$STATE_DIR/reports"
+EVIDENCE_DIR="$STATE_DIR/evidence"
+CLASSIFICATION="${GPTDOUG_DATA_CLASSIFICATION:-PUBLIC}"
+
+if [ -t 1 ]; then
+  C0="$(printf '\033[0m')"; C1="$(printf '\033[36m')"; C2="$(printf '\033[32m')"
+  C3="$(printf '\033[33m')"; C4="$(printf '\033[31m')"; C5="$(printf '\033[35m')"
+else
+  C0=""; C1=""; C2=""; C3=""; C4=""; C5=""
+fi
+
+say(){ printf '%s\n' "$*"; }
+line(){ printf '%s\n' "--------------------------------------------------------------------------------"; }
+pass(){ printf '%s[PASS]%s %s\n' "$C2" "$C0" "$*"; }
+warn(){ printf '%s[WARN]%s %s\n' "$C3" "$C0" "$*"; }
+block(){ printf '%s[BLOCK]%s %s\n' "$C4" "$C0" "$*"; }
+info(){ printf '%s[INFO]%s %s\n' "$C1" "$C0" "$*"; }
+external(){ printf '%s[EXTERNAL]%s %s\n' "$C5" "$C0" "$*"; }
+die(){ block "$*"; exit 1; }
+
+need_repo(){
+  [ -d "$ROOT/.git" ] || die "GPT-Doug repo not found at $ROOT"
+  [ -f "$BASELINE" ] || die "baseline missing: $BASELINE"
+  cd "$ROOT"
+}
+
+count_lines(){
+  if [ -z "${1:-}" ]; then printf '0'; else printf '%s\n' "$1" | awk 'NF{n++} END{print n+0}'; fi
+}
+
+class_gate(){
+  case "$CLASSIFICATION" in
+    PUBLIC) pass "Data classification: PUBLIC" ;;
+    FCI) warn "Data classification: FCI — contract-specific controls still apply." ;;
+    CUI) warn "Data classification: CUI — use only an approved scoped enclave; this shell does not authorize the environment." ;;
+    NSS) block "Data classification: NSS — authorization boundary, overlays, crypto, and Authorizing Official evidence are required." ;;
+    CLASSIFIED) block "CLASSIFIED selected — do not use the public GitHub/Render prototype. Use an approved classified environment." ;;
+    *) die "Unknown GPTDOUG_DATA_CLASSIFICATION=$CLASSIFICATION" ;;
+  esac
+}
+
+repo_checks(){
+  need_repo
+  line
+  say "$C1 GPT-DOUG // REPOSITORY + SUPPLY-CHAIN CHECKS $C0"
+  line
+
+  branch="$(git branch --show-current 2>/dev/null || printf unknown)"
+  sha="$(git rev-parse --short HEAD 2>/dev/null || printf unknown)"
+  info "Branch: $branch  Commit: $sha"
+
+  if [ -z "$(git status --porcelain 2>/dev/null)" ]; then pass "Working tree clean"; else warn "Working tree has uncommitted changes"; fi
+
+  if [ -f SECURITY.md ]; then pass "SECURITY.md present"; else warn "SECURITY.md missing"; fi
+  if [ -f SECURITY_REVIEW.md ]; then pass "SECURITY_REVIEW.md present"; else warn "SECURITY_REVIEW.md missing"; fi
+
+  lock=0
+  for f in package-lock.json npm-shrinkwrap.json pnpm-lock.yaml yarn.lock requirements.lock poetry.lock uv.lock Pipfile.lock Cargo.lock go.sum; do
+    if [ -f "$f" ]; then lock=$((lock+1)); fi
+  done
+  if [ "$lock" -gt 0 ]; then pass "Dependency lock evidence found ($lock file(s))"; else warn "No recognized dependency lock file found at repo root"; fi
+
+  workflow_count="$(find .github/workflows -type f 2>/dev/null | wc -l | tr -d ' ')"
+  if [ "${workflow_count:-0}" -gt 0 ]; then pass "CI workflows present ($workflow_count)"; else warn "No GitHub Actions workflows detected"; fi
+
+  sbom_files="$(git ls-files 2>/dev/null | grep -Ei '(^|/)(sbom|bom)[^/]*\.(json|xml)$|\.(spdx|cdx)\.json$' || true)"
+  sbom_count="$(count_lines "$sbom_files")"
+  if [ "$sbom_count" -gt 0 ]; then pass "SBOM artifact(s) tracked ($sbom_count)"; else warn "No tracked SBOM artifact detected"; fi
+
+  key_files="$(git grep -I -l -E 'BEGIN ([A-Z0-9 ]+ )?PRIVATE KEY' -- . 2>/dev/null || true)"
+  key_count="$(count_lines "$key_files")"
+  if [ "$key_count" -eq 0 ]; then pass "No tracked private-key marker found"; else block "Potential private key material in $key_count tracked file(s)"; fi
+
+  secret_files="$(git grep -I -l -E '(gh[pousr]_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16})' -- . 2>/dev/null || true)"
+  secret_count="$(count_lines "$secret_files")"
+  if [ "$secret_count" -eq 0 ]; then pass "No common GitHub/AWS token pattern found"; else block "Potential credential pattern in $secret_count tracked file(s). Values intentionally not printed."; fi
+
+  if command -v git >/dev/null 2>&1; then pass "git available"; fi
+  if command -v python3 >/dev/null 2>&1; then pass "python3 available"; else warn "python3 unavailable"; fi
+  if command -v npm >/dev/null 2>&1; then info "npm available"; else info "npm not installed"; fi
+  if command -v syft >/dev/null 2>&1; then pass "syft available for SBOM generation"; else external "syft not installed (optional)"; fi
+  if command -v trivy >/dev/null 2>&1; then pass "trivy available for vuln/config scans"; else external "trivy not installed (optional)"; fi
+  if command -v gitleaks >/dev/null 2>&1; then pass "gitleaks available for secret scanning"; else external "gitleaks not installed (optional)"; fi
+}
+
+ai_checks(){
+  need_repo
+  line
+  say "$C1 GPT-DOUG // AI GOVERNANCE BASELINE $C0"
+  line
+  pass "NIST AI RMF mapped: GOVERN / MAP / MEASURE / MANAGE"
+  pass "NIST AI 600-1 Generative AI profile included in baseline"
+  pass "NIST SP 800-218 / 218A secure AI software development mapped"
+  if [ -f ORGANOID_INTELLIGENCE_PROJECT.md ]; then pass "AI project provenance/governance artifact present"; else warn "No AI project governance artifact detected"; fi
+  external "DoD Responsible AI assessment requires mission/use-case evidence and accountable owner."
+  external "TEVV adequacy cannot be certified by this shell; attach evaluation plans, results, limitations, and approvals."
+  external "AI RMF 1.0 is under revision; pin the version used in each assessment package."
+}
+
+cui_checks(){
+  need_repo
+  line
+  say "$C1 GPT-DOUG // FCI / CUI / DOD CONTRACTOR LAYER $C0"
+  line
+  class_gate
+  pass "CMMC / 32 CFR Part 170 included in baseline"
+  pass "DFARS 252.204-7012/7019/7020/7021/7025 included in clause map"
+  external "Contract decides applicable clauses, CMMC level, assessment type, and required NIST revision."
+  external "SSP, CUI boundary, SPRS/CMMC status, POA&M, incident-reporting and flow-down evidence require organizational records."
+  if [ "$CLASSIFICATION" = "PUBLIC" ]; then info "Current shell mode is PUBLIC; CUI controls are planning-only." fi
+}
+
+zero_trust_checks(){
+  line
+  say "$C1 GPT-DOUG // ZERO TRUST + NSS LAYER $C0"
+  line
+  pass "DoD Zero Trust strategy mapped"
+  pass "NIST SP 800-53 / 800-53A control + assessment layer mapped"
+  pass "DISA STIG/SRG hardening layer mapped"
+  pass "FIPS 140-3 cryptographic-module requirement mapped"
+  pass "FedRAMP + DoD Cloud SRG cloud layer mapped"
+  external "FIPS validation must be proven by the actual cryptographic module/CMVP record."
+  external "STIG compliance is technology/environment specific and needs scan/checklist evidence."
+  external "FedRAMP/DoD Cloud authorization status is service-specific."
+  external "NSS/classified use requires separate mission, classification, CNSS/NSA/DoD overlays, approved crypto, and authorization."
+}
+
+init_evidence(){
+  need_repo
+  mkdir -p "$EVIDENCE_DIR"/ai "$EVIDENCE_DIR"/cui "$EVIDENCE_DIR"/rmf "$EVIDENCE_DIR"/supply-chain "$EVIDENCE_DIR"/zero-trust "$EVIDENCE_DIR"/cloud "$REPORT_DIR"
+  cat > "$EVIDENCE_DIR/README.md" <<'EOF'
+# GPT-DOUG GovSec Evidence Workspace
+
+Evidence collection only. Presence of a file here does not establish compliance, certification, FedRAMP authorization, CMMC status, FIPS validation, RMF authorization, ATO, or classified-system approval.
+
+Suggested evidence:
+- ai/: system cards, RAI assessment, TEVV plans/results, model limitations, human-oversight records
+- cui/: scope, SSP, CUI boundary, assessment evidence, POA&M, incident plan, supplier flow-downs
+- rmf/: control matrix, assessment plan/results, authorization artifacts
+- supply-chain/: SBOM, build attestations, dependency/vulnerability reports, signed-release evidence
+- zero-trust/: identity, device posture, segmentation, least privilege, telemetry, continuous-auth evidence
+- cloud/: provider authorization, impact-level decision, shared-responsibility matrix
+EOF
+  pass "Evidence workspace created at $EVIDENCE_DIR"
+}
+
+report(){
+  need_repo
+  mkdir -p "$REPORT_DIR"
+  ts="$(date -u '+%Y%m%dT%H%M%SZ')"
+  iso="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+  branch="$(git branch --show-current 2>/dev/null || printf unknown)"
+  sha="$(git rev-parse HEAD 2>/dev/null || printf unknown)"
+  dirty="no"; [ -n "$(git status --porcelain 2>/dev/null)" ] && dirty="yes"
+  key_files="$(git grep -I -l -E 'BEGIN ([A-Z0-9 ]+ )?PRIVATE KEY' -- . 2>/dev/null || true)"
+  secret_files="$(git grep -I -l -E '(gh[pousr]_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16})' -- . 2>/dev/null || true)"
+  key_count="$(count_lines "$key_files")"; secret_count="$(count_lines "$secret_files")"
+  out="$REPORT_DIR/govsec-$ts.md"
+  cat > "$out" <<EOF
+# GPT-DOUG GovSec Engineering Report
+
+Generated: $iso  
+Classification mode: $CLASSIFICATION  
+Branch: $branch  
+Commit: $sha  
+Working tree dirty: $dirty
+
+## Local automated checks
+- Potential tracked private-key marker files: $key_count
+- Potential common credential-pattern files: $secret_count
+- SECURITY.md: $([ -f SECURITY.md ] && printf present || printf missing)
+- SECURITY_REVIEW.md: $([ -f SECURITY_REVIEW.md ] && printf present || printf missing)
+- Baseline catalog: compliance/govsec-ai-baseline.json
+
+## Mapped frameworks
+- NIST AI RMF 1.0
+- NIST AI 600-1 Generative AI Profile
+- NIST SP 800-218 / 800-218A SSDF
+- NIST SP 800-53 Rev. 5 / SP 800-53A
+- NIST SP 800-171
+- CMMC / 32 CFR Part 170
+- DFARS 252.204-7012 / 7019 / 7020 / 7021 / 7025
+- DoD Zero Trust Strategy
+- DISA STIG / SRG
+- FIPS 140-3
+- FedRAMP + DoD Cloud SRG
+- National Security Systems overlays (mission-specific)
+- DoD Responsible AI
+
+## Important
+This report is engineering evidence only. It is not a CMMC certificate, SPRS score,
+FedRAMP authorization, FIPS validation, RMF authorization/ATO, classified-system
+approval, or legal determination of contract applicability.
+EOF
+  pass "Report written: $out"
+}
+
+standards(){
+  line
+  say "$C1 GPT-DOUG // GOVERNMENT + NATIONAL SECURITY AI CONTROL CATALOG $C0"
+  line
+  cat <<'EOF'
+AI GOVERNANCE
+  NIST AI RMF 1.0
+  NIST AI 600-1 Generative AI Profile
+  DoD Responsible AI Pathway / Toolkit
+
+SECURE SOFTWARE / SUPPLY CHAIN
+  NIST SP 800-218 SSDF
+  NIST SP 800-218A (AI / dual-use foundation model profile)
+
+FEDERAL / RMF
+  NIST SP 800-53 Rev. 5
+  NIST SP 800-53A
+  FIPS 140-3
+
+DOD CONTRACTOR / CUI
+  FAR 52.204-21
+  NIST SP 800-171
+  CMMC / 32 CFR Part 170
+  DFARS 252.204-7012 / 7019 / 7020 / 7021 / 7025
+
+DOD / NSS ARCHITECTURE
+  DoD Zero Trust Strategy
+  DISA STIG / SRG
+  FedRAMP + DoD Cloud SRG
+  CNSS / NSA / mission-specific NSS overlays
+
+CLASSIFIED
+  Separate approved environment, authorization boundary, approved crypto,
+  personnel/facility/process controls, and agency-specific authorization.
+  Never use the public demo as a classified environment.
+EOF
+}
+
+docs(){
+  cat <<'EOF'
+OFFICIAL REFERENCES
+NIST AI RMF:       https://www.nist.gov/itl/ai-risk-management-framework
+NIST AI 600-1:    https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence
+NIST SSDF:        https://csrc.nist.gov/projects/ssdf
+NIST SP 800-53:   https://csrc.nist.gov/pubs/sp/800/53/r5/final
+NIST SP 800-171:  https://csrc.nist.gov/pubs/sp/800/171/r3/final
+FIPS 140-3:       https://csrc.nist.gov/pubs/fips/140-3/final
+CMMC:             https://dodcio.defense.gov/CMMC/
+DFARS:            https://www.acquisition.gov/dfars/part-252-solicitation-provisions-and-contract-clauses
+DoD Zero Trust:   https://dodcio.defense.gov/Zero-Trust/
+DISA STIG:        https://public.cyber.mil/stigs/
+FedRAMP:          https://www.fedramp.gov/
+DoD RAI:          https://www.ai.mil/Initiatives/About/Resources/Pathway-to-AI-Readiness/Responsible-AI/
+CNSS:             https://www.cnss.gov/
+EOF
+}
+
+dashboard(){
+  need_repo
+  while :; do
+    clear 2>/dev/null || true
+    say "$C1"
+    say " ██████╗ ██████╗ ████████╗      ██████╗  ██████╗ ██╗   ██╗ ██████╗ "
+    say "██╔════╝ ██╔══██╗╚══██╔══╝      ██╔══██╗██╔═══██╗██║   ██║██╔════╝ "
+    say "██║  ███╗██████╔╝   ██║   █████╗██║  ██║██║   ██║██║   ██║██║  ███╗"
+    say "██║   ██║██╔═══╝    ██║   ╚════╝██║  ██║██║   ██║██║   ██║██║   ██║"
+    say "╚██████╔╝██║        ██║         ██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝"
+    say " ╚═════╝ ╚═╝        ╚═╝         ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝ "
+    say "$C0"
+    say "$C5 NATIONAL SECURITY AI // COMPLIANCE ENGINEERING SHELL $C0"
+    say "Authority: HUMAN-FIRST   Classification mode: $CLASSIFICATION"
+    line
+    class_gate
+    say
+    say "  1) Full local scan"
+    say "  2) AI governance layer"
+    say "  3) FCI/CUI/CMMC/DFARS layer"
+    say "  4) Zero Trust / RMF / NSS layer"
+    say "  5) Standards catalog"
+    say "  6) Initialize evidence workspace"
+    say "  7) Generate engineering report"
+    say "  8) Official references"
+    say "  q) Quit"
+    say
+    printf "govsec> "
+    read ans || exit 0
+    case "$ans" in
+      1) full_scan ;;
+      2) ai_checks ;;
+      3) cui_checks ;;
+      4) zero_trust_checks ;;
+      5) standards ;;
+      6) init_evidence ;;
+      7) report ;;
+      8) docs ;;
+      q|Q) exit 0 ;;
+      *) warn "Unknown selection" ;;
+    esac
+    say
+    printf "Press ENTER to return to menu..."
+    read _ || exit 0
+  done
+}
+
+full_scan(){
+  repo_checks
+  ai_checks
+  cui_checks
+  zero_trust_checks
+  line
+  warn "Result is an engineering readiness scan, not a compliance certification."
+}
+
+case "${1:-dashboard}" in
+  dashboard) dashboard ;;
+  scan|doctor) full_scan ;;
+  ai) ai_checks ;;
+  cui|cmmc|dfars) cui_checks ;;
+  zero-trust|rmf|nss) zero_trust_checks ;;
+  standards) standards ;;
+  init-evidence) init_evidence ;;
+  report) report ;;
+  docs|references) docs ;;
+  help|-h|--help)
+    cat <<'EOF'
+Usage: gpt-doug-govsec [command]
+
+Commands:
+  dashboard      interactive shell
+  scan|doctor    full local engineering-readiness scan
+  ai             AI governance checks
+  cui            FCI/CUI/CMMC/DFARS layer
+  zero-trust     Zero Trust/RMF/NSS layer
+  standards      show mapped standards
+  init-evidence  create local evidence workspace
+  report         write a timestamped Markdown engineering report
+  docs           official reference URLs
+
+Environment:
+  GPTDOUG_HOME=/path/to/gpt-doug-llm
+  GPTDOUG_DATA_CLASSIFICATION=PUBLIC|FCI|CUI|NSS|CLASSIFIED
+
+This tool does not grant certifications, ATOs, CMMC status, FedRAMP authorization,
+FIPS validation, or permission to process classified information.
+EOF
+    ;;
+  *) die "Unknown command: $1 (use --help)" ;;
+esac
