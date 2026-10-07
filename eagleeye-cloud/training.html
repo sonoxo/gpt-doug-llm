@@ -47,4 +47,4 @@ document.getElementById('conf').textContent=(90+Math.random()*7).toFixed(1)+'%';
 document.getElementById('spawn').onclick=()=>{units.push({x:Math.random(),y:Math.random(),vx:(Math.random()-.5)*.0008,vy:(Math.random()-.5)*.0008,t:Math.random()>.5?1:0});document.getElementById('units').textContent=units.length;addLog('Synthetic unit spawned')};
 document.getElementById('incident').onclick=()=>{incs++;document.getElementById('incs').textContent=incs;addLog('Synthetic incident injected for analysis')};
 document.getElementById('reset').onclick=()=>location.reload();addLog('Training range initialized');draw();
-</script></body></html>
+</script><script src="/quantum-renderer.js"></script>\n</body></html>
