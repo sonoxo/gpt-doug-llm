@@ -260,44 +260,49 @@ EOF
 
 dashboard(){
   need_repo
-  clear 2>/dev/null || true
-  say "$C1"
-  say " ██████╗ ██████╗ ████████╗      ██████╗  ██████╗ ██╗   ██╗ ██████╗ "
-  say "██╔════╝ ██╔══██╗╚══██╔══╝      ██╔══██╗██╔═══██╗██║   ██║██╔════╝ "
-  say "██║  ███╗██████╔╝   ██║   █████╗██║  ██║██║   ██║██║   ██║██║  ███╗"
-  say "██║   ██║██╔═══╝    ██║   ╚════╝██║  ██║██║   ██║██║   ██║██║   ██║"
-  say "╚██████╔╝██║        ██║         ██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝"
-  say " ╚═════╝ ╚═╝        ╚═╝         ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝ "
-  say "$C0"
-  say "$C5 NATIONAL SECURITY AI // COMPLIANCE ENGINEERING SHELL $C0"
-  say "Authority: HUMAN-FIRST   Classification mode: $CLASSIFICATION"
-  line
-  class_gate
-  say
-  say "  1) Full local scan"
-  say "  2) AI governance layer"
-  say "  3) FCI/CUI/CMMC/DFARS layer"
-  say "  4) Zero Trust / RMF / NSS layer"
-  say "  5) Standards catalog"
-  say "  6) Initialize evidence workspace"
-  say "  7) Generate engineering report"
-  say "  8) Official references"
-  say "  q) Quit"
-  say
-  printf "govsec> "
-  read ans || exit 0
-  case "$ans" in
-    1) repo_checks ;;
-    2) ai_checks ;;
-    3) cui_checks ;;
-    4) zero_trust_checks ;;
-    5) standards ;;
-    6) init_evidence ;;
-    7) report ;;
-    8) docs ;;
-    q|Q) exit 0 ;;
-    *) warn "Unknown selection" ;;
-  esac
+  while :; do
+    clear 2>/dev/null || true
+    say "$C1"
+    say " ██████╗ ██████╗ ████████╗      ██████╗  ██████╗ ██╗   ██╗ ██████╗ "
+    say "██╔════╝ ██╔══██╗╚══██╔══╝      ██╔══██╗██╔═══██╗██║   ██║██╔════╝ "
+    say "██║  ███╗██████╔╝   ██║   █████╗██║  ██║██║   ██║██║   ██║██║  ███╗"
+    say "██║   ██║██╔═══╝    ██║   ╚════╝██║  ██║██║   ██║██║   ██║██║   ██║"
+    say "╚██████╔╝██║        ██║         ██████╔╝╚██████╔╝╚██████╔╝╚██████╔╝"
+    say " ╚═════╝ ╚═╝        ╚═╝         ╚═════╝  ╚═════╝  ╚═════╝  ╚═════╝ "
+    say "$C0"
+    say "$C5 NATIONAL SECURITY AI // COMPLIANCE ENGINEERING SHELL $C0"
+    say "Authority: HUMAN-FIRST   Classification mode: $CLASSIFICATION"
+    line
+    class_gate
+    say
+    say "  1) Full local scan"
+    say "  2) AI governance layer"
+    say "  3) FCI/CUI/CMMC/DFARS layer"
+    say "  4) Zero Trust / RMF / NSS layer"
+    say "  5) Standards catalog"
+    say "  6) Initialize evidence workspace"
+    say "  7) Generate engineering report"
+    say "  8) Official references"
+    say "  q) Quit"
+    say
+    printf "govsec> "
+    read ans || exit 0
+    case "$ans" in
+      1) full_scan ;;
+      2) ai_checks ;;
+      3) cui_checks ;;
+      4) zero_trust_checks ;;
+      5) standards ;;
+      6) init_evidence ;;
+      7) report ;;
+      8) docs ;;
+      q|Q) exit 0 ;;
+      *) warn "Unknown selection" ;;
+    esac
+    say
+    printf "Press ENTER to return to menu..."
+    read _ || exit 0
+  done
 }
 
 full_scan(){
