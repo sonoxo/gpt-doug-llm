@@ -1,0 +1,58 @@
+{
+  "schema": "xunia.gpt-doug-maven-gotham.instrumentation.v1",
+  "updated_at": "2026-09-30",
+  "source_id": "uspto-US-20230058539-A1",
+  "mode": "SAFE_FIELD_INSTRUMENTATION_ARCHITECTURE_WATCH",
+  "pipeline": [
+    "AUTHORIZED_OR_SIMULATED_SENSORS",
+    "CALIBRATION_AND_HEALTH_CHECK",
+    "EDGE_FIRMWARE_OR_DEVICE_ADAPTER",
+    "NORMALIZED_TELEMETRY_VECTOR",
+    "ENVIRONMENTAL_CONTEXT",
+    "MAVEN_FUSION",
+    "GOTHAM_SIMULATION_VIEW",
+    "HUMAN_REVIEW",
+    "LOCAL_AND_CLOUD_ARCHIVE"
+  ],
+  "reusable_patterns": [
+    "multi-sensor fusion",
+    "sensor calibration before analysis",
+    "edge firmware separated from operator application",
+    "environmental context enrichment",
+    "single-page operator dashboard",
+    "statistical telemetry summaries",
+    "wired and wireless adapter abstraction",
+    "camera and environmental sensor ingestion",
+    "local plus cloud archival",
+    "timestamped provenance"
+  ],
+  "permitted_inputs": [
+    "environmental sensors",
+    "orientation sensors",
+    "authorized platform health telemetry",
+    "authorized camera status or imagery metadata",
+    "simulated motion telemetry",
+    "coarse public geospatial context"
+  ],
+  "blocked_inputs_or_outputs": [
+    "weapon telemetry",
+    "projectile telemetry",
+    "precise target coordinates",
+    "personnel tracking",
+    "ballistic solution",
+    "aim correction",
+    "fire-control cue",
+    "target designation",
+    "weapon command"
+  ],
+  "controls": {
+    "human_review_required": true,
+    "provenance_required": true,
+    "calibration_state_required": true,
+    "external_actuation": false,
+    "weapon_control": false,
+    "fire_control": false,
+    "target_generation": false,
+    "person_level_tracking": false
+  }
+}

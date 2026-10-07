@@ -166,6 +166,7 @@ def print_summary(source: dict) -> None:
     print("  zyrapalantir patent-intel list")
     print("  zyrapalantir patent-intel attributed")
     print("  zyrapalantir patent-intel eligibility-engine")
+    print("  zyrapalantir patent-intel runtime-environment")
     print("  zyrapalantir patent-intel themes")
     print("  zyrapalantir patent-intel search governance")
     print("  zyrapalantir patent-intel search migration")
@@ -232,6 +233,29 @@ def print_attributed() -> None:
         print(f"Watch ............ {source.get('architecture_watch', {}).get('name')}")
     print("\nCurrent ownership  NOT INFERRED BEYOND DOCUMENT FIELDS")
     print("Claim conclusions  NOT PERFORMED")
+
+
+def print_runtime_environment() -> None:
+    source = find_attributed("US-12748581-B2")
+    watch = source.get("architecture_watch", {})
+    facts = source.get("source_facts", {})
+    print("GPT-MAVEN // RUNTIME ENVIRONMENT ARCHITECTURE WATCH")
+    print("==================================================")
+    print(f"Source document .. {source.get('document_number')}")
+    print(f"Applicant ........ {source.get('applicant', {}).get('name')}")
+    print(f"Assignee ......... {source.get('assignee', {}).get('name')}")
+    print(f"Pattern .......... {watch.get('name')}")
+    print("\nSource-supported lifecycle:")
+    for item in facts.get("core_flow", []):
+        print(f"  - {item}")
+    print("\nOperator/lifecycle loop:")
+    for item in facts.get("operator_loop", []):
+        print(f"  - {item}")
+    print("\nGPT-MAVEN independent-design mapping:")
+    for mapping in watch.get("gpt_doug_mapping", []):
+        print(f"  - {mapping}")
+    print("\nGuardrail ........ architecture watch only; no claim copying")
+    print("Review ........... human review required for claim-level/FTO analysis")
 
 
 def print_eligibility_engine() -> None:
@@ -351,7 +375,7 @@ def main() -> int:
         "command",
         nargs="?",
         default="summary",
-        choices=["summary", "list", "attributed", "eligibility-engine", "themes", "search", "json", "doctor"],
+        choices=["summary", "list", "attributed", "eligibility-engine", "runtime-environment", "themes", "search", "json", "doctor"],
     )
     parser.add_argument("terms", nargs="*")
     args = parser.parse_args()
@@ -367,6 +391,9 @@ def main() -> int:
         return 0
     if args.command == "eligibility-engine":
         print_eligibility_engine()
+        return 0
+    if args.command == "runtime-environment":
+        print_runtime_environment()
         return 0
     if args.command == "themes":
         print_themes(source)

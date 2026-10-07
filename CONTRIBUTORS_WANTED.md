@@ -25,6 +25,11 @@ Open contributor lanes:
 - cyber-range / intentionally vulnerable lab engineering
 - resilience digital twins and recovery simulation
 - compliance and control mapping
+- NSS governance and authority-boundary mapping using public sources only
+- vulnerability coordination, disclosure, triage and remediation evidence
+- NIST SP 800-171 / CMMC evidence engineering without assessment or certification claims
+- post-quantum cryptography inventory, algorithm agility and migration simulation
+- AI cybersecurity evaluation, controllability, auditability and human-approval gates
 - audit, CI, testing, documentation and explainers
 - accessibility and beginner operations
 - software supply-chain defense
@@ -32,6 +37,8 @@ Open contributor lanes:
 Public contribution work must remain defensive, simulated, local, owned, or explicitly authorized. Public references, policy documents, agent names, prompts, and repository labels do not create operational authority.
 
 The **Tech Force Authority Gate** is a repository-integrity check. A green gate means the checked files preserve the declared fail-closed policy; it does **not** mean a contributor, repository, organization, or operation has government approval, contractual authority, clearance, or permission to access any external system.
+
+For cryptography, Federal cybersecurity, NSS, DoD/DoW, CMMC, or AI-security references, contributors must label work as **public-policy mapping / local engineering evidence** unless a separately verifiable contract, authorization, certification, accreditation, or government designation exists.
 
 Additional ecosystem contributor resources:
 

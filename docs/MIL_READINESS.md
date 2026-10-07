@@ -4,6 +4,9 @@ Status: **engineering roadmap — not an authorization, accreditation, or milita
 
 ZYRAPALANTIR is being developed as a defensive mission-assurance and intelligence-fusion control plane. The current demo uses synthetic/unclassified data, Palantir Foundry Maven artifact verification, Glass Onion ontology validation, GPT-REDPANDA CPR, and human-reviewed defensive recommendations.
 
+Cyber-defense operating doctrine: [`CYBER_DEFENSE_READINESS.md`](CYBER_DEFENSE_READINESS.md)  
+Machine-readable defensive policy: [`../safety-shield/policies/cyber-defense-readiness.json`](../safety-shield/policies/cyber-defense-readiness.json)
+
 ## Current demonstrable capability
 
 - Defensive software profile activation with fail-closed checks.
@@ -46,7 +49,7 @@ Add unit/integration tests, dependency locking, SBOM generation, signed releases
 
 ### M2 — Enterprise Security Baseline
 
-Integrate approved identity provider, MFA, RBAC/ABAC, service accounts, secret manager, centralized logging, alerting, backup/restore, key rotation, network policy, and documented incident response.
+Integrate approved identity provider, MFA, RBAC/ABAC, service accounts, secret manager, centralized logging, alerting, backup/restore, key rotation, network policy, and documented incident response. Apply the `CyberDefenseReadiness` policy for vulnerability prioritization, authorized containment, evidence preservation, recovery exercises, and fail-closed external-action boundaries.
 
 ### M3 — RMF Evidence Package
 

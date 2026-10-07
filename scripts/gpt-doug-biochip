@@ -1,0 +1,102 @@
+#!/bin/sh
+set -eu
+
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+BRANCH="${GPTDOUG_BRANCH:-cloud/eagleeye-free}"
+WEB_DIR="$ROOT/eagleeye-cloud"
+PAGE="organoid-intelligence-lab.html"
+LOG="${TMPDIR:-/tmp}/gpt-doug-biochip-http.log"
+PIDFILE="${TMPDIR:-/tmp}/gpt-doug-biochip-http.pid"
+
+say(){ printf '%s\n' "$*"; }
+die(){ say "ERROR: $*" >&2; exit 1; }
+
+command -v git >/dev/null 2>&1 || die "git is required"
+command -v python3 >/dev/null 2>&1 || die "python3 is required"
+[ -d "$ROOT/.git" ] || die "repo not found at $ROOT"
+cd "$ROOT"
+
+say "GPT-DOUG // BIOCHIP HARDWIRED LAUNCHER"
+say "repo: $ROOT"
+
+git fetch origin "$BRANCH" >/dev/null 2>&1 || die "git fetch failed"
+
+CURRENT="$(git branch --show-current)"
+if [ "$CURRENT" != "$BRANCH" ]; then
+  if [ -n "$(git status --porcelain)" ]; then
+    die "working tree has local changes on $CURRENT. Commit/stash them, then run again."
+  fi
+  git switch "$BRANCH" >/dev/null 2>&1 || git switch -c "$BRANCH" --track "origin/$BRANCH" >/dev/null 2>&1 || die "cannot switch to $BRANCH"
+fi
+
+git pull --ff-only origin "$BRANCH" >/dev/null 2>&1 || die "fast-forward pull failed"
+[ -f "$WEB_DIR/$PAGE" ] || die "$PAGE missing"
+
+# Static source sanity checks before launch.
+VIEWS="$(grep -o 'data-view="' "$WEB_DIR/$PAGE" | wc -l | tr -d ' ')"
+CHIPS="$(grep -o 'data-chip="' "$WEB_DIR/$PAGE" | wc -l | tr -d ' ')"
+AGENTS="$(grep -o 'data-agent="' "$WEB_DIR/$PAGE" | wc -l | tr -d ' ')"
+[ "$VIEWS" -eq 6 ] || die "view wiring check failed: $VIEWS/6"
+[ "$CHIPS" -eq 6 ] || die "biochip wiring check failed: $CHIPS/6"
+[ "$AGENTS" -eq 8 ] || die "agent wiring check failed: $AGENTS/8"
+
+PORT="${GPTDOUG_PORT:-8080}"
+if command -v curl >/dev/null 2>&1 && curl -fsS "http://127.0.0.1:$PORT/$PAGE" >/dev/null 2>&1; then
+  say "reusing existing local server on port $PORT"
+else
+  if command -v lsof >/dev/null 2>&1; then
+    while lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1; do
+      PORT=$((PORT + 1))
+    done
+  fi
+
+  nohup python3 -m http.server "$PORT" -d "$WEB_DIR" >"$LOG" 2>&1 &
+  PID=$!
+  printf '%s\n' "$PID" >"$PIDFILE"
+
+  READY=0
+  i=0
+  while [ "$i" -lt 30 ]; do
+    if command -v curl >/dev/null 2>&1; then
+      if curl -fsS "http://127.0.0.1:$PORT/$PAGE" >/dev/null 2>&1; then READY=1; break; fi
+    else
+      sleep 1
+      READY=1
+      break
+    fi
+    i=$((i + 1))
+    sleep 0.2
+  done
+  [ "$READY" -eq 1 ] || { cat "$LOG" >&2 2>/dev/null || true; die "local server did not start"; }
+fi
+
+BASE="http://127.0.0.1:$PORT"
+URL="$BASE/$PAGE?selftest=1"
+
+say ""
+say "END-TO-END STATIC CHECK"
+say "  anatomy views : $VIEWS/6"
+say "  biochip nodes : $CHIPS/6"
+say "  agent stages  : $AGENTS/8"
+
+if command -v curl >/dev/null 2>&1; then
+  for route in "/" "/$PAGE" "/nolimits-robotics.html" "/dots-neural-lab.html"; do
+    if curl -fsS "$BASE$route" >/dev/null 2>&1; then
+      say "  route         : PASS $route"
+    else
+      say "  route         : FAIL $route"
+      exit 1
+    fi
+  done
+fi
+
+say ""
+say "LAUNCH URL: $URL"
+say "KEYS: 1-6 anatomy views | P pulse | X explode | R rotate | T self-test"
+say "BROWSER CONSOLE API: GPT_DOUG.status() / GPT_DOUG.runSelfTest()"
+
+if command -v open >/dev/null 2>&1; then
+  open "$URL"
+elif command -v xdg-open >/dev/null 2>&1; then
+  xdg-open "$URL" >/dev/null 2>&1 &
+fi

@@ -1,8 +1,8 @@
 # TECH FORCE // OPEN CALL ORDERS
 
 **Status:** OPEN  
-**Issued:** 2026-09-07  
-**Program type:** Civilian/open-source engineering contributor program  
+**Issued:** 2026-09-23  
+**Program type:** civilian/open-source engineering contributor program  
 **Authority boundary:** See [ECOSYSTEM_DISCLAIMER.md](ECOSYSTEM_DISCLAIMER.md)
 
 > **Tech Force is not a military unit or government program. Open Call Orders are scoped engineering work orders, not military orders or authorization to access third-party systems.**
@@ -118,6 +118,66 @@ Do not conduct unsanctioned intrusion, persistence, disruption, destructive effe
 - release verification and rollback documentation;
 - tests that fail closed on missing integrity evidence.
 
+## OPEN CALL ORDER TF-009 // NSS GOVERNANCE MAPPING
+
+**Objective:** Map public National Security Systems governance concepts into the ecosystem without implying government status.
+
+**Deliverables:**
+- ontology objects for `NSS`, `CNSS`, `NationalManager`, `GovernanceRole`, and `AuthorityBoundary`;
+- public-source provenance and date tracking;
+- tests preventing claims of NSS access, designation, CNSS membership, clearance, or Federal authorization.
+
+**Boundary:** public-policy mapping only; no NSS access, credentials, or operational integration.
+
+## OPEN CALL ORDER TF-010 // VULNERABILITY COORDINATION LAB
+
+**Objective:** Build a defensive vulnerability intake, triage, provenance, prioritization, disclosure, and remediation workflow modeled on public Federal coordination concepts.
+
+**Deliverables:**
+- local vulnerability intake schema;
+- provenance and severity tracking;
+- remediation evidence and disclosure workflow;
+- synthetic fixtures and authorized test targets.
+
+**Boundary:** no unsanctioned scanning, exploit deployment, third-party remediation, or access to Federal vulnerability feeds.
+
+## OPEN CALL ORDER TF-011 // CMMC / NIST 800-171 EVIDENCE LAB
+
+**Objective:** Build non-authoritative security evidence and control-mapping tooling for future defense-supply-chain readiness.
+
+**Deliverables:**
+- asset inventory and control-evidence mappings;
+- access-control, audit, configuration, incident, and supply-chain evidence workflows;
+- explicit distinction between local evidence and an actual assessment.
+
+**Boundary:** no claim of CMMC certification, assessment, DIB approval, contract eligibility, or government acceptance.
+
+## OPEN CALL ORDER TF-012 // POST-QUANTUM CRYPTOGRAPHY MIGRATION LAB
+
+**Objective:** Prepare ecosystem software for cryptographic agility and future PQC migration.
+
+**Deliverables:**
+- local cryptographic dependency inventory;
+- identification of key-establishment and digital-signature dependencies;
+- algorithm-agility and migration/rollback tests;
+- cryptographic bill-of-materials experiments;
+- migration-readiness evidence.
+
+**Boundary:** owned/local/synthetic systems only. Do not collect third-party keys, decrypt protected third-party traffic, or test Federal/NSS/critical-infrastructure systems without explicit authorization. EO 14412 and OMB M-26-15 are public policy references, not project authorization.
+
+## OPEN CALL ORDER TF-013 // HUMAN-CONTROLLED AI ASSURANCE LAB
+
+**Objective:** Test AI security, controllability, auditability, approval gates, rollback, and safe simulation patterns.
+
+**Deliverables:**
+- model/system evaluation harnesses;
+- human approval gates for consequential actions;
+- audit and provenance records;
+- fail-closed behavior and rollback tests;
+- synthetic mission and cyber-range scenarios.
+
+**Boundary:** no weapons targeting, autonomous lethal action, mission-system access, or DoD authorization claims.
+
 ---
 
 ## Who should answer the call
@@ -139,7 +199,7 @@ Accepted work receives normal Git/GitHub attribution. Participation does not cre
 
 ## Government-program readiness lane
 
-Contributors may help build **non-operational readiness artifacts** such as compliance mappings, evaluation harnesses, cyber-range simulations, proposal-support documentation, authorization schemas, audit tooling, and defensive prototypes.
+Contributors may help build **non-operational readiness artifacts** such as compliance mappings, evaluation harnesses, cyber-range simulations, proposal-support documentation, authorization schemas, audit tooling, PQC migration planning, and defensive prototypes.
 
 If an actual government-directed cyber program or contract later becomes applicable, operational participation must remain disabled until the specific legal, contractual, vetting, oversight, approval, and target-scope requirements are independently satisfied.
 

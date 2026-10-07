@@ -1,0 +1,127 @@
+:root{
+  --maven-ease:cubic-bezier(.16,1,.3,1);
+  --maven-fast:160ms;
+  --maven-med:300ms;
+  --maven-slow:520ms;
+}
+body.tactical-ui{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(124,231,255,.04),transparent 28%),
+    radial-gradient(circle at 84% 76%,rgba(156,255,170,.03),transparent 32%),
+    linear-gradient(180deg,#030604,#010302);
+}
+body.tactical-ui .top,
+body.tactical-ui .tactical-strip,
+body.tactical-ui .panel,
+body.tactical-ui .tactical-log,
+body.tactical-ui .tactical-hotkeys{
+  backdrop-filter:blur(18px) saturate(120%);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+}
+body.tactical-ui .top{
+  background:linear-gradient(90deg,rgba(3,8,5,.94),rgba(8,17,10,.9),rgba(4,9,6,.94));
+  border-bottom-color:rgba(86,143,101,.32);
+  box-shadow:0 10px 34px rgba(0,0,0,.24);
+}
+body.tactical-ui .panel{
+  border-color:rgba(57,101,68,.5);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(7,15,9,.9),rgba(3,8,5,.94));
+  box-shadow:0 14px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.02);
+  transition:
+    transform var(--maven-med) var(--maven-ease),
+    border-color var(--maven-fast) ease,
+    box-shadow var(--maven-med) var(--maven-ease),
+    opacity var(--maven-fast) ease;
+  transform:translateZ(0);
+}
+body.tactical-ui .panel:hover{
+  transform:translateY(-1px);
+  border-color:rgba(82,137,95,.64);
+  box-shadow:0 22px 58px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03);
+}
+body.tactical-ui .panel-head{
+  background:linear-gradient(90deg,rgba(5,13,7,.96),rgba(9,18,11,.9));
+  border-bottom-color:rgba(60,106,72,.46);
+}
+body.tactical-ui .chip,
+body.tactical-ui .tac-kpi,
+body.tactical-ui .stat,
+body.tactical-ui .source-card,
+body.tactical-ui .map-overlay button,
+body.tactical-ui .simtools button,
+body.tactical-ui .categories button,
+body.tactical-ui .searchbar button,
+body.tactical-ui .panel-focus,
+body.tactical-ui .tactical-hotkeys button{
+  transition:
+    transform var(--maven-fast) var(--maven-ease),
+    border-color var(--maven-fast) ease,
+    background var(--maven-med) var(--maven-ease),
+    color var(--maven-fast) ease,
+    box-shadow var(--maven-med) var(--maven-ease);
+}
+body.tactical-ui .chip:hover,
+body.tactical-ui .tac-kpi:hover,
+body.tactical-ui .stat:hover,
+body.tactical-ui .source-card:hover,
+body.tactical-ui .map-overlay button:hover,
+body.tactical-ui .simtools button:hover,
+body.tactical-ui .categories button:hover,
+body.tactical-ui .searchbar button:hover,
+body.tactical-ui .panel-focus:hover,
+body.tactical-ui .tactical-hotkeys button:hover{
+  transform:translateY(-1px);
+}
+body.tactical-ui .chip:active,
+body.tactical-ui .map-overlay button:active,
+body.tactical-ui .simtools button:active,
+body.tactical-ui .categories button:active,
+body.tactical-ui .searchbar button:active,
+body.tactical-ui .panel-focus:active,
+body.tactical-ui .tactical-hotkeys button:active{
+  transform:scale(.985);
+}
+body.tactical-ui .tactical-strip{
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(5,12,7,.84),rgba(3,8,5,.9));
+  box-shadow:0 10px 26px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.018);
+}
+body.tactical-ui .tac-kpi,
+body.tactical-ui .stat,
+body.tactical-ui .source-card{
+  border-radius:9px;
+  background:linear-gradient(180deg,rgba(7,15,9,.88),rgba(4,9,6,.92));
+}
+body.tactical-ui .tactical-log{
+  border-radius:12px;
+  background:rgba(3,9,5,.9);
+  box-shadow:0 22px 70px rgba(0,0,0,.48);
+  transition:transform var(--maven-med) var(--maven-ease),opacity var(--maven-fast) ease;
+}
+body.tactical-ui .tactical-log.open{
+  transform:translate3d(0,0,0) scale(1);
+}
+body.tactical-ui .map-wrap:after{
+  opacity:.62;
+}
+body.tactical-ui .panel.focused{
+  border-radius:14px!important;
+  box-shadow:0 30px 100px rgba(0,0,0,.62)!important;
+}
+@media(pointer:coarse){
+  body.tactical-ui .panel:hover,
+  body.tactical-ui .chip:hover,
+  body.tactical-ui .tac-kpi:hover,
+  body.tactical-ui .stat:hover,
+  body.tactical-ui .source-card:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  body.tactical-ui .panel,
+  body.tactical-ui .chip,
+  body.tactical-ui .tac-kpi,
+  body.tactical-ui .stat,
+  body.tactical-ui .source-card,
+  body.tactical-ui .tactical-log,
+  body.tactical-ui button{transition:none!important}
+}

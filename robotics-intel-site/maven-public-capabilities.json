@@ -1,0 +1,81 @@
+{
+  "schema": "xunia.maven-si.public-capabilities.v1",
+  "name": "GPT-DOUG MAVEN SI Public Capability Mesh",
+  "mode": "PUBLIC_CIVILIAN_ENVIRONMENTAL_AND_SIMULATION_ONLY",
+  "credential_posture": "NO_PROJECT_API_KEYS_REQUIRED_FOR_LISTED_DEFAULT_SOURCES",
+  "sources": [
+    {
+      "id": "openstreetmap",
+      "name": "OpenStreetMap",
+      "type": "base_map",
+      "integration": "tile_layer",
+      "url": "https://www.openstreetmap.org/",
+      "capabilities": ["global_reference_map"]
+    },
+    {
+      "id": "open_meteo",
+      "name": "Open-Meteo",
+      "type": "weather_api",
+      "integration": "direct_json",
+      "url": "https://open-meteo.com/",
+      "capabilities": ["temperature", "wind", "weather_code"]
+    },
+    {
+      "id": "usgs_earthquakes",
+      "name": "USGS Earthquake Hazards Program",
+      "type": "hazard_feed",
+      "integration": "geojson",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/",
+      "capabilities": ["earthquake_events", "magnitude", "event_time", "regional_location"]
+    },
+    {
+      "id": "nasa_eonet",
+      "name": "NASA EONET",
+      "type": "natural_event_feed",
+      "integration": "geojson",
+      "url": "https://eonet.gsfc.nasa.gov/",
+      "capabilities": ["open_natural_events", "event_location", "event_title"]
+    },
+    {
+      "id": "zoom_earth",
+      "name": "Zoom Earth",
+      "type": "external_visual_portal",
+      "integration": "launch_external",
+      "url": "https://zoom.earth/maps/satellite/#view=37.46,-77.596,6z",
+      "capabilities": ["near_real_time_satellite", "weather_visualization", "forecast_maps"]
+    },
+    {
+      "id": "nullschool_earth",
+      "name": "Nullschool Earth",
+      "type": "external_visual_portal",
+      "integration": "launch_external",
+      "url": "https://earth.nullschool.net/",
+      "capabilities": ["wind", "weather", "ocean", "atmospheric_chemistry", "particulates", "space_weather", "biology"]
+    },
+    {
+      "id": "nasa_worldview",
+      "name": "NASA Worldview",
+      "type": "external_visual_portal",
+      "integration": "launch_external",
+      "url": "https://worldview.earthdata.nasa.gov/",
+      "capabilities": ["earth_observation_imagery", "environmental_layers", "time_navigation"]
+    },
+    {
+      "id": "local_simulation",
+      "name": "MAVEN Local Simulation Range",
+      "type": "local_simulation",
+      "integration": "browser_local",
+      "url": null,
+      "capabilities": ["virtual_drone_visualization", "synthetic_trajectory_animation", "coarse_swarm_cells", "task_ops"]
+    }
+  ],
+  "controls": {
+    "person_tracking": false,
+    "live_military_unit_tracking": false,
+    "precise_targeting": false,
+    "weapon_control": false,
+    "kinetic_execution": false,
+    "public_environmental_awareness": true,
+    "local_simulation": true
+  }
+}

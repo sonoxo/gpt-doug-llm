@@ -1,0 +1,171 @@
+/* GPT-MAVEN resilience + system health layer */
+.maven-system-pill{
+  flex:0 0 auto;
+  min-height:28px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid rgba(76,127,90,.5);
+  border-radius:999px;
+  background:#08100a;
+  color:#9eb0a2;
+  padding:4px 8px;
+  font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;
+  cursor:pointer;
+  touch-action:manipulation
+}
+.maven-system-pill.good{color:#d7ff64;border-color:#4d713c}
+.maven-system-pill.warn{color:#ffd166;border-color:#705225}
+.maven-system-pill.bad{color:#ff8179;border-color:#6f3532}
+.maven-system-pill .dot{
+  width:7px;height:7px;border-radius:50%;background:currentColor;
+  box-shadow:0 0 10px currentColor
+}
+
+.maven-frame-loader{
+  position:absolute;
+  z-index:45;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(124,231,255,.055),transparent 32%),
+    rgba(2,5,3,.94);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease
+}
+.maven-frame-loader.show{opacity:1;pointer-events:auto}
+.maven-frame-loader-box{
+  width:min(360px,calc(100vw - 28px));
+  border:1px solid rgba(77,126,89,.55);
+  border-radius:14px;
+  background:rgba(5,11,7,.94);
+  box-shadow:0 20px 64px rgba(0,0,0,.5);
+  padding:14px
+}
+.maven-frame-loader-title{
+  color:#7ce7ff;
+  font-size:10px;
+  font-weight:950;
+  letter-spacing:.06em
+}
+.maven-frame-loader-msg{
+  margin-top:7px;
+  color:#9caf9f;
+  font-size:9px;
+  line-height:1.45
+}
+.maven-loader-track{
+  margin-top:10px;
+  height:5px;
+  overflow:hidden;
+  border-radius:999px;
+  background:#0b140d;
+  border:1px solid #26392b
+}
+.maven-loader-bar{
+  height:100%;
+  width:34%;
+  background:linear-gradient(90deg,#7ce7ff,#d7ff64);
+  animation:maven-loader-scan 1.2s ease-in-out infinite
+}
+.maven-frame-loader-actions{
+  display:flex;
+  gap:6px;
+  margin-top:10px
+}
+.maven-frame-loader-actions button{
+  min-height:36px;
+  border:1px solid #35503b;
+  border-radius:8px;
+  background:#08110a;
+  color:#dff2e4;
+  padding:6px 9px;
+  font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace;
+  cursor:pointer
+}
+
+.maven-system-drawer{
+  position:absolute;
+  z-index:95;
+  top:8px;
+  left:8px;
+  width:min(360px,calc(100vw - 16px));
+  max-height:calc(100% - 16px);
+  overflow:auto;
+  border:1px solid rgba(76,127,90,.54);
+  border-radius:14px;
+  background:rgba(5,11,7,.96);
+  box-shadow:0 24px 80px rgba(0,0,0,.55);
+  backdrop-filter:blur(18px) saturate(120%);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+  padding:9px;
+  transform:translate3d(calc(-100% - 20px),0,0);
+  opacity:0;
+  pointer-events:none;
+  transition:transform .28s cubic-bezier(.16,1,.3,1),opacity .16s ease
+}
+.maven-system-drawer.open{transform:translate3d(0,0,0);opacity:1;pointer-events:auto}
+.maven-system-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.maven-system-head strong{color:#ffb21d;font-size:10px}
+.maven-system-head button{
+  margin-left:auto;
+  min-height:32px;
+  border:1px solid #4b5f4f;
+  border-radius:7px;
+  background:#081009;
+  color:#ffd166;
+  padding:5px 8px;
+  font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.maven-health-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.maven-health-card{
+  border:1px solid #263a2b;
+  border-radius:9px;
+  background:#050a06;
+  padding:8px;
+  color:#79907f;
+  font-size:8px
+}
+.maven-health-card b{display:block;margin-top:3px;color:#e8eee8;font-size:10px}
+.maven-health-card.good b{color:#d7ff64}
+.maven-health-card.warn b{color:#ffd166}
+.maven-health-card.bad b{color:#ff8179}
+.maven-system-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.maven-system-actions button{
+  min-height:40px;
+  border:1px solid #31523b;
+  border-radius:8px;
+  background:#08110a;
+  color:#dff2e4;
+  padding:6px;
+  font:850 8px ui-monospace,SFMono-Regular,Menlo,monospace
+}
+.maven-system-note{
+  margin-top:8px;
+  color:#718778;
+  font-size:8px;
+  line-height:1.45
+}
+@keyframes maven-loader-scan{
+  0%{transform:translateX(-110%)}
+  50%{transform:translateX(105%)}
+  100%{transform:translateX(240%)}
+}
+@media(max-width:900px){
+  .maven-system-drawer{
+    top:auto;left:7px;right:7px;bottom:max(7px,env(safe-area-inset-bottom));width:auto;max-height:64dvh;
+    transform:translate3d(0,calc(100% + 18px),0)
+  }
+  .maven-system-drawer.open{transform:translate3d(0,0,0)}
+}
+@media(max-width:430px){
+  .maven-health-grid{grid-template-columns:1fr 1fr}
+  .maven-system-actions{grid-template-columns:1fr}
+  .maven-system-pill{min-height:36px}
+}
+@media(prefers-reduced-motion:reduce){
+  .maven-loader-bar{animation:none!important;width:100%}
+  .maven-frame-loader,.maven-system-drawer{transition:none!important}
+}

@@ -27,6 +27,7 @@ from cloud_nxyz import CloudNXYZEngine
 from gpt_chaos import GPTChaos
 from body_link import BodyLinkClient, BodyStateRelay, runtime_body_state
 from uap_matrix import UAPMatrixSharedSpace
+from unreal_gpt_doug import UnrealGPTDoug
 
 MODEL = llm_backend.DEFAULT_MODEL
 GREEN = "\033[38;5;154m"
@@ -149,6 +150,10 @@ def main():
         accelerator=automation_accelerator,
         apm_law=apm_law,
     )
+    unreal = UnrealGPTDoug(
+        Path(__file__).parent,
+        enabled=os.getenv("GPT_DOUG_UNREAL_MODE", "1").strip().lower() not in {"0", "false", "off", "no"},
+    )
     print(CYAN + BANNER + RESET)
     print(GREEN + "EUREKA // LOCAL SYSTEM ONLINE" + RESET)
     print(CYAN + "ZYRA // CYBER WATCHDOG ACTIVE" + RESET)
@@ -184,6 +189,13 @@ def main():
     print(CYAN + "AUTOMATION ACCELERATOR // ACTIVE // COMPOSITES -> RULES -> TEMPLATES -> SETUP OBJECTS" + RESET)
     print(CYAN + "APM LAW // APM-001 ACTIVE // VERIFIED EXPERIENCE -> REUSABLE PROCEDURE" + RESET)
     print(CYAN + "CLOUD-NXYZ // READY // ONE COMMAND -> IaC -> MONITOR -> LEARN" + RESET)
+    unreal_status = unreal.status()
+    print(
+        CYAN
+        + f"UNREAL-GPT-DOUG // {'ACTIVE' if unreal.enabled else 'OFF'} // "
+        + f"{unreal_status['engine_target']} // {unreal_status['knowledge_entries']} SOURCE-GROUNDED ENTRIES // MCP READY"
+        + RESET
+    )
     body_state("IDLE", "GPT-Doug terminal online")
     history = []
     while True:
@@ -204,7 +216,7 @@ def main():
             print("Memory cleared.")
             continue
         if prompt == "/help":
-            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /matrix  /matrix checkpoint  /matrix publish <channel> <message>  /matrix propose <statement>  /matrix vote <decision> <SUPPORT|DISSENT|ABSTAIN>  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /palantir  /deepthink  /eureka 369  /quit")
+            print("/help  /clear  /mission  /zyra  /shield  /sentinel  /scan  /compliance  /ontology  /hive  /matrix  /matrix checkpoint  /matrix publish <channel> <message>  /matrix propose <statement>  /matrix vote <decision> <SUPPORT|DISSENT|ABSTAIN>  /body  /body link  /body ping  /accelerator  /apm-law  /cloud-nxyz  /automation-template  /summon <job>  /unreal  /unreal on|off  /unreal search <query>  /unreal sources [query]  /unreal mcp  /palantir  /deepthink  /eureka 369  /quit")
             continue
         if prompt == "/deepthink":
             deep_think = not deep_think
@@ -337,6 +349,34 @@ def main():
             swarm = gpt_chaos.summon(job)
             print(json.dumps(swarm, indent=2, sort_keys=True))
             continue
+        if prompt == "/unreal":
+            print(json.dumps(unreal.status(), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal on":
+            unreal.enabled = True
+            print("UNREAL-GPT-DOUG // ACTIVE // source-grounded UE 5.8 context injection enabled")
+            continue
+        if prompt == "/unreal off":
+            unreal.enabled = False
+            print("UNREAL-GPT-DOUG // OFF // knowledge remains installed but prompt injection is disabled")
+            continue
+        if prompt.startswith("/unreal search "):
+            query = prompt[len("/unreal search "):].strip()
+            if not query:
+                print("Usage: /unreal search <query>")
+            else:
+                print(json.dumps(unreal.search(query, top_n=10), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal sources":
+            print(json.dumps(unreal.source_list(), indent=2, sort_keys=True))
+            continue
+        if prompt.startswith("/unreal sources "):
+            query = prompt[len("/unreal sources "):].strip()
+            print(json.dumps(unreal.source_list(query), indent=2, sort_keys=True))
+            continue
+        if prompt == "/unreal mcp":
+            print(json.dumps(unreal.mcp_guide(), indent=2, sort_keys=True))
+            continue
         if prompt.startswith("/knowledge "):
             query = prompt[len("/knowledge "):]
             links = Ontology.task_knowledge("search", query, top_n=5)
@@ -424,7 +464,8 @@ def main():
             if not verdict.allowed:
                 print("ZYRA BLOCKED // " + "; ".join(verdict.reasons))
                 continue
-        history.append({"role": "user", "content": verdict.text})
+        model_prompt = unreal.ground_prompt(verdict.text)
+        history.append({"role": "user", "content": model_prompt})
         print(GREEN + ("doug (deep think) > " if deep_think else "doug > ") + RESET, end="")
         if deep_think:
             final_text, think_passes = deep_think_chat(history, zyra)

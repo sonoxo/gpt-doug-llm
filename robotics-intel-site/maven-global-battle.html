@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030604">
+<title>GPT-MAVEN // GLOBAL COMBINED-DOMAIN SIM</title>
+<link rel="stylesheet" href="./maven-global-battle.css">
+<link rel="stylesheet" href="./maven-clean.css">
+</head>
+<body class="clean-child">
+<div class="global-battle-shell">
+  <header class="global-battle-top">
+    <div class="global-battle-brand">🌎 GPT-MAVEN // GLOBAL COMBINED-DOMAIN SIM</div>
+    <span class="global-battle-chip good">LAND / AIR / SEA</span>
+    <span class="global-battle-chip live" id="liveWorldStatus">LIVE WORLD CONNECTING</span>
+    <span class="global-battle-chip" id="battleStance">DEFENSE SIM</span>
+    <span class="global-battle-chip warn">REAL TARGETING OFF</span>
+    <span class="global-battle-chip warn">EXTERNAL WEAPON CONTROL OFF</span>
+  </header>
+  <main class="global-battle-main">
+    <section class="global-battle-map">
+      <canvas id="globalBattleCanvas" aria-label="Synthetic global combined-domain battle simulation"></canvas>
+      <div class="global-battle-hud" data-no-translate="true">
+        <div class="good">LAND UNITS<b id="landCount">0</b></div>
+        <div class="info">AIR UNITS<b id="airCount">0</b></div>
+        <div class="info">SEA UNITS<b id="seaCount">0</b></div>
+        <div class="good">DEFENSE<b>AVAILABLE</b></div>
+        <div class="warn">OFFENSE<b>SIM ONLY</b></div>
+      </div>
+      <div class="global-battle-boundary">LIVE WORLD CONTEXT IS READ-ONLY AND COARSE · SYNTHETIC DEFENSE/OFFENSE EFFECTS ARE ISOLATED FROM LIVE DATA · NO REAL TARGET DESIGNATION · NO FIRE CONTROL · NO PERSONNEL OR UNIT TRACKING.</div>
+    </section>
+    <aside class="global-battle-side">
+      <section class="global-battle-section">
+        <h2>POSTURE</h2>
+        <div class="global-battle-tabs">
+          <button class="def active" type="button" data-stance="defense">🛡 DEFENSE SIM</button>
+          <button class="off" type="button" data-stance="offense">⚡ OFFENSE SIM</button>
+        </div>
+      </section>
+      <section class="global-battle-section">
+        <h2>DOMAINS</h2>
+        <div class="global-battle-domain">
+          <button class="land active" type="button" data-domain="land">LAND</button>
+          <button class="air active" type="button" data-domain="air">AIR</button>
+          <button class="sea active" type="button" data-domain="sea">SEA</button>
+        </div>
+      </section>
+      <section class="global-battle-section">
+        <h2>OVERHEAD</h2>
+        <div class="global-battle-actions">
+          <a href="./maven-overhead-isr.html" style="text-decoration:none"><button type="button" class="air">🛰 OVERHEAD ISR</button></a>
+          <a href="https://worldview.earthdata.nasa.gov/" target="_blank" rel="noopener" style="text-decoration:none"><button type="button" class="air">NASA WORLDVIEW ↗</button></a>
+        </div>
+      </section>
+      <section class="global-battle-section">
+        <h2>SYNTHETIC CAPABILITIES</h2>
+        <div class="global-battle-actions">
+          <button class="def" type="button" data-action="fortify">FORTIFY</button>
+          <button class="def" type="button" data-action="intercept">INTERCEPT</button>
+          <button class="def" type="button" data-action="decoy">DECOY FIELD</button>
+          <button class="def" type="button" data-action="repair">RECOVERY FIELD</button>
+          <button class="off" type="button" data-action="advance">ADVANCE</button>
+          <button class="off" type="button" data-action="flank">FLANK</button>
+          <button class="off" type="button" data-action="pressure">PRESSURE WAVE</button>
+          <button class="off" type="button" data-action="breakthrough">BREAKTHROUGH</button>
+        </div>
+      </section>
+      <div class="global-battle-log" id="globalBattleLog"></div>
+    </aside>
+  </main>
+</div>
+<script src="./maven-global-battle.js" defer></script>
+</body>
+</html>

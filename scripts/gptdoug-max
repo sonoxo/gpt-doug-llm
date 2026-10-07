@@ -8,7 +8,33 @@ if [[ -f "$CONFIG" ]]; then
   set +a
 fi
 
-ROOT="${GPT_DOUG_ROOT:-$HOME/gpt-doug-llm}"
+resolve_root() {
+  local script_root="${0:A:h:h}"
+  local candidates=()
+  [[ -n "${GPT_DOUG_ROOT:-}" ]] && candidates+=("$GPT_DOUG_ROOT")
+  candidates+=(
+    "$script_root"
+    "$HOME/.config/gptdoug/src/gpt-doug-llm"
+    "$HOME/gpt-doug-llm"
+    "$HOME/Downloads/gpt-doug-llm"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "$candidate/gpt_doug_max.py" && -f "$candidate/scripts/zyra-maven" ]]; then
+      print -r -- "$candidate"
+      return 0
+    fi
+  done
+  return 1
+}
+
+ROOT="$(resolve_root)" || {
+  echo "GPT-DOUG: repository root not found."
+  echo "Checked GPT_DOUG_ROOT, script-relative root, ~/.config/gptdoug/src/gpt-doug-llm, ~/gpt-doug-llm, and ~/Downloads/gpt-doug-llm."
+  exit 1
+}
+export GPT_DOUG_ROOT="$ROOT"
+
 cd "$ROOT"
 PY="$(command -v python3 || command -v python)"
 exec "$PY" "$ROOT/gpt_doug_max.py" "$@"

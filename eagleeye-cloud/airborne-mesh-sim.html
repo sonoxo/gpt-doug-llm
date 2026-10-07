@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // AIRBORNE MESH RESILIENCE SIM</title>
+<meta name="theme-color" content="#05080f">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<style>
+html,body{height:100%;margin:0;background:#05080f;color:#f1f5f9;font-family:Inter,ui-sans-serif,system-ui,sans-serif;overflow:hidden}
+body{background-image:linear-gradient(rgba(56,189,248,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.035) 1px,transparent 1px);background-size:40px 40px}
+.glass{background:rgba(10,17,30,.84);backdrop-filter:blur(12px);border:1px solid rgba(56,189,248,.18);box-shadow:0 8px 32px rgba(0,0,0,.45)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:rgba(56,189,248,.32);border-radius:3px}
+#sim,#spider{display:block;width:100%;height:100%}
+.status-dot{width:8px;height:8px;border-radius:999px;background:#10b981;box-shadow:0 0 10px #10b981}
+</style>
+</head>
+<body class="h-screen w-screen p-2 md:p-3 flex flex-col gap-2">
+<header class="glass rounded-xl px-4 py-2.5 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div class="h-9 w-9 rounded-lg border border-sky-400/40 bg-sky-500/10 flex items-center justify-center text-sky-300"><i class="fa-solid fa-network-wired"></i></div>
+    <div>
+      <div class="text-sm md:text-base font-bold mono tracking-wider text-sky-400">GPT-DOUG // AIRBORNE MESH RESILIENCE C2</div>
+      <div class="text-[10px] mono text-slate-400">SYNTHETIC FLEET • COMMUNICATIONS • ROUTING • HAZARD AVOIDANCE • HUMAN-FIRST</div>
+    </div>
+  </div>
+  <div class="hidden xl:flex items-center gap-5 text-xs mono">
+    <span>ACTIVE NODES <b id="activeMetric" class="text-sky-400">0/0</b></span>
+    <span>MESH <b id="meshMetric" class="text-emerald-400">100%</b></span>
+    <span>HAZARDS <b id="hazardMetric" class="text-amber-400">0</b></span>
+    <span>REROUTES <b id="rerouteMetric" class="text-violet-300">0</b></span>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="play" class="px-3 py-1.5 rounded bg-sky-500/20 border border-sky-500/40 text-sky-300 text-xs mono">PAUSE</button>
+    <button data-speed="1" class="speed px-2 py-1.5 rounded bg-sky-500/30 text-sky-200 text-xs mono">1x</button>
+    <button data-speed="2" class="speed px-2 py-1.5 rounded bg-slate-800 text-slate-400 text-xs mono">2x</button>
+    <button data-speed="4" class="speed px-2 py-1.5 rounded bg-slate-800 text-slate-400 text-xs mono">4x</button>
+    <button id="reset" class="px-3 py-1.5 rounded bg-red-500/15 border border-red-500/35 text-red-300 text-xs mono">RESET</button>
+  </div>
+</header>
+
+<main class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-[1fr_390px] gap-2">
+  <section class="relative rounded-xl overflow-hidden border border-sky-500/20 bg-slate-950">
+    <canvas id="sim"></canvas>
+    <div class="absolute top-3 left-3 glass rounded-lg px-3 py-2 text-[10px] mono text-sky-300 pointer-events-none">
+      SECTOR: SYNTHETIC ALPHA-07<br>
+      MODE: <span class="text-emerald-400 font-bold">RESILIENCE / ROUTING</span><br>
+      CONTROL: <span class="text-amber-300 font-bold">HUMAN-FIRST</span>
+    </div>
+    <div class="absolute top-3 right-3 glass rounded-lg p-2 flex gap-1">
+      <button id="spawnWeather" class="px-2.5 py-1.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] mono">+ WEATHER CELL</button>
+      <button id="spawnInterference" class="px-2.5 py-1.5 rounded bg-violet-500/10 border border-violet-500/30 text-violet-300 text-[10px] mono">+ RF INTERFERENCE</button>
+      <button id="spawnNoFly" class="px-2.5 py-1.5 rounded bg-red-500/10 border border-red-500/30 text-red-300 text-[10px] mono">+ NO-FLY ZONE</button>
+    </div>
+    <div class="absolute bottom-3 left-3 glass rounded-lg px-3 py-1.5 text-[9px] mono text-slate-400 flex gap-4">
+      <span><i class="inline-block w-2 h-2 rounded-full bg-sky-400"></i> HUB</span>
+      <span><i class="inline-block w-2 h-2 rounded-full bg-emerald-400"></i> REMOTE NODE</span>
+      <span><i class="inline-block w-2 h-2 rounded-full bg-amber-400"></i> WEATHER</span>
+      <span><i class="inline-block w-2 h-2 rounded-full bg-violet-400"></i> INTERFERENCE</span>
+      <span><i class="inline-block w-2 h-2 rounded-full bg-red-400"></i> RESTRICTED</span>
+    </div>
+  </section>
+
+  <aside class="glass rounded-xl overflow-hidden flex flex-col min-h-0">
+    <div class="grid grid-cols-3 border-b border-slate-800 text-[10px] mono">
+      <button class="tab active py-3 text-sky-400 border-b-2 border-sky-400" data-tab="telemetry">TELEMETRY</button>
+      <button class="tab py-3 text-slate-400 border-b-2 border-transparent" data-tab="spider">DATA SPIDER</button>
+      <button class="tab py-3 text-slate-400 border-b-2 border-transparent" data-tab="config">PARAMS</button>
+    </div>
+
+    <div class="flex-1 min-h-0 overflow-y-auto p-3">
+      <div id="telemetryTab">
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 mb-3">
+          <div class="text-[10px] text-slate-500 mono mb-1">SELECTED NODE</div>
+          <div id="selectedId" class="text-sky-300 font-bold mono text-sm">HUB-01</div>
+          <div class="grid grid-cols-2 gap-2 mt-3 text-xs mono">
+            <div class="bg-slate-950 p-2 rounded border border-slate-800"><div class="text-[9px] text-slate-500">ROLE</div><div id="teleRole">AIRBORNE HUB</div></div>
+            <div class="bg-slate-950 p-2 rounded border border-slate-800"><div class="text-[9px] text-slate-500">ENERGY</div><div id="teleEnergy" class="text-emerald-400">100%</div></div>
+            <div class="bg-slate-950 p-2 rounded border border-slate-800"><div class="text-[9px] text-slate-500">SIGNAL</div><div id="teleSignal" class="text-sky-300">100%</div></div>
+            <div class="bg-slate-950 p-2 rounded border border-slate-800"><div class="text-[9px] text-slate-500">TASK</div><div id="teleTask">MESH COORDINATION</div></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-800 mb-3">
+          <div class="text-[10px] text-slate-400 mono font-bold mb-2">SAFE MANUAL TASKING</div>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="taskObserve" class="p-2 rounded border border-sky-500/30 bg-sky-500/10 text-sky-300 text-xs mono text-left">OBSERVE</button>
+            <button id="taskRelay" class="p-2 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs mono text-left">RELAY COMMS</button>
+            <button id="taskSurvey" class="p-2 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs mono text-left">SURVEY</button>
+            <button id="taskAuto" class="p-2 rounded border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs mono text-left">RETURN AUTO</button>
+          </div>
+        </div>
+
+        <div class="text-[10px] text-slate-400 mono font-bold mb-2">FLEET ROSTER</div>
+        <div id="roster" class="space-y-1.5"></div>
+      </div>
+
+      <div id="spiderTab" class="hidden h-full min-h-[420px]">
+        <div class="text-[10px] text-slate-400 mono mb-2">VISUAL DATA SPIDER // LIVE MESH TOPOLOGY</div>
+        <div class="h-[360px] rounded-lg border border-slate-800 bg-slate-950 overflow-hidden"><canvas id="spider"></canvas></div>
+        <div class="mt-3 bg-slate-950 border border-slate-800 rounded-lg p-2 text-[10px] mono text-slate-400">
+          <div class="flex justify-between"><span>HUB DEGREE</span><b id="spiderDegree" class="text-sky-300">0</b></div>
+          <div class="flex justify-between"><span>ISOLATED NODES</span><b id="spiderIsolated" class="text-amber-300">0</b></div>
+          <div class="flex justify-between"><span>AVERAGE LINK QUALITY</span><b id="spiderQuality" class="text-emerald-300">100%</b></div>
+        </div>
+      </div>
+
+      <div id="configTab" class="hidden space-y-3 text-xs mono">
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+          <div class="flex justify-between mb-1"><span>NODE COUNT</span><span id="nodeLabel" class="text-sky-300">8</span></div>
+          <input id="nodeSlider" type="range" min="4" max="24" value="8" class="w-full accent-sky-400">
+        </div>
+        <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800">
+          <div class="flex justify-between mb-1"><span>HAZARD DENSITY</span><span id="hazardLabel" class="text-amber-300">MEDIUM</span></div>
+          <input id="hazardSlider" type="range" min="1" max="3" value="2" class="w-full accent-amber-400">
+        </div>
+        <label class="flex items-center justify-between bg-slate-900/80 p-3 rounded-lg border border-slate-800"><span>AUTO-REROUTE</span><input id="autoReroute" type="checkbox" checked></label>
+        <label class="flex items-center justify-between bg-slate-900/80 p-3 rounded-lg border border-slate-800"><span>SHOW MESH LINKS</span><input id="showLinks" type="checkbox" checked></label>
+      </div>
+    </div>
+
+    <div class="h-44 border-t border-slate-800 bg-slate-950/90 p-3 flex flex-col">
+      <div class="flex items-center justify-between text-[10px] mono text-slate-400 mb-2">
+        <span class="flex items-center gap-2"><span class="status-dot"></span><b class="text-slate-200">EVENT LOG</b></span>
+        <button id="clearLog" class="text-slate-500 hover:text-slate-300">CLEAR</button>
+      </div>
+      <div id="log" class="flex-1 overflow-y-auto text-[10px] mono space-y-1 text-slate-300"></div>
+    </div>
+  </aside>
+</main>
+
+<footer class="glass rounded-lg px-3 py-1.5 flex items-center justify-between text-[9px] mono text-slate-500">
+  <span>GPT-DOUG // SYNTHETIC RESILIENCE SIMULATION</span>
+  <span>NO WEAPON CONTROL • NO TARGETING • NO STRIKE LOGIC</span>
+  <a class="text-sky-400" href="/dots-neural-lab.html">OPEN GPT-DOTS ↗</a>
+</footer>
+
+<script>
+const canvas=document.getElementById('sim'),ctx=canvas.getContext('2d');
+const spider=document.getElementById('spider'),sctx=spider.getContext('2d');
+const $=id=>document.getElementById(id);
+const state={running:true,speed:1,nodeCount:8,hazardDensity:2,autoReroute:true,showLinks:true,selected:null,reroutes:0,time:0};
+let hub=null,nodes=[],hazards=[],links=[];
+
+function fit(c){const r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return r}
+function log(msg,color='slate'){const d=document.createElement('div');d.className=color==='warn'?'text-amber-300':color==='ok'?'text-emerald-300':'text-slate-300';d.textContent='['+new Date().toLocaleTimeString()+'] '+msg;$('log').appendChild(d);$('log').scrollTop=$('log').scrollHeight}
+function rand(a,b){return a+Math.random()*(b-a)}
+
+class Hub{
+ constructor(x,y){this.id='HUB-01';this.x=x;this.y=y;this.baseX=x;this.baseY=y;this.angle=0;this.energy=100;this.signal=100;this.task='MESH COORDINATION';this.type='HUB';this.commRange=360}
+ update(){this.angle+=.0016*state.speed;this.x=this.baseX+Math.cos(this.angle)*70;this.y=this.baseY+Math.sin(this.angle)*35}
+ draw(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.angle+Math.PI/2);ctx.fillStyle='#38bdf8';ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(24,12);ctx.lineTo(8,8);ctx.lineTo(-8,8);ctx.lineTo(-24,12);ctx.closePath();ctx.fill();ctx.restore();ctx.fillStyle='#7dd3fc';ctx.font='10px ui-monospace';ctx.textAlign='center';ctx.fillText('HUB-01',this.x,this.y-24)}
+}
+class Node{
+ constructor(i,x,y){this.id='NODE-'+String(i+1).padStart(2,'0');this.x=x;this.y=y;this.energy=rand(86,100);this.signal=100;this.task='OBSERVE';this.type='NODE';this.commRange=190;this.heading=rand(0,Math.PI*2);this.target={x,y};this.manual=false;this.trail=[]}
+ update(){
+  if(state.time%4===0){this.trail.push({x:this.x,y:this.y});if(this.trail.length>18)this.trail.shift()}
+  if(!this.manual){
+    const hazard=nearestHazard(this.x,this.y);
+    if(state.autoReroute&&hazard&&hazardDistance(hazard,this.x,this.y)<hazard.r+55){
+      const a=Math.atan2(this.y-hazard.y,this.x-hazard.x);
+      this.target={x:hazard.x+Math.cos(a)*(hazard.r+95),y:hazard.y+Math.sin(a)*(hazard.r+95)};
+      this.task='REROUTE';
+      if(Math.random()<.01){state.reroutes++;log(this.id+' rerouted around '+hazard.kind,'warn')}
+    }else{
+      const i=parseInt(this.id.split('-')[1]);const a=state.time*.004+i;const rr=115+i*10;
+      this.target={x:hub.x+Math.cos(a)*rr,y:hub.y+Math.sin(a)*rr};this.task='OBSERVE';
+    }
+  }
+  const dx=this.target.x-this.x,dy=this.target.y-this.y,d=Math.hypot(dx,dy);if(d>3){const a=Math.atan2(dy,dx);this.heading+=angleDiff(a,this.heading)*.08;this.x+=Math.cos(this.heading)*1.15*state.speed;this.y+=Math.sin(this.heading)*1.15*state.speed}
+  this.energy=Math.max(0,this.energy-.0015*state.speed)
+ }
+ draw(){
+  if(this.trail.length>1){ctx.beginPath();ctx.moveTo(this.trail[0].x,this.trail[0].y);for(const p of this.trail)ctx.lineTo(p.x,p.y);ctx.strokeStyle='rgba(16,185,129,.18)';ctx.stroke()}
+  ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.heading);ctx.fillStyle='#10b981';ctx.beginPath();ctx.moveTo(9,0);ctx.lineTo(-6,-5);ctx.lineTo(-3,0);ctx.lineTo(-6,5);ctx.closePath();ctx.fill();ctx.restore();
+  if(state.selected===this){ctx.beginPath();ctx.arc(this.x,this.y,13,0,Math.PI*2);ctx.strokeStyle='#38bdf8';ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([])}
+  ctx.fillStyle='#94a3b8';ctx.font='9px ui-monospace';ctx.textAlign='center';ctx.fillText(this.id,this.x,this.y-11)
+ }
+}
+class Hazard{
+ constructor(kind,x,y){this.kind=kind;this.x=x;this.y=y;this.r=kind==='WEATHER'?85:kind==='INTERFERENCE'?105:70;this.phase=rand(0,Math.PI*2)}
+ update(){this.phase+=.015*state.speed}
+ draw(){
+  const col=this.kind==='WEATHER'?'245,158,11':this.kind==='INTERFERENCE'?'168,85,247':'239,68,68';
+  ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba('+col+',.045)';ctx.fill();ctx.strokeStyle='rgba('+col+',.32)';ctx.setLineDash([5,5]);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.arc(this.x,this.y,8+Math.sin(this.phase)*2,0,Math.PI*2);ctx.fillStyle='rgb('+col+')';ctx.fill();
+  ctx.fillStyle='rgba('+col+',.9)';ctx.font='9px ui-monospace';ctx.textAlign='center';ctx.fillText(this.kind,this.x,this.y-13)
+ }
+}
+function angleDiff(a,b){let d=a-b;while(d<-Math.PI)d+=Math.PI*2;while(d>Math.PI)d-=Math.PI*2;return d}
+function hazardDistance(h,x,y){return Math.hypot(x-h.x,y-h.y)}
+function nearestHazard(x,y){let best=null,d=1e9;for(const h of hazards){const q=hazardDistance(h,x,y);if(q<d){d=q;best=h}}return best}
+
+function init(){
+ const r=fit(canvas);fit(spider);hub=new Hub(r.width*.35,r.height*.5);nodes=[];hazards=[];links=[];state.reroutes=0;state.time=0;
+ for(let i=0;i<state.nodeCount;i++){const a=i/state.nodeCount*Math.PI*2,rr=rand(90,170);nodes.push(new Node(i,hub.x+Math.cos(a)*rr,hub.y+Math.sin(a)*rr))}
+ for(let i=0;i<state.hazardDensity;i++)hazards.push(new Hazard(i%2?'INTERFERENCE':'WEATHER',r.width*rand(.58,.88),r.height*rand(.2,.8)));
+ state.selected=hub;updateRoster();updateTelemetry();log('Synthetic airborne mesh initialized with '+nodes.length+' remote nodes.','ok')
+}
+function computeLinks(){
+ links=[];const all=[hub,...nodes];let qualitySum=0;
+ for(let i=0;i<all.length;i++)for(let j=i+1;j<all.length;j++){const a=all[i],b=all[j],d=Math.hypot(a.x-b.x,a.y-b.y),max=(a.type==='HUB'||b.type==='HUB')?360:190;if(d<max){let q=Math.max(0,1-d/max);for(const h of hazards)if(h.kind==='INTERFERENCE'&&(hazardDistance(h,a.x,a.y)<h.r||hazardDistance(h,b.x,b.y)<h.r))q*=.25;links.push({a,b,q});qualitySum+=q}}
+ const hubDegree=links.filter(l=>l.a===hub||l.b===hub).length,isolated=nodes.filter(n=>!links.some(l=>l.a===n||l.b===n)).length,avg=links.length?qualitySum/links.length:0;
+ $('spiderDegree').textContent=hubDegree;$('spiderIsolated').textContent=isolated;$('spiderQuality').textContent=Math.round(avg*100)+'%';
+ const integrity=Math.max(0,Math.min(100,Math.round((1-isolated/Math.max(1,nodes.length))*70+avg*30)));$('meshMetric').textContent=integrity+'%';$('meshMetric').className=integrity<60?'text-red-400 font-bold':'text-emerald-400 font-bold';
+ for(const n of nodes){const ls=links.filter(l=>l.a===n||l.b===n);n.signal=Math.round((ls.length?ls.reduce((s,l)=>s+l.q,0)/ls.length:0)*100)}
+}
+function drawLinks(){if(!state.showLinks)return;for(const l of links){ctx.beginPath();ctx.moveTo(l.a.x,l.a.y);ctx.lineTo(l.b.x,l.b.y);ctx.strokeStyle='rgba(56,189,248,'+(.08+l.q*.28)+')';ctx.lineWidth=1;ctx.stroke()}}
+function render(){
+ const r=canvas.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);
+ if(state.running){state.time++;hub.update();hazards.forEach(h=>h.update());nodes.forEach(n=>n.update())}
+ computeLinks();drawLinks();hazards.forEach(h=>h.draw());hub.draw();nodes.forEach(n=>n.draw());drawSpider();
+ $('activeMetric').textContent=nodes.length+'/'+state.nodeCount;$('hazardMetric').textContent=hazards.length;$('rerouteMetric').textContent=state.reroutes;
+ if(state.time%15===0)updateTelemetry();
+ requestAnimationFrame(render)
+}
+function drawSpider(){
+ const r=spider.getBoundingClientRect();sctx.clearRect(0,0,r.width,r.height);const cx=r.width/2,cy=r.height/2,scale=Math.min(r.width/700,r.height/500)*.62;
+ const all=[hub,...nodes],map=new Map(all.map(o=>[o,{x:cx+(o.x-hub.x)*scale,y:cy+(o.y-hub.y)*scale}]));
+ for(const l of links){const a=map.get(l.a),b=map.get(l.b);sctx.beginPath();sctx.moveTo(a.x,a.y);sctx.lineTo(b.x,b.y);sctx.strokeStyle='rgba(56,189,248,'+(.14+l.q*.5)+')';sctx.stroke()}
+ for(const o of all){const p=map.get(o);sctx.beginPath();sctx.arc(p.x,p.y,o===hub?8:5,0,Math.PI*2);sctx.fillStyle=o===hub?'#38bdf8':'#10b981';sctx.fill();sctx.fillStyle='#94a3b8';sctx.font='8px ui-monospace';sctx.fillText(o.id,p.x+8,p.y-7)}
+}
+function updateTelemetry(){const e=state.selected;if(!e)return;$('selectedId').textContent=e.id;$('teleRole').textContent=e===hub?'AIRBORNE HUB':'REMOTE NODE';$('teleEnergy').textContent=Math.round(e.energy)+'%';$('teleSignal').textContent=Math.round(e.signal)+'%';$('teleTask').textContent=e.task}
+function updateRoster(){
+ $('roster').innerHTML='';nodes.forEach(n=>{const d=document.createElement('div');d.className='p-2 rounded bg-slate-950 border border-slate-800 hover:border-sky-500/50 cursor-pointer flex justify-between mono text-[10px]';d.innerHTML='<div><b class="text-slate-200">'+n.id+'</b><div class="text-slate-500">'+n.task+'</div></div><div class="text-right"><b class="text-emerald-400">'+Math.round(n.energy)+'%</b><div class="text-slate-500">SIG '+n.signal+'%</div></div>';d.onclick=()=>{state.selected=n;updateTelemetry();updateRoster()};if(state.selected===n)d.classList.add('border-sky-400');$('roster').appendChild(d)})
+}
+canvas.addEventListener('click',e=>{const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let hit=Math.hypot(x-hub.x,y-hub.y)<30?hub:null;if(!hit)for(const n of nodes)if(Math.hypot(x-n.x,y-n.y)<18){hit=n;break}if(hit){state.selected=hit;updateTelemetry();updateRoster()}});
+
+function safeTask(task){if(state.selected&&state.selected!==hub){state.selected.manual=task!=='AUTO';state.selected.task=task==='AUTO'?'OBSERVE':task;log(state.selected.id+' task set to '+state.selected.task,'ok');updateTelemetry();updateRoster()}}
+$('taskObserve').onclick=()=>safeTask('OBSERVE');$('taskRelay').onclick=()=>safeTask('RELAY COMMS');$('taskSurvey').onclick=()=>safeTask('SURVEY');$('taskAuto').onclick=()=>safeTask('AUTO');
+
+$('spawnWeather').onclick=()=>{const r=canvas.getBoundingClientRect();hazards.push(new Hazard('WEATHER',r.width*rand(.52,.88),r.height*rand(.18,.82)));log('Synthetic weather cell injected.','warn')};
+$('spawnInterference').onclick=()=>{const r=canvas.getBoundingClientRect();hazards.push(new Hazard('INTERFERENCE',r.width*rand(.48,.86),r.height*rand(.18,.82)));log('Synthetic RF interference injected.','warn')};
+$('spawnNoFly').onclick=()=>{const r=canvas.getBoundingClientRect();hazards.push(new Hazard('NO-FLY',r.width*rand(.55,.9),r.height*rand(.2,.8)));log('Synthetic restricted zone injected.','warn')};
+
+$('play').onclick=()=>{state.running=!state.running;$('play').textContent=state.running?'PAUSE':'PLAY'};
+document.querySelectorAll('.speed').forEach(b=>b.onclick=()=>{state.speed=Number(b.dataset.speed);document.querySelectorAll('.speed').forEach(x=>x.className='speed px-2 py-1.5 rounded bg-slate-800 text-slate-400 text-xs mono');b.className='speed px-2 py-1.5 rounded bg-sky-500/30 text-sky-200 text-xs mono'});
+$('reset').onclick=init;$('clearLog').onclick=()=>$('log').innerHTML='';
+$('nodeSlider').oninput=e=>{state.nodeCount=Number(e.target.value);$('nodeLabel').textContent=state.nodeCount;init()};
+$('hazardSlider').oninput=e=>{state.hazardDensity=Number(e.target.value);$('hazardLabel').textContent=['LOW','MEDIUM','HIGH'][state.hazardDensity-1];init()};
+$('autoReroute').onchange=e=>state.autoReroute=e.target.checked;$('showLinks').onchange=e=>state.showLinks=e.target.checked;
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.className='tab py-3 text-slate-400 border-b-2 border-transparent');b.className='tab active py-3 text-sky-400 border-b-2 border-sky-400';['telemetry','spider','config'].forEach(t=>$(t+'Tab').classList.toggle('hidden',t!==b.dataset.tab));if(b.dataset.tab==='spider')fit(spider)});
+
+addEventListener('resize',()=>{fit(canvas);fit(spider);init()});
+init();render();
+</script>
+<script src="/quantum-renderer.js"></script>\n</body></html>

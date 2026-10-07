@@ -1,0 +1,204 @@
+{
+  "schema": "unreal-gpt-doug/ontology-v1",
+  "name": "UNREAL-GPT-DOUG",
+  "engine_target": "Unreal Engine 5.8",
+  "status": "ACTIVE_SOURCE_GROUNDED_PROFILE",
+  "axioms": [
+    "UNREAL EDITOR AND PROJECT FILES ARE THE EXECUTION SOURCE OF TRUTH.",
+    "FIRST-PARTY EPIC DOCUMENTATION OVERRIDES COMMUNITY TUTORIALS ON CURRENT ENGINE BEHAVIOR.",
+    "EXPERIMENTAL FEATURES REMAIN LABELED EXPERIMENTAL.",
+    "BLUEPRINT AND C++ ARE COMPLEMENTARY AUTHORING SURFACES.",
+    "MULTIPLAYER AUTHORITY, OWNERSHIP, REPLICATION, LATENCY, AND PREDICTION ARE ARCHITECTURAL CONCERNS.",
+    "MCP TOOLS MAY PROPOSE AND EXECUTE EDITOR CHANGES ONLY INSIDE USER-AUTHORIZED PROJECT CONTEXT.",
+    "SOURCE CONTROL, AUTOMATION TESTS, PROFILING, AND REVERSIBLE EDITS ARE PART OF THE BUILD LOOP."
+  ],
+  "domains": {
+    "foundation": [
+      "C++",
+      "UObject reflection",
+      "Blueprints",
+      "Gameplay Framework",
+      "Modules",
+      "Plugins",
+      "UnrealBuildTool"
+    ],
+    "gameplay": [
+      "Gameplay Ability System",
+      "Enhanced Input",
+      "StateTree",
+      "Smart Objects",
+      "Mover"
+    ],
+    "multiplayer": [
+      "Replication",
+      "Iris",
+      "Replication Graph",
+      "Dedicated Server",
+      "Networked Physics"
+    ],
+    "animation": [
+      "Motion Matching",
+      "Pose Search",
+      "Control Rig",
+      "Physics Control",
+      "Smart Object interactions"
+    ],
+    "simulation": [
+      "Chaos Physics",
+      "Networked Physics",
+      "Physics Fields"
+    ],
+    "audio_vfx": [
+      "Audio Engine",
+      "MetaSounds",
+      "Audio Modulation",
+      "Niagara"
+    ],
+    "worlds_rendering": [
+      "World Partition",
+      "HLOD",
+      "PCG",
+      "Mesh Terrain",
+      "Nanite",
+      "Lumen",
+      "Materials"
+    ],
+    "cinematics_virtual_production": [
+      "Sequencer",
+      "Movie Render Graph",
+      "Accumulation DOF",
+      "nDisplay",
+      "Live Link",
+      "In-Camera VFX"
+    ],
+    "build_infrastructure": [
+      "UAT",
+      "BuildCookRun",
+      "BuildGraph",
+      "Horde",
+      "Gauntlet",
+      "Automation Test Framework",
+      "Unreal Insights"
+    ],
+    "ai_editor_control": [
+      "Unreal MCP",
+      "ModelContextProtocol",
+      "AllToolsets",
+      "local HTTP editor bridge"
+    ]
+  },
+  "relationships": [
+    [
+      "UnrealBuildTool",
+      "BUILDS",
+      "Modules"
+    ],
+    [
+      "Plugins",
+      "CONTAIN",
+      "Modules"
+    ],
+    [
+      "C++",
+      "EXPOSES_TO",
+      "Blueprints"
+    ],
+    [
+      "Gameplay Framework",
+      "REPLICATES_THROUGH",
+      "Replication"
+    ],
+    [
+      "Networked Physics",
+      "USES",
+      "Replication"
+    ],
+    [
+      "Mover",
+      "USES",
+      "Rollback Networking"
+    ],
+    [
+      "Motion Matching",
+      "USES",
+      "Pose Search"
+    ],
+    [
+      "Control Rig",
+      "ANIMATES_IN",
+      "Sequencer"
+    ],
+    [
+      "PCG",
+      "INTEGRATES_WITH",
+      "World Partition"
+    ],
+    [
+      "PCG",
+      "READS_WRITES",
+      "Mesh Terrain"
+    ],
+    [
+      "Lumen",
+      "INTEGRATES_WITH",
+      "Nanite"
+    ],
+    [
+      "Movie Render Graph",
+      "CAN_USE",
+      "Accumulation DOF"
+    ],
+    [
+      "Horde",
+      "EXECUTES",
+      "BuildGraph"
+    ],
+    [
+      "Gauntlet",
+      "REPORTS_TO",
+      "Horde Automation Hub"
+    ],
+    [
+      "Unreal MCP",
+      "EXPOSES",
+      "Editor Toolsets"
+    ],
+    [
+      "GPT-DOUG",
+      "CONNECTS_TO",
+      "Unreal MCP"
+    ]
+  ],
+  "feature_status": {
+    "experimental": [
+      "Iris",
+      "Mover",
+      "Mesh Terrain",
+      "Accumulation DOF",
+      "Unreal MCP"
+    ],
+    "current": [
+      "Gameplay Framework",
+      "Blueprints",
+      "C++ UObject reflection",
+      "Replication Graph",
+      "Chaos Physics",
+      "Niagara",
+      "World Partition",
+      "Nanite",
+      "Lumen",
+      "Sequencer",
+      "Movie Render Pipeline",
+      "Horde",
+      "BuildGraph",
+      "Gauntlet",
+      "Automation Test Framework"
+    ],
+    "verify_per_project": [
+      "MetaSounds feature maturity",
+      "Control Rig subfeatures",
+      "platform SDK support",
+      "plugin availability"
+    ]
+  }
+}

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // DOTS NEURAL FUSION LAB</title>
+<meta name="theme-color" content="#050317">
+<style>
+:root{
+ --bg:#050317;--panel:#090622ee;--panel2:#0d0828;--line:#32265f;--grid:#241b49;
+ --violet:#9a74ff;--violet2:#6f4fff;--gold:#ffd56b;--pink:#ff4ba8;--cyan:#65d8ff;
+ --green:#66ffae;--red:#ff6077;--text:#eee9ff;--muted:#8d83af;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);mix-blend-mode:screen}
+.app{height:100vh;display:grid;grid-template-rows:72px 1fr 28px;background:radial-gradient(circle at 50% -20%,#1a0e3c 0,#08051d 38%,#03020b 72%)}
+header{display:grid;grid-template-columns:390px 1fr 290px;align-items:center;padding:0 13px;border-bottom:1px solid var(--line);background:#060318f4}
+.brand{font-size:20px;font-weight:900;letter-spacing:.075em;color:#fff}
+.brand b{color:var(--violet)} .brand span{color:var(--pink)}
+.brand small{display:block;color:var(--muted);font-size:8px;margin-top:4px;letter-spacing:.12em}
+.topstats{display:flex;justify-content:center;gap:18px;font-size:8px;color:var(--muted)} .topstats b{color:#fff;font-size:10px}
+.clock{text-align:right;font-size:8px;line-height:1.55;color:var(--muted)} .online{color:var(--green)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 330px;min-height:0}
+.workspace{display:grid;grid-template-rows:96px 1fr 188px;min-width:0;min-height:0;border-right:1px solid var(--line)}
+.wavebox{position:relative;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#0b0622,#08041a)}
+#waves{position:absolute;inset:0;width:100%;height:100%}
+.waveMeta{position:absolute;left:8px;top:7px;font-size:7px;color:var(--muted);line-height:1.5;pointer-events:none}
+.waveTitle{position:absolute;right:10px;top:7px;color:var(--gold);font-size:8px}
+.center{display:grid;grid-template-columns:minmax(0,1fr) 292px;min-height:0}
+.brainStack{display:grid;grid-template-rows:repeat(3,1fr);min-height:0}
+.view{position:relative;min-height:0;border-bottom:1px solid var(--line);background:#07041a;overflow:hidden}
+.view:last-child{border-bottom:0}
+.view canvas{position:absolute;inset:0;width:100%;height:100%}
+.viewLabel{position:absolute;left:8px;top:7px;z-index:3;color:var(--muted);font-size:7px;letter-spacing:.08em}
+.axis{position:absolute;left:8px;right:8px;bottom:7px;display:flex;justify-content:space-between;color:#63598a;font-size:6px;z-index:3}
+.cross{position:absolute;left:50%;top:50%;width:76px;height:76px;transform:translate(-50%,-50%);border:1px solid #9a74ff30;border-radius:50%;z-index:2;pointer-events:none}
+.cross:before,.cross:after{content:"";position:absolute;background:#9a74ff44}.cross:before{left:-28px;right:-28px;height:1px;top:37px}.cross:after{top:-28px;bottom:-28px;width:1px;left:37px}
+.analysis{border-left:1px solid var(--line);background:#08051d;padding:7px;overflow:auto}
+.analysisCard{border:1px solid var(--line);background:#0a0622;margin-bottom:7px}
+.analysisCard h3{margin:0;padding:5px 7px;font-size:8px;color:#fff;background:linear-gradient(90deg,#2b176b,#100927);display:flex;justify-content:space-between}
+.analysisCard h3 b{color:var(--gold)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:6px}
+.kpi{border:1px solid #281f52;background:#09061e;padding:5px}.kpi .n{font-size:14px;color:#fff}.kpi .l{font-size:6px;color:var(--muted);margin-top:2px}
+.bigScore{font-size:25px;color:#fff;padding:0 7px}.bigScore small{font-size:7px;color:var(--muted)}
+.bars{padding:6px 7px}.bar{display:grid;grid-template-columns:44px 1fr 28px;align-items:center;gap:5px;font-size:6px;color:var(--muted);margin:4px 0}.rail{height:3px;background:#201944;position:relative}.rail i{display:block;height:100%;background:linear-gradient(90deg,var(--violet2),var(--gold));width:50%}
+.scanline{height:24px;margin:6px;background:repeating-linear-gradient(90deg,#5b3fbb 0 2px,#120b2e 2px 5px,#8d6dff 5px 6px,#120b2e 6px 9px)}
+.bottom{display:grid;grid-template-rows:72px 1fr;border-top:1px solid var(--line);min-height:0}
+.agents{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px;background:#07041a}
+.agent{border:1px solid var(--line);background:#0a0621;display:grid;grid-template-columns:52px 1fr;align-items:center;padding:5px;position:relative;overflow:hidden}
+.avatar{width:42px;height:42px;border-radius:50% 50% 46% 46%;background:radial-gradient(circle at 50% 35%,#91dcff 0 18%,#2244a5 20% 60%,#11145b 61%);position:relative;margin:auto}
+.agent:nth-child(2) .avatar{background:radial-gradient(circle at 50% 35%,#8dffc9 0 18%,#1a8c6a 20% 60%,#0d4538 61%)}
+.agent:nth-child(3) .avatar{background:radial-gradient(circle at 50% 35%,#ffd078 0 18%,#d46922 20% 60%,#77300c 61%)}
+.agent:nth-child(4) .avatar{background:radial-gradient(circle at 50% 35%,#dfb6ff 0 18%,#8250bb 20% 60%,#3f1f6f 61%)}
+.agent b{font-size:8px}.agent p{margin:2px 0 0;font-size:6px;color:var(--muted);line-height:1.35}.agent .state{position:absolute;right:5px;top:5px;color:var(--green);font-size:6px}
+.metrics{display:grid;grid-template-columns:1.15fr 1fr 1fr 1fr;min-height:0}
+.metricPanel{border-right:1px solid var(--line);position:relative;overflow:hidden;background:#08051c}.metricPanel:last-child{border-right:0}
+.metricPanel h4{margin:5px 7px;font-size:7px;color:var(--muted);letter-spacing:.08em}
+.metricPanel canvas{position:absolute;left:0;right:0;top:20px;bottom:0;width:100%;height:calc(100% - 20px)}
+.side{background:#07041b;padding:8px;overflow:auto}
+.sectionTitle{font-size:8px;color:var(--violet);letter-spacing:.14em;margin:6px 0}
+.card{border:1px solid var(--line);background:#0a0621;padding:7px;margin-bottom:7px}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:7px;line-height:1.5;color:var(--muted)}.row b{color:#fff}
+button,.btn{width:100%;display:block;padding:7px;margin:3px 0;border:1px solid #433371;background:#100a2e;color:var(--text);font:inherit;font-size:7px;text-align:left;cursor:pointer;text-decoration:none}
+button:hover,.btn:hover,button.active{border-color:var(--violet);color:#fff;background:#1a1046}
+.repoList{max-height:235px;overflow:auto}.repo{border-left:2px solid #4d3b88;padding:5px 6px;margin:4px 0;background:#0b0724;cursor:pointer}.repo:hover{border-color:var(--gold)}.repo b{font-size:7px}.repo div{font-size:6px;color:var(--muted);margin-top:2px}
+.event{border-left:2px solid #6f4fff;padding-left:6px;margin:5px 0;font-size:6px;color:var(--muted);line-height:1.35}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;background:#060318;border-top:1px solid var(--line);font-size:7px;color:var(--muted)}
+@media(max-width:980px){header{grid-template-columns:1fr auto}.topstats{display:none}main{grid-template-columns:1fr}.side{display:none}.center{grid-template-columns:1fr}.analysis{display:none}.workspace{grid-template-rows:86px 1fr 160px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">GPT-DOUG <b>+ GPT DOTS</b> <span>/ SONOXO FUSION</span><small>NEURAL AGENT FIELD • 3 VIEWS • 4 AGENTS • GITHUB SIGNAL ANALYSIS</small></div>
+  <div class="topstats"><span>NODES <b id="nodeCount">500</b></span><span>WAVES <b>8</b></span><span>PROBES <b id="probeCount">0</b></span><span>DELIVERIES <b id="deliveryCount">0</b></span></div>
+  <div class="clock"><span class="online">● LAB ONLINE</span><br><span id="clock">--:--:--</span><br><span id="sync">GITHUB SYNC WAIT</span></div>
+</header>
+
+<main>
+<section class="workspace">
+  <div class="wavebox">
+    <canvas id="waves"></canvas>
+    <div class="waveMeta">EEG MONTAGE • 8 CHANNELS<br>F1 F2 F3 C1 C2 P1 P2 O1<br>AMPLITUDE NORMALIZED</div>
+    <div class="waveTitle">TASK MODE • SYSTEM FUSION</div>
+  </div>
+
+  <div class="center">
+    <div class="brainStack">
+      <div class="view"><canvas id="brain1"></canvas><div class="viewLabel">V1 • AXIAL // SYSTEM GRAPH</div><div class="cross"></div><div class="axis"><span>TEMP −0.20</span><span>ACTIVE MESH</span><span>VAR +0.38</span></div></div>
+      <div class="view"><canvas id="brain2"></canvas><div class="viewLabel">V2 • LATERAL // TEMPORAL MEMORY</div><div class="cross"></div><div class="axis"><span>PROV 0.93</span><span>GRAPHITI LAYER</span><span>CONF 0.87</span></div></div>
+      <div class="view"><canvas id="brain3"></canvas><div class="viewLabel">V3 • CORONAL // AGENT ROUTING</div><div class="cross"></div><div class="axis"><span>SIM 0.78</span><span>HUMAN-FIRST GATE</span><span>SYNC 0.91</span></div></div>
+    </div>
+
+    <aside class="analysis">
+      <div class="analysisCard"><h3>DATA ANALYSIS • V1 <b id="score1">20.69</b></h3><div class="kpis"><div class="kpi"><div class="n" id="v1a">64</div><div class="l">REPOS</div></div><div class="kpi"><div class="n" id="v1b">128</div><div class="l">SIGNALS</div></div><div class="kpi"><div class="n">8</div><div class="l">WAVES</div></div><div class="kpi"><div class="n">4</div><div class="l">AGENTS</div></div></div><div class="bars" id="bars1"></div><div class="scanline"></div></div>
+      <div class="analysisCard"><h3>DATA ANALYSIS • V2 <b id="score2">23.74</b></h3><div class="bigScore"><span id="memoryScore">91.2</span><small>% TEMPORAL COHERENCE</small></div><div class="bars" id="bars2"></div><div class="scanline"></div></div>
+      <div class="analysisCard"><h3>DATA ANALYSIS • V3 <b id="score3">29.97</b></h3><div class="bigScore"><span id="gateScore">98.4</span><small>% GOVERNANCE GATE</small></div><div class="bars" id="bars3"></div><div class="scanline"></div></div>
+    </aside>
+  </div>
+
+  <div class="bottom">
+    <div class="agents">
+      <div class="agent"><div class="avatar"></div><div><b>ECHO</b><p>screenpipe observation ingest + timeline indexing</p></div><span class="state">IDLE</span></div>
+      <div class="agent"><div class="avatar"></div><div><b>SPROUT</b><p>graphiti temporal graph + provenance memory</p></div><span class="state">READY</span></div>
+      <div class="agent"><div class="avatar"></div><div><b>POCKET</b><p>mirofish scenario sandbox + simulation report</p></div><span class="state">SIM</span></div>
+      <div class="agent"><div class="avatar"></div><div><b>STELLA</b><p>cua computer-use evaluation + approved actions</p></div><span class="state">GATED</span></div>
+    </div>
+    <div class="metrics">
+      <div class="metricPanel"><h4>SCALAR TOPOGRAPHY</h4><canvas id="topo"></canvas></div>
+      <div class="metricPanel"><h4>DIRECTION / PHASE</h4><canvas id="polar"></canvas></div>
+      <div class="metricPanel"><h4>NODE DENSITY</h4><canvas id="density"></canvas></div>
+      <div class="metricPanel"><h4>PROBE ACCURACY</h4><canvas id="radar"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<aside class="side">
+  <div class="sectionTitle">SONOXO REPOSITORY SIGNAL</div>
+  <div class="card">
+    <div class="row"><span>Public repos</span><b id="repoMetric">—</b></div>
+    <div class="row"><span>Stars</span><b id="starsMetric">—</b></div>
+    <div class="row"><span>Open issues</span><b id="issuesMetric">—</b></div>
+    <div class="row"><span>Last update</span><b id="updateMetric">—</b></div>
+  </div>
+  <button class="active" id="liveBtn">● LIVE GITHUB MODE</button>
+  <button id="pulseBtn">✦ PULSE NEURAL FIELD</button>
+  <button id="freezeBtn">Ⅱ FREEZE / RESUME</button>
+  <button id="rotateBtn">↻ TOGGLE AUTO ROTATION</button>
+  <button id="resetBtn">◎ RESET VIEW FIELD</button>
+  <div class="sectionTitle">CORE STACK</div>
+  <div class="card small">
+    <div class="row"><span>STRIX</span><b class="amber">DEFENSIVE</b></div>
+    <div class="row"><span>SCREENPIPE</span><b>OBSERVE</b></div>
+    <div class="row"><span>GRAPHITI</span><b>MEMORY</b></div>
+    <div class="row"><span>MIROFISH</span><b>SIMULATE</b></div>
+    <div class="row"><span>CUA</span><b>EXECUTE*</b></div>
+    <div style="margin-top:5px;color:#8d83af">* computer actions remain human-approved and sandboxed.</div>
+  </div>
+  <div class="sectionTitle">RECENT SONOXO SYSTEMS</div>
+  <div class="repoList" id="repos"></div>
+  <div class="sectionTitle">EVENT STREAM</div>
+  <div class="card" id="events"><div class="event">Neural fusion lab initialized.</div></div>
+  <a class="btn" href="/sonoxo-systems.html">⬡ OPEN SONOXO SYSTEMS MATRIX</a>
+  <a class="btn" href="/">← EAGLE EYE GLOBAL FUSION</a>
+</aside>
+</main>
+<footer><span>SOURCE // SONOXO PUBLIC GITHUB + SYNTHETIC NEURAL VISUALIZATION</span><span>ILLUSTRATIVE SYSTEM MODEL • NOT A MEDICAL OR PRODUCT SCREEN</span><span>HUMAN-FIRST • TEVV • AUDIT</span></footer>
+</div>
+
+<script type="module">
+import * as THREE from 'https://unpkg.com/three@0.180.0/build/three.module.js';
+
+const $=id=>document.getElementById(id);
+let frozen=false,autoRotate=true,pulse=0,repos=[];
+
+function log(msg){
+  const d=document.createElement('div');d.className='event';d.textContent=new Date().toLocaleTimeString()+'  '+msg;
+  $('events').prepend(d);while($('events').children.length>12)$('events').lastChild.remove();
+}
+
+function sizeCanvas(c){
+  const d=devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);
+  const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w:r.width,h:r.height}
+}
+
+function waves(){
+  const c=$('waves'),o=sizeCanvas(c),x=o.x,w=o.w,h=o.h;
+  x.clearRect(0,0,w,h);x.strokeStyle='#2a2056';x.lineWidth=.5;
+  for(let gx=0;gx<w;gx+=42){x.beginPath();x.moveTo(gx,0);x.lineTo(gx,h);x.stroke()}
+  for(let gy=8;gy<h;gy+=11){x.beginPath();x.moveTo(0,gy);x.lineTo(w,gy);x.stroke()}
+  const now=performance.now()/1000;
+  for(let ch=0;ch<8;ch++){
+    x.strokeStyle=ch===4?'#ff4ba8':ch%3===0?'#b490ff':'#8069d6';x.lineWidth=.75;x.beginPath();
+    for(let px=0;px<w;px++){
+      const y=10+ch*10+Math.sin(px*.12+now*(1.6+ch*.08))*1.7+Math.sin(px*.31-now*.8)*.65+(Math.random()-.5)*.45;
+      px?x.lineTo(px,y):x.moveTo(px,y)
+    }x.stroke()
+  }
+  if(!frozen)requestAnimationFrame(waves)
+}
+
+function makeBrain(canvasId,viewIndex){
+  const mount=$(canvasId),scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,1,.1,50);
+  if(viewIndex===0)camera.position.set(0,5.6,.15);
+  if(viewIndex===1)camera.position.set(5.7,.3,0);
+  if(viewIndex===2)camera.position.set(.1,.2,5.8);
+  camera.lookAt(0,0,0);
+  const renderer=new THREE.WebGLRenderer({canvas:mount,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+  const count=4800,positions=new Float32Array(count*3),colors=new Float32Array(count*3);
+  const col1=new THREE.Color('#6f4fff'),col2=new THREE.Color('#ffd56b'),col3=new THREE.Color('#ff4ba8');
+  for(let i=0;i<count;i++){
+    const u=Math.random()*Math.PI*2,v=Math.acos(2*Math.random()-1);
+    let rx=1.55,ry=1.05,rz=1.18;
+    let x=rx*Math.sin(v)*Math.cos(u),y=ry*Math.cos(v),z=rz*Math.sin(v)*Math.sin(u);
+    const split=(x>0?1:-1)*.12*Math.exp(-Math.abs(z)*2.2);
+    x+=split;
+    const wob=.10*Math.sin(u*5+v*7)+.055*Math.sin(u*13-v*4);
+    x*=1+wob;y*=1+wob*.7;z*=1+wob*.9;
+    positions[i*3]=x;positions[i*3+1]=y;positions[i*3+2]=z;
+    const t=(x/3.2+.5),c=t>.72?col2.clone().lerp(col3,(t-.72)/.28):col1.clone().lerp(col2,t/.72);
+    colors[i*3]=c.r;colors[i*3+1]=c.g;colors[i*3+2]=c.b;
+  }
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(positions,3));geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+  const mat=new THREE.PointsMaterial({size:.026,vertexColors:true,transparent:true,opacity:.9,sizeAttenuation:true});
+  const brain=new THREE.Points(geo,mat);scene.add(brain);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.8,.012,8,96),new THREE.MeshBasicMaterial({color:0x6f4fff,transparent:true,opacity:.24}));
+  ring.rotation.x=Math.PI/2;scene.add(ring);
+  const nodes=new THREE.Group();scene.add(nodes);
+  if(viewIndex===2){
+    for(let i=0;i<5;i++){const a=i*Math.PI*2/5;const n=new THREE.Mesh(new THREE.SphereGeometry(.055,12,8),new THREE.MeshBasicMaterial({color:i===0?0xff4ba8:0xa879ff}));n.position.set(Math.cos(a)*.75,Math.sin(a)*.55,.4);nodes.add(n)}
+    const hub=new THREE.Mesh(new THREE.OctahedronGeometry(.16),new THREE.MeshBasicMaterial({color:0xff4ba8}));hub.position.z=.45;nodes.add(hub);
+  }
+  function resize(){const r=mount.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix()}
+  function loop(){
+    resize();
+    if(!frozen){if(autoRotate){brain.rotation.y+=.0016*(viewIndex+1);brain.rotation.z+=.00045}ring.rotation.z+=.002;pulse*=.96;mat.size=.026+pulse*.015}
+    renderer.render(scene,camera);requestAnimationFrame(loop)
+  }loop();return{brain,mat,renderer,camera}
+}
+const brains=[makeBrain('brain1',0),makeBrain('brain2',1),makeBrain('brain3',2)];
+
+function makeBars(id){
+ const root=$(id);root.innerHTML='';
+ ['FOCUS','LOAD','SYNC','DRIFT','CONF'].forEach((n,i)=>{const d=document.createElement('div');d.className='bar';const val=Math.round(55+Math.random()*43);d.innerHTML='<span>'+n+'</span><span class="rail"><i style="width:'+val+'%"></i></span><b>'+val+'</b>';root.appendChild(d)})
+}
+makeBars('bars1');makeBars('bars2');makeBars('bars3');
+
+function radialCanvas(id,kind){
+ const c=$(id),o=sizeCanvas(c),x=o.x,w=o.w,h=o.h,cx=w/2,cy=h/2+2,r=Math.min(w,h)*.34;
+ x.clearRect(0,0,w,h);x.lineWidth=.6;
+ for(let i=1;i<=4;i++){x.strokeStyle='#392d68';x.beginPath();x.arc(cx,cy,r*i/4,0,Math.PI*2);x.stroke()}
+ for(let a=0;a<8;a++){const q=a*Math.PI/4;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(q)*r,cy+Math.sin(q)*r);x.stroke()}
+ if(kind==='topo'){
+   for(let j=0;j<9;j++){const q=j*Math.PI*2/9+performance.now()/5000,rr=r*(.28+.68*((j%4)/4));x.fillStyle=['#6f4fff','#a778ff','#ffd56b','#ff4ba8'][j%4]+'99';x.beginPath();x.arc(cx+Math.cos(q)*rr*.55,cy+Math.sin(q)*rr*.55,r*(.34-(j%3)*.05),0,Math.PI*2);x.fill()}
+ }else{
+   x.strokeStyle=kind==='polar'?'#ffd56b':kind==='density'?'#ff4ba8':'#65d8ff';x.lineWidth=1.3;x.beginPath();
+   for(let i=0;i<8;i++){const q=i*Math.PI*2/8-Math.PI/2,val=r*(.35+.55*Math.abs(Math.sin(performance.now()/1600+i*1.17)));const px=cx+Math.cos(q)*val,py=cy+Math.sin(q)*val;i?x.lineTo(px,py):x.moveTo(px,py)}
+   x.closePath();x.stroke();
+ }
+}
+function charts(){['topo','polar','density','radar'].forEach((id,i)=>radialCanvas(id,['topo','polar','density','radar'][i]));if(!frozen)requestAnimationFrame(charts)}
+
+async function gh(url){const r=await fetch(url,{headers:{Accept:'application/vnd.github+json'}});if(!r.ok)throw Error('GitHub '+r.status);return r.json()}
+async function syncGitHub(){
+ try{
+  $('sync').textContent='GITHUB SYNC ACTIVE';
+  repos=await gh('https://api.github.com/users/sonoxo/repos?per_page=100&sort=updated');
+  repos=repos.filter(r=>!r.private);
+  const stars=repos.reduce((a,r)=>a+(r.stargazers_count||0),0),issues=repos.reduce((a,r)=>a+(r.open_issues_count||0),0);
+  $('repoMetric').textContent=repos.length;$('starsMetric').textContent=stars;$('issuesMetric').textContent=issues;$('updateMetric').textContent=repos[0]?new Date(repos[0].updated_at).toLocaleDateString():'—';
+  $('v1a').textContent=repos.length;$('v1b').textContent=repos.reduce((a,r)=>a+(r.size||0),0)%999;
+  $('nodeCount').textContent=500+repos.length*7;$('probeCount').textContent=repos.filter(r=>r.open_issues_count>0).length;$('deliveryCount').textContent=repos.filter(r=>r.updated_at&&Date.now()-new Date(r.updated_at)<86400000*30).length;
+  $('repos').innerHTML=repos.slice(0,18).map(r=>'<div class="repo" data-url="'+r.html_url+'"><b>'+esc(r.name)+'</b><div>'+esc(r.language||'n/a')+' • ★ '+(r.stargazers_count||0)+' • '+new Date(r.updated_at).toLocaleDateString()+'</div></div>').join('');
+  document.querySelectorAll('.repo').forEach(el=>el.onclick=()=>window.open(el.dataset.url,'_blank','noopener'));
+  log('GitHub inventory synchronized: '+repos.length+' public repositories');
+ }catch(e){$('sync').textContent='GITHUB '+e.message;log('GitHub sync failed: '+e.message)}
+}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+$('pulseBtn').onclick=()=>{pulse=1;log('Neural field pulse injected')};
+$('freezeBtn').onclick=()=>{frozen=!frozen;if(!frozen){waves();charts()}log(frozen?'Visualization frozen':'Visualization resumed')};
+$('rotateBtn').onclick=()=>{autoRotate=!autoRotate;log('Auto rotation '+(autoRotate?'enabled':'disabled'))};
+$('resetBtn').onclick=()=>{brains.forEach(b=>b.brain.rotation.set(0,0,0));pulse=.5;log('View field reset')};
+$('liveBtn').onclick=syncGitHub;
+
+setInterval(()=>{
+ $('clock').textContent=new Date().toLocaleTimeString();
+ $('score1').textContent=(18+Math.random()*5).toFixed(2);$('score2').textContent=(21+Math.random()*5).toFixed(2);$('score3').textContent=(27+Math.random()*5).toFixed(2);
+ $('memoryScore').textContent=(88+Math.random()*8).toFixed(1);$('gateScore').textContent=(96+Math.random()*3).toFixed(1);
+},1000);
+addEventListener('resize',()=>{if(!frozen){waves();charts()}});
+waves();charts();syncGitHub();
+</script>
+<script src="/quantum-renderer.js"></script>\n</body>
+</html>

@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+SRC="$ROOT/scripts/gpt-doug-biochip"
+BIN_DIR="$HOME/.local/bin"
+BIN="$BIN_DIR/gpt-doug-biochip"
+
+[ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
+mkdir -p "$BIN_DIR"
+chmod +x "$SRC"
+ln -sf "$SRC" "$BIN"
+
+case ":${PATH}:" in
+  *":$BIN_DIR:"*) ;;
+  *)
+    SHELL_RC="$HOME/.zshrc"
+    [ -f "$SHELL_RC" ] || touch "$SHELL_RC"
+    printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$SHELL_RC"
+    ;;
+esac
+
+echo "Installed: $BIN"
+echo "Run now: $BIN"
+echo "Future shells: gpt-doug-biochip"

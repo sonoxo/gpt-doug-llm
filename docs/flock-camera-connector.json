@@ -1,0 +1,26 @@
+{
+  "schema": "xunia.flock-compatible.connector.v1",
+  "provider_label": "Flock Safety",
+  "affiliation": "none",
+  "status": "CONTRACT_READY_NOT_CONNECTED",
+  "note": "This is a normalization contract for an organization-authorized Flock Safety integration. It does not contain credentials and does not claim an official integration.",
+  "requirements": [
+    "Organization-approved Flock Safety API or export access",
+    "Server-side credentials only; never expose credentials in browser code",
+    "Purpose and authorization scope on every imported event",
+    "Privacy filtering before events reach the public UI",
+    "Coarse public geolocation and no person/biometric tracking"
+  ],
+  "normalized_event": {
+    "source_id": "string",
+    "provider": "flock-safety",
+    "object_type": "infrastructure_asset | authorized_fleet_vehicle | environmental_sensor | public_event",
+    "observed_at": "ISO-8601",
+    "latitude": "number optional",
+    "longitude": "number optional",
+    "confidence": "0..1 optional",
+    "authorization_scope": "string",
+    "purpose": "string",
+    "provenance_url": "string optional"
+  }
+}

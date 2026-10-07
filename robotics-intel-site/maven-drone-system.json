@@ -1,0 +1,66 @@
+{
+  "system": "DOUG-GPT-MAVEN-DRONE-SYSTEM",
+  "version": "1.0.0",
+  "authority": "HUMAN_FIRST",
+  "mode": "SYNTHETIC_FLIGHT_AUTHORIZED_OBSERVATION",
+  "purpose": [
+    "flight simulation",
+    "authorized observation workflow design",
+    "public-source situational awareness",
+    "video analytics research"
+  ],
+  "flight": {
+    "real_autopilot_link": false,
+    "real_gps_route_upload": false,
+    "real_drone_telemetry": false,
+    "modes": [
+      "GROUND",
+      "TAKEOFF",
+      "FORMATION",
+      "ORBIT",
+      "MANUAL",
+      "HOME",
+      "LAND",
+      "REPLAY"
+    ],
+    "missions": [
+      "SURVEY",
+      "GRID_SCAN",
+      "INFRA_INSPECT",
+      "ENVIRONMENT_SCAN",
+      "RTB"
+    ]
+  },
+  "analytics": {
+    "pipeline": [
+      "SEGMENT",
+      "CLASSIFY",
+      "TRACK",
+      "EVENT",
+      "HUMAN_REVIEW"
+    ],
+    "source_mode": "SYNTHETIC_OR_EXPLICITLY_AUTHORIZED",
+    "allowed_classes": [
+      "authorized_asset",
+      "infrastructure",
+      "environmental_region",
+      "obstacle",
+      "synthetic_contact"
+    ],
+    "person_tracking": false,
+    "biometric_identification": false,
+    "target_generation": false,
+    "weapon_cueing": false
+  },
+  "video": {
+    "strategy": "SCENE_ADAPTIVE_ROI_SIMULATION",
+    "roi_priority": "HIGHER_FIDELITY",
+    "background_priority": "BANDWIDTH_SAVING",
+    "real_encoder_control": false
+  },
+  "external_actions": {
+    "autonomous": false,
+    "weapons": false,
+    "payload_release": false
+  }
+}

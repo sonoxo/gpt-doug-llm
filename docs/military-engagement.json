@@ -1,0 +1,78 @@
+{
+  "schema": "xunia.maven.military-engagement.v1",
+  "updated_at": "2026-09-29",
+  "handling": "PUBLIC_OFFICIAL_CONTACTS_ONLY",
+  "policy": {
+    "individual_personnel_lookup": false,
+    "private_contact_data": false,
+    "live_personnel_tracking": false,
+    "credentialed_system_access": false,
+    "official_public_offices_only": true
+  },
+  "channels": [
+    {
+      "id": "dod-public",
+      "service": "Department of Defense",
+      "purpose": "Public inquiries and media routing",
+      "url": "https://www.defense.gov/Resources/For-the-Media/index.html",
+      "contact": "Defense Press Operations: 703-697-5131",
+      "type": "PUBLIC_AFFAIRS"
+    },
+    {
+      "id": "dod-industry",
+      "service": "DoD Industry Engagement",
+      "purpose": "Business, supplier and industry engagement",
+      "url": "https://business.defense.gov/Work-with-us/",
+      "contact": "osd.ousd-a-s.industry-engagement@mail.mil",
+      "type": "INDUSTRY_ENGAGEMENT"
+    },
+    {
+      "id": "army-outreach",
+      "service": "U.S. Army",
+      "purpose": "Army outreach and public engagement",
+      "url": "https://www.army.mil/publicaffairs/",
+      "contact": "usarmy.pentagon.hqda-acoo.mbx.strategy-policy-and-assessments@army.mil",
+      "type": "OUTREACH"
+    },
+    {
+      "id": "navy-public",
+      "service": "U.S. Navy",
+      "purpose": "Public and personnel-policy inquiries",
+      "url": "https://www.mynavyhr.navy.mil/Contact-Us/",
+      "contact": "Public Inquiries: 703-695-0965",
+      "type": "PUBLIC_AFFAIRS"
+    },
+    {
+      "id": "airforce-public",
+      "service": "U.S. Air Force",
+      "purpose": "Public inquiries and installation public-affairs directory",
+      "url": "https://www.af.mil/Contact-Us/",
+      "contact": "Public Inquiries: 703-697-3039",
+      "type": "PUBLIC_AFFAIRS"
+    },
+    {
+      "id": "spaceforce-public",
+      "service": "U.S. Space Force",
+      "purpose": "Public inquiries, internships, cyber and acquisitions questions",
+      "url": "https://www.spaceforce.mil/Contact/",
+      "contact": "Public Inquiries: 703-697-3039",
+      "type": "PUBLIC_AFFAIRS"
+    },
+    {
+      "id": "marforcom-public",
+      "service": "U.S. Marine Corps Forces Command",
+      "purpose": "Official public-affairs / press inquiries",
+      "url": "https://www.marforcom.marines.mil/Legacy-Content/Contact-Us/",
+      "contact": "Public Affairs Office: 757-836-1556",
+      "type": "PUBLIC_AFFAIRS"
+    },
+    {
+      "id": "dod-small-business",
+      "service": "DoD Small Business Offices",
+      "purpose": "Official offices for companies seeking defense-market engagement",
+      "url": "https://business.defense.gov/Work-with-us/Military-Departments-and-Defense-Agencies/",
+      "contact": "Directory of service and agency small-business offices",
+      "type": "BUSINESS"
+    }
+  ]
+}

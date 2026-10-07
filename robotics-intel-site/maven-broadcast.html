@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#070906">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<title>DOUG-GPT-MAVEN // DRONE + OPS</title>
+<link rel="preconnect" href="https://gpt-doug-robotics-intel.onrender.com">
+<style>
+:root{
+  --bg:#050704;--panel:#090d0a;--panel2:#0c110d;--line:#5d3a12;--line2:#2d4d36;
+  --text:#f1e4c8;--muted:#ad9c7f;--accent:#ff9f1c;--lime:#d7ff64;--cyan:#7ce7ff;
+  --red:#ff6b6b;--shadow:0 22px 80px rgba(0,0,0,.55);--ease:cubic-bezier(.2,.78,.2,1)
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;min-height:100svh;min-height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,input{font:inherit}
+button{touch-action:manipulation}
+a{color:var(--cyan)}
+.shell{display:grid;grid-template-rows:auto minmax(0,1fr);height:100dvh;min-height:100dvh}
+.top{
+  min-height:52px;display:flex;align-items:center;gap:7px;padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) 7px max(9px,env(safe-area-inset-left));
+  border-bottom:1px solid rgba(255,159,28,.28);background:linear-gradient(90deg,rgba(7,10,7,.98),rgba(14,19,12,.96));overflow-x:auto;white-space:nowrap;scrollbar-width:none
+}
+.top::-webkit-scrollbar{display:none}
+.brand{font-weight:950;color:var(--accent);letter-spacing:.045em;flex:0 0 auto}
+.chip{flex:0 0 auto;border:1px solid #3b4f35;border-radius:999px;background:#0a100b;padding:5px 8px;font-size:9px}
+.chip.ok{color:var(--lime)}.chip.info{color:var(--cyan)}.chip.off{color:#90978b}.chip.warn{color:#ffd166}
+.workspace{
+  min-height:0;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(520px,.92fr);
+  gap:7px;padding:7px;background:
+    radial-gradient(circle at 20% 20%,rgba(255,159,28,.045),transparent 28%),
+    linear-gradient(180deg,#060906,#040604)
+}
+.panel{
+  position:relative;min-width:0;min-height:0;border:1px solid rgba(93,58,18,.85);border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(12,17,13,.97),rgba(7,10,8,.98));box-shadow:var(--shadow)
+}
+.panel-head{
+  min-height:40px;display:flex;align-items:center;gap:7px;padding:7px 9px;border-bottom:1px solid rgba(93,58,18,.7);
+  background:rgba(8,12,9,.96);font-size:10px;font-weight:900;color:var(--accent);letter-spacing:.05em
+}
+.panel-head .spacer{flex:1}
+.panel-head .mini{font-size:9px;color:var(--muted);font-weight:700}
+.mapframe{width:100%;height:100%;border:0;background:#020403;display:block}
+.map-wrap{display:grid;grid-template-rows:auto minmax(0,1fr)}
+.map-overlay{
+  position:absolute;left:10px;bottom:10px;z-index:5;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 20px)
+}
+.map-overlay button{
+  min-height:38px;border:1px solid #4a351b;border-radius:9px;background:rgba(9,13,10,.92);color:var(--text);padding:7px 9px;font-size:9px;font-weight:850;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)
+}
+.map-overlay button.active{background:var(--accent);color:#1b0d00;border-color:#ffb84f}
+.sim{display:grid;grid-template-rows:auto auto minmax(300px,1.15fr) auto auto minmax(140px,.52fr)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px}
+.stat{border:1px solid #26392c;border-radius:9px;padding:8px;background:#071008;font-size:9px;color:var(--muted)}
+.stat b{display:block;margin-top:3px;color:var(--lime);font-size:12px}
+.simboard{position:relative;margin:0 8px 8px;border:1px solid #234832;border-radius:10px;overflow:hidden;background:#041008}
+#simCanvas{display:block;width:100%;height:100%}
+.simtools{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 8px 8px}
+.simtools button{
+  min-height:40px;border:1px solid #5a3d18;border-radius:8px;background:#11140d;color:#f5ddaa;padding:7px;font-size:9px;font-weight:900
+}
+.simtools button.primary{background:#2d240c;color:#ffd166}
+.arsenal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0 8px 8px}
+.arsenal button{min-height:40px;border:1px solid #314b37;border-radius:8px;background:linear-gradient(180deg,#0a130c,#071009);color:#d9f4df;padding:7px;font-size:9px;font-weight:900;letter-spacing:.03em}
+.arsenal button:hover{border-color:#5f986e;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+.arsenal button:active{transform:scale(.985)}
+.arsenal .pulse{color:#ffd166}.arsenal .beam{color:#7ce7ff}.arsenal .intercept{color:#d7ff64}.arsenal .defense{color:#9fd7ff}.arsenal .nova{color:#fff09a}.arsenal .meteor{color:#ff9866}.arsenal .ion{color:#9fe8ff}.arsenal .gravity{color:#c8a4ff}.arsenal .plasma{color:#ff8be8}.arsenal .shock{color:#87ffd1}
+.feed{margin:0 8px 8px;padding:8px;border:1px solid #253629;border-radius:9px;background:#060a07;overflow:auto;font-size:9px;line-height:1.45;color:#bcae92}
+.feed .time{color:#7ce7ff}.feed .good{color:#d7ff64}
+.palantir-pane{display:none;position:relative}
+.palantir-pane iframe{width:100%;height:100%;border:0;background:#020403;display:block}
+.workspace.palantir-mode{display:block;position:relative}
+.workspace.palantir-mode>[data-pane]:not(.palantir-pane){display:none!important}
+.workspace.palantir-mode .palantir-pane{display:block;position:absolute;inset:7px}
+.pal-mode-btn{cursor:pointer;color:#7ce7ff}
+.pal-mode-btn.active{background:#102029;border-color:#356c78;color:#d8f8ff}
+.mobile-dock{display:none}
+.fold-toggle{display:none}
+html.embed .top{display:none}
+html.embed .shell{grid-template-rows:minmax(0,1fr)}
+html.embed .xunia-i18n{display:none!important}
+html.local-file .xunia-i18n{display:none!important}
+html.local-file .top{box-shadow:0 10px 36px rgba(0,0,0,.28)}
+html.local-file .panel{box-shadow:0 14px 44px rgba(0,0,0,.42)}
+
+@media(max-width:1320px){
+  .workspace{grid-template-columns:minmax(0,1.04fr) minmax(420px,.96fr)}
+}
+@media(max-width:900px){
+  .workspace{display:block;position:relative;padding:5px}
+  .panel{position:absolute;inset:5px;display:none}
+  .panel.mobile-active{display:grid}
+  .map-wrap.mobile-active{grid-template-rows:auto minmax(0,1fr)}
+  .sim.mobile-active{grid-template-rows:auto auto minmax(220px,1fr) auto minmax(120px,.44fr)}
+  .mobile-dock{
+    position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom));
+    display:flex;gap:5px;padding:5px;border:1px solid rgba(255,159,28,.36);border-radius:14px;background:rgba(5,8,6,.92);
+    box-shadow:0 18px 54px rgba(0,0,0,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)
+  }
+  .mobile-dock button{min-height:44px;border:1px solid #4a351b;border-radius:9px;background:#0e140f;color:#e9dcc4;padding:7px 10px;font-size:9px;font-weight:900}
+  .mobile-dock button.active{background:#ff9f1c;color:#180b00}
+}
+@media(max-width:520px){.arsenal{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:430px){
+  .brand{font-size:11px}.chip{font-size:8px}
+  .stats{grid-template-columns:1fr 1fr}.simtools{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+</style>
+<link rel="stylesheet" href="./maven-tactical.css">
+<link rel="stylesheet" href="./maven-iphone16e.css">
+<link rel="stylesheet" href="./maven-camera.css">
+<link rel="stylesheet" href="./maven-drone-sim.css">
+<link rel="stylesheet" href="./maven-gotham-sim.css">
+<link rel="stylesheet" href="./maven-clean.css">
+<link rel="stylesheet" href="./maven-flight-visibility.css">
+<script>
+(() => {
+  const params=new URLSearchParams(location.search);
+  if(params.get("embed")==="1") document.documentElement.classList.add("embed");
+  if(location.protocol==="file:"){
+    document.documentElement.classList.add("local-file");
+    return;
+  }
+  const i18n=document.createElement("script");
+  i18n.src="https://xunia.org/xunia-i18n.js";
+  i18n.defer=true;
+  document.head.appendChild(i18n);
+})();
+</script>
+</head>
+<body>
+<div class="shell">
+  <div class="top" data-no-translate="true">
+    <div class="brand">📡 DOUG-GPT-MAVEN // DRONE + OPS</div><span class="chip ok">TACTICAL MAX</span>
+    <span class="chip ok" id="opsChip">OPS CONNECTING</span><span class="chip info" id="liveBusChip">LIVE BUS CONNECTING</span><span class="chip info" id="palBroadcastChip">PALANTIR CHECKING</span><button class="chip pal-mode-btn" id="palantirModeToggle" type="button">🔷 PALANTIR LIVE</button>
+    <button class="chip pal-mode-btn" id="ecoFabricOpen" type="button">🌐 ECO FABRIC</button>
+    <span class="chip warn">SYNTHETIC TRAINING</span>
+    <span class="chip off">EXTERNAL ACTION OFF</span>
+  </div>
+
+  <main class="workspace">
+    <section class="panel map-wrap mobile-active" data-pane="map">
+      <div class="panel-head">
+        <span>🌍 GEOSPATIAL</span><span class="mini">PUBLIC / AUTHORIZED</span><span class="spacer"></span><span class="mini" id="mapState">2D LIVE</span>
+      </div>
+      <iframe id="mapFrame" class="mapframe" src="https://gpt-doug-robotics-intel.onrender.com/maven-geospatial.html?embed=1" title="GPT-MAVEN public geospatial map" loading="eager" allow="fullscreen"></iframe>
+      <div class="map-overlay" data-no-translate="true">
+        <button type="button" data-view="global">GLOBAL</button>
+        <button type="button" data-view="europe" class="active">EUROPE</button>
+        <button type="button" data-view="blacksea">BLACK SEA</button>
+        <button type="button" id="mapRefresh">↻ DATA</button>
+        <button type="button" id="infraSchematicToggle">⌗ SCHEMATIC</button>
+      </div>
+    </section>
+
+    <section class="panel sim" data-pane="sim">
+      <div class="panel-head"><span>🧪 SYNTHETIC SCENARIO LAB</span><span class="spacer"></span><button class="drone-view-toggle" id="droneViewToggle" type="button">DRONE VIEW</button><button class="drone-view-toggle" id="flightFocusToggle" type="button">FLIGHT FOCUS</button><button class="camera-view-toggle" id="cameraViewToggle" type="button">CAMERA VIEW</button><span class="mini">ISOLATED FROM REAL TARGETING</span></div>
+      <div class="stats">
+        <div class="stat">ACTIVE CONTACTS<b id="activeCount">5</b></div>
+        <div class="stat">RESOLVED<b id="resolvedCount">0</b></div>
+        <div class="stat">AUTO SIM<b id="autoState">OFF</b></div>
+        <div class="stat">SIM CLOCK<b id="simClock">00:00</b></div>
+      </div>
+      <div class="simboard"><canvas id="simCanvas" aria-label="Synthetic scenario visualization"></canvas></div>
+      <section class="drone-bay" id="droneBay" hidden aria-label="DOUG-GPT-MAVEN synthetic drone system">
+        <div class="drone-head">
+          <span>🛸 DOUG-GPT-MAVEN DRONE SYSTEM</span><span class="spacer"></span>
+          <span class="drone-chip live">SYSTEM ONLINE</span><span class="drone-chip" id="droneMission">SURVEY</span><span class="drone-chip" id="droneMode">GROUND</span>
+        </div>
+        <div class="drone-stage">
+          <canvas id="droneCanvas" aria-label="Animated synthetic drone flight visualization"></canvas>
+          <div class="drone-hud" data-no-translate="true">
+            <div class="good">FLEET<b id="droneFleet">4</b></div>
+            <div class="info">AVG ALT<b id="droneAlt">0 m</b></div>
+            <div class="info">AVG SPEED<b id="droneSpeed">0 km/h</b></div>
+            <div class="good">AVG BATTERY<b id="droneBattery">96%</b></div>
+            <div class="info">ANALYTICS<b id="droneAnalyticsState">IDLE</b></div>
+            <div class="info">ROI VIDEO<b id="droneVideoState">BACKGROUND SAVE</b></div>
+            <div class="good">EVENTS<b id="droneEventCount">0</b></div>
+            <div class="good">LINK<b>SIM / LOCAL</b></div>
+          </div>
+        </div>
+        <div class="drone-footer" data-no-translate="true">
+          <button class="amber" type="button" data-drone-mode="TAKEOFF">TAKEOFF</button>
+          <button class="cyan" type="button" data-drone-mode="ORBIT">ORBIT</button>
+          <button class="cyan" type="button" data-drone-mode="FORMATION">FORMATION</button>
+          <button type="button" data-drone-mode="COCKPIT">FPV</button>
+          <button type="button" data-drone-mode="HOME">HOME</button>
+          <button class="amber" type="button" data-drone-mode="LAND">LAND</button>
+        </div>
+        <div class="drone-mission-panel" data-no-translate="true">
+          <div class="drone-mission-head">
+            <span>MISSION PROFILE</span>
+            <span>ANALYTICS PIPELINE: <b id="dronePipelineState">SEGMENT → CLASSIFY → TRACK → EVENT → HUMAN REVIEW</b></span>
+          </div>
+          <div class="drone-mission-grid">
+            <button type="button" data-drone-mission="SURVEY" class="active">SURVEY</button>
+            <button type="button" data-drone-mission="GRID_SCAN">GRID SCAN</button>
+            <button type="button" data-drone-mission="INFRA_INSPECT">INFRA INSPECT</button>
+            <button type="button" data-drone-mission="ENVIRONMENT_SCAN">ENVIRONMENT</button>
+            <button type="button" data-drone-mission="RTB">RTB</button>
+          </div>
+          <div class="drone-analytics-strip">
+            <span>SEGMENT <b id="droneSeg">READY</b></span>
+            <span>CLASSIFY <b id="droneClass">READY</b></span>
+            <span>TRACK <b id="droneTrack">READY</b></span>
+            <span>EVENT <b id="droneEvent">0</b></span>
+            <span>REVIEW <b>HUMAN</b></span>
+          </div>
+        </div>
+        <div class="drone-pilot" data-no-translate="true">
+          <div class="drone-pilot-head">
+            <span>🎮 MANUAL PILOT // SYNTHETIC XYZ</span>
+            <span>SELECTED <b id="droneSelected">SIM-DRONE-1</b></span>
+            <span>TRAJECTORY <b id="droneTrajectoryState">IDLE</b></span>
+          </div>
+          <div class="drone-pilot-grid">
+            <button type="button" data-drone-pilot="left">A / ◀</button>
+            <button type="button" data-drone-pilot="forward">W / ▲</button>
+            <button type="button" data-drone-pilot="right">D / ▶</button>
+            <button type="button" data-drone-pilot="back">S / ▼</button>
+            <button type="button" data-drone-pilot="up">E / ALT+</button>
+            <button type="button" data-drone-pilot="down">Q / ALT−</button>
+          </div>
+          <div class="drone-trajectory-tools">
+            <button type="button" id="droneSelectNext">NEXT DRONE</button>
+            <button type="button" id="droneRecordPath">RECORD PATH</button>
+            <button type="button" id="droneMarkWaypoint">MARK WAYPOINT</button>
+            <button type="button" id="droneReplayPath">REPLAY PATH</button>
+            <button type="button" id="droneClearPath">CLEAR</button>
+          </div>
+        </div>
+        <div class="drone-note">DOUG-GPT-MAVEN DRONE SYSTEM · SYNTHETIC FLIGHT + AUTHORIZED OBSERVATION WORKFLOW · NORMALIZED XYZ SPACE · ANALYTICS: SEGMENT / CLASSIFY / TRACK / EVENT / HUMAN REVIEW · ROI VIDEO QUALITY SIMULATION · NO REAL GPS ROUTE · NO REAL DRONE TELEMETRY · NO AUTOPILOT LINK · NO PERSON TRACKING · NO TARGET GENERATION · NO WEAPON CONTROL.</div>
+      </section>
+      <section class="camera-bay" id="cameraBay" hidden aria-label="Local camera visual bay">
+        <div class="camera-bay-head">
+          <span>📷 LOCAL CAMERA VISUAL BAY</span><span class="spacer"></span><span class="camera-status" id="cameraStatus">CAMERA OFF</span>
+        </div>
+        <div class="camera-stage">
+          <video id="mavenCamera" class="camera-video" playsinline muted autoplay></video>
+          <div class="camera-overlay">
+            <div class="camera-readout"><strong>LOCAL PREVIEW</strong><span>VISUALS ONLY</span><span class="spacer"></span><span>NO DETECTION / NO UPLOAD</span></div>
+          </div>
+        </div>
+        <div class="camera-controls" data-no-translate="true">
+          <button id="cameraStart" type="button">CAMERA ON</button>
+          <button id="cameraFlip" type="button" disabled>FLIP</button>
+          <button id="cameraFilter" type="button">LOOK: CLEAN</button>
+          <button id="cameraOverlayToggle" type="button" class="active">HUD ON</button>
+          <button id="cameraStop" type="button" disabled>CAMERA OFF</button>
+        </div>
+        <div class="camera-note">DEVICE CAMERA STAYS LOCAL IN THE BROWSER. NO FACE RECOGNITION, OBJECT DETECTION, PERSON TRACKING, TARGET GENERATION, RECORDING, OR UPLOAD. SYNTHETIC ARSENAL REMAINS SEPARATE.</div>
+      </section>
+      <div class="simtools" data-no-translate="true">
+        <button class="primary" id="addContact" type="button">+ SYNTHETIC CONTACT</button>
+        <button id="resolveContact" type="button">RESOLVE ONE</button>
+        <button id="autoToggle" type="button">AUTO SIM</button>
+        <button id="resetSim" type="button">RESET</button>
+      </div>
+      <div class="arsenal" data-no-translate="true" aria-label="Synthetic-only arsenal">
+        <button class="pulse" type="button" data-sim-tool="pulse">◉ ARC PULSE</button>
+        <button class="beam" type="button" data-sim-tool="beam">⌁ BEAM BURST</button>
+        <button class="intercept" type="button" data-sim-tool="intercept">△ INTERCEPTOR</button>
+        <button class="defense" type="button" data-sim-tool="decoy">◇ DECOY FIELD</button>
+        <button class="defense" type="button" data-sim-tool="shield">⬡ SHIELD DOME</button>
+        <button class="defense" type="button" data-sim-tool="net"># NET LOCK</button>
+        <button class="nova" type="button" data-sim-tool="nova">✹ NOVA BURST</button>
+        <button class="meteor" type="button" data-sim-tool="meteor">☄ METEOR IMPACT</button>
+        <button class="ion" type="button" data-sim-tool="ion">ϟ ION STORM</button>
+        <button class="gravity" type="button" data-sim-tool="gravity">◌ GRAVITY WELL</button>
+        <button class="plasma" type="button" data-sim-tool="plasma">╱ PLASMA LANCE</button>
+        <button class="shock" type="button" data-sim-tool="shock">◎ SHOCK RING</button>
+      </div>
+      <div class="feed" id="eventFeed" aria-live="polite"></div>
+    </section>
+
+    <section class="panel palantir-pane" data-pane="palantir">
+      <iframe src="https://gpt-doug-robotics-intel.onrender.com/maven-palantir.html?embed=1" title="GPT-MAVEN Palantir live ontology workspace" loading="lazy"></iframe>
+    </section>
+  </main>
+</div>
+
+<nav class="mobile-dock" data-no-translate="true" aria-label="Broadcast workspaces">
+  <button class="active" data-mobile-pane="map">🌍 MAP</button>
+  <button data-mobile-pane="sim">🧪 SIM</button>
+  <button data-mobile-pane="palantir">🔷 PALANTIR</button>
+</nav>
+
+<script>
+(() => {
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const frame=document.getElementById("mapFrame");
+  const mapOrigin="https://gpt-doug-robotics-intel.onrender.com";
+
+  function mapCmd(command,value){
+    frame.contentWindow?.postMessage({type:"maven-command",command,value},mapOrigin);
+  }
+  document.querySelectorAll("[data-view]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-view]").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");mapCmd("view",btn.dataset.view);
+  }));
+  document.getElementById("mapRefresh").addEventListener("click",()=>mapCmd("refresh"));
+  document.getElementById("infraSchematicToggle")?.addEventListener("click",()=>mapCmd("schematic","toggle"));
+
+  const workspace=document.querySelector(".workspace");
+  const palantirModeToggle=document.getElementById("palantirModeToggle");
+  function setPalantirWorkspace(on){
+    workspace.classList.toggle("palantir-mode",on);
+    palantirModeToggle.classList.toggle("active",on);
+    palantirModeToggle.textContent=on?"↩ FUSION":"🔷 PALANTIR LIVE";
+  }
+  palantirModeToggle.addEventListener("click",()=>setPalantirWorkspace(!workspace.classList.contains("palantir-mode")));
+  document.getElementById("ecoFabricOpen")?.addEventListener("click",()=>{
+    window.open("./maven-eco.html","_blank","noopener");
+  });
+
+  const flightFocusToggle=document.getElementById("flightFocusToggle");
+  function setFlightFocus(on){
+    document.documentElement.classList.toggle("flight-focus-mode",on);
+    flightFocusToggle?.classList.toggle("active",on);
+    if(flightFocusToggle) flightFocusToggle.textContent=on?"EXIT FOCUS":"FLIGHT FOCUS";
+
+    if(on){
+      setPalantirWorkspace(false);
+      const bay=document.getElementById("droneBay");
+      const sim=document.querySelector('[data-pane="sim"]');
+      const droneToggle=document.getElementById("droneViewToggle");
+      if(bay) bay.hidden=false;
+      sim?.classList.add("drone-open","mobile-active");
+      droneToggle?.classList.add("active");
+      if(droneToggle) droneToggle.textContent="DRONE VIEW ON";
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
+      requestAnimationFrame(()=>document.getElementById("droneCanvas")?.scrollIntoView({block:"center"}));
+    }
+  }
+  flightFocusToggle?.addEventListener("click",()=>setFlightFocus(!document.documentElement.classList.contains("flight-focus-mode")));
+  addEventListener("keydown",event=>{
+    const tag=(event.target?.tagName||"").toLowerCase();
+    if(tag==="input"||tag==="textarea"||tag==="select") return;
+    if(event.key.toLowerCase()==="f"){
+      event.preventDefault();
+      setFlightFocus(!document.documentElement.classList.contains("flight-focus-mode"));
+    }else if(event.key==="Escape"&&document.documentElement.classList.contains("flight-focus-mode")){
+      setFlightFocus(false);
+    }
+  });
+
+  const joinMode=new URLSearchParams(location.search).get("join");
+  if(joinMode==="1"||joinMode==="gotham-flight"){
+    document.documentElement.classList.add("join-flight-mode");
+    const activateJoinedFlight=()=>{
+      setPalantirWorkspace(false);
+      if(matchMedia("(max-width:900px)").matches){
+        document.querySelector('[data-mobile-pane="sim"]')?.click();
+      }
+
+      const bay=document.getElementById("droneBay");
+      const sim=document.querySelector('[data-pane="sim"]');
+      const toggle=document.getElementById("droneViewToggle");
+      if(bay) bay.hidden=false;
+      sim?.classList.add("drone-open");
+      toggle?.classList.add("active");
+      if(toggle) toggle.textContent="DRONE VIEW ON";
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
+    };
+    if(document.readyState==="loading"){
+      document.addEventListener("DOMContentLoaded",()=>setTimeout(activateJoinedFlight,0),{once:true});
+    }else{
+      setTimeout(activateJoinedFlight,0);
+    }
+    window.addEventListener("load",activateJoinedFlight,{once:true});
+  }
+
+  document.querySelectorAll("[data-mobile-pane]").forEach(btn=>btn.addEventListener("click",()=>{
+    const pane=btn.dataset.mobilePane;
+    document.querySelectorAll("[data-mobile-pane]").forEach(x=>x.classList.toggle("active",x===btn));
+    setPalantirWorkspace(pane==="palantir");
+    document.querySelectorAll("[data-pane]").forEach(x=>x.classList.toggle("mobile-active",x.dataset.pane===pane));
+  }));
+
+  window.addEventListener("message",evt=>{
+    if(!["https://xunia.org","https://www.xunia.org"].includes(evt.origin)) return;
+    if(evt.data?.type!=="maven-ui") return;
+    if(evt.data.action==="open-sim"||evt.data.action==="open-drone"){
+      setPalantirWorkspace(false);
+      const simBtn=document.querySelector('[data-mobile-pane="sim"]');
+      if(matchMedia("(max-width:900px)").matches) simBtn?.click();
+      else document.querySelector('[data-pane="sim"]')?.scrollIntoView({block:"nearest",inline:"nearest"});
+    }
+    if(evt.data.action==="open-gotham"){
+      setPalantirWorkspace(false);
+      const simBtn=document.querySelector('[data-mobile-pane="sim"]');
+      if(matchMedia("(max-width:900px)").matches) simBtn?.click();
+      else document.querySelector('[data-pane="sim"]')?.scrollIntoView({block:"nearest",inline:"nearest"});
+      document.dispatchEvent(new CustomEvent("maven:drone-request-open"));
+    }
+  });
+
+  function applyLiveSnapshot(d){
+    if(!d||d.schema!=="xunia.maven.live.v1") return;
+    const summary=d.ops?.summary||{};
+    const opsChip=document.getElementById("opsChip");
+    opsChip.textContent="OPS "+(summary.reachable??"—")+"/"+(summary.total??"—");
+    opsChip.className="chip "+(Number(summary.degraded||0)>0?"warn":"ok");
+
+    const liveChip=document.getElementById("liveBusChip");
+    liveChip.textContent="LIVE BUS #"+d.sequence;
+    liveChip.className="chip "+(Number(summary.degraded||0)>0?"warn":"ok");
+
+    const p=d.palantir||{};
+    const pal=document.getElementById("palBroadcastChip");
+    pal.textContent=p.connected?(p.ontology_bound?"PALANTIR BOUND":"PALANTIR CONNECTED"):p.configured?"PALANTIR ERROR":"PALANTIR STANDBY";
+    pal.className="chip "+(p.connected?"ok":p.configured?"warn":"info");
+  }
+
+  function connectMavenLiveBus(){
+    const liveChip=document.getElementById("liveBusChip");
+    if(!("EventSource" in window)){liveChip.textContent="LIVE BUS FALLBACK";return}
+    try{
+      const es=new EventSource("https://xunia-ops-api.onrender.com/api/live");
+      es.addEventListener("snapshot",e=>{try{applyLiveSnapshot(JSON.parse(e.data))}catch{}});
+      es.addEventListener("open",()=>{liveChip.textContent="LIVE BUS ONLINE";liveChip.className="chip ok"});
+      es.addEventListener("error",()=>{liveChip.textContent="LIVE BUS DEGRADED";liveChip.className="chip warn"});
+    }catch{
+      liveChip.textContent="LIVE BUS FALLBACK";liveChip.className="chip warn";
+    }
+  }
+
+  async function ops(){
+    try{
+      const r=await fetch("https://xunia-ops-api.onrender.com/api/status",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d=await r.json();
+      const c=document.getElementById("opsChip");
+      c.textContent="OPS "+d.summary.reachable+"/"+d.summary.total;
+      c.className="chip "+(d.summary.degraded?"warn":"ok");
+    }catch{
+      const c=document.getElementById("opsChip");c.textContent="OPS DEGRADED";c.className="chip warn";
+    }
+  }
+  async function palantirBroadcastStatus(){
+    const chip=document.getElementById("palBroadcastChip");
+    try{
+      const r=await fetch("https://xunia-palantir-bridge.onrender.com/api/status",{cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d=await r.json();
+      chip.textContent=d.connected?(d.ontology_bound?"PALANTIR BOUND":"PALANTIR CONNECTED"):d.configured?"PALANTIR ERROR":"PALANTIR STANDBY";
+      chip.className="chip "+(d.connected?"ok":d.configured?"warn":"info");
+    }catch{
+      chip.textContent="PALANTIR DEGRADED";chip.className="chip warn";
+    }
+  }
+  connectMavenLiveBus();ops();setInterval(ops,30000);palantirBroadcastStatus();setInterval(palantirBroadcastStatus,30000);
+
+  const canvas=document.getElementById("simCanvas");
+  const ctx=canvas.getContext("2d",{alpha:false});
+  const activeEl=document.getElementById("activeCount");
+  const resolvedEl=document.getElementById("resolvedCount");
+  const autoEl=document.getElementById("autoState");
+  const clockEl=document.getElementById("simClock");
+  const feed=document.getElementById("eventFeed");
+  let resolved=0,auto=false,start=performance.now(),lastAuto=0,shieldUntil=0,slowUntil=0,gravityUntil=0;
+  let contacts=[];
+  let effects=[];
+  let particles=[];
+
+  function id(){return "SIM-"+String(Math.floor(1000+Math.random()*8999))}
+  function makeContact(extra={}){
+    return {id:id(),x:.08+Math.random()*.84,y:.12+Math.random()*.76,vx:(Math.random()-.5)*.000055,vy:(Math.random()-.5)*.000055,r:9+Math.random()*6,phase:Math.random()*Math.PI*2,...extra}
+  }
+  for(let i=0;i<5;i++)contacts.push(makeContact());
+
+  function log(msg,good=false){
+    const row=document.createElement("div");
+    row.innerHTML='<span class="time">['+new Date().toLocaleTimeString()+']</span> <span class="'+(good?'good':'')+'"></span>';
+    row.querySelector("span:last-child").textContent=msg;
+    feed.prepend(row);while(feed.children.length>35)feed.removeChild(feed.lastChild);
+  }
+  log("Synthetic scenario initialized",true);
+  log("Real coordinates disabled",true);
+  log("External action disabled",true);
+
+  function burstAt(x,y,count=34,color="#ffb21d",power=.00023){
+    const now=performance.now();
+    for(let i=0;i<count;i++){
+      const a=Math.random()*Math.PI*2;
+      const speed=power*(.35+Math.random()*.95);
+      particles.push({
+        x,y,
+        vx:Math.cos(a)*speed,
+        vy:Math.sin(a)*speed,
+        born:now,
+        life:520+Math.random()*780,
+        size:1.2+Math.random()*3.2,
+        color
+      });
+    }
+  }
+
+  function screenKick(intensity=6){
+    if(reduce||!canvas.animate) return;
+    canvas.animate(
+      [
+        {transform:"translate3d(0,0,0)"},
+        {transform:"translate3d("+intensity+"px,"+(-intensity*.55)+"px,0)"},
+        {transform:"translate3d("+(-intensity*.7)+"px,"+(intensity*.45)+"px,0)"},
+        {transform:"translate3d("+(intensity*.35)+"px,"+(-intensity*.2)+"px,0)"},
+        {transform:"translate3d(0,0,0)"}
+      ],
+      {duration:260,easing:"ease-out"}
+    );
+  }
+
+  function takeSynthetic(count=1){
+    const removed=[];
+    for(let i=contacts.length-1;i>=0 && removed.length<count;i--){
+      if(!contacts[i].decoy) removed.push(...contacts.splice(i,1));
+    }
+    resolved+=removed.length;
+    return removed;
+  }
+
+  function useSimTool(tool){
+    const now=performance.now();
+    if(tool==="pulse"){
+      effects.push({type:"pulse",t:now,d:900,x:.5,y:.5});
+      if(contacts.length){const c=contacts.shift();resolved++;log("ARC PULSE // "+c.id+" resolved in synthetic space",true)}
+      else log("ARC PULSE // no synthetic contacts");
+    }else if(tool==="beam"){
+      const c=contacts[0];
+      effects.push({type:"beam",t:now,d:620,target:c?{x:c.x,y:c.y}:{x:.5,y:.35}});
+      if(c){contacts.shift();resolved++;log("BEAM BURST // "+c.id+" resolved in synthetic space",true)}
+      else log("BEAM BURST // no synthetic contacts");
+    }else if(tool==="intercept"){
+      const c=contacts.pop();
+      effects.push({type:"intercept",t:now,d:900,target:c?{x:c.x,y:c.y}:{x:.65,y:.4}});
+      if(c){resolved++;log("INTERCEPTOR // "+c.id+" resolved in synthetic space",true)}
+      else log("INTERCEPTOR // no synthetic contacts");
+    }else if(tool==="decoy"){
+      const d=makeContact({id:"DECOY-"+String(Math.floor(100+Math.random()*899)),decoy:true,r:8});
+      contacts.push(d);effects.push({type:"decoy",t:now,d:1200,x:d.x,y:d.y});log("DECOY FIELD // synthetic decoy deployed",true);
+    }else if(tool==="shield"){
+      shieldUntil=Date.now()+6000;effects.push({type:"shield",t:now,d:6000,x:.5,y:.5});log("SHIELD DOME // synthetic protection field active",true);
+    }else if(tool==="net"){
+      slowUntil=Date.now()+6000;effects.push({type:"net",t:now,d:6000});log("NET LOCK // synthetic contacts slowed",true);
+    }else if(tool==="nova"){
+      const removed=takeSynthetic(3);
+      effects.push({type:"nova",t:now,d:1300,x:.5,y:.5});
+      burstAt(.5,.5,72,"#ffd166",.00034);
+      burstAt(.5,.5,36,"#ffffff",.00022);
+      screenKick(9);
+      log("NOVA BURST // "+removed.length+" synthetic contact"+(removed.length===1?"":"s")+" resolved",true);
+    }else if(tool==="meteor"){
+      const target=contacts.find(c=>!c.decoy)||{x:.62,y:.42,id:"EMPTY-ZONE"};
+      const idx=contacts.indexOf(target);
+      if(idx>=0){contacts.splice(idx,1);resolved++}
+      effects.push({type:"meteor",t:now,d:1500,target:{x:target.x,y:target.y}});
+      burstAt(target.x,target.y,58,"#ff9866",.00031);
+      screenKick(8);
+      log("METEOR IMPACT // "+target.id+" synthetic impact visual",true);
+    }else if(tool==="ion"){
+      slowUntil=Date.now()+8500;
+      effects.push({type:"ion",t:now,d:3000});
+      for(let i=0;i<6;i++) burstAt(.12+Math.random()*.76,.15+Math.random()*.7,10,"#9fe8ff",.00012);
+      screenKick(4);
+      log("ION STORM // synthetic field disruption active",true);
+    }else if(tool==="gravity"){
+      gravityUntil=Date.now()+7000;
+      effects.push({type:"gravity",t:now,d:7000,x:.5,y:.5});
+      log("GRAVITY WELL // synthetic contacts pulled to center",true);
+    }else if(tool==="plasma"){
+      const target=contacts.find(c=>!c.decoy)||{x:.72,y:.3,id:"EMPTY-ZONE"};
+      const idx=contacts.indexOf(target);
+      if(idx>=0){contacts.splice(idx,1);resolved++}
+      effects.push({type:"plasma",t:now,d:850,target:{x:target.x,y:target.y}});
+      burstAt(target.x,target.y,44,"#ff8be8",.00026);
+      screenKick(6);
+      log("PLASMA LANCE // "+target.id+" synthetic contact resolved",true);
+    }else if(tool==="shock"){
+      effects.push({type:"shock",t:now,d:1200,x:.5,y:.5});
+      burstAt(.5,.5,46,"#87ffd1",.0002);
+      for(const c of contacts){
+        const dx=c.x-.5,dy=c.y-.5,mag=Math.hypot(dx,dy)||1;
+        c.x=Math.min(.96,Math.max(.04,c.x+(dx/mag)*.06));
+        c.y=Math.min(.94,Math.max(.08,c.y+(dy/mag)*.06));
+      }
+      screenKick(5);
+      log("SHOCK RING // synthetic contacts displaced",true);
+    }
+  }
+
+  document.querySelectorAll("[data-sim-tool]").forEach(btn=>btn.addEventListener("click",()=>useSimTool(btn.dataset.simTool)));
+
+  function resize(){
+    const r=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,1.7);
+    canvas.width=Math.max(1,Math.round(r.width*dpr));canvas.height=Math.max(1,Math.round(r.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  new ResizeObserver(resize).observe(canvas);resize();
+
+  function draw(ts){
+    const w=canvas.clientWidth,h=canvas.clientHeight;
+    ctx.fillStyle="#041008";ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle="rgba(90,255,150,.14)";ctx.lineWidth=1;
+    for(let x=0;x<w;x+=38){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+    for(let y=0;y<h;y+=38){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+    ctx.fillStyle="#6ee7a1";ctx.font="10px monospace";ctx.fillText("SYNTHETIC SENSOR SPACE // GEO-LINK OFF",12,18);
+
+    for(const c of contacts){
+      const dt=ts-(draw.last||ts);
+      const speed=Date.now()<slowUntil?.25:1;
+      if(!reduce){
+        c.x+=c.vx*dt*speed;c.y+=c.vy*dt*speed;
+        if(Date.now()<gravityUntil&&!c.decoy){
+          c.x+=(.5-c.x)*Math.min(.018,dt*.00065);
+          c.y+=(.5-c.y)*Math.min(.018,dt*.00065);
+        }
+      }
+      if(c.x<.04||c.x>.96)c.vx*=-1;if(c.y<.08||c.y>.94)c.vy*=-1;
+      const x=c.x*w,y=c.y*h,pulse=reduce?1:(1+Math.sin(ts*.003+c.phase)*.18);
+      ctx.strokeStyle=c.decoy?"#7ce7ff":"#ffb21d";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(x,y,c.r*pulse,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.rect(x-c.r*1.4,y-c.r*1.4,c.r*2.8,c.r*2.8);ctx.stroke();
+      ctx.fillStyle="#ffd166";ctx.font="9px monospace";ctx.fillText(c.id,x+c.r+6,y+3);
+    }
+    effects=effects.filter(e=>ts-e.t<e.d);
+    for(const e of effects){
+      const p=Math.max(0,Math.min(1,(ts-e.t)/e.d));
+      ctx.save();
+      if(e.type==="pulse"){
+        ctx.strokeStyle="rgba(255,209,102,"+(1-p)+")";ctx.lineWidth=3;ctx.beginPath();ctx.arc(e.x*w,e.y*h,p*Math.max(w,h)*.42,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="beam"){
+        const tx=e.target.x*w,ty=e.target.y*h;ctx.strokeStyle="rgba(124,231,255,"+(1-p*.55)+")";ctx.lineWidth=4-2*p;ctx.beginPath();ctx.moveTo(w*.5,h*.96);ctx.lineTo(tx,ty);ctx.stroke();
+      }else if(e.type==="intercept"){
+        const tx=e.target.x*w,ty=e.target.y*h;const x=w*.12+(tx-w*.12)*p,y=h*.9+(ty-h*.9)*p;ctx.fillStyle="#d7ff64";ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+      }else if(e.type==="decoy"){
+        ctx.strokeStyle="rgba(124,231,255,"+(1-p)+")";ctx.beginPath();ctx.arc(e.x*w,e.y*h,14+40*p,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="shield"){
+        ctx.strokeStyle="rgba(156,255,170,.45)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(w*.5,h*.5,Math.min(w,h)*.23*(.98+.02*Math.sin(ts*.006)),0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="net"){
+        ctx.strokeStyle="rgba(124,231,255,.12)";ctx.lineWidth=1;
+        for(let x=0;x<w;x+=24){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+        for(let y=0;y<h;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+      }else if(e.type==="nova"){
+        const r=p*Math.max(w,h)*.58;
+        ctx.globalAlpha=Math.max(0,1-p);
+        ctx.fillStyle="rgba(255,236,170,"+(0.38*(1-p))+")";ctx.beginPath();ctx.arc(e.x*w,e.y*h,22+80*Math.sin(Math.min(1,p)*Math.PI),0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle="#ffd166";ctx.lineWidth=5*(1-p)+1;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle="rgba(255,255,255,"+(1-p)+")";ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r*.64,0,Math.PI*2);ctx.stroke();
+      }else if(e.type==="meteor"){
+        const tx=e.target.x*w,ty=e.target.y*h;
+        const q=Math.min(1,p/0.72);
+        const x=w*.14+(tx-w*.14)*q,y=-20+(ty+20)*q;
+        ctx.strokeStyle="rgba(255,152,102,.78)";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(w*.14,-20);ctx.lineTo(x,y);ctx.stroke();
+        ctx.fillStyle="#fff4c7";ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+        if(p>.62){const ep=(p-.62)/.38;ctx.strokeStyle="rgba(255,152,102,"+(1-ep)+")";ctx.lineWidth=4;ctx.beginPath();ctx.arc(tx,ty,ep*Math.min(w,h)*.28,0,Math.PI*2);ctx.stroke()}
+      }else if(e.type==="ion"){
+        ctx.globalAlpha=.9*(1-p*.45);
+        for(let i=0;i<7;i++){
+          const y=h*(.12+i*.12),amp=14+10*Math.sin(ts*.004+i);
+          ctx.strokeStyle=i%2?"rgba(159,232,255,.5)":"rgba(124,231,255,.75)";ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(0,y);
+          for(let x=0;x<=w;x+=22){ctx.lineTo(x,y+Math.sin(x*.055+ts*.01+i)*amp)}
+          ctx.stroke();
+        }
+      }else if(e.type==="gravity"){
+        const cx=e.x*w,cy=e.y*h;
+        for(let i=0;i<6;i++){
+          ctx.strokeStyle="rgba(200,164,255,"+(0.34-i*.04)+")";ctx.lineWidth=1.5;
+          ctx.beginPath();ctx.ellipse(cx,cy,28+i*22,12+i*10,ts*.0006+i*.28,0,Math.PI*2);ctx.stroke();
+        }
+        ctx.fillStyle="rgba(200,164,255,.18)";ctx.beginPath();ctx.arc(cx,cy,18+4*Math.sin(ts*.008),0,Math.PI*2);ctx.fill();
+      }else if(e.type==="plasma"){
+        const tx=e.target.x*w,ty=e.target.y*h;
+        ctx.strokeStyle="rgba(255,139,232,"+(1-p*.35)+")";ctx.lineWidth=9-5*p;ctx.beginPath();ctx.moveTo(w*.5,h*.97);ctx.lineTo(tx,ty);ctx.stroke();
+        ctx.strokeStyle="rgba(255,255,255,"+(1-p)+")";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(w*.5,h*.97);ctx.lineTo(tx,ty);ctx.stroke();
+      }else if(e.type==="shock"){
+        const r=p*Math.max(w,h)*.52;
+        ctx.strokeStyle="rgba(135,255,209,"+(1-p)+")";ctx.lineWidth=5*(1-p)+1;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r,0,Math.PI*2);ctx.stroke();
+        ctx.strokeStyle="rgba(124,231,255,"+(.65*(1-p))+")";ctx.lineWidth=2;ctx.beginPath();ctx.arc(e.x*w,e.y*h,r*.78,0,Math.PI*2);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    particles=particles.filter(pt=>ts-pt.born<pt.life);
+    for(const pt of particles){
+      const age=ts-pt.born,life=Math.max(0,1-age/pt.life);
+      pt.x+=pt.vx*(draw.last?ts-draw.last:0);
+      pt.y+=pt.vy*(draw.last?ts-draw.last:0);
+      pt.vx*=.992;pt.vy*=.992;
+      ctx.globalAlpha=life;
+      ctx.fillStyle=pt.color;
+      ctx.beginPath();ctx.arc(pt.x*w,pt.y*h,pt.size*(.45+life),0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+
+    if(Date.now()<shieldUntil){
+      ctx.strokeStyle="rgba(156,255,170,.35)";ctx.lineWidth=2;ctx.beginPath();ctx.arc(w*.5,h*.5,Math.min(w,h)*.23,0,Math.PI*2);ctx.stroke();
+    }
+
+    draw.last=ts;activeEl.textContent=contacts.filter(c=>!c.decoy).length;resolvedEl.textContent=resolved;
+    const sec=Math.floor((performance.now()-start)/1000);clockEl.textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0");
+    if(auto&&ts-lastAuto>4200){lastAuto=ts;if(Math.random()>.5&&contacts.length<9){contacts.push(makeContact());log("Auto-sim added synthetic contact")}else if(contacts.length>2){const c=contacts.shift();resolved++;log(c.id+" resolved by synthetic workflow",true)}}
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+  document.getElementById("addContact").addEventListener("click",()=>{
+    if(contacts.length>=12){log("Synthetic contact cap reached");return}
+    const c=makeContact();contacts.push(c);log(c.id+" entered synthetic scenario");
+  });
+  document.getElementById("resolveContact").addEventListener("click",()=>{
+    if(!contacts.length){log("No active synthetic contacts");return}
+    const c=contacts.shift();resolved++;log(c.id+" resolved by synthetic workflow",true);
+  });
+  document.getElementById("autoToggle").addEventListener("click",e=>{
+    auto=!auto;autoEl.textContent=auto?"ON":"OFF";e.currentTarget.classList.toggle("primary",auto);log("Auto simulation "+(auto?"enabled":"disabled"),auto);
+  });
+  document.getElementById("resetSim").addEventListener("click",()=>{
+    contacts=[];effects=[];particles=[];shieldUntil=0;slowUntil=0;gravityUntil=0;for(let i=0;i<5;i++)contacts.push(makeContact());resolved=0;start=performance.now();log("Synthetic scenario reset",true);
+  });
+
+  if(!reduce){
+    document.querySelectorAll(".panel").forEach((p,i)=>p.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"translateY(0)"}],{duration:420+i*80,easing:"cubic-bezier(.2,.78,.2,1)",fill:"both"}));
+  }
+})();
+</script>
+<script src="./maven-tactical.js" defer></script>
+<script src="./maven-iphone16e.js" defer></script>
+<script src="./maven-camera.js" defer></script>
+<script src="./maven-drone-sim.js" defer></script>
+<script src="./maven-drone-mission.js" defer></script>
+<script src="./maven-gotham-sim.js" defer></script>
+<script src="./maven-clean.js" defer></script>
+</body>
+</html>

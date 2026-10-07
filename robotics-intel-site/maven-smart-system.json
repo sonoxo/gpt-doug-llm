@@ -1,0 +1,65 @@
+{
+  "system": "DOUG-GPT-MAVEN-SMART-SYSTEM",
+  "version": "1.0.0",
+  "authority": "HUMAN_FIRST",
+  "operating_model": "DECISION_SUPPORT_ONLY",
+  "loop": [
+    "SENSE",
+    "FUSE",
+    "REASON",
+    "VERIFY",
+    "PROPOSE",
+    "HUMAN_APPROVE",
+    "AUDIT"
+  ],
+  "sources": {
+    "live_ops": "XUNIA ops health and event bus",
+    "geospatial": "public/authorized map and environmental layers",
+    "schematic": "synthetic infrastructure schematic state",
+    "drone": "synthetic/authorized observation workflow state",
+    "palantir": "configured ontology bridge health",
+    "hive_swarm": "bounded analysis/orchestration status"
+  },
+  "smart_functions": {
+    "normalize": true,
+    "provenance": true,
+    "freshness_check": true,
+    "service_health_fusion": true,
+    "anomaly_flagging": true,
+    "synthetic_event_correlation": true,
+    "confidence_estimation": true,
+    "recommendation_generation": true,
+    "human_approval_gate": true,
+    "audit_log": true
+  },
+  "recommendation_scope": [
+    "refresh_public_sources",
+    "review_degraded_service",
+    "open_infrastructure_schematic",
+    "review_synthetic_event",
+    "run_non_kinetic_simulation",
+    "inspect_provenance",
+    "request_human_review"
+  ],
+  "prohibited_outputs": {
+    "real_target_generation": true,
+    "weapon_cueing": true,
+    "autonomous_external_action": true,
+    "biometric_identification": true,
+    "person_tracking": true,
+    "restricted_feed_access": true
+  },
+  "confidence": {
+    "meaning": "data-quality and system-health confidence, not certainty about real-world intent or identity",
+    "inputs": [
+      "service_reachability",
+      "data_freshness",
+      "source_count",
+      "synthetic_event_review_state"
+    ]
+  },
+  "audit": {
+    "local_ui_log": true,
+    "immutable_external_ledger": false
+  }
+}

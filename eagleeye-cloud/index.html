@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // EAGLE EYE GLOBAL FUSION</title><meta name="theme-color" content="#040705">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<style>
+:root{--bg:#040705;--p:#07100bdc;--line:#24452f;--t:#dcffe4;--m:#86a990;--a:#8cff9f;--w:#ffd36a;--r:#ff7676;--b:#7fd7ff}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--t);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}body{overflow:hidden}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;background:radial-gradient(circle at 55% -10%,#16331d 0,#08110b 31%,#040705 62%)}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;border-bottom:1px solid var(--line);background:#050a07f4}.brand{font-weight:900;letter-spacing:.08em}.sub{font-size:9px;color:var(--m);margin-top:2px}.live{color:var(--a)}.status{display:flex;gap:12px;font-size:10px;align-items:center}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 12px var(--a);margin-right:5px}
+main{display:grid;grid-template-columns:295px minmax(0,1fr) 350px;min-height:0}.panel{background:var(--p);backdrop-filter:blur(12px);padding:11px;overflow:auto}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:10px;letter-spacing:.15em;color:var(--a);margin:7px 0 8px}.card{border:1px solid var(--line);background:#07100a;padding:8px;border-radius:7px;margin-bottom:7px}.small{font-size:9.5px;color:var(--m);line-height:1.48}.num{font-size:21px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:10px;line-height:1.55}.ok{color:var(--a)}.warn{color:var(--w)}.err{color:var(--r)}.blue{color:var(--b)}
+button{width:100%;padding:8px 9px;margin:3px 0;background:#0b1910;border:1px solid #376947;border-radius:6px;color:var(--t);font:inherit;font-size:10px;text-align:left;cursor:pointer}button:hover,button.active{color:var(--a);border-color:var(--a);background:#112619}
+.src{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #17301f;font-size:9.5px}.pill{border:1px solid var(--line);border-radius:999px;padding:2px 5px;font-size:8px}
+.viewport{position:relative;min-width:0;min-height:0}.map{position:absolute;inset:0}.hud{position:absolute;inset:0;z-index:500;pointer-events:none;background:linear-gradient(90deg,rgba(6,17,10,.18),transparent 14%,transparent 86%,rgba(6,17,10,.18))}.badge,.toast{position:absolute;background:#07100ade;border:1px solid var(--line);border-radius:6px;padding:7px 8px;font-size:9px}.badge{left:11px;top:11px}.toast{right:11px;bottom:11px;max-width:430px}
+.cyberDrawer{position:absolute;z-index:650;top:48px;right:12px;width:min(440px,calc(100% - 24px));max-height:calc(100% - 96px);overflow:auto;background:#061009f1;border:1px solid #3c7450;border-radius:8px;padding:10px;display:none;pointer-events:auto;box-shadow:0 18px 60px #0008}.cyberDrawer.open{display:block}.cyberItem{border:1px solid #23462f;border-radius:6px;padding:8px;margin:6px 0;background:#08140c}.cyberItem b{color:var(--w);font-size:10px}.cyberItem p{margin:4px 0;font-size:9px;color:var(--m);line-height:1.4}.cyberItem .meta{font-size:8px;color:var(--b)}
+.log{border-left:2px solid var(--line);padding-left:7px;margin:6px 0;font-size:9px;line-height:1.45}
+footer{display:flex;justify-content:space-between;gap:12px;padding:6px 11px;border-top:1px solid var(--line);font-size:8.5px;color:var(--m);background:#050a07}
+.leaflet-container{background:#020503;filter:saturate(.68) brightness(.79) contrast(1.13)}.leaflet-control-attribution{background:#07100acc!important;color:#76917d!important}.leaflet-control-attribution a{color:var(--a)!important}.mk{width:12px;height:12px;border-radius:50%;border:2px solid #ecfff0;box-shadow:0 0 11px currentColor}.eo{background:#ffd36a;color:#ffd36a}.sat{background:#7fd7ff;color:#7fd7ff}
+@media(max-width:900px){main{grid-template-columns:1fr}.left,.right{display:none}.status .wide{display:none}.cyberDrawer{top:45px}}
+</style></head>
+<body><div class="app">
+<header><div class="brand">🦅 GPT-DOUG // EAGLE EYE <span class="live">GLOBAL FUSION</span><div class="sub">LIVE PUBLIC CYBER + PHYSICAL EVENT AWARENESS • HUMAN-FIRST</div></div><div class="status"><span><i class="dot"></i>ONLINE</span><span class="wide" id="fresh">SYNCING</span><span id="clock">--:--:--</span></div></header>
+<main>
+<aside class="panel left">
+<h2>PUBLIC PHYSICAL DATA</h2>
+<button class="active" data-toggle="earthquakes">● USGS EARTHQUAKES</button>
+<button class="active" data-toggle="eonet">◆ NASA EONET EVENTS</button>
+<button class="active" data-toggle="satellites">✦ CELESTRAK SPACE STATIONS</button>\n<button class="active" data-toggle="radar">◉ LIVE WEATHER RADAR • RAINVIEWER</button>
+<button id="weather">☁ WEATHER AT MAP CENTER</button>
+<h2>DEFENSIVE CYBER DATA</h2>
+<button id="cyberBtn">⚠ CISA KEV • ACTIVE EXPLOITATION</button>\n<a class="btn" href="/operations.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#0b1910;border:1px solid #376947;border-radius:6px;color:var(--t);font:inherit;font-size:10px;text-align:left;text-decoration:none">🦅 EAGLE EYE OPERATIONS SOFTWARE</a>
+<a class="btn" href="/shoggoth.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#0b1910;border:1px solid #376947;border-radius:6px;color:var(--t);font:inherit;font-size:10px;text-align:left;text-decoration:none">☣ EAGLE EYE SHOGGOTH DEFENSE</a>\n<a class="btn" href="/sonoxo-systems.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#071923;border:1px solid #2b6b84;border-radius:6px;color:#bfefff;font:inherit;font-size:10px;text-align:left;text-decoration:none">⬡ SONOXO SYSTEMS MATRIX</a>\n<a class="btn" href="/dots-neural-lab.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#100a2e;border:1px solid #5d46a2;border-radius:6px;color:#efe8ff;font:inherit;font-size:10px;text-align:left;text-decoration:none">◈ GPT-DOTS NEURAL FUSION LAB</a>
+<button id="nistBtn">◇ NIST AIRC • AI RMF GOVERNANCE</button>
+<button id="nist100Btn">▣ NIST AI 100-1 • RMF 1.0 PDF</button>
+<button id="aircPlusBtn">⬡ AIRC+ • TEVV / PROFILES / METROLOGY</button>
+<button id="refresh">↻ REFRESH ALL LIVE FEEDS</button>
+<button id="world">◎ GLOBAL VIEW</button>
+<h2>FEED STATUS</h2>
+<div class="card">
+<div class="src"><span>USGS earthquakes</span><span class="pill" id="s-usgs">WAIT</span></div>
+<div class="src"><span>NASA EONET</span><span class="pill" id="s-eonet">WAIT</span></div>
+<div class="src"><span>CelesTrak stations</span><span class="pill" id="s-sat">WAIT</span></div>\n<div class="src"><span>RainViewer weather radar</span><span class="pill" id="s-radar">WAIT</span></div>
+<div class="src"><span>Open-Meteo weather</span><span class="pill" id="s-weather">READY</span></div>
+<div class="src"><span>NOAA space weather</span><span class="pill" id="s-kp">WAIT</span></div>
+<div class="src"><span>CISA KEV catalog</span><span class="pill" id="s-kev">WAIT</span></div>
+<div class="src"><span>NIST AIRC / AI RMF</span><span class="pill ok" id="s-nist">LINKED</span></div>
+<div class="src"><span>AIRC TEVV / Metrology</span><span class="pill ok" id="s-aircplus">ENABLED</span></div>
+</div>
+<div class="card small">This platform fuses public defensive cyber intelligence with public physical hazard/event data. It does not expose private-person tracking, covert surveillance, weapon control, target selection, or strike planning.</div>
+<a class="btn" href="/organoid-intelligence-lab.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#160b20;border:1px solid #6f3b82;border-radius:6px;color:#ffd6f2;font:inherit;font-size:10px;text-align:left;text-decoration:none">🧠 ORGANOID INTELLIGENCE LAB</a>\n<a class="btn" href="/quantum-security-fusion.html" style="display:block;width:100%;padding:8px 9px;margin:3px 0;background:#071725;border:1px solid #2d6b86;border-radius:6px;color:#c8f3ff;font:inherit;font-size:10px;text-align:left;text-decoration:none">◈ QUANTUM SECURITY FUSION</a>\n</aside>
+
+<section class="viewport">
+<div id="map" class="map"></div>
+<div class="hud"><div class="badge"><b>EAGLE EYE // PUBLIC FUSION</b><br><span class="ok">LIVE CYBER + PHYSICAL FEEDS</span></div><div class="toast" id="toast">Initializing live adapters…</div></div>
+<div id="cyberDrawer" class="cyberDrawer"><div class="row"><b class="warn">CISA KNOWN EXPLOITED VULNERABILITIES</b><button id="closeCyber" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div><div class="small">Defensive prioritization feed. Items here are vulnerabilities CISA lists as known to be exploited in the wild.</div><div id="kevList"></div></div>
+<div id="nistDrawer" class="cyberDrawer">
+  <div class="row"><b class="ok">NIST AIRC // AI RISK MANAGEMENT</b><button id="closeNist" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div>
+  <div class="small">Official NIST AI Resource Center integration for governance, testing, evaluation, verification, and validation (TEVV).</div>
+  <div class="cyberItem"><b>AI RMF CORE</b><p>Use NIST's voluntary AI Risk Management Framework as Eagle Eye's governance reference for AI risk decisions.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/airmf/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN NIST AI RMF</a></div></div>
+  <div class="cyberItem"><b>AI RMF PLAYBOOK</b><p>Suggested actions and documentation practices mapped to AI RMF outcomes.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/playbook/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN PLAYBOOK</a></div></div>
+  <div class="cyberItem"><b>USE CASES + CROSSWALKS</b><p>Reference implementations and mappings to other governance frameworks.</p><div class="meta"><a href="https://airc.nist.gov/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN AIRC RESOURCE CENTER</a></div></div>
+  <div class="cyberItem"><b>EAGLE EYE GOVERNANCE GATE</b><p>Human-first authorization • source provenance • uncertainty labeling • audit trail • defensive-use boundary • no autonomous weapon control.</p><div class="meta">STATUS: ENABLED</div></div>
+<div id="nist100Drawer" class="cyberDrawer">
+  <div class="row"><b class="ok">NIST AI 100-1 // AI RMF 1.0</b><button id="closeNist100" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div>
+  <div class="small">January 2023 • NIST Artificial Intelligence Risk Management Framework (AI RMF 1.0). Eagle Eye uses this as a governance reference, not as an authorization to exceed law, policy, or human approval.</div>
+  <div class="cyberItem"><b>CORE FUNCTIONS</b><p>GOVERN • MAP • MEASURE • MANAGE</p><div class="meta">Govern is cross-cutting across the other functions.</div></div>
+  <div class="cyberItem"><b>TRUSTWORTHINESS CHARACTERISTICS</b><p>Valid & Reliable • Safe • Secure & Resilient • Accountable & Transparent • Explainable & Interpretable • Privacy-Enhanced • Fair with harmful bias managed.</p></div>
+  <div class="cyberItem"><b>EAGLE EYE APPLICATION</b><p>Source provenance • confidence/uncertainty labeling • human authorization • audit trail • resilience checks • privacy boundaries • documented risk decisions.</p></div>
+  <div class="cyberItem"><b>OFFICIAL PUBLICATION</b><p>NIST AI 100-1, Artificial Intelligence Risk Management Framework (AI RMF 1.0).</p><div class="meta"><a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-1.pdf" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN OFFICIAL NIST PDF</a></div></div>
+</div>
+<div id="aircPlusDrawer" class="cyberDrawer">
+  <div class="row"><b class="ok">AIRC+ // GPT-DOUG TRUSTWORTHY AI CONTROL PLANE</b><button id="closeAircPlus" style="width:auto;padding:4px 7px;margin:0">CLOSE</button></div>
+  <div class="small">Enhanced from the NIST AI Resource Center for operationalizing AI RMF and supporting testing, evaluation, verification, and validation (TEVV).</div>
+  <div class="cyberItem"><b>GOVERNANCE ROUTER</b><p>Route every AI-assisted decision through GOVERN → MAP → MEASURE → MANAGE, with explicit human authorization for consequential actions.</p></div>
+  <div class="cyberItem"><b>TEVV GATE</b><p>Before an AI output is trusted, record source provenance, test scope, expected behavior, observed behavior, confidence, failure conditions, and verification status.</p><div class="meta">TEST • EVALUATE • VERIFY • VALIDATE</div></div>
+  <div class="cyberItem"><b>PROFILE LAYER</b><p>Apply task-specific AI RMF profiles for the actual use case rather than treating all models and deployments as equivalent.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/airmf-profiles/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN NIST AI RMF PROFILES</a></div></div>
+  <div class="cyberItem"><b>USE-CASE EVIDENCE</b><p>Compare Eagle Eye controls against public examples of organizations applying the AI RMF.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/use-cases/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN USE CASES</a></div></div>
+  <div class="cyberItem"><b>CROSSWALK ENGINE</b><p>Map Eagle Eye controls to other governance frameworks rather than duplicating controls or creating conflicting policy layers.</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/crosswalks/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN CROSSWALKS</a></div></div>
+  <div class="cyberItem"><b>AI METROLOGY</b><p>Track measurable system qualities and evaluation metrics instead of relying on subjective claims that an AI system is “safe” or “accurate.”</p><div class="meta"><a href="https://airc.nist.gov/airmf-resources/ai-metrology/" target="_blank" rel="noopener" style="color:#7fd7ff">OPEN AI METROLOGY</a></div></div>
+  <div class="cyberItem"><b>SECURE DEVELOPMENT</b><p>Pair AI risk management with secure software-development practices, vulnerability management, rollback, audit, and dependency controls.</p></div>
+  <div class="cyberItem"><b>GPT-DOUG ENHANCED LOOP</b><p>OBSERVE → RETRIEVE → MODEL → HYPOTHESIZE → SIMULATE → TEVV → CRITIQUE → RISK MAP → HUMAN/POLICY GATE → VERSIONED MEMORY → AUDIT.</p><div class="meta">AIRC-ALIGNED CONTROL LOOP</div></div>
+</div>
+</section>
+
+<aside class="panel right">
+<h2>LIVE COUNTS</h2>
+<div class="grid">
+<div class="card"><div class="small">EARTHQUAKES / DAY</div><div class="num" id="eqCount">—</div></div>
+<div class="card"><div class="small">OPEN EONET EVENTS</div><div class="num" id="eoCount">—</div></div>
+<div class="card"><div class="small">SPACE STATIONS</div><div class="num" id="satCount">—</div></div>
+<div class="card"><div class="small">CISA KEV TOTAL</div><div class="num" id="kevCount">—</div></div>
+<div class="card"><div class="small">KEV ADDED ≤30D</div><div class="num" id="kevRecent">—</div></div>
+<div class="card"><div class="small">PLANETARY Kp</div><div class="num" id="kp">—</div></div>
+</div>
+<h2>NIST AI RMF GATE</h2><div class="card small"><b class="ok">GOVERN • MAP • MEASURE • MANAGE</b><br>AI outputs remain advisory, source-labeled, uncertainty-aware, and subject to human authorization and audit.<br><br><b class="blue">TEVV:</b> Test • Evaluate • Verify • Validate before trust.</div>
+<h2>CYBER ↔ PHYSICAL CORRELATION</h2>
+<div class="card small" id="fusionBox">Correlation engine waiting for feeds. Correlation is informational only and never claims causation without evidence.</div>
+<h2>SELECTED / WEATHER</h2><div class="card small" id="weatherBox">Center the map anywhere, then select Weather at map center.</div>
+<h2>EVENT STREAM</h2><div id="timeline"><div class="log"><b>BOOT</b> Eagle Eye fusion runtime initialized.</div></div>
+</aside>
+</main>
+<footer><span>USGS • NASA EONET • CelesTrak • RainViewer Radar • Open-Meteo • NOAA SWPC • CISA KEV • NIST AIRC • NIST AI 100-1 • AIRC TEVV • OpenStreetMap</span><span>AUTO REFRESH: 60s</span></footer>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="https://unpkg.com/satellite.js@5.0.0/dist/satellite.min.js"></script>
+<script>
+const $=id=>document.getElementById(id), map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([20,0],2);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+const layers={earthquakes:L.layerGroup().addTo(map),eonet:L.layerGroup().addTo(map),satellites:L.layerGroup().addTo(map),radar:L.layerGroup().addTo(map)},active={earthquakes:true,eonet:true,satellites:true,radar:true};
+let tle=[],refreshing=false,last={eq:0,eo:0,kev:0,kevRecent:0};
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function stat(id,v,cls='ok'){$(id).textContent=v;$(id).className='pill '+cls}
+function log(a,b,cls=''){const d=document.createElement('div');d.className='log';d.innerHTML='<b class="'+cls+'">'+esc(a)+'</b> '+esc(b);$('timeline').prepend(d);while($('timeline').children.length>14)$('timeline').lastChild.remove()}
+function icon(cls){return L.divIcon({className:'',html:'<div class="mk '+cls+'"></div>',iconSize:[14,14],iconAnchor:[7,7]})}
+async function json(url,timeout=14000){const c=new AbortController(),t=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{signal:c.signal,cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return await r.json()}finally{clearTimeout(t)}}
+async function loadUSGS(){try{stat('s-usgs','LOAD','warn');const d=await json('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');layers.earthquakes.clearLayers();for(const f of d.features||[]){const c=f.geometry?.coordinates,p=f.properties||{};if(!c)continue;L.circleMarker([c[1],c[0]],{radius:Math.max(3,Math.min(11,2+(p.mag||0)*1.5)),weight:1,fillOpacity:.72}).bindPopup('<b>USGS Earthquake</b><br>M '+esc(p.mag)+' • '+esc(p.place)+'<br>'+new Date(p.time).toLocaleString()).addTo(layers.earthquakes)}last.eq=(d.features||[]).length;$('eqCount').textContent=last.eq;stat('s-usgs','LIVE');log('USGS','Synchronized '+last.eq+' earthquakes in the last day.')}catch(e){stat('s-usgs','ERROR','err');log('USGS',e.message,'err')}}
+async function loadEONET(){try{stat('s-eonet','LOAD','warn');const d=await json('https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=250');layers.eonet.clearLayers();for(const e of d.events||[]){const g=(e.geometry||[]).at(-1);if(!g||g.type!=='Point')continue;const [lng,lat]=g.coordinates;L.marker([lat,lng],{icon:icon('eo')}).bindPopup('<b>NASA EONET</b><br>'+esc(e.title)+'<br>'+esc((e.categories||[]).map(x=>x.title).join(', '))).addTo(layers.eonet)}last.eo=(d.events||[]).length;$('eoCount').textContent=last.eo;stat('s-eonet','LIVE');log('EONET','Synchronized '+last.eo+' open natural events.')}catch(e){stat('s-eonet','ERROR','err');log('EONET',e.message,'err')}}
+async function loadSat(){try{stat('s-sat','LOAD','warn');const d=await json('https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=json');tle=(d||[]).map(x=>{try{return{name:x.OBJECT_NAME,s:satellite.twoline2satrec(x.TLE_LINE1,x.TLE_LINE2)}}catch{return null}}).filter(Boolean);$('satCount').textContent=tle.length;stat('s-sat','LIVE');drawSat();log('SPACE','Synchronized public orbital elements for '+tle.length+' space stations.')}catch(e){stat('s-sat','ERROR','err');log('SPACE',e.message,'err')}}
+function drawSat(){layers.satellites.clearLayers();const now=new Date(),gmst=satellite.gstime(now);for(const x of tle){try{const pv=satellite.propagate(x.s,now);if(!pv.position)continue;const gd=satellite.eciToGeodetic(pv.position,gmst),lat=satellite.degreesLat(gd.latitude),lng=satellite.degreesLong(gd.longitude);L.marker([lat,lng],{icon:icon('sat')}).bindTooltip(esc(x.name)+' • '+Math.round(gd.height)+' km • PUBLIC ORBIT').addTo(layers.satellites)}catch{}}}
+
+async function loadRadar(){
+  try{
+    stat('s-radar','LOAD','warn');
+    const d=await json('https://api.rainviewer.com/public/weather-maps.json');
+    const frames=d.radar&&d.radar.past?d.radar.past:[];
+    if(!frames.length) throw Error('No radar frames');
+    const frame=frames[frames.length-1];
+    if(layers.radar && map.hasLayer(layers.radar)) map.removeLayer(layers.radar);
+    layers.radar=L.tileLayer(d.host+frame.path+'/256/{z}/{x}/{y}/2/1_1.png',{
+      tileSize:256,opacity:.58,maxNativeZoom:7,maxZoom:12,
+      attribution:'Weather radar © RainViewer'
+    });
+    if(active.radar) layers.radar.addTo(map);
+    stat('s-radar','LIVE');
+    const when=new Date(frame.time*1000);
+    log('RADAR','RainViewer precipitation radar loaded • '+when.toLocaleString());
+  }catch(e){
+    stat('s-radar','ERROR','err');
+    log('RADAR',e.message,'err');
+  }
+}
+
+async function loadKp(){try{stat('s-kp','LOAD','warn');const d=await json('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json');const r=d[d.length-1];$('kp').textContent=r?Number(r[1]).toFixed(1):'—';stat('s-kp','LIVE')}catch(e){stat('s-kp','ERROR','err')}}
+async function loadKEV(){try{stat('s-kev','LOAD','warn');const d=await json('https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json');const v=d.vulnerabilities||[];last.kev=v.length;const cutoff=Date.now()-30*864e5,recent=v.filter(x=>Date.parse(x.dateAdded)>=cutoff);last.kevRecent=recent.length;$('kevCount').textContent=v.length;$('kevRecent').textContent=recent.length;stat('s-kev','LIVE');$('kevList').innerHTML=v.slice().sort((a,b)=>String(b.dateAdded).localeCompare(String(a.dateAdded))).slice(0,25).map(x=>'<div class="cyberItem"><b>'+esc(x.cveID)+' • '+esc(x.vendorProject)+' '+esc(x.product)+'</b><p>'+esc(x.vulnerabilityName)+'</p><div class="meta">Added '+esc(x.dateAdded)+' • Due '+esc(x.dueDate||'n/a')+' • Ransomware: '+esc(x.knownRansomwareCampaignUse||'Unknown')+'</div></div>').join('');log('CISA KEV','Loaded '+v.length+' known exploited vulnerabilities; '+recent.length+' added in the last 30 days.');updateFusion()}catch(e){stat('s-kev','ERROR','err');log('CISA KEV',e.message,'err')}}
+function updateFusion(){$('fusionBox').innerHTML='<b>Current public-signal picture</b><br>'+last.kevRecent+' KEV entries added in the last 30 days • '+last.eq+' earthquakes in the last day • '+last.eo+' open NASA natural events.<br><br><span class="warn">No causal claim:</span> Eagle Eye places cyber and physical indicators in the same operating picture for defensive awareness only.'}
+async function weather(){const c=map.getCenter();try{stat('s-weather','LOAD','warn');const d=await json('https://api.open-meteo.com/v1/forecast?latitude='+c.lat.toFixed(4)+'&longitude='+c.lng.toFixed(4)+'&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&timezone=auto');const w=d.current||{};$('weatherBox').innerHTML='<b>Open-Meteo current</b><br>'+c.lat.toFixed(3)+', '+c.lng.toFixed(3)+'<br>'+esc(w.temperature_2m)+'°C • RH '+esc(w.relative_humidity_2m)+'%<br>Wind '+esc(w.wind_speed_10m)+' km/h @ '+esc(w.wind_direction_10m)+'°<br>Precip '+esc(w.precipitation)+' mm<br>'+esc(w.time||'');stat('s-weather','LIVE')}catch(e){stat('s-weather','ERROR','err');$('weatherBox').textContent=e.message}}
+async function refresh(){if(refreshing)return;refreshing=true;$('fresh').textContent='SYNCING';await Promise.allSettled([loadUSGS(),loadEONET(),loadSat(),loadRadar(),loadKp(),loadKEV()]);updateFusion();$('fresh').textContent='SYNC '+new Date().toLocaleTimeString();$('toast').textContent='Public cyber + physical feeds synchronized.';refreshing=false}
+document.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const k=b.dataset.toggle;active[k]=!active[k];b.classList.toggle('active',active[k]);active[k]?layers[k].addTo(map):map.removeLayer(layers[k])});
+$('cyberBtn').onclick=()=>{$('cyberDrawer').classList.add('open')};$('closeCyber').onclick=()=>{$('cyberDrawer').classList.remove('open')};$('nistBtn').onclick=()=>{$('nistDrawer').classList.add('open');log('NIST AIRC','AI RMF governance resources opened.')};$('closeNist').onclick=()=>{$('nistDrawer').classList.remove('open')};$('nist100Btn').onclick=()=>{$('nist100Drawer').classList.add('open');log('NIST AI 100-1','AI RMF 1.0 framework loaded into governance view.')};$('closeNist100').onclick=()=>{$('nist100Drawer').classList.remove('open')};$('aircPlusBtn').onclick=()=>{$('aircPlusDrawer').classList.add('open');log('AIRC+','TEVV, profiles, crosswalks, and metrology controls opened.')};$('closeAircPlus').onclick=()=>{$('aircPlusDrawer').classList.remove('open')};$('refresh').onclick=refresh;$('world').onclick=()=>map.flyTo([20,0],2);$('weather').onclick=weather;
+setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString();if(tle.length)drawSat()},1000);setInterval(refresh,60000);refresh();
+</script><script src="/quantum-renderer.js"></script>\n</body></html>

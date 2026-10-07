@@ -1,0 +1,255 @@
+/* iPhone 16e / compact iOS completion layer */
+:root{
+  --maven-app-h:100dvh;
+  --maven-safe-top:env(safe-area-inset-top,0px);
+  --maven-safe-bottom:env(safe-area-inset-bottom,0px);
+  --maven-dock-h:64px;
+}
+html,body{overscroll-behavior:none}
+body{-webkit-tap-highlight-color:transparent}
+button,a{touch-action:manipulation}
+
+@media(max-width:430px) and (orientation:portrait){
+  .shell{height:var(--maven-app-h);min-height:var(--maven-app-h)}
+  .top{
+    min-height:46px;
+    padding:max(6px,var(--maven-safe-top)) 7px 6px;
+    gap:5px;
+  }
+  .brand{font-size:10px;max-width:58vw;overflow:hidden;text-overflow:ellipsis}
+  .chip{font-size:7px;padding:4px 6px}
+  .top .chip:nth-of-type(n+5){display:none}
+  .fold-toggle{min-height:36px;padding:5px 8px}
+
+  .workspace{
+    display:block!important;
+    position:relative;
+    min-height:0;
+    height:100%;
+    padding:0!important;
+    overflow:hidden;
+  }
+
+  .tactical-strip{
+    position:absolute!important;
+    z-index:35;
+    top:5px;
+    left:5px;
+    right:5px;
+    height:42px;
+    min-height:42px;
+    display:flex!important;
+    gap:5px;
+    padding:5px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    border-radius:10px;
+    scrollbar-width:none;
+  }
+  .tactical-strip::-webkit-scrollbar{display:none}
+  .tac-kpi{flex:0 0 112px;padding:5px 7px}
+  .tac-kpi:nth-child(n+4){display:none}
+  .tactical-ribbon{display:none!important}
+
+  .panel{
+    position:absolute!important;
+    top:52px!important;
+    left:5px!important;
+    right:5px!important;
+    bottom:calc(var(--maven-dock-h) + var(--maven-safe-bottom) + 7px)!important;
+    inset:auto!important;
+    display:none;
+    border-radius:11px!important;
+    overflow:hidden;
+  }
+  .panel.mobile-active{display:grid}
+  .panel-head{min-height:38px;padding:6px 8px;font-size:9px}
+  .panel-head .mini{font-size:7px}
+  .panel-focus,.panel-pin{min-height:30px;padding:4px 7px}
+
+  .map-wrap.mobile-active{grid-template-rows:auto minmax(0,1fr)}
+  .tac-bearing{top:40px;width:calc(100% - 12px);font-size:6px}
+  .tac-grid-labels{top:68px}
+  .tac-status-stack{display:none}
+  .map-overlay{
+    left:7px;
+    right:7px;
+    bottom:7px;
+    max-width:none;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .map-overlay::-webkit-scrollbar{display:none}
+  .map-overlay button{flex:0 0 auto;min-height:44px;padding:7px 10px}
+
+  .sim.mobile-active{
+    display:grid;
+    grid-template-rows:auto auto minmax(190px,1fr) auto auto minmax(78px,.34fr)!important;
+  }
+  .stats{
+    display:flex!important;
+    gap:5px;
+    padding:6px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .stats::-webkit-scrollbar{display:none}
+  .stat{flex:0 0 112px;padding:7px}
+  .simboard{margin:0 6px 6px;min-height:0;border-radius:8px}
+  .simtools{
+    display:flex!important;
+    gap:5px;
+    padding:0 6px 6px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .simtools::-webkit-scrollbar{display:none}
+  .simtools button{flex:0 0 132px;min-height:44px}
+  .arsenal{
+    display:flex!important;
+    grid-template-columns:none!important;
+    gap:5px;
+    padding:0 6px 6px;
+    overflow-x:auto;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .arsenal::-webkit-scrollbar{display:none}
+  .arsenal button{flex:0 0 138px;min-height:44px}
+  .feed{margin:0 6px 6px;padding:7px;font-size:8px}
+
+  .media.mobile-active{
+    display:grid!important;
+    grid-template-rows:auto auto auto auto minmax(0,1fr);
+    position:absolute!important;
+    top:52px!important;
+    left:5px!important;
+    right:5px!important;
+    bottom:calc(var(--maven-dock-h) + var(--maven-safe-bottom) + 7px)!important;
+    width:auto!important;
+    transform:none!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+  .categories{padding:6px;gap:5px}
+  .categories button{min-height:44px;padding:7px 10px}
+  .searchbar{grid-template-columns:minmax(0,1fr) auto auto;gap:5px;padding:6px}
+  .searchbar input,.searchbar button{min-height:44px}
+  .boundary{font-size:7px;padding:5px 7px}
+  .directory{padding:7px;-webkit-overflow-scrolling:touch}
+  .source-card{padding:9px}
+
+  .workspace.palantir-mode{display:block!important}
+  .workspace.palantir-mode .palantir-pane{
+    display:block!important;
+    position:absolute!important;
+    top:52px!important;
+    left:5px!important;
+    right:5px!important;
+    bottom:calc(var(--maven-dock-h) + var(--maven-safe-bottom) + 7px)!important;
+    inset:auto!important;
+  }
+
+  .mobile-dock{
+    position:fixed;
+    z-index:900;
+    left:7px!important;
+    right:7px!important;
+    bottom:max(7px,var(--maven-safe-bottom))!important;
+    transform:none!important;
+    width:auto;
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:5px;
+    padding:5px;
+    border-radius:14px;
+  }
+  .mobile-dock button{
+    min-width:0;
+    min-height:50px;
+    padding:6px 4px;
+    font-size:8px;
+    border-radius:9px;
+  }
+
+  .tactical-log{
+    left:7px!important;
+    right:7px!important;
+    bottom:calc(var(--maven-dock-h) + var(--maven-safe-bottom) + 12px)!important;
+    width:auto!important;
+    max-height:42vh;
+    -webkit-overflow-scrolling:touch;
+  }
+  .tactical-hotkeys{display:none!important}
+  .tactical-palette{padding:calc(var(--maven-safe-top) + 10px) 7px 0}
+  .tactical-palette-box{width:100%;max-height:72vh}
+  .tactical-palette-list{max-height:50vh;-webkit-overflow-scrolling:touch}
+}
+
+@media(max-height:500px) and (orientation:landscape){
+  .shell{height:var(--maven-app-h);min-height:var(--maven-app-h)}
+  .top{min-height:40px;padding:4px max(6px,env(safe-area-inset-right)) 4px max(6px,env(safe-area-inset-left))}
+  .brand{font-size:9px}
+  .chip{font-size:7px;padding:3px 5px}
+  .top .chip:nth-of-type(n+4){display:none}
+
+  .workspace{display:block!important;position:relative;padding:0!important}
+  .tactical-strip{
+    position:absolute!important;
+    z-index:35;
+    top:4px;
+    left:max(5px,env(safe-area-inset-left));
+    right:72px;
+    height:38px;
+    display:flex!important;
+    overflow-x:auto;
+    padding:4px;
+  }
+  .tac-kpi{flex:0 0 104px}
+  .tac-kpi:nth-child(n+4){display:none}
+  .tactical-ribbon{display:none!important}
+
+  .panel,
+  .media.mobile-active,
+  .workspace.palantir-mode .palantir-pane{
+    top:46px!important;
+    left:max(5px,env(safe-area-inset-left))!important;
+    right:70px!important;
+    bottom:max(5px,env(safe-area-inset-bottom))!important;
+  }
+
+  .mobile-dock{
+    position:fixed!important;
+    z-index:900;
+    top:50%;
+    right:max(5px,env(safe-area-inset-right))!important;
+    bottom:auto!important;
+    left:auto!important;
+    transform:translateY(-50%)!important;
+    width:58px!important;
+    display:grid!important;
+    grid-template-columns:1fr;
+    gap:4px;
+    padding:4px;
+  }
+  .mobile-dock button{min-height:42px;padding:4px 2px;font-size:7px}
+  .stats{display:none!important}
+  .sim.mobile-active{grid-template-rows:auto minmax(150px,1fr) auto auto minmax(60px,.28fr)!important}
+  .simboard{margin-top:6px}
+  .simtools button,.arsenal button{flex-basis:118px;min-height:40px}
+  .feed{min-height:0}
+  .tactical-log{right:72px!important;bottom:5px!important;max-height:70vh}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .mobile-dock,.panel,.tactical-log{transition:none!important}
+}

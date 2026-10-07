@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // SONOXO SYSTEMS MATRIX</title>
+<meta name="theme-color" content="#03070a">
+<style>
+:root{--bg:#020609;--panel:#061018e8;--line:#164d66;--cyan:#47d9ff;--green:#62ff9f;--amber:#ffd05d;--red:#ff6a70;--text:#e1faff;--muted:#7ba2b1;--blue:#7aa8ff;--violet:#ba88ff}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:1000;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px);opacity:.35}
+.app{height:100vh;display:grid;grid-template-rows:70px 1fr 32px;background:radial-gradient(circle at 50% -20%,#103247 0,#051019 34%,#020609 68%)}
+header{display:grid;grid-template-columns:320px 1fr 270px;align-items:center;padding:0 12px;border-bottom:1px solid var(--line);background:#031018f4}
+.brand{font-weight:900;color:var(--cyan);letter-spacing:.08em;font-size:17px}.brand small{display:block;font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.1em}
+.pipeline{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;overflow:hidden}.pipe{padding:5px 7px;border:1px solid #17546d;background:#061824;border-radius:4px;font-size:8px;color:#c7eff9}.arrow{color:#4389a3}
+.status{text-align:right;font-size:9px;line-height:1.55}.online{color:var(--green)}.amber{color:var(--amber)}.red{color:var(--red)}.cyan{color:var(--cyan)}.muted{color:var(--muted)}
+main{display:grid;grid-template-columns:270px minmax(0,1fr) 340px;min-height:0}.panel{background:var(--panel);backdrop-filter:blur(11px);overflow:auto;padding:9px}.left{border-right:1px solid var(--line)}.right{border-left:1px solid var(--line)}
+h2{font-size:9px;color:var(--cyan);letter-spacing:.15em;margin:7px 0}.card{border:1px solid #123f54;background:#05131c;border-radius:5px;padding:8px;margin-bottom:7px}.row{display:flex;justify-content:space-between;gap:8px;font-size:9px;line-height:1.45}.metric{font-size:24px;color:#fff}.small{font-size:8.5px;line-height:1.5;color:var(--muted)}
+button,.btn{display:block;width:100%;padding:7px 8px;margin:3px 0;border:1px solid #1a607d;background:#061923;color:var(--text);border-radius:4px;font:inherit;font-size:8.5px;cursor:pointer;text-decoration:none;text-align:left}button:hover,button.active,.btn:hover{border-color:var(--cyan);color:var(--cyan);background:#0a2634}
+.stackCard{position:relative;border:1px solid #15516b;border-radius:6px;background:linear-gradient(135deg,#071824,#041017);padding:9px;margin-bottom:7px;overflow:hidden}.stackCard:after{content:"";position:absolute;right:-30px;top:-30px;width:80px;height:80px;border:1px solid #47d9ff22;border-radius:50%}.stackCard b{color:var(--cyan);font-size:10px}.stackCard .role{font-size:8px;color:#9bc1cf;margin-top:3px}.stackCard .mode{display:inline-block;margin-top:6px;border:1px solid #235b70;border-radius:999px;padding:2px 5px;font-size:7px;color:var(--green)}
+.stage{position:relative;min-width:0;min-height:0;background:radial-gradient(circle at center,#092331 0,#041018 52%,#020609 100%)}#graph{position:absolute;inset:0;width:100%;height:100%}
+.graphHud{position:absolute;z-index:3;left:12px;top:12px;border:1px solid var(--line);background:#031019dc;padding:7px 9px;border-radius:5px;font-size:8px}.legend{position:absolute;z-index:3;left:12px;bottom:12px;border:1px solid var(--line);background:#031019dc;padding:7px 9px;border-radius:5px;font-size:7px;line-height:1.5}.legend span{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.repoGrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.repo{border:1px solid #124158;border-radius:4px;padding:7px;background:#04131b;cursor:pointer;min-height:72px}.repo:hover,.repo.sel{border-color:var(--cyan);background:#08212d}.repo b{font-size:9px;color:#c9f3ff;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.repo .meta{font-size:7px;color:var(--muted);margin-top:4px;line-height:1.5}.pill{display:inline-block;border:1px solid #20576f;border-radius:999px;padding:1px 4px;font-size:7px;margin-right:3px}
+.detailTitle{font-size:15px;color:var(--cyan);font-weight:900}.commit{border-left:2px solid #18536d;padding-left:7px;margin:7px 0;font-size:8px;line-height:1.45}.commit b{color:#d9f8ff}.commit time{color:var(--muted)}
+.health{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.health .card{margin:0;text-align:center}.health .n{font-size:18px;color:#fff}
+footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#031018;color:var(--muted);font-size:8px}
+@media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+</style>
+</head>
+<body><div class="app">
+<header>
+<div class="brand">🦅 GPT-DOUG // SONOXO SYSTEMS MATRIX<small>GITHUB VISUAL INTELLIGENCE • TEMPORAL MEMORY • SIMULATION • COMPUTER-USE • DEFENSIVE SECURITY</small></div>
+<div class="pipeline"><span class="pipe">SCREENPIPE</span><span class="arrow">→</span><span class="pipe">GRAPHITI</span><span class="arrow">→</span><span class="pipe">MIROFISH</span><span class="arrow">→</span><span class="pipe">CUA</span><span class="arrow">↔</span><span class="pipe">GITHUB</span><span class="arrow">←</span><span class="pipe">STRIX</span></div>
+<div class="status"><span class="online">● VISUAL MATRIX ONLINE</span><br><span id="repoStatus">PUBLIC GITHUB: SYNCING</span><br><span id="clock">--:--:--</span></div>
+</header>
+
+<main>
+<aside class="panel left">
+<h2>CORE STACK // LEARNED</h2>
+<div class="stackCard"><b>STRIX</b><div class="role">AI application-security testing, findings, remediation and CI security workflows.</div><span class="mode">AUTHORIZED DEFENSIVE VIEW</span></div>
+<div class="stackCard"><b>SCREENPIPE</b><div class="role">Local-first screen/audio activity capture and searchable personal context.</div><span class="mode">USER-OWNED LOCAL DATA</span></div>
+<div class="stackCard"><b>GRAPHITI</b><div class="role">Temporal context graph with entities, facts, episodes, provenance and historical validity.</div><span class="mode">TEMPORAL MEMORY</span></div>
+<div class="stackCard"><b>MIROFISH</b><div class="role">Multi-agent parallel-world simulation from seed material with evolving agents and reports.</div><span class="mode">SANDBOX SIMULATION</span></div>
+<div class="stackCard"><b>CUA</b><div class="role">Computer-use spaces, driver, sandboxes, VM tooling, agent evaluation and trajectories.</div><span class="mode">HUMAN-APPROVED EXECUTION</span></div>
+
+<h2>STACK POLICY</h2>
+<div class="card small">The matrix visualizes repository metadata and architecture. It does not automatically launch Strix exploitation, control desktops, expose private Screenpipe content, or execute MiroFish/CUA actions. Runtime actions stay behind explicit human approval.</div>
+<a class="btn" href="/">← EAGLE EYE GLOBAL FUSION</a>
+<a class="btn" href="/operations-v2.html">◎ OPTICAL COMMAND</a>
+<a class="btn" href="/nolimits-robotics.html">🤖 ROBOTICS DIGITAL TWIN</a>
+</aside>
+
+<section class="stage">
+<canvas id="graph"></canvas>
+<div class="graphHud"><b class="cyan">SONOXO SYSTEM GRAPH</b><br><span id="graphState">Loading public repository inventory…</span></div>
+<div class="legend"><span style="background:#47d9ff"></span>core stack &nbsp; <span style="background:#62ff9f"></span>sonoxo public repo &nbsp; <span style="background:#ba88ff"></span>external learned framework<br>Click a repository node/card to inspect live GitHub metadata.</div>
+</section>
+
+<aside class="panel right">
+<h2>PUBLIC SONOXO INVENTORY</h2>
+<div class="health">
+<div class="card"><div class="n" id="repoCount">—</div><div class="small">REPOS</div></div>
+<div class="card"><div class="n" id="starCount">—</div><div class="small">STARS</div></div>
+<div class="card"><div class="n" id="issueCount">—</div><div class="small">OPEN ISSUES</div></div>
+</div>
+<div style="height:7px"></div>
+<input id="search" placeholder="filter repositories…" style="width:100%;padding:7px 8px;background:#041018;border:1px solid #164d66;border-radius:4px;color:#e1faff;font:inherit;font-size:9px;outline:none">
+<div style="height:6px"></div>
+<div class="repoGrid" id="repos"></div>
+
+<h2>SELECTED REPOSITORY</h2>
+<div class="card">
+<div class="detailTitle" id="name">sonoxo/gpt-doug-llm</div>
+<div class="small" id="desc">Select a repository from the matrix.</div>
+<div class="row" style="margin-top:7px"><span>Language</span><b id="lang">—</b></div>
+<div class="row"><span>Default branch</span><b id="branch">—</b></div>
+<div class="row"><span>Updated</span><b id="updated">—</b></div>
+<div class="row"><span>Size</span><b id="size">—</b></div>
+<div class="row"><span>Visibility</span><b id="visibility">PUBLIC</b></div>
+<a class="btn" id="openRepo" target="_blank" rel="noopener">OPEN ON GITHUB ↗</a>
+</div>
+
+<h2>RECENT COMMITS</h2>
+<div class="card" id="commits"><div class="small">Waiting for repository selection…</div></div>
+</aside>
+</main>
+<footer><span>GPT-DOUG // HUMAN-FIRST // PUBLIC GITHUB METADATA</span><span>PRIVATE REPOSITORIES ARE NOT EXPOSED BY THIS PUBLIC DASHBOARD</span><span id="rate">API RATE: —</span></footer>
+</div>
+
+<script>
+const core=[
+ {id:'screenpipe',label:'SCREENPIPE',kind:'core',x:.18,y:.22},
+ {id:'graphiti',label:'GRAPHITI',kind:'external',x:.43,y:.20},
+ {id:'mirofish',label:'MIROFISH',kind:'external',x:.68,y:.23},
+ {id:'cua',label:'CUA',kind:'core',x:.78,y:.55},
+ {id:'github',label:'SONOXO/GITHUB',kind:'core',x:.50,y:.52},
+ {id:'strix',label:'STRIX',kind:'core',x:.22,y:.57}
+];
+const flows=[['screenpipe','graphiti'],['graphiti','mirofish'],['mirofish','cua'],['cua','github'],['strix','github'],['strix','graphiti'],['github','graphiti']];
+let repos=[],filtered=[],nodes=[],selected=null,hover=null;
+const $=id=>document.getElementById(id),canvas=$('graph'),ctx=canvas.getContext('2d');
+function color(k){return k==='core'?'#47d9ff':k==='external'?'#ba88ff':'#62ff9f'}
+function resize(){const d=devicePixelRatio||1,r=canvas.getBoundingClientRect();canvas.width=Math.max(1,r.width*d);canvas.height=Math.max(1,r.height*d);ctx.setTransform(d,0,0,d,0,0);draw()}addEventListener('resize',resize);
+function nodePos(n,w,h){return{x:n.x*w,y:n.y*h}}
+function draw(){
+ const r=canvas.getBoundingClientRect(),w=r.width,h=r.height;ctx.clearRect(0,0,w,h);
+ const all=[...core,...nodes],map=new Map(all.map(n=>[n.id,n]));
+ ctx.lineWidth=1;
+ for(const [a,b] of flows){const A=map.get(a),B=map.get(b);if(!A||!B)continue;const p=nodePos(A,w,h),q=nodePos(B,w,h);ctx.strokeStyle='#24587088';ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke()}
+ for(const n of nodes){const hub=core[4],p=nodePos(n,w,h),q=nodePos(hub,w,h);ctx.strokeStyle='#23504744';ctx.beginPath();ctx.moveTo(q.x,q.y);ctx.lineTo(p.x,p.y);ctx.stroke()}
+ for(const n of all){const p=nodePos(n,w,h),isSel=selected&&selected.full_name===n.repo,isHover=hover===n;const rad=n.kind==='repo'?4:8;ctx.fillStyle=color(n.kind);ctx.shadowColor=color(n.kind);ctx.shadowBlur=isSel||isHover?18:8;ctx.beginPath();ctx.arc(p.x,p.y,rad+(isSel?3:0),0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;if(n.kind!=='repo'||isSel||isHover){ctx.fillStyle='#dffaff';ctx.font=(n.kind==='repo'?'8px':'10px')+' ui-monospace,monospace';ctx.fillText(n.label,p.x+10,p.y+3)}}
+}
+function rebuildNodes(){
+ const count=Math.min(repos.length,70);nodes=repos.slice(0,count).map((r,i)=>{const a=(Math.PI*2*i/count)-Math.PI/2,rr=.34+(i%3)*.025;return{id:'repo:'+r.name,label:r.name,repo:r.full_name,kind:'repo',x:.5+Math.cos(a)*rr,y:.52+Math.sin(a)*rr*.78}});
+ draw();
+}
+async function gh(url){const res=await fetch(url,{headers:{Accept:'application/vnd.github+json'}});const rem=res.headers.get('x-ratelimit-remaining'),lim=res.headers.get('x-ratelimit-limit');if(rem)$('rate').textContent='API RATE: '+rem+'/'+lim;if(!res.ok)throw Error('GitHub '+res.status);return res.json()}
+async function loadRepos(){
+ try{
+  $('repoStatus').textContent='PUBLIC GITHUB: SYNCING';
+  const data=await gh('https://api.github.com/users/sonoxo/repos?per_page=100&sort=updated');
+  repos=data.filter(r=>!r.private);filtered=[...repos];
+  $('repoCount').textContent=repos.length;$('starCount').textContent=repos.reduce((a,r)=>a+(r.stargazers_count||0),0);$('issueCount').textContent=repos.reduce((a,r)=>a+(r.open_issues_count||0),0);
+  $('repoStatus').textContent='PUBLIC GITHUB: LIVE';$('repoStatus').className='online';$('graphState').textContent='Indexed '+repos.length+' public repositories • click nodes/cards for metadata';
+  renderRepos();rebuildNodes();if(repos.length)selectRepo(repos.find(r=>r.name==='gpt-doug-llm')||repos[0]);
+ }catch(e){$('repoStatus').textContent='PUBLIC GITHUB: '+e.message;$('repoStatus').className='red';$('graphState').textContent='GitHub API unavailable or rate-limited';}
+}
+function renderRepos(){
+ const root=$('repos');root.innerHTML='';
+ for(const r of filtered.slice(0,60)){const el=document.createElement('div');el.className='repo'+(selected?.id===r.id?' sel':'');el.innerHTML='<b>'+escapeHtml(r.name)+'</b><div class="meta"><span class="pill">'+escapeHtml(r.language||'n/a')+'</span><span class="pill">★ '+(r.stargazers_count||0)+'</span><br>'+new Date(r.updated_at).toLocaleDateString()+'</div>';el.onclick=()=>selectRepo(r);root.appendChild(el)}
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function selectRepo(r){
+ selected=r;renderRepos();draw();$('name').textContent=r.full_name;$('desc').textContent=r.description||'No repository description.';$('lang').textContent=r.language||'—';$('branch').textContent=r.default_branch||'—';$('updated').textContent=new Date(r.updated_at).toLocaleString();$('size').textContent=(r.size||0).toLocaleString()+' KB';$('visibility').textContent=(r.visibility||'public').toUpperCase();$('openRepo').href=r.html_url;
+ $('commits').innerHTML='<div class="small">Loading commit stream…</div>';
+ try{const cs=await gh('https://api.github.com/repos/'+r.full_name+'/commits?per_page=6');$('commits').innerHTML=cs.map(c=>'<div class="commit"><b>'+escapeHtml((c.commit?.message||'').split('\n')[0])+'</b><br><time>'+new Date(c.commit?.author?.date||0).toLocaleString()+' • '+escapeHtml((c.sha||'').slice(0,8))+'</time></div>').join('')||'<div class="small">No commits returned.</div>'}catch(e){$('commits').innerHTML='<div class="small">Commit stream unavailable: '+escapeHtml(e.message)+'</div>'}
+}
+$('search').oninput=e=>{const q=e.target.value.toLowerCase();filtered=repos.filter(r=>(r.name+' '+(r.description||'')+' '+(r.language||'')).toLowerCase().includes(q));renderRepos()};
+canvas.addEventListener('mousemove',e=>{const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,w=r.width,h=r.height;hover=null;for(const n of [...core,...nodes]){const p=nodePos(n,w,h);if(Math.hypot(x-p.x,y-p.y)<13){hover=n;break}}canvas.style.cursor=hover&&hover.repo?'pointer':'default';draw()});
+canvas.addEventListener('click',()=>{if(hover?.repo){const r=repos.find(x=>x.full_name===hover.repo);if(r)selectRepo(r)}});
+setInterval(()=>$('clock').textContent=new Date().toLocaleTimeString(),1000);resize();loadRepos();
+</script>
+<script src="/quantum-renderer.js"></script>\n</body></html>
