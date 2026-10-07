@@ -57,10 +57,23 @@ if age > 30:
 }
 
 posture(){
-  [ -n "$TOKEN" ] || { say "Set GPTDOUG_AUDITOR_TOKEN to query protected posture."; exit 2; }
-  curl -fsS -H "Authorization: Bearer $TOKEN" "$CORE_URL/api/v1/compliance/posture" |
-  python3 -c 'import json,sys
-d=json.load(sys.stdin)
+  [ -n "${TOKEN:-}" ] || {
+    say "Set GPTDOUG_AUDITOR_TOKEN to a real auditor token."
+    exit 2
+  }
+
+  TMP="$(mktemp)"
+  CODE="$(curl -sS -o "$TMP" -w "%{http_code}" \
+    -H "Authorization: Bearer $TOKEN" \
+    "$CORE_URL/api/v1/compliance/posture" || true)"
+
+  case "$CODE" in
+    200)
+      python3 - "$TMP" <<'PY'
+import json, sys
+path = sys.argv[1]
+with open(path, "r", encoding="utf-8") as f:
+    d = json.load(f)
 print("GPT-DOUG // COMPLIANCE ENGINEERING POSTURE")
 print(d.get("claim",""))
 print("Reviewed:", d.get("reviewedAt"))
@@ -68,7 +81,86 @@ print("Counts:", d.get("counts"))
 print("")
 for c in d.get("checks",[]):
     print("[%s] %s :: %s" % (c.get("status"), c.get("id"), c.get("title")))
-    print("    "+c.get("detail",""))'
+    print("    " + c.get("detail",""))
+PY
+      ;;
+    401)
+      say "ERROR: Unauthorized (401). GPTDOUG_AUDITOR_TOKEN is invalid or does not match the Core."
+      [ -s "$TMP" ] && cat "$TMP"
+      rm -f "$TMP"
+      exit 1
+      ;;
+    403)
+      say "ERROR: Forbidden (403). Token authenticated but lacks auditor/director access."
+      [ -s "$TMP" ] && cat "$TMP"
+      rm -f "$TMP"
+      exit 1
+      ;;
+    *)
+      say "ERROR: compliance posture request failed with HTTP $CODE"
+      [ -s "$TMP" ] && cat "$TMP"
+      rm -f "$TMP"
+      exit 1
+      ;;
+  esac
+  rm -f "$TMP"
+}
+
+global_catalog(){
+  curl -fsS "$CORE_URL/api/v1/compliance/global" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // GLOBAL CYBERSECURITY & AI COMPLIANCE CATALOG")
+print("Reviewed:", d.get("reviewedAt"))
+print("Regions:", ", ".join(d.get("coverage",{}).get("regions",[])))
+print("Regimes:", d.get("coverage",{}).get("regimeCount"))
+print("")
+for r in d.get("regimes",[]):
+    print("[%-14s] %-34s %-48s %s" % (
+        r.get("region",""),
+        r.get("id",""),
+        r.get("name",""),
+        r.get("status","")
+    ))
+print("")
+print(d.get("claim",""))'
+}
+
+horizon(){
+  curl -fsS "$CORE_URL/api/v1/compliance/horizon/2027" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // 2027 COMPLIANCE HORIZON")
+print("Reviewed:", d.get("reviewedAt"))
+print("")
+for e in d.get("events",[]):
+    print("%s  %-4s  %-42s  %s" % (
+        e.get("date",""),
+        e.get("region",""),
+        e.get("regime",""),
+        e.get("event","")
+    ))
+print("")
+print(d.get("rule",""))'
+}
+
+jurisdictions(){
+  REGIONS="${1:-GLOBAL,US,EU,UK,CANADA,AUSTRALIA,SINGAPORE,INDIA,SAUDI_ARABIA,BRAZIL}"
+  curl -fsS "$CORE_URL/api/v1/compliance/jurisdictions?regions=$REGIONS" |
+  python3 -c 'import json,sys
+d=json.load(sys.stdin)
+print("GPT-DOUG // JURISDICTION PROFILE")
+print("Regions:", ", ".join(d.get("regions",[])))
+print("Engineering domains:", ", ".join(d.get("requiredEngineeringDomains",[])))
+print("")
+for r in d.get("regimes",[]):
+    print("[%-12s] %-52s %s" % (
+        r.get("region",""),
+        r.get("name",""),
+        r.get("status","")
+    ))
+print("")
+print(d.get("claim",""))'
 }
 
 status(){
@@ -89,10 +181,13 @@ case "${1:-status}" in
   catalog|standards) catalog ;;
   policy|influence) policy ;;
   freshness|drift) freshness ;;
+  global|world) global_catalog ;;
+  horizon|2027) horizon ;;
+  jurisdictions|regions) shift; jurisdictions "${1:-}" ;;
   posture|scan) posture ;;
   *)
     cat <<EOF
-Usage: gpt-doug-compliance [status|catalog|policy|freshness|posture]
+Usage: gpt-doug-compliance [status|catalog|global|horizon|jurisdictions|policy|freshness|posture]
 
 Environment:
   GPTDOUG_CORE_URL=$CORE_URL
