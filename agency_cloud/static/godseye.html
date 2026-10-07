@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#02070d">
+<title>GPT-DOUG // GoDsEye</title>
+<style>
+:root{color-scheme:dark;--bg:#02070d;--panel:#07141e;--line:#1d4355;--text:#d9f2ff;--muted:#7da6b8;--cyan:#5ee7ff;--green:#62f6a2;--gold:#ffd36a;--red:#ff6b7a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#0b2130 0,#02070d 55%);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+header{display:flex;justify-content:space-between;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);background:#04101aee;position:sticky;top:0;z-index:5}.brand{font-weight:800;letter-spacing:.14em;color:var(--cyan)}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:5px;letter-spacing:.1em}.status{text-align:right;font-size:11px;color:var(--muted)}
+nav{padding:8px 18px;border-bottom:1px solid #102f40;display:flex;flex-wrap:wrap;gap:8px}nav a{color:var(--cyan);text-decoration:none;border:1px solid #23546b;border-radius:5px;padding:6px 9px;font-size:11px}
+main{padding:14px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}.card{background:linear-gradient(180deg,#081925e8,#04111ae8);border:1px solid var(--line);border-radius:8px;padding:12px;min-height:98px}.card h2{font-size:11px;margin:0 0 8px;color:var(--muted);letter-spacing:.1em}.metric{font-size:19px;font-weight:800}.span3{grid-column:span 3}.span4{grid-column:span 4}.span6{grid-column:span 6}.span8{grid-column:span 8}.span12{grid-column:span 12}.ok{color:var(--green)}.warn{color:var(--gold)}.bad{color:var(--red)}pre{white-space:pre-wrap;word-break:break-word;font-size:11px;color:#bcd9e7;background:#020a10;border:1px solid #123245;border-radius:6px;padding:9px;max-height:300px;overflow:auto}.list{font-size:11px;color:#a9c9d7;line-height:1.5;max-height:230px;overflow:auto}.boundary{font-size:10px;color:var(--gold);letter-spacing:.08em}form{display:flex;gap:8px}input{flex:1;background:#020a10;color:var(--text);border:1px solid #27546b;border-radius:6px;padding:10px}button{background:#0d3547;color:var(--cyan);border:1px solid #2f6f8a;border-radius:6px;padding:9px 13px;font-weight:700;cursor:pointer}
+@media(max-width:900px){.span3,.span4,.span6,.span8{grid-column:span 12}}
+</style>
+</head>
+<body>
+<header><div class="brand">GPT-DOUG // GODSEYE<small>PLANETARY FUSION • ZYRA • WARHAWK • XUNIA • PROVENANCE</small></div><div class="status"><span id="coreState">● INITIALIZING</span><br><span class="boundary">READ-ONLY • HUMAN APPROVAL REQUIRED</span></div></header>
+<nav><a href="/global-intel">GLOBAL INTEL</a><a href="/global-compliance">GLOBAL COMPLIANCE</a><a href="/bioinformatics-fusion">BIOFUSION</a><a href="/director-command">DIRECTOR COMMAND</a></nav>
+<main>
+<section class="card span3"><h2>SYSTEM HEALTH</h2><div id="systemHealth" class="metric">—</div></section>
+<section class="card span3"><h2>GPT-DOUG BRAIN</h2><div id="brainState" class="metric">—</div></section>
+<section class="card span3"><h2>WARHAWK</h2><div id="warhawkState" class="metric">—</div></section>
+<section class="card span3"><h2>ZYRA MSS</h2><div id="zyraState" class="metric">—</div></section>
+<section class="card span4"><h2>GLOBAL INTEL</h2><div id="intelState" class="metric">—</div></section>
+<section class="card span4"><h2>COMPLIANCE</h2><div id="complianceState" class="metric">—</div></section>
+<section class="card span4"><h2>BIOFUSION</h2><div id="bioState" class="metric">—</div></section>
+<section class="card span6"><h2>PLANETARY / XUNIA</h2><div id="planetaryState" class="metric">—</div></section>
+<section class="card span6"><h2>POLICY BOUNDARY</h2><div id="policyState" class="metric">READ-ONLY</div><div class="boundary">NO WEAPON CONTROL • NO IMPLANT CONTROL • NO PRIVATE SYSTEM ACCESS CLAIMS</div></section>
+<section class="card span6"><h2>PROVENANCE</h2><div id="provenanceList" class="list">No snapshot yet.</div></section>
+<section class="card span6"><h2>LIVE EVENTS</h2><div id="eventLog" class="list">Waiting for event stream.</div></section>
+<section class="card span12"><h2>ASK GPT-DOUG GODSEYE</h2><form id="queryForm"><input id="queryInput" maxlength="4000" autocomplete="off" placeholder="Ask about source health, compliance, planetary context, or system readiness"><button id="querySubmit" type="submit">QUERY</button></form><pre id="queryOutput">GoDsEye ready for read-only analysis.</pre></section>
+</main>
+</body>
+</html>

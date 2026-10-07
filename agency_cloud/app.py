@@ -45,6 +45,7 @@ from agency_cloud.global_intel import (
     source_catalog as global_intel_source_catalog,
 )
 from agency_cloud.godseye_api import router as godseye_router
+from agency_cloud.godseye_ui import router as godseye_ui_router
 from agency_cloud.integrations import (
     IntelligenceIntegrationError,
     glassonion_query,
@@ -114,6 +115,7 @@ async def security_headers(request, call_next):
 
 
 app.include_router(godseye_router)
+app.include_router(godseye_ui_router)
 app.mount("/assets", StaticFiles(directory=static_dir), name="assets")
 
 
