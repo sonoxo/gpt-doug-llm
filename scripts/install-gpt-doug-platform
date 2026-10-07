@@ -4,10 +4,16 @@ ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
 SRC="$ROOT/scripts/gpt-doug-platform"
 DOCTOR_SRC="$ROOT/scripts/gpt-doug-platform-doctor"
 SMOKE_SRC="$ROOT/scripts/gpt-doug-platform-smoke"
+COMPLIANCE_SRC="$ROOT/scripts/gpt-doug-compliance"
+EVIDENCE_SRC="$ROOT/scripts/gpt-doug-evidence-snapshot"
+REGWATCH_SRC="$ROOT/scripts/gpt-doug-regulatory-watch"
 BIN_DIR="$HOME/.local/bin"
 BIN="$BIN_DIR/gpt-doug-platform"
 DOCTOR_BIN="$BIN_DIR/gpt-doug-platform-doctor"
 SMOKE_BIN="$BIN_DIR/gpt-doug-platform-smoke"
+COMPLIANCE_BIN="$BIN_DIR/gpt-doug-compliance"
+EVIDENCE_BIN="$BIN_DIR/gpt-doug-evidence-snapshot"
+REGWATCH_BIN="$BIN_DIR/gpt-doug-regulatory-watch"
 [ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$BIN_DIR"
 chmod +x "$SRC"
@@ -20,8 +26,23 @@ if [ -f "$SMOKE_SRC" ]; then
   chmod +x "$SMOKE_SRC"
   ln -sf "$SMOKE_SRC" "$SMOKE_BIN"
 fi
+if [ -f "$COMPLIANCE_SRC" ]; then
+  chmod +x "$COMPLIANCE_SRC"
+  ln -sf "$COMPLIANCE_SRC" "$COMPLIANCE_BIN"
+fi
+if [ -f "$EVIDENCE_SRC" ]; then
+  chmod +x "$EVIDENCE_SRC"
+  ln -sf "$EVIDENCE_SRC" "$EVIDENCE_BIN"
+fi
+if [ -f "$REGWATCH_SRC" ]; then
+  chmod +x "$REGWATCH_SRC"
+  ln -sf "$REGWATCH_SRC" "$REGWATCH_BIN"
+fi
 case ":${PATH}:" in *":$BIN_DIR:"*) ;; *) printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc" ;; esac
 echo "Installed: $BIN"
 echo "Run:    gpt-doug-platform"
 echo "Doctor: gpt-doug-platform-doctor"
-echo "Smoke:  gpt-doug-platform-smoke"
+echo "Smoke:      gpt-doug-platform-smoke"
+echo "Compliance: gpt-doug-compliance"
+echo "Evidence:   gpt-doug-evidence-snapshot"
+echo "Reg watch:  gpt-doug-regulatory-watch"
