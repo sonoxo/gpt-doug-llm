@@ -1,0 +1,34 @@
+#!/bin/sh
+set -eu
+
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+UI_URL="${GPTDOUG_UI_URL:-https://gpt-doug-eagleeye-guardian.onrender.com}"
+
+pass(){ printf '[PASS] %s\n' "$*"; }
+fail(){ printf '[FAIL] %s\n' "$*" >&2; FAILS=$((FAILS+1)); }
+check(){ url="$1"; label="$2"; if curl -fsS --max-time 20 "$url" >/dev/null 2>&1; then pass "$label"; else fail "$label -> $url"; fi; }
+
+command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
+FAILS=0
+
+printf '%s\n' "GPT-DOUG // PLATFORM DOCTOR"
+printf '%s\n' "Core: $CORE_URL"
+printf '%s\n' "UI:   $UI_URL"
+printf '%s\n' "------------------------------------------------------------"
+
+check "$CORE_URL/healthz" "Core health"
+check "$CORE_URL/api/v1/platform/manifest" "Platform manifest"
+check "$CORE_URL/api/v1/ontology/schema" "Ontology schema"
+check "$CORE_URL/api/v1/sources" "Source registry"
+check "$CORE_URL/api/v1/public/events?limit=1" "Public event history"
+check "$UI_URL/" "Eagle Eye UI"
+check "$UI_URL/core-client.js" "Shared core browser client"
+check "$UI_URL/quantum-security-fusion.html" "Security Fusion"
+
+printf '%s\n' "------------------------------------------------------------"
+if [ "$FAILS" -eq 0 ]; then
+  pass "End-to-end public platform surface is reachable"
+  exit 0
+fi
+fail "$FAILS platform check(s) failed"
+exit 1
