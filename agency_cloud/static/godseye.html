@@ -31,5 +31,161 @@ main{padding:14px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));ga
 <section class="card span6"><h2>LIVE EVENTS</h2><div id="eventLog" class="list">Waiting for event stream.</div></section>
 <section class="card span12"><h2>ASK GPT-DOUG GODSEYE</h2><form id="queryForm"><input id="queryInput" maxlength="4000" autocomplete="off" placeholder="Ask about source health, compliance, planetary context, or system readiness"><button id="querySubmit" type="submit">QUERY</button></form><pre id="queryOutput">GoDsEye ready for read-only analysis.</pre></section>
 </main>
+
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  let lastSnapshot=null;
+  let reconnectTimer=null;
+
+  function setText(id,value){
+    const node=$(id);
+    if(!node)return;
+    node.textContent=value===undefined||value===null?'—':String(value);
+  }
+
+  function setState(id,status){
+    const node=$(id);
+    if(!node)return;
+    const value=String(status||'UNKNOWN').toUpperCase();
+    node.textContent=value;
+    node.classList.remove('ok','warn','bad');
+    node.classList.add(value==='ONLINE'||value==='READY'?'ok':value==='OFFLINE'||value==='FAIL'?'bad':'warn');
+  }
+
+  function renderProvenance(items){
+    const root=$('provenanceList');
+    root.replaceChildren();
+    const values=Array.isArray(items)?items:[];
+    if(!values.length){
+      const row=document.createElement('div');
+      row.textContent='No provenance reported.';
+      root.appendChild(row);
+      return;
+    }
+    for(const item of values){
+      const row=document.createElement('div');
+      row.textContent=String(item);
+      root.appendChild(row);
+    }
+  }
+
+  function appendEvent(value){
+    const root=$('eventLog');
+    if(root.dataset.empty!=='0'){
+      root.replaceChildren();
+      root.dataset.empty='0';
+    }
+    const row=document.createElement('div');
+    row.textContent=typeof value==='string'?value:JSON.stringify(value);
+    root.prepend(row);
+    while(root.children.length>40)root.lastElementChild.remove();
+  }
+
+  function subsystem(snapshot,name){
+    return snapshot?.subsystems?.[name]||{};
+  }
+
+  function renderSnapshot(snapshot,planetary){
+    lastSnapshot=snapshot;
+    const states=Object.values(snapshot?.subsystems||{}).map(x=>String(x?.status||'UNKNOWN').toUpperCase());
+    const overall=states.includes('OFFLINE')?'DEGRADED':states.includes('DEGRADED')?'DEGRADED':'ONLINE';
+    setState('systemHealth',overall);
+    setState('brainState',subsystem(snapshot,'brain').status);
+    setState('warhawkState',subsystem(snapshot,'warhawk').status);
+    setState('zyraState',subsystem(snapshot,'zyra').status);
+    setState('intelState',subsystem(snapshot,'global_intel').status);
+    setState('complianceState',subsystem(snapshot,'global_compliance').status);
+    setState('bioState',subsystem(snapshot,'biofusion').status);
+    setState('planetaryState',planetary?.status||subsystem(snapshot,'planetary').status);
+    setText('policyState',snapshot?.policy?.mode||'READ_ONLY_FUSION');
+    renderProvenance(snapshot?.provenance||[]);
+    setText('coreState','● GODSEYE '+overall);
+  }
+
+  async function getJson(url,options){
+    const response=await fetch(url,{cache:'no-store',...(options||{})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data?.detail?.message||data?.detail||('HTTP '+response.status));
+    return data;
+  }
+
+  async function loadSnapshot(){
+    try{
+      const [snapshot,sources,planetary]=await Promise.all([
+        getJson('/api/v1/godseye/status'),
+        getJson('/api/v1/godseye/sources'),
+        getJson('/api/v1/planetary/status')
+      ]);
+      const combined=[...(snapshot.provenance||[])];
+      for(const source of sources?.sources||[]){
+        const id=source?.id||source?.name||source?.subsystem;
+        const locator=source?.url||source?.provenance||source?.authority;
+        const label=[id,locator].filter(Boolean).join(':');
+        if(label&&!combined.includes(label))combined.push(label);
+      }
+      snapshot.provenance=combined;
+      renderSnapshot(snapshot,planetary);
+    }catch(error){
+      setText('coreState','● GODSEYE DEGRADED');
+      if(lastSnapshot)renderSnapshot(lastSnapshot,subsystem(lastSnapshot,'planetary').payload);
+      appendEvent('REST refresh failed: '+String(error?.message||error));
+    }
+  }
+
+  async function submitQuery(){
+    const question=$('queryInput').value.trim();
+    if(!question)return;
+    const button=$('querySubmit');
+    button.disabled=true;
+    setText('queryOutput','Querying read-only fusion context…');
+    try{
+      const result=await getJson('/api/v1/godseye/query',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question})
+      });
+      const lines=[result.answer||'No answer returned.'];
+      if(Array.isArray(result.provenance)&&result.provenance.length)lines.push('\nPROVENANCE\n'+result.provenance.join('\n'));
+      if(Array.isArray(result.uncertainty)&&result.uncertainty.length)lines.push('\nUNCERTAINTY\n'+result.uncertainty.join('\n'));
+      setText('queryOutput',lines.join('\n'));
+    }catch(error){
+      setText('queryOutput','Request unavailable: '+String(error?.message||error));
+    }finally{
+      button.disabled=false;
+    }
+  }
+
+  function connectEvents(){
+    clearTimeout(reconnectTimer);
+    const proto=location.protocol==='https:'?'wss:':'ws:';
+    let socket;
+    try{
+      socket=new WebSocket(proto+'//'+location.host+'/ws/v1/events');
+    }catch(error){
+      appendEvent('Event stream unavailable: '+String(error?.message||error));
+      reconnectTimer=setTimeout(connectEvents,2500);
+      return;
+    }
+    socket.onopen=()=>appendEvent('Event stream connected.');
+    socket.onmessage=event=>{
+      try{appendEvent(JSON.parse(event.data));}
+      catch(_error){appendEvent(String(event.data));}
+    };
+    socket.onerror=()=>appendEvent('Event stream degraded.');
+    socket.onclose=()=>{
+      appendEvent('Event stream disconnected; retaining last snapshot.');
+      reconnectTimer=setTimeout(connectEvents,2500);
+    };
+  }
+
+  $('queryForm').addEventListener('submit',event=>{event.preventDefault();submitQuery();});
+  $('eventLog').dataset.empty='1';
+  loadSnapshot();
+  connectEvents();
+  setInterval(loadSnapshot,30000);
+})();
+</script>
+
 </body>
 </html>

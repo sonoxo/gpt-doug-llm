@@ -47,3 +47,28 @@ def test_dashboard_shell_declares_read_only_boundary():
     assert "READ-ONLY" in text
     assert "NO WEAPON CONTROL" in text
     assert "NO IMPLANT CONTROL" in text
+
+
+def test_dashboard_live_endpoints_and_safe_rendering():
+    text = HTML.read_text(encoding="utf-8")
+    assert "/api/v1/godseye/status" in text
+    assert "/api/v1/godseye/sources" in text
+    assert "/api/v1/planetary/status" in text
+    assert "/api/v1/godseye/query" in text
+    assert "/ws/v1/events" in text
+    assert "new WebSocket" in text
+    assert "textContent" in text
+    assert "replaceChildren" in text
+    assert "document.createElement" in text
+    assert "eval(" not in text
+    assert "new Function" not in text
+    assert "innerHTML" not in text
+    assert "shell" not in text.lower()
+    assert "terminal" not in text.lower()
+
+
+def test_dashboard_provenance_uses_text_only_path():
+    text = HTML.read_text(encoding="utf-8")
+    assert "function renderProvenance" in text
+    assert "row.textContent=String(item)" in text.replace(" ", "")
+    assert "<img src=x onerror=1>" not in text
