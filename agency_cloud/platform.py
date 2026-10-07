@@ -108,6 +108,8 @@ PLATFORM_MANIFEST: Final = {
         "hash-chained audit evidence",
         "provenance metadata",
         "shared ontology schema",
+        "public-source global intelligence benchmark",
+        "source-fitness scoring and provenance",
     ],
     "blocked": sorted(BLOCKED_OPERATIONAL_EVENT_TYPES),
     "publicRealtimeClasses": sorted(PUBLIC_EVENT_CLASSES),
