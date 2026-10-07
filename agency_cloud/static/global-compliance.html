@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // Global Compliance Command 2027</title>
+<meta name="theme-color" content="#020711">
+<style>
+:root{--bg:#020711;--panel:#07131f;--line:#173b58;--cyan:#61ddff;--green:#62ffad;--gold:#ffd56c;--red:#ff7484;--violet:#a985ff;--white:#edf8ff;--muted:#8199ab}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--white);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{background:radial-gradient(circle at 50% -10%,#15324e 0,#081520 38%,#020711 76%)}
+header{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);background:#020711ef;backdrop-filter:blur(15px)}
+.brand{font-weight:900;color:var(--cyan);font-size:18px;letter-spacing:.07em}.brand small{display:block;margin-top:4px;color:var(--muted);font-size:8px}.state{text-align:right;font-size:8px;line-height:1.55}
+main{max-width:1600px;margin:auto;padding:10px;display:grid;grid-template-columns:310px minmax(0,1fr) 360px;gap:10px}.panel{border:1px solid var(--line);border-radius:8px;background:#06111bdc;overflow:hidden;box-shadow:0 12px 40px #0008}.panel h2{margin:0;padding:9px 10px;background:#091724;border-bottom:1px solid var(--line);font-size:9px;color:var(--cyan);letter-spacing:.13em}.pad{padding:9px}.card{border:1px solid #173751;border-radius:6px;background:#081522;padding:9px;margin:7px 0}.row{display:flex;justify-content:space-between;gap:10px;font-size:8px;line-height:1.55;color:var(--muted)}.row b{color:#fff;text-align:right}.mode{font-size:20px;font-weight:900;color:var(--green)}.notice{padding:9px;border:1px solid #735b27;background:#171408;border-radius:6px;color:#f2dda4;font-size:7px;line-height:1.55}
+.region{display:flex;flex-wrap:wrap;gap:5px}.region button{width:auto;padding:5px 7px;margin:0}.region button.active{border-color:var(--cyan);color:var(--cyan)}button,a.btn{display:block;width:100%;padding:7px 8px;margin:4px 0;border:1px solid #315975;border-radius:5px;background:#071725;color:#fff;text-decoration:none;font:inherit;font-size:8px;cursor:pointer}button:hover,a.btn:hover{border-color:var(--cyan);background:#0b2434}
+.metricGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.metric{padding:11px 6px;text-align:center;border:1px solid #173853;border-radius:7px;background:#071522}.metric strong{display:block;font-size:22px;color:var(--cyan)}.metric span{font-size:6px;color:var(--muted)}
+.regime{padding:8px;border-bottom:1px solid #123149}.regime:last-child{border-bottom:0}.regime b{display:block;font-size:8px}.regime small{display:block;margin-top:2px;color:var(--muted);font-size:6px}.pill{display:inline-block;margin:3px 3px 0 0;padding:2px 5px;border:1px solid #2b5974;border-radius:999px;font-size:6px;color:var(--green)}.pill.warn{color:var(--gold);border-color:#6a582a}.pill.regionP{color:var(--violet);border-color:#5b4777}
+.timeline{position:relative;padding-left:14px}.event{position:relative;margin:0 0 10px 0;padding:8px;border:1px solid #173853;border-radius:6px;background:#081522}.event:before{content:"";position:absolute;left:-13px;top:13px;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}.event:after{content:"";position:absolute;left:-10px;top:19px;bottom:-13px;width:1px;background:#36516a}.event:last-child:after{display:none}.event time{font-size:7px;color:var(--gold)}.event b{display:block;font-size:8px;margin:3px 0}.event span{font-size:7px;color:#a8bac8;line-height:1.5}
+.domain{display:grid;grid-template-columns:46px 1fr;gap:8px;padding:6px;border-bottom:1px solid #123149;font-size:7px}.domain b{color:var(--cyan)}.risk{padding:7px;border-bottom:1px solid #123149}.risk b{font-size:8px}.risk span{display:block;color:var(--muted);font-size:6px;line-height:1.5;margin-top:3px}
+footer{padding:9px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:7px;display:flex;justify-content:space-between;gap:10px}
+@media(max-width:1100px){main{grid-template-columns:1fr}.state{display:none}}@media(max-width:600px){.metricGrid{grid-template-columns:1fr}.brand{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">🌐 GPT-DOUG // GLOBAL COMPLIANCE COMMAND 2027<small>CYBERSECURITY • AI GOVERNANCE • PRIVACY • RESILIENCE • SUPPLY CHAIN • EVIDENCE</small></div>
+<div class="state"><span id="coreState" class="warn">● CONNECTING CORE</span><br><span id="reviewDate">REVIEWED —</span><br>ENGINEERING READINESS — NOT UNIVERSAL CERTIFICATION</div>
+</header>
+<main>
+<section class="panel">
+<h2>OPERATING MODEL</h2><div class="pad">
+<div class="card"><div class="mode">ADVISORY_ONLY</div><div class="row"><span>Human authority</span><b>TRUE</b></div><div class="row"><span>Autonomous consequential execution</span><b>FALSE</b></div></div>
+<div class="notice">No single technical build can guarantee compliance with every law worldwide. This console creates a common engineering baseline and jurisdiction profiles; legal applicability, sector rules, certifications, and regulator decisions remain external.</div>
+<h2 style="margin:12px -9px 0">REGION FILTER</h2><div class="region" id="regionButtons"></div>
+<h2 style="margin:12px -9px 0">LINKS</h2>
+<a class="btn" href="/docs">OPENAPI</a><a class="btn" href="/api/v1/compliance/global">GLOBAL JSON</a><a class="btn" href="/api/v1/compliance/horizon/2027">2027 HORIZON JSON</a><a class="btn" href="/">← CORE DASHBOARD</a>
+</div></section>
+
+<section class="panel">
+<h2>GLOBAL REGISTRY</h2><div class="pad">
+<div class="metricGrid">
+<div class="metric"><strong id="regimeCount">0</strong><span>REGIMES / STANDARDS</span></div>
+<div class="metric"><strong id="regionCount">0</strong><span>REGIONS</span></div>
+<div class="metric"><strong id="horizonCount">0</strong><span>2027 MILESTONES</span></div>
+</div>
+<div id="regimes" class="card"></div>
+</div></section>
+
+<section class="panel">
+<h2>2027 HORIZON</h2><div class="pad"><div class="timeline" id="timeline"></div>
+<h2 style="margin:12px -9px 0">UNIVERSAL RISK BASELINE</h2><div id="risks"></div>
+<h2 style="margin:12px -9px 0">CONTROL DOMAINS</h2><div id="domains"></div>
+</div></section>
+</main>
+<footer><span>GPT-DOUG // GLOBAL ENGINEERING READINESS</span><span>HUMAN-FIRST • EVIDENCE-BASED • JURISDICTION-AWARE</span><span id="clock">—</span></footer>
+<script>
+const $=id=>document.getElementById(id);
+let catalog=null,selected='ALL';
+function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+async function get(path){const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(path+' HTTP '+r.status);return r.json()}
+function render(){
+ if(!catalog)return;
+ const regimes=(catalog.regimes||[]).filter(r=>selected==='ALL'||r.region===selected||r.region==='GLOBAL');
+ $('regimeCount').textContent=regimes.length;
+ $('regionCount').textContent=new Set((catalog.regimes||[]).map(r=>r.region)).size;
+ $('horizonCount').textContent=(catalog.horizon2027||[]).length;
+ $('regimes').innerHTML=regimes.map(r=>'<div class="regime"><b>'+esc(r.name)+'</b><small>'+esc(r.jurisdiction)+' • '+esc(r.authority)+'</small><span class="pill regionP">'+esc(r.region)+'</span><span class="pill">'+esc(r.status)+'</span>'+(r.nextMilestone?'<span class="pill warn">NEXT '+esc(r.nextMilestone)+'</span>':'')+'</div>').join('')||'<div class="regime">No regimes in this filter.</div>';
+ $('timeline').innerHTML=(catalog.horizon2027||[]).map(e=>'<div class="event"><time>'+esc(e.date)+' • '+esc(e.region)+'</time><b>'+esc(e.regime)+'</b><span>'+esc(e.event)+'</span></div>').join('');
+ $('risks').innerHTML=(catalog.riskBaseline||[]).map(r=>'<div class="risk"><b>'+esc(r.title)+'</b><span>'+esc((r.minimum||[]).join(' • '))+'</span></div>').join('');
+ $('domains').innerHTML=(catalog.controlDomains||[]).map(d=>'<div class="domain"><b>'+esc(d.id)+'</b><span>'+esc(d.name)+'</span></div>').join('');
+}
+function buttons(){
+ const regions=['ALL',...new Set((catalog.regimes||[]).map(r=>r.region))];
+ $('regionButtons').innerHTML=regions.map(r=>'<button data-region="'+esc(r)+'" class="'+(r===selected?'active':'')+'">'+esc(r)+'</button>').join('');
+ document.querySelectorAll('[data-region]').forEach(b=>b.onclick=()=>{selected=b.dataset.region;buttons();render()});
+}
+async function boot(){
+ try{
+   catalog=await get('/api/v1/compliance/global');
+   $('coreState').textContent='● CORE ONLINE';$('coreState').style.color='var(--green)';
+   $('reviewDate').textContent='REVIEWED '+catalog.reviewedAt;
+   buttons();render();
+ }catch(e){$('coreState').textContent='● CORE DEGRADED';$('coreState').style.color='var(--red)';$('regimes').innerHTML='<div class="regime">Load failed: '+esc(e.message)+'</div>'}
+}
+setInterval(()=>{$('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z'},1000);boot();
+</script>
+</body></html>
