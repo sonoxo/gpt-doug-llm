@@ -84,7 +84,7 @@ say "  director-demo / analyst-demo / auditor-demo / client-demo"
 say "These demo tokens are disabled by the production configuration."
 say ""
 
-if command -v open >/dev/null 2>&1; then
+if [ "${GPTDOUG_NO_OPEN:-0}" != "1" ] && command -v open >/dev/null 2>&1; then
   open "http://127.0.0.1:$UI_PORT/quantum-security-fusion.html"
 fi
 
