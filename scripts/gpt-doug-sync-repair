@@ -30,6 +30,8 @@ for path in \
   scripts/gpt-doug-evidence-snapshot \
   scripts/gpt-doug-regulatory-watch \
   scripts/gpt-doug-global-intel \
+  scripts/gpt-doug-biofusion \
+  scripts/gpt-doug-all \
   scripts/install-gpt-doug-platform
 do
   if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
@@ -45,6 +47,8 @@ chmod +x \
   scripts/gpt-doug-evidence-snapshot \
   scripts/gpt-doug-regulatory-watch \
   scripts/gpt-doug-global-intel \
+  scripts/gpt-doug-biofusion \
+  scripts/gpt-doug-all \
   scripts/install-gpt-doug-platform
 
 ./scripts/install-gpt-doug-platform
@@ -61,4 +65,6 @@ printf '%s\n' "Local backup preserved at: $BACKUP"
 printf '%s\n' "Run next:"
 printf '%s\n' "  gpt-doug-regulatory-watch"
 printf '%s\n' "  gpt-doug-global-intel"
+printf '%s\n' "  gpt-doug-biofusion"
+printf '%s\n' "  gpt-doug-all"
 printf '%s\n' "  gpt-doug-evidence-snapshot"
