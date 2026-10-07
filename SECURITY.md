@@ -73,6 +73,28 @@ GPT-DOUG must not claim CMMC status, FedRAMP authorization/certification, FIPS m
 validation, RMF authorization/ATO, CUI enclave approval, or NSS/classified
 authorization without the applicable external evidence and responsible authority.
 
+## Global 2027 engineering baseline
+
+In addition to the U.S. engineering references above, GPT-DOUG tracks jurisdiction
+profiles for global management standards and major cyber/AI regimes including
+ISO/IEC 27001, ISO/IEC 42001, ISO/IEC 42005, the EU AI Act, Cyber Resilience Act,
+NIS2, DORA, UK NCSC CAF and cyber-security codes of practice, Canada's current
+federal cyber-control catalogue and OSFI B-13, Australia's ISM and Essential Eight,
+Singapore's Cybersecurity Act, India's DPDP Rules, Saudi NCA ECC 2-2024, Brazil's
+LGPD incident rules, and PCI DSS where payment-card environments are in scope.
+
+The project maintains a separate 2027 horizon because several obligations materially
+change during that year. The catalog is a technical planning input, not a legal
+opinion. Official regulator and standards-body sources override repository snapshots.
+
+See:
+
+- `compliance/GLOBAL_ENGINEERING_BASELINE_2027.md`
+- `compliance/GLOBAL_INCIDENT_MATRIX.md`
+- `agency_cloud/global_compliance.py`
+- `/api/v1/compliance/global`
+- `/api/v1/compliance/horizon/2027`
+
 ## Deployment and secrets
 
 Production deployments must:
