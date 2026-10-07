@@ -31,7 +31,9 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
 '
 fi
 
-for path in   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform
+for path in   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform \
+  scripts/gpt-doug-global-intel \
+  scripts/gpt-doug-global-intel
 do
   if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
     git restore --source=HEAD --staged --worktree "$path" 2>/dev/null ||       git checkout -- "$path"
