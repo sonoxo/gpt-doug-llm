@@ -8,6 +8,7 @@ from pathlib import Path
 from .kernel import BrainKernel
 from .memory import BrainMemory
 from .status import build_status
+from warhawk import WarHawkSwarm
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -28,6 +29,27 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser("status", help="show brain readiness without running a model")
     sub.add_parser("doctor", help="show detailed readiness diagnostics")
+
+    warhawk = sub.add_parser(
+        "warhawk",
+        help="US-01-GoDsWarHawk bounded defensive software swarm",
+    )
+    warhawk_sub = warhawk.add_subparsers(dest="warhawk_command", required=True)
+
+    warhawk_status = warhawk_sub.add_parser("status", help="show swarm profile and policy gates")
+    warhawk_status.add_argument("--repo", default=".")
+    warhawk_status.add_argument("--workers", type=int, default=6)
+
+    warhawk_plan = warhawk_sub.add_parser("plan", help="build a dry-run swarm mission plan")
+    warhawk_plan.add_argument("mission", nargs="+")
+    warhawk_plan.add_argument("--repo", default=".")
+    warhawk_plan.add_argument("--workers", type=int, default=6)
+
+    warhawk_run = warhawk_sub.add_parser("run", help="run bounded software workers")
+    warhawk_run.add_argument("mission", nargs="+")
+    warhawk_run.add_argument("--repo", default=".")
+    warhawk_run.add_argument("--workers", type=int, default=6)
+    warhawk_run.add_argument("--execute", action="store_true")
     return parser
 
 
@@ -42,8 +64,27 @@ def _error(kind: str, message: str) -> int:
     return 2
 
 
+def _run_warhawk(args: argparse.Namespace) -> int:
+    swarm = WarHawkSwarm(root=args.repo, max_workers=args.workers)
+    try:
+        if args.warhawk_command == "status":
+            payload = swarm.status()
+        elif args.warhawk_command == "plan":
+            payload = swarm.plan(" ".join(args.mission))
+        else:
+            payload = swarm.run(" ".join(args.mission), execute=args.execute)
+    except (PermissionError, ValueError) as exc:
+        return _error("warhawk_run_failed", str(exc))
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+    return 0
+
+
 def main() -> int:
     args = build_parser().parse_args()
+
+    if args.command == "warhawk":
+        return _run_warhawk(args)
+
     memory = BrainMemory()
 
     if args.command in {None, "status", "doctor"}:
