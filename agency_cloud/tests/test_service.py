@@ -5,7 +5,9 @@ from pathlib import Path
 import pytest
 from sqlalchemy import select
 
+from agency_cloud.advisory import create_advisory, decide_advisory, list_advisories
 from agency_cloud.audit import verify_chain
+from agency_cloud.compliance import posture
 from agency_cloud.config import Settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
 from agency_cloud.models import AuditEvent
@@ -187,3 +189,46 @@ def test_platform_event_policy_blocks_operational_weapon_actions(tmp_path: Path)
                 confidence=1.0,
                 payload={},
             )
+
+
+
+def test_advisory_records_never_execute(tmp_path: Path):
+    settings = settings_for(tmp_path)
+    engine = build_engine(settings)
+    create_schema(engine)
+    factory = build_session_factory(engine)
+
+    with factory() as session:
+        service = IntelligenceService(session, settings)
+        workspace = service.bootstrap()
+        item = create_advisory(
+            session,
+            settings,
+            workspace_id=workspace.id,
+            actor="analyst-test",
+            objective="Improve production resilience",
+            recommendation="Move durable state to managed Postgres and add restore testing.",
+            rationale="Current local state is not a durable production boundary.",
+            risk_level="HIGH",
+            evidence_refs=["CP-DATA-01"],
+        )
+        assert item.status == "PROPOSED"
+        decided = decide_advisory(
+            session,
+            settings,
+            workspace_id=workspace.id,
+            actor="director-test",
+            advisory_id=item.id,
+            decision="ACCEPTED_FOR_HUMAN_IMPLEMENTATION",
+            note="Approved for an authorized operator to implement.",
+        )
+        assert decided.status == "ACCEPTED_FOR_HUMAN_IMPLEMENTATION"
+        assert len(list_advisories(session, workspace.id)) == 1
+
+
+def test_compliance_posture_is_evidence_not_certification(tmp_path: Path):
+    settings = settings_for(tmp_path)
+    result = posture(settings)
+    assert result["schema"] == "gpt-doug.compliance-posture.v1"
+    assert "no certification" in result["claim"].lower()
+    assert result["counts"]["EXTERNAL"] >= 1
