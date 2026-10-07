@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GPT-DOUG // Strategic Intelligence Director</title>
+<meta name="theme-color" content="#010509">
+<style>
+:root{--bg:#010509;--panel:#06121c;--line:#17465e;--cyan:#64e8ff;--green:#65ffad;--gold:#ffd36a;--red:#ff6d80;--violet:#a98aff;--white:#eefaff;--muted:#7f98aa}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--white);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{background:radial-gradient(circle at 50% -10%,#153950 0,#07131d 35%,#010509 74%)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.12;background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(100,232,255,.06) 4px)}
+header{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 18px;background:#01060bec;border-bottom:1px solid var(--line);backdrop-filter:blur(16px)}
+.brand{font-size:18px;font-weight:900;letter-spacing:.07em;color:var(--cyan);text-shadow:0 0 15px #64e8ff44}.brand small{display:block;font-size:8px;color:var(--muted);margin-top:4px}.state{text-align:right;font-size:8px;line-height:1.55}
+main{max-width:1750px;margin:auto;padding:10px;display:grid;grid-template-columns:310px minmax(0,1fr) 360px;gap:10px}.panel{border:1px solid var(--line);border-radius:8px;background:#06111bdc;overflow:hidden;box-shadow:0 15px 45px #0009}.panel h2{margin:0;padding:9px 10px;background:#081824;border-bottom:1px solid var(--line);font-size:9px;color:var(--cyan);letter-spacing:.14em}.pad{padding:9px}.card{border:1px solid #173d55;border-radius:6px;background:#071522;padding:9px;margin:7px 0}.row{display:flex;justify-content:space-between;gap:10px;font-size:8px;line-height:1.55;color:var(--muted)}.row b{color:#fff;text-align:right}.hero{font-size:42px;font-weight:900;color:var(--green);line-height:1}.grade{font-size:14px;color:var(--cyan);font-weight:900}.bar{height:6px;background:#0d2636;border-radius:999px;overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--cyan),var(--green))}
+.metricGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.metric{padding:10px 4px;border:1px solid #173b53;border-radius:6px;background:#071522;text-align:center}.metric strong{display:block;font-size:20px;color:var(--cyan)}.metric span{font-size:6px;color:var(--muted)}
+.stage{position:relative;height:650px;border:1px solid #153a52;border-radius:7px;overflow:hidden;background:radial-gradient(circle at center,#0b2635 0,#05141d 50%,#01070c 82%)}canvas{width:100%;height:100%;display:block}.hud{position:absolute;inset:0;pointer-events:none}.corner{position:absolute;width:34px;height:34px}.c1{top:10px;left:10px;border-left:2px solid var(--cyan);border-top:2px solid var(--cyan)}.c2{top:10px;right:10px;border-right:2px solid var(--cyan);border-top:2px solid var(--cyan)}.c3{bottom:10px;left:10px;border-left:2px solid var(--cyan);border-bottom:2px solid var(--cyan)}.c4{bottom:10px;right:10px;border-right:2px solid var(--cyan);border-bottom:2px solid var(--cyan)}.label{position:absolute;left:50%;top:16px;transform:translateX(-50%);text-align:center;color:var(--cyan);font-size:8px;letter-spacing:.15em}.scope{position:absolute;left:12px;bottom:12px;padding:7px 9px;border:1px solid #28526a;border-radius:5px;background:#020a10dc;font-size:7px;color:#9ab6c6;line-height:1.55}
+.domain{padding:7px 2px;border-bottom:1px solid #123145}.domain b{display:flex;justify-content:space-between;font-size:8px}.domain small{font-size:6px;color:var(--muted)}.signal{padding:7px;border-bottom:1px solid #123145}.signal b{font-size:8px}.signal pre{white-space:pre-wrap;margin:4px 0 0;color:#93a9b8;font-size:6px;line-height:1.45}.log{max-height:220px;overflow:auto}.event{padding:6px;margin:5px 0;border-left:2px solid #2b6280;background:#071725;color:#9fb6c6;font-size:7px;line-height:1.45}
+button,a.btn{display:block;width:100%;padding:7px 8px;margin:4px 0;border:1px solid #315a73;border-radius:5px;background:#071725;color:#fff;text-decoration:none;font:inherit;font-size:8px;cursor:pointer}button:hover,a.btn:hover{border-color:var(--cyan);background:#0b2434}.notice{padding:9px;margin-top:8px;border:1px solid #6e5926;border-radius:6px;background:#171407;color:#efdba0;font-size:7px;line-height:1.6}
+footer{display:flex;justify-content:space-between;gap:10px;padding:9px 14px;border-top:1px solid var(--line);color:var(--muted);font-size:7px}@media(max-width:1100px){main{grid-template-columns:1fr}.state{display:none}.stage{height:500px}}@media(max-width:600px){.metricGrid{grid-template-columns:1fr}.brand{font-size:14px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">◈ GPT-DOUG // STRATEGIC INTELLIGENCE DIRECTOR<small>PRIVATE DEMONSTRATION • PUBLIC-SOURCE STRATEGIC AWARENESS • CYBER DEFENSE • HUMAN AUTHORITY</small></div>
+<div class="state"><span id="core" style="color:var(--gold)">● CONNECTING CORE</span><br><span>NOT DoD / DNI / USG OFFICIAL SYSTEM</span><br><span>NO CLASSIFIED DATA</span></div>
+</header>
+<main>
+<section class="panel"><h2>DIRECTOR READINESS</h2><div class="pad">
+<div class="card"><div class="row"><span>GLOBAL INTEL FITNESS</span><b id="grade" class="grade">—</b></div><div id="score" class="hero">—</div><div class="bar"><i id="scoreBar" style="width:0%"></i></div></div>
+<div class="metricGrid"><div class="metric"><strong id="sources">0</strong><span>SOURCES</span></div><div class="metric"><strong id="online">0</strong><span>ONLINE</span></div><div class="metric"><strong id="latency">—</strong><span>MEDIAN MS</span></div></div>
+<h2 style="margin:12px -9px 0">MISSION DOMAINS</h2><div id="domains"></div>
+<h2 style="margin:12px -9px 0">COMMAND LINKS</h2>
+<a class="btn" href="/global-intel">GLOBAL INTEL BENCHMARK</a><a class="btn" href="/global-compliance">GLOBAL COMPLIANCE</a><a class="btn" href="/docs">OPENAPI</a><button id="refresh">↻ REFRESH COMMAND PICTURE</button>
+<div class="notice">GPT-DOUG may analyze, correlate, simulate, warn and recommend. Human authority retains consequential decision power.</div>
+</div></section>
+
+<section class="panel"><h2>HOLOGRAPHIC STRATEGIC FIELD</h2><div class="pad"><div class="stage"><canvas id="holo"></canvas><div class="hud"><div class="corner c1"></div><div class="corner c2"></div><div class="corner c3"></div><div class="corner c4"></div><div class="label">GPT-DOUG // STRATEGIC FUSION FIELD<br>PUBLIC • STRATEGIC • READ-ONLY</div><div class="scope">CYBER DEFENSE<br>SPACE WEATHER<br>NATURAL HAZARDS<br>ENVIRONMENTAL EVENTS<br>GLOBAL STRUCTURAL INDICATORS</div></div></div>
+<div class="card"><div class="row"><span>Selected object</span><b id="selected">NONE</b></div><div class="row"><span>Source</span><b id="selectedSource">—</b></div><div class="row"><span>Category</span><b id="selectedCategory">—</b></div></div></div></section>
+
+<section class="panel"><h2>STRATEGIC DIRECTOR BRIEF</h2><div class="pad">
+<div class="card"><div class="row"><span>Core readiness</span><b id="ready">CHECKING</b></div><div class="row"><span>Authority</span><b>HUMAN_FIRST</b></div><div class="row"><span>Control mode</span><b>ADVISORY_ONLY</b></div><div class="row"><span>Autonomous execution</span><b style="color:var(--green)">FALSE</b></div></div>
+<h2 style="margin:12px -9px 0">CURRENT SIGNALS</h2><div id="signals"></div>
+<h2 style="margin:12px -9px 0">DIRECTOR EVENT STREAM</h2><div class="log" id="events"><div class="event">Director console initializing.</div></div>
+</div></section>
+</main>
+<footer><span>GPT-DOUG // PRIVATE STRATEGIC INTELLIGENCE CONSOLE</span><span>PUBLIC / TRAINING / SIMULATION • NO TARGETING • NO WEAPON CONTROL</span><span id="clock">—</span></footer>
+<script>
+const $=id=>document.getElementById(id),canvas=$('holo'),ctx=canvas.getContext('2d');let points=[],selected=null,phase=0;
+function log(m){const e=document.createElement('div');e.className='event';e.textContent=new Date().toISOString().slice(11,19)+'Z  '+m;$('events').prepend(e);while($('events').children.length>20)$('events').lastChild.remove()}
+function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function resize(){const r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);canvas.width=r.width*d;canvas.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);return r}
+function project(lon,lat,w,h){return[(lon+180)/360*w,(90-lat)/180*h]}
+function draw(){const r=resize(),w=r.width,h=r.height,cx=w/2,cy=h/2;phase+=.012;ctx.clearRect(0,0,w,h);ctx.fillStyle='#020a10';ctx.fillRect(0,0,w,h);ctx.strokeStyle='rgba(100,232,255,.11)';
+for(let lon=-150;lon<=150;lon+=30){const x=(lon+180)/360*w;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+for(let lat=-60;lat<=60;lat+=30){const y=(90-lat)/180*h;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+for(let i=0;i<4;i++){ctx.beginPath();ctx.strokeStyle='rgba(100,232,255,'+(.15-i*.025)+')';ctx.ellipse(cx,cy,w*(.15+i*.065),h*(.11+i*.045),phase*(i%2?-1:1),0,Math.PI*2);ctx.stroke()}
+ctx.save();ctx.translate(cx,cy);ctx.rotate(phase);const g=ctx.createLinearGradient(0,0,w*.42,0);g.addColorStop(0,'rgba(100,232,255,.27)');g.addColorStop(1,'rgba(100,232,255,0)');ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(w*.42,-30);ctx.lineTo(w*.42,30);ctx.closePath();ctx.fill();ctx.restore();
+for(const p of points){const [x,y]=project(+p.longitude,+p.latitude,w,h),quake=p.category==='EARTHQUAKE',rad=p.severity==='HIGH'?5:p.severity==='MEDIUM'?4:3;ctx.fillStyle=quake?'#ffd36a':'#a98aff';ctx.beginPath();ctx.arc(x,y,rad,0,Math.PI*2);ctx.fill();ctx.strokeStyle=quake?'rgba(255,211,106,.25)':'rgba(169,138,255,.25)';ctx.beginPath();ctx.arc(x,y,rad+5+Math.sin(phase*4+x)*3,0,Math.PI*2);ctx.stroke();if(selected===p){ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(x,y,rad+9,0,Math.PI*2);ctx.stroke()}}requestAnimationFrame(draw)}
+canvas.onclick=e=>{const r=canvas.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;let best=null,distance=16;for(const p of points){const [x,y]=project(+p.longitude,+p.latitude,r.width,r.height),d=Math.hypot(mx-x,my-y);if(d<distance){distance=d;best=p}}if(best){selected=best;$('selected').textContent=best.title;$('selectedSource').textContent=best.sourceId;$('selectedCategory').textContent=best.category;log('Selected public strategic object: '+best.category+' / '+best.title)}};
+async function json(path){const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(path+' HTTP '+r.status);return r.json()}
+async function refresh(){ $('core').textContent='● SYNCHRONIZING';$('core').style.color='var(--gold)';
+try{const [benchmark,readiness,manifest,compliance]=await Promise.all([json('/api/v1/intel/global/benchmark'),json('/readyz'),json('/api/v1/platform/manifest'),json('/api/v1/compliance/global')]);const b=benchmark.benchmark||{};$('core').textContent='● GPT-DOUG CORE ONLINE';$('core').style.color='var(--green)';$('score').textContent=b.overallScore??0;$('grade').textContent=b.grade||'—';$('sources').textContent=b.sourceCount??0;$('online').textContent=b.onlineSources??0;$('latency').textContent=b.medianLatencyMs??'—';$('scoreBar').style.width=Math.min(100,Math.max(0,+b.overallScore||0))+'%';$('ready').textContent=String(readiness.status||'UNKNOWN').toUpperCase();
+$('domains').innerHTML=Object.entries(benchmark.domains||{}).map(([n,v])=>'<div class="domain"><b><span>'+esc(n)+'</span><span>'+esc(v.score)+'</span></b><small>'+esc(v.online)+'/'+esc(v.sources)+' SOURCES ONLINE</small><div class="bar"><i style="width:'+Number(v.score||0)+'%"></i></div></div>').join('');
+$('signals').innerHTML=Object.entries(benchmark.signals||{}).map(([n,v])=>'<div class="signal"><b>'+esc(n)+'</b><pre>'+esc(JSON.stringify(v,null,2))+'</pre></div>').join('');points=benchmark.mapPoints||[];log('Global strategic picture synchronized.');log('Human authority: '+manifest.authority);log('Global compliance regimes tracked: '+(compliance.coverage?.regimeCount??'—'))}
+catch(error){$('core').textContent='● CORE DEGRADED';$('core').style.color='var(--red)';log('Director synchronization failed: '+error.message)}}
+$('refresh').onclick=refresh;setInterval(()=>{$('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z'},1000);addEventListener('resize',resize);refresh();draw();
+</script>
+</body></html>
