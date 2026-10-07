@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import Final
 
+from agency_cloud.advisory import advisory_policy
 from agency_cloud.config import Settings
-from agency_cloud.platform import PLATFORM_MANIFEST, PUBLIC_EVENT_CLASSES
+from agency_cloud.platform import PUBLIC_EVENT_CLASSES
 
 REVIEWED_AT: Final = "2026-10-07"
 
@@ -36,7 +37,7 @@ def posture(settings: Settings) -> dict:
     db_is_postgres = settings.database_url.startswith("postgresql")
     cors = tuple(origin for origin in settings.cors_origins if origin)
     checks = [
-        {"id":"GOV-HUMAN-01","family":"Governance","status":"PASS" if PLATFORM_MANIFEST.get("operatingMode")=="ADVISORY_ONLY" else "GAP","title":"Advisory-only AI authority","detail":"AI may recommend and influence; execution remains outside the AI control plane."},
+        {"id":"GOV-HUMAN-01","family":"Governance","status":"PASS" if advisory_policy().get("mode")=="ADVISORY_ONLY" else "GAP","title":"Advisory-only AI authority","detail":"AI may recommend and influence; execution remains outside the AI control plane."},
         {"id":"AC-DEMO-01","family":"Access Control","status":"PASS" if not settings.allow_demo_auth else "GAP","title":"Demo authentication disabled","detail":"Production boundaries must not accept built-in demo credentials."},
         {"id":"IA-SECRET-01","family":"Identification and Authentication","status":"PASS" if all([settings.director_token,settings.analyst_token,settings.auditor_token,settings.client_token]) else "GAP","title":"Role authentication secrets configured","detail":"Static role tokens are interim; OIDC/MFA is the target state."},
         {"id":"AU-INTEGRITY-01","family":"Audit and Accountability","status":"PASS" if bool(settings.audit_key) else "GAP","title":"Dedicated audit integrity key","detail":"Hash-chained audit records require a non-development secret."},
