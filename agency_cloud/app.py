@@ -24,6 +24,10 @@ from agency_cloud.advisory import (
     list_advisories,
 )
 from agency_cloud.audit import verify_chain
+from agency_cloud.bioinformatics import (
+    bioinformatics_catalog,
+    bioinformatics_fusion,
+)
 from agency_cloud.compliance import (
     catalog as compliance_catalog,
     posture as compliance_posture,
@@ -246,6 +250,11 @@ def global_compliance_dashboard():
 @app.get("/global-intel")
 def global_intel_dashboard():
     return FileResponse(static_dir / "global-intel.html")
+
+
+@app.get("/bioinformatics-fusion")
+def bioinformatics_fusion_dashboard():
+    return FileResponse(static_dir / "bioinformatics-fusion.html")
 
 
 @app.get("/healthz")
@@ -733,6 +742,16 @@ async def public_event_stream(websocket: WebSocket):
         pass
     finally:
         await event_hub.disconnect(websocket)
+
+
+@app.get("/api/v1/bioinformatics/catalog")
+def api_bioinformatics_catalog():
+    return bioinformatics_catalog()
+
+
+@app.get("/api/v1/bioinformatics/fusion")
+def api_bioinformatics_fusion():
+    return bioinformatics_fusion()
 
 
 @app.get("/api/v1/intel/global/sources")
