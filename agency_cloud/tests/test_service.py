@@ -2,13 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from sqlalchemy import select
 
 from agency_cloud.audit import verify_chain
 from agency_cloud.config import Settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
 from agency_cloud.models import AuditEvent
-from agency_cloud.service import IntelligenceService
+from agency_cloud.service import IntelligenceService, IntelligenceServiceError
 
 
 def settings_for(tmp_path: Path) -> Settings:
@@ -159,3 +160,30 @@ def test_platform_event_fabric_persists_and_filters_public_classes(tmp_path: Pat
         public_events = service.list_public_platform_events()
         assert [item.id for item in public_events] == [public.id]
         assert service.status(workspace.id)["counts"]["events"] == 2
+
+
+
+def test_platform_event_policy_blocks_operational_weapon_actions(tmp_path: Path):
+    settings = settings_for(tmp_path)
+    engine = build_engine(settings)
+    create_schema(engine)
+    factory = build_session_factory(engine)
+
+    with factory() as session:
+        service = IntelligenceService(session, settings)
+        workspace = service.bootstrap()
+        with pytest.raises(IntelligenceServiceError):
+            service.create_platform_event(
+                workspace_id=workspace.id,
+                actor="analyst-test",
+                event_type="TARGET_SELECTION",
+                entity_kind="event",
+                object_id="blocked-01",
+                title="Blocked operation",
+                summary="Must never enter the operational event fabric.",
+                classification="SIMULATION",
+                source_id="platform-sim",
+                provenance_locator="test:blocked",
+                confidence=1.0,
+                payload={},
+            )
