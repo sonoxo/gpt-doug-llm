@@ -9,16 +9,11 @@ BACKUP="$ROOT/.gpt-doug/repair/$STAMP"
 cd "$ROOT"
 mkdir -p "$BACKUP"
 
-printf '%s
-' "GPT-DOUG // SAFE SYNC REPAIR"
-printf '%s
-' "Repo:   $ROOT"
-printf '%s
-' "Branch: $BRANCH"
-printf '%s
-' "Backup: $BACKUP"
-printf '%s
-' "------------------------------------------------------------"
+printf '%s\n' "GPT-DOUG // SAFE SYNC REPAIR"
+printf '%s\n' "Repo:   $ROOT"
+printf '%s\n' "Branch: $BRANCH"
+printf '%s\n' "Backup: $BACKUP"
+printf '%s\n' "------------------------------------------------------------"
 
 git fetch origin
 git switch "$BRANCH"
@@ -27,40 +22,43 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   git status --short > "$BACKUP/status.txt"
   git diff > "$BACKUP/worktree.patch" || true
   git diff --cached > "$BACKUP/index.patch" || true
-  printf '[BACKUP] local changes saved as patches
-'
+  printf '[BACKUP] local changes saved as patches\n'
 fi
 
-for path in   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform \
+for path in \
+  scripts/gpt-doug-compliance \
+  scripts/gpt-doug-evidence-snapshot \
+  scripts/gpt-doug-regulatory-watch \
   scripts/gpt-doug-global-intel \
-  scripts/gpt-doug-global-intel
+  scripts/install-gpt-doug-platform
 do
   if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
-    git restore --source=HEAD --staged --worktree "$path" 2>/dev/null ||       git checkout -- "$path"
+    git restore --source=HEAD --staged --worktree "$path" 2>/dev/null || \
+      git checkout -- "$path"
   fi
 done
 
 git pull --ff-only origin "$BRANCH"
 
-chmod +x   scripts/gpt-doug-compliance   scripts/gpt-doug-evidence-snapshot   scripts/gpt-doug-regulatory-watch   scripts/install-gpt-doug-platform
+chmod +x \
+  scripts/gpt-doug-compliance \
+  scripts/gpt-doug-evidence-snapshot \
+  scripts/gpt-doug-regulatory-watch \
+  scripts/gpt-doug-global-intel \
+  scripts/install-gpt-doug-platform
 
 ./scripts/install-gpt-doug-platform
 
-printf '%s
-' "------------------------------------------------------------"
+printf '%s\n' "------------------------------------------------------------"
 ./scripts/gpt-doug-compliance status
 ./scripts/gpt-doug-compliance global
 ./scripts/gpt-doug-compliance horizon
+./scripts/gpt-doug-global-intel
 
-printf '%s
-' "------------------------------------------------------------"
-printf '%s
-' "[PASS] GPT-DOUG sync repair complete"
-printf '%s
-' "Local backup preserved at: $BACKUP"
-printf '%s
-' "Run next:"
-printf '%s
-' "  gpt-doug-regulatory-watch"
-printf '%s
-' "  gpt-doug-evidence-snapshot"
+printf '%s\n' "------------------------------------------------------------"
+printf '%s\n' "[PASS] GPT-DOUG sync repair complete"
+printf '%s\n' "Local backup preserved at: $BACKUP"
+printf '%s\n' "Run next:"
+printf '%s\n' "  gpt-doug-regulatory-watch"
+printf '%s\n' "  gpt-doug-global-intel"
+printf '%s\n' "  gpt-doug-evidence-snapshot"
