@@ -1,8 +1,12 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-10-06T11:48:56Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-10-06T19:08:12Z",
+  "due_files_reviewed": 3,
+  "due_paths": [
+    "eagleeye-cloud/operations.html",
+    "intel/white-house/daily/2026-10-06.json",
+    "intel/white-house/daily/2026-10-06.md"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -557,10 +561,10 @@
     ".github/workflows/pages-museum-hq.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-03T07:03:07Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "5d09bc4cb7d0abd64643ad4601b9ff33afeaa1b439dd3bf5aa6e95a3379631b5",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T19:06:43Z",
+      "reviewed_at": null,
+      "sha256": "f55bde707eed9d52c46c546563068bfda99683395cb4c1bf48405aec3aa674bf",
       "size": 11232,
       "validation_issues": [],
       "was_due": false
@@ -4790,15 +4794,17 @@
       "was_due": false
     },
     "eagleeye-cloud/operations.html": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-06T18:55:36Z",
-      "reviewed_at": null,
-      "sha256": "3c90b54f51d0b7a44bb9f0467a027f1ffda3fe66235e2e78b73ceb881483a9b1",
-      "size": 14149,
+      "reviewed_at": "2026-10-07T19:08:12Z",
+      "sha256": "3a66b34dbf97283e6cccda139f68f370556d8dd8a2029485c3d981f0c133aae2",
+      "size": 14150,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "eagleeye-cloud/organoid-intelligence-lab.html": {
       "actions": [],
@@ -8138,20 +8144,42 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-06T17:38:30Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-07T19:08:12Z",
       "sha256": "90364723afed829f56589aa82430fefe0aefbbb1eef95b5eb0d047ca57f18704",
       "size": 9690,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-10-06.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-06T17:38:30Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-07T19:08:12Z",
       "sha256": "27c9c087929812bc01f7aeb37fde9b33aca41089c45c961b9346d732f56fd698",
       "size": 3426,
+      "validation_issues": [],
+      "was_due": true
+    },
+    "intel/white-house/daily/2026-10-07.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:10:20Z",
+      "reviewed_at": null,
+      "sha256": "4fe9919663ba05c5b87af11e60df6c87673935fee86d29f3ffcb1928b02163b7",
+      "size": 1865,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-10-07.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-07T18:10:20Z",
+      "reviewed_at": null,
+      "sha256": "bb5457e6c8e05e4e530e22f5447e6d86866c36bdef15fb3bd6efe1cd459db925",
+      "size": 1229,
       "validation_issues": [],
       "was_due": false
     },
@@ -8159,10 +8187,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-06T17:38:30Z",
+      "git_touched_at": "2026-10-07T18:10:20Z",
       "reviewed_at": null,
-      "sha256": "071efa672e91e285ad4b4191af6fcd0f4eb3fb2e7176394f09a78898ae2ac796",
-      "size": 26058,
+      "sha256": "bcb9e0eae860f35a123b95bbaa1bbd7d1cd171a5c90e98bbba2322f6f0ecadcd",
+      "size": 26290,
       "validation_issues": [],
       "was_due": false
     },
@@ -8632,10 +8660,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-06T22:57:45Z",
+      "git_touched_at": "2026-10-07T19:06:43Z",
       "reviewed_at": null,
-      "sha256": "94e98bcdb1fe59868779d7cb721f46fc01000e3321aecf7f41a80eac24fed290",
-      "size": 11044,
+      "sha256": "7925170fef3b900a62209742f86fa4717484e6024c53c3b5a072c42baf2dcf21",
+      "size": 11847,
       "validation_issues": [],
       "was_due": false
     },
@@ -18343,11 +18371,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-07T11:48:56Z",
+  "generated_at": "2026-10-07T19:08:12Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "eagleeye-cloud/operations.html"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1667,
+  "tracked_files_reviewed": 1669,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
