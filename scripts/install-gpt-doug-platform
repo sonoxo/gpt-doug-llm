@@ -3,9 +3,11 @@ set -eu
 ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
 SRC="$ROOT/scripts/gpt-doug-platform"
 DOCTOR_SRC="$ROOT/scripts/gpt-doug-platform-doctor"
+SMOKE_SRC="$ROOT/scripts/gpt-doug-platform-smoke"
 BIN_DIR="$HOME/.local/bin"
 BIN="$BIN_DIR/gpt-doug-platform"
 DOCTOR_BIN="$BIN_DIR/gpt-doug-platform-doctor"
+SMOKE_BIN="$BIN_DIR/gpt-doug-platform-smoke"
 [ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$BIN_DIR"
 chmod +x "$SRC"
@@ -14,7 +16,12 @@ if [ -f "$DOCTOR_SRC" ]; then
   chmod +x "$DOCTOR_SRC"
   ln -sf "$DOCTOR_SRC" "$DOCTOR_BIN"
 fi
+if [ -f "$SMOKE_SRC" ]; then
+  chmod +x "$SMOKE_SRC"
+  ln -sf "$SMOKE_SRC" "$SMOKE_BIN"
+fi
 case ":${PATH}:" in *":$BIN_DIR:"*) ;; *) printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc" ;; esac
 echo "Installed: $BIN"
 echo "Run:    gpt-doug-platform"
 echo "Doctor: gpt-doug-platform-doctor"
+echo "Smoke:  gpt-doug-platform-smoke"
