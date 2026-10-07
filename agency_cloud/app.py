@@ -257,6 +257,11 @@ def bioinformatics_fusion_dashboard():
     return FileResponse(static_dir / "bioinformatics-fusion.html")
 
 
+@app.get("/director-command")
+def director_command_dashboard():
+    return FileResponse(static_dir / "director-command.html")
+
+
 @app.get("/healthz")
 def healthz():
     return {
