@@ -36,6 +36,10 @@ from agency_cloud.global_compliance import (
     horizon_2027,
     jurisdiction_profile,
 )
+from agency_cloud.global_intel import (
+    global_intel_benchmark,
+    source_catalog as global_intel_source_catalog,
+)
 from agency_cloud.integrations import (
     IntelligenceIntegrationError,
     glassonion_query,
@@ -237,6 +241,11 @@ def dashboard():
 @app.get("/global-compliance")
 def global_compliance_dashboard():
     return FileResponse(static_dir / "global-compliance.html")
+
+
+@app.get("/global-intel")
+def global_intel_dashboard():
+    return FileResponse(static_dir / "global-intel.html")
 
 
 @app.get("/healthz")
@@ -724,6 +733,16 @@ async def public_event_stream(websocket: WebSocket):
         pass
     finally:
         await event_hub.disconnect(websocket)
+
+
+@app.get("/api/v1/intel/global/sources")
+def api_global_intel_sources():
+    return global_intel_source_catalog()
+
+
+@app.get("/api/v1/intel/global/benchmark")
+def api_global_intel_benchmark():
+    return global_intel_benchmark()
 
 
 @app.get("/api/v1/compliance/catalog")
