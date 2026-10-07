@@ -232,9 +232,9 @@ def readyz():
 @app.get("/metrics", response_class=PlainTextResponse)
 def metrics():
     with session_factory() as session:
-        from agency_cloud.models import Alert, AuditEvent, Case, IntelRecord, PlatformEvent, Report
+        from agency_cloud.models import Alert, AuditEvent, Case, IntelRecord, PlatformEvent, Report, Workspace
         counts = {
-            "workspaces": session.scalar(select(func.count()).select_from(__import__("agency_cloud.models", fromlist=["Workspace"]).Workspace)) or 0,
+            "workspaces": session.scalar(select(func.count()).select_from(Workspace)) or 0,
             "cases": session.scalar(select(func.count()).select_from(Case)) or 0,
             "intel": session.scalar(select(func.count()).select_from(IntelRecord)) or 0,
             "reports": session.scalar(select(func.count()).select_from(Report)) or 0,
