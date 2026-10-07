@@ -10,6 +10,7 @@ REGWATCH_SRC="$ROOT/scripts/gpt-doug-regulatory-watch"
 SYNC_REPAIR_SRC="$ROOT/scripts/gpt-doug-sync-repair"
 GLOBAL_INTEL_SRC="$ROOT/scripts/gpt-doug-global-intel"
 BIOFUSION_SRC="$ROOT/scripts/gpt-doug-biofusion"
+ALL_SRC="$ROOT/scripts/gpt-doug-all"
 BIN_DIR="$HOME/.local/bin"
 BIN="$BIN_DIR/gpt-doug-platform"
 DOCTOR_BIN="$BIN_DIR/gpt-doug-platform-doctor"
@@ -20,6 +21,7 @@ REGWATCH_BIN="$BIN_DIR/gpt-doug-regulatory-watch"
 SYNC_REPAIR_BIN="$BIN_DIR/gpt-doug-sync-repair"
 GLOBAL_INTEL_BIN="$BIN_DIR/gpt-doug-global-intel"
 BIOFUSION_BIN="$BIN_DIR/gpt-doug-biofusion"
+ALL_BIN="$BIN_DIR/gpt-doug-all"
 [ -f "$SRC" ] || { echo "Missing $SRC" >&2; exit 1; }
 mkdir -p "$BIN_DIR"
 chmod +x "$SRC"
@@ -56,6 +58,10 @@ if [ -f "$BIOFUSION_SRC" ]; then
   chmod +x "$BIOFUSION_SRC"
   ln -sf "$BIOFUSION_SRC" "$BIOFUSION_BIN"
 fi
+if [ -f "$ALL_SRC" ]; then
+  chmod +x "$ALL_SRC"
+  ln -sf "$ALL_SRC" "$ALL_BIN"
+fi
 case ":${PATH}:" in *":$BIN_DIR:"*) ;; *) printf '\nexport PATH="$HOME/.local/bin:$PATH"\n' >> "$HOME/.zshrc" ;; esac
 echo "Installed: $BIN"
 echo "Run:    gpt-doug-platform"
@@ -67,3 +73,4 @@ echo "Reg watch:  gpt-doug-regulatory-watch"
 echo "Sync repair: gpt-doug-sync-repair"
 echo "Global intel: gpt-doug-global-intel"
 echo "Biofusion:   gpt-doug-biofusion"
+echo "All-in-one:  gpt-doug-all"
