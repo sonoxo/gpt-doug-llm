@@ -7,29 +7,128 @@
   <title>XUNIA Planet // MMGIS Forge</title>
   <meta name="description" content="XUNIA Planet powered by the MMGIS XUNIAverse Planetary Forge." />
   <style>
-    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#02070d;color:#cceeff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    #forge{position:fixed;inset:0;width:100%;height:100%;border:0;background:#02070d}
-    .fallback{position:fixed;inset:0;display:grid;place-items:center;z-index:-1;background:radial-gradient(circle at 50% 40%,#082438,#02070d 62%)}
+    :root{--bg:#02070d;--panel:#071823ee;--line:#1f5268;--cyan:#69e9ff;--green:#68f5a5;--gold:#ffd36b;--red:#ff6f7e;--text:#d8f1ff;--muted:#7faabd}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);color:#cceeff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    #forge{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--bg);z-index:1}
+    .fallback{position:fixed;inset:0;display:grid;place-items:center;z-index:0;background:radial-gradient(circle at 50% 40%,#082438,var(--bg) 62%)}
     .fallback div{text-align:center}.fallback b{display:block;font-size:20px;letter-spacing:.08em}.fallback span{display:block;margin-top:8px;font-size:11px;color:#6fa8bd;letter-spacing:.12em}
+    #dougToggle{position:fixed;right:14px;top:14px;z-index:20;background:#062334e8;border:1px solid var(--line);color:var(--cyan);border-radius:8px;padding:9px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;cursor:pointer}
+    #dougPanel{position:fixed;right:14px;top:58px;bottom:14px;width:min(410px,calc(100vw - 28px));z-index:19;background:linear-gradient(180deg,#061823f3,#020b12f3);border:1px solid var(--line);border-radius:10px;box-shadow:0 14px 45px #0009;display:flex;flex-direction:column;overflow:hidden;backdrop-filter:blur(9px)}
+    #dougPanel[hidden]{display:none}.dougHead{padding:12px;border-bottom:1px solid #153a4d}.dougBrand{font:800 13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;color:var(--cyan)}.dougStatus{margin-top:5px;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--gold);letter-spacing:.07em}.dougBody{padding:11px;display:flex;flex-direction:column;gap:9px;min-height:0;overflow:auto}.dougLabel{font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--muted)}#dougContext,#dougOutput{margin:0;white-space:pre-wrap;word-break:break-word;background:#02090f;border:1px solid #15384a;border-radius:7px;padding:9px;color:#bcd9e8;font:10px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;max-height:155px;overflow:auto}#dougQuestion{width:100%;min-height:78px;resize:vertical;background:#02090f;border:1px solid #28566d;border-radius:7px;color:var(--text);padding:9px;font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.dougActions{display:flex;gap:8px}.dougActions button{flex:1;background:#0b3345;color:var(--cyan);border:1px solid #2d6a84;border-radius:7px;padding:9px;font-weight:800;cursor:pointer}.dougActions button:disabled{opacity:.55;cursor:wait}.dougFoot{font:9px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);padding:0 2px}.online{color:var(--green)}.offline{color:var(--red)}
   </style>
 </head>
 <body>
   <div class="fallback"><div><b>XUNIA // MMGIS</b><span>LOADING PLANETARY FORGE</span></div></div>
   <iframe id="forge" title="XUNIAverse MMGIS Planetary Forge" allow="fullscreen; geolocation" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+
+  <button id="dougToggle" type="button" aria-controls="dougPanel" aria-expanded="true">GPT-DOUG</button>
+  <aside id="dougPanel" aria-label="GPT-Doug planetary copilot">
+    <div class="dougHead">
+      <div class="dougBrand">GPT-DOUG // PLANETARY COPILOT</div>
+      <div id="dougStatus" class="dougStatus">GODSEYE OFFLINE — CHECKING LOCAL CORE</div>
+    </div>
+    <div class="dougBody">
+      <div class="dougLabel">VISIBLE MAP CONTEXT</div>
+      <pre id="dougContext">Waiting for trusted XUNIA map state.</pre>
+      <div class="dougLabel">ASK / PLAN</div>
+      <textarea id="dougQuestion" maxlength="4000" placeholder="Ask about the visible map, source health, compliance, readiness, or request a bounded plan."></textarea>
+      <div class="dougActions">
+        <button id="dougAsk" type="button">ASK GODSEYE</button>
+        <button id="dougPlan" type="button">PLAN</button>
+      </div>
+      <div class="dougLabel">OUTPUT</div>
+      <pre id="dougOutput">Read-only analysis. Human approval remains required for governed actions.</pre>
+      <div class="dougFoot">PUBLIC/AUTHORIZED CONTEXT • NO REAL-WORLD ACTUATION • ROBO PARTY REFERENCES ARE RESEARCH/SIMULATION ONLY</div>
+    </div>
+  </aside>
+
   <script>
     (()=>{
       const BASE='https://xunia-mmgis-forge.onrender.com/';
       const DEFAULT='v=2&lat=30.2672&lon=-97.7431&alt=600&heading=15&pitch=-30&roll=360&style=normal&bloom=0&sharpen=1&bi=0&bv=2&si=49&hud=tactical&hv=1&dm=DENSE&dd=75&da=elastic&kf=7&ko=1&cr=0&sc=1&scf=11&map=osm&l=&lo=f.e.1&ui=c.c.1_c.p.0_l.c.1_l.p.0_d.c.1_v.c.1_r.c.1_s.c.1_g.c.1_p.c.1_m.c.0';
       const forge=document.getElementById('forge');
+      const params=new URLSearchParams(location.search);
+      const apiBase=(params.get('godseyeApi')||'http://127.0.0.1:8090').replace(/\/$/,'');
+      let trustedShareState=null;
+
       const valid=()=>{const p=new URLSearchParams(location.hash.slice(1));return p.get('v')==='2'&&Number.isFinite(Number(p.get('lat')))&&Number.isFinite(Number(p.get('lon')))};
-      if(!valid())history.replaceState(null,'',`${location.pathname}#${DEFAULT}`);
+      if(!valid())history.replaceState(null,'',`${location.pathname}${location.search}#${DEFAULT}`);
       forge.src=BASE+location.hash;
-      addEventListener('hashchange',()=>{forge.src=BASE+location.hash});
+      addEventListener('hashchange',()=>{forge.src=BASE+location.hash;renderContext()});
       addEventListener('message',e=>{
         if(e.origin!=='https://xunia-mmgis-forge.onrender.com')return;
         if(e.data?.type!=='xunia:share-state'||typeof e.data.hash!=='string'||!e.data.hash.startsWith('#v=2&'))return;
-        history.replaceState(null,'',`${location.pathname}${e.data.hash}`);
+        trustedShareState={hash:e.data.hash,selectedEntity:e.data.selectedEntity||null,visibleLayers:Array.isArray(e.data.visibleLayers)?e.data.visibleLayers.slice(0,100):[]};
+        history.replaceState(null,'',`${location.pathname}${location.search}${e.data.hash}`);
+        renderContext();
       });
+
+      function currentMapContext(){
+        const hashParams=new URLSearchParams(location.hash.slice(1));
+        const visible={};
+        for(const key of ['lat','lon','alt','heading','pitch','roll','map','l','hud']){
+          const value=hashParams.get(key);
+          if(value!==null)visible[key]=value;
+        }
+        return {
+          source:'XUNIA/MMGIS visible wrapper state',
+          viewport:visible,
+          trustedShareState:trustedShareState,
+          realWorldControl:false
+        };
+      }
+
+      function setOutput(value){document.getElementById('dougOutput').textContent=String(value)}
+      function renderContext(){document.getElementById('dougContext').textContent=JSON.stringify(currentMapContext(),null,2)}
+      function setStatus(value,online){const node=document.getElementById('dougStatus');node.textContent=value;node.classList.toggle('online',Boolean(online));node.classList.toggle('offline',!online)}
+
+      async function request(path,body){
+        const response=await fetch(apiBase+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const data=await response.json().catch(()=>({}));
+        if(!response.ok){const detail=data?.detail?.message||data?.detail||('HTTP '+response.status);throw new Error(typeof detail==='string'?detail:JSON.stringify(detail))}
+        return data;
+      }
+
+      async function probeGodseye(){
+        try{
+          const response=await fetch(apiBase+'/api/v1/planetary/status',{cache:'no-store'});
+          if(!response.ok)throw new Error('HTTP '+response.status);
+          setStatus('GODSEYE ONLINE — READ-ONLY',true);
+        }catch(error){
+          setStatus('GODSEYE OFFLINE — '+String(error?.message||error),false);
+        }
+      }
+
+      async function askDoug(){
+        const question=document.getElementById('dougQuestion').value.trim();
+        if(!question)return;
+        const button=document.getElementById('dougAsk');button.disabled=true;setOutput('Analyzing visible authorized context…');
+        const composed=question+'\n\nVISIBLE MAP CONTEXT:\n'+JSON.stringify(currentMapContext());
+        try{
+          const data=await fetch(apiBase+'/api/v1/godseye/query',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:composed})}).then(async response=>{const payload=await response.json().catch(()=>({}));if(!response.ok)throw new Error(typeof payload?.detail==='string'?payload.detail:JSON.stringify(payload?.detail||('HTTP '+response.status)));return payload});
+          const parts=[data.answer||'No answer returned.'];
+          if(Array.isArray(data.provenance)&&data.provenance.length)parts.push('\nPROVENANCE\n'+data.provenance.join('\n'));
+          if(Array.isArray(data.uncertainty)&&data.uncertainty.length)parts.push('\nUNCERTAINTY\n'+data.uncertainty.join('\n'));
+          setOutput(parts.join('\n'));setStatus('GODSEYE ONLINE — READ-ONLY',true);
+        }catch(error){setOutput('GODSEYE OFFLINE — '+String(error?.message||error));setStatus('GODSEYE OFFLINE',false)}finally{button.disabled=false}
+      }
+
+      async function planMission(){
+        const mission=document.getElementById('dougQuestion').value.trim();
+        if(!mission)return;
+        const button=document.getElementById('dougPlan');button.disabled=true;setOutput('Building bounded dry-run plan…');
+        const composed=mission+'\n\nVISIBLE MAP CONTEXT:\n'+JSON.stringify(currentMapContext());
+        try{
+          const data=await fetch(apiBase+'/api/v1/planetary/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mission:composed})}).then(async response=>{const payload=await response.json().catch(()=>({}));if(!response.ok)throw new Error(typeof payload?.detail==='string'?payload.detail:JSON.stringify(payload?.detail||('HTTP '+response.status)));return payload});
+          setOutput(JSON.stringify(data,null,2));setStatus('GODSEYE ONLINE — DRY-RUN PLAN',true);
+        }catch(error){setOutput('GODSEYE OFFLINE — '+String(error?.message||error));setStatus('GODSEYE OFFLINE',false)}finally{button.disabled=false}
+      }
+
+      document.getElementById('dougToggle').addEventListener('click',()=>{const panel=document.getElementById('dougPanel');panel.hidden=!panel.hidden;document.getElementById('dougToggle').setAttribute('aria-expanded',String(!panel.hidden))});
+      document.getElementById('dougAsk').addEventListener('click',askDoug);
+      document.getElementById('dougPlan').addEventListener('click',planMission);
+      renderContext();
+      probeGodseye();
     })();
   </script>
 </body>
