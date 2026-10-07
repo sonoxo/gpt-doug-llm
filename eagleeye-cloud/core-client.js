@@ -16,6 +16,7 @@
     connected: false,
     websocket: false,
     manifest: null,
+    compliance: null,
     lastEventAt: null,
     lastError: null,
     reconnects: 0,
@@ -35,14 +36,17 @@
 
   async function bootstrap() {
     try {
-      const [manifest, events] = await Promise.all([
+      const [manifest, events, compliance] = await Promise.all([
         getJSON("/api/v1/platform/manifest"),
         getJSON("/api/v1/public/events?limit=50"),
+        getJSON("/api/v1/compliance/catalog"),
       ]);
       state.manifest = manifest;
+      state.compliance = compliance;
       state.connected = true;
       state.lastError = null;
       emit("status", { ...state });
+      emit("compliance", compliance);
       emit("snapshot", events);
     } catch (err) {
       state.connected = false;
