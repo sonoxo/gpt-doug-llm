@@ -43,7 +43,10 @@ jobs:
         run: python -m pytest agency_cloud/tests -q
 
       - name: Ruff intelligence cloud
-        run: ruff check agency_cloud
+        run: ruff check agency_cloud --ignore I001
+
+      - name: Ruff format check
+        run: ruff format --check agency_cloud
 
       - name: Bandit intelligence cloud
         run: bandit -ll -r agency_cloud -x agency_cloud/tests
