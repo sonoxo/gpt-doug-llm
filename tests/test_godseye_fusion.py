@@ -35,6 +35,16 @@ def _bio(*, force=False):
     }
 
 
+def _zyra():
+    return {
+        "schema": "gpt-doug.zyra-status.v1",
+        "status": "ONLINE",
+        "sourceCount": 1,
+        "logicalAgentCount": 100,
+        "provenance": ["safety-shield/ontology/zyra-mss-v1.json"],
+    }
+
+
 def _planet():
     return {
         "schema": "gpt-doug.planetary-status.v1",
@@ -55,6 +65,7 @@ def test_collect_snapshot_normalizes_all_subsystems():
         compliance_fn=_compliance,
         bio_fn=_bio,
         planetary_fn=_planet,
+        zyra_fn=_zyra,
     )
 
     assert set(snapshot.subsystems) == {
@@ -63,13 +74,16 @@ def test_collect_snapshot_normalizes_all_subsystems():
         "global_intel",
         "global_compliance",
         "biofusion",
+        "zyra",
         "planetary",
     }
     assert all(state.status == "ONLINE" for state in snapshot.subsystems.values())
     assert snapshot.subsystems["global_intel"].source_count == 5
     assert snapshot.subsystems["biofusion"].source_count == 5
     assert snapshot.subsystems["planetary"].source_count == 2
+    assert snapshot.subsystems["zyra"].source_count == 1
     assert snapshot.policy["mode"] == "READ_ONLY_FUSION"
+    assert "safety-shield/ontology/zyra-mss-v1.json" in snapshot.provenance
 
 
 def test_timeout_degrades_only_one_subsystem():
@@ -84,6 +98,7 @@ def test_timeout_degrades_only_one_subsystem():
         compliance_fn=_compliance,
         bio_fn=_bio,
         planetary_fn=_planet,
+        zyra_fn=_zyra,
     )
 
     assert snapshot.subsystems["global_intel"].status == "DEGRADED"
@@ -102,6 +117,7 @@ def test_malformed_payload_degrades_only_that_subsystem():
         compliance_fn=_compliance,
         bio_fn=_bio,
         planetary_fn=_planet,
+        zyra_fn=_zyra,
     )
 
     assert snapshot.subsystems["brain"].status == "DEGRADED"
@@ -118,6 +134,7 @@ def test_snapshot_sources_flattens_source_provenance():
         compliance_fn=_compliance,
         bio_fn=_bio,
         planetary_fn=_planet,
+        zyra_fn=_zyra,
     )
     sources = snapshot_sources(snapshot)
     assert any(item["subsystem"] == "global_intel" and item["id"] == "cisa-kev" for item in sources)

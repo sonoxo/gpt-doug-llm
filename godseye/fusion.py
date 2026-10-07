@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from .models import GoDsEyeSnapshot, SubsystemState
 from .planetary import planetary_status
+from .zyra import zyra_status
 
 
 def _utc_now() -> str:
@@ -82,6 +83,13 @@ def _errors(payload: Dict[str, Any]) -> List[str]:
 
 def _provenance(payload: Dict[str, Any]) -> List[str]:
     items: List[str] = []
+    direct = payload.get("provenance")
+    if isinstance(direct, list):
+        for item in direct:
+            if item is not None and str(item) not in items:
+                items.append(str(item))
+    elif direct:
+        items.append(str(direct))
     for source in payload.get("sources", []) or []:
         if isinstance(source, dict):
             source_id = source.get("id") or source.get("sourceId") or source.get("name")
@@ -155,6 +163,7 @@ def collect_snapshot(
     compliance_fn=None,
     bio_fn=None,
     planetary_fn=planetary_status,
+    zyra_fn=zyra_status,
 ) -> GoDsEyeSnapshot:
     if any(item is None for item in (brain_status_fn, warhawk_factory, intel_fn, compliance_fn, bio_fn)):
         defaults = _load_defaults()
@@ -172,6 +181,7 @@ def collect_snapshot(
         "global_intel": _safe_collect("global_intel", lambda: intel_fn(force=False)),
         "global_compliance": _safe_collect("global_compliance", lambda: compliance_fn(settings)),
         "biofusion": _safe_collect("biofusion", lambda: bio_fn(force=False)),
+        "zyra": _safe_collect("zyra", lambda: zyra_fn()),
         "planetary": _safe_collect("planetary", lambda: planetary_fn()),
     }
 
