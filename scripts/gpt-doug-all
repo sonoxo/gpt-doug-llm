@@ -1,0 +1,165 @@
+#!/bin/sh
+set -eu
+
+resolve_repo_root(){
+  SOURCE="$0"
+  while [ -L "$SOURCE" ]; do
+    DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    LINK="$(readlink "$SOURCE")"
+    case "$LINK" in
+      /*) SOURCE="$LINK" ;;
+      *) SOURCE="$DIR/$LINK" ;;
+    esac
+  done
+  SCRIPT_DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  CANDIDATE="$(CDPATH= cd -P -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+  if [ -d "$CANDIDATE/.git" ]; then
+    printf '%s\n' "$CANDIDATE"
+    return 0
+  fi
+  if [ -n "${GPTDOUG_HOME:-}" ] && [ -d "$GPTDOUG_HOME/.git" ]; then
+    printf '%s\n' "$GPTDOUG_HOME"
+    return 0
+  fi
+  if [ -d "$HOME/gpt-doug-llm/.git" ]; then
+    printf '%s\n' "$HOME/gpt-doug-llm"
+    return 0
+  fi
+  return 1
+}
+
+ROOT="$(resolve_repo_root)" || {
+  echo "ERROR: GPT-DOUG repo not found. Expected this script inside the repo or ~/gpt-doug-llm." >&2
+  exit 1
+}
+if [ -n "${GPTDOUG_HOME:-}" ] && [ "$GPTDOUG_HOME" != "$ROOT" ]; then
+  printf '[WARN] Ignoring stale GPTDOUG_HOME=%s; using %s\n' "$GPTDOUG_HOME" "$ROOT" >&2
+}
+
+CORE_PORT="${GPTDOUG_CORE_PORT:-8090}"
+UI_PORT="${GPTDOUG_UI_PORT:-8080}"
+CORE="http://127.0.0.1:$CORE_PORT"
+UI="http://127.0.0.1:$UI_PORT"
+LOG_DIR="${TMPDIR:-/tmp}/gpt-doug-all"
+PLATFORM_LOG="$LOG_DIR/platform.log"
+PLATFORM_PID=""
+
+say(){ printf '%s\n' "$*"; }
+die(){ say "ERROR: $*" >&2; exit 1; }
+need(){ command -v "$1" >/dev/null 2>&1 || die "$1 is required"; }
+
+need git
+need python3
+need curl
+need open
+
+[ -d "$ROOT/.git" ] || die "repo not found at $ROOT"
+[ -x "$ROOT/scripts/gpt-doug-platform" ] || die "run ./scripts/install-gpt-doug-platform first"
+mkdir -p "$LOG_DIR"
+
+is_core_up(){ curl -fsS --max-time 2 "$CORE/healthz" >/dev/null 2>&1; }
+is_ui_up(){ curl -fsS --max-time 2 "$UI/quantum-security-fusion.html" >/dev/null 2>&1; }
+
+cleanup(){
+  if [ -n "$PLATFORM_PID" ]; then
+    kill "$PLATFORM_PID" >/dev/null 2>&1 || true
+    wait "$PLATFORM_PID" >/dev/null 2>&1 || true
+  fi
+}
+trap cleanup INT TERM EXIT
+
+say "GPT-DOUG // MAC UNIFIED LAUNCHER"
+say "Repo: $ROOT"
+say "Core: $CORE"
+say "UI:   $UI"
+say "------------------------------------------------------------"
+
+if is_core_up && is_ui_up; then
+  say "[PASS] Existing local GPT-DOUG stack detected; reusing it."
+elif ! is_core_up && ! is_ui_up; then
+  say "Starting Core + Eagle Eye..."
+  GPTDOUG_NO_OPEN=1 "$ROOT/scripts/gpt-doug-platform" >"$PLATFORM_LOG" 2>&1 &
+  PLATFORM_PID=$!
+
+  i=0
+  while [ "$i" -lt 80 ]; do
+    if is_core_up && is_ui_up; then
+      break
+    fi
+    if ! kill -0 "$PLATFORM_PID" >/dev/null 2>&1; then
+      cat "$PLATFORM_LOG" >&2 || true
+      die "platform launcher exited before readiness"
+    fi
+    i=$((i+1))
+    sleep 0.25
+  done
+
+  is_core_up || { cat "$PLATFORM_LOG" >&2 || true; die "Core did not become ready"; }
+  is_ui_up || { cat "$PLATFORM_LOG" >&2 || true; die "Eagle Eye UI did not become ready"; }
+  say "[PASS] Core + Eagle Eye online"
+else
+  die "partial stack detected on ports $CORE_PORT/$UI_PORT; stop the old process, then rerun gpt-doug-all"
+fi
+
+check(){
+  url="$1"; label="$2"
+  if curl -fsS --max-time 12 "$url" >/dev/null 2>&1; then
+    say "[PASS] $label"
+  else
+    say "[WARN] $label unavailable -> $url"
+  fi
+}
+
+check "$CORE/readyz" "Core readiness"
+check "$CORE/api/v1/platform/manifest" "Platform manifest"
+check "$CORE/api/v1/intel/global/benchmark" "Global Intel"
+check "$CORE/api/v1/bioinformatics/fusion" "Bioinformatics Fusion"
+check "$CORE/api/v1/compliance/global" "Global Compliance"
+check "$CORE/director-command" "Strategic Director Console"
+check "$UI/quantum-security-fusion.html" "Quantum Security Fusion"
+check "$UI/organoid-intelligence-lab.html" "Organoid Intelligence Lab"
+check "$UI/nolimits-robotics.html" "Robotics Digital Twin"
+check "$UI/airborne-mesh-sim.html" "Airborne Mesh Simulator"
+check "$UI/sonoxo-systems.html" "Sonoxo Systems Matrix"
+
+say "------------------------------------------------------------"
+say "Opening GPT-DOUG command surfaces..."
+
+open "$CORE/"
+open "$CORE/director-command"
+open "$CORE/global-intel"
+open "$CORE/bioinformatics-fusion"
+open "$CORE/global-compliance"
+open "$UI/quantum-security-fusion.html"
+open "$UI/organoid-intelligence-lab.html"
+open "$UI/nolimits-robotics.html"
+open "$UI/airborne-mesh-sim.html"
+open "$UI/sonoxo-systems.html"
+
+say ""
+say "GPT-DOUG // ALL WIRED TO MAC"
+say "Core API:       $CORE"
+say "Director:       $CORE/director-command"
+say "Global Intel:   $CORE/global-intel"
+say "Biofusion:      $CORE/bioinformatics-fusion"
+say "Compliance:     $CORE/global-compliance"
+say "Security UI:    $UI/quantum-security-fusion.html"
+say "Organoid Lab:   $UI/organoid-intelligence-lab.html"
+say "Robotics:       $UI/nolimits-robotics.html"
+say "Airborne Mesh:  $UI/airborne-mesh-sim.html"
+say "Systems Matrix: $UI/sonoxo-systems.html"
+say ""
+say "Utility commands:"
+say "  gpt-doug-global-intel"
+say "  gpt-doug-biofusion"
+say "  gpt-doug-compliance global"
+say "  gpt-doug-regulatory-watch"
+say "  gpt-doug-evidence-snapshot"
+say "  gpt-doug-platform-doctor"
+say ""
+if [ -n "$PLATFORM_PID" ]; then
+  say "Press Ctrl-C to stop the local stack."
+  wait "$PLATFORM_PID"
+else
+  say "Existing local stack left running."
+fi

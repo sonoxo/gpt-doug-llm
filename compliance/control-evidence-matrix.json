@@ -1,0 +1,100 @@
+{
+  "schema": "gpt-doug.control-evidence-matrix.v1",
+  "reviewedAt": "2026-10-07",
+  "purpose": "Engineering evidence map. External assessment and authorization remain separate.",
+  "controls": [
+    {
+      "id": "GOV-001",
+      "family": "Governance",
+      "objective": "Human authority over consequential decisions",
+      "evidence": [
+        "agency_cloud/advisory.py",
+        "agency_cloud/platform.py"
+      ],
+      "state": "IMPLEMENTED_ENGINEERING_CONTROL"
+    },
+    {
+      "id": "AC-001",
+      "family": "Access Control",
+      "objective": "Role-bounded authenticated API access",
+      "evidence": [
+        "agency_cloud/security.py",
+        "agency_cloud/app.py"
+      ],
+      "state": "IMPLEMENTED_ENGINEERING_CONTROL"
+    },
+    {
+      "id": "AU-001",
+      "family": "Audit and Accountability",
+      "objective": "Tamper-evident audit history",
+      "evidence": [
+        "agency_cloud/audit.py"
+      ],
+      "state": "IMPLEMENTED_ENGINEERING_CONTROL"
+    },
+    {
+      "id": "CM-001",
+      "family": "Configuration Management",
+      "objective": "Version-controlled platform and deployment configuration",
+      "evidence": [
+        "render.platform.yaml",
+        ".github/workflows/agency-cloud.yml"
+      ],
+      "state": "IMPLEMENTED_ENGINEERING_CONTROL"
+    },
+    {
+      "id": "CA-001",
+      "family": "Assessment",
+      "objective": "Automated compile, unit test, lint, security scan, dependency audit and SBOM gates",
+      "evidence": [
+        ".github/workflows/agency-cloud.yml"
+      ],
+      "state": "IN_PROGRESS"
+    },
+    {
+      "id": "CP-001",
+      "family": "Contingency Planning",
+      "objective": "Durable production state and tested recovery",
+      "evidence": [
+        "render.platform.yaml",
+        "PLATFORM_INTEGRATION.md"
+      ],
+      "state": "GAP_REQUIRES_DURABLE_POSTGRES"
+    },
+    {
+      "id": "IA-001",
+      "family": "Identification and Authentication",
+      "objective": "Federated identity and MFA",
+      "evidence": [
+        "agency_cloud/security.py"
+      ],
+      "state": "TARGET_OIDC_MFA"
+    },
+    {
+      "id": "SC-001",
+      "family": "System and Communications Protection",
+      "objective": "Explicit public browser boundary",
+      "evidence": [
+        "agency_cloud/config.py",
+        "agency_cloud/app.py"
+      ],
+      "state": "IMPLEMENTED_ENGINEERING_CONTROL"
+    },
+    {
+      "id": "SR-001",
+      "family": "Supply Chain Risk Management",
+      "objective": "SBOM and dependency evidence",
+      "evidence": [
+        ".github/workflows/agency-cloud.yml"
+      ],
+      "state": "IN_PROGRESS"
+    }
+  ],
+  "external": [
+    "CMMC assessment status",
+    "FedRAMP authorization",
+    "FIPS module validation",
+    "RMF authorization decision",
+    "Contract-specific applicability"
+  ]
+}

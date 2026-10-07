@@ -1,0 +1,38 @@
+#!/bin/sh
+set -eu
+
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+
+command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
+
+curl -fsS "$CORE_URL/api/v1/intel/global/benchmark" |
+python3 -c 'import json,sys
+d=json.load(sys.stdin)
+b=d.get("benchmark",{})
+print("GPT-DOUG // GLOBAL INTEL BENCHMARK 2030")
+print("Generated:", d.get("generatedAt"))
+print("Score:", b.get("overallScore"), "Grade:", b.get("grade"))
+print("Sources:", b.get("onlineSources"), "/", b.get("sourceCount"), "online")
+print("Median latency:", b.get("medianLatencyMs"), "ms")
+print("")
+print("DOMAINS")
+for name,val in sorted(d.get("domains",{}).items()):
+    print("  %-24s score=%s online=%s/%s" % (
+        name, val.get("score"), val.get("online"), val.get("sources")
+    ))
+print("")
+print("SOURCES")
+for s in d.get("sources",[]):
+    print("  [%-8s] %3s  %-24s %s" % (
+        s.get("status",""),
+        s.get("score",""),
+        s.get("domain",""),
+        s.get("name","")
+    ))
+print("")
+print("SIGNALS")
+for key,value in d.get("signals",{}).items():
+    print(" ", key, json.dumps(value, sort_keys=True))
+print("")
+print(d.get("claim",""))'

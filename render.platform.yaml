@@ -1,0 +1,51 @@
+# GPT-DOUG canonical Render infrastructure blueprint.
+# Sync intentionally as a NEW stack; the existing Eagle Eye static service is not
+# automatically adopted by this file.
+
+databases:
+  - name: gpt-doug-platform-db
+    plan: free
+    region: virginia
+
+services:
+  - type: web
+    name: gpt-doug-platform-core
+    runtime: python
+    plan: free
+    region: virginia
+    buildCommand: pip install -r agency_cloud/requirements.txt
+    startCommand: uvicorn agency_cloud.app:app --host 0.0.0.0 --port $PORT --proxy-headers
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: AGENCY_ENVIRONMENT
+        value: production
+      - key: AGENCY_SERVICE_NAME
+        value: GPT-DOUG Core Platform
+      - key: AGENCY_DEFAULT_WORKSPACE
+        value: GPT-DOUG Command
+      - key: AGENCY_DATABASE_URL
+        fromDatabase:
+          name: gpt-doug-platform-db
+          property: connectionString
+      - key: AGENCY_AUDIT_KEY
+        generateValue: true
+      - key: AGENCY_DIRECTOR_TOKEN
+        generateValue: true
+      - key: AGENCY_ANALYST_TOKEN
+        generateValue: true
+      - key: AGENCY_AUDITOR_TOKEN
+        generateValue: true
+      - key: AGENCY_CLIENT_TOKEN
+        generateValue: true
+      - key: AGENCY_ALLOW_DEMO_AUTH
+        value: "false"
+      - key: AGENCY_CORS_ORIGINS
+        value: https://gpt-doug-eagleeye-guardian.onrender.com
+
+  - type: web
+    name: gpt-doug-platform-ui
+    runtime: static
+    buildCommand: echo "static build"
+    staticPublishPath: eagleeye-cloud
+    autoDeployTrigger: commit

@@ -1,0 +1,132 @@
+#!/bin/sh
+set -eu
+
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+STATE_DIR="${GPTDOUG_STATE_DIR:-$HOME/.gpt-doug}"
+STATE_FILE="$STATE_DIR/regulatory-watch.json"
+TIMEOUT="${GPTDOUG_WATCH_TIMEOUT:-20}"
+mkdir -p "$STATE_DIR"
+
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
+
+python3 - "$CORE_URL" "$STATE_FILE" "$TIMEOUT" <<'PY'
+from __future__ import annotations
+
+import hashlib
+import json
+import pathlib
+import ssl
+import sys
+import time
+import urllib.error
+import urllib.request
+
+core_url = sys.argv[1].rstrip("/")
+state_file = pathlib.Path(sys.argv[2])
+timeout = int(sys.argv[3])
+user_agent = "GPT-DOUG-Regulatory-Watch/1.0 (+engineering-readiness; read-only)"
+
+def fetch_json(url: str) -> dict:
+    req = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout, context=ssl.create_default_context()) as res:
+        return json.loads(res.read().decode("utf-8"))
+
+def fetch_source(url: str) -> dict:
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": user_agent,
+            "Accept": "text/html,application/pdf,application/json;q=0.9,*/*;q=0.8",
+        },
+    )
+    started = time.time()
+    with urllib.request.urlopen(req, timeout=timeout, context=ssl.create_default_context()) as res:
+        body = res.read(5 * 1024 * 1024)
+        return {
+            "finalUrl": res.geturl(),
+            "status": getattr(res, "status", 200),
+            "etag": res.headers.get("ETag"),
+            "lastModified": res.headers.get("Last-Modified"),
+            "contentType": res.headers.get("Content-Type"),
+            "sha256": hashlib.sha256(body).hexdigest(),
+            "bytesSampled": len(body),
+            "elapsedMs": int((time.time() - started) * 1000),
+        }
+
+catalog = fetch_json(core_url + "/api/v1/compliance/global")
+reviewed = catalog.get("reviewedAt")
+regimes = catalog.get("regimes", [])
+urls = {}
+for regime in regimes:
+    url = str(regime.get("url") or "").strip()
+    if url.startswith(("https://", "http://")):
+        urls.setdefault(url, []).append(
+            {
+                "id": regime.get("id"),
+                "region": regime.get("region"),
+                "name": regime.get("name"),
+            }
+        )
+
+previous = {}
+if state_file.exists():
+    try:
+        previous = json.loads(state_file.read_text(encoding="utf-8"))
+    except Exception:
+        previous = {}
+
+results = {}
+changed = []
+errors = []
+print("GPT-DOUG // GLOBAL REGULATORY WATCH")
+print("Catalog reviewed:", reviewed)
+print("Sources:", len(urls))
+print("Mode: READ_ONLY / NO AUTOMATED COMPLIANCE CLAIMS")
+print("")
+
+for idx, (url, refs) in enumerate(sorted(urls.items()), 1):
+    label = ", ".join(sorted({str(r.get("id")) for r in refs if r.get("id")}))
+    try:
+        current = fetch_source(url)
+        current["refs"] = refs
+        before = previous.get("sources", {}).get(url, {})
+        material_change = bool(
+            before
+            and (
+                current.get("etag") != before.get("etag")
+                or current.get("lastModified") != before.get("lastModified")
+                or current.get("sha256") != before.get("sha256")
+            )
+        )
+        current["changedSinceLastRun"] = material_change
+        results[url] = current
+        state = "CHANGED" if material_change else ("BASELINE" if not before else "UNCHANGED")
+        if material_change:
+            changed.append({"url": url, "refs": refs})
+        print(f"[{idx:02d}/{len(urls):02d}] {state:9s} {label}")
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        errors.append({"url": url, "refs": refs, "error": str(exc)})
+        print(f"[{idx:02d}/{len(urls):02d}] ERROR     {label} :: {exc}")
+
+snapshot = {
+    "schema": "gpt-doug.regulatory-watch.v1",
+    "checkedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    "catalogReviewedAt": reviewed,
+    "coreUrl": core_url,
+    "sources": results,
+    "changed": changed,
+    "errors": errors,
+    "claim": "Read-only source-change detector. Human review is required before catalog or compliance conclusions change.",
+}
+state_file.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+print("")
+print("Changed:", len(changed))
+print("Errors:", len(errors))
+print("State:", state_file)
+if changed:
+    print("")
+    print("Human review required for changed official sources:")
+    for item in changed:
+        print(" -", item["url"])
+PY

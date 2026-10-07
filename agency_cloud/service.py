@@ -16,9 +16,15 @@ from agency_cloud.models import (
     Case,
     CaseIntel,
     IntelRecord,
+    PlatformEvent,
     Report,
     Workspace,
     new_id,
+)
+from agency_cloud.platform import (
+    PUBLIC_EVENT_CLASSES,
+    validate_event_classification,
+    validate_event_type,
 )
 
 INTELLIGENCE_CLASSES = {
@@ -124,6 +130,7 @@ class IntelligenceService:
             "intel": IntelRecord,
             "reports": Report,
             "alerts": Alert,
+            "events": PlatformEvent,
         }.items():
             counts[name] = self.session.scalar(
                 select(func.count()).select_from(model).where(model.workspace_id == workspace_id)
@@ -403,4 +410,101 @@ class IntelligenceService:
         if workspace_id:
             statement = statement.where(AuditEvent.workspace_id == workspace_id)
         statement = statement.order_by(AuditEvent.created_at.desc()).limit(max(1, min(limit, 500)))
+        return list(self.session.scalars(statement))
+
+
+    def create_platform_event(
+        self,
+        *,
+        workspace_id: str,
+        actor: str,
+        event_type: str,
+        entity_kind: str,
+        object_id: str,
+        title: str,
+        summary: str,
+        classification: str,
+        source_id: str,
+        provenance_locator: str,
+        confidence: float,
+        payload: dict | None = None,
+    ) -> PlatformEvent:
+        self.get_workspace(workspace_id)
+        try:
+            event_type = validate_event_type(event_type)
+            classification = validate_event_classification(classification)
+        except ValueError as exc:
+            raise IntelligenceServiceError(str(exc)) from exc
+
+        entity_kind = str(entity_kind or "event").strip().lower()[:64] or "event"
+        object_id = str(object_id or "").strip()[:128]
+        title = str(title or "").strip()
+        summary = str(summary or "").strip()
+        source_id = str(source_id or "").strip()
+        provenance_locator = str(provenance_locator or "").strip()
+        confidence = float(confidence)
+
+        if not title:
+            raise IntelligenceServiceError("event title is required")
+        if not source_id or not provenance_locator:
+            raise IntelligenceServiceError("event source_id and provenance_locator are required")
+        if confidence < 0.0 or confidence > 1.0:
+            raise IntelligenceServiceError("event confidence must be between 0 and 1")
+
+        event = PlatformEvent(
+            id=new_id("evt"),
+            workspace_id=workspace_id,
+            event_type=event_type,
+            entity_kind=entity_kind,
+            object_id=object_id,
+            title=title,
+            summary=summary,
+            classification=classification,
+            source_id=source_id,
+            provenance_locator=provenance_locator,
+            confidence=confidence,
+            payload=payload or {},
+            created_by=actor,
+        )
+        self.session.add(event)
+        append_event(
+            self.session,
+            audit_key=self.settings.audit_key,
+            workspace_id=workspace_id,
+            actor=actor,
+            action="PLATFORM_EVENT_INGESTED",
+            object_type="platform_event",
+            object_id=event.id,
+            payload={
+                "eventType": event_type,
+                "entityKind": entity_kind,
+                "classification": classification,
+                "sourceId": source_id,
+                "confidence": confidence,
+            },
+        )
+        self.session.commit()
+        return event
+
+    def list_platform_events(
+        self,
+        workspace_id: str,
+        *,
+        limit: int = 100,
+        public_only: bool = False,
+    ) -> list[PlatformEvent]:
+        self.get_workspace(workspace_id)
+        statement = select(PlatformEvent).where(PlatformEvent.workspace_id == workspace_id)
+        if public_only:
+            statement = statement.where(PlatformEvent.classification.in_(PUBLIC_EVENT_CLASSES))
+        statement = statement.order_by(PlatformEvent.created_at.desc()).limit(max(1, min(limit, 500)))
+        return list(self.session.scalars(statement))
+
+    def list_public_platform_events(self, *, limit: int = 100) -> list[PlatformEvent]:
+        statement = (
+            select(PlatformEvent)
+            .where(PlatformEvent.classification.in_(PUBLIC_EVENT_CLASSES))
+            .order_by(PlatformEvent.created_at.desc())
+            .limit(max(1, min(limit, 500)))
+        )
         return list(self.session.scalars(statement))

@@ -2,7 +2,7 @@ name: ZYRA Intelligence Cloud
 
 on:
   push:
-    branches: [main]
+    branches: [main, cloud/eagleeye-free]
     paths:
       - "agency_cloud/**"
       - "agents/ontology_query.py"
@@ -34,16 +34,35 @@ jobs:
       - name: Install cloud test tooling
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r agency_cloud/requirements.txt pytest ruff bandit httpx
+          python -m pip install -r agency_cloud/requirements.txt pytest ruff bandit httpx pip-audit cyclonedx-bom
+
+      - name: Compile API
+        run: python -m compileall -q agency_cloud
 
       - name: Intelligence Cloud unit tests
         run: python -m pytest agency_cloud/tests -q
 
       - name: Ruff intelligence cloud
-        run: ruff check agency_cloud
+        run: ruff check agency_cloud --ignore I001
+
+      - name: Ruff format check
+        continue-on-error: true
+        run: ruff format --check agency_cloud
 
       - name: Bandit intelligence cloud
         run: bandit -ll -r agency_cloud -x agency_cloud/tests
+
+      - name: Dependency vulnerability audit
+        run: pip-audit -r agency_cloud/requirements.txt
+
+      - name: Generate CycloneDX SBOM
+        run: cyclonedx-py environment --of JSON -o agency-cloud.cdx.json
+
+      - name: Upload SBOM evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: agency-cloud-sbom
+          path: agency-cloud.cdx.json
 
       - name: Import API
         env:

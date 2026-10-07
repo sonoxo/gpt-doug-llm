@@ -18,6 +18,7 @@ class Settings:
     allow_demo_auth: bool
     repo_root: Path
     default_workspace_name: str
+    cors_origins: tuple[str, ...]
 
     @property
     def production(self) -> bool:
@@ -48,6 +49,14 @@ def load_settings() -> Settings:
         allow_demo_auth=_truthy(os.getenv("AGENCY_ALLOW_DEMO_AUTH")),
         repo_root=repo_root,
         default_workspace_name=os.getenv("AGENCY_DEFAULT_WORKSPACE", "ZYRA Command"),
+        cors_origins=tuple(
+            item.strip()
+            for item in os.getenv(
+                "AGENCY_CORS_ORIGINS",
+                "https://gpt-doug-eagleeye-guardian.onrender.com",
+            ).split(",")
+            if item.strip()
+        ),
     )
 
     if settings.production:

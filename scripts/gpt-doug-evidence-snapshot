@@ -1,0 +1,116 @@
+#!/bin/sh
+set -eu
+
+resolve_repo_root(){
+  SOURCE="$0"
+  while [ -L "$SOURCE" ]; do
+    DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    LINK="$(readlink "$SOURCE")"
+    case "$LINK" in
+      /*) SOURCE="$LINK" ;;
+      *) SOURCE="$DIR/$LINK" ;;
+    esac
+  done
+  SCRIPT_DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  CANDIDATE="$(CDPATH= cd -P -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+  if [ -d "$CANDIDATE/.git" ]; then
+    printf '%s\n' "$CANDIDATE"
+    return 0
+  fi
+  if [ -n "${GPTDOUG_HOME:-}" ] && [ -d "$GPTDOUG_HOME/.git" ]; then
+    printf '%s\n' "$GPTDOUG_HOME"
+    return 0
+  fi
+  if [ -d "$HOME/gpt-doug-llm/.git" ]; then
+    printf '%s\n' "$HOME/gpt-doug-llm"
+    return 0
+  fi
+  return 1
+}
+
+ROOT="$(resolve_repo_root)" || {
+  echo "ERROR: GPT-DOUG repo not found. Expected this script inside the repo or ~/gpt-doug-llm." >&2
+  exit 1
+}
+if [ -n "${GPTDOUG_HOME:-}" ] && [ "$GPTDOUG_HOME" != "$ROOT" ]; then
+  printf '[WARN] Ignoring stale GPTDOUG_HOME=%s; using %s\n' "$GPTDOUG_HOME" "$ROOT" >&2
+}
+
+CORE_URL="${GPTDOUG_CORE_URL:-https://gpt-doug-platform-core.onrender.com}"
+OUT_DIR="${GPTDOUG_EVIDENCE_DIR:-$ROOT/.gpt-doug/evidence}"
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+DEST="$OUT_DIR/$STAMP"
+
+command -v curl >/dev/null 2>&1 || { echo "curl is required" >&2; exit 1; }
+command -v python3 >/dev/null 2>&1 || { echo "python3 is required" >&2; exit 1; }
+mkdir -p "$DEST"
+
+fetch(){
+  path="$1"
+  file="$2"
+  if curl -fsS --max-time 30 "$CORE_URL$path" > "$DEST/$file"; then
+    printf '[PASS] %s\n' "$path"
+  else
+    printf '[WARN] %s unavailable\n' "$path" >&2
+    printf '{"status":"unavailable","path":"%s"}\n' "$path" > "$DEST/$file"
+  fi
+}
+
+fetch "/healthz" "health.json"
+fetch "/readyz" "readiness.json"
+fetch "/api/v1/platform/manifest" "platform-manifest.json"
+fetch "/api/v1/ontology/schema" "ontology-schema.json"
+fetch "/api/v1/sources" "source-registry.json"
+fetch "/api/v1/compliance/catalog" "compliance-catalog-us.json"
+fetch "/api/v1/compliance/global" "compliance-catalog-global.json"
+fetch "/api/v1/compliance/horizon/2027" "compliance-horizon-2027.json"
+fetch "/api/v1/advisory/policy" "advisory-policy.json"
+fetch "/api/v1/public/events?limit=25" "public-event-sample.json"
+fetch "/api/v1/intel/global/sources" "global-intel-sources.json"
+fetch "/api/v1/intel/global/benchmark" "global-intel-benchmark.json"
+fetch "/api/v1/bioinformatics/catalog" "bioinformatics-catalog.json"
+fetch "/api/v1/bioinformatics/fusion" "bioinformatics-fusion.json"
+
+if [ -d "$ROOT/.git" ]; then
+  (
+    cd "$ROOT"
+    git rev-parse HEAD > "$DEST/git-head.txt"
+    git branch --show-current > "$DEST/git-branch.txt"
+    git status --porcelain > "$DEST/git-status.txt"
+  )
+fi
+
+python3 - "$DEST" "$CORE_URL" <<'PY'
+import hashlib
+import json
+import pathlib
+import sys
+from datetime import datetime, timezone
+
+dest = pathlib.Path(sys.argv[1])
+core_url = sys.argv[2]
+files = []
+for path in sorted(dest.iterdir()):
+    if not path.is_file() or path.name == "manifest.json":
+        continue
+    data = path.read_bytes()
+    files.append({
+        "file": path.name,
+        "sha256": hashlib.sha256(data).hexdigest(),
+        "bytes": len(data),
+    })
+
+manifest = {
+    "schema": "gpt-doug.engineering-evidence.v1",
+    "createdAt": datetime.now(timezone.utc).isoformat(),
+    "coreUrl": core_url,
+    "authority": "HUMAN_FIRST",
+    "operatingMode": "ADVISORY_ONLY",
+    "claim": "Engineering evidence snapshot only; no certification or authorization is implied.",
+    "files": files,
+}
+(dest / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+PY
+
+printf '\nGPT-DOUG engineering evidence snapshot created:\n%s\n' "$DEST"
+printf 'This command collects evidence only. It does not change platform state.\n'

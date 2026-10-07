@@ -1,0 +1,104 @@
+#!/bin/sh
+set -eu
+
+resolve_repo_root(){
+  SOURCE="$0"
+  while [ -L "$SOURCE" ]; do
+    DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+    LINK="$(readlink "$SOURCE")"
+    case "$LINK" in
+      /*) SOURCE="$LINK" ;;
+      *) SOURCE="$DIR/$LINK" ;;
+    esac
+  done
+  SCRIPT_DIR="$(CDPATH= cd -P -- "$(dirname -- "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  CANDIDATE="$(CDPATH= cd -P -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
+  if [ -d "$CANDIDATE/.git" ]; then
+    printf '%s\n' "$CANDIDATE"
+    return 0
+  fi
+  if [ -n "${GPTDOUG_HOME:-}" ] && [ -d "$GPTDOUG_HOME/.git" ]; then
+    printf '%s\n' "$GPTDOUG_HOME"
+    return 0
+  fi
+  if [ -d "$HOME/gpt-doug-llm/.git" ]; then
+    printf '%s\n' "$HOME/gpt-doug-llm"
+    return 0
+  fi
+  return 1
+}
+
+ROOT="$(resolve_repo_root)" || {
+  echo "ERROR: GPT-DOUG repo not found. Expected this script inside the repo or ~/gpt-doug-llm." >&2
+  exit 1
+}
+if [ -n "${GPTDOUG_HOME:-}" ] && [ "$GPTDOUG_HOME" != "$ROOT" ]; then
+  printf '[WARN] Ignoring stale GPTDOUG_HOME=%s; using %s\n' "$GPTDOUG_HOME" "$ROOT" >&2
+}
+
+BRANCH="${GPTDOUG_BRANCH:-cloud/eagleeye-free}"
+STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+BACKUP="$ROOT/.gpt-doug/repair/$STAMP"
+
+cd "$ROOT"
+mkdir -p "$BACKUP"
+
+printf '%s\n' "GPT-DOUG // SAFE SYNC REPAIR"
+printf '%s\n' "Repo:   $ROOT"
+printf '%s\n' "Branch: $BRANCH"
+printf '%s\n' "Backup: $BACKUP"
+printf '%s\n' "------------------------------------------------------------"
+
+git fetch origin
+git switch "$BRANCH"
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  git status --short > "$BACKUP/status.txt"
+  git diff > "$BACKUP/worktree.patch" || true
+  git diff --cached > "$BACKUP/index.patch" || true
+  printf '[BACKUP] local changes saved as patches\n'
+fi
+
+for path in \
+  scripts/gpt-doug-compliance \
+  scripts/gpt-doug-evidence-snapshot \
+  scripts/gpt-doug-regulatory-watch \
+  scripts/gpt-doug-global-intel \
+  scripts/gpt-doug-biofusion \
+  scripts/gpt-doug-all \
+  scripts/install-gpt-doug-platform
+do
+  if git ls-files --error-unmatch "$path" >/dev/null 2>&1; then
+    git restore --source=HEAD --staged --worktree "$path" 2>/dev/null || \
+      git checkout -- "$path"
+  fi
+done
+
+git pull --ff-only origin "$BRANCH"
+
+chmod +x \
+  scripts/gpt-doug-compliance \
+  scripts/gpt-doug-evidence-snapshot \
+  scripts/gpt-doug-regulatory-watch \
+  scripts/gpt-doug-global-intel \
+  scripts/gpt-doug-biofusion \
+  scripts/gpt-doug-all \
+  scripts/install-gpt-doug-platform
+
+./scripts/install-gpt-doug-platform
+
+printf '%s\n' "------------------------------------------------------------"
+./scripts/gpt-doug-compliance status
+./scripts/gpt-doug-compliance global
+./scripts/gpt-doug-compliance horizon
+./scripts/gpt-doug-global-intel
+
+printf '%s\n' "------------------------------------------------------------"
+printf '%s\n' "[PASS] GPT-DOUG sync repair complete"
+printf '%s\n' "Local backup preserved at: $BACKUP"
+printf '%s\n' "Run next:"
+printf '%s\n' "  gpt-doug-regulatory-watch"
+printf '%s\n' "  gpt-doug-global-intel"
+printf '%s\n' "  gpt-doug-biofusion"
+printf '%s\n' "  gpt-doug-all"
+printf '%s\n' "  gpt-doug-evidence-snapshot"

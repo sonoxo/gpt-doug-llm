@@ -3,7 +3,17 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -127,3 +137,23 @@ class AuditEvent(Base):
     prev_hash: Mapped[str] = mapped_column(String(64), nullable=False)
     event_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+
+class PlatformEvent(Base):
+    __tablename__ = "platform_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    workspace_id: Mapped[str] = mapped_column(ForeignKey("workspaces.id", ondelete="CASCADE"), index=True)
+    event_type: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    entity_kind: Mapped[str] = mapped_column(String(64), nullable=False, default="event")
+    object_id: Mapped[str] = mapped_column(String(128), nullable=False, default="")
+    title: Mapped[str] = mapped_column(String(280), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    classification: Mapped[str] = mapped_column(String(48), nullable=False, index=True)
+    source_id: Mapped[str] = mapped_column(String(160), nullable=False)
+    provenance_locator: Mapped[str] = mapped_column(String(500), nullable=False)
+    confidence: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    payload: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    created_by: Mapped[str] = mapped_column(String(160), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
