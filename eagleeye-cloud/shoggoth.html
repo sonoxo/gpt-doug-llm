@@ -92,4 +92,4 @@ async function refresh(){
  }catch(e){$('repoState').textContent='ERROR';$('bridge').textContent='ERROR';log('Repository sync failed: '+e.message)}
 }
 $('refresh').onclick=refresh;setInterval(()=>{$('clock').textContent=new Date().toLocaleTimeString()},1000);setInterval(refresh,120000);log('Defensive Shoggoth bridge initialized');refresh();
-</script></body></html>
+</script><script src="/quantum-renderer.js"></script>\n</body></html>
