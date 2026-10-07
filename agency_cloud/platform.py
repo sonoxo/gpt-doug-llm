@@ -79,6 +79,13 @@ SOURCE_REGISTRY: Final = [
         "freshnessSeconds": 3600,
     },
     {
+        "id": "public-bioinformatics",
+        "name": "Public Bioinformatics Reference Data",
+        "mode": "PUBLIC",
+        "provenanceRequired": True,
+        "freshnessSeconds": 86400,
+    },
+    {
         "id": "robot-sim",
         "name": "Authorized Robotics Simulator",
         "mode": "SIMULATION",
@@ -110,6 +117,8 @@ PLATFORM_MANIFEST: Final = {
         "shared ontology schema",
         "public-source global intelligence benchmark",
         "source-fitness scoring and provenance",
+        "public bioinformatics reference fusion",
+        "synthetic biochip digital twin visualization",
     ],
     "blocked": sorted(BLOCKED_OPERATIONAL_EVENT_TYPES),
     "publicRealtimeClasses": sorted(PUBLIC_EVENT_CLASSES),
