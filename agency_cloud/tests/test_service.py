@@ -10,6 +10,12 @@ from agency_cloud.audit import verify_chain
 from agency_cloud.compliance import posture
 from agency_cloud.config import Settings
 from agency_cloud.db import build_engine, build_session_factory, create_schema
+from agency_cloud.global_compliance import (
+    global_catalog,
+    global_posture,
+    horizon_2027,
+    jurisdiction_profile,
+)
 from agency_cloud.models import AuditEvent
 from agency_cloud.service import IntelligenceService, IntelligenceServiceError
 
@@ -232,3 +238,24 @@ def test_compliance_posture_is_evidence_not_certification(tmp_path: Path):
     assert result["schema"] == "gpt-doug.compliance-posture.v1"
     assert "no certification" in result["claim"].lower()
     assert result["counts"]["EXTERNAL"] >= 1
+
+
+
+def test_global_compliance_catalog_and_2027_horizon(tmp_path: Path):
+    settings = settings_for(tmp_path)
+    catalog = global_catalog()
+    horizon = horizon_2027()
+    profile = jurisdiction_profile(["US", "EU", "UK"])
+    posture_result = global_posture(settings)
+
+    assert catalog["schema"] == "gpt-doug.global-compliance-catalog.v1"
+    assert catalog["coverage"]["regimeCount"] >= 20
+    assert "GLOBAL" in catalog["coverage"]["regions"]
+    assert "EU" in catalog["coverage"]["regions"]
+    assert "US" in catalog["coverage"]["regions"]
+    assert any(item["date"] == "2027-12-11" for item in horizon["events"])
+    assert any(item["date"] == "2027-12-02" for item in horizon["events"])
+    assert "EU" in profile["regions"]
+    assert "AI" in profile["requiredEngineeringDomains"]
+    assert posture_result["schema"] == "gpt-doug.global-posture.v1"
+    assert posture_result["counts"]["EXTERNAL"] >= 1
