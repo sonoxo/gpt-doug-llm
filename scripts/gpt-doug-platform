@@ -1,0 +1,92 @@
+#!/bin/sh
+set -eu
+
+ROOT="${GPTDOUG_HOME:-$HOME/gpt-doug-llm}"
+CORE_PORT="${GPTDOUG_CORE_PORT:-8090}"
+UI_PORT="${GPTDOUG_UI_PORT:-8080}"
+VENV="$ROOT/.venv-platform"
+LOG_DIR="${TMPDIR:-/tmp}/gpt-doug-platform"
+CORE_LOG="$LOG_DIR/core.log"
+UI_LOG="$LOG_DIR/ui.log"
+
+say(){ printf '%s\n' "$*"; }
+die(){ say "ERROR: $*" >&2; exit 1; }
+
+command -v python3 >/dev/null 2>&1 || die "python3 is required"
+command -v git >/dev/null 2>&1 || die "git is required"
+[ -d "$ROOT/.git" ] || die "repo not found at $ROOT"
+mkdir -p "$LOG_DIR"
+cd "$ROOT"
+
+if [ ! -x "$VENV/bin/python" ]; then
+  say "Creating platform virtual environment..."
+  python3 -m venv "$VENV"
+fi
+
+"$VENV/bin/python" -m pip install -q --upgrade pip
+"$VENV/bin/python" -m pip install -q -r agency_cloud/requirements.txt
+
+export AGENCY_ENVIRONMENT=development
+export AGENCY_SERVICE_NAME="GPT-DOUG Core Platform"
+export AGENCY_DEFAULT_WORKSPACE="GPT-DOUG Command"
+export AGENCY_ALLOW_DEMO_AUTH=true
+export AGENCY_CORS_ORIGINS="http://127.0.0.1:$UI_PORT,http://localhost:$UI_PORT"
+
+stop_pid(){
+  p="${1:-}"
+  [ -n "$p" ] || return 0
+  kill "$p" >/dev/null 2>&1 || true
+}
+
+CORE_PID=""
+UI_PID=""
+cleanup(){
+  stop_pid "$CORE_PID"
+  stop_pid "$UI_PID"
+}
+trap cleanup INT TERM EXIT
+
+say "Starting GPT-DOUG Core on :$CORE_PORT ..."
+"$VENV/bin/python" -m uvicorn agency_cloud.app:app --host 127.0.0.1 --port "$CORE_PORT" >"$CORE_LOG" 2>&1 &
+CORE_PID=$!
+
+say "Starting Eagle Eye UI on :$UI_PORT ..."
+python3 -m http.server "$UI_PORT" -d eagleeye-cloud >"$UI_LOG" 2>&1 &
+UI_PID=$!
+
+wait_http(){
+  url="$1"; name="$2"; i=0
+  while [ "$i" -lt 50 ]; do
+    if command -v curl >/dev/null 2>&1 && curl -fsS "$url" >/dev/null 2>&1; then
+      say "[PASS] $name"
+      return 0
+    fi
+    i=$((i+1))
+    sleep 0.2
+  done
+  return 1
+}
+
+wait_http "http://127.0.0.1:$CORE_PORT/healthz" "Core health" || { cat "$CORE_LOG" >&2; die "core failed to start"; }
+wait_http "http://127.0.0.1:$CORE_PORT/api/v1/platform/manifest" "Platform manifest" || die "manifest unavailable"
+wait_http "http://127.0.0.1:$CORE_PORT/api/v1/ontology/schema" "Ontology schema" || die "ontology unavailable"
+wait_http "http://127.0.0.1:$UI_PORT/quantum-security-fusion.html" "Security Fusion UI" || die "UI unavailable"
+
+say ""
+say "GPT-DOUG PLATFORM ONLINE"
+say "Core API:     http://127.0.0.1:$CORE_PORT"
+say "OpenAPI:      http://127.0.0.1:$CORE_PORT/docs"
+say "Event stream: ws://127.0.0.1:$CORE_PORT/ws/v1/events"
+say "Fusion UI:    http://127.0.0.1:$UI_PORT/quantum-security-fusion.html"
+say ""
+say "Demo local roles only:"
+say "  director-demo / analyst-demo / auditor-demo / client-demo"
+say "These demo tokens are disabled by the production configuration."
+say ""
+
+if command -v open >/dev/null 2>&1; then
+  open "http://127.0.0.1:$UI_PORT/quantum-security-fusion.html"
+fi
+
+say "Press Ctrl-C to stop both services."
+wait
