@@ -34,6 +34,8 @@ fetch "/api/v1/advisory/policy" "advisory-policy.json"
 fetch "/api/v1/public/events?limit=25" "public-event-sample.json"
 fetch "/api/v1/intel/global/sources" "global-intel-sources.json"
 fetch "/api/v1/intel/global/benchmark" "global-intel-benchmark.json"
+fetch "/api/v1/bioinformatics/catalog" "bioinformatics-catalog.json"
+fetch "/api/v1/bioinformatics/fusion" "bioinformatics-fusion.json"
 
 if [ -d "$ROOT/.git" ]; then
   (
