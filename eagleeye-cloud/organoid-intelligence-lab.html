@@ -48,7 +48,15 @@ button:hover,.btn:hover,button.active{border-color:var(--pink);background:#1a0e2
 .agent.active{border-color:var(--pink);box-shadow:0 0 14px #ff63c822}.agent.active b{color:var(--pink)}
 .eventlog{max-height:128px;overflow:auto;border:1px solid #2f2140;background:#07040d;padding:6px;border-radius:4px}.ev{border-left:2px solid #5f3d82;padding-left:6px;margin:4px 0;font-size:7px;color:#a89ab9}.ev b{color:#eee3ff}
 footer{display:flex;justify-content:space-between;align-items:center;padding:0 10px;border-top:1px solid var(--line);background:#070411;color:var(--muted);font-size:7px}
-@media(max-width:980px){header{grid-template-columns:1fr auto}.pipeline{display:none}main{grid-template-columns:1fr}.left,.right{display:none}}
+.mobileTools{display:none;gap:4px}.mobileTools button{width:auto;padding:5px 7px;margin:0}
+.diagLine{display:flex;justify-content:space-between;gap:8px;font-size:7px;line-height:1.55}.pass{color:var(--green)}.fail{color:var(--red)}
+@media(max-width:980px){
+ header{grid-template-columns:1fr auto}.pipeline{display:none}.status{display:none}.mobileTools{display:flex}
+ main{grid-template-columns:1fr}.panel.left,.panel.right{display:block;position:fixed;z-index:1200;top:72px;bottom:30px;width:min(88vw,360px);transition:transform .22s ease;box-shadow:0 20px 60px #000c}
+ .panel.left{left:0;transform:translateX(-105%)}.panel.right{right:0;transform:translateX(105%)}
+ .panel.left.mobileOpen,.panel.right.mobileOpen{transform:translateX(0)}
+ .stage{grid-column:1}
+}
 </style>
 </head>
 <body>
@@ -57,6 +65,7 @@ footer{display:flex;justify-content:space-between;align-items:center;padding:0 1
 <div class="brand">🧠⚙ GPT-DOUG // ROBOTIC BIOCHIP ANATOMY LAB<small>ORGANOID BIOCORE • ROBOTIC ANATOMY • NEURAL BUS • SENSOR-MOTOR DIGITAL TWIN</small></div>
 <div class="pipeline"><span class="pipe">BIOCORE</span><span class="arrow">→</span><span class="pipe">BIOCHIP ARRAY</span><span class="arrow">→</span><span class="pipe">NEURAL BUS</span><span class="arrow">→</span><span class="pipe">SPINE CONTROLLER</span><span class="arrow">→</span><span class="pipe">LIMB I/O</span><span class="arrow">→</span><span class="pipe">TEVV</span></div>
 <div class="status"><span class="ok">● DIGITAL ANATOMY ONLINE</span><br><span id="clock">--:--:--</span><br><span class="warn">SYNTHETIC BIOCHIP MODEL</span></div>
+<div class="mobileTools"><button id="mobileMenu">☰ MENU</button><button id="mobileSystem">⚙ SYSTEM</button></div>
 </header>
 
 <main>
@@ -78,6 +87,19 @@ footer{display:flex;justify-content:space-between;align-items:center;padding:0 1
 <button id="sequenceRun">▶ RUN AGENTIC SEQUENCE</button>
 <button id="sequenceStep">→ STEP SEQUENCE</button>
 <button id="sequenceStop">■ STOP SEQUENCE</button>
+<button id="selfTest">✓ RUN END-TO-END SELF TEST</button>
+
+<h2>SYSTEM DIAGNOSTICS</h2>
+<div class="card">
+  <div class="diagLine"><span>BOOT</span><b id="diagBoot" class="warn">CHECKING</b></div>
+  <div class="diagLine"><span>3D RENDERER</span><b id="diag3d">—</b></div>
+  <div class="diagLine"><span>ANATOMY MENUS</span><b id="diagViews">—</b></div>
+  <div class="diagLine"><span>BIOCHIP NODES</span><b id="diagChips">—</b></div>
+  <div class="diagLine"><span>AGENT SEQUENCE</span><b id="diagAgents">—</b></div>
+  <div class="diagLine"><span>EXPORT</span><b id="diagExport">—</b></div>
+  <div class="diagLine"><span>NAVIGATION</span><b id="diagNav">—</b></div>
+  <div class="diagLine"><span>TOTAL</span><b id="diagTotal">—</b></div>
+</div>
 
 <h2>ROBOTIC ANATOMY</h2>
 <div class="card small">
@@ -211,7 +233,7 @@ const bioRing=new THREE.Mesh(new THREE.TorusGeometry(.45,.012,8,72),new THREE.Me
 
 // neck bridge
 for(let i=0;i<4;i++){const v=cyl(.12,.22,i%2?cyan:bone);v.position.set(0,2.15-i*.19,0);groups.spine.add(v)}
-chip(0,2.23,.16,cyan,.42,.14,.08);
+const cervicalChip=chip(0,2.23,.16,cyan,.42,.14,.08);groups.spine.add(cervicalChip);
 
 // thorax + ribs + biochips
 const sternum=box(.28,1.25,.34,dark);sternum.position.set(0,.95,0);groups.thoracic.add(sternum);
@@ -237,9 +259,9 @@ const pelvis=box(1.02,.38,.55,dark);pelvis.position.set(0,-1.18,0);anatomy.add(p
 
 // shoulders/arms
 function arm(side){
- const sx=side; joint(.77*sx,1.63,0,.15);
+ const sx=side; const shoulder=joint(.77*sx,1.63,0,.15);groups.arms.add(shoulder);
  const upper=cyl(.15,1.1,metal);upper.position.set(1.23*sx,1.4,0);upper.rotation.z=Math.PI/2;groups.arms.add(upper);
- joint(1.72*sx,1.4,0,.13);
+ const elbow=joint(1.72*sx,1.4,0,.13);groups.arms.add(elbow);
  const lower=cyl(.13,.95,dark);lower.position.set(2.13*sx,1.4,0);lower.rotation.z=Math.PI/2;groups.arms.add(lower);
  const hand=box(.28,.3,.28,metal);hand.position.set(2.65*sx,1.4,0);groups.arms.add(hand);
  const c1=chip(1.15*sx,1.55,.18,cyan,.24,.12,.06),c2=chip(2.05*sx,1.55,.18,pink,.22,.11,.06);groups.arms.add(c1,c2)
@@ -248,9 +270,9 @@ arm(-1);arm(1);
 
 // hips/legs
 function leg(side){
- const sx=side;joint(.38*sx,-1.34,0,.16);
+ const sx=side;const hip=joint(.38*sx,-1.34,0,.16);groups.legs.add(hip);
  const thigh=cyl(.18,1.18,metal);thigh.position.set(.38*sx,-1.93,0);groups.legs.add(thigh);
- joint(.38*sx,-2.56,0,.15);
+ const knee=joint(.38*sx,-2.56,0,.15);groups.legs.add(knee);
  const shin=cyl(.15,1.13,dark);shin.position.set(.38*sx,-3.12,0);groups.legs.add(shin);
  const foot=box(.38,.22,.72,metal);foot.position.set(.38*sx,-3.72,.17);groups.legs.add(foot);
  const c1=chip(.58*sx,-1.93,.17,violet,.18,.13,.06),c2=chip(.58*sx,-3.08,.17,cyan,.18,.13,.06);groups.legs.add(c1,c2)
@@ -300,11 +322,11 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.data
 
 function explode(on){
  exploded=on;
- groups.cranial.position.y=on?.55:0;
- groups.thoracic.position.z=on?.45:0;
+ groups.cranial.position.y=on ? .55 : 0;
+ groups.thoracic.position.z=on ? .45 : 0;
  groups.spine.position.z=on?-.5:0;
- groups.arms.position.x=0; groups.arms.position.z=on?.25:0;
- groups.legs.position.y=on?-.2:0; groups.legs.position.z=on?.25:0;
+ groups.arms.position.x=0; groups.arms.position.z=on ? .25 : 0;
+ groups.legs.position.y=on ? -.2 : 0; groups.legs.position.z=on ? .25 : 0;
 }
 function renderSequence(){
  const rail=$('seqRail');rail.innerHTML='';
@@ -314,7 +336,7 @@ function renderSequence(){
 }
 function agentLog(title,msg){const d=document.createElement('div');d.className='ev';d.innerHTML='<b>'+title+'</b> '+msg;$('agentLog').prepend(d);while($('agentLog').children.length>16)$('agentLog').lastChild.remove()}
 function sequenceStep(){
- if(sequenceIndex>=sequence.length){sequenceRunning=false;$('seqState').textContent='COMPLETE';renderSequence();agentLog('COMPLETE','Sequence closed with versioned audit record.');return}
+ if(sequenceIndex>=sequence.length){sequenceRunning=false;clearInterval(sequenceTimer);$('seqState').textContent='COMPLETE';renderSequence();agentLog('COMPLETE','Sequence closed with versioned audit record.');return}
  const q=sequence[sequenceIndex];
  $('seqState').textContent=q.label;
  const confidence=Math.round(86+Math.random()*12);$('seqConfidence').textContent=confidence+'%';
@@ -332,7 +354,8 @@ function runSequence(){
  if($('humanGate').textContent==='AWAITING APPROVAL'){ $('humanGate').textContent='APPROVED';$('humanGate').className='ok';sequenceIndex++;agentLog('HUMAN GATE','Human approval recorded for synthetic response.')}
  if(sequenceIndex>=sequence.length)sequenceIndex=0;
  sequenceRunning=true;$('seqState').textContent='RUNNING';renderSequence();
- clearInterval(sequenceTimer);sequenceTimer=setInterval(()=>{if(sequenceRunning)sequenceStep()},950)
+ clearInterval(sequenceTimer);sequenceTimer=markDiag('diagBoot',true,'READY');runSelfTest();
+setInterval(()=>{if(sequenceRunning)sequenceStep()},950)
 }
 function stopSequence(){sequenceRunning=false;clearInterval(sequenceTimer);$('seqState').textContent='STOPPED';renderSequence();agentLog('STOP','Agentic sequence stopped by operator.')}
 function selectChip(id){
@@ -343,6 +366,10 @@ function selectChip(id){
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>selectChip(c.dataset.chip));
 
 function resize(){const r=canvas.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/Math.max(1,r.height);camera.updateProjectionMatrix()}addEventListener('resize',resize);
+let dragging=false,lastX=0,lastY=0;
+canvas.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture?.(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!dragging)return;const dx=e.clientX-lastX,dy=e.clientY-lastY;anatomy.rotation.y+=dx*.008;anatomy.rotation.x+=dy*.006;lastX=e.clientX;lastY=e.clientY});
+canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
 function loop(){
  resize();
  if(rotating&&view==='body')anatomy.rotation.y+=.0012;
@@ -358,10 +385,34 @@ renderSequence();
 $('sequenceRun').onclick=runSequence;
 $('sequenceStep').onclick=()=>{if($('humanGate').textContent==='AWAITING APPROVAL'){ $('humanGate').textContent='APPROVED';$('humanGate').className='ok';sequenceIndex++;agentLog('HUMAN GATE','Manual approval recorded for synthetic sequence.');renderSequence();return} sequenceRunning=true;sequenceStep();sequenceRunning=false;renderSequence()};
 $('sequenceStop').onclick=stopSequence;
+
+function markDiag(id,ok,msg){const el=$(id);el.textContent=msg;el.className=ok?'pass':'fail';return ok}
+function runSelfTest(){
+ const results=[];
+ results.push(markDiag('diag3d',!!renderer?.getContext?.(),'PASS'));
+ results.push(markDiag('diagViews',document.querySelectorAll('[data-view]').length===6,'6/6'));
+ results.push(markDiag('diagChips',document.querySelectorAll('[data-chip]').length===6,'6/6'));
+ results.push(markDiag('diagAgents',sequence.length===8&&document.querySelectorAll('[data-agent]').length===8,'8/8'));
+ let exportOk=false;try{exportOk=typeof Blob==='function'&&typeof URL.createObjectURL==='function'}catch{}
+ results.push(markDiag('diagExport',exportOk,exportOk?'PASS':'FAIL'));
+ const nav=[...document.querySelectorAll('a.btn')],navOk=nav.length>=3&&nav.every(a=>a.getAttribute('href'));
+ results.push(markDiag('diagNav',navOk,navOk?nav.length+'/ '+nav.length:'FAIL'));
+ const passed=results.filter(Boolean).length,total=results.length;
+ markDiag('diagTotal',passed===total,passed+'/'+total+' PASS');
+ markDiag('diagBoot',passed===total,passed===total?'READY':'REVIEW');
+ agentLog('SELF TEST',passed+'/'+total+' functional groups passed.');
+ return passed===total;
+}
+$('selfTest').onclick=runSelfTest;
+
+$('mobileMenu').onclick=()=>{document.querySelector('.panel.left').classList.toggle('mobileOpen');document.querySelector('.panel.right').classList.remove('mobileOpen')};
+$('mobileSystem').onclick=()=>{document.querySelector('.panel.right').classList.toggle('mobileOpen');document.querySelector('.panel.left').classList.remove('mobileOpen')};
+document.querySelector('.stage').addEventListener('click',()=>{if(innerWidth<=980){document.querySelector('.panel.left').classList.remove('mobileOpen');document.querySelector('.panel.right').classList.remove('mobileOpen')}});
+
 $('pulse').onclick=()=>pulse=1;
 $('explode').onclick=()=>{explode(!exploded);$('explode').textContent=exploded?'◇ COLLAPSE ANATOMY':'◇ EXPLODE ANATOMY'};
 $('rotate').onclick=()=>rotating=!rotating;
-$('reset').onclick=()=>{anatomy.rotation.set(0,0,0);explode(false);rotating=true;setView('body');selectChip('brain');pulse=.5;$('explode').textContent='◇ EXPLODE ANATOMY';sequenceRunning=false;clearInterval(sequenceTimer);sequenceIndex=0;$('seqState').textContent='IDLE';$('seqConfidence').textContent='—';$('humanGate').textContent='REQUIRED';$('humanGate').className='ok';renderSequence();agentLog('RESET','Digital twin and agentic sequence reset.')};
+$('reset').onclick=()=>{anatomy.rotation.set(0,0,0);explode(false);rotating=true;selected='brain';document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('sel',c.dataset.chip==='brain'));setView('body');pulse=.5;$('explode').textContent='◇ EXPLODE ANATOMY';sequenceRunning=false;clearInterval(sequenceTimer);sequenceIndex=0;$('seqState').textContent='IDLE';$('seqConfidence').textContent='—';$('humanGate').textContent='REQUIRED';$('humanGate').className='ok';renderSequence();agentLog('RESET','Digital twin and agentic sequence reset.')};
 $('snapshot').onclick=()=>{
  const data={schema:'gpt-doug.robotic-biochip-anatomy.v2',created:new Date().toISOString(),view,selected_biochip:selected,architecture:'synthetic bio-hybrid digital twin',nodes:['BC-01 cranial biocore','NB-02 cervical bridge','BC-03 thoracic array','NB-04 lumbar controller','IO-05 arm biochips','IO-06 leg biochips'],human_approval:'required',wet_lab_protocols:'not_embedded',agentic_sequence:sequence.map(x=>x.label),agentic_sequence_state:$('seqState').textContent};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='gpt-doug-robotic-biochip-anatomy.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
