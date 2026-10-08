@@ -141,3 +141,26 @@ external assessment/authorization required by a specific contract or agency.
 
 Security readiness is continuous. Passing internal tests or deploying successfully
 does not by itself establish a government authorization.
+
+
+## GPT-ZYRA-Shaggoth hardened bridge
+
+The repository-local `gpt-zyra-shaggoth` entry point is a bounded integration layer
+over the existing ZYRA Mission Control control plane. It is intentionally not a
+general-purpose autonomy or remote-execution interface.
+
+The bridge enforces these invariants:
+
+- it verifies that it is running from a `gpt-doug-llm` checkout before binding;
+- its policy cannot enable network access, external effects, or a remote console;
+- planning uses the existing `READ_ONLY` capability grant and `gpt-doug-core` route;
+- GitHub delivery and network-provider capabilities are explicitly verified as denied;
+- Mission Control is exposed only on `127.0.0.1` through the bridge;
+- local state directories reject symlink redirection and are reduced to private
+  permissions where the operating system supports POSIX modes;
+- journal and attestation keys are verified as private local files; and
+- `gpt-doug-swarm shaggoth` resolves the bridge from the current repository checkout,
+  rather than trusting an arbitrary executable found earlier on `PATH`.
+
+Any future expansion that requires network or external-effect capability must use a
+separate reviewed integration surface and must not weaken these defaults.
