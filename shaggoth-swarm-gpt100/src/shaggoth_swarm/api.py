@@ -9,6 +9,7 @@ try:
 except ImportError as exc:
     raise RuntimeError("Install the API extra with: pip install -e '.[api]'") from exc
 
+from .atomic import stack_manifest
 from .capabilities import CAPABILITY_CATALOG
 from .config import SwarmConfig
 from .connectors import ConnectorConfig
@@ -54,12 +55,10 @@ def status() -> dict:
         "authorized_endpoint_count": len(connectors.endpoints),
         "connector_interval_seconds": connectors.interval_seconds,
         "connector_max_retries": connectors.max_retries,
-        "connector_auth_configured": bool(connectors.bearer_token),
-    }
+        "connector_auth_configured": bool(connectors.bearer_token),\n        "atomic_stack_valid": stack_manifest()["valid"],\n    }
 
 
-@app.get("/capabilities")
-def capabilities() -> dict:
+@app.get("/layers")\ndef layers() -> dict:\n    return stack_manifest()\n\n\n@app.get("/capabilities")\ndef capabilities() -> dict:
     policy = CapabilityPolicy.from_env()
     return {
         "profile": os.getenv("SHAGGOTH_CAPABILITY_PROFILE", "reasoning"),
