@@ -17,6 +17,42 @@ A safe-by-default, local-first multi-agent orchestration framework for running u
 - Uses normal production-service behavior: visible identity, standard authentication, bounded retries, rate limits, health checks, and structured audit events.
 - Provides a scoped capability broker covering local development, APIs, GitHub, storage, queues, databases, schedules, email, calendar, telemetry, artifacts, models, and web search.
 
+## Heartbeat and terminal install
+
+If the shell says `zsh: command not found: shaggoth`, install the CLI into a
+dedicated local virtual environment:
+
+```bash
+bash scripts/bootstrap-shaggoth.sh
+```
+
+The installer creates the virtual environment under
+`~/.local/share/gpt-doug-shaggoth/venv`, symlinks `shaggoth` into
+`~/.local/bin`, and adds that bin directory to `~/.zshrc` if necessary.
+
+Verify the local runtime:
+
+```bash
+shaggoth heartbeat
+shaggoth heartbeat --json
+```
+
+Continuously emit a heartbeat every five seconds:
+
+```bash
+shaggoth heartbeat --watch 5
+```
+
+Optionally include an explicit HTTP health endpoint in the pulse:
+
+```bash
+shaggoth heartbeat --endpoint http://127.0.0.1:8787/health
+```
+
+A normal local pulse reports the CLI process, 100-agent capacity, adapter,
+active capability profile, and atomic-stack validity. It does not require the
+API server to be running unless `--endpoint` is supplied.
+
 ## Atomic layers
 
 Shaggoth now uses an eight-layer atomic execution model:
