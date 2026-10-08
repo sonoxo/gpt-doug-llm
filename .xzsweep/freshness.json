@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-07T02:10:45Z",
+  "cutoff_at": "2026-10-07T03:05:52Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -917,6 +917,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    ".github/workflows/zyra-shaggoth-hardening.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:04:16Z",
+      "reviewed_at": null,
+      "sha256": "d42090a3b99b1fcf913c380adf186b29038fc4ada22eaeb08986ea73984cd0ff",
+      "size": 2245,
+      "validation_issues": [],
+      "was_due": false
+    },
     ".gitignore": {
       "actions": [],
       "binary": false,
@@ -1152,10 +1163,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T18:37:43Z",
+      "git_touched_at": "2026-10-08T03:03:20Z",
       "reviewed_at": null,
-      "sha256": "88664d9f27ca36ccf7ba17cf1effe219f93440c5abff012667ffbf2e69254251",
-      "size": 7068,
+      "sha256": "d38b35f5b09c165d67fd66588c7f373bd12ebc0edc5acf2100ab43b8db446f50",
+      "size": 8303,
       "validation_issues": [],
       "was_due": false
     },
@@ -3649,9 +3660,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-08T02:04:18Z",
+      "git_touched_at": "2026-10-08T02:10:48Z",
       "reviewed_at": null,
-      "sha256": "f8e598e9c9e75c52d02f020551dc5ee2aef40d897079b4f6e47c8fe25ef28c92",
+      "sha256": "85a2b33f9f240e062bb7c9a33c47f211af7871103bfb1abf0301ba7c38720e6f",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -6040,6 +6051,50 @@
       "reviewed_at": "2026-10-07T11:33:45Z",
       "sha256": "3ee60157929a9a71e9544304fe99a94b3bb95608cc853c275b20266d25114a11",
       "size": 3146,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_zyra_shaggoth/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T02:49:07Z",
+      "reviewed_at": null,
+      "sha256": "29ee5edae1f9c82305b919cdbc75a4f951b9715df8646e4eb60b03e419b8feec",
+      "size": 176,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_zyra_shaggoth/__main__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:03:10Z",
+      "reviewed_at": null,
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "size": 48,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_zyra_shaggoth/bridge.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:03:07Z",
+      "reviewed_at": null,
+      "sha256": "2934c3b489ea81738394742683d7563f58f72eaad97d60a27e70a29714230a1c",
+      "size": 7118,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_zyra_shaggoth/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:03:08Z",
+      "reviewed_at": null,
+      "sha256": "a6146d43da4ec07eadf49120e59d20d047400010564e022f2cbc0270d4cf323c",
+      "size": 1751,
       "validation_issues": [],
       "was_due": false
     },
@@ -9698,11 +9753,11 @@
     "pyproject.toml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-26T01:15:55Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "56483995ae6b18d5ced00f3b7b3b643b6c0a239af6cf62061c865637863e0dce",
-      "size": 2740,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:04:14Z",
+      "reviewed_at": null,
+      "sha256": "914ac694a3f2ce68f9902dc26b3ce2a9b68e5d94ac6f4c7d51ea87d2ef91b972",
+      "size": 2810,
       "validation_issues": [],
       "was_due": false
     },
@@ -11810,11 +11865,11 @@
     "scripts/gpt-doug-swarm": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-29T03:18:49Z",
-      "reviewed_at": "2026-10-07T11:33:45Z",
-      "sha256": "f1e6d629d62b2034159f4afabc9ce86f17701fe2245f03dd8a57c874ce76723b",
-      "size": 1586,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:03:45Z",
+      "reviewed_at": null,
+      "sha256": "eb9463e42f9ccf4f2a5fb002bc6f637ae123387f91a543b778027ae81f4b1e11",
+      "size": 2320,
       "validation_issues": [],
       "was_due": false
     },
@@ -13971,6 +14026,17 @@
       "reviewed_at": "2026-10-07T11:33:45Z",
       "sha256": "05d014c02ed7e8d78c225c38fb0bd4028bb2910e456d4033ce0ddaa20c4a6c39",
       "size": 2201,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_gpt_zyra_shaggoth.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T03:03:12Z",
+      "reviewed_at": null,
+      "sha256": "b090b066e3d1d22754fc1c25b884b5d36067e928ac273c14dbfba6142eff8ed7",
+      "size": 3649,
       "validation_issues": [],
       "was_due": false
     },
@@ -16882,9 +16948,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-08T02:04:53Z",
+      "git_touched_at": "2026-10-08T02:10:44Z",
       "reviewed_at": null,
-      "sha256": "64914017fd9541cd4c654ea3826c354c90c5040f87f3ce9214417dd7e28130fc",
+      "sha256": "dd74cee2395d86481a71ca06fb497b1b67a250a2c5a48ccc83d155aa1b691e01",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -19355,11 +19421,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-08T02:10:45Z",
+  "generated_at": "2026-10-08T03:05:52Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1759,
+  "tracked_files_reviewed": 1765,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
