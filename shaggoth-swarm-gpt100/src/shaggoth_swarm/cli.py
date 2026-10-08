@@ -37,7 +37,12 @@ def build_parser() -> argparse.ArgumentParser:
     connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
     connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
 
-    layers = sub.add_parser("layers", help="show and validate the atomic layer stack")\n    layers.add_argument("--json", action="store_true", help="emit JSON")\n    layers.add_argument("--validate", action="store_true", help="exit non-zero if the stack is invalid")\n\n    caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")\n    caps.add_argument("--json", action="store_true", help="emit JSON")
+    layers = sub.add_parser("layers", help="show and validate the atomic layer stack")
+    layers.add_argument("--json", action="store_true", help="emit JSON")
+    layers.add_argument("--validate", action="store_true", help="exit non-zero if the stack is invalid")
+
+    caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")
+    caps.add_argument("--json", action="store_true", help="emit JSON")
 
     catalog = sub.add_parser("catalog", help="query external open-source catalog sources")
     catalog_sub = catalog.add_subparsers(dest="catalog_command", required=True)
@@ -53,11 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     catalog_search.add_argument("query", help="space-separated search terms")
     catalog_search.add_argument("--cache", default=str(OSE_DEFAULT_CACHE), help="cache JSON path")
     catalog_search.add_argument("--limit", type=int, default=20, help="maximum results, 1-100")
-    catalog_search.add_argument(
-        "--refresh",
-        action="store_true",
-        help="refresh from the pinned upstream snapshot before searching",
-    )
+    catalog_search.add_argument("--refresh", action="store_true", help="refresh before searching")
     catalog_search.add_argument("--json", action="store_true", help="emit JSON")
 
     sub.add_parser("status", help="show configured service and swarm capacity")
@@ -81,7 +82,30 @@ def main() -> int:
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
 
-    if args.command == "layers":\n        manifest = stack_manifest()\n        if args.json:\n            print(json.dumps(manifest, indent=2))\n        else:\n            print(\n                f"atomic-stack v{manifest[\'version\']} " \n                f"layers={manifest[\'layer_count\']} valid={manifest[\'valid\']}"\n            )\n            for layer in manifest["layers"]:\n                deps = ",".join(layer["dependencies"]) or "none"\n                print(f"L{layer[\'id\']} {layer[\'name\']} deps={deps} - {layer[\'purpose\']}")\n            if manifest["errors"]:\n                for error in manifest["errors"]:\n                    print(f"ERROR {error}")\n        if args.validate:\n            valid, _ = validate_stack()\n            return 0 if valid else 1\n        return 0\n\n    if args.command == "catalog":\n        if args.catalog_command == "source":
+    if args.command == "layers":
+        manifest = stack_manifest()
+        if args.json:
+            print(json.dumps(manifest, indent=2))
+        else:
+            print(
+                f"atomic-stack v{manifest['version']} "
+                f"layers={manifest['layer_count']} valid={manifest['valid']}"
+            )
+            for layer in manifest["layers"]:
+                deps = ",".join(layer["dependencies"]) or "none"
+                print(
+                    f"L{layer['id']} {layer['name']} "
+                    f"deps={deps} - {layer['purpose']}"
+                )
+            for error in manifest["errors"]:
+                print(f"ERROR {error}")
+        if args.validate:
+            valid, _ = validate_stack()
+            return 0 if valid else 1
+        return 0
+
+    if args.command == "catalog":
+        if args.catalog_command == "source":
             payload = _catalog_source_payload()
             if args.json:
                 print(json.dumps(payload, indent=2))
@@ -153,6 +177,7 @@ def main() -> int:
 
     if args.command == "status":
         connectors = ConnectorConfig.from_env()
+        manifest = stack_manifest()
         print(
             json.dumps(
                 {
@@ -170,6 +195,8 @@ def main() -> int:
                     "connector_max_retries": connectors.max_retries,
                     "connector_auth_configured": bool(connectors.bearer_token),
                     "open_source_everything_cache": str(OSE_DEFAULT_CACHE),
+                    "atomic_stack_valid": manifest["valid"],
+                    "atomic_layer_count": manifest["layer_count"],
                 },
                 indent=2,
             )
