@@ -10,7 +10,9 @@ from __future__ import annotations
 import json
 import os
 import secrets
+import sys
 import threading
+import webbrowser
 from collections import deque
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -423,7 +425,15 @@ class DefensiveArsenalServer:
                 self._json(200, result)
 
         server = ThreadingHTTPServer(("127.0.0.1", chosen), Handler)
-        print(f"GPT-ZYRA Defensive Arsenal: http://127.0.0.1:{chosen}")
+        address = f"http://127.0.0.1:{chosen}"
+        print(f"GPT-ZYRA Defensive Arsenal: {address}", flush=True)
+        # Open the local HUD when launched interactively on macOS.
+        # CI and headless operators can disable the browser explicitly.
+        if sys.platform == "darwin" and not os.environ.get("CI") and os.environ.get("ZYRA_ARSENAL_NO_BROWSER") != "1":
+            try:
+                webbrowser.open(address, new=2)
+            except (OSError, webbrowser.Error):
+                print(f"Open manually in your browser: {address}", flush=True)
         server.serve_forever()
 
 
