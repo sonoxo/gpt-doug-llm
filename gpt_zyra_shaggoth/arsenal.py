@@ -23,6 +23,7 @@ from urllib.parse import urlparse
 from golden_shield import GoldenShield
 
 from .bridge import ZyraShaggothBridge
+from .nexus import build_nexus_snapshot, load_local_brain, load_local_swarm, nexus_page
 
 HTML = r"""<!doctype html>
 <html lang="en">
@@ -354,7 +355,7 @@ class DefensiveArsenalServer:
     def __init__(self, arsenal: DefensiveArsenal) -> None:
         self.arsenal = arsenal
 
-    def serve(self, *, port: int = 8791) -> None:
+    def serve(self, *, port: int = 8791, open_nexus: bool = False) -> None:
         chosen = int(port)
         if not (1024 <= chosen <= 65535):
             raise ValueError("arsenal port must be between 1024 and 65535")
@@ -395,6 +396,23 @@ class DefensiveArsenalServer:
                 if path == "/api/status":
                     self._json(200, arsenal.snapshot())
                     return
+                if path == "/nexus":
+                    body = nexus_page().encode("utf-8")
+                    self._headers(200, "text/html; charset=utf-8", len(body))
+                    self.wfile.write(body)
+                    return
+                if path == "/api/nexus":
+                    try:
+                        payload = build_nexus_snapshot(
+                            arsenal.snapshot(),
+                            brain=load_local_brain(),
+                            swarm=load_local_swarm(),
+                        )
+                    except ValueError:
+                        self._json(503, {"error": "hardened boundary verification failed"})
+                        return
+                    self._json(200, payload)
+                    return
                 self._json(404, {"error": "not found"})
 
             def do_POST(self) -> None:
@@ -426,12 +444,13 @@ class DefensiveArsenalServer:
 
         server = ThreadingHTTPServer(("127.0.0.1", chosen), Handler)
         address = f"http://127.0.0.1:{chosen}"
+        browser_address = f"{address}/nexus" if open_nexus else address
         print(f"GPT-ZYRA Defensive Arsenal: {address}", flush=True)
         # Open the local HUD when launched interactively on macOS.
         # CI and headless operators can disable the browser explicitly.
         if sys.platform == "darwin" and not os.environ.get("CI") and os.environ.get("ZYRA_ARSENAL_NO_BROWSER") != "1":
             try:
-                webbrowser.open(address, new=2)
+                webbrowser.open(browser_address, new=2)
             except (OSError, webbrowser.Error):
                 print(f"Open manually in your browser: {address}", flush=True)
         server.serve_forever()
@@ -441,9 +460,10 @@ def serve_defensive_arsenal(
     bridge: ZyraShaggothBridge,
     *,
     port: int = 8791,
+    open_nexus: bool = False,
 ) -> None:
     """Run the defensive arsenal on loopback only."""
 
     if os.environ.get("ZYRA_ALLOW_REMOTE_ARSENAL"):
         raise PermissionError("remote defensive arsenal binding is not supported")
-    DefensiveArsenalServer(DefensiveArsenal(bridge)).serve(port=port)
+    DefensiveArsenalServer(DefensiveArsenal(bridge)).serve(port=port, open_nexus=open_nexus)

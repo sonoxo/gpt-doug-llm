@@ -47,6 +47,9 @@ case "$ACTION" in
   shaggoth|zyra-shaggoth)
     shaggoth_launch console
     ;;
+  nexus|cortex|brain-hud)
+    shaggoth_launch nexus
+    ;;
   arsenal|defense|shield)
     shaggoth_launch arsenal
     ;;
@@ -65,6 +68,8 @@ gpt-doug-swarm maven        Open ZYRA / MAVEN visual intelligence console
 gpt-doug-swarm zyra         Alias for maven
 gpt-doug-swarm intel        Alias for maven
 gpt-doug-swarm shaggoth     Open hardened GPT-ZYRA-Shaggoth local Mission Control
+gpt-doug-swarm nexus        Open Shoggoth Nexus visual command center
+gpt-doug-swarm cortex       Alias for nexus
 gpt-doug-swarm arsenal      Open defensive visual arsenal
 gpt-doug-swarm defense      Alias for arsenal
 gpt-doug-swarm shield       Alias for arsenal
