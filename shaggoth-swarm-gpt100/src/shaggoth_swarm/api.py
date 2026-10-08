@@ -41,6 +41,7 @@ def status() -> dict:
     config = SwarmConfig()
     connectors = ConnectorConfig.from_env()
     policy = CapabilityPolicy.from_env()
+    manifest = stack_manifest()
     return {
         "status": "ok",
         "service": connectors.service_name,
@@ -55,10 +56,19 @@ def status() -> dict:
         "authorized_endpoint_count": len(connectors.endpoints),
         "connector_interval_seconds": connectors.interval_seconds,
         "connector_max_retries": connectors.max_retries,
-        "connector_auth_configured": bool(connectors.bearer_token),\n        "atomic_stack_valid": stack_manifest()["valid"],\n    }
+        "connector_auth_configured": bool(connectors.bearer_token),
+        "atomic_stack_valid": manifest["valid"],
+        "atomic_layer_count": manifest["layer_count"],
+    }
 
 
-@app.get("/layers")\ndef layers() -> dict:\n    return stack_manifest()\n\n\n@app.get("/capabilities")\ndef capabilities() -> dict:
+@app.get("/layers")
+def layers() -> dict:
+    return stack_manifest()
+
+
+@app.get("/capabilities")
+def capabilities() -> dict:
     policy = CapabilityPolicy.from_env()
     return {
         "profile": os.getenv("SHAGGOTH_CAPABILITY_PROFILE", "reasoning"),
