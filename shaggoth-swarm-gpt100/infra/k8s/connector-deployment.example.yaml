@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shaggoth-connector
+  namespace: shaggoth-system
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shaggoth-connector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shaggoth-connector
+        app.kubernetes.io/part-of: shaggoth-swarm
+    spec:
+      serviceAccountName: shaggoth
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: connector
+          image: shaggoth-swarm-gpt100:0.3.0
+          imagePullPolicy: IfNotPresent
+          command: ["shaggoth", "connect"]
+          envFrom:
+            - configMapRef:
+                name: shaggoth-config
+            - secretRef:
+                name: shaggoth-secrets
+                optional: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 32Mi
