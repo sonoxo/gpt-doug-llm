@@ -85,6 +85,30 @@ Run tests:
 python -m unittest discover -s tests -v
 ```
 
+## Infrastructure
+
+Shaggoth now includes a deployable infrastructure layer:
+
+- `infra/compose/compose.yml` — hardened single-host API plus optional persistent connector profile.
+- `infra/k8s/` — namespace, service account, two-replica deployment, ClusterIP service, HPA, PDB, and default-deny network policies.
+- `docs/INFRASTRUCTURE.md` — deployment and network-policy runbook.
+
+Start the local production container stack:
+
+```bash
+cp infra/compose/.env.example infra/compose/.env
+docker compose --env-file infra/compose/.env -f infra/compose/compose.yml up -d --build
+curl http://127.0.0.1:8787/health
+```
+
+Render the Kubernetes base:
+
+```bash
+kubectl kustomize infra/k8s
+```
+
+The Kubernetes base intentionally has no broad external egress. Add only the network ranges or CNI FQDN rules required for the model/API endpoints your deployment is authorized to use.
+
 ## Authorized production-style connectors
 
 Configure only systems you own or are explicitly authorized to access:
