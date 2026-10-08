@@ -15,10 +15,58 @@ A safe-by-default, local-first multi-agent orchestration framework for running u
 - Ships with deterministic tests and a zero-network mock adapter.
 - Can continuously monitor explicitly authorized HTTP(S) endpoints.
 - Uses normal production-service behavior: visible identity, standard authentication, bounded retries, rate limits, health checks, and structured audit events.
+- Provides a scoped capability broker covering local development, APIs, GitHub, storage, queues, databases, schedules, email, calendar, telemetry, artifacts, models, and web search.
+
+## Capability profiles
+
+Shaggoth now exposes four capability profiles:
+
+```text
+reasoning        reason, summarize, classify, plan
+local-dev        reasoning + model, workspace files, allowlisted processes, git, artifacts, telemetry
+integrations     reasoning + authorized APIs, GitHub, databases, object stores, queues, secrets, schedules,
+                 email, calendar, telemetry, artifacts, models, and web search
+full-authorized  every supported legitimate capability in the catalog
+```
+
+Inspect the catalog:
+
+```bash
+shaggoth capabilities
+shaggoth capabilities --json
+```
+
+Enable the complete supported catalog:
+
+```bash
+export SHAGGOTH_CAPABILITY_PROFILE=full-authorized
+```
+
+`full-authorized` does **not** mean unrestricted access. Capabilities that touch external resources require an explicit resource scope before the broker dispatches a registered handler. For example, enabling `github.write` does not authorize every repository; the host must grant specific repository scopes.
+
+The supported catalog includes:
+
+```text
+reason                 summarize             classify
+plan                   model.invoke          fs.read
+fs.write               process.run           http.get
+http.write             git.read              git.write
+github.read            github.write          database.read
+database.write         object_store.read     object_store.write
+queue.consume          queue.publish         secrets.use
+schedule.manage        email.read            email.send
+calendar.read          calendar.write        telemetry.read
+telemetry.write        artifact.create       artifact.publish
+web.search
+```
+
+The capability broker is provider-neutral: handlers are registered by the deployment for the systems it actually owns or is authorized to use.
 
 ## Safety model
 
-The default profile is **offline and non-destructive**. Network access, shell execution, filesystem writes outside a workspace, credential access, self-replication, and unbounded task creation are not granted by default. Tool capabilities must be explicitly allowlisted by the host application.
+The default profile is **offline and non-destructive**. External access, subprocess execution, file writes, credentials, and integrations are disabled unless selected through a capability profile or explicit extra grants.
+
+Scoped capabilities still require their approved resource scope at call time. This prevents a broad profile from silently expanding to unrelated repositories, endpoints, databases, mailboxes, queues, calendars, or storage.
 
 The connector monitor is not a scanner, injection system, stealth agent, or attribution-evasion layer. It performs bounded `GET` checks only against endpoints you explicitly configure. Non-local endpoints must use HTTPS, cross-origin redirects are rejected, responses are size-capped, retries are bounded, and the service identifies itself in normal HTTP headers.
 
@@ -29,12 +77,6 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 shaggoth run "Design a resilient swarm scheduler"
-```
-
-Run with the built-in mock adapter and 100 agents:
-
-```bash
-SHAGGOTH_AGENT_COUNT=100 shaggoth run "Map the work into parallel research tracks"
 ```
 
 Run tests:
@@ -73,10 +115,6 @@ shaggoth connect
 
 Each check sends a visible service identity, `X-Client-Service`, and `X-Request-ID`. Events are emitted as structured JSON. Authentication secrets are never printed by the monitor.
 
-Default retry behavior is limited to two retries for transient transport errors and HTTP 429/5xx responses, using exponential backoff. The polling interval cannot be set below five seconds.
-
-The monitor does not discover endpoints, scan address ranges, submit arbitrary payloads, suppress logs, spoof unrelated software, or modify remote systems.
-
 ## Optional API
 
 ```bash
@@ -90,14 +128,7 @@ Operational endpoints:
 curl -s http://127.0.0.1:8787/health
 curl -s http://127.0.0.1:8787/ready
 curl -s http://127.0.0.1:8787/status
-```
-
-Run a swarm job:
-
-```bash
-curl -s -X POST http://127.0.0.1:8787/v1/swarm/run \
-  -H 'content-type: application/json' \
-  -d '{"goal":"Create a launch checklist","fanout":8}'
+curl -s http://127.0.0.1:8787/capabilities
 ```
 
 ## OpenAI-compatible endpoint
@@ -120,29 +151,18 @@ Credentials are read only from environment variables. Never commit `.env` files.
 Goal
   |
   v
-Orchestrator ----> Policy Gate
-  |                  |
-  v                  v
-Planner         Capability decision
-  |
-  +----> Agent 001 ----> Model adapter
+Orchestrator ----> CapabilityPolicy ----> CapabilityBroker
+  |                       |                    |
+  v                       v                    v
+Planner               Profile + scopes    Registered handlers
+  |                                            |
+  +----> Agent 001 ----> Model adapter         +--> approved GitHub/API/etc.
   +----> Agent 002 ----> Model adapter
   +----> ...
   +----> Agent 100 ----> Model adapter
   |
   v
 Aggregator -> SwarmReport
-
-Authorized endpoints
-  |
-  v
-Exact allowlist
-  |
-  v
-Visible service identity -> optional bearer auth -> bounded GET probe
-  |
-  v
-Bounded retry/backoff -> structured JSON audit event
 ```
 
 ## Repository layout
@@ -150,26 +170,27 @@ Bounded retry/backoff -> structured JSON audit event
 ```text
 src/shaggoth_swarm/
   adapters/          model backends
+  api.py             optional FastAPI surface
+  broker.py          scoped capability dispatcher
+  capabilities.py    capability catalog and profiles
+  cli.py             command-line entry point
   config.py          environment-driven config
   connectors.py      authorized endpoint monitor
   models.py          typed swarm data structures
-  policy.py          capability allowlist
-  registry.py        deterministic 100-agent registry
   orchestrator.py    planning, routing, aggregation
-  cli.py             command-line entry point
-  api.py             optional FastAPI surface
+  policy.py          capability profile and scope policy
+  registry.py        deterministic 100-agent registry
 ```
 
 ## Design principles
 
-1. **Bounded autonomy** — fanout and depth are capped.
-2. **Explicit capabilities** — deny by default.
-3. **Local-first** — the default adapter performs no network calls.
-4. **Auditable execution** — every task and result has an ID and timestamp.
-5. **Replaceable models** — adapters isolate model-provider details.
-6. **No self-propagation** — the framework does not clone itself, scan networks, or modify external systems on its own.
-7. **Authorized connectivity only** — persistent monitoring is limited to explicitly configured endpoints.
-8. **Normal service identity** — no spoofing, stealth headers, or log suppression.
+1. **Broad capability, narrow authority** — the catalog can be large while each resource remains scoped.
+2. **Bounded autonomy** — fanout and depth are capped.
+3. **Explicit capabilities** — profiles and per-resource scopes are visible.
+4. **Auditable execution** — tasks, connector requests, and capability grants are observable.
+5. **Replaceable providers** — the broker isolates service-specific handlers.
+6. **Authorized connectivity only** — integrations are limited to configured systems and scopes.
+7. **Normal service identity** — no spoofing, stealth headers, or log suppression.
 
 ## License
 

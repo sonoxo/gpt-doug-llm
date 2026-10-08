@@ -43,7 +43,7 @@ class ConnectorTests(unittest.TestCase):
             bearer_token="test-token",
         )
         headers = _request_headers(config)
-        self.assertEqual(headers["User-Agent"], "shaggoth-swarm-gpt100/0.2.0")
+        self.assertEqual(headers["User-Agent"], "shaggoth-swarm-gpt100/0.3.0")
         self.assertEqual(headers["X-Client-Service"], "shaggoth-swarm-gpt100")
         self.assertEqual(headers["Authorization"], "Bearer test-token")
         self.assertTrue(headers["X-Request-ID"])
