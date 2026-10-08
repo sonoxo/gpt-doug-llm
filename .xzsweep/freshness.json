@@ -1,8 +1,10 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-10-06T19:57:57Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-10-07T00:38:15Z",
+  "due_files_reviewed": 1,
+  "due_paths": [
+    "eagleeye-cloud/sonoxo-stack.json"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -3638,9 +3640,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T19:08:16Z",
+      "git_touched_at": "2026-10-07T19:58:00Z",
       "reviewed_at": null,
-      "sha256": "b729902051d2450770c2c3233e19835b160810304239b75ca3096d1f87416ee8",
+      "sha256": "0190893afb799f959e224cbbbc599f4bd17f89490de679027211c053339144f2",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -5065,15 +5067,17 @@
       "was_due": false
     },
     "eagleeye-cloud/sonoxo-stack.json": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-06T21:52:17Z",
-      "reviewed_at": null,
-      "sha256": "c9ec4257af6913d7e1852b2308a2570a50f36a47f1d07035ccfac3db71511cd4",
-      "size": 1994,
+      "reviewed_at": "2026-10-08T00:38:15Z",
+      "sha256": "73f259bff5f6ec34f17c734c9bc92325b420a3bf7a01880bbca5f0e567d6cd78",
+      "size": 1995,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "eagleeye-cloud/sonoxo-systems.html": {
       "actions": [],
@@ -8863,10 +8867,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T19:17:55Z",
+      "git_touched_at": "2026-10-07T23:44:21Z",
       "reviewed_at": null,
-      "sha256": "eeb903d5ab93019afb7d4010be795e1fe1daf8878dc85aede2bbe689b0af57a4",
-      "size": 11244,
+      "sha256": "39ae59ef7b281ccce8d70b8fc9f8a8dedbf6947063c136607143eb722f804749",
+      "size": 11237,
       "validation_issues": [],
       "was_due": false
     },
@@ -12786,6 +12790,270 @@
       "validation_issues": [],
       "was_due": false
     },
+    "shaggoth-swarm-gpt100/.env.example": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:33:11Z",
+      "reviewed_at": null,
+      "sha256": "152d856870c84130a7ae4066aaaefcd3d3421ccba205fced63b4b14d670abf7b",
+      "size": 167,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/.github/workflows/ci.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:47Z",
+      "reviewed_at": null,
+      "sha256": "b10a3de210e1edf168c48e64047fcc63575b5eec198c92793fbc1b9f4f55f8a4",
+      "size": 334,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/.gitignore": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:49Z",
+      "reviewed_at": null,
+      "sha256": "7ab0a91906c034dde4167389e8d04e0ca28f9521ed48d0661f48a10b9b478afa",
+      "size": 113,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/CONTRIBUTING.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:34Z",
+      "reviewed_at": null,
+      "sha256": "63e735a98a8adcb9dfaa54e7873f0ea965de7b5edeb2218390e4edca9a2ddaa6",
+      "size": 274,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/Dockerfile": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:51Z",
+      "reviewed_at": null,
+      "sha256": "1ec90bca2ba34199c1ede96004ddd113e3847013309370b2a424d683cc8a83a7",
+      "size": 177,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/LICENSE": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:36Z",
+      "reviewed_at": null,
+      "sha256": "49f39e09027648d15bd03dad64c811caa29f4e3b7f64d7e3dd9a9737213ce09b",
+      "size": 1063,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:29Z",
+      "reviewed_at": null,
+      "sha256": "0c25047be3b1073dfb2896ebd94d8574ccb680f5fe101151fbd7a236600179dc",
+      "size": 3345,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/SECURITY.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:31Z",
+      "reviewed_at": null,
+      "sha256": "4d4a05c2394320a7f259d56cb8154afaabb20576fd710b24499c8ecae3e6ffa1",
+      "size": 863,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/pyproject.toml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:53Z",
+      "reviewed_at": null,
+      "sha256": "ed77a0d543667417f71617924b40f8a580d8f0679a5f23878617a70f505df6ac",
+      "size": 518,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:56Z",
+      "reviewed_at": null,
+      "sha256": "34b696c24843c02f678c22d566f0ef3c181b62600e06f690b6892637a049be0f",
+      "size": 177,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:51Z",
+      "reviewed_at": null,
+      "sha256": "f62f62946a4c37481c5002eecac28097aaf466744c20e10d210857def072c998",
+      "size": 186,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/base.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:53Z",
+      "reviewed_at": null,
+      "sha256": "1420f5a5d313100bb822b002aa5a2ab2fb96cf197a79c7c6d88f258d305a414a",
+      "size": 262,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/mock.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:55Z",
+      "reviewed_at": null,
+      "sha256": "7b33fc92eae312828d092abb0817f4a22f4db7f3befe4b5bc863b419f1255785",
+      "size": 312,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/openai_compatible.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:58Z",
+      "reviewed_at": null,
+      "sha256": "66627a43b5315363a986dd637ca6d96a45a6efc2c347c45745003e6102139d17",
+      "size": 1743,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/api.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:48Z",
+      "reviewed_at": null,
+      "sha256": "46e48e26992c6605a38c213f3745f799d706870ad328d8da28b0f05a64ab6f9e",
+      "size": 892,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:46Z",
+      "reviewed_at": null,
+      "sha256": "be78a6518e6308146850324730b4d7a24e5962bcce98a37c23ac09b36d088c9f",
+      "size": 1365,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/config.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:34:58Z",
+      "reviewed_at": null,
+      "sha256": "d519d848115cfa7bb5f0e7d598d8ff05ece82194defc6ed8250563d7d8214e5f",
+      "size": 1352,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/models.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:35:00Z",
+      "reviewed_at": null,
+      "sha256": "112eacd62e982bd8c486ed412230da1e062be6dc75c775dfaad4e9a0c88182bd",
+      "size": 1573,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/orchestrator.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:43Z",
+      "reviewed_at": null,
+      "sha256": "afc35d8305c4942d534e41cebee022844d685d72bf87e8e1279432cda98542c3",
+      "size": 4099,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/policy.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:38Z",
+      "reviewed_at": null,
+      "sha256": "061d3840595aab564a061ac56516d32b8ea9afcb347636f0b7629af0a7ed600f",
+      "size": 669,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/registry.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:36:41Z",
+      "reviewed_at": null,
+      "sha256": "faacc0915c2db8fc841f66e742504e8ee88e8c245bd9f1b58438cb7bb8780c05",
+      "size": 905,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/tests/test_orchestrator.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:37:07Z",
+      "reviewed_at": null,
+      "sha256": "590808cacc4cebc71fb77bd72649b897c31f64aeb2d07890669b4764047f75a5",
+      "size": 847,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/tests/test_policy.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:37:04Z",
+      "reviewed_at": null,
+      "sha256": "0de6a70b225479caf697d5aedb54af77ec07670d690c3a33393b43eb5d0a1e08",
+      "size": 496,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "shaggoth-swarm-gpt100/tests/test_registry.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-08T00:37:01Z",
+      "reviewed_at": null,
+      "sha256": "58a541a5f9d86643882f15a7bfccc6b683de425034ef150d526227584b7d304e",
+      "size": 462,
+      "validation_issues": [],
+      "was_due": false
+    },
     "shell/gpt-doug-fall.zsh": {
       "actions": [],
       "binary": false,
@@ -16233,9 +16501,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-07T19:08:12Z",
+      "git_touched_at": "2026-10-07T19:57:56Z",
       "reviewed_at": null,
-      "sha256": "9029d1310849d5832e0c2204b8a45417c32ea1dd4669b1362b83aea60e74afc6",
+      "sha256": "511f64e4dc4adfcc38e85cefcca00a4f1a04923a12f32f729d11f66450fffc31",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18706,11 +18974,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-07T19:57:57Z",
+  "generated_at": "2026-10-08T00:38:15Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "eagleeye-cloud/sonoxo-stack.json"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1700,
+  "tracked_files_reviewed": 1724,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
