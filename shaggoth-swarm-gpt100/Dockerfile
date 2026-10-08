@@ -18,4 +18,4 @@ EXPOSE 8787
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=5 \
   CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/health', timeout=3).read()" || exit 1
 
-CMD ["uvicorn", "shaggoth_swarm.api:app", "--host", "0.0.0.0", "--port", "8787", "--no-access-log"]
+CMD ["uvicorn", "shaggoth_swarm.api:app", "--host", "0.0.0.0", "--port", "8787"]
