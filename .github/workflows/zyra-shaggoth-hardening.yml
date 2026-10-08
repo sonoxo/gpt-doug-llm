@@ -43,7 +43,7 @@ jobs:
           python -m py_compile             gpt_zyra_shaggoth/__init__.py             gpt_zyra_shaggoth/__main__.py             gpt_zyra_shaggoth/bridge.py             gpt_zyra_shaggoth/cli.py             tests/test_gpt_zyra_shaggoth.py
 
       - name: Run isolated hardening regression
-        run: PYTHONPATH=. python -m unittest tests.test_gpt_zyra_shaggoth -v
+        run: PYTHONPATH=. python tests/test_gpt_zyra_shaggoth.py -v
 
       - name: Validate GPT-DOUG swarm launcher
         run: bash -n scripts/gpt-doug-swarm
