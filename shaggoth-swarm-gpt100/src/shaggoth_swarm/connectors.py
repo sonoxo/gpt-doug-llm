@@ -50,7 +50,7 @@ class ConnectorConfig:
     timeout_seconds: float = 10.0
     max_response_bytes: int = 65536
     service_name: str = "shaggoth-swarm-gpt100"
-    service_version: str = "0.2.0"
+    service_version: str = "0.3.0"
     bearer_token: str | None = None
     max_retries: int = 2
     retry_backoff_seconds: float = 1.0
@@ -88,7 +88,7 @@ class ConnectorConfig:
             timeout_seconds=float(os.getenv("SHAGGOTH_CONNECT_TIMEOUT_SECONDS", "10")),
             max_response_bytes=int(os.getenv("SHAGGOTH_CONNECT_MAX_BYTES", "65536")),
             service_name=os.getenv("SHAGGOTH_SERVICE_NAME", "shaggoth-swarm-gpt100"),
-            service_version=os.getenv("SHAGGOTH_SERVICE_VERSION", "0.2.0"),
+            service_version=os.getenv("SHAGGOTH_SERVICE_VERSION", "0.3.0"),
             bearer_token=os.getenv("SHAGGOTH_CONNECT_BEARER_TOKEN") or None,
             max_retries=int(os.getenv("SHAGGOTH_CONNECT_MAX_RETRIES", "2")),
             retry_backoff_seconds=float(os.getenv("SHAGGOTH_CONNECT_RETRY_BACKOFF_SECONDS", "1")),
