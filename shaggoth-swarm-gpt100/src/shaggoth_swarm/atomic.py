@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
+import json
 from enum import IntEnum
 from hashlib import sha256
 from typing import Any, Iterable
@@ -200,8 +201,7 @@ class AtomicEnvelope:
 
     @property
     def digest(self) -> str:
-        canonical = repr(sorted(self.payload.items())).encode("utf-8")
-        return sha256(canonical).hexdigest()
+        canonical = json.dumps(\n            self.payload, sort_keys=True, separators=(",", ":"), default=repr\n        ).encode("utf-8")\n        return sha256(canonical).hexdigest()
 
     def promote(
         self,
