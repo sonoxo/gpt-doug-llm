@@ -20,7 +20,7 @@ def build_parser() -> argparse.ArgumentParser:
     connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
     connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
 
-    sub.add_parser("status", help="show configured swarm capacity")
+    sub.add_parser("status", help="show configured service and swarm capacity")
     return parser
 
 
@@ -29,16 +29,21 @@ def main() -> int:
     config = SwarmConfig()
 
     if args.command == "status":
-        connector_config = ConnectorConfig.from_env()
+        connectors = ConnectorConfig.from_env()
         print(
             json.dumps(
                 {
                     "project": "shaggoth-swarm-gpt100",
+                    "service": connectors.service_name,
+                    "service_version": connectors.service_version,
                     "agent_capacity": config.agent_count,
                     "max_fanout": config.max_fanout,
                     "max_depth": config.max_depth,
                     "adapter": config.adapter,
-                    "authorized_endpoint_count": len(connector_config.endpoints),
+                    "authorized_endpoint_count": len(connectors.endpoints),
+                    "connector_interval_seconds": connectors.interval_seconds,
+                    "connector_max_retries": connectors.max_retries,
+                    "connector_auth_configured": bool(connectors.bearer_token),
                 },
                 indent=2,
             )
