@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from pathlib import Path
 
 from .atomic import stack_manifest, validate_stack
@@ -21,6 +22,7 @@ from .catalogs.open_source_everything import (
 )
 from .config import SwarmConfig
 from .connectors import AuthorizedConnectorMonitor, ConnectorConfig
+from .heartbeat import build_heartbeat, format_heartbeat, heartbeat_json
 from .orchestrator import SwarmOrchestrator
 from .policy import CapabilityPolicy
 
@@ -33,6 +35,12 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("goal", help="goal for the swarm")
     run.add_argument("--fanout", type=int, default=None, help="number of agents to activate")
     run.add_argument("--json", action="store_true", help="emit JSON")
+
+    heartbeat = sub.add_parser("heartbeat", help="show Shaggoth runtime heartbeat")
+    heartbeat.add_argument("--json", action="store_true", help="emit JSON")
+    heartbeat.add_argument("--endpoint", default=None, help="optional http(s) health endpoint to probe")
+    heartbeat.add_argument("--timeout", type=float, default=3.0, help="endpoint timeout in seconds")
+    heartbeat.add_argument("--watch", type=float, default=None, metavar="SECONDS", help="repeat heartbeat until stopped")
 
     connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
     connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
@@ -81,6 +89,21 @@ def main() -> int:
     args = build_parser().parse_args()
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
+
+    if args.command == "heartbeat":
+        if args.timeout <= 0 or args.timeout > 60:
+            raise SystemExit("--timeout must be greater than 0 and at most 60 seconds")
+        if args.watch is not None and args.watch < 1:
+            raise SystemExit("--watch must be at least 1 second")
+        try:
+            while True:
+                pulse = build_heartbeat(args.endpoint, timeout=args.timeout)
+                print(heartbeat_json(pulse) if args.json else format_heartbeat(pulse), flush=True)
+                if args.watch is None:
+                    return 0 if pulse.status == "alive" else 1
+                time.sleep(args.watch)
+        except KeyboardInterrupt:
+            return 0
 
     if args.command == "layers":
         manifest = stack_manifest()
