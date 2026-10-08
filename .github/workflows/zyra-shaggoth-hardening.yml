@@ -8,6 +8,8 @@ on:
       - "tests/test_gpt_zyra_shaggoth.py"
       - "scripts/gpt-doug-swarm"
       - "pyproject.toml"
+      - "SECURITY.md"
+      - ".github/CODEOWNERS"
       - ".github/workflows/zyra-shaggoth-hardening.yml"
   pull_request:
     branches: [main]
@@ -16,11 +18,17 @@ on:
       - "tests/test_gpt_zyra_shaggoth.py"
       - "scripts/gpt-doug-swarm"
       - "pyproject.toml"
+      - "SECURITY.md"
+      - ".github/CODEOWNERS"
       - ".github/workflows/zyra-shaggoth-hardening.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: zyra-shaggoth-hardening-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   hardening:
@@ -40,10 +48,15 @@ jobs:
 
       - name: Compile hardened bridge
         run: |
-          python -m py_compile             gpt_zyra_shaggoth/__init__.py             gpt_zyra_shaggoth/__main__.py             gpt_zyra_shaggoth/bridge.py             gpt_zyra_shaggoth/cli.py             tests/test_gpt_zyra_shaggoth.py
+          python -m py_compile \
+            gpt_zyra_shaggoth/__init__.py \
+            gpt_zyra_shaggoth/__main__.py \
+            gpt_zyra_shaggoth/bridge.py \
+            gpt_zyra_shaggoth/cli.py \
+            tests/test_gpt_zyra_shaggoth.py
 
       - name: Run isolated hardening regression
-        run: PYTHONPATH=. python tests/test_gpt_zyra_shaggoth.py -v
+        run: PYTHONPATH=. python -m unittest tests.test_gpt_zyra_shaggoth -v
 
       - name: Validate GPT-DOUG swarm launcher
         run: bash -n scripts/gpt-doug-swarm
@@ -56,10 +69,12 @@ jobs:
         run: |
           set -euo pipefail
           tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
           gpt-zyra-shaggoth --state-dir "$tmp" verify > "$tmp/verify.json"
           python - "$tmp/verify.json" <<'PY'
           import json
           import sys
+
           payload = json.load(open(sys.argv[1], encoding="utf-8"))
           assert payload["system"] == "GPT-ZYRA-SHAGGOTH"
           assert payload["mode"] == "LOCAL_HARDENED"
