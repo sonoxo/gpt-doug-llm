@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 
+from .atomic import stack_manifest, validate_stack
 from .capabilities import CAPABILITY_CATALOG, PROFILES
 from .catalogs.open_source_everything import (
     DEFAULT_CACHE as OSE_DEFAULT_CACHE,
@@ -36,8 +37,7 @@ def build_parser() -> argparse.ArgumentParser:
     connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
     connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
 
-    caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")
-    caps.add_argument("--json", action="store_true", help="emit JSON")
+    layers = sub.add_parser("layers", help="show and validate the atomic layer stack")\n    layers.add_argument("--json", action="store_true", help="emit JSON")\n    layers.add_argument("--validate", action="store_true", help="exit non-zero if the stack is invalid")\n\n    caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")\n    caps.add_argument("--json", action="store_true", help="emit JSON")
 
     catalog = sub.add_parser("catalog", help="query external open-source catalog sources")
     catalog_sub = catalog.add_subparsers(dest="catalog_command", required=True)
@@ -81,8 +81,7 @@ def main() -> int:
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
 
-    if args.command == "catalog":
-        if args.catalog_command == "source":
+    if args.command == "layers":\n        manifest = stack_manifest()\n        if args.json:\n            print(json.dumps(manifest, indent=2))\n        else:\n            print(\n                f"atomic-stack v{manifest[\'version\']} " \n                f"layers={manifest[\'layer_count\']} valid={manifest[\'valid\']}"\n            )\n            for layer in manifest["layers"]:\n                deps = ",".join(layer["dependencies"]) or "none"\n                print(f"L{layer[\'id\']} {layer[\'name\']} deps={deps} - {layer[\'purpose\']}")\n            if manifest["errors"]:\n                for error in manifest["errors"]:\n                    print(f"ERROR {error}")\n        if args.validate:\n            valid, _ = validate_stack()\n            return 0 if valid else 1\n        return 0\n\n    if args.command == "catalog":\n        if args.catalog_command == "source":
             payload = _catalog_source_payload()
             if args.json:
                 print(json.dumps(payload, indent=2))
