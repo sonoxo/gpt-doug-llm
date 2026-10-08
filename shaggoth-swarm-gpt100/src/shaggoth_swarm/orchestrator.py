@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict
 
 from .adapters import MockAdapter, ModelAdapter, OpenAICompatibleAdapter
+from .broker import CapabilityBroker
 from .config import SwarmConfig
 from .models import AgentResult, SwarmReport, SwarmTask, TaskState, utc_now
 from .policy import CapabilityPolicy
@@ -15,10 +16,12 @@ class SwarmOrchestrator:
         config: SwarmConfig | None = None,
         adapter: ModelAdapter | None = None,
         policy: CapabilityPolicy | None = None,
+        broker: CapabilityBroker | None = None,
     ) -> None:
         self.config = config or SwarmConfig()
         self.agents = build_registry(self.config.agent_count)
-        self.policy = policy or CapabilityPolicy()
+        self.policy = policy or CapabilityPolicy.from_env()
+        self.broker = broker or CapabilityBroker(self.policy)
         self.adapter = adapter or self._build_adapter()
 
     def _build_adapter(self) -> ModelAdapter:
@@ -77,10 +80,25 @@ class SwarmOrchestrator:
             try:
                 content = self.adapter.complete(agent, task)
                 task.state = TaskState.SUCCEEDED
-                results.append(AgentResult(task_id=task.id, agent_id=agent.id, content=content, state=TaskState.SUCCEEDED))
+                results.append(
+                    AgentResult(
+                        task_id=task.id,
+                        agent_id=agent.id,
+                        content=content,
+                        state=TaskState.SUCCEEDED,
+                    )
+                )
             except Exception as exc:
                 task.state = TaskState.FAILED
-                results.append(AgentResult(task_id=task.id, agent_id=agent.id, content="", state=TaskState.FAILED, error=str(exc)))
+                results.append(
+                    AgentResult(
+                        task_id=task.id,
+                        agent_id=agent.id,
+                        content="",
+                        state=TaskState.FAILED,
+                        error=str(exc),
+                    )
+                )
 
         summary = self._summarize(goal, results)
         return SwarmReport(goal=goal, results=results, summary=summary, started_at=started_at)
