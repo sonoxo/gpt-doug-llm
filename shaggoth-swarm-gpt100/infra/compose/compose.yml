@@ -1,0 +1,79 @@
+name: shaggoth-swarm
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: shaggoth-swarm-gpt100:0.3.0
+    init: true
+    restart: unless-stopped
+    environment:
+      SHAGGOTH_AGENT_COUNT: ${SHAGGOTH_AGENT_COUNT:-100}
+      SHAGGOTH_MAX_FANOUT: ${SHAGGOTH_MAX_FANOUT:-16}
+      SHAGGOTH_MAX_DEPTH: ${SHAGGOTH_MAX_DEPTH:-2}
+      SHAGGOTH_ADAPTER: ${SHAGGOTH_ADAPTER:-mock}
+      SHAGGOTH_BASE_URL: ${SHAGGOTH_BASE_URL:-https://api.openai.com/v1}
+      SHAGGOTH_MODEL: ${SHAGGOTH_MODEL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      SHAGGOTH_CAPABILITY_PROFILE: ${SHAGGOTH_CAPABILITY_PROFILE:-reasoning}
+      SHAGGOTH_EXTRA_CAPABILITIES: ${SHAGGOTH_EXTRA_CAPABILITIES:-}
+      SHAGGOTH_DENY_CAPABILITIES: ${SHAGGOTH_DENY_CAPABILITIES:-}
+      SHAGGOTH_SERVICE_NAME: ${SHAGGOTH_SERVICE_NAME:-shaggoth-swarm-gpt100}
+      SHAGGOTH_SERVICE_VERSION: ${SHAGGOTH_SERVICE_VERSION:-0.3.0}
+      SHAGGOTH_AUTHORIZED_ENDPOINTS: ${SHAGGOTH_AUTHORIZED_ENDPOINTS:-}
+      SHAGGOTH_CONNECT_BEARER_TOKEN: ${SHAGGOTH_CONNECT_BEARER_TOKEN:-}
+    ports:
+      - "${SHAGGOTH_BIND_ADDRESS:-127.0.0.1}:${SHAGGOTH_PORT:-8787}:8787"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/health', timeout=3).read()"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    stop_grace_period: 20s
+    networks:
+      - shaggoth
+
+  connector:
+    profiles: ["connectors"]
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: shaggoth-swarm-gpt100:0.3.0
+    init: true
+    restart: unless-stopped
+    command: ["shaggoth", "connect"]
+    environment:
+      SHAGGOTH_SERVICE_NAME: ${SHAGGOTH_SERVICE_NAME:-shaggoth-swarm-gpt100}
+      SHAGGOTH_SERVICE_VERSION: ${SHAGGOTH_SERVICE_VERSION:-0.3.0}
+      SHAGGOTH_AUTHORIZED_ENDPOINTS: ${SHAGGOTH_AUTHORIZED_ENDPOINTS:-}
+      SHAGGOTH_CONNECT_INTERVAL_SECONDS: ${SHAGGOTH_CONNECT_INTERVAL_SECONDS:-30}
+      SHAGGOTH_CONNECT_TIMEOUT_SECONDS: ${SHAGGOTH_CONNECT_TIMEOUT_SECONDS:-10}
+      SHAGGOTH_CONNECT_MAX_BYTES: ${SHAGGOTH_CONNECT_MAX_BYTES:-65536}
+      SHAGGOTH_CONNECT_BEARER_TOKEN: ${SHAGGOTH_CONNECT_BEARER_TOKEN:-}
+      SHAGGOTH_CONNECT_MAX_RETRIES: ${SHAGGOTH_CONNECT_MAX_RETRIES:-2}
+      SHAGGOTH_CONNECT_RETRY_BACKOFF_SECONDS: ${SHAGGOTH_CONNECT_RETRY_BACKOFF_SECONDS:-1}
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    stop_grace_period: 20s
+    networks:
+      - shaggoth
+
+networks:
+  shaggoth:
+    driver: bridge
