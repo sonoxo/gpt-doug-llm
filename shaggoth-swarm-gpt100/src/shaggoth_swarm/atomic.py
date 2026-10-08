@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
 import json
+from dataclasses import asdict, dataclass, field
 from enum import IntEnum
 from hashlib import sha256
 from typing import Any, Iterable
@@ -147,7 +147,6 @@ ATOMIC_STACK: tuple[LayerSpec, ...] = (
     ),
 )
 
-
 SPECS_BY_LAYER = {spec.layer: spec for spec in ATOMIC_STACK}
 SPECS_BY_NAME = {spec.name: spec for spec in ATOMIC_STACK}
 
@@ -162,6 +161,7 @@ def validate_stack(stack: Iterable[LayerSpec] = ATOMIC_STACK) -> tuple[bool, tup
         if spec.layer in seen_layers:
             errors.append(f"duplicate layer id: {spec.layer.name}")
         seen_layers.add(spec.layer)
+
         if spec.name in seen_names:
             errors.append(f"duplicate layer name: {spec.name}")
         seen_names.add(spec.name)
@@ -173,8 +173,7 @@ def validate_stack(stack: Iterable[LayerSpec] = ATOMIC_STACK) -> tuple[bool, tup
                         f"{spec.name} depends on non-lower layer {dependency.name.lower()}"
                     )
 
-    expected = set(AtomicLayer)
-    missing = expected - seen_layers
+    missing = set(AtomicLayer) - seen_layers
     if missing:
         errors.append(
             "missing layers: " + ", ".join(sorted(layer.name.lower() for layer in missing))
@@ -201,7 +200,13 @@ class AtomicEnvelope:
 
     @property
     def digest(self) -> str:
-        canonical = json.dumps(\n            self.payload, sort_keys=True, separators=(",", ":"), default=repr\n        ).encode("utf-8")\n        return sha256(canonical).hexdigest()
+        canonical = json.dumps(
+            self.payload,
+            sort_keys=True,
+            separators=(",", ":"),
+            default=repr,
+        ).encode("utf-8")
+        return sha256(canonical).hexdigest()
 
     def promote(
         self,
