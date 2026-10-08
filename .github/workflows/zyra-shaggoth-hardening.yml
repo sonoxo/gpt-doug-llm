@@ -6,6 +6,7 @@ on:
     paths:
       - "gpt_zyra_shaggoth/**"
       - "tests/test_gpt_zyra_shaggoth.py"
+      - "tests/test_gpt_zyra_defensive_arsenal.py"
       - "scripts/gpt-doug-swarm"
       - "pyproject.toml"
       - "SECURITY.md"
@@ -16,6 +17,7 @@ on:
     paths:
       - "gpt_zyra_shaggoth/**"
       - "tests/test_gpt_zyra_shaggoth.py"
+      - "tests/test_gpt_zyra_defensive_arsenal.py"
       - "scripts/gpt-doug-swarm"
       - "pyproject.toml"
       - "SECURITY.md"
@@ -52,11 +54,16 @@ jobs:
             gpt_zyra_shaggoth/__init__.py \
             gpt_zyra_shaggoth/__main__.py \
             gpt_zyra_shaggoth/bridge.py \
+            gpt_zyra_shaggoth/arsenal.py \
             gpt_zyra_shaggoth/cli.py \
-            tests/test_gpt_zyra_shaggoth.py
+            tests/test_gpt_zyra_shaggoth.py \
+            tests/test_gpt_zyra_defensive_arsenal.py
 
       - name: Run isolated hardening regression
         run: PYTHONPATH=. python -m unittest tests.test_gpt_zyra_shaggoth -v
+
+      - name: Run defensive arsenal regression
+        run: PYTHONPATH=. python -m unittest tests.test_gpt_zyra_defensive_arsenal -v
 
       - name: Validate GPT-DOUG swarm launcher
         run: bash -n scripts/gpt-doug-swarm
