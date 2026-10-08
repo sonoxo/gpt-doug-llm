@@ -21,7 +21,7 @@ class RunRequest(BaseModel):
     fanout: int | None = Field(default=None, ge=1, le=100)
 
 
-app = FastAPI(title="Shaggoth Swarm GPT-100", version="0.2.0")
+app = FastAPI(title="Shaggoth Swarm GPT-100", version="0.3.0")
 
 
 @app.get("/health")
