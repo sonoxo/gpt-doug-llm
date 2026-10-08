@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 
+from .atomic import stack_manifest, validate_stack
 from .capabilities import CAPABILITY_CATALOG, PROFILES
 from .catalogs.open_source_everything import (
     DEFAULT_CACHE as OSE_DEFAULT_CACHE,
@@ -36,6 +37,10 @@ def build_parser() -> argparse.ArgumentParser:
     connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
     connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
 
+    layers = sub.add_parser("layers", help="show and validate the atomic layer stack")
+    layers.add_argument("--json", action="store_true", help="emit JSON")
+    layers.add_argument("--validate", action="store_true", help="exit non-zero if the stack is invalid")
+
     caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")
     caps.add_argument("--json", action="store_true", help="emit JSON")
 
@@ -53,11 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
     catalog_search.add_argument("query", help="space-separated search terms")
     catalog_search.add_argument("--cache", default=str(OSE_DEFAULT_CACHE), help="cache JSON path")
     catalog_search.add_argument("--limit", type=int, default=20, help="maximum results, 1-100")
-    catalog_search.add_argument(
-        "--refresh",
-        action="store_true",
-        help="refresh from the pinned upstream snapshot before searching",
-    )
+    catalog_search.add_argument("--refresh", action="store_true", help="refresh before searching")
     catalog_search.add_argument("--json", action="store_true", help="emit JSON")
 
     sub.add_parser("status", help="show configured service and swarm capacity")
@@ -80,6 +81,28 @@ def main() -> int:
     args = build_parser().parse_args()
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
+
+    if args.command == "layers":
+        manifest = stack_manifest()
+        if args.json:
+            print(json.dumps(manifest, indent=2))
+        else:
+            print(
+                f"atomic-stack v{manifest['version']} "
+                f"layers={manifest['layer_count']} valid={manifest['valid']}"
+            )
+            for layer in manifest["layers"]:
+                deps = ",".join(layer["dependencies"]) or "none"
+                print(
+                    f"L{layer['id']} {layer['name']} "
+                    f"deps={deps} - {layer['purpose']}"
+                )
+            for error in manifest["errors"]:
+                print(f"ERROR {error}")
+        if args.validate:
+            valid, _ = validate_stack()
+            return 0 if valid else 1
+        return 0
 
     if args.command == "catalog":
         if args.catalog_command == "source":
@@ -154,6 +177,7 @@ def main() -> int:
 
     if args.command == "status":
         connectors = ConnectorConfig.from_env()
+        manifest = stack_manifest()
         print(
             json.dumps(
                 {
@@ -171,6 +195,8 @@ def main() -> int:
                     "connector_max_retries": connectors.max_retries,
                     "connector_auth_configured": bool(connectors.bearer_token),
                     "open_source_everything_cache": str(OSE_DEFAULT_CACHE),
+                    "atomic_stack_valid": manifest["valid"],
+                    "atomic_layer_count": manifest["layer_count"],
                 },
                 indent=2,
             )

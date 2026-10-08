@@ -17,6 +17,38 @@ A safe-by-default, local-first multi-agent orchestration framework for running u
 - Uses normal production-service behavior: visible identity, standard authentication, bounded retries, rate limits, health checks, and structured audit events.
 - Provides a scoped capability broker covering local development, APIs, GitHub, storage, queues, databases, schedules, email, calendar, telemetry, artifacts, models, and web search.
 
+## Atomic layers
+
+Shaggoth now uses an eight-layer atomic execution model:
+
+```text
+L0 particle    immutable envelope, ID, trace, timestamp, digest
+L1 atom        one scoped capability invocation
+L2 molecule    bounded composition of atoms
+L3 cell        one agent execution boundary
+L4 swarm       bounded multi-agent coordination
+L5 service     APIs, queues, storage, catalogs, connectors
+L6 fabric      containers, Kubernetes, networking, scaling
+L7 governance  policy, audit, provenance, risk, compliance
+```
+
+Execution moves upward one layer at a time. Any execution layer may emit a
+governance record, but governance cannot silently re-enter the execution stack.
+
+`AtomicEnvelope` preserves a trace ID across promotions and links each new
+envelope to its parent. Capability broker atomic calls record only capability
+metadata, not handler arguments or results.
+
+```bash
+shaggoth layers
+shaggoth layers --validate
+shaggoth layers --json
+```
+
+The API exposes the same manifest at `GET /layers`.
+
+See `docs/ATOMIC_LAYERS.md` for the complete contracts and invariants.
+
 ## Capability profiles
 
 Shaggoth now exposes four capability profiles:

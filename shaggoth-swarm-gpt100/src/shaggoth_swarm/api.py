@@ -9,6 +9,7 @@ try:
 except ImportError as exc:
     raise RuntimeError("Install the API extra with: pip install -e '.[api]'") from exc
 
+from .atomic import stack_manifest
 from .capabilities import CAPABILITY_CATALOG
 from .config import SwarmConfig
 from .connectors import ConnectorConfig
@@ -40,6 +41,7 @@ def status() -> dict:
     config = SwarmConfig()
     connectors = ConnectorConfig.from_env()
     policy = CapabilityPolicy.from_env()
+    manifest = stack_manifest()
     return {
         "status": "ok",
         "service": connectors.service_name,
@@ -55,7 +57,14 @@ def status() -> dict:
         "connector_interval_seconds": connectors.interval_seconds,
         "connector_max_retries": connectors.max_retries,
         "connector_auth_configured": bool(connectors.bearer_token),
+        "atomic_stack_valid": manifest["valid"],
+        "atomic_layer_count": manifest["layer_count"],
     }
+
+
+@app.get("/layers")
+def layers() -> dict:
+    return stack_manifest()
 
 
 @app.get("/capabilities")
