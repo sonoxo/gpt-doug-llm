@@ -1,0 +1,29 @@
+name: Shaggoth Swarm CI
+
+on:
+  push:
+    paths:
+      - "shaggoth-swarm-gpt100/**"
+      - ".github/workflows/shaggoth-swarm-ci.yml"
+  pull_request:
+    paths:
+      - "shaggoth-swarm-gpt100/**"
+      - ".github/workflows/shaggoth-swarm-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: shaggoth-swarm-gpt100
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v

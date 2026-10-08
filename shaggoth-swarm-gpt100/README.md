@@ -14,12 +14,13 @@ A safe-by-default, local-first multi-agent orchestration framework for running u
 - Provides a CLI and an optional HTTP API.
 - Ships with deterministic tests and a zero-network mock adapter.
 - Can continuously monitor explicitly authorized HTTP(S) endpoints.
+- Uses normal production-service behavior: visible identity, standard authentication, bounded retries, rate limits, health checks, and structured audit events.
 
 ## Safety model
 
 The default profile is **offline and non-destructive**. Network access, shell execution, filesystem writes outside a workspace, credential access, self-replication, and unbounded task creation are not granted by default. Tool capabilities must be explicitly allowlisted by the host application.
 
-The connector monitor is not a scanner or injection system. It only performs bounded `GET` checks against endpoints you explicitly configure. Non-local endpoints must use HTTPS, redirects outside the exact allowlist are rejected, and responses are size-capped.
+The connector monitor is not a scanner, injection system, stealth agent, or attribution-evasion layer. It performs bounded `GET` checks only against endpoints you explicitly configure. Non-local endpoints must use HTTPS, cross-origin redirects are rejected, responses are size-capped, retries are bounded, and the service identifies itself in normal HTTP headers.
 
 ## Quick start
 
@@ -42,13 +43,20 @@ Run tests:
 python -m unittest discover -s tests -v
 ```
 
-## Authorized persistent connectors
+## Authorized production-style connectors
 
 Configure only systems you own or are explicitly authorized to access:
 
 ```bash
+export SHAGGOTH_SERVICE_NAME="shaggoth-swarm-gpt100"
 export SHAGGOTH_AUTHORIZED_ENDPOINTS="https://api.example.com/health,https://status.example.com/api"
 export SHAGGOTH_CONNECT_INTERVAL_SECONDS=30
+```
+
+For an approved service using standard bearer authentication:
+
+```bash
+export SHAGGOTH_CONNECT_BEARER_TOKEN="<token-from-your-secret-manager>"
 ```
 
 Poll once:
@@ -57,13 +65,17 @@ Poll once:
 shaggoth connect --once
 ```
 
-Keep the monitor running until you stop the process:
+Keep the visible foreground monitor running until you stop the process:
 
 ```bash
 shaggoth connect
 ```
 
-The monitor emits JSON audit events to stdout. It does not discover endpoints, scan address ranges, submit arbitrary payloads, or modify remote systems.
+Each check sends a visible service identity, `X-Client-Service`, and `X-Request-ID`. Events are emitted as structured JSON. Authentication secrets are never printed by the monitor.
+
+Default retry behavior is limited to two retries for transient transport errors and HTTP 429/5xx responses, using exponential backoff. The polling interval cannot be set below five seconds.
+
+The monitor does not discover endpoints, scan address ranges, submit arbitrary payloads, suppress logs, spoof unrelated software, or modify remote systems.
 
 ## Optional API
 
@@ -72,10 +84,17 @@ pip install -e '.[api]'
 uvicorn shaggoth_swarm.api:app --host 127.0.0.1 --port 8787
 ```
 
-Then:
+Operational endpoints:
 
 ```bash
 curl -s http://127.0.0.1:8787/health
+curl -s http://127.0.0.1:8787/ready
+curl -s http://127.0.0.1:8787/status
+```
+
+Run a swarm job:
+
+```bash
 curl -s -X POST http://127.0.0.1:8787/v1/swarm/run \
   -H 'content-type: application/json' \
   -d '{"goal":"Create a launch checklist","fanout":8}'
@@ -117,7 +136,13 @@ Aggregator -> SwarmReport
 Authorized endpoints
   |
   v
-Exact allowlist -> bounded GET probe -> JSON audit event
+Exact allowlist
+  |
+  v
+Visible service identity -> optional bearer auth -> bounded GET probe
+  |
+  v
+Bounded retry/backoff -> structured JSON audit event
 ```
 
 ## Repository layout
@@ -144,6 +169,7 @@ src/shaggoth_swarm/
 5. **Replaceable models** — adapters isolate model-provider details.
 6. **No self-propagation** — the framework does not clone itself, scan networks, or modify external systems on its own.
 7. **Authorized connectivity only** — persistent monitoring is limited to explicitly configured endpoints.
+8. **Normal service identity** — no spoofing, stealth headers, or log suppression.
 
 ## License
 
