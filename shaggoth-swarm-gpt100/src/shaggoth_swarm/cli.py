@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import time
+import webbrowser
 from pathlib import Path
 
 from .atomic import stack_manifest, validate_stack
@@ -35,6 +36,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("goal", help="goal for the swarm")
     run.add_argument("--fanout", type=int, default=None, help="number of agents to activate")
     run.add_argument("--json", action="store_true", help="emit JSON")
+
+    visual = sub.add_parser("visual", help="launch the visual data layer console")
+    visual.add_argument("--host", default="127.0.0.1", help="bind host; defaults to loopback")
+    visual.add_argument("--port", type=int, default=8787, help="HTTP port")
+    visual.add_argument("--no-browser", action="store_true", help="do not open the browser automatically")
 
     heartbeat = sub.add_parser("heartbeat", help="show Shaggoth runtime heartbeat")
     heartbeat.add_argument("--json", action="store_true", help="emit JSON")
@@ -89,6 +95,21 @@ def main() -> int:
     args = build_parser().parse_args()
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
+
+    if args.command == "visual":
+        if not 1 <= args.port <= 65535:
+            raise SystemExit("--port must be between 1 and 65535")
+        try:
+            import uvicorn
+        except ImportError as exc:
+            raise SystemExit("visual console requires the API extra: pip install -e '.[api]'") from exc
+        browse_host = "127.0.0.1" if args.host in {"0.0.0.0", "::"} else args.host
+        url = f"http://{browse_host}:{args.port}/visual"
+        print(f"SHAGGOTH VISUAL DATA LAYERS -> {url}", flush=True)
+        if not args.no_browser:
+            webbrowser.open(url)
+        uvicorn.run("shaggoth_swarm.api:app", host=args.host, port=args.port, log_level="info")
+        return 0
 
     if args.command == "heartbeat":
         if args.timeout <= 0 or args.timeout > 60:
