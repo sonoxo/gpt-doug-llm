@@ -32,6 +32,9 @@ def build_parser() -> argparse.ArgumentParser:
     console = sub.add_parser("console", help="Run the ZYRA Mission Control UI on loopback only.")
     console.add_argument("--port", type=int, default=8790)
 
+    nexus = sub.add_parser("nexus", help="Open the local Shoggoth Nexus command center.")
+    nexus.add_argument("--port", type=int, default=8791)
+
     arsenal = sub.add_parser("arsenal", help="Run the local defensive visual arsenal.")
     arsenal.add_argument("--port", type=int, default=8791)
     return parser
@@ -53,6 +56,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command == "console":
         bridge.serve_console(port=args.port)
+        return 0
+    if args.command == "nexus":
+        serve_defensive_arsenal(bridge, port=args.port, open_nexus=True)
         return 0
     if args.command == "arsenal":
         serve_defensive_arsenal(bridge, port=args.port)
