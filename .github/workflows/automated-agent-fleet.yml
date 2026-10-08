@@ -66,7 +66,7 @@ jobs:
         run: ruff check . --output-format=github || true
       - name: Upload coverage
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-py${{ matrix.python-version }}
           path: coverage.xml
@@ -245,7 +245,7 @@ jobs:
           echo "| **TOTAL** | **$total** |" >> knowledge_report.md
           cat knowledge_report.md
       - name: Upload knowledge report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: knowledge-status
           path: knowledge_report.md
@@ -352,7 +352,7 @@ jobs:
           echo "#AllThingsAgenticHackathon #AI #Cybersecurity #OpenSource" >> social.txt
           cat social.txt
       - name: Upload social post
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: social-post
           path: social.txt
@@ -384,7 +384,7 @@ jobs:
           STATS
           cat stats.json
       - name: Upload stats
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: project-stats
           path: stats.json

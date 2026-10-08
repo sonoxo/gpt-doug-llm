@@ -48,7 +48,7 @@ jobs:
 
       - name: Upload heartbeat report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: soundcloud-heartbeat-${{ github.run_id }}
           path: soundcloud-heartbeat.json

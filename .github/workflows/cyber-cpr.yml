@@ -48,7 +48,7 @@ jobs:
           cd cyber-cpr/dist
           sha256sum -c cyber-cpr-*.tar.gz.sha256
       - name: Upload Cyber CPR package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: cyber-cpr-release
           path: |
