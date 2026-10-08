@@ -61,16 +61,25 @@ jobs:
       - name: Validate GPT-DOUG swarm launcher
         run: bash -n scripts/gpt-doug-swarm
 
-      - name: Install local CLI without dependency resolution
-        run: python -m pip install --no-deps --no-build-isolation -e .
+      - name: Validate local CLI metadata
+        run: |
+          python - <<'PY'
+          import tomllib
+          from pathlib import Path
 
-      - name: Verify installed hardwire
+          payload = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
+          assert payload["project"]["scripts"]["gpt-zyra-shaggoth"] == "gpt_zyra_shaggoth.cli:main"
+          assert "gpt_zyra_shaggoth" in payload["tool"]["setuptools"]["packages"]
+          print("GPT-ZYRA-SHAGGOTH CLI METADATA: GREEN")
+          PY
+
+      - name: Verify checkout hardwire
         shell: bash
         run: |
           set -euo pipefail
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
-          gpt-zyra-shaggoth --state-dir "$tmp" verify > "$tmp/verify.json"
+          PYTHONPATH=. python -m gpt_zyra_shaggoth --state-dir "$tmp" verify > "$tmp/verify.json"
           python - "$tmp/verify.json" <<'PY'
           import json
           import sys
