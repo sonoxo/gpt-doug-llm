@@ -46,7 +46,7 @@ uap-matrix = "uap_matrix.cli:main"
 gpt-doug-body = "body_link.cli:main"
 cloud-nxyz = "cloud_nxyz.cli:main"
 gpt-doug-xmr-neural = "monero_neural.cli:main"
-zyra-sentinel = "golden_shield:start_247_monitoring"
+zyra-sentinel = "golden_shield:start_247_monitoring"\ngpt-zyra-shaggoth = "gpt_zyra_shaggoth.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/sonoxo/gpt-doug-llm"
@@ -54,7 +54,7 @@ Repository = "https://github.com/sonoxo/gpt-doug-llm"
 Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
-packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix"]
+packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
