@@ -13,10 +13,13 @@ A safe-by-default, local-first multi-agent orchestration framework for running u
 - Aggregates results into a single swarm report.
 - Provides a CLI and an optional HTTP API.
 - Ships with deterministic tests and a zero-network mock adapter.
+- Can continuously monitor explicitly authorized HTTP(S) endpoints.
 
 ## Safety model
 
 The default profile is **offline and non-destructive**. Network access, shell execution, filesystem writes outside a workspace, credential access, self-replication, and unbounded task creation are not granted by default. Tool capabilities must be explicitly allowlisted by the host application.
+
+The connector monitor is not a scanner or injection system. It only performs bounded `GET` checks against endpoints you explicitly configure. Non-local endpoints must use HTTPS, redirects outside the exact allowlist are rejected, and responses are size-capped.
 
 ## Quick start
 
@@ -38,6 +41,29 @@ Run tests:
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## Authorized persistent connectors
+
+Configure only systems you own or are explicitly authorized to access:
+
+```bash
+export SHAGGOTH_AUTHORIZED_ENDPOINTS="https://api.example.com/health,https://status.example.com/api"
+export SHAGGOTH_CONNECT_INTERVAL_SECONDS=30
+```
+
+Poll once:
+
+```bash
+shaggoth connect --once
+```
+
+Keep the monitor running until you stop the process:
+
+```bash
+shaggoth connect
+```
+
+The monitor emits JSON audit events to stdout. It does not discover endpoints, scan address ranges, submit arbitrary payloads, or modify remote systems.
 
 ## Optional API
 
@@ -87,6 +113,11 @@ Planner         Capability decision
   |
   v
 Aggregator -> SwarmReport
+
+Authorized endpoints
+  |
+  v
+Exact allowlist -> bounded GET probe -> JSON audit event
 ```
 
 ## Repository layout
@@ -95,6 +126,7 @@ Aggregator -> SwarmReport
 src/shaggoth_swarm/
   adapters/          model backends
   config.py          environment-driven config
+  connectors.py      authorized endpoint monitor
   models.py          typed swarm data structures
   policy.py          capability allowlist
   registry.py        deterministic 100-agent registry
@@ -111,6 +143,7 @@ src/shaggoth_swarm/
 4. **Auditable execution** — every task and result has an ID and timestamp.
 5. **Replaceable models** — adapters isolate model-provider details.
 6. **No self-propagation** — the framework does not clone itself, scan networks, or modify external systems on its own.
+7. **Authorized connectivity only** — persistent monitoring is limited to explicitly configured endpoints.
 
 ## License
 
