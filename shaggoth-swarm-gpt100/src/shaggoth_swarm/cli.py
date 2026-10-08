@@ -4,6 +4,7 @@ import argparse
 import json
 
 from .config import SwarmConfig
+from .connectors import AuthorizedConnectorMonitor, ConnectorConfig
 from .orchestrator import SwarmOrchestrator
 
 
@@ -16,6 +17,9 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--fanout", type=int, default=None, help="number of agents to activate")
     run.add_argument("--json", action="store_true", help="emit JSON")
 
+    connect = sub.add_parser("connect", help="monitor explicitly authorized endpoints")
+    connect.add_argument("--once", action="store_true", help="poll each endpoint once and exit")
+
     sub.add_parser("status", help="show configured swarm capacity")
     return parser
 
@@ -25,8 +29,31 @@ def main() -> int:
     config = SwarmConfig()
 
     if args.command == "status":
-        print(json.dumps({"project":"shaggoth-swarm-gpt100","agent_capacity":config.agent_count,"max_fanout":config.max_fanout,"max_depth":config.max_depth,"adapter":config.adapter}, indent=2))
+        connector_config = ConnectorConfig.from_env()
+        print(
+            json.dumps(
+                {
+                    "project": "shaggoth-swarm-gpt100",
+                    "agent_capacity": config.agent_count,
+                    "max_fanout": config.max_fanout,
+                    "max_depth": config.max_depth,
+                    "adapter": config.adapter,
+                    "authorized_endpoint_count": len(connector_config.endpoints),
+                },
+                indent=2,
+            )
+        )
         return 0
+
+    if args.command == "connect":
+        monitor = AuthorizedConnectorMonitor(ConnectorConfig.from_env())
+        if args.once:
+            print(json.dumps(monitor.poll_once(), indent=2))
+            return 0
+        try:
+            monitor.run_forever()
+        except KeyboardInterrupt:
+            return 0
 
     orchestrator = SwarmOrchestrator(config=config)
     report = orchestrator.run(args.goal, fanout=args.fanout)
