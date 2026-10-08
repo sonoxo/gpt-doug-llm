@@ -24,7 +24,28 @@ maven_visual() {
   exit 127
 }
 
+shaggoth_console() {
+  local repo
+  repo="$(CDPATH= cd -- "$BIN_DIR/.." && pwd)"
+
+  if [ ! -f "$repo/pyproject.toml" ] || ! grep -Fq 'name = "gpt-doug-llm"' "$repo/pyproject.toml"; then
+    printf '%s\n' "[GPT-DOUG-SWARM] Refusing Shaggoth launch outside gpt-doug-llm." >&2
+    exit 126
+  fi
+
+  if [ ! -f "$repo/gpt_zyra_shaggoth/cli.py" ]; then
+    printf '%s\n' "[GPT-DOUG-SWARM] Hardened GPT-ZYRA-Shaggoth bridge is not installed in this checkout." >&2
+    exit 127
+  fi
+
+  cd "$repo"
+  exec python3 -m gpt_zyra_shaggoth console
+}
+
 case "$ACTION" in
+  shaggoth|zyra-shaggoth)
+    shaggoth_console
+    ;;
   maven|zyra|intel)
     maven_visual
     ;;
@@ -38,9 +59,11 @@ gpt-doug-swarm status       Show swarm state
 gpt-doug-swarm off          Disable swarm state
 gpt-doug-swarm maven        Open ZYRA / MAVEN visual intelligence console
 gpt-doug-swarm zyra         Alias for maven
-gpt-doug-swarm intel        Alias for maven\ngpt-doug-swarm shaggoth     Open hardened GPT-ZYRA-Shaggoth local Mission Control
+gpt-doug-swarm intel        Alias for maven
+gpt-doug-swarm shaggoth     Open hardened GPT-ZYRA-Shaggoth local Mission Control
 
 MAVEN remains a local, human-controlled intelligence/ontology view.
+GPT-ZYRA-Shaggoth remains local-only and read-only by default.
 This launcher does not provide access to private military feeds, targeting,
 weapon control, or autonomous real-world vehicle tasking.
 EOF
