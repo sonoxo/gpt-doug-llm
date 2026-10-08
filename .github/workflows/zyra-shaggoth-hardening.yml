@@ -1,0 +1,70 @@
+name: GPT ZYRA Shaggoth hardening gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "gpt_zyra_shaggoth/**"
+      - "tests/test_gpt_zyra_shaggoth.py"
+      - "scripts/gpt-doug-swarm"
+      - "pyproject.toml"
+      - ".github/workflows/zyra-shaggoth-hardening.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "gpt_zyra_shaggoth/**"
+      - "tests/test_gpt_zyra_shaggoth.py"
+      - "scripts/gpt-doug-swarm"
+      - "pyproject.toml"
+      - ".github/workflows/zyra-shaggoth-hardening.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hardening:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile hardened bridge
+        run: |
+          python -m py_compile             gpt_zyra_shaggoth/__init__.py             gpt_zyra_shaggoth/__main__.py             gpt_zyra_shaggoth/bridge.py             gpt_zyra_shaggoth/cli.py             tests/test_gpt_zyra_shaggoth.py
+
+      - name: Run isolated hardening regression
+        run: PYTHONPATH=. python -m unittest tests.test_gpt_zyra_shaggoth -v
+
+      - name: Validate GPT-DOUG swarm launcher
+        run: bash -n scripts/gpt-doug-swarm
+
+      - name: Install local CLI without dependency resolution
+        run: python -m pip install --no-deps --no-build-isolation -e .
+
+      - name: Verify installed hardwire
+        shell: bash
+        run: |
+          set -euo pipefail
+          tmp="$(mktemp -d)"
+          gpt-zyra-shaggoth --state-dir "$tmp" verify > "$tmp/verify.json"
+          python - "$tmp/verify.json" <<'PY'
+          import json
+          import sys
+          payload = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert payload["system"] == "GPT-ZYRA-SHAGGOTH"
+          assert payload["mode"] == "LOCAL_HARDENED"
+          assert payload["ok"] is True
+          assert payload["checks"]["github_delivery_denied"] is True
+          assert payload["checks"]["network_provider_denied"] is True
+          print("GPT-ZYRA-SHAGGOTH HARDWIRE: GREEN")
+          PY
