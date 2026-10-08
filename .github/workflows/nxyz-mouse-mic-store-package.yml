@@ -56,7 +56,7 @@ jobs:
           unzip -p "dist/nxyz-mouse-mic-store-v${VERSION}.zip" manifest.json | python -m json.tool >/dev/null
 
       - name: Upload store package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: nxyz-mouse-mic-chrome-store
           path: dist/nxyz-mouse-mic-store-v*.zip

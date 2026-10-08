@@ -64,7 +64,7 @@ jobs:
           print("VA3LM defensive lock verified:", lock["lockId"])
           PY
       - name: Upload VA3LM defensive intelligence package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: va3lm-redhat-defense
           path: |

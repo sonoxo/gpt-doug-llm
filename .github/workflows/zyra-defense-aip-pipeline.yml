@@ -127,7 +127,7 @@ jobs:
           PY
 
       - name: Upload ontology export artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: zyra-defense-ontology-${{ github.sha }}
           path: zyra-defense/zyra_ontology_export.json

@@ -89,7 +89,7 @@ jobs:
           print("Glass Onion query verified")
           PY
       - name: Upload Glass Onion locked package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gpt-glassonion-master-lock
           path: |
