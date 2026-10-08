@@ -53,6 +53,39 @@ A normal local pulse reports the CLI process, 100-agent capacity, adapter,
 active capability profile, and atomic-stack validity. It does not require the
 API server to be running unless `--endpoint` is supplied.
 
+## Visual data layers
+
+Launch the live atomic data console directly from Terminal:
+
+```bash
+shaggoth visual
+```
+
+The command starts the local API on `127.0.0.1:8787` and opens:
+
+```text
+http://127.0.0.1:8787/visual
+```
+
+The console renders:
+
+- all eight atomic layers L0-L7
+- dependency and invariant inspection
+- heartbeat state
+- 100-agent capacity
+- enabled/supported capability totals
+- low/medium/high capability risk distribution
+- max fanout and execution depth
+- authorized endpoint count
+- service/fabric/governance state
+- live telemetry refresh every three seconds
+
+Machine-readable visual telemetry is available at `GET /visual/data`. The
+dashboard itself is self-contained and makes no external browser requests.
+
+Use `shaggoth visual --no-browser` when running headless. The bootstrap
+installer includes the API dependencies required by the visual console.
+
 ## Atomic layers
 
 Shaggoth now uses an eight-layer atomic execution model:
