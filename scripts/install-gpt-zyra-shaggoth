@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Restore GPT-DOUG and GPT-ZYRA-Shaggoth launchers without sudo or pip.
+set -euo pipefail
+umask 077
+
+case "${1:-}" in
+  "") CONFIGURE_SHELL=1 ;;
+  --no-shell-config) CONFIGURE_SHELL=0 ;;
+  *) printf 'usage: bash scripts/install-gpt-zyra-shaggoth [--no-shell-config]\n' >&2; exit 2 ;;
+esac
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
+if [[ ! -f "$ROOT/pyproject.toml" || ! -f "$ROOT/gpt_zyra_shaggoth/arsenal.py" ]] ||
+   ! grep -Fq 'name = "gpt-doug-llm"' "$ROOT/pyproject.toml"; then
+  printf '%s\n' "ERROR: installer must run from the updated gpt-doug-llm repository." >&2
+  exit 1
+fi
+if ! command -v python3 >/dev/null 2>&1; then
+  printf '%s\n' "ERROR: python3 is required." >&2
+  exit 127
+fi
+
+BIN_DIR="${GPTDOUG_LAUNCHER_BIN:-$HOME/.local/bin}"
+mkdir -p "$BIN_DIR"
+BACKUP="$HOME/.gpt-doug/launcher-backups/$(date -u +%Y%m%dT%H%M%SZ)-$$"
+
+install_launcher() {
+  local name="$1" path tmp
+  path="$BIN_DIR/$name"
+  tmp="$(mktemp "$BIN_DIR/.gptdoug-launcher.XXXXXX")"
+  if [[ "$name" == "gpt-doug-swarm" ]]; then
+    printf '#!/usr/bin/env bash\nset -euo pipefail\nexec bash %q "$@"\n' "$ROOT/scripts/gpt-doug-swarm" > "$tmp"
+  else
+    printf '#!/usr/bin/env bash\nset -euo pipefail\ncd -- %q\nexec python3 -m gpt_zyra_shaggoth "$@"\n' "$ROOT" > "$tmp"
+  fi
+  chmod 755 "$tmp"
+
+  # Preserve any pre-existing command (regular file or symlink) on replacement.
+  if [[ -e "$path" || -L "$path" ]]; then
+    if cmp -s "$tmp" "$path" && [[ ! -L "$path" ]]; then
+      rm -f "$tmp"
+      printf '[UNCHANGED] %s\n' "$path"
+      return 0
+    fi
+    mkdir -p "$BACKUP"
+    mv "$path" "$BACKUP/$name"
+    printf '[BACKUP] %s\n' "$BACKUP/$name"
+  fi
+  mv "$tmp" "$path"
+  printf '[INSTALLED] %s\n' "$path"
+}
+
+install_launcher gpt-doug-swarm
+install_launcher gpt-zyra-shaggoth
+
+# Make the user-level launchers win over older global installs in new zsh shells.
+if [[ "$CONFIGURE_SHELL" == 1 && "$BIN_DIR" == "$HOME/.local/bin" ]]; then
+  ZSHRC="$HOME/.zshrc"
+  BEGIN="# >>> GPT-DOUG SHAGGOTH LAUNCHERS >>>"
+  if [[ ! -f "$ZSHRC" ]]; then
+    : > "$ZSHRC"
+  fi
+  if ! grep -Fq "$BEGIN" "$ZSHRC"; then
+    mkdir -p "$BACKUP"
+    cp "$ZSHRC" "$BACKUP/zshrc.before-shaggoth"
+    cat >> "$ZSHRC" <<'ZSH'
+
+# >>> GPT-DOUG SHAGGOTH LAUNCHERS >>>
+export PATH="$HOME/.local/bin:$PATH"
+unalias gpt-doug-swarm gpt-zyra-shaggoth 2>/dev/null || true
+# <<< GPT-DOUG SHAGGOTH LAUNCHERS <<<
+ZSH
+    printf '[UPDATED] %s (backup saved)\n' "$ZSHRC"
+  fi
+fi
+
+# Validate the bridge with local-only capability checks. No remote scans or installs.
+"$BIN_DIR/gpt-zyra-shaggoth" --state-dir "$HOME/.gpt-doug/zyra-shaggoth" verify >/dev/null
+printf '%s\n' "[OK] GPT-ZYRA-Shaggoth CLI and security boundary verified."
+printf 'Launch: "%s/gpt-doug-swarm" arsenal\n' "$BIN_DIR"
