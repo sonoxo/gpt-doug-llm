@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import asdict
 
 try:
@@ -8,9 +9,11 @@ try:
 except ImportError as exc:
     raise RuntimeError("Install the API extra with: pip install -e '.[api]'") from exc
 
+from .capabilities import CAPABILITY_CATALOG
 from .config import SwarmConfig
 from .connectors import ConnectorConfig
 from .orchestrator import SwarmOrchestrator
+from .policy import CapabilityPolicy
 
 
 class RunRequest(BaseModel):
@@ -29,17 +32,14 @@ def health() -> dict:
 @app.get("/ready")
 def ready() -> dict:
     config = SwarmConfig()
-    return {
-        "status": "ready",
-        "agent_capacity": config.agent_count,
-        "adapter": config.adapter,
-    }
+    return {"status": "ready", "agent_capacity": config.agent_count, "adapter": config.adapter}
 
 
 @app.get("/status")
 def status() -> dict:
     config = SwarmConfig()
     connectors = ConnectorConfig.from_env()
+    policy = CapabilityPolicy.from_env()
     return {
         "status": "ok",
         "service": connectors.service_name,
@@ -48,10 +48,31 @@ def status() -> dict:
         "max_fanout": config.max_fanout,
         "max_depth": config.max_depth,
         "adapter": config.adapter,
+        "capability_profile": os.getenv("SHAGGOTH_CAPABILITY_PROFILE", "reasoning"),
+        "enabled_capability_count": len(policy.allowed),
+        "supported_capability_count": len(CAPABILITY_CATALOG),
         "authorized_endpoint_count": len(connectors.endpoints),
         "connector_interval_seconds": connectors.interval_seconds,
         "connector_max_retries": connectors.max_retries,
         "connector_auth_configured": bool(connectors.bearer_token),
+    }
+
+
+@app.get("/capabilities")
+def capabilities() -> dict:
+    policy = CapabilityPolicy.from_env()
+    return {
+        "profile": os.getenv("SHAGGOTH_CAPABILITY_PROFILE", "reasoning"),
+        "enabled": sorted(policy.allowed),
+        "supported": [
+            {
+                "name": spec.name,
+                "description": spec.description,
+                "risk": spec.risk.value,
+                "requires_scope": spec.requires_scope,
+            }
+            for spec in CAPABILITY_CATALOG
+        ],
     }
 
 
