@@ -8,6 +8,7 @@ on:
       - "tests/test_gpt_zyra_shaggoth.py"
       - "tests/test_gpt_zyra_defensive_arsenal.py"
       - "scripts/gpt-doug-swarm"
+      - "scripts/install-gpt-zyra-shaggoth"
       - "pyproject.toml"
       - "SECURITY.md"
       - ".github/CODEOWNERS"
@@ -19,6 +20,7 @@ on:
       - "tests/test_gpt_zyra_shaggoth.py"
       - "tests/test_gpt_zyra_defensive_arsenal.py"
       - "scripts/gpt-doug-swarm"
+      - "scripts/install-gpt-zyra-shaggoth"
       - "pyproject.toml"
       - "SECURITY.md"
       - ".github/CODEOWNERS"
@@ -67,6 +69,32 @@ jobs:
 
       - name: Validate GPT-DOUG swarm launcher
         run: bash -n scripts/gpt-doug-swarm
+
+      - name: Validate macOS launcher repair syntax
+        run: bash -n scripts/install-gpt-zyra-shaggoth
+
+      - name: Exercise launcher repair in isolated HOME
+        shell: bash
+        run: |
+          set -euo pipefail
+          temp_home="$(mktemp -d)"
+          trap 'rm -rf "$temp_home"' EXIT
+          export HOME="$temp_home"
+          mkdir -p "$HOME/.local/bin"
+          printf '#!/bin/sh\\necho stale-launcher\\n' > "$HOME/.local/bin/gpt-doug-swarm"
+          chmod 755 "$HOME/.local/bin/gpt-doug-swarm"
+          bash scripts/install-gpt-zyra-shaggoth --no-shell-config
+          "$HOME/.local/bin/gpt-doug-swarm" help | grep -Fq 'gpt-doug-swarm arsenal'
+          "$HOME/.local/bin/gpt-zyra-shaggoth" --state-dir "$HOME/verified" verify > "$HOME/verified.json"
+          python - "$HOME/verified.json" <<'PY'
+          import json
+          import sys
+          payload = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert payload["ok"] is True
+          print("SHAGGOTH MACOS LAUNCHER REPAIR: GREEN")
+          PY
+          test -n "$(find "$HOME/.gpt-doug/launcher-backups" -type f -name gpt-doug-swarm -print -quit)"
+          bash scripts/install-gpt-zyra-shaggoth --no-shell-config
 
       - name: Validate local CLI metadata
         run: |
