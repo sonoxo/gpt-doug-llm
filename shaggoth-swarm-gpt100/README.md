@@ -62,6 +62,35 @@ web.search
 
 The capability broker is provider-neutral: handlers are registered by the deployment for the systems it actually owns or is authorized to use.
 
+## Open Source Everything catalog
+
+The integration label `gpt-doug-shoggoth-anon-llm` uses the public
+`An-anonymous-coder/Open-Source-Everything` catalog as an external software
+intelligence source.
+
+The upstream repository is a curated list rather than executable agent code.
+Shaggoth therefore indexes its tool names, links, sections, and subsections with
+provenance instead of vendoring the upstream README.
+
+The adapter is pinned to upstream release `165.2026.5.13.0`, commit
+`7290f2cb9ffa7c7bba1723b7e06f726802de51be`, and records the upstream
+`GPL-3.0` license in every generated index.
+
+```bash
+shaggoth catalog source
+shaggoth catalog refresh
+shaggoth catalog search "AI Tools"
+shaggoth catalog search "Security Privacy" --limit 10
+shaggoth catalog search "Ollama" --json
+```
+
+By default the generated cache is written to
+`/tmp/shaggoth-catalogs/open-source-everything.json`. Override it with
+`SHAGGOTH_OSE_CACHE` or `--cache`. Generated indexes are runtime data and
+are not committed to this repository.
+
+See `THIRD_PARTY_SOURCES.md` for attribution and redistribution notes.
+
 ## Safety model
 
 The default profile is **offline and non-destructive**. External access, subprocess execution, file writes, credentials, and integrations are disabled unless selected through a capability profile or explicit extra grants.
