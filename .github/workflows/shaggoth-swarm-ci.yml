@@ -59,6 +59,8 @@ jobs:
           curl -fsS http://127.0.0.1:8787/ready
           curl -fsS http://127.0.0.1:8787/capabilities
           curl -fsS http://127.0.0.1:8787/layers
+          curl -fsS http://127.0.0.1:8787/visual/data
+          curl -fsS http://127.0.0.1:8787/visual | grep -q 'SHAGGOTH // VISUAL DATA LAYERS'
       - name: Cleanup
         if: always()
         run: docker rm -f shaggoth-ci || true
