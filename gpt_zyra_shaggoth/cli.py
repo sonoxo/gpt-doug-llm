@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Sequence
 
+from .arsenal import serve_defensive_arsenal
 from .bridge import ZyraShaggothBridge
 
 
@@ -30,6 +31,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     console = sub.add_parser("console", help="Run the ZYRA Mission Control UI on loopback only.")
     console.add_argument("--port", type=int, default=8790)
+
+    arsenal = sub.add_parser("arsenal", help="Run the local defensive visual arsenal.")
+    arsenal.add_argument("--port", type=int, default=8791)
     return parser
 
 
@@ -49,6 +53,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command == "console":
         bridge.serve_console(port=args.port)
+        return 0
+    if args.command == "arsenal":
+        serve_defensive_arsenal(bridge, port=args.port)
         return 0
     raise AssertionError("unreachable")
 
