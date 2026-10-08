@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable
 
+from .atomic import AtomicEnvelope, AtomicLayer
 from .capabilities import CAPABILITIES_BY_NAME
 from .policy import CapabilityPolicy
 
@@ -44,3 +45,46 @@ class CapabilityBroker:
         if registered is None:
             raise LookupError(f"no handler registered for capability: {name}")
         return registered.handler(*args, **kwargs)
+
+    def invoke_atomic(
+        self,
+        envelope: AtomicEnvelope,
+        name: str,
+        *args: Any,
+        scope: str | None = None,
+        **kwargs: Any,
+    ) -> tuple[AtomicEnvelope, Any]:
+        """Invoke one capability as an atom and return a molecule result envelope.
+
+        Arguments and return values are intentionally not copied into the envelope.
+        The envelope records only execution metadata, preserving traceability without
+        turning the audit path into a secret/data exfiltration channel.
+        """
+
+        if envelope.layer is AtomicLayer.PARTICLE:
+            atom = envelope.promote(
+                AtomicLayer.ATOM,
+                kind="capability-call",
+                payload={
+                    "capability": name,
+                    "scope_present": scope is not None,
+                },
+            )
+        elif envelope.layer is AtomicLayer.ATOM:
+            atom = envelope
+        else:
+            raise ValueError(
+                "atomic capability invocation requires a particle or atom envelope"
+            )
+
+        result = self.invoke(name, *args, scope=scope, **kwargs)
+        molecule = atom.promote(
+            AtomicLayer.MOLECULE,
+            kind="capability-result",
+            payload={
+                "capability": name,
+                "status": "succeeded",
+                "scope_present": scope is not None,
+            },
+        )
+        return molecule, result
