@@ -5,6 +5,7 @@ from dataclasses import asdict
 
 try:
     from fastapi import FastAPI
+    from fastapi.responses import HTMLResponse
     from pydantic import BaseModel, Field
 except ImportError as exc:
     raise RuntimeError("Install the API extra with: pip install -e '.[api]'") from exc
@@ -15,6 +16,7 @@ from .config import SwarmConfig
 from .connectors import ConnectorConfig
 from .orchestrator import SwarmOrchestrator
 from .policy import CapabilityPolicy
+from .visual import build_visual_data, render_visual_dashboard
 
 
 class RunRequest(BaseModel):
@@ -60,6 +62,16 @@ def status() -> dict:
         "atomic_stack_valid": manifest["valid"],
         "atomic_layer_count": manifest["layer_count"],
     }
+
+
+@app.get("/visual", response_class=HTMLResponse)
+def visual() -> HTMLResponse:
+    return HTMLResponse(render_visual_dashboard(), headers={"Cache-Control": "no-store"})
+
+
+@app.get("/visual/data")
+def visual_data() -> dict:
+    return build_visual_data()
 
 
 @app.get("/layers")
