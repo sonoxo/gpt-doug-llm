@@ -26,7 +26,8 @@ mkdir -p "$BIN_DIR"
 BACKUP="$HOME/.gpt-doug/launcher-backups/$(date -u +%Y%m%dT%H%M%SZ)-$$"
 
 install_launcher() {
-  local name="$1" path="$BIN_DIR/$name" tmp
+  local name="$1" path tmp
+  path="$BIN_DIR/$name"
   tmp="$(mktemp "$BIN_DIR/.gptdoug-launcher.XXXXXX")"
   if [[ "$name" == "gpt-doug-swarm" ]]; then
     printf '#!/usr/bin/env bash\nset -euo pipefail\nexec bash %q "$@"\n' "$ROOT/scripts/gpt-doug-swarm" > "$tmp"
