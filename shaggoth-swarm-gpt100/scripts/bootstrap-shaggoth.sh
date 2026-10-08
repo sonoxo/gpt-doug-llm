@@ -14,7 +14,7 @@ command -v python3 >/dev/null 2>&1 || {
 mkdir -p "$(dirname "$VENV_DIR")" "$BIN_DIR"
 python3 -m venv "$VENV_DIR"
 "$VENV_DIR/bin/python" -m pip install --upgrade pip setuptools wheel
-"$VENV_DIR/bin/python" -m pip install -e "$PROJECT_DIR"
+"$VENV_DIR/bin/python" -m pip install -e "${PROJECT_DIR}[api]"
 ln -sf "$VENV_DIR/bin/shaggoth" "$BIN_DIR/shaggoth"
 
 PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
