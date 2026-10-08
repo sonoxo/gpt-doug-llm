@@ -24,7 +24,8 @@ maven_visual() {
   exit 127
 }
 
-shaggoth_console() {
+shaggoth_launch() {
+  local mode="${1:-console}"
   local repo
   repo="$(CDPATH= cd -- "$BIN_DIR/.." && pwd)"
 
@@ -39,12 +40,15 @@ shaggoth_console() {
   fi
 
   cd "$repo"
-  exec python3 -m gpt_zyra_shaggoth console
+  exec python3 -m gpt_zyra_shaggoth "$mode"
 }
 
 case "$ACTION" in
   shaggoth|zyra-shaggoth)
-    shaggoth_console
+    shaggoth_launch console
+    ;;
+  arsenal|defense|shield)
+    shaggoth_launch arsenal
     ;;
   maven|zyra|intel)
     maven_visual
@@ -61,6 +65,9 @@ gpt-doug-swarm maven        Open ZYRA / MAVEN visual intelligence console
 gpt-doug-swarm zyra         Alias for maven
 gpt-doug-swarm intel        Alias for maven
 gpt-doug-swarm shaggoth     Open hardened GPT-ZYRA-Shaggoth local Mission Control
+gpt-doug-swarm arsenal      Open defensive visual arsenal
+gpt-doug-swarm defense      Alias for arsenal
+gpt-doug-swarm shield       Alias for arsenal
 
 MAVEN remains a local, human-controlled intelligence/ontology view.
 GPT-ZYRA-Shaggoth remains local-only and read-only by default.
