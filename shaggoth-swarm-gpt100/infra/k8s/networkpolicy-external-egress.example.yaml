@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-approved-external-egress
+  namespace: shaggoth-system
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    # Replace the documentation-only TEST-NET address below with exact approved ranges.
+    - to:
+        - ipBlock:
+            cidr: 203.0.113.10/32
+      ports:
+        - protocol: TCP
+          port: 443

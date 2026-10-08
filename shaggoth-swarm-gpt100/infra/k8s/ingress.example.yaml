@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shaggoth-api
+  namespace: shaggoth-system
+spec:
+  rules:
+    - host: shaggoth.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: shaggoth-api
+                port:
+                  number: 8787
