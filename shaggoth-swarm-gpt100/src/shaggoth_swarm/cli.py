@@ -3,8 +3,21 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from pathlib import Path
 
 from .capabilities import CAPABILITY_CATALOG, PROFILES
+from .catalogs.open_source_everything import (
+    DEFAULT_CACHE as OSE_DEFAULT_CACHE,
+    SOURCE_COMMIT as OSE_SOURCE_COMMIT,
+    SOURCE_HOST as OSE_SOURCE_HOST,
+    SOURCE_LICENSE as OSE_SOURCE_LICENSE,
+    SOURCE_MIRROR as OSE_SOURCE_MIRROR,
+    SOURCE_REPOSITORY as OSE_SOURCE_REPOSITORY,
+    SOURCE_VERSION as OSE_SOURCE_VERSION,
+    load_cache as load_ose_cache,
+    refresh_cache as refresh_ose_cache,
+    search_index as search_ose_index,
+)
 from .config import SwarmConfig
 from .connectors import AuthorizedConnectorMonitor, ConnectorConfig
 from .orchestrator import SwarmOrchestrator
@@ -26,14 +39,88 @@ def build_parser() -> argparse.ArgumentParser:
     caps = sub.add_parser("capabilities", help="show supported capabilities and active profile")
     caps.add_argument("--json", action="store_true", help="emit JSON")
 
+    catalog = sub.add_parser("catalog", help="query external open-source catalog sources")
+    catalog_sub = catalog.add_subparsers(dest="catalog_command", required=True)
+
+    catalog_source = catalog_sub.add_parser("source", help="show Open Source Everything provenance")
+    catalog_source.add_argument("--json", action="store_true", help="emit JSON")
+
+    catalog_refresh = catalog_sub.add_parser("refresh", help="refresh the Open Source Everything index")
+    catalog_refresh.add_argument("--cache", default=str(OSE_DEFAULT_CACHE), help="cache JSON path")
+    catalog_refresh.add_argument("--timeout", type=float, default=30.0, help="request timeout in seconds")
+
+    catalog_search = catalog_sub.add_parser("search", help="search the Open Source Everything index")
+    catalog_search.add_argument("query", help="space-separated search terms")
+    catalog_search.add_argument("--cache", default=str(OSE_DEFAULT_CACHE), help="cache JSON path")
+    catalog_search.add_argument("--limit", type=int, default=20, help="maximum results, 1-100")
+    catalog_search.add_argument(
+        "--refresh",
+        action="store_true",
+        help="refresh from the pinned upstream snapshot before searching",
+    )
+    catalog_search.add_argument("--json", action="store_true", help="emit JSON")
+
     sub.add_parser("status", help="show configured service and swarm capacity")
     return parser
+
+
+def _catalog_source_payload() -> dict:
+    return {
+        "source": "Open Source Everything",
+        "repository": OSE_SOURCE_REPOSITORY,
+        "canonical_host": OSE_SOURCE_HOST,
+        "github_mirror": OSE_SOURCE_MIRROR,
+        "commit": OSE_SOURCE_COMMIT,
+        "version": OSE_SOURCE_VERSION,
+        "license": OSE_SOURCE_LICENSE,
+    }
 
 
 def main() -> int:
     args = build_parser().parse_args()
     config = SwarmConfig()
     policy = CapabilityPolicy.from_env()
+
+    if args.command == "catalog":
+        if args.catalog_command == "source":
+            payload = _catalog_source_payload()
+            if args.json:
+                print(json.dumps(payload, indent=2))
+            else:
+                for key, value in payload.items():
+                    print(f"{key}: {value}")
+            return 0
+
+        cache = Path(args.cache)
+        if args.catalog_command == "refresh":
+            index = refresh_ose_cache(cache, timeout=args.timeout)
+            print(
+                json.dumps(
+                    {
+                        "cache": str(cache),
+                        "entry_count": index["entry_count"],
+                        "source": index["source"],
+                    },
+                    indent=2,
+                )
+            )
+            return 0
+
+        if args.refresh or not cache.exists():
+            index = refresh_ose_cache(cache)
+        else:
+            index = load_ose_cache(cache)
+        results = search_ose_index(index, args.query, limit=args.limit)
+        if args.json:
+            print(json.dumps({"query": args.query, "results": results}, indent=2))
+        else:
+            print(f"results={len(results)} source={index['source']['repository']}")
+            for entry in results:
+                section = entry.get("section", "")
+                subsection = entry.get("subsection", "")
+                category = f"{section} / {subsection}" if subsection else section
+                print(f"- {entry['name']} [{category}] {entry['url']}")
+        return 0
 
     if args.command == "capabilities":
         payload = {
@@ -83,6 +170,7 @@ def main() -> int:
                     "connector_interval_seconds": connectors.interval_seconds,
                     "connector_max_retries": connectors.max_retries,
                     "connector_auth_configured": bool(connectors.bearer_token),
+                    "open_source_everything_cache": str(OSE_DEFAULT_CACHE),
                 },
                 indent=2,
             )
