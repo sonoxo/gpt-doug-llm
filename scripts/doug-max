@@ -51,6 +51,11 @@ case "$first_arg_lc" in
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
     ;;
+  credential-ontology|kraken-keys)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m kraken_jutsu.credential_ontology "$@"
+    ;;
   navier-stokes-triads)
     shift
     cd "$ROOT"
