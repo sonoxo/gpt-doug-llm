@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 
 from .bridge import read_legacy_memory, read_ontology
+from .dashboard import run_dashboard
+from .federation import list_nodes
 from .http_api import PinealHTTPServer
 from .kraken import KrakenController, Telemetry
 from .store import PinealStore
@@ -71,6 +73,20 @@ def parser() -> argparse.ArgumentParser:
     telemetry.add_argument("--water-fraction", type=float, default=1.0)
     sub.add_parser("audit", help="verify audit hash chain")
     sub.add_parser("heartbeat", help="expire memories and append an audit checkpoint")
+    sub.add_parser("federation", help="list offline provider templates and real access status")
+    observe = sub.add_parser("observe", help="append an approved local aggregate or synthetic observation")
+    observe.add_argument("node")
+    observe.add_argument("metric")
+    observe.add_argument("value", type=float)
+    observe.add_argument("--unit", default="count")
+    observe.add_argument("--source", required=True, help="specific provenance for operator-provided input")
+    observe.add_argument("--synthetic", action="store_true")
+    dashboard = sub.add_parser("dashboard", help="show ZYRA federation terminal cortex")
+    dashboard.add_argument("--demo", action="store_true", help="clearly labeled synthetic signals")
+    dashboard.add_argument("--watch", action="store_true", help="redraw until Ctrl+C")
+    dashboard.add_argument("--interval", type=float, default=2.0, help="refresh seconds")
+    dashboard.add_argument("--frames", type=int, help="limit frames for noninteractive runs")
+    dashboard.add_argument("--no-color", action="store_true")
     serve = sub.add_parser("serve", help="serve authenticated loopback HTTP API")
     serve.add_argument("--port", type=int, default=8765)
     return p
@@ -119,6 +135,17 @@ def main(argv: list[str] | None = None) -> int:
             output = store.verify_audit()
         elif args.cmd == "heartbeat":
             output = store.heartbeat()
+        elif args.cmd == "federation":
+            output = {"nodes": list_nodes(), "connected_count": 0,
+                      "observation_mode": "local-only", "no_remote_data": True}
+        elif args.cmd == "observe":
+            output = store.record_observation(node=args.node, metric=args.metric,
+                                              value=args.value, unit=args.unit,
+                                              source=args.source, synthetic=args.synthetic)
+        elif args.cmd == "dashboard":
+            return run_dashboard(store, demo=args.demo, watch=args.watch,
+                                 interval=args.interval, frames=args.frames,
+                                 color=False if args.no_color else None)
         elif args.cmd == "serve":
             token = os.environ.get("PINEAL_TOKEN") or ensure_token(home).read_text(encoding="utf-8").strip()
             with PinealHTTPServer(("127.0.0.1", args.port), store, token) as server:

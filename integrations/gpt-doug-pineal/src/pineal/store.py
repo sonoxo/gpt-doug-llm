@@ -96,6 +96,16 @@ class PinealStore:
                     water_fraction REAL NOT NULL, mode TEXT NOT NULL,
                     rationale TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS federation_observations (
+                    seq INTEGER PRIMARY KEY AUTOINCREMENT,
+                    stamp TEXT NOT NULL,
+                    node TEXT NOT NULL, metric TEXT NOT NULL,
+                    value REAL NOT NULL, unit TEXT NOT NULL,
+                    source TEXT NOT NULL, kind TEXT NOT NULL,
+                    classification TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_federation_node_seq
+                    ON federation_observations(node, seq);
             """)
 
     @staticmethod
@@ -249,6 +259,46 @@ class PinealStore:
         with self._connect() as db:
             row = db.execute("SELECT * FROM telemetry ORDER BY seq DESC LIMIT 1").fetchone()
             return dict(row) if row else None
+
+    def record_observation(self, *, node: str, metric: str, value: float, unit: str,
+                           source: str, synthetic: bool = False, classification: str = "PUBLIC",
+                           actor: str = "local") -> dict[str, Any]:
+        """Append one policy-gated local/synthetic observation with audit proof."""
+        from .federation import validate_observation
+        record = validate_observation(node, metric, value, unit, source,
+                                      synthetic=synthetic, classification=classification)
+        actor = validate_text("actor", actor, 80)
+        stamp = utcnow()
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            cursor = db.execute(
+                "INSERT INTO federation_observations "
+                "(stamp,node,metric,value,unit,source,kind,classification) "
+                "VALUES (?,?,?,?,?,?,?,?)",
+                (stamp, record["node"], record["metric"], record["value"],
+                 record["unit"], record["source"], record["kind"], record["classification"]))
+            seq = cursor.lastrowid
+            self._append_audit(db, actor, "federation_observation", str(seq),
+                               {"node": record["node"], "metric": record["metric"],
+                                "kind": record["kind"]})
+        return {"seq": seq, "stamp": stamp, **record}
+
+    def list_observations(self, *, node: str | None = None,
+                          limit: int = 100) -> list[dict[str, Any]]:
+        """Local observations only, with no remote source lookup."""
+        from .federation import list_nodes
+        if type(limit) is not int or not 1 <= limit <= 500:
+            raise ValueError("observation limit must be an integer from 1 to 500")
+        if node is not None and node not in {n["id"] for n in list_nodes()}:
+            raise ValueError("unrecognized federation node")
+        with self._connect() as db:
+            if node is not None:
+                rows = db.execute("SELECT * FROM federation_observations WHERE node=? "
+                                  "ORDER BY seq DESC LIMIT ?", (node, limit)).fetchall()
+            else:
+                rows = db.execute("SELECT * FROM federation_observations "
+                                  "ORDER BY seq DESC LIMIT ?", (limit,)).fetchall()
+        return [dict(r) for r in rows]
 
     def heartbeat(self) -> dict[str, Any]:
         """Prune expired memory; no external activity or background execution."""

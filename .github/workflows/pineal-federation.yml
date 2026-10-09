@@ -1,0 +1,40 @@
+name: PINEAL Federation Checks
+
+on:
+  push:
+    branches: [main, feature/gpt-doug-pineal-mvp]
+    paths:
+      - 'integrations/gpt-doug-pineal/**'
+      - '.github/workflows/pineal-federation.yml'
+  pull_request:
+    paths:
+      - 'integrations/gpt-doug-pineal/**'
+      - '.github/workflows/pineal-federation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install offline-capable Pineal Python package
+        working-directory: integrations/gpt-doug-pineal
+        run: python -m pip install -e '.[test]'
+      - name: Run full Pineal tests
+        working-directory: integrations/gpt-doug-pineal
+        run: python -m pytest -q
+      - name: Verify demo is visibly synthetic and never a provider connection
+        run: |
+          pineal --home "$RUNNER_TEMP/pineal" federation > "$RUNNER_TEMP/federation.json"
+          pineal --home "$RUNNER_TEMP/pineal" dashboard --demo --frames 1 --no-color > "$RUNNER_TEMP/dashboard.txt"
+          grep -q 'SYNTHETIC DEMONSTRATION' "$RUNNER_TEMP/dashboard.txt"
+          grep -q 'EXTERNAL CONNECTIONS: 0 /' "$RUNNER_TEMP/dashboard.txt"

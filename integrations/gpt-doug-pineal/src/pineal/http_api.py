@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 from .bridge import read_legacy_memory, read_ontology
+from .federation import list_nodes
 from .kraken import KrakenController, Telemetry
 from .store import ConflictError, NotFoundError, PinealStore
 
@@ -98,6 +99,16 @@ class PinealHandler(BaseHTTPRequestHandler):
                                    "physical_brain_io": False}
         if path == "/v1/audit/verify":
             return HTTPStatus.OK, self.server.store.verify_audit()
+        if path == "/v1/federation":
+            nodes = list_nodes()
+            return HTTPStatus.OK, {
+                "nodes": nodes, "connected_count": 0,
+                "observation_mode": "local-only",
+                "samples": self.server.store.list_observations(limit=40),
+                "no_live_provider_connections": True,
+                "defense_hardware_control": False,
+                "human_brain_io": False,
+            }
         if path == "/v1/telemetry":
             return HTTPStatus.OK, {"latest": self.server.store.latest_telemetry()}
         if path.startswith("/v1/memories/"):

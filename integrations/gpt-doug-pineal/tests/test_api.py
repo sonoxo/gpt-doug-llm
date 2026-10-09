@@ -74,3 +74,14 @@ def test_post_cannot_change_existing_memory(api):
             "subject": "mine", "predicate": "purpose", "value": "malicious", "source": "human"})
     assert exc.value.code == 400
     assert send(api, f"/v1/memories/{original['id']}")[1]["value"] == "original"
+
+
+def test_federation_api_requires_auth_and_never_claims_connection(api):
+    with pytest.raises(HTTPError) as exc:
+        send(api, '/v1/federation', auth=False)
+    assert exc.value.code == 401
+    _, payload = send(api, '/v1/federation')
+    assert payload['connected_count'] == 0
+    assert any(n['id'] == 'tesla' and n['connected'] is False for n in payload['nodes'])
+    assert payload['observation_mode'] == 'local-only'
+    assert payload['samples'] == []
