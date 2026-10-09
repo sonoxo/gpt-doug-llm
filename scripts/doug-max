@@ -18,7 +18,7 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  brain-doctor|doctor|brain-status|matrix|brain-recall)
+  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads)
     read_only_mode=1
     ;;
   brain)
@@ -50,6 +50,18 @@ case "$first_arg_lc" in
   invention-lab)
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
+    ;;
+  navier-stokes-triads)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- demo; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.navier_stokes_triads "$@"
+    ;;
+  navier-stokes-lab)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- demo; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.navier_stokes_beltrami "$@"
     ;;
   singularity-lab)
     shift
