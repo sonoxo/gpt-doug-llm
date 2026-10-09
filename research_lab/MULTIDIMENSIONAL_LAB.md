@@ -25,7 +25,7 @@ bash scripts/doug-max math-lattice verify certificate.json
 python3 -m unittest discover -s research_lab/tests -p 'test_multidimensional.py' -v
 ~~~
 
-Alternatively, run as a module: \`python3 -m research_lab.multidimensional demo\`.
+Alternatively, run as a module: `python3 -m research_lab.multidimensional demo`.
 
 The CLI returns JSON. Analyze exits 0 for proven stability, 1 for INCONCLUSIVE, 2 for invalid input; the independent *replay* command exits 0 only when the entire report recomputes exactly. Its SHA-256 field is a content digest, not a signature or attestation of external facts.
 
@@ -40,9 +40,9 @@ Input schema:
 }
 ~~~
 
-- \`mode\`: \`discrete\` or \`continuous\`.
+- `mode`: `discrete` or `continuous`.
 - Matrix coefficients: integer or exact rational strings; **no floating-point input**.
-- Maximum matrix dimension: 6. Maximum search radius: 5. Maximum evaluations: 100,000, with deterministic traversal and an explicit \`SEARCH_LIMIT_REACHED\` outcome.
+- Maximum matrix dimension: 6. Maximum search radius: 5. Maximum evaluations: 100,000, with deterministic traversal and an explicit `SEARCH_LIMIT_REACHED` outcome.
 - File input is capped at 64 KiB and matrix coefficient numerators/denominators at \(10^6\).
 
 ## Independently checked demonstration
@@ -71,6 +71,6 @@ This is transient Euclidean amplification in a provably stable system. SymPy 1.1
 
 ## Evidence ontology
 
-The accompanying [multidimensional_ontology.json](multidimensional_ontology.json) describes \`RationalLinearModel\`, \`LyapunovCertificate\`, \`FiniteLatticeExperiment\`, \`AmplificationWitness\`, and \`EvidenceRecord\` types. This schema is **not** automatically merged into GPT-Doug's canonical authority ontology and does not grant actions or external access.
+The accompanying [multidimensional_ontology.json](multidimensional_ontology.json) describes `RationalLinearModel`, `LyapunovCertificate`, `FiniteLatticeExperiment`, `AmplificationWitness`, and `EvidenceRecord` types. This schema is **not** automatically merged into GPT-Doug's canonical authority ontology and does not grant actions or external access.
 
 The research record must maintain the distinction between a mathematical certificate, an empirical grid result, an unverified hypothesis, and a claim about real-world observations. Generalizing to nonlinear/PDE systems requires separately stated hypotheses, independent proofs and expert review.
