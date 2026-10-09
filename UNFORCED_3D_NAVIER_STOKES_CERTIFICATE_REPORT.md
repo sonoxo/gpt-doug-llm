@@ -79,3 +79,29 @@ The arbitrary-data 3D problem involves interactions between different curl eigen
 - Classical ABC/Beltrami flow exact solutions: https://users.dma.unipi.it/berselli/html/papers/tg.pdf
 
 This report and its computational certificate are a reproducible research baseline, not mathematical priority or independent formal proof of a new statement.
+
+## Exact scale-interaction obstruction and instantaneous enstrophy growth
+
+The same proof environment also computes the Leray-projected nonlinear Fourier term for *arbitrary finite divergence-free real Fourier fields*, without assuming curl eigenstructure. A pair of individually exact Beltrami eigenfields at wavenumbers 1 and 2 generates four nonzero projected nonlinear Fourier modes when superposed. Their individual nonlinear pressure-projected terms vanish but the cross interactions do not.
+
+A separate 10-mode, fully 3-dimensional Fourier polynomial is supplied in `research_lab/examples/enstrophy_growth_initial_data.json`. The exact quadratic and cubic invariants of this *base* datum are:
+
+    sum_k |a_k|^2 = 64
+    sum_k |k|^2 |a_k|^2 = 84
+    sum_k |k|^4 |a_k|^2 = 124
+    sum_k |k|^2 conj(a_k) dot [P((V dot grad)V)]_k = -20.
+
+The nonlinear energy transfer itself sums to exactly 0, as it must for divergence-free periodic flow. Scale the velocity by 10 and take viscosity nu=1. If `Y(t)=int_T3 |grad(u)|^2` and `K(t)=int_T3 |u|^2/2`, the exact Navier-Stokes identities at the initial time give
+
+    (dK/dt)(0) = -8400*(2*pi)^3 < 0,
+    (dY/dt)(0) = 15200*(2*pi)^3 > 0.
+
+Therefore some smooth unforced 3D data can have *strictly increasing gradient norm* at the initial time even as kinetic energy strictly decreases. This is a standard possibility in viscous 3D fluid dynamics, **not** finite-time blow-up or a novel regularity criterion. An independent SymPy calculation reproduced the four base invariants and the exact two derivatives.
+
+Reproduce this local finite-Fourier check with:
+
+    python3 -m research_lab.navier_stokes_triads demo
+    python3 -m research_lab.navier_stokes_triads growth research_lab/examples/enstrophy_growth_initial_data.json --amplitude 10 --nu 1
+    python3 -m research_lab.navier_stokes_triads verify-growth exact-initial-growth-certificate.json
+
+The initial-derivative calculation uses classical local smooth existence for smooth periodic data. It makes no assertion about positive times beyond an initial sufficiently small interval, let alone a singularity.
