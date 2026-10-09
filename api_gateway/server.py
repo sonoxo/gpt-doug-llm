@@ -18,11 +18,11 @@ from __future__ import annotations
 import json
 import os
 import secrets
-import time
 import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse, parse_qs
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 from observability.prometheus_aws.metrics import GatewayMetrics
 
