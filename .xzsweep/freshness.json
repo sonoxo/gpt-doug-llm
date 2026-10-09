@@ -1,8 +1,30 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-10-08T00:08:06Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-10-08T01:02:36Z",
+  "due_files_reviewed": 21,
+  "due_paths": [
+    "ORGANOID_INTELLIGENCE_PROJECT.md",
+    "eagleeye-cloud/shoggoth.html",
+    "eagleeye-cloud/sonoxo-stack.json",
+    "shaggoth-swarm-gpt100/.github/workflows/ci.yml",
+    "shaggoth-swarm-gpt100/.gitignore",
+    "shaggoth-swarm-gpt100/CONTRIBUTING.md",
+    "shaggoth-swarm-gpt100/LICENSE",
+    "shaggoth-swarm-gpt100/SECURITY.md",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/__init__.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/base.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/mock.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/openai_compatible.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/capabilities.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/config.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/models.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/policy.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/registry.py",
+    "shaggoth-swarm-gpt100/tests/test_capability_profiles.py",
+    "shaggoth-swarm-gpt100/tests/test_orchestrator.py",
+    "shaggoth-swarm-gpt100/tests/test_policy.py",
+    "shaggoth-swarm-gpt100/tests/test_registry.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1142,11 +1164,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-07T00:54:44Z",
-      "reviewed_at": "2026-10-08T00:58:17Z",
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "4853b24ca5a6cf36a6bac85f1b4762b554c87f8faabf17ac774241bb6a739379",
       "size": 2971,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "PLATFORM_INTEGRATION.md": {
       "actions": [],
@@ -5087,26 +5109,28 @@
       "was_due": false
     },
     "eagleeye-cloud/shoggoth.html": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:57:22Z",
-      "reviewed_at": null,
-      "sha256": "d2d0383ec06eb53474f27f00a292f4a272d0a187973ed2ea49a6588c54f29f88",
-      "size": 9548,
+      "reviewed_at": "2026-10-09T01:02:36Z",
+      "sha256": "7ae8093be31e0708fdc14b690f14b5b434f3444ec282d35810d8b9df9ac2ea2e",
+      "size": 9549,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "eagleeye-cloud/sonoxo-stack.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:38:55Z",
-      "reviewed_at": "2026-10-08T00:38:15Z",
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "73f259bff5f6ec34f17c734c9bc92325b420a3bf7a01880bbca5f0e567d6cd78",
       "size": 1995,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "eagleeye-cloud/sonoxo-systems.html": {
       "actions": [],
@@ -10047,6 +10071,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/RESEARCH_REPORT_2026-10-08.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:12:14Z",
+      "reviewed_at": null,
+      "sha256": "18111de98c2b761eba88f3967c7ca5f205681c30acf77313a41a2ef5b5dc8fad",
+      "size": 6101,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/SINGULARITY_LAB.md": {
       "actions": [],
       "binary": false,
@@ -10201,6 +10236,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/singularity_quadratic.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:11:52Z",
+      "reviewed_at": null,
+      "sha256": "c017d7a1941b1af26a69efa7f970392c0ff6d973567c5cbec4aa6fea27c808f0",
+      "size": 4908,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/singularity_sos.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:11:50Z",
+      "reviewed_at": null,
+      "sha256": "3f70771d8059805b7cce60da01dc557c6f5d7f53c72e14496eeb8a2da7540298",
+      "size": 10424,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/tests/test_cte.py": {
       "actions": [],
       "binary": false,
@@ -10264,6 +10321,28 @@
       "reviewed_at": null,
       "sha256": "2f9960e8c9b603309346387317b5de7a0929b5623ebbcad61e77669d54d427de",
       "size": 5220,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/tests/test_singularity_quadratic.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:11:56Z",
+      "reviewed_at": null,
+      "sha256": "5aa09f5dd6a6da7b80d09fe89b7da490fffb1706d21cd62259b10d335d60e937",
+      "size": 5702,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/tests/test_singularity_sos.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:11:54Z",
+      "reviewed_at": null,
+      "sha256": "04d61f4ebbd9094e980aef915bedc4c0c3026f38dcc237744190c34898f23714",
+      "size": 8386,
       "validation_issues": [],
       "was_due": false
     },
@@ -11744,11 +11823,11 @@
     "scripts/doug-max": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-26T01:15:55Z",
-      "reviewed_at": "2026-10-08T12:04:01Z",
-      "sha256": "630fe00954e809c07845f85393bf8c9fe4bf196eded02b80c3f178081cd3dcde",
-      "size": 4808,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T00:12:22Z",
+      "reviewed_at": null,
+      "sha256": "7993838075294d7430a322eecfa4f49a68ffb7b293d9c9a7b2622782e8c6eb55",
+      "size": 5575,
       "validation_issues": [],
       "was_due": false
     },
@@ -12978,33 +13057,33 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:34:47Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "b10a3de210e1edf168c48e64047fcc63575b5eec198c92793fbc1b9f4f55f8a4",
       "size": 334,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/.gitignore": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:34:49Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "7ab0a91906c034dde4167389e8d04e0ca28f9521ed48d0661f48a10b9b478afa",
       "size": 113,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/CONTRIBUTING.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:34Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "63e735a98a8adcb9dfaa54e7873f0ea965de7b5edeb2218390e4edca9a2ddaa6",
       "size": 274,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/Dockerfile": {
       "actions": [],
@@ -13022,11 +13101,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:36Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "49f39e09027648d15bd03dad64c811caa29f4e3b7f64d7e3dd9a9737213ce09b",
       "size": 1063,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/README.md": {
       "actions": [],
@@ -13044,11 +13123,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:31Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "4d4a05c2394320a7f259d56cb8154afaabb20576fd710b24499c8ecae3e6ffa1",
       "size": 863,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/THIRD_PARTY_SOURCES.md": {
       "actions": [],
@@ -13308,44 +13387,44 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:51Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "f62f62946a4c37481c5002eecac28097aaf466744c20e10d210857def072c998",
       "size": 186,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/base.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "1420f5a5d313100bb822b002aa5a2ab2fb96cf197a79c7c6d88f258d305a414a",
       "size": 262,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/mock.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:55Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "7b33fc92eae312828d092abb0817f4a22f4db7f3befe4b5bc863b419f1255785",
       "size": 312,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/openai_compatible.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "66627a43b5315363a986dd637ca6d96a45a6efc2c347c45745003e6102139d17",
       "size": 1743,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/api.py": {
       "actions": [],
@@ -13385,11 +13464,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T01:01:17Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "e04aa9c14a71fca5c6ee3703ceefa9489270dd4d77ed49a9b4ec12554dd1d6b4",
       "size": 4923,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/catalogs/__init__.py": {
       "actions": [],
@@ -13429,11 +13508,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:34:58Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "d519d848115cfa7bb5f0e7d598d8ff05ece82194defc6ed8250563d7d8214e5f",
       "size": 1352,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/connectors.py": {
       "actions": [],
@@ -13462,11 +13541,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:35:00Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "112eacd62e982bd8c486ed412230da1e062be6dc75c775dfaad4e9a0c88182bd",
       "size": 1573,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/orchestrator.py": {
       "actions": [],
@@ -13484,22 +13563,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T01:01:22Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "3796540892b7c977423726dc22f2f84031346d00a33c5d3a8f6aef7def1787c3",
       "size": 2164,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/registry.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:36:41Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "faacc0915c2db8fc841f66e742504e8ee88e8c245bd9f1b58438cb7bb8780c05",
       "size": 905,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_atomic.py": {
       "actions": [],
@@ -13528,11 +13607,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T01:01:20Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "ed0c1a1cb22c1e41138f7e3af591140be7c51ebf0db54ba8f4695040acfd65eb",
       "size": 1743,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_connectors.py": {
       "actions": [],
@@ -13572,33 +13651,33 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:37:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "590808cacc4cebc71fb77bd72649b897c31f64aeb2d07890669b4764047f75a5",
       "size": 847,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_policy.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:37:04Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "0de6a70b225479caf697d5aedb54af77ec07670d690c3a33393b43eb5d0a1e08",
       "size": 496,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_registry.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-08T00:37:01Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-09T01:02:36Z",
       "sha256": "58a541a5f9d86643882f15a7bfccc6b683de425034ef150d526227584b7d304e",
       "size": 462,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shell/gpt-doug-fall.zsh": {
       "actions": [],
@@ -19553,11 +19632,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-09T00:08:06Z",
+  "generated_at": "2026-10-09T01:02:36Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "eagleeye-cloud/shoggoth.html"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1777,
+  "tracked_files_reviewed": 1782,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
