@@ -127,3 +127,11 @@ def test_constant_denominator_still_supported(engine):
 def test_constant_identity_verifies_without_poly_generators(engine):
     assert engine.verify("2=2")["status"] == "verified"
     assert engine.verify("3=2")["status"] == "refuted"
+
+
+def test_high_degree_rejected_before_expensive_polynomial_expansion(engine, monkeypatch):
+    def forbidden_poly(*args, **kwargs):
+        raise AssertionError("high degree should be screened before SymPy polynomial expansion")
+    monkeypatch.setattr(engine.sp, "Poly", forbidden_poly)
+    out = engine.solve(["x^8 - 3 = 0"])
+    assert out["status"] == "outside_scope"

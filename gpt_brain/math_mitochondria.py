@@ -98,6 +98,20 @@ class MathMitochondria:
             raise MathInputError("too many unknowns")
         return expr
 
+    def _degree_upper(self, expr: Any) -> int:
+        """Cheap expression-tree degree bound before any polynomial expansion."""
+        if not expr.free_symbols:
+            return 0
+        if expr.is_Symbol:
+            return 1
+        if expr.is_Add:
+            return max(self._degree_upper(item) for item in expr.args)
+        if expr.is_Mul:
+            return sum(self._degree_upper(item) for item in expr.args)
+        if expr.is_Pow and expr.exp.is_Integer and expr.exp >= 0:
+            return int(expr.exp) * self._degree_upper(expr.base)
+        return self.MAX_DEGREE + 1
+
     def _equality(self, text: str) -> Any:
         if not isinstance(text, str) or text.count("=") != 1:
             raise MathInputError("provide one equality using a single '='")
@@ -139,6 +153,9 @@ class MathMitochondria:
             return self._result("underdetermined", equations, domain, reason="no solve variables")
         if len(exprs) == 1 and len(vars_) == 1:
             x = vars_[0]
+            if self._degree_upper(exprs[0]) > self.MAX_DEGREE:
+                return self._result("outside_scope", equations, domain,
+                                    reason="polynomial degree exceeds 4")
             try:
                 poly = sp.Poly(exprs[0], x)
             except (sp.PolynomialError, ValueError, TypeError):
@@ -167,6 +184,9 @@ class MathMitochondria:
             raise MathInputError("system size exceeds limit")
         try:
             for e in exprs:
+                if self._degree_upper(e) > 1:
+                    return self._result("outside_scope", equations, domain,
+                                        reason="multivariable systems must be linear")
                 p = sp.Poly(e, *vars_)
                 if p.total_degree() > 1:
                     return self._result("outside_scope", equations, domain,
@@ -206,8 +226,11 @@ class MathMitochondria:
                     "proof": "exact constant equality" if zero else None,
                     "counterexample": None if zero else {"residual": sp.sstr(difference)},
                     "scope": "exact polynomial identity (degree <= 4)"}
+        if self._degree_upper(difference) > self.MAX_DEGREE:
+            return {"status": "outside_scope", "identity": identity,
+                    "proof": None, "reason": "polynomial identity degree exceeds 4"}
         try:
-            poly = sp.Poly(difference, *variables) if variables else sp.Poly(difference)
+            poly = sp.Poly(difference, *variables)
         except (sp.PolynomialError, ValueError, TypeError):
             return {"status": "outside_scope", "identity": identity,
                     "proof": None, "reason": "nonpolynomial identities require domain analysis"}
