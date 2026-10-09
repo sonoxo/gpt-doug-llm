@@ -1,0 +1,84 @@
+{
+  "ontology_id": "gpt-doug-exact-multidimensional-research-v1",
+  "schema_version": "1.0",
+  "domain": "finite-dimensional rational linear dynamical systems",
+  "description": "Typed research evidence only; not an internet/credential access mechanism",
+  "entities": [
+    {
+      "type": "RationalLinearModel",
+      "fields": [
+        "matrix",
+        "dimension",
+        "mode"
+      ],
+      "constraint": "1 <= dimension <= 6; exact rational matrix, discrete or continuous"
+    },
+    {
+      "type": "LyapunovCertificate",
+      "fields": [
+        "P",
+        "leading_principal_minors",
+        "lyapunov_identity",
+        "trace_P"
+      ],
+      "constraint": "Symmetric positive-definite P with exactly zero equation residual"
+    },
+    {
+      "type": "FiniteLatticeExperiment",
+      "fields": [
+        "radius",
+        "max_evaluations",
+        "checked_vectors",
+        "status"
+      ],
+      "constraint": "Bounded integer grid; negative findings cannot establish universal stability"
+    },
+    {
+      "type": "AmplificationWitness",
+      "fields": [
+        "vector",
+        "exact_change"
+      ],
+      "constraint": "A one-step or instantaneous norm-growth witness is not an instability or blow-up proof"
+    },
+    {
+      "type": "EvidenceRecord",
+      "fields": [
+        "model_sha256",
+        "verification_status",
+        "provenance"
+      ],
+      "constraint": "Digest detects accidental drift, not adversarial forgery or source authenticity"
+    }
+  ],
+  "relations": [
+    {
+      "from": "RationalLinearModel",
+      "name": "evaluated_by",
+      "to": "FiniteLatticeExperiment"
+    },
+    {
+      "from": "RationalLinearModel",
+      "name": "certified_by",
+      "to": "LyapunovCertificate"
+    },
+    {
+      "from": "FiniteLatticeExperiment",
+      "name": "may_find",
+      "to": "AmplificationWitness"
+    },
+    {
+      "from": "LyapunovCertificate",
+      "name": "is_recorded_in",
+      "to": "EvidenceRecord"
+    }
+  ],
+  "verification_contract": [
+    "All quantities are exact rational fractions, not floating point approximations",
+    "Solver must recompute Lyapunov equations and all positive principal minors",
+    "Grid claims must disclose finite radius and checked-point count",
+    "Reject unrecognized input and never interpret INCONCLUSIVE as failure or stability",
+    "Never run credential discovery, key guessing, network probing or unauthorized external calls",
+    "Data about the physical world is not inferred merely from a symbolic model"
+  ]
+}
