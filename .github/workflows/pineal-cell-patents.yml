@@ -1,0 +1,27 @@
+name: PINEAL Cell and Patent Atlas Tests
+on:
+  pull_request:
+  push:
+    branches: [main, feature/gpt-doug-pineal-mvp]
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: integrations/gpt-doug-pineal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install PINEAL
+        run: python -m pip install -e '.[test]'
+      - name: Full tests
+        run: python -m pytest -q
+      - name: Blink smoke
+        run: python -m pineal --home "$RUNNER_TEMP/pineal" blink --frames 2 --interval 0.001 --no-color
+      - name: Patent provider status
+        run: python -m pineal --home "$RUNNER_TEMP/pineal" patents sources

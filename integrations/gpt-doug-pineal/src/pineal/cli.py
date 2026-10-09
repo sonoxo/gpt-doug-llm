@@ -9,6 +9,11 @@ import sys
 from pathlib import Path
 
 from .bridge import read_legacy_memory, read_ontology
+from .dashboard import run_dashboard
+from .blink import run_blink
+from .cells import list_cells, search_cells, simulate
+from .patents import list_sources, load_records, fetch_ep_metadata
+from .federation import list_nodes
 from .http_api import PinealHTTPServer
 from .kraken import KrakenController, Telemetry
 from .store import PinealStore
@@ -71,6 +76,44 @@ def parser() -> argparse.ArgumentParser:
     telemetry.add_argument("--water-fraction", type=float, default=1.0)
     sub.add_parser("audit", help="verify audit hash chain")
     sub.add_parser("heartbeat", help="expire memories and append an audit checkpoint")
+    sub.add_parser("federation", help="list offline provider templates and real access status")
+    observe = sub.add_parser("observe", help="append an approved local aggregate or synthetic observation")
+    observe.add_argument("node")
+    observe.add_argument("metric")
+    observe.add_argument("value", type=float)
+    observe.add_argument("--unit", default="count")
+    observe.add_argument("--source", required=True, help="specific provenance for operator-provided input")
+    observe.add_argument("--synthetic", action="store_true")
+    dashboard = sub.add_parser("dashboard", help="show ZYRA federation terminal cortex")
+    dashboard.add_argument("--demo", action="store_true", help="clearly labeled synthetic signals")
+    dashboard.add_argument("--watch", action="store_true", help="redraw until Ctrl+C")
+    dashboard.add_argument("--interval", type=float, default=2.0, help="refresh seconds")
+    dashboard.add_argument("--frames", type=int, help="limit frames for noninteractive runs")
+    dashboard.add_argument("--no-color", action="store_true")
+    cells = sub.add_parser("cells", help="curated human cell atlas and educational states")
+    cs = cells.add_subparsers(dest="cell_cmd", required=True)
+    cs.add_parser("list", help="view known cell types")
+    sim = cs.add_parser("simulate", help="symbolic, not biological, state timeline")
+    sim.add_argument("cell")
+    sim.add_argument("--steps", type=int, default=6)
+    patents = sub.add_parser("patents", help="worldwide public patent metadata network")
+    ps = patents.add_subparsers(dest="patent_cmd", required=True)
+    ps.add_parser("sources", help="view permitted data feeds and limitations")
+    imp = ps.add_parser("import", help="import authorized JSONL/JSON/CSV metadata")
+    imp.add_argument("file")
+    imp.add_argument("--limit", type=int, default=1000)
+    search = ps.add_parser("search", help="search offline indexed patents")
+    search.add_argument("query", nargs="?", default="")
+    search.add_argument("--limit", type=int, default=20)
+    ps.add_parser("stats", help="local patent index coverage and count")
+    fetch = ps.add_parser("fetch", help="opt-in single EPO metadata reference lookup")
+    fetch.add_argument("publication_id")
+    fetch.add_argument("--online", action="store_true", help="explicitly enable one EPO request")
+    blink = sub.add_parser("blink", help="animate a symbolic cellular heartbeat in Mac Terminal")
+    blink.add_argument("--watch", action="store_true")
+    blink.add_argument("--frames", type=int)
+    blink.add_argument("--interval", type=float, default=0.6)
+    blink.add_argument("--no-color", action="store_true")
     serve = sub.add_parser("serve", help="serve authenticated loopback HTTP API")
     serve.add_argument("--port", type=int, default=8765)
     return p
@@ -105,7 +148,10 @@ def main(argv: list[str] | None = None) -> int:
         elif args.cmd == "context":
             output = {"ontology": read_ontology(args.gpt_doug_root, args.query) if args.gpt_doug_root else [],
                       "legacy_memory": read_legacy_memory(args.legacy_home, args.query) if args.legacy_home else [],
-                      "pineal_memory": store.search(query=args.query)}
+                      "pineal_memory": store.search(query=args.query),
+                      "cell_atlas": search_cells(args.query),
+                      "patent_publications": store.search_patents(args.query, limit=10),
+                      "patent_evidence_notice": "Patent disclosures are not proof of scientific validity."}
         elif args.cmd == "telemetry":
             sample = Telemetry(args.temperature_c, args.power_w, args.water_fraction)
             previous = store.latest_telemetry()
@@ -119,6 +165,46 @@ def main(argv: list[str] | None = None) -> int:
             output = store.verify_audit()
         elif args.cmd == "heartbeat":
             output = store.heartbeat()
+        elif args.cmd == "federation":
+            output = {"nodes": list_nodes(), "connected_count": 0,
+                      "observation_mode": "local-only", "no_remote_data": True}
+        elif args.cmd == "observe":
+            output = store.record_observation(node=args.node, metric=args.metric,
+                                              value=args.value, unit=args.unit,
+                                              source=args.source, synthetic=args.synthetic)
+        elif args.cmd == "dashboard":
+            return run_dashboard(store, demo=args.demo, watch=args.watch,
+                                 interval=args.interval, frames=args.frames,
+                                 color=False if args.no_color else None)
+        elif args.cmd == "cells":
+            if args.cell_cmd == "list":
+                output = {"cells": list_cells(), "claim": "educational metadata, not creation of living cells"}
+            else:
+                output = simulate(args.cell, steps=args.steps)
+        elif args.cmd == "patents":
+            if args.patent_cmd == "sources":
+                output = {"sources": list_sources(), "connected_count": 0,
+                          "globally_complete": False}
+            elif args.patent_cmd == "import":
+                records = load_records(args.file, limit=args.limit)
+                output = store.import_patents(records)
+            elif args.patent_cmd == "search":
+                records = store.search_patents(args.query, limit=args.limit)
+                output = {"items": records, "count": len(records),
+                          "global_corpus_complete": False}
+            elif args.patent_cmd == "stats":
+                output = store.patent_stats()
+            elif args.patent_cmd == "fetch":
+                if not args.online:
+                    raise ValueError("patents fetch requires explicit --online permission")
+                record = fetch_ep_metadata(args.publication_id)
+                output = {"record": record, "import": store.import_patents([record]),
+                          "note": "patent metadata is not scientific validation"}
+            else:
+                raise ValueError("unknown patent command")
+        elif args.cmd == "blink":
+            return run_blink(store, watch=args.watch, frames=args.frames,
+                             interval=args.interval, color=False if args.no_color else None)
         elif args.cmd == "serve":
             token = os.environ.get("PINEAL_TOKEN") or ensure_token(home).read_text(encoding="utf-8").strip()
             with PinealHTTPServer(("127.0.0.1", args.port), store, token) as server:

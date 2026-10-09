@@ -6,6 +6,87 @@ PINEAL is a real, runnable Python memory gateway for GPT-Doug / SHAGGOTH-KRAKEN.
 
 **Scope:** PINEAL reads and writes software memory controlled by the operator. It does not access hidden model weights, private chain-of-thought, EEG signals, or anyone's brain; it does not stimulate neural tissue or manipulate GPU/hydrogen hardware. It uses no paid model calls. A separate model integration would have its own costs.
 
+## PINEAL Cell Atlas // Patent Network // BLINK (v0.3)
+
+This release adds a **10-type human cell reference ontology** and deterministic,
+*symbolic* cell-state educational display, plus a **local worldwide patent-publication
+metadata index**. It does not create real cells, decode a brain, or download the
+world's patents. The optional EPO adapter makes **one known-publication metadata
+request** only with `--online`. Other offices require your public or licensed exports.
+
+```bash
+pineal cells list
+pineal cells simulate neuron --steps 6
+pineal patents sources
+pineal patents stats
+pineal blink --watch --interval 0.7
+# Optional, only with permission/online access to EPO:
+pineal patents fetch EP0084638A1 --online
+```
+
+The terminal blink alternates a molecular **symbolic** cell illustration and
+shows the local patent count, source status, and hash-chain audit verification.
+The `pineal context QUERY` and `GET /v1/context?q=QUERY` retrieval paths now
+include matching `patent_publications` and `cell_atlas` in addition to existing
+ontology and memory sources, with provenance and scientific limitations.
+`Ctrl+C` exits; this is not an independent background agent. The API adds
+read-only `GET /v1/cells`, `GET /v1/patents?q=`, `GET /v1/patents/sources`
+and `GET /v1/patents/stats`, all bearer-token protected.
+
+Patent records are bibliographic disclosures, **not scientific validation**.
+The project term "parthenogenesisitheorum" is treated as a conceptual research
+label, **not** an established theorem or method. Human parthenogenesis is not
+an established route to viable human reproduction, and human molecular biology
+is not literally binary computer code. See
+[Patents, sources and legal limitations](docs/PATENT_CONNECTORS.md) and
+[research safety specification](docs/CELL_PATENT_NETWORK_SPEC.md).
+
+## ZYRA Federation // Universal Terminal Cortex (offline first)
+
+The federation update adds provider templates for **Meta, Tesla, X, Snapchat,
+LinkedIn, Global Trade, Global Markets, Biotech Research, ZYRA, and Warfighter
+Defensive Systems Integration**. Templates are **not connected accounts**.
+All named companies, market data sources and defense systems remain unconnected;
+this project does not claim access, endorsement or affiliation. The new dashboard
+runs natively in macOS Terminal or iTerm without an account or external API key.
+
+```bash
+pineal federation
+pineal dashboard --demo --watch --interval 1
+```
+
+This animates **synthetic demonstration data** with per-node mini graphs,
+ontology topology, Kraken GPU advisories and a ZYRA policy/audit shield. It
+makes no network calls and has no physical/neuronal control. Press `Ctrl+C`
+to stop. For a real local view without simulated metrics:
+
+```bash
+pineal dashboard
+pineal observe global-trade shipping_index 108.3 --unit index --source authorized-local-export
+pineal dashboard
+```
+
+Warfighter readiness and EEG-inspired research values are limited to
+explicitly labeled, nonpersonal simulation. The federation API is
+`GET /v1/federation` behind the same bearer token as the memory endpoints.
+See [architecture and boundaries](docs/FEDERATION_ARCHITECTURE.md).
+
+### Install from the existing GPT-Doug GitHub integration branch
+
+If `gpt-doug-pineal` is not present on your Mac, there is no directory to `cd` into.
+Use this repo subdirectory installation instead:
+
+```bash
+python3 -m venv "$HOME/.venvs/gpt-doug-pineal"
+source "$HOME/.venvs/gpt-doug-pineal/bin/activate"
+python -m pip install 'git+https://github.com/sonoxo/gpt-doug-llm.git@feature/gpt-doug-pineal-mvp#subdirectory=integrations/gpt-doug-pineal'
+pineal init
+pineal dashboard --demo --watch
+```
+
+Python 3.10+ and Git are required. The standalone `sonoxo/gpt-doug-pineal`
+repository has not been created. This verified branch is the actual source.
+
 ## Start in under a minute
 
 Requirements: Python 3.10+; no cloud account, GPU, or API key required.
