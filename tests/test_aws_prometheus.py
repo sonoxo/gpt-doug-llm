@@ -114,6 +114,17 @@ class PrometheusAWSBridgeTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 configure(runtime)
 
+    def test_direct_gateway_script_import_is_compatible(self):
+        """The gateway must work when launched by absolute path from any cwd."""
+        import subprocess
+        import sys
+        source = Path(__file__).resolve().parents[1] / "api_gateway" / "server.py"
+        with tempfile.TemporaryDirectory() as temp:
+            script = f"import runpy; runpy.run_path({str(source)!r}, run_name='import_only')"
+            result = subprocess.run([sys.executable, "-I", "-c", script],
+                                    cwd=temp, capture_output=True, text=True, timeout=8)
+            self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_metric_endpoint_uses_authentication(self):
         """Smoke test the actual gateway without launching external services."""
         from http.server import ThreadingHTTPServer
