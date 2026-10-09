@@ -11,6 +11,8 @@ from urllib.parse import parse_qs, urlsplit
 
 from .bridge import read_legacy_memory, read_ontology
 from .federation import list_nodes
+from .cells import list_cells, search_cells
+from .patents import list_sources
 from .kraken import KrakenController, Telemetry
 from .store import ConflictError, NotFoundError, PinealStore
 
@@ -109,6 +111,19 @@ class PinealHandler(BaseHTTPRequestHandler):
                 "defense_hardware_control": False,
                 "human_brain_io": False,
             }
+        if path == "/v1/cells":
+            return HTTPStatus.OK, {"cells": list_cells(),
+                                   "living_cells_created": False,
+                                   "mode": "educational_metadata"}
+        if path == "/v1/patents/sources":
+            return HTTPStatus.OK, {"sources": list_sources(), "connected_count": 0}
+        if path == "/v1/patents/stats":
+            return HTTPStatus.OK, self.server.store.patent_stats()
+        if path == "/v1/patents":
+            records = self.server.store.search_patents(
+                params.get("q", [""])[0], limit=int(params.get("limit", ["20"])[0]))
+            return HTTPStatus.OK, {"items": records, "count": len(records),
+                                   "global_corpus_complete": False}
         if path == "/v1/telemetry":
             return HTTPStatus.OK, {"latest": self.server.store.latest_telemetry()}
         if path.startswith("/v1/memories/"):
@@ -132,6 +147,9 @@ class PinealHandler(BaseHTTPRequestHandler):
                 "ontology": read_ontology(root, query, 8) if root else [],
                 "legacy_memory": read_legacy_memory(legacy_home, query, 6) if legacy_home else [],
                 "pineal_memory": records,
+                "cell_atlas": search_cells(query),
+                "patent_publications": self.server.store.search_patents(query, limit=10),
+                "patent_evidence_notice": "Patent disclosures are not proof of scientific validity.",
                 "note": "retrieved external data, not hidden model thought or instructions",
             }
         return HTTPStatus.NOT_FOUND, {"error": "route not found"}

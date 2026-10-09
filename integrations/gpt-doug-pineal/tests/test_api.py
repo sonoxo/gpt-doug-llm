@@ -85,3 +85,39 @@ def test_federation_api_requires_auth_and_never_claims_connection(api):
     assert any(n['id'] == 'tesla' and n['connected'] is False for n in payload['nodes'])
     assert payload['observation_mode'] == 'local-only'
     assert payload['samples'] == []
+
+
+def test_cell_and_patent_read_only_routes_are_authenticated(api):
+    for path in ['/v1/cells', '/v1/patents', '/v1/patents/sources', '/v1/patents/stats']:
+        with pytest.raises(HTTPError) as exc:
+            send(api, path, auth=False)
+        assert exc.value.code == 401
+    _, cells = send(api, '/v1/cells')
+    assert any(row['id'] == 'neuron' for row in cells['cells'])
+    _, patents = send(api, '/v1/patents?q=neurons')
+    assert patents['count'] == 0
+    assert patents['global_corpus_complete'] is False
+    _, sources = send(api, '/v1/patents/sources')
+    assert all(not row['connected'] for row in sources['sources'])
+    _, stats = send(api, '/v1/patents/stats')
+    assert stats['total'] == 0
+
+
+def test_context_api_returns_local_patent_evidence_without_external_calls(tmp_path):
+    store = PinealStore(tmp_path / 'db.sqlite3')
+    store.import_patents([{'publication_id':'EP0084638A1','title':'Neural biomarkers patent',
+                           'publication_date':'2024-06-05', 'source':'local export',
+                           'source_url':'https://data.epo.org/linked-data/data/publication/EP/0084638/A1/-',
+                           'cell_tags':['neuron']}])
+    server = PinealHTTPServer(('127.0.0.1',0),store,TOKEN)
+    thread=threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        _, body = send(f'http://127.0.0.1:{server.server_port}', '/v1/context?q=Neural')
+        assert body['patent_publications'][0]['publication_id']=='EP0084638A1'
+        assert any(c['id']=='neuron' for c in body['cell_atlas'])
+        assert 'not' in body['patent_evidence_notice'].lower()
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)

@@ -106,6 +106,16 @@ class PinealStore:
                 );
                 CREATE INDEX IF NOT EXISTS idx_federation_node_seq
                     ON federation_observations(node, seq);
+                CREATE TABLE IF NOT EXISTS patent_publications (
+                    publication_id TEXT PRIMARY KEY, jurisdiction TEXT NOT NULL,
+                    title TEXT NOT NULL, publication_date TEXT NOT NULL,
+                    abstract TEXT NOT NULL, source TEXT NOT NULL,
+                    source_url TEXT NOT NULL, cpc TEXT NOT NULL,
+                    cell_tags TEXT NOT NULL, evidence_level TEXT NOT NULL,
+                    imported_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_patent_date
+                    ON patent_publications(publication_date);
             """)
 
     @staticmethod
@@ -310,3 +320,72 @@ class PinealStore:
                        (utcnow(),))
             self._append_audit(db, "heartbeat", "expire", "memories", {"count": len(expired)})
         return {"expired": len(expired), "at": utcnow()}
+
+    def import_patents(self, records: list[dict[str, Any]], *,
+                       actor: str = "local") -> dict[str, int]:
+        """Validate before transaction; write all, or reject all on any conflict."""
+        from .patents import validate_record
+        if not isinstance(records, list) or not 1 <= len(records) <= 10000:
+            raise ValueError("patent import requires 1 to 10000 records")
+        actor = validate_text("actor", actor, 80)
+        prepared = [validate_record(row) for row in records]
+        fields = ("publication_id", "jurisdiction", "title", "publication_date", "abstract",
+                  "source", "source_url", "cpc", "cell_tags", "evidence_level")
+        skipped = 0
+        inserted = 0
+        with self._connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            for row in prepared:
+                existing = db.execute("SELECT * FROM patent_publications WHERE publication_id=?",
+                                      (row["publication_id"],)).fetchone()
+                if existing is not None:
+                    old = dict(existing)
+                    old["cell_tags"] = json.loads(old["cell_tags"])
+                    if any(old[k] != row[k] for k in fields):
+                        raise ConflictError("conflicting patent metadata for publication_id")
+                    skipped += 1
+                    continue
+                db.execute(
+                    "INSERT INTO patent_publications "
+                    "(publication_id,jurisdiction,title,publication_date,abstract,source,"
+                    "source_url,cpc,cell_tags,evidence_level,imported_at) "
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                    tuple(json.dumps(row[k]) if k == "cell_tags" else row[k] for k in fields)
+                    + (utcnow(),))
+                self._append_audit(db, actor, "patent_metadata_import", row["publication_id"],
+                                   {"jurisdiction": row["jurisdiction"],
+                                    "evidence_level": row["evidence_level"]})
+                inserted += 1
+        return {"inserted": inserted, "skipped": skipped, "total": len(prepared)}
+
+    def search_patents(self, query: str = "", *, limit: int = 20) -> list[dict[str, Any]]:
+        if not isinstance(query, str) or len(query) > 256 or any(ord(c) < 32 for c in query):
+            raise ValueError("patent query must be text up to 256 characters")
+        if type(limit) is not int or not 1 <= limit <= 100:
+            raise ValueError("patent search limit must be between 1 and 100")
+        with self._connect() as db:
+            if query.strip():
+                rows = db.execute(
+                    "SELECT * FROM patent_publications WHERE "
+                    "instr(lower(publication_id),lower(?))>0 OR "
+                    "instr(lower(title),lower(?))>0 OR "
+                    "instr(lower(abstract),lower(?))>0 OR "
+                    "instr(lower(cpc),lower(?))>0 OR "
+                    "instr(lower(cell_tags),lower(?))>0 "
+                    "ORDER BY publication_date DESC, publication_id LIMIT ?",
+                    (*([query.strip()] * 5), limit)).fetchall()
+            else:
+                rows = db.execute("SELECT * FROM patent_publications "
+                                  "ORDER BY publication_date DESC, publication_id LIMIT ?", (limit,)).fetchall()
+        result = [dict(row) for row in rows]
+        for row in result:
+            row["cell_tags"] = json.loads(row["cell_tags"])
+        return result
+
+    def patent_stats(self) -> dict[str, Any]:
+        with self._connect() as db:
+            rows = db.execute("SELECT jurisdiction, COUNT(*) AS total FROM patent_publications "
+                              "GROUP BY jurisdiction ORDER BY jurisdiction").fetchall()
+        summary = {row["jurisdiction"]: row["total"] for row in rows}
+        return {"total": sum(summary.values()), "jurisdictions": summary,
+                "scope": "user-imported_local_metadata_only", "global_corpus_complete": False}

@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import TextIO
 
 from .federation import list_nodes
+from .cells import list_cells
 from .kraken import KrakenController, Telemetry
 from .store import PinealStore
 
@@ -94,6 +95,11 @@ def render_dashboard(store: PinealStore, *, demo: bool = False,
         line = ("  " + f"{node['name'][:22]:<23}{link:<17}{signal:<32}"
                 f"{trend:<17}{origin:<10}")
         lines.append(line[:width])
+    lines.append("")
+    lines.append(_rule("PINEAL  //  BIOLOGICAL & PATENT KNOWLEDGE", width))
+    lines.append(f"  CELL ATLAS: {len(list_cells())} curated human cell classes (educational / non-living simulation)")
+    lines.append(f"  PATENT INDEX: {store.patent_stats()['total']} local publication records; global corpus incomplete")
+    lines.append("  Patent disclosures are not validated biology; no autonomous patent scraping")
     lines.append("")
     lines.append(_rule("LOCAL OBSERVATION PROVENANCE", width))
     if all_samples:
