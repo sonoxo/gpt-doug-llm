@@ -15,6 +15,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import secrets
@@ -24,10 +25,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from observability.prometheus_aws.metrics import GatewayMetrics
-
 _PROJECT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT))
+GatewayMetrics = importlib.import_module("observability.prometheus_aws.metrics").GatewayMetrics
 
 PORT = int(os.environ.get("API_PORT", "9090"))
 _METRICS = GatewayMetrics()
