@@ -1,0 +1,46 @@
+services:
+  gpt-doug-api:
+    image: python:3.12-slim
+    working_dir: /app
+    command: python3 -m api_gateway.server
+    environment:
+      API_PORT: "9090"
+      GPT_DOUG_METRICS_TOKEN_FILE: /run/secrets/gpt_doug_metrics_token
+    volumes:
+      - ../..:/app:ro
+      - ./runtime/metrics_token:/run/secrets/gpt_doug_metrics_token:ro
+    expose:
+      - "9090"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - telemetry
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=7d
+    ports:
+      - "127.0.0.1:${PROMETHEUS_PORT:-9098}:9090"
+    volumes:
+      - ./runtime/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./runtime/metrics_token:/etc/prometheus/metrics_token:ro
+      - prometheus_data:/prometheus
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - telemetry
+    depends_on:
+      - gpt-doug-api
+
+networks:
+  telemetry:
+    driver: bridge
+
+volumes:
+  prometheus_data:

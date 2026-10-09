@@ -17,17 +17,28 @@ from __future__ import annotations
 
 import json
 import os
+import secrets
 import sys
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import urlparse, parse_qs
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
+
+from observability.prometheus_aws.metrics import GatewayMetrics
 
 _PROJECT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT))
 
 PORT = int(os.environ.get("API_PORT", "9090"))
+_METRICS = GatewayMetrics()
 
 class APIHandler(BaseHTTPRequestHandler):
+    def send_response(self, code, message=None):
+        started = getattr(self, "_request_started", time.monotonic())
+        elapsed = max(0.0, time.monotonic() - started)
+        _METRICS.observe(getattr(self, "command", "OTHER"), urlparse(getattr(self, "path", "")).path, code, elapsed)
+        return super().send_response(code, message)
+
     def _send_json(self, code, data):
         body = json.dumps(data, indent=2).encode()
         self.send_response(code)
@@ -42,7 +53,31 @@ class APIHandler(BaseHTTPRequestHandler):
         return json.loads(self.rfile.read(length))
 
     def do_GET(self):
+        self._request_started = time.monotonic()
         path = urlparse(self.path).path
+        if path == "/metrics":
+            token_file = os.environ.get("GPT_DOUG_METRICS_TOKEN_FILE", "").strip()
+            if not token_file:
+                self._send_json(404, {"error": "not found"})
+                return
+            try:
+                expected_token = Path(token_file).read_text(encoding="utf-8").strip()
+            except (OSError, UnicodeError):
+                self._send_json(503, {"error": "metrics unavailable"})
+                return
+            if not expected_token or not secrets.compare_digest(
+                self.headers.get("Authorization", ""), "Bearer " + expected_token
+            ):
+                self._send_json(401, {"error": "unauthorized"})
+                return
+            payload = _METRICS.render().encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
         if path == "/health":
             self._send_json(200, {"status": "online", "agent": "gpt-doug", "version": "1.0",
                                    "zyra": "ZYRA/3.0", "shield": "GOLDEN-SHIELD/1.0",
@@ -61,6 +96,7 @@ class APIHandler(BaseHTTPRequestHandler):
             self._send_json(404, {"error": "not found"})
 
     def do_POST(self):
+        self._request_started = time.monotonic()
         path = urlparse(self.path).path
         try:
             body = self._read_body()
