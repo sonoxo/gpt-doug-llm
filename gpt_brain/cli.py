@@ -26,6 +26,9 @@ def build_parser() -> argparse.ArgumentParser:
     recall.add_argument("query", nargs="+")
     recall.add_argument("--limit", type=int, default=8)
 
+    math = sub.add_parser("math", help="verified bounded symbolic equations and conjecture triage")
+    math.add_argument("math_args", nargs=argparse.REMAINDER)
+
     sub.add_parser("status", help="show brain readiness without running a model")
     sub.add_parser("doctor", help="show detailed readiness diagnostics")
     return parser
@@ -44,6 +47,9 @@ def _error(kind: str, message: str) -> int:
 
 def main() -> int:
     args = build_parser().parse_args()
+    if args.command == "math":
+        from .math_mitochondria import math_cli
+        return math_cli(args.math_args)
     memory = BrainMemory()
 
     if args.command in {None, "status", "doctor"}:
