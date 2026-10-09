@@ -5,6 +5,10 @@ from pathlib import Path
 
 import pytest
 
+# SymPy is an optional extra. Full-repository test jobs without [math]
+# should skip this module; the dedicated math workflow installs it and runs all tests.
+pytest.importorskip("sympy", reason="install gpt-doug-llm[math] to test exact algebra")
+
 from gpt_brain.math_mitochondria import MathMitochondria, MathInputError, math_cli
 
 
