@@ -21,7 +21,7 @@ from .store import validate_text
 
 _PUBLICATION = re.compile(r"^([A-Z]{2})([0-9]{4,15})([ABCU][0-9]?)$")
 _ALLOWED_HOSTS = frozenset({
-    "patents.google.com", "data.epo.org", "epo.org", "www.epo.org",
+    "patents.google.com", "data.epo.org", "epo.org", "www.epo.org", "ops.epo.org",
     "api.uspto.gov", "ppubs.uspto.gov", "data.uspto.gov", "www.uspto.gov",
     "patentscope.wipo.int", "www.wipo.int", "wipo.int", "patentsview.org",
 })

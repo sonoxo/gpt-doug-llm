@@ -59,3 +59,98 @@ Research background:
 - NIH Grants Policy Statement human embryo research/cloning restrictions: https://www.grants.nih.gov/grants/policy/nihgps/HTML5/section_4/4.2.4_human_embryo_research_and_cloning_ban.htm
 
 No code in this package creates, cultures, modifies or implants human cells or embryos, accesses private model or human thoughts, or directs physical equipment.
+
+## v0.4: Explicit worldwide patent publication wiring
+
+The new connectors expose **bounded single-document operations**, not a full global
+patent mirror. Source status never claims connectivity from an environment variable
+alone. API calls occur only with `patents fetch ... --online` or
+`patents sync ... --online`. Credentials are never persisted in the SQLite database
+or source repository.
+
+### EPO Open Patent Services (OPS): worldwide DOCDB bibliographic lookup
+
+Official information: https://www.epo.org/en/searching-for-patents/data/web-services/ops
+
+1. Register on EPO's official developer portal and create an OPS v3.2 app.
+2. Set `EPO_OPS_KEY` and `EPO_OPS_SECRET` **locally** through your approved
+   secret-management or shell environment (never commit them).
+3. Run `pineal patents connect-status`. **Configured** does not equal a verified
+   remote session.
+4. Test a known published US/WO/EP document explicitly, e.g.:
+
+```bash
+pineal patents fetch US20260305554A1 --source epo-ops --online
+pineal patents search CH894993
+```
+
+PINEAL requests an OAuth client-credentials bearer token and then calls the
+pinned OPS `/published-data/publication/docdb/{AUTHORITY}.{NUMBER}.{KIND}/biblio`
+endpoint. Token is used transiently in memory. The client denies redirects,
+limits token response to 16 KiB and XML to 256 KiB, checks the exact returned
+publication reference, rejects DTD/entity declarations, and normalizes the
+bibliographic record with the existing citation policy. Published metadata
+availability and EPO fair-use/throughput constraints apply. **No full-text
+or legal-status entitlement is implied.**
+
+### PatentsView Search API: US issued grants
+
+Official examples and access restrictions:
+https://github.com/PatentsView/PatentSearch-API/blob/main/docs/docs/Search%20API/Examples.md
+
+An *existing* PatentsView API key is required. New key grants were temporarily
+suspended according to its API documentation when this code was written.
+Supply `PATENTSVIEW_API_KEY` locally. Then use:
+
+```bash
+pineal patents fetch US12345678B2 --source patentsview-us --online
+```
+
+The adapter requests a **single exact patent ID**, checks that the API returns
+one matching grant, normalizes title/date/abstract and uses a canonical
+publication reference. It does not claim to validate B1 versus B2 kind-code
+from the PatentsView response, which provides the grant number. It cannot
+fetch pre-grant A1 application publications; use EPO OPS for those, subject to
+coverage and your credentials. PatentsView terms and per-key rate limits apply.
+
+### WIPO, USPTO and additional national authorities
+
+Direct bulk or automated PATENTSCOPE search is not permitted through the public
+service: https://www.wipo.int/en/web/patentscope/data/terms_patentscope
+Only authorized WIPO licensed data imports are supported. USPTO's Open Data
+Portal requires registration/API access, and this module currently ingests
+operator-authorized exports rather than claiming a direct application
+publication API it has not verified. Other national patent publications can
+be resolved using EPO OPS **where available** or imported locally, always
+retaining source and publication metadata. Normalized authority IDs do not
+mean all jurisdictions, patent families, or full texts are complete.
+
+### Atomic known-ID sync
+
+Put one publication ID per line in a UTF-8 text file, e.g.:
+
+```text
+US20260305554A1
+EP0084638A1
+```
+
+Then:
+
+```bash
+pineal patents sync ids.txt --source epo-ops --dry-run
+pineal patents sync ids.txt --source epo-ops --online
+pineal patents stats
+pineal audit
+pineal blink --watch
+```
+
+The sync limit is 10 by default and 20 maximum; no pagination or crawling.
+All lookups must succeed and match requested IDs before the whole import
+transaction is attempted. Remote access can fail because of credentials,
+quotas, network connectivity, publication coverage, or API schema changes.
+There is no automatic retry against unapproved hosts and no hidden bypass.
+
+The exposed local HTTP routes `GET /v1/patents`, `/v1/patents/sources`,
+`/v1/patents/stats`, and `/v1/context` remain authenticated and read-only.
+`/v1/patents/sources` reports `configured`, `connection_state`, `connected`
+and `verified_live` explicitly without performing a probe.

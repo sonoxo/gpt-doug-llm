@@ -12,6 +12,7 @@ from typing import TextIO
 
 from .federation import list_nodes
 from .cells import list_cells
+from .patent_connectors import patent_connection_status
 from .kraken import KrakenController, Telemetry
 from .store import PinealStore
 
@@ -99,6 +100,10 @@ def render_dashboard(store: PinealStore, *, demo: bool = False,
     lines.append(_rule("PINEAL  //  BIOLOGICAL & PATENT KNOWLEDGE", width))
     lines.append(f"  CELL ATLAS: {len(list_cells())} curated human cell classes (educational / non-living simulation)")
     lines.append(f"  PATENT INDEX: {store.patent_stats()['total']} local publication records; global corpus incomplete")
+    source_status = {item["id"]: item for item in patent_connection_status()}
+    ops = "configured" if source_status["epo-ops"]["configured"] else "key required"
+    pv = "configured" if source_status["patentsview-us"]["configured"] else "key required"
+    lines.append(f"  PATENT FEEDS: EPO OPS {ops}; PatentsView {pv}; not live verified")
     lines.append("  Patent disclosures are not validated biology; no autonomous patent scraping")
     lines.append("")
     lines.append(_rule("LOCAL OBSERVATION PROVENANCE", width))
