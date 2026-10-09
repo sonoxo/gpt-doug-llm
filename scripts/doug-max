@@ -51,6 +51,30 @@ case "$first_arg_lc" in
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
     ;;
+  singularity-lab)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.singularity_sos demo
+    fi
+    mode="$1"
+    shift
+    case "$mode" in
+      sos)
+        exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.singularity_sos "$@"
+        ;;
+      quadratic)
+        exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.singularity_quadratic "$@"
+        ;;
+      classic)
+        exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.singularity "$@"
+        ;;
+      *)
+        echo "usage: doug-max singularity-lab [sos|quadratic|classic] <command>" >&2
+        exit 2
+        ;;
+    esac
+    ;;
   robotics-lab|schematic-lab|patent-robotics)
     shift
     exec python3 "$ROOT/scripts/gpt_doug_max_robotics_lab.py" "$@"
