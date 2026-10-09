@@ -1,0 +1,23 @@
+name: GPT-Doug Pineal CI
+on:
+  push:
+    paths:
+      - "integrations/gpt-doug-pineal/**"
+      - ".github/workflows/gpt-doug-pineal.yml"
+  pull_request:
+    paths:
+      - "integrations/gpt-doug-pineal/**"
+      - ".github/workflows/gpt-doug-pineal.yml"
+jobs:
+  pineal-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: integrations/gpt-doug-pineal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest -q

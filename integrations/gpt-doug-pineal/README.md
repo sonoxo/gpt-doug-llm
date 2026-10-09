@@ -1,0 +1,106 @@
+# GPT-DOUG-PINEAL
+
+**Non-invasive, local-first read/write access to an AI system's external memory.**
+
+PINEAL is a real, runnable Python memory gateway for GPT-Doug / SHAGGOTH-KRAKEN. It records typed ontology facts with provenance in SQLite, retrieves known context, bridges *read-only* to existing GPT-Doug ontology and `BrainMemory` exports, exposes an authenticated loopback JSON API, and simulates GPU power/thermal advisory decisions.
+
+**Scope:** PINEAL reads and writes software memory controlled by the operator. It does not access hidden model weights, private chain-of-thought, EEG signals, or anyone's brain; it does not stimulate neural tissue or manipulate GPU/hydrogen hardware. It uses no paid model calls. A separate model integration would have its own costs.
+
+## Start in under a minute
+
+Requirements: Python 3.10+; no cloud account, GPU, or API key required.
+
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[test]'
+pineal init
+pineal put gpt-doug has_layer pineal --namespace architecture --source user-approved
+pineal find pineal
+pineal context pineal
+pineal telemetry 83 350 --water-fraction 0.7
+pineal audit
+python -m pytest -q
+```
+
+Run the local API in one terminal:
+
+```bash
+pineal serve --port 8765
+```
+
+Read and write from another terminal (token is local and never stored in Git):
+
+```bash
+TOKEN="$(cat "$HOME/.local/share/gpt-doug-pineal/token")"
+curl -fsS http://127.0.0.1:8765/v1/health -H "Authorization: Bearer $TOKEN"
+curl -fsS http://127.0.0.1:8765/v1/memories \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"subject":"gpt-doug","predicate":"has_layer","value":"PINEAL","source":"operator-approved"}'
+curl -fsS 'http://127.0.0.1:8765/v1/context?q=PINEAL' \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+The API supports `POST /v1/memories`, `GET /v1/memories?q=`, `GET /v1/memories/<id>`, `PUT /v1/memories/<id>` (include `expected_version`), `DELETE /v1/memories/<id>?expected_version=N`, `GET /v1/context?q=`, `POST /v1/telemetry`, `GET /v1/telemetry`, `POST /v1/heartbeat`, `GET /v1/audit/verify`, and `GET /v1/health`. **Every endpoint requires the bearer token.** Do not bind it to a public network or proxy it without TLS and access controls.
+
+## Hook to the existing GPT-Doug brain
+
+The read-only bridge consumes two concrete files from the current `sonoxo/gpt-doug-llm` implementation:
+
+- `config/global-ontology.json` via `gpt_brain.ontology.OntologyIndex`'s data format;
+- `~/.gpt-doug/brain-memory-v1.jsonl` via `gpt_brain.memory.BrainMemory`'s export format.
+
+It does not modify those files. For a checked-out `gpt-doug-llm`:
+
+```bash
+export PINEAL_GPT_DOUG_ROOT="$HOME/code/gpt-doug-llm"  # change to actual checkout
+export PINEAL_LEGACY_HOME="$HOME"
+pineal context "gpt-doug memory"
+```
+
+Those environment variables also enable the optional bridge for `GET /v1/context` when `pineal serve` starts. Response order is **ontology, legacy memory, PINEAL-authorized edits**. Integration is deliberately read-only for the source repository so the existing ontology remains authoritative. PINEAL edits are separate until an operator implements a reviewed synchronization policy.
+
+## Components
+
+```mermaid
+flowchart TD
+    U[Operator / authorized AI client] -->|Bearer token over loopback| API[PINEAL memory API]
+    API --> O[Read-only ontology adapter]
+    API --> M[Read-only legacy BrainMemory adapter]
+    API --> RW[Version-checked ontology read/write]
+    RW --> DB[(Local SQLite external memory)]
+    RW --> A[(Hash-chain audit log)]
+    API --> K[KRAKEN threshold advisory]
+    K --> T[(Telemetry history + audit)]
+    K -. advisory only .-> H[Human-approved resource control]
+```
+
+The external 'brain' is a data structure, not an anatomical organ or a private model state. See [Architecture](docs/ARCHITECTURE.md), [Patent mapping](docs/PATENT_MAPPING.md), and [Neural-interface boundaries](docs/NEURO_BOUNDARIES.md).
+
+## Security and limits
+
+Local database lives at `~/.local/share/gpt-doug-pineal/pineal.sqlite3` (or `PINEAL_HOME`). The generated bearer token is stored in `token`, created with restrictive file permissions. Credentials and secret-looking values are rejected from memory; treat stored data as sensitive regardless. Do not commit the database or token. HTTP listens on `127.0.0.1` only, requires authentication for reads as well as writes, does not enable cross-origin access, and limits JSON bodies to 32 KiB. Each write carries provenance and an actor, with optimistic locking for replacements/deletes. Audit entries omit plaintext but are not a substitute for tamper-resistant off-host log storage.
+
+Neural sensing: any future wearable EEG adapter must be opt-in, read-only by default, privacy-preserving, and use documented device APIs. Decoding arbitrary thoughts or writing knowledge into a human brain is **not** a capability of this project.
+
+## Run tests
+
+```bash
+python -m pytest -q
+```
+
+## Standalone GitHub repository
+
+```bash
+gh auth login
+gh repo create sonoxo/gpt-doug-pineal --private --source . --remote origin --push
+```
+
+Run from the project directory after reviewing the code. The command requires a GitHub session with permission to create the repository; it does not run automatically and does not promise repo creation.
+
+## Research provenance
+
+User-supplied USPTO Patent Public Search excerpt: publication **US 2026/0313851 A1**, October 8, 2026, "System and Method for Providing Supplemental Power and Cooling to One or More Components of an Electrical Load," Wang et al., assigned to Toyota entities. It describes server power/cooling, not BCI. Here it inspires *advisory* telemetry monitoring, thresholds, and low-water safeguard review; no patent implementation, ownership, or license is claimed. See `docs/PATENT_MAPPING.md`.
+
+MIT license. Experimental research and developer tooling; no medical claims.
