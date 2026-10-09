@@ -6,6 +6,47 @@ PINEAL is a real, runnable Python memory gateway for GPT-Doug / SHAGGOTH-KRAKEN.
 
 **Scope:** PINEAL reads and writes software memory controlled by the operator. It does not access hidden model weights, private chain-of-thought, EEG signals, or anyone's brain; it does not stimulate neural tissue or manipulate GPU/hydrogen hardware. It uses no paid model calls. A separate model integration would have its own costs.
 
+## PINEAL live patent connectors (v0.4)
+
+The previously disconnected metadata templates now have **explicit, permitted
+network adapters**. No automatic network access occurs during `init`, `blink`,
+`dashboard`, `patents sources`, `patents connect-status`, or offline search.
+These are bibliographic records, **not validated scientific discoveries**.
+
+| Source | Access mode | Publication scope | Required from operator |
+| --- | --- | --- | --- |
+| EPO Linked Open Data | Optional HTTPS known-ID GET | European EP documents | No key; EPO fair-use terms |
+| **EPO OPS** | OAuth client credentials + bounded HTTPS XML | Worldwide publication IDs included in OPS | `EPO_OPS_KEY` and `EPO_OPS_SECRET` from an approved EPO app |
+| **PatentsView Search API** | HTTPS with key header | Issued U.S. grants (`US...B1/B2`) | Existing `PATENTSVIEW_API_KEY`; new key issuance may be suspended |
+| USPTO Open Data Portal | Authorized local export | USPTO data as available under your access | USPTO account/API access (direct publication lookup not implemented) |
+| WIPO PATENTSCOPE | Authorized licensed local import | PCT records included in your lawful exports | Appropriate WIPO data agreement; **no scraping** |
+
+After obtaining the required credentials directly from their official services,
+provide them as environment variables on your own Mac. Do **not** paste keys
+into GitHub commits or this conversation. Then run:
+
+```bash
+pineal patents connect-status                 # offline, credential presence only
+pineal patents fetch US20260305554A1 --source epo-ops --online
+pineal patents fetch US12345678B2 --source patentsview-us --online
+pineal patents fetch EP0084638A1 --source epo-linked-open --online
+pineal patents sync examples/patents/sample-publication-ids.txt --source epo-ops --dry-run
+pineal patents sync examples/patents/sample-publication-ids.txt --source epo-ops --online
+pineal patents search CH894993
+pineal blink --watch
+```
+
+`patents sync` fetches up to 10 publication IDs by default (maximum 20 per
+invocation, 4 KiB input), validates all records, then performs **one atomic
+local import**. Dry-run sends no requests and writes no patents. Conflicting
+local publication metadata aborts the whole batch. Published patent status,
+kind codes, claim scope, legal status and scientific efficacy still require
+independent verification. `patents connect-status` reports **configured**, not
+**connected**; the CLI only reports a successful fetch after the API succeeds.
+The local HTTP API remains read-only for patents and bearer-authenticated.
+
+See [Patent API wiring and setup](docs/PATENT_CONNECTORS.md).
+
 ## PINEAL Cell Atlas // Patent Network // BLINK (v0.3)
 
 This release adds a **10-type human cell reference ontology** and deterministic,

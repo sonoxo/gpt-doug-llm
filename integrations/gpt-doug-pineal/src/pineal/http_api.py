@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlsplit
 from .bridge import read_legacy_memory, read_ontology
 from .federation import list_nodes
 from .cells import list_cells, search_cells
-from .patents import list_sources
+from .patent_connectors import patent_connection_status
 from .kraken import KrakenController, Telemetry
 from .store import ConflictError, NotFoundError, PinealStore
 
@@ -116,7 +116,8 @@ class PinealHandler(BaseHTTPRequestHandler):
                                    "living_cells_created": False,
                                    "mode": "educational_metadata"}
         if path == "/v1/patents/sources":
-            return HTTPStatus.OK, {"sources": list_sources(), "connected_count": 0}
+            return HTTPStatus.OK, {"sources": patent_connection_status(), "connected_count": 0,
+                                   "verified_live": False, "no_network_requests": True}
         if path == "/v1/patents/stats":
             return HTTPStatus.OK, self.server.store.patent_stats()
         if path == "/v1/patents":

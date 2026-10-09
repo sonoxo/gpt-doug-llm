@@ -12,7 +12,8 @@ from .bridge import read_legacy_memory, read_ontology
 from .dashboard import run_dashboard
 from .blink import run_blink
 from .cells import list_cells, search_cells, simulate
-from .patents import list_sources, load_records, fetch_ep_metadata
+from .patents import list_sources, load_records, fetch_ep_metadata, normalize_publication_id
+from .patent_connectors import fetch_patent, load_publication_ids, patent_connection_status
 from .federation import list_nodes
 from .http_api import PinealHTTPServer
 from .kraken import KrakenController, Telemetry
@@ -99,6 +100,7 @@ def parser() -> argparse.ArgumentParser:
     patents = sub.add_parser("patents", help="worldwide public patent metadata network")
     ps = patents.add_subparsers(dest="patent_cmd", required=True)
     ps.add_parser("sources", help="view permitted data feeds and limitations")
+    ps.add_parser("connect-status", help="show credential readiness (no network requests)")
     imp = ps.add_parser("import", help="import authorized JSONL/JSON/CSV metadata")
     imp.add_argument("file")
     imp.add_argument("--limit", type=int, default=1000)
@@ -108,7 +110,14 @@ def parser() -> argparse.ArgumentParser:
     ps.add_parser("stats", help="local patent index coverage and count")
     fetch = ps.add_parser("fetch", help="opt-in single EPO metadata reference lookup")
     fetch.add_argument("publication_id")
-    fetch.add_argument("--online", action="store_true", help="explicitly enable one EPO request")
+    fetch.add_argument("--online", action="store_true", help="explicitly enable one official request")
+    fetch.add_argument("--source", choices=("auto", "epo-linked-open", "epo-ops", "patentsview-us"), default="auto")
+    sync = ps.add_parser("sync", help="fetch a bounded list of publication IDs and atomically import")
+    sync.add_argument("file", help="UTF-8 text with one exact publication ID per line")
+    sync.add_argument("--source", choices=("auto", "epo-linked-open", "epo-ops", "patentsview-us"), default="auto")
+    sync.add_argument("--limit", type=int, default=10, help="maximum 20 IDs")
+    sync.add_argument("--online", action="store_true")
+    sync.add_argument("--dry-run", action="store_true", help="preview without network or database mutation")
     blink = sub.add_parser("blink", help="animate a symbolic cellular heartbeat in Mac Terminal")
     blink.add_argument("--watch", action="store_true")
     blink.add_argument("--frames", type=int)
@@ -183,8 +192,11 @@ def main(argv: list[str] | None = None) -> int:
                 output = simulate(args.cell, steps=args.steps)
         elif args.cmd == "patents":
             if args.patent_cmd == "sources":
-                output = {"sources": list_sources(), "connected_count": 0,
+                output = {"sources": patent_connection_status(), "connected_count": 0,
                           "globally_complete": False}
+            elif args.patent_cmd == "connect-status":
+                output = {"sources": patent_connection_status(), "connected_count": 0,
+                          "verified_live": False, "no_network_requests": True}
             elif args.patent_cmd == "import":
                 records = load_records(args.file, limit=args.limit)
                 output = store.import_patents(records)
@@ -197,9 +209,25 @@ def main(argv: list[str] | None = None) -> int:
             elif args.patent_cmd == "fetch":
                 if not args.online:
                     raise ValueError("patents fetch requires explicit --online permission")
-                record = fetch_ep_metadata(args.publication_id)
+                record = fetch_patent(args.publication_id, source=args.source)
+                if record.get("publication_id") != normalize_publication_id(args.publication_id):
+                    raise ValueError("patent source response ID mismatch")
                 output = {"record": record, "import": store.import_patents([record]),
                           "note": "patent metadata is not scientific validation"}
+            elif args.patent_cmd == "sync":
+                ids = load_publication_ids(args.file, limit=args.limit)
+                if args.dry_run:
+                    output = {"preview_only": True, "planned_count": len(ids),
+                              "ids": ids, "source": args.source, "network_calls": 0}
+                else:
+                    if not args.online:
+                        raise ValueError("patents sync requires explicit --online permission")
+                    fetched = [fetch_patent(pub, source=args.source) for pub in ids]
+                    if [row.get("publication_id") for row in fetched] != ids:
+                        raise ValueError("patent source response IDs do not match requested IDs")
+                    output = {"preview_only": False, "fetched": len(fetched),
+                              "import": store.import_patents(fetched),
+                              "note": "patent publications are disclosures, not scientifically validated research"}
             else:
                 raise ValueError("unknown patent command")
         elif args.cmd == "blink":

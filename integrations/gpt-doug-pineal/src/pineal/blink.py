@@ -12,6 +12,7 @@ from datetime import datetime
 from typing import TextIO
 
 from .cells import list_cells
+from .patent_connectors import patent_connection_status
 from .store import PinealStore
 
 
@@ -23,6 +24,9 @@ def render_blink(store: PinealStore, *, frame: int = 0, color: bool = False) -> 
     timeline = ('▁▂▅█▅▂▁' if on else '▁▃▆▇▆▃▁')
     stats = store.patent_stats()
     audit = store.verify_audit()
+    sources = {row["id"]: row for row in patent_connection_status()}
+    ops = "CONFIGURED" if sources["epo-ops"]["configured"] else "NEEDS KEY"
+    pv = "CONFIGURED" if sources["patentsview-us"]["configured"] else "NEEDS KEY"
     now = datetime.now().astimezone().strftime('%Y-%m-%d %H:%M:%S %Z')
     green = '\033[1;32m' if color else ''
     blue = '\033[1;36m' if color else ''
@@ -45,7 +49,8 @@ def render_blink(store: PinealStore, *, frame: int = 0, color: bool = False) -> 
         f'  CELL ATLAS   {len(list_cells())} curated educational human cell classes',
         f'  PATENT INDEX {stats["total"]} indexed LOCAL bibliographic records',
         f'  PROVENANCE   {green}{"AUDIT OK" if audit["ok"] else "AUDIT FAILED"}{reset}  /  {audit["checked"]} logged mutations',
-        '  SOURCES      EPO: opt-in known-ID lookup; USPTO/WIPO: licensed local exports',
+        f'  PATENT FEEDS OPS: {ops}  |  PATENTSVIEW: {pv}  |  LIVE VERIFIED: 0',
+        '  SOURCES      EPO EP public/OPS worldwide; US grants PV; WIPO/ODP: licensed exports',
         '  ACCESS       NO HUMAN BRAIN I/O  |  NO AUTONOMOUS EXTERNAL CONNECTIONS',
         '  REALITY      LIVING CELLS CREATED: NO  |  SYMBOLIC COMPUTER MODEL ONLY',
         '  EVIDENCE     PATENT DISCLOSURE DOES NOT ESTABLISH SCIENTIFIC VALIDITY',
