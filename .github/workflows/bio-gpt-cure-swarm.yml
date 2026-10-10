@@ -1,0 +1,48 @@
+name: Bio-Gpt Cure Swarm (manual public research)
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Public oncology research topic only; no patient information'
+        required: true
+        default: 'glioblastoma'
+        type: choice
+        options:
+          - glioblastoma
+          - pancreatic cancer
+          - lung cancer
+          - breast cancer
+          - leukemia
+permissions:
+  contents: read
+concurrency:
+  group: cure-swarm-manual
+  cancel-in-progress: true
+jobs:
+  public-metadata-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit tests (offline)
+        run: python3 -m unittest discover -s research_lab/tests -p 'test_cure_swarm.py' -q
+      - name: Fetch up to 5 studies and 5 publications (public endpoints only)
+        env:
+          CURE_TOPIC: ${{ inputs.topic }}
+        run: |
+          python3 -m research_lab.cure_swarm online \
+            --query "$CURE_TOPIC" --per-source 5 \
+            --save-snapshot cure-swarm-snapshot.json > cure-swarm-report.json
+      - name: Independently replay exact evidence report
+        run: python3 -m research_lab.cure_swarm verify cure-swarm-report.json
+      - name: Retain short-lived research evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: bio-gpt-cure-swarm-review
+          path: |
+            cure-swarm-snapshot.json
+            cure-swarm-report.json
+          retention-days: 7
