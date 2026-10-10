@@ -31,6 +31,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
+math = ["sympy>=1.12,<2"]
 web = ["cryptography"]
 test = ["pytest", "pytest-cov"]
 lint = ["ruff"]
@@ -39,6 +40,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 [project.scripts]
 gpt-nedu = "gpt_nedu.cli:main"
 gpt-doug = "gpt_brain.cli:main"
+gpt-doug-math = "gpt_brain.math_mitochondria:math_cli"
 gpt-doug-hivemind = "hivemind.cli:main"
 gpt-doug-brain = "gpt_brain.cli:main"
 gpt-chaos = "gpt_chaos.cli:main"
