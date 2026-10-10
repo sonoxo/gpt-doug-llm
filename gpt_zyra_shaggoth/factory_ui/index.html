@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="factory-csrf" content="@@CSRF_TOKEN@@">
+<meta name="theme-color" content="#07121f">
+<title>GPT-Doug / Shaggoth Autonomous Factory</title>
+<link rel="stylesheet" href="/factory.css">
+<script defer src="/factory.js"></script>
+</head>
+<body>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<div class="app-shell">
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><span>G</span><small>∞</small></div>
+    <div><div class="brand-overline">SONOXO / GPT-DOUG SYSTEMS</div><div class="brand-title">SHAGGOTH <em>FACTORY</em></div></div>
+  </div>
+  <div class="top-actions">
+    <span class="stat-pill"><span id="connection-dot" class="status-light waiting"></span><span id="connection-text">Connecting locally</span></span>
+    <span class="stat-pill mono" id="uptime">UPTIME —</span>
+    <span class="local-chip">127.0.0.1 ONLY</span>
+  </div>
+</header>
+<div class="eyebrow-row"><span>CONTROL PLANE / LOCAL DEVELOPMENT</span><span id="last-update">AWAITING FIRST SNAPSHOT</span></div>
+<section class="hero">
+  <div>
+    <div class="kicker"><span class="small-pulse"></span> BOUNDED AUTONOMOUS PRODUCTION</div>
+    <h1>Ideas in. <span>Verified drafts out.</span></h1>
+    <p>Five specialized stages automatically assemble local project artifacts, check syntax and provenance, then hold every result for your review. No generated code is executed or deployed.</p>
+    <div class="hero-pills"><span>ONE LOCAL WORKER</span><span>SHA-256 ARTIFACTS</span><span>NO CLOUD CREDENTIALS</span></div>
+  </div>
+  <div class="reactor">
+    <div class="reactor-ring ring-one"></div><div class="reactor-ring ring-two"></div>
+    <div class="reactor-core">S<span>5</span></div><span class="reactor-label">FACTORY CORE / ACTIVE MONITOR</span>
+  </div>
+</section>
+<section class="metrics" aria-label="Factory metrics">
+  <div class="metric"><span>JOBS PRODUCED</span><strong id="total-jobs">0</strong><small>Lifetime queued</small></div>
+  <div class="metric"><span>ON THE LINE</span><strong id="active-jobs">0</strong><small>Queued / processing</small></div>
+  <div class="metric"><span>WAITING FOR YOU</span><strong id="review-jobs">0</strong><small>Human review required</small></div>
+  <div class="metric"><span>LOCALLY APPROVED</span><strong id="approved-jobs">0</strong><small>Never automatically deployed</small></div>
+</section>
+<main class="main-grid">
+<section class="panel queue-panel">
+  <div class="section-heading"><div><span class="section-index">01 / INPUT DOCK</span><h2>Queue a build</h2></div><span class="panel-icon">✦</span></div>
+  <p class="small-help">Choose a work blueprint. The offline option is fully functional without a model or API key.</p>
+  <form id="job-form">
+    <label for="job-kind">PRODUCTION BLUEPRINT</label>
+    <select id="job-kind"><option value="python-scaffold">Python component scaffold</option><option value="research-brief">Research evidence brief</option><option value="test-plan">Verification test plan</option></select>
+    <label for="job-goal">TASK DIRECTIVE</label>
+    <textarea id="job-goal" maxlength="480" rows="4" placeholder="Example: Build an offline data quality component with clear acceptance criteria" required></textarea>
+    <div class="field-bottom"><span id="chars">0 / 480</span><span>LOCAL DRAFTS ONLY</span></div>
+    <label for="job-backend">FABRICATION ENGINE</label>
+    <select id="job-backend"><option value="offline">Built-in deterministic factory (free)</option><option value="ollama">Local Ollama model (opt-in)</option></select>
+    <button id="create-job" class="primary-btn" type="submit"><span>✚</span> Start production</button>
+  </form>
+  <button id="seed-demo" class="secondary-btn">▶ Run three sample jobs</button>
+  <p id="action-feedback" class="feedback" aria-live="polite"></p>
+  <div class="policy-readout"><div><span class="tiny-dot"></span> GOVERNANCE FIREWALL</div><strong id="policy-state">CHECKING</strong><small id="policy-note">Verifying the local rule ontology</small><div class="policy-meter"><span id="policy-fill"></span></div><small id="policy-count">— / 18 expected controls</small></div>
+</section>
+<section class="panel assembly-panel">
+  <div class="section-heading"><div><span class="section-index">02 / PRODUCTION FLOOR</span><h2>Five-stage assembly line</h2></div><span class="chip" id="factory-mode">WAITING</span></div>
+  <p class="small-help">Live stage telemetry from the local Python worker. No fictional agent processes are counted.</p>
+  <div class="factory-viewport"><div class="grid-floor"></div><div class="rail rail-top"></div><div class="rail rail-bottom"></div><div class="line-glow"></div>
+    <div class="stations" id="stations">
+      <div class="station" data-phase="PLANNING"><div class="station-number">01</div><div class="station-glyph">⌘</div><strong>PLAN</strong><span>GPT-Doug</span><div class="station-foot">SPECIFICATION</div></div>
+      <div class="station" data-phase="BUILDING"><div class="station-number">02</div><div class="station-glyph">⬡</div><strong>BUILD</strong><span>Shaggoth</span><div class="station-foot">ARTIFACT ASSEMBLY</div></div>
+      <div class="station" data-phase="VERIFYING"><div class="station-number">03</div><div class="station-glyph">◇</div><strong>VERIFY</strong><span>Pineal</span><div class="station-foot">STATIC CHECKS</div></div>
+      <div class="station" data-phase="CRITIQUING"><div class="station-number">04</div><div class="station-glyph">✶</div><strong>CRITIQUE</strong><span>Chaos</span><div class="station-foot">RISK REVIEW</div></div>
+      <div class="station" data-phase="AWAITING_REVIEW"><div class="station-number">05</div><div class="station-glyph">⛨</div><strong>REVIEW</strong><span>Redpanda</span><div class="station-foot">HUMAN GATE</div></div>
+    </div>
+    <div class="conveyor"><div class="conveyor-belt"></div><span id="live-stage-label">AWAITING PRODUCTION</span><span class="conveyor-mark">CONTROLLED OUTPUT →</span></div>
+  </div>
+  <div class="line-footer"><span><span class="status-light running"></span> WORKER CAP: <b>1</b></span><span>EXTERNAL ACTIONS: <b>BLOCKED</b></span><button id="pause-worker" class="mini-btn">Pause worker</button></div>
+  <div class="machine-telemetry"><div class="telemetry-head"><span>ACTIVE PRODUCTION CYCLE</span><span id="telemetry-phase">IDLE</span></div><strong id="active-order">No active order — factory standing by</strong><div class="telemetry-track"><span id="active-progress"></span></div><div class="telemetry-tail"><span>QUEUE: <b id="pending-count">0</b></span><span>LOCAL REVIEWS: <b id="review-count">0</b></span><span>ARTIFACT INTEGRITY: SHA-256</span></div></div>
+</section>
+<section class="panel jobs-panel">
+  <div class="section-heading"><div><span class="section-index">03 / OUTPUT INVENTORY</span><h2>Production records</h2></div><span class="small-grey">MOST RECENT 24</span></div>
+  <div id="jobs" class="jobs-list"><div class="empty-state"><strong>No jobs yet</strong><span>Submit a directive or run the sample batch to activate the factory.</span></div></div>
+</section>
+<section class="panel event-panel">
+  <div class="section-heading"><div><span class="section-index">04 / AUDIT BUS</span><h2>Live events</h2></div><span class="pulsing-live">● LIVE</span></div>
+  <div id="events" class="event-feed"><div class="empty-state"><strong>Waiting for events</strong><span>The ledger will show verified local stages and reviews here.</span></div></div>
+  <div class="footer-badge">READ-ONLY EXPORT / REPRODUCIBLE EVIDENCE</div>
+</section>
+</main>
+<footer class="footer"><span>GPT-DOUG / SHAGGOTH // FACTORY CONTROL PLANE v1</span><span>NOT A CLOUD DEPLOYMENT · NOT A GENERATIVE AGENT SWARM WITHOUT LOCAL OLLAMA</span></footer>
+</div>
+</body>
+</html>

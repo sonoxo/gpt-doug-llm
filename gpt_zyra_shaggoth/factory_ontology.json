@@ -1,0 +1,23 @@
+{
+  "name": "GPT-Doug-Shaggoth Autonomous Factory",
+  "version": "1.0.0",
+  "ontology_type": "local_bounded_artifact_factory",
+  "provenance": "sonoxo/gpt-doug-llm/gpt_zyra_shaggoth/factory.py",
+  "authority": "canonical_project_guardrails_only",
+  "scope": "offline draft creation and human review; no execution or external effects",
+  "worker_count_max": 1,
+  "queue_capacity_max": 48,
+  "total_history_max": 500,
+  "roles": [
+    {"id":"GPT-Doug", "operation":"plan", "evidence":"acceptance specification"},
+    {"id":"GPT-Shaggoth", "operation":"build", "evidence":"bounded local draft files"},
+    {"id":"GPT-Pineal", "operation":"verify", "evidence":"AST and SHA-256 checks, not runtime testing"},
+    {"id":"GPT-Chaos", "operation":"critique", "evidence":"human-readable limitations and checks"},
+    {"id":"GPT-Redpanda", "operation":"review", "evidence":"explicit human local approval status"}
+  ],
+  "states": ["QUEUED", "PLANNING", "BUILDING", "VERIFYING", "CRITIQUING", "AWAITING_REVIEW", "APPROVED_LOCAL", "REJECTED", "BLOCKED"],
+  "capabilities": {"offline_draft_generation":true, "optional_loopback_ollama":true, "syntax_check":true, "file_hash_verification":true, "human_review":true, "external_network":false, "arbitrary_code_execution":false, "credential_acquisition":false, "unlimited_replication":false, "automatic_deployment":false},
+  "approval_boundary": "local status change only; no downstream promotion",
+  "truth_boundary": "source present != service running; static-check pass != feature implemented",
+  "lifecycle": "only during user-started local process; no background process after stop"
+}
