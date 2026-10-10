@@ -8,7 +8,7 @@ def test_all_bio_hilbert_math_certificates():
     suite = unittest.TestLoader().loadTestsFromModule(test_bio_hilbert)
     result = unittest.TestResult()
     suite.run(result)
-    assert result.testsRun == 29, f"unexpected bio Hilbert test count: {result.testsRun}"
+    assert result.testsRun == 30, f"unexpected bio Hilbert test count: {result.testsRun}"
     assert result.wasSuccessful(), {
         "failures": [(str(test), message) for test, message in result.failures],
         "errors": [(str(test), message) for test, message in result.errors],
