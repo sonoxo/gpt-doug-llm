@@ -77,6 +77,12 @@ case "$first_arg_lc" in
     case "$1" in --*) set -- serve "$@";; esac
     exec python3 "$ROOT/gpt_chaos/live_cube.py" "$@"
     ;;
+  shaggoth-factory|gpt-doug-shaggoth-factory)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- serve --demo; fi
+    exec python3 "$ROOT/gpt_zyra_shaggoth/factory.py" "$@"
+    ;;
   bio-gpt)
     shift
     cd "$ROOT"
