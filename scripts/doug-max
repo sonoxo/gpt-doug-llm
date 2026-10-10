@@ -54,7 +54,15 @@ case "$first_arg_lc" in
   bio-gpt)
     shift
     cd "$ROOT"
-    if [[ $# -eq 0 ]]; then set -- demo; fi
+    if [[ $# -eq 0 ]]; then
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.bio_gpt_terminal
+    fi
+    case "$1" in
+      open|terminal|start)
+        shift
+        exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.bio_gpt_terminal "$@"
+        ;;
+    esac
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.bio_gpt "$@"
     ;;
   bio-infinity|bio-hilbert)
