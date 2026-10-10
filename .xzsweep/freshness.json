@@ -1,8 +1,74 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-09T11:12:19Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-10-09T19:10:27Z",
+  "due_files_reviewed": 65,
+  "due_paths": [
+    ".github/CODEOWNERS",
+    ".github/workflows/agency-cloud.yml",
+    ".github/workflows/automated-agent-fleet.yml",
+    ".github/workflows/cyber-cpr.yml",
+    ".github/workflows/defensive-hardening.yml",
+    ".github/workflows/glassonion-master-lock.yml",
+    ".github/workflows/government-intelligence-readiness.yml",
+    ".github/workflows/nxyz-agentic-upgrade.yml",
+    ".github/workflows/nxyz-mouse-mic-store-package.yml",
+    ".github/workflows/ontology-master-lock.yml",
+    ".github/workflows/security-gate.yml",
+    ".github/workflows/shaggoth-swarm-ci.yml",
+    ".github/workflows/soundcloud-heartbeat.yml",
+    ".github/workflows/unified-tests.yml",
+    ".github/workflows/va3lm-redhat-defense.yml",
+    ".github/workflows/zyra-defense-aip-pipeline.yml",
+    "SECURITY.md",
+    "gpt_zyra_shaggoth/__init__.py",
+    "gpt_zyra_shaggoth/__main__.py",
+    "gpt_zyra_shaggoth/bridge.py",
+    "intel/white-house/daily/2026-10-09.json",
+    "intel/white-house/daily/2026-10-09.md",
+    "scripts/install-gpt-zyra-shaggoth",
+    "shaggoth-swarm-gpt100/.env.example",
+    "shaggoth-swarm-gpt100/Dockerfile",
+    "shaggoth-swarm-gpt100/README.md",
+    "shaggoth-swarm-gpt100/THIRD_PARTY_SOURCES.md",
+    "shaggoth-swarm-gpt100/docs/ATOMIC_LAYERS.md",
+    "shaggoth-swarm-gpt100/docs/INFRASTRUCTURE.md",
+    "shaggoth-swarm-gpt100/infra/compose/.env.example",
+    "shaggoth-swarm-gpt100/infra/compose/compose.yml",
+    "shaggoth-swarm-gpt100/infra/k8s/configmap.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/connector-deployment.example.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/deployment.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/hpa.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/ingress.example.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/kustomization.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/namespace.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-api-ingress.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-default-deny.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-dns-egress.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-external-egress.example.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/pdb.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/secret-example.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/service.yaml",
+    "shaggoth-swarm-gpt100/infra/k8s/serviceaccount.yaml",
+    "shaggoth-swarm-gpt100/pyproject.toml",
+    "shaggoth-swarm-gpt100/scripts/bootstrap-shaggoth.sh",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/__init__.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/api.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/atomic.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/broker.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/catalogs/__init__.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/catalogs/open_source_everything.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/cli.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/connectors.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/heartbeat.py",
+    "shaggoth-swarm-gpt100/src/shaggoth_swarm/orchestrator.py",
+    "shaggoth-swarm-gpt100/tests/test_atomic.py",
+    "shaggoth-swarm-gpt100/tests/test_broker.py",
+    "shaggoth-swarm-gpt100/tests/test_connectors.py",
+    "shaggoth-swarm-gpt100/tests/test_heartbeat.py",
+    "shaggoth-swarm-gpt100/tests/test_open_source_everything.py",
+    "tests/test_gpt_zyra_defensive_arsenal.py",
+    "tests/test_gpt_zyra_shaggoth.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -75,11 +141,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T08:53:22Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "faf937d5ee6ae01a68c9e5087b2f7fe560ee87b3d6d3648cc3ea5582a82134ef",
       "size": 302,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/ISSUE_TEMPLATE/bug_report.yml": {
       "actions": [],
@@ -152,11 +218,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "0e8cfb6d9b0f4a49796285200c49501030f4d039a329c7f5ab535d0434cd3bdb",
       "size": 2863,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/agentic-knowledge-gate.yml": {
       "actions": [],
@@ -207,11 +273,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "79cc24bd9a0a10f1b1cedc4b1ccc8efa1f293a3b53c291e2482e73be31cc68a0",
       "size": 14317,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/black-house-cyber-learning.yml": {
       "actions": [],
@@ -284,22 +350,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "f51b3a73e36f60839fcf5092b46f2e69d7b72404cb0bb13b279bac93341d76e9",
       "size": 1670,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/defensive-hardening.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "e0b4b19c66c0c56e17cff9775a4769cb4a43953478b20676d63c00dab5c9636e",
       "size": 2860,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/docker-publish.yml": {
       "actions": [],
@@ -372,22 +438,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "27538b50cd60dc2787a3475a3eeaf3e906d486358b5e508295bc439203ba38ee",
       "size": 3809,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/government-intelligence-readiness.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "3ff170963a4c1433c7b701dfdbc58b173bddf6c444f7610308a3e60c0b20bdab",
       "size": 2377,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/gpt-doug-astra.yml": {
       "actions": [],
@@ -548,22 +614,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "e2da3f8193d7fe50344d3ee278d4619c3a1fc2ac987770b6bb402b2ca9761ba4",
       "size": 2570,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/nxyz-mouse-mic-store-package.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "63f0eb06091e738e90dd8f4f8f767abb99a16fcb8b6d52b573e77a78032294cc",
       "size": 2175,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/ontologi.yml": {
       "actions": [],
@@ -581,11 +647,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "8138851bc4aba9e20abb73f047a076dceac2efd699a8d73e5c2bf3a9503d8463",
       "size": 2937,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/pages-museum-hq.yml": {
       "actions": [],
@@ -724,22 +790,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "481edc0e2adf775eb420436de4ea27c61786bd8c44333ef9d964819e90760263",
       "size": 3394,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/shaggoth-swarm-ci.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:09:29Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "aed2fa6edd120014957a69b3952b076ff303f87c0c5fc6885bdaae4844ba6ba8",
       "size": 1830,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/sonoxo-xraycloud.yml": {
       "actions": [],
@@ -757,11 +823,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "fc494d31dfeaa55f588247ef7e0faaec3f1376853888033d03c0a4de7f5828e5",
       "size": 2979,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/sovereignty-performance-gate.yml": {
       "actions": [],
@@ -790,11 +856,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "bb68e9716f4b915479d79cacd540b2c2b4bb3f83b60d0009473cde3da11e3edd",
       "size": 4140,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/va3lm-8088.yml": {
       "actions": [],
@@ -845,11 +911,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "ebcab7b12fc2e2613ba54b8dacbd37b0ab9c608e2dcd171cd141db034e7b0461",
       "size": 2925,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/wakeup3lm-readme.yml": {
       "actions": [],
@@ -988,11 +1054,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T04:20:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "db6a2cb95ab4da2be80ecbc936129da1d75b776b60bd1e4a74804408393a2c7a",
       "size": 8255,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/zyra-shaggoth-hardening.yml": {
       "actions": [],
@@ -1241,11 +1307,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T03:03:20Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "d38b35f5b09c165d67fd66588c7f373bd12ebc0edc5acf2100ab43b8db446f50",
       "size": 8303,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "SECURITY_REVIEW.md": {
       "actions": [],
@@ -6191,22 +6257,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T08:34:24Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "5aff333e94f29b6062c2f7d2f90775d206638fb8f632b1b0e8ee33d8ecaee2f1",
       "size": 305,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "gpt_zyra_shaggoth/__main__.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T03:03:10Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
       "size": 48,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "gpt_zyra_shaggoth/arsenal.py": {
       "actions": [],
@@ -6224,11 +6290,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T03:03:07Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "2934c3b489ea81738394742683d7563f58f72eaad97d60a27e70a29714230a1c",
       "size": 7118,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "gpt_zyra_shaggoth/cli.py": {
       "actions": [],
@@ -9227,20 +9293,42 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T17:45:36Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "c1dc21457552e2492ba9a0fb8b33f6d6e46b491921262f017a1972a841c30bd7",
       "size": 2854,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-10-09.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T17:45:36Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "3ffa03a3c23d60c153aebf711e76f021575cb8edfc38de3a1b222ce377660f01",
       "size": 1794,
+      "validation_issues": [],
+      "was_due": true
+    },
+    "intel/white-house/daily/2026-10-10.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T16:38:51Z",
+      "reviewed_at": null,
+      "sha256": "c021b0fdbfe3ada3435a3c49658152d521c89ad761a3c6b846b96f551ea9d475",
+      "size": 2598,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-10-10.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T16:38:51Z",
+      "reviewed_at": null,
+      "sha256": "71e770078f443ad08e08ca60e4831afce9f474a67cbe9da03d5269ca4ca21912",
+      "size": 1553,
       "validation_issues": [],
       "was_due": false
     },
@@ -9248,10 +9336,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-09T17:45:36Z",
+      "git_touched_at": "2026-10-10T16:38:51Z",
       "reviewed_at": null,
-      "sha256": "3a5e65c1354d503c69191e36c834bda5b7d0209a2abdb9e62b3ed4cd83cc8c50",
-      "size": 27360,
+      "sha256": "438620e9586212f20fdeb8120e26614a588aec5128b32fe0eb9f5466d5209163",
+      "size": 27698,
       "validation_issues": [],
       "was_due": false
     },
@@ -10850,6 +10938,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/BIO_GPT.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:49Z",
+      "reviewed_at": null,
+      "sha256": "8f1f637d1de43cfc06a5cb87c523cd78c7842dcc9e132d041e92730c83655a37",
+      "size": 5043,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/BIO_HILBERT_DIMENSIONS.md": {
       "actions": [],
       "binary": false,
@@ -10935,6 +11034,28 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "c8b993c530a6af3b7f0d24ea5daf840d175176a42181a48bf68ae4ddad4ea87e",
       "size": 3407,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/bio_gpt.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:15Z",
+      "reviewed_at": null,
+      "sha256": "4b1455a89d5c3bb2c226d70ba68d176a3d0a06a0febd35b9d0462b586e7c2a35",
+      "size": 10379,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/bio_gpt_ontology.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:40Z",
+      "reviewed_at": null,
+      "sha256": "7f97268fbdab6aba00fa499061a948082c2932c837a24f5e23eef8300ed95316",
+      "size": 1434,
       "validation_issues": [],
       "was_due": false
     },
@@ -11034,6 +11155,28 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "d1d83a900f3701a4cb49bbea259d55b6a994307ca223704db226fbd793e401b5",
       "size": 2183,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/examples/bio_gpt.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:41Z",
+      "reviewed_at": null,
+      "sha256": "9adae5920bf753d1571b87782e7effde1a420daa4da058dc8500ee553156e09d",
+      "size": 332,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/examples/bio_gpt_hierarchy.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:43Z",
+      "reviewed_at": null,
+      "sha256": "4f9c532141f33b0bc6a2e44e8e1c7c1bee44b12b4739221b4d9aa93a5d909a3f",
+      "size": 318,
       "validation_issues": [],
       "was_due": false
     },
@@ -11188,6 +11331,17 @@
       "reviewed_at": "2026-10-10T09:18:29Z",
       "sha256": "3f70771d8059805b7cce60da01dc557c6f5d7f53c72e14496eeb8a2da7540298",
       "size": 10424,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/tests/test_bio_gpt.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:17Z",
+      "reviewed_at": null,
+      "sha256": "8cdc095e64d268a324ea37ce2bbea50474347240b5d662987acc873375074525",
+      "size": 10276,
       "validation_issues": [],
       "was_due": false
     },
@@ -12801,10 +12955,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:37:18Z",
+      "git_touched_at": "2026-10-10T10:00:59Z",
       "reviewed_at": null,
-      "sha256": "e5d854a2ad10a7bbcb39c1578ae6d47282c83dec07ca512d46f1b77a3b76caf8",
-      "size": 6689,
+      "sha256": "37b60b834ba1f4b639aeb483366da3fccbc0c106d6cabdac0dfd969b347244cf",
+      "size": 6880,
       "validation_issues": [],
       "was_due": false
     },
@@ -13264,11 +13418,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T08:53:22Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "a867060785b477cfb41a6285b42bf5d75ab8bbe8c50983fdb3d2392a7767da69",
       "size": 2837,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "scripts/install-gptdoug-blackhouse-v3": {
       "actions": [],
@@ -14023,11 +14177,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:34:23Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "fa09eb8ac915b91408c0e060f6545797b5da25fae8536f4c4e584f4463aa6186",
       "size": 1148,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/.github/workflows/ci.yml": {
       "actions": [],
@@ -14067,11 +14221,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:24:02Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "ac78cddde52efd9ccb989ae189eba81f7d9350d49435f3ad1d4260811c2bead9",
       "size": 531,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/LICENSE": {
       "actions": [],
@@ -14089,11 +14243,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:09:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "e49f5abe452562035013a05a0c4ca8a864e10b8fc084effd0c2e7df16c91165e",
       "size": 11143,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/SECURITY.md": {
       "actions": [],
@@ -14111,253 +14265,253 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:32:40Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "a9396a0a6d0e45f7da9b237680f8f5ca27b192112b72194af30bdd599b5b33a4",
       "size": 925,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/docs/ATOMIC_LAYERS.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:57:17Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "334deb9bd78efc0ad3717cce8e021a1a69005eccf9e69ab64ff7b6bc4961e828",
       "size": 1737,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/docs/INFRASTRUCTURE.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:21:56Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "299b231e54738b7bda32153fc228a8b08e900799abf57b240a18991f93e9c70b",
       "size": 2542,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/compose/.env.example": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:19:51Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "f01788eea5015a344eb61d66ae826da084eb0cc7acd48844c733783d2821d708",
       "size": 631,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/compose/compose.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:19:48Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "69642963d0808a42291d212bb73af7c670b9beb9d44d2be16cd7626069f2008b",
       "size": 2780,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/configmap.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:19:58Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "efdcad97672d3f1fc619001af2bfb028779cfa2235f64c50a42f1ddf7bcfd850",
       "size": 609,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/connector-deployment.example.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:21:49Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "d654f208e07689b117109597c844db768f9c4ee7ac5e8a5f5a1d50c9f10609fb",
       "size": 1442,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/deployment.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:00Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "492b72b0d3fdc7e69956fc1c24acfcc3cd86b961af8a0e2dfaf9d6dd90527c90",
       "size": 2246,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/hpa.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:04Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "698659cc4455ca9adea3050660e6d2c712df0a211f4ddd3f6adc83ea5e25a654",
       "size": 502,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/ingress.example.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:21:51Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "18f526fb3c62088f29c502e22f9c7289cabbdf2d60c8cc94d4e3ac3158afcb5d",
       "size": 363,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/kustomization.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:55Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "bf3bc684d74d38b26979f814dc791074798d75c931dbe39d8d97d60a1c5dd8ee",
       "size": 305,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/namespace.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:19:53Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "e60b10ca1a3590b5ebf7d0dbf6115d5e41dae41e5e7515b40a713eff997dd23c",
       "size": 121,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-api-ingress.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:49Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "02c1601841984b6da7895565c6505b8e48b8ca7c392c983cfaf25b3c5cc73b42",
       "size": 429,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-default-deny.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:47Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "485b8f8ebc79210a826bf8c48d1bf19049b406abb1856ded7b2a9b6c92a7b5ef",
       "size": 179,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-dns-egress.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:52Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "0c75b21e333ba8e4e94d0ae1f432ae722095d18ac6133cea0ec2009b3ba434ef",
       "size": 390,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/networkpolicy-external-egress.example.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:21:53Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "eed59c37817f0088df127235dd4dfd8bafb9aa7b9f708a2b8774640c5bc591c5",
       "size": 401,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/pdb.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:06Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "54094f69e408bfffe9a97358ab0cca68d58305c268d03577bd758d800ff86c3f",
       "size": 204,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/secret-example.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:59Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "2e7a20ac8b1a0f7f393cf797b2bc8de6c30917caef14e7fdb83e085f28ac2ed9",
       "size": 280,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/service.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:20:02Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "c0e630fcc831a0bf5f4053457e5385dc17a9a399a9d00156bfc4ee1eff921ad9",
       "size": 283,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/infra/k8s/serviceaccount.yaml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:19:55Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "1cbe83a4338a7c4c6bc48dcadf8fad3e1d243620c0a45b6dc5bf8a8bc8984a33",
       "size": 128,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/pyproject.toml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:04:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "998ed0ee0b6fda3668effe349c9831e1b9db25033c0f60748a32bea816915803",
       "size": 524,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/scripts/bootstrap-shaggoth.sh": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:08:29Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "b235319691aad8a3afa6971abbdfd570bf0ea0dce0e4ca6babfec993f717684f",
       "size": 862,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/__init__.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:58:50Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "7e07856c39e5b0ff63ff692e25ae630156be8d995ae0dafd5196ee7c670ebf98",
       "size": 399,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/adapters/__init__.py": {
       "actions": [],
@@ -14408,33 +14562,33 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:00:59Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "2d76023435698f90ac596905451c2f19fd0e09b7d249f65cdb83b9a11eaac718",
       "size": 2819,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/atomic.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:00:55Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "6fbc2adbb59e2a074f0f403a218ff435a3acaaee53c311ce9f6bf8a24f62e480",
       "size": 8284,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/broker.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:02:48Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "1071ff3d6ae7f2457d8cd527af2ae59ca326fac7c2e101e8ef211e5febfb721f",
       "size": 3122,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/capabilities.py": {
       "actions": [],
@@ -14452,33 +14606,33 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:32:32Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "c3e27511928f21bbe7e98bec688a02f100e09f684a8aa9e0f542d502b16e7cba",
       "size": 52,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/catalogs/open_source_everything.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:32:35Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "9e0af8753d83227c99ef30750bcccf42789f2150f221e076b348d570ed920803",
       "size": 5608,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/cli.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:09:25Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "3ee220fbd0cf3b13f0452b8a6daabb603f2423937568b9c266b5353752be48f0",
       "size": 10623,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/config.py": {
       "actions": [],
@@ -14496,22 +14650,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:04:31Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "56b45a35a3980baf9f6520a780e7d668b05e6e9cc18354fa09859bfb78d02a53",
       "size": 8197,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/heartbeat.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:08:25Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "b9fe75ad1feb43c487584c34a00fb70e9772e77bf548759f539737263595dca2",
       "size": 4015,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/models.py": {
       "actions": [],
@@ -14529,11 +14683,11 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:03:00Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "d5d00c214db4775151bce789fa5131ed4e089d891b2da31a45a8bb13d44d32e7",
       "size": 4593,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/src/shaggoth_swarm/policy.py": {
       "actions": [],
@@ -14562,22 +14716,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:57:15Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "3b0995439e25df4ca7cc4a3e179c55c5befb3b098dd39e606b21fb557fb0e55d",
       "size": 2925,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_broker.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:02:50Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "a1cfe4075ad813481040b9212809f6ce613ab47eb4d6b6385533520ca15b0495",
       "size": 3104,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_capability_profiles.py": {
       "actions": [],
@@ -14595,33 +14749,33 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:06:04Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "99d6b8a465caed4a281a7d515b7265a2291855692ec59ef1eb74de870d0ee6f7",
       "size": 2437,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_heartbeat.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T02:08:27Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "bf64cbcf5d4c4aa78869426afe68f75b1cb1c4189036815816a66369a098efed",
       "size": 1309,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_open_source_everything.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T01:32:37Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "fd8b5a7213aaed2501b0b28d79e0c61d4eef3f8e8035831ccfc68b4a9b3cc564",
       "size": 1763,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/tests/test_orchestrator.py": {
       "actions": [],
@@ -14840,6 +14994,17 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "4dbfb01cf5f7b8756068924aa702993b32def80c9a2c3608881f3b84ee25c9e6",
       "size": 2966,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_bio_gpt_math.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T10:00:19Z",
+      "reviewed_at": null,
+      "sha256": "c5e193c9873886cb9317ce4b73c8772642d5eafdad4b9957d83994ff479650f3",
+      "size": 580,
       "validation_issues": [],
       "was_due": false
     },
@@ -15222,22 +15387,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T08:34:24Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "ea76021d6e9805cfed86be263367a53b5bcb1be95fe62fc3d81e94f87dab1750",
       "size": 2209,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_gpt_zyra_shaggoth.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-08T03:03:12Z",
-      "reviewed_at": "2026-10-09T11:55:47Z",
+      "reviewed_at": "2026-10-10T19:10:27Z",
       "sha256": "b090b066e3d1d22754fc1c25b884b5d36067e928ac273c14dbfba6142eff8ed7",
       "size": 3649,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_gpt_zyra_shaggoth_nexus.py": {
       "actions": [],
@@ -20664,11 +20829,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-10T11:12:19Z",
+  "generated_at": "2026-10-10T19:10:27Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1878,
+  "tracked_files_reviewed": 1887,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
