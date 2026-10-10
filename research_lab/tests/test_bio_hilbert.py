@@ -120,6 +120,17 @@ class OperatorIdentityTests(unittest.TestCase):
 
 
 class StabilityAndTruncationTests(unittest.TestCase):
+    def test_reproduces_earlier_six_dimensional_half_identity(self):
+        # The previous 6D linear test system A=(1/2)*I_6 is a special case.
+        legacy = {"alpha": "8", "beta": "0", "kappa": "0",
+                  "omega": ["0", "0", "0"], "dt": "1/16"}
+        out = b.analyze({"model": legacy, "modes": 1,
+                         "initial": [[2, -4, 6, -8, 10, -12]], "steps": 1})
+        self.assertEqual(out["final_state"], [["1", "-2", "3", "-4", "5", "-6"]])
+        self.assertEqual(out["theorem"]["euler_squared_norm_factor_upper_bound"], "1/4")
+        self.assertTrue(out["exact_infinite_euler_horizon"])
+        self.assertTrue(b.verify(out))
+
     def test_exact_dimension_independent_certificate(self):
         model=b.param_model(MODEL)
         self.assertEqual(model["delta"],2)
