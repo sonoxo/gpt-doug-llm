@@ -1,6 +1,6 @@
 # GPT-Doug — Lateral Stability & Mobility Tests (independent numerical model)
 
-**Public source metadata recovered from YouTube oEmbed:** "Lateral Stability & Mobility Tests" — NoLimits AI, https://www.youtube.com/shorts/eNIFAcuEFVU?feature=share. The actual clip's video, frames and captions were **not** accessible in the GitHub runner when this module was authored. This model is an independent demonstration inspired **only by the verified title**, not the video's hidden code or its observed mechanics.
+**Public source metadata recovered from YouTube oEmbed:** "Lateral Stability & Mobility Tests" — NoLimits AI, https://www.youtube.com/shorts/eNIFAcuEFVU?feature=share. The GitHub runner recovered a **public JPEG poster** depicting what appear to be robot-like machines during an indoor test, but moving video, frames extracted from the video, and captions were **not** accessible when this module was authored. This model is an independent demonstration inspired **only by the verified title**, not the video's hidden code or its observed mechanics.
 
 ## Dynamical system (exact 1D toy model)
 
