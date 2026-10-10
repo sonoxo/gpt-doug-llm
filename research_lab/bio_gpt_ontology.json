@@ -1,0 +1,23 @@
+{
+  "ontology_id": "Bio-Gpt-six-to-infinity-v1",
+  "repository": "sonoxo/gpt-doug-llm",
+  "scope": "analytic exact rational Hilbert space software research, no physical biology",
+  "space": "ell2(N; R^6)",
+  "channels": ["neural", "metabolic", "immune", "epigenetic", "sensory", "memory"],
+  "roles": [
+    {"name": "GPT-Doug", "edge": ["neural", "metabolic"], "source": "gpt_brain/math_mitochondria.py"},
+    {"name": "GPT-Pineal", "edge": ["metabolic", "memory"], "source": "integrations/gpt-doug-pineal/src/pineal/store.py"},
+    {"name": "GPT-Doug-Shaggoth", "edge": ["immune", "epigenetic"], "source": "gpt_zyra_shaggoth/bridge.py"},
+    {"name": "GPT-Doug-Chaos", "edge": ["epigenetic", "sensory"], "source": "gpt_chaos/runtime.py"},
+    {"name": "GPT-Doug-Redpanda", "edge": ["sensory", "memory"], "source": "redpanda-desktop/gpt_redpanda_llm.py"}
+  ],
+  "mathematical_contract": {
+    "role_operator": "eta_r * J_ab with J_ab skew symmetric",
+    "energy_change_from_roles": "0 exactly",
+    "decay_delta": "alpha-beta > 0",
+    "proof_kind": "conditional analytic stability theorem plus exact finite Euler replay",
+    "status": "mathematical abstraction, not biological implementation"
+  },
+  "permissions": {"network": false, "new_credentials": false, "external_effects": false, "subagents_started": false},
+  "provenance": "hardcoded source anchors refer to existing project modules without importing or executing them"
+}
