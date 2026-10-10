@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>GPT-Doug-Chaos // Live Access Cube</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="GPT-Doug Chaos home">
+      <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span><strong>GPT-DOUG<span class="accent">//CHAOS</span></strong><small>RUBIK ACCESS OBSERVATORY</small></span>
+    </a>
+    <div class="top-meta">
+      <span class="local-chip">127.0.0.1 • LOCAL ONLY</span>
+      <div id="connection" class="connection waiting" role="status" aria-live="polite"><span class="dot"></span><span id="connection-label">CONNECTING</span></div>
+      <span class="utc" id="utc-time">--:--:-- UTC</span>
+    </div>
+  </header>
+  <section class="hero" aria-labelledby="page-title">
+    <div><div class="eyebrow"><span class="hash">// 01</span> CHAOS OPERATIONS CONSOLE <span class="sep">/</span> READ-ONLY</div>
+      <h1 id="page-title">CONTROL THE <em>VIEW.</em><br>NOT THE PERMISSIONS.</h1>
+      <p>Six policy faces. Seven project components. One live local telemetry stream. Rotations inspect governance; they never unlock infrastructure.</p>
+    </div>
+    <div class="hero-verification"><span class="eyebrow">VERIFICATION STATE</span><strong id="hero-policy">CHECKING POLICY</strong><small id="hero-hash">Expected constraints • no external actions</small></div>
+  </section>
+  <section class="metrics" aria-label="Live measurements">
+    <article class="metric"><span>PROCESS UPTIME</span><strong id="uptime">00:00:00</strong><small>Local observer runtime</small></article>
+    <article class="metric"><span>SOURCE MODULES</span><strong id="modules-count">— / 7</strong><small>File presence, not running agents</small></article>
+    <article class="metric"><span>LIVE VIEWERS</span><strong id="viewers">0</strong><small>SSE connections on this server</small></article>
+    <article class="metric"><span>INBOUND REQUESTS</span><strong id="requests">0</strong><small>Since local launch</small></article>
+    <article class="metric signature"><span>OBSERVATION SEQUENCE</span><strong id="sequence">#0000</strong><small>Updates every two seconds</small></article>
+  </section>
+  <main class="primary">
+    <section class="panel rules-panel" aria-labelledby="rules-title">
+      <div class="section-head"><span class="kicker">01 / POLICY FACES</span><span class="micro">PROJECT-SCOPED</span></div>
+      <h2 id="rules-title">The access rules</h2>
+      <p class="panel-summary">Each face represents one locally sampled rule. Select a face to examine its controls.</p>
+      <div id="rule-list" class="rule-list"><span class="dimmed">Waiting for local policy snapshot…</span></div>
+      <div class="governance-note"><span class="governance-icon">!</span><span>These are repository security constraints—not universal laws or credentials.</span></div>
+    </section>
+    <section class="cube-panel" aria-labelledby="cube-title">
+      <div class="section-head cube-heading"><span class="kicker">02 / INTERACTIVE OBSERVER</span><span class="micro" id="cube-update">AWAITING TELEMETRY</span></div>
+      <div class="cube-title-block"><h2 id="cube-title">Access <span>Rubik Cube</span></h2><p>Rotate the cube or select a policy face. You control the visualization only.</p></div>
+      <div class="scene" id="cube-scene" aria-label="Decorative six-face interactive access cube">
+        <div class="scene-glow" aria-hidden="true"></div>
+        <div class="scene-rings" aria-hidden="true"></div>
+        <div class="cube" id="cube" aria-hidden="true">
+          <div class="face front" data-axis="identity"></div>
+          <div class="face right" data-axis="scope"></div>
+          <div class="face back" data-axis="consent"></div>
+          <div class="face left" data-axis="policy"></div>
+          <div class="face top" data-axis="resources"></div>
+          <div class="face bottom" data-axis="audit"></div>
+        </div>
+        <div class="axis-label axis-label-top">+ Y</div><div class="axis-label axis-label-left">− X</div><div class="axis-label axis-label-right">+ X</div>
+      </div>
+      <div class="cube-footer">
+        <div class="selected-face"><span>SELECTED FACE</span><strong id="selected-title">IDENTITY</strong><small id="selected-explain">Local scope; operator authentication not established</small></div>
+        <div class="controls" aria-label="Rotate visualization"><button id="rotate-left" type="button" aria-label="Rotate cube left">←</button><button id="rotate-up" type="button" aria-label="Rotate cube up">↑</button><button id="reset-view" type="button" aria-label="Reset cube view">↺</button><button id="rotate-right" type="button" aria-label="Rotate cube right">→</button></div>
+      </div>
+      <div class="legend"><span><i class="legend-dot yes"></i>ENFORCED</span><span><i class="legend-dot review"></i>LIMITED / REVIEW</span><span><i class="legend-dot unknown"></i>UNVERIFIED</span></div>
+    </section>
+    <section class="panel modules-panel" aria-labelledby="modules-title">
+      <div class="section-head"><span class="kicker">03 / PROJECT MODULES</span><span class="micro">LIVE FILE CHECKS</span></div>
+      <h2 id="modules-title">Ecosystem status</h2>
+      <p class="panel-summary">These reflect local source availability, not autonomous execution or remote access.</p>
+      <div id="module-list" class="module-list"><span class="dimmed">Checking repository modules…</span></div>
+      <div class="modules-foot"><span class="foot-indicator"></span><span>ACTIVE AGENT RUNTIMES VERIFIED</span><strong id="agents-active">0</strong></div>
+    </section>
+  </main>
+  <section class="bottom-grid">
+    <article class="panel timeline"><div class="section-head"><span class="kicker">04 / OBSERVER HEARTBEAT</span><span class="micro">ACTUAL LOCAL SAMPLES</span></div><h2>Runtime pulse</h2><canvas id="pulse" height="120" aria-label="Graph of observed local request counters"></canvas><div class="chart-labels"><span>LOCAL HTTP REQUESTS / SNAPSHOT</span><span>LIVE FEED: <b id="feed-label">CONNECTING</b></span></div></article>
+    <article class="panel audit"><div class="section-head"><span class="kicker">05 / ACCESS BOUNDARY</span><span class="micro">FAIL CLOSED</span></div><h2>Authority check</h2><div class="boundary-grid"><div><span>NETWORK</span><strong>LOOPBACK ONLY</strong></div><div><span>EXTERNAL ACTIONS</span><strong>DISABLED</strong></div><div><span>ACCESS KEYS</span><strong>NOT ACCESSED</strong></div><div><span>AUDIT</span><strong>VOLATILE COUNTERS</strong></div></div><div class="audit-bottom" id="audit-status">Awaiting local policy validation</div></article>
+  </section>
+  <footer><span>GPT-DOUG-CHAOS / LOCAL RESEARCH DASHBOARD v1.0</span><span>CTRL+C IN TERMINAL TO STOP · NO UNAUTHORIZED ACCESS</span></footer>
+</div>
+</body>
+</html>
