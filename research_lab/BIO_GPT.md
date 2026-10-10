@@ -66,6 +66,24 @@ For explicit rational Euler of step `h`, a sufficient finite-mode energy certifi
 
 All numerical checks use Python's exact `Fraction` arithmetic, including skew-energy cancellation. The Euler simulation has 1–128 layers (6–768 coordinates), 0–8 steps and fixed complexity caps. A single Euler step only spreads support by one layer; the truncation bound accounts for the otherwise missing `(n+1)`st layer. **Continuous time has no such finite exact-propagation horizon.**
 
+## Interactive Terminal: Bio-Gpt
+
+The original `bio-gpt demo` is a one-shot **JSON** output, not an interactive application. The corrected standalone package includes both required Python modules (`bio_gpt.py` and `bio_hilbert.py`), a text-based menu, and a Mac-compatible `run-Bio-Gpt.command` launcher. It uses only Python 3.9+ and makes **no network or API calls**.
+
+From the repository root:
+
+```sh
+bash run-Bio-Gpt.command
+# Or use the GPT-Doug launcher:
+bash scripts/doug-max bio-gpt open
+```
+
+The `open` action shows four options: run the mathematical simulation, inspect five named operators, view the dimension hierarchy, and replay the proof certificate. Enter `q` to exit. Run `bash run-Bio-Gpt.command --once` to print a single dashboard and exit, for CI or diagnosis.
+
+To launch from **any working directory**, pass an absolute path to `run-Bio-Gpt.command`. The script moves into its own directory first. The original JSON commands such as `bash scripts/doug-max bio-gpt demo` still work.
+
+**What opens:** an interactive ASCII research console in an existing Terminal window. There is no native Mac graphical application or running agent swarm. A GitHub review branch must be checked out before using these new commands; the default `main` branch does not yet contain them.
+
 ## Command-line integration
 
 After checking out the new review branch, from the repository root:
