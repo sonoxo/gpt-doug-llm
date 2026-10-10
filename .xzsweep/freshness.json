@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-09T09:19:43Z",
+  "cutoff_at": "2026-10-09T09:21:01Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -628,6 +628,17 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "76df7483a7cf1076dadf52e8bbed7bb1de5179b808f6b6999e920ccc0df2ca8c",
       "size": 1572,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/pineal-cad-model.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "5464a3e53d7c38723ebb9943a2183b91526eceff6dbcb01eebe936e14dc01683",
+      "size": 1261,
       "validation_issues": [],
       "was_due": false
     },
@@ -3759,9 +3770,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:18:34Z",
+      "git_touched_at": "2026-10-10T09:19:44Z",
       "reviewed_at": null,
-      "sha256": "447f8aec307e4f76d1ce18b4287e0242d2124c06251db0c7c30e121b6f280756",
+      "sha256": "c405c0e947ebdf39bcb0d036a9d22485c84217bf11c71f874a542793de732065",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -7085,6 +7096,61 @@
       "reviewed_at": null,
       "sha256": "6f41c4e366a2603959bc2b4e334e394b3c1b6ba9a21489d0720fed797c27addc",
       "size": 12269,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/gpt-doug-pineal/cad/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "9dab7ba51906bf21a3ddc82f53e378dc7ed19838ae832a03b7a53add135f97dd",
+      "size": 3376,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/gpt-doug-pineal/cad/pineal_cad.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "cf3c148bb3616bf0a6da7f479446291c20e0de6ff109997d52c5042ddd23cc68",
+      "size": 10613,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/gpt-doug-pineal/cad/render_vtk.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "cd4c1af8cd1f0abecdcefb23bc395c5f47734d88a017b871c0855c015973c731",
+      "size": 4286,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/gpt-doug-pineal/cad/requirements.txt": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "4cd1a09cc613d52a0d2b15e36eb35a5a1b7b5dd63f20c7c25117d11dbbb61ad8",
+      "size": 76,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "integrations/gpt-doug-pineal/cad/verify_cad.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-09T22:49:55Z",
+      "reviewed_at": null,
+      "sha256": "8b7e5dfe0fbc3731a15026a34f96b08ec8c82036e20c5c05b837853e9d899412",
+      "size": 2019,
       "validation_issues": [],
       "was_due": false
     },
@@ -18048,9 +18114,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:18:30Z",
+      "git_touched_at": "2026-10-10T09:19:48Z",
       "reviewed_at": null,
-      "sha256": "18a25da243964f26f161e1f1c73a5ff8cfb7456adc1437c2243b92960fb032af",
+      "sha256": "0bb48ab62e63d04806a816e05e5e423493ee4f0319abd635d52b0350e035c977",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18070,9 +18136,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:18:30Z",
+      "git_touched_at": "2026-10-10T09:19:48Z",
       "reviewed_at": null,
-      "sha256": "8631619bb92cc31a9e259df5e5f89afab124719c5e1038bb00f6ea724d52e9bf",
+      "sha256": "37a69e305bb31f6f6e9d20d7bd8dd2592dd22e1b3d53cf03eae99395d7d7fc64",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -20521,11 +20587,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-10T09:19:43Z",
+  "generated_at": "2026-10-10T09:21:01Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1865,
+  "tracked_files_reviewed": 1871,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
