@@ -226,7 +226,7 @@ def analyze(payload: Any) -> Dict[str, Any]:
         "input": canonical,
         "theorem": theorem,
         "initial_support_modes": support,
-        "exact_infinite_euler_horizon": canonical["modes"] >= support + canonical["steps"],
+        "exact_infinite_euler_horizon": (kappa == 0 or canonical["modes"] >= support + canonical["steps"]),
         "trajectory": trajectory,
         "final_state": _state_strings(state),
         "initial_squared_norm": str(initial_energy),
