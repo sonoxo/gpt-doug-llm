@@ -1,0 +1,38 @@
+name: GPT-Doug PINEAL CAD Validation
+on:
+  pull_request:
+    paths:
+      - 'integrations/gpt-doug-pineal/cad/**'
+      - '.github/workflows/pineal-cad-model.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'integrations/gpt-doug-pineal/cad/**'
+      - '.github/workflows/pineal-cad-model.yml'
+permissions:
+  contents: read
+jobs:
+  cad-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install geometry dependencies
+        run: python -m pip install -r integrations/gpt-doug-pineal/cad/requirements.txt
+      - name: Validate source geometry and output files
+        run: |
+          cd integrations/gpt-doug-pineal/cad
+          python -m pytest -q verify_cad.py
+      - name: Export the actual CAD and AutoCAD 3D models
+        run: |
+          cd integrations/gpt-doug-pineal/cad
+          python pineal_cad.py --output build --tolerance 0.65
+      - name: Publish native 3D CAD files from CI
+        uses: actions/upload-artifact@v4
+        with:
+          name: GPT-DOUG-PINEAL-AutoCAD-3D
+          path: integrations/gpt-doug-pineal/cad/build/GPT-DOUG-PINEAL-3D.*
+          retention-days: 30
