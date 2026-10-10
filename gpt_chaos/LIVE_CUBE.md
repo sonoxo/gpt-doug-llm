@@ -24,12 +24,12 @@ The backend pushes updates using Server-Sent Events (SSE) at roughly **two-secon
 | --- | --- |
 | Process uptime, request totals, SSE viewer count | Measured from the actual local server process |
 | Source modules | Rechecked every snapshot using a fixed allowlist of known file paths inside the GitHub checkout |
-| Governance | A **sample** of 9 required rule values from `safety-shield/ontology/universal-galactic-federation-guardrails-v1.json` is compared to fixed expectations, with a SHA-256 prefix for change detection |
+| Governance | All **18 expected rule values** from `safety-shield/ontology/universal-galactic-federation-guardrails-v1.json` are compared to fixed expectations, with a SHA-256 prefix for change detection |
 | Access cube | Six informational faces: **identity, scope, consent, policy, resources, audit**; rotating is purely cosmetic |
 | Agent runtimes | **Unverified (0)** by default; the file checks do **not** prove that agents are running, healthy, authorized, or connected |
 | External infrastructure | Not probed, connected, scanned, or controlled |
 
-This visualization is a **project policy sample, not a replacement for the canonical full guardrail validator**, a legal compliance finding, or a bearer-access control. A missing or drifted policy is marked **UNVERIFIED**; it is not interpreted as approval. The dashboard does not accept capability changes, usernames, requests for keys, or execution commands.
+This visualization is a **project policy status display, not a replacement for the canonical full guardrail validator**, a legal compliance finding, or a bearer-access control. A missing or drifted policy is marked **UNVERIFIED**; it is not interpreted as approval. The dashboard does not accept capability changes, usernames, requests for keys, or execution commands.
 
 ## Security limits
 
