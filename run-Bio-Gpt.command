@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Self-contained Bio-Gpt terminal startup; only Python 3.9+ required.
 set -euo pipefail
-ROOT="$(cd "$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if ! command -v python3 >/dev/null 2>&1; then
   printf '%s\n' 'BIO-GPT ERROR: Python 3 is missing. Install Python 3.9+ and rerun.' >&2
   exit 127

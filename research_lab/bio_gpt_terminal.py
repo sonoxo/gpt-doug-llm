@@ -71,6 +71,29 @@ def show_hierarchy() -> None:
     print("\n  This exactness concerns finite-step Euler, not continuous time.\n")
 
 
+def show_cure_swarm() -> None:
+    """Safe, entirely synthetic cancer-research evidence preview."""
+    from research_lab import cure_swarm
+
+    report = cure_swarm.analyze(cure_swarm.sample_snapshot())
+    print("\nBIO-GPT CURE SWARM // SYNTHETIC RESEARCH DEMO")
+    print("  PUBLIC CLINICAL TRIAL API FETCH: DISABLED IN THIS MENU")
+    print("  SOURCE:              SIMULATED DATA ONLY")
+    print("  Recorded trials:     ", report["counts"]["studies"])
+    print("  Publications:        ", report["counts"]["publications"])
+    print("  Medical review gate: REQUIRED")
+    print("  Approved cures:      0 (no clinical efficacy assessed)")
+    print("  Research stages:")
+    for role in report["agents"]:
+        print(f'   - {role["role"]}: {role["function"]}')
+    print("  Evidence gaps:")
+    for record in report["evidence"]:
+        print(f'   - {record["id"]}: {", ".join(record["review_flags"])}')
+    print("  For public metadata: bash scripts/doug-max cure-swarm online")
+    print("      --query glioblastoma --per-source 5")
+    print("  No diagnosis, treatment, drug synthesis or patient data.\n")
+
+
 def check_replay() -> None:
     report = bio_gpt.analyze(bio_gpt.demo_problem())
     print("\nCERTIFICATE REPLAY:", "VERIFIED" if bio_gpt.verify(report) else "INVALID")
@@ -83,6 +106,7 @@ def show_menu() -> None:
     print(" [2] Inspect all five operator mappings")
     print(" [3] View dimension hierarchy (6 -> 96)")
     print(" [4] Verify demo proof certificate")
+    print(" [5] Bio-Gpt Cure Swarm (synthetic evidence preview)")
     print(" [q] Quit Bio-Gpt\n")
 
 
@@ -108,11 +132,13 @@ def launch() -> int:
                 show_hierarchy()
             elif choice in ("4", "verify", "check"):
                 check_replay()
+            elif choice in ("5", "cure", "cure-swarm", "research"):
+                show_cure_swarm()
             elif choice in ("q", "quit", "exit", "0"):
                 print("Exiting Bio-Gpt. No background processes left running.")
                 return 0
             else:
-                print("Unknown command. Enter 1, 2, 3, 4, or q.\n")
+                print("Unknown command. Enter 1, 2, 3, 4, 5, or q.\n")
         except (ArithmeticError, ValueError, OverflowError):
             print("Model computation failed; no result claimed.\n")
 

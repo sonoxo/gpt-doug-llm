@@ -21,6 +21,11 @@ case "$first_arg_lc" in
   brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt)
     read_only_mode=1
     ;;
+  cure-swarm|cancer-research)
+    # Offline demo/analyze/compare/verify are read-only. An explicitly requested
+    # public HTTPS fetch continues through the canonical guardrail preflight.
+    if [[ "${2:-demo}" != "online" ]]; then read_only_mode=1; fi
+    ;;
   brain)
     if [[ $# -eq 1 ]]; then read_only_mode=1; fi
     ;;
@@ -50,6 +55,20 @@ case "$first_arg_lc" in
   invention-lab)
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
+    ;;
+  cure-swarm|cancer-research)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.cure_swarm_terminal
+    fi
+    case "$1" in
+      open|terminal|start)
+        shift
+        exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.cure_swarm_terminal "$@"
+        ;;
+    esac
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.cure_swarm "$@"
     ;;
   bio-gpt)
     shift
