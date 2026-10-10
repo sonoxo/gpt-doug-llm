@@ -31,7 +31,7 @@ jobs:
           set +e
           python -m research_lab.youtube_short_ingest inspect \
             'https://www.youtube.com/shorts/eNIFAcuEFVU?feature=share' \
-            --frames --output /tmp/gpt-doug-short-evidence
+            --frames --poster --output /tmp/gpt-doug-short-evidence
           status=$?
           echo "public_video_crawl_exit=$status"  # 1 = not publicly retrievable in runner
           python - <<'PY'
@@ -45,6 +45,7 @@ jobs:
               print('creator:',data.get('metadata',{}).get('uploader','')[:120])
               print('captions_status:',data.get('captions',{}).get('status'))
               print('sampled_frames:',data.get('frames',{}).get('count'))
+              print('public_poster:',data.get('poster',{}).get('status'))
               t=Path('/tmp/gpt-doug-short-evidence/transcript.txt')
               if t.is_file():
                   print('transcript_preview:',repr(t.read_text()[:1200]))
