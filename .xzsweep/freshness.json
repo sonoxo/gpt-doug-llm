@@ -1,8 +1,15 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-10-09T09:21:01Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "content_repairs": 1,
+  "cutoff_at": "2026-10-09T09:52:49Z",
+  "due_files_reviewed": 6,
+  "due_paths": [
+    "UNFORCED_3D_NAVIER_STOKES_CERTIFICATE_REPORT.md",
+    "research_lab/examples/enstrophy_growth_initial_data.json",
+    "research_lab/navier_stokes_beltrami.py",
+    "research_lab/navier_stokes_triads.py",
+    "research_lab/tests/test_navier_stokes_beltrami.py",
+    "research_lab/tests/test_navier_stokes_triads.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1270,15 +1277,17 @@
       "was_due": false
     },
     "UNFORCED_3D_NAVIER_STOKES_CERTIFICATE_REPORT.md": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:31:27Z",
-      "reviewed_at": null,
-      "sha256": "8701234a160443872eb21942a88babe633c82301e3c08300f78a66c15a25c26c",
-      "size": 7113,
+      "reviewed_at": "2026-10-10T09:52:49Z",
+      "sha256": "69fdd054781125ef04dbdee23ffac22ffa606d7e18eb6ad0f6024ef75f67b3b2",
+      "size": 7114,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "USA_INFRASTRUCTURE_SHIELD.md": {
       "actions": [],
@@ -3770,9 +3779,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:19:44Z",
+      "git_touched_at": "2026-10-10T09:21:02Z",
       "reviewed_at": null,
-      "sha256": "c405c0e947ebdf39bcb0d036a9d22485c84217bf11c71f874a542793de732065",
+      "sha256": "7790f099529632059a9c91eede91c497c1d90cea4686c2b9b7e60421ad76e2eb",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -10850,6 +10859,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/BIO_HILBERT_DIMENSIONS.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:38:55Z",
+      "reviewed_at": null,
+      "sha256": "eb820dfd32a1747ed9cad568da2edea84680ac2f2a593a8109c75bdaaa235d9c",
+      "size": 7504,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/INVENTION_CANDIDATES.md": {
       "actions": [],
       "binary": false,
@@ -10924,6 +10944,28 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "c8b993c530a6af3b7f0d24ea5daf840d175176a42181a48bf68ae4ddad4ea87e",
       "size": 3407,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/bio_hilbert.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:38:48Z",
+      "reviewed_at": null,
+      "sha256": "867322d14aa28d0d1758d165a3638083683e629d962b77c8e089d85918afcd64",
+      "size": 14297,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/bio_hilbert_ontology.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:36:57Z",
+      "reviewed_at": null,
+      "sha256": "c8ab81dc295ad5148a5fa7f96aa0891779347ea22f910138ac6b4f59dff15bba",
+      "size": 1430,
       "validation_issues": [],
       "was_due": false
     },
@@ -11004,16 +11046,38 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/examples/bio_hilbert_6_to_infinity.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:36:59Z",
+      "reviewed_at": null,
+      "sha256": "95379a1c5d9de7bf2da280d361f9d9e32fa9df6cdc47291f2fcfba617471c4f4",
+      "size": 193,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/examples/bio_hilbert_hierarchy.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:37:01Z",
+      "reviewed_at": null,
+      "sha256": "6e2bf11ab4c4ef8adc6023c0779e676bdc92ad3781cd57a63030d30d514b4270",
+      "size": 179,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/examples/enstrophy_growth_initial_data.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:31:24Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T09:52:49Z",
       "sha256": "04ad36fc53a767e4b3b9b77510bbcafaed85e3ea71574c948c0f37f70210e5e3",
       "size": 2437,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/examples/multidimensional_nonnormal.json": {
       "actions": [],
@@ -11064,22 +11128,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:25:51Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T09:52:49Z",
       "sha256": "cddd6fa2c8bbc6a6c137d837ba73039025983fc19ee10906c805ed71e01374ac",
       "size": 10996,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/navier_stokes_triads.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:31:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T09:52:49Z",
       "sha256": "c95ec513407ba2c1666a4013605c5dae7e958a16a47cd83fb3609d36aa5af620",
       "size": 7858,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/reconcile.py": {
       "actions": [],
@@ -11133,6 +11197,17 @@
       "reviewed_at": "2026-10-10T09:18:29Z",
       "sha256": "3f70771d8059805b7cce60da01dc557c6f5d7f53c72e14496eeb8a2da7540298",
       "size": 10424,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/tests/test_bio_hilbert.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:38:50Z",
+      "reviewed_at": null,
+      "sha256": "5f78efa66c9eea0371bee275c051e6fecc2815d98dd00f3148a43999630a0802",
+      "size": 12194,
       "validation_issues": [],
       "was_due": false
     },
@@ -11207,22 +11282,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:25:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T09:52:49Z",
       "sha256": "d500d664fbfdb0b5b65341fa97516acbd9f4200b0116191c20f31a28d55f9bd1",
       "size": 6517,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/tests/test_navier_stokes_triads.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-09T09:31:22Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-10T09:52:49Z",
       "sha256": "f25e704c8c2b81610bf120d91a710103950fa4e8910fcf027328ab49537fa7a7",
       "size": 3730,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/tests/test_singularity.py": {
       "actions": [],
@@ -12735,10 +12810,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-09T23:41:33Z",
+      "git_touched_at": "2026-10-10T09:37:18Z",
       "reviewed_at": null,
-      "sha256": "8cf83b1a4eb741c7169443131d00d4675b21c57afad611d221b7b6c5f84b7e5c",
-      "size": 6460,
+      "sha256": "e5d854a2ad10a7bbcb39c1578ae6d47282c83dec07ca512d46f1b77a3b76caf8",
+      "size": 6689,
       "validation_issues": [],
       "was_due": false
     },
@@ -14774,6 +14849,17 @@
       "reviewed_at": "2026-10-09T19:44:24Z",
       "sha256": "4dbfb01cf5f7b8756068924aa702993b32def80c9a2c3608881f3b84ee25c9e6",
       "size": 2966,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_bio_hilbert_math.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-10T09:38:53Z",
+      "reviewed_at": null,
+      "sha256": "04e3f76809c399a95085c35faf7851c2714cc3b947149e42f459cef0395fe707",
+      "size": 606,
       "validation_issues": [],
       "was_due": false
     },
@@ -18114,9 +18200,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:19:48Z",
+      "git_touched_at": "2026-10-10T09:21:05Z",
       "reviewed_at": null,
-      "sha256": "0bb48ab62e63d04806a816e05e5e423493ee4f0319abd635d52b0350e035c977",
+      "sha256": "ae38aa74869b51b5753fef90787ffe3e869bb8b6f0185df1b1ceac76f936e284",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18136,9 +18222,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T09:19:48Z",
+      "git_touched_at": "2026-10-10T09:21:05Z",
       "reviewed_at": null,
-      "sha256": "37a69e305bb31f6f6e9d20d7bd8dd2592dd22e1b3d53cf03eae99395d7d7fc64",
+      "sha256": "ecfa8795da0441a39895d280bdd588575f974f62cdc2665b6d9fbd9f4691a399",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -20587,11 +20673,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-10T09:21:01Z",
+  "generated_at": "2026-10-10T09:52:49Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "UNFORCED_3D_NAVIER_STOKES_CERTIFICATE_REPORT.md"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1871,
+  "tracked_files_reviewed": 1878,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
