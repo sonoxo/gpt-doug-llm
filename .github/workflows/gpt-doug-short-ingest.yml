@@ -4,6 +4,9 @@ on:
     paths:
       - 'research_lab/youtube_short_ingest.py'
       - 'tests/test_youtube_short_ingest.py'
+      - 'research_lab/lateral_stability.py'
+      - 'tests/test_lateral_stability.py'
+      - 'docs/LATERAL_STABILITY_TITLE_INSPIRED.md'
       - '.github/workflows/gpt-doug-short-ingest.yml'
       - 'docs/GPT_DOUG_SHORT_EVIDENCE.md'
       - 'scripts/doug-max'
@@ -23,7 +26,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run strict offline unit tests
-        run: python -m unittest discover -s tests -p 'test_youtube_short_ingest.py' -v
+        run: |
+          python -m unittest discover -s tests -p 'test_youtube_short_ingest.py' -v
+          python -m unittest discover -s tests -p 'test_lateral_stability.py' -v
+          bash scripts/doug-max lateral-stability demo > /tmp/lateral-stability-report.json
+          bash scripts/doug-max lateral-stability verify /tmp/lateral-stability-report.json
       - name: Install free public video metadata extractor
         run: python -m pip install --disable-pip-version-check 'yt-dlp>=2025.1.1'
       - name: Crawl requested public Short
