@@ -31,6 +31,7 @@ class SourceFixture(unittest.TestCase):
         self.policy = {
             'mode': 'DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY',
             'status': 'ACTIVE',
+            'truth_boundary': {'external_legal_status': 'NOT_PROMOTED_TO_STATUTE_OR_REGULATION'},
             'guardrails': m.GUARDRAIL_EXPECTED.copy(),
         }
         self.persist()
@@ -55,6 +56,11 @@ class MonitorTests(SourceFixture):
         self.persist()
         self.assertEqual(m.read_policy(self.root)['state'], 'REVIEW_REQUIRED')
         self.assertLess(m.read_policy(self.root)['controls_checked'], len(m.GUARDRAIL_EXPECTED))
+
+    def test_legal_truth_boundary_cannot_be_promoted(self):
+        self.policy['truth_boundary']['external_legal_status'] = 'CLAIMED_AS_UNIVERSAL_LAW'
+        self.persist()
+        self.assertEqual(m.read_policy(self.root)['state'], 'REVIEW_REQUIRED')
 
     def test_policy_missing_or_symlink_unverified(self):
         self.path.unlink()
