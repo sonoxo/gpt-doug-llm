@@ -78,6 +78,10 @@ For finite Euler vectors padded with zeros in H, the **only omitted mode** of th
 
 For finite-support initial data with largest nonzero layer `m`, nearest-neighbor interactions ensure the **infinite Euler state is represented exactly** after `K` steps whenever `n >= m+K`; the code certifies this sufficient condition. This is **not** a statement that the continuous-time infinite solution has strictly finite-speed propagation. The stored boundary residual has squared norm `kappa^2*||X_n||^2` for the continuous generator at the current finite state.
 
+### Compatibility with GPT-Doug's previous six-dimensional matrix
+
+The earlier exact linear benchmark `A_6 = (1/2)*I_6` is contained as a **special case of the Euler update**: choose one layer, `alpha=8`, `beta=0`, `kappa=0`, `omega=(0,0,0)` and `h=1/16`. Then `F(X)=-8X` and `X[k+1]=(1/2)X[k]`, with an exact squared-norm factor `1/4`. This establishes a direct mathematical compatibility with the previous six-dimensional module, without asserting any biological equivalence.
+
 ## Exact worked example
 
 Choose `alpha=3`, `beta=1`, `kappa=1/4`, `(omega_1,omega_2,omega_3)=(1/4,1/8,1/16)` and `h=1/16`.
