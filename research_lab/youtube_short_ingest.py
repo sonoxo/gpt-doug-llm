@@ -220,7 +220,7 @@ def inspect(url: str, dest: Path, *, frames: bool = False, poster: bool = False)
     metadata = None
     transcript = ""
     captions = {"status": "UNAVAILABLE", "kind": None, "language": None}
-    result_frames = {"status": "NOT_REQUESTED", "count": 0}
+    result_frames = {"status": "PENDING_VIDEO_EXTRACTION" if frames else "NOT_REQUESTED", "count": 0}
     sources_attempted = []
     info = None
     try:
@@ -244,6 +244,8 @@ def inspect(url: str, dest: Path, *, frames: bool = False, poster: bool = False)
     except (ImportError, OSError, ValueError, RuntimeError, Exception) as exc:
         # Do not expose signed caption URLs, access tokens, or exception strings.
         sources_attempted.append("yt_dlp_unavailable:" + type(exc).__name__)
+    if frames and info is None:
+        result_frames = {"status": "UNAVAILABLE_PUBLIC_STREAM", "count": 0}
     if metadata is None:
         try:
             sources_attempted.append("youtube_oembed")
