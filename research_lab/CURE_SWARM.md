@@ -10,11 +10,12 @@ From a checked-out branch/repository root:
 
 ```bash
 bash scripts/doug-max cure-swarm demo
-bash run-Cure-Swarm.command
-bash scripts/doug-max bio-gpt open   # select 5 for offline Cure Swarm
+bash run-Cure-Swarm.command         # interactive local research dashboard
+bash run-Cure-Swarm.command --once  # one-shot safe diagnostics
+bash scripts/doug-max bio-gpt open # select 5 for offline Cure Swarm
 ```
 
-The three-record demo is entirely **synthetic**. IDs start with `SIM-`; none identify real trials or discoveries.
+The three-record demo is entirely **synthetic**. IDs start with `SIM-`; none identify real trials or discoveries. Both terminal menus refuse automatic external fetching; online retrieval must be explicitly invoked from the separate CLI.
 
 To search fresh **public metadata** from ClinicalTrials.gov and Europe PMC (explicit opt-in, HTTPS GET, max 10 records from each source per run):
 
