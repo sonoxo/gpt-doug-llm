@@ -213,7 +213,7 @@ def extract_frames(video_id: str, info: dict[str, Any], dest: Path) -> dict[str,
         return {"status": "FRAMES_COLLECTED" if count else "NO_FRAMES_COLLECTED", "count": count}
 
 
-def inspect(url: str, dest: Path, *, frames: bool = False) -> dict[str, Any]:
+def inspect(url: str, dest: Path, *, frames: bool = False, poster: bool = False) -> dict[str, Any]:
     video_id = parse_video_id(url)
     dest = Path(dest)
     dest.mkdir(parents=True, exist_ok=True)
@@ -252,6 +252,16 @@ def inspect(url: str, dest: Path, *, frames: bool = False) -> dict[str, Any]:
             sources_attempted.append("youtube_oembed_unavailable:" + type(exc).__name__)
     if metadata is None:
         metadata = normalize({}, video_id, "unverified_url_only")
+    thumbnail = {"status": "NOT_REQUESTED", "sha256": None}
+    if poster:
+        try:
+            photo = read_public(f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg", limit=1024*1024)
+            if not photo.startswith(b"\xff\xd8\xff") or len(photo) < 512:
+                raise ValueError("not a valid JPEG poster")
+            (dest / "poster.jpg").write_bytes(photo)
+            thumbnail = {"status": "CAPTURED", "sha256": hashlib.sha256(photo).hexdigest()}
+        except (OSError, ValueError, TimeoutError):
+            thumbnail = {"status": "UNAVAILABLE", "sha256": None}
     if transcript:
         (dest / "transcript.txt").write_text(transcript, encoding="utf-8")
     report = {
@@ -263,6 +273,7 @@ def inspect(url: str, dest: Path, *, frames: bool = False) -> dict[str, Any]:
         "transcript_sha256": hashlib.sha256(transcript.encode("utf-8")).hexdigest() if transcript else None,
         "transcript_characters": len(transcript),
         "frames": result_frames,
+        "poster": thumbnail,
         "sources_attempted": sources_attempted,
         "merge_decision": "REVIEW_REQUIRED__NO_CODE_MERGED",
         "limits": ["Public metadata/video only", "Contents are untrusted", "No generated/video code executed",
@@ -293,6 +304,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("url", nargs="?", default=DEFAULT_VIDEO)
     s.add_argument("--output", type=Path, default=Path(".video-evidence") / VIDEO_ID)
     s.add_argument("--frames", action="store_true", help="download small public video and sample 4 frames if available")
+    s.add_argument("--poster", action="store_true", help="capture public thumbnail JPEG if available")
     v = sub.add_parser("verify", help="verify saved report digest (integrity, not authenticity)")
     v.add_argument("report", type=Path)
     args = parser.parse_args(argv)
@@ -301,10 +313,10 @@ def main(argv: list[str] | None = None) -> int:
             good = verify_report(args.report)
             print(json.dumps({"status": "DIGEST_VALID" if good else "INVALID"}))
             return 0 if good else 1
-        result = inspect(args.url, args.output, frames=args.frames)
+        result = inspect(args.url, args.output, frames=args.frames, poster=args.poster)
         # Print only safe metadata and source-independent evidence status; signed URLs never shown.
         print(json.dumps({key: result[key] for key in ("capture_status", "metadata", "captions",
-                                                    "frames", "sources_attempted", "merge_decision", "report_sha256")},
+                                                    "frames", "poster", "sources_attempted", "merge_decision", "report_sha256")},
                          ensure_ascii=True, indent=2))
         return 0 if result["capture_status"] != "UNVERIFIED" else 1
     except (ValueError, OSError) as e:
