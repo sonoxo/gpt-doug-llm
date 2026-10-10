@@ -108,6 +108,26 @@ class EvidenceParsing(unittest.TestCase):
             self.assertEqual((Path(d)/'transcript.txt').read_text(),'Sample walkthrough')
             self.assertEqual(report['transcript_sha256'],hashlib.sha256(b'Sample walkthrough').hexdigest())
 
+    def test_public_poster_is_validated_and_hashed(self):
+        data = b"\xff\xd8\xff" + b"a" * 1024
+        with tempfile.TemporaryDirectory() as d, \
+            patch.object(mod,'get_yt_dlp_info', side_effect=RuntimeError('network')), \
+            patch.object(mod,'oembed', return_value=mod.normalize({'title':'Demo'},mod.VIDEO_ID,'youtube_oembed')), \
+            patch.object(mod,'read_public', return_value=data):
+            report=mod.inspect(mod.DEFAULT_VIDEO,Path(d),poster=True)
+            self.assertEqual(report['poster']['status'],'CAPTURED')
+            self.assertEqual((Path(d)/'poster.jpg').read_bytes(),data)
+            self.assertTrue(mod.verify_report(Path(d)/'report.json'))
+
+    def test_rejects_fake_poster(self):
+        with tempfile.TemporaryDirectory() as d, \
+            patch.object(mod,'get_yt_dlp_info', side_effect=RuntimeError('network')), \
+            patch.object(mod,'oembed', return_value=mod.normalize({'title':'Demo'},mod.VIDEO_ID,'youtube_oembed')), \
+            patch.object(mod,'read_public',return_value=b'<html>fake</html>'):
+            report=mod.inspect(mod.DEFAULT_VIDEO,Path(d),poster=True)
+            self.assertEqual(report['poster']['status'],'UNAVAILABLE')
+            self.assertFalse((Path(d)/'poster.jpg').exists())
+
     def test_metadata_only_fallback(self):
         with tempfile.TemporaryDirectory() as d, \
             patch.object(mod,'get_yt_dlp_info',side_effect=RuntimeError('blocked')), \
