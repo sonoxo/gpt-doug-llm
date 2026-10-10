@@ -1,0 +1,45 @@
+{
+  "ontology_id": "Bio-Gpt-Cure-Swarm-v1",
+  "status": "research_only_human_review_required",
+  "focus": "cancer research public metadata",
+  "infinite_meaning": "extendable, repeatable human-approved research cycles, not infinite compute or guaranteed cures",
+  "data_policy": {
+    "sources": [
+      "https://clinicaltrials.gov/api/v2/studies",
+      "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
+    ],
+    "default_network": "off",
+    "live_fetch_requires": "explicit online command",
+    "max_records_per_source": 10,
+    "max_records_total": 20,
+    "patient_records": "prohibited",
+    "clinical_interventions": "prohibited",
+    "authorizations": "public_read_only_research_metadata"
+  },
+  "nodes": [
+    {"name": "ResearchTopic", "fields": ["query", "retrieved_at_utc", "origin"]},
+    {"name": "TrialEvidence", "fields": ["nct_id", "phase", "status", "results_posted", "randomized"]},
+    {"name": "PublicationEvidence", "fields": ["source_id", "publication_type", "retracted", "publication_date"]},
+    {"name": "ProvenanceRecord", "fields": ["url", "record_sha256", "source"]},
+    {"name": "EvidenceGap", "fields": ["code", "source_id", "review_required"]},
+    {"name": "ResearchQuestion", "fields": ["evidence_id", "question", "review_required"]},
+    {"name": "ReviewGate", "fields": ["treatment_use", "approval", "clinical_benefit_validated"]}
+  ],
+  "agents": [
+    {"role": "GPT-Doug", "task": "topic intake and bounded source selection"},
+    {"role": "GPT-Pineal", "task": "hash each evidence record and preserve source IDs"},
+    {"role": "GPT-Doug-Chaos", "task": "search for metadata gaps, retractions and counterevidence"},
+    {"role": "GPT-Doug-Shaggoth", "task": "require qualified human review before biomedical claims"},
+    {"role": "GPT-Doug-Redpanda", "task": "coordinate bounded results without launching background agents"}
+  ],
+  "guardrails": [
+    "A trial registration does not prove benefit or safety",
+    "An abstract cannot substitute for critical appraisal of the full study",
+    "A reported result or literature record is not a treatment recommendation",
+    "Never declare that an intervention cures cancer based on metadata",
+    "Source citations are unverified until examined by a qualified researcher",
+    "Patient identifiers, biometrics and medical records are not accepted",
+    "No access keys, shell execution, lab automation, patient interventions, or autonomous clinical trials",
+    "No automatic GitHub scheduling; manual trigger only with time and result caps"
+  ]
+}
