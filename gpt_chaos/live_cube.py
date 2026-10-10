@@ -38,15 +38,24 @@ MODULES = (
     ('CURE SWARM', 'EVIDENCE RESEARCH', 'research_lab/cure_swarm.py'),
 )
 GUARDRAIL_EXPECTED = {
+    'automaticBlocking': False,
+    'automaticContainment': False,
     'humanApprovalForContainment': True,
     'humanApprovalForConsequentialExternalAction': True,
     'externalThirdPartyAction': False,
     'destructiveAction': False,
+    'offensiveReplication': False,
     'credentialAcquisition': False,
     'targetExploitation': False,
     'uncontrolledAgentReplication': False,
     'autonomousFundsTransfer': False,
+    'transcriptRequiredBeforeSemanticLearning': True,
+    'authoritativeEvidenceRequiredForLegalPromotion': True,
+    'patentClaimsCopiedIntoImplementationRequirements': False,
+    'patentMaterialPriorArtReferenceOnly': True,
     'memoryRequiresProvenance': True,
+    'modelWeightsModifiedBySourceIngestion': False,
+    'masterLockRequiredForPublishedGuardrailState': True,
 }
 
 
@@ -77,8 +86,11 @@ def read_policy(root: Path) -> dict[str, Any]:
         if not isinstance(controls, dict):
             raise ValueError('missing rules')
         matching = sum(controls.get(k) is v for k, v in GUARDRAIL_EXPECTED.items())
+        truth = policy.get('truth_boundary')
         valid = (policy.get('status') == 'ACTIVE'
                  and policy.get('mode') == 'DEFENSIVE_AUTHORIZED_ENVIRONMENTS_ONLY'
+                 and isinstance(truth, dict)
+                 and truth.get('external_legal_status') == 'NOT_PROMOTED_TO_STATUTE_OR_REGULATION'
                  and matching == len(GUARDRAIL_EXPECTED))
         return {'state': 'MATCHED' if valid else 'REVIEW_REQUIRED',
                 'reason': 'sampled governance checks satisfied' if valid else 'policy drift or incomplete rules',
