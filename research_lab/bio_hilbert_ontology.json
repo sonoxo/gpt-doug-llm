@@ -1,0 +1,36 @@
+{
+  "ontology_id": "gpt-doug-bio-hilbert-6-to-infinity-v1",
+  "schema_version": "1.0",
+  "status": "mathematical_toy_model_not_biological_validation",
+  "scope": "six_channel_layers_in_ell2_infinite_dimensional_hilbert_space",
+  "state": {
+    "finite": "X^(n) in R^(6*n)",
+    "infinite": "X in ell2(N;R^6)",
+    "channels": ["neural", "metabolic", "immune", "epigenetic", "sensory", "memory"],
+    "labels_are_conceptual": true
+  },
+  "operator": {
+    "damping": "-alpha*X_j",
+    "diffusion": "kappa*(X_(j-1)-2*X_j+X_(j+1))",
+    "cross_channel": "Omega*X_j with Omega^T=-Omega",
+    "saturation": "beta*X/(1+abs(X)) componentwise",
+    "forcing": "U_j(t), optional, not simulated",
+    "boundary": "X_0=0",
+    "admissible": "alpha>beta>=0;kappa>=0;all input coefficients rational"
+  },
+  "certificates": [
+    "globally_lipschitz_and_global_wellposedness",
+    "continuous_energy_dissipation_bound",
+    "exact_rational_euler_step_contraction",
+    "finite_to_infinite_euler_error_upper_bound",
+    "exact_nearest_neighbor_finite_propagation_in_euler",
+    "output_digest_with_deterministic_full_replay"
+  ],
+  "boundaries": [
+    "not an AGI or actual biological brain",
+    "not an actual computation of infinitely many coordinates",
+    "not a solution to an open PDE or a new physical law",
+    "no credential collection or external network action",
+    "infinite theorem is separate from finite Euler trajectory"
+  ]
+}
