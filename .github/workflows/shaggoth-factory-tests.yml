@@ -1,0 +1,32 @@
+name: GPT-Doug Shaggoth Autonomous Factory
+on:
+  pull_request:
+    paths:
+      - 'gpt_zyra_shaggoth/factory.py'
+      - 'gpt_zyra_shaggoth/factory_ui/**'
+      - 'gpt_zyra_shaggoth/factory_ontology.json'
+      - 'tests/test_shaggoth_factory.py'
+      - 'run-GPT-Doug-Shaggoth-Factory.command'
+      - '.github/workflows/shaggoth-factory-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-factory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify exact factory behavior without external calls
+        run: python3 -m unittest discover -s tests -p 'test_shaggoth_factory.py' -v
+      - name: Check syntax and ontology
+        run: |
+          python3 -m py_compile gpt_zyra_shaggoth/factory.py
+          python3 -m json.tool gpt_zyra_shaggoth/factory_ontology.json >/dev/null
+          bash -n run-GPT-Doug-Shaggoth-Factory.command
