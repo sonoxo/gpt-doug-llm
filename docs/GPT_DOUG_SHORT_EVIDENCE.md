@@ -4,6 +4,14 @@
 
 **Objective:** Retrieve the public video's *actual* title, creator, description, captions and, if available, four low-resolution frames. Use that evidence to identify a reproducible feature before changing GPT-Doug's other components.
 
+## Verified live crawl (GitHub Actions, 2026-10-10)
+
+The publicly accessible **YouTube oEmbed API** returned the Short's title “Lateral Stability & Mobility Tests” and creator **NoLimits AI** for video ID `eNIFAcuEFVU`. The public YouTube thumbnail CDN returned a valid JPEG poster; the recovered poster shows what appear to be two robot-like machines in an indoor evaluation space. This identifies the **topic**, but does not establish any specific control algorithm, published source code or real hardware operation.
+
+A GitHub-hosted `yt-dlp` metadata/stream request was blocked by YouTube's automated-traffic challenge. **No transcript, embedded source code, moving footage or sampled video frames was retrieved.** The live crawl's evidence report has SHA-256 `272df558db7c2d3706c3689236bb075fd88ac8021d68aa5f8ee6e175a224f249`; poster JPEG SHA-256 `e864b3eb00c028337b73f88241088d36d940a629ab116e8fb556f98d3059b355`. Reproduction and short-lived artifact: [GitHub Actions run](https://github.com/sonoxo/gpt-doug-llm/actions/runs/38089712217). Source of actual scientific claims: **none** beyond the title and poster image.
+
+As a useful, strictly **independent** integration, `research_lab/lateral_stability.py` implements an exact finite linear feedback model with a bounded-disturbance invariance certificate. This mathematical toy must not be represented as code reproduced from the video or as a real robot/exoskeleton control law.
+
 ## Free local workflow
 
 ```bash
