@@ -1,0 +1,70 @@
+name: GPT-Doug YouTube Short evidence fetch
+on:
+  pull_request:
+    paths:
+      - 'research_lab/youtube_short_ingest.py'
+      - 'tests/test_youtube_short_ingest.py'
+      - 'research_lab/lateral_stability.py'
+      - 'tests/test_lateral_stability.py'
+      - 'docs/LATERAL_STABILITY_TITLE_INSPIRED.md'
+      - '.github/workflows/gpt-doug-short-ingest.yml'
+      - 'docs/GPT_DOUG_SHORT_EVIDENCE.md'
+      - 'scripts/doug-max'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    name: Public video / captions / sampled frames
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run strict offline unit tests
+        run: |
+          python -m unittest discover -s tests -p 'test_youtube_short_ingest.py' -v
+          python -m unittest discover -s tests -p 'test_lateral_stability.py' -v
+          bash scripts/doug-max lateral-stability demo > /tmp/lateral-stability-report.json
+          bash scripts/doug-max lateral-stability verify /tmp/lateral-stability-report.json
+      - name: Install free public video metadata extractor
+        run: python -m pip install --disable-pip-version-check 'yt-dlp>=2025.1.1'
+      - name: Crawl requested public Short
+        run: |
+          set +e
+          python -m research_lab.youtube_short_ingest inspect \
+            'https://www.youtube.com/shorts/eNIFAcuEFVU?feature=share' \
+            --frames --poster --output /tmp/gpt-doug-short-evidence
+          status=$?
+          echo "public_video_crawl_exit=$status"  # 1 = not publicly retrievable in runner
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          file = Path('/tmp/gpt-doug-short-evidence/report.json')
+          if file.is_file():
+              data=json.loads(file.read_text())
+              print('capture_status:',data.get('capture_status'))
+              print('video_title:',data.get('metadata',{}).get('title','')[:180])
+              print('creator:',data.get('metadata',{}).get('uploader','')[:120])
+              print('captions_status:',data.get('captions',{}).get('status'))
+              print('sampled_frames:',data.get('frames',{}).get('count'))
+              print('public_poster:',data.get('poster',{}).get('status'))
+              t=Path('/tmp/gpt-doug-short-evidence/transcript.txt')
+              if t.is_file():
+                  print('transcript_preview:',repr(t.read_text()[:1200]))
+              print('claim: no video-derived code merged without source review')
+          else:
+              print('capture_status: NOT_EXECUTED')
+          PY
+          exit 0
+      - name: Upload public capture for human review
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-doug-eNIFAcuEFVU-public-evidence
+          path: /tmp/gpt-doug-short-evidence/
+          if-no-files-found: warn
+          retention-days: 3
