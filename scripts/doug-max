@@ -18,8 +18,13 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos)
+  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|lateral-stability|mobility-test)
     read_only_mode=1
+    ;;
+  video-evidence|youtube-short-ingest)
+    # Actual public HTTPS crawling continues through canonical preflight.
+    # Verifying a saved digest needs no network access.
+    if [[ "${2:-}" == "verify" ]]; then read_only_mode=1; fi
     ;;
   cure-swarm|cancer-research)
     # Offline demo/analyze/compare/verify are read-only. An explicitly requested
@@ -55,6 +60,18 @@ case "$first_arg_lc" in
   invention-lab)
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
+    ;;
+  video-evidence|youtube-short-ingest)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- inspect; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.youtube_short_ingest "$@"
+    ;;
+  lateral-stability|mobility-test)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- demo; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.lateral_stability "$@"
     ;;
   cure-swarm|cancer-research)
     shift
