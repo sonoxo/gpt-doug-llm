@@ -18,6 +18,7 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
+  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge)
   brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|lateral-stability|mobility-test)
     read_only_mode=1
     ;;
@@ -61,6 +62,11 @@ case "$first_arg_lc" in
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
     ;;
+  millennium-lab|millennium-forge)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- demo; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.millennium_forge "$@"
   video-evidence|youtube-short-ingest)
     shift
     cd "$ROOT"
