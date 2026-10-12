@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
+import math
+import sqlite3
 import os
 from pathlib import Path
 import platform
@@ -13,6 +15,8 @@ import subprocess
 import sys
 import time
 from urllib.error import HTTPError, URLError
+from urllib.parse import quote
+from bridge import records_from_snapshot, SAFE_ROUTES
 from urllib.request import urlopen
 
 LAYERS = "maritime,satellites,cctv,cctv_previews,live_news,earthquakes,global_incidents,day_night,cables,sdk_air,sdk_naval"
@@ -39,26 +43,75 @@ def check_process(port: int) -> dict:
         return {"serving": False, "scope": "process-only; upstream feeds not checked"}
 
 
+def pineal_counts() -> dict:
+    """Read only aggregate metrics from an existing PINEAL database.
+
+    No SQLite database is created here, and no ontology plaintext leaves it.
+    """
+    home = Path(os.getenv("PINEAL_HOME", str(Path.home() / ".local/share/gpt-doug-pineal")))
+    dbfile = home.expanduser() / "pineal.sqlite3"
+    if not dbfile.is_file():
+        return {"state": "NOT_INITIALIZED", "feed_health_records": 0, "audit_entries": 0}
+    try:
+        uri = "file:" + quote(str(dbfile.resolve()), safe="/") + "?mode=ro"
+        with sqlite3.connect(uri, uri=True, timeout=2) as db:
+            record_count = db.execute(
+                "SELECT COUNT(*) FROM memories WHERE namespace = ?",
+                ("osiris_feed",)
+            ).fetchone()[0]
+            audit_count = db.execute("SELECT COUNT(*) FROM audit").fetchone()[0]
+        return {"state": "LOCAL", "feed_health_records": record_count,
+                "audit_entries": audit_count,
+                "audit_integrity_verified": False}
+    except (OSError, sqlite3.Error, ValueError):
+        return {"state": "UNAVAILABLE", "feed_health_records": 0, "audit_entries": 0}
+
+
 def status(port: int) -> dict:
+    """Truthful read-only status with stale-feed checks and no raw payloads."""
     snapshot_path = Path(os.getenv("OSIRIS_MIRROR_OUT", str(DEFAULT_SNAPSHOT.parent))) / "snapshot.json"
-    state: dict = {"dashboard": check_process(port), "snapshot_exists": snapshot_path.is_file()}
+    output = {
+        "dashboard": check_process(port),
+        "map_url": f"http://127.0.0.1:{port}/",
+        "snapshot_exists": snapshot_path.is_file(),
+        "snapshot_generated_at_utc": None,
+        "safe_routes": {},
+        "pineal": pineal_counts(),
+    }
     if not snapshot_path.is_file():
-        return state
+        return output
     try:
         if snapshot_path.stat().st_size > 75_000_000:
             raise ValueError("snapshot exceeds 75 MB")
         snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-        states = snapshot.get("layer_state", {})
-        allowed = {"health", "earthquakes", "fires", "weather", "air-quality",
-                   "space-weather", "news", "live-news", "gdelt", "markets"}
-        filtered = {name: {"ok": bool(value.get("ok")), "fetched_at": value.get("fetched_at")}
-                    for name, value in states.items()
-                    if name in allowed and isinstance(value, dict)}
-        state["snapshot"] = {"generated_at": snapshot.get("generated_at"), "health": snapshot.get("health"),
-                             "safe_routes": filtered}
-    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
-        state["snapshot_error"] = str(exc)
-    return state
+        # The same strict parser and route allowlist are used by the PINEAL importer.
+        records = records_from_snapshot(snapshot, now=time.time(), max_age=600)
+        safe_routes = {
+            json.loads(record["value"])["route"]: {
+                "status": json.loads(record["value"])["status"],
+                "last_check_utc": json.loads(record["value"])["last_check_utc"],
+                "latency_ms": json.loads(record["value"])["latency_ms"],
+                "provenance": "gpt-doug.osiris-safe-mirror.v1",
+            }
+            for record in records
+        }
+        generated = snapshot.get("generated_at")
+        if isinstance(generated, (int, float)) and not isinstance(generated, bool) and math.isfinite(generated):
+            try:
+                output["snapshot_generated_at_utc"] = datetime.fromtimestamp(
+                    generated, tz=timezone.utc
+                ).isoformat()
+            except (OSError, OverflowError, ValueError):
+                pass
+        output["safe_routes"] = safe_routes
+        output["snapshot"] = {"safe_routes": safe_routes,
+                              "health": {"observed_routes": len(safe_routes),
+                                         "fresh_successful_routes": sum(1 for r in safe_routes.values()
+                                                                        if r["status"] == "ONLINE"),
+                                         "allowed_routes": len(SAFE_ROUTES)}}
+    except (OSError, OverflowError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        output["snapshot_error"] = "Invalid, untrusted or unavailable public-feed snapshot"
+    return output
 
 
 def wait_for_http(proc: subprocess.Popen, port: int, timeout: int) -> bool:
@@ -90,9 +143,12 @@ def sync_once(launcher: Path, interval: int) -> None:
         print(f"PINEAL sync unavailable: {exc}; will retry in {interval}s.", file=sys.stderr, flush=True)
 
 
-def start(launcher: Path, port: int, interval: int, startup_timeout: int) -> int:
+def start(launcher: Path, port: int, interval: int, startup_timeout: int,
+          console_port: int = 8766) -> int:
     if not launcher.is_file():
         raise ValueError(f"run.sh not found: {launcher}")
+    if console_port == port or not 1024 <= console_port <= 65535:
+        raise ValueError("console port must be 1024..65535 and differ from map port")
     if check_process(port)["serving"]:
         print(f"OSIRIS is already running on port {port}; refusing to manage an unrelated process.", file=sys.stderr)
         print("Use 'sh integrations/pineal_osiris/run.sh status' to inspect the local dashboard.", file=sys.stderr)
@@ -100,15 +156,20 @@ def start(launcher: Path, port: int, interval: int, startup_timeout: int) -> int
     env = os.environ.copy()
     env["OSIRIS_PORT"] = str(port)
     proc = subprocess.Popen(["sh", str(launcher), "run"], env=env, start_new_session=True)
+    console = None
     try:
         if not wait_for_http(proc, port, startup_timeout):
             print("OSIRIS did not respond before timeout; check Git, npm and upstream errors above.", file=sys.stderr)
             return 2
         url = f"http://127.0.0.1:{port}/?layers={LAYERS}"
-        print(f"\nOSIRIS VISUAL DASHBOARD: {url}\nPINEAL: local-only feed-health sync every {interval}s.", flush=True)
+        from console import launch_console
+        console = launch_console(console_port, lambda: status(port))
+        control_url = f"http://127.0.0.1:{console_port}/"
+        print(f"\nOSIRIS VISUAL DASHBOARD: {url}\nPINEAL HEALTH CONSOLE: {control_url}"
+              f"\nPINEAL: local-only feed-health sync every {interval}s.", flush=True)
         if platform.system() == "Darwin" and sys.stdout.isatty() and os.getenv("OSIRIS_NO_BROWSER") != "1":
             try:
-                subprocess.Popen(["open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.Popen(["open", control_url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             except OSError:
                 pass
         while not STOP and proc.poll() is None:
@@ -121,6 +182,9 @@ def start(launcher: Path, port: int, interval: int, startup_timeout: int) -> int
             return proc.returncode or 2
         return 0
     finally:
+        if console is not None:
+            console.shutdown()
+            console.server_close()
         if proc.poll() is None:
             os.killpg(proc.pid, signal.SIGTERM)
             try:
@@ -137,6 +201,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--interval", type=int, default=300)
     p.add_argument("--startup-timeout", type=int, default=600)
     p.add_argument("--launcher", type=Path)
+    p.add_argument("--console-port", type=int, default=8766)
     args = p.parse_args(argv)
     if not 1024 <= args.port <= 65535:
         p.error("port must be 1024..65535")
@@ -149,7 +214,8 @@ def main(argv: list[str] | None = None) -> int:
     signal.signal(signal.SIGTERM, stop)
     launcher = args.launcher or Path(__file__).with_name("run.sh")
     try:
-        return start(launcher.resolve(), args.port, args.interval, args.startup_timeout)
+        return start(launcher.resolve(), args.port, args.interval, args.startup_timeout,
+                     console_port=args.console_port)
     except (OSError, RuntimeError, ValueError) as exc:
         print(f"OSIRIS stack failed: {exc}", file=sys.stderr)
         return 2
