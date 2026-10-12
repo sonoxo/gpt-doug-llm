@@ -12,9 +12,13 @@ This downloads the inspectable bootstrap script and runs it. It **does not requi
 
 Prerequisites: Git, Node.js 20.9+ (22 LTS recommended), npm, Python 3.10+, internet on initial install. The launcher prints a specific missing dependency instead of silently installing it. Inspect the downloaded bootstrap shell file first if desired.
 
-The stack checks out official OSIRIS at pin `0aaba3838b550f83eeeaea99e5179d24f85ad65c` into `~/.local/share/gpt-doug/osiris-ui`, checks upstream Git origin and MIT license, runs `npm ci`, and starts Next.js on `127.0.0.1:3000`. It waits for the **process liveness** `/api/health` (not upstream feed health). On an interactive Mac it opens the selected URL in your default browser. While running it refreshes the approved OSIRIS safe-mirror routes every 300 seconds into PINEAL's existing audited ontology memory; unavailable routes are marked degraded or stale, not claimed live. `Ctrl+C` shuts down the managed local server and bridge. No background persistence is created.
+The stack checks out official OSIRIS at pin `0aaba3838b550f83eeeaea99e5179d24f85ad65c` into `~/.local/share/gpt-doug/osiris-ui`, checks upstream Git origin and MIT license, runs `npm ci`, and starts Next.js on `127.0.0.1:3000`. It waits for the **process liveness** `/api/health` (not upstream feed health). On an interactive Mac it opens the new **PINEAL / OSIRIS Control Deck** at `http://127.0.0.1:8766/` in your default browser. The control deck is a responsive read-only local webpage with 11 operator-selectable map layers, a one-click launch into the official OSIRIS globe, live process health, strict source freshness classification (ONLINE, DEGRADED, STALE, CLOCK_SKEW and UNAVAILABLE), route provenance, and Pineal SQLite/audit counts. While running the stack refreshes the approved OSIRIS safe-mirror routes every 300 seconds into PINEAL's existing audited ontology memory; unavailable routes are marked degraded or stale, not claimed live. `Ctrl+C` shuts down the managed local server and bridge. No background persistence is created.
 
-Open the visual UI after the server is ready:
+Open the local control deck after the server is ready:
+
+`http://127.0.0.1:8766/`
+
+Open OSIRIS's globe directly:
 
 `http://127.0.0.1:3000/?layers=maritime,satellites,cctv,cctv_previews,live_news,earthquakes,global_incidents,day_night,cables,sdk_air,sdk_naval`
 
@@ -29,7 +33,7 @@ sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/r
 sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" status
 ```
 
-The launcher also supports `url`, `run` (visual only), `sync` (one public feed-health import), `stack` (normal integrated foreground mode), and `help`. To use another port, run with `OSIRIS_PORT=3005` set in the environment. Optional `OSIRIS_SYNC_INTERVAL=300` is bounded to 120–3600 seconds. `OSIRIS_NO_BROWSER=1` disables automatic browser opening.
+The launcher also supports `url` (map link), `console` (control deck link), `run` (visual only), `sync` (one public feed-health import), `stack` (normal integrated foreground mode), and `help`. To use another port, run with `OSIRIS_PORT=3005` set in the environment. Change the control deck port separately with `PINEAL_OSIRIS_CONSOLE_PORT=8767`. Optional `OSIRIS_SYNC_INTERVAL=300` is bounded to 120–3600 seconds. `OSIRIS_NO_BROWSER=1` disables automatic browser opening.
 
 PINEAL's local ontology can be inspected by running:
 
@@ -37,6 +41,14 @@ PINEAL's local ontology can be inspected by running:
 cd "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris"
 PYTHONPATH=integrations/gpt-doug-pineal/src python3 -m pineal.cli find osiris --namespace osiris_feed
 ```
+
+## Visual control deck and state truth
+
+The local HTTP server binds **only** to `127.0.0.1`, uses an explicit Host allowlist, serves only three static assets and `GET /api/status`, exposes no write endpoint, and applies a strict Content Security Policy. It does not proxy the live map or copy OSIRIS's recon endpoints. You can select any subset of the 11 visual layers, then open the chosen upstream globe URL.
+
+The status API re-evaluates mirror timestamps **at read time**: an old successful request is labeled `STALE`, not `ONLINE`. The OSIRIS `/api/health` endpoint is explicitly only process liveness. The console counts existing PINEAL SQLite records with a read-only connection and does not disclose record values, private data, or secrets. Audit counts **are not** claims that integrity was re-verified. No snapshot or database is created by a status read.
+
+The console is available only while the integrated foreground stack is running. It does not install a permanent daemon or public network listener. The globe remains accessible directly at the chosen map port. Use `Ctrl+C` to shut down both the local OSIRIS process and the console.
 
 ## Feed access boundary
 
@@ -56,4 +68,4 @@ sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
 python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
 ```
 
-The offline suite verifies working-directory independence, feed-health semantics, schema filtering, and idempotent Pineal ontology updates. Local OSIRIS boot, third-party feed health and browser rendering still require an internet-connected operator machine; they cannot be claimed verified by offline tests.
+The offline suite verifies working-directory independence, strict HTTP Host and CSP controls, static asset delivery, feed freshness, untrusted timestamp handling, SQLite read-only metrics, schema filtering, and idempotent Pineal ontology updates. Local OSIRIS boot, third-party feed health and browser rendering still require an internet-connected operator machine; they cannot be claimed verified by offline tests.
