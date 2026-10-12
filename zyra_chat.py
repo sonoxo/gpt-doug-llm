@@ -9,7 +9,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from ai_killswitch import require_ai_allowed
+from ai_killswitch import require_ai_allowed, status as ai_stop_status
 
 from agents.ontology_master_lock import MasterLockError, print_master_lock_report, run_master_lock
 from zyra import Zyra
@@ -173,7 +173,10 @@ def _looks_like_shell(prompt: str) -> bool:
 
 
 def main():
-    require_ai_allowed("ZYRA terminal startup")
+    stop = ai_stop_status()
+    if stop["stopped"]:
+        print("ZYRA AI execution stopped by the human-operated kill switch.")
+        return 3
     zyra = Zyra()
     laser = ZyraLaser()
     mode = os.environ.get("ZYRA_MODE", "fast").lower()
