@@ -49,4 +49,5 @@ jobs:
       - name: Enforce stop regressions without external APIs
         run: |
           python -m unittest tests.test_ai_killswitch tests.test_ai_killswitch_integrations -v
+          python -m unittest tests.test_shaggoth_factory.LauncherTests.test_cli_demo_and_offline_results tests.test_shaggoth_factory.LauncherTests.test_start_from_unrelated_directory_with_demo -v
           python -m py_compile ai_killswitch.py agents/llm_backend.py agents/xunia_stream.py gpt_brain/kernel.py workers/agent-daemon.py
