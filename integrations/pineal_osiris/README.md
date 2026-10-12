@@ -1,55 +1,59 @@
-# GPT-Doug-PINEAL x OSIRIS (local open-source clone)
+# GPT-Doug PINEAL x OSIRIS — locally integrated visual stack
 
-This integration runs the original [MIT-licensed OSIRIS](https://github.com/simplifaisoul/osiris) dashboard locally at a reviewed, pinned source revision, with the 11 map-layer switches supplied by the operator. It optionally imports **only approved public route health metadata** to the already-existing local PINEAL ontology memory. It does not copy upstream proprietary infrastructure or change the existing safe-mirror permissions.
+Uses the official [MIT-licensed OSIRIS source](https://github.com/simplifaisoul/osiris) for the 11 requested map layers. The visual dashboard runs on loopback only; PINEAL receives strictly allowlisted **public feed-health metadata**, not raw coordinates, CCTV, tactical feeds, device IDs or event payloads.
 
-## Run (Mac/Linux)
-
-From the GPT-Doug repository root:
+## Run from ANY Mac terminal directory, including ~/Downloads
 
 ```sh
-sh integrations/pineal_osiris/run.sh doctor
-sh integrations/pineal_osiris/run.sh run
+curl -fsSLo "$HOME/Downloads/gpt-doug-osiris-bootstrap.sh" 'https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/feature/pineal-osiris-local-clone/integrations/pineal_osiris/bootstrap.sh' && sh "$HOME/Downloads/gpt-doug-osiris-bootstrap.sh"
 ```
 
-The launcher requires Git, Node.js 20+ and npm. It checks out OSIRIS commit `0aaba3838b550f83eeeaea99e5179d24f85ad65c` in `~/.local/share/gpt-doug/osiris-ui`, checks upstream origin, refuses modified worktrees, installs dependencies with `npm ci`, then starts Next.js bound to `127.0.0.1:3000`. Network access is needed for initial cloning and dependencies. Read upstream's MIT LICENSE and privacy/security guidance.
+This downloads the inspectable bootstrap script and runs it. It **does not require a git remote in the current directory**. It safely clones or updates a dedicated `~/.local/share/gpt-doug/gpt-doug-llm-osiris` feature checkout and runs `run.sh stack`. Existing unrelated/modified directories are never overwritten.
 
-The launcher prints the selected-layers URL; you can also print it without running anything:
+Prerequisites: Git, Node.js 20.9+ (22 LTS recommended), npm, Python 3.10+, internet on initial install. The launcher prints a specific missing dependency instead of silently installing it. Inspect the downloaded bootstrap shell file first if desired.
+
+The stack checks out official OSIRIS at pin `0aaba3838b550f83eeeaea99e5179d24f85ad65c` into `~/.local/share/gpt-doug/osiris-ui`, checks upstream Git origin and MIT license, runs `npm ci`, and starts Next.js on `127.0.0.1:3000`. It waits for the **process liveness** `/api/health` (not upstream feed health). On an interactive Mac it opens the selected URL in your default browser. While running it refreshes the approved OSIRIS safe-mirror routes every 300 seconds into PINEAL's existing audited ontology memory; unavailable routes are marked degraded or stale, not claimed live. `Ctrl+C` shuts down the managed local server and bridge. No background persistence is created.
+
+Open the visual UI after the server is ready:
+
+`http://127.0.0.1:3000/?layers=maritime,satellites,cctv,cctv_previews,live_news,earthquakes,global_incidents,day_night,cables,sdk_air,sdk_naval`
+
+Selecting any OSIRIS layer does not guarantee that its API or camera provider is reachable, current, licensed, or configured. The original OSIRIS interface retains its own source limitations and access rules.
+
+## Diagnosis and operations
+
+Run these from anywhere after bootstrap:
 
 ```sh
-sh integrations/pineal_osiris/run.sh url
+sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" doctor
+sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" status
 ```
 
-The upstream dashboard controls the 11 visual toggles: maritime, satellites, CCTV, CCTV previews, live news, earthquakes, global incidents, day/night, cables, SDK air, and SDK naval. Selecting a layer does not guarantee that its upstream provider is live, permitted, configured, or accessible.
+The launcher also supports `url`, `run` (visual only), `sync` (one public feed-health import), `stack` (normal integrated foreground mode), and `help`. To use another port, run with `OSIRIS_PORT=3005` set in the environment. Optional `OSIRIS_SYNC_INTERVAL=300` is bounded to 120–3600 seconds. `OSIRIS_NO_BROWSER=1` disables automatic browser opening.
 
-## Opt-in PINEAL health sync
-
-In a second terminal, with the OSIRIS application running, execute:
+PINEAL's local ontology can be inspected by running:
 
 ```sh
-sh integrations/pineal_osiris/run.sh sync
-```
-
-This triggers the pre-existing `integrations/osiris_mirror/osiris_mirror.py --once` local allowlist, then imports only the snapshot's sanitized metadata into PINEAL's `osiris_feed` namespace with provenance, freshness flags and audit logging. It will not mirror raw coordinates, traffic tracks, CCTV images, telemetry payloads, or intelligence records. Only `health`, `earthquakes`, `fires`, `weather`, `air-quality`, `space-weather`, `news`, `live-news`, `gdelt` and `markets` health states are eligible, consistent with the existing restricted mirror. `global_incidents` is not imported as incident records. The importer uses versioned upserts to avoid duplicate memory entries.
-
-Inspect the sanitized snapshot without changing memory:
-
-```sh
-python3 integrations/pineal_osiris/bridge.py --dry-run
-```
-
-Read saved ontology records:
-
-```sh
+cd "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris"
 PYTHONPATH=integrations/gpt-doug-pineal/src python3 -m pineal.cli find osiris --namespace osiris_feed
 ```
 
-`sync` is an explicit one-shot operation, not an indefinite agent or background process. Upstream raw visual layers remain subject to applicable terms, operator permissions, and source freshness.
+## Feed access boundary
 
-## Offline tests
+`osiris_mirror.py` allows only `health`, `earthquakes`, `fires`, `weather`, `air-quality`, `space-weather`, `news`, `live-news`, `gdelt` and `markets`. `bridge.py` additionally rechecks the exact allowlist and source schema, storing each route's status, last-check timestamp, latency, digest and evidence label as PINEAL ontology facts. Raw source JSON is **never** imported into memory.
+
+| OSIRIS share URL layer | Visual UI | PINEAL metadata |
+| --- | --- | --- |
+| `maritime`, `satellites`, `cctv`, `cctv_previews`, `sdk_air`, `sdk_naval` | Upstream visual, if available | Not mirrored |
+| `live_news`, `earthquakes` | Upstream visual, if available | Health/provenance only |
+| `global_incidents` | Upstream visual, if available | Only approved `gdelt` feed health; no incidents |
+| `day_night`, `cables` | Upstream visual | Not mirrored |
+
+## Offline validation
 
 ```sh
-sh -n integrations/pineal_osiris/run.sh
+sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
 python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
 ```
 
-The five offline regression tests cover route allowlisting, filtering coordinates and tracking payloads, reject-untrusted-input behavior, stale/clock-skew flags, and idempotent/updating writes. A live end-to-end run requires internet access and upstream availability. Do not represent an unavailable or cached data source as currently live.
+The offline suite verifies working-directory independence, feed-health semantics, schema filtering, and idempotent Pineal ontology updates. Local OSIRIS boot, third-party feed health and browser rendering still require an internet-connected operator machine; they cannot be claimed verified by offline tests.
