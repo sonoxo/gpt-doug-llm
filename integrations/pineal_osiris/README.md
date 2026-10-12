@@ -24,6 +24,39 @@ Open OSIRIS's globe directly:
 
 Selecting any OSIRIS layer does not guarantee that its API or camera provider is reachable, current, licensed, or configured. The original OSIRIS interface retains its own source limitations and access rules.
 
+## macOS storage recovery (`ENOSPC`)
+
+If the terminal shows `npm warn tar TAR_ENTRY_ERROR ENOSPC: no space left on device`, the Git clones succeeded but npm **could not extract the dependencies onto your Mac**. Repeating `npm ci` without freeing disk space will fail again.
+
+Inspect storage first (safe, non-destructive):
+
+```sh
+df -h "$HOME"
+du -sh "$HOME/.local/share/gpt-doug/osiris-ui/node_modules" "$HOME/.npm/_cacache" 2>/dev/null || true
+```
+
+The standalone recovery script is intentionally runnable **before** updating a local feature-branch checkout, even with a failed install:
+
+```sh
+curl -fsSLo "$HOME/Downloads/gpt-doug-osiris-recover.sh" 'https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/feature/pineal-osiris-local-clone/integrations/pineal_osiris/recover.sh'
+sh "$HOME/Downloads/gpt-doug-osiris-recover.sh" --check
+sh "$HOME/Downloads/gpt-doug-osiris-recover.sh"
+```
+
+Recovery validates that `~/.local/share/gpt-doug/osiris-ui` is the **official upstream Git checkout**, refuses symlinked or unexpected source trees, stops if OSIRIS is currently running, deletes only that checkout's incomplete `node_modules` installation, and explicitly clears npm's **regenerable shared download cache**. Clearing the shared cache may make subsequent installs for unrelated projects slower, but does not remove their installed dependencies. Recovery does **not** touch `~/Downloads` project files (apart from its named bootstrap scripts), PINEAL SQLite data, other Git repositories, or your system directories. It requires a recommended 4096 MiB of available disk space before fetching the updated feature branch and resuming the dashboard launch. If disk remains low, it fails with a clear message instead of repeatedly unpacking dependencies. You may need to free more ordinary Mac storage first. The 4 GiB figure is a conservative preflight target, not a guarantee of npm's final footprint.
+
+After the first successful install, a marker is written inside the managed `node_modules` directory; a failed or incomplete npm install is never marked successful. Subsequent starts reuse the completed dependencies unless the lockfile changes.
+
+Once the updated integration is installed you can also run explicit local diagnostics without fetching the standalone recovery script:
+
+```sh
+sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" disk
+sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" repair
+# To ALSO clear npm's shared download cache, use 'repair-cache' instead.
+```
+
+Do not remove unrelated `~/Downloads` files or entire project directories to fix this error. On a smaller Mac disk, an external APFS volume can host the OSIRIS checkout via `OSIRIS_WORKTREE`, but npm's cache may still need space in the home volume unless reconfigured.
+
 ## Diagnosis and operations
 
 Run these from anywhere after bootstrap:
@@ -33,7 +66,7 @@ sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/r
 sh "$HOME/.local/share/gpt-doug/gpt-doug-llm-osiris/integrations/pineal_osiris/run.sh" status
 ```
 
-The launcher also supports `url` (map link), `console` (control deck link), `run` (visual only), `sync` (one public feed-health import), `stack` (normal integrated foreground mode), and `help`. To use another port, run with `OSIRIS_PORT=3005` set in the environment. Change the control deck port separately with `PINEAL_OSIRIS_CONSOLE_PORT=8767`. Optional `OSIRIS_SYNC_INTERVAL=300` is bounded to 120–3600 seconds. `OSIRIS_NO_BROWSER=1` disables automatic browser opening.
+The launcher also supports `disk` (storage check), `repair` (explicit OSIRIS-only partial dependency cleanup), `repair-cache` (also clear shared npm cache), `url` (map link), `console` (control deck link), `run` (visual only), `sync` (one public feed-health import), `stack` (normal integrated foreground mode), and `help`. To use another port, run with `OSIRIS_PORT=3005` set in the environment. Change the control deck port separately with `PINEAL_OSIRIS_CONSOLE_PORT=8767`. Optional `OSIRIS_SYNC_INTERVAL=300` is bounded to 120–3600 seconds. `OSIRIS_NO_BROWSER=1` disables automatic browser opening.
 
 PINEAL's local ontology can be inspected by running:
 
@@ -68,4 +101,4 @@ sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
 python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
 ```
 
-The offline suite verifies working-directory independence, strict HTTP Host and CSP controls, static asset delivery, feed freshness, untrusted timestamp handling, SQLite read-only metrics, schema filtering, and idempotent Pineal ontology updates. Local OSIRIS boot, third-party feed health and browser rendering still require an internet-connected operator machine; they cannot be claimed verified by offline tests.
+The offline suite verifies ENOSPC preflight and isolated cleanup behavior, working-directory independence, strict HTTP Host and CSP controls, static asset delivery, feed freshness, untrusted timestamp handling, SQLite read-only metrics, schema filtering, and idempotent Pineal ontology updates. Local OSIRIS boot, third-party feed health and browser rendering still require an internet-connected operator machine; they cannot be claimed verified by offline tests.
