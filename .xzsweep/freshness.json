@@ -1,15 +1,8 @@
 {
-  "content_repairs": 1,
-  "cutoff_at": "2026-10-10T23:47:45Z",
-  "due_files_reviewed": 6,
-  "due_paths": [
-    ".github/workflows/millennium-forge.yml",
-    "docs/MILLENNIUM_FORGE_REPORT.md",
-    "research_lab/millennium_forge.py",
-    "run-Millennium-Forge.command",
-    "tests/test_millennium_forge.py",
-    "tests/test_millennium_launch.py"
-  ],
+  "content_repairs": 0,
+  "cutoff_at": "2026-10-11T00:27:04Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -564,13 +557,13 @@
     ".github/workflows/millennium-forge.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-10T20:27:27Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "04b74e98658b43c0270d7df6b0b91b6d7c628f6e6d9258df7ae8498cbeedc431",
       "size": 1175,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/nuclear-global-pipeline.yml": {
       "actions": [],
@@ -635,6 +628,17 @@
       "reviewed_at": "2026-10-11T09:56:16Z",
       "sha256": "f55bde707eed9d52c46c546563068bfda99683395cb4c1bf48405aec3aa674bf",
       "size": 11232,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/palantir-ecosystem-graph.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "f9beb0ccc2e03001b24a119fa76fb7b6b65174bb1e8a00a083a1ceb886fe2354",
+      "size": 1037,
       "validation_issues": [],
       "was_due": false
     },
@@ -1647,6 +1651,39 @@
       "reviewed_at": "2026-10-11T09:56:16Z",
       "sha256": "5322f6e646c5cbced24fe9366b5bb865c47dab6ad24ab0ee25dd95eff1cb5152",
       "size": 7272,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/palantir-ecosystem-data.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "b61718f0f22d4a8950ff0d2ff9b6a66f8c7833786eaf1f7b3e02cb9bc57403c9",
+      "size": 4101,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/palantir-ecosystem.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "9e09e2d631554f90bd46465459a080e20b5bd7df2a02df5aa2c4c8dfc52d24b0",
+      "size": 6797,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agency_cloud/static/palantir-ecosystem.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "3fcfd7df4aeb6a198bc6f62d00e1f918bc08a848364817d35e9002d58310710d",
+      "size": 6081,
       "validation_issues": [],
       "was_due": false
     },
@@ -3444,17 +3481,15 @@
       "was_due": false
     },
     "docs/MILLENNIUM_FORGE_REPORT.md": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-10T20:26:59Z",
+      "git_touched_at": "2026-10-11T23:48:31Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "12d8f2959202b1318476245abcecda6cf216ada1155688e6f208a00fa215d2b5",
       "size": 8770,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/MIL_READINESS.md": {
       "actions": [],
@@ -3519,6 +3554,17 @@
       "reviewed_at": "2026-10-11T23:43:34Z",
       "sha256": "6cdef7e640db07ebee85f0202243dc2da73f2656889b35ef3bf1c90b25092777",
       "size": 4129,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/PALANTIR_ECOSYSTEM_INTELLIGENCE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "7b5f68cf259327041d0adc0e392ab10802e5eeb2ef6f4117a49aedd428394abc",
+      "size": 2652,
       "validation_issues": [],
       "was_due": false
     },
@@ -3867,9 +3913,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T09:56:16Z",
+      "git_touched_at": "2026-10-11T23:47:39Z",
       "reviewed_at": null,
-      "sha256": "a54d8374f49f8990cf8b6bedde67748cecbb066b4437017ac8a9d9c034f107d9",
+      "sha256": "4ed7bca70c2fc8975a5119175a485cb01882e02865c22c4fe7ac455f264fae38",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -11489,13 +11535,13 @@
     "research_lab/millennium_forge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-10T20:26:29Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "c3c52554ec4dd6119bb3404a423d27115b4a54515e900e0b72f880ca5835bf5c",
       "size": 19033,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/multidimensional.py": {
       "actions": [],
@@ -12325,13 +12371,13 @@
     "run-Millennium-Forge.command": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-10T20:27:05Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "5da60d9d50c9f51d6f5a02ff53b2d3c8846ed7a027ba2d5e74e38fb6bfce0cb5",
       "size": 389,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "rvia-intel/README.md": {
       "actions": [],
@@ -15977,24 +16023,24 @@
     "tests/test_millennium_forge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-10T20:26:31Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "d3279690d27566c12d6d1dac7451076ac7ad503ac3da9b33da0b1a169a1dab53",
       "size": 13113,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_millennium_launch.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-10T20:26:52Z",
       "reviewed_at": "2026-10-11T23:47:45Z",
       "sha256": "17e63ecec84398c04b21a0e22aceda3c5be614bbb4bc53e8d1dd9386e151f78d",
       "size": 1369,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_mission_support_workbench.py": {
       "actions": [],
@@ -16125,6 +16171,17 @@
       "reviewed_at": "2026-10-11T23:43:34Z",
       "sha256": "64b4c1ad87ff56ec3de5d3b69fd6cc5487ace62b2b54e5af70f6bc97cdc83bd1",
       "size": 1416,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_palantir_ecosystem_graph.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "b77c60dcda2d4bcea636510cbba4db8df9b7d9b1827f4a5c6c0a2061046673a2",
+      "size": 3288,
       "validation_issues": [],
       "was_due": false
     },
@@ -18794,9 +18851,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T09:56:20Z",
+      "git_touched_at": "2026-10-11T23:47:44Z",
       "reviewed_at": null,
-      "sha256": "6fa2314380faafa22f3eb5dcc0a5523369f4ebb4e11fdbdc6a9bf62c1b00d8f4",
+      "sha256": "8cf52a6b7fc9f1c61e83fe6b171bfae4d460e6470e0fd0935638e2cd6ca6e300",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18816,9 +18873,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T09:56:20Z",
+      "git_touched_at": "2026-10-11T23:47:44Z",
       "reviewed_at": null,
-      "sha256": "dba05657ef182e66fd3e0e537cbd5b7d6f2b21ba9051985d249e204bbf4e27dc",
+      "sha256": "06a6502cbbf2a6c6a6bf6e2802f7eab9bf1ceb3ea79a96fc248ada2236aac15a",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -21232,6 +21289,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "zyrapalantir/ecosystem_intelligence.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:21:39Z",
+      "reviewed_at": null,
+      "sha256": "cd39af3052197991498f89f3cc2cfa640f704dc95a92036ac797b8bd58c11ccb",
+      "size": 6788,
+      "validation_issues": [],
+      "was_due": false
+    },
     "zyrapalantir/foundry_blueprint.json": {
       "actions": [],
       "binary": false,
@@ -21267,13 +21335,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-11T23:47:45Z",
+  "generated_at": "2026-10-12T00:27:04Z",
   "mode": "apply",
-  "repaired_paths": [
-    "docs/MILLENNIUM_FORGE_REPORT.md"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1932,
+  "tracked_files_reviewed": 1939,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
