@@ -89,19 +89,23 @@ def test_aggregate_spans_captured_pages_and_exact_documents():
     assert EXPECTED_EXACT.issubset(exact_numbers)
 
 
-def test_exact_front_page_sources_are_palantir_attributed_and_review_gated():
+def test_exact_document_sources_keep_evidence_grade_and_review_gate():
     cli = load_cli()
     exact = cli.load_attributed_sources()
     assert EXPECTED_EXACT.issubset({record["document_number"] for record in exact})
+    evidence_types = {
+        "HIGH_FROM_DOCUMENT_FRONT_PAGE": "front page",
+        "HIGH_FROM_DOCUMENT_RECORD": "record",
+    }
     for record in exact:
-        applicant = record.get("applicant", {})
-        assignee = record.get("assignee", {})
-        if applicant:
-            assert applicant["name"] == "Palantir Technologies Inc."
-            assert applicant["confidence"] == "HIGH_FROM_DOCUMENT_FRONT_PAGE"
-        if assignee:
-            assert assignee["name"] == "Palantir Technologies Inc."
-            assert assignee["confidence"] == "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+        # Source captures include patent front pages *and* USPTO detailed records.
+        # Never silently promote a detailed-record citation to front-page evidence.
+        for field_name in ("applicant", "assignee"):
+            party = record.get(field_name, {})
+            if party:
+                assert party["name"] == "Palantir Technologies Inc."
+                assert party["confidence"] in evidence_types
+                assert evidence_types[party["confidence"]] in party["attribution_basis"].lower()
         assert record["controls"]["claim_freedom_to_operate"] is False
         assert record["controls"]["claim_non_infringement"] is False
 
