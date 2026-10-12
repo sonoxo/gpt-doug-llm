@@ -6,6 +6,30 @@
 
 The STOP latch is stored outside the repository at `~/.gpt-doug/ai-killswitch/STOP` (or the operator-managed `GPT_DOUG_AI_STOP_DIR` directory). A second operator-level `GPT_DOUG_AI_BLOCK_ALL=1` configuration forces the gate closed even if no STOP file is present. Both are checked afresh at AI action boundaries, rather than cached. A malformed stop configuration, unreadable state, or a symlinked latch causes an execution denial. An interactive terminal is required to rearm the local file latch; a forced environment stop cannot be rearmed through the CLI. Stop is idempotent, persistent across model/process restarts, and records a best-effort local operator audit log.
 
+## The operator phrase: STOP THE KRAKEN
+
+The exact operator **activation command** is:
+
+```bash
+gpt-doug-llm stop the kraken
+```
+
+Install the command from the repository root in a trusted local environment:
+
+```bash
+python3 -m pip install -e .
+```
+
+The fallback for a source checkout that has not been installed is:
+
+```bash
+python3 -m ai_killswitch stop the kraken
+```
+
+The parser recognizes only the exact command tokens, case-insensitively. An explanatory sentence, prompt, email, log, or model-generated text **must not** be interpreted as an operator request to trigger a stop. **This phrase is not a secret or an authorization credential.** OS operator permissions and deployment controls must protect the switch from untrusted users. This command only **activates** the stop; it cannot clear, rearm or bypass it.
+
+This GitHub implementation does not activate itself based on text appearing in a conversation. The operator must explicitly run the CLI on a host where the code is installed, or invoke an appropriately authenticated operator control that executes the same local stop operation. Merely creating a PR or saying the phrase in chat is not evidence that any running AI has been stopped.
+
 ## Commands (on an owned system)
 
 ```bash
