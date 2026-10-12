@@ -1,0 +1,38 @@
+name: PINEAL OSIRIS integration smoke
+on:
+  push:
+    branches:
+      - feature/pineal-osiris-local-clone
+    paths:
+      - 'integrations/pineal_osiris/**'
+      - '.github/workflows/pineal-osiris-smoke.yml'
+  pull_request:
+    paths:
+      - 'integrations/pineal_osiris/**'
+      - '.github/workflows/pineal-osiris-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bridge-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate shell scripts
+        run: sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
+      - name: Check offline launcher and bridge tests
+        run: python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
+      - name: Check from unrelated working directory
+        run: |
+          sh "$GITHUB_WORKSPACE/integrations/pineal_osiris/run.sh" doctor
+          (cd /tmp && sh "$GITHUB_WORKSPACE/integrations/pineal_osiris/run.sh" url | grep -q 'sdk_naval')
+          (cd /tmp && sh "$GITHUB_WORKSPACE/integrations/pineal_osiris/bootstrap.sh" --check)
