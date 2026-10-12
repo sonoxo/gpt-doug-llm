@@ -21,6 +21,9 @@ DEFAULT_STATE_DIR = "~/.gpt-doug/ai-killswitch"
 STATE_DIRECTORY_ENV = "GPT_DOUG_AI_STOP_DIR"
 FORCE_STOP_ENV = "GPT_DOUG_AI_BLOCK_ALL"
 STOP_FILENAME = "STOP"
+# Exact, non-secret human operator command; not a chat/prompt substring trigger.
+ACTIVATION_PHRASE = "gpt-doug-llm stop the kraken"
+_ACTIVATION_TOKENS = ("stop", "the", "kraken")
 _CONFIRMATION = "REARM GPT-DOUG AI"
 
 T = TypeVar("T")
@@ -201,11 +204,24 @@ def _resume_after_interactive_confirmation() -> dict[str, Any]:
     return state
 
 
+def _normalized_cli_argv(argv: list[str] | None = None) -> list[str]:
+    """Interpret only the exact operator phrase, never arbitrary prompt text."""
+    received = list(sys.argv[1:] if argv is None else argv)
+    lower = tuple(token.casefold() for token in received)
+    if lower in (
+        _ACTIVATION_TOKENS,
+        ("gpt-doug-llm",) + _ACTIVATION_TOKENS,
+        (ACTIVATION_PHRASE,),
+    ):
+        return ["stop", "--reason", "operator_stop_the_kraken"]
+    return received
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Operator-controlled AI execution stop")
     parser.add_argument("action", choices=("status", "stop", "resume", "check"))
     parser.add_argument("--reason", default="operator_emergency_stop")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(_normalized_cli_argv(argv))
     try:
         if args.action == "stop":
             state = emergency_stop(args.reason)
