@@ -91,6 +91,15 @@ and independent physical safety controls where relevant.
 - `workers/agent-daemon.py`: queue suppression while STOP is engaged and supervised termination of an owned Claude subprocess if STOP is activated while executing.
 - `local-control/gpt-doug-local-control`: existing local PANIC triggers the ecosystem latch; clearing local panic **does not** rearm AI.
 
+### Additional legacy terminal coverage
+
+- `zyra_agent.py`: direct Ollama model requests and bounded mission steps now check STOP.
+- `zyra_chat.py`: direct Ollama streaming checks STOP before inference and before each displayed chunk; an engaged STOP prevents self-healing from automatically starting Ollama.
+- `xunia_godis.py`: model chat, direct interactive Ollama process, model installation, and tool invocation check STOP while read-only model inventory remains available.
+- `local_repo_agent.py`: preflight stops local repo agent work before dependency bootstrap, model self-healing or mission execution.
+
+All these gates are cooperative. They do not terminate unrelated Ollama processes launched outside these paths, and they cannot reliably cancel non-cooperative in-flight inference without operator-controlled service/network shutdown.
+
 ## Limitations / non-negotiable external controls
 
 1. **No global Internet-wide stop.** External models, organizations, products, devices, and unrelated repositories are not under this switch.
