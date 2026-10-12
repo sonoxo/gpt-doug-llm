@@ -1,12 +1,13 @@
 # GPT-Doug Quantum Warfighter Ontology
 ## Isolated Research + Simulation Architecture Specification
 
-**Version:** 1.0.0 — design for review  
+**Version:** 1.0.0 — adopted project design  
 **Date:** 2026-10-12  
-**Status:** DESIGN SPECIFICATION — NOT IMPLEMENTED OR AUTHORIZED FOR OPERATIONAL USE  
+**Status:** CANONICAL PUBLIC PROJECT DESIGN — NOT YET IMPLEMENTED OR AUTHORIZED FOR OPERATIONAL USE  
 **Repository:** sonoxo/gpt-doug-llm  
 **Target:** GPT-Doug-LLM + PINEAL + ZYRA / ZYRA-MSS  
 **Selected architecture:** Isolated, offline-first mathematical research and synthetic simulations. Only explicitly human-reviewed, reproducible results enter a dedicated research ontology overlay.
+**Public project reference:** [Canonical Quantum Warfighter Ontology entry point](../../WARFIGHTER_RESEARCH_ONTOLOGY.md). This file is authoritative for proposed project *design*, not the operational capability of any deployed system.
 
 > **Reality boundary:** “Quantum” in this proposal means classical quantum-inspired mathematics/simulation, not quantum-computing hardware or speedup. The 6D/10D/11D representations are computational or mathematical projections, not physical access to additional dimensions. String-inspired geometry is educational and exploratory, not a validated physical discovery. The platform is not a Department of Defense system, accreditation, certification, authority to operate, targeting capability, or weapons-control system.
 
@@ -594,4 +595,4 @@ I7. **No inference of DoD status, system certification, 6D physical implementati
 
 ---
 
-**Approval gate:** This file is the complete **architectural specification**, not an implementation plan or code. The user should review/approve this written artifact before a separate implementation plan is prepared. That plan must identify exact commits, tests, execution method, and the first testable M0/M1 slice. Do not treat approval of the earlier high-level approach as approval to begin implementation.
+**Publication and implementation gate:** This architectural specification has been adopted as the public project design reference. This adoption neither implements the proposed subsystem nor approves a code rollout. A separate implementation plan must identify exact commits, tests, execution method, and an independently verifiable first M0/M1 slice; changes to code or operating authority require their own review.
