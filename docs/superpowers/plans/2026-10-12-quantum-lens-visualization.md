@@ -63,6 +63,8 @@ For the first delivery, only the first three modes and a minimal research status
 | `research_lab/warfighter/tests/test_snapshot.py` | Source-kind/privacy/status/integrity |
 | `research_lab/warfighter/tests/test_lens_terminal.py` | Projection/frames/TTY/escaping |
 | `research_lab/warfighter/tests/test_blender_export.py` | Optional executable detection, manifest, nonmutation |
+| `research_lab/warfighter/tests/test_lens_review.py` | Explicit artifact/review integration for both optional models |
+| `research_lab/warfighter/tests/test_lens_security.py` | Boundaries, no-dispatch, data-integrity, profiling smoke |
 | `docs/WARFIGHTER_QUANTUM_LENS.md` | Truthful instructions, examples, screenshots generated only from actual code |
 | `research_lab/warfighter/cli.py` | Delegate `lens` subcommand to optional lens_cli while preserving core parser |
 | `scripts/doug-max` | Use existing guarded `warfighter` dispatch, no new bypass |
@@ -144,6 +146,30 @@ For the first delivery, only the first three modes and a minimal research status
 - [ ] **Step 4: Run** `python3 -m unittest discover -s research_lab/warfighter/tests -p 'test_*.py' -v` and `python3 -m unittest research_lab.tests.test_bio_hilbert research_lab.tests.test_multidimensional -v`. Check `bash scripts/doug-max warfighter lens doctor` only if guarded CLI integration and bash syntax pass; do not claim success from a design file. Expected GREEN for available components and documented optional SKIPs.
 - [ ] **Step 5: Commit** `git add research_lab/warfighter/lens_cli.py research_lab/warfighter/cli.py research_lab/warfighter/tests/test_lens_cli.py docs/WARFIGHTER_QUANTUM_LENS.md && git commit -m "feat(warfighter): read-only quantum lens terminal and export controls"`.
 
+### Task 7: Classical Mathematics Evidence Becomes Reviewable Research (Never Operational)
+
+**Files:** Modify `research_lab/warfighter/artifact.py`, `research_lab/warfighter/verify.py` and `research_lab/warfighter/lens_cli.py`; create `research_lab/warfighter/tests/test_lens_review.py`.
+
+**Interfaces:** Extend the Research Core verifier's **fixed** engine registry with `statevector-classical` → `simulate_quantum` and `geometry-projection` → `generate_geometry`. Add `submit_lens_study(journal: ResearchJournal, *, engine: str, input_payload: dict[str, Any]) -> dict[str, Any]` in lens_cli. Returned envelope has `mathematical_verification="CLASSICAL_REPLAY"`, `authority="RESEARCH_ONLY"`, and `publication="QUARANTINED"`. The existing `review` and `publish` commands remain the **only** route into approved research ontology; visualization never approves.
+
+- [ ] **Step 1: Write failing `test_lens_review.py`**: classical-H and 10D examples create replayable quarantined runs; changed seed, gate, dimension, projection matrix, output or source digest causes verification failure; malformed/inconclusive math never labeled a proof of nature; no publication before explicit human review; approved publication appears only under research overlay; revocation removes it from default retrieval.
+- [ ] **Step 2: Run** `python3 -m unittest research_lab.warfighter.tests.test_lens_review -v`. Expected RED.
+- [ ] **Step 3: Implement** an allowlisted engine registration and direct replay of own deterministic math output, recording tolerance/seed/method/version and never interpreting visualization as certification. Reuse ResearchJournal transaction and publication methods; no new review backend, no automatic PINEAL writes or operational edge.
+- [ ] **Step 4: Run** focused test plus `python3 -m unittest research_lab.warfighter.tests.test_verify research_lab.warfighter.tests.test_publication -v`. Expected GREEN.
+- [ ] **Step 5: Commit** `git add research_lab/warfighter/artifact.py research_lab/warfighter/verify.py research_lab/warfighter/lens_cli.py research_lab/warfighter/tests/test_lens_review.py && git commit -m "feat(warfighter): allow reviewed classical research-lens evidence"`.
+
+### Task 8: Reproducible Security and Performance Evidence
+
+**Files:** Create `research_lab/warfighter/tests/test_lens_security.py` and `docs/WARFIGHTER_LENS_SECURITY_EVIDENCE.md`.
+
+**Interfaces:** No new runtime API. Preserve fixed input limits and the existing core `doctor` and `lens doctor` commands. Security evidence records the exact Git SHA, Python/Blender version, tests run, skipped optional graphics checks, basic observed time/memory and limitations.
+
+- [ ] **Step 1: Write failing `test_lens_security.py`**: all core + lens imports have no socket calls, writes or daemon startup; malformed JSON, injected terminal escapes and hostile Blender paths fail before renderer execution; 7-qubit, >128-gate, >1024-shots, 12D, >256-point, >1000-vertex requests fail with defined resource status; default research retrieval omits quarantined/revoked results; repeatability and output hashes are stable.
+- [ ] **Step 2: Run** `python3 -m unittest research_lab.warfighter.tests.test_lens_security -v`. Expected RED until the demonstrated limits and boundary tests are covered.
+- [ ] **Step 3: Add** minimal targeted validation fixes only where test evidence finds genuine gaps, then write the evidence document from **actual** test output and a timed synthetic sample. Do not invent hardware activity, audit signatures, performance numbers or completed reviews. Run no unapproved network checks.
+- [ ] **Step 4: Run** `python3 -m unittest discover -s research_lab/warfighter/tests -p 'test_*.py' -v` and `bash -n scripts/doug-max`. If locally installed, run Blender smoke tests and report their result; otherwise explicitly mark SKIPPED. Expected GREEN on supported nonoptional tests.
+- [ ] **Step 5: Commit** `git add research_lab/warfighter/tests/test_lens_security.py docs/WARFIGHTER_LENS_SECURITY_EVIDENCE.md && git commit -m "test(warfighter): document independent lens security and performance evidence"`. Add any small security-fix paths separately when changed.
+
 ## Release Acceptance, Risks, and Creative Follow-On
 
 - **Scientific truth:** diagrams render classical math and data semantics only. All UI must say what is MEASURED, SYNTHETIC, DERIVED, UNVERIFIED, or OFFLINE. No “extra dimensions unlocked” or real quantum hardware claims.
@@ -153,4 +179,4 @@ For the first delivery, only the first three modes and a minimal research status
 - **Integration:** independent review of ANSI escaping, subprocess argument handling, purity and input bounds before PR; reference source SHA, model version, and schema status in sample screenshots.
 - **Later path:** connect to the separately reviewed PINEAL 6D Biochip design through a **read-only** adapter once that project is actually implemented. Do not presume it exists because a conceptual drawing or spec exists.
 
-This plan implements optional M3–M4 after the Warfighter Research Core. Review both written plans and choose an execution method before any product code changes.
+This plan implements optional M3–M4 and the first M5 verification gate after the Warfighter Research Core. Review both written plans and choose an execution method before any product code changes.
