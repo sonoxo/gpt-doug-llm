@@ -84,6 +84,14 @@ This repository is designed to make that entire path visible instead of hiding e
 
 ---
 
+## Public project research specification: Quantum Warfighter Ontology
+
+The [**Quantum Warfighter Ontology — canonical public project specification (v1.0.0)**](docs/WARFIGHTER_RESEARCH_ONTOLOGY.md) defines the **research-only design** for synthetic operational support, defensive-system exercises, mathematical verification, and separately human-reviewed ontology findings. Read the [full 19-section architecture](docs/superpowers/specs/2026-10-12-quantum-warfighter-ontology-design.md).
+
+**Publication status:** adopted design, **not yet implemented as a complete subsystem**, not an operational readiness source, military authorization, endorsement, or scientific proof. The existing [ZYRA_MSS_V1 ontology](safety-shield/ontology/zyra-mss-v1.json) remains unchanged and authoritative for its own existing software contract.
+
+---
+
 ## Ecosystem at a glance
 
 <div align="center">
