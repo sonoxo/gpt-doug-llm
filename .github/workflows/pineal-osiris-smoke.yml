@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: '22'
       - name: Validate shell scripts
-        run: sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
+        run: sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh integrations/pineal_osiris/recover.sh
       - name: Check offline launcher and bridge tests
         run: python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
       - name: Validate local console JavaScript syntax
