@@ -73,6 +73,12 @@ class BridgeTests(unittest.TestCase):
         out = records_from_snapshot(snap, 100, 600)
         self.assertEqual(json.loads(out[0]["value"])["status"], "CLOCK_SKEW")
 
+    def test_bad_large_timestamp_is_rejected_without_crashing(self):
+        snap = sample()
+        snap["layer_state"]["earthquakes"]["fetched_at"] = 1e100
+        records = records_from_snapshot(snap, 1_010, 600)
+        self.assertEqual([r["subject"] for r in records], ["osiris:live-news"])
+
     def test_rejects_untrusted_schema(self):
         snap = sample()
         snap["source"]["mode"] = "unverified-scraper"
