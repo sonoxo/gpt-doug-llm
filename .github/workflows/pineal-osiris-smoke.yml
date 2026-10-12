@@ -31,6 +31,10 @@ jobs:
         run: sh -n integrations/pineal_osiris/run.sh integrations/pineal_osiris/bootstrap.sh
       - name: Check offline launcher and bridge tests
         run: python3 -m unittest discover -s integrations/pineal_osiris -p 'test_*.py' -v
+      - name: Validate local console JavaScript syntax
+        run: node --check integrations/pineal_osiris/console.js
+      - name: Compile local Python modules
+        run: python3 -m compileall -q integrations/pineal_osiris
       - name: Check from unrelated working directory
         run: |
           sh "$GITHUB_WORKSPACE/integrations/pineal_osiris/run.sh" doctor
