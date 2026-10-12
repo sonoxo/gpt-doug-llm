@@ -40,6 +40,8 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 [project.scripts]
 # Operator-owned emergency-stop command: gpt-doug-llm stop the kraken
 gpt-doug-llm = "ai_killswitch:main"
+# Offline, verification-only fleet receipt tooling.
+gpt-doug-fleet = "kraken_fleet:main"
 gpt-nedu = "gpt_nedu.cli:main"
 gpt-doug = "gpt_brain.cli:main"
 gpt-doug-math = "gpt_brain.math_mitochondria:math_cli"
@@ -60,7 +62,7 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 
 [tool.setuptools]
 # Top-level AI stop module must be included in installed wheels, not only source checkouts.
-py-modules = ["ai_killswitch"]
+py-modules = ["ai_killswitch", "kraken_fleet"]
 packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth"]
 
 [tool.pytest.ini_options]
