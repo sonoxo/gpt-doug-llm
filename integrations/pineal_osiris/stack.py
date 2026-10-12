@@ -199,7 +199,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("action", choices=("start", "status"))
     p.add_argument("--port", type=int, default=3000)
     p.add_argument("--interval", type=int, default=300)
-    p.add_argument("--startup-timeout", type=int, default=600)
+    p.add_argument("--startup-timeout", type=int, default=1500)
     p.add_argument("--launcher", type=Path)
     p.add_argument("--console-port", type=int, default=8766)
     args = p.parse_args(argv)
