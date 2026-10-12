@@ -30,9 +30,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
-from ai_killswitch import require_ai_allowed, status as ai_stop_status
 
 ROOT = Path(__file__).resolve().parents[1]
+# Direct file launches from other working directories must still see the repo-owned gate.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from ai_killswitch import require_ai_allowed, status as ai_stop_status
 UI = Path(__file__).with_name('factory_ui')
 DEFAULT_STATE = Path.home() / '.gpt-doug' / 'shaggoth-factory'
 POLICY_REL = 'safety-shield/ontology/universal-galactic-federation-guardrails-v1.json'
