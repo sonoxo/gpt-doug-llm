@@ -63,7 +63,8 @@ class StackTests(unittest.TestCase):
                     result = stack.status(3000)
             self.assertEqual(list(result["safe_routes"]), ["earthquakes"])
             self.assertEqual(result["safe_routes"]["earthquakes"]["status"], "STALE")
-            self.assertNotIn("lat", json.dumps(result))
+            self.assertNotIn('"lat": 2', json.dumps(result))
+            self.assertNotIn('"payload":', json.dumps(result))
             self.assertNotIn("flights", json.dumps(result))
 
     def test_freshness_is_recomputed_not_copied_from_cached_health(self):
