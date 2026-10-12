@@ -1,0 +1,52 @@
+name: AI Emergency Stop Enforcement Gate
+
+on:
+  push:
+    paths:
+      - ai_killswitch.py
+      - agents/llm_backend.py
+      - agents/xunia_stream.py
+      - agents/agent_chain.py
+      - gpt_brain/kernel.py
+      - zyra_control_plane/control_plane.py
+      - wakeup3lm/runtime.py
+      - gpt_zyra_shaggoth/factory.py
+      - workers/agent-daemon.py
+      - local-control/gpt-doug-local-control/agent_core.py
+      - tests/test_ai_killswitch*.py
+      - .github/workflows/ai-killswitch-gate.yml
+  pull_request:
+    paths:
+      - ai_killswitch.py
+      - agents/llm_backend.py
+      - agents/xunia_stream.py
+      - agents/agent_chain.py
+      - gpt_brain/kernel.py
+      - zyra_control_plane/control_plane.py
+      - wakeup3lm/runtime.py
+      - gpt_zyra_shaggoth/factory.py
+      - workers/agent-daemon.py
+      - local-control/gpt-doug-local-control/agent_core.py
+      - tests/test_ai_killswitch*.py
+      - .github/workflows/ai-killswitch-gate.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Enforce stop regressions without external APIs
+        run: |
+          python -m unittest tests.test_ai_killswitch tests.test_ai_killswitch_integrations -v
+          python -m py_compile ai_killswitch.py agents/llm_backend.py agents/xunia_stream.py gpt_brain/kernel.py workers/agent-daemon.py
