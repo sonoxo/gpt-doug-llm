@@ -49,6 +49,11 @@ def records_from_snapshot(snapshot: dict[str, Any], now: float, max_age: int) ->
             continue
         if not math.isfinite(observed) or observed <= 0:
             continue
+        try:
+            observed_iso = datetime.fromtimestamp(observed, tz=timezone.utc).isoformat()
+        except (OSError, OverflowError, ValueError):
+            # Untrusted local snapshot timestamps must not crash sync or invent freshness.
+            continue
         age = now - float(observed)
         if age < -300:
             status = "CLOCK_SKEW"
@@ -67,7 +72,7 @@ def records_from_snapshot(snapshot: dict[str, Any], now: float, max_age: int) ->
         details = {
             "route": route,
             "status": status,
-            "last_check_utc": datetime.fromtimestamp(observed, tz=timezone.utc).isoformat(),
+            "last_check_utc": observed_iso,
             "sha256": digest,
             "latency_ms": latency,
             "provenance": "OSIRIS public route via gpt-doug.osiris-safe-mirror.v1",
