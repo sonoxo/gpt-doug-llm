@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
+from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed, status as ai_stop_status
 
 Message = dict[str, str]
 Event = dict
@@ -67,6 +68,7 @@ def _safe_urlopen(
     )
     if not (is_https or is_loopback_http):
         raise ValueError(f"Refusing unsafe provider URL: {parsed.scheme}://{host}")
+    require_ai_allowed("AI provider HTTP transport")
     return urllib.request.urlopen(request, timeout=timeout)  # nosec B310 -- scheme/host validated above
 
 
@@ -513,7 +515,13 @@ DEFAULT_MODEL = _provider.config.model
 
 
 def health() -> dict:
+    stop_state = ai_stop_status()
+    if stop_state["stopped"]:
+        return {"backend": _provider.config.name, "provider": _provider.config.name,
+                "configured": False, "model_available": False, "models": [],
+                "message": "AI emergency stop engaged", "killswitch": stop_state}
     state = _provider.health()
+    state["killswitch"] = stop_state
     state["ai_action_plan_profile"] = os.environ.get("GPT_DOUG_AI_ACTION_PLAN", "1").strip().lower() not in {"0", "false", "off", "no", "disabled"}
     return state
 
@@ -523,7 +531,10 @@ def chat_once(
     model: str | None = None,
     options: dict | None = None,
 ) -> Event:
-    return _provider.chat_once(inject_policy(messages), model, options or {})
+    require_ai_allowed("AI chat request")
+    result = _provider.chat_once(inject_policy(messages), model, options or {})
+    require_ai_allowed("AI chat response")
+    return result
 
 
 def chat_stream(
@@ -533,10 +544,11 @@ def chat_stream(
 ):
     from agents.xunia_stream import stream_auto, stream_provider, xunia_stream
 
+    require_ai_allowed("AI stream request")
     prepared = inject_policy(messages)
     opts = options or {}
     if isinstance(_provider, XuniaProvider):
-        yield from xunia_stream(_provider, prepared, opts)
+        yield from guarded_stream(xunia_stream(_provider, prepared, opts), "XUNIA model stream")
         return
     if isinstance(_provider, AstraProvider):
         ranked = _provider.ranked(prepared, opts)
@@ -553,13 +565,15 @@ def chat_stream(
                 "astra_score": round(candidate.score, 4),
             }
             try:
-                for event in stream_provider(provider, prepared, None, opts):
+                for event in guarded_stream(stream_provider(provider, prepared, None, opts), "Astra model stream"):
                     event["source_provider"] = event.get("provider", provider.config.name)
                     event["provider"] = "astra"
                     event["routed_by"] = "astra"
                     event["astra_score"] = round(candidate.score, 4)
                     yield event
                 return
+            except AIKillSwitchEngaged:
+                raise
             except Exception as exc:
                 errors.append(_safe_provider_error(provider.config.name, exc))
                 yield {
@@ -582,12 +596,14 @@ def chat_stream(
         }
         return
     if isinstance(_provider, AutoProvider):
-        yield from stream_auto(_provider, prepared, model, opts)
+        yield from guarded_stream(stream_auto(_provider, prepared, model, opts), "auto model stream")
         return
-    yield from stream_provider(_provider, prepared, model, opts)
+    yield from guarded_stream(stream_provider(_provider, prepared, model, opts), "model stream")
 
 
 def available_providers() -> list[dict]:
+    if ai_stop_status()["stopped"]:
+        return [{"id": "none", "label": "AI stopped; offline workspace", "configured": True}]
     providers = [AnthropicProvider(), OpenAIProvider(), GeminiProvider(), OllamaProvider()]
     ready = any(provider.ready() for provider in providers)
     return [

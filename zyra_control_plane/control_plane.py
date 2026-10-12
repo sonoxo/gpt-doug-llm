@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .attestation import AttestationSigner
+from ai_killswitch import require_ai_allowed, status as ai_stop_status
 from .capabilities import WRITE_LOCAL, CapabilityRegistry, MissionGrant
 from .dag import MissionDAG, MissionStep, StepResult
 from .journal import MissionJournal
@@ -35,6 +36,7 @@ class MissionControl:
         grant: MissionGrant = WRITE_LOCAL,
         model_route: str = "gpt-doug-core",
     ) -> dict[str, Any]:
+        require_ai_allowed("MissionControl create mission")
         mission_id = uuid.uuid4().hex[:12]
         criteria = dag.acceptance_criteria()
         self.journal.append(mission_id, "MISSION_CREATED", data={"goal": goal, "model_route": model_route})
@@ -80,12 +82,14 @@ class MissionControl:
         *,
         resume: bool = False,
     ) -> dict[str, Any]:
+        require_ai_allowed("MissionControl execution")
         mission_id = str(mission["mission_id"])
         dag: MissionDAG = mission["dag"]
         grant: MissionGrant = mission["grant"]
         completed = self.load_checkpoint(mission_id) if resume else set()
 
         def runner(step: MissionStep) -> StepResult:
+            require_ai_allowed("MissionControl mission step")
             ok, missing = self.registry.authorize(step.executor, grant, step.capabilities)
             if not ok:
                 self.journal.append(
@@ -118,7 +122,9 @@ class MissionControl:
         results = dag.execute(runner, resume_after=completed)
         completed_now = {step_id for step_id, result in results.items() if result.ok}
         self.save_checkpoint(mission_id, completed_now)
-        verified = len(results) == len(dag.steps) and all(result.ok for result in results.values())
+        verified = (len(results) == len(dag.steps)
+                    and all(result.ok for result in results.values())
+                    and not ai_stop_status()["stopped"])
         self.journal.append(
             mission_id,
             "MISSION_VERIFIED" if verified else "MISSION_FAILED",

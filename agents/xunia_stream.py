@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import urllib.parse
 import urllib.request
+
+from agents.llm_backend import _safe_urlopen
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterator
 
@@ -60,7 +62,7 @@ def stream_openai(provider, messages, model, options) -> Iterator[Event]:
             "Authorization": f"Bearer {provider.api_key}",
         },
     )
-    with urllib.request.urlopen(request, timeout=provider_timeout()) as response:
+    with _safe_urlopen(request, timeout=provider_timeout()) as response:
         for data in _data_lines(response):
             choices = data.get("choices") or []
             if not choices:
@@ -104,7 +106,7 @@ def stream_anthropic(provider, messages, model, options) -> Iterator[Event]:
             "anthropic-version": "2023-06-01",
         },
     )
-    with urllib.request.urlopen(request, timeout=provider_timeout()) as response:
+    with _safe_urlopen(request, timeout=provider_timeout()) as response:
         for data in _data_lines(response):
             if data.get("type") == "content_block_delta":
                 delta = data.get("delta") or {}
@@ -138,7 +140,7 @@ def stream_gemini(provider, messages, model, options) -> Iterator[Event]:
         json.dumps(body).encode(),
         {"Content-Type": "application/json", "Accept": "text/event-stream", "x-goog-api-key": provider.api_key},
     )
-    with urllib.request.urlopen(request, timeout=provider_timeout()) as response:
+    with _safe_urlopen(request, timeout=provider_timeout()) as response:
         for data in _data_lines(response):
             candidates = data.get("candidates") or []
             if not candidates:
@@ -162,7 +164,7 @@ def stream_ollama(provider, messages, model, options) -> Iterator[Event]:
         body,
         {"Content-Type": "application/json", "Accept": "application/x-ndjson"},
     )
-    with urllib.request.urlopen(request, timeout=max(provider_timeout(), 600)) as response:
+    with _safe_urlopen(request, timeout=max(provider_timeout(), 600), allow_local_http=True) as response:
         for raw in response:
             line = raw.decode("utf-8", errors="replace").strip()
             if not line:
