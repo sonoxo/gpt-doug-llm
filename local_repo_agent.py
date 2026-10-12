@@ -15,6 +15,8 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
+from ai_killswitch import require_ai_allowed
+
 from zyra_agent import MissionBudget, MissionError, ZyraAgent, print_agent_report
 from zyra_self_heal import run_self_heal
 
@@ -169,6 +171,7 @@ def main() -> int:
         print("💳 Codex/OpenAI credits: NOT USED")
         print("🧠 Provider: local Ollama")
 
+        require_ai_allowed("local repository agent startup")
         if args.bootstrap:
             print("📦 Bootstrapping declared dependencies…")
             bootstrap_repo(root)
@@ -192,6 +195,7 @@ def main() -> int:
             print(agent.preview(goal, evolve=False))
             return 0
 
+        require_ai_allowed("local repository agent mission")
         result = agent.run(goal, evolve=False)
         print_agent_report(result)
         return 0 if result.status == "PASS" else 1

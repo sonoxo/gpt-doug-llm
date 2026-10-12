@@ -41,6 +41,43 @@ python3 -m ai_killswitch resume  # requires interactive local confirmation
 
 For shared containers, mount an **operator-owned** stop directory (same path/volume across all protected runtimes) and set `GPT_DOUG_AI_STOP_DIR` consistently. For an immediately forced deployment block, set `GPT_DOUG_AI_BLOCK_ALL=1` using a host/deployment secret/configuration service that agents cannot edit. Never store a stop-state file in a model-writable workspace. AI service identities should have **read** permission to the operator-owned STOP state, not delete/rearm permission. The stop CLI must run as the authorized operator identity in that environment.
 
+## Strict deployment mode: fail closed if the STOP mount disappears
+
+Default local development remains backwards-compatible: the missing state directory is
+interpreted as "never initialized." This is **not suitable for a critical deployment**
+where a lost or unmounted stop volume could otherwise allow AI work to resume.
+
+For each controlled host, the **human operator** first provisions an absolute,
+operator-owned STOP directory and ensures it is visible inside each AI worker.
+The service identity should only be able to **read**, not rearm or alter it.
+
+```bash
+install -d -m 700 "$HOME/.gpt-doug/ai-killswitch"
+export GPT_DOUG_AI_STOP_DIR="$HOME/.gpt-doug/ai-killswitch"
+export GPT_DOUG_AI_REQUIRE_STOP_DIRECTORY=1
+gpt-doug-llm status
+```
+
+The example is for a single-user local machine. For containers or multi-user services,
+use an **operator-owned mount** and grant workers read/traverse access (never write/delete
+access), instead of relying on the local `700` mode above. Place the two environment
+variables in the actual service or container configuration, **not only in an operator's
+shell**. Ensure every protected worker receives the same absolute in-container path.
+
+When strict mode is set:
+- Missing, unreadable, symlinked, or non-directory STOP state => block AI execution.
+- Existing valid operator state without STOP => permit already-authorized work.
+- Presence of STOP => deny new AI execution until explicitly rearmed.
+- If the mounted state disappears while STOP was engaged => remain blocked.
+- Interactive rearm refuses to silently recreate an absent required state directory.
+- Invalid strict-mode configuration or relative configured paths => fail closed.
+
+`GPT_DOUG_AI_BLOCK_ALL=1` remains the stronger independent host stop flag.
+Strict mode does **not** prevent a privileged administrator from tampering with
+the state, or let Python control unrelated AI services. Production enforcement
+requires host-controlled firewall/network egress rules, model credential disablement,
+and independent physical safety controls where relevant.
+
 ## Enforced paths in this change
 
 - Shared Python `ai_killswitch.require_ai_allowed`: default gate for connected Python services.
@@ -53,6 +90,15 @@ For shared containers, mount an **operator-owned** stop directory (same path/vol
 - `gpt_zyra_shaggoth.factory`: new jobs and cooperative stage boundaries.
 - `workers/agent-daemon.py`: queue suppression while STOP is engaged and supervised termination of an owned Claude subprocess if STOP is activated while executing.
 - `local-control/gpt-doug-local-control`: existing local PANIC triggers the ecosystem latch; clearing local panic **does not** rearm AI.
+
+### Additional legacy terminal coverage
+
+- `zyra_agent.py`: direct Ollama model requests and bounded mission steps now check STOP.
+- `zyra_chat.py`: direct Ollama streaming checks STOP before inference and before each displayed chunk; an engaged STOP prevents self-healing from automatically starting Ollama.
+- `xunia_godis.py`: model chat, direct interactive Ollama process, model installation, and tool invocation check STOP while read-only model inventory remains available.
+- `local_repo_agent.py`: preflight stops local repo agent work before dependency bootstrap, model self-healing or mission execution.
+
+All these gates are cooperative. They do not terminate unrelated Ollama processes launched outside these paths, and they cannot reliably cancel non-cooperative in-flight inference without operator-controlled service/network shutdown.
 
 ## Limitations / non-negotiable external controls
 

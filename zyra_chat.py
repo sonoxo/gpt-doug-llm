@@ -9,6 +9,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from ai_killswitch import require_ai_allowed, status as ai_stop_status
+
 from agents.ontology_master_lock import MasterLockError, print_master_lock_report, run_master_lock
 from zyra import Zyra
 from zyra_agent import ZyraAgent, print_agent_report, run_native_agent_test
@@ -132,12 +134,14 @@ def show_fleet():
 
 
 def stream_chat(model, messages, mode):
+    require_ai_allowed("ZYRA terminal Ollama chat stream")
     options = {"temperature": 0.25, "num_ctx": 4096, "num_predict": 256} if mode == "fast" else {"temperature": 0.35, "num_ctx": 8192, "num_predict": 512}
     body = {"model": model, "messages": messages, "stream": True, "keep_alive": "30m", "options": options}
     chunks = []
     done_reason = ""
     with urllib.request.urlopen(_request("/api/chat", body), timeout=TIMEOUT) as response:
         for raw in response:
+            require_ai_allowed("ZYRA terminal Ollama stream chunk")
             line = raw.decode(errors="replace").strip()
             if not line:
                 continue
@@ -169,6 +173,10 @@ def _looks_like_shell(prompt: str) -> bool:
 
 
 def main():
+    stop = ai_stop_status()
+    if stop["stopped"]:
+        print("ZYRA AI execution stopped by the human-operated kill switch.")
+        return 3
     zyra = Zyra()
     laser = ZyraLaser()
     mode = os.environ.get("ZYRA_MODE", "fast").lower()
@@ -221,6 +229,7 @@ def main():
                 print_master_lock_report(report)
             continue
         if command == "/heal":
+            require_ai_allowed("ZYRA terminal runtime heal")
             heal_report = run_self_heal(start_ollama=True, persist=True)
             print_heal_report(heal_report)
             if heal_report.get("healthy"):
