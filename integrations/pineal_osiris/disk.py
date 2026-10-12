@@ -7,7 +7,7 @@ requires an explicit --npm-cache flag and is never done during startup.
 from __future__ import annotations
 
 import argparse
-import os
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -82,7 +82,7 @@ def validate_checkout(path: Path) -> Path:
     return path
 
 
-def repair(path: Path, *, clear_npm_cache: bool = False) -> dict:
+def repair(path: Path, *, clear_npm_cache: bool = False, port: int = 3000) -> dict:
     path = validate_checkout(path)
     modules = path / "node_modules"
     if modules.is_symlink():
@@ -91,10 +91,12 @@ def repair(path: Path, *, clear_npm_cache: bool = False) -> dict:
         raise ValueError("refusing unexpected node_modules entry")
     # Avoid dismantling a server that is currently rendering or serving data.
     try:
-        with urlopen("http://127.0.0.1:3000/api/health", timeout=1.5) as response:
-            if response.status == 200 and b'"platform":"OSIRIS"' in response.read(8192):
-                raise ValueError("OSIRIS is running on port 3000; stop it before repair")
-    except (HTTPError, URLError, TimeoutError, OSError):
+        with urlopen(f"http://127.0.0.1:{port}/api/health", timeout=1.5) as response:
+            if response.status == 200:
+                payload = json.loads(response.read(8192))
+                if payload.get("platform") == "OSIRIS" and payload.get("status") == "serving":
+                    raise ValueError(f"OSIRIS is running on port {port}; stop it before repair")
+    except (HTTPError, URLError, TimeoutError, OSError, json.JSONDecodeError):
         pass
     before = free_mb(path)
     deleted = False
@@ -121,6 +123,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("action", choices=("status", "preflight", "repair", "repair-cache"))
     p.add_argument("--worktree", type=Path, default=DEFAULT_WORKTREE)
     p.add_argument("--minimum-mb", type=int, default=DEFAULT_MIN_FREE_MB)
+    p.add_argument("--port", type=int, default=3000)
     args = p.parse_args(argv)
     try:
         if args.action == "status":
@@ -129,7 +132,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.action == "preflight":
             return 0 if preflight(args.worktree, args.minimum_mb)["enough_free_space"] else 2
-        repair(args.worktree, clear_npm_cache=args.action == "repair-cache")
+        repair(args.worktree, clear_npm_cache=args.action == "repair-cache", port=args.port)
         return 0
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         print(f"OSIRIS disk tool stopped: {exc}", file=sys.stderr)
