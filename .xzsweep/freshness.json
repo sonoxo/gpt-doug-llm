@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-11T00:27:04Z",
+  "cutoff_at": "2026-10-11T01:50:23Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -166,6 +166,17 @@
       "reviewed_at": "2026-10-11T23:43:34Z",
       "sha256": "b8c1446940664ae77626f3d8b41786f883c95263a0c8775305212f3382b2210b",
       "size": 2272,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/ai-killswitch-gate.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T01:43:32Z",
+      "reviewed_at": null,
+      "sha256": "996953fa37af9635e40439fb448148d75642cb0dd39ea692e06fabc6e8630cc8",
+      "size": 2237,
       "validation_issues": [],
       "was_due": false
     },
@@ -1756,11 +1767,11 @@
     "agents/agent_chain.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-20T23:12:12Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "4ba7d462c132628300fc14a68f967107543ef917afe768bc985a2c123d345574",
-      "size": 13098,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "632a462c2ba1800bd7af95b5072b3fa9d6a1d2e66fb4826342b518885be48391",
+      "size": 13337,
       "validation_issues": [],
       "was_due": false
     },
@@ -1943,11 +1954,11 @@
     "agents/llm_backend.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-03T20:09:05Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "ce77cd046c3e090d7a7a29a88296b66cd69521ec17a3c1d0e4bbb12a79e91397",
-      "size": 21625,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "033371ba40a0bf4fe73e067849b939a1cb10b841ade4794a10fb098b1358ee38",
+      "size": 22617,
       "validation_issues": [],
       "was_due": false
     },
@@ -2339,11 +2350,22 @@
     "agents/xunia_stream.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-19T00:01:39Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "f273f5d918ae30c94f2489e3aa42e3e195f620a8147a7ffe21b092fb73a37567",
-      "size": 13824,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "47bf38e13e0709d53bdd377870d6f1a1865a5f5d9f779c3a19a5fb93b8d86595",
+      "size": 13857,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "ai_killswitch.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T01:42:36Z",
+      "reviewed_at": null,
+      "sha256": "9a8a64a8b1b220706320517fc7a31dc7529ad6d83a332ca218d71758fdb6353b",
+      "size": 8561,
       "validation_issues": [],
       "was_due": false
     },
@@ -3026,6 +3048,17 @@
       "reviewed_at": "2026-10-11T23:43:34Z",
       "sha256": "9db5115fce18c1e18cada85661d595d6ad74da1aedd4ea1527d5387b67887ffb",
       "size": 3856,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/AI_KILLSWITCH.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T01:43:16Z",
+      "reviewed_at": null,
+      "sha256": "a4ad2bc502d55ededc585fc787b3741f2a947b392ce51397f7dcd950a9d394eb",
+      "size": 6476,
       "validation_issues": [],
       "was_due": false
     },
@@ -3913,9 +3946,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T23:47:39Z",
+      "git_touched_at": "2026-10-12T00:27:04Z",
       "reviewed_at": null,
-      "sha256": "4ed7bca70c2fc8975a5119175a485cb01882e02865c22c4fe7ac455f264fae38",
+      "sha256": "c295e71c01d8ed83c6b57b86c1e51d48866d7f8d3a919608d78eb1a180d91eef",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -3989,10 +4022,10 @@
     "docs/assets/security-gates.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-29T12:26:38Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "60af162748b56dbe02744b3baeb8359087045e0bcd63f4bcd44d8ca7c3f0c1a6",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:27:04Z",
+      "reviewed_at": null,
+      "sha256": "146f27195b506a85c17a5912858d3f8b5b9a57c6b6827f4ba8f7c4c4228a846b",
       "size": 6386,
       "validation_issues": [],
       "was_due": false
@@ -6134,11 +6167,11 @@
     "gpt_brain/kernel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-26T01:15:55Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "59cc935c22f078207dbac58856856adb38ce2aec0e8bf5ebe55a44cfaa10e4b4",
-      "size": 7125,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "2dd733120683ad5e998dedf1a9d53c31fe370f05264b871f600eb241a59e020f",
+      "size": 7367,
       "validation_issues": [],
       "was_due": false
     },
@@ -6453,11 +6486,11 @@
     "gpt_zyra_shaggoth/factory.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-10T20:06:56Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "097064e53123e2eb6f82d54ec92fb9df1da90efd6ee3883d548375aa250c4851",
-      "size": 41227,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:51:24Z",
+      "reviewed_at": null,
+      "sha256": "4799981ed5d0de3a6a89fa4399346e5449e271f5616ee7113d40a168445a45c3",
+      "size": 41838,
       "validation_issues": [],
       "was_due": false
     },
@@ -9907,11 +9940,11 @@
     "local-control/gpt-doug-local-control/agent_core.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-18T02:11:43Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "928bae5de5a0ba5e110be9adfdfe25dc6c500fab848e7e625eda22258487244b",
-      "size": 11686,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "363c48531a4c3118c45fa1cd973155f517a14e0bcd14b92881309092f4efabb0",
+      "size": 12044,
       "validation_issues": [],
       "was_due": false
     },
@@ -10952,11 +10985,11 @@
     "pyproject.toml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-09T23:01:23Z",
-      "reviewed_at": "2026-10-11T09:56:16Z",
-      "sha256": "a4b2862198af7a317d7038165f1c5ee41634eea4b7ccb4d523afce5bdd2afa70",
-      "size": 2891,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T01:43:00Z",
+      "reviewed_at": null,
+      "sha256": "e9327e082af5828b89b977b67030d3baf9ff9e59e1fdd0099f9f0ad898da795e",
+      "size": 3120,
       "validation_issues": [],
       "was_due": false
     },
@@ -15316,6 +15349,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_ai_killswitch.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T01:42:48Z",
+      "reviewed_at": null,
+      "sha256": "6ffade2cf6d87e61b1ec8a3bdba230d5de645b871b63260e4ed7dc8dda5d20c7",
+      "size": 7864,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_ai_killswitch_integrations.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:50:03Z",
+      "reviewed_at": null,
+      "sha256": "1db2fe44c866aff7eae15ce20fda10bef83f5303a2addb2d5f79f69a38469bbe",
+      "size": 5226,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_astra_router.py": {
       "actions": [],
       "binary": false,
@@ -18851,9 +18906,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T23:47:44Z",
+      "git_touched_at": "2026-10-12T00:27:02Z",
       "reviewed_at": null,
-      "sha256": "8cf52a6b7fc9f1c61e83fe6b171bfae4d460e6470e0fd0935638e2cd6ca6e300",
+      "sha256": "d8c02c4433077cf64f81ed7ea720dc3d0708a276fcd141b24500319068db09b0",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -18873,9 +18928,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-11T23:47:44Z",
+      "git_touched_at": "2026-10-12T00:27:02Z",
       "reviewed_at": null,
-      "sha256": "06a6502cbbf2a6c6a6bf6e2802f7eab9bf1ceb3ea79a96fc248ada2236aac15a",
+      "sha256": "772138e4facd5225bf2e4f9ab231dd4493914b9a4f0471011fb4204171043877",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -18949,11 +19004,11 @@
     "wakeup3lm/runtime.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-05T02:44:24Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "f2347bd736f3af0f57776fbef6951303b73efbccbb52fcfa1497dbbd1ab6f1f5",
-      "size": 8923,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "7ca1cc1790eabd74484dc02189900a9d854b2a6ff0e669bc98086a3bccdbe0ba",
+      "size": 9669,
       "validation_issues": [],
       "was_due": false
     },
@@ -19609,11 +19664,11 @@
     "workers/agent-daemon.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-21T05:07:08Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "fd7e2036f2affad722cf23d12eb6cabc362b65f03294a97706f7c2564c39aefe",
-      "size": 13297,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "9cd3ef351c29863609c877f576e7985298e81b18a0079301a7e8339f84b5c442",
+      "size": 15838,
       "validation_issues": [],
       "was_due": false
     },
@@ -21083,11 +21138,11 @@
     "zyra_control_plane/control_plane.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-23T07:29:34Z",
-      "reviewed_at": "2026-10-11T23:43:34Z",
-      "sha256": "7e816dcac0cb9be010920c6caf5bce76e343a17455b253e5065141ba767e9ff6",
-      "size": 7272,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T00:49:11Z",
+      "reviewed_at": null,
+      "sha256": "256d0464760abaef22905b69b32d16e4ed27362ddd252173d1ba388c7e963360",
+      "size": 7598,
       "validation_issues": [],
       "was_due": false
     },
@@ -21335,11 +21390,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-12T00:27:04Z",
+  "generated_at": "2026-10-12T01:50:23Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1939,
+  "tracked_files_reviewed": 1944,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
