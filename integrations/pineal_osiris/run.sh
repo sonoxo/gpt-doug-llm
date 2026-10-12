@@ -46,8 +46,19 @@ prepare_upstream() {
   git -C "$WORKTREE" fetch --depth=1 origin "$PIN"
   git -C "$WORKTREE" checkout --detach "$PIN"
   grep -q 'MIT License' "$WORKTREE/LICENSE" || { echo 'Expected MIT LICENSE missing' >&2; exit 2; }
-  if [ ! -f "$WORKTREE/node_modules/.package-lock.json" ] || [ "$WORKTREE/package-lock.json" -nt "$WORKTREE/node_modules/.package-lock.json" ]; then
-    (cd "$WORKTREE" && npm ci --no-audit --no-fund)
+  # A completed installer marker, written only AFTER npm ci succeeds, prevents
+  # a failed ENOSPC extraction from ever being mistaken for an installed app.
+  marker="$WORKTREE/node_modules/.gpt-doug-osiris-install-ok"
+  if [ ! -f "$marker" ] || [ "$WORKTREE/package-lock.json" -nt "$marker" ]; then
+    python3 "$SELF/disk.py" preflight --worktree "$WORKTREE" --minimum-mb "${OSIRIS_MIN_FREE_MB:-4096}" || exit 2
+    if (cd "$WORKTREE" && npm ci --no-audit --no-fund); then
+      printf '%s\n' "$PIN" > "$marker"
+    else
+      echo 'OSIRIS dependency install failed. If npm reported ENOSPC, do not rerun without reclaiming space.' >&2
+      echo "Try: sh '$SELF/run.sh' repair-cache" >&2
+      echo 'Then verify: df -h "$HOME"' >&2
+      exit 2
+    fi
   fi
 }
 run_sync() {
@@ -64,14 +75,24 @@ run_sync() {
 case "${1:-stack}" in
   console) printf 'http://127.0.0.1:%s/\n' "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}" ;;
   help|-h|--help)
-    echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url|console]'
+    echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url|console|disk|repair|repair-cache]'
     echo 'stack installs OSIRIS, launches map and keeps PINEAL public-feed health synchronized'
     echo 'run starts OSIRIS only; sync captures approved health once; status checks local state'
+    echo 'disk shows free space; repair removes only managed node_modules; repair-cache also clears shared npm download cache'
     ;;
   url) printf '%s\n' "$URL" ;;
   doctor)
     check_prereqs
+    python3 "$SELF/disk.py" status --worktree "$WORKTREE"
     printf 'Prerequisites: OK. OSIRIS source pinned at %s\nMap: %s\nConsole: http://127.0.0.1:%s/\n' "$PIN" "$URL" "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}"
+    ;;
+  disk)
+    need python3
+    python3 "$SELF/disk.py" status --worktree "$WORKTREE"
+    ;;
+  repair|repair-cache)
+    need python3
+    python3 "$SELF/disk.py" "$1" --worktree "$WORKTREE" --port "$PORT"
     ;;
   sync) run_sync ;;
   status)
@@ -88,5 +109,5 @@ case "${1:-stack}" in
     check_prereqs
     exec python3 "$SELF/stack.py" start --port "$PORT" --interval "${OSIRIS_SYNC_INTERVAL:-300}" --launcher "$SELF/run.sh" --console-port "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}"
     ;;
-  *) echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url]' >&2; exit 2 ;;
+  *) echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url|console|disk|repair|repair-cache]' >&2; exit 2 ;;
 esac
