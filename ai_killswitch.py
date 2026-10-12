@@ -220,6 +220,14 @@ def _resume_after_interactive_confirmation() -> dict[str, Any]:
         raise PermissionError("operator rearm confirmation did not match")
     if _forced_stop() is not None:
         raise PermissionError("host-enforced AI stop must be cleared by its operator")
+    if _required_stop_directory():
+        # Rearming must not quietly recreate an absent or unmounted state volume.
+        try:
+            directory_info = _directory().lstat()
+        except OSError as error:
+            raise PermissionError("required operator stop directory is unavailable") from error
+        if not stat.S_ISDIR(directory_info.st_mode):
+            raise PermissionError("required operator stop directory is unsafe")
     directory = _secure_directory()
     path = directory / STOP_FILENAME
     if path.is_symlink():
