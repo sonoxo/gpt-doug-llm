@@ -6,6 +6,7 @@ SOURCE='https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/feature/pineal-osi
 WORKTREE=${OSIRIS_WORKTREE:-"$HOME/.local/share/gpt-doug/osiris-ui"}
 BOOTSTRAP="$HOME/Downloads/gpt-doug-osiris-bootstrap.sh"
 MIN_MB=${OSIRIS_MIN_FREE_MB:-4096}
+PORT=${OSIRIS_PORT:-3000}
 if [ "${1:-}" = '--check' ]; then
   echo "OSIRIS checkout to repair: $WORKTREE"
   echo "Will remove only this checkout's node_modules after verifying its official Git origin."
@@ -27,7 +28,7 @@ if [ "${1:-}" != '' ]; then echo 'Usage: sh recover.sh [--check]' >&2; exit 2; f
 for cmd in git python3 npm curl; do
   command -v "$cmd" >/dev/null 2>&1 || { echo "Missing dependency: $cmd" >&2; exit 2; }
 done
-python3 - "$WORKTREE" <<'PY'
+python3 - "$WORKTREE" "$PORT" <<'PY'
 import json
 from pathlib import Path
 import shutil
@@ -48,7 +49,7 @@ if Path(root).resolve() != target.resolve():
 if not (target / "package-lock.json").is_file() or not (target / "LICENSE").is_file():
     raise SystemExit("Refusing repair: expected upstream source files missing.")
 try:
-    with urlopen("http://127.0.0.1:3000/api/health", timeout=1.5) as response:
+    with urlopen(f"http://127.0.0.1:{sys.argv[2]}/api/health", timeout=1.5) as response:
         health = json.load(response)
         if health.get("platform") == "OSIRIS" and health.get("status") == "serving":
             raise SystemExit("OSIRIS is already running. Stop it before repairing.")
