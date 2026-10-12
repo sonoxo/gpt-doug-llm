@@ -60,7 +60,7 @@
 
 **Interfaces:** `load_schema(path: Path | None = None) -> dict[str, Any]`, `validate_record(record: Mapping[str, Any], schema: Mapping[str, Any]) -> dict[str, Any]`, `validate_graph(nodes: list[dict], edges: list[dict], schema: Mapping[str, Any]) -> None`.
 
-- [ ] **Step 1: Write failing tests** asserting schema ontology_id `WARFIGHTER_RESEARCH_V1`, authority `RESEARCH_ONLY`, all 21 new object types and 15 directed link types exactly matching Spec ``5.2-5.3`; `ResearchEvidence --SUPPORTED_BY--> MathCertificate` works. Reject wrong types, missing mandatory fields, duplicate IDs, 101 nodes, 501 links, self-review link, unknown fields including `api_key` or `password`, and nonsynthetic/public Warfighter claims.
+- [ ] **Step 1: Write failing tests** asserting schema ontology_id `WARFIGHTER_RESEARCH_V1`, authority `RESEARCH_ONLY`, all 21 new object types and 16 directed link types exactly matching Spec ``5.2-5.3`; `ResearchEvidence --SUPPORTED_BY--> MathCertificate` works. Reject wrong types, missing mandatory fields, duplicate IDs, 101 nodes, 501 links, self-review link, unknown fields including `api_key` or `password`, and nonsynthetic/public Warfighter claims.
 - [ ] **Step 2: Run** `python3 -m unittest research_lab.warfighter.tests.test_schema -v`. Expected RED: module/schema absent.
 - [ ] **Step 3: Implement** the three named APIs. Validate each node's id, schema_version, type, source_kind, classification, synthetic, created_at, provenance, source_refs, evidence_status, confidence_scope and record_sha256; validate link endpoints and graph bound before any storage; never eval embedded text or redefine base ZYRA types.
 - [ ] **Step 4: Run** same focused command. Expected GREEN.
