@@ -1,0 +1,30 @@
+name: Palantir Ecosystem Graph Read-Only Gate
+on:
+  pull_request:
+    paths:
+      - 'zyrapalantir/ecosystem_intelligence.py'
+      - 'agency_cloud/static/palantir-ecosystem*'
+      - 'tests/test_palantir_ecosystem_graph.py'
+      - 'docs/PALANTIR_ECOSYSTEM_INTELLIGENCE.md'
+      - '.github/workflows/palantir-ecosystem-graph.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'zyrapalantir/ecosystem_intelligence.py'
+      - 'agency_cloud/static/palantir-ecosystem*'
+      - 'tests/test_palantir_ecosystem_graph.py'
+      - 'docs/PALANTIR_ECOSYSTEM_INTELLIGENCE.md'
+      - '.github/workflows/palantir-ecosystem-graph.yml'
+jobs:
+  offline-graph:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m unittest tests.test_palantir_ecosystem_graph -v
+      - run: node --check agency_cloud/static/palantir-ecosystem.js
