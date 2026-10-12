@@ -19,6 +19,7 @@ from typing import Any, Iterable, Iterator, TypeVar
 
 DEFAULT_STATE_DIR = "~/.gpt-doug/ai-killswitch"
 STATE_DIRECTORY_ENV = "GPT_DOUG_AI_STOP_DIR"
+REQUIRED_STOP_DIR_ENV = "GPT_DOUG_AI_REQUIRE_STOP_DIRECTORY"
 FORCE_STOP_ENV = "GPT_DOUG_AI_BLOCK_ALL"
 STOP_FILENAME = "STOP"
 # Exact, non-secret human operator command; not a chat/prompt substring trigger.
@@ -37,7 +38,10 @@ def _directory() -> Path:
     raw = os.getenv(STATE_DIRECTORY_ENV, DEFAULT_STATE_DIR)
     if not isinstance(raw, str) or not raw.strip():
         raise ValueError("AI stop directory must not be empty")
-    return Path(raw).expanduser().absolute()
+    candidate = Path(raw).expanduser()
+    if os.environ.get(STATE_DIRECTORY_ENV) is not None and not candidate.is_absolute():
+        raise ValueError("configured AI stop directory must be absolute")
+    return candidate.absolute()
 
 
 def _forced_stop() -> str | None:
@@ -47,6 +51,16 @@ def _forced_stop() -> str | None:
     if raw in ("1", "true", "yes", "on"):
         return "host_enforced_stop"
     return "invalid_host_stop_configuration"
+
+
+def _required_stop_directory() -> bool:
+    """Strict deployments must not infer RUNNING from a missing stop volume."""
+    raw = os.environ.get(REQUIRED_STOP_DIR_ENV, "0").strip().lower()
+    if raw in ("", "0", "false", "no", "off"):
+        return False
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    raise ValueError("invalid required stop directory configuration")
 
 
 def _latch_path() -> Path:
@@ -78,10 +92,26 @@ def status() -> dict[str, Any]:
     """Inspectable while stopped; errors in switch state fail closed."""
     reason = _forced_stop()
     try:
+        required = _required_stop_directory()
+    except ValueError:
+        required = False
+        reason = reason or "invalid_required_stop_directory_configuration"
+    try:
         path = _latch_path()
         path_reason = _check_path(path)
         if path_reason and not reason:
             reason = path_reason
+        if required and not path_reason:
+            # Missing operator-mounted state is unsafe in strict deployments.
+            try:
+                parent_info = path.parent.lstat()
+            except FileNotFoundError:
+                reason = reason or "required_stop_directory_missing"
+            except OSError:
+                reason = reason or "unreadable_stop_directory"
+            else:
+                if not stat.S_ISDIR(parent_info.st_mode):
+                    reason = reason or "unsafe_stop_directory"
         display_path = str(path)
     except (OSError, ValueError, RuntimeError):
         display_path = None
@@ -89,6 +119,7 @@ def status() -> dict[str, Any]:
     return {
         "stopped": reason is not None,
         "reason": reason or "running",
+        "stop_directory_required": required,
         "state_dir": display_path,
         "scope": "cooperating_AI_processes_on_this_host_or_shared_mount",
         "external_ai_control": False,
