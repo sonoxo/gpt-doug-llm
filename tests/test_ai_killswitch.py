@@ -130,6 +130,48 @@ class TestAIKillSwitch(unittest.TestCase):
                 ks._resume_after_interactive_confirmation()
         self.assertTrue(ks.status()["stopped"])
 
+    def test_exact_stop_the_kraken_operator_command(self):
+        for command in (
+            ["stop", "the", "kraken"],
+            ["gpt-doug-llm", "stop", "the", "kraken"],
+            ["gpt-doug-llm stop the kraken"],
+            ["STOP", "THE", "KRAKEN"],
+        ):
+            # Each command must engage the same idempotent operator latch.
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                self.assertEqual(ks.main(command), 0)
+            self.assertTrue(json.loads(output.getvalue())["stopped"])
+        record = json.loads((Path(self.tmp.name) / ks.STOP_FILENAME).read_text())
+        self.assertEqual(record["reason"], "operator_stop_the_kraken")
+        self.assertEqual(len((Path(self.tmp.name) / "operator-audit.jsonl").read_text().splitlines()), 1)
+
+    def test_phrase_inside_text_cannot_trigger(self):
+        for text in (
+            "please gpt-doug-llm stop the kraken",
+            "the kraken has stopped",
+            "model says stop the kraken",
+        ):
+            self.assertEqual(ks._normalized_cli_argv([text]), [text])
+        for args in (
+            ["stop", "the", "kraken", "please"],
+            ["please", "stop", "the", "kraken"],
+            ["stop", "kraken"],
+        ):
+            self.assertEqual(ks._normalized_cli_argv(args), args)
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as err:
+                    ks.main(args)
+                self.assertEqual(err.exception.code, 2)
+        self.assertFalse(ks.status()["stopped"])
+
+    def test_explicit_phrase_never_rearms_latched_stop(self):
+        ks.emergency_stop("operator_initial")
+        with contextlib.redirect_stdout(io.StringIO()) as output:
+            self.assertEqual(ks.main(["stop", "the", "kraken"]), 0)
+        self.assertTrue(json.loads(output.getvalue())["stopped"])
+        self.assertEqual(json.loads((Path(self.tmp.name)/ks.STOP_FILENAME).read_text())["reason"],
+                         "operator_initial")
+
     def test_check_command_exit_code_and_stop_idempotence(self):
         with contextlib.redirect_stdout(io.StringIO()) as buf:
             self.assertEqual(ks.main(["check"]), 0)
