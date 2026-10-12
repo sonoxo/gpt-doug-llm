@@ -62,15 +62,16 @@ run_sync() {
   python3 "$SELF/bridge.py"
 }
 case "${1:-stack}" in
+  console) printf 'http://127.0.0.1:%s/\n' "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}" ;;
   help|-h|--help)
-    echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url]'
+    echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url|console]'
     echo 'stack installs OSIRIS, launches map and keeps PINEAL public-feed health synchronized'
     echo 'run starts OSIRIS only; sync captures approved health once; status checks local state'
     ;;
   url) printf '%s\n' "$URL" ;;
   doctor)
     check_prereqs
-    printf 'Prerequisites: OK. OSIRIS source pinned at %s\n%s\n' "$PIN" "$URL"
+    printf 'Prerequisites: OK. OSIRIS source pinned at %s\nMap: %s\nConsole: http://127.0.0.1:%s/\n' "$PIN" "$URL" "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}"
     ;;
   sync) run_sync ;;
   status)
@@ -85,7 +86,7 @@ case "${1:-stack}" in
     ;;
   stack)
     check_prereqs
-    exec python3 "$SELF/stack.py" start --port "$PORT" --interval "${OSIRIS_SYNC_INTERVAL:-300}" --launcher "$SELF/run.sh"
+    exec python3 "$SELF/stack.py" start --port "$PORT" --interval "${OSIRIS_SYNC_INTERVAL:-300}" --launcher "$SELF/run.sh" --console-port "${PINEAL_OSIRIS_CONSOLE_PORT:-8766}"
     ;;
   *) echo 'Usage: sh run.sh [stack|run|sync|status|doctor|url]' >&2; exit 2 ;;
 esac
