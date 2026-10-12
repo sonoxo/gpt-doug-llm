@@ -30,6 +30,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
+from ai_killswitch import require_ai_allowed, status as ai_stop_status
 
 ROOT = Path(__file__).resolve().parents[1]
 UI = Path(__file__).with_name('factory_ui')
@@ -215,6 +216,7 @@ class Factory:
                   (job_id, stage, detail[:240], utcnow()))
 
     def submit(self, kind: str, goal: str, backend: str = 'offline', *, idempotency: str | None = None) -> dict[str, Any]:
+        require_ai_allowed("Shaggoth factory job submission")
         kind, goal, backend = validate_goal(kind, goal, backend)
         policy = self.policy()
         if not policy['local_drafts_allowed']:
@@ -278,6 +280,7 @@ class Factory:
         return {'name': 'GPT-Doug-Shaggoth Autonomous Factory', 'mode': 'LOCAL_BOUNDED_REVIEW_GATED',
                 'backend': 'offline+opt-in-local-ollama' if self.allow_ollama else 'offline',
                 'factory_running': self._server_running, 'worker_paused': self._pause.is_set(),
+                'ai_killswitch': ai_stop_status(),
                 'uptime_seconds': int(time.monotonic() - self.started_at),
                 'policy': self.policy(), 'roles': [{'name': a, 'stage': b, 'description': c} for a, b, c in ROLES],
                 'jobs_total': count, 'counts': totals,
@@ -326,7 +329,7 @@ class Factory:
                 for i, (kind, goal) in enumerate(rows)]
 
     def process_one(self, *, delay: float = 0.0) -> dict[str, Any] | None:
-        if self._pause.is_set() or not self._busy.acquire(blocking=False):
+        if ai_stop_status()["stopped"] or self._pause.is_set() or not self._busy.acquire(blocking=False):
             return None
         try:
             with self._connect() as c:
@@ -345,11 +348,14 @@ class Factory:
                     raise PermissionError('policy changed while job was queued')
                 if job['backend'] == 'ollama' and (not self.allow_ollama or not policy['ollama_allowed']):
                     raise PermissionError('local model is not approved')
+                require_ai_allowed("Shaggoth planning")
                 plan = make_plan(job)
                 if delay:
                     time.sleep(delay)
                 self.stage(job_id, 'BUILDING', 'Shaggoth fabricator assembling draft', 36)
+                require_ai_allowed("Shaggoth drafting")
                 files = create_draft(job, plan, model=self.model)
+                require_ai_allowed("Shaggoth draft response")
                 if delay:
                     time.sleep(delay)
                 self.stage(job_id, 'VERIFYING', 'Pineal syntax and artifact manifest checks', 64)
@@ -362,6 +368,7 @@ class Factory:
                     time.sleep(delay)
                 if not self.policy()['local_drafts_allowed']:
                     raise PermissionError('project policy drifted during production')
+                require_ai_allowed("Shaggoth artifact publication")
                 digest = self._write_bundle(job_id, files, plan, findings, critique)
                 with self._connect() as c:
                     c.execute('UPDATE jobs SET artifact_sha256=?,stage=?,progress=100,updated=? WHERE id=?',

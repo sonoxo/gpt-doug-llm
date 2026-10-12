@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
 from .memory import BrainMemory
+from ai_killswitch import require_ai_allowed
 from .models import AgentSpec, BrainResult
 from .ontology import OntologyIndex
 from .router import BrainRouter
@@ -48,6 +49,7 @@ class BrainKernel:
         return llm_backend.chat_once(messages, model, options)
 
     def _call(self, system: str, user: str) -> str:
+        require_ai_allowed("brain model call")
         try:
             result = self.chat_fn(
                 [{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -58,6 +60,7 @@ class BrainKernel:
             raise RuntimeError(
                 f"brain provider call failed: {type(exc).__name__}"
             ) from exc
+        require_ai_allowed("brain model response")
         if not isinstance(result, dict):
             raise RuntimeError("brain provider returned an invalid response")
         if result.get("error"):
@@ -91,6 +94,7 @@ class BrainKernel:
         return agent.name, self._call(agent.system_prompt, user)
 
     def run(self, task: str) -> BrainResult:
+        require_ai_allowed("brain task start")
         task = (task or "").strip()
         if not task:
             raise ValueError("task must be non-empty")
@@ -179,6 +183,7 @@ class BrainKernel:
         except (OSError, ValueError) as exc:
             uncertainty.append(f"memory_archive:failed:{type(exc).__name__}")
 
+        require_ai_allowed("brain task completion")
         return BrainResult(
             answer=answer,
             run_id=run_id,

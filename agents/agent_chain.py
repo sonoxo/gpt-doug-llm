@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from zyra_self_heal import load_runtime_env
+from ai_killswitch import require_ai_allowed
 
 # Load ZYRA's persisted runtime settings before llm_backend creates its
 # module-level provider object. This fixes the common case where the shell
@@ -101,6 +102,7 @@ def _resolve_model(requested: str) -> str:
 
 
 def _call(model, system, user):
+    require_ai_allowed("agent-chain model call")
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": user},
@@ -264,6 +266,7 @@ def run(task, on_event=None, _depth=0, _budget=None):
     _depth and _budget are internal and enforce hard ceilings on nested
     sub-agents so self-repair can never become a recursive runaway loop.
     """
+    require_ai_allowed("agent-chain task start")
     if _budget is None:
         _budget = {"spawned": 0}
 
@@ -295,6 +298,7 @@ def run(task, on_event=None, _depth=0, _budget=None):
 
     transcript_parts = []
     for i, step in enumerate(steps, 1):
+        require_ai_allowed("agent-chain step")
         prior = "\n\n".join(transcript_parts) or "(none yet)"
         emit({"stage": "execute_start", "model": _resolve_model(EXECUTOR_MODEL), "step_index": i, "step": step["description"]})
         output = _execute_step(task, step, prior, can_spawn)
@@ -316,6 +320,7 @@ def run(task, on_event=None, _depth=0, _budget=None):
     review = _review(task, full_transcript, task_graph)
     emit({"stage": "review_done", "model": _resolve_model(REVIEWER_MODEL), "review": review})
 
+    require_ai_allowed("agent-chain completion")
     trace["finished_at"] = time.time()
     trace["duration_s"] = round(trace["finished_at"] - started, 2)
     trace["plan_mode"] = plan_mode

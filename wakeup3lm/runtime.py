@@ -9,6 +9,7 @@ from typing import Any, Callable
 from uuid import uuid4
 
 from .memory import MEMORY_KINDS, MEMORY_SCHEMA, ProjectMemory
+from ai_killswitch import AIKillSwitchEngaged, require_ai_allowed
 from .ontology import OntologyGraph
 from .workspace import WorkspaceFS, WorkspaceSecurityError
 
@@ -141,6 +142,10 @@ class Wakeup3LM:
 
     def execute(self, payload: str | dict[str, Any]) -> ToolResult:
         try:
+            require_ai_allowed("Wakeup3LM agent tool execution")
+        except AIKillSwitchEngaged as error:
+            return ToolResult("ai_killswitch", DecisionStatus.BLOCKED, error=str(error))
+        try:
             decision = self.validate_decision(payload)
         except ValueError as error:
             decision_id = uuid4().hex
@@ -176,7 +181,13 @@ class Wakeup3LM:
         self.ontology.link("AgentDecision", decision.decision_id, "REQUESTED", "ToolCall", call_id)
 
         try:
+            require_ai_allowed("Wakeup3LM tool dispatch")
             output = self.tools[decision.action](**decision.arguments)
+            require_ai_allowed("Wakeup3LM tool response")
+        except AIKillSwitchEngaged as error:
+            self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.BLOCKED.value, error=str(error))
+            self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.BLOCKED.value)
+            return ToolResult(decision.action, DecisionStatus.BLOCKED, error=str(error))
         except Exception as error:
             self.ontology.upsert("ToolCall", call_id, status=DecisionStatus.FAILED.value, error=str(error))
             self.ontology.upsert("AgentDecision", decision.decision_id, status=DecisionStatus.FAILED.value)

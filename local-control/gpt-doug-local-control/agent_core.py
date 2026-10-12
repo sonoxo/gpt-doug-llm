@@ -14,6 +14,9 @@ from hdd_swarm import (
 )
 
 ROOT = Path(__file__).resolve().parent
+# The local PANIC button also latches the shared, operator-controlled AI stop.
+sys.path.insert(0, str(ROOT.parents[1]))
+from ai_killswitch import emergency_stop as _stop_all_ai, require_ai_allowed as _require_ai_allowed
 RUNTIME = ROOT / "runtime"
 RUNTIME.mkdir(exist_ok=True)
 POLICY = json.loads((ROOT / "policy.json").read_text())
@@ -114,6 +117,7 @@ def armed() -> bool:
 def panic() -> None:
     PANIC_FILE.write_text("STOP")
     disarm()
+    _stop_all_ai("local_control_panic")
     _audit({"event": "panic"})
 
 
@@ -123,6 +127,8 @@ def clear_panic() -> None:
 
 
 def _require_control(kind: str) -> None:
+    if kind in {"control", "write", "shell"}:
+        _require_ai_allowed("local control action")
     if panic_active():
         raise RuntimeError("PANIC switch is active")
     if kind in {"control", "write", "shell"} and not armed():

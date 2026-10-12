@@ -12,9 +12,11 @@ Task file format:
 import json
 import os
 import re
+import signal
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -23,6 +25,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from workers import ontology_workers as ontology
 from workers import zyra_guard
+from ai_killswitch import AIKillSwitchEngaged, require_ai_allowed, interruptible_sleep, status as ai_stop_status
 
 ROOT = Path(__file__).resolve().parent.parent
 TASKS_DIR = ROOT / "xuni-workers" / "tasks"
@@ -163,6 +166,61 @@ def _resolve_claude_bin() -> str:
     _CLAUDE_BIN_CACHE["path"] = found
     return found
 
+
+def _terminate_owned_process(proc: subprocess.Popen) -> None:
+    """Stop only the isolated worker process group, never unrelated programs."""
+    if proc.poll() is not None:
+        return
+    try:
+        if os.name == "posix":
+            os.killpg(proc.pid, signal.SIGTERM)
+        else:
+            proc.terminate()
+    except ProcessLookupError:
+        pass
+    try:
+        proc.wait(timeout=1)
+        return
+    except subprocess.TimeoutExpired:
+        pass
+    try:
+        if os.name == "posix":
+            os.killpg(proc.pid, signal.SIGKILL)
+        else:
+            proc.kill()
+    except ProcessLookupError:
+        pass
+    proc.wait(timeout=2)
+
+
+def _run_supervised(command: list[str], *, cwd: str, timeout: float, started=None) -> subprocess.CompletedProcess:
+    """Cancel an owned agent subprocess promptly when STOP is latched."""
+    require_ai_allowed("worker subprocess launch")
+    with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as stdout, tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as stderr:
+        proc = subprocess.Popen(
+            command, cwd=cwd, stdout=stdout, stderr=stderr,
+            text=True, start_new_session=(os.name == "posix"),
+        )
+        if started is not None:
+            started.set()
+        born = time.monotonic()
+        try:
+            while True:
+                require_ai_allowed("worker subprocess continued execution")
+                rc = proc.poll()
+                if rc is not None:
+                    require_ai_allowed("worker subprocess result")
+                    stdout.seek(0)
+                    stderr.seek(0)
+                    return subprocess.CompletedProcess(command, rc, stdout.read(), stderr.read())
+                if time.monotonic() - born > timeout:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                time.sleep(0.15)
+        finally:
+            if proc.poll() is None:
+                _terminate_owned_process(proc)
+
+
 for d in (TASKS_DIR, CLAIMED_DIR, PROCESSED_DIR, RESULTS_DIR):
     d.mkdir(parents=True, exist_ok=True)
 
@@ -243,15 +301,13 @@ def run_task(task_path: Path):
     attempts_log = []
     result = None
     for attempt in range(1, max_attempts + 1):
-        if backoff[attempt - 1]:
-            time.sleep(backoff[attempt - 1])
         try:
-            proc = subprocess.run(
+            if backoff[attempt - 1]:
+                interruptible_sleep(backoff[attempt - 1], "worker retry backoff")
+            require_ai_allowed("worker AI dispatch")
+            proc = _run_supervised(
                 [_resolve_claude_bin(), "-p", "--agent", "doug", full_prompt],
-                cwd=str(ROOT),
-                capture_output=True,
-                text=True,
-                timeout=600,
+                cwd=str(ROOT), timeout=600,
             )
             if proc.returncode == 0:
                 result = {
@@ -272,6 +328,11 @@ def run_task(task_path: Path):
                 "stdout": proc.stdout, "stderr": proc.stderr,
                 "duration_seconds": round(time.time() - started, 2), "attempts": attempt,
             }
+        except AIKillSwitchEngaged as e:
+            result = {"id": task_id, "prompt": prompt, "error": str(e),
+                      "duration_seconds": round(time.time() - started, 2), "attempts": attempt}
+            attempts_log.append("AI emergency stop engaged; no retry")
+            break
         except Exception as e:
             attempts_log.append(f"attempt {attempt}: {type(e).__name__}: {e}")
             print(f"[retry] {task_id}: attempt {attempt} raised ({e})", flush=True)
@@ -319,6 +380,9 @@ def main():
     print(f"xuni agent daemon started, watching {TASKS_DIR} with {WORKER_COUNT} workers", flush=True)
     with ThreadPoolExecutor(max_workers=WORKER_COUNT) as pool:
         while True:
+            if ai_stop_status()["stopped"]:
+                time.sleep(POLL_SECONDS)
+                continue
             for task_path in sorted(TASKS_DIR.glob("*.json")):
                 claimed_path = claim_task(task_path)
                 if claimed_path is not None:
