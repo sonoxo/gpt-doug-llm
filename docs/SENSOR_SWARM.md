@@ -12,7 +12,7 @@ Supported adapters:
 
 Per-sensor registration declares source identity, object type, purpose, authorization scope and classification. The loader enforces docs/sensor-policy.json; forbidden person/biometric/private residence/weapon/live military unit object types are rejected. File adapters enforce relative paths, no symlinks, type extension, maximum 256 KiB and 128 observations per file. Records contain only limited numeric, boolean or approved status-enumeration values (no raw unstructured documents, images, credentials, email addresses or personal identifiers). A snapshot supports up to 16 sensors, with at most four collectors running concurrently.
 
-The local journal uses SQLite with SHA-256 event IDs for replay deduplication and a default rolling seven-day retention; it is **not** encrypted at rest. Store only data allowed under local policies. No remote discovery, login, remote API fetching, camera/video ingest, actuator or external actions are implemented. A future external data connector must undergo separate authorization, rate-limit, provenance, SSRF and privacy review.
+The local journal uses SQLite with SHA-256 event IDs covering the declared source, event and authorization scope for replay deduplication and a default rolling seven-day retention and an upper bound of 50,000 stored events; it is **not** encrypted at rest. Store only data allowed under local policies. No remote discovery, login, remote API fetching, camera/video ingest, actuator or external actions are implemented. A future external data connector must undergo separate authorization, rate-limit, provenance, SSRF and privacy review.
 
 ## Instant offline demo — no files touched
 
