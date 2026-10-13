@@ -82,7 +82,7 @@ class PortfolioFleetTests(unittest.TestCase):
         called = []
         def fake_fetch(url):
             called.append(url)
-            return [fake_repo(i) for i in range(100)] if url.endswith("&page=1") else [fake_repo(100)]
+            return [fake_repo(i) for i in range(100)] if "&page=1&" in url else [fake_repo(100)]
         snap = core.public_repo_inventory(fetch_json=fake_fetch)
         assert snap["repository_count"] == 101
         assert all(x.startswith("https://api.github.com/users/sonoxo/repos?") for x in called)
