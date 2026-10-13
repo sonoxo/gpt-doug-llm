@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .core import GeoInputError, load_file, write_dashboard
 from .map_sources import CatalogError, inspect_checkout, write_ecosystem
+from .docs_registry import public_registry, inventory_local_documents, local_text_search, write_docs_portal
 
 ROOT = Path(__file__).resolve().parent.parent
 DEMO = ROOT / "examples" / "tak_geo" / "synthetic-civilian-exercise.geojson"
@@ -34,6 +35,17 @@ def main(argv: list[str] | None = None) -> int:
     atlas.add_argument("--force", action="store_true")
     doctor = sub.add_parser("maps-doctor", help="read-only diagnostics for a local ATAK-Maps checkout")
     doctor.add_argument("--source", type=Path, default=Path("../ATAK-Maps"))
+    sub.add_parser("docs-status", help="show public TAK documentation coverage, access and gaps")
+    docs = sub.add_parser("docs-build", help="generate static public docs index without downloading manuals")
+    docs.add_argument("--output", type=Path, default=Path("build/tak-docs"))
+    docs.add_argument("--force", action="store_true")
+    inventory = sub.add_parser("docs-inventory", help="local-only metadata inventory; never uploads manuals")
+    inventory.add_argument("--local-root", type=Path, required=True)
+    inventory.add_argument("--show-names", action="store_true")
+    search = sub.add_parser("docs-find", help="search local authorized text docs in memory only")
+    search.add_argument("--local-root", type=Path, required=True)
+    search.add_argument("--query", type=str, required=True)
+    search.add_argument("--limit", type=int, default=12)
     args = parser.parse_args(argv)
 
     if args.command == "status":
@@ -53,6 +65,31 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        if args.command == "docs-status":
+            d = public_registry()
+            print(json.dumps({
+                "system": d["system"],
+                "authority": d["authority"],
+                "references": d["document_count"],
+                "public": d["public_references"],
+                "login_required": d["login_required_references"],
+                "areas": d["areas"],
+                "restricted_documents_retrieved": False,
+                "tak_server_connected": False,
+                "sdk_installed": False,
+                "network_actions": 0,
+                "limitations": d["limitations"],
+            }, indent=2))
+            return 0
+        if args.command == "docs-build":
+            print(json.dumps(write_docs_portal(args.output, force=args.force), indent=2))
+            return 0
+        if args.command == "docs-inventory":
+            print(json.dumps(inventory_local_documents(args.local_root, include_names=args.show_names), indent=2))
+            return 0
+        if args.command == "docs-find":
+            print(json.dumps(local_text_search(args.local_root, args.query, limit=args.limit), indent=2))
+            return 0
         if args.command == "maps-doctor":
             catalog = inspect_checkout(args.source)
             print(json.dumps({
