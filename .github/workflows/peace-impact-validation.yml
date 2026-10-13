@@ -40,6 +40,16 @@ jobs:
           bash scripts/doug-max peace-lab pilot-preview /tmp/doug-pilot-report.json > /tmp/doug-pilot-preview.html
           grep -F "NOT A FIELD PILOT APPROVAL" /tmp/doug-pilot-review.md
           grep -F "REAL-WORLD PEACE OUTCOMES VERIFIED" /tmp/doug-pilot-preview.html
+      - name: Upload review-only synthetic pilot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: peacelab-pilot-review-${{ matrix.python-version }}
+          path: |
+            /tmp/doug-pilot-report.json
+            /tmp/doug-pilot-review.md
+            /tmp/doug-pilot-preview.html
+          if-no-files-found: error
+          retention-days: 7
       - name: Reproduce synthetic report without network access
         run: |
           bash run-GPT-Doug-PeaceLab.command demo > /tmp/peace-synthetic.json
