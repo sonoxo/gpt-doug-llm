@@ -22,6 +22,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from ai_killswitch import require_ai_allowed
+
 TEXT_SUFFIXES = {
     ".py", ".md", ".txt", ".json", ".toml", ".yaml", ".yml", ".ini",
     ".cfg", ".css", ".html", ".js", ".jsx", ".ts", ".tsx", ".sh", ".sql",
@@ -177,6 +179,7 @@ class ZyraAgent:
         return {"rolled_back": True, "files": restored}
 
     def _chat(self, system: str, user: str, *, num_predict: int = 900) -> str:
+        require_ai_allowed("ZYRA Agent direct Ollama inference")
         body = json.dumps({
             "model": self.model,
             "messages": [
@@ -194,6 +197,7 @@ class ZyraAgent:
         )
         with urllib.request.urlopen(request, timeout=120) as response:
             data = json.loads(response.read().decode())
+        require_ai_allowed("ZYRA Agent Ollama response")
         if data.get("error"):
             raise MissionError(str(data["error"]))
         return ((data.get("message") or {}).get("content") or "").strip()
@@ -382,6 +386,7 @@ When the goal is complete, return finish. Do not invent tool results."""
         raise MissionError(f"unsupported action: {kind or 'missing'}")
 
     def run(self, goal: str, *, evolve: bool = False) -> MissionResult:
+        require_ai_allowed("ZYRA Agent mission start")
         if not goal.strip():
             raise MissionError("mission goal is required")
         mission_id = uuid.uuid4().hex[:12]
@@ -396,12 +401,14 @@ When the goal is complete, return finish. Do not invent tool results."""
 
         try:
             for index in range(1, self.budget.max_steps + 1):
+                require_ai_allowed("ZYRA Agent mission step")
                 if time.time() > deadline:
                     raise MissionError("mission time budget exceeded")
                 if model_calls >= self.budget.max_model_calls:
                     raise MissionError("model-call budget exceeded")
                 action = self._next_action(goal, transcript, evolve=evolve)
                 model_calls += 1
+                require_ai_allowed("ZYRA Agent tool dispatch")
                 tool_result = self._execute_action(mission_id, action, touched, evolve=evolve)
                 event = {"step": index, "action": action, "result": tool_result}
                 compact = json.loads(json.dumps(event))

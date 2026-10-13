@@ -23,6 +23,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+from ai_killswitch import require_ai_allowed
+
 ROOT = Path(__file__).resolve().parent
 OLLAMA_BASE_URL = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434").rstrip("/")
 DEFAULT_BASE_MODEL = os.environ.get("XUNIA_BASE_MODEL", "qwen2.5-coder:7b")
@@ -77,6 +79,8 @@ class OllamaClient:
         self.timeout = timeout
 
     def _request(self, path: str, body: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
+        if body is not None:
+            require_ai_allowed("XUNIA direct Ollama request")
         data = None if body is None else json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             self.base_url + path,
@@ -89,6 +93,8 @@ class OllamaClient:
                 raw = response.read().decode("utf-8")
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
             raise OllamaError(f"Ollama unavailable at {self.base_url}: {exc}") from exc
+        if body is not None:
+            require_ai_allowed("XUNIA direct Ollama response")
         try:
             payload = json.loads(raw)
         except json.JSONDecodeError as exc:
@@ -379,6 +385,7 @@ def main(argv: list[str] | None = None) -> int:
     client = OllamaClient()
 
     if args.command == "install":
+        require_ai_allowed("XUNIA Ollama model installation")
         install_profiles(args.base_model, pull=not args.no_pull)
         return 0
     if args.command == "doctor":
@@ -392,6 +399,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{'✅' if installed else '⬜'} {profile.model:<20} {profile.role}")
         return 0 if report.get("healthy") else 1
     if args.command == "run":
+        require_ai_allowed("XUNIA interactive Ollama process")
         profile = resolve_profile(args.profile)
         if shutil.which("ollama") is None:
             raise RuntimeError("Ollama is not installed or is not on PATH.")
@@ -409,6 +417,7 @@ def main(argv: list[str] | None = None) -> int:
         asyncio.run(mcp_list(args.url, args.stdio))
         return 0
     if args.command == "mcp-call":
+        require_ai_allowed("XUNIA agent MCP execution")
         try:
             payload = json.loads(args.arguments)
         except json.JSONDecodeError as exc:

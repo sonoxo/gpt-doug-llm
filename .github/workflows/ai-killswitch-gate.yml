@@ -4,6 +4,10 @@ on:
   push:
     paths:
       - ai_killswitch.py
+      - zyra_agent.py
+      - zyra_chat.py
+      - xunia_godis.py
+      - local_repo_agent.py
       - pyproject.toml
       - agents/llm_backend.py
       - agents/xunia_stream.py
@@ -19,6 +23,10 @@ on:
   pull_request:
     paths:
       - ai_killswitch.py
+      - zyra_agent.py
+      - zyra_chat.py
+      - xunia_godis.py
+      - local_repo_agent.py
       - pyproject.toml
       - agents/llm_backend.py
       - agents/xunia_stream.py
@@ -50,7 +58,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Enforce stop regressions without external APIs
         run: |
-          python -m unittest tests.test_ai_killswitch tests.test_ai_killswitch_integrations -v
+          python -m unittest tests.test_ai_killswitch tests.test_ai_killswitch_integrations tests.test_ai_killswitch_strict tests.test_ai_killswitch_direct_paths -v
           python -m unittest tests.test_shaggoth_factory.LauncherTests.test_cli_demo_and_offline_results tests.test_shaggoth_factory.LauncherTests.test_start_from_unrelated_directory_with_demo -v
           python -m py_compile ai_killswitch.py agents/llm_backend.py agents/xunia_stream.py gpt_brain/kernel.py workers/agent-daemon.py
       - name: Test installed STOP THE KRAKEN command outside checkout
