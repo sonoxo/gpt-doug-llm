@@ -31,6 +31,13 @@ case "$first_arg_lc" in
     # public HTTPS fetch continues through the canonical guardrail preflight.
     if [[ "${2:-demo}" != "online" ]]; then read_only_mode=1; fi
     ;;
+  bio-pineal|gpt-doug-biopineal|pineal-nexus)
+    # Read-only local ontology/index views stay available during guardrail diagnosis.
+    # Any import-reference request is treated as a write for canonical preflight.
+    case "${2:-map}" in
+      audit|status|map|html|dot|preview|watch) read_only_mode=1 ;;
+    esac
+    ;;
   peace-lab|peacelab)
     # Offline read/assessment commands never execute outside software.
     # 'init' writes a local template, so it retains guardrail preflight.
@@ -118,6 +125,13 @@ case "$first_arg_lc" in
     cd "$ROOT"
     if [[ $# -eq 0 ]]; then set -- serve --demo; fi
     exec python3 "$ROOT/gpt_zyra_shaggoth/factory.py" "$@"
+    ;;
+  bio-pineal|gpt-doug-biopineal|pineal-nexus)
+    shift
+    cd "$ROOT/integrations/gpt-doug-pineal"
+    if [[ $# -eq 0 ]]; then set -- map; fi
+    if [[ "$1" != "nexus" ]]; then set -- nexus "$@"; fi
+    exec env PYTHONPATH="$ROOT/integrations/gpt-doug-pineal/src:$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m pineal "$@"
     ;;
   bio-gpt)
     shift
