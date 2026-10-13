@@ -1,20 +1,8 @@
 {
-  "content_repairs": 3,
-  "cutoff_at": "2026-10-12T21:27:49Z",
-  "due_files_reviewed": 11,
-  "due_paths": [
-    "integrations/pineal_osiris/bootstrap.sh",
-    "integrations/pineal_osiris/bridge.py",
-    "integrations/pineal_osiris/console.css",
-    "integrations/pineal_osiris/console.html",
-    "integrations/pineal_osiris/console.js",
-    "integrations/pineal_osiris/console.py",
-    "integrations/pineal_osiris/test_bridge.py",
-    "integrations/pineal_osiris/test_console.py",
-    "integrations/pineal_osiris/test_stack.py",
-    "intel/white-house/daily/2026-10-12.json",
-    "intel/white-house/daily/2026-10-12.md"
-  ],
+  "content_repairs": 0,
+  "cutoff_at": "2026-10-12T21:44:21Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -4651,10 +4639,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T14:15:44Z",
+      "git_touched_at": "2026-10-13T21:44:11Z",
       "reviewed_at": null,
-      "sha256": "712df89827ae480a0ea4d5c79ae1961dce9f7034f1f39409fcab43cff6755cd9",
-      "size": 12193,
+      "sha256": "de378782d509cac96b7a73bcda821cbf707946f6134339b6ee3776bbcbf0db65",
+      "size": 12571,
       "validation_issues": [],
       "was_due": false
     },
@@ -5157,10 +5145,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T14:15:42Z",
+      "git_touched_at": "2026-10-13T21:44:11Z",
       "reviewed_at": null,
-      "sha256": "db0f7742981a783177ef401cb9d82aea1a071fe5689f59c0a142c953516ce62f",
-      "size": 8918,
+      "sha256": "41940ea9178e32d83fa79ce1d85f5d5faee07fcde7bdf993e95d47e87d74dbd1",
+      "size": 9743,
       "validation_issues": [],
       "was_due": false
     },
@@ -5183,6 +5171,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "150717131651acc07936cf00f5fa1c1abece90108db6fbbf96304cc0092fc6e6",
       "size": 9186,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/supergame/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T21:44:11Z",
+      "reviewed_at": null,
+      "sha256": "5fadd4458b8e215775ceb870981ad39c7f0ec642eaded6b3304bec80d3e1a005",
+      "size": 47829,
       "validation_issues": [],
       "was_due": false
     },
@@ -8841,74 +8840,68 @@
     "integrations/pineal_osiris/bootstrap.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T20:44:21Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "666969b993c786c2d1ab9d93d9c815ebd5a4984fb2e14f6e7a9780650e5e5969",
       "size": 1395,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/bridge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:04:52Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "be371309ccf0ff34f9d209e976266266b21073f75b513f939879d4790b895f8a",
       "size": 6311,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.css": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:02:19Z",
+      "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "9d6e514fe7e55e9bfd87b25ced7365eb8fbcdeb8accb2d56349fcf0c58f08809",
       "size": 6347,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.html": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:01:55Z",
+      "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "aa1d970e7b5511c8775db2d31e7bee7c673aef909bd098968519c8b897d1469f",
       "size": 5369,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.js": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:02:39Z",
+      "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "570afd830bcb67e317fa1ddcd87cdcca36797a68c28cb68db6db7cca0142c906",
       "size": 5247,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:01:31Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "65bfbb9a0e91cf4ab92ec770a84e52a1314e527a9cb2491d7f7a20595387bbfa",
       "size": 3725,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/disk.py": {
       "actions": [],
@@ -8957,24 +8950,24 @@
     "integrations/pineal_osiris/test_bridge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:05:00Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "83e126e202fa7cf4c01e7c886777ee14035b837cd8d6c7ff42e13ccd8cc585dc",
       "size": 4303,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_console.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:04:07Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "3da1b6c784c0757bc1e8fc1adf05e0af6ef4230f75583c4e9331ab80a15d4cbc",
       "size": 3030,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_disk.py": {
       "actions": [],
@@ -8990,13 +8983,13 @@
     "integrations/pineal_osiris/test_stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:05:33Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "b107061736f442d0cfed46d657442a53baab50d27dfba22a27b0452cdc49e002",
       "size": 5657,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/reef/README.md": {
       "actions": [],
@@ -10629,24 +10622,24 @@
     "intel/white-house/daily/2026-10-12.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T20:37:51Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "856d53a1439d050840210346a3126e16da9f5fc80e0af0b1759c5c20d1a391e3",
       "size": 352,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-12.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T20:37:51Z",
       "reviewed_at": "2026-10-13T21:27:49Z",
       "sha256": "2d44a452114e00b0cce0562591660a54e8a32022168df32280d50d4db64dda2c",
       "size": 579,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-13.json": {
       "actions": [],
@@ -20871,9 +20864,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T19:58:23Z",
+      "git_touched_at": "2026-10-13T21:27:47Z",
       "reviewed_at": null,
-      "sha256": "71290e685a1b4b40164187fe951227cf52606d7f8c1d6ffc4b2a89871231ee0b",
+      "sha256": "3c0f608996ea781c948e34ef99db76f197d78c21eaf5150b97abb2db1cbb940e",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -20893,9 +20886,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T19:58:23Z",
+      "git_touched_at": "2026-10-13T21:27:47Z",
       "reviewed_at": null,
-      "sha256": "f4bef58691dbabd7d8f9e6814f8471536e049e024240acb438d402dd81238feb",
+      "sha256": "d4163148758dcc257e7647393379489c047096cab26d79eba445ebc10d8e28ef",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -23355,15 +23348,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T21:27:49Z",
+  "generated_at": "2026-10-13T21:44:21Z",
   "mode": "apply",
-  "repaired_paths": [
-    "integrations/pineal_osiris/console.css",
-    "integrations/pineal_osiris/console.html",
-    "integrations/pineal_osiris/console.js"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2121,
+  "tracked_files_reviewed": 2122,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
