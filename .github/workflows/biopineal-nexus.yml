@@ -26,7 +26,16 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install free local Pineal package and test framework
-        run: python -m pip install -e './integrations/gpt-doug-pineal[test]'
+        run: python -m pip install './integrations/gpt-doug-pineal[test]'
+      - name: Confirm installed distribution includes canonical data files
+        run: |
+          python - <<'PY'
+          from importlib.resources import files
+          root = files('pineal').joinpath('data')
+          assert root.joinpath('lithium_nexus_v1.json').is_file()
+          assert root.joinpath('user-supplied-us12760393b1.jsonl').is_file()
+          print('INSTALLED BIOPINEAL PACKAGE DATA VERIFIED')
+          PY
       - name: Test BioPineal ontology, provenance and safety
         run: python -m pytest -q integrations/gpt-doug-pineal/tests/test_innovation_nexus.py
       - name: Run complete original PINEAL regression suite
