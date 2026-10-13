@@ -34,6 +34,8 @@ jobs:
         python-version: ["3.9", "3.13"]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
@@ -53,4 +55,5 @@ jobs:
           python -c 'import json; d=json.load(open("/tmp/warfighter-doctor.json")); assert d["status"]=="RESEARCH_ONLY" and d["synthetic_only"] and not d["military_authority"] and d["external_calls"]==0'
       - name: Verify no canonical governance files were modified
         run: |
-          git diff --exit-code HEAD^ HEAD -- safety-shield/ontology/zyra-mss-v1.json integrations/gpt-doug-pineal/src/pineal/federation.py workers/xqe.py
+          BASE="$(git merge-base origin/main HEAD)"
+          git diff --exit-code "$BASE" HEAD -- safety-shield/ontology/zyra-mss-v1.json integrations/gpt-doug-pineal/src/pineal/federation.py workers/xqe.py
