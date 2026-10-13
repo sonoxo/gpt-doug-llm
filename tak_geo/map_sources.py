@@ -112,10 +112,11 @@ def _check_host(url: str, kind: str) -> dict:
     if host in {"localhost", "localhost.localdomain"} or host.endswith(".local"):
         raise CatalogError("local/private map endpoints are prohibited")
     try:
-        if not ipaddress.ip_address(host).is_global:
-            raise CatalogError("private or non-global IP map endpoint is prohibited")
+        address = ipaddress.ip_address(host)
     except ValueError:
-        pass
+        address = None
+    if address is not None and not address.is_global:
+        raise CatalogError("private or non-global IP map endpoint is prohibited")
     if not re.fullmatch(r"[a-z0-9.-]+", host):
         raise CatalogError("invalid map hostname")
     if kind == "TMS":
