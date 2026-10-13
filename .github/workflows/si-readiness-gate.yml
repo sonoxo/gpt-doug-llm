@@ -1,0 +1,55 @@
+name: EO 14434 SI public fleet readiness
+on:
+  pull_request:
+    paths:
+      - 'sonoxo_fleet/**'
+      - 'tests/test_si_readiness.py'
+      - 'docs/SI_EO_14434_READINESS.md'
+      - '.github/workflows/si-readiness-gate.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '41 10 * * 2'
+permissions:
+  contents: read
+jobs:
+  offline-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify bounded audit, privacy and existing fleet contracts
+        run: |
+          python -m compileall -q sonoxo_fleet
+          python -m unittest discover -s tests -p 'test_si_readiness.py' -v
+          python -m unittest discover -s tests -p 'test_sonoxo_fleet.py' -v
+          python -m sonoxo_fleet.si_readiness --output build/sonoxo-si-offline
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eo-14434-si-offline-evidence
+          path: build/sonoxo-si-offline/
+          retention-days: 14
+  public-root-manifests:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bounded read-only public GitHub API inspection
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m sonoxo_fleet.si_readiness --live --limit 12 --output build/sonoxo-si-live
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eo-14434-si-public-manifest-review
+          path: build/sonoxo-si-live/
+          retention-days: 14
