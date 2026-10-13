@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpt-doug-pineal"
-version = "0.4.0"
+version = "0.5.0"
 description = "Local-first AI memory, cell ontology, patent metadata indexing and symbolic terminal cortex"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -17,6 +17,9 @@ test = ["pytest>=7"]
 
 [project.scripts]
 pineal = "pineal.cli:main"
+
+[tool.setuptools.package-data]
+pineal = ["data/*.json", "data/*.jsonl"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
