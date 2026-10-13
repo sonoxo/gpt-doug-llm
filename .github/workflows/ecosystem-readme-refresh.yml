@@ -1,4 +1,4 @@
-name: Ecosystem README Refresh
+name: Ecosystem Diagram Review (No Direct Main Writes)
 
 on:
   push:
@@ -17,56 +17,61 @@ on:
       - "palantir*.py"
       - "zyra*.py"
       - "!docs/assets/**"
+  pull_request:
+    paths:
+      - "scripts/generate_ecosystem_diagrams.py"
+      - "scripts/generate_kraken_infra_diagram.py"
+      - "docs/assets/**"
+      - ".github/workflows/ecosystem-readme-refresh.yml"
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: ecosystem-readme-refresh-main
+  group: ecosystem-diagrams-review-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  refresh:
+  generate:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Refresh and publish adaptive ecosystem diagrams
+      - name: Generate diagrams in the ephemeral CI workspace
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          for attempt in 1 2 3; do
-            echo "Refresh attempt ${attempt}/3"
-            git fetch origin main
-            git reset --hard origin/main
-
-            GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_ecosystem_diagrams.py
-            GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_kraken_infra_diagram.py
-
-            if [[ -z "$(git status --porcelain docs/assets/)" ]]; then
-              echo "Ecosystem diagrams already match repository state."
-              exit 0
-            fi
-
-            git add docs/assets/ecosystem-flow.svg docs/assets/wakeup3lm-agent-loop.svg docs/assets/security-gates.svg
-            git commit -m "docs: refresh adaptive ecosystem diagrams [skip ci]"
-
-            if git push origin HEAD:main; then
-              echo "Ecosystem diagrams published."
-              exit 0
-            fi
-
-            echo "main advanced during refresh; regenerating from latest main."
-            sleep 2
-          done
-
-          echo "Unable to publish diagrams after 3 race-safe attempts."
-          exit 1
+          GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_ecosystem_diagrams.py
+          GITHUB_SHA="$(git rev-parse HEAD)" python scripts/generate_kraken_infra_diagram.py
+      - name: Surface generated changes without committing or pushing
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/ecosystem-diagrams
+          if [[ -d docs/assets ]]; then
+            cp -a docs/assets/. build/ecosystem-diagrams/
+          fi
+          {
+            echo "## Review-generated ecosystem diagrams"
+            echo
+            echo "This workflow is intentionally read-only: it never resets, force-pushes, or commits to main."
+            echo
+            echo "Generated files (changed paths):"
+            git status --short -- docs/assets || true
+            echo
+            echo "Review the artifact before including updated diagrams in a separately approved PR."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload diagram preview artifact for manual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-doug-ecosystem-diagrams-review
+          path: build/ecosystem-diagrams/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,33 @@
+name: BioPineal Phase II Research
+on:
+  push:
+    paths:
+      - 'research_lab/biopineal_phase2.py'
+      - 'research_lab/biopineal_patent.py'
+      - 'tests/test_biopineal_phase2.py'
+      - 'tests/test_biopineal_patent.py'
+      - '.github/workflows/biopineal-phase2.yml'
+  pull_request:
+    paths:
+      - 'research_lab/biopineal_phase2.py'
+      - 'research_lab/biopineal_patent.py'
+      - 'tests/test_biopineal_phase2.py'
+      - 'tests/test_biopineal_patent.py'
+      - '.github/workflows/biopineal-phase2.yml'
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m unittest discover -s tests -p 'test_biopineal_phase2.py' -v
+      - run: python -m unittest discover -s tests -p 'test_biopineal_patent.py' -v
+      - run: python -m research_lab.biopineal_phase2 report > /tmp/biopineal-phase2.json
+      - run: python -m research_lab.biopineal_phase2 verify /tmp/biopineal-phase2.json

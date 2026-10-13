@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0.0",
+  "domain": "GPT-Doug BioPineal // Patent Evidence Nexus",
+  "publication_id": "US12760393B1",
+  "issued_to": "PolyPlus Battery Company",
+  "publication_date": "2026-10-13",
+  "source_provenance": "USER_PROVIDED_USPTO_PASTED_EXCERPT_UNVERIFIED_BY_INDEPENDENT_LOOKUP",
+  "evidence_kind": "THIRD_PARTY_PATENT_DISCLOSURE_NOT_OPERATIONAL_VALIDATION",
+  "patent_rights": "THIRD_PARTY_RIGHTS_AND_FREEDOM_TO_OPERATE_REVIEW_REQUIRED",
+  "integration_targets": [
+    "integrations/gpt-doug-pineal/src/pineal/store.py",
+    "integrations/gpt-doug-pineal/src/pineal/patents.py",
+    "peace_impact/peacelab.ontology.jsonld"
+  ],
+  "peace_impact_transfer": "NO_REAL_WORLD_PEACE_IMPACT_CAN_BE_INFERRED_FROM_PATENT_METADATA",
+  "policy": {
+    "physical_hardware_build_authorized": false,
+    "dangerous_electrolysis_operations_authorized": false,
+    "patent_license_or_ownership_granted": false,
+    "independent_patent_or_claim_verification_completed": false,
+    "clinical_or_biological_effect_proven": false,
+    "humanitarian_impact_independently_verified": false,
+    "external_network_or_chemical_actuation": false,
+    "review_requirements": [
+      "patent_counsel",
+      "process_safety_engineer",
+      "environmental_compliance_specialist",
+      "independent_patent_source_verification"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "publication",
+      "kind": "patent_document",
+      "label": "US 12,760,393 B1"
+    },
+    {
+      "id": "assignee",
+      "kind": "organization",
+      "label": "PolyPlus Battery Company"
+    },
+    {
+      "id": "brine",
+      "kind": "material_source",
+      "label": "Geothermal or oilfield brine"
+    },
+    {
+      "id": "recycled_lithium",
+      "kind": "material_source",
+      "label": "Recycled lithium-containing feed"
+    },
+    {
+      "id": "selective_membrane",
+      "kind": "technology_concept",
+      "label": "Li-ion selective ceramic membrane"
+    },
+    {
+      "id": "laminate",
+      "kind": "technology_concept",
+      "label": "Cation-exchange laminate"
+    },
+    {
+      "id": "lithium_hydroxide",
+      "kind": "material_output",
+      "label": "Lithium hydroxide"
+    },
+    {
+      "id": "hydrogen_gas",
+      "kind": "potential_coproduct",
+      "label": "Hydrogen gas (potential hazard)"
+    },
+    {
+      "id": "chlorine_gas",
+      "kind": "potential_coproduct",
+      "label": "Chlorine gas (potential hazard)"
+    },
+    {
+      "id": "flammability",
+      "kind": "hazard",
+      "label": "Hydrogen flammability"
+    },
+    {
+      "id": "toxicity",
+      "kind": "hazard",
+      "label": "Chlorine toxicity"
+    },
+    {
+      "id": "corrosion",
+      "kind": "hazard",
+      "label": "LiOH corrosive material"
+    },
+    {
+      "id": "patent_review",
+      "kind": "approval_required",
+      "label": "Patent/IP legal review"
+    },
+    {
+      "id": "process_safety",
+      "kind": "approval_required",
+      "label": "Independent process safety review"
+    },
+    {
+      "id": "provider_check",
+      "kind": "verification_required",
+      "label": "Independent official source check"
+    },
+    {
+      "id": "pineal_store",
+      "kind": "software_component",
+      "label": "PINEAL SQLite patent metadata store"
+    },
+    {
+      "id": "peace_truth",
+      "kind": "separate_boundary",
+      "label": "PeaceLab: no peace impact inferred"
+    }
+  ],
+  "edges": [
+    {
+      "from": "publication",
+      "to": "assignee",
+      "relation": "attributed_to"
+    },
+    {
+      "from": "publication",
+      "to": "brine",
+      "relation": "describes_source"
+    },
+    {
+      "from": "publication",
+      "to": "recycled_lithium",
+      "relation": "describes_source"
+    },
+    {
+      "from": "publication",
+      "to": "selective_membrane",
+      "relation": "describes"
+    },
+    {
+      "from": "publication",
+      "to": "laminate",
+      "relation": "describes"
+    },
+    {
+      "from": "publication",
+      "to": "lithium_hydroxide",
+      "relation": "discloses_possible_product"
+    },
+    {
+      "from": "publication",
+      "to": "hydrogen_gas",
+      "relation": "mentions_possible_coproduct"
+    },
+    {
+      "from": "publication",
+      "to": "chlorine_gas",
+      "relation": "mentions_possible_coproduct"
+    },
+    {
+      "from": "hydrogen_gas",
+      "to": "flammability",
+      "relation": "requires_risk_review"
+    },
+    {
+      "from": "chlorine_gas",
+      "to": "toxicity",
+      "relation": "requires_risk_review"
+    },
+    {
+      "from": "lithium_hydroxide",
+      "to": "corrosion",
+      "relation": "requires_risk_review"
+    },
+    {
+      "from": "publication",
+      "to": "patent_review",
+      "relation": "requires_human_review"
+    },
+    {
+      "from": "publication",
+      "to": "process_safety",
+      "relation": "requires_human_review"
+    },
+    {
+      "from": "publication",
+      "to": "provider_check",
+      "relation": "requires_external_verification"
+    },
+    {
+      "from": "publication",
+      "to": "pineal_store",
+      "relation": "indexable_as_metadata"
+    },
+    {
+      "from": "pineal_store",
+      "to": "peace_truth",
+      "relation": "cannot_promote_impact"
+    }
+  ]
+}
