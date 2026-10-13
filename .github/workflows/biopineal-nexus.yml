@@ -1,0 +1,77 @@
+name: GPT-Doug BioPineal Patent Evidence Nexus
+on:
+  pull_request:
+    paths:
+      - "integrations/gpt-doug-pineal/**"
+      - "scripts/doug-max"
+      - "run-GPT-Doug-BioPineal.command"
+      - ".github/workflows/biopineal-nexus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: offline-patent-nexus (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install free local Pineal package and test framework
+        run: python -m pip install -e './integrations/gpt-doug-pineal[test]'
+      - name: Test BioPineal ontology, provenance and safety
+        run: python -m pytest -q integrations/gpt-doug-pineal/tests/test_innovation_nexus.py
+      - name: Run complete original PINEAL regression suite
+        run: python -m pytest -q integrations/gpt-doug-pineal/tests
+      - name: Smoke root shell route and demonstrate local evidence import
+        env:
+          PINEAL_HOME: ${{ runner.temp }}/gpt-doug-biopineal
+        run: |
+          bash -n scripts/doug-max
+          bash -n run-GPT-Doug-BioPineal.command
+          bash scripts/doug-max bio-pineal audit > /tmp/nexus-audit.json
+          bash scripts/doug-max bio-pineal preview > /tmp/nexus-import-preview.json
+          bash scripts/doug-max bio-pineal status > /tmp/nexus-status-before.json
+          bash scripts/doug-max bio-pineal import-reference --commit > /tmp/nexus-import-committed.json
+          bash scripts/doug-max bio-pineal status > /tmp/nexus-status-after.json
+          bash scripts/doug-max bio-pineal map > /tmp/nexus-terminal-map.txt
+          bash scripts/doug-max bio-pineal dot > /tmp/nexus-graph.dot
+          bash scripts/doug-max bio-pineal html > /tmp/nexus-graph.html
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          def load(s):
+              return json.loads(Path("/tmp/" + s).read_text())
+          assert load("nexus-audit.json")["ontology_status"] == "VALID_LOCAL_SOURCE_GRAPH"
+          assert load("nexus-status-before.json")["index_status"] == "NOT_IMPORTED"
+          assert load("nexus-import-committed.json")["local_import"]["inserted"] == 1
+          assert load("nexus-status-after.json")["index_status"] == "USER_EXCERPT_METADATA_INDEXED"
+          assert not load("nexus-status-after.json")["official_uspto_record_verified"]
+          text = Path("/tmp/nexus-graph.html").read_text()
+          assert "default-src 'none'" in text
+          assert "<script" not in text
+          print("BIOPINEAL VERIFIED LOCAL INDEX; NO EXTERNAL PATENT OR PHYSICAL AUTHORITY")
+          PY
+      - name: Upload time-limited review visuals (no credentials, no private data)
+        uses: actions/upload-artifact@v4
+        with:
+          name: biopineal-evidence-nexus-${{ matrix.python-version }}
+          path: |
+            /tmp/nexus-audit.json
+            /tmp/nexus-import-preview.json
+            /tmp/nexus-status-before.json
+            /tmp/nexus-import-committed.json
+            /tmp/nexus-status-after.json
+            /tmp/nexus-terminal-map.txt
+            /tmp/nexus-graph.dot
+            /tmp/nexus-graph.html
+          if-no-files-found: error
+          retention-days: 7
