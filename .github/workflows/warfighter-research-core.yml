@@ -1,0 +1,56 @@
+name: Warfighter Research Core
+
+on:
+  pull_request:
+    paths:
+      - "research_lab/warfighter/**"
+      - "safety-shield/ontology/warfighter-research-v1.json"
+      - "docs/WARFIGHTER_RESEARCH_CLI.md"
+      - ".github/workflows/warfighter-research-core.yml"
+  push:
+    branches:
+      - "feat/warfighter-research-core-20261012"
+      - "main"
+    paths:
+      - "research_lab/warfighter/**"
+      - "safety-shield/ontology/warfighter-research-v1.json"
+      - ".github/workflows/warfighter-research-core.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: warfighter-research-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  synthetic-core:
+    name: Synthetic core (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check source compatibility
+        run: |
+          python -m compileall -q research_lab/warfighter
+          bash -n scripts/doug-max
+      - name: Run isolated synthetic ontology tests
+        run: python -m unittest discover -s research_lab/warfighter/tests -p 'test_*.py' -v
+      - name: Test existing exact research math
+        run: |
+          python -m unittest research_lab.tests.test_bio_hilbert -v
+          python -m unittest research_lab.tests.test_multidimensional -v
+      - name: Verify ontology is research-only
+        run: |
+          python -m research_lab.warfighter.cli doctor > /tmp/warfighter-doctor.json
+          python -c 'import json; d=json.load(open("/tmp/warfighter-doctor.json")); assert d["status"]=="RESEARCH_ONLY" and d["synthetic_only"] and not d["military_authority"] and d["external_calls"]==0'
+      - name: Verify no canonical governance files were modified
+        run: |
+          git diff --exit-code HEAD^ HEAD -- safety-shield/ontology/zyra-mss-v1.json integrations/gpt-doug-pineal/src/pineal/federation.py workers/xqe.py
