@@ -139,7 +139,7 @@ const access=newEl("span","pill "+(e.policy==="OPT_IN_USGS_PREVIEW"?"ok":"warn")
 meta.append(type,access);const footer=newEl("p","small",(e.category||"Uncategorized")+" · Z"+e.min_zoom+"–"+e.max_zoom);
 btn.append(provider,name,meta,footer);btn.onclick=()=>select(e);box.append(btn)}}
 function showTab(tab){state.tab=tab;for(const p of document.querySelectorAll(".panel"))p.classList.toggle("active",p.id==="tab-"+tab);for(const b of document.querySelectorAll(".nav button"))b.classList.toggle("active",b.dataset.tab===tab);if(tab==="graph")paintGraph();}
-function initSelect(id,key){const values=[...new Set(entries.map(e=>e[key]))].sort((a,b)=>String(a).localeCompare(String(b)));const control=$(id);values.forEach(value=>{const o=newEl("option","",value);o.value=value;control.append(o)});control.onchange=()=>{state[key]=control.value;paintCards();if(state.tab==="graph")paintGraph()}}
+function initSelect(id,key){const sourceKey=key==="format"?"source_type":key;const values=[...new Set(entries.map(e=>e[sourceKey]))].sort((a,b)=>String(a).localeCompare(String(b)));const control=$(id);values.forEach(value=>{const o=newEl("option","",value);o.value=value;control.append(o)});control.onchange=()=>{state[key]=control.value;paintCards();if(state.tab==="graph")paintGraph()}}
 function svgNode(root,tag,attrs,text){const n=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [key,val] of Object.entries(attrs||{}))n.setAttribute(key,val);if(text!==undefined)n.textContent=String(text);root.appendChild(n);return n}
 function paintGraph(){const canvas=$("graph");canvas.replaceChildren();const graph=svgNode(canvas,"svg",{viewBox:"0 0 900 800",role:"img","aria-label":"Providers connected to categories and source types"});const list=filterList();if(!list.length){svgNode(graph,"text",{x:20,y:40,fill:"#b2cada"},"No matching map sources");return}
 const groups=[...new Set(list.map(e=>e.provider))].sort(),categories=[...new Set(list.map(e=>e.category))].sort(),formats=[...new Set(list.map(e=>e.source_type))].sort();
@@ -158,7 +158,7 @@ setText("validator",catalog.summary.issues===0?"Basic structural checks: no dete
 const violation=$("violations");for(const item of catalog.issues.slice(0,20)){const p=newEl("p","",item.path+": "+item.error);violation.append(p)}
 for(const b of document.querySelectorAll(".nav button"))b.onclick=()=>showTab(b.dataset.tab);
 $("query").oninput=e=>{state.query=e.target.value;paintCards();if(state.tab==="graph")paintGraph()};
-initSelect("category","category");initSelect("format","source_type");initSelect("policy","policy");
+initSelect("category","category");initSelect("format","format");initSelect("policy","policy");
 select(entries[0]||{id:"none",name:"No available layers",provider:"—",category:"—",source_type:"—",min_zoom:0,max_zoom:0,coordinate_systems:[],tile_type:"—",hostnames:[],overlay:false,requires_key:false,policy:"REVIEW_REQUIRED",xml_sha256:"—",description:"",path:""});
 paintCards();
 </script>
