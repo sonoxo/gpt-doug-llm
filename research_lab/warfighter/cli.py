@@ -63,6 +63,9 @@ def _parser():
     bstat=bio_sub.add_parser('status')
     bstat.add_argument('--memory-root',type=Path,required=True)
     bstat.add_argument('--workspace',type=Path)
+    bsources=bio_sub.add_parser('sources',help='offline external patent and biocomputing references')
+    bsources.add_argument('--topic',choices=('bioassimilating_polymers','biological_computing'))
+    bsources.add_argument('--query')
     bsim=bio_sub.add_parser('simulate')
     bsim.add_argument('file',type=Path)
     bsim.add_argument('--input-root',type=Path,required=True)
@@ -102,6 +105,9 @@ def _run(args):
             return register_operator(args.workspace,args.callsign)
         return {'operator':read_operator(args.workspace),'authority':'RESEARCH_ONLY'}
     if args.cmd=='biopineal':
+        if args.bio_action=='sources':
+            from .biopineal_sources import search_sources
+            return search_sources(query=args.query, topic=args.topic)
         from .biopineal import read_biochip_telemetry, simulate_biomito_quantum
         if args.bio_action=='status':
             from .operator_profile import read_operator
