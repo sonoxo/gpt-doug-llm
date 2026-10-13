@@ -15,6 +15,9 @@ from typing import Any
 
 CALLSIGN_RE = re.compile(r'[A-Za-z][A-Za-z0-9_-]{1,31}\Z')
 PROFILE = 'operator-profile.json'
+PROFILE_FIELDS = frozenset({'schema_version', 'callsign', 'created_at', 'identity_source',
+                            'source_system', 'identity_verified', 'military_affiliation_verified',
+                            'authority', 'granted_permissions', 'note'})
 
 
 def _validate_callsign(callsign: Any) -> str:
@@ -43,7 +46,8 @@ def read_operator(workspace: Path) -> dict[str, Any] | None:
         data = json.loads(target.read_text(encoding='utf-8'))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise ValueError('invalid operator profile') from exc
-    if (not isinstance(data, dict) or data.get('schema_version') != '1.0.0'
+    if (not isinstance(data, dict) or set(data) != PROFILE_FIELDS
+            or data.get('schema_version') != '1.0.0'
             or data.get('authority') != 'RESEARCH_ONLY'
             or data.get('identity_source') != 'SELF_DECLARED'
             or data.get('source_system') != 'LOCAL_ONLY'

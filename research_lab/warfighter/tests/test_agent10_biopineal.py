@@ -46,6 +46,17 @@ class OperatorProfileTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'credentials or authority'):
                 read_operator(root)
 
+    def test_profile_with_forged_authority_fields_is_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td)
+            register_operator(root, 'Agent10')
+            path=root / 'operator-profile.json'
+            obj=json.loads(path.read_text())
+            obj['government_authority'] = True
+            path.write_text(json.dumps(obj))
+            with self.assertRaisesRegex(ValueError, 'credentials or authority'):
+                read_operator(root)
+
     def test_invalid_and_symlinked_operator_profile_are_rejected(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
