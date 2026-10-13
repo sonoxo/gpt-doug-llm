@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070e1b">
+<title>GPT-Doug PINEAL // OSIRIS Control Deck</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <div class="brand"><div class="mark" aria-hidden="true">◈</div>
+      <div><div class="eyebrow">SONOXO / GPT-DOUG-LLM</div><h1>PINEAL <span>//</span> OSIRIS</h1></div></div>
+    <div class="topright"><span class="tag">LOCAL • READ ONLY</span><span id="clock" class="mono muted">UTC --:--:--</span></div>
+  </header>
+  <section class="hero">
+    <div>
+      <div class="eyebrow cyan">GLOBAL INTELLIGENCE · OBSERVABILITY PLANE</div>
+      <h2>Operator control deck</h2>
+      <p>Official OSIRIS visual map, paired with PINEAL's provenance-aware public feed-health monitor. No fabricated live signals.</p>
+      <div class="actions">
+        <a id="open-map" class="primary" href="http://127.0.0.1:3000/" target="_blank" rel="noopener noreferrer">OPEN OSIRIS GLOBE ↗</a>
+        <button id="refresh" type="button">REFRESH STATUS</button>
+      </div>
+    </div>
+    <div class="orb" aria-hidden="true"><div class="orb-core"></div><div class="orb-ring"></div><div class="orb-ring two"></div><div class="orb-ring three"></div></div>
+  </section>
+  <section class="metrics" aria-label="System health metrics">
+    <div class="metric"><div class="eyebrow">OSIRIS PROCESS</div><div id="map-state" class="metric-val">CHECKING</div><div class="metric-note">Application HTTP process only</div></div>
+    <div class="metric"><div class="eyebrow">FRESH PUBLIC ROUTES</div><div id="feed-count" class="metric-val">—</div><div class="metric-note">Successful checks within 10 min</div></div>
+    <div class="metric"><div class="eyebrow">STALE / DEGRADED</div><div id="feed-degraded" class="metric-val">—</div><div class="metric-note">Excludes routes with no evidence</div></div>
+    <div class="metric"><div class="eyebrow">PINEAL ONTOLOGY</div><div id="memory-count" class="metric-val">—</div><div class="metric-note">Stored public feed-health facts</div></div>
+  </section>
+  <div class="two-col">
+    <section class="panel">
+      <div class="section-top"><div><div class="eyebrow">MAP CONTROL</div><h3>Visual layers</h3></div><span class="pill">UPSTREAM VIEW</span></div>
+      <p class="subtext">Toggles select official OSIRIS map layers. They do not authorize inaccessible feeds or guarantee live coverage.</p>
+      <div id="layers" class="layer-grid">
+        <label><input type="checkbox" value="maritime" checked><span>Maritime</span></label>
+        <label><input type="checkbox" value="satellites" checked><span>Satellites</span></label>
+        <label><input type="checkbox" value="cctv" checked><span>Public CCTV</span></label>
+        <label><input type="checkbox" value="cctv_previews" checked><span>CCTV previews</span></label>
+        <label><input type="checkbox" value="live_news" checked><span>Live news</span></label>
+        <label><input type="checkbox" value="earthquakes" checked><span>Earthquakes</span></label>
+        <label><input type="checkbox" value="global_incidents" checked><span>Global incidents</span></label>
+        <label><input type="checkbox" value="day_night" checked><span>Day / night</span></label>
+        <label><input type="checkbox" value="cables" checked><span>Subsea cables</span></label>
+        <label><input type="checkbox" value="sdk_air" checked><span>SDK air</span></label>
+        <label><input type="checkbox" value="sdk_naval" checked><span>SDK naval</span></label>
+      </div>
+      <div class="layer-footer"><span id="selected-count" class="mono">11 SELECTED</span><span>Toggle then open globe</span></div>
+    </section>
+    <section class="panel">
+      <div class="section-top"><div><div class="eyebrow">READ ONLY · HEALTH DATA</div><h3>Feed provenance</h3></div><span id="snapshot-state" class="pill">PENDING</span></div>
+      <p class="subtext">These observations come from the restricted local safe mirror. Positions, camera streams, and SDK telemetry are never copied to PINEAL.</p>
+      <div id="routes" class="routes" aria-live="polite">Waiting for first local status...</div>
+      <div class="sync-row"><span>LAST MIRROR SNAPSHOT</span><time id="snapshot-time">Not available</time></div>
+    </section>
+  </div>
+  <section class="panel diagnostics">
+    <div class="section-top"><div><div class="eyebrow">VERIFICATION</div><h3>Pipeline state</h3></div><span class="pill">EVIDENCE FIRST</span></div>
+    <div class="diagnostic-grid">
+      <div><span class="mini-label">OSIRIS health semantics</span><strong>Process liveness ≠ feed availability</strong></div>
+      <div><span class="mini-label">Ontology integration</span><strong id="pineal-state">Awaiting first local sync</strong></div>
+      <div><span class="mini-label">Latest local poll</span><strong id="last-check">Waiting</strong></div>
+      <div><span class="mini-label">Storage boundary</span><strong>Metadata only · Audit-backed</strong></div>
+    </div>
+  </section>
+  <footer>GPT-DOUG-PINEAL / OSIRIS CONTROL PLANE <span>Local host 127.0.0.1 · Source freshness shown explicitly · No third-party affiliation claimed</span></footer>
+</div>
+</body>
+</html>

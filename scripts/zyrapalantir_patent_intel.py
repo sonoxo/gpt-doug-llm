@@ -61,6 +61,11 @@ def attributed_as_record(source: dict) -> dict:
     watch = source.get("architecture_watch", {})
     applicant = source.get("applicant", {})
     assignee = source.get("assignee", {})
+    confidence = assignee.get("confidence") or applicant.get("confidence")
+    source_type = {
+        "HIGH_FROM_DOCUMENT_FRONT_PAGE": "document-front-page",
+        "HIGH_FROM_DOCUMENT_RECORD": "document-record",
+    }.get(confidence, "unverified")
     return {
         "rank": "exact",
         "document_number": source.get("document_number"),
@@ -69,8 +74,8 @@ def attributed_as_record(source: dict) -> dict:
         "themes": watch.get("themes", []),
         "applicant": applicant.get("name"),
         "assignee": assignee.get("name"),
-        "attribution_confidence": assignee.get("confidence") or applicant.get("confidence"),
-        "source_type": "document-front-page",
+        "attribution_confidence": confidence,
+        "source_type": source_type,
         "architecture_watch": watch.get("name"),
     }
 
@@ -154,7 +159,7 @@ def print_summary(source: dict) -> None:
     print(f"Reported results . {source.get('reported_result_count')}")
     print(f"Captured pages ... {pages}")
     print(f"Indexed records .. {len(records)} search-result record(s)")
-    print(f"Attributed exact . {len(attributed)} document-front-page record(s)")
+    print(f"Attributed exact . {len(attributed)} document-level record(s)")
     print(f"Retrieved ........ {source.get('retrieved')}")
     print("Search ownership . NOT ESTABLISHED FROM SEARCH RESULT")
     print("Exact attribution. DOCUMENT-LEVEL APPLICANT/ASSIGNEE FIELDS ONLY")

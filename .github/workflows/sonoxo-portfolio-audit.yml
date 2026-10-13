@@ -1,0 +1,106 @@
+name: Sonoxo Public Portfolio Upgrade Audit
+
+on:
+  pull_request:
+    paths:
+      - 'sonoxo_fleet/**'
+      - 'data/sonoxo_fleet/**'
+      - 'tests/test_sonoxo_fleet.py'
+      - 'docs/SONOXO_PORTFOLIO_UPGRADE.md'
+      - '.github/workflows/sonoxo-portfolio-audit.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '19 11 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonoxo-portfolio-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-portfolio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile and test public inventory contracts
+        run: |
+          python -m compileall -q sonoxo_fleet
+          python -m unittest discover -s tests -p 'test_sonoxo_fleet.py' -v
+      - name: Generate offline portfolio and immutable review plan
+        run: |
+          python -m sonoxo_fleet status
+          python -m sonoxo_fleet audit --output build/sonoxo-fleet
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('build/sonoxo-fleet/summary.json').read_text())
+          assert r['repositories_indexed'] == 206
+          assert r['observed_open_prs'] == 51
+          assert r['default_policy']['auto_merge'] is False
+          assert r['default_policy']['force_push'] is False
+          assert r['default_policy']['private_repo_inventory'] is False
+          assert Path('build/sonoxo-fleet/portfolio.html').is_file()
+          PY
+      - name: Validate standalone visualization JavaScript syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          markup=Path('build/sonoxo-fleet/portfolio.html').read_text()
+          script=markup.split('<script>', 1)[1].split('</script>', 1)[0]
+          Path('/tmp/sonoxo-fleet-viewer.js').write_text(script)
+          PY
+          node --check /tmp/sonoxo-fleet-viewer.js
+      - name: Publish public metadata visualization, never private repo names
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonoxo-public-portfolio-offline-review
+          path: build/sonoxo-fleet/
+          retention-days: 14
+          if-no-files-found: error
+
+  public-metadata-refresh:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch current public-only repository metadata
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m sonoxo_fleet sync-public --output build/sonoxo-fleet-live
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path('build/sonoxo-fleet-live/snapshot.json').read_text())
+          assert s['visibility_scope'] == 'PUBLIC_REPOSITORIES_ONLY'
+          assert all(x['visibility'] == 'public' for x in s['repositories'])
+          assert s['operations']['remote_writes'] is False
+          print('Public repositories observed:',s['repository_count'])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sonoxo-live-public-inventory-read-only
+          path: build/sonoxo-fleet-live/
+          retention-days: 14
+          if-no-files-found: error

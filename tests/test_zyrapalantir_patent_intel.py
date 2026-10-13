@@ -106,8 +106,32 @@ def test_exact_document_sources_keep_evidence_grade_and_review_gate():
                 assert party["name"] == "Palantir Technologies Inc."
                 assert party["confidence"] in evidence_types
                 assert evidence_types[party["confidence"]] in party["attribution_basis"].lower()
+        applicant = record.get("applicant", {})
+        assignee = record.get("assignee", {})
+        if applicant:
+            assert applicant["name"] == "Palantir Technologies Inc."
+            basis = applicant["attribution_basis"].lower()
+            assert "front page" in basis or "record" in basis
+            expected = "HIGH_FROM_DOCUMENT_RECORD" if "record" in basis else "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+            assert applicant["confidence"] == expected
+        if assignee:
+            assert assignee["name"] == "Palantir Technologies Inc."
+            basis = assignee["attribution_basis"].lower()
+            assert "front page" in basis or "record" in basis
+            expected = "HIGH_FROM_DOCUMENT_RECORD" if "record" in basis else "HIGH_FROM_DOCUMENT_FRONT_PAGE"
+            assert assignee["confidence"] == expected
         assert record["controls"]["claim_freedom_to_operate"] is False
         assert record["controls"]["claim_non_infringement"] is False
+
+
+def test_exact_record_keeps_document_evidence_kind_in_aggregated_view():
+    cli = load_cli()
+    by_number = {
+        source["document_number"]: cli.attributed_as_record(source)
+        for source in cli.load_attributed_sources()
+    }
+    assert by_number["US-12748581-B2"]["source_type"] == "document-record"
+    assert by_number["US-12591555-B2"]["source_type"] == "document-front-page"
 
 
 def test_patent_ontology_contains_exact_attributions_and_architecture_watches():

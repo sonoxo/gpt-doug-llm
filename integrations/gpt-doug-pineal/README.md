@@ -6,6 +6,36 @@ PINEAL is a real, runnable Python memory gateway for GPT-Doug / SHAGGOTH-KRAKEN.
 
 **Scope:** PINEAL reads and writes software memory controlled by the operator. It does not access hidden model weights, private chain-of-thought, EEG signals, or anyone's brain; it does not stimulate neural tissue or manipulate GPU/hydrogen hardware. It uses no paid model calls. A separate model integration would have its own costs.
 
+## BioPineal Patent Evidence Nexus (v0.5)
+
+**New:** an offline, ontology-first research interface linking a **user-supplied patent excerpt**, real local patent metadata SQLite index, explicit provenance and rights status, human safety review requirements, and terminal/browser visual maps.
+
+The initial reference is **US 12,760,393 B1** (attributed in the supplied source to **PolyPlus Battery Company**). The exact newly published US record has **not** been independently verified. This package makes **no** claim of patent ownership, permission to practice an invention, lithium-process hardware, scientific effectiveness, or real peace outcomes.
+
+One-command Mac terminal and offline HTML dashboard (repository root):
+
+~~~sh
+bash run-GPT-Doug-BioPineal.command
+bash scripts/doug-max bio-pineal map
+bash scripts/doug-max bio-pineal status
+bash scripts/doug-max bio-pineal watch --frames 10 --interval 1
+~~~
+
+PINEAL-native commands (inside this package after install):
+
+~~~sh
+pineal nexus audit
+pineal nexus map
+pineal nexus html
+pineal nexus preview
+pineal nexus import-reference --commit  # OPTIONAL explicit local SQLite write
+pineal context lithium
+~~~
+
+The import is dry-run by default. It writes to your own PINEAL patent index only after --commit, and creates no external request. A successful local metadata import **does not** verify USPTO facts or license rights. The ontology has **17 nodes / 16 edges**, including risk categories for hydrogen flammability, chlorine toxicity, and caustic lithium hydroxide; the tool contains no laboratory or industrial operating instructions.
+
+[Full BioPineal patent nexus guide](docs/LITHIUM_PATENT_NEXUS.md).
+
 ## PINEAL live patent connectors (v0.4)
 
 The previously disconnected metadata templates now have **explicit, permitted

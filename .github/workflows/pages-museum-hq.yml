@@ -51,6 +51,9 @@ jobs:
           test -f _site/holo/holo.ts
           test -f _site/arcade/index.html
           test -f _site/cte/index.html
+          test -f _site/tak-os/index.html
+          test -f _site/tak-os/manifest.webmanifest
+          test -f _site/tak-os/sw.js
           test ! -e _site/eye-mouse
 
       - name: Compile HOLO TypeScript
@@ -189,6 +192,8 @@ jobs:
           curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'XUNIA ARCADE ENTRY GATE'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'ZYRA-CTE'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'Counterfactual Transaction Engine'
+          curl -fsS http://127.0.0.1:8080/tak-os/ | grep -q 'Common Operating Picture'
+          curl -fsS http://127.0.0.1:8080/tak-os/manifest.webmanifest | grep -q 'TAK-OS Demo'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'SYNTHETIC-ONLY'
           if curl -fsS http://127.0.0.1:8080/eye-mouse/ >/dev/null 2>&1; then
             echo 'Unfinished prototype unexpectedly published.' >&2
@@ -282,3 +287,16 @@ jobs:
 
           echo 'CANONICAL_XUNIA_ARCADE_LIVE=PASS'
           echo 'CANONICAL_XUNIA_CTE_LIVE=PASS'
+
+          tak_os_ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/tak-os/?v=${CACHE_BUST}" -o /tmp/xunia-tak-os.html \
+              && grep -q 'Common Operating Picture' /tmp/xunia-tak-os.html \
+              && grep -q 'SIMULATED DATA' /tmp/xunia-tak-os.html; then
+              tak_os_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$tak_os_ok" -eq 1
+          echo 'CANONICAL_XUNIA_TAK_OS_LIVE=PASS'
