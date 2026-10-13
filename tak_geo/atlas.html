@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>GPT-DOUG × ATAK-MAPS | Atlas Ecosystem</title>
+<style>
+:root{--bg:#07101b;--panel:#0c1d30;--card:#12263a;--line:#294257;--ink:#e5f4fb;--muted:#98b5c9;--cyan:#76d9e6;--blue:#61a8f8;--gold:#ffb85d;--ok:#9ee0b3;--bad:#f68da5;color-scheme:dark;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}button,input,select{font:inherit}
+button,select,input{color:var(--ink);background:#142b40;border:1px solid #3a5c70;border-radius:8px;padding:9px 10px}
+button{cursor:pointer}button:hover{border-color:var(--cyan)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+a{color:#94deed;text-decoration:none}a:hover{text-decoration:underline}header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:15px 20px;border-bottom:1px solid var(--line);background:#0b1b2c}
+.header-left{display:flex;gap:13px;align-items:center}.logo{width:42px;height:42px;border:1px solid #508599;border-radius:10px;display:grid;place-items:center;font-weight:900;color:#b6f6ff;background:#133d50;font-size:27px}
+h1{font-size:17px;letter-spacing:.1em;margin:0}h2{font-size:14px;color:#c1e9fa;letter-spacing:.06em;text-transform:uppercase;margin:0 0 12px}p{line-height:1.5}
+.sub{color:var(--muted);font-size:12px;margin:5px 0 0}.status{border:1px solid #715f39;border-radius:25px;color:#f5d597;background:#31291f;padding:9px 12px;font-size:11px;font-weight:700}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr) 300px;min-height:calc(100vh - 120px)}
+aside{padding:20px 15px;overflow:auto;background:#0b1929}aside.left{border-right:1px solid var(--line)}aside.right{border-left:1px solid var(--line)}
+.section{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}.section>p{font-size:12px;color:var(--muted)}
+.nav{display:grid;gap:8px}.nav button{text-align:left;padding:12px}.nav button.active{border-color:var(--cyan);background:#144054;color:#d9f9ff}
+.detail{margin:11px 0;border-bottom:1px solid #243a4d;padding-bottom:10px;font-size:12px}.detail small{color:var(--muted);display:block;margin-bottom:4px}.detail strong{display:block;word-break:break-word}
+.btn{display:inline-block;padding:10px;border:1px solid #345f75;background:#11364b;border-radius:8px;font-size:12px;max-width:100%}
+.narrative{color:var(--muted);font-size:12px}.note{background:#242b2c;color:#e9ce9c;border:1px solid #5e5a3d;border-radius:8px;padding:12px;font-size:11px;line-height:1.6}
+main{min-width:0;padding:19px;background:radial-gradient(circle at 40% 0%,#153047 0%,#081321 65%);overflow:hidden}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:18px}.metric{border:1px solid #2e4d60;background:#12263b;border-radius:10px;padding:13px}.metric strong{font-size:25px;display:block;color:var(--cyan)}.metric span{font-size:11px;color:var(--muted)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}.toolbar input{flex:2;min-width:160px}.toolbar select{flex:1;min-width:110px}
+.heading-row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.heading-row h2{margin:0}.small{font-size:11px;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:11px;max-height:calc(100vh - 330px);overflow:auto;padding-right:4px}
+.card{border:1px solid #284659;background:linear-gradient(180deg,#153046,#101e30);border-radius:11px;text-align:left;padding:14px;min-height:160px}
+.card.active{border-color:var(--cyan);background:#1a394d}.card .name{font-weight:720;display:block;line-height:1.4;font-size:13px;margin:12px 0}
+.card .foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;font-size:10px;color:#c7dfed;gap:8px}
+.pill{border-radius:15px;border:1px solid #466079;padding:3px 7px;font-size:10px;color:#b3d7e8;display:inline-block}.pill.ok{border-color:#428878;color:#91e4c4}.pill.warn{border-color:#785a42;color:#f4d29e}
+.provider{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.card:focus-visible{outline:2px solid var(--cyan)}
+.panel{display:none}.panel.active{display:block}
+#graph{height:min(75vh,880px);min-height:600px;width:100%;background:#0b1b2d;border:1px solid #29495e;border-radius:12px;overflow:hidden}
+#graph svg{width:100%;height:100%}
+iframe{width:100%;height:calc(100vh - 200px);min-height:650px;border:1px solid #34566d;border-radius:12px;background:#0b1d2c}
+#sourceCount{font-weight:700}
+.rawlink{font-size:12px;word-break:break-all}
+table{border-collapse:collapse;width:100%;font-size:12px}th,td{border-bottom:1px solid #315064;padding:8px;text-align:left}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cyan);margin-right:6px}
+footer{padding:10px 18px;font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
+@media(max-width:1100px){.layout{grid-template-columns:185px minmax(0,1fr) 250px}aside{padding:15px 11px}.metrics{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:810px){.layout{display:flex;flex-direction:column}aside.left{border-right:0;border-bottom:1px solid var(--line)}aside.right{border-left:0;border-top:1px solid var(--line)}.nav{grid-template-columns:repeat(3,minmax(0,1fr))}.nav button{font-size:11px;padding:8px}.cards{max-height:none}main{padding:12px}iframe{height:650px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left"><div class="logo" aria-hidden="true">◎</div><div><h1>GPT-DOUG / ATAK-MAPS ECOSYSTEM</h1><div class="sub">Versioned MOBAC registry · geospatial visualization · provider graph · provenance</div></div></div>
+  <span class="status">LOCAL METADATA · NO TAK SERVER · NO AUTO TILE FETCH</span>
+</header>
+<div class="layout">
+  <aside class="left">
+    <div class="section"><h2>Workspaces</h2><div class="nav">
+      <button type="button" class="active" data-tab="catalog">Map sources</button>
+      <button type="button" data-tab="graph">Provider graph</button>
+      <button type="button" data-tab="viewer">Geo map viewer</button>
+    </div></div>
+    <div class="section"><h2>Source provenance</h2>
+      <div class="detail"><small>Repository</small><strong>sonoxo/ATAK-Maps</strong></div>
+      <div class="detail"><small>Source commit</small><strong id="sha">Not available</strong></div>
+      <div class="detail"><small>Catalog SHA-256</small><strong id="digest">—</strong></div>
+      <div class="detail"><small>XML validation scope</small><strong>Structural profile only; upstream XSD required for release</strong></div>
+      <a href="https://github.com/sonoxo/ATAK-Maps" rel="noopener noreferrer" target="_blank" class="btn">Source repository ↗</a>
+    </div>
+    <div class="section"><h2>Documentation</h2>
+      <p><a href="https://github.com/sonoxo/ATAK-Maps/blob/master/docs/xml-reference.md" rel="noopener noreferrer" target="_blank">MOBAC XML reference ↗</a></p>
+      <p><a href="https://github.com/sonoxo/ATAK-Maps/blob/master/docs/install-guide.md" rel="noopener noreferrer" target="_blank">ATAK installation guide ↗</a></p>
+      <p><a href="https://github.com/sonoxo/ATAK-Maps/blob/master/schema/mobac-maps.xsd" rel="noopener noreferrer" target="_blank">ATAK-Maps XSD schema ↗</a></p>
+      <p><a href="https://tak.gov" rel="noopener noreferrer" target="_blank">Official TAK portal ↗</a></p>
+      <a class="btn" href="./catalog.json" download="gpt-doug-maps-catalog.json">Export map metadata</a>
+    </div>
+    <div class="note">This page indexes XML source metadata only. It never queries the listed vendor tile hosts. A source's presence in the catalog does not authorize use of imagery, tools, caches, or APIs.</div>
+  </aside>
+  <main>
+    <div class="metrics">
+      <div class="metric"><strong id="sources">0</strong><span>Map definitions</span></div>
+      <div class="metric"><strong id="providers">0</strong><span>Map providers</span></div>
+      <div class="metric"><strong id="overlays">0</strong><span>Overlay sources</span></div>
+      <div class="metric"><strong id="issues">0</strong><span>Structural issues</span></div>
+    </div>
+    <section class="panel active" id="tab-catalog">
+      <div class="heading-row"><h2>Indexed imagery and maps</h2><span class="small" id="matchCount"></span></div>
+      <div class="toolbar">
+        <input id="query" aria-label="Search map sources" placeholder="Search providers, map name, category, host">
+        <select id="category" aria-label="Filter by category"><option value="">All categories</option></select>
+        <select id="format" aria-label="Filter by format"><option value="">All formats</option></select>
+        <select id="policy" aria-label="Filter by access policy"><option value="">All review statuses</option></select>
+      </div>
+      <div class="cards" id="cards"></div>
+    </section>
+    <section class="panel" id="tab-graph">
+      <div class="heading-row"><h2>Provider → Category → Format</h2><span class="small">Metadata links, not device connections</span></div>
+      <div id="graph" aria-label="Interactive provider, category, and format relationship graph"></div>
+      <div class="legend"><span><i></i> Provider</span><span><i style="background:var(--gold)"></i> Category</span><span><i style="background:var(--blue)"></i> Source format</span></div>
+    </section>
+    <section class="panel" id="tab-viewer">
+      <div class="heading-row"><h2>Geospatial map</h2><span class="small">Synthetic example; you can import an authorized local CoT or GeoJSON</span></div>
+      <iframe id="viewer" src="./index.html" title="GPT-Doug local geospatial map"></iframe>
+      <p class="narrative">The viewer defaults to an offline grid; USGS imagery is available only after the operator explicitly selects it. Other provider definitions remain metadata-only until their individual usage terms are reviewed.</p>
+    </section>
+  </main>
+  <aside class="right" aria-label="Selected map source">
+    <div class="section"><h2>Map-source inspector</h2><div id="inspector" class="narrative">Select a map definition to inspect documentation provenance and access restrictions.</div></div>
+    <div class="section"><h2>Catalog validation</h2><p id="validator">Pending</p><div class="small" id="violations"></div></div>
+    <div class="note"><strong>Licensing boundary</strong><p>ATAK-Maps source XML is MIT-licensed (Copyright © 2023 Joshua Fuller). That license does not grant access or redistribution rights to Google, Bing, Esri, Ordnance Survey or other map imagery. Review providers separately.</p></div>
+  </aside>
+</div>
+<footer>GPT-Doug independently developed integration · Offline source registry · Provenance preserved · No claim of official TAK endorsement.</footer>
+<script>
+"use strict";
+const catalog = __ATAK_MAPS_CATALOG__;
+const $=id=>document.getElementById(id);
+const state={tab:"catalog",selected:null,query:"",category:"",format:"",policy:""};
+const colors={provider:"#76d9e6",category:"#ffb85d",format:"#61a8f8"};
+const entries=Array.isArray(catalog.entries)?catalog.entries:[];
+function setText(id,value){$(id).textContent=String(value??"—")}
+function newEl(tag,cls,val){const x=document.createElement(tag);if(cls)x.className=cls;if(val!==undefined)x.textContent=String(val);return x}
+function prop(container,label,value){const d=newEl("div","detail");const l=newEl("small","",label),v=newEl("strong","",value);d.append(l,v);container.append(d)}
+function filterList(){const search=state.query.toLowerCase();return entries.filter(e=>(!state.category||e.category===state.category)&&(!state.format||e.source_type===state.format)&&(!state.policy||e.policy===state.policy)&&(!search||[e.provider,e.name,e.category,e.source_type,e.path,...e.hostnames].join(" ").toLowerCase().includes(search)))}
+function sourceHref(e){const ref=/^[0-9a-f]{40}$/.test(catalog.source.commit_sha||"")?catalog.source.commit_sha:"master";return "https://github.com/sonoxo/ATAK-Maps/blob/"+ref+"/"+e.path.split("/").map(encodeURIComponent).join("/")}
+function select(entry){state.selected=entry.id;const inspector=$("inspector");inspector.replaceChildren();const h=newEl("h3","",entry.name);inspector.append(h);
+  prop(inspector,"Provider",entry.provider);prop(inspector,"Category",entry.category);prop(inspector,"Map format",entry.source_type);
+  prop(inspector,"Zoom range",entry.min_zoom+"–"+entry.max_zoom);prop(inspector,"Coordinate reference",entry.coordinate_systems.join(", "));
+  prop(inspector,"Tile MIME hint",entry.tile_type);prop(inspector,"Provider endpoint hosts",entry.hostnames.join(", "));
+  prop(inspector,"Overlay source",entry.overlay?"Yes":"No");prop(inspector,"Requires key",entry.requires_key?"Yes":"No");
+  prop(inspector,"Access policy",entry.policy);prop(inspector,"Source XML SHA-256",entry.xml_sha256);
+  if(entry.description){const p=newEl("p","narrative",entry.description);inspector.append(p)}
+  const link=newEl("a","btn","Review source XML on GitHub ↗");link.href=sourceHref(entry);link.target="_blank";link.rel="noopener noreferrer";inspector.append(link);
+  const note=newEl("p","narrative","No vendor imagery requests are made when selecting this source.");inspector.append(note);
+  paintCards();
+}
+function paintCards(){const box=$("cards");box.replaceChildren();const list=filterList();setText("matchCount",list.length+" of "+entries.length+" records");if(!list.length){box.append(newEl("p","narrative","No sources match these filters."));return}
+for(const e of list){const btn=newEl("button","card"+(e.id===state.selected?" active":""));btn.type="button";btn.setAttribute("aria-label","Inspect "+e.name);
+const provider=newEl("span","provider",e.provider);const name=newEl("span","name",e.name);
+const meta=newEl("div","foot");const type=newEl("span","pill",e.source_type);
+const access=newEl("span","pill "+(e.policy==="OPT_IN_USGS_PREVIEW"?"ok":"warn"),e.policy==="OPT_IN_USGS_PREVIEW"?"USGS opt-in":"Review required");
+meta.append(type,access);const footer=newEl("p","small",(e.category||"Uncategorized")+" · Z"+e.min_zoom+"–"+e.max_zoom);
+btn.append(provider,name,meta,footer);btn.onclick=()=>select(e);box.append(btn)}}
+function showTab(tab){state.tab=tab;for(const p of document.querySelectorAll(".panel"))p.classList.toggle("active",p.id==="tab-"+tab);for(const b of document.querySelectorAll(".nav button"))b.classList.toggle("active",b.dataset.tab===tab);if(tab==="graph")paintGraph();}
+function initSelect(id,key){const values=[...new Set(entries.map(e=>e[key]))].sort((a,b)=>String(a).localeCompare(String(b)));const control=$(id);values.forEach(value=>{const o=newEl("option","",value);o.value=value;control.append(o)});control.onchange=()=>{state[key]=control.value;paintCards();if(state.tab==="graph")paintGraph()}}
+function svgNode(root,tag,attrs,text){const n=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [key,val] of Object.entries(attrs||{}))n.setAttribute(key,val);if(text!==undefined)n.textContent=String(text);root.appendChild(n);return n}
+function paintGraph(){const canvas=$("graph");canvas.replaceChildren();const graph=svgNode(canvas,"svg",{viewBox:"0 0 900 800",role:"img","aria-label":"Providers connected to categories and source types"});const list=filterList();if(!list.length){svgNode(graph,"text",{x:20,y:40,fill:"#b2cada"},"No matching map sources");return}
+const groups=[...new Set(list.map(e=>e.provider))].sort(),categories=[...new Set(list.map(e=>e.category))].sort(),formats=[...new Set(list.map(e=>e.source_type))].sort();
+const pos=new Map();function nodes(values,x,kind){const step=700/Math.max(values.length,1);values.forEach((value,i)=>pos.set(kind+":"+value,{x,y:65+(i+.5)*step,kind,value}))}
+nodes(groups,125,"provider");nodes(categories,455,"category");nodes(formats,760,"format");
+const pcount=new Map(),fcount=new Map();list.forEach(e=>{const a=e.provider+"|"+e.category,b=e.category+"|"+e.source_type;pcount.set(a,(pcount.get(a)||0)+1);fcount.set(b,(fcount.get(b)||0)+1)});
+for(const [key,count] of pcount){const parts=key.split("|"),a=pos.get("provider:"+parts[0]),b=pos.get("category:"+parts[1]);svgNode(graph,"path",{d:"M"+a.x+" "+a.y+" C"+(a.x+150)+" "+a.y+" "+(b.x-150)+" "+b.y+" "+b.x+" "+b.y,stroke:"#46778c","stroke-width":Math.min(8,1.3+count),fill:"none",opacity:".63"})}
+for(const [key,count] of fcount){const parts=key.split("|"),a=pos.get("category:"+parts[0]),b=pos.get("format:"+parts[1]);svgNode(graph,"path",{d:"M"+a.x+" "+a.y+" C"+(a.x+150)+" "+a.y+" "+(b.x-150)+" "+b.y+" "+b.x+" "+b.y,stroke:"#9b7855","stroke-width":Math.min(9,1.2+count),fill:"none",opacity:".61"})}
+for(const [_,n] of pos){const circle=svgNode(graph,"circle",{cx:n.x,cy:n.y,r:n.kind==="category"?11:8,fill:colors[n.kind],stroke:"#e8f7ff","stroke-width":"1"});if(n.kind==="provider"||n.kind==="category"){circle.style.cursor="pointer";circle.addEventListener("click",()=>{if(n.kind==="provider"){$("query").value=n.value;state.query=n.value}else{$("category").value=n.value;state.category=n.value}paintCards();showTab("catalog")})}
+const align=n.kind==="provider"?"end":"start",tx=n.kind==="provider"?n.x-15:n.x+15;svgNode(graph,"text",{x:tx,y:n.y+4,fill:"#dbedf7","font-size":"13","text-anchor":align},n.value.slice(0,27))}
+svgNode(graph,"text",{x:35,y:24,fill:"#80b5cc","font-size":"12"},"PROVIDERS");svgNode(graph,"text",{x:390,y:24,fill:"#ecc898","font-size":"12"},"CATEGORIES");svgNode(graph,"text",{x:705,y:24,fill:"#91bff8","font-size":"12"},"MOBAC FORMATS")
+}
+setText("sources",catalog.summary.sources);setText("providers",catalog.summary.providers);setText("overlays",catalog.summary.overlay_sources);setText("issues",catalog.summary.issues);
+setText("sha",catalog.source.commit_sha||"Unversioned checkout");setText("digest",String(catalog.source.catalog_sha256||"").slice(0,24)+"…");
+setText("validator",catalog.summary.issues===0?"Basic structural checks: no detected errors":"Review "+catalog.summary.issues+" XML issue(s) before import.");
+const violation=$("violations");for(const item of catalog.issues.slice(0,20)){const p=newEl("p","",item.path+": "+item.error);violation.append(p)}
+for(const b of document.querySelectorAll(".nav button"))b.onclick=()=>showTab(b.dataset.tab);
+$("query").oninput=e=>{state.query=e.target.value;paintCards();if(state.tab==="graph")paintGraph()};
+initSelect("category","category");initSelect("format","source_type");initSelect("policy","policy");
+select(entries[0]||{id:"none",name:"No available layers",provider:"—",category:"—",source_type:"—",min_zoom:0,max_zoom:0,coordinate_systems:[],tile_type:"—",hostnames:[],overlay:false,requires_key:false,policy:"REVIEW_REQUIRED",xml_sha256:"—",description:"",path:""});
+paintCards();
+</script>
+</body>
+</html>
