@@ -59,7 +59,7 @@ jobs:
         run: |
           set -euo pipefail
           if grep -RInE --include='*.sh' --include='*.yml' --include='*.yaml' \
-            '(curl|wget)[^|]{0,200}\\|[[:space:]]*(sh|bash)' \
+            '(curl|wget)[^|]{0,200}\|[[:space:]]*(sh|bash)' \
             .github scripts safety-shield 2>/dev/null; then
             echo "Remote pipe-to-shell bootstrap detected in protected paths."
             exit 1
