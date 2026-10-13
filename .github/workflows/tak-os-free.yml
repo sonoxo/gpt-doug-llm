@@ -1,4 +1,4 @@
-name: GPT-Doug TAK-OS / Free Simulator Gate
+name: GPT-Doug TAK-OS / Complete Free Local Gateway Gate
 
 on:
   pull_request:
@@ -6,6 +6,7 @@ on:
       - 'docs/tak-os/**'
       - 'docs/resources.json'
       - 'docs/index.html'
+      - 'tests/test_tak_os_gateway.py'
       - 'tests/test_tak_os_static.py'
       - '.github/workflows/tak-os-free.yml'
   push:
@@ -14,6 +15,7 @@ on:
       - 'docs/tak-os/**'
       - 'docs/resources.json'
       - 'docs/index.html'
+      - 'tests/test_tak_os_gateway.py'
       - 'tests/test_tak_os_static.py'
       - '.github/workflows/tak-os-free.yml'
   workflow_dispatch:
@@ -22,63 +24,41 @@ permissions:
   contents: read
 
 jobs:
-  static-demo:
+  local-gateway-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
     steps:
       - uses: actions/checkout@v6
-      - name: Static, legal, free-tier, VM and catalog contracts
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Python CoT XML / HTTP / SQLite / SSE / UDP / TCP integration
+        run: python3 -m unittest discover -s tests -p 'test_tak_os_gateway.py' -v
+      - name: Static/PWA/CI security contracts
         run: python3 -m unittest discover -s tests -p 'test_tak_os_static.py' -v
-
-      - name: JavaScript parse validation (no npm install)
+      - name: JavaScript syntax (no npm dependencies)
         run: |
+          node --check docs/tak-os/app.js
+          node --check docs/tak-os/bridge.js
           node --check docs/tak-os/sw.js
-          python3 - <<'PY'
-          from html.parser import HTMLParser
-          from pathlib import Path
-          import subprocess
-          import tempfile
-
-          class ScriptParser(HTMLParser):
-              def __init__(self):
-                  super().__init__()
-                  self.in_script=False
-                  self.parts=[]
-                  self.scripts=[]
-              def handle_starttag(self, tag, attrs):
-                  if tag == 'script' and not dict(attrs).get('src'):
-                      self.in_script=True
-                      self.parts=[]
-              def handle_data(self, data):
-                  if self.in_script:
-                      self.parts.append(data)
-              def handle_endtag(self, tag):
-                  if tag == 'script' and self.in_script:
-                      self.scripts.append(''.join(self.parts))
-                      self.in_script=False
-
-          parser=ScriptParser()
-          parser.feed(Path('docs/tak-os/index.html').read_text())
-          assert parser.scripts, 'No runnable JS in standalone console'
-          for num, code in enumerate(parser.scripts):
-              with tempfile.TemporaryDirectory() as tempdir:
-                  output=Path(tempdir)/f'app_{num}.js'
-                  output.write_text(code)
-                  subprocess.run(['node','--check',str(output)],check=True)
-          print(f'PASS: {len(parser.scripts)} inline JS scripts parsed')
-          PY
-
-      - name: Static hosting smoke test
+      - name: Shell launch scripts syntax
         run: |
-          set -euo pipefail
-          python3 -m http.server 18908 --bind 127.0.0.1 --directory docs/tak-os >/tmp/tak-os-http.log 2>&1 &
-          SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
-          for i in $(seq 1 20); do
-            if curl --silent --fail http://127.0.0.1:18908/ >/tmp/tak-os.html; then break; fi
-            sleep 0.2
-          done
-          grep -q 'Common Operating Picture' /tmp/tak-os.html
-          curl --fail --silent http://127.0.0.1:18908/manifest.webmanifest | grep -q 'TAK-OS Demo'
-          curl --fail --silent http://127.0.0.1:18908/sw.js | grep -q 'CACHE'
-          echo 'STATIC_TAK_OS_DEMO=PASS'
+          sh -n docs/tak-os/start.sh
+          sh -n docs/tak-os/vm/launch.sh
+      - name: Resource catalog contract
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          registry = json.loads(Path('docs/resources.json').read_text())
+          records = [x for x in registry['items'] if x.get('id') == 'gpt-doug-tak-os']
+          assert len(records) == 1
+          assert records[0]['access'] == 'public' and records[0]['free'] is True
+          assert records[0]['url'] == './tak-os/'
+          assert 'href="./tak-os/"' in Path('docs/index.html').read_text()
+          print('FREE_TAK_OS_CATALOG=PASS')
+          PY

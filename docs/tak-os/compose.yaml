@@ -1,23 +1,27 @@
-# Free local companion. Never binds the unauthenticated demo to a public interface.
+# Free self-hosted CoT gateway. Docker host port is loopback only.
 services:
-  tak-os-demo:
-    image: nginxinc/nginx-unprivileged:stable-alpine
+  tak-os-gateway:
+    build: .
     restart: unless-stopped
     read_only: true
     ports:
       - "127.0.0.1:${TAK_OS_PORT:-8080}:8080"
     volumes:
-      - ./:/usr/share/nginx/html:ro
+      - takos_eventlog:/data
     tmpfs:
-      - /tmp
-      - /var/cache/nginx
-      - /var/run
+      - /tmp:rw,noexec,nosuid,size=16m
     security_opt:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    pids_limit: 100
+    environment:
+      TAK_OS_CONTAINER: "1"
+      TAK_OS_DB: /data/gateway.sqlite3
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/api/v1/health',timeout=2).read()"]
       interval: 30s
-      timeout: 5s
+      timeout: 4s
       retries: 3
+volumes:
+  takos_eventlog:

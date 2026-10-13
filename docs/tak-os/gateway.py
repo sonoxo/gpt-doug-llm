@@ -193,7 +193,14 @@ class State:
                 history = (before["history"]+[[unit["lat"], unit["lon"]]])[-30:]
             else:
                 history = [[unit["lat"], unit["lon"]]]
-            unit.update({"source": source, "history": history})
+            unit.update({
+                "source": source,
+                "history": history,
+                # Preserve the synthetic motion anchor when a local sender uses
+                # one of the six built-in LAB UIDs. Never crash the heartbeat.
+                "baseLat": before.get("baseLat", unit["lat"]) if before else unit["lat"],
+                "baseLon": before.get("baseLon", unit["lon"]) if before else unit["lon"],
+            })
             self.entities[unit["id"]] = unit
             self.ingested += 1
             self.record("cot", source, f"CoT position {unit['id']}", uid=unit["id"], synthetic=unit["synthetic"])

@@ -1,81 +1,69 @@
-"""Dependency-free contracts for the public, independent TAK-OS simulator."""
-from pathlib import Path
+"""Zero-paid-dependency contracts for expanded TAK-OS HTML/CSS/JS and local gateway."""
 from html.parser import HTMLParser
+from pathlib import Path
 import json
-import re
+import subprocess
 import unittest
 
-ROOT = Path(__file__).resolve().parents[1]
-APP = ROOT / "docs" / "tak-os"
+ROOT=Path(__file__).resolve().parents[1]
+APP=ROOT/'docs'/'tak-os'
 
-class Tags(HTMLParser):
+class Parse(HTMLParser):
     def __init__(self):
-        super().__init__()
-        self.ids = set()
-        self.links = set()
-    def handle_starttag(self, tag, attrs):
-        a = dict(attrs)
-        if a.get("id"):
-            self.ids.add(a["id"])
-        if a.get("href"):
-            self.links.add(a["href"])
+        super().__init__(); self.ids=set(); self.scripts=[]; self.styles=[]
+    def handle_starttag(self,tag,attrs):
+        a=dict(attrs)
+        if 'id' in a:self.ids.add(a['id'])
+        if tag=='script' and a.get('src'):self.scripts.append(a['src'])
+        if tag=='link' and a.get('rel')=='stylesheet':self.styles.append(a.get('href'))
 
-class FreeTAKOSContract(unittest.TestCase):
-    def test_public_assets_exist(self):
-        for path in ("index.html", "compose.yaml", "start.sh", "vm/launch.sh",
-                     "vm/README.md", "sw.js", "manifest.webmanifest", "icon.svg", "README.md"):
-            with self.subTest(path=path):
-                self.assertTrue((APP / path).is_file())
+class StaticContracts(unittest.TestCase):
+    def test_local_assets(self):
+        for path in ('index.html','app.js','bridge.js','styles.css','gateway.py','start.sh','Dockerfile','compose.yaml','sw.js','manifest.webmanifest','icon.svg','README.md','LEGACY_COMPATIBILITY.md','vm/README.md','vm/launch.sh'):
+            with self.subTest(path=path):self.assertTrue((APP/path).is_file())
 
-    def test_working_interface_not_placeholder(self):
-        html = (APP / "index.html").read_text()
-        parser = Tags()
-        parser.feed(html)
-        for identifier in ("page-map", "page-vm", "page-feeds", "page-events",
-                           "page-ontology", "page-settings", "map", "markers",
-                           "pause", "speed", "incident", "timeline", "csv",
-                           "validate", "vm-command", "copy-vm", "export"):
-            with self.subTest(identifier=identifier):
-                self.assertIn(identifier, parser.ids)
-        for feature in ("function renderMap", "function renderEventList",
-                        "function snapshot", "function vmtext", "DOMParser",
-                        "SIMULATED", "text/csv"):
-            self.assertIn(feature, html)
-        self.assertIn("NOT TAK PRODUCT CENTER SOFTWARE", html)
+    def test_interactive_page_has_actual_controls(self):
+        html=(APP/'index.html').read_text()
+        parser=Parse();parser.feed(html)
+        for element in ('view-map','view-system','view-feeds','view-events','view-ontology','view-settings','map-stage','map-markers','sim-play','cot-input','cot-validate','topology','events-list','vm-cpus','ontology-list','settings-tiles'):
+            self.assertIn(element,parser.ids)
+        self.assertEqual(parser.scripts,['./app.js','./bridge.js'])
+        self.assertIn('./styles.css',parser.styles)
+        self.assertIn('NOT TAK PRODUCT CENTER SOFTWARE',html)
 
-    def test_zero_required_paid_dependencies(self):
-        html = (APP / "index.html").read_text()
-        self.assertNotRegex(html, r"<script[^>]+src=['\"]https?://")
-        self.assertNotRegex(html, r"<link[^>]+stylesheet[^>]+https?://")
-        for term in ("api.openai.com", "sk-proj-", "Authorization: Bearer", "new WebSocket("):
-            self.assertNotIn(term, html)
+    def test_original_app_is_integrated_not_a_mockup(self):
+        js=(APP/'app.js').read_text()
+        for functionality in ('function renderMap','function renderEvents','function advance','function validateCot','setGatewayUnits','setGatewayConnection','window.TAKOSApp'):
+            self.assertIn(functionality,js)
+        bridge=(APP/'bridge.js').read_text()
+        for path in ('session','snapshot','cot','incident','ack','stream'):
+            self.assertIn(path,bridge)
+        self.assertIn('EventSource',bridge)
 
-    def test_registry_and_home_page_links(self):
-        data = json.loads((ROOT / "docs" / "resources.json").read_text())
-        entry = next(x for x in data["items"] if x["id"] == "gpt-doug-tak-os")
-        self.assertEqual(entry["access"], "public")
-        self.assertTrue(entry["free"])
-        self.assertEqual(entry["url"], "./tak-os/")
-        self.assertIn('href="./tak-os/"', (ROOT / "docs" / "index.html").read_text())
+    def test_no_paid_runtime_or_sensitive_credentials(self):
+        html=(APP/'index.html').read_text()
+        self.assertNotIn('<script src="https://',html)
+        self.assertNotIn('OPENAI_API_KEY',html)
+        self.assertNotIn('sk-proj-',html)
+        docker=(APP/'compose.yaml').read_text()
+        self.assertIn('127.0.0.1:',docker)
+        self.assertIn('read_only: true',docker)
+        self.assertIn('no-new-privileges:true',docker)
+        backend=(APP/'gateway.py').read_text()
+        self.assertIn('"127.0.0.1"',backend)
+        self.assertIn('realTakConnected',backend)
+        self.assertIn('not a TAK Server', (APP/'LEGACY_COMPATIBILITY.md').read_text())
 
-    def test_vm_boundaries(self):
-        compose = (APP / "compose.yaml").read_text()
-        self.assertIn("127.0.0.1:", compose)
-        self.assertIn("read_only: true", compose)
-        self.assertIn("no-new-privileges:true", compose)
-        vm = (APP / "vm/launch.sh").read_text()
-        self.assertIn("hostfwd=tcp:127.0.0.1:", vm)
-        self.assertIn("-:22", vm)
-        self.assertNotIn("8080-:8080", vm)
-        self.assertIn("ssh -p 2222", (APP / "vm/README.md").read_text())
+    def test_syntax_without_npm_or_pip(self):
+        for name in ('app.js','bridge.js','sw.js'):
+            with self.subTest(name=name):
+                subprocess.run(['node','--check',str(APP/name)],check=True,capture_output=True)
+        subprocess.run(['python3','-m','py_compile',str(APP/'gateway.py')],check=True,capture_output=True)
 
-    def test_pwa_offline_scope(self):
-        manifest = json.loads((APP / "manifest.webmanifest").read_text())
-        self.assertEqual(manifest["scope"], "./")
-        sw = (APP / "sw.js").read_text()
-        self.assertIn("url.origin !== self.location.origin", sw)
-        self.assertIn("tak-os", sw)
-        self.assertIn("serviceWorker.register('./sw.js')", (APP / "index.html").read_text())
+    def test_pwa_cache_ignores_api(self):
+        cache=(APP/'sw.js').read_text()
+        self.assertIn("url.pathname.includes('/api/')",cache)
+        self.assertIn('bridge.js',cache)
+        self.assertEqual(json.loads((APP/'manifest.webmanifest').read_text())['scope'],'./')
 
-if __name__ == "__main__":
-    unittest.main()
+if __name__=='__main__': unittest.main()

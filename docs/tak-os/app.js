@@ -42,7 +42,7 @@
     motion: !!local.motion,
   };
   const state = {
-    units: [], events: [], annotations: Array.isArray(local.annotations) ? local.annotations.filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lon)).slice(0, 40) : [],
+    units: [], gatewayUnits: [], gatewayConnected: false, events: [], annotations: Array.isArray(local.annotations) ? local.annotations.filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lon)).slice(0, 40) : [],
     selected: 'CIV-RESCUE-01', running: true, speed: 1, tick: 0, packets: 0, latency: 42,
     search: '', filter: 'all', view: 'map', center: { lat: 37.75, lon: -77.27 }, zoom: 8, selectedType: null,
     drag: null, moved: false, toastTimer: null, refreshN: 0,
@@ -57,6 +57,7 @@
   }
   function readableTime(iso) { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
   function timestamp() { return new Date().toISOString(); }
+  function escapeHTML(v) { return String(v ?? '').replace(/[&<>"']/g, x => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x])); }
   function makeEvent(type, title, description, incident = false) {
     const event = { id: uuid('EVT'), type, title, description, ts: timestamp(), synthetic: true, acknowledged: !incident };
     state.events.unshift(event); state.events = state.events.slice(0, 100);
@@ -100,7 +101,7 @@
     $('#sim-run-state').style.color = state.running ? '#82edc8' : '#ffbc62';
   }
   function renderStats() {
-    $('#stat-units').textContent = state.units.length;
+    $('#stat-units').textContent = state.units.length + state.gatewayUnits.length;
     $('#stat-packets').textContent = state.packets.toLocaleString();
     $('#stat-latency').textContent = state.latency;
     const open = state.events.filter((e) => e.type === 'incident' && !e.acknowledged).length;
@@ -201,7 +202,7 @@
       addSvg('circle', { cx: point.x, cy: point.y, r: radius, fill: '#4af0df', 'fill-opacity': .035, stroke: '#39dec7', 'stroke-width': 1.5, 'stroke-dasharray': '6 6', 'stroke-opacity': .7 }, svg);
       addSvg('circle', { cx: point.x, cy: point.y, r: 3, fill: '#86fcdf' }, svg);
     }
-    state.units.filter(visibleUnit).forEach((unit) => {
+    [...state.units,...state.gatewayUnits].filter(visibleUnit).forEach((unit) => {
       if (preferences.trails && unit.history.length > 1) {
         const pts = unit.history.map(([lat, lon]) => { const p = project(lat, lon); return `${p.x.toFixed(1)},${p.y.toFixed(1)}`; }).join(' ');
         addSvg('polyline', { points: pts, fill: 'none', stroke: unit.type === 'air' ? '#b28aff' : unit.type === 'maritime' ? '#ffbc62' : '#39d9d2', 'stroke-width': 1.6, 'stroke-opacity': .55, 'stroke-dasharray': '4 5' }, svg);
@@ -209,7 +210,7 @@
       const p = project(unit.lat, unit.lon); if (p.x < -30 || p.y < -30 || p.x > width + 30 || p.y > height + 30) return;
       const button = document.createElement('button');
       button.className = `marker ${unit.type}${state.selected === unit.id ? ' selected' : ''}`;
-      button.style.left = `${p.x}px`; button.style.top = `${p.y}px`; button.title = `SIMULATED ${unit.id}`; button.setAttribute('aria-label', `Inspect simulated asset ${unit.id}`);
+      button.style.left = `${p.x}px`; button.style.top = `${p.y}px`; button.title = `${unit.synthetic === false ? 'UNVERIFIED LAB' : 'SYNTHETIC'} ${unit.id}`; button.setAttribute('aria-label', `Inspect lab asset ${unit.id}`);
       const glyph = document.createElement('span'); glyph.className = 'marker-symbol'; glyph.textContent = symbols[unit.type];
       const title = document.createElement('span'); title.className = 'marker-call'; title.textContent = unit.id;
       button.append(glyph, title);
@@ -230,12 +231,15 @@
     $('#map-coordinates').textContent = `${Math.abs(state.center.lat).toFixed(3)}° ${state.center.lat >= 0 ? 'N' : 'S'} · ${Math.abs(state.center.lon).toFixed(3)}° ${state.center.lon >= 0 ? 'E' : 'W'} · Z${state.zoom}`;
   }
   function renderInspector() {
-    const unit = state.units.find((p) => p.id === state.selected) || state.units[0];
+    const unit = [...state.units,...state.gatewayUnits].find((p) => p.id === state.selected) || state.units[0];
     const inspector = $('#asset-inspector'); if (!unit) return;
     const age = state.tick ? `T+${state.tick}` : 'T+0';
-    inspector.innerHTML = `<div class="asset-top"><span class="asset-avatar">${symbols[unit.type]}</span><span><b>${unit.id}</b><small>${types[unit.type]} · SYNTHETIC</small></span></div>
-      <div class="inspector-desc">${unit.label} — demo unit trajectory calculated entirely in your browser.</div>
-      <div class="inspector-grid"><div class="inspector-cell"><small>SIMULATED STATUS</small><strong>${unit.status}</strong></div><div class="inspector-cell"><small>PROVENANCE</small><strong>LOCAL GENERATOR</strong></div><div class="inspector-cell"><small>LATITUDE</small><strong>${unit.lat.toFixed(5)}</strong></div><div class="inspector-cell"><small>LONGITUDE</small><strong>${unit.lon.toFixed(5)}</strong></div><div class="inspector-cell"><small>TRACK POINTS</small><strong>${unit.history.length}</strong></div><div class="inspector-cell"><small>UPDATE / DEMO</small><strong>${age}</strong></div></div>`;
+    const safeType = ['ground','air','sensor','maritime'].includes(unit.type) ? unit.type : 'ground';
+    const source = escapeHTML(unit.source || 'LOCAL GENERATOR');
+    const claim = unit.synthetic === false ? 'UNVERIFIED / LAB' : 'SYNTHETIC';
+    inspector.innerHTML = `<div class="asset-top"><span class="asset-avatar">${symbols[safeType]}</span><span><b>${escapeHTML(unit.id)}</b><small>${types[safeType]} · ${claim}</small></span></div>
+      <div class="inspector-desc">${escapeHTML(unit.label)} — ${unit.synthetic === false ? 'unverified local CoT input; not an authoritative track.' : 'synthetic laboratory data only.'}</div>
+      <div class="inspector-grid"><div class="inspector-cell"><small>LAB STATUS</small><strong>${escapeHTML(unit.status)}</strong></div><div class="inspector-cell"><small>PROVENANCE</small><strong>${source}</strong></div><div class="inspector-cell"><small>LATITUDE</small><strong>${unit.lat.toFixed(5)}</strong></div><div class="inspector-cell"><small>LONGITUDE</small><strong>${unit.lon.toFixed(5)}</strong></div><div class="inspector-cell"><small>TRACK POINTS</small><strong>${unit.history.length}</strong></div><div class="inspector-cell"><small>UPDATE</small><strong>${escapeHTML(unit.timestamp || age)}</strong></div></div>`;
   }
   function renderRecentEvents() {
     const layer = $('#recent-events'); layer.replaceChildren();
@@ -248,7 +252,7 @@
     });
   }
   function renderTopology() {
-    const nodes = [['▣', 'Browser VM Console', 'RUNNING / DEMO', false], ['⊙', 'Simulation Broker', 'LOCAL / DEMO', false], ['⌁', 'CoT Adapter', 'REAL OFFLINE', true], ['◉', 'Map + Event View', 'ACTIVE / DEMO', false]];
+    const nodes = [['▣', 'Browser VM Console', 'RUNNING / DEMO', false], ['⊙', 'Python + SQLite', state.gatewayConnected ? 'LOCAL / ONLINE' : 'OPTIONAL / OFFLINE', !state.gatewayConnected], ['⌁', 'CoT 2.0 Gateway', state.gatewayConnected ? 'SYNTHETIC / LOCAL' : 'OFFLINE', !state.gatewayConnected], ['◉', 'Map + Event View', 'ACTIVE / DEMO', false]];
     $('#topology').replaceChildren(...nodes.flatMap(([icon, title, stateText, offline], i) => {
       const item = document.createElement('div'); item.className = 'topology-item';
       const orb = document.createElement('span'); orb.className = `topology-node${offline ? ' offline' : ''}`; orb.textContent = icon;
@@ -310,7 +314,8 @@
       ['MarineObservation', `${state.units.filter((x) => x.type === 'maritime').length} entities`, 'Synthetic maritime tracks'],
       ['ScenarioEvent', `${state.events.length} entities`, 'Browser-generated event records'],
       ['UserAnnotation', `${state.annotations.length} entities`, 'Browser-local, deletable'],
-      ['RealCoTConnection', '0 entities', 'Not configured / not connected'],
+      ['LocalCoTGateway', `${state.gatewayUnits.length} entities`, state.gatewayConnected ? 'Local SSE and SQLite CoT lab' : 'Offline (browser only)'],
+      ['RealCoTConnection', '0 entities', 'No authorized external endpoint connected'],
     ];
     data.forEach(([name, count, provenance]) => {
       const row = document.createElement('div'); row.className = 'ontology-entry';
@@ -454,6 +459,35 @@
     });
     window.addEventListener('resize', () => { if (state.view === 'map') { renderTiles(); renderMap(); } });
   }
+  // The only intentional integration boundary for the optional, same-origin
+  // CoT/SSE lab service. Static GitHub Pages continues to work without it.
+  window.TAKOSApp = Object.freeze({
+    setGatewayConnection(connected) {
+      state.gatewayConnected = !!connected;
+      renderTopology();
+      const local = $('#vm-gateway-local-state');
+      if (local) { local.textContent = connected ? 'LOCAL SSE ONLINE' : 'NOT STARTED'; local.className = connected ? 'ok-text' : 'warn-text'; }
+    },
+    setGatewayUnits(raw) {
+      if (!Array.isArray(raw)) return;
+      state.gatewayUnits = raw.slice(0, 50).flatMap((unit) => {
+        if (!unit || typeof unit.id !== 'string' || !/^[A-Za-z0-9_.:@/-]{1,128}$/.test(unit.id)) return [];
+        const lat = Number(unit.lat), lon = Number(unit.lon);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return [];
+        const type = ['ground','air','sensor','maritime'].includes(unit.type) ? unit.type : 'ground';
+        const history = Array.isArray(unit.history) ? unit.history.slice(-30).filter(pair => Array.isArray(pair) && pair.length === 2 && pair.every(Number.isFinite)) : [];
+        return [{
+          id: unit.id, type, lat, lon, label: String(unit.label || unit.id).slice(0,80),
+          status: String(unit.status || 'LOCAL CoT').slice(0,70),
+          timestamp: String(unit.timestamp || '').slice(0,60),
+          source: String(unit.source || 'LOCAL GATEWAY').slice(0,55),
+          synthetic: unit.synthetic === true, history,
+        }];
+      });
+      renderAll();
+      renderTopology();
+    },
+  });
   function startClock() {
     const draw = () => { $('#utc-clock').textContent = new Date().toISOString().slice(11, 19) + ' UTC'; };
     draw(); setInterval(draw, 1000); setInterval(advance, 1200);

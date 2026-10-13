@@ -59,7 +59,7 @@
     state.health = health;
     $('#gateway-transport').textContent = safe(health.transport);
     $('#gateway-count').textContent = safe(health.acceptedCoT);
-    $('#gateway-udp').textContent = health.udpLoopbackPort ? '127.0.0.1:' + health.udpLoopbackPort : 'DISABLED';
+    $('#gateway-udp').textContent = (health.udpLoopbackPort ? 'UDP ' + health.udpLoopbackPort : 'UDP OFF') + ' / ' + (health.tcpLoopbackPort ? 'TCP ' + health.tcpLoopbackPort : 'TCP OFF');
   }
 
   function ingestFrame(frame) {
