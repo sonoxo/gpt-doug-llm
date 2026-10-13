@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080f1d">
+<title>GPT-DOUG // LUNAR COMMAND MATRIX</title>
+<style>
+:root{color-scheme:dark;--bg:#060b16;--panel:#0d1928;--pane2:#101f32;--stroke:#23354b;--fg:#e6f4ff;--muted:#8ba3bb;--accent:#52f5d0;--blue:#65a4ff;--gold:#f5c46c;--red:#ff7182;--grid:rgba(89,177,232,.065);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -40%,#112d47 0,transparent 55%),var(--bg);color:var(--fg);font-size:13px}button,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.app{max-width:1800px;margin:0 auto;padding:20px 22px 30px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid var(--stroke);padding-bottom:16px}.brand{display:flex;align-items:center;gap:14px}.brandmark{height:44px;width:44px;border:1px solid #337c8c;border-radius:13px;background:radial-gradient(circle,#214a5d,#0a1426);display:grid;place-items:center;color:var(--accent);font-size:23px;box-shadow:0 0 38px #00efcc1a}.eyebrow{color:var(--accent);letter-spacing:3px;font-size:10px;font-weight:800}h1{font-size:24px;letter-spacing:1.3px;line-height:1.2;margin:3px 0;font-weight:750}h2,h3,p{margin-top:0}.subtitle{color:var(--muted);font-size:11px}.topright{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.badge{font-size:10px;letter-spacing:1px;border:1px solid #1d806e;background:#0c332e;color:#8af8d6;padding:7px 10px;border-radius:30px;font-weight:700;white-space:nowrap}.badge.sim{border-color:#32516d;background:#102237;color:#bbd5f7}.time{border-left:1px solid var(--stroke);padding-left:16px}.time strong{display:block;letter-spacing:1.3px;font-size:16px}.time small{color:var(--muted);font-size:10px}.metrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:17px 0}.metric{border:1px solid var(--stroke);background:linear-gradient(145deg,#112336,#091522);border-radius:10px;padding:13px 15px;min-height:89px}.metric .name{font-size:10px;font-weight:750;color:#90a9c0;letter-spacing:1.25px}.metric .num{font-size:28px;letter-spacing:-.4px;font-weight:700;margin-top:8px;line-height:1.1}.metric .num em{font-size:12px;font-style:normal;color:var(--muted);margin-left:3px}.metric .hint{color:var(--muted);font-size:10px;margin-top:4px}.green{color:var(--accent)}.warn{color:var(--gold)}.red{color:var(--red)}.blue{color:var(--blue)}.body-grid{display:grid;grid-template-columns:245px minmax(500px,1fr) 277px;gap:13px;align-items:stretch}.panel{border:1px solid var(--stroke);background:#0b1726;border-radius:12px;min-width:0;overflow:hidden}.panelheader{display:flex;justify-content:space-between;align-items:center;padding:15px 15px 12px;border-bottom:1px solid #203349}.panelheader h2{font-size:11px;letter-spacing:1.6px;color:#cce2f0;margin:0}.panelheader span{font-size:10px;color:var(--muted)}.sidebar .group{padding:15px;border-bottom:1px solid #17283b}.groupname{font-size:10px;letter-spacing:1.6px;font-weight:750;color:#7491ac;margin:0 0 12px}.base{display:flex;gap:10px;padding:11px;border-radius:8px;cursor:pointer;border:1px solid transparent;margin-bottom:7px;transition:background .2s}.base:hover{background:#162c40}.base.selected{background:#132a3b;border-color:#2e566c}.node{width:30px;height:30px;border:1px solid #3bb8ac;border-radius:8px;display:grid;place-items:center;color:var(--accent);font-size:14px;flex-shrink:0}.base strong,.agent strong{display:block;font-size:11px;letter-spacing:.6px}.base small,.agent small{display:block;color:var(--muted);font-size:10px;margin-top:4px}.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin-right:5px}.sidebar .agent{display:flex;align-items:center;gap:9px;padding:7px 0}.agenticon{width:26px;height:26px;display:grid;place-items:center;background:#152b3c;color:var(--blue);border-radius:6px;font-size:12px}.status{margin-left:auto;font-size:9px;color:var(--accent);letter-spacing:.4px}.status.hold{color:var(--gold)}.mini-legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:10px;margin-top:15px}.selection{font-size:11px;line-height:1.65;color:#b0c4d5}.selection strong{color:white}.view{display:flex;flex-direction:column}.maphead{height:51px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--stroke)}.tabs{display:flex;gap:4px}.tab{border:0;background:transparent;color:#7998b2;padding:9px 12px;border-radius:5px;font-size:10px;letter-spacing:1.2px;font-weight:800}.tab.active{background:#163246;color:#86edd7}.coords{color:var(--muted);font-family:ui-monospace,monospace;font-size:10px}.mapwrap{position:relative;min-height:525px;background:radial-gradient(ellipse at 50% 45%,#233447,#0b1525 70%);overflow:hidden}.mapwrap:after{position:absolute;content:"";inset:0;pointer-events:none;background:linear-gradient(transparent 50%,rgba(0,0,0,.07) 50%);background-size:100% 4px;opacity:.4}.map{display:block;width:100%;height:525px}.map svg{display:block;width:100%;height:100%}.map .asset{cursor:pointer;transform-box:fill-box;transform-origin:center;transition:filter .2s}.map .asset:hover{filter:drop-shadow(0 0 8px #ffffff)}.overlaytop{position:absolute;top:18px;left:18px;z-index:1;border:1px solid #28455e;background:#081522b8;border-radius:8px;padding:11px 13px;pointer-events:none}.overlaytop b{letter-spacing:1.5px;font-size:11px}.overlaytop small{color:#8daec1;display:block;margin-top:4px}.scale{position:absolute;bottom:19px;left:19px;color:#b2c9dc;font:10px ui-monospace,monospace;background:#091a2bc7;padding:6px 9px;border:1px solid #213a4b}.overlaybottom{position:absolute;bottom:18px;right:18px;color:#abd9d6;background:#091a2bc7;padding:6px 9px;border:1px solid #254c55;font:10px ui-monospace,monospace}.mapfooter{display:flex;gap:15px;padding:12px 16px;align-items:center;justify-content:space-between;border-top:1px solid var(--stroke);color:var(--muted);font-size:10px}.mapfooter b{color:var(--fg)}.controls .inside{padding:13px 14px}.control-title{font-size:10px;letter-spacing:1.7px;color:#94b6c9;margin:3px 0 12px}.buttonrow{display:flex;gap:7px;margin:8px 0}.btn{border:1px solid #324f63;background:#152b3e;color:#d5eaf7;padding:10px 11px;border-radius:7px;font-size:11px;font-weight:700;letter-spacing:.4px;transition:filter .2s,background .2s;flex:1}.btn:hover{filter:brightness(1.18)}.btn.primary{background:#0f5a50;border-color:#158e7b;color:#c7fff1}.btn.gold{background:#4f3a1b;border-color:#906b35;color:#ffe5a4}.btn.danger{background:#56202c;border-color:#a03b4b;color:#ffd0d7}.btn.active{box-shadow:inset 0 0 0 1px #e7ce9a}.btn.small{font-size:10px;padding:8px 5px}.btn:disabled{box-shadow:none}.controlbox{border:1px solid #2b4259;background:#0d1d2c;padding:12px;border-radius:9px;margin-bottom:11px}.controlbox p{font-size:10px;color:#a5b8cc;margin:5px 0 9px;line-height:1.6}.controlbox b{font-size:11px;letter-spacing:.4px}.condition{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #203349;font-size:11px;gap:5px}.condition span{color:var(--muted)}.condition strong{font-size:10px}.sep{height:1px;background:var(--stroke);margin:15px 0}.speed{display:flex;justify-content:space-between;gap:7px}.speed button{flex:1}.tiny{font-size:10px;color:var(--muted);line-height:1.5}.lower{display:grid;grid-template-columns:minmax(350px,1fr) minmax(310px,1fr);gap:13px;margin-top:13px}.log{padding:10px 14px;height:229px;overflow:auto}.logrow{display:grid;grid-template-columns:45px 70px 1fr;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid #1a2a3d;font-size:11px;line-height:1.5}.logrow time{color:#87a6bd;font:10px ui-monospace,monospace}.logrow span{font-size:9px;letter-spacing:.7px;font-weight:750}.logrow p{margin:0;color:#b8cde0}.rovergrid{padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-height:229px;overflow:auto}.rovercard{border:1px solid #263b50;border-radius:8px;background:#102135;padding:11px}.rovercard .line{display:flex;align-items:center;justify-content:space-between;gap:8px}.rovercard b{font-size:11px}.rovercard small{font-size:9px;color:var(--muted);display:block;margin-top:7px}.meter{height:5px;border-radius:4px;background:#213447;overflow:hidden;margin-top:10px}.meter div{background:linear-gradient(90deg,#32b49c,#8cffe8);height:100%;border-radius:4px}.footer{margin-top:14px;color:#68849c;font-size:10px;letter-spacing:.2px;display:flex;gap:12px;justify-content:space-between}.footer b{color:#94adbe}.toast{position:fixed;bottom:18px;right:20px;max-width:380px;background:#203a4c;color:#f6fbff;border:1px solid #5b8298;border-radius:8px;padding:13px 15px;box-shadow:0 6px 36px #0008;z-index:9;display:none}.toast.visible{display:block}@media(max-width:1250px){.body-grid{grid-template-columns:205px minmax(420px,1fr) 238px}.app{padding:15px}.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.mapwrap{min-height:470px}.map{height:470px}}@media(max-width:960px){.body-grid{grid-template-columns:1fr 270px}.sidebar{grid-column:1 / -1}.sidebar .sidebarbody{display:grid;grid-template-columns:1fr 1fr 1fr}.sidebar .group{border-right:1px solid var(--stroke)}.view{grid-column:1}.controls{grid-column:2}.lower{grid-template-columns:1fr}}@media(max-width:740px){.top{align-items:flex-start}.brandmark{display:none}h1{font-size:17px}.topright{justify-content:flex-end}.time{display:none}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.body-grid{display:block}.body-grid>.panel{margin-bottom:12px}.sidebar .sidebarbody{display:block}.mapwrap{min-height:335px}.map{height:335px}.coords{display:none}.lower{display:block}.lower>.panel{margin-bottom:12px}.footer{display:block}.tab{padding:8px 7px}.overlaytop{top:10px;left:10px}.overlaybottom{right:8px;bottom:8px}}
+
+.view .mapwrap{flex:1}.view .mapwrap .map{position:absolute;inset:0;height:100%}.view .mapwrap .map svg{height:100%}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div class="brandmark">◈</div><div><div class="eyebrow">SONOXO // GPT-DOUG-LLM</div><h1>LUNAR COMMAND <span class="green">MATRIX</span></h1><div class="subtitle">AUTONOMOUS SYSTEMS // MISSION RESILIENCE // LUNAR SURFACE OPERATIONS</div></div></div><div class="topright"><span class="badge sim">OFFLINE TRAINING ONLY</span><span class="badge" id="global-status">● ALL SYSTEMS NOMINAL</span><div class="time"><strong id="missionclock">T+ 000:00</strong><small>SIMULATION CLOCK · 1 TICK = 1 MIN</small></div></div></header>
+<section class="metrics" aria-label="Mission metrics">
+<div class="metric"><div class="name">MISSION CLOCK</div><div class="num green" id="kpi-clock">000:00</div><div class="hint">SIMULATED MISSION TIME</div></div>
+<div class="metric"><div class="name">GRID POWER</div><div class="num" id="kpi-power">--<em>%</em></div><div class="hint">AVERAGE · 2 HABITATS</div></div>
+<div class="metric"><div class="name">OXYGEN RESERVE</div><div class="num" id="kpi-oxygen">--<em>%</em></div><div class="hint">CLOSED-LOOP LIFE SUPPORT</div></div>
+<div class="metric"><div class="name">WATER STORES</div><div class="num" id="kpi-water">--<em>%</em></div><div class="hint">RECYCLING SIMULATION</div></div>
+<div class="metric"><div class="name">ROVER AUTONOMY</div><div class="num green" id="kpi-rovers">--<em>/4</em></div><div class="hint">ACTIVE FIELD AGENTS</div></div>
+<div class="metric"><div class="name">COMMS UPLINK</div><div class="num green" id="kpi-link" style="font-size:22px">SIMULATED</div><div class="hint">NO LIVE SPACE LINK</div></div>
+</section>
+<div class="body-grid">
+<aside class="panel sidebar"><div class="panelheader"><h2>ASSET REGISTRY</h2><span>MOON-LOCAL</span></div><div class="sidebarbody"><section class="group"><div class="groupname">LUNAR HABITATS <span class="green">02</span></div><div id="base-list"></div></section><section class="group"><div class="groupname">AUTONOMOUS ROVERS <span class="green">04</span></div><div id="agent-list"></div></section><section class="group"><div class="groupname">SELECTED ASSET</div><div id="selection" class="selection"></div><div class="mini-legend"><span><i class="dot"></i>Nominal</span><span><i class="dot" style="background:var(--gold)"></i>Caution</span><span><i class="dot" style="background:var(--red)"></i>Critical</span></div></section></div></aside>
+<section class="panel view"><div class="maphead"><div class="tabs"><button class="tab active" data-tab="SURFACE">SURFACE MAP</button><button class="tab" data-tab="ORBIT">ORBITAL MATRIX</button><button class="tab" data-tab="NETWORK">SYSTEM GRAPH</button></div><div class="coords">FRAME: MOON_LOCAL_ENU_KM</div></div><div class="mapwrap"><div id="map" class="map" role="img" aria-label="Interactive synthetic lunar surface and orbit mission visualization"></div><div class="overlaytop"><b id="scene-title">LUNAR SOUTH POLAR SECTOR</b><small id="scene-subtitle">Procedural terrain · not navigation-grade</small></div><div class="scale" id="scale">◀──────── 2 km ────────▶</div><div class="overlaybottom" id="map-hud">GRAVITY 1.62 m/s² · TRAINING</div></div><div class="mapfooter"><div><b>◉ MISSION STATE:</b> <span id="mission-state">NOMINAL</span></div><div><b>AREA SURVEYED:</b> <span id="surveyed">0.0 km</span></div><div><b>DELIVERIES:</b> <span id="deliveries">0</span></div></div></section>
+<aside class="panel controls"><div class="panelheader"><h2>MISSION CONTROL</h2><span class="green">LOCAL</span></div><div class="inside"><div class="control-title">TIME & AUTONOMY</div><div class="buttonrow"><button id="play" class="btn primary">▶ RUN</button><button id="pause" class="btn">Ⅱ PAUSE</button><button id="step" class="btn">⇥ STEP</button></div><div class="speed"><button class="btn small active" data-speed="1">1×</button><button class="btn small" data-speed="4">4×</button><button class="btn small" data-speed="12">12×</button></div><div class="sep"></div><div class="control-title">SPACECRAFT FLIGHT PLAN</div><div class="controlbox"><b id="craft-name">ODYSSEY-01 / UNCREWED</b><p id="craft-phase">STANDBY · Supply transfer simulation</p><div class="meter"><div id="craft-progress" style="width:0%"></div></div><div class="buttonrow" style="margin-top:12px"><button class="btn gold" id="request">REQUEST CARGO</button></div><div class="buttonrow" id="review-actions" style="display:none"><button class="btn primary" id="approve">APPROVE</button><button class="btn" id="reject">DENY</button></div></div><div class="control-title">SCENARIO INJECTION</div><div class="buttonrow"><button class="btn small" id="storm">SOLAR STORM</button><button class="btn small" id="outage">COMMS LOSS</button></div><div class="buttonrow"><button class="btn small" id="dust">LUNAR DUST</button><button class="btn small" id="reset">↺ RESET</button></div><div class="sep"></div><div class="control-title">INTEGRITY & POLICY</div><div class="condition"><span>Navigation frame</span><strong class="green">MOON-LOCAL KM</strong></div><div class="condition"><span>Real-world actuation</span><strong class="green">BLOCKED</strong></div><div class="condition"><span>TAK outbound</span><strong class="green">DISABLED</strong></div><div class="condition"><span>Operator approval</span><strong class="warn">REQUIRED</strong></div><div class="buttonrow" style="margin-top:13px"><button class="btn danger" id="halt">■ STOP ALL AGENTS</button></div><div class="buttonrow"><button class="btn" id="resume" disabled>RESUME SIM</button></div><div class="buttonrow"><button class="btn small" id="snapshot">EXPORT STATE</button><button class="btn small" id="tak">TAK PREVIEW</button></div><p class="tiny">Only synthetic spacecraft phases, assets and Moon-local coordinates are modeled. No actual TAK, satellite, rover, weapon or military infrastructure connections.</p></div></aside>
+</div>
+<div class="lower"><section class="panel"><div class="panelheader"><h2>LIVE MISSION EVENT STREAM</h2><span id="event-count">0 EVENTS</span></div><div id="eventlog" class="log" aria-live="polite"></div></section><section class="panel"><div class="panelheader"><h2>SWARM TELEMETRY / BATTERY</h2><span>DETERMINISTIC AGENTS</span></div><div id="rovergrid" class="rovergrid"></div></section></div>
+<div class="footer"><span><b>GPT-DOUG-LLM · LUNAR OPS v0.1</b> · OPEN-SOURCE SANDBOX · ALL INDICATORS SYNTHETIC</span><span>LOCAL FILES ONLY · ZERO EXTERNAL APIS · NO LIVE CoT/ATAK TRANSMISSION</span></div>
+</div><div class="toast" id="toast" role="status"></div>
+<script type="module">
+/**
+ * GPT-Doug Lunar Command Matrix: deterministic, local-only mission simulation.
+ * No vehicle control, live telemetry, weapon systems, network code or CoT transmission.
+ * All Cartesian coordinates are synthetic Moon-local east/north kilometers, NOT WGS84.
+ */
+const SCHEMA = 'sonoxo.lunar.sim.v1';
+const FRAME = 'MOON_LOCAL_ENU_KM';
+const ALLOWED_COMMANDS = Object.freeze([
+  'REQUEST_SUPPLY', 'APPROVE_SUPPLY', 'REJECT_SUPPLY',
+  'TOGGLE_STORM', 'TOGGLE_OUTAGE', 'TOGGLE_DUST', 'EMERGENCY_STOP', 'RESUME',
+]);
+
+const round = (n, digits = 2) => Number(n.toFixed(digits));
+const clamp = (n, lo = 0, hi = 100) => round(Math.max(lo, Math.min(hi, n)));
+const copy = state => JSON.parse(JSON.stringify(state));
+const event = (state, severity, source, message) => {
+  state.events.unshift({ id: `LOG-${String(++state.logSeq).padStart(5, '0')}`, tick: state.tick, severity, source, message });
+  state.events.length = Math.min(state.events.length, 70);
+};
+
+function makeScenario(seed = 7) {
+  if (!Number.isSafeInteger(seed) || seed < 0 || seed > 1000000) throw new Error('seed must be an integer from 0 to 1000000');
+  const s = {
+    schema: SCHEMA, frame: FRAME, mode: 'SYNTHETIC_TRAINING', seed, tick: 0, logSeq: 0,
+    simulationOnly: true, externalActuation: false, networkEnabled: false,
+    humanApprovalRequired: true, halted: false,
+    lunar: { gravityMps2: 1.62, scaleKm: 14, terrain: 'procedural_not_navigation_grade' },
+    environment: { illumination: 0.82, radiation: 12, dust: false, solarStorm: false, commsOutage: false },
+    bases: [
+      { id: 'ARGENT-1', name: 'ARGENT POLAR', x: -2.4, y: 1.8, crew: 4, power: 88, oxygen: 84, water: 74, integrity: 96, solarCapacity: 1.15, status: 'NOMINAL' },
+      { id: 'SELENE-2', name: 'SELENE RIDGE', x: 3.2, y: -1.8, crew: 2, power: 79, oxygen: 89, water: 83, integrity: 93, solarCapacity: 1.05, status: 'NOMINAL' },
+    ],
+    rovers: [
+      { id: 'SCOUT-07', name: 'SCOUT-07', baseId: 'ARGENT-1', role: 'SURVEY', x: -3.0, y: 2.7, battery: 87, task: 'SURVEYING', status: 'ACTIVE', payload: 0 },
+      { id: 'HAUL-02', name: 'HAUL-02', baseId: 'ARGENT-1', role: 'HAUL', x: -1.4, y: 2.1, battery: 75, task: 'TRANSPORT', status: 'ACTIVE', payload: 4 },
+      { id: 'MAINT-04', name: 'MAINT-04', baseId: 'SELENE-2', role: 'MAINT', x: 4.0, y: -2.9, battery: 93, task: 'INSPECT', status: 'ACTIVE', payload: 0 },
+      { id: 'SCOUT-09', name: 'SCOUT-09', baseId: 'SELENE-2', role: 'SURVEY', x: 2.1, y: -2.8, battery: 65, task: 'SURVEYING', status: 'ACTIVE', payload: 0 },
+    ],
+    spacecraft: [
+      { id: 'ODYSSEY-01', kind: 'UNCREWED_CARGO', phase: 'STANDBY', progress: 0, payloadTons: 2.4, destination: 'ARGENT-1', condition: 'NOMINAL' },
+      { id: 'LUNA-RELAY', kind: 'COMMUNICATION_RELAY', phase: 'LUNAR_ORBIT', progress: 0.32, payloadTons: 0, destination: 'ORBIT', condition: 'NOMINAL' },
+    ],
+    pending: [], delivered: 0, surveyedKm: 0, events: [],
+  };
+  event(s, 'INFO', 'MATRIX', 'Synthetic lunar command simulation initialized. All external actuation disabled.');
+  event(s, 'INFO', 'AUTONOMY', 'Four rover agents registered; operator approval governs spacecraft cargo release.');
+  return s;
+}
+
+function validateScenario(state) {
+  if (!state || typeof state !== 'object' || Array.isArray(state)) throw new Error('scenario must be a JSON object');
+  if (state.schema !== SCHEMA || state.frame !== FRAME || state.mode !== 'SYNTHETIC_TRAINING') throw new Error('unsupported simulation schema or coordinate reference frame');
+  if (state.simulationOnly !== true || state.externalActuation !== false || state.networkEnabled !== false || state.humanApprovalRequired !== true) throw new Error('simulation-only policy cannot be disabled');
+  if (!Number.isSafeInteger(state.tick) || state.tick < 0 || state.tick > 100000) throw new Error('invalid simulation tick');
+  if (!Array.isArray(state.bases) || state.bases.length !== 2 || !Array.isArray(state.rovers) || state.rovers.length !== 4 || !Array.isArray(state.spacecraft) || state.spacecraft.length !== 2) throw new Error('unexpected asset inventory');
+  if (!Array.isArray(state.pending) || !Array.isArray(state.events)) throw new Error('invalid event log or approval queue');
+  const restricted = /(?:^|_)(weapon|munition|targeting|firecontrol|realworldendpoint|livecoordinates|credentials|personid)(?:$|_)/i;
+  const stack = [{ obj: state, depth: 0 }];
+  while (stack.length) {
+    const { obj, depth } = stack.pop();
+    if (depth > 8) throw new Error('scenario nesting too deep');
+    for (const [key, value] of Object.entries(obj)) {
+      if (restricted.test(key)) throw new Error(`restricted field: ${key}`);
+      if (value && typeof value === 'object') stack.push({ obj: value, depth: depth + 1 });
+    }
+  }
+  return true;
+}
+
+const moveToward = (agent, targetX, targetY, maxDistance) => {
+  const dx = targetX - agent.x, dy = targetY - agent.y;
+  const d = Math.hypot(dx, dy);
+  if (d <= maxDistance) { agent.x = round(targetX); agent.y = round(targetY); return d; }
+  agent.x = round(agent.x + dx / d * maxDistance);
+  agent.y = round(agent.y + dy / d * maxDistance);
+  return maxDistance;
+};
+
+function roverStep(s, rover) {
+  const base = s.bases.find(b => b.id === rover.baseId);
+  if (s.environment.solarStorm || s.environment.dust) {
+    rover.task = 'SHELTER'; rover.status = 'SAFE_HOLD';
+    return;
+  }
+  if (rover.battery < 28 || rover.task === 'CHARGING') {
+    rover.task = 'CHARGING';
+    if (Math.hypot(rover.x - base.x, rover.y - base.y) <= 0.22) {
+      rover.battery = clamp(rover.battery + (base.power > 20 ? 6 : 0.5));
+      rover.status = 'CHARGING';
+      if (rover.battery >= 92) { rover.task = 'READY'; rover.status = 'ACTIVE'; event(s, 'INFO', rover.id, 'Battery restored; autonomous work resumed.'); }
+    } else {
+      moveToward(rover, base.x, base.y, 0.18);
+      rover.battery = clamp(rover.battery - 0.15);
+      rover.status = 'RETURN_TO_BASE';
+    }
+    return;
+  }
+  if (s.environment.commsOutage && rover.role === 'HAUL') {
+    rover.task = 'LOCAL_SAFE_HOLD'; rover.status = 'SAFE_HOLD';
+    return;
+  }
+  if (rover.role === 'MAINT') {
+    rover.task = base.integrity < 95 ? 'REPAIR' : 'INSPECT';
+    moveToward(rover, base.x + 0.12, base.y + 0.14, 0.12);
+    if (base.integrity < 95 && Math.hypot(rover.x - base.x, rover.y - base.y) < 0.35) {
+      base.integrity = clamp(base.integrity + 0.7);
+    }
+    rover.battery = clamp(rover.battery - 0.21);
+  } else if (rover.role === 'HAUL') {
+    rover.task = 'TRANSPORT';
+    // Bounded synthetic depot shuttle, not a robot drive plan.
+    const depotX = base.x + 2, depotY = base.y + 0.6;
+    const outward = Math.sin(s.tick * 0.09) > 0;
+    moveToward(rover, outward ? depotX : base.x, outward ? depotY : base.y, 0.16);
+    rover.payload = outward ? 0 : 4;
+    rover.battery = clamp(rover.battery - 0.18);
+  } else {
+    rover.task = 'SURVEYING';
+    const theta = s.tick * 0.075 + (rover.id.endsWith('09') ? 2.2 : 0);
+    const x = base.x + Math.cos(theta) * 1.6;
+    const y = base.y + Math.sin(theta) * 1.6;
+    const moved = moveToward(rover, x, y, 0.15);
+    s.surveyedKm = round(s.surveyedKm + moved);
+    rover.battery = clamp(rover.battery - 0.17);
+  }
+  rover.status = 'ACTIVE';
+}
+
+function cargoStep(s) {
+  const craft = s.spacecraft[0];
+  if (!['TRANSIT', 'LUNAR_ORBIT', 'DESCENT'].includes(craft.phase)) return;
+  if (s.environment.commsOutage && craft.phase === 'DESCENT') {
+    craft.condition = 'HOLD_COMMS';
+    return;
+  }
+  if (s.environment.solarStorm && craft.phase === 'DESCENT') {
+    craft.condition = 'HOLD_STORM';
+    return;
+  }
+  craft.condition = 'NOMINAL';
+  craft.progress = round(Math.min(1, craft.progress + (craft.phase === 'TRANSIT' ? 0.06 : craft.phase === 'LUNAR_ORBIT' ? 0.09 : 0.11)), 3);
+  if (craft.progress < 1) return;
+  if (craft.phase === 'TRANSIT') {
+    craft.phase = 'LUNAR_ORBIT'; craft.progress = 0;
+    event(s, 'INFO', craft.id, 'Synthetic Earth-Moon transfer complete; orbital sequence entered.');
+  } else if (craft.phase === 'LUNAR_ORBIT') {
+    if (s.environment.commsOutage || s.environment.solarStorm) {
+      craft.progress = 1; craft.condition = 'HOLD_ENVIRONMENT';
+      event(s, 'ADVISORY', craft.id, 'Descent suspended until simulated environment recovers.');
+    } else {
+      craft.phase = 'DESCENT'; craft.progress = 0;
+      event(s, 'ADVISORY', craft.id, 'Scripted descent simulation started. No flight commands issued.');
+    }
+  } else {
+    craft.phase = 'DELIVERED'; craft.progress = 1; s.delivered += 1;
+    const base = s.bases.find(b => b.id === craft.destination);
+    base.oxygen = clamp(base.oxygen + 19);
+    base.water = clamp(base.water + 20);
+    base.power = clamp(base.power + 16);
+    base.integrity = clamp(base.integrity + 4);
+    event(s, 'INFO', craft.id, `${craft.payloadTons} t of synthetic cargo delivered to ${base.id}; resource ledger updated.`);
+  }
+}
+
+function stepScenario(state) {
+  validateScenario(state);
+  if (state.halted) return copy(state);
+  if (state.tick >= 100000) throw new Error('scenario maximum duration reached');
+  const s = copy(state);
+  s.tick += 1;
+  const e = s.environment;
+  // Stylized south-pole sunlight cycle; NOT a predictive ephemeris.
+  e.illumination = round(Math.max(0.05, Math.min(0.98, 0.69 + 0.2 * Math.sin((s.tick + s.seed) * 0.044) - (e.dust ? 0.38 : 0))));
+  e.radiation = e.solarStorm ? 85 : round(11 + 3 * Math.abs(Math.sin(s.tick * 0.11)));
+  s.bases.forEach(b => {
+    const solarGain = e.solarStorm ? 0.04 : b.solarCapacity * e.illumination * 0.94;
+    const consumption = 0.33 + b.crew * 0.12;
+    b.power = clamp(b.power + solarGain - consumption);
+    b.oxygen = clamp(b.oxygen + (b.power > 20 ? 0.15 : 0) - b.crew * 0.075);
+    b.water = clamp(b.water - b.crew * 0.05 + (b.power > 20 ? 0.065 : 0));
+    if (e.solarStorm) b.integrity = clamp(b.integrity - 0.22);
+    if (e.dust) b.integrity = clamp(b.integrity - 0.12);
+    const critical = Math.min(b.power, b.oxygen, b.water, b.integrity) < 22;
+    const low = Math.min(b.power, b.oxygen, b.water, b.integrity) < 45;
+    const old = b.status;
+    b.status = critical ? 'CRITICAL' : low ? 'CAUTION' : 'NOMINAL';
+    if (old !== b.status) event(s, critical ? 'CRITICAL' : 'ADVISORY', b.id, `Base changed status to ${b.status}.`);
+  });
+  s.rovers.forEach(r => roverStep(s, r));
+  cargoStep(s);
+  s.spacecraft[1].progress = round((s.spacecraft[1].progress + 0.018) % 1, 3);
+  s.spacecraft[1].condition = e.commsOutage ? 'SIMULATED_LINK_LOSS' : 'NOMINAL';
+  if (s.tick % 20 === 0) event(s, 'INFO', 'HEARTBEAT', `Autonomy matrix healthy; ${s.rovers.filter(r => r.status === 'ACTIVE').length}/4 rovers active.`);
+  return s;
+}
+
+function issueCommand(state, command) {
+  validateScenario(state);
+  if (!ALLOWED_COMMANDS.includes(command)) throw new Error('command not supported by the offline simulator');
+  const s = copy(state);
+  if (command === 'EMERGENCY_STOP') {
+    s.halted = true;
+    event(s, 'CRITICAL', 'OPERATOR', 'Manual all-agent simulation stop engaged. Time evolution frozen.');
+    return s;
+  }
+  if (command === 'RESUME') {
+    s.halted = false;
+    event(s, 'ADVISORY', 'OPERATOR', 'Simulation resumed by operator. No external control issued.');
+    return s;
+  }
+  if (s.halted) throw new Error('simulation stopped: operator must RESUME before making changes');
+  if (command === 'REQUEST_SUPPLY') {
+    if (s.spacecraft[0].phase !== 'STANDBY') throw new Error('cargo spacecraft is already in a mission phase');
+    if (s.pending.length) throw new Error('a review request is already pending');
+    s.pending.push({ id: 'CARGO-RELEASE-01', kind: 'CARGO_RELEASE', description: 'Authorize scripted uncrewed cargo-transfer simulation', status: 'PENDING_OPERATOR' });
+    event(s, 'ADVISORY', 'CARGO', 'Cargo mission requested; awaiting explicit operator approval.');
+  } else if (command === 'APPROVE_SUPPLY') {
+    if (!s.pending.some(p => p.kind === 'CARGO_RELEASE')) throw new Error('no pending cargo authorization');
+    if (s.environment.commsOutage) throw new Error('operator release blocked during simulated communications outage');
+    s.pending = s.pending.filter(p => p.kind !== 'CARGO_RELEASE');
+    s.spacecraft[0].phase = 'TRANSIT';
+    s.spacecraft[0].progress = 0;
+    event(s, 'INFO', 'OPERATOR', 'Scripted cargo transfer approved. Simulated mission sequence only.');
+  } else if (command === 'REJECT_SUPPLY') {
+    if (!s.pending.length) throw new Error('no pending request');
+    s.pending = [];
+    event(s, 'INFO', 'OPERATOR', 'Synthetic cargo transfer request rejected.');
+  } else {
+    const key = { TOGGLE_STORM: 'solarStorm', TOGGLE_OUTAGE: 'commsOutage', TOGGLE_DUST: 'dust' }[command];
+    s.environment[key] = !s.environment[key];
+    event(s, s.environment[key] ? 'CRITICAL' : 'INFO', 'SCENARIO', `${key} injection ${s.environment[key] ? 'ENABLED' : 'CLEARED'} (synthetic).`);
+  }
+  return s;
+}
+
+function makeTakPreview(state) {
+  validateScenario(state);
+  return {
+    schema: 'sonoxo.tak.offline-preview.v1', title: 'LUNAR COMMAND MATRIX / SYNTHETIC',
+    simulationOnly: true, networkTransmitAllowed: false, executableCommand: false,
+    referenceFrame: FRAME,
+    warning: 'NOT a CoT feed or Earth map. Moon-local km coordinates must never be treated as WGS84.',
+    tick: state.tick,
+    entities: [
+      ...state.bases.map(b => ({ uid: `SIM-${b.id}`, label: b.name, category: 'HABITAT', localXKm: b.x, localYKm: b.y, status: b.status })),
+      ...state.rovers.map(r => ({ uid: `SIM-${r.id}`, label: r.name, category: 'ROVER', localXKm: r.x, localYKm: r.y, status: r.status })),
+    ],
+  };
+}
+
+function missionSummary(state) {
+  validateScenario(state);
+  const avg = field => round(state.bases.reduce((acc, b) => acc + b[field], 0) / state.bases.length, 1);
+  return {
+    tick: state.tick, power: avg('power'), oxygen: avg('oxygen'), water: avg('water'), integrity: avg('integrity'),
+    crew: state.bases.reduce((n, b) => n + b.crew, 0),
+    roversActive: state.rovers.filter(r => r.status === 'ACTIVE').length,
+    pending: state.pending.length, link: state.environment.commsOutage ? 'OFFLINE' : 'CONNECTED (SIM)',
+    highestAlert: state.bases.some(b => b.status === 'CRITICAL') || state.environment.solarStorm ? 'CRITICAL' : state.bases.some(b => b.status === 'CAUTION') || state.environment.commsOutage ? 'ADVISORY' : 'NORMAL',
+  };
+}
+
+let state=makeScenario(),running=false,speed=1,tab='SURFACE',selected='ARGENT-1';
+const $=id=>document.getElementById(id);
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const baseOf=id=>state.bases.find(b=>b.id===id);
+const assetOf=id=>[...state.bases,...state.rovers,...state.spacecraft].find(x=>x.id===id);
+const fmtTime=t=>`${String(Math.floor(t/60)).padStart(3,'0')}:${String(t%60).padStart(2,'0')}`;
+const posX=x=>450+x*42, posY=y=>295-y*42;
+function alertUser(message){const node=$('toast');node.textContent=message;node.classList.add('visible');clearTimeout(alertUser.timer);alertUser.timer=setTimeout(()=>node.classList.remove('visible'),3200)}
+function cmd(command){try{state=issueCommand(state,command);if(state.halted)running=false;render()}catch(e){alertUser(e.message)}}
+function download(name,data){const blob=new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500)}
+function surface(){const e=state.environment;let craters='';for(let i=0;i<27;i++){const x=80+(i*151%740),y=65+(i*97%475),r=11+(i*29%56);craters+=`<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${(r*.67).toFixed(1)}" fill="url(#crater)" stroke="#576577" stroke-opacity=".16" stroke-width="2"/>`;}
+const grid=Array.from({length:12},(_,i)=>`<path d="M${i*84} 0 V590 M0 ${i*55} H900" stroke="#8bbbd0" stroke-opacity=".085" stroke-width="1"/>`).join('');
+const links=state.rovers.map(r=>{const b=baseOf(r.baseId);return `<line x1="${posX(b.x)}" y1="${posY(b.y)}" x2="${posX(r.x)}" y2="${posY(r.y)}" stroke="#63d4c3" stroke-width="1.3" stroke-dasharray="4 7" opacity=".33"/>`;}).join('');
+const bases=state.bases.map(b=>{const x=posX(b.x),y=posY(b.y),focus=selected===b.id,critical=b.status==='CRITICAL';return `<g class="asset" data-id="${b.id}"><circle cx="${x}" cy="${y}" r="${focus?32:24}" fill="none" stroke="${critical?'#ff7182':'#55efd0'}" stroke-dasharray="3 6" opacity=".7"/><path d="M${x} ${y-13} L${x+12} ${y-5} L${x+12} ${y+10} L${x} ${y+17} L${x-12} ${y+10} L${x-12} ${y-5}Z" fill="#103d43" stroke="#65eed7" stroke-width="2"/><path d="M${x-8} ${y-2} H${x+8} M${x} ${y-8} V${y+8}" stroke="#87ffe8" stroke-width="1.5"/><rect x="${x-51}" y="${y+25}" width="102" height="27" rx="4" fill="#071726" stroke="#29475c"/><text x="${x}" y="${y+37}" text-anchor="middle" fill="#d7f7fb" font-size="11" font-weight="700">${esc(b.id)}</text><text x="${x}" y="${y+48}" text-anchor="middle" fill="#7fa8ae" font-size="8">${b.crew} CREW · ${Math.round(b.power)}% PWR</text></g>`;}).join('');
+const rovers=state.rovers.map(r=>{const x=posX(r.x),y=posY(r.y),focus=selected===r.id;return `<g class="asset" data-id="${r.id}"><circle cx="${x}" cy="${y}" r="${focus?16:11}" fill="#102746" stroke="${r.status==='ACTIVE'?'#70adff':'#e9c577'}" stroke-width="1.5"/><rect x="${x-5}" y="${y-4}" width="10" height="8" rx="2" fill="#71aaff"/><path d="M${x-9} ${y+5}h18" stroke="#a4daff" stroke-width="2"/><text x="${x+13}" y="${y-8}" font-size="9" fill="#beddf2">${esc(r.id)}</text></g>`;}).join('');
+const storm=e.solarStorm?'<rect width="900" height="590" fill="#ff3b6e" fill-opacity=".1"/><text x="450" y="83" text-anchor="middle" fill="#ff8da3" font-size="18" letter-spacing="3">⚠ RADIATION EVENT</text>':'';
+return `<svg viewBox="0 0 900 590" xmlns="http://www.w3.org/2000/svg" role="presentation"><defs><radialGradient id="terrain"><stop stop-color="#344557"/><stop offset=".65" stop-color="#1a293d"/><stop offset="1" stop-color="#091323"/></radialGradient><radialGradient id="crater"><stop stop-color="#090f1b"/><stop offset=".65" stop-color="#18263a"/><stop offset=".87" stop-color="#455163"/><stop offset="1" stop-color="#242f43"/></radialGradient><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency=".015" numOctaves="4" seed="${state.seed}" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".13"/></feComponentTransfer></filter></defs><rect width="900" height="590" fill="url(#terrain)"/><g opacity=".57">${craters}</g><rect width="900" height="590" filter="url(#noise)" opacity=".8"/><g>${grid}</g><circle cx="450" cy="295" r="266" fill="none" stroke="#557188" stroke-dasharray="2 8" opacity=".28"/><circle cx="450" cy="295" r="152" fill="none" stroke="#557188" stroke-dasharray="2 8" opacity=".28"/>${links}${bases}${rovers}${storm}<text x="20" y="565" font-family="monospace" font-size="10" fill="#7394aa">SYNTHETIC DEMONSTRATION GRID / ±7 KM</text></svg>`;
+}
+function orbit(){const craft=state.spacecraft[0],theta=state.spacecraft[1].progress*Math.PI*2,rx=450+230*Math.cos(theta),ry=300+117*Math.sin(theta),phase=craft.phase,p=craft.progress,orbital=phase==='LUNAR_ORBIT'||phase==='DESCENT';const x=orbital?450+285*Math.cos(3.0-p*2):170+430*p,y=orbital?300+146*Math.sin(3.0-p*2):490-245*p;return `<svg viewBox="0 0 900 590" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="moon"><stop stop-color="#777f92"/><stop offset=".63" stop-color="#48556b"/><stop offset="1" stop-color="#101b2d"/></radialGradient><radialGradient id="space"><stop stop-color="#182c49"/><stop offset="1" stop-color="#050914"/></radialGradient></defs><rect width="900" height="590" fill="url(#space)"/>${Array.from({length:80},(_,i)=>`<circle cx="${(i*179)%900}" cy="${(i*251)%590}" r="${i%8?0.8:1.7}" fill="#b4d4ec" opacity=".65"/>`).join('')}<ellipse cx="450" cy="299" rx="279" ry="148" fill="none" stroke="#49f3d4" stroke-width="1.4" stroke-dasharray="7 8" opacity=".75"/><ellipse cx="450" cy="299" rx="343" ry="187" fill="none" stroke="#4b77aa" stroke-width=".9" stroke-dasharray="3 12" opacity=".38"/><circle cx="450" cy="299" r="139" fill="url(#moon)" stroke="#8591a1" stroke-width="1.5"/><circle cx="420" cy="265" r="28" fill="#364459" opacity=".7"/><circle cx="504" cy="313" r="39" fill="#313f55" opacity=".6"/><circle cx="390" cy="347" r="18" fill="#34445a" opacity=".8"/><path d="M408 200 Q435 270 527 337" fill="none" stroke="#8395ad" opacity=".17" stroke-width="7"/><text x="450" y="302" text-anchor="middle" font-size="16" font-weight="800" fill="#c1d2e0" letter-spacing="4">MOON</text><text x="450" y="324" text-anchor="middle" font-size="10" fill="#c1d2e0">SOUTH POLAR OPERATIONS</text><g class="asset" data-id="LUNA-RELAY"><circle cx="${rx}" cy="${ry}" r="10" fill="#70a9ff"/><circle cx="${rx}" cy="${ry}" r="19" fill="none" stroke="#70a9ff" opacity=".6"/><text x="${rx+15}" y="${ry-14}" fill="#a3d3ff" font-size="12">LUNA-RELAY</text></g><g class="asset" data-id="ODYSSEY-01"><path d="M${x} ${y-15}L${x+11} ${y+13}L${x} ${y+7}L${x-11} ${y+13}Z" fill="#eec776" stroke="#fff0c9" stroke-width="1.5"/><text x="${x+20}" y="${y+20}" fill="#fff0c9" font-size="11">ODYSSEY-01</text></g><text x="35" y="50" fill="#7ba4ba" font-size="12">SPACECRAFT PHASE // ${esc(phase)}</text><text x="35" y="70" fill="#a0d8d2" font-size="11">ILLUSTRATIVE STATES · NOT ORBIT DYNAMICS</text><text x="35" y="555" fill="#7ba4ba" font-size="11">ORBIT PATHS ARE DIAGRAMMATIC · NO EPHEMERIS</text></svg>`;}
+function network(){const nodes=[{id:'EARTH OPS',x:110,y:293,color:'#75a9ff'},{id:'LUNA-RELAY',x:365,y:160,color:'#7ce8d8'},{id:'ARGENT-1',x:625,y:200,color:'#7ce8d8'},{id:'SELENE-2',x:660,y:410,color:'#7ce8d8'},{id:'ROVER SWARM',x:380,y:440,color:'#d7c182'},{id:'MISSION CORE',x:410,y:295,color:'#7ce8d8'}],links=[[0,1],[1,2],[1,3],[1,5],[5,4],[4,2],[4,3]];return `<svg viewBox="0 0 900 590" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="graphbg"><stop stop-color="#203a50"/><stop offset="1" stop-color="#07101f"/></radialGradient></defs><rect width="900" height="590" fill="url(#graphbg)"/>${Array.from({length:15},(_,i)=>`<path d="M0 ${i*46}H900 M${i*70} 0V590" stroke="#40667c" stroke-opacity=".13"/>`).join('')}${links.map(([a,b])=>`<path d="M${nodes[a].x} ${nodes[a].y}L${nodes[b].x} ${nodes[b].y}" stroke="${state.environment.commsOutage?'#e0a671':'#5adecc'}" stroke-width="2" stroke-opacity=".45" stroke-dasharray="4 7"/>`).join('')}${nodes.map(n=>`<g class="asset" data-id="${n.id}"><circle cx="${n.x}" cy="${n.y}" r="39" fill="#102636" stroke="${n.color}" stroke-opacity=".7"/><circle cx="${n.x}" cy="${n.y}" r="26" fill="none" stroke="${n.color}" stroke-opacity=".3"/><text x="${n.x}" y="${n.y+4}" fill="#e7f8f9" font-size="10" font-weight="750" text-anchor="middle">${n.id.replace(' ','-')}</text></g>`).join('')}<text x="32" y="545" fill="#8bb3c5" font-size="11">AIR-GAPPED MODEL · NO REAL-NETWORK CONNECTION</text></svg>`;}
+function render(){const m=missionSummary(state),craft=state.spacecraft[0],e=state.environment;
+$('kpi-clock').textContent=fmtTime(state.tick);$('missionclock').textContent=`T+ ${fmtTime(state.tick)}`;
+for(const name of ['power','oxygen','water']){$(`kpi-${name}`).innerHTML=`${m[name].toFixed(1)}<em>%</em>`;$(`kpi-${name}`).className='num '+(m[name]<30?'red':m[name]<55?'warn':'');}
+$('kpi-rovers').innerHTML=`${m.roversActive}<em>/4</em>`;$('kpi-link').textContent=e.commsOutage?'LINK LOST':'SIMULATED';$('kpi-link').className=`num ${e.commsOutage?'red':'green'}`;
+$('global-status').textContent=m.highestAlert==='CRITICAL'?'● CRITICAL SIM ALERT':m.highestAlert==='ADVISORY'?'● ADVISORY ACTIVE':'● ALL SYSTEMS NOMINAL';$('global-status').style.borderColor=m.highestAlert==='CRITICAL'?'#af4b58':m.highestAlert==='ADVISORY'?'#b08a45':'';
+$('base-list').innerHTML=state.bases.map(b=>`<div class="base ${b.id===selected?'selected':''}" data-id="${b.id}" tabindex="0"><div class="node">⬡</div><div><strong>${esc(b.name)}</strong><small><span class="dot" style="background:${b.status==='CRITICAL'?'#ff7182':b.status==='CAUTION'?'#f5c46c':'#52f5d0'}"></span>${b.status} · ${b.crew} CREW</small></div></div>`).join('');
+$('agent-list').innerHTML=state.rovers.map(r=>`<div class="agent" data-id="${r.id}" tabindex="0"><div class="agenticon">◇</div><div><strong>${r.id}</strong><small>${r.role} · ${r.battery.toFixed(0)}% BAT</small></div><div class="status ${r.status!=='ACTIVE'?'hold':''}">${r.status==='ACTIVE'?'● LIVE':'● HOLD'}</div></div>`).join('');
+const asset=assetOf(selected);$('selection').innerHTML=asset?Object.entries(asset).filter(([k])=>['id','name','status','phase','task','role','battery','power','oxygen','water','integrity','condition'].includes(k)).map(([k,v])=>`<div><strong>${esc(k.toUpperCase())}:</strong> ${esc(v)}</div>`).join(''):'<div>Choose a habitat or rover on the map.</div>';
+$('map').innerHTML=tab==='SURFACE'?surface():tab==='ORBIT'?orbit():network();$('scene-title').textContent=tab==='SURFACE'?'LUNAR SOUTH POLAR SECTOR':tab==='ORBIT'?'LUNAR ORBITAL ASSETS':'AGENT COMMUNICATION GRAPH';$('scene-subtitle').textContent=tab==='SURFACE'?'Procedural terrain · synthetic positioning':tab==='ORBIT'?'Illustrative trajectories, not flight dynamics':'Logical paths, no network connections';$('scale').style.display=tab==='SURFACE'?'':'none';$('map-hud').textContent=tab==='SURFACE'?'GRAVITY 1.62 m/s² · TRAINING':tab==='ORBIT'?'2 SPACECRAFT · ILLUSTRATIVE':'EXTERNAL ACTUATION DISABLED';
+$('mission-state').textContent=state.halted?'EMERGENCY STOP':m.highestAlert;$('surveyed').textContent=state.surveyedKm.toFixed(1)+' km';$('deliveries').textContent=state.delivered;
+$('craft-name').textContent=craft.id+' / UNCREWED';$('craft-phase').textContent=craft.phase+' · '+(craft.condition==='NOMINAL'?'Synthetic supply operations':craft.condition);$('craft-progress').style.width=(craft.progress*100)+'%';$('request').disabled=state.halted||craft.phase!=='STANDBY'||state.pending.length>0;$('review-actions').style.display=state.pending.length?'flex':'none';$('approve').disabled=state.halted||e.commsOutage;$('reject').disabled=state.halted;
+for(const [id,key] of [['storm','solarStorm'],['outage','commsOutage'],['dust','dust']]){$(id).classList.toggle('active',e[key]);$(id).style.borderColor=e[key]?'#e3bd67':'';$(id).disabled=state.halted;}
+$('halt').disabled=state.halted;$('resume').disabled=!state.halted;$('play').disabled=state.halted;$('step').disabled=state.halted;$('event-count').textContent=state.events.length+' EVENTS';
+$('eventlog').innerHTML=state.events.slice(0,24).map(o=>`<div class="logrow"><time>T+${String(o.tick).padStart(4,'0')}</time><span class="${o.severity==='CRITICAL'?'red':o.severity==='ADVISORY'?'warn':'green'}">${o.severity}</span><p><strong>${esc(o.source)}</strong> · ${esc(o.message)}</p></div>`).join('');
+$('rovergrid').innerHTML=state.rovers.map(r=>`<div class="rovercard"><div class="line"><b>${r.id}</b><span class="${r.status==='ACTIVE'?'green':'warn'}" style="font-size:9px">${r.status}</span></div><small>${r.role} AUTONOMY · ${r.task}</small><div class="meter"><div style="width:${r.battery}%"></div></div><small>BATTERY ${r.battery.toFixed(1)}% · ${r.x.toFixed(1)}, ${r.y.toFixed(1)} KM</small></div>`).join('');
+document.querySelectorAll('[data-id]').forEach(n=>{const select=()=>{selected=n.dataset.id;render()};n.addEventListener('click',select);n.addEventListener('keydown',ev=>{if(ev.key==='Enter')select()});});
+}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(t=>t.classList.toggle('active',t===b));render()}));
+document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{speed=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(t=>t.classList.toggle('active',t===b));}));
+$('play').onclick=()=>{if(!state.halted)running=true;render()};$('pause').onclick=()=>{running=false;render()};$('step').onclick=()=>{try{state=stepScenario(state);render()}catch(e){running=false;alertUser(e.message)}};
+$('request').onclick=()=>cmd('REQUEST_SUPPLY');$('approve').onclick=()=>cmd('APPROVE_SUPPLY');$('reject').onclick=()=>cmd('REJECT_SUPPLY');
+$('storm').onclick=()=>cmd('TOGGLE_STORM');$('outage').onclick=()=>cmd('TOGGLE_OUTAGE');$('dust').onclick=()=>cmd('TOGGLE_DUST');$('halt').onclick=()=>cmd('EMERGENCY_STOP');$('resume').onclick=()=>cmd('RESUME');
+$('reset').onclick=()=>{state=makeScenario();running=false;selected='ARGENT-1';render();alertUser('Training scenario reset to initial synthetic state.')};
+$('snapshot').onclick=()=>download(`lunar-matrix-state-t${state.tick}.json`,state);
+$('tak').onclick=()=>{download(`tak-offline-lunar-preview-t${state.tick}.json`,makeTakPreview(state));alertUser('Offline TAK-style preview exported. This is NOT a CoT stream.')};
+let previous=performance.now();function animate(now){if(running&&!state.halted&&now-previous>=620){const ticks=Math.min(speed,12);for(let i=0;i<ticks;i++)state=stepScenario(state);render();previous=now;}requestAnimationFrame(animate)}
+render();requestAnimationFrame(animate);
+</script>
+</body>
+</html>
