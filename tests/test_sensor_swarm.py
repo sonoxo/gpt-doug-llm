@@ -14,6 +14,7 @@ from sensor_swarm.core import (
     load_policy, observation, safe_path, snapshot, timestamp, validate_specs,
 )
 from sensor_swarm.dashboard import HTML
+from sensor_swarm.ontology import export_graph, verify_export
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -189,6 +190,57 @@ class SensorSwarmTests(unittest.TestCase):
         with self.assertRaises(PermissionError): snapshot([s])
         r = snapshot([s], authorized_local=True)
         self.assertEqual(r["accepted"], 2)
+
+    def test_enum_allowlist_prevents_free_text(self):
+        s = demo_specs()[1]
+        for value in ("John Smith", "192.168.0.1", "password123"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                observation(s, {"metric": "status", "value": value}, locator="fixture", sha=digest("fixture"))
+        self.assertEqual(observation(s, {"metric": "status", "value": "HEALTHY"},
+                                     locator="fixture", sha=digest("fixture"))["value"], "HEALTHY")
+    def test_huge_integer_does_not_crash_swarm(self):
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "events.json").write_text(json.dumps([row(10**2000)]))
+            result = snapshot([example()], root=d, authorized_local=True)
+            self.assertEqual(result["rejected_sensors"], 1)
+    def test_missing_file_timestamp_replay_stable(self):
+        with tempfile.TemporaryDirectory() as d:
+            Path(d, "events.json").write_text(json.dumps([{"metric": "count", "value": 1}]))
+            a = snapshot([example()], root=d, authorized_local=True)
+            b = snapshot([example()], root=d, authorized_local=True)
+            self.assertEqual(a["events"][0]["id"], b["events"][0]["id"])
+    def test_ontology_export_linkage(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = Store(Path(d) / "events.db")
+            try:
+                db.write(snapshot(demo_specs()))
+                graph = export_graph(db)
+                self.assertTrue(verify_export(graph))
+                nodes = {x["id"] for x in graph["nodes"]}
+                self.assertTrue(all(edge["from"] in nodes and edge["to"] in nodes for edge in graph["edges"]))
+                self.assertFalse(graph["automatically_promoted"])
+                self.assertFalse(graph["official_patent_verified"])
+                self.assertIn("DERIVED_FROM", {edge["type"] for edge in graph["edges"]})
+            finally:
+                db.close()
+    def test_ontology_digest_tampering(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = Store(Path(d) / "events.db")
+            try:
+                db.write(snapshot(demo_specs()))
+                graph = export_graph(db)
+                graph["sha256"] = "0" * 64
+                self.assertFalse(verify_export(graph))
+            finally:
+                db.close()
+    def test_ontology_rejects_bad_limit(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = Store(Path(d) / "events.db")
+            try:
+                with self.assertRaises(ValueError):
+                    export_graph(db, 0)
+            finally:
+                db.close()
 
 if __name__ == "__main__":
     unittest.main()
