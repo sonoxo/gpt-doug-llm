@@ -32,7 +32,7 @@
     { name: 'WASHINGTON, DC', lat: 38.907, lon: -77.036 },
     { name: 'RALEIGH', lat: 35.78, lon: -78.64 },
   ];
-  const tabs = ['map', 'system', 'feeds', 'events', 'ontology', 'swarm', 'settings'];
+  const tabs = ['map', 'system', 'feeds', 'events', 'ontology', 'swarm', 'nasa', 'settings'];
   let local = {};
   try { local = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (_) { local = {}; }
   const preferences = {
@@ -125,7 +125,7 @@
       node.classList.toggle('active', selected);
       if (selected) node.setAttribute('aria-current', 'page'); else node.removeAttribute('aria-current');
     });
-    $('#breadcrumb-view').textContent = ({map:'LIVE OPERATIONS',system:'SYSTEM / VM',feeds:'DATA FEEDS',events:'EVENT TIMELINE',ontology:'ONTOLOGY',swarm:'DEFENSIVE SWARM',settings:'SETTINGS'})[view];
+    $('#breadcrumb-view').textContent = ({map:'LIVE OPERATIONS',system:'SYSTEM / VM',feeds:'DATA FEEDS',events:'EVENT TIMELINE',ontology:'ONTOLOGY',swarm:'DEFENSIVE SWARM',nasa:'NASA / SATELLITES',settings:'SETTINGS'})[view];
     $('.sidebar').classList.remove('open'); $('#mobile-menu').setAttribute('aria-expanded', 'false');
     if (view === 'map') { requestAnimationFrame(() => { renderTiles(); renderMap(); }); }
     if (view === 'events') renderEvents();
@@ -154,7 +154,7 @@
     state.center = { lat: Math.max(-82, Math.min(82, point.lat)), lon: ((point.lon + 540) % 360) - 180 };
     renderTiles(); renderMap();
   }
-  function setZoom(zoom) { state.zoom = Math.max(5, Math.min(13, zoom)); renderTiles(); renderMap(); }
+  function setZoom(zoom) { state.zoom = Math.max(2, Math.min(13, zoom)); renderTiles(); renderMap(); }
   function renderTiles() {
     const layer = $('#map-tiles'); layer.replaceChildren();
     const { width, height } = size(); if (!width || !height) return;
@@ -229,6 +229,7 @@
       }); markerLayer.appendChild(button);
     });
     $('#map-coordinates').textContent = `${Math.abs(state.center.lat).toFixed(3)}° ${state.center.lat >= 0 ? 'N' : 'S'} · ${Math.abs(state.center.lon).toFixed(3)}° ${state.center.lon >= 0 ? 'E' : 'W'} · Z${state.zoom}`;
+    window.dispatchEvent(new CustomEvent('takos:map-render', {detail:{center:{...state.center},zoom:state.zoom,width,height}}));
   }
   function renderInspector() {
     const unit = [...state.units,...state.gatewayUnits].find((p) => p.id === state.selected) || state.units[0];
@@ -452,7 +453,7 @@
     stage.addEventListener('wheel', (event) => { event.preventDefault(); setZoom(state.zoom + (event.deltaY < 0 ? 1 : -1)); }, { passive: false });
     document.addEventListener('keydown', (event) => {
       if (event.target.matches('input,textarea,select') || $('#help-dialog').open || event.ctrlKey || event.metaKey || event.altKey) return;
-      if (/^[1-7]$/.test(event.key)) navigate(tabs[Number(event.key) - 1]);
+      if (/^[1-8]$/.test(event.key)) navigate(tabs[Number(event.key) - 1]);
       if (event.code === 'Space') { event.preventDefault(); $('#sim-play').click(); }
       if (event.key === '+' || event.key === '=') setZoom(state.zoom + 1);
       if (event.key === '-') setZoom(state.zoom - 1);
@@ -462,6 +463,14 @@
   // The only intentional integration boundary for the optional, same-origin
   // CoT/SSE lab service. Static GitHub Pages continues to work without it.
   window.TAKOSApp = Object.freeze({
+    navigateView(view) { navigate(view); },
+    publicMapViewport() { return {center:{...state.center},zoom:state.zoom,...size()}; },
+    focusPublicObservation(lat,lon) {
+      if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat)>82 || Math.abs(lon)>180) return false;
+      state.zoom = Math.min(state.zoom, 6);
+      setMapCenter({lat,lon}); navigate('map'); return true;
+    },
+    resetPublicView(){state.zoom=8;setMapCenter({lat:37.75,lon:-77.27});navigate('map');},
     setGatewayConnection(connected) {
       state.gatewayConnected = !!connected;
       renderTopology();
