@@ -10,6 +10,8 @@ from pathlib import Path
 from .core import assess, demo, facilitator_kit, review_brief, verify
 from .pilot import (pilot_assess, pilot_dashboard_html, pilot_demo,
                     pilot_review_markdown, pilot_verify)
+from .ontology_graph import (load_ontology, audit_ontology, text_map,
+                             graphviz_dot, standalone_html)
 
 
 def read(path):
@@ -33,15 +35,29 @@ def initialize(path, value, label):
 def main(argv=None):
     p = argparse.ArgumentParser(prog="gpt-doug-peacelab")
     sub = p.add_subparsers(dest="action", required=True)
-    for name in ("demo", "kit", "pilot-demo", "pilot-kit"):
+    for name in ("demo", "kit", "pilot-demo", "pilot-kit", "ontology", "ontology-json",
+                 "ontology-dot", "ontology-html"):
         sub.add_parser(name)
+    sub.add_parser("ontology-check").add_argument("file", type=Path, nargs="?")
     for name in ("init", "pilot-init"):
         sub.add_parser(name).add_argument("path", type=Path)
     for name in ("assess", "verify", "brief", "pilot-assess", "pilot-verify", "pilot-brief", "pilot-preview"):
         sub.add_parser(name).add_argument("file", type=Path)
     args = p.parse_args(argv)
     try:
-        if args.action == "demo":
+        if args.action == "ontology":
+            print(text_map(load_ontology()), end="")
+        elif args.action == "ontology-check":
+            dump(audit_ontology(load_ontology(args.file)))
+        elif args.action == "ontology-json":
+            graph = load_ontology()
+            audit_ontology(graph)
+            dump(graph)
+        elif args.action == "ontology-dot":
+            print(graphviz_dot(load_ontology()), end="")
+        elif args.action == "ontology-html":
+            print(standalone_html(load_ontology()), end="")
+        elif args.action == "demo":
             dump(assess(demo()))
         elif args.action == "kit":
             print(facilitator_kit())
