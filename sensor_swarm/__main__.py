@@ -80,6 +80,10 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="action", required=True)
     commands.add_parser("demo", help="Offline BioPineal and synthetic evidence; no writes")
+    demo = commands.add_parser("live-demo", help="Start localhost dashboard using synthetic and BioPineal evidence")
+    demo.add_argument("--port", type=int, default=8765)
+    demo.add_argument("--interval", type=int, default=5)
+    demo.add_argument("--db", default=str(DEFAULT_DB))
     for action in ("snapshot", "serve"):
         p = commands.add_parser(action, help="Read registered sensors (explicit opt-in)")
         p.add_argument("--config", required=True, help="Approved manifest JSON path")
@@ -95,6 +99,10 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.action == "demo":
         print_json(snapshot(demo_specs()))
+        return 0
+    if args.action == "live-demo":
+        serve(demo_specs(), root=None, authorized_local=False,
+              db=args.db, port=args.port, interval=args.interval)
         return 0
     if args.action in {"status", "ontology"}:
         store = Store(args.db)
