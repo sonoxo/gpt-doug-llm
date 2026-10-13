@@ -63,6 +63,8 @@ def _parser():
     bstat=bio_sub.add_parser('status')
     bstat.add_argument('--memory-root',type=Path,required=True)
     bstat.add_argument('--workspace',type=Path)
+    bfree=bio_sub.add_parser('freedom',help='inspect no-extra-review rule for bounded local research')
+    bfree.add_argument('--action',required=True)
     bsources=bio_sub.add_parser('sources',help='offline external patent and biocomputing references')
     bsources.add_argument('--topic',choices=('bioassimilating_polymers','biological_computing'))
     bsources.add_argument('--query')
@@ -105,6 +107,9 @@ def _run(args):
             return register_operator(args.workspace,args.callsign)
         return {'operator':read_operator(args.workspace),'authority':'RESEARCH_ONLY'}
     if args.cmd=='biopineal':
+        if args.bio_action=='freedom':
+            from .research_freedom import evaluate
+            return evaluate(args.action)
         if args.bio_action=='sources':
             from .biopineal_sources import search_sources
             return search_sources(query=args.query, topic=args.topic)
