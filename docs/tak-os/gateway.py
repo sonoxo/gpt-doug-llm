@@ -287,7 +287,22 @@ def handler_factory(state: State):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("Cross-Origin-Resource-Policy", "same-origin")
-            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org https://gibs.earthdata.nasa.gov data:; connect-src 'self' https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'")
+            route = urllib.parse.urlsplit(self.path).path
+            if route.startswith(("/live-3d/", "/tak-os/live-3d/")):
+                csp = ("default-src 'self'; "
+                    "script-src 'self' https://cdn.jsdelivr.net https://esm.sh; "
+                    "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+                    "img-src 'self' data: blob: https://cdn.jsdelivr.net https://gibs.earthdata.nasa.gov; "
+                    "connect-src 'self' https://cdn.jsdelivr.net https://esm.sh "
+                    "https://gibs.earthdata.nasa.gov https://earthquake.usgs.gov "
+                    "https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov "
+                    "https://celestrak.org https://overpass-api.de; "
+                    "worker-src 'self' blob: https://cdn.jsdelivr.net; "
+                    "font-src 'self' data: https://cdn.jsdelivr.net; "
+                    "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
+                self.send_header("Content-Security-Policy", csp)
+            else:
+                self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org https://gibs.earthdata.nasa.gov data:; connect-src 'self' https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'")
             self.send_header("Cross-Origin-Opener-Policy", "same-origin")
             if length is not None: self.send_header("Content-Length", str(length))
             self.end_headers()
@@ -334,7 +349,8 @@ def handler_factory(state: State):
             if path.startswith("/api/"):
                 return self.respond(404, {"error": "unknown API endpoint"})
             target = path.lstrip("/") or "index.html"
-            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js"}:
+            if target in ("live-3d", "live-3d/"): target = "live-3d/index.html"
+            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js", "live-3d/index.html", "live-3d/style.css", "live-3d/cesium-config.js", "live-3d/ontology.js", "live-3d/live-earth.js"}:
                 return self.respond(404, {"error": "file not available"})
             file = APP_ROOT / target
             if not file.is_file(): return self.respond(404, {"error": "file not found"})

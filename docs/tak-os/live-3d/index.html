@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050b15">
+<meta name="description" content="GPT-Doug Live Earth 3D: NASA GIBS globe, live NASA EONET, USGS, NOAA, public civilian CelesTrak orbital elements and a provenance-first ontology. No demo entities.">
+<title>GPT-DOUG / LIVE EARTH 3D · Real Data Ontology</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Widgets/widgets.css">
+<link rel="stylesheet" href="./style.css">
+<script defer src="./cesium-config.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Cesium.js"></script>
+<script defer src="./ontology.js"></script>
+<script defer src="./live-earth.js"></script>
+</head><body>
+<header class="topbar">
+  <div class="brandmark">◈ <span>GPT-DOUG</span><b>// LIVE EARTH 3D</b><small>ZYRA · REAL PUBLIC OBSERVATIONS</small></div>
+  <div class="topstatus"><span class="statuschip" id="render-status">3D ENGINE: LOADING</span><span class="clock" id="utc-clock">UTC --:--:--</span><a href="../" class="return-link">TAK-OS ↗</a></div>
+</header>
+<div id="globe" aria-label="Interactive Cesium 3D NASA Earth globe"></div>
+<div class="globe-caption"><b>WGS84 THREE-DIMENSIONAL EARTH</b> · NASA GIBS historical composite imagery · ellipsoid surface (not terrain height model) · <span id="imagery-state">IMAGERY: PENDING</span></div>
+<aside class="leftpanel" aria-label="Real public data layer controls">
+  <div class="section-eyebrow">PUBLIC EARTH OBSERVATORY / 01</div>
+  <h1>Planetary awareness<span>Verified sources. No synthetic events.</span></h1>
+  <div class="hero-stats"><div><strong id="live-count">0</strong><small>CURRENT RECORDS</small></div><div><strong id="feed-count">0/5</strong><small>SOURCES CONNECTED</small></div><div><strong id="global-kp">—</strong><small>NOAA Kp INDEX</small></div></div>
+  <div class="section-heading">LIVE DATA PLANE <button id="refresh-all" class="mini" type="button">↻ REFRESH</button></div>
+  <div class="feed-controls">
+   <label class="feedrow"><span class="sourceicon earthquake">≋</span><span class="source-label"><b>USGS · earthquakes</b><small>Reported events · ~2 min refresh</small></span><input id="toggle-usgs" type="checkbox" checked aria-label="Show reported earthquakes"><em id="status-usgs">WAITING</em></label>
+   <label class="feedrow"><span class="sourceicon hazards">◎</span><span class="source-label"><b>NASA · EONET hazards</b><small>Wildfires, storms, floods · ~10 min</small></span><input id="toggle-eonet" type="checkbox" checked aria-label="Show NASA natural events"><em id="status-eonet">WAITING</em></label>
+   <label class="feedrow"><span class="sourceicon weather">◉</span><span class="source-label"><b>NOAA · geomagnetic Kp</b><small>Global index · ~5 min</small></span><input id="toggle-noaa" type="checkbox" checked aria-label="Include NOAA index in ontology"><em id="status-noaa">WAITING</em></label>
+   <label class="feedrow"><span class="sourceicon satellite">✧</span><span class="source-label"><b>Public civilian orbits</b><small>CelesTrak OMM · predicted, not GPS</small></span><input id="toggle-orbit" type="checkbox" checked aria-label="Show civilian orbital predictions"><em id="status-orbit">WAITING</em></label>
+  </div>
+  <div class="section-heading">SATELLITE IMAGERY</div>
+  <div class="panel-section"><label class="fieldlabel" for="imagery-date">NASA MODIS Terra — request data day</label><div class="compactline"><input type="date" id="imagery-date"><button id="imagery-apply" type="button" class="mini">SHOW DATE</button></div><label class="checkline"><input type="checkbox" id="imagery-overlay"> Overlay dated satellite reflectance</label><p id="imagery-note">Not real-time video. Availability varies by date, region and cloud cover.</p><a class="source-link" href="https://nasa-gibs.github.io/gibs-api-docs/" target="_blank" rel="noopener noreferrer">NASA GIBS source docs ↗</a></div>
+  <div class="section-heading">REAL 3D BUILDING GEOMETRY</div>
+  <div class="panel-section"><label class="fieldlabel" for="city-select">On-demand OpenStreetMap footprints</label><div class="compactline"><select id="city-select"><option value="richmond">Richmond, Virginia</option><option value="dc">Washington, DC</option><option value="nyc">New York, NY</option><option value="sf">San Francisco, CA</option></select><button id="buildings-load" type="button" class="mini">LOAD 3D</button></div><p id="building-note">Only a recorded OSM height tag yields an extruded 3D building. Missing heights stay flat. No invented building heights.</p><a class="source-link" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors ↗</a></div>
+  <div class="section-heading">CAMERA</div><div class="camera-row"><button data-camera="earth" class="mini">GLOBE</button><button data-camera="north-america" class="mini">N. AMERICA</button><button data-camera="atlantic" class="mini">ATLANTIC</button><button data-camera="city" class="mini">CITY 3D</button></div>
+  <p class="important">The display refreshes while this tab runs. Network failures and stale observations are flagged, not replaced by generated data. Satellites are <strong>SGP4 position estimates</strong> based on publicly reported orbital elements.</p>
+</aside>
+<section class="rightpanel" aria-label="Real ontology and selected observation">
+ <div class="section-eyebrow">SOURCE OF TRUTH / ONTOLOGY</div><h2>Observation inspector</h2>
+ <div id="entity-inspector" class="entity-inspector"><p>Select a verified map observation, building, or orbital element to view evidence and timestamps.</p></div>
+ <div class="section-heading">SOURCE HEALTH <span id="health-updated">—</span></div><div id="feed-health" class="feed-health" aria-live="polite"></div>
+ <div class="section-heading">KNOWLEDGE GRAPH <button type="button" class="mini" id="export-ontology">⇩ JSON-LD</button></div>
+ <div id="ontology-stats" class="ontology-stats"></div>
+ <div class="search-row"><input id="record-search" type="search" placeholder="Search source observations…" aria-label="Search ontology records"><select id="record-type"><option value="all">All types</option><option value="Earthquake">Earthquakes</option><option value="NaturalHazard">Natural hazards</option><option value="CivilOrbitalElementSet">Orbital elements</option><option value="BuildingFootprint">Buildings</option><option value="GeomagneticIndex">Space weather</option></select></div>
+ <div id="records" class="records" aria-label="Current source-backed records"></div>
+ <div class="audit-foot">Nodes and lineage derive from named source records. Export includes acquisition times, observation times, source URLs, source status, and methods. No inferred government authority.</div>
+</section>
+<footer class="bottomhud"><span class="led"></span><span id="global-status">CONNECTING TO PUBLIC SOURCES</span><span class="bottomnote">REAL DATA / SOURCE TIMESTAMPS / NO FAKE FALLBACK</span><button id="reset-camera" class="mini">⌖ RESET CAMERA</button><button id="toggle-hud" class="mini mobile-hud" aria-label="Toggle panels">PANELS</button></footer>
+<div id="toast" role="status" aria-live="polite" class="toast"></div>
+</body></html>

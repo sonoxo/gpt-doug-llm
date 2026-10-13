@@ -8,7 +8,7 @@ if [ "$PORT" -lt 1024 ] || [ "$PORT" -gt 65535 ]; then echo 'Port must be betwee
 # A port used by an existing local server is never killed or stolen.
 # Auto-select the next free loopback port unless the operator selected one.
 case "${1:-web}" in
-  web|gateway|legacy-udp|legacy-tcp|static)
+  web|gateway|legacy-udp|legacy-tcp|static|real-3d)
     command -v python3 >/dev/null || { echo 'Install free Python 3' >&2; exit 1; }
     PORT="$(python3 - "$PORT" "${TAK_OS_PORT+x}" <<'PYPORT'
 import socket
@@ -44,6 +44,10 @@ case "${1:-web}" in
     command -v python3 >/dev/null || { echo 'Install free Python 3'; exit 1; }
     printf 'GPT-DOUG TAK-OS / CoT TCP loopback on 8087. Lab only.\n'
     exec python3 -u gateway.py --bind 127.0.0.1 --port "$PORT" --tcp-port 8087;;
+  real-3d)
+    command -v python3 >/dev/null || { echo 'Install free Python 3' >&2; exit 1; }
+    printf 'GPT-DOUG REAL EARTH 3D (NO SYNTHETIC BACKEND): http://127.0.0.1:%s\\n' "$PORT"
+    exec python3 -m http.server "$PORT" --bind 127.0.0.1 --directory live-3d;;
   static)
     command -v python3 >/dev/null || { echo 'Install Python 3'; exit 1; }
     printf 'GPT-DOUG TAK-OS / browser-only fallback: http://127.0.0.1:%s\n' "$PORT"
@@ -54,5 +58,5 @@ case "${1:-web}" in
   test)
     python3 -m unittest discover -s ../../tests -p 'test_tak_os_gateway.py' -v
     exec python3 -m unittest discover -s ../../tests -p 'test_tak_os_swarm.py' -v;;
-  *) echo 'Usage: sh start.sh [web|static|legacy-udp|legacy-tcp|docker|test]' >&2; exit 2;;
+  *) echo 'Usage: sh start.sh [web|real-3d|static|legacy-udp|legacy-tcp|docker|test]' >&2; exit 2;;
 esac

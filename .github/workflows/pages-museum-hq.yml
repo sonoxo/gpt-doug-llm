@@ -51,6 +51,8 @@ jobs:
           test -f _site/holo/holo.ts
           test -f _site/arcade/index.html
           test -f _site/cte/index.html
+          test -f _site/tak-os/live-3d/index.html
+          test -f _site/tak-os/live-3d/ontology.js
           test -f _site/tak-os/index.html
           test -f _site/tak-os/manifest.webmanifest
           test -f _site/tak-os/sw.js
@@ -192,6 +194,7 @@ jobs:
           curl -fsS http://127.0.0.1:8080/arcade/ | grep -q 'XUNIA ARCADE ENTRY GATE'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'ZYRA-CTE'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'Counterfactual Transaction Engine'
+          curl -fsS http://127.0.0.1:8080/tak-os/live-3d/ | grep -q 'LIVE EARTH 3D'
           curl -fsS http://127.0.0.1:8080/tak-os/ | grep -q 'Common Operating Picture'
           curl -fsS http://127.0.0.1:8080/tak-os/manifest.webmanifest | grep -q 'TAK-OS Demo'
           curl -fsS http://127.0.0.1:8080/cte/ | grep -q 'SYNTHETIC-ONLY'
@@ -300,3 +303,16 @@ jobs:
           done
           test "$tak_os_ok" -eq 1
           echo 'CANONICAL_XUNIA_TAK_OS_LIVE=PASS'
+          live_earth_ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/tak-os/live-3d/?v=${CACHE_BUST}" -o /tmp/xunia-real-3d.html \
+              && grep -q 'LIVE EARTH 3D' /tmp/xunia-real-3d.html \
+              && grep -q 'NO FAKE FALLBACK' /tmp/xunia-real-3d.html; then
+              live_earth_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$live_earth_ok" -eq 1
+          echo 'CANONICAL_XUNIA_LIVE_EARTH_3D=PASS'
+
