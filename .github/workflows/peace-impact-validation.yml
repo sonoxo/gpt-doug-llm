@@ -28,6 +28,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Run privacy, spoofing and certificate tests
         run: python3 -m unittest discover -s tests -p 'test_peace_impact.py' -v
+      - name: Check shared Bash launcher and GPT-Doug integration
+        run: |
+          bash -n scripts/doug-max
+          bash scripts/doug-max peace-lab demo > /tmp/doug-peace-demo.json
+          bash scripts/doug-max peace-lab verify /tmp/doug-peace-demo.json
       - name: Reproduce synthetic report without network access
         run: |
           bash run-GPT-Doug-PeaceLab.command demo > /tmp/peace-synthetic.json
