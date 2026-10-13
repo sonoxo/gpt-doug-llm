@@ -1,0 +1,511 @@
+{
+  "@context": {
+    "pl": "https://github.com/sonoxo/gpt-doug-llm/blob/main/peace_impact/peacelab.ontology.jsonld#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "hasPilot": {
+      "@id": "pl:hasPilot",
+      "@type": "@id"
+    },
+    "hasGate": {
+      "@id": "pl:hasGate",
+      "@type": "@id"
+    },
+    "hasPhase": {
+      "@id": "pl:hasPhase",
+      "@type": "@id"
+    },
+    "hasRisk": {
+      "@id": "pl:hasRisk",
+      "@type": "@id"
+    },
+    "requiresHumanRole": {
+      "@id": "pl:requiresHumanRole",
+      "@type": "@id"
+    },
+    "nextPhase": {
+      "@id": "pl:nextPhase",
+      "@type": "@id"
+    },
+    "hasTrustState": {
+      "@id": "pl:hasTrustState",
+      "@type": "@id"
+    }
+  },
+  "@id": "pl:ontology",
+  "@type": "owl:Ontology",
+  "rdfs:label": "GPT-Doug PeaceLab: safety, evidence and review ontology",
+  "rdfs:comment": "Design-only ontology. No identified reviewers, verified peace outcomes, field authorization, nomination, or humanitarian partner are asserted.",
+  "owl:versionInfo": "1.0.0",
+  "pl:ontologyStatus": "ENGINEERING_REVIEW_ONLY",
+  "pl:authorityBoundary": "NEVER_GRANTED_BY_SOFTWARE",
+  "pl:verifiedRealWorldOutcomes": 0,
+  "pl:nobelNominationSubmitted": false,
+  "@graph": [
+    {
+      "@id": "pl:PeaceProgram",
+      "@type": "owl:Class",
+      "rdfs:label": "Peace program",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:PilotPlan",
+      "@type": "owl:Class",
+      "rdfs:label": "Human-reviewed pilot plan",
+      "rdfs:subClassOf": {
+        "@id": "prov:Plan"
+      }
+    },
+    {
+      "@id": "pl:SafetyGate",
+      "@type": "owl:Class",
+      "rdfs:label": "Safety and ethics gate",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:HumanRole",
+      "@type": "owl:Class",
+      "rdfs:label": "Human reviewer role, not an identified person",
+      "rdfs:subClassOf": {
+        "@id": "prov:Role"
+      }
+    },
+    {
+      "@id": "pl:PilotPhase",
+      "@type": "owl:Class",
+      "rdfs:label": "Conditional pilot stage",
+      "rdfs:subClassOf": {
+        "@id": "prov:Activity"
+      }
+    },
+    {
+      "@id": "pl:Risk",
+      "@type": "owl:Class",
+      "rdfs:label": "Safeguarding risk",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:EvidenceRecord",
+      "@type": "owl:Class",
+      "rdfs:label": "Evidence reference, not proof of validity",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:EvaluationMeasurement",
+      "@type": "owl:Class",
+      "rdfs:label": "Aggregated descriptive measurement",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:ReviewDecision",
+      "@type": "owl:Class",
+      "rdfs:label": "External human reviewer decision",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:SoftwareComponent",
+      "@type": "owl:Class",
+      "rdfs:label": "Software-only assistant",
+      "rdfs:subClassOf": {
+        "@id": "prov:SoftwareAgent"
+      }
+    },
+    {
+      "@id": "pl:GovernancePolicy",
+      "@type": "owl:Class",
+      "rdfs:label": "Deny-first operating policy",
+      "rdfs:subClassOf": {
+        "@id": "prov:Entity"
+      }
+    },
+    {
+      "@id": "pl:hasPilot",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "contains proposed pilot",
+      "rdfs:domain": {
+        "@id": "pl:PeaceProgram"
+      },
+      "rdfs:range": {
+        "@id": "pl:PilotPlan"
+      }
+    },
+    {
+      "@id": "pl:hasGate",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "requires safety gate",
+      "rdfs:domain": {
+        "@id": "pl:PilotPlan"
+      },
+      "rdfs:range": {
+        "@id": "pl:SafetyGate"
+      }
+    },
+    {
+      "@id": "pl:hasPhase",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "defines phase",
+      "rdfs:domain": {
+        "@id": "pl:PilotPlan"
+      },
+      "rdfs:range": {
+        "@id": "pl:PilotPhase"
+      }
+    },
+    {
+      "@id": "pl:hasRisk",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "faces harm risk",
+      "rdfs:domain": {
+        "@id": "pl:PilotPlan"
+      },
+      "rdfs:range": {
+        "@id": "pl:Risk"
+      }
+    },
+    {
+      "@id": "pl:requiresHumanRole",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "requires human review role",
+      "rdfs:domain": {
+        "@id": "pl:SafetyGate"
+      },
+      "rdfs:range": {
+        "@id": "pl:HumanRole"
+      }
+    },
+    {
+      "@id": "pl:nextPhase",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "next proposed phase",
+      "rdfs:domain": {
+        "@id": "pl:PilotPhase"
+      },
+      "rdfs:range": {
+        "@id": "pl:PilotPhase"
+      }
+    },
+    {
+      "@id": "pl:hasTrustState",
+      "@type": "owl:ObjectProperty",
+      "rdfs:label": "annotated evidence state",
+      "rdfs:domain": {
+        "@id": "pl:PilotPlan"
+      },
+      "rdfs:range": {
+        "@id": "skos:Concept"
+      }
+    },
+    {
+      "@id": "pl:program",
+      "@type": "pl:PeaceProgram",
+      "rdfs:label": "GPT-Doug PeaceLab",
+      "hasPilot": "pl:pilot-90-day",
+      "pl:verifiedRealWorldOutcomes": 0,
+      "pl:humanFieldAuthority": "NEVER_GRANTED_BY_SOFTWARE",
+      "pl:nobelNominationSubmitted": false
+    },
+    {
+      "@id": "pl:pilot-90-day",
+      "@type": "pl:PilotPlan",
+      "rdfs:label": "90-day pilot — proposed, not running",
+      "hasTrustState": "pl:trust-SYNTHETIC",
+      "hasGate": [
+        "pl:gate-legal_partner",
+        "pl:gate-community_voice",
+        "pl:gate-conflict_sensitivity",
+        "pl:gate-consent_privacy",
+        "pl:gate-human_facilitator",
+        "pl:gate-evaluation_protocol",
+        "pl:gate-incident_response",
+        "pl:gate-conflict_of_interest"
+      ],
+      "hasPhase": [
+        "pl:phase-01-30",
+        "pl:phase-31-60",
+        "pl:phase-61-75",
+        "pl:phase-76-90"
+      ],
+      "hasRisk": [
+        "pl:risk-retaliation",
+        "pl:risk-power_imbalance",
+        "pl:risk-privacy",
+        "pl:risk-escalation",
+        "pl:risk-evaluation_bias"
+      ],
+      "pl:executionStatus": "NO_FIELD_PILOT_ACTIVATED",
+      "pl:externalApprovalGranted": false
+    },
+    {
+      "@id": "pl:peacelab-software",
+      "@type": "pl:SoftwareComponent",
+      "rdfs:label": "GPT-Doug PeaceLab local analysis code",
+      "rdfs:comment": "Offline evidence verifier. It is not a human reviewer and cannot grant authority."
+    },
+    {
+      "@id": "pl:role-independent-organization-reviewer",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Independent organization reviewer",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-community-advisory-council",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Community advisory council",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-qualified-safeguarding-reviewer",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Qualified safeguarding reviewer",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-independent-privacy-reviewer",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Independent privacy reviewer",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-community-partner",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Community partner",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-independent-evaluator",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Independent evaluator",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:role-qualified-human-facilitator",
+      "@type": "pl:HumanRole",
+      "rdfs:label": "Qualified human facilitator",
+      "pl:identifiedOrApproved": false,
+      "rdfs:comment": "Required function only; no real individual has been assigned."
+    },
+    {
+      "@id": "pl:gate-legal_partner",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Accountable legal organization and director",
+      "pl:gateKey": "legal_partner",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-independent-organization-reviewer",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-community_voice",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Voluntary community input and local legitimacy",
+      "pl:gateKey": "community_voice",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-community-advisory-council",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-conflict_sensitivity",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Independent conflict and do-no-harm review",
+      "pl:gateKey": "conflict_sensitivity",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-qualified-safeguarding-reviewer",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-consent_privacy",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Informed consent, privacy and opt-out protocol",
+      "pl:gateKey": "consent_privacy",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-independent-privacy-reviewer",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-human_facilitator",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Qualified impartial human facilitator",
+      "pl:gateKey": "human_facilitator",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-community-partner",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-evaluation_protocol",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Preregistered independent evaluation and harm measures",
+      "pl:gateKey": "evaluation_protocol",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-independent-evaluator",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-incident_response",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Human incident escalation and stop procedure",
+      "pl:gateKey": "incident_response",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-qualified-safeguarding-reviewer",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:gate-conflict_of_interest",
+      "@type": "pl:SafetyGate",
+      "rdfs:label": "Funding and conflict-of-interest transparency",
+      "pl:gateKey": "conflict_of_interest",
+      "pl:reviewState": "PENDING",
+      "requiresHumanRole": "pl:role-independent-organization-reviewer",
+      "pl:externalAttestation": "NOT_PERFORMED"
+    },
+    {
+      "@id": "pl:phase-01-30",
+      "@type": "pl:PilotPhase",
+      "rdfs:label": "Partner and community scoping",
+      "pl:days": "01-30",
+      "pl:permissionBoundary": "NO FIELD ACTIVITY",
+      "nextPhase": "pl:phase-31-60"
+    },
+    {
+      "@id": "pl:phase-31-60",
+      "@type": "pl:PilotPhase",
+      "rdfs:label": "Safeguards and preregistration",
+      "pl:days": "31-60",
+      "pl:permissionBoundary": "NO FIELD ACTIVITY",
+      "nextPhase": "pl:phase-61-75"
+    },
+    {
+      "@id": "pl:phase-61-75",
+      "@type": "pl:PilotPhase",
+      "rdfs:label": "Conditional voluntary pilot",
+      "pl:days": "61-75",
+      "pl:permissionBoundary": "EXTERNAL APPROVAL REQUIRED",
+      "nextPhase": "pl:phase-76-90"
+    },
+    {
+      "@id": "pl:phase-76-90",
+      "@type": "pl:PilotPhase",
+      "rdfs:label": "Follow-up, independent audit",
+      "pl:days": "76-90",
+      "pl:permissionBoundary": "INDEPENDENT RELEASE REVIEW"
+    },
+    {
+      "@id": "pl:risk-retaliation",
+      "@type": "pl:Risk",
+      "rdfs:label": "Participation may invite retaliation",
+      "pl:riskKey": "retaliation",
+      "pl:mitigation": "No identifying public records and voluntary safe exit",
+      "pl:stopTrigger": "Any credible retaliation risk"
+    },
+    {
+      "@id": "pl:risk-power_imbalance",
+      "@type": "pl:Risk",
+      "rdfs:label": "Participation could become coercive",
+      "pl:riskKey": "power_imbalance",
+      "pl:mitigation": "Independent community review and opt-out",
+      "pl:stopTrigger": "Consent is compromised"
+    },
+    {
+      "@id": "pl:risk-privacy",
+      "@type": "pl:Risk",
+      "rdfs:label": "Small cohorts and stories identify people",
+      "pl:riskKey": "privacy",
+      "pl:mitigation": "Suppress small cohorts, avoid raw narratives and recordings",
+      "pl:stopTrigger": "Suspected identity disclosure"
+    },
+    {
+      "@id": "pl:risk-escalation",
+      "@type": "pl:Risk",
+      "rdfs:label": "Dialogue could escalate disputes",
+      "pl:riskKey": "escalation",
+      "pl:mitigation": "Exclude high-risk settings and involve qualified professionals",
+      "pl:stopTrigger": "Threat or escalating dispute"
+    },
+    {
+      "@id": "pl:risk-evaluation_bias",
+      "@type": "pl:Risk",
+      "rdfs:label": "Pre-post data could be overclaimed as causal peace benefit",
+      "pl:riskKey": "evaluation_bias",
+      "pl:mitigation": "Independent preregistration and limitations",
+      "pl:stopTrigger": "Misleading efficacy or Nobel claim"
+    },
+    {
+      "@id": "pl:trust-SYNTHETIC",
+      "@type": "skos:Concept",
+      "rdfs:label": "Synthetic model; no real person or outcome",
+      "pl:trustCode": "SYNTHETIC"
+    },
+    {
+      "@id": "pl:trust-SELF_REPORTED",
+      "@type": "skos:Concept",
+      "rdfs:label": "Self-reported and not independently checked",
+      "pl:trustCode": "SELF_REPORTED"
+    },
+    {
+      "@id": "pl:trust-LINKS_PROVIDED_UNCHECKED",
+      "@type": "skos:Concept",
+      "rdfs:label": "Evidence URLs supplied; their truth is unchecked",
+      "pl:trustCode": "LINKS_PROVIDED_UNCHECKED"
+    },
+    {
+      "@id": "pl:trust-EXTERNAL_REVIEW_REQUIRED",
+      "@type": "skos:Concept",
+      "rdfs:label": "Independent assessment is still required",
+      "pl:trustCode": "EXTERNAL_REVIEW_REQUIRED"
+    },
+    {
+      "@id": "pl:policy-no-automated-fieldwork",
+      "@type": "pl:GovernancePolicy",
+      "rdfs:label": "Software never grants authority for external fieldwork",
+      "pl:effect": "DENY",
+      "pl:overrideBySoftware": false
+    },
+    {
+      "@id": "pl:policy-no-autonomous-mediation",
+      "@type": "pl:GovernancePolicy",
+      "rdfs:label": "No automated conflict mediation or intervention",
+      "pl:effect": "DENY",
+      "pl:overrideBySoftware": false
+    },
+    {
+      "@id": "pl:policy-no-identity-tracking",
+      "@type": "pl:GovernancePolicy",
+      "rdfs:label": "Do not store participant identities, biographies or raw stories",
+      "pl:effect": "DENY",
+      "pl:overrideBySoftware": false
+    },
+    {
+      "@id": "pl:policy-no-unverified-impact",
+      "@type": "pl:GovernancePolicy",
+      "rdfs:label": "Never equate hash/links, workshop counts or before-after differences with verified peace outcomes",
+      "pl:effect": "DENY",
+      "pl:overrideBySoftware": false
+    },
+    {
+      "@id": "pl:policy-no-nobel-application",
+      "@type": "pl:GovernancePolicy",
+      "rdfs:label": "Do not self-nominate or claim Nobel endorsement or award",
+      "pl:effect": "DENY",
+      "pl:overrideBySoftware": false
+    }
+  ]
+}
