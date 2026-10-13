@@ -1,0 +1,211 @@
+{
+  "authority": "RESEARCH_ONLY",
+  "base_ontology": "ZYRA_MSS_V1",
+  "constraints": [
+    "synthetic-only",
+    "no-operational-authority",
+    "human-reviewed-research-only",
+    "no-actuation-or-dispatch"
+  ],
+  "data_classifications": [
+    "SYNTHETIC"
+  ],
+  "edge_types": {
+    "AFFECTS_CATEGORY": {
+      "from": "SupplyConstraint",
+      "to": "SupplyCategory"
+    },
+    "AUTHORIZED_BY": {
+      "from": "ApprovedResearchFinding",
+      "to": "ReviewDecision"
+    },
+    "CONSTRAINS": {
+      "from": "DefensiveControl",
+      "to": "CommunicationsServiceClass"
+    },
+    "DERIVED_FROM": {
+      "from": "ResearchEvidence",
+      "to": "SimulationRun"
+    },
+    "EVALUATED_BY": {
+      "from": "SimulationRun",
+      "to": "MathCertificate"
+    },
+    "EVALUATES": {
+      "from": "TrainingExercise",
+      "to": "TrainingRequirement"
+    },
+    "HAS_INPUT_SOURCE": {
+      "from": "ResearchScenario",
+      "to": "ProvenanceSource"
+    },
+    "HAS_RECOVERY_EXERCISE": {
+      "from": "DefensiveIncidentExercise",
+      "to": "ContinuityExercise"
+    },
+    "HAS_REQUIREMENT": {
+      "from": "EquipmentClass",
+      "to": "MaintenanceRequirement"
+    },
+    "INSTANTIATES": {
+      "from": "SimulationRun",
+      "to": "ResearchScenario"
+    },
+    "PUBLISHED_FROM": {
+      "from": "ApprovedResearchFinding",
+      "to": "ResearchEvidence"
+    },
+    "RECORDS_REVIEW": {
+      "from": "AuditTrailEvent",
+      "to": "ReviewDecision"
+    },
+    "REQUIRES_SOURCE": {
+      "from": "ApprovedResearchFinding",
+      "to": "ProvenanceSource"
+    },
+    "REVIEWS": {
+      "from": "ReviewDecision",
+      "to": "ResearchEvidence"
+    },
+    "SUPPORTED_BY": {
+      "from": "ResearchEvidence",
+      "to": "MathCertificate"
+    },
+    "USES_MODEL": {
+      "from": "ResearchScenario",
+      "to": "ResearchModel"
+    }
+  },
+  "limits": {
+    "max_edges": 500,
+    "max_objects": 100
+  },
+  "object_types": {
+    "ApprovedResearchFinding": [
+      "evidence_ref",
+      "review_ref",
+      "publication_id",
+      "evidence_label",
+      "supersedes"
+    ],
+    "AuditTrailEvent": [
+      "event_type",
+      "actor_ref",
+      "timestamp",
+      "payload_digest",
+      "previous_digest"
+    ],
+    "CommunicationsServiceClass": [
+      "service_class",
+      "aggregate_status",
+      "simulated_uptime_pct"
+    ],
+    "ContinuityExercise": [
+      "scenario_ref",
+      "recovery_objective",
+      "simulated_result_ref"
+    ],
+    "DefensiveControl": [
+      "control_family",
+      "control_status",
+      "simulated_coverage_pct"
+    ],
+    "DefensiveIncidentExercise": [
+      "incident_class",
+      "simulated_impact",
+      "proposed_recovery_ref"
+    ],
+    "EquipmentClass": [
+      "name",
+      "count_band",
+      "synthetic_state",
+      "exercise_id"
+    ],
+    "MaintenanceRequirement": [
+      "equipment_class_ref",
+      "category",
+      "due_phase",
+      "status"
+    ],
+    "MathCertificate": [
+      "run_ref",
+      "certificate_kind",
+      "verification_method",
+      "check_status"
+    ],
+    "ProvenanceSource": [
+      "source_uri_or_local_id",
+      "rights_basis",
+      "source_kind",
+      "captured_at"
+    ],
+    "ResearchEvidence": [
+      "run_ref",
+      "certificate_refs",
+      "claim_text",
+      "scope_of_claim",
+      "limitations"
+    ],
+    "ResearchModel": [
+      "model_family",
+      "formal_assumptions",
+      "implementation_digest",
+      "limits"
+    ],
+    "ResearchScenario": [
+      "domains",
+      "fixture_ref",
+      "assumptions",
+      "mathematical_models",
+      "seed"
+    ],
+    "ReviewDecision": [
+      "evidence_ref",
+      "disposition",
+      "reviewer_ref",
+      "timestamp",
+      "rationale"
+    ],
+    "SensorHealthClass": [
+      "category",
+      "synthetic_health_pct",
+      "observed_at"
+    ],
+    "SimulationRun": [
+      "scenario_ref",
+      "model_ref",
+      "input_digest",
+      "output_digest",
+      "run_status"
+    ],
+    "SoftwareArtifactEvidence": [
+      "artifact_digest",
+      "source",
+      "integrity_check",
+      "status"
+    ],
+    "SupplyCategory": [
+      "category",
+      "capacity_band",
+      "availability_band",
+      "unit"
+    ],
+    "SupplyConstraint": [
+      "supply_category_ref",
+      "constraint_kind",
+      "severity_band"
+    ],
+    "TrainingExercise": [
+      "training_requirement_ref",
+      "cohort_aggregate",
+      "simulated_completion_pct"
+    ],
+    "TrainingRequirement": [
+      "training_kind",
+      "completion_criteria",
+      "evidence_refs"
+    ]
+  },
+  "ontology_id": "WARFIGHTER_RESEARCH_V1",
+  "version": "1.0.0"
+}

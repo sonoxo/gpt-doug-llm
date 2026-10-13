@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "scenario_id": "wr:scenario:demo-0001",
+  "source_kind": "SYNTHETIC",
+  "classification": "SYNTHETIC",
+  "synthetic": true,
+  "domains": ["training", "defensive-systems"],
+  "fixture": {
+    "training_readiness_pct": 68,
+    "patch_compliance_pct": 74,
+    "sensor_health_pct": 91
+  },
+  "assumptions": [
+    "All values are invented for an offline exercise",
+    "No external connectivity or real systems"
+  ],
+  "model_id": "synthetic-baseline-v1",
+  "seed": 0
+}
