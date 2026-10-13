@@ -35,7 +35,7 @@ case "$first_arg_lc" in
     # Offline read/assessment commands never execute outside software.
     # 'init' writes a local template, so it retains guardrail preflight.
     case "${2:-demo}" in
-      demo|kit|assess|verify|brief) read_only_mode=1 ;;
+      demo|kit|assess|verify|brief|pilot-demo|pilot-kit|pilot-assess|pilot-verify|pilot-brief|pilot-preview) read_only_mode=1 ;;
     esac
     ;;
   brain)
