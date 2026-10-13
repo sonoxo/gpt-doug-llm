@@ -1,8 +1,10 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T17:43:34Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-10-12T17:58:14Z",
+  "due_files_reviewed": 1,
+  "due_paths": [
+    "free-video-studio/requirements.txt"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1035,6 +1037,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "5250717c664387a89cb93104594e0f5f0a21de5cbd5f414472865830bc3183b5",
       "size": 888,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/warfighter-research-core.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:26:49Z",
+      "reviewed_at": null,
+      "sha256": "972efccefdc773832a331167e5ec71b988db120d18f6bc8eee763bc69a5f171e",
+      "size": 3144,
       "validation_issues": [],
       "was_due": false
     },
@@ -3238,6 +3251,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/BIOPINEAL_CL1_INTEGRATION.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:56:19Z",
+      "reviewed_at": null,
+      "sha256": "54e3172ddbbc1d947529630cd7f60bfdc19a01fb970271474ad33e19076b581c",
+      "size": 2108,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md": {
       "actions": [],
       "binary": false,
@@ -4071,6 +4095,28 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "76fb3fb00801460e0e006e8aa9dde2cc6f204455bf7d8a51595877806b415b63",
       "size": 3333,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/WARFIGHTER_CORE_TEST_REPORT.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "fc8adc4edc70c493f2095911c0834a76537e293f74000607d6a0eec0dc718ce6",
+      "size": 1506,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/WARFIGHTER_RESEARCH_CLI.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "29c2c9692dabecbfb0d579d845943ffe8f0e5cc246ac7413f604d7846cef2050",
+      "size": 5888,
       "validation_issues": [],
       "was_due": false
     },
@@ -6464,13 +6510,13 @@
     "free-video-studio/requirements.txt": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-06T04:15:56Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "586d8a52db65f65fbb70e76c99b67cc438fd721513a1f6c600f9a21227eadb24",
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:14:31Z",
+      "reviewed_at": "2026-10-13T17:58:14Z",
+      "sha256": "54f7248a4e464ebd92053e76610ee786f4c8c7e25e4745bbbfe24e2dab425da3",
       "size": 18,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "free-video-studio/run.sh": {
       "actions": [],
@@ -12258,6 +12304,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/cl1_simulator_bridge.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:56:08Z",
+      "reviewed_at": null,
+      "sha256": "f303e2bf1aa9be2a2df56bfd2d70a12820759e362313934378fd31b69c1b39b3",
+      "size": 2255,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/cli.py": {
       "actions": [],
       "binary": false,
@@ -12728,6 +12785,270 @@
       "reviewed_at": "2026-10-13T13:37:41Z",
       "sha256": "04d61f4ebbd9094e980aef915bedc4c0c3026f38dcc237744190c34898f23714",
       "size": 8386,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/artifact.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "c90d8eb24f90629a776b831f8a323c862d603893d6ac2fff2db9a5e2fd59da21",
+      "size": 3076,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/baseline.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "26785c2f27d60113ca7193eada056c4f445f02312fd656a9d91b9786cfcbab5b",
+      "size": 1070,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "bb4b2f42e19fe49326b056763ea183f8ea48d4b0f7f18cc5db2dcd0349b98020",
+      "size": 7773,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/examples/synthetic_training_defense.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "f22ee06863aaafcf5eb07f8d0005b5e8cd2fb87fb581fce5aa9e26276578712e",
+      "size": 498,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/fixtures.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "3c4b2847abc7076f2adaae2160103e8977e7402cf7843d50567b776e36b91a14",
+      "size": 4001,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/hilbert_adapter.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "3d642811216af6dfe9158f619173e55d1959831df4871ae23443ee262aa5a837",
+      "size": 2168,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/journal.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "d5c22f58f11083b0b20782400474350c53458de731bc430b4d98bf2a6dda5de4",
+      "size": 8153,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/pineal_projection.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "aebc6255e33018cd6edc0044e3bd2488ab0d635bc238e4375a1a998ef5ef5273",
+      "size": 4270,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/publication.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "2c7cab7ee7cf487d00f306db444b55eec3fabe5eff54187db2497de3cf83191f",
+      "size": 5630,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/schema.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "e79e43df73abd8f9a4dadc43af1705b2982f90a5aceabd8a87df45c0647edb98",
+      "size": 5335,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_baseline.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "f209233588b1b17cd14671c794aeda13324c9a4bedfb87e5d9c5a237bdf5bcab",
+      "size": 1234,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_cli_e2e.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "9e20e9921172fda5cadc900872bfa294308bc825473ee6e5fc6b574101ff6ebb",
+      "size": 3822,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_doug_max_wrapper.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:21:44Z",
+      "reviewed_at": null,
+      "sha256": "fce487e1f32db3a82f8e8cf94e591935b1093a9af90588c22f00845120d6a335",
+      "size": 1006,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_fixtures.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "4866c884bb46ffa25b14b0cb040f51ceca120a7a92adb4ccdab7528af5f78df4",
+      "size": 2621,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_journal.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "c0e0741b94425890c5f0735180baa02d7263cbd01f5f0d5af212ce6e5673fcab",
+      "size": 2837,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_math_adapter.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "811f8cb2c90f76b9749175b0bea5794d2c895961448f063f12cad5714fc81c79",
+      "size": 2603,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_pineal_integration.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:26:02Z",
+      "reviewed_at": null,
+      "sha256": "9c81c19994fccfec30752b32118796be53860339164ee725ace982bc40143d3c",
+      "size": 2810,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_pineal_projection.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "989bfa76e0074f927788b37a8387985d38aaf79af65c5d594b9ce67dbc570302",
+      "size": 3267,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_publication.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "54aeb09cd6a40f71be061be489eafe6659dfa2b62d5ff0b78cf05de97bb022ee",
+      "size": 3844,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_schema.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "c3dcb9532e24411934b0f16a34e99bdd687ac0ba6e172e5a787d5e74f8365d48",
+      "size": 3419,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/tests/test_verify.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "da1dbd8f897c79c5508579c8f57749c456effa46b3068f33df31802641facc7a",
+      "size": 3200,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/warfighter/verify.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "6d87470ab63f6d0c81f61b9a3e7c637f4d25d9060904fbfeb20ad17ed5e0a253",
+      "size": 2442,
       "validation_issues": [],
       "was_due": false
     },
@@ -14051,6 +14372,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "safety-shield/ontology/warfighter-research-v1.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T00:20:05Z",
+      "reviewed_at": null,
+      "sha256": "817dc2e4b32b70a14e04828464b198bc0ef743fc43da33f2d39f4a52d9bcab11",
+      "size": 4572,
+      "validation_issues": [],
+      "was_due": false
+    },
     "safety-shield/ontology/zyra-ballistic-warning-sim.json": {
       "actions": [],
       "binary": false,
@@ -14297,10 +14629,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:34:35Z",
+      "git_touched_at": "2026-10-13T17:43:45Z",
       "reviewed_at": null,
-      "sha256": "a56000a6e100c3c04bc93d5c34e4094b428f0b4b2ca3fede7931474eeed82b4d",
-      "size": 11249,
+      "sha256": "9b8b8a66c0697425a617ac98ef1fa9a738d7e7505ba69bbd823ccfe0c80475a4",
+      "size": 11639,
       "validation_issues": [],
       "was_due": false
     },
@@ -20105,9 +20437,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:40:27Z",
+      "git_touched_at": "2026-10-13T17:44:16Z",
       "reviewed_at": null,
-      "sha256": "6df61c74f7c2967df18fb5975453318e7e8b9a8e19b89534fc91b7b7874bea81",
+      "sha256": "9284baaf061317b53f1441a9d629132f6f46dc5e99780f565468d39dbc335d27",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -20127,9 +20459,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:40:27Z",
+      "git_touched_at": "2026-10-13T17:44:16Z",
       "reviewed_at": null,
-      "sha256": "178befdaf29a9102b2d3e405a16106023e25e6f8a4e817074544ef7fb9eca793",
+      "sha256": "1b8c51bb241089e08af3717c1a754010eb75d47956926569bba8780fc25e85ce",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -22589,11 +22921,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T17:43:34Z",
+  "generated_at": "2026-10-13T17:58:14Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2053,
+  "tracked_files_reviewed": 2083,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
