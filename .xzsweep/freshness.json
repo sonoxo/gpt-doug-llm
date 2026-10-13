@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T17:40:37Z",
+  "cutoff_at": "2026-10-12T17:43:34Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -848,6 +848,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "481edc0e2adf775eb420436de4ea27c61786bd8c44333ef9d964819e90760263",
       "size": 3394,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/sensor-swarm.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:35:51Z",
+      "reviewed_at": null,
+      "sha256": "54e38dbf1fd146ef25ad0679085eb91b87ad37ae4875fc902ae185c0a05fbea9",
+      "size": 980,
       "validation_issues": [],
       "was_due": false
     },
@@ -3216,6 +3227,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/BIOCHIP_SWARM_PROTOTYPE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:39:22Z",
+      "reviewed_at": null,
+      "sha256": "8fc313bc7587e6f11b3a2a56113443f20b280ecb5904bde90fac59be11c0447a",
+      "size": 2122,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md": {
       "actions": [],
       "binary": false,
@@ -3961,6 +3983,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "42abb78c1054f15efeffb0b1af9acafcf57cf1115e45b668e8c44b50cd4a96d8",
       "size": 8972,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/SENSOR_SWARM.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:42:31Z",
+      "reviewed_at": null,
+      "sha256": "0e453a924b02755dd0e7bedd23499d44eb1aa168cb018e2f5c02185d1dc9a3f4",
+      "size": 5725,
       "validation_issues": [],
       "was_due": false
     },
@@ -4968,11 +5001,11 @@
     "docs/sensor-policy.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-29T13:51:41Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "6d9f332aabbe474d79e8d5163f5660c7bc0d0202288b5dc2bd598219e955c655",
-      "size": 1383,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:34:33Z",
+      "reviewed_at": null,
+      "sha256": "c3eb4f8ebf8b1d1066ddff5a5e52e59963134835872b8e29422db6eae6d9bab9",
+      "size": 1408,
       "validation_issues": [],
       "was_due": false
     },
@@ -12192,6 +12225,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/biochip_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:39:00Z",
+      "reviewed_at": null,
+      "sha256": "a7f0f75ac911bb2cb9eeb0325c33f8e9f851f03729bc2d50e836d108bc9b9d8a",
+      "size": 3817,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/biopineal_patent.py": {
       "actions": [],
       "binary": false,
@@ -14253,10 +14297,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:13:30Z",
+      "git_touched_at": "2026-10-13T17:34:35Z",
       "reviewed_at": null,
-      "sha256": "3657324291c62ec779e4084f0355323e78aada75d07cc028485c1b1c615d870c",
-      "size": 11076,
+      "sha256": "a56000a6e100c3c04bc93d5c34e4094b428f0b4b2ca3fede7931474eeed82b4d",
+      "size": 11249,
       "validation_issues": [],
       "was_due": false
     },
@@ -15470,6 +15514,61 @@
       "validation_issues": [],
       "was_due": false
     },
+    "sensor_swarm/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:34:07Z",
+      "reviewed_at": null,
+      "sha256": "44867d5278abbaf2c289c7664dc367646b71d3632950b919f69e391a51dd69f2",
+      "size": 59,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "sensor_swarm/__main__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:42:26Z",
+      "reviewed_at": null,
+      "sha256": "5de663af341a514d641127f16773629c4bdb4c1b28658961e9f9b84d06e026ba",
+      "size": 5648,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "sensor_swarm/core.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:40:21Z",
+      "reviewed_at": null,
+      "sha256": "084d1c0341ec239b0d05b0d093691249233d6300aa893dc75931917c6bbef7b1",
+      "size": 18340,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "sensor_swarm/dashboard.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:34:12Z",
+      "reviewed_at": null,
+      "sha256": "e785302dcd3572dd373fc146ab6fa1ed4663d26c2a14a32b7c0cdf0265b8779c",
+      "size": 3929,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "sensor_swarm/ontology.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:38:37Z",
+      "reviewed_at": null,
+      "sha256": "98959f903a757f42241831b159759626037464616b4dee3cc7c48ae1564647d9",
+      "size": 3023,
+      "validation_issues": [],
+      "was_due": false
+    },
     "shaggoth-swarm-gpt100/.env.example": {
       "actions": [],
       "binary": false,
@@ -16413,6 +16512,17 @@
       "reviewed_at": "2026-10-13T13:37:41Z",
       "sha256": "04e3f76809c399a95085c35faf7851c2714cc3b947149e42f459cef0395fe707",
       "size": 606,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_biochip_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:39:09Z",
+      "reviewed_at": null,
+      "sha256": "844c18a0753e0bbd81ac032e599bda0d90c28d82f474202e0ea623ffb5b05a2e",
+      "size": 1638,
       "validation_issues": [],
       "was_due": false
     },
@@ -17370,6 +17480,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "8e340985529e5d0c74eaf49bf224643fdc91ab1db0ba7f4a21df82a0bdf4d99b",
       "size": 5231,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_sensor_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T17:42:29Z",
+      "reviewed_at": null,
+      "sha256": "3ad8c9fac9909cd737dc8837efabaf39bd1e1ee8e843c876d6db23282e66fdca",
+      "size": 14364,
       "validation_issues": [],
       "was_due": false
     },
@@ -19984,9 +20105,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:32:09Z",
+      "git_touched_at": "2026-10-13T17:40:27Z",
       "reviewed_at": null,
-      "sha256": "ab98c4e7bbb66c5a7e050ff7befe041d3086b9e946dac4c35f74d116847a264e",
+      "sha256": "6df61c74f7c2967df18fb5975453318e7e8b9a8e19b89534fc91b7b7874bea81",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -20006,9 +20127,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:32:09Z",
+      "git_touched_at": "2026-10-13T17:40:27Z",
       "reviewed_at": null,
-      "sha256": "54c71f9f3bf8f377767d34fe30006e12249a81d9ad9359ba815622e5f4d57a40",
+      "sha256": "178befdaf29a9102b2d3e405a16106023e25e6f8a4e817074544ef7fb9eca793",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -22468,11 +22589,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T17:40:37Z",
+  "generated_at": "2026-10-13T17:43:34Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2042,
+  "tracked_files_reviewed": 2053,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
