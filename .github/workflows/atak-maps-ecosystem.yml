@@ -1,0 +1,109 @@
+name: GPT-Doug ATAK-Maps Ecosystem
+
+on:
+  pull_request:
+    paths:
+      - 'tak_geo/**'
+      - 'tests/test_atak_maps_ecosystem.py'
+      - 'docs/GPT_DOUG_ATAK_MAPS_ECOSYSTEM.md'
+      - 'scripts/doug-max'
+      - '.github/workflows/atak-maps-ecosystem.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tak_geo/**'
+      - 'tests/test_atak_maps_ecosystem.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test runner
+        run: python -m pip install 'pytest>=7,<10'
+      - name: Test XML parser, access policy, ontology and offline viewer
+        run: |
+          python -m compileall -q tak_geo
+          python -m pytest -q tests/test_atak_maps_ecosystem.py tests/test_tak_geo.py tests/test_gpt_brain.py
+          bash -n scripts/doug-max
+      - name: Validate browser JS parsing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ('tak_geo/atlas.html', 'tak_geo/dashboard.html'):
+              html = Path(name).read_text(encoding='utf-8')
+              script = html.split('<script>', 1)[1].split('</script>', 1)[0]
+              Path('/tmp/' + Path(name).stem + '.js').write_text(script, encoding='utf-8')
+          PY
+          node --check /tmp/atlas.js
+          node --check /tmp/dashboard.js
+
+  pinned-source-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout GPT-Doug integration
+        uses: actions/checkout@v4
+        with:
+          path: integration
+      - name: Checkout public ATAK-Maps source at inspected commit
+        uses: actions/checkout@v4
+        with:
+          repository: sonoxo/ATAK-Maps
+          ref: 9dd45641a6849bf52e56b279e39b27126573c434
+          path: source/ATAK-Maps
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compare actual catalog counts against source XML
+        working-directory: integration
+        run: |
+          python -m tak_geo maps-doctor --source ../source/ATAK-Maps > /tmp/atak-maps-doctor.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          q=json.loads(Path('/tmp/atak-maps-doctor.json').read_text())
+          summary=q['summary']
+          print('ATAK-MAPS OBSERVED XML:', summary)
+          assert summary['sources'] >= 35
+          assert summary['issues'] == 0
+          assert q['network_actions'] == 0
+          assert not q['TAK_server_connected']
+          PY
+      - name: Generate versioned atlas and ontology graph
+        working-directory: integration
+        run: |
+          python -m tak_geo ecosystem --source ../source/ATAK-Maps --output build/tak-maps-ecosystem
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('build/tak-maps-ecosystem')
+          c=json.loads((root/'catalog.json').read_text())
+          g=json.loads((root/'atlas-ontology.json').read_text())
+          assert c['source']['commit_sha'] == '9dd45641a6849bf52e56b279e39b27126573c434'
+          assert len(g['nodes']) > c['summary']['sources']
+          assert g['runtime_connections'] == 0
+          assert c['summary']['issues'] == 0
+          assert (root/'atlas.html').is_file()
+          assert (root/'index.html').is_file()
+          print('STATIC ATLAS BUILT:',c['summary'])
+          PY
+      - name: Upload public synthetic-only atlas for visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-doug-atak-maps-public-demo
+          path: integration/build/tak-maps-ecosystem/
+          if-no-files-found: error
