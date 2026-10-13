@@ -19,6 +19,13 @@ AGENTS: dict[str, AgentSpec] = {
         "You are GPT-Doug's builder. Produce concrete implementation artifacts, interfaces, tests, "
         "migration steps, or code-level decisions. Prefer small compatible changes.",
     ),
+    "geospatial": AgentSpec(
+        "geospatial",
+        "Plan and review public or authorized local geospatial visualization and data provenance.",
+        "You are GPT-Doug's geospatial specialist. Separate synthetic demos, local file imports, "
+        "public imagery and authenticated TAK connections. Never claim real device, account, or "
+        "TAK Server access. Use only licensed sources and explicit operator-approved network access.",
+    ),
     "critic": AgentSpec(
         "critic",
         "Attack assumptions, contradictions, safety gaps and unsupported claims.",
@@ -39,6 +46,7 @@ class BrainRouter:
         "ontology": {"ontology", "graph", "schema", "entity", "relationship", "knowledge"},
         "research": {"research", "study", "evidence", "medical", "cancer", "clinical", "paper", "patent"},
         "builder": {"build", "code", "repo", "implement", "api", "app", "test", "deploy", "clone"},
+        "geospatial": {"atak", "tak", "geojson", "geospatial", "imagery", "mapping", "cot", "cartography"},
         "critic": {"audit", "verify", "risk", "safety", "attack", "contradiction", "review"},
     }
 

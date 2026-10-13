@@ -1,0 +1,78 @@
+name: MECHA Research Core
+
+on:
+  pull_request:
+    paths:
+      - 'mecha/**'
+      - 'integrations/mecha_bridge/**'
+      - 'tests/test_mecha*.py'
+      - 'scripts/doug-max'
+      - '.github/workflows/mecha-research.yml'
+      - 'docs/MECHA.md'
+  push:
+    branches:
+      - main
+    paths:
+      - 'mecha/**'
+      - 'integrations/mecha_bridge/**'
+      - '.github/workflows/mecha-research.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mecha-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-core:
+    name: MECHA offline (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.13']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Syntax and portable unit tests
+        env:
+          PYTHONPATH: 'mecha:.'
+        run: |
+          python -m compileall -q mecha integrations/mecha_bridge
+          python -m unittest discover -s mecha/tests -p 'test_*.py' -v
+      - name: Host bridge and guarded launcher
+        env:
+          PYTHONPATH: 'mecha:.'
+        run: |
+          bash -n scripts/doug-max
+          python -m unittest tests.test_mecha_bridge tests.test_mecha_guarded_entry -v
+          bash scripts/doug-max mecha doctor > /tmp/mecha-doctor.json
+          python -c 'import json; d=json.load(open("/tmp/mecha-doctor.json")); assert d["authority"]=="RESEARCH_ONLY" and d["external_calls"]==0 and not d["real_world_actuation"]'
+      - name: Existing Warfighter and BioPINEAL tests
+        env:
+          PYTHONPATH: 'mecha:.'
+        run: python -m unittest discover -s research_lab/warfighter/tests -p 'test_*.py' -v
+      - name: Existing governed robotics package tests
+        run: |
+          python -m pip install 'pytest>=8,<10'
+          python -m pytest -q tests/test_gpt_doug_max_robotics_lab.py
+      - name: Base ZYRA/PINEAL/XQE authorities unchanged
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT_NAME" = "push" ]; then
+            BASE="$PUSH_BEFORE"
+          else
+            BASE="$(git merge-base origin/main HEAD)"
+          fi
+          test -n "$BASE"
+          test "$BASE" != "0000000000000000000000000000000000000000"
+          git cat-file -e "$BASE^{commit}"
+          git diff --exit-code "$BASE" HEAD -- safety-shield/ontology/zyra-mss-v1.json integrations/gpt-doug-pineal/src/pineal/federation.py workers/xqe.py
