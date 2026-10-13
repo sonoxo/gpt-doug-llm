@@ -1,0 +1,55 @@
+name: Math Frontier Finite Evidence
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 1'
+  pull_request:
+    paths:
+      - 'gpt_brain/math_frontier.py'
+      - 'gpt_brain/math_mitochondria.py'
+      - 'tests/test_math_frontier.py'
+      - '.github/workflows/math-frontier-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  finite-math-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {problem: goldbach, start: 4, end: 2002}
+          - {problem: goldbach, start: 2004, end: 4002}
+          - {problem: goldbach, start: 4004, end: 6002}
+          - {problem: goldbach, start: 6004, end: 8002}
+          - {problem: collatz, start: 1, end: 1000}
+          - {problem: collatz, start: 1001, end: 2000}
+          - {problem: collatz, start: 2001, end: 3000}
+          - {problem: collatz, start: 3001, end: 4000}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run independent math evidence replay and tests
+        env:
+          PROBLEM: ${{ matrix.problem }}
+          START: ${{ matrix.start }}
+          END: ${{ matrix.end }}
+        run: |
+          python -m gpt_brain.math_frontier run "$PROBLEM" --start "$START" --end "$END" --output evidence.json
+          python -m gpt_brain.math_frontier verify evidence.json
+          python -m unittest -q tests.test_math_frontier
+      - name: Retain exact finite evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontier-${{ matrix.problem }}-${{ matrix.start }}-${{ matrix.end }}
+          path: evidence.json
+          retention-days: 30
+          if-no-files-found: error
