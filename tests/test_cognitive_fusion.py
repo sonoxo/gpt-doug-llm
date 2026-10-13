@@ -291,5 +291,17 @@ class CognitiveFusionTests(unittest.TestCase):
             self.assertTrue(json.loads(p.stdout)["integrity_verified"])
             self.assertFalse(json.loads(p.stdout)["source_authenticity_verified"])
 
+    def test_integrity_cannot_certify_forged_source_authentication(self):
+        result = fuse(build_demo_graph(), "patent evidence", now=NOW)
+        result["workers"]["governance_auditor"]["source_authenticity_verified"] = True
+        result["sha256"] = digest({k: v for k, v in result.items() if k != "sha256"})
+        self.assertFalse(verify_brief(result))
+    def test_integrity_cannot_certify_forged_claim_label(self):
+        result = fuse(build_demo_graph(), "patent evidence", now=NOW)
+        event = result["workers"]["evidence_curator"]["evidence"][0]
+        event["source_authenticity"] = "VERIFIED"
+        result["sha256"] = digest({k: v for k, v in result.items() if k != "sha256"})
+        self.assertFalse(verify_brief(result))
+
 if __name__ == "__main__":
     unittest.main()
