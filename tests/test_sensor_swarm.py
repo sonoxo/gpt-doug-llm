@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from sensor_swarm.core import (
     load_policy, observation, safe_path, snapshot, timestamp, validate_specs,
 )
 from sensor_swarm.dashboard import HTML
+from sensor_swarm.__main__ import main as swarm_cli
 from sensor_swarm.ontology import export_graph, verify_export
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -266,6 +268,14 @@ class SensorSwarmTests(unittest.TestCase):
                     db.write(snapshot(demo_specs()), retention_days=3650)
             finally:
                 db.close()
+
+    def test_live_demo_starts_only_fixture_and_research(self):
+        with mock.patch("sensor_swarm.__main__.serve") as mock_serve:
+            self.assertEqual(swarm_cli(["live-demo", "--port", "8766"]), 0)
+            mock_serve.assert_called_once()
+            specs = mock_serve.call_args.args[0]
+            self.assertEqual({s["kind"] for s in specs}, {"biopineal", "synthetic"})
+            self.assertFalse(mock_serve.call_args.kwargs["authorized_local"])
 
 if __name__ == "__main__":
     unittest.main()
