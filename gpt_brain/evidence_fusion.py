@@ -411,6 +411,29 @@ def verify_brief(value: Any) -> bool:
         return False
     if value.get("evidence_status") != "UNVERIFIED_REPORTED_OBSERVATIONS":
         return False
+    workers = value.get("workers")
+    if not isinstance(workers, dict) or set(workers) != {
+        "evidence_curator", "consistency_critic",
+        "freshness_reviewer", "governance_auditor",
+    }:
+        return False
+    govern = workers["governance_auditor"]
+    if not isinstance(govern, dict):
+        return False
+    if any(govern.get(key) is not False for key in (
+        "source_authenticity_verified", "patent_identity_verified",
+        "technology_use_rights_verified", "automatic_ontology_promotion",
+        "external_actions_enabled", "model_inference_used",
+    )):
+        return False
+    curator = workers["evidence_curator"]
+    if not isinstance(curator, dict) or not isinstance(curator.get("evidence"), list):
+        return False
+    if any(not isinstance(item, dict) or item.get("source_authenticity") != "UNVERIFIED"
+           for item in curator["evidence"]):
+        return False
+    if "SOURCE_AUTHENTICITY_NOT_ESTABLISHED" not in value.get("issues", []):
+        return False
     return value.get("sha256") == digest({k: v for k, v in value.items() if k != "sha256"})
 
 def build_demo_graph() -> dict[str, Any]:
