@@ -33,9 +33,23 @@ Only the named transitive dependencies were refreshed using ordinary
   and attacker-controlled `constructor.isBuffer`, then pass with patched dependencies.
 - Zyra companion validation passes five dependency regressions, 48 existing
   application/kernel tests, TypeScript checking, and client/server compilation.
-- The local environment prohibits the Unix socket used by the `tsx` CLI.
-  Zyra tests/build were additionally run through `node --import tsx` using
-  the same files; hosted CI must verify the exact npm scripts on Node 20.
+- Hosted Zyra Node 20 CI passes the exact npm test, typecheck, audit, and
+  production-build scripts, plus Security Gate:
+  https://github.com/sonoxo/zyra/actions/runs/38397374122.
+  Root Node 20/22 npm security checks pass:
+  https://github.com/sonoxo/gpt-doug-llm/actions/runs/38397442257.
+  Local `tsx` CLI Unix-socket restrictions affected local invocation only;
+  the hosted scripts passed unchanged.
+- GPT-Doug's full local Python suite reports 1031 passed, four failed, two
+  skipped and 207 subtests passed. The same four failures reproduce on the
+  untouched base: three launcher tests fail on `scripts/doug-max` line 22
+  shell syntax; the fourth is the separate patent-confidence assertion.
+  Hosted unified Python checks also reproduce these failures.
+- The original run was rerun. Zyra and the completion verdict remain red
+  because they still consume unpatched Zyra main. The same occurs in the
+  companion GPT-Doug PR's full-completion workflow.
+- An independent agent code review found no blocking issues. Independent
+  human approval remains pending; this is not merge authorization.
 - The new workflow checks root dependencies. The existing cross-repository
   job continues to check Zyra main, so it cannot validate the unmerged
   Zyra companion branch. Its status must remain separate from PR-local CI.
