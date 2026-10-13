@@ -52,7 +52,13 @@ def _exact_keys(value: Any, allowed: set[str], mandatory: set[str], kind: str):
         _fail("invalid or unknown fields in " + kind)
 
 def _identifier(text: Any, prefix: str):
-    if not isinstance(text, str) or not text.startswith(prefix) or not IDENT.fullmatch(text[len(prefix):]):
+    if not isinstance(text, str) or not text.startswith(prefix):
+        _fail("invalid ontology identifier")
+    suffix = text[len(prefix):]
+    if prefix == "observation:":
+        if not HEX_ID.fullmatch(suffix):
+            _fail("invalid observation digest ID")
+    elif not IDENT.fullmatch(suffix):
         _fail("invalid ontology identifier")
     return text
 
@@ -383,7 +389,7 @@ def verify_brief(value: Any) -> bool:
         return False
     if value.get("schema") != REPORT_SCHEMA or value.get("read_only") is not True:
         return False
-    if value.get("model_calls") != 0 or value.get("external_actions") != 0:
+    if value.get("no_network") is not True or value.get("model_calls") != 0 or value.get("external_actions") != 0:
         return False
     if value.get("claim_of_superintelligence") is not False:
         return False
