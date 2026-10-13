@@ -62,6 +62,10 @@ jobs:
         run: |
           python -m research_lab.warfighter.cli doctor > /tmp/warfighter-doctor.json
           python -c 'import json; d=json.load(open("/tmp/warfighter-doctor.json")); assert d["status"]=="RESEARCH_ONLY" and d["synthetic_only"] and not d["military_authority"] and d["external_calls"]==0'
+      - name: Verify guarded GPT-Doug Warfighter launcher
+        run: |
+          bash scripts/doug-max warfighter doctor > /tmp/warfighter-guarded.json
+          python -c 'import json; d=json.load(open("/tmp/warfighter-guarded.json")); assert d["status"]=="RESEARCH_ONLY" and d["synthetic_only"] and d["external_calls"]==0'
       - name: Verify no canonical governance files were modified
         run: |
           BASE="$(git merge-base origin/main HEAD)"
