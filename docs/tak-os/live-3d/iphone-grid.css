@@ -1,0 +1,38 @@
+/* Source-backed live Earth only; layout supports iOS safe areas and touch. */
+.cloud-grid-badge{position:absolute;z-index:10;top:111px;left:379px;max-width:calc(100% - 755px);padding:6px 10px;background:#071523e8;border:1px solid #315469;border-radius:6px;color:#a4e9db;font:700 10px/1.4 ui-monospace,monospace;pointer-events:none}
+.iphone-grid-nav{display:none}
+@media(max-width:850px){.cloud-grid-badge{top:104px;left:12px;max-width:calc(100% - 24px)}}
+@media(max-width:700px){
+ html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
+ .topbar{top:0;height:calc(54px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;align-items:center}
+ .brandmark{font-size:12px;min-width:0}.brandmark b{font-size:10px}.brandmark small,.clock,.return-link{display:none!important}
+ .statuschip{font-size:9px;max-width:125px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #globe{inset:calc(54px + env(safe-area-inset-top)) 0 calc(83px + env(safe-area-inset-bottom))}
+ .globe-caption{top:calc(60px + env(safe-area-inset-top));left:9px;right:9px;max-width:none;padding:6px 8px;font-size:9px;line-height:1.35}
+ .cloud-grid-badge{top:calc(118px + env(safe-area-inset-top));left:9px;right:9px;max-width:none;font-size:9px;padding:6px}
+ .leftpanel,.rightpanel,.leftpanel.hidden,.rightpanel.open{display:none}
+ .leftpanel.mobile-open,.rightpanel.mobile-open,.leftpanel.mobile-open.hidden,.rightpanel.mobile-open.open{
+  position:fixed;display:block;z-index:35;top:auto;bottom:calc(83px + env(safe-area-inset-bottom));left:8px;right:8px;width:auto;
+  height:min(56dvh,560px);max-height:min(56dvh,560px);padding:15px 14px;border-radius:15px 15px 8px 8px;
+  background:#071421f4;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-shadow:0 -10px 45px #000c
+ }
+ .iphone-grid-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;position:fixed;z-index:50;
+  bottom:calc(32px + env(safe-area-inset-bottom));left:0;right:0;height:52px;padding:4px 8px;
+  border-top:1px solid #274957;background:#061522f5;backdrop-filter:blur(12px)}
+ .iphone-grid-nav button{touch-action:manipulation;min-width:0;min-height:44px;border:1px solid #345d6b;
+  border-radius:9px;background:#142938;color:#d8eff5;font-weight:750;font-size:11px}
+ .iphone-grid-nav button[aria-pressed="true"]{color:#05141a;background:#5ce5ce;border-color:#77f5df}
+ .bottomhud{height:calc(32px + env(safe-area-inset-bottom));padding:0 8px env(safe-area-inset-bottom);font-size:9px;gap:5px}
+ .bottomhud .bottomnote,#toggle-hud{display:none!important}.bottomhud .mini{min-height:26px}
+ .topstatus{gap:5px}.globe-caption b{font-size:9px}.cesium-viewer-bottom{bottom:0!important}
+ button,.mini,.feedrow,input,select{min-height:44px}.feedrow input{min-height:20px;width:20px;height:20px}
+ .records{max-height:28dvh}.camera-row .mini{flex:1 1 30%}
+ .toast{bottom:calc(145px + env(safe-area-inset-bottom));width:calc(100% - 32px);max-width:none}
+}
+@media(max-width:700px) and (orientation:landscape){
+ .leftpanel.mobile-open,.rightpanel.mobile-open,.leftpanel.mobile-open.hidden,.rightpanel.mobile-open.open{
+   height:calc(100dvh - 150px);max-height:calc(100dvh - 150px);width:min(430px,60vw);right:auto}
+ .globe-caption{max-width:56vw}
+ .cloud-grid-badge{top:calc(96px + env(safe-area-inset-top));max-width:55vw}
+}
+@media(prefers-reduced-motion:reduce){.iphone-grid-nav button{transition:none}}
