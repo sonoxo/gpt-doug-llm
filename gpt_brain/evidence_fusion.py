@@ -412,6 +412,8 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     demo = sub.add_parser("demo", help="Analyze synthetic and BioPineal demo evidence")
     demo.add_argument("--question", default="BioPineal patent evidence verification")
+    live = sub.add_parser("live-demo", help="Start interactive localhost-only research console")
+    live.add_argument("--port", type=int, default=8777)
     brief = sub.add_parser("brief", help="Review an explicit local sensor ontology JSON export")
     brief.add_argument("--graph", required=True)
     brief.add_argument("--question", required=True)
@@ -437,6 +439,10 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "verify":
             result = {"integrity_verified": verify_brief(read_graph(args.file)),
                       "source_authenticity_verified": False}
+        elif args.command == "live-demo":
+            from .cognitive_dashboard import serve_demo
+            serve_demo(args.port)
+            return 0
         elif args.command == "demo":
             result = fuse(build_demo_graph(), args.question)
         else:
