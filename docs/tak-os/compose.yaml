@@ -1,0 +1,23 @@
+# Free local companion. Never binds the unauthenticated demo to a public interface.
+services:
+  tak-os-demo:
+    image: nginxinc/nginx-unprivileged:stable-alpine
+    restart: unless-stopped
+    read_only: true
+    ports:
+      - "127.0.0.1:${TAK_OS_PORT:-8080}:8080"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
