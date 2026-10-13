@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RIn --include='*.yml' --include='*.yaml' 'pull_request_target:' .github/workflows; then
+          if grep -RInE --include='*.yml' --include='*.yaml' '^[[:space:]]*pull_request_target[[:space:]]*:' .github/workflows; then
             echo "pull_request_target is not permitted by the defensive hardening gate."
             exit 1
           fi
