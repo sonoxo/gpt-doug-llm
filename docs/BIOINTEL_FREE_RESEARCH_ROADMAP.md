@@ -17,7 +17,7 @@ python3.12 -m venv .venv && . .venv/bin/activate && python -m pip install cl-sdk
 ## Research provenance rules
 The software knowledge atlas catalogs Hermeticism, Atlantis, Egyptian archaeology, UAP reports and biocomputing claims. Every entry contains its source, evidence label and caveat. In particular, Plato's description of Atlantis is documented as literature, not proof of an Atlantis civilization, and UAP observations are not evidence of extraterrestrial technology without corroboration. Hermetic writings are analyzed as historical texts, not empirical laws of physics.
 
-This dataset is a starter bibliography, not a scraped or comprehensive corpus. The classifications are catalog labels, not machine-validated scientific conclusions. In the starter index, the CL1 vendor report uses the generic `government-report` enum value solely as a placeholder type; this **does not** make it a government report. Future revisions should use a distinct `vendor-documentation` type.
+This dataset is a starter bibliography, not a scraped or comprehensive corpus. The classifications are catalog labels, not machine-validated scientific conclusions. CL1 simulator material is classified as `vendor-documentation`, not as a government report.
 
 ## Model roadmap
 1. Keep the CL SDK simulator isolated from the ontology. Confirm record/read examples from the official developer guide.
