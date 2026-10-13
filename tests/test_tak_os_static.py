@@ -19,7 +19,7 @@ class Parse(HTMLParser):
 
 class StaticContracts(unittest.TestCase):
     def test_local_assets(self):
-        for path in ('index.html','app.js','bridge.js','styles.css','gateway.py','swarm.py','swarm-ui.js','start.sh','Dockerfile','compose.yaml','sw.js','manifest.webmanifest','icon.svg','README.md','LEGACY_COMPATIBILITY.md','vm/README.md','vm/launch.sh'):
+        for path in ('index.html','app.js','bridge.js','styles.css','gateway.py','swarm.py','swarm-ui.js','nasa-layers.js','nasa-layers.css','start.sh','Dockerfile','compose.yaml','sw.js','manifest.webmanifest','icon.svg','README.md','LEGACY_COMPATIBILITY.md','vm/README.md','vm/launch.sh'):
             with self.subTest(path=path):self.assertTrue((APP/path).is_file())
 
     def test_interactive_page_has_actual_controls(self):
@@ -27,9 +27,10 @@ class StaticContracts(unittest.TestCase):
         parser=Parse();parser.feed(html)
         for element in ('view-map','view-system','view-feeds','view-events','view-ontology','view-settings','map-stage','map-markers','sim-play','cot-input','cot-validate','topology','events-list','vm-cpus','ontology-list','settings-tiles'):
             self.assertIn(element,parser.ids)
-        self.assertEqual(parser.scripts,['./app.js','./bridge.js','./swarm-ui.js'])
+        self.assertEqual(parser.scripts,['./app.js','./bridge.js','./swarm-ui.js','./nasa-layers.js'])
         self.assertIn('id="view-swarm"',html)
         self.assertIn('./styles.css',parser.styles)
+        self.assertIn('./nasa-layers.css',parser.styles)
         self.assertIn('NOT TAK PRODUCT CENTER SOFTWARE',html)
 
     def test_original_app_is_integrated_not_a_mockup(self):
@@ -56,7 +57,7 @@ class StaticContracts(unittest.TestCase):
         self.assertIn('not a TAK Server', (APP/'LEGACY_COMPATIBILITY.md').read_text())
 
     def test_syntax_without_npm_or_pip(self):
-        for name in ('app.js','bridge.js','swarm-ui.js','sw.js'):
+        for name in ('app.js','bridge.js','swarm-ui.js','nasa-layers.js','sw.js'):
             with self.subTest(name=name):
                 subprocess.run(['node','--check',str(APP/name)],check=True,capture_output=True)
         subprocess.run(['python3','-m','py_compile',str(APP/'gateway.py')],check=True,capture_output=True)
@@ -90,6 +91,8 @@ class StaticContracts(unittest.TestCase):
         self.assertIn("url.pathname.includes('/api/')",cache)
         self.assertIn('bridge.js',cache)
         self.assertIn('swarm-ui.js',cache)
+        self.assertIn('nasa-layers.js',cache)
+        self.assertIn('nasa-layers.css',cache)
         self.assertNotIn('https://tile.openstreetmap.org', cache)
         self.assertEqual(json.loads((APP/'manifest.webmanifest').read_text())['scope'],'./')
 

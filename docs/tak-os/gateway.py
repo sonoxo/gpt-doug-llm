@@ -287,7 +287,7 @@ def handler_factory(state: State):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("Cross-Origin-Resource-Policy", "same-origin")
-            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'")
+            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org https://gibs.earthdata.nasa.gov data:; connect-src 'self' https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'")
             self.send_header("Cross-Origin-Opener-Policy", "same-origin")
             if length is not None: self.send_header("Content-Length", str(length))
             self.end_headers()
@@ -334,7 +334,7 @@ def handler_factory(state: State):
             if path.startswith("/api/"):
                 return self.respond(404, {"error": "unknown API endpoint"})
             target = path.lstrip("/") or "index.html"
-            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "icon.svg", "manifest.webmanifest", "sw.js"}:
+            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js"}:
                 return self.respond(404, {"error": "file not available"})
             file = APP_ROOT / target
             if not file.is_file(): return self.respond(404, {"error": "file not found"})

@@ -132,3 +132,7 @@ Run those from the **repository root**. Browser tests are optional and run with 
 Official references: [TAK.gov](https://tak.gov/), [TAK products](https://tak.gov/products), [TAK usage FAQ](https://tak.gov/faq), [open-source TAK Server](https://github.com/TAK-Product-Center/Server) and its [CoreConfig example](https://github.com/TAK-Product-Center/Server/blob/main/src/takserver-core/example/CoreConfig.example.xml).
 
 **Independent demonstration · synthetic data by default · not TAK Product Center software.**
+
+## NASA Earth / Satellite Atlas (public scientific sources)
+
+The **NASA / Satellites** workspace provides opt-in NASA GIBS dated imagery overlay, NASA EONET natural event reports, NOAA SWPC planetary Kp measurements and six cited civil Earth-observation mission cards from NASA/WMO (U.S., China, Russia). The initial state is network-off; no real-time military satellite tracking or tasking is implemented. The static mission atlas works offline. See [NASA_SATELLITE_README.md](NASA_SATELLITE_README.md) for sources, limitations, privacy, and validation commands.
