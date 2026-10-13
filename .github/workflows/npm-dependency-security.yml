@@ -1,0 +1,37 @@
+name: Root npm dependency security
+
+on:
+  pull_request:
+    paths:
+      - package.json
+      - package-lock.json
+      - tests/npm/**
+      - .github/workflows/npm-dependency-security.yml
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - package-lock.json
+      - tests/npm/**
+      - .github/workflows/npm-dependency-security.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/npm/*.test.cjs
+      - run: npm audit --audit-level=high

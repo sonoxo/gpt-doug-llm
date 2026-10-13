@@ -14,6 +14,7 @@ from .blink import run_blink
 from .cells import list_cells, search_cells, simulate
 from .patents import list_sources, load_records, fetch_ep_metadata, normalize_publication_id
 from .patent_connectors import fetch_patent, load_publication_ids, patent_connection_status
+from .innovation_nexus import audit as nexus_audit, preview as nexus_preview, import_reference as nexus_import, report as nexus_report, terminal_map as nexus_map, dot_graph as nexus_dot, static_html as nexus_html, watch as nexus_watch
 from .federation import list_nodes
 from .http_api import PinealHTTPServer
 from .kraken import KrakenController, Telemetry
@@ -118,6 +119,19 @@ def parser() -> argparse.ArgumentParser:
     sync.add_argument("--limit", type=int, default=10, help="maximum 20 IDs")
     sync.add_argument("--online", action="store_true")
     sync.add_argument("--dry-run", action="store_true", help="preview without network or database mutation")
+    nexus = sub.add_parser("nexus", help="offline third-party patent evidence and ontology graph")
+    ns = nexus.add_subparsers(dest="nexus_cmd", required=True)
+    ns.add_parser("audit", help="check ontology, metadata provenance and deny-first controls")
+    ns.add_parser("status", help="report actual local patent index status")
+    ns.add_parser("map", help="terminal visual knowledge graph from real local records")
+    ns.add_parser("html", help="CSP-locked offline visual dashboard HTML")
+    ns.add_parser("dot", help="Graphviz DOT graph; no network or optional installs")
+    ns.add_parser("preview", help="read-only preview of user-supplied patent metadata")
+    imp_ref = ns.add_parser("import-reference", help="validate fixture; --commit performs one local metadata write")
+    imp_ref.add_argument("--commit", action="store_true", help="explicit approval to modify local SQLite")
+    watcher = ns.add_parser("watch", help="monitor actual local patent index updates in Terminal")
+    watcher.add_argument("--frames", type=int, default=3)
+    watcher.add_argument("--interval", type=float, default=0.6)
     blink = sub.add_parser("blink", help="animate a symbolic cellular heartbeat in Mac Terminal")
     blink.add_argument("--watch", action="store_true")
     blink.add_argument("--frames", type=int)
@@ -230,6 +244,28 @@ def main(argv: list[str] | None = None) -> int:
                               "note": "patent publications are disclosures, not scientifically validated research"}
             else:
                 raise ValueError("unknown patent command")
+        elif args.cmd == "nexus":
+            if args.nexus_cmd == "audit":
+                output = nexus_audit()
+            elif args.nexus_cmd == "status":
+                output = nexus_report(store)
+            elif args.nexus_cmd == "map":
+                print(nexus_map(nexus_report(store)), end="")
+                return 0
+            elif args.nexus_cmd == "html":
+                print(nexus_html(nexus_report(store)), end="")
+                return 0
+            elif args.nexus_cmd == "dot":
+                print(nexus_dot(), end="")
+                return 0
+            elif args.nexus_cmd == "preview":
+                output = nexus_preview()
+            elif args.nexus_cmd == "import-reference":
+                output = nexus_import(store, commit=args.commit)
+            elif args.nexus_cmd == "watch":
+                return nexus_watch(store, frames=args.frames, interval=args.interval)
+            else:
+                raise ValueError("unrecognized BioPineal nexus command")
         elif args.cmd == "blink":
             return run_blink(store, watch=args.watch, frames=args.frames,
                              interval=args.interval, color=False if args.no_color else None)
