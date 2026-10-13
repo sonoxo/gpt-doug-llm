@@ -4,7 +4,7 @@ Exports do not write to, authorize, or automatically promote the global ontology
 """
 from __future__ import annotations
 
-from .core import SCHEMA, canonical, digest
+from .core import SCHEMA, digest
 
 def export_graph(store, limit=100):
     if type(limit) is not int or not 1 <= limit <= 200:
@@ -47,7 +47,12 @@ def verify_export(data):
     prepared = {k: v for k, v in data.items() if k != "sha256"}
     ids = {n.get("id") for n in data.get("nodes", []) if isinstance(n, dict)}
     return (
-        data["sha256"] == digest(prepared)
+        isinstance(data.get("nodes"), list)
+        and isinstance(data.get("edges"), list)
+        and all(isinstance(n, dict) and isinstance(n.get("id"), str) for n in data["nodes"])
+        and len(ids) == len(data["nodes"])
+        and all(isinstance(e, dict) for e in data["edges"])
+        and data["sha256"] == digest(prepared)
         and data.get("read_only") is True
         and data.get("automatically_promoted") is False
         and data.get("official_patent_verified") is False
