@@ -97,7 +97,7 @@
 
 **Interfaces:** static HTML loads a local `manifest.json` via user-chosen local file picker (no fetch or CDN) or a bundled synthetic inline sample; renders only sanitized state with DOM `textContent` and a Canvas 2D wireframe. The page has source/limits/caveat labels, keyboard-pausable animation and clear error for malformed JSON. No telemetry, geolocation or external scripts.
 
-- [ ] **Step 1: Write failing `test_web_viewer.py`**: no network/CDN imports, no remote fetch, no ``innerHTML` unsafe interpolation, no remote images or analytics; keyboard tab labels and pause controls present; no arbitrary evaluation or data export; synthetic source label and file picker explicit.
+- [ ] **Step 1: Write failing `test_web_viewer.py`**: no network/CDN imports, no remote fetch, no `innerHTML` unsafe interpolation, no remote images or analytics; keyboard tab labels and pause controls present; no arbitrary evaluation or data export; synthetic source label and file picker explicit.
 - [ ] **Step 2: Run** `PYTHONPATH=mecha:. python3 -m unittest discover -s mecha/tests -p 'test_web_viewer.py' -v`. Expected RED for missing files.
 - [ ] **Step 3: Implement** plain static canvas viewport and safe text-only labels. Browser file content is untrusted; validate size and schema before use, do not deserialize into code or persist sensitive data.
 - [ ] **Step 4: Run** focused checks and optional browser smoke if a headless browser exists; expected GREEN on tests, optional browser test SKIPPED with explanation if unavailable.
