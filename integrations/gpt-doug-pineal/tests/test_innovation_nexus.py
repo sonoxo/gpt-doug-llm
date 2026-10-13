@@ -178,7 +178,7 @@ def test_sqlite_audit_chain_after_import(tmp_path):
     store=local_store(tmp_path)
     import_reference(store,commit=True)
     a=store.verify_audit()
-    assert a["valid"]
+    assert a["ok"]
     assert a["checked"] >= 1
 
 
