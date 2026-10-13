@@ -242,5 +242,30 @@ class SensorSwarmTests(unittest.TestCase):
             finally:
                 db.close()
 
+    def test_classification_scope_participates_in_event_id(self):
+        first = demo_specs()[1]
+        altered = copy.deepcopy(first)
+        altered["authorization_scope"] = "separately-approved"
+        event = {"metric": "test_heartbeat", "value": True,
+                 "observed_at": "2026-10-13T00:00:00Z"}
+        a = observation(first, event, locator="fixture", sha=digest("fixture"))
+        b = observation(altered, event, locator="fixture", sha=digest("fixture"))
+        self.assertNotEqual(a["id"], b["id"])
+    def test_required_denials_cannot_be_removed_from_policy(self):
+        policy = load_policy()
+        policy["prohibited_object_types"].remove("person")
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / "relaxed.json"
+            path.write_text(json.dumps(policy))
+            with self.assertRaises(ValueError): load_policy(path)
+    def test_journal_rejects_unbounded_retention(self):
+        with tempfile.TemporaryDirectory() as d:
+            db = Store(Path(d) / "events.db")
+            try:
+                with self.assertRaises(ValueError):
+                    db.write(snapshot(demo_specs()), retention_days=3650)
+            finally:
+                db.close()
+
 if __name__ == "__main__":
     unittest.main()
