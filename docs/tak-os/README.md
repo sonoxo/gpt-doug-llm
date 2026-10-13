@@ -11,7 +11,7 @@ cd docs/tak-os
 sh start.sh web
 ```
 
-Open **http://127.0.0.1:8080**. Requires only free Python 3. No paid API, subscription, database server, Node installation, or Docker is needed.
+Open the printed loopback URL (normally **http://127.0.0.1:8080**; if busy the launcher selects another free port). Requires only free Python 3. No paid API, subscription, database server, Node installation, or Docker is needed.
 
 Full data path in this local deployment:
 
@@ -25,6 +25,21 @@ Legacy CoT UDP/TCP loopback ──┘                     │
 ```
 
 The real TAK interface remains OFFLINE. Browser fallback continues working if the Python gateway is not started.
+
+## Hardened Phase 2 — GPT-Doug × GPT-Chaos local swarm
+
+The interactive dashboard now has a seventh **GPT-Chaos Swarm** tab. Six deterministic reviewer agents challenge synthetic observations before any human-approved CoT map update. The local SQLite ledger records every operator START, PAUSE, STOP, review and heartbeat in a bounded SHA-256 hash chain. Human approval is always required; no real TAK network traffic, shell commands or external actions can be delegated to the swarm.
+
+**The swarm is PAUSED at startup.** Open the swarm tab and explicitly press **START SWARM**. Use **STOP THE KRAKEN** for a persistent, restart-safe stop; type `REARM LOCAL SWARM` to restore PAUSED. High-risk proposals (large moves or out-of-area records) cannot be approved in the single-user lab. Per-minute and pending-queue limits prevent unbounded operation.
+
+Optional real **local LLM critique** is supported with an operator-installed free Ollama model at fixed `127.0.0.1:11434`, never enabled by default. Its output is a **non-authoritative advisory** and cannot change risk scores or execute anything. Example:
+
+```sh
+# Optional, only after Ollama and the model have been installed by the operator:
+TAK_OS_LOCAL_CRITIC_MODEL='qwen2.5:1.5b' sh start.sh web
+```
+
+See [SWARM_SECURITY.md](SWARM_SECURITY.md) for the architecture, threat model, consent gates, hardening, and complete operator guidance. It does not claim a remotely hosted LLM or autonomous government system.
 
 ## Runtime options
 
@@ -60,6 +75,7 @@ If you have no checkout, `git clone --single-branch --branch feat/free-tak-os-si
 - Data Feeds: validate, ingest and export CoT 2.0 XML; live gateway status; persistent local incident queue with acknowledgment
 - SQLite logs, `/api/v1/health`, `/api/v1/session`, `/api/v1/snapshot`, `/api/v1/events`, `/api/v1/stream` (SSE), `/api/v1/cot.xml?uid=LAB-RESCUE-01`
 - Human-readable VM launch preview, offline PWA shell, responsive desktop/mobile layout, JSON/CSV export and local typed ontology view
+- Seventh Swarm view with deterministic GPT-Doug/Chaos/ZYRA/ontology/provenance/watchdog agent roles; optional localhost Ollama text-only reviewer, review queue, stop/rearm, integrity checks and audit export
 
 ### API example (local lab only)
 
@@ -94,8 +110,10 @@ See [vm/README.md](vm/README.md) for QEMU/KVM and free UTM / Ubuntu guest instru
 ```sh
 python3 -m unittest discover -s tests -p 'test_tak_os_gateway.py' -v
 python3 -m unittest discover -s tests -p 'test_tak_os_static.py' -v
+python3 -m unittest discover -s tests -p 'test_tak_os_swarm.py' -v
 node --check docs/tak-os/app.js
 node --check docs/tak-os/bridge.js
+node --check docs/tak-os/swarm-ui.js
 node --check docs/tak-os/sw.js
 ```
 

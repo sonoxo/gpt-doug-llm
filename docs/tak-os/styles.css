@@ -13,3 +13,26 @@
 .takos-map-status{position:absolute;z-index:10;left:10px;bottom:42px;background:#081c2bf0;border:1px solid #37737b;color:#95ebde;border-radius:4px;font:750 9px monospace;padding:7px;pointer-events:none}
 @media(max-width:1100px){.gateway-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:530px){.gateway-metrics{grid-template-columns:1fr}}
+
+/* Autonomous-claim-free, operator-controlled GPT-Doug / GPT-Chaos local defensive swarm */
+.swarm-statement{border:1px solid #3c705f;background:#0e312f66;color:#9fe9d8;padding:12px 16px;border-radius:8px;font:700 10px/1.8 ui-monospace,monospace;letter-spacing:.07em;margin-bottom:16px}
+.swarm-stat-value{font-weight:900;font-size:27px;letter-spacing:-.03em;margin:12px 0;color:#def5f2}
+.swarm-controls{margin:18px 0;flex-wrap:wrap}.swarm-label{display:block;margin:8px 0;color:#bed2d8;font-size:11px;line-height:1.7}
+.swarm-label code{color:#62e4d5}.swarm-budget{font:650 10px/1.6 ui-monospace,monospace;color:#84afa8;border:1px solid #214953;padding:10px;border-radius:5px;margin-top:14px}
+#swarm-rearm-phrase{background:#081825;color:#def1f3;border:1px solid #315665;border-radius:6px;padding:10px;min-width:165px;max-width:100%}
+#swarm-rearm-phrase:focus{outline:2px solid #27cfc0}
+.swarm-grid-spaced{margin-top:16px}.swarm-agents{display:grid;gap:8px;margin-top:14px}
+.swarm-agent{border:1px solid #264350;border-radius:7px;padding:10px 12px;display:flex;gap:12px;justify-content:space-between;align-items:center}
+.swarm-agent strong{display:block;font-size:12px;color:#d0edf1}.swarm-agent small{display:block;font-size:10px;color:#8baab6;margin-top:4px}.swarm-agent em{font:700 10px ui-monospace,monospace;color:#62e3c2;white-space:nowrap}
+.swarm-editor{display:block;margin:12px 0;width:100%;min-height:125px;max-width:100%;background:#081623;color:#bfefdf;border:1px solid #365666;border-radius:7px;padding:12px;font:12px/1.55 ui-monospace,monospace}
+.swarm-proposals{max-height:490px;overflow:auto;display:grid;gap:12px;margin-top:13px}.swarm-proposal{padding:12px;background:#0a1927;border:1px solid #285164;border-radius:8px}
+.swarm-proposal strong{color:#d4f1f4;font-size:12px;display:block}.swarm-proposal small{display:block;color:#8aaab6;font-size:10px;margin-top:5px}
+.swarm-proposal.high{border-color:#926340}.swarm-proposal.reviewed{opacity:.7}.swarm-votes{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.swarm-vote{font-size:9px;color:#9ee9ce;border:1px solid #28564e;padding:5px 7px;border-radius:4px}.swarm-vote.review{color:#ffd496;border-color:#885b31}
+.swarm-review-controls{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.swarm-review-controls button{font-size:10px}
+.swarm-audit{display:grid;gap:7px;max-height:260px;overflow:auto;margin-top:10px}.swarm-audit-entry{border:1px solid #254450;border-radius:5px;padding:10px 12px;background:#091726}
+.swarm-audit-entry strong{font-size:11px;color:#abd9d9}.swarm-audit-entry small{display:block;color:#87a7b3;font:10px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
+#swarm-feedback{min-height:26px;overflow-wrap:anywhere}
+@media(max-width:580px){.swarm-proposals{max-height:340px}.swarm-controls .btn{flex:1;min-width:130px}.swarm-stat-value{font-size:20px}}
+
+.swarm-controls button:disabled,.swarm-review-controls button:disabled{opacity:.45;filter:grayscale(.35);cursor:not-allowed}

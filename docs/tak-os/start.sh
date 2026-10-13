@@ -5,38 +5,29 @@ cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 PORT="${TAK_OS_PORT:-8080}"
 case "$PORT" in ''|*[!0-9]*) echo 'TAK_OS_PORT must be numeric' >&2; exit 2 ;; esac
 if [ "$PORT" -lt 1024 ] || [ "$PORT" -gt 65535 ]; then echo 'Port must be between 1024 and 65535' >&2; exit 2; fi
-# Keep existing services untouched. For the default port, choose the next free
-# loopback TCP port if 8080 is already held by a browser-only server or another app.
-# An explicitly requested TAK_OS_PORT fails with a clear error instead.
+# A port used by an existing local server is never killed or stolen.
+# Auto-select the next free loopback port unless the operator selected one.
 case "${1:-web}" in
   web|gateway|legacy-udp|legacy-tcp|static)
-    command -v python3 >/dev/null || { echo 'Install free Python 3'; exit 1; }
-    PORT="$(python3 - "$PORT" "${TAK_OS_PORT+x}" <<'PY'
+    command -v python3 >/dev/null || { echo 'Install free Python 3' >&2; exit 1; }
+    PORT="$(python3 - "$PORT" "${TAK_OS_PORT+x}" <<'PYPORT'
 import socket
 import sys
-
-preferred = int(sys.argv[1])
-explicit = bool(sys.argv[2])
-for candidate in (preferred,) if explicit else range(preferred, min(65535, preferred + 100) + 1):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        sock.bind(("127.0.0.1", candidate))
-    except OSError:
-        pass
-    else:
-        if candidate != preferred:
-            print(f"TAK-OS: port {preferred} is busy; switching to free port {candidate}.", file=sys.stderr)
-        print(candidate)
-        break
-    finally:
-        sock.close()
+preferred = int(sys.argv[1]); explicit = bool(sys.argv[2])
+for candidate in ((preferred,) if explicit else range(preferred, min(65535, preferred + 100) + 1)):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        try:
+            sock.bind(('127.0.0.1', candidate))
+        except OSError:
+            continue
+    if candidate != preferred:
+        print(f'TAK-OS: port {preferred} busy; selecting {candidate}.',file=sys.stderr)
+    print(candidate)
+    break
 else:
-    if explicit:
-        print(f"TAK-OS: port {preferred} is already in use. Try TAK_OS_PORT=8090 sh start.sh web, or stop the existing server.", file=sys.stderr)
-    else:
-        print(f"TAK-OS: no free localhost TCP port in {preferred}-{min(65535,preferred+100)}.", file=sys.stderr)
+    print(f'TAK-OS: port {preferred} is busy or unavailable. Use TAK_OS_PORT=8090 sh start.sh web or stop the old server.',file=sys.stderr)
     sys.exit(3)
-PY
+PYPORT
     )" || exit 3
     ;;
 esac
@@ -61,6 +52,7 @@ case "${1:-web}" in
     command -v docker >/dev/null || { echo 'Install Docker Engine/Compose'; exit 1; }
     exec docker compose up --build -d --wait;;
   test)
-    exec python3 -m unittest discover -s ../../tests -p 'test_tak_os_gateway.py' -v;;
+    python3 -m unittest discover -s ../../tests -p 'test_tak_os_gateway.py' -v
+    exec python3 -m unittest discover -s ../../tests -p 'test_tak_os_swarm.py' -v;;
   *) echo 'Usage: sh start.sh [web|static|legacy-udp|legacy-tcp|docker|test]' >&2; exit 2;;
 esac

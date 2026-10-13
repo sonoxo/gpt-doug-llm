@@ -32,7 +32,7 @@
     { name: 'WASHINGTON, DC', lat: 38.907, lon: -77.036 },
     { name: 'RALEIGH', lat: 35.78, lon: -78.64 },
   ];
-  const tabs = ['map', 'system', 'feeds', 'events', 'ontology', 'settings'];
+  const tabs = ['map', 'system', 'feeds', 'events', 'ontology', 'swarm', 'settings'];
   let local = {};
   try { local = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch (_) { local = {}; }
   const preferences = {
@@ -125,7 +125,7 @@
       node.classList.toggle('active', selected);
       if (selected) node.setAttribute('aria-current', 'page'); else node.removeAttribute('aria-current');
     });
-    $('#breadcrumb-view').textContent = ({map:'LIVE OPERATIONS',system:'SYSTEM / VM',feeds:'DATA FEEDS',events:'EVENT TIMELINE',ontology:'ONTOLOGY',settings:'SETTINGS'})[view];
+    $('#breadcrumb-view').textContent = ({map:'LIVE OPERATIONS',system:'SYSTEM / VM',feeds:'DATA FEEDS',events:'EVENT TIMELINE',ontology:'ONTOLOGY',swarm:'DEFENSIVE SWARM',settings:'SETTINGS'})[view];
     $('.sidebar').classList.remove('open'); $('#mobile-menu').setAttribute('aria-expanded', 'false');
     if (view === 'map') { requestAnimationFrame(() => { renderTiles(); renderMap(); }); }
     if (view === 'events') renderEvents();
@@ -452,7 +452,7 @@
     stage.addEventListener('wheel', (event) => { event.preventDefault(); setZoom(state.zoom + (event.deltaY < 0 ? 1 : -1)); }, { passive: false });
     document.addEventListener('keydown', (event) => {
       if (event.target.matches('input,textarea,select') || $('#help-dialog').open || event.ctrlKey || event.metaKey || event.altKey) return;
-      if (/^[1-6]$/.test(event.key)) navigate(tabs[Number(event.key) - 1]);
+      if (/^[1-7]$/.test(event.key)) navigate(tabs[Number(event.key) - 1]);
       if (event.code === 'Space') { event.preventDefault(); $('#sim-play').click(); }
       if (event.key === '+' || event.key === '=') setZoom(state.zoom + 1);
       if (event.key === '-') setZoom(state.zoom - 1);

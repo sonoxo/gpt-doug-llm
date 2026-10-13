@@ -8,6 +8,8 @@ on:
       - 'docs/index.html'
       - 'tests/test_tak_os_gateway.py'
       - 'tests/test_tak_os_static.py'
+      - 'tests/test_tak_os_swarm.py'
+      - 'tests/test_tak_os_swarm_browser.py'
       - '.github/workflows/tak-os-free.yml'
   push:
     branches: [main]
@@ -17,6 +19,8 @@ on:
       - 'docs/index.html'
       - 'tests/test_tak_os_gateway.py'
       - 'tests/test_tak_os_static.py'
+      - 'tests/test_tak_os_swarm.py'
+      - 'tests/test_tak_os_swarm_browser.py'
       - '.github/workflows/tak-os-free.yml'
   workflow_dispatch:
 
@@ -38,17 +42,22 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Python CoT XML / HTTP / SQLite / SSE / UDP / TCP integration
         run: python3 -m unittest discover -s tests -p 'test_tak_os_gateway.py' -v
+      - name: GPT-Doug / GPT-Chaos local defensive swarm security and CoT approval gates
+        run: python3 -m unittest discover -s tests -p 'test_tak_os_swarm.py' -v
       - name: Static/PWA/CI security contracts
         run: python3 -m unittest discover -s tests -p 'test_tak_os_static.py' -v
       - name: JavaScript syntax (no npm dependencies)
         run: |
           node --check docs/tak-os/app.js
           node --check docs/tak-os/bridge.js
+          node --check docs/tak-os/swarm-ui.js
           node --check docs/tak-os/sw.js
       - name: Shell launch scripts syntax
         run: |
           sh -n docs/tak-os/start.sh
           sh -n docs/tak-os/vm/launch.sh
+      - name: Compile backend modules
+        run: python3 -m py_compile docs/tak-os/gateway.py docs/tak-os/swarm.py
       - name: Resource catalog contract
         run: |
           python3 - <<'PY'

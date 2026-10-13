@@ -27,6 +27,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+# Resolve the adjacent free swarm module both in normal script execution and
+# in the existing importlib-based integration test harness.
+import importlib.util
+_SWARM_FILE = Path(__file__).resolve().parent / "swarm.py"
+_SWARM_SPEC = importlib.util.spec_from_file_location("tak_os_swarm", _SWARM_FILE)
+_SWARM_MODULE = importlib.util.module_from_spec(_SWARM_SPEC)
+_SWARM_SPEC.loader.exec_module(_SWARM_MODULE)
+SwarmKernel = _SWARM_MODULE.SwarmKernel
+
 UTC = dt.timezone.utc
 APP_ROOT = Path(__file__).resolve().parent
 MAX_XML = 16_384
@@ -132,6 +141,7 @@ def cot_encode(entity: dict[str, Any]) -> bytes:
 class State:
     def __init__(self, db_path: str = ":memory:", allow_unverified: bool = False):
         self.lock = threading.RLock()
+        self.cot_encode = cot_encode
         self.token = secrets.token_urlsafe(32)
         self.started = time.monotonic()
         self.stopped = threading.Event()
@@ -150,6 +160,7 @@ class State:
         for uid, cat, lat, lon, name in DEMO:
             self.entities[uid] = {"id": uid, "type": cat, "lat": lat, "lon": lon, "baseLat": lat, "baseLon": lon, "label": name, "status": "ACTIVE / LAB", "source": "local-simulation", "synthetic": True, "history": [[lat, lon]], "timestamp": utcnow()}
         self.record("system", "gateway", "Local synthetic CoT gateway started", synthetic=True)
+        self.swarm = SwarmKernel(self)
 
     def record(self, kind: str, source: str, detail: str, *, uid: str = "", synthetic: bool = True) -> dict[str, Any]:
         with self.lock:
@@ -174,7 +185,7 @@ class State:
 
     def snapshot(self) -> dict[str, Any]:
         with self.lock:
-            return {"mode": "synthetic-lab", "tick": self.tick, "units": [dict(u) for u in self.entities.values()], "events": self.list_events(limit=30), "utc": utcnow(), "realTakConnected": False, "source": "loopback-only TAK-OS gateway"}
+            return {"mode": "synthetic-lab", "tick": self.tick, "units": [dict(u) for u in self.entities.values()], "events": self.list_events(limit=30), "utc": utcnow(), "realTakConnected": False, "source": "loopback-only TAK-OS gateway", "swarmMode": self.swarm.mode}
 
     def list_events(self, limit: int = 80) -> list[dict[str, Any]]:
         with self.lock:
@@ -183,7 +194,7 @@ class State:
 
     def status(self) -> dict[str, Any]:
         with self.lock:
-            return {"status": "ok", "mode": "synthetic-lab", "protocol": "CoT 2.0 XML", "transport": "HTTP/SSE, optional UDP 127.0.0.1", "uptimeSeconds": round(time.monotonic()-self.started), "assets": len(self.entities), "tick": self.tick, "acceptedCoT": self.ingested, "udpLoopbackPort": self.udp_port, "tcpLoopbackPort": self.tcp_port, "realTakConnected": False, "externalCoTAllowed": self.allow_unverified, "authorization": "local browser session, no third-party remote access", "apiVersion": "1"}
+            return {"status": "ok", "mode": "synthetic-lab", "protocol": "CoT 2.0 XML", "transport": "HTTP/SSE, optional UDP 127.0.0.1", "uptimeSeconds": round(time.monotonic()-self.started), "assets": len(self.entities), "tick": self.tick, "acceptedCoT": self.ingested, "udpLoopbackPort": self.udp_port, "tcpLoopbackPort": self.tcp_port, "realTakConnected": False, "externalCoTAllowed": self.allow_unverified, "authorization": "local browser session, no third-party remote access", "apiVersion": "1", "swarmMode":self.swarm.mode, "swarmIntegrity": "VERIFIED" if self.swarm.verify_chain() else "FAILED"}
 
     def ingest(self, xml: bytes, source: str) -> dict[str, Any]:
         unit = cot_decode(xml, allow_unverified=self.allow_unverified)
@@ -223,6 +234,13 @@ class State:
             self.publish("telemetry", {"tick": self.tick, "units": [dict(self.entities[u[0]]) for u in DEMO]})
             if self.tick % 10 == 0:
                 self.record("heartbeat", "local-simulation", f"Synthetic gateway heartbeat {self.tick}")
+            if self.tick % 8 == 0:
+                try:
+                    self.swarm.pulse()  # read-only challenge/heartbeat, never auto-promote
+                except RuntimeError:
+                    # A compromised audit chain cannot terminate the synthetic
+                    # gateway; all new swarm writes fail closed until reviewed.
+                    pass
 
     def ack(self, event_id: int) -> bool:
         with self.lock:
@@ -256,6 +274,11 @@ def handler_factory(state: State):
             if os.getenv("TAK_OS_DEBUG") == "1":
                 super().log_message(format, *args)
 
+        def setup(self):
+            super().setup()
+            # Bound slow or partially sent browser requests; localhost only.
+            self.connection.settimeout(8)
+
         def respond_headers(self, code: int, content_type: str, length: int | None = None):
             self.send_response(code)
             self.send_header("Content-Type", content_type)
@@ -264,6 +287,8 @@ def handler_factory(state: State):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("X-Frame-Options", "DENY")
             self.send_header("Cross-Origin-Resource-Policy", "same-origin")
+            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; worker-src 'self'; manifest-src 'self'")
+            self.send_header("Cross-Origin-Opener-Policy", "same-origin")
             if length is not None: self.send_header("Content-Length", str(length))
             self.end_headers()
 
@@ -281,7 +306,9 @@ def handler_factory(state: State):
 
         def acceptable_host(self):
             host = self.headers.get("Host", "").lower().strip()
-            return host in {"localhost", "127.0.0.1", "localhost:8080", "127.0.0.1:8080"} or bool(re.fullmatch(r"(?:localhost|127\.0\.0\.1):[0-9]{1,5}", host))
+            # Fail closed against DNS-rebinding or forged host/port pairs.
+            port = self.server.server_port
+            return host in {f"localhost:{port}", f"127.0.0.1:{port}"}
 
         def do_GET(self):
             if not self.acceptable_host():
@@ -293,6 +320,8 @@ def handler_factory(state: State):
                 return
             if path == "/api/v1/snapshot": return self.respond(200, state.snapshot())
             if path == "/api/v1/events": return self.respond(200, {"events": state.list_events()})
+            if path == "/api/v1/swarm": return self.respond(200, state.swarm.snapshot())
+            if path == "/api/v1/swarm/audit": return self.respond(200, state.swarm.audit())
             if path == "/api/v1/cot.xml":
                 uid = query.get("uid", ["LAB-RESCUE-01"])[0]
                 with state.lock: entity = state.entities.get(uid)
@@ -305,7 +334,7 @@ def handler_factory(state: State):
             if path.startswith("/api/"):
                 return self.respond(404, {"error": "unknown API endpoint"})
             target = path.lstrip("/") or "index.html"
-            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "icon.svg", "manifest.webmanifest", "sw.js"}:
+            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "icon.svg", "manifest.webmanifest", "sw.js"}:
                 return self.respond(404, {"error": "file not available"})
             file = APP_ROOT / target
             if not file.is_file(): return self.respond(404, {"error": "file not found"})
@@ -364,7 +393,7 @@ def handler_factory(state: State):
                 except PermissionError as exc: return self.respond(403, {"error": str(exc)})
                 except ValueError as exc: return self.respond(400, {"error": str(exc)})
                 return self.respond(201, {"accepted": True, "unit": unit})
-            if path in ("/api/v1/incident", "/api/v1/ack"):
+            if path in ("/api/v1/incident", "/api/v1/ack", "/api/v1/swarm/control", "/api/v1/swarm/evaluate", "/api/v1/swarm/review"):
                 if self.headers.get("Content-Type", "").split(";",1)[0].strip() != "application/json":
                     return self.respond(415, {"error": "application/json required"})
                 raw = self.rfile.read(length)
@@ -372,6 +401,27 @@ def handler_factory(state: State):
                 try: obj = json.loads(raw)
                 except (ValueError, UnicodeDecodeError): return self.respond(400, {"error": "invalid JSON"})
                 if not isinstance(obj, dict): return self.respond(400, {"error":"JSON object required"})
+                if path.startswith("/api/v1/swarm/"):
+                    try:
+                        if path.endswith("/control"):
+                            action, confirmation = obj.get("action", ""), obj.get("confirmation", "")
+                            if not isinstance(action, str) or not isinstance(confirmation, str):
+                                raise ValueError("control must be text")
+                            return self.respond(200, state.swarm.control(action, confirmation))
+                        if path.endswith("/evaluate"):
+                            return self.respond(201, state.swarm.evaluate(obj.get("candidate")))
+                        proposal_id = obj.get("id")
+                        if isinstance(proposal_id, bool) or not isinstance(proposal_id, int) or proposal_id < 1:
+                            raise ValueError("positive integer proposal ID required")
+                        decision, confirmation = obj.get("decision", ""), obj.get("confirmation", "")
+                        if not isinstance(decision, str) or not isinstance(confirmation, str):
+                            raise ValueError("review and confirmation must be text")
+                        return self.respond(200, state.swarm.review(proposal_id, decision, confirmation))
+                    except PermissionError as exc: return self.respond(403, {"error":str(exc)})
+                    except LookupError as exc: return self.respond(404, {"error":str(exc)})
+                    except OverflowError as exc: return self.respond(429, {"error":str(exc)})
+                    except (ValueError, TypeError) as exc: return self.respond(400, {"error":str(exc)})
+                    except RuntimeError as exc: return self.respond(409, {"error":str(exc)})
                 if path.endswith("incident"):
                     title = str(obj.get("title", "Demo drill"))[:100].strip()
                     if not title: return self.respond(400, {"error":"title required"})

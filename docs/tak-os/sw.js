@@ -1,7 +1,7 @@
 /* Offline cache for same-origin public app-shell only; do not cache CoT API or OSM imagery. */
-const CACHE = 'gpt-doug-tak-os-cot-gateway-v3';
-const SHELL = ['./','./index.html','./app.js','./bridge.js','./styles.css','./icon.svg','./manifest.webmanifest'];
-const ALLOWED = new Set(['','index.html','app.js','bridge.js','styles.css','icon.svg','manifest.webmanifest']);
+const CACHE = 'gpt-doug-tak-os-chaos-swarm-v4';
+const SHELL = ['./','./index.html','./app.js','./bridge.js','./swarm-ui.js','./styles.css','./icon.svg','./manifest.webmanifest'];
+const ALLOWED = new Set(['','index.html','app.js','bridge.js','swarm-ui.js','styles.css','icon.svg','manifest.webmanifest']);
 self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('gpt-doug-tak-os-') && k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', event => {
