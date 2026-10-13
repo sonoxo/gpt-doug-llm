@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>GPT-DOUG | TAK-GEO Atlas</title>
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color-scheme:dark;--bg:#07111e;--panel:#0c1b2d;--elev:#12273c;--line:#274057;--ink:#e7f2fc;--muted:#a4bfd0;--hi:#66dcdf;--orange:#ffad57;--green:#9ae6bc}
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--ink)}
+body{display:flex;flex-direction:column;overflow:hidden}button,input,select{font:inherit}
+button,select,.upload{background:#132a40;color:var(--ink);border:1px solid #34516a;border-radius:7px;padding:9px;cursor:pointer}
+button:hover,select:hover,.upload:hover{border-color:var(--hi)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--hi);outline-offset:2px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px;padding:10px 18px;background:#0c1a2b;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:12px;min-width:0}.logomark{height:36px;width:36px;display:grid;place-items:center;background:linear-gradient(135deg,#295a71,#12394b);border:1px solid #63bacc;border-radius:10px;font-size:22px}
+h1{font-size:15px;letter-spacing:.09em;margin:0}h2{font-size:13px;letter-spacing:.07em;text-transform:uppercase;color:#c5e4f2;margin:0 0 10px}
+.sub{color:var(--muted);font-size:11px;margin-top:4px}.small{font-size:11px;color:var(--muted);line-height:1.5}
+.badge{border:1px solid #5a5438;background:#2d2a1d;color:#f6cf91;border-radius:16px;padding:7px 10px;font-size:11px;font-weight:700;white-space:nowrap}
+.shell{flex:1;min-height:0;display:grid;grid-template-columns:255px minmax(0,1fr) 290px}
+aside{padding:17px;background:#0b192a;overflow:auto}aside.left{border-right:1px solid var(--line)}aside.right{border-left:1px solid var(--line)}
+.section{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:17px}
+label{display:flex;align-items:center;gap:8px;font-size:12px;margin:8px 0;color:#d5e6f1}
+label input[type="checkbox"]{accent-color:#73d4dd}
+.block{display:block;width:100%;margin:8px 0}select,.search{width:100%}
+.search{background:#0a1a2a;border:1px solid #34516a;border-radius:7px;padding:9px;color:var(--ink)}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row>*{flex:1}
+input[type="file"]{display:none}
+.upload{display:block;text-align:center;font-size:12px;margin:8px 0}
+.list{display:flex;flex-direction:column;gap:6px}.item{text-align:left;width:100%;padding:10px;background:#0e2438}
+.item strong{display:block;font-size:12px;overflow-wrap:anywhere}.item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.item.active{border-color:var(--hi);background:#17364a}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:var(--hi)}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px}.metric{padding:10px;border:1px solid var(--line);background:#102539;border-radius:8px}
+.metric b{display:block;color:var(--hi);font-size:20px}.metric small{color:var(--muted);font-size:10px}
+.stage{position:relative;background:radial-gradient(circle at 40% 30%,#123146,#071321 70%);overflow:hidden;min-width:0}
+#tiles{position:absolute;inset:0;overflow:hidden;pointer-events:none}#tiles img{position:absolute;width:256px;height:256px;max-width:none}
+#grid,#overlay,#network{position:absolute;inset:0;width:100%;height:100%}#grid,#overlay{pointer-events:none}
+#overlay .pin{pointer-events:auto;cursor:pointer}.pin circle{stroke:#dceaf2;stroke-width:1.5}.pin.active circle{stroke:#fff;stroke-width:3}
+#network{display:none;pointer-events:auto;background:#091627}
+.toptools{position:absolute;top:14px;left:14px;display:flex;gap:5px;z-index:4}
+.toptools button{background:#0a1b2bde}.toptools button.on{border-color:var(--hi);color:var(--hi)}
+.zoom{position:absolute;top:14px;right:14px;display:grid;gap:5px;z-index:4}
+.zoom button{font-size:19px;font-weight:600;width:38px;height:38px}
+.bottom{position:absolute;bottom:0;left:0;right:0;padding:11px 16px;display:flex;justify-content:space-between;gap:10px;background:#07101fdb;border-top:1px solid #294457;z-index:4;font-size:11px;color:#c4dae8}
+.hint{position:absolute;top:64px;left:14px;font-size:11px;background:#091f33d9;color:var(--muted);padding:7px 9px;border-radius:6px;z-index:3}
+.field{font-size:11px;color:var(--muted);margin:11px 0}.field strong{display:block;color:var(--ink);font-size:12px;overflow-wrap:anywhere;margin-top:5px}
+#feedback{color:#acd9db;border-left:3px solid #74ccd2;padding:8px 10px;background:#132c3e;font-size:11px;line-height:1.5;white-space:normal;word-break:break-word}
+.warn{color:#f4d39d;background:#28271f;border:1px solid #55472f;border-radius:8px;padding:10px;font-size:11px;line-height:1.55}
+a{color:#85def0;text-decoration:underline}
+footer{padding:6px 18px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);background:#0a1728}
+@media(max-width:1150px){.shell{grid-template-columns:215px minmax(0,1fr) 240px}aside{padding:12px}}
+@media(max-width:850px){body{overflow:auto;min-height:100dvh}.shell{display:flex;flex-direction:column}.stage{min-height:490px;order:1}aside.left{order:2}aside.right{order:3}.bottom{flex-wrap:wrap}header{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><div class="logomark" aria-hidden="true">◎</div><div><h1>GPT-DOUG / TAK-GEO ATLAS</h1><div class="sub">Civilian geospatial visualization · local CoT + GeoJSON · imagery</div></div></div>
+  <div class="row"><span class="badge" id="sourceLabel">SYNTHETIC DEMO · NO TAK CONNECTION</span><button type="button" id="resetDemo">Load demo</button></div>
+</header>
+<div class="shell">
+  <aside class="left" aria-label="Layers and data">
+    <div class="section"><h2>Imagery / basemap</h2>
+      <select id="basemap" aria-label="Choose basemap">
+        <option value="offline">Offline coordinate grid</option>
+        <option value="topo">USGS Topographic (online opt-in)</option>
+        <option value="imagery">USGS Aerial Imagery (online opt-in)</option>
+      </select>
+      <p class="small">Offline is the default. Selecting USGS makes map tile requests to USGS; your imported observations are not uploaded.</p>
+    </div>
+    <div class="section"><h2>Layers</h2>
+      <label><input id="points" type="checkbox" checked> Points / devices</label>
+      <label><input id="routes" type="checkbox" checked> Routes / line features</label>
+      <label><input id="areas" type="checkbox" checked> Areas / polygons</label>
+      <label><input id="labels" type="checkbox" checked> Marker labels</label>
+    </div>
+    <div class="section"><h2>Local file input</h2>
+      <label class="upload" for="upload">Import local CoT or GeoJSON</label>
+      <input id="upload" type="file" accept=".cot,.xml,.geojson,.json,application/geo+json,text/xml,application/xml">
+      <button type="button" class="block" id="export">Export displayed GeoJSON</button>
+      <div class="small">Files stay in this browser. No TAK credentials, covert sensor collection, or live operational feeds.</div>
+    </div>
+    <div class="section"><h2>Observations</h2><input id="search" class="search" type="search" placeholder="Filter names and categories" aria-label="Filter features"><div class="list" id="featureList" style="margin-top:10px"></div></div>
+  </aside>
+  <main class="stage" id="stage" aria-label="Interactive geospatial map and observation graph">
+    <div id="tiles"></div>
+    <svg id="grid" aria-hidden="true"></svg>
+    <svg id="overlay" aria-label="Imported geospatial objects"></svg>
+    <svg id="network" aria-label="Category graph of observations"></svg>
+    <div class="toptools"><button id="viewMap" class="on" type="button">Map</button><button id="viewGraph" type="button">Data graph</button></div>
+    <div class="hint" id="mapHint">Drag to pan · mouse wheel or +/- to zoom · click a marker to inspect</div>
+    <div class="zoom" id="zoom"><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="fit" aria-label="Fit all objects">⌖</button></div>
+    <div class="bottom"><span id="coordinates">WGS84 · longitude / latitude</span><span id="mapStatus">OFFLINE / NO EXTERNAL MAP REQUESTS</span></div>
+  </main>
+  <aside class="right" aria-label="Feature inspection">
+    <div class="section"><h2>Layer summary</h2><div class="metrics">
+      <div class="metric"><b id="countPoints">0</b><small>Point markers</small></div>
+      <div class="metric"><b id="countLines">0</b><small>Paths / routes</small></div>
+      <div class="metric"><b id="countAreas">0</b><small>Polygons</small></div>
+      <div class="metric"><b id="countAll">0</b><small>Total features</small></div>
+    </div></div>
+    <div class="section"><h2>Selected observation</h2><div id="inspector" class="small">Select a map marker or list entry.</div></div>
+    <div class="section"><h2>System diagnostics</h2><div id="feedback" role="status" aria-live="polite">Synthetic data loaded; no external requests made.</div></div>
+    <div class="warn"><strong>Data scope</strong><p>Demonstration and user-provided local files only. No TAK Server connection, TAK SDK, telemetry uplink, unit position collection, or location sharing is active.</p>Graph links indicate shared <em>categories</em>, not actual device connectivity.</div>
+  </aside>
+</div>
+<footer>USGS The National Map imagery/topography is optional and credited when enabled. This independently developed viewer is not an official TAK product.</footer>
+<script>
+"use strict";
+const DEMO = __TAK_GEO_DATA__;
+const N="http://www.w3.org/2000/svg";
+const byId=id=>document.getElementById(id);
+const state={data:DEMO,selected:null,mode:"map",basemap:"offline",zoom:12,center:[-77.438,37.54],pan:null,filter:"",source:"SYNTHETIC DEMO"};
+const kindColor={sensor:"#70d4e8",asset:"#ffc16b",site:"#b8a9fa",event:"#f77c9b",route:"#8ceac7",area:"#e1b477",cot:"#87dcff",other:"#d7e2ef"};
+let cachedTilesKey="";
+function kind(f){const p=f.properties||{};return String(p.category||p.kind||f.geometry.type).toLowerCase()}
+function color(f){return kindColor[kind(f)]||kindColor.other}
+function title(f){const p=f.properties||{};return String(p.name||p.label||p.title||f.id||"Observation").slice(0,180)}
+function text(parent,tag,value,attrs){const node=document.createElementNS(N,tag);Object.entries(attrs||{}).forEach(([k,v])=>node.setAttribute(k,v));node.textContent=value;parent.appendChild(node);return node}
+function element(parent,tag,attrs){const node=document.createElementNS(N,tag);Object.entries(attrs||{}).forEach(([k,v])=>node.setAttribute(k,v));parent.appendChild(node);return node}
+function merc(lon,lat,z){const size=256*2**z;const capped=Math.max(-85.05112878,Math.min(85.05112878,lat))*Math.PI/180;return [(lon+180)/360*size,(1-Math.asinh(Math.tan(capped))/Math.PI)/2*size]}
+function inverse(x,y,z){const size=256*2**z;return [(x/size*360+540)%360-180,Math.atan(Math.sinh(Math.PI*(1-2*y/size)))*180/Math.PI]}
+function pointOnScreen(c){const box=byId("stage").getBoundingClientRect();const a=merc(c[0],c[1],state.zoom),b=merc(state.center[0],state.center[1],state.zoom),world=256*2**state.zoom;let dx=a[0]-b[0];if(dx>world/2)dx-=world;if(dx< -world/2)dx+=world;return [box.width/2+dx,box.height/2+a[1]-b[1]]}
+function activeFeatures(){return state.data.features.filter(f=>{const t=f.geometry.type;if(t==="Point"&&!byId("points").checked)return false;if(t==="LineString"&&!byId("routes").checked)return false;if(t==="Polygon"&&!byId("areas").checked)return false;const q=state.filter.toLowerCase();return !q||title(f).toLowerCase().includes(q)||kind(f).includes(q)})}
+function allCoords(f){const g=f.geometry;if(g.type==="Point")return[g.coordinates];if(g.type==="LineString")return g.coordinates;if(g.type==="Polygon")return g.coordinates.flat();return[]}
+function fitMap(){const coords=state.data.features.flatMap(allCoords);if(!coords.length)return;const lo=coords.map(v=>v[0]),la=coords.map(v=>v[1]);state.center=[(Math.min(...lo)+Math.max(...lo))/2,(Math.min(...la)+Math.max(...la))/2];const b=byId("stage").getBoundingClientRect();for(let z=15;z>=4;z--){const left=merc(Math.min(...lo),Math.max(...la),z),right=merc(Math.max(...lo),Math.min(...la),z);if(right[0]-left[0]<=b.width*.74&&right[1]-left[1]<=b.height*.74){state.zoom=z;break}}renderAll()}
+function uiFeedback(message){byId("feedback").textContent=message}
+function renderTiles(){const layer=byId("tiles");const rect=byId("stage").getBoundingClientRect();layer.replaceChildren();if(state.basemap==="offline"){cachedTilesKey="";byId("mapStatus").textContent="OFFLINE GRID · NO EXTERNAL MAP REQUESTS";return}const z=state.zoom,n=2**z,center=merc(...state.center,z),left=center[0]-rect.width/2,top=center[1]-rect.height/2;const x0=Math.floor(left/256),y0=Math.floor(top/256);const cols=Math.min(10,Math.ceil(rect.width/256)+2),rows=Math.min(10,Math.ceil(rect.height/256)+2);let count=0;for(let dx=0;dx<cols;dx++)for(let dy=0;dy<rows;dy++){const x=x0+dx,y=y0+dy;if(y<0||y>=n||count>=80)continue;const img=new Image();const wrapped=(x%n+n)%n;const svc=state.basemap==="imagery"?"USGSImageryOnly":"USGSTopo";img.src="https://basemap.nationalmap.gov/arcgis/rest/services/"+svc+"/MapServer/tile/"+z+"/"+y+"/"+wrapped;img.alt="";img.referrerPolicy="no-referrer";img.style.left=(x*256-left)+"px";img.style.top=(y*256-top)+"px";layer.appendChild(img);count++}byId("mapStatus").textContent="USGS THE NATIONAL MAP · ONLINE TILE VIEW · NOT LIVE"}
+function paintGrid(){const svg=byId("grid");const r=byId("stage").getBoundingClientRect();svg.setAttribute("viewBox","0 0 "+r.width+" "+r.height);svg.replaceChildren();if(state.basemap!=="offline")return;const b=merc(state.center[0],state.center[1],state.zoom);const width=r.width,height=r.height,step=100;for(let x=(width/2-b[0]%step+step)%step;x<width;x+=step)element(svg,"line",{x1:x,y1:0,x2:x,y2:height,stroke:"#234154","stroke-opacity":".8"});for(let y=(height/2-b[1]%step+step)%step;y<height;y+=step)element(svg,"line",{x1:0,y1:y,x2:width,y2:y,stroke:"#234154","stroke-opacity":".8"});const axis=pointOnScreen(state.center);text(svg,"text","WGS84 / WEB MERCATOR",{"x":16,"y":height-65,"fill":"#678ba4","font-size":"12","letter-spacing":"1.5"})}
+function renderOverlay(){const svg=byId("overlay");const rect=byId("stage").getBoundingClientRect();svg.setAttribute("viewBox","0 0 "+rect.width+" "+rect.height);svg.replaceChildren();for(const f of activeFeatures()){const g=f.geometry,paint=color(f),chosen=f.id===state.selected;if(g.type==="Point"){const [x,y]=pointOnScreen(g.coordinates);const group=element(svg,"g",{class:"pin"+(chosen?" active":""),tabindex:"0",role:"button","aria-label":"Select "+title(f)});group.addEventListener("pointerdown",e=>e.stopPropagation());group.addEventListener("click",e=>{e.stopPropagation();selectFeature(f.id)});group.addEventListener("keydown",e=>{if(e.key==="Enter"){selectFeature(f.id)}});element(group,"circle",{cx:x,cy:y,r:chosen?11:8,fill:paint});if(byId("labels").checked){text(group,"text",title(f),{x:x+13,y:y+4,fill:"#edf8ff","font-size":"12","paint-order":"stroke",stroke:"#07121f","stroke-width":"3","stroke-linejoin":"round"})}}
+else{const rings=g.type==="Polygon"?g.coordinates:[g.coordinates];for(const ring of rings){const pts=ring.map(pointOnScreen);const p=element(svg,g.type==="Polygon"?"polygon":"polyline",{points:pts.map(v=>v.join(",")).join(" "),stroke:paint,"stroke-width":chosen?4:2.5,"stroke-opacity":".95",fill:g.type==="Polygon"?paint:"none","fill-opacity":g.type==="Polygon"?".18":"0"});p.style.pointerEvents="stroke";p.addEventListener("click",e=>{e.stopPropagation();selectFeature(f.id)})}}}}
+function renderList(){const holder=byId("featureList");holder.replaceChildren();const fs=activeFeatures();if(fs.length===0){holder.textContent="No features in this layer/filter.";return}for(const f of fs){const btn=document.createElement("button");btn.className="item"+(state.selected===f.id?" active":"");btn.type="button";const label=document.createElement("strong");const dot=document.createElement("i");dot.className="dot";dot.style.background=color(f);label.append(dot,document.createTextNode(title(f)));const sub=document.createElement("small");sub.textContent=kind(f)+" · "+f.geometry.type+" · "+String(f.properties.source_kind||"LOCAL");btn.append(label,sub);btn.onclick=()=>selectFeature(f.id);holder.append(btn)}}
+function selectFeature(id){state.selected=id;const f=state.data.features.find(v=>v.id===id);const panel=byId("inspector");panel.replaceChildren();if(!f){panel.textContent="Select a map marker or list entry.";renderAll();return}const name=document.createElement("h3");name.textContent=title(f);panel.append(name);const fields={Category:kind(f),Geometry:f.geometry.type,Source:f.properties.source_kind||"LOCAL_FILE",Time:f.properties.observed_at||f.properties.time||"Not provided",CoTType:f.properties.cot_type||"Not specified",Description:f.properties.description||"—",Coordinates:f.geometry.type==="Point"?f.geometry.coordinates.map(n=>Number(n).toFixed(6)).join(", "):"Line/area geometry"};for(const [key,val] of Object.entries(fields)){const d=document.createElement("div");d.className="field";const lab=document.createElement("span");lab.textContent=key;const v=document.createElement("strong");v.textContent=String(val);d.append(lab,v);panel.append(d)}if(f.geometry.type==="Point"){state.center=[...f.geometry.coordinates];renderAll(false)}else renderAll(false)}
+function renderGraph(){const svg=byId("network");const rect=byId("stage").getBoundingClientRect(),width=rect.width,height=rect.height;svg.setAttribute("viewBox","0 0 "+width+" "+height);svg.replaceChildren();const fs=activeFeatures(),map={};for(const f of fs)(map[kind(f)]||=[]).push(f);const groups=Object.entries(map);text(svg,"text","GROUPED BY GEOSPATIAL FEATURE CATEGORY · NOT NETWORK CONNECTIVITY",{x:20,y:88,fill:"#8eb2c9","font-size":"11"});if(!groups.length)return;const radius=Math.max(100,Math.min(width,height)*.29);groups.forEach(([k,items],i)=>{const t=2*Math.PI*i/groups.length-Math.PI/2,gx=width/2+Math.cos(t)*radius,gy=height/2+Math.sin(t)*radius;const hub=element(svg,"circle",{cx:gx,cy:gy,r:24,fill:kindColor[k]||kindColor.other,opacity:".89"});text(svg,"text",k+" ("+items.length+")",{x:gx,y:gy-35,fill:"#d3e8f7","text-anchor":"middle","font-size":"12"});items.forEach((f,j)=>{const theta=2*Math.PI*j/items.length;const spread=Math.min(80,36+items.length*9);const x=gx+Math.cos(theta)*spread,y=gy+Math.sin(theta)*spread;element(svg,"line",{x1:gx,y1:gy,x2:x,y2:y,stroke:"#486b86","stroke-dasharray":"3 3"});const circle=element(svg,"circle",{cx:x,cy:y,r:f.id===state.selected?10:7,fill:color(f),stroke:"#d6e7f2","stroke-width":"1.3"});circle.style.cursor="pointer";circle.addEventListener("click",()=>selectFeature(f.id));const lab=text(svg,"text",title(f).slice(0,24),{x:x+11,y:y+3,fill:"#dceaf6","font-size":"10"});lab.style.pointerEvents="none"})})}
+function renderAll(redrawTiles=true){byId("countAll").textContent=state.data.features.length;byId("countPoints").textContent=state.data.features.filter(f=>f.geometry.type==="Point").length;byId("countLines").textContent=state.data.features.filter(f=>f.geometry.type==="LineString").length;byId("countAreas").textContent=state.data.features.filter(f=>f.geometry.type==="Polygon").length;byId("sourceLabel").textContent=state.source+(state.source==="SYNTHETIC DEMO"?" · NO TAK CONNECTION":" · LOCAL ONLY");byId("coordinates").textContent="CENTER "+state.center[1].toFixed(5)+"° N · "+state.center[0].toFixed(5)+"° E | Z"+state.zoom;renderList();if(state.mode==="graph"){byId("network").style.display="block";byId("zoom").style.display="none";byId("mapHint").textContent="Category relationship graph: lines mean shared category, not device links";renderGraph();return}byId("network").style.display="none";byId("zoom").style.display="grid";byId("mapHint").textContent="Drag to pan · wheel or +/- to zoom · click marker to inspect";paintGrid();renderOverlay();if(redrawTiles)renderTiles()}
+function changeZoom(delta){state.zoom=Math.max(4,Math.min(16,state.zoom+delta));renderAll()}
+function normalize(raw){let fs;if(raw&&raw.type==="FeatureCollection"&&Array.isArray(raw.features))fs=raw.features;else if(raw&&raw.type==="Feature")fs=[raw];else throw Error("Expected GeoJSON FeatureCollection or Feature");if(fs.length>250)throw Error("Maximum 250 features");let total=0;const copy=fs.map((f,i)=>{if(!f||f.type!=="Feature"||!f.geometry)throw Error("Malformed GeoJSON Feature");let g=f.geometry,c=g.coordinates;if(g.type==="Point"){c=coord(c);total+=1}else if(g.type==="LineString"){if(!Array.isArray(c)||c.length<2)throw Error("Invalid LineString");c=c.map(coord);total+=c.length}else if(g.type==="Polygon"){if(!Array.isArray(c)||c.length===0)throw Error("Invalid Polygon");c=c.map(r=>{if(!Array.isArray(r)||r.length<4)throw Error("Invalid Polygon ring");let pts=r.map(coord);if(pts[0][0]!==pts[pts.length-1][0]||pts[0][1]!==pts[pts.length-1][1])throw Error("Open Polygon ring");return pts});total+=c.reduce((n,r)=>n+r.length,0)}else throw Error("Only Point, LineString, Polygon are supported");if(total>10000)throw Error("Maximum 10000 coordinates");let p={};const allowed=["name","title","label","category","kind","source_kind","source","observed_at","time","stale","cot_type","how","synthetic","description"];for(const key of allowed){const v=f.properties&&f.properties[key];if(["string","number","boolean"].includes(typeof v))p[key]=String(v).slice(0,180)}p.source_kind=p.source_kind||"LOCAL_FILE";p.name=p.name||String(f.id||"Observation "+(i+1)).slice(0,180);return{type:"Feature",id:String(f.id||"item-"+i).slice(0,180),geometry:{type:g.type,coordinates:c},properties:p}});return{type:"FeatureCollection",features:copy}}
+function coord(p){if(!Array.isArray(p)||p.length<2||typeof p[0]!=="number"||typeof p[1]!=="number"||!Number.isFinite(p[0])||!Number.isFinite(p[1])||Math.abs(p[0])>180||Math.abs(p[1])>90)throw Error("Invalid WGS84 coordinate");return[p[0],p[1]]}
+function parseCot(raw){if(/<!\s*(DOCTYPE|ENTITY)\b/i.test(raw))throw Error("CoT DTD or entities are not accepted");const xml=new DOMParser().parseFromString(raw,"text/xml");if(xml.getElementsByTagName("parsererror").length)throw Error("Invalid CoT XML");const root=xml.documentElement;if(!root||root.localName!=="event")throw Error("CoT expects a single <event> XML document");const point=Array.from(root.children).find(x=>x.localName==="point");if(!point)throw Error("CoT event has no point");const coordinates=coord([Number(point.getAttribute("lon")),Number(point.getAttribute("lat"))]);const detail=Array.from(root.children).find(x=>x.localName==="detail"),contact=detail&&Array.from(detail.children).find(x=>x.localName==="contact");const uid=root.getAttribute("uid")||"cot-event";return normalize({type:"FeatureCollection",features:[{type:"Feature",id:uid,geometry:{type:"Point",coordinates},properties:{name:contact&&contact.getAttribute("callsign")||uid,source_kind:"LOCAL_COT_FILE",category:"cot",cot_type:root.getAttribute("type")||"",how:root.getAttribute("how")||"",time:root.getAttribute("time")||"",stale:root.getAttribute("stale")||""}}]})}
+byId("viewMap").onclick=()=>{state.mode="map";byId("viewMap").classList.add("on");byId("viewGraph").classList.remove("on");renderAll()};
+byId("viewGraph").onclick=()=>{state.mode="graph";byId("viewGraph").classList.add("on");byId("viewMap").classList.remove("on");renderAll()};
+for(const id of ["points","routes","areas","labels"])byId(id).onchange=()=>renderAll(false);
+byId("search").oninput=e=>{state.filter=e.target.value;renderAll(false)};
+byId("zoomIn").onclick=()=>changeZoom(1);byId("zoomOut").onclick=()=>changeZoom(-1);byId("fit").onclick=fitMap;
+byId("basemap").onchange=e=>{const next=e.target.value;if(next!=="offline"&&!confirm("Online USGS basemap tiles will request your viewed map area from USGS. Imported CoT/GeoJSON stays local. Continue?")){e.target.value=state.basemap;return}state.basemap=next;cachedTilesKey="";renderAll();uiFeedback(next==="offline"?"Offline grid enabled. No external map requests.":"USGS "+next+" imagery selected. Requests for visible basemap tiles only.")};
+const stage=byId("stage");
+stage.addEventListener("pointerdown",e=>{if(state.mode!=="map"||e.target.closest("button")||e.target.closest(".pin"))return;state.pan={x:e.clientX,y:e.clientY,center:state.center.slice()};stage.setPointerCapture(e.pointerId)});
+stage.addEventListener("pointermove",e=>{if(!state.pan)return;const orig=merc(...state.pan.center,state.zoom);state.center=inverse(orig[0]-(e.clientX-state.pan.x),orig[1]-(e.clientY-state.pan.y),state.zoom);renderAll(false)});
+stage.addEventListener("pointerup",e=>{if(state.pan){state.pan=null;renderAll(true)}});
+stage.addEventListener("pointercancel",()=>{state.pan=null;renderAll(true)});
+stage.addEventListener("wheel",e=>{if(state.mode==="map"){e.preventDefault();changeZoom(e.deltaY<0?1:-1)}},{passive:false});
+byId("upload").onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{if(file.size>2000000)throw Error("File must be 2 MB or smaller");const raw=await file.text();state.data=/\.(cot|xml)$/i.test(file.name)?parseCot(raw):normalize(JSON.parse(raw));state.source="LOCAL FILE";state.selected=null;state.filter="";byId("search").value="";fitMap();uiFeedback("Imported "+state.data.features.length+" local feature(s) from "+file.name+". No data uploaded.")}catch(err){uiFeedback("Import rejected: "+err.message)}e.target.value=""};
+byId("resetDemo").onclick=()=>{state.data=DEMO;state.source="SYNTHETIC DEMO";state.selected=null;state.filter="";byId("search").value="";fitMap();uiFeedback("Synthetic demo restored; no TAK Server connected.")};
+byId("export").onclick=()=>{const exportable=normalize({type:"FeatureCollection",features:activeFeatures()});const url=URL.createObjectURL(new Blob([JSON.stringify(exportable,null,2)],{type:"application/geo+json"}));const a=document.createElement("a");a.href=url;a.download="gpt-doug-tak-geo-local.geojson";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);uiFeedback("GeoJSON exported locally. No remote transmission.")};
+window.addEventListener("resize",()=>renderAll());
+fitMap();
+</script>
+</body></html>
