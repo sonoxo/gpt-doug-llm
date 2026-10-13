@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .core import DEFAULT_DB, Store, demo_specs, load_manifest, snapshot
 from .dashboard import HTML
+from .ontology import export_graph
 
 def print_json(value):
     print(json.dumps(value, indent=2, sort_keys=True))
@@ -29,6 +30,9 @@ def serve(specs, *, root, authorized_local, db, port, interval):
     stop = threading.Event()
     class Handler(BaseHTTPRequestHandler):
         def do_GET(self):
+            if self.headers.get("Host", "").split(":", 1)[0].lower() not in {"127.0.0.1", "localhost"}:
+                self.send_error(403)
+                return
             if self.path == "/":
                 body, content_type = HTML.encode("utf-8"), "text/html; charset=utf-8"
             elif self.path == "/api/status":
@@ -65,6 +69,8 @@ def serve(specs, *, root, authorized_local, db, port, interval):
     print("Local dashboard: http://127.0.0.1:%s/" % port, flush=True)
     try:
         server.serve_forever(poll_interval=0.5)
+    except KeyboardInterrupt:
+        pass
     finally:
         stop.set()
         server.server_close()
@@ -83,16 +89,17 @@ def main(argv=None):
         if action == "serve":
             p.add_argument("--port", type=int, default=8765)
             p.add_argument("--interval", type=int, default=5)
-    p = commands.add_parser("status", help="Inspect local evidence journal")
-    p.add_argument("--db", default=str(DEFAULT_DB))
+    for action in ("status", "ontology"):
+        p = commands.add_parser(action, help="Inspect local evidence or export reviewed ontology graph")
+        p.add_argument("--db", default=str(DEFAULT_DB))
     args = parser.parse_args(argv)
     if args.action == "demo":
         print_json(snapshot(demo_specs()))
         return 0
-    if args.action == "status":
+    if args.action in {"status", "ontology"}:
         store = Store(args.db)
         try:
-            print_json(store.status())
+            print_json(store.status() if args.action == "status" else export_graph(store))
         finally:
             store.close()
         return 0
