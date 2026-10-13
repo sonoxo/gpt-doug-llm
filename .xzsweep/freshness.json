@@ -1,8 +1,18 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T21:44:21Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-10-12T21:57:23Z",
+  "due_files_reviewed": 9,
+  "due_paths": [
+    ".github/workflows/pineal-osiris-smoke.yml",
+    "integrations/pineal_osiris/README.md",
+    "integrations/pineal_osiris/disk.py",
+    "integrations/pineal_osiris/recover.sh",
+    "integrations/pineal_osiris/run.sh",
+    "integrations/pineal_osiris/stack.py",
+    "integrations/pineal_osiris/test_disk.py",
+    "intel/white-house/daily/2026-10-11.json",
+    "intel/white-house/daily/2026-10-11.md"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -790,11 +800,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:51:26Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "7b14476592e09fb16d40339c2cc911a399d6096ecbda9819e74011ffd981398e",
       "size": 1544,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/pineal-patent-connectors.yml": {
       "actions": [],
@@ -3719,6 +3729,28 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "3958e23d35c830774efaf66c2111d50a7bcacacb01edf4891f72e2bf4fa10224",
       "size": 2527,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/KRAKEN_LATTICE_50_TOOLS.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:20:40Z",
+      "reviewed_at": null,
+      "sha256": "04f80f97553e303a27ca4969bb1592608b074b9babc11d8c46354cf4a5c4ce06",
+      "size": 4860,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/KRAKEN_LATTICE_OFFLINE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:05:45Z",
+      "reviewed_at": null,
+      "sha256": "38e1b154ba2bdbd4b89d55831b4404ddbf82c275ebe10b16bea79fdce1067f34",
+      "size": 1401,
       "validation_issues": [],
       "was_due": false
     },
@@ -8831,11 +8863,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:51:49Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "ba092010def55bf241e1021fd11aee9c0d5a2aa19971222cedd20cd7c98a5ab7",
       "size": 9366,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/bootstrap.sh": {
       "actions": [],
@@ -8908,44 +8940,44 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:50:14Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "d971ff371d72f914dc00eb7ea9d5b7a44d5aebf20cf5695c33d7a6463e17b776",
       "size": 6166,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/recover.sh": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:52:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "26d569d58cbeaa7d8da7f55ff82d98b82710f95a80323e2537a99f444091fb39",
       "size": 4156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/run.sh": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:50:27Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "9f7390d6470e4df0f5a8f7c5f0424a3296ad2adf68123584bbf9405f563ec6ee",
       "size": 5095,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/stack.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:51:33Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "6f560850b4f76f7a363fc48371cf01fd9ce893218386447b1a9b8c71ec01f382",
       "size": 10533,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/test_bridge.py": {
       "actions": [],
@@ -8974,11 +9006,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-12T21:51:19Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "51b5cb81d5b8eed42787b15bf8a12895c358eb01b848a76dc7cb0cc85dea8305",
       "size": 4287,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/pineal_osiris/test_stack.py": {
       "actions": [],
@@ -10602,22 +10634,22 @@
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-11T17:04:53Z",
-      "reviewed_at": "2026-10-12T21:54:15Z",
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "f1c6a0989850d46b02ebf96920bd8fc061488db29fb6b33303ae043994a5b424",
       "size": 1063,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-10-11.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-11T17:04:53Z",
-      "reviewed_at": "2026-10-12T21:54:15Z",
+      "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "984e77b2dc4193f99b142a4e023dccac587e44dff0becf1620897c9ecfd919a9",
       "size": 819,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "intel/white-house/daily/2026-10-12.json": {
       "actions": [],
@@ -12775,6 +12807,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "research_lab/kraken_lattice_preview.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:05:30Z",
+      "reviewed_at": null,
+      "sha256": "23ed06870f4e84025a76d70e068da61de6edff872d31aafc588a2bc581c2306b",
+      "size": 2278,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/kraken_robot_sim.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:04:33Z",
+      "reviewed_at": null,
+      "sha256": "1e40fda3e2474da21d6048096260c1da2ce78366eaa221c4efef78c14d263416",
+      "size": 2057,
+      "validation_issues": [],
+      "was_due": false
+    },
     "research_lab/lateral_stability.py": {
       "actions": [],
       "binary": false,
@@ -12783,6 +12837,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "63da3762300f6a2a9044e84cf3679fcd493f260a70906191a74650cb6fd6081a",
       "size": 7923,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/lattice_50_tools.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:20:34Z",
+      "reviewed_at": null,
+      "sha256": "f7709fa81e02c872feb370d196e0372507ba2e550b413f16275d2b7432e44b9c",
+      "size": 19887,
       "validation_issues": [],
       "was_due": false
     },
@@ -17714,6 +17779,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_kraken_lattice_preview.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:05:36Z",
+      "reviewed_at": null,
+      "sha256": "9a72483027d5e853fcf308f85487d46ff7ab20709d7d3c7d1f624f4e35283767",
+      "size": 724,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_kraken_narrative_intel.py": {
       "actions": [],
       "binary": false,
@@ -17725,6 +17801,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_kraken_robot_sim.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:04:39Z",
+      "reviewed_at": null,
+      "sha256": "8390d7dec050c89b959514c98b67e6ca8327aa4973e17a644e6a047eacb2d8dc",
+      "size": 715,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_lateral_stability.py": {
       "actions": [],
       "binary": false,
@@ -17733,6 +17820,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "8ef1d7351004ca1c298ae8e7074903c0ab5b94b2068d105cec9ced6005ee0292",
       "size": 3964,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_lattice_50_tools.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T20:20:37Z",
+      "reviewed_at": null,
+      "sha256": "4e75a5c668d7b9e3e32ac518c9f809223a779b6924b967e77c07eec2cd1fa114",
+      "size": 2495,
       "validation_issues": [],
       "was_due": false
     },
@@ -23348,11 +23446,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T21:44:21Z",
+  "generated_at": "2026-10-13T21:57:23Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2122,
+  "tracked_files_reviewed": 2130,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
