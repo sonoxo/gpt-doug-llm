@@ -1,4 +1,7 @@
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import time
 import unittest
@@ -62,6 +65,16 @@ class TestMechaBridge(unittest.TestCase):
         self.assertEqual(comparison['proof_scope'],'CLASSICAL_MODEL_ONLY')
         self.assertFalse(comparison['quantum_hardware_used'])
         self.assertEqual(comparison['external_calls'],0)
+
+    def test_monorepo_root_imports_portable_mecha_without_pythonpath_override(self):
+        root=Path(__file__).resolve().parents[1]
+        env=dict(os.environ, PYTHONPATH=str(root))
+        proc=subprocess.run(
+            [sys.executable,'-c',
+             'from mecha.quantum import simulate_quantum; import mecha.cli; print("OK")'],
+            cwd=root,env=env,capture_output=True,text=True,timeout=10)
+        self.assertEqual(proc.returncode,0,proc.stderr)
+        self.assertIn('OK',proc.stdout)
 
     def test_rover_contract_cannot_grant_hardware_control(self):
         with tempfile.TemporaryDirectory() as td:
