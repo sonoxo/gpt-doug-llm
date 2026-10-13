@@ -66,3 +66,21 @@ These sources **inform** design but imply no endorsement or accreditation.
 4. **Nomination preparation (only if warranted):** if substantial real-world peace impact is independently substantiated and an eligible candidate organization exists, assemble a factual dossier that an **eligible independent nominator** could consider. The next regular deadline is **January 31, 2027**, but a new and unvalidated project would not justify haste. An eligible nominator and the Norwegian Nobel Committee make their own decisions. A nomination is never guaranteed.
 
 **Launch target:** safe, measurable peace work—not a prize claim. The award is entirely at the Committee's discretion.
+
+## 90-day pilot engineering review (phase 2, not a launched project)
+
+The new **PeaceLab 90-day pilot protocol** is documented in [PEACELAB_90_DAY_PILOT.md](PEACELAB_90_DAY_PILOT.md) and [PEACELAB_ENGINEERING_REVIEW_REQUEST.md](PEACELAB_ENGINEERING_REVIEW_REQUEST.md).
+
+All eight human-led documentary gates default to pending. A date and a document link are **self-reported evidence**, not proof that review occurred. The software never authorizes participation or a real-world field activity, even when a snapshot says every gate is documented. It blocks underdeclared cohorts, unsafe URLs, fictional positive outcomes and evidence tampering, and it forces explicit review if a gate is blocked or harm is reported.
+
+Quick demo:
+
+~~~sh
+bash scripts/doug-max peace-lab pilot-demo > /tmp/peacelab-pilot.json
+bash scripts/doug-max peace-lab pilot-verify /tmp/peacelab-pilot.json
+bash scripts/doug-max peace-lab pilot-brief /tmp/peacelab-pilot.json > /tmp/peacelab-review.md
+bash scripts/doug-max peace-lab pilot-preview /tmp/peacelab-pilot.json > /tmp/peacelab-review.html
+~~~
+
+Both generated reviewer files are proposals, **not proof of a peace program, a qualified review, a nomination, or human authorization**. A review-requested GitHub PR does not replace an independent ethics or community review.
+
