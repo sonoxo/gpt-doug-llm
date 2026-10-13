@@ -4,6 +4,7 @@ import json
 import math
 from typing import Any
 from .contracts import validate_fixture,digest,canonical_json
+from .robotics import simulate_rover
 
 _SIM_STATUSES=frozenset({'SIMULATED_STEP_COMPLETE','SIMULATED_OBSTACLE_HALT',
                          'SIMULATED_POWER_EXHAUSTED','SIMULATED_BOUNDARY_HALT'})
@@ -16,6 +17,15 @@ def build_snapshot(fixture: dict[str, Any], model_state: dict[str, Any],
         raise ValueError('invalid simulation state or model version')
     if model_state.get('REAL_WORLD_ACTUATION') is not False:
         raise ValueError('a simulated state may never have real actuation')
+    requested_steps=model_state.get('requested_steps')
+    # Replay the bounded model; untrusted but numerically plausible state fields
+    # cannot be relabeled as evidence from another fixture or changed post-run.
+    replay=simulate_rover(data,steps=requested_steps)
+    bound=('source_sha256','requested_steps','simulated_pose','simulated_steps',
+           'simulated_power_remaining','sensor_health_pct','simulation_status',
+           'source_kind','authority','REAL_WORLD_ACTUATION')
+    if any(model_state.get(key)!=replay[key] for key in bound):
+        raise ValueError('simulation and source fixture replay mismatch')
     status=model_state.get('simulation_status')
     if status not in _SIM_STATUSES:
         raise ValueError('invalid synthetic simulation status')

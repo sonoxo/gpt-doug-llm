@@ -2,7 +2,7 @@
 from __future__ import annotations
 import math
 from typing import Any
-from .contracts import validate_fixture
+from .contracts import validate_fixture,digest
 
 
 def simulate_rover(fixture: dict[str, Any], *, steps: int = 3) -> dict[str, Any]:
@@ -34,4 +34,5 @@ def simulate_rover(fixture: dict[str, Any], *, steps: int = 3) -> dict[str, Any]
             'simulated_power_remaining':energy,
             'sensor_health_pct':data['robot']['health_pct'],
             'simulation_status':status,'source_kind':'SYNTHETIC',
-            'authority':'RESEARCH_ONLY','REAL_WORLD_ACTUATION':False}
+            'authority':'RESEARCH_ONLY','REAL_WORLD_ACTUATION':False,
+            'requested_steps':steps,'source_sha256':digest(data)}

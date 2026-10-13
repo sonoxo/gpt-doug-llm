@@ -46,6 +46,15 @@ class TestGuardedEntry(unittest.TestCase):
             self.assertIn('error',json.loads(r.stderr))
             self.assertEqual(len(list(p.iterdir())),1)
 
+    def test_push_event_protected_file_check_compares_before_sha(self):
+        workflow=(ROOT/'.github/workflows/mecha-research.yml').read_text()
+        self.assertIn('github.event_name',workflow)
+        self.assertIn('github.event.before',workflow)
+        self.assertIn('BASE="$PUSH_BEFORE"',workflow)
+        self.assertIn('git cat-file -e "$BASE^{commit}"',workflow)
+        self.assertIn('git diff --exit-code "$BASE" HEAD',workflow)
+        self.assertIn('git merge-base origin/main HEAD',workflow)
+
     def test_bell_state_through_guarded_launcher(self):
         p=ROOT/'mecha'/'examples'/'bell-state.json'
         r=launch('quantum',p,'--input-root',p.parent,'--budget-units','200')

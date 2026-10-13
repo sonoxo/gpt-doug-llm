@@ -43,6 +43,28 @@ class TestSnapshot(unittest.TestCase):
         bad=dict(self.state,simulation_status='CONNECTED_REAL_ROVER')
         with self.assertRaises(ValueError):build_snapshot(FIXTURE,bad)
 
+    def test_snapshot_rejects_state_from_different_source_fixture(self):
+        different=copy.deepcopy(FIXTURE)
+        different['robot']['pose']=[10.0,0.0,0.0]
+        run=simulate_rover(different)
+        with self.assertRaisesRegex(ValueError,'mismatch|fixture|source'):
+            build_snapshot(FIXTURE,run)
+
+    def test_snapshot_rejects_valid_but_tampered_state_metrics(self):
+        altered=copy.deepcopy(self.state)
+        altered['simulated_pose']=[0.5,0.0,0.0]
+        with self.assertRaises(ValueError):build_snapshot(FIXTURE,altered)
+        altered=copy.deepcopy(self.state)
+        altered['simulation_status']='SIMULATED_OBSTACLE_HALT'
+        with self.assertRaises(ValueError):build_snapshot(FIXTURE,altered)
+
+    def test_snapshot_uses_requested_step_count_when_verifying(self):
+        short=simulate_rover(FIXTURE,steps=1)
+        snap=build_snapshot(FIXTURE,short)
+        self.assertEqual(snap['channels']['time']['simulated_step'],1)
+        self.assertEqual(short['requested_steps'],1)
+        self.assertEqual(short['source_sha256'],digest(FIXTURE))
+
     def test_determinism_and_immutability(self):
         state=copy.deepcopy(self.state)
         a=build_snapshot(FIXTURE,state)

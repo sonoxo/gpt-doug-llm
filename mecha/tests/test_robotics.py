@@ -10,6 +10,8 @@ class TestRover(unittest.TestCase):
         state=simulate_rover(FIXTURE,steps=3)
         self.assertEqual(state['simulated_pose'],[0.75,0.0,0.0])
         self.assertEqual(state['simulated_steps'],3)
+        self.assertEqual(state['requested_steps'],3)
+        self.assertEqual(len(state['source_sha256']),64)
         self.assertEqual(state['simulated_power_remaining'],97)
         self.assertEqual(state['sensor_health_pct'],91)
         self.assertFalse(state['REAL_WORLD_ACTUATION'])
