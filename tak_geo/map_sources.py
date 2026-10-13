@@ -375,7 +375,7 @@ def render_catalog_page(catalog: dict, template: str) -> str:
 def write_ecosystem(source: Path, output: Path, *, force: bool = False) -> dict:
     """Emit standalone catalog + synthetic geoviewer, with explicit local provenance."""
     output = Path(output).expanduser()
-    generated = ("index.html", "atlas.html", "catalog.json", "ecosystem-status.json")
+    generated = ("index.html", "atlas.html", "catalog.json", "atlas-ontology.json", "ecosystem-status.json")
     if any((output / name).exists() for name in generated) and not force:
         raise CatalogError("ecosystem output exists; pass --force to regenerate generated files")
     report = inspect_checkout(source)
@@ -388,6 +388,9 @@ def write_ecosystem(source: Path, output: Path, *, force: bool = False) -> dict:
         encoding="utf-8",
     )
     (output / "catalog.json").write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    from .atlas_ontology import build_ontology
+    graph = build_ontology(report)
+    (output / "atlas-ontology.json").write_text(json.dumps(graph, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     status = {
         "system": "GPT-DOUG TAK-ATLAS ECOSYSTEM",
         "status": "OFFLINE_CATALOG_BUILT",
@@ -396,6 +399,8 @@ def write_ecosystem(source: Path, output: Path, *, force: bool = False) -> dict:
         "catalog": str(output / "catalog.json"),
         "source_commit": report["source"]["commit_sha"],
         "summary": report["summary"],
+        "ontology_nodes": len(graph["nodes"]),
+        "ontology_edges": len(graph["edges"]),
         "network_calls": 0,
         "tak_server_connected": False,
         "source_repo": SOURCE_REPO,
