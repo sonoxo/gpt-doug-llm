@@ -10,7 +10,7 @@ Supported adapters:
 - host-health: current computer's logical CPU count and local free-space summary, only with explicit operator approval.
 - json / jsonl / csv: bounded metric records from a single, explicitly authorized local directory.
 
-Per-sensor registration declares source identity, object type, purpose, authorization scope and classification. The loader enforces docs/sensor-policy.json; forbidden person/biometric/private residence/weapon/live military unit object types are rejected. File adapters enforce relative paths, no symlinks, type extension, maximum 256 KiB and 128 observations per file. Records contain only limited numeric, boolean or short enumerated values (no raw unstructured documents, images, credentials, email addresses or personal identifiers). A snapshot supports up to 16 sensors, with at most four collectors running concurrently.
+Per-sensor registration declares source identity, object type, purpose, authorization scope and classification. The loader enforces docs/sensor-policy.json; forbidden person/biometric/private residence/weapon/live military unit object types are rejected. File adapters enforce relative paths, no symlinks, type extension, maximum 256 KiB and 128 observations per file. Records contain only limited numeric, boolean or approved status-enumeration values (no raw unstructured documents, images, credentials, email addresses or personal identifiers). A snapshot supports up to 16 sensors, with at most four collectors running concurrently.
 
 The local journal uses SQLite with SHA-256 event IDs for replay deduplication and a default rolling seven-day retention; it is **not** encrypted at rest. Store only data allowed under local policies. No remote discovery, login, remote API fetching, camera/video ingest, actuator or external actions are implemented. A future external data connector must undergo separate authorization, rate-limit, provenance, SSRF and privacy review.
 
@@ -71,6 +71,7 @@ Run **with explicit authorization** (replace the paths):
 ~~~sh
 bash scripts/doug-max swarm-sensors snapshot --config /path/to/manifest.json --root /path/to/approved-data --authorize-local
 bash scripts/doug-max swarm-sensors status
+bash scripts/doug-max swarm-sensors ontology > /tmp/gpt-doug-sensor-ontology.json
 bash scripts/doug-max swarm-sensors serve --config /path/to/manifest.json --root /path/to/approved-data --authorize-local --port 8765 --interval 5
 ~~~
 
@@ -80,7 +81,8 @@ Visit http://127.0.0.1:8765/ while the serve command is running. It binds to loc
 
 - Records preserve provenance digest, source locator, classification and operator-declared scope. A digest confirms byte identity, **not** source authenticity.
 - Individual invalid feeds are rejected without blocking unrelated healthy sensors; fail-closed policy validation occurs before the swarm starts.
-- Events are deduplicated across runs. No event data is sent to third-party services.
+- Events are deduplicated across runs. Missing file timestamps are anchored to file modification time. No event data is sent to third-party services.
+- The ontology export is a read-only graph of sensor/source/observation nodes, with explicit unverified provenance and integrity checksum. It is not automatically promoted into GPT-Doug's trusted ontology.
 - No polling, persistence or background service occurs from the demo command; persistence and live monitoring require explicit CLI commands.
 - Use Python 3.11 or 3.12 and run:
   python3 -m unittest discover -s tests -p 'test_sensor_swarm.py' -v
