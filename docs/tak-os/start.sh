@@ -5,6 +5,41 @@ cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 PORT="${TAK_OS_PORT:-8080}"
 case "$PORT" in ''|*[!0-9]*) echo 'TAK_OS_PORT must be numeric' >&2; exit 2 ;; esac
 if [ "$PORT" -lt 1024 ] || [ "$PORT" -gt 65535 ]; then echo 'Port must be between 1024 and 65535' >&2; exit 2; fi
+# Keep existing services untouched. For the default port, choose the next free
+# loopback TCP port if 8080 is already held by a browser-only server or another app.
+# An explicitly requested TAK_OS_PORT fails with a clear error instead.
+case "${1:-web}" in
+  web|gateway|legacy-udp|legacy-tcp|static)
+    command -v python3 >/dev/null || { echo 'Install free Python 3'; exit 1; }
+    PORT="$(python3 - "$PORT" "${TAK_OS_PORT+x}" <<'PY'
+import socket
+import sys
+
+preferred = int(sys.argv[1])
+explicit = bool(sys.argv[2])
+for candidate in (preferred,) if explicit else range(preferred, min(65535, preferred + 100) + 1):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind(("127.0.0.1", candidate))
+    except OSError:
+        pass
+    else:
+        if candidate != preferred:
+            print(f"TAK-OS: port {preferred} is busy; switching to free port {candidate}.", file=sys.stderr)
+        print(candidate)
+        break
+    finally:
+        sock.close()
+else:
+    if explicit:
+        print(f"TAK-OS: port {preferred} is already in use. Try TAK_OS_PORT=8090 sh start.sh web, or stop the existing server.", file=sys.stderr)
+    else:
+        print(f"TAK-OS: no free localhost TCP port in {preferred}-{min(65535,preferred+100)}.", file=sys.stderr)
+    sys.exit(3)
+PY
+    )" || exit 3
+    ;;
+esac
 case "${1:-web}" in
   web|gateway)
     command -v python3 >/dev/null || { echo 'Install free Python 3'; exit 1; }
