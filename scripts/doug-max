@@ -18,7 +18,7 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  biopineal-patent|hydrogen-patent)
+  biopineal-patent|hydrogen-patent|biopineal-phase2)
     # Only bounded offline public-excerpt inspection; no device control.
     read_only_mode=1
     ;;
@@ -83,6 +83,11 @@ case "$first_arg_lc" in
     shift
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.biopineal_patent "$@"
+    ;;
+  biopineal-phase2)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.biopineal_phase2 "$@"
     ;;
   peace-lab|peacelab)
     shift
