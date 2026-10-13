@@ -60,6 +60,24 @@ class StaticContracts(unittest.TestCase):
                 subprocess.run(['node','--check',str(APP/name)],check=True,capture_output=True)
         subprocess.run(['python3','-m','py_compile',str(APP/'gateway.py')],check=True,capture_output=True)
 
+    def test_shell_launcher_syntax_and_busy_port_diagnostics(self):
+        import os
+        import socket
+        subprocess.run(['sh', '-n', str(APP / 'start.sh')],
+                       check=True, capture_output=True, timeout=5)
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as occupied:
+            occupied.bind(('127.0.0.1', 0))
+            occupied.listen(1)
+            port = occupied.getsockname()[1]
+            env = os.environ.copy()
+            env['TAK_OS_PORT'] = str(port)
+            outcome = subprocess.run(['sh', str(APP / 'start.sh'), 'web'],
+                                     cwd=APP, env=env, capture_output=True,
+                                     text=True, timeout=5)
+            self.assertEqual(outcome.returncode, 3)
+            self.assertIn('already in use', outcome.stderr)
+            self.assertNotIn('Traceback', outcome.stderr)
+
     def test_pwa_cache_ignores_api(self):
         cache=(APP/'sw.js').read_text()
         self.assertIn("url.pathname.includes('/api/')",cache)
