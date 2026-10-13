@@ -48,7 +48,8 @@ def read_operator(workspace: Path) -> dict[str, Any] | None:
             or data.get('identity_source') != 'SELF_DECLARED'
             or data.get('source_system') != 'LOCAL_ONLY'
             or data.get('identity_verified') is not False
-            or data.get('military_affiliation_verified') is not False):
+            or data.get('military_affiliation_verified') is not False
+            or data.get('granted_permissions') != []):
         raise ValueError('operator profile cannot grant credentials or authority')
     _validate_callsign(data.get('callsign'))
     return data

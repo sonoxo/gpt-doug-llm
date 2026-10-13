@@ -35,6 +35,17 @@ class OperatorProfileTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'different callsign'):
                 register_operator(root, 'Agent11')
 
+    def test_profile_cannot_claim_new_privileges_by_editing_json(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            register_operator(root, 'Agent10')
+            path = root / 'operator-profile.json'
+            data = json.loads(path.read_text())
+            data['granted_permissions'] = ['ADMIN']
+            path.write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError, 'credentials or authority'):
+                read_operator(root)
+
     def test_invalid_and_symlinked_operator_profile_are_rejected(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
