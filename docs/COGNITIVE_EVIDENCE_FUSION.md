@@ -18,7 +18,10 @@ Workers run concurrently using Python's standard library; no paid tokens, networ
 ~~~sh
 bash scripts/doug-max super-ai demo
 bash scripts/doug-max super-ai status
+bash scripts/doug-max super-ai live-demo
 ~~~
+
+The live-demo command starts a localhost-only interactive research console at http://127.0.0.1:8777/. Users can change the question and inspect source-linked reported readings, disagreement counts, freshness and policy warnings. It uses only demo evidence and no personal or physical sensor data. Stop with Ctrl+C.
 
 The demo creates a temporary local database solely to assemble the existing BioPineal patent-evidence + synthetic heartbeat graph. Nothing is transmitted, polled on the network, or deployed. The temporary database is removed when the command exits. The run is blocked if GPT-Doug's cooperative AI kill switch is engaged; read-only status remains inspectable.
 
