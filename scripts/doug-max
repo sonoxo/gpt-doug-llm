@@ -22,7 +22,7 @@ case "$first_arg_lc" in
     read_only_mode=1
     ;;
   tak-geo|atak-graph)
-    if [[ "${2:-status}" == "status" || "${2:-status}" == "maps-doctor" ]]; then read_only_mode=1; fi
+    if [[ "${2:-status}" == "status" || "${2:-status}" == "maps-doctor" || "${2:-status}" == "docs-status" ]]; then read_only_mode=1; fi
     ;;
   video-evidence|youtube-short-ingest)
     # Actual public HTTPS crawling continues through canonical preflight.
