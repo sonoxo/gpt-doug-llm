@@ -25,6 +25,7 @@ FILE_KINDS = {"json", "jsonl", "csv"}
 MAX_SENSORS = 16
 MAX_BYTES = 262144
 MAX_ROWS = 128
+MAX_RETAINED_EVENTS = 50000
 DEFAULT_DB = Path.home() / ".config" / "gpt-doug" / "sensor-swarm.sqlite3"
 POLICY_PATH = Path(__file__).resolve().parents[1] / "docs" / "sensor-policy.json"
 IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,63}$")
@@ -54,6 +55,12 @@ def load_policy(path=POLICY_PATH):
                           "fire_control", "autonomous_external_action")
     if any(data["controls"].get(name) is not False for name in forbidden_controls):
         raise ValueError("unsafe sensor capabilities not explicitly denied")
+    required_forbidden_types = {"person", "face", "biometric_identity",
+                                "license_plate_owner", "private_vehicle", "private_residence",
+                                "weapon_target", "live_military_unit"}
+    prohibited = set(data.get("prohibited_object_types", []))
+    if not required_forbidden_types <= prohibited:
+        raise ValueError("mandatory prohibited object types missing from sensor policy")
     required_controls = ("provenance_required", "human_review_for_material_actions")
     if not all(data["controls"].get(name) is True for name in required_controls):
         raise ValueError("mandatory sensor controls are missing")
@@ -165,6 +172,9 @@ def observation(spec, row, *, locator, sha):
     observed = timestamp(row.get("observed_at"))
     identity = {"sensor_id": spec["id"], "source_id": spec["source_id"],
                 "metric": metric, "value": value, "unit": unit,
+                "object_type": spec["object_type"],
+                "classification": spec["classification"],
+                "authorization_scope": spec["authorization_scope"], "purpose": spec["purpose"],
                 "observed_at": observed, "source_sha256": sha, "locator": locator}
     return {"schema": EVENT_SCHEMA, "id": digest(identity),
             "sensor_id": spec["id"], "source_id": spec["source_id"],
@@ -297,12 +307,18 @@ class Store:
                                 "(id TEXT PRIMARY KEY, updated REAL NOT NULL, payload TEXT NOT NULL)")
         self.connection.commit()
     def write(self, result, retention_days=7):
+        if type(retention_days) is not int or not 1 <= retention_days <= 30:
+            raise ValueError("retention must be a whole number of days between 1 and 30")
         with self.connection:
             self.connection.execute("DELETE FROM events WHERE inserted < ?",
                                     (time.time() - retention_days * 86400,))
             for e in result["events"]:
                 self.connection.execute("INSERT OR IGNORE INTO events VALUES(?,?,?)",
                                         (e["id"], time.time(), canonical(e)))
+            self.connection.execute(
+                "DELETE FROM events WHERE id IN "
+                "(SELECT id FROM events ORDER BY inserted DESC, id DESC LIMIT -1 OFFSET ?)",
+                (MAX_RETAINED_EVENTS,))
             for h in result["sensors"]:
                 self.connection.execute("INSERT OR REPLACE INTO health VALUES(?,?,?)",
                                         (h["id"], time.time(), canonical(h)))
