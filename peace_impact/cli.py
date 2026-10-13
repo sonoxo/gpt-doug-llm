@@ -12,6 +12,9 @@ from .pilot import (pilot_assess, pilot_dashboard_html, pilot_demo,
                     pilot_review_markdown, pilot_verify)
 from .ontology_graph import (load_ontology, audit_ontology, text_map,
                              graphviz_dot, standalone_html)
+from .nobel_readiness import (template as nobel_template, review as nobel_review,
+                              verify_report as nobel_verify, reviewer_brief as nobel_brief,
+                              visual_html as nobel_html)
 
 
 def read(path):
@@ -36,16 +39,34 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="gpt-doug-peacelab")
     sub = p.add_subparsers(dest="action", required=True)
     for name in ("demo", "kit", "pilot-demo", "pilot-kit", "ontology", "ontology-json",
-                 "ontology-dot", "ontology-html"):
+                 "ontology-dot", "ontology-html", "nobel-demo"):
         sub.add_parser(name)
     sub.add_parser("ontology-check").add_argument("file", type=Path, nargs="?")
-    for name in ("init", "pilot-init"):
+    for name in ("init", "pilot-init", "nobel-init"):
         sub.add_parser(name).add_argument("path", type=Path)
     for name in ("assess", "verify", "brief", "pilot-assess", "pilot-verify", "pilot-brief", "pilot-preview"):
         sub.add_parser(name).add_argument("file", type=Path)
+    for name in ("nobel-audit", "nobel-brief", "nobel-html"):
+        sub.add_parser(name).add_argument("file", type=Path, nargs="?")
+    sub.add_parser("nobel-check").add_argument("file", type=Path)
     args = p.parse_args(argv)
     try:
-        if args.action == "ontology":
+        if args.action == "nobel-demo":
+            dump(nobel_review())
+        elif args.action == "nobel-init":
+            initialize(args.path, nobel_template(), "private-nobel-evidence-inventory")
+        elif args.action == "nobel-audit":
+            dump(nobel_review(read(args.file) if args.file else None))
+        elif args.action == "nobel-check":
+            valid = nobel_verify(read(args.file))
+            dump({"local_readiness_replay_valid": valid, "nomination_submitted": False,
+                  "peace_impact_independently_verified": False})
+            return 0 if valid else 1
+        elif args.action == "nobel-brief":
+            print(nobel_brief(read(args.file) if args.file else nobel_review()))
+        elif args.action == "nobel-html":
+            print(nobel_html(read(args.file) if args.file else nobel_review()))
+        elif args.action == "ontology":
             print(text_map(load_ontology()), end="")
         elif args.action == "ontology-check":
             dump(audit_ontology(load_ontology(args.file)))
