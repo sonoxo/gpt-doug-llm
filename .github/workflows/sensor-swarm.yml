@@ -1,0 +1,32 @@
+name: Governed Sensor Swarm
+on:
+  push:
+    paths:
+      - 'sensor_swarm/**'
+      - 'tests/test_sensor_swarm.py'
+      - 'docs/sensor-policy.json'
+      - '.github/workflows/sensor-swarm.yml'
+  pull_request:
+    paths:
+      - 'sensor_swarm/**'
+      - 'tests/test_sensor_swarm.py'
+      - 'docs/sensor-policy.json'
+      - '.github/workflows/sensor-swarm.yml'
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m unittest discover -s tests -p 'test_sensor_swarm.py' -v
+      - run: python -m unittest discover -s tests -p 'test_biopineal_phase2.py' -v
+      - run: python -m sensor_swarm demo > /tmp/sensor-demo.json
+      - run: python -m json.tool /tmp/sensor-demo.json >/dev/null
