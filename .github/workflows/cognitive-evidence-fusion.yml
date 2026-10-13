@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'gpt_brain/evidence_fusion.py'
+      - 'gpt_brain/cognitive_dashboard.py'
       - 'sensor_swarm/**'
       - 'docs/COGNITIVE_EVIDENCE_FUSION.md'
       - 'tests/test_cognitive_fusion.py'
@@ -35,6 +36,8 @@ jobs:
         run: bash -n scripts/doug-max
       - name: Cognitive evidence fusion assurance
         run: python -m unittest discover -s tests -p 'test_cognitive_fusion.py' -v
+      - name: Local cognitive dashboard tests
+        run: python -m unittest discover -s tests -p 'test_cognitive_dashboard.py' -v
       - name: Sensor source regression
         run: python -m unittest discover -s tests -p 'test_sensor_swarm.py' -v
       - name: BioPineal provenance regression
