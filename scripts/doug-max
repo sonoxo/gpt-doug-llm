@@ -18,8 +18,7 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|lateral-stability|mobility-test)
-  biopineal-patent|hydrogen-patent|biopineal-phase2|swarm-sensors|data-swarm)
+  biopineal-patent|hydrogen-patent|biopineal-phase2|swarm-sensors|data-swarm|super-ai|cognitive-fusion)
     # Only bounded offline public-excerpt inspection; no device control.
     read_only_mode=1
     ;;
@@ -89,6 +88,11 @@ case "$first_arg_lc" in
     shift
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m sensor_swarm "$@"
+    ;;
+  super-ai|cognitive-fusion)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.evidence_fusion "$@"
     ;;
   biopineal-phase2)
     shift

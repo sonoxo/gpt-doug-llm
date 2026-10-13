@@ -1,0 +1,50 @@
+name: GPT-Doug Cognitive Evidence Fusion
+on:
+  push:
+    paths:
+      - 'gpt_brain/evidence_fusion.py'
+      - 'gpt_brain/cognitive_dashboard.py'
+      - 'sensor_swarm/**'
+      - 'docs/COGNITIVE_EVIDENCE_FUSION.md'
+      - 'tests/test_cognitive_fusion.py'
+      - 'scripts/doug-max'
+      - '.github/workflows/cognitive-evidence-fusion.yml'
+  pull_request:
+    paths:
+      - 'gpt_brain/evidence_fusion.py'
+      - 'sensor_swarm/**'
+      - 'docs/COGNITIVE_EVIDENCE_FUSION.md'
+      - 'tests/test_cognitive_fusion.py'
+      - 'scripts/doug-max'
+      - '.github/workflows/cognitive-evidence-fusion.yml'
+permissions:
+  contents: read
+jobs:
+  offline-assurance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate terminal syntax
+        run: bash -n scripts/doug-max
+      - name: Cognitive evidence fusion assurance
+        run: python -m unittest discover -s tests -p 'test_cognitive_fusion.py' -v
+      - name: Local cognitive dashboard tests
+        run: python -m unittest discover -s tests -p 'test_cognitive_dashboard.py' -v
+      - name: Sensor source regression
+        run: python -m unittest discover -s tests -p 'test_sensor_swarm.py' -v
+      - name: BioPineal provenance regression
+        run: python -m unittest discover -s tests -p 'test_biopineal_phase2.py' -v
+      - name: Exercise integrated terminal launcher
+        run: |
+          bash scripts/doug-max super-ai demo > /tmp/gpt-doug-cognitive-demo.json
+          python -m gpt_brain.evidence_fusion verify /tmp/gpt-doug-cognitive-demo.json
+          bash scripts/doug-max super-ai status > /tmp/gpt-doug-cognitive-status.json
+          python -m json.tool /tmp/gpt-doug-cognitive-status.json >/dev/null
