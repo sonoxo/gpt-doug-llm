@@ -1,17 +1,16 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T21:57:23Z",
-  "due_files_reviewed": 9,
+  "cutoff_at": "2026-10-12T21:58:30Z",
+  "due_files_reviewed": 8,
   "due_paths": [
-    ".github/workflows/pineal-osiris-smoke.yml",
-    "integrations/pineal_osiris/README.md",
-    "integrations/pineal_osiris/disk.py",
-    "integrations/pineal_osiris/recover.sh",
-    "integrations/pineal_osiris/run.sh",
-    "integrations/pineal_osiris/stack.py",
-    "integrations/pineal_osiris/test_disk.py",
-    "intel/white-house/daily/2026-10-11.json",
-    "intel/white-house/daily/2026-10-11.md"
+    ".github/workflows/ai-killswitch-gate.yml",
+    "ai_killswitch.py",
+    "local_repo_agent.py",
+    "tests/test_ai_killswitch_direct_paths.py",
+    "tests/test_ai_killswitch_strict.py",
+    "xunia_godis.py",
+    "zyra_agent.py",
+    "zyra_chat.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -182,13 +181,13 @@
     ".github/workflows/ai-killswitch-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-12T01:43:32Z",
-      "reviewed_at": "2026-10-13T12:44:38Z",
-      "sha256": "996953fa37af9635e40439fb448148d75642cb0dd39ea692e06fabc6e8630cc8",
-      "size": 2237,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:22:57Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "cf64258966478d71811171ae0fdd3f431075efcbccd95136a9601045e1b89687",
+      "size": 2495,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/ai-layer-gate.yml": {
       "actions": [],
@@ -798,13 +797,13 @@
     ".github/workflows/pineal-osiris-smoke.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:51:26Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "7b14476592e09fb16d40339c2cc911a399d6096ecbda9819e74011ffd981398e",
       "size": 1544,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/pineal-patent-connectors.yml": {
       "actions": [],
@@ -2514,13 +2513,13 @@
     "ai_killswitch.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-10-12T01:42:36Z",
-      "reviewed_at": "2026-10-13T12:44:38Z",
-      "sha256": "9a8a64a8b1b220706320517fc7a31dc7529ad6d83a332ca218d71758fdb6353b",
-      "size": 8561,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:14:37Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "c72a9a0dffc688a36df5a31d48a88c0eef46eb4b726567b9956fdbb08d963689",
+      "size": 10389,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "api_gateway/__init__.py": {
       "actions": [],
@@ -3263,10 +3262,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T12:45:22Z",
-      "reviewed_at": "2026-10-13T12:44:38Z",
-      "sha256": "ccf3362b9913f047b6eb98b50763c3c862f5190060da129f129a98e0267a7153",
-      "size": 6477,
+      "git_touched_at": "2026-10-13T21:58:18Z",
+      "reviewed_at": null,
+      "sha256": "2f2049fdd04d6da3922e99b149e0c67004e9215a5c57149e6e0f5ffa937712c0",
+      "size": 9388,
       "validation_issues": [],
       "was_due": false
     },
@@ -8861,13 +8860,13 @@
     "integrations/pineal_osiris/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:51:49Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "ba092010def55bf241e1021fd11aee9c0d5a2aa19971222cedd20cd7c98a5ab7",
       "size": 9366,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/bootstrap.sh": {
       "actions": [],
@@ -8938,46 +8937,46 @@
     "integrations/pineal_osiris/disk.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:50:14Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "d971ff371d72f914dc00eb7ea9d5b7a44d5aebf20cf5695c33d7a6463e17b776",
       "size": 6166,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/recover.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:52:32Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "26d569d58cbeaa7d8da7f55ff82d98b82710f95a80323e2537a99f444091fb39",
       "size": 4156,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/run.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:50:27Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "9f7390d6470e4df0f5a8f7c5f0424a3296ad2adf68123584bbf9405f563ec6ee",
       "size": 5095,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/stack.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:51:33Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "6f560850b4f76f7a363fc48371cf01fd9ce893218386447b1a9b8c71ec01f382",
       "size": 10533,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_bridge.py": {
       "actions": [],
@@ -9004,13 +9003,13 @@
     "integrations/pineal_osiris/test_disk.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T21:51:19Z",
       "reviewed_at": "2026-10-13T21:57:23Z",
       "sha256": "51b5cb81d5b8eed42787b15bf8a12895c358eb01b848a76dc7cb0cc85dea8305",
       "size": 4287,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_stack.py": {
       "actions": [],
@@ -10638,7 +10637,7 @@
       "sha256": "f1c6a0989850d46b02ebf96920bd8fc061488db29fb6b33303ae043994a5b424",
       "size": 1063,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-11.md": {
       "actions": [],
@@ -10649,7 +10648,7 @@
       "sha256": "984e77b2dc4193f99b142a4e023dccac587e44dff0becf1620897c9ecfd919a9",
       "size": 819,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-12.json": {
       "actions": [],
@@ -11171,13 +11170,13 @@
     "local_repo_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-22T10:40:46Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "62fb44dc9400f8718b597041b56cb8238250338171d55bd8b4bac7577fee1e1d",
-      "size": 7846,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:21:28Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "060abaf3fe913d97c7f8a63a5f7ba7d6b66059e8343da47167d65aeec431d951",
+      "size": 8014,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "lunar_ops/lunar-command-live.html": {
       "actions": [],
@@ -17086,6 +17085,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_ai_killswitch_direct_paths.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:22:39Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "e1e084d9ca7052bec65b6a1450cfac9b0a9eb97ebc31bf3cc44995d07629945a",
+      "size": 3431,
+      "validation_issues": [],
+      "was_due": true
+    },
     "tests/test_ai_killswitch_integrations.py": {
       "actions": [],
       "binary": false,
@@ -17096,6 +17106,17 @@
       "size": 5226,
       "validation_issues": [],
       "was_due": false
+    },
+    "tests/test_ai_killswitch_strict.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:14:56Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "d5a698be85b4c599a5466774a96b68319eea40f8f7c11f8fc75ec742e58acbdd",
+      "size": 4620,
+      "validation_issues": [],
+      "was_due": true
     },
     "tests/test_astra_router.py": {
       "actions": [],
@@ -20962,9 +20983,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:27:47Z",
+      "git_touched_at": "2026-10-13T21:57:22Z",
       "reviewed_at": null,
-      "sha256": "3c0f608996ea781c948e34ef99db76f197d78c21eaf5150b97abb2db1cbb940e",
+      "sha256": "aa48dec2418495a40b9c3ed9a06480693610c68e0f990b6f6a30e999e94e7f62",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -20984,9 +21005,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:27:47Z",
+      "git_touched_at": "2026-10-13T21:57:22Z",
       "reviewed_at": null,
-      "sha256": "d4163148758dcc257e7647393379489c047096cab26d79eba445ebc10d8e28ef",
+      "sha256": "e4025c6996366f7310b70aab9931956c2d76522f5cd86ab8668506821251ea85",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -22655,13 +22676,13 @@
     "xunia_godis.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-21T14:59:40Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "726729d93951e9838e668080f1369b318f730800e267341fb1e9377e747657f1",
-      "size": 16415,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:21:28Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "1c25eb7b6f5389e4fa241cca1a73c52527504737651ed5a78a8de3a68aba8631",
+      "size": 16825,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "xunia_security.py": {
       "actions": [],
@@ -23106,24 +23127,24 @@
     "zyra_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-21T00:07:30Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "9cdaecf8ac85a8257232cd7e0ac8db9ba74f0c65ce3a8321f291870abcc27254",
-      "size": 24730,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:21:28Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "e969a73b8373555bb0fac1fdd1f9e660586169c114d85cbb99801687d4760c32",
+      "size": 25078,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "zyra_chat.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-22T15:33:37Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "e0bed10df336fe68095242476c3769dfc151da9bb3d0d589c1f7beeb9769824c",
-      "size": 18329,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-12T13:22:03Z",
+      "reviewed_at": "2026-10-13T21:58:30Z",
+      "sha256": "ae2fe28982479b66db2f0928260caa3e0abc349678f1d4933304adac6da8d6be",
+      "size": 18736,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "zyra_control.py": {
       "actions": [],
@@ -23446,11 +23467,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T21:57:23Z",
+  "generated_at": "2026-10-13T21:58:30Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2130,
+  "tracked_files_reviewed": 2132,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
