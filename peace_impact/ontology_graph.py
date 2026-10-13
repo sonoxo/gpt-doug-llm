@@ -323,16 +323,16 @@ def graphviz_dot(graph):
     def e(src, dst):
         lines.append("  " + q(src) + " -> " + q(dst) + ";")
     n("program", "PeaceLab", "#214F64")
-    n("pilot", "90-day pilot\\nNOT RUNNING", "#245263")
+    n("pilot", "90-day pilot\nNOT RUNNING", "#245263")
     e("program", "pilot")
     for key, title, role in GATES:
-        n("gate-"+key, "GATE: "+key+"\\nPENDING", "#665128")
+        n("gate-"+key, "GATE: "+key+"\nPENDING", "#665128")
         e("pilot", "gate-"+key)
-        n("role-"+role, "HUMAN ROLE\\n"+role, "#214235")
+        n("role-"+role, "HUMAN ROLE\n"+role, "#214235")
         e("gate-"+key, "role-"+role)
     for idx, phase in enumerate(PHASES):
         pid="phase-"+phase["days"]
-        n(pid, "Days "+phase["days"]+"\\n"+phase["permission"], "#244460")
+        n(pid, "Days "+phase["days"]+"\n"+phase["permission"], "#244460")
         if idx==0:e("pilot",pid)
         else:e("phase-"+PHASES[idx-1]["days"],pid)
     for risk in RISKS:
