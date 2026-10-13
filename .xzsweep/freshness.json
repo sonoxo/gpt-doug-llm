@@ -1,10 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T17:58:14Z",
-  "due_files_reviewed": 1,
-  "due_paths": [
-    "free-video-studio/requirements.txt"
-  ],
+  "cutoff_at": "2026-10-12T19:23:59Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -5121,6 +5119,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/superpowers/specs/2026-10-13-gpt-doug-exoskeleton-digital-twin-design.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T19:08:06Z",
+      "reviewed_at": null,
+      "sha256": "df8e90892c4361551545934b28da25f3b1eda2a75b3714254ef41206a7547229",
+      "size": 19146,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/tak-os/.dockerignore": {
       "actions": [],
       "binary": false,
@@ -6510,13 +6519,13 @@
     "free-video-studio/requirements.txt": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:14:31Z",
       "reviewed_at": "2026-10-13T17:58:14Z",
       "sha256": "54f7248a4e464ebd92053e76610ee786f4c8c7e25e4745bbbfe24e2dab425da3",
       "size": 18,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "free-video-studio/run.sh": {
       "actions": [],
@@ -10401,14 +10410,36 @@
       "validation_issues": [],
       "was_due": false
     },
+    "intel/white-house/daily/2026-10-13.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T18:40:56Z",
+      "reviewed_at": null,
+      "sha256": "6a7d653f7dac76c228cfb3601da80cb16a83ab671244203af52072eb68dd804c",
+      "size": 3613,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-10-13.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T18:40:56Z",
+      "reviewed_at": null,
+      "sha256": "520e2a72dc3929db059a8285fef9387694e19cebe13f4349af58dbb80ec611d6",
+      "size": 2119,
+      "validation_issues": [],
+      "was_due": false
+    },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T20:37:51Z",
+      "git_touched_at": "2026-10-13T18:40:56Z",
       "reviewed_at": null,
-      "sha256": "2d52be556c6a90419093f4eba78e11478fa041222cb27a49e83c64620362450b",
-      "size": 27786,
+      "sha256": "5c37e0b51395f1d15db7a080ab890edbcd6a2abb35fb910a1fc3cf64072cb0eb",
+      "size": 28343,
       "validation_issues": [],
       "was_due": false
     },
@@ -22921,11 +22952,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T17:58:14Z",
+  "generated_at": "2026-10-13T19:23:59Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2083,
+  "tracked_files_reviewed": 2086,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
