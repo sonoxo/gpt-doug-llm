@@ -5,6 +5,7 @@ optimization, laboratory instructions, patent rights assessment or production.
 """
 from __future__ import annotations
 import argparse
+import copy
 import hashlib
 import json
 import re
@@ -63,7 +64,7 @@ def report():
     result = {
         "module": "GPT-Doug BioPineal Patent Knowledge",
         "state": MODULE_STATE,
-        "patent": SOURCE,
+        "patent": copy.deepcopy(SOURCE),
         "quoted_reaction": "2 LiCl + 2 H2O -> 2 LiOH + H2 + Cl2",
         "stoichiometric_coefficients": EQUATION,
         "net_element_balance": balance,
