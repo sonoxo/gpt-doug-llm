@@ -136,3 +136,11 @@ Official references: [TAK.gov](https://tak.gov/), [TAK products](https://tak.gov
 ## NASA Earth / Satellite Atlas (public scientific sources)
 
 The **NASA / Satellites** workspace provides opt-in NASA GIBS dated imagery overlay, NASA EONET natural event reports, NOAA SWPC planetary Kp measurements and six cited civil Earth-observation mission cards from NASA/WMO (U.S., China, Russia). The initial state is network-off; no real-time military satellite tracking or tasking is implemented. The static mission atlas works offline. See [NASA_SATELLITE_README.md](NASA_SATELLITE_README.md) for sources, limitations, privacy, and validation commands.
+
+## Real public observations in Cesium 3D (separate non-synthetic workspace)
+
+The independent [Live Earth 3D](./live-3d/) workspace uses CesiumJS, NASA GIBS dated imagery, USGS reported earthquakes, NASA EONET hazards, NOAA geomagnetic Kp, civilian CelesTrak orbital elements (with model-based SGP4 prediction if supported), and on-demand OpenStreetMap 3D footprints. **No dummy assets or synthetic incidents** are loaded in that workspace.
+
+Launch with `sh start.sh real-3d` from `docs/tak-os`, then open the localhost address printed by Terminal. This starts **only** the real-data browser workspace; the training CoT gateway and swarm are not launched. Existing `sh start.sh web` keeps the separate simulator and exposes the real route at `/live-3d/`. No hosted API key or paid service is required; Internet/WebGL access are necessary.
+
+Real observation timestamps, feed failures, orbital prediction uncertainty, and provenance are explicit. Browser polling only continues while the browser is active; true around-the-clock collection requires a separately operated persistent host. [Read scope, schema, accuracy and credits](./live-3d/README.md).

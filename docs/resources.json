@@ -22,6 +22,19 @@
       "engine": "CesiumJS 1.145 + Leaflet 1.9.4 + XUNIA Live SSE + Palantir Foundry Bridge + Broadcast Fusion"
     },
     {
+      "id": "gpt-doug-live-earth-3d",
+      "name": "GPT-Doug Live Earth 3D — Real Public Data",
+      "category": "Operations + Geospatial",
+      "type": "live-geospatial-observatory",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./tak-os/live-3d/",
+      "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/docs/tak-os/live-3d",
+      "description": "Cesium 3D WGS84 Earth with dated NASA GIBS imagery, current USGS seismic events, NASA EONET hazards, NOAA Kp readings, public civilian orbital elements and source-backed 3D OSM buildings. Typed JSON-LD provenance and source freshness; no synthetic event or fake model fallback.",
+      "engine": "CesiumJS 1.145 + NASA GIBS + NASA EONET + USGS + NOAA SWPC + CelesTrak OMM + OpenStreetMap Overpass"
+    },
+    {
       "id": "gpt-doug-tak-os",
       "name": "GPT-DOUG TAK-OS — Free Virtual Operations Console",
       "category": "Operations + Geospatial",
