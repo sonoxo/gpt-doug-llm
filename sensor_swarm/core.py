@@ -30,7 +30,7 @@ POLICY_PATH = Path(__file__).resolve().parents[1] / "docs" / "sensor-policy.json
 IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,63}$")
 SAFE_UNIT = re.compile(r"^[A-Za-z0-9/%_. -]{0,24}$")
 SAFE_ENUM = re.compile(r"^[A-Za-z0-9 _.,:/+-]{1,64}$")
-SENSITIVE = re.compile(r"password|secret|bearer|api.?key|access.?token|private.?key|credential|@|gh[pousr]_", re.I)
+SENSITIVE = re.compile(r"password|secret|bearer|api.?key|access.?token|private.?key|credential|@|gh[pousr]_|sk-[A-Za-z0-9_-]{16,}|xox[baprs]-", re.I)
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
@@ -48,6 +48,12 @@ def load_policy(path=POLICY_PATH):
         raise ValueError("sensor governance policy unavailable or malformed") from exc
     if data.get("mode") != "AUTHORIZED_SENSORS_ONLY" or not data.get("controls", {}).get("explicit_authorization_required"):
         raise ValueError("fail-closed sensor policy required")
+    forbidden_controls = ("facial_recognition", "biometric_identification",
+                          "license_plate_owner_lookup", "covert_person_tracking",
+                          "private_residence_monitoring", "weapon_targeting",
+                          "fire_control", "autonomous_external_action")
+    if any(data["controls"].get(name) is not False for name in forbidden_controls):
+        raise ValueError("unsafe sensor capabilities not explicitly denied")
     required_controls = ("provenance_required", "human_review_for_material_actions")
     if not all(data["controls"].get(name) is True for name in required_controls):
         raise ValueError("mandatory sensor controls are missing")
