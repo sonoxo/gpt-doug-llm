@@ -50,6 +50,23 @@ def _parser():
         if name=='pineal-project':
             cmd.add_argument('publication_id')
             cmd.add_argument('--pineal-db',type=Path,required=True)
+    operator=sub.add_parser('operator',help='local self-declared research operator alias')
+    op_sub=operator.add_subparsers(dest='operator_action',required=True)
+    for name in ('register','show'):
+        action=op_sub.add_parser(name)
+        action.add_argument('--workspace',type=Path,required=True)
+        if name=='register':
+            action.add_argument('--callsign',required=True)
+
+    bio=sub.add_parser('biopineal',help='Mitochondrial compute analogy and bounded classical quantum math')
+    bio_sub=bio.add_subparsers(dest='bio_action',required=True)
+    bstat=bio_sub.add_parser('status')
+    bstat.add_argument('--memory-root',type=Path,required=True)
+    bstat.add_argument('--workspace',type=Path)
+    bsim=bio_sub.add_parser('simulate')
+    bsim.add_argument('file',type=Path)
+    bsim.add_argument('--input-root',type=Path,required=True)
+    bsim.add_argument('--budget-units',type=int,default=1000)
     return p
 
 
@@ -79,6 +96,19 @@ def _workspace(args):
 
 
 def _run(args):
+    if args.cmd=='operator':
+        from .operator_profile import register_operator, read_operator
+        if args.operator_action=='register':
+            return register_operator(args.workspace,args.callsign)
+        return {'operator':read_operator(args.workspace),'authority':'RESEARCH_ONLY'}
+    if args.cmd=='biopineal':
+        from .biopineal import read_biochip_telemetry, simulate_biomito_quantum
+        if args.bio_action=='status':
+            from .operator_profile import read_operator
+            result=read_biochip_telemetry(args.memory_root)
+            result['operator']=read_operator(args.workspace) if args.workspace else None
+            return result
+        return simulate_biomito_quantum(_read_math(args.file,args.input_root),budget_units=args.budget_units)
     if args.cmd=='status':
         return {'system':'GPT-Doug Warfighter Research Core','authority':'RESEARCH_ONLY',
                 'classification':'SYNTHETIC','operational_connected':False,
