@@ -18,7 +18,10 @@ The local journal uses SQLite with SHA-256 event IDs covering the declared sourc
 
 ~~~sh
 bash scripts/doug-max swarm-sensors demo
+bash scripts/doug-max swarm-sensors live-demo
 ~~~
+
+The second command starts a localhost dashboard at http://127.0.0.1:8765/ from the two safe demo adapters. It writes a local demo evidence journal and polls only the fixture/research data until Ctrl+C; no real device reads or remote connections are enabled.
 
 ## Register approved local sensors
 
