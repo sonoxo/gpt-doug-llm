@@ -73,8 +73,12 @@ def run(argv: list[str] | None = None) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    actual = list(sys.argv[1:] if argv is None else argv)
+    if actual and actual[0] == "open-data":
+        from .open_data import main as open_data_main
+        return open_data_main(actual[1:])
     try:
-        print(json.dumps(run(argv), indent=2, ensure_ascii=False, default=str))
+        print(json.dumps(run(actual), indent=2, ensure_ascii=False, default=str))
         return 0
     except (OSError, ValueError, sqlite3.Error, LocalModelError) as exc:
         print(json.dumps({"ok": False, "error": type(exc).__name__, "message": str(exc)}), file=sys.stderr)
