@@ -95,7 +95,7 @@
       if(!row)continue;
       const stamp=row.time_tag||row.time||row.timestamp, kp=Number(row.kp_index ?? row.kp ?? row.Kp);
       if(!Number.isFinite(epoch(stamp)) || !Number.isFinite(kp) || kp<0 || kp>9)continue;
-      candidates.push({stamp:new Date(stamp).toISOString(),kp});
+      candidates.push({stamp:new Date(epoch(stamp)).toISOString(),kp});
     }
     if(!candidates.length)throw Error('NOAA feed contains no valid timestamped Kp record');
     candidates.sort((a,b)=>epoch(b.stamp)-epoch(a.stamp));
