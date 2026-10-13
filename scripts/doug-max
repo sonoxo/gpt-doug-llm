@@ -18,8 +18,7 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge)
-  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|lateral-stability|mobility-test)
+  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge|lateral-stability|mobility-test)
     read_only_mode=1
     ;;
   video-evidence|youtube-short-ingest)
@@ -31,6 +30,13 @@ case "$first_arg_lc" in
     # Offline demo/analyze/compare/verify are read-only. An explicitly requested
     # public HTTPS fetch continues through the canonical guardrail preflight.
     if [[ "${2:-demo}" != "online" ]]; then read_only_mode=1; fi
+    ;;
+  peace-lab|peacelab)
+    # Offline read/assessment commands never execute outside software.
+    # 'init' writes a local template, so it retains guardrail preflight.
+    case "${2:-demo}" in
+      demo|kit|assess|verify|brief|pilot-demo|pilot-kit|pilot-assess|pilot-verify|pilot-brief|pilot-preview) read_only_mode=1 ;;
+    esac
     ;;
   brain)
     if [[ $# -eq 1 ]]; then read_only_mode=1; fi
@@ -62,11 +68,18 @@ case "$first_arg_lc" in
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
     ;;
+  peace-lab|peacelab)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- demo; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m peace_impact.cli "$@"
+    ;;
   millennium-lab|millennium-forge)
     shift
     cd "$ROOT"
     if [[ $# -eq 0 ]]; then set -- demo; fi
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.millennium_forge "$@"
+    ;;
   video-evidence|youtube-short-ingest)
     shift
     cd "$ROOT"

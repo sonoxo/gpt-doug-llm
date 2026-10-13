@@ -1,0 +1,58 @@
+name: GPT-Doug PeaceLab evidence and safety tests
+on:
+  pull_request:
+    paths:
+      - "peace_impact/**"
+      - "tests/test_peace*.py"
+      - "docs/GPT_DOUG_PEACELAB.md"
+      - "docs/PEACELAB_*.md"
+      - "run-GPT-Doug-PeaceLab.command"
+      - "scripts/doug-max"
+      - ".github/workflows/peace-impact-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  local-evidence-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run privacy, spoofing and certificate tests
+        run: python3 -m unittest discover -s tests -p 'test_peace*.py' -v
+      - name: Check shared Bash launcher and GPT-Doug integration
+        run: |
+          bash -n scripts/doug-max
+          bash scripts/doug-max peace-lab demo > /tmp/doug-peace-demo.json
+          bash scripts/doug-max peace-lab verify /tmp/doug-peace-demo.json
+          bash scripts/doug-max peace-lab pilot-demo > /tmp/doug-pilot-report.json
+          bash scripts/doug-max peace-lab pilot-verify /tmp/doug-pilot-report.json
+          bash scripts/doug-max peace-lab pilot-brief /tmp/doug-pilot-report.json > /tmp/doug-pilot-review.md
+          bash scripts/doug-max peace-lab pilot-preview /tmp/doug-pilot-report.json > /tmp/doug-pilot-preview.html
+          grep -F "NOT A FIELD PILOT APPROVAL" /tmp/doug-pilot-review.md
+          grep -F "REAL-WORLD PEACE OUTCOMES VERIFIED" /tmp/doug-pilot-preview.html
+      - name: Upload review-only synthetic pilot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: peacelab-pilot-review-${{ matrix.python-version }}
+          path: |
+            /tmp/doug-pilot-report.json
+            /tmp/doug-pilot-review.md
+            /tmp/doug-pilot-preview.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: Reproduce synthetic report without network access
+        run: |
+          bash run-GPT-Doug-PeaceLab.command demo > /tmp/peace-synthetic.json
+          bash run-GPT-Doug-PeaceLab.command verify /tmp/peace-synthetic.json
+          bash run-GPT-Doug-PeaceLab.command brief /tmp/peace-synthetic.json > /tmp/peace-brief.md
+          grep -F 'UNSUBMITTED' /tmp/peace-brief.md
