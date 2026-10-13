@@ -9,7 +9,7 @@ import json
 from dataclasses import asdict, dataclass
 from typing import Literal
 
-Evidence = Literal["primary-text", "established-history", "government-report", "hypothesis"]
+Evidence = Literal["primary-text", "established-history", "government-report", "vendor-documentation", "hypothesis"]
 
 @dataclass(frozen=True)
 class Entry:
@@ -28,7 +28,7 @@ ENTRIES = (
     Entry("egypt-history", "Ancient Egypt", "Ancient Egyptian material culture can be studied through museum collections.", "established-history", "The Metropolitan Museum of Art: Egyptian Art", "https://www.metmuseum.org/about-the-met/collection-areas/egyptian-art", "Specific claims require object-level dating, inscriptions, and provenance."),
     Entry("uap-nasa", "UAP", "NASA published a 2023 independent study recommending better data collection and scientific analysis of UAP.", "government-report", "NASA UAP Independent Study", "https://science.nasa.gov/uap/", "Unidentified does not establish extraterrestrial origin."),
     Entry("uap-unknown", "UAP", "The extraterrestrial origin of unidentified observations is a hypothesis, not a verified finding.", "hypothesis", "NASA UAP Independent Study", "https://science.nasa.gov/uap/", "Do not promote hypotheses into facts without independent reproducible evidence."),
-    Entry("cl1-simulator", "BioComputing", "The Cortical Labs simulator generates synthetic non-learning control data.", "government-report", "Cortical Labs CL SDK", "https://github.com/Cortical-Labs/cl-sdk", "Classification denotes documented vendor information, not government endorsement."),
+    Entry("cl1-simulator", "BioComputing", "The Cortical Labs simulator generates synthetic non-learning control data.", "vendor-documentation", "Cortical Labs CL SDK", "https://github.com/Cortical-Labs/cl-sdk", "Vendor documentation describes synthetic simulator behavior, not biological learning."),
 )
 
 def query(topic: str | None = None) -> list[dict]:
