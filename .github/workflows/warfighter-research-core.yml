@@ -57,6 +57,7 @@ jobs:
         run: |
           python -m pytest -q integrations/gpt-doug-pineal/tests/test_federation.py integrations/gpt-doug-pineal/tests/test_federation_store.py integrations/gpt-doug-pineal/tests/test_store.py
           python -m pytest -q tests/test_zyra_mss.py
+          python -m pytest -q research_lab/warfighter/tests/test_pineal_integration.py
       - name: Verify ontology is research-only
         run: |
           python -m research_lab.warfighter.cli doctor > /tmp/warfighter-doctor.json
