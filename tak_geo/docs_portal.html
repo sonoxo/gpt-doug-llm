@@ -49,10 +49,12 @@ footer{padding:13px;color:var(--muted);border-top:1px solid var(--line);font-siz
   <button data-tab="catalog" type="button" class="active">References</button>
   <button data-tab="coverage" type="button">Coverage</button>
   <button data-tab="graph" type="button">Domain graph</button>
+  <button data-tab="pipeline" type="button">TPC pipeline</button>
  </div></section>
  <section><h2>GPT-Doug modules</h2>
- <a class="link" href="./atlas.html">ATAK-Maps Atlas ↗</a>
- <a class="link" href="./index.html">GeoJSON + CoT Viewer ↗</a>
+ <a class="link" href="https://github.com/sonoxo/gpt-doug-llm/pull/360" target="_blank" rel="noopener noreferrer">ATAK-Maps Atlas implementation ↗</a>
+ <a class="link" href="https://github.com/sonoxo/atak-civ/pull/1" target="_blank" rel="noopener noreferrer">Civilian ATAK plugin source ↗</a>
+ <a class="link" href="https://github.com/sonoxo/atak-civ/actions/runs/38393316154" target="_blank" rel="noopener noreferrer">Preflight-validated source ZIP ↗</a>
  <a class="link" href="./docs-registry.json" download="tak-docs-registry.json">Export reference metadata ↗</a>
  <a class="link" href="./docs-ontology.json" download="tak-docs-ontology.json">Export documentation graph ↗</a>
  </section>
@@ -81,6 +83,14 @@ footer{padding:13px;color:var(--muted);border-top:1px solid var(--line);font-siz
  <h2>Documented coverage versus implemented functionality</h2>
  <p class="small">These counts refer to curated reference links, not the number of full manuals read. Implementation statuses are engineering assessments of the current GPT-Doug local tools.</p>
  <table class="coverage"><thead><tr><th>Domain</th><th>Links</th><th>Public</th><th>Restricted</th><th>Implemented / partial</th></tr></thead><tbody id="coverage"></tbody></table>
+</section>
+<section class="panel" id="tab-pipeline">
+ <h2>TAK Third Party Pipeline release readiness</h2>
+ <p class="small">These results distinguish a structurally validated source ZIP from a real authenticated build, government signing, and operational approval.</p>
+ <table class="coverage"><thead><tr><th>Gate</th><th>Evidence / status</th></tr></thead><tbody id="pipeline"></tbody></table>
+ <p class="small">Version discrepancy: ATAK-CIV 5.6 template uses takdev 3.+, while the supplied TAK.gov third-party instructions specify 2.+ for ATAK 4.2 and later. A developer with authorized SDK access must resolve this against current TPC requirements before upload.</p>
+ <a class="btn" href="https://tak.gov/user_builds" target="_blank" rel="noopener noreferrer">Open authenticated TAK build pipeline ↗</a>
+ <a class="btn" href="https://tak.gov/user_builds/agreement" target="_blank" rel="noopener noreferrer">Review signing-service agreement ↗</a>
 </section>
 <section class="panel" id="tab-graph">
  <h2>Documentation provenance and domain graph</h2>
@@ -131,6 +141,10 @@ function graph(){const parent=$("graph");parent.replaceChildren();const scene=sv
 const groups=Object.keys(DATA.areas).sort();const centers=new Map();groups.forEach((area,i)=>{const y=66+i*77;centers.set(area,{x:460,y});svg(scene,"rect",{x:365,y:y-20,width:205,height:40,rx:10,fill:"#1d5265",stroke:"#75cbd8"});svg(scene,"text",{x:467,y:y+5,"text-anchor":"middle",fill:"#e5fbff","font-size":"13"},area.replaceAll("_"," "));});
 const plotted=items.filter(matches);let left=0,right=0;for(const d of plotted){const index=(d.access==="public"?left++:right++),x=d.access==="public"?115:843,y=35+(index*32)%690;const c=centers.get(d.area);svg(scene,"line",{x1:d.access==="public"?x+5:x-5,y1:y,x2:d.access==="public"?365:570,y2:c.y,stroke:d.access==="public"?"#3c9ca8":"#a17843","stroke-opacity":".5"});const marker=svg(scene,"circle",{cx:x,cy:y,r:6,fill:d.access==="public"?"#89e6c5":"#e8c28d",stroke:"#dceef8"});marker.style.cursor="pointer";marker.addEventListener("click",()=>{selectDoc(d.id);showTab("catalog")});svg(scene,"text",{x:d.access==="public"?x+11:x-12,y:y+4,"text-anchor":d.access==="public"?"start":"end",fill:"#cbe4f1","font-size":"9"},d.id.slice(0,33));}
 svg(scene,"text",{x:40,y:18,fill:"#99ddca","font-size":"12"},"PUBLIC REFERENCE");svg(scene,"text",{x:758,y:18,fill:"#edd2a9","font-size":"12"},"LOGIN-REQUIRED");}
+const gates=DATA.third_party_pipeline||{};
+for(const [key,label] of [["source_package_checks","Source ZIP preflight"],["authenticated_release_compilation","Authenticated Gradle assembleCivRelease"],["tak_gov_upload","TAK.gov source upload"],["signed_apk","TPC signed artifact"],["operational_authorization","Operational authorization"],["dependency_version_discrepancy","Plugin version compatibility"]]){
+  const row=node("tr");row.append(node("td","",label),node("td","",gates[key]||"Unknown"));$("pipeline").append(row);
+}
 $("nAll").textContent=DATA.document_count;$("nPublic").textContent=DATA.public_references;$("nPrivate").textContent=DATA.login_required_references;$("nDomains").textContent=Object.keys(DATA.areas).length;
 for(const [area,meta] of Object.entries(DATA.areas)){const row=node("tr");for(const cell of [area.replaceAll("_"," "),meta.references,meta.public,meta.login_required,meta.implemented_or_partial])row.append(node("td","",cell));$("coverage").append(row)}
 for(const area of Object.keys(DATA.areas).sort()){const option=node("option","",area.replaceAll("_"," "));option.value=area;$("area").append(option)}
