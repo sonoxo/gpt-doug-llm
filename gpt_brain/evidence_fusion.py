@@ -12,6 +12,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 import json
 import math
+import os
+import stat
 from pathlib import Path
 import re
 import sys
@@ -90,12 +92,24 @@ def _value(value: Any):
 def read_graph(path: str | Path) -> dict[str, Any]:
     """Read an explicitly selected local JSON export, rejecting oversized/symlink files."""
     file = Path(path).expanduser()
-    if file.is_symlink() or not file.is_file():
-        _fail("graph must be a local regular file, not a symlink")
-    if file.stat().st_size > MAX_GRAPH_BYTES:
-        _fail("graph exceeds the one-megabyte input budget")
-    with file.open("rb") as stream:
-        raw = stream.read(MAX_GRAPH_BYTES + 1)
+    if not hasattr(os, "O_NOFOLLOW"):
+        _fail("secure symlink-safe file access is unavailable")
+    flags = os.O_RDONLY | os.O_NOFOLLOW
+    flags |= getattr(os, "O_CLOEXEC", 0)
+    try:
+        fd = os.open(file, flags)
+    except OSError as exc:
+        raise InvalidEvidence("graph file could not be opened safely") from exc
+    try:
+        metadata = os.fstat(fd)
+        if not stat.S_ISREG(metadata.st_mode):
+            _fail("graph must be a regular file")
+        if metadata.st_size > MAX_GRAPH_BYTES:
+            _fail("graph exceeds the one-megabyte input budget")
+        with os.fdopen(fd, "rb", closefd=False) as stream:
+            raw = stream.read(MAX_GRAPH_BYTES + 1)
+    finally:
+        os.close(fd)
     if len(raw) > MAX_GRAPH_BYTES:
         _fail("graph exceeds the one-megabyte input budget")
     try:
@@ -321,6 +335,8 @@ def fuse(graph: dict[str, Any], question: str, *, include_local: bool = False,
         _fail("freshness window must be 1 to 3650 days")
     if type(include_local) is not bool:
         _fail("include_local must be explicitly true or false")
+    if now is not None and now.tzinfo is None:
+        _fail("analysis clock must be timezone-aware")
     now = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     all_events = validated_observations(graph, now=now)
     excluded = sum(x["classification"] == "authorized_local" for x in all_events)
