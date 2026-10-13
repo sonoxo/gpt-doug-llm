@@ -63,6 +63,18 @@ class PrizeProcessTests(unittest.TestCase):
         self.assertIn("NORWEGIAN_NOBEL_COMMITTEE_CURRENT_OR_FORMER_MEMBER", NOMINATOR_CATEGORIES)
         self.assertIsNone(review()["project_evidence"]["proposed_nominator_category_self_reported"])
 
+    def test_after_deadline_cannot_be_called_next_cycle(self):
+        d = template()
+        d["as_of"] = "2028-01-01"
+        with self.assertRaisesRegex(ValueError, "unsupported Nobel rules snapshot"):
+            review(d)
+
+    def test_outdated_prior_cycle_not_accepted(self):
+        d = template()
+        d["as_of"] = "2025-01-01"
+        with self.assertRaisesRegex(ValueError, "unsupported Nobel rules snapshot"):
+            review(d)
+
     def test_report_replay_valid_for_template(self):
         r = review()
         self.assertTrue(verify_report(r))
