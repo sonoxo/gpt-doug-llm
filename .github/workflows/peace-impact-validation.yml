@@ -4,9 +4,11 @@ on:
     paths:
       - "peace_impact/**"
       - "tests/test_peace*.py"
+      - "tests/test_nobel_readiness.py"
       - "docs/GPT_DOUG_PEACELAB.md"
       - "docs/PEACELAB_ONTOLOGY.md"
       - "docs/PEACELAB_*.md"
+      - "docs/NOBEL_2027_EVIDENCE_DOSSIER.md"
       - "run-GPT-Doug-PeaceLab.command"
       - "scripts/doug-max"
       - ".github/workflows/peace-impact-validation.yml"
@@ -30,6 +32,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Run privacy, spoofing and certificate tests
         run: python3 -m unittest discover -s tests -p 'test_peace*.py' -v
+      - name: Run independent Nobel-readiness governance tests
+        run: python3 -m unittest discover -s tests -p 'test_nobel_readiness.py' -v
       - name: Check shared Bash launcher and GPT-Doug integration
         run: |
           bash -n scripts/doug-max
@@ -51,6 +55,14 @@ jobs:
           grep -F '"status": "VALID_REPOSITORY_ONTOLOGY"' /tmp/peacelab-ontology-audit.json
           grep -F 'NEVER grants field authority' /tmp/peacelab-ontology-map.txt
           grep -F "NO PILOT AUTHORIZATION" /tmp/peacelab-ontology.html
+      - name: Verify synthetic Nobel dossier and reviewer views
+        run: |
+          bash scripts/doug-max peace-lab nobel-demo > /tmp/peacelab-nobel-readiness.json
+          bash scripts/doug-max peace-lab nobel-check /tmp/peacelab-nobel-readiness.json
+          bash scripts/doug-max peace-lab nobel-brief /tmp/peacelab-nobel-readiness.json > /tmp/peacelab-nobel-review.md
+          bash scripts/doug-max peace-lab nobel-html /tmp/peacelab-nobel-readiness.json > /tmp/peacelab-nobel-review.html
+          grep -F 'NOT AN OFFICIAL NOMINATION OR NOBEL AFFILIATION' /tmp/peacelab-nobel-review.md
+          grep -F 'NOT AN AWARD OR SUBMITTED NOMINATION' /tmp/peacelab-nobel-review.html
       - name: Upload review-only synthetic pilot artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -64,6 +76,9 @@ jobs:
             /tmp/peacelab-ontology.jsonld
             /tmp/peacelab-ontology.dot
             /tmp/peacelab-ontology.html
+            /tmp/peacelab-nobel-readiness.json
+            /tmp/peacelab-nobel-review.md
+            /tmp/peacelab-nobel-review.html
           if-no-files-found: error
           retention-days: 7
       - name: Reproduce synthetic report without network access
