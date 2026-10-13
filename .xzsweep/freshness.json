@@ -1,17 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T21:58:30Z",
-  "due_files_reviewed": 8,
-  "due_paths": [
-    ".github/workflows/ai-killswitch-gate.yml",
-    "ai_killswitch.py",
-    "local_repo_agent.py",
-    "tests/test_ai_killswitch_direct_paths.py",
-    "tests/test_ai_killswitch_strict.py",
-    "xunia_godis.py",
-    "zyra_agent.py",
-    "zyra_chat.py"
-  ],
+  "cutoff_at": "2026-10-12T22:05:31Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -181,13 +172,13 @@
     ".github/workflows/ai-killswitch-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:22:57Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "cf64258966478d71811171ae0fdd3f431075efcbccd95136a9601045e1b89687",
       "size": 2495,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/ai-layer-gate.yml": {
       "actions": [],
@@ -2513,13 +2504,13 @@
     "ai_killswitch.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:14:37Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "c72a9a0dffc688a36df5a31d48a88c0eef46eb4b726567b9956fdbb08d963689",
       "size": 10389,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "api_gateway/__init__.py": {
       "actions": [],
@@ -4670,10 +4661,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:44:11Z",
+      "git_touched_at": "2026-10-13T22:05:19Z",
       "reviewed_at": null,
-      "sha256": "de378782d509cac96b7a73bcda821cbf707946f6134339b6ee3776bbcbf0db65",
-      "size": 12571,
+      "sha256": "bef051b22f0299c22ae7e3764ccec361f12bd952bcc4fd146d50a762b63953de",
+      "size": 12617,
       "validation_issues": [],
       "was_due": false
     },
@@ -5205,14 +5196,47 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/supergame/catalog.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:05:19Z",
+      "reviewed_at": null,
+      "sha256": "42d6af808d56502df7d67ca2d8ccfbacf9cec13157d9fe92d2cc8cb9bee90ee2",
+      "size": 6151,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/supergame/genesis/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:05:19Z",
+      "reviewed_at": null,
+      "sha256": "5fadd4458b8e215775ceb870981ad39c7f0ec642eaded6b3304bec80d3e1a005",
+      "size": 47829,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/supergame/index.html": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:44:11Z",
+      "git_touched_at": "2026-10-13T22:05:19Z",
       "reviewed_at": null,
-      "sha256": "5fadd4458b8e215775ceb870981ad39c7f0ec642eaded6b3304bec80d3e1a005",
-      "size": 47829,
+      "sha256": "ec40579e46e59d32ddfb300ac434c91659c86242845ed10b21e95605363192a2",
+      "size": 11793,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/supergame/launcher.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:05:19Z",
+      "reviewed_at": null,
+      "sha256": "f4f60ae6ebd71f5b8a22058f4d9238a54eea0c1886e8e99371e7b588d2200766",
+      "size": 4041,
       "validation_issues": [],
       "was_due": false
     },
@@ -11170,13 +11194,13 @@
     "local_repo_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:21:28Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "060abaf3fe913d97c7f8a63a5f7ba7d6b66059e8343da47167d65aeec431d951",
       "size": 8014,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "lunar_ops/lunar-command-live.html": {
       "actions": [],
@@ -17088,13 +17112,13 @@
     "tests/test_ai_killswitch_direct_paths.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:22:39Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "e1e084d9ca7052bec65b6a1450cfac9b0a9eb97ebc31bf3cc44995d07629945a",
       "size": 3431,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_ai_killswitch_integrations.py": {
       "actions": [],
@@ -17110,13 +17134,13 @@
     "tests/test_ai_killswitch_strict.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:14:56Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "d5a698be85b4c599a5466774a96b68319eea40f8f7c11f8fc75ec742e58acbdd",
       "size": 4620,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_astra_router.py": {
       "actions": [],
@@ -20983,9 +21007,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:57:22Z",
+      "git_touched_at": "2026-10-13T21:58:31Z",
       "reviewed_at": null,
-      "sha256": "aa48dec2418495a40b9c3ed9a06480693610c68e0f990b6f6a30e999e94e7f62",
+      "sha256": "d7549f58dd30a7db73c7c427df1d7f91c466a96831489ec801bfbb4ee375e1e7",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -21005,9 +21029,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T21:57:22Z",
+      "git_touched_at": "2026-10-13T21:58:31Z",
       "reviewed_at": null,
-      "sha256": "e4025c6996366f7310b70aab9931956c2d76522f5cd86ab8668506821251ea85",
+      "sha256": "59d969342aa97a01b4ab4b179060ccce8c19f33ebc0123aec26d207a435ced75",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -22676,13 +22700,13 @@
     "xunia_godis.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:21:28Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "1c25eb7b6f5389e4fa241cca1a73c52527504737651ed5a78a8de3a68aba8631",
       "size": 16825,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia_security.py": {
       "actions": [],
@@ -23127,24 +23151,24 @@
     "zyra_agent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:21:28Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "e969a73b8373555bb0fac1fdd1f9e660586169c114d85cbb99801687d4760c32",
       "size": 25078,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra_chat.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-12T13:22:03Z",
       "reviewed_at": "2026-10-13T21:58:30Z",
       "sha256": "ae2fe28982479b66db2f0928260caa3e0abc349678f1d4933304adac6da8d6be",
       "size": 18736,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra_control.py": {
       "actions": [],
@@ -23467,11 +23491,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T21:58:30Z",
+  "generated_at": "2026-10-13T22:05:31Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2132,
+  "tracked_files_reviewed": 2135,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
