@@ -14,7 +14,18 @@
     buildings: Object.freeze({label:'OpenStreetMap via Overpass',url:'https://overpass-api.de/api/interpreter',intervalMs:0,maxAgeMs:86400000 * 90}),
   });
   const categoryType = Object.freeze({wildfires:'Wildfire',severeStorms:'SevereStorm',volcanoes:'Volcano',floods:'Flood',drought:'Drought',seaLakeIce:'CryosphereEvent'});
-  const epoch = x => { const n = new Date(x).getTime(); return Number.isFinite(n) ? n : NaN; };
+  // NOAA SWPC and CelesTrak OMM zone-less timestamps are UTC by provider convention.
+  // A desktop's local timezone must never change an observation or SGP4 epoch.
+  const epoch = x => {
+    let value=x;
+    if(typeof value==='string'){
+      value=value.trim();
+      if(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}(?:\.\d+)?$/.test(value))
+        value=value.replace(' ','T')+'Z';
+    }
+    const n=new Date(value).getTime();
+    return Number.isFinite(n)?n:NaN;
+  };
   const validCoord = (lat, lon) => Number.isFinite(lat) && Number.isFinite(lon) && Math.abs(lat) <= 90 && Math.abs(lon) <= 180;
   const safeString = (value, max = 220) => String(value == null ? '' : value).slice(0, max).trim();
   const validPoint = raw => {
@@ -105,7 +116,7 @@
       result.push({id:'celestrak:'+cat,type:'CivilOrbitalElementSet',provider:'orbit',label:safeString(row.OBJECT_NAME,90),
         observationTime:new Date(observed).toISOString(),ingestedAt:receivedAt,
         sourceUrl:`https://celestrak.org/NORAD/elements/gp.php?CATNR=${cat}&FORMAT=JSON`,geometry:null,
-        properties:{catalogNumber:cat,epoch:new Date(observed).toISOString(),omm:row},
+        properties:{catalogNumber:cat,epoch:new Date(observed).toISOString(),omm:{...row,EPOCH:new Date(observed).toISOString()}},
         methodology:'public_general_perturbations_elements_requires_SGP4_propagation',accuracy:'predicted_not_live_position'});
       if(result.length>=24)break;
     }
