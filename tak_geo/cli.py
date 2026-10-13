@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from .core import GeoInputError, load_file, write_dashboard
+from .map_sources import CatalogError, inspect_checkout, write_ecosystem
 
 ROOT = Path(__file__).resolve().parent.parent
 DEMO = ROOT / "examples" / "tak_geo" / "synthetic-civilian-exercise.geojson"
@@ -27,6 +28,12 @@ def main(argv: list[str] | None = None) -> int:
     convert.add_argument("input", type=Path)
     convert.add_argument("--output", required=True, type=Path)
     convert.add_argument("--force", action="store_true")
+    atlas = sub.add_parser("ecosystem", help="build a source-backed ATAK-Maps registry, provider graph and offline viewer")
+    atlas.add_argument("--source", type=Path, default=Path("../ATAK-Maps"), help="local clone of sonoxo/ATAK-Maps")
+    atlas.add_argument("--output", type=Path, default=Path("build/tak-maps-ecosystem"))
+    atlas.add_argument("--force", action="store_true")
+    doctor = sub.add_parser("maps-doctor", help="read-only diagnostics for a local ATAK-Maps checkout")
+    doctor.add_argument("--source", type=Path, default=Path("../ATAK-Maps"))
     args = parser.parse_args(argv)
 
     if args.command == "status":
@@ -46,6 +53,23 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     try:
+        if args.command == "maps-doctor":
+            catalog = inspect_checkout(args.source)
+            print(json.dumps({
+                "system": "GPT-DOUG TAK-MAPS ECOSYSTEM",
+                "source_repo": catalog["source"]["repository"],
+                "source_commit": catalog["source"]["commit_sha"],
+                "summary": catalog["summary"],
+                "issues": catalog["issues"],
+                "network_actions": 0, "TAK_server_connected": False,
+                "ready_for_metadata_browsing": bool(catalog["entries"]),
+                "ready_for_release": False,
+            }, indent=2))
+            return 0 if not catalog["issues"] else 2
+        if args.command == "ecosystem":
+            status = write_ecosystem(args.source, args.output, force=args.force)
+            print(json.dumps({"ok": True, **status}, indent=2))
+            return 0 if not status["summary"]["issues"] else 2
         source = DEMO if args.command == "demo" else args.input
         data = load_file(source)
         if args.command == "convert":
@@ -64,7 +88,7 @@ def main(argv: list[str] | None = None) -> int:
             "online_imagery_default": False,
         }, indent=2))
         return 0
-    except (GeoInputError, OSError, UnicodeError, ValueError) as exc:
+    except (GeoInputError, CatalogError, OSError, UnicodeError, ValueError) as exc:
         print(json.dumps({"ok": False, "error": str(exc), "network_actions": 0}), file=sys.stderr)
         return 2
 
