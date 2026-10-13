@@ -319,7 +319,7 @@ def dot_graph() -> str:
            '  graph [rankdir=LR, bgcolor="#07111f"];',
            '  node [shape=box, fontcolor="#eaf6ff", color="#314e64", '
            'style="rounded,filled", fillcolor="#132a3a"];',
-           '  edge [color="#79d7ba"];']
+           '  edge [color="#79d7ba", fontcolor="#c4f1e9", fontsize=10];']
     for node in graph["nodes"]:
         fill = {"hazard": "#682c41", "approval_required": "#655026",
                 "verification_required": "#655026", "organization": "#264860"}.get(
