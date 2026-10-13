@@ -29,7 +29,7 @@ DEFAULT_DB = Path.home() / ".config" / "gpt-doug" / "sensor-swarm.sqlite3"
 POLICY_PATH = Path(__file__).resolve().parents[1] / "docs" / "sensor-policy.json"
 IDENT = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,63}$")
 SAFE_UNIT = re.compile(r"^[A-Za-z0-9/%_. -]{0,24}$")
-SAFE_ENUM = re.compile(r"^[A-Za-z0-9 _.,:/+-]{1,64}$")
+ALLOWED_ENUMS = {"OK", "WARN", "ERROR", "ONLINE", "OFFLINE", "UP", "DOWN", "PASS", "FAIL", "UNKNOWN", "UNVERIFIED", "VERIFIED", "PENDING", "LOW", "MEDIUM", "HIGH", "HEALTHY", "DEGRADED", "ACTIVE", "INACTIVE"}
 SENSITIVE = re.compile(r"password|secret|bearer|api.?key|access.?token|private.?key|credential|@|gh[pousr]_|sk-[A-Za-z0-9_-]{16,}|xox[baprs]-", re.I)
 
 def canonical(value):
@@ -151,12 +151,12 @@ def observation(spec, row, *, locator, sha):
     if not isinstance(metric, str) or not IDENT.fullmatch(metric) or SENSITIVE.search(metric):
         raise ValueError("metric label denied")
     if type(value) in (int, float):
-        if not math.isfinite(value) or abs(value) > 1e15:
+        if abs(value) > 1e15 or not math.isfinite(value):
             raise ValueError("numeric value out of bounds")
     elif type(value) is bool:
         pass
     elif type(value) is str:
-        if not SAFE_ENUM.fullmatch(value) or SENSITIVE.search(value):
+        if value not in ALLOWED_ENUMS or SENSITIVE.search(value):
             raise ValueError("text value denied; no PII, credentials, or free-form text")
     else:
         raise ValueError("only bounded scalar sensor values are supported")
@@ -193,6 +193,7 @@ def collect_one(spec, root=None):
         if type(rows) is not list or len(rows) > MAX_ROWS:
             raise ValueError("unbounded or invalid sensor rows")
         events = []
+        fallback_time = datetime.fromtimestamp(target.stat().st_mtime, timezone.utc).isoformat(timespec="seconds")
         for i, row in enumerate(rows, 1):
             if kind == "csv":
                 if not isinstance(row, dict) or "value" not in row:
@@ -203,6 +204,9 @@ def collect_one(spec, root=None):
                 except (TypeError, ValueError):
                     row["value"] = val
                 row = {k: v for k, v in row.items() if v not in (None, "")}
+            if not isinstance(row, dict):
+                raise ValueError("row must be a JSON object")
+            row.setdefault("observed_at", fallback_time)
             events.append(observation(spec, row, locator=f"row:{i}", sha=sha))
         return events
     if kind == "host-health":
@@ -259,7 +263,7 @@ def snapshot(specs, *, root=None, authorized_local=False, policy_path=POLICY_PAT
                         seen.add(event["id"])
                         events.append(event)
                         state["accepted"] += 1
-            except (OSError, UnicodeError, ValueError, TypeError, PermissionError, json.JSONDecodeError) as exc:
+            except Exception as exc:  # Isolate a failed adapter from unrelated sensors.
                 state["status"] = "rejected"
                 state["error_type"] = type(exc).__name__
                 state["accepted"] = 0
@@ -281,7 +285,7 @@ class Store:
     """Owner-local SQLite journal; not connected to any public endpoint."""
     def __init__(self, path=DEFAULT_DB):
         self.path = Path(path).expanduser()
-        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         if self.path.is_symlink():
             raise ValueError("database must not be a symlink")
         self.connection = sqlite3.connect(str(self.path), timeout=5)
