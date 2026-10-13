@@ -49,6 +49,14 @@ jobs:
         run: |
           python -m unittest research_lab.tests.test_bio_hilbert -v
           python -m unittest research_lab.tests.test_multidimensional -v
+      - name: Install existing PINEAL test dependencies
+        run: python -m pip install "pytest>=8,<10"
+      - name: Test PINEAL store, federation, and ZYRA governance compatibility
+        env:
+          PYTHONPATH: "integrations/gpt-doug-pineal/src:."
+        run: |
+          python -m pytest -q integrations/gpt-doug-pineal/tests/test_federation.py integrations/gpt-doug-pineal/tests/test_federation_store.py integrations/gpt-doug-pineal/tests/test_store.py
+          python -m pytest -q tests/test_zyra_mss.py
       - name: Verify ontology is research-only
         run: |
           python -m research_lab.warfighter.cli doctor > /tmp/warfighter-doctor.json
