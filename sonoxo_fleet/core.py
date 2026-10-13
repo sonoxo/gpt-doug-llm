@@ -26,7 +26,6 @@ MAX_RESPONSE_BYTES = 8_000_000
 PRIORITY = {
     "gpt-doug-llm": "brain_and_governance",
     "zyra": "zyra_application",
-    "xuniahub": "xunia_hub",
     "xuniadao": "xunia_governance",
     "ATAK-Maps": "map_source_registry",
     "atak-civ": "civilian_atak_plugin_source",
