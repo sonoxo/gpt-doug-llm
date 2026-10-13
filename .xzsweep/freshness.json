@@ -1,6 +1,6 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-12T12:48:49Z",
+  "cutoff_at": "2026-10-12T12:56:10Z",
   "due_files_reviewed": 0,
   "due_paths": [],
   "files": {
@@ -573,6 +573,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "04b74e98658b43c0270d7df6b0b91b6d7c628f6e6d9258df7ae8498cbeedc431",
       "size": 1175,
+      "validation_issues": [],
+      "was_due": false
+    },
+    ".github/workflows/npm-dependency-security.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T12:26:16Z",
+      "reviewed_at": null,
+      "sha256": "374163eb9d308840ba3af9fcc88c835f27deb2fb451e11e6a9c2df56ec7024a4",
+      "size": 791,
       "validation_issues": [],
       "was_due": false
     },
@@ -4012,9 +4023,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:54:12Z",
+      "git_touched_at": "2026-10-13T12:48:50Z",
       "reviewed_at": null,
-      "sha256": "b68faac910a976252748ee6adc378f4f35d1d94459745290986841e79c670460",
+      "sha256": "9fea1da7647fe568ef69f295d16fa430168ed1891e944d96670004d260ea60dd",
       "size": 12809,
       "validation_issues": [],
       "was_due": false
@@ -4643,6 +4654,17 @@
       "reviewed_at": "2026-10-12T23:49:56Z",
       "sha256": "5d5bde12a70a0cf501b3887cec043f948e16f65247275dc95c4c94c3595b6533",
       "size": 20879,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/npm-security-remediation-2026-10-13.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T12:31:14Z",
+      "reviewed_at": null,
+      "sha256": "0d975665c08e7f46af3991f4b5d1224459aec0e24e5c441e7af19ebadf4eda6c",
+      "size": 4392,
       "validation_issues": [],
       "was_due": false
     },
@@ -11007,11 +11029,11 @@
     "package-lock.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-08-16T04:34:05Z",
-      "reviewed_at": "2026-10-12T23:49:56Z",
-      "sha256": "565b82367e6aedf6a10d96a67d1f1db670b50ce93a643bca7fdcd83a6de4226e",
-      "size": 30282,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T12:26:16Z",
+      "reviewed_at": null,
+      "sha256": "13717589352a134ae1e83dda480e3d23f5e0ca8c772bc124a0394f766e60e1c4",
+      "size": 30396,
       "validation_issues": [],
       "was_due": false
     },
@@ -15668,6 +15690,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/npm/dependency-security.test.cjs": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T12:26:16Z",
+      "reviewed_at": null,
+      "sha256": "54b8a2de9a779e69d70f295df9e25a2ebb3d9047cc5fbae239135f9cace03a53",
+      "size": 1525,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_agent_daemon.py": {
       "actions": [],
       "binary": false,
@@ -19258,9 +19291,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:54:14Z",
+      "git_touched_at": "2026-10-13T12:48:48Z",
       "reviewed_at": null,
-      "sha256": "92e49b1c41a8e1d134c4072f90133e1f98a1516612abe05e9900efec8454acce",
+      "sha256": "ec668fe1c74f922e4d15973c4738d1fc4a2187c196ce500e6c041aedbff988ba",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -19280,9 +19313,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-12T21:54:14Z",
+      "git_touched_at": "2026-10-13T12:48:48Z",
       "reviewed_at": null,
-      "sha256": "0cdbd7afe277f333fa5d84db54df29d3bb93e709289a6b251f6428c032eb66e9",
+      "sha256": "fdc1cfcd84b3fedd1ce497a7f13c71b6f011962c584066f05c5d455d67b4bbe5",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -21742,11 +21775,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-13T12:48:49Z",
+  "generated_at": "2026-10-13T12:56:10Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 1976,
+  "tracked_files_reviewed": 1979,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
