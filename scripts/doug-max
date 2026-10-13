@@ -18,7 +18,6 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
-  brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge)
   brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|lateral-stability|mobility-test)
     read_only_mode=1
     ;;
@@ -260,6 +259,11 @@ case "$first_arg_lc" in
     shift
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.status "$@"
+    ;;
+  warfighter|warfighter-research)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.warfighter.cli "$@"
     ;;
   mss)
     shift
