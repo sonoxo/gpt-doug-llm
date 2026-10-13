@@ -8,7 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 from urllib.parse import parse_qs, urlsplit
 
-from ai_killswitch import require_ai_allowed
+from ai_killswitch import AIKillSwitchEngaged, require_ai_allowed
 from .evidence_fusion import build_demo_graph, fuse, validated_observations
 
 DEFAULT_QUERY = "BioPineal patent evidence verification"
@@ -175,8 +175,10 @@ def build_server(port: int = 8777, *, graph: dict | None = None,
                     result = fuse(graph, question)
                     self._send(200, json.dumps(result).encode("utf-8"),
                                "application/json; charset=utf-8")
-                except (ValueError, PermissionError):
-                    self._error(400, "invalid question or cooperative AI stop is active")
+                except AIKillSwitchEngaged:
+                    self._error(503, "cooperative AI stop is active")
+                except ValueError:
+                    self._error(400, "invalid research question")
             else:
                 self._error(404, "not found")
         def log_message(self, fmt, *args):
