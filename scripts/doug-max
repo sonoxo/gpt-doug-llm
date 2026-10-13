@@ -261,6 +261,11 @@ case "$first_arg_lc" in
     cd "$ROOT"
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.status "$@"
     ;;
+  mecha)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT/mecha:$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m mecha.cli "$@"
+    ;;
   warfighter|warfighter-research)
     shift
     cd "$ROOT"
