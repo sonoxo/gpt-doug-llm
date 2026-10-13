@@ -193,6 +193,15 @@ class DataCatalog:
                 params.append(value)
             else:
                 raise TTDValidationError("unsupported filter operator")
+        # Do not let a model combine magnitudes, dollars, populations or citations.
+        # The canonical public dataset always names the measure and source.
+        if (table == "open_records" and {"source_id", "measure", "metric_unit"}.issubset(columns)
+                and aggregate is not None and aggregate["column"] == "metric_value"
+                and aggregate["function"] in {"sum", "avg", "min", "max"}
+                and not any(condition["column"] == "measure" and condition["op"] == "eq"
+                            and isinstance(condition["value"], str)
+                            for condition in filters)):
+            raise TTDValidationError("filter metric_value aggregates by measure to avoid mixed units")
         if predicates:
             sql += " WHERE " + " AND ".join(predicates)
         if aggregate is not None and group:

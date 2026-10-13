@@ -74,3 +74,64 @@ Run the isolated checks:
 ```sh
 python3 -m unittest discover -s tests -p 'test_ttd_llm.py' -v
 ```
+
+## Global Open Data Fabric (explicit opt-in)
+
+Five public, official or openly documented read-only interfaces can be synchronized into
+an **operator-controlled local SQLite snapshot**. This does not put the model on a
+third-party network, scan the internet, or subscribe to all datasets worldwide.
+
+| Source ID | Publisher | Dataset | Measurement |
+| --- | --- | --- | --- |
+| `usgs_earthquakes` | U.S. Geological Survey | Earthquakes during the previous day | Magnitude |
+| `nasa_eonet` | NASA EONET | Current natural events | Event count |
+| `worldbank_population` | World Bank Indicators V2 | Latest available country population | People |
+| `worldbank_gdp` | World Bank Indicators V2 | Latest available country GDP | Current USD |
+| `openalex_works` | OpenAlex | Bounded page of scholarly works | Citation count |
+
+List sources and preview a reproducible randomized subset with **no network calls**:
+
+```sh
+python3 -m ttd_llm open-data sources
+python3 -m ttd_llm open-data sync --all --randomize --seed 20261013 --sample-sources 3 --max-records 50 --db ttd_open_data.sqlite3 --dry-run
+```
+
+To perform one controlled synchronization (real HTTPS requests), remove `--dry-run`:
+
+```sh
+python3 -m ttd_llm open-data sync --all --randomize --seed 20261013 --sample-sources 3 --max-records 50 --db ttd_open_data.sqlite3
+python3 -m ttd_llm --sqlite ttd_open_data.sqlite3 --table open_records --schema
+python3 -m ttd_llm --sqlite ttd_open_data.sqlite3 --table open_records --plan-file data/ttd_open_data_plan.json
+python3 -m ttd_llm --sqlite ttd_open_data.sqlite3 --table open_records --ask 'Count records by public data source.'
+```
+
+The last command requires the local Ollama model from the setup section. If the
+snapshot already exists, synchronization refuses to replace it until `--replace`
+is supplied. The snapshot is not scheduled, uploaded, shared, or published.
+
+`--randomize` randomizes **only approved source order, optional source subset and
+bounded record samples**. A reported seed permits repeating the same choices
+against identical upstream data; the data may of course change over time. It
+never randomizes IP addresses, proxies, identities, endpoint hosts, or rate limits.
+
+The `open_records` table includes source ID, exact endpoint URL, record URL,
+measurement and unit, source-observed time, fetch time, and individual record
+SHA-256. The `source_receipts` table records publisher, documentation URL,
+whole-response SHA-256, counts, and sampling seed. The read-only query model
+should normally be authorized only for `open_records`; humans can inspect
+`source_receipts` separately for provenance.
+
+**Guardrails:** no arbitrary URLs, credentials, scraping, write-back, unattended
+polling, or network exploration. Connections use HTTPS, strict endpoints,
+no redirects/proxies, a ten-second timeout and 2.5 MB response cap. Sources are
+queried sequentially, once per explicit invocation; sampling caps are 200 records
+per source, with 50 by default. Failed sources are disclosed; if all fail the
+existing snapshot remains unchanged. Public-data licensing and API terms still
+apply. Statistics across incompatible units (magnitude vs. people vs. dollars)
+are meaningless; always filter by `measure` when aggregating values.
+
+Run regression coverage for both layers:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_ttd*.py' -v
+```
