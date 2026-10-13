@@ -19,6 +19,7 @@ import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
+from contextlib import closing
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -273,7 +274,7 @@ def _write_snapshot(path: Path, *, receipts: list[dict[str, Any]],
     os.close(descriptor)
     temp_path = Path(temp_name)
     try:
-        with sqlite3.connect(temp_path) as conn:
+        with closing(sqlite3.connect(temp_path)) as conn, conn:
             conn.execute("""CREATE TABLE open_records (
                 source_id TEXT NOT NULL, record_id TEXT NOT NULL, title TEXT NOT NULL,
                 category TEXT NOT NULL, region TEXT, observed_at TEXT, measure TEXT NOT NULL,

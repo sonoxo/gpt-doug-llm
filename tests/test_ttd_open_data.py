@@ -1,12 +1,12 @@
 """Isolation tests for opt-in public-data sources and randomized snapshots."""
 from __future__ import annotations
 
-import json
 import sqlite3
 import sys
 import tempfile
 import types
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest.mock import patch
 
@@ -95,7 +95,7 @@ class OpenDataTests(unittest.TestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["sources_imported"], 5)
         self.assertEqual(result["records_imported"], 6)
-        with sqlite3.connect(path) as conn:
+        with closing(sqlite3.connect(path)) as conn:
             self.assertEqual(conn.execute("SELECT COUNT(*) FROM source_receipts").fetchone()[0], 5)
             self.assertEqual(conn.execute("SELECT COUNT(*) FROM open_records").fetchone()[0], 6)
             self.assertEqual(conn.execute("SELECT response_sha256 FROM source_receipts WHERE source_id='nasa_eonet'").fetchone()[0], "c" * 64)
@@ -152,7 +152,7 @@ class OpenDataTests(unittest.TestCase):
                         randomize=True, seed=934, max_records=3, fetcher=self.fake_fetch)
         self.assertEqual(a["selected_sources"], b["selected_sources"])
         self.assertEqual(a["seed"], 934)
-        with sqlite3.connect(first) as ca, sqlite3.connect(second) as cb:
+        with closing(sqlite3.connect(first)) as ca, closing(sqlite3.connect(second)) as cb:
             sql = "SELECT source_id, record_id FROM open_records ORDER BY source_id, record_id"
             self.assertEqual(ca.execute(sql).fetchall(), cb.execute(sql).fetchall())
             self.assertEqual(ca.execute("SELECT COUNT(*) FROM open_records").fetchone()[0], 4)
