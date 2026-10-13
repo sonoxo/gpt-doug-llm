@@ -89,6 +89,8 @@ def validate_inventory(entry: Any) -> dict[str, Any]:
     as_of = entry["as_of"]
     _fail_unless(type(as_of) is str and len(as_of) == 10 and date.fromisoformat(as_of).isoformat() == as_of,
                  "invalid date")
+    _fail_unless(SNAPSHOT_DATE <= as_of <= DEADLINE,
+                 "unsupported Nobel rules snapshot window; refresh official rules for a new award cycle")
     _fail_unless(entry["initiative"] == "GPT-Doug PeaceLab",
                  "initiative must match audited software")
     kind = entry["candidate_kind"]
