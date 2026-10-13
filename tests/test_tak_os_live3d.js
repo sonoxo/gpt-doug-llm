@@ -40,6 +40,13 @@ test('civil orbital elements are CelesTrak source records, not invented live GPS
  assert.equal(records.length,1);assert.equal(records[0].type,'CivilOrbitalElementSet');
  assert.equal(records[0].geometry,null);assert.equal(records[0].accuracy,'predicted_not_live_position');
 });
+test('NOAA and CelesTrak zone-less timestamps mean UTC, not the client timezone',()=>{
+ const noaa=O.parseNoaa([{time_tag:'2026-10-13 17:30:00',kp_index:4.7}],ts);
+ assert.equal(noaa[0].observationTime,'2026-10-13T17:30:00.000Z');
+ const satellite=O.parseOrbits([{OBJECT_NAME:'ISS (ZARYA)',NORAD_CAT_ID:25544,EPOCH:'2026-10-13T17:30:00',MEAN_MOTION:15}],ts,clock);
+ assert.equal(satellite[0].observationTime,'2026-10-13T17:30:00.000Z');
+ assert.ok(satellite[0].properties.omm.EPOCH.endsWith('Z'));
+});
 test('3D OSM buildings extrude ONLY if height tag exists',()=>{
  const elements=[{type:'way',id:100,tags:{building:'yes',height:'42 ft'},geometry:[{lat:37,lon:-77},{lat:37.001,lon:-77},{lat:37.001,lon:-77.001}]},
  {type:'way',id:101,tags:{building:'yes','building:levels':'99'},geometry:[{lat:37,lon:-77},{lat:37.001,lon:-77},{lat:37.001,lon:-77.001}]}];
