@@ -102,7 +102,7 @@ class CognitiveDashboardTests(unittest.TestCase):
         with dashboard() as server:
             with mock.patch.dict(os.environ, {"GPT_DOUG_AI_BLOCK_ALL": "1"}):
                 code, _, body = get(server, "/api/brief?q=patent")
-                self.assertIn(code, {400, 503})
+                self.assertEqual(code, 503)
                 self.assertNotIn(b"workers", body)
     def test_invalid_port_rejected(self):
         with self.assertRaises(ValueError):
