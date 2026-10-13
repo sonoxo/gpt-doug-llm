@@ -18,9 +18,11 @@ from typing import Any
 from .patents import load_records
 from .store import PinealStore
 
-PROJECT = Path(__file__).resolve().parents[2]
-FIXTURE = PROJECT / "examples" / "patents" / "user-supplied-us12760393b1.jsonl"
-ONTOLOGY = PROJECT / "ontology" / "lithium_nexus_v1.json"
+# The package must work from a regular (non-editable) wheel installation.
+# Read source evidence from bundled, immutable local package data only.
+DATA_DIR = Path(__file__).resolve().parent / "data"
+FIXTURE = DATA_DIR / "user-supplied-us12760393b1.jsonl"
+ONTOLOGY = DATA_DIR / "lithium_nexus_v1.json"
 PATENT_ID = "US12760393B1"
 OWNER = "PolyPlus Battery Company"
 PROVENANCE = "USER_PROVIDED_USPTO_PASTED_EXCERPT_UNVERIFIED_BY_INDEPENDENT_LOOKUP"
