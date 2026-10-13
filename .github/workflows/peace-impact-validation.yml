@@ -3,8 +3,9 @@ on:
   pull_request:
     paths:
       - "peace_impact/**"
-      - "tests/test_peace_impact.py"
+      - "tests/test_peace*.py"
       - "docs/GPT_DOUG_PEACELAB.md"
+      - "docs/PEACELAB_*.md"
       - "run-GPT-Doug-PeaceLab.command"
       - "scripts/doug-max"
       - ".github/workflows/peace-impact-validation.yml"
@@ -27,12 +28,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Run privacy, spoofing and certificate tests
-        run: python3 -m unittest discover -s tests -p 'test_peace_impact.py' -v
+        run: python3 -m unittest discover -s tests -p 'test_peace*.py' -v
       - name: Check shared Bash launcher and GPT-Doug integration
         run: |
           bash -n scripts/doug-max
           bash scripts/doug-max peace-lab demo > /tmp/doug-peace-demo.json
           bash scripts/doug-max peace-lab verify /tmp/doug-peace-demo.json
+          bash scripts/doug-max peace-lab pilot-demo > /tmp/doug-pilot-report.json
+          bash scripts/doug-max peace-lab pilot-verify /tmp/doug-pilot-report.json
+          bash scripts/doug-max peace-lab pilot-brief /tmp/doug-pilot-report.json > /tmp/doug-pilot-review.md
+          bash scripts/doug-max peace-lab pilot-preview /tmp/doug-pilot-report.json > /tmp/doug-pilot-preview.html
+          grep -F "NOT A FIELD PILOT APPROVAL" /tmp/doug-pilot-review.md
+          grep -F "REAL-WORLD PEACE OUTCOMES VERIFIED" /tmp/doug-pilot-preview.html
       - name: Reproduce synthetic report without network access
         run: |
           bash run-GPT-Doug-PeaceLab.command demo > /tmp/peace-synthetic.json
