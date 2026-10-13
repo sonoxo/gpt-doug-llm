@@ -15,7 +15,7 @@ The provided material describes lithium-bearing brines and recycling inputs, a s
 The extension reuses the established PINEAL memory platform rather than a separate dataset:
 
 - Existing patent validation, public metadata source host rules and SQLite provenance/audit chain.
-- Typed knowledge graph in the ontology/lithium_nexus_v1.json file with **17 nodes and 16 edges**: inventor/company attribution, potential feedstocks, technical concepts, possible outputs, hazardous coproducts, legal and independent safety approvals.
+- Typed knowledge graph in the src/pineal/data/lithium_nexus_v1.json package data file with **17 nodes and 16 edges**: inventor/company attribution, potential feedstocks, technical concepts, possible outputs, hazardous coproducts, legal and independent safety approvals.
 - An explicit import preview that writes nothing, and an opt-in single-record atomic/idempotent SQLite import.
 - A terminal visual graph, Graphviz DOT, offline CSP-locked HTML dashboard, and bounded watch of **actual local** indexed records.
 - Local context search after import, not any automated website scraping.
