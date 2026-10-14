@@ -16,7 +16,7 @@ const mobileProfile=mobileTools?mobileTools.chooseProfile({
 }):{mobile:false,resolutionScale:1,tileCacheSize:110,maximumScreenSpaceError:2,orbitTickMs:12000,cameraDuration:1.4};
 let gridVisible=false;
 const store=new Ontology(), statusNodes=['usgs','eonet','noaa','orbit','buildings'];
-const ui={enabled:{usgs:true,eonet:true,noaa:true,orbit:true,buildings:true},lastRequested:new Map(),inFlight:new Set(),lastFly:null,selected:null,orbitPositions:new Map(),camera:'earth',viewer:null,dataSources:{},serviceTimers:[],orbitLibrary:null,originError:null,imagery:null,imagesInError:0,buildingsRunAt:0,gridSource:null};
+const ui={enabled:{usgs:true,eonet:true,noaa:true,orbit:true,buildings:true},lastRequested:new Map(),inFlight:new Set(),lastFly:null,selected:null,orbitPositions:new Map(),camera:'earth',viewer:null,dataSources:{},serviceTimers:[],orbitLibrary:null,originError:null,imagery:null,imagesInError:0,buildingsRunAt:0,gridSource:null,baseLayer:null,streetsLayer:null,streetFailures:0};
 const cities={richmond:{lat:37.5407,lon:-77.436},dc:{lat:38.9072,lon:-77.0369},nyc:{lat:40.7128,lon:-74.006},sf:{lat:37.7749,lon:-122.4194}};
 const colors={usgs:'#ff897f',eonet:'#fac675',orbit:'#70fbef',buildings:'#a1e4ff'};
 const countString=(n)=>Number(n).toLocaleString();
@@ -192,6 +192,7 @@ function initGlobe(){
  ui.viewer.resolutionScale=mobileProfile.resolutionScale;
  ui.viewer.scene.globe.tileCacheSize=mobileProfile.tileCacheSize;
  ui.viewer.scene.globe.maximumScreenSpaceError=mobileProfile.maximumScreenSpaceError;
+ ui.baseLayer=ui.viewer.imageryLayers.get(0);
  if(mobileProfile.mobile){
    ui.viewer.scene.fog.enabled=false;
    if(ui.viewer.scene.skyAtmosphere)ui.viewer.scene.skyAtmosphere.show=false;
@@ -209,7 +210,9 @@ function initGlobe(){
  reference.show=false;
  ui.gridSource=reference;
  ui.viewer.selectedEntityChanged.addEventListener(entity=>{if(entity){const r=store.records.get(entity.id);if(r)inspectNoFly(r);}});
- text('render-status',mobileProfile.mobile?'3D ACTIVE · iPHONE ECO':'CESIUM 3D ACTIVE');text('imagery-state','NASA HISTORICAL BASE REQUESTED');setCamera('earth');
+ ui.viewer.camera.moveEnd.addEventListener(updateCameraReadout);
+ text('render-status',mobileProfile.mobile?'3D ACTIVE · iPHONE':'CESIUM 3D ACTIVE');text('imagery-state','NASA HISTORICAL BASE REQUESTED');
+ setCamera(mobileProfile.mobile?'north-america':'earth');updateCameraReadout();
  }catch(err){text('render-status','CESIUM ERROR');text('imagery-state','GLOBE UNAVAILABLE');toast(`Cesium failed: ${err.message}`);}
 }
 function overlayImagery(){
@@ -241,6 +244,62 @@ async function loadBuildings(){
    text('building-note',`${buildings.length} actual OSM footprints received; ${measured} have recorded height tags and are extruded. ${buildings.length-measured} stay flat. Community data is not surveyed truth.`);
  }catch(err){store.failure('buildings',err);rebuildSource('buildings');text('building-note',`OSM Overpass unavailable: ${err.message}. No estimated heights generated.`);
  }finally{ui.inFlight.delete('buildings');renderHealth();}
+}
+function updateCameraReadout(){
+ if(!rendererReady())return;
+ const c=ui.viewer.camera.positionCartographic,C=window.Cesium;
+ if(!c)return;
+ const latitude=C.Math.toDegrees(c.latitude),longitude=C.Math.toDegrees(c.longitude);
+ const altitude=Math.max(0,c.height)/1000;
+ text('mobile-camera-readout','CAMERA '+Math.abs(latitude).toFixed(1)+'°'+(latitude<0?'S':'N')+' · '+Math.abs(longitude).toFixed(1)+'°'+(longitude<0?'W':'E')+' · '+altitude.toFixed(altitude<100?1:0)+' km ALT');
+}
+function toggleStreets(){
+ if(!rendererReady()){toast('3D map unavailable.');return;}
+ const C=window.Cesium;
+ if(ui.streetsLayer){
+  ui.viewer.imageryLayers.remove(ui.streetsLayer,true);ui.streetsLayer=null;
+  if(ui.baseLayer)ui.baseLayer.show=true;
+  $('street-toggle').textContent='OSM STREETS OFF';
+  $('street-mobile').textContent='STREETS';
+  $('street-toggle').setAttribute('aria-pressed','false');
+  $('street-mobile').setAttribute('aria-pressed','false');
+  text('streets-note','OSM street tiles OFF. NASA GIBS historical composite selected.');
+ }else{
+  try{
+   const provider=new C.UrlTemplateImageryProvider({
+    url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    tilingScheme:new C.WebMercatorTilingScheme(),maximumLevel:18,
+    credit:new C.Credit('© OpenStreetMap contributors')
+   });
+   provider.errorEvent.addEventListener(()=>{
+    ui.streetFailures++;
+    if(ui.streetFailures===1){
+     text('streets-note','OSM imagery request failed; check network or tile service. No replacement tiles generated.');
+     toast('OSM tile request failed. Check source access.');
+    }
+   });
+   ui.streetFailures=0;
+   ui.streetsLayer=ui.viewer.imageryLayers.addImageryProvider(provider);
+   if(ui.baseLayer)ui.baseLayer.show=false;
+   $('street-toggle').textContent='OSM STREETS ON';
+   $('street-mobile').textContent='STREETS ON';
+   $('street-toggle').setAttribute('aria-pressed','true');
+   $('street-mobile').setAttribute('aria-pressed','true');
+   text('streets-note','OSM street tiles requested for this view only. © OpenStreetMap contributors. Network and usage policy apply.');
+   if(mobileProfile.mobile)setCamera('city'); // Preset city, not device GPS.
+  }catch(err){toast('OSM streets unavailable: '+err.message);}
+ }
+ ui.viewer.scene.requestRender();
+}
+function moveCamera(action){
+ if(!rendererReady())return;
+ if(action==='center'){setCamera('north-america');return;}
+ const height=ui.viewer.camera.positionCartographic?.height;
+ if(!Number.isFinite(height))return;
+ const step=Math.max(300,Math.min(6000000,Math.abs(height)*0.33));
+ if(action==='zoom-in')ui.viewer.camera.zoomIn(step);
+ else if(action==='zoom-out')ui.viewer.camera.zoomOut(step);
+ ui.viewer.scene.requestRender();updateCameraReadout();
 }
 function switchMobilePanel(panel){
  const left=document.querySelector('.leftpanel'),right=document.querySelector('.rightpanel');
@@ -278,8 +337,12 @@ function bind(){
  $('reset-camera').addEventListener('click',()=>setCamera('earth'));
  document.querySelectorAll('[data-mobile-panel]').forEach(button=>button.addEventListener('click',()=>switchMobilePanel(button.dataset.mobilePanel)));
  $('grid-toggle').addEventListener('click',toggleReferenceGrid);
+ $('street-toggle').addEventListener('click',toggleStreets);
+ $('street-mobile').addEventListener('click',toggleStreets);
+ document.querySelectorAll('[data-map-action]').forEach(button=>button.addEventListener('click',()=>moveCamera(button.dataset.mapAction)));
+ document.querySelectorAll('[data-close-panel]').forEach(button=>button.addEventListener('click',()=>switchMobilePanel('map')));
  $('grid-mobile').addEventListener('click',toggleReferenceGrid);
- $('toggle-hud').addEventListener('click',()=>{const right=document.querySelector('.rightpanel');right.classList.toggle('open');document.querySelector('.leftpanel').classList.toggle('hidden');});
+ $('toggle-hud').addEventListener('click',()=>switchMobilePanel('intel'));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHealth();refreshAll(false);orbitalRender();}});
 }
 function init(){
