@@ -1,20 +1,27 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T15:43:56Z",
-  "due_files_reviewed": 12,
+  "cutoff_at": "2026-10-13T16:59:25Z",
+  "due_files_reviewed": 19,
   "due_paths": [
-    ".github/workflows/peace-impact-validation.yml",
-    "docs/NOBEL_2027_EVIDENCE_DOSSIER.md",
-    "docs/tak-os/.dockerignore",
-    "docs/tak-os/Dockerfile",
-    "docs/tak-os/LEGACY_COMPATIBILITY.md",
-    "docs/tak-os/compose.yaml",
-    "docs/tak-os/launch-macos.command",
-    "peace_impact/cli.py",
-    "peace_impact/nobel_readiness.py",
-    "tests/test_nobel_readiness.py",
-    "tests/test_tak_os_browser.py",
-    "tests/test_tak_os_gateway.py"
+    ".github/workflows/biopineal-nexus.yml",
+    ".github/workflows/biopineal-patent-research.yml",
+    "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md",
+    "docs/tak-os/SWARM_SECURITY.md",
+    "docs/tak-os/swarm-ui.js",
+    "docs/tak-os/swarm.py",
+    "integrations/gpt-doug-pineal/README.md",
+    "integrations/gpt-doug-pineal/docs/LITHIUM_PATENT_NEXUS.md",
+    "integrations/gpt-doug-pineal/pyproject.toml",
+    "integrations/gpt-doug-pineal/src/pineal/cli.py",
+    "integrations/gpt-doug-pineal/src/pineal/data/lithium_nexus_v1.json",
+    "integrations/gpt-doug-pineal/src/pineal/data/user-supplied-us12760393b1.jsonl",
+    "integrations/gpt-doug-pineal/src/pineal/innovation_nexus.py",
+    "integrations/gpt-doug-pineal/tests/test_innovation_nexus.py",
+    "research_lab/biopineal_patent.py",
+    "run-GPT-Doug-BioPineal.command",
+    "tests/test_biopineal_patent.py",
+    "tests/test_tak_os_swarm.py",
+    "tests/test_tak_os_swarm_browser.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -253,22 +260,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "d62511f665527919d70704a3be0801a572c379fa18c9e2064ffea70335c35f55",
       "size": 3887,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/biopineal-patent-research.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:55:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "3fa7ef4b4a682ec4529c02a11a354311ce5c82ec8803a2a435f23d8afcdb312b",
       "size": 1162,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/biopineal-phase2.yml": {
       "actions": [],
@@ -757,13 +764,13 @@
     ".github/workflows/peace-impact-validation.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:38:53Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "fcfc08f321f26f0fb7f73943fa282fc4b110e49aa798851223ac1ce9ec1a3361",
       "size": 4495,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/pineal-cad-model.yml": {
       "actions": [],
@@ -3377,11 +3384,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:55:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f2d9262c7555cc0cf7111cd0ce9a41432bd8eff4481e58b6f983c741e9fb9da5",
       "size": 2572,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/BIOPINEAL_PHASE2.md": {
       "actions": [],
@@ -4013,13 +4020,13 @@
     "docs/NOBEL_2027_EVIDENCE_DOSSIER.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:38:53Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "cf30e107f43228c63402e80c6a6926c25710a9e34730466e48b7635098a3a727",
       "size": 8970,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -4304,6 +4311,17 @@
       "reviewed_at": null,
       "sha256": "6d19ab8405a5aad07a0ef20ad4d8bce8adc5370d2c3f279566c092026ea90c63",
       "size": 2617,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/SONOXO_CASHAPP_REVENUE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T16:58:47Z",
+      "reviewed_at": null,
+      "sha256": "6a33c47b37212cc360fe1b66dc00fac53798f8f5d4108422f6d3c4c7a5904e4d",
+      "size": 2519,
       "validation_issues": [],
       "was_due": false
     },
@@ -5498,35 +5516,35 @@
     "docs/tak-os/.dockerignore": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "c9921e7f607032bda185ccfcc3f7faefb72179a82d87de86ad03da1b551e4940",
       "size": 81,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/Dockerfile": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "2e5d6197399977a85b4f477cc013522cb164d192e01b31012cc2aea58bb9e3ef",
       "size": 395,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/LEGACY_COMPATIBILITY.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "11cbf1af9596c608c9068ac83fefaf4db60049605222508beb97c7091af57da4",
       "size": 1999,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/NASA_SATELLITE_README.md": {
       "actions": [],
@@ -5555,11 +5573,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:07:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "c7d481e8a9bf5df93a5dbddd00007dc1862fb57e8169c1b08609d0030895156b",
       "size": 6510,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/app.js": {
       "actions": [],
@@ -5586,13 +5604,13 @@
     "docs/tak-os/compose.yaml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "29e7f50553a9ac62112eb4578bd1f8cd41de7dfdc4e4f6e2d75c83f6ed0cba28",
       "size": 725,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/gateway.py": {
       "actions": [],
@@ -5630,13 +5648,13 @@
     "docs/tak-os/launch-macos.command": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "db49e57c3057ad9fb9bc2ee96e56229c543c875db99be7554684fa646b1ccf52",
       "size": 511,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/live-3d/README.md": {
       "actions": [],
@@ -5830,22 +5848,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:07:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5012678343f248e4af06a60190c45eda867e78ab06f968a5cf7e203b9517abe7",
       "size": 12056,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/swarm.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:07:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "495fe7831e3fc0c293a13966fefbc73a1395db31cabfd6ebb339564afc06439b",
       "size": 20988,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/vm/README.md": {
       "actions": [],
@@ -8756,11 +8774,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f1f1c2a9c2996ea04839cd1f446dc46f5600a1186a6a9746457c874c01ad8af5",
       "size": 13928,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/cad/README.md": {
       "actions": [],
@@ -8866,11 +8884,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f8a23c30fd52706831d32bec27a29108be6551052842ca486dcb34f9a3479d6c",
       "size": 4725,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/docs/NEURO_BOUNDARIES.md": {
       "actions": [],
@@ -8987,11 +9005,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "42a96aa904e153b358e86ec5f189b95adf46929d87e20bfcc84fac8c3fe65312",
       "size": 694,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/src/pineal/__init__.py": {
       "actions": [],
@@ -9053,11 +9071,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "92a514c82dc1729341d9983cc152b63bf44477e8ef995b8742ea71e7acd147f2",
       "size": 17046,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/src/pineal/dashboard.py": {
       "actions": [],
@@ -9075,22 +9093,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "7b3708c7cbb57d7dc19dc3dc988e65cbcdb42788e5697502805f7c757d66594e",
       "size": 5156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/src/pineal/data/user-supplied-us12760393b1.jsonl": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "440385ef3afec3d91a620ce889fb75c0e10a8a3595fa23010b64b2972d226f7c",
       "size": 828,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/src/pineal/federation.py": {
       "actions": [],
@@ -9119,11 +9137,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5957f38c01f9617b9c686f426bfb66f1859d0b95c20843f38ca5f880cbf7fe8c",
       "size": 20622,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/src/pineal/kraken.py": {
       "actions": [],
@@ -9262,11 +9280,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "2b0c10d7bcd37c917c6f1cd6476d7862eba782fa49b13002f201d1160f0bf80d",
       "size": 10577,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "integrations/gpt-doug-pineal/tests/test_kraken.py": {
       "actions": [],
@@ -11270,14 +11288,36 @@
       "validation_issues": [],
       "was_due": false
     },
+    "intel/white-house/daily/2026-10-14.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T16:12:56Z",
+      "reviewed_at": null,
+      "sha256": "0e05b584a366f40af6c555433153fdac99aa44ff16372fd3c8e7a66a5bf7ac26",
+      "size": 1129,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/white-house/daily/2026-10-14.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T16:12:56Z",
+      "reviewed_at": null,
+      "sha256": "1f70bd7643d11a1687e4569f78063841c3f8b27176cd4f555f910e82cf5dc4cd",
+      "size": 897,
+      "validation_issues": [],
+      "was_due": false
+    },
     "intel/white-house/state.json": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T18:40:56Z",
+      "git_touched_at": "2026-10-14T16:12:56Z",
       "reviewed_at": null,
-      "sha256": "5c37e0b51395f1d15db7a080ab890edbcd6a2abb35fb910a1fc3cf64072cb0eb",
-      "size": 28343,
+      "sha256": "bcde014fd45a627596db113ab72da7bf752fc198aada0f460d8897a3402535bf",
+      "size": 28470,
       "validation_issues": [],
       "was_due": false
     },
@@ -12681,13 +12721,13 @@
     "peace_impact/cli.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:38:53Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "32c2ee84e7689f71525120fb917b33bb04e67b2d058361917f3aaed2eb278b48",
       "size": 5576,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/core.py": {
       "actions": [],
@@ -12703,13 +12743,13 @@
     "peace_impact/nobel_readiness.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:38:53Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "72f30b093f218661e215cc0f9571bbaf75e2d8c5a2271c02123b199cb5b007ee",
       "size": 17651,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/ontology.json": {
       "actions": [],
@@ -13387,11 +13427,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:55:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5e04d8cc69081b9cdad84c66661655b423afa1e6191fbc86e488189e445c4b35",
       "size": 5534,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/biopineal_phase2.py": {
       "actions": [],
@@ -14850,11 +14890,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:04:10Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "090437d94372f13cbdc79466d609fa4b57f3f20c7c6c3418c84994bc78b4c065",
       "size": 931,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "run-GPT-Doug-Chaos.command": {
       "actions": [],
@@ -18238,11 +18278,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:55:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "d142e1b5a7e467c4605d821fcc6d4259dca9ec06a993d06335b2bbd7bd994056",
       "size": 3145,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_biopineal_phase2.py": {
       "actions": [],
@@ -19105,13 +19145,13 @@
     "tests/test_nobel_readiness.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:38:53Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "d6f3450393626c5169f13769cdb09aeedd81ceba14fbebd45b276a947624bf72",
       "size": 11880,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_nrl_public_repository_ecosystem.py": {
       "actions": [],
@@ -19399,6 +19439,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_sonoxo_cashapp_billing.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T16:58:45Z",
+      "reviewed_at": null,
+      "sha256": "3a94cc609dc741f19ec9d603e35306be0d69c1f9491f8b680f2fec01e488a27f",
+      "size": 2244,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_sonoxo_fleet.py": {
       "actions": [],
       "binary": false,
@@ -19457,24 +19508,24 @@
     "tests/test_tak_os_browser.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "c1b79ae55857fe7516fdf466d07d4673107a6dd20693954cc13124fda1a10314",
       "size": 5663,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_tak_os_gateway.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T15:22:38Z",
       "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "f4a3c353e7fc3a0ed0ee82967cd5007cffdfea229ef427dd465ebae7684fa60d",
       "size": 8648,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_tak_os_live3d.js": {
       "actions": [],
@@ -19525,22 +19576,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:07:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "8fdcde2280ee39f5503fc124c5245332df07437181572672517d39a4854dacea",
       "size": 15179,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_tak_os_swarm_browser.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T16:07:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "b32d4cebae9fe0720895aa8079000806d38048cca88b5ad9d57ca8a62fd29458",
       "size": 6456,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_time_jump_1000.py": {
       "actions": [],
@@ -22120,9 +22171,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T15:14:30Z",
+      "git_touched_at": "2026-10-14T15:43:55Z",
       "reviewed_at": null,
-      "sha256": "223ce025d6568adac117785bec66ef6e9424c3bbc4616aeda311abecb53a831b",
+      "sha256": "107ff2b9a375e97b37e0f24875542422c20188017d433c2ad73173844d22681b",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -22142,9 +22193,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T15:08:32Z",
+      "git_touched_at": "2026-10-14T15:43:55Z",
       "reviewed_at": null,
-      "sha256": "f54b87960d6f85243715a4368fbf538de143d45002853893560f2df75a075ceb",
+      "sha256": "603302365ed4f1b18cdce8b74fbb641c87eca518e9d58bf29878f9b7a0422a4c",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -23070,6 +23121,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "f9e3317849fd171d4c3ae6ef864aa8f406998bab54298f900a1260e952b7bf84",
       "size": 16104,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "workers/sonoxo_cashapp_billing.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T16:58:42Z",
+      "reviewed_at": null,
+      "sha256": "b0393fb8a6254ad9ff5dcb878f97f4e7d41b5460eada2c0d0e8930404576bc0e",
+      "size": 5998,
       "validation_issues": [],
       "was_due": false
     },
@@ -24604,11 +24666,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T15:43:56Z",
+  "generated_at": "2026-10-14T16:59:25Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2235,
+  "tracked_files_reviewed": 2240,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
