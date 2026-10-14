@@ -1,0 +1,48 @@
+name: Sonoxo Fleet Upgrade Readiness
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/sonoxo_fleet_upgrader.py'
+      - 'tests/test_sonoxo_fleet_upgrader.py'
+      - '.github/workflows/sonoxo-fleet-upgrade-audit.yml'
+  schedule:
+    - cron: '17 10 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_sonoxo_fleet_upgrader.py' -v
+
+  weekly-readiness-report:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit public Sonoxo repositories without mutations
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/sonoxo_fleet_upgrader.py --owner sonoxo --output-dir /tmp/sonoxo-fleet-report
+      - name: Upload read-only audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonoxo-fleet-readiness
+          path: /tmp/sonoxo-fleet-report/
+          if-no-files-found: warn
+          retention-days: 14

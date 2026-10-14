@@ -32,3 +32,13 @@ updates:
       actions-nonmajor:
         patterns: ["*"]
         update-types: ["minor", "patch"]
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      npm-nonmajor:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
