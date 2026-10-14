@@ -8,11 +8,14 @@ on:
       - 'docs/tak-os/styles.css'
       - 'docs/resources.json'
       - 'tests/test_tak_os_live3d*'
+      - 'tests/test_tak_os_itak_metrics.py'
+      - 'docs/tak-os/itak_metrics.py'
       - '.github/workflows/tak-os-live3d.yml'
   push:
     branches: [main]
     paths:
       - 'docs/tak-os/live-3d/**'
+      - 'docs/tak-os/itak_metrics.py'
       - 'docs/tak-os/gateway.py'
       - 'docs/tak-os/index.html'
       - 'docs/tak-os/styles.css'
@@ -44,7 +47,10 @@ jobs:
           node --check docs/tak-os/live-3d/live-earth.js
           node --check docs/tak-os/live-3d/cesium-config.js
           node --check docs/tak-os/live-3d/iphone-grid.js
+          grep -q 'data-mobile-panel="itak"' docs/tak-os/live-3d/index.html
           node --check docs/tak-os/live-3d/sw.js
+      - name: Private iTAK metric aggregation and strict access contract
+        run: python3 -m unittest discover -s tests -p 'test_tak_os_itak_metrics.py' -v
       - name: Ensure no real-world fake-fallback records
         run: |
           ! grep -E 'const demoUnits|seed = \[|const fakeEvents|Math.random\(' docs/tak-os/live-3d/live-earth.js

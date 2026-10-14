@@ -42,6 +42,8 @@
 <section class="rightpanel" aria-label="Real ontology and selected observation"><button class="sheet-close" data-close-panel type="button" aria-label="Close source data and return to map">CLOSE ×</button>
  <div class="section-eyebrow">SOURCE OF TRUTH / ONTOLOGY</div><h2>Observation inspector</h2>
  <div id="entity-inspector" class="entity-inspector"><p>Select a verified map observation, building, or orbital element to view evidence and timestamps.</p></div>
+ <div class="section-heading" id="itak-metrics-heading">iTAK / TAK METRICS <button type="button" class="mini" id="itak-refresh">RECONNECT</button></div>
+ <div class="panel-section" id="itak-metrics" aria-live="polite">Checking private TAK metrics capability. No iTAK session inferred.</div>
  <div class="section-heading">SOURCE HEALTH <span id="health-updated">—</span></div><div id="feed-health" class="feed-health" aria-live="polite"></div>
  <div class="section-heading">KNOWLEDGE GRAPH <button type="button" class="mini" id="export-ontology">⇩ JSON-LD</button></div>
  <div id="ontology-stats" class="ontology-stats"></div>
@@ -51,7 +53,7 @@
 </section>
 <div class="mobile-map-tools" role="group" aria-label="3D globe zoom and camera"><button type="button" data-map-action="zoom-in" aria-label="Zoom in">+</button><button type="button" data-map-action="zoom-out" aria-label="Zoom out">−</button><button type="button" data-map-action="center" aria-label="Center on North America">⌖</button></div>
 <div class="mobile-camera-readout" id="mobile-camera-readout">WGS84 · CAMERA VIEW · NOT DEVICE LOCATION</div>
-<nav class="iphone-grid-nav" aria-label="iPhone Earth controls"><button type="button" data-mobile-panel="map" aria-pressed="true">MAP</button><button type="button" data-mobile-panel="layers" aria-pressed="false">LAYERS</button><button type="button" data-mobile-panel="intel" aria-pressed="false">DATA</button><button type="button" id="street-mobile" aria-pressed="false">STREETS</button><button type="button" id="grid-mobile" aria-pressed="false">GRID</button></nav>
+<nav class="iphone-grid-nav" aria-label="iPhone Earth controls"><button type="button" data-mobile-panel="map" aria-pressed="true">MAP</button><button type="button" data-mobile-panel="layers" aria-pressed="false">LAYERS</button><button type="button" data-mobile-panel="intel" aria-pressed="false">DATA</button><button type="button" data-mobile-panel="itak" aria-pressed="false">iTAK</button><button type="button" id="street-mobile" aria-pressed="false">STREETS</button><button type="button" id="grid-mobile" aria-pressed="false">GRID</button></nav>
 <footer class="bottomhud"><span class="led"></span><span id="global-status">CONNECTING TO PUBLIC SOURCES</span><span class="bottomnote">REAL DATA / SOURCE TIMESTAMPS / NO FAKE FALLBACK</span><button id="reset-camera" class="mini">⌖ RESET CAMERA</button><button id="toggle-hud" class="mini mobile-hud" aria-label="Toggle panels">PANELS</button></footer>
 <div id="toast" role="status" aria-live="polite" class="toast"></div>
 </body></html>

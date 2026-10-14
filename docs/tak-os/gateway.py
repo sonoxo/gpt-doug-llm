@@ -35,6 +35,10 @@ _SWARM_SPEC = importlib.util.spec_from_file_location("tak_os_swarm", _SWARM_FILE
 _SWARM_MODULE = importlib.util.module_from_spec(_SWARM_SPEC)
 _SWARM_SPEC.loader.exec_module(_SWARM_MODULE)
 SwarmKernel = _SWARM_MODULE.SwarmKernel
+_METRICS_SPEC = importlib.util.spec_from_file_location('tak_os_private_metrics', Path(__file__).resolve().parent / 'itak_metrics.py')
+_METRICS_MODULE = importlib.util.module_from_spec(_METRICS_SPEC)
+_METRICS_SPEC.loader.exec_module(_METRICS_MODULE)
+PrivateItakMetrics = _METRICS_MODULE.PrivateItakMetrics
 
 UTC = dt.timezone.utc
 APP_ROOT = Path(__file__).resolve().parent
@@ -161,6 +165,7 @@ class State:
             self.entities[uid] = {"id": uid, "type": cat, "lat": lat, "lon": lon, "baseLat": lat, "baseLon": lon, "label": name, "status": "ACTIVE / LAB", "source": "local-simulation", "synthetic": True, "history": [[lat, lon]], "timestamp": utcnow()}
         self.record("system", "gateway", "Local synthetic CoT gateway started", synthetic=True)
         self.swarm = SwarmKernel(self)
+        self.itak_metrics = PrivateItakMetrics()
 
     def record(self, kind: str, source: str, detail: str, *, uid: str = "", synthetic: bool = True) -> dict[str, Any]:
         with self.lock:
@@ -329,6 +334,19 @@ def handler_factory(state: State):
             if not self.acceptable_host():
                 return self.respond(403, {"error":"localhost Host header required"})
             path, query = self.path_info()
+            if path == "/api/v1/itak/capabilities": return self.respond(200, state.itak_metrics.capabilities())
+            if path == "/api/v1/itak/metrics":
+                if not state.itak_metrics.configured():
+                    return self.respond(503, {"status":"not_configured","metrics":None})
+                if not state.itak_metrics.authorized(self.headers.get("Authorization")):
+                    self.send_response(401)
+                    self.send_header("WWW-Authenticate", 'Bearer realm="private-tak-metrics"')
+                    self.send_header("Cache-Control", "no-store")
+                    self.send_header("Content-Length", "0")
+                    self.end_headers()
+                    return
+                code, data = state.itak_metrics.sample()
+                return self.respond(code, data)
             if path == "/api/v1/health": return self.respond(200, state.status())
             if path == "/api/v1/session":
                 self.respond(200, {**state.status(), "csrfToken": state.token})

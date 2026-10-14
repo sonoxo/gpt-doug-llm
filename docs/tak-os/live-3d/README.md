@@ -91,3 +91,22 @@ The iPhone viewport opens on the real Cesium 3D globe with **no large control dr
 The mobile initial camera now frames **North America**, not an overly distant full-Earth sphere or the user's private device location. An optional, user-triggered **STREETS** layer requests OpenStreetMap raster tiles. The selected preset city (Richmond, Virginia by default) is shown when streets are enabled; camera coordinates are explicitly camera position, never the device GPS location. NASA historical imagery is restored when streets are disabled. OSM contributor attribution and tile request errors are visible. Tiles are not locally cached by the service worker; see the [OpenStreetMap tile policy](https://operations.osmfoundation.org/policies/tiles/).
 
 Before production acceptance, confirm on physical iPhones in portrait, landscape, Safari with its bars expanded/collapsed, and standalone Add to Home Screen. Automated route and JavaScript tests cannot replace physical Safari WebGL testing.
+
+
+## Private iTAK / TAK Server metrics (opt-in)
+
+The iPhone DATA inspector attempts a same-origin `/tak-os/api/v1/itak/capabilities` request. **GitHub Pages is static** and cannot serve this private API; public xunia.org shows disconnected/unavailable, not fabricated counts. The local Python gateway implements a protected, **read-only, admin-authenticated** TAK Server aggregate metrics connector. The source is official `GET /actuator/custom-network-metrics`; there is no iTAK-specific count exposed by this aggregate endpoint.
+
+Set these only on the **private server**, never in HTML, GitHub Pages, client JS, screenshots, or committed `.env`: `TAK_METRICS_BASE_URL=https://owned-tak-server:8443`, `TAK_METRICS_CLIENT_CERT`, `TAK_METRICS_CLIENT_KEY`, `TAK_METRICS_CA_CERT` (files readable only to gateway), and a separate randomly generated `TAK_METRICS_VIEW_TOKEN` of 32–256 characters. Configure authenticated private access/transport between the iPhone and the private gateway; do not expose the local simulator directly to the Internet. The bearer token gives access to server-wide metrics, so restrict it and keep it out of browser persistence. The upstream server certificate is checked against the supplied CA and mutual TLS certs; redirects are rejected. Network counters have source timestamps, nullable derived rates, an all-TAK scope and no identity, geolocation, UID, or CoT payloads. Errors return **unavailable** rather than stale data.
+
+The public page is **not a native iTAK client** and **does not have any TAK Server permission or client certificates**. Actual iTAK-only, location, video, message, or battery telemetry would need separate, documented, permissioned evidence and policy review. Unit test: `python3 -m unittest discover -s tests -p 'test_tak_os_itak_metrics.py' -v`.
+
+### Native iTAK vs private TAK Server metrics on iPhone
+
+The iPhone dock now has a dedicated **iTAK** panel, separate from the public Earth map DATA tab. Public xunia.org remains a static GitHub Pages site and can show the interface but **cannot** access a private TAK gateway by itself. Without an owned TAK Server, authorized certificates and a private gateway session, every live metric remains explicitly NOT CONNECTED or UNAVAILABLE.
+
+An authorized operator can run the Python gateway on a protected host with the TAK_METRICS_BASE_URL, TAK_METRICS_CLIENT_CERT, TAK_METRICS_CLIENT_KEY, TAK_METRICS_CA_CERT, and TAK_METRICS_VIEW_TOKEN environment variables configured only on that host. The iPhone browser needs an authenticated HTTPS route to this same-origin private gateway; the public GitHub Pages origin cannot be used as a relay. Never paste certificate files or credentials into source code or this public repo.
+
+The operator explicitly submits a viewer token from the private page. The browser keeps it only in volatile memory and polls verified counters at ten-second intervals. STOP clears the token and all displayed totals. Backgrounding the app or leaving the iTAK panel also ends polling. Counter resets and transport failures never return stale measurements as current. If the private gateway reuses a recent report, sampleAgeSeconds reflects the true monotonic elapsed time rather than zero.
+
+Displayed counters are **all connected TAK client types**, not iTAK-only devices. Native iTAK client identities, CoT positions, GPS, message bodies, video, and device-battery metrics are not ingested.
