@@ -83,3 +83,11 @@ The public Live Earth workspace is an installable iPhone Safari web application,
 ### iPhone validation
 
 `node --test tests/test_tak_os_live3d.js` and `python3 -m unittest discover -s tests -p 'test_tak_os_live3d.py' -v` check the PWA manifest, static-route allowlist, shell-only cache, source-health math, mobile resource limits, and the new controls. Actual Safari WebGL fidelity, live provider availability and iOS Add to Home Screen installation require real-device testing after deployment.
+
+### ATAK-style iPhone scaling (map-first)
+
+The iPhone viewport opens on the real Cesium 3D globe with **no large control drawer covering the map**. MAP closes drawers; LAYERS and DATA open bounded, scrollable bottom sheets with a close button. Three touch-sized floating controls zoom or recenter the map, while the top status and bottom five-button dock respect the device safe areas. Cesium continues handling touch/pinch gestures.
+
+The mobile initial camera now frames **North America**, not an overly distant full-Earth sphere or the user's private device location. An optional, user-triggered **STREETS** layer requests OpenStreetMap raster tiles. The selected preset city (Richmond, Virginia by default) is shown when streets are enabled; camera coordinates are explicitly camera position, never the device GPS location. NASA historical imagery is restored when streets are disabled. OSM contributor attribution and tile request errors are visible. Tiles are not locally cached by the service worker; see the [OpenStreetMap tile policy](https://operations.osmfoundation.org/policies/tiles/).
+
+Before production acceptance, confirm on physical iPhones in portrait, landscape, Safari with its bars expanded/collapsed, and standalone Add to Home Screen. Automated route and JavaScript tests cannot replace physical Safari WebGL testing.
