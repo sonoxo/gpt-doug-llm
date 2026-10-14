@@ -43,7 +43,8 @@ class SIReadinessTests(unittest.TestCase):
             raise RuntimeError("secret in token")
         report=si.build_report(self.snapshot,limit=1,fetch_text=bad)
         self.assertEqual(report["counts"]["incomplete_evidence"],1)
-        self.assertNotIn("secret",json.dumps(report))
+        self.assertNotIn("secret in token",json.dumps(report))
+        self.assertFalse(report["policy"]["secret_collection"])
 
     def test_local_output_only(self):
         with tempfile.TemporaryDirectory() as td:
