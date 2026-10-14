@@ -65,6 +65,7 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 [tool.setuptools]
 # Top-level AI stop module must be included in installed wheels, not only source checkouts.
 py-modules = ["ai_killswitch"]
+packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "gpt_doug_guardian"]
 packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio"]
 
 [tool.pytest.ini_options]
