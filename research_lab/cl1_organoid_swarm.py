@@ -13,13 +13,13 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import hashlib
+import http.client
 import importlib.metadata
 import json
 import time
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
-from urllib.request import Request, urlopen
+from urllib.parse import urljoin, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = ROOT / "intel" / "sources" / "cl1-organoid-authorized-sources.json"
@@ -85,21 +85,53 @@ def simulator_snapshot(seconds: float, output: Path) -> dict[str, Any]:
     }
 
 
-def _fetch_one(item: dict[str, Any]) -> dict[str, Any]:
-    req = Request(item["url"], headers={
+def _bounded_https_get(
+    url: str,
+    allowed_hosts: frozenset[str],
+    redirects_remaining: int = 3,
+) -> tuple[bytes, str, str]:
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        raise ValueError("only HTTPS evidence URLs are permitted")
+    if parsed.hostname not in allowed_hosts:
+        raise ValueError(f"evidence host not allowlisted: {parsed.hostname}")
+    if parsed.username or parsed.password:
+        raise ValueError("credentials in evidence URLs are forbidden")
+    if parsed.port not in (None, 443):
+        raise ValueError("non-standard HTTPS ports are forbidden")
+
+    target = parsed.path or "/"
+    if parsed.query:
+        target += "?" + parsed.query
+    headers = {
         "User-Agent": "GPT-Doug-CL1-Evidence-Swarm/1.0",
         "Accept": "text/html,application/json,text/plain;q=0.8,*/*;q=0.2",
-    })
-    started = time.monotonic()
-    with urlopen(req, timeout=TIMEOUT) as response:
+    }
+    connection = http.client.HTTPSConnection(parsed.hostname, 443, timeout=TIMEOUT)
+    try:
+        connection.request("GET", target, headers=headers)
+        response = connection.getresponse()
+        location = response.getheader("Location")
+        if response.status in {301, 302, 303, 307, 308}:
+            response.read()
+            if not location or redirects_remaining <= 0:
+                raise ValueError("redirect rejected by evidence boundary")
+            redirected = urljoin(url, location)
+            return _bounded_https_get(redirected, allowed_hosts, redirects_remaining - 1)
+        if response.status < 200 or response.status >= 300:
+            raise ValueError(f"evidence source returned HTTP {response.status}")
         body = response.read(MAX_BYTES + 1)
         if len(body) > MAX_BYTES:
             raise ValueError("response exceeds bounded evidence limit")
-        content_type = response.headers.get("Content-Type", "")
-        final_url = response.geturl()
-    parsed = urlparse(final_url)
-    if parsed.scheme != "https":
-        raise ValueError("redirect left HTTPS")
+        content_type = response.getheader("Content-Type", "")
+        return body, content_type, url
+    finally:
+        connection.close()
+
+
+def _fetch_one(item: dict[str, Any], allowed_hosts: frozenset[str]) -> dict[str, Any]:
+    started = time.monotonic()
+    body, content_type, final_url = _bounded_https_get(item["url"], allowed_hosts)
     return {
         "id": item["id"],
         "url": item["url"],
@@ -117,8 +149,12 @@ def evidence_swarm(path: Path = DEFAULT_MANIFEST, workers: int = 4) -> dict[str,
     manifest = load_manifest(path)
     workers = max(1, min(int(workers), MAX_WORKERS))
     results: list[dict[str, Any]] = []
+    allowed_hosts = frozenset(manifest["allowed_hosts"])
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers, thread_name_prefix="cl1-evidence") as pool:
-        futures = {pool.submit(_fetch_one, item): item for item in manifest["sources"]}
+        futures = {
+            pool.submit(_fetch_one, item, allowed_hosts): item
+            for item in manifest["sources"]
+        }
         for future in concurrent.futures.as_completed(futures):
             item = futures[future]
             try:
