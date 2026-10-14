@@ -52,7 +52,7 @@ Rollback is an explicit, separately approved local operation. Neither command de
 
 ## Ontology/evidence delta
 
-The `observe` command reuses `gpt_brain.s_brain.SBrain` rather than creating a second truth store. Caller-supplied observations are source-tagged, timestamped by S-Brain, and deduplicated by `(subject,predicate,value,source,URI)`. A conflicting or changed value yields a `changed` event and identifies existing source IDs. Such records are **not independently verified** by ingesting them.
+The `observe` command uses the shared `gpt_brain.s_brain.SBrain` store when it is installed. Because S-Brain is currently on a feature lineage and may not be on `main`, GPT-Delta also provides a **standalone SQLite fallback**, with the same source-tagged, append-only status events and secret-like input rejection. Caller-supplied observations are deduplicated by `(subject,predicate,value,source,URI)`. A conflicting or changed value yields a `changed` event and identifies existing source IDs. The fallback can later be reconciled with the canonical S-Brain ontology under an explicit migration. Such records are **not independently verified** by ingesting them.
 
 ## Install and run
 
