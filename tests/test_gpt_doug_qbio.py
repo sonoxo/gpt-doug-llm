@@ -29,6 +29,9 @@ def test_sequence_report_has_probabilities_and_dimensions():
     assert math.isclose(sum(probs.values()), 1.0, abs_tol=1e-5)
     assert report["dimensions"]["count"] == 16
     assert tuple(report["dimensions"]["axes"]) == FEATURE_DIMENSIONS
+    assert set(report["dimensions"]["state"]) == set(FEATURE_DIMENSIONS)
+    assert report["sequence"][-1]["population_rate_hz"] > 0
+    assert report["forecast"]["confidence_proxy"] >= 0
 
 
 def test_quantum_layer_is_explicitly_classical():
