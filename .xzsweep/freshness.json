@@ -1,11 +1,9 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T14:36:46Z",
-  "due_files_reviewed": 3,
+  "cutoff_at": "2026-10-13T15:08:31Z",
+  "due_files_reviewed": 1,
   "due_paths": [
-    "docs/PEACELAB_ONTOLOGY.md",
-    "peace_impact/peacelab.ontology.jsonld",
-    "tests/test_peace_ontology.py"
+    "peace_impact/ontology_graph.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -4147,13 +4145,24 @@
     "docs/PEACELAB_ONTOLOGY.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:35:13Z",
       "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "548f9d60ab97b3365530053b58e0f9c3d18c0488fc78c5c8fddbcb7de9615aee",
       "size": 6053,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
+    },
+    "docs/PLATFORM_ONE_REPO1_READINESS.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "5f25303377e0e88d098e49483b4cb852f3b69da5066c7ced9ae60cccd0610231",
+      "size": 2066,
+      "validation_issues": [],
+      "was_due": false
     },
     "docs/PRODUCTS.md": {
       "actions": [],
@@ -12696,22 +12705,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T14:39:47Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:08:31Z",
       "sha256": "6c09df6a64d190ba8644a9c26de6d0d52c509b7435eb4c8466e24906c1189cbb",
       "size": 19463,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/peacelab.ontology.jsonld": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:28:11Z",
       "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "e8b79bacfe294617190fe9c7c42b0c40900fcaca2f55f9504c52f75a8cc54092",
       "size": 15915,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/pilot.py": {
       "actions": [],
@@ -12721,6 +12730,138 @@
       "reviewed_at": "2026-10-14T12:47:02Z",
       "sha256": "0b8ce24dd20204e467032fec9fcc27bae1ffc1fab0841ba11a873c864210ba6e",
       "size": 16569,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/.dockerignore": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "95df7e0042012bb9c469271f4156d6df824afadc5ccd18ff96afda187704dfa3",
+      "size": 98,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/.gitignore": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "95b0ec32050f17421977caf718f26503667be5137a5d948855a4443c0f893651",
+      "size": 42,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/Dockerfile": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "9989e904393f9ade89788140d58e2c1a10d04030130dc3b772aad208ad229f16",
+      "size": 1063,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/LICENSE": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "18df46b456afeffde29c5bc0c5e108908c16ed3ea835f8f0b968d7f128ec3b90",
+      "size": 1063,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "3675b6cfd7e18f33113835d4f321a878345d922f95f9a1b5acf524cf34a98e62",
+      "size": 2547,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/SECURITY.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "fdc1800591ab867c55dcd3ffa42303017615950adcea1e0e885baf66b200ee55",
+      "size": 792,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/hardening_manifest.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "2c40c9ffd88ee0ade0dc0669fe1d346081168042e7da9f7372063639b545ac2c",
+      "size": 838,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/renovate.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "b283eb56b503c64e6e01a69adab066b889afe338958983f5c580fa2cd9c7e863",
+      "size": 339,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/scripts/validate.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "e946245facbd8662cceb8c74c5897456e03d40dbb0f976f5da961575c2c6be22",
+      "size": 201,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/src/core.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "399803ff384c77d15cf285b5597985b86e790fda25bb4cd31482051195f0095d",
+      "size": 17876,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/src/service.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "d740c5c7db9f052cb02a3b465852fabde4f94ec1dd311f07855b3963bb5eefd1",
+      "size": 7239,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-qbio/tests/test_service.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "10b32d9fe42219cf6066873e962bd78ca888a75f191c6b4b32f68ac9f916fa96",
+      "size": 2672,
       "validation_issues": [],
       "was_due": false
     },
@@ -15636,6 +15777,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "6d53e3642da0d3c34f4ecbcb0f110ee0b28681c45f3c37c422ec0dd3d6ddf893",
       "size": 872,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/export-repo1-qbio.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "2aa781f895651e05f6183451503559a2432e6be3fe5fc7e7513c4a761b6b0b2c",
+      "size": 463,
       "validation_issues": [],
       "was_due": false
     },
@@ -18975,13 +19127,13 @@
     "tests/test_peace_ontology.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:33:08Z",
       "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "33240bdc4a905e02a56e6d0ee67ee653386421a4fe36241383006569de899e2a",
       "size": 9428,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_peace_pilot.py": {
       "actions": [],
@@ -18991,6 +19143,17 @@
       "reviewed_at": "2026-10-14T12:47:02Z",
       "sha256": "7d5a4410f9762b8e2ecce5550587a365f2e76244c538067e813119b07b8dffe2",
       "size": 9388,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_platform_one_repo1_qbio.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:08:20Z",
+      "reviewed_at": null,
+      "sha256": "07cdcbd7746db936c4594826c421406f2b910d99226e93b8b450f72e88d7d7be",
+      "size": 1565,
       "validation_issues": [],
       "was_due": false
     },
@@ -21825,9 +21988,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:26:36Z",
+      "git_touched_at": "2026-10-14T14:36:48Z",
       "reviewed_at": null,
-      "sha256": "08e80c911ae64e882c4e41cd5dd1cd8be47e0c918a457136113a23dbc79a223a",
+      "sha256": "98c4cd105ca92d07d13d64c7b58609d2ce41634af3d33be83132b3a8a3d0e523",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -21847,9 +22010,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:26:36Z",
+      "git_touched_at": "2026-10-14T14:36:48Z",
       "reviewed_at": null,
-      "sha256": "508feaa614ea709fb33306219577fa5abc6822a24568a46dd2e909ceefaaf4ba",
+      "sha256": "8fd1d85734743116b5b4a2b04a3bd700e36c8ce529982cdde7c19b0188ba95ce",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -24309,11 +24472,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T14:36:46Z",
+  "generated_at": "2026-10-14T15:08:31Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2209,
+  "tracked_files_reviewed": 2224,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
