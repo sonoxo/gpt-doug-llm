@@ -6,6 +6,7 @@ from pathlib import Path
 from sonoxo_fleet import si_readiness as si
 from sonoxo_fleet.cli import SNAPSHOT, load_snapshot
 
+
 class SIReadinessTests(unittest.TestCase):
     def setUp(self):
         self.snapshot = load_snapshot(SNAPSHOT)
