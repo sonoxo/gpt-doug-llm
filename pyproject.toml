@@ -55,6 +55,8 @@ zyra-sentinel = "golden_shield:start_247_monitoring"
 gpt-zyra-shaggoth = "gpt_zyra_shaggoth.cli:main"
 gpt-doug-ttd = "ttd_llm.__main__:main"
 gpt-doug-mlm = "gpt_doug_mlm.cli:main"
+gpt-stark-llm = "agents.gpt_stark_llm:main"
+gpt-ironman-llm = "agents.gpt_ironman_llm:main"
 gpt-doug-qbio = "gpt_doug_qbio.cli:main"
 
 [project.urls]
@@ -65,7 +67,6 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 [tool.setuptools]
 # Top-level AI stop module must be included in installed wheels, not only source checkouts.
 py-modules = ["ai_killswitch"]
-packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "gpt_doug_guardian"]
 packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio"]
 
 [tool.pytest.ini_options]

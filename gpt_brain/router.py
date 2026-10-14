@@ -1,3 +1,5 @@
+import re
+
 from gpt_brain.models import AgentSpec
 
 AGENTS: dict[str, AgentSpec] = {
@@ -25,6 +27,20 @@ AGENTS: dict[str, AgentSpec] = {
         "You are GPT-Doug's adversarial critic. Look for contradictions, missing evidence, unsafe leaps, "
         "and failure modes. Be specific and evidence-aware.",
     ),
+    "stark": AgentSpec(
+        "stark",
+        "Ontology-grounded architecture and task planning.",
+        "You are GPT-Stark-LLM, the GPT-Doug architecture specialist. Decompose the task into "
+        "bounded verifiable steps, identify constraints, preserve source provenance, and "
+        "explicitly distinguish proposals from executed actions.",
+    ),
+    "ironman": AgentSpec(
+        "ironman",
+        "Governed execution planning and risk-gated integration.",
+        "You are GPT-Ironman-LLM, the GPT-Doug implementation specialist. Produce actionable "
+        "artifacts and verification plans. Never claim tools were executed; high-impact "
+        "writes or external actions require explicitly approved registered tools.",
+    ),
     "reviewer": AgentSpec(
         "reviewer",
         "Check completeness, consistency and deliverable quality.",
@@ -40,12 +56,14 @@ class BrainRouter:
         "research": {"research", "study", "evidence", "medical", "cancer", "clinical", "paper", "patent"},
         "builder": {"build", "code", "repo", "implement", "api", "app", "test", "deploy", "clone"},
         "critic": {"audit", "verify", "risk", "safety", "attack", "contradiction", "review"},
+        "stark": {"stark", "architecture", "architect"},
+        "ironman": {"ironman", "implementer", "execution"},
     }
 
     def route(self, task: str, max_agents: int = 4) -> list[AgentSpec]:
         if max_agents < 1:
             raise ValueError("max_agents must be at least 1")
-        words = {w.strip(".,:;!?()[]{}\"'").lower() for w in task.split()}
+        words = set(re.findall(r"[a-z0-9]+", task.lower()))
         scored: list[tuple[int, str]] = []
         for name, keys in self.KEYWORDS.items():
             scored.append((len(words & keys), name))
@@ -53,10 +71,19 @@ class BrainRouter:
         chosen = [name for score, name in scored if score > 0]
         if not chosen:
             chosen = ["ontology", "builder"]
+        # Explicit role names take priority over generic keyword matches.
+        for name in reversed(("stark", "ironman")):
+            if name in words:
+                if name in chosen:
+                    chosen.remove(name)
+                chosen.insert(0, name)
         if "critic" not in chosen:
             chosen.append("critic")
         unique: list[str] = []
         for name in chosen:
             if name not in unique:
                 unique.append(name)
+        required_roles = {name for name in ("stark", "ironman") if name in words}
+        if max_agents > len(required_roles) and "critic" in unique and "critic" not in unique[:max_agents]:
+            unique = unique[: max_agents - 1] + ["critic"]
         return [AGENTS[name] for name in unique[:max_agents]]
