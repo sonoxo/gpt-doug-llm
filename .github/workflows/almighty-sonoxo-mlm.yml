@@ -5,6 +5,8 @@ on:
     paths:
       - "gpt_doug_mlm/almighty_sonoxo.py"
       - "gpt_doug_mlm/almighty_cli.py"
+      - "gpt_doug_mlm/almighty_ensemble.py"
+      - "tests/test_almighty_ensemble.py"
       - "tests/test_almighty_sonoxo.py"
       - "data/almighty_sonoxo_seed.txt"
       - ".github/workflows/almighty-sonoxo-mlm.yml"
@@ -12,6 +14,8 @@ on:
     paths:
       - "gpt_doug_mlm/almighty_sonoxo.py"
       - "gpt_doug_mlm/almighty_cli.py"
+      - "gpt_doug_mlm/almighty_ensemble.py"
+      - "tests/test_almighty_ensemble.py"
       - "tests/test_almighty_sonoxo.py"
       - "data/almighty_sonoxo_seed.txt"
       - ".github/workflows/almighty-sonoxo-mlm.yml"
@@ -42,7 +46,7 @@ jobs:
           OMP_NUM_THREADS: "1"
           MKL_NUM_THREADS: "1"
           PYTHONPATH: .
-        run: python -m unittest tests.test_almighty_sonoxo -v
+        run: python -m unittest tests.test_almighty_sonoxo tests.test_almighty_ensemble -v
       - name: CLI end-to-end train, inspect and inference
         env:
           OMP_NUM_THREADS: "1"
