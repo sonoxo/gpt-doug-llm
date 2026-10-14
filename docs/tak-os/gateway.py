@@ -292,11 +292,11 @@ def handler_factory(state: State):
                 csp = ("default-src 'self'; "
                     "script-src 'self' https://cdn.jsdelivr.net https://esm.sh; "
                     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
-                    "img-src 'self' data: blob: https://cdn.jsdelivr.net https://gibs.earthdata.nasa.gov; "
+                    "img-src 'self' data: blob: https://cdn.jsdelivr.net https://gibs.earthdata.nasa.gov https://tile.openstreetmap.org; "
                     "connect-src 'self' https://cdn.jsdelivr.net https://esm.sh "
                     "https://gibs.earthdata.nasa.gov https://earthquake.usgs.gov "
                     "https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov "
-                    "https://celestrak.org https://overpass-api.de; "
+                    "https://celestrak.org https://overpass-api.de https://tile.openstreetmap.org; "
                     "worker-src 'self' blob: https://cdn.jsdelivr.net; "
                     "font-src 'self' data: https://cdn.jsdelivr.net; "
                     "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
