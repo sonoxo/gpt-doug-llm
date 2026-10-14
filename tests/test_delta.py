@@ -86,7 +86,7 @@ class DeltaTests(unittest.TestCase):
 
     def test_training_is_real_and_updates_parameters(self):
         model, tok, _ = load_delta(self.base, self.candidate)
-        self.assertGreater(float(model.up.weight.abs().sum()), 0)
+        self.assertGreater(float(model.up.weight.detach().abs().sum()), 0)
         x = torch.tensor([tok.encode("the ontology stores [MASK] with provenance", 32)], dtype=torch.long)
         self.assertEqual(list(model(x).shape), [1, x.size(1), len(tok.vocab)])
 
@@ -185,6 +185,20 @@ class DeltaTests(unittest.TestCase):
             self.assertTrue(change["material"])
             self.assertTrue(change["contradictory_values"])
             self.assertFalse(change["independently_verified"])
+
+    def test_standalone_sqlite_fallback_when_s_brain_not_installed(self):
+        import sys
+        with tempfile.TemporaryDirectory() as folder:
+            with patch.dict(sys.modules, {"gpt_brain.s_brain": None}):
+                db = Path(folder) / "fallback.sqlite3"
+                kwargs = dict(database=db, subject="NCT-TEST", predicate="recruitment",
+                              source_id="registry", source_uri="local:snapshot")
+                self.assertEqual(observe_change(**kwargs, value="recruiting")["event"], "new")
+                self.assertEqual(observe_change(**kwargs, value="recruiting")["event"], "duplicate")
+                change = observe_change(**kwargs, value="suspended")
+                self.assertEqual(change["event"], "changed")
+                self.assertEqual(change["backend"], "standalone-sqlite")
+                self.assertFalse(change["independently_verified"])
 
     def test_secrets_rejected_by_s_brain(self):
         with tempfile.TemporaryDirectory() as folder:
