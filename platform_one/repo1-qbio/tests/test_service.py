@@ -8,7 +8,12 @@ SRC = os.path.join(ROOT, "src")
 sys.path.insert(0, SRC)
 
 from core import OUTCOME_STATES  # noqa: E402
-from service import analyze_payload, build_frames  # noqa: E402
+from service import (  # noqa: E402
+    MAX_CONNECTIONS,
+    REQUEST_TIMEOUT_SECONDS,
+    analyze_payload,
+    build_frames,
+)
 
 
 class ServiceTests(unittest.TestCase):
@@ -45,6 +50,12 @@ class ServiceTests(unittest.TestCase):
 
     def test_json_serializable(self):
         json.dumps(analyze_payload(self.sample_payload()), allow_nan=False)
+
+    def test_network_resource_bounds_are_finite(self):
+        self.assertGreater(REQUEST_TIMEOUT_SECONDS, 0)
+        self.assertLessEqual(REQUEST_TIMEOUT_SECONDS, 10)
+        self.assertGreater(MAX_CONNECTIONS, 0)
+        self.assertLessEqual(MAX_CONNECTIONS, 64)
 
     def test_rejects_subnormal_timestamp_interval(self):
         payload = self.sample_payload()
