@@ -45,8 +45,9 @@ Each frame is assigned one of four research states:
 `QUIESCENT`, `DISTRIBUTED_ACTIVITY`, `CONFLUENT_ACTIVITY`, or `BURST_CONFLUENT`.
 
 The next-state forecast blends a transparent heuristic score with a Laplace-smoothed
-first-order transition model derived from the observed sequence. The probabilities are
-**not calibrated biological predictions**.
+first-order transition model derived from the observed sequence. The report also emits
+the full four-by-four transition matrix and propagated probability distributions for
+steps 1 through 5. The probabilities are **not calibrated biological predictions**.
 
 ## Quantum-inspired transform
 
@@ -109,3 +110,10 @@ The bundled `demo --frames 64 --channels 64 --seed 42` sequence is designed only
 as a software reference. Its exact forecast may change if the scoring equations are
 revised; it must never be interpreted as a biological prediction or quantum-hardware
 measurement.
+
+
+## Bounds and input integrity
+
+Each analysis is bounded to 10,000 frames and 256 channels. JSON spike counts must be
+literal non-negative integers; fractional numbers, booleans and numeric strings are
+rejected rather than silently coerced. Per-channel counts are bounded to 1,000,000.
