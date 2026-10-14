@@ -371,8 +371,8 @@ class SequentialSpikeModel:
         for step in range(2, 6):
             propagated = _propagate(propagated, transition_matrix)
             horizons[str(step)] = {
-                key: round(value, 6)
-                for key, value in propagated.items()
+                state: round(value, 6)
+                for state, value in propagated.items()
             }
         quantum = quantum_inspired_projection(last)
         uncertainty = round(_uncertainty(probabilities), 6)
