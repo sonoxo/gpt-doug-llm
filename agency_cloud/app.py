@@ -44,6 +44,7 @@ from agency_cloud.global_intel import (
     global_intel_benchmark,
     source_catalog as global_intel_source_catalog,
 )
+from agency_cloud.intel_evidence import summarize_benchmark as global_intel_evidence_summary
 from agency_cloud.integrations import (
     IntelligenceIntegrationError,
     glassonion_query,
@@ -767,6 +768,12 @@ def api_global_intel_sources():
 @app.get("/api/v1/intel/global/benchmark")
 def api_global_intel_benchmark():
     return global_intel_benchmark()
+
+
+@app.get("/api/v1/intel/global/evidence")
+def api_global_intel_evidence():
+    """Public-source evidence freshness and uncorroborated ontology references."""
+    return global_intel_evidence_summary(global_intel_benchmark())
 
 
 @app.get("/api/v1/compliance/catalog")
