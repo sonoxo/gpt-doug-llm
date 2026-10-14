@@ -314,7 +314,7 @@ li{{margin:12px 0}}a{{color:#a8dafa}}li small{{display:block;color:#99aebb}}
 .note{{border-left:3px solid #dda66c;padding:12px 16px;background:#2b241e}}
 </style></head>
 <body><div class="header"><div><div class="muted">GPT-DOUG-MAX / BIOPINEAL / CL1</div>
-<h1>Neural Culture Growth Evidence</h1><p>Offline evidence view • no live CL1 connection • no fabricated readings</p>
+<h1>Neural Culture Growth Evidence</h1><p>Offline evidence view • No live CL1 connection • no fabricated readings</p>
 </div><span class="tag">RESEARCH / OPERATOR-ATTESTED</span></div>
 <div class="grid">
 <div class="card"><small>CULTURE ID</small><strong>{esc(report["culture_id"])}</strong></div>
