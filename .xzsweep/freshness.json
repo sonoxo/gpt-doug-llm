@@ -1,25 +1,14 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T10:16:18Z",
-  "due_files_reviewed": 17,
+  "cutoff_at": "2026-10-13T11:17:49Z",
+  "due_files_reviewed": 6,
   "due_paths": [
-    ".github/workflows/defensive-hardening.yml",
-    ".github/workflows/nxyz-agentic-upgrade.yml",
-    ".github/workflows/warfighter-research-core.yml",
-    "docs/BIOPINEAL_AGENT10.md",
-    "docs/BIOPINEAL_RESEARCH_SOURCES.md",
-    "docs/superpowers/specs/2026-10-12-mecha-dual-repo-biopineal-design.md",
-    "intel/sources/biopineal-2026-10-12-public-evidence.json",
-    "research_lab/warfighter/biopineal.py",
-    "research_lab/warfighter/biopineal_sources.py",
-    "research_lab/warfighter/cli.py",
-    "research_lab/warfighter/examples/biopineal_bell.json",
-    "research_lab/warfighter/operator_profile.py",
-    "research_lab/warfighter/tests/test_agent10_biopineal.py",
-    "research_lab/warfighter/tests/test_biopineal_sources.py",
-    "research_lab/warfighter/tests/test_doug_max_wrapper.py",
-    "research_lab/warfighter/tests/test_pineal_integration.py",
-    "scripts/zyrapalantir_patent_intel.py"
+    ".gitignore",
+    "peace_impact/__init__.py",
+    "peace_impact/core.py",
+    "peace_impact/ontology.json",
+    "run-GPT-Doug-PeaceLab.command",
+    "tests/test_peace_impact.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -377,13 +366,13 @@
     ".github/workflows/defensive-hardening.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:14:28Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "94d9b5357c24800b0f0a808d71cdb159131f6d242d66311f627ba2f78d3a573c",
       "size": 2885,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/docker-publish.yml": {
       "actions": [],
@@ -663,13 +652,13 @@
     ".github/workflows/nxyz-agentic-upgrade.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:04:27Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "fb22b4b6feed5dd3871d2cd2dcbe896fc6eb15e35c67497dc4122d2cb774d9a3",
       "size": 1461,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/nxyz-mouse-mic-store-package.yml": {
       "actions": [],
@@ -1092,13 +1081,13 @@
     ".github/workflows/warfighter-research-core.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:26:49Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "972efccefdc773832a331167e5ec71b988db120d18f6bc8eee763bc69a5f171e",
       "size": 3144,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/watch-dog-typescript.yml": {
       "actions": [],
@@ -1237,11 +1226,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:23:40Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "75cf907aabc0f9de9eb46c5e8fb6b9e72a035459a8d62ca36afa408cf593075f",
       "size": 750,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".gitmodules": {
       "actions": [],
@@ -3358,13 +3347,13 @@
     "docs/BIOPINEAL_AGENT10.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:39:33Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "56a2f92365324a15b2b8afa5d6a5c59b5275c85a262375600a7d61522e067b58",
       "size": 4016,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BIOPINEAL_CL1_INTEGRATION.md": {
       "actions": [],
@@ -3402,13 +3391,13 @@
     "docs/BIOPINEAL_RESEARCH_SOURCES.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:48:51Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "a4b13373ac7d7145a41edbf816df21048a46f3b27c70b900e78b3f73eec22b64",
       "size": 5109,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BLACK_HOUSE_STUDIO.md": {
       "actions": [],
@@ -3418,6 +3407,61 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "307aef97cdedf8bd9cc87d96b5326ac069f7792781c6633b37d83fbc02c28a94",
       "size": 8467,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/CL1_BREAKTHROUGH_ENGINE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "b6f965e5625058ab2c8db921344ac2023f7a9962c151f8ad6791f5f98b761b62",
+      "size": 2111,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/CL1_MITOCHONDRIA.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "652552100c6a6d686759ee2205fcb66ca0852b4f7fc32713d347956f23850012",
+      "size": 2189,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/CL1_ORGANOID_SWARM.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "8fbc120907867e09b30e6e659ea4a8f4964cfbd11681acb615ab7ee41f96ee23",
+      "size": 1994,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/CL1_RESEARCH_CLAIM.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "25baf1ebdcb3b68d2340b192f1bc9d8abaab21a7d7298cf4d6e0ae60648f7b50",
+      "size": 4088,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/CL1_TRUTH_FACTS.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "78ce010df511c808a223b72a20f7c04009a3275ac14eb1237fbc1681fe7352cf",
+      "size": 5910,
       "validation_issues": [],
       "was_due": false
     },
@@ -5327,13 +5371,13 @@
     "docs/superpowers/specs/2026-10-12-mecha-dual-repo-biopineal-design.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T01:14:40Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "eb42d0b36624fdd6d3a070a6b7a2afc564822775f224e3e14134d747fcfc855d",
       "size": 29495,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/superpowers/specs/2026-10-12-quantum-warfighter-ontology-design.md": {
       "actions": [],
@@ -9628,13 +9672,57 @@
     "intel/sources/biopineal-2026-10-12-public-evidence.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:48:51Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "1000a79794916cca143ef5a14aad3d9cd383a94d4b8b834fb60ee468a66e6ceb",
       "size": 3609,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
+    },
+    "intel/sources/cl1-breakthrough-research-2026-10-13.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "4608b6c58b77b134751223d635427d55dd05354186673d2012ea499a064b6f22",
+      "size": 3359,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/sources/cl1-mitochondria-2026-10-13-evidence.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "ef44a2bc494e68ca6fd0daeb4c368f15bdd32affedee0e9a8558cd89eab87a17",
+      "size": 4395,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/sources/cl1-organoid-authorized-sources.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "89109020e0782c5c9482681d0aff47cdc553ad985d24b7d53664211e6d05bcc4",
+      "size": 1398,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "intel/sources/cl1-truth-facts-2026-10-13.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "0aeaf6593edd8dc85c4ec626b84f62b608464f33d4f00e6c46f89e54acaedd3d",
+      "size": 7046,
+      "validation_issues": [],
+      "was_due": false
     },
     "intel/sources/crowdstrike-safemind-2026-09-06.json": {
       "actions": [],
@@ -12303,11 +12391,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:22:51Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "2a746668cc3d80b0e5cd4bd758127ada7475063dda421aca575faec1a0a5dde5",
       "size": 65,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/cli.py": {
       "actions": [],
@@ -12325,11 +12413,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:22:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "d6c75bf02b95912db573957791c5c3377b7ae7d5957c12ef7d7704133fb0ede4",
       "size": 14849,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/nobel_readiness.py": {
       "actions": [],
@@ -12347,11 +12435,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:22:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "65b11d624caa1c6a2329cddee1f8d426bbbd83eb7768680e3b7a6d14a90a45a8",
       "size": 2202,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/ontology_graph.py": {
       "actions": [],
@@ -12401,10 +12489,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T19:27:58Z",
+      "git_touched_at": "2026-10-14T11:17:36Z",
       "reviewed_at": null,
-      "sha256": "a11745d4261a89e6f5be84205f6a33aad1a5964cf6b644bf77ceff06cf01dd55",
-      "size": 3451,
+      "sha256": "14103c15687c96328ef122bdf015d287a4e463502775a5cca79ca3e27ae2cfdd",
+      "size": 3245,
       "validation_issues": [],
       "was_due": false
     },
@@ -12812,6 +12900,39 @@
       "reviewed_at": null,
       "sha256": "59bd6f8092fcf49114fee97c6a3952561d9b676388a97d47d331be94a74fbcdd",
       "size": 4703,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/cl1_breakthrough_engine.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "3598a3c3884c35f665a2628f80fb9e247a1095671b9169c581d81c083bb0bf3e",
+      "size": 6448,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/cl1_mitochondria.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "f784f53077205d0ce8a017172d538030b7c10975b3ddd0d6172012f50b1aa3c3",
+      "size": 5392,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/cl1_organoid_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "0009ec4aa97e540dea231ad6775c59a7a33a093280b0e5794b979822f788f3f8",
+      "size": 8879,
       "validation_issues": [],
       "was_due": false
     },
@@ -13368,46 +13489,46 @@
     "research_lab/warfighter/biopineal.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:39:33Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "37fc34b0de0dcd1bc06cbeecae457af4e01db3ef2f8e76074779855943fc22d0",
       "size": 7509,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/biopineal_sources.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:48:51Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "5ba91cd7595fc68a7bfbd2e7db4c10eab6d69594dff4392645c5ba35c98cf074",
       "size": 9960,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/cli.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:48:51Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "6cf4e3a9a036baac9fac377479919300cbeaab6410f1f7bdb5e3bc0239d07717",
       "size": 9887,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/examples/biopineal_bell.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:39:33Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "24a52e236362ec3ddec2b50e4a94a12888cf7993974d02515aaaeb8852b3b177",
       "size": 165,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/examples/synthetic_training_defense.json": {
       "actions": [],
@@ -13456,13 +13577,13 @@
     "research_lab/warfighter/operator_profile.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:41:28Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "4f71b5d0e32d0201e7e97d410927602375a20cbf80d937a2b57f38ad6550f29e",
       "size": 4146,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/pineal_projection.py": {
       "actions": [],
@@ -13511,13 +13632,13 @@
     "research_lab/warfighter/tests/test_agent10_biopineal.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:41:28Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "be376008a4aa0bc5a48476ed6663f68c1a1d1bcb60b2e093bdf7b995d98af5c4",
       "size": 8861,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/tests/test_baseline.py": {
       "actions": [],
@@ -13533,13 +13654,13 @@
     "research_lab/warfighter/tests/test_biopineal_sources.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:48:51Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "e785b22cc270270ce00167c9871bbb9e972b1a48de2b09a762f4668d7c83db36",
       "size": 6945,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/tests/test_cli_e2e.py": {
       "actions": [],
@@ -13555,13 +13676,13 @@
     "research_lab/warfighter/tests/test_doug_max_wrapper.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:21:44Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "fce487e1f32db3a82f8e8cf94e591935b1093a9af90588c22f00845120d6a335",
       "size": 1006,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/tests/test_fixtures.py": {
       "actions": [],
@@ -13599,13 +13720,13 @@
     "research_lab/warfighter/tests/test_pineal_integration.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T00:26:02Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "9c81c19994fccfec30752b32118796be53860339164ee725ace982bc40143d3c",
       "size": 2810,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/warfighter/tests/test_pineal_projection.py": {
       "actions": [],
@@ -14239,11 +14360,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:23:06Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "92dfdc455f65ede36e6af24f57be687aed70e78d0e6baadaddd2e7cd82e67644",
       "size": 180,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "run-GPT-Doug-Shaggoth-Factory.command": {
       "actions": [],
@@ -15323,6 +15444,39 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/gpt-doug-breakthrough": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "7c4ed42d0559619748cc64db2340cf04fdb387593e7dea7b07154625b9bc84e8",
+      "size": 190,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-cl1-mitochondria": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "899d43820a082c0feee8e964e357dc557b3d8ed95581373771c688ec4cf95202",
+      "size": 183,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/gpt-doug-cl1-swarm": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "aefbf61cd68ca01e98952f94a20dc50e119a2c564cc7b1ea663a6032acbf7fae",
+      "size": 185,
+      "validation_issues": [],
+      "was_due": false
+    },
     "scripts/gpt-doug-compliance": {
       "actions": [],
       "binary": false,
@@ -16393,13 +16547,13 @@
     "scripts/zyrapalantir_patent_intel.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:08:50Z",
       "reviewed_at": "2026-10-14T10:16:18Z",
       "sha256": "1c99c76c16471532c44854c0185688f6dd503ca396dfaf50ef771528a417bf28",
       "size": 17431,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "scripts/zyrapalantir_visual.py": {
       "actions": [],
@@ -17556,6 +17710,39 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_cl1_breakthrough_engine.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "ee65056e7c4290f6981d9813426d43dc539cbebec7005f4ef0018e552cf05351",
+      "size": 1161,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_cl1_mitochondria.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "715c53690d30e57e82ec34aeb1878d9084289f62e45af9f4dba927582488b105",
+      "size": 1020,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_cl1_organoid_swarm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:17:36Z",
+      "reviewed_at": null,
+      "sha256": "6792ecab37d564a2cb250d0214bd08f6ac99957f5cddd4db68795ec42909bfa4",
+      "size": 1392,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_cloud_nxyz.py": {
       "actions": [],
       "binary": false,
@@ -18441,11 +18628,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T10:23:01Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "a21cf947c415488ecae92fad722ea70aa9899f6ae5325476a9e8da022ad93bcb",
       "size": 8245,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_peace_ontology.py": {
       "actions": [],
@@ -18572,10 +18759,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T19:46:51Z",
+      "git_touched_at": "2026-10-14T11:17:36Z",
       "reviewed_at": null,
-      "sha256": "2229a3215e17ccdec6a483226975add5599c12b832fc9bd4f364ee786e050553",
-      "size": 2344,
+      "sha256": "da5dfd9217dd35744214de15de4c70326c512516ca3069ed6aa09e7560541237",
+      "size": 2437,
       "validation_issues": [],
       "was_due": false
     },
@@ -23762,11 +23949,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T10:16:18Z",
+  "generated_at": "2026-10-14T11:17:49Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2158,
+  "tracked_files_reviewed": 2176,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
