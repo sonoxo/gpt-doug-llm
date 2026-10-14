@@ -31,6 +31,12 @@ def parser_factory() -> argparse.ArgumentParser:
 
     inspect = sub.add_parser("inspect", help="verify checksum and report checkpoint metadata")
     inspect.add_argument("--model", required=True)
+
+    council = sub.add_parser("council", help="run explicitly selected, locally installed Ollama models")
+    council.add_argument("--task", required=True)
+    council.add_argument("--models", required=True, help="comma-separated exact installed Ollama model IDs")
+    council.add_argument("--reviewers", default="", help="optional comma-separated local reviewer models")
+    council.add_argument("--evidence-json", default=None, help="local JSON array of {source_id,content,provenance}")
     return parser
 
 
@@ -38,7 +44,30 @@ def main(argv: list[str] | None = None) -> int:
     options = parser_factory().parse_args(argv)
     try:
         from gpt_doug_mlm.almighty_sonoxo import fill_mask, load_model, train_model
-        if options.command == "train":
+        if options.command == "council":
+            from pathlib import Path
+            from gpt_doug_mlm.almighty_ensemble import (
+                Source, SonoxoModelCouncil, register_local_ollama,
+            )
+            from gpt_doug_mlm.providers import ProviderRegistry
+            proposers = [name.strip() for name in options.models.split(",") if name.strip()]
+            reviewers = [name.strip() for name in options.reviewers.split(",") if name.strip()]
+            evidence = []
+            if options.evidence_json:
+                file = Path(options.evidence_json)
+                if not file.is_file() or file.stat().st_size > 500000:
+                    raise ValueError("evidence must be local JSON below 500KB")
+                data = json.loads(file.read_text(encoding="utf-8"))
+                if not isinstance(data, list):
+                    raise ValueError("evidence must be a JSON array")
+                evidence = [Source(**row) for row in data]
+            registry = ProviderRegistry()
+            register_local_ollama(registry, list(dict.fromkeys([*proposers, *reviewers])))
+            result = SonoxoModelCouncil(registry).evaluate(
+                options.task, proposer_models=proposers,
+                reviewer_models=reviewers, evidence=evidence,
+            )
+        elif options.command == "train":
             result = train_model(
                 options.corpus,
                 options.output,
