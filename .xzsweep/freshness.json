@@ -1,12 +1,11 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T14:26:38Z",
-  "due_files_reviewed": 4,
+  "cutoff_at": "2026-10-13T14:36:46Z",
+  "due_files_reviewed": 3,
   "due_paths": [
-    "docs/tak-os/icon.svg",
-    "docs/tak-os/manifest.webmanifest",
-    "docs/tak-os/vm/README.md",
-    "docs/tak-os/vm/launch.sh"
+    "docs/PEACELAB_ONTOLOGY.md",
+    "peace_impact/peacelab.ontology.jsonld",
+    "tests/test_peace_ontology.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -4150,11 +4149,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T14:35:13Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "548f9d60ab97b3365530053b58e0f9c3d18c0488fc78c5c8fddbcb7de9615aee",
       "size": 6053,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/PRODUCTS.md": {
       "actions": [],
@@ -4285,6 +4284,17 @@
       "reviewed_at": "2026-10-14T12:47:02Z",
       "sha256": "cec36e14a6a3bfe252d0bf809abdd85674d71f8100b74fce03a37144d1e5bcec",
       "size": 6866,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/SPIKE_CONFLUENCE_QBIO.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T14:36:34Z",
+      "reviewed_at": null,
+      "sha256": "124a1bc5d007b3fb265b36e5c85915e744f615ff2f1d221000524006459e1878",
+      "size": 3781,
       "validation_issues": [],
       "was_due": false
     },
@@ -5567,13 +5577,13 @@
     "docs/tak-os/icon.svg": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:18:40Z",
       "reviewed_at": "2026-10-14T14:26:38Z",
       "sha256": "7d6ef67cd3f4ef072828a143633b4a05fea9c02e2d866bb8420e1e500f02eb00",
       "size": 607,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/index.html": {
       "actions": [],
@@ -5721,13 +5731,13 @@
     "docs/tak-os/manifest.webmanifest": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:18:43Z",
       "reviewed_at": "2026-10-14T14:26:38Z",
       "sha256": "a1d2f56449aaaf191f0babc69c75bf32c2f61cdb18c2f904a2e16c070eb6324b",
       "size": 545,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/nasa-layers.css": {
       "actions": [],
@@ -5809,24 +5819,24 @@
     "docs/tak-os/vm/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:17:59Z",
       "reviewed_at": "2026-10-14T14:26:38Z",
       "sha256": "2e5bb9d0f3e463be72464ddbab98ee77b883737e0b326d6c579bfb15b136ab7a",
       "size": 1750,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/vm/launch.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T14:17:54Z",
       "reviewed_at": "2026-10-14T14:26:38Z",
       "sha256": "37bc0059d4f1ca4be9c1056691482105d91a5c3277d653a46d0c48d863128d86",
       "size": 1932,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/task-pipeline/01-design-readme.md": {
       "actions": [],
@@ -7640,6 +7650,39 @@
       "reviewed_at": null,
       "sha256": "9d1a25314e8f7f44fb585191159adfd7db5db12af2192df96cc4615eac8d8bc6",
       "size": 1214,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_doug_qbio/__init__.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T14:36:34Z",
+      "reviewed_at": null,
+      "sha256": "e4356c6f96b7c5f2899c20bbbe79f5d015ece0b40554ce064d5ea66a6b27a6f8",
+      "size": 397,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_doug_qbio/cli.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T14:36:34Z",
+      "reviewed_at": null,
+      "sha256": "389aefa8eedd030741c95de1293d8096ec4a629f4924ec4dec97a51f93c0e505",
+      "size": 3729,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_doug_qbio/core.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T14:36:34Z",
+      "reviewed_at": null,
+      "sha256": "08fb7d5dc6288e24735a64e660fabfad8292df000db23c91a32b4cd18990cce8",
+      "size": 16965,
       "validation_issues": [],
       "was_due": false
     },
@@ -12664,11 +12707,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T14:28:11Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "e8b79bacfe294617190fe9c7c42b0c40900fcaca2f55f9504c52f75a8cc54092",
       "size": 15915,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/pilot.py": {
       "actions": [],
@@ -12696,10 +12739,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:14:19Z",
+      "git_touched_at": "2026-10-14T14:36:34Z",
       "reviewed_at": null,
-      "sha256": "b372d045fe872e716427fd95a1c6653f3274d6fbb064f6d8e070f2ad964edec0",
-      "size": 3300,
+      "sha256": "fb2fb5a6b236fe6a31d2cb97154745ceb4ecf721caecb5ffd92f54f3eff033c1",
+      "size": 3358,
       "validation_issues": [],
       "was_due": false
     },
@@ -18423,6 +18466,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_gpt_doug_qbio.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T14:36:34Z",
+      "reviewed_at": null,
+      "sha256": "23f85c0384da1a23f32987a01144ec150415c618ab80dd5709c1ae534db20e4b",
+      "size": 3909,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_gpt_nedu.py": {
       "actions": [],
       "binary": false,
@@ -18923,11 +18977,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T14:33:08Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "33240bdc4a905e02a56e6d0ee67ee653386421a4fe36241383006569de899e2a",
       "size": 9428,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_peace_pilot.py": {
       "actions": [],
@@ -21771,9 +21825,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:14:33Z",
+      "git_touched_at": "2026-10-14T14:26:36Z",
       "reviewed_at": null,
-      "sha256": "15a6e66e845cc54e15c62c94b25dfd21bb2d0352180a0e8b934994040ec2b9f4",
+      "sha256": "08e80c911ae64e882c4e41cd5dd1cd8be47e0c918a457136113a23dbc79a223a",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -21793,9 +21847,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:14:33Z",
+      "git_touched_at": "2026-10-14T14:26:36Z",
       "reviewed_at": null,
-      "sha256": "6e0e4157c1e37e455ca4e2482ce71ce09237f3279bc1d64e3f9670ee3d7a2823",
+      "sha256": "508feaa614ea709fb33306219577fa5abc6822a24568a46dd2e909ceefaaf4ba",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -24255,11 +24309,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T14:26:38Z",
+  "generated_at": "2026-10-14T14:36:46Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2204,
+  "tracked_files_reviewed": 2209,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
