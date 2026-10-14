@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "1.0.0",
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "recordType": "gmr.ClinicalTrialEvidenceDelta",
+  "date": "2026-10-14",
+  "updates": [
+    {
+      "id": "NCT07809906",
+      "otherIdentifiers": [
+        "ORM-1153-01-001"
+      ],
+      "trialName": "Study of ORM-1153 in Acute Myeloid Leukemia (AML) With CD123 Expression",
+      "diagnosis": "Relapsed or refractory acute myeloid leukemia (AML) or other CD123-expressing hematologic malignancies",
+      "cancerType": [
+        "acute myeloid leukemia",
+        "hematologic malignancy"
+      ],
+      "eligibility": "Adults with relapsed/refractory AML and any detectable level of CD123 on local assessment; TP53 mutation is preclinical rationale, NOT a confirmed required enrollment biomarker; excludes acute promyelocytic leukemia.",
+      "molecularEligibility": {
+        "required": "detectable CD123 expression (any level by local assessment)",
+        "notRequiredForEnrollment": [
+          "TP53 mutation"
+        ]
+      },
+      "intervention": "ORM-1153 intravenous infusion; CD123-targeting antibody conjugated to GSPT1 protein degrader via cleavable beta-glucuronide linker",
+      "mechanism": "CD123-directed degrader-antibody conjugate; intracellular GSPT1 degradation",
+      "phase": "Phase 1",
+      "studyDesign": "First-in-human, open-label, sequential dose escalation; approximately 42 planned participants",
+      "sponsor": "Orum Therapeutics USA, Inc.",
+      "institution": [
+        "START - Midwest, Grand Rapids, Michigan, USA",
+        "MD Anderson Cancer Center, Houston, Texas, USA"
+      ],
+      "geography": [
+        "United States: Michigan, Texas (two named registry sites)"
+      ],
+      "endpoint": {
+        "primary": "Optimal biological dose(s) of ORM-1153 (approximately 24 months)",
+        "additional": "Safety and tolerability, pharmacokinetics, pharmacodynamics, preliminary antileukemic activity (sponsor-described; full registry endpoint specifications not directly reverified)"
+      },
+      "status": {
+        "sponsorObserved": "First participant dosed; sponsor announcement Oct 13, 2026 at 19:00 ET / Oct 14, 2026 on official sponsor newsroom",
+        "registryReported": "Not yet recruiting; September 9, 2026 last-posted record, via two independent registry mirrors",
+        "reconciliation": "UNRESOLVED: first patient dosing occurred after the September record; no verified ClinicalTrials.gov status change; do not label recruiting without official reconciliation",
+        "results": "No human efficacy or safety data disclosed",
+        "studyStart": "December 1, 2026 estimated in stale September registry record; contradicted by October 2026 first-patient dosing"
+      },
+      "eventDate": "2026-10-13",
+      "eventDatePrecision": "announcement date; actual administration date not specified",
+      "event": "Orum announced first patient dosed in Phase 1 first-in-human ORM-1153 trial. Material first-in-human milestone for CD123/GSPT1-targeted AML program.",
+      "evidenceClass": "SPONSOR_CONFIRMED_FIRST_PATIENT_DOSED",
+      "priority": "MEDIUM_HIGH",
+      "provenance": [
+        {
+          "sourceType": "SPONSOR_PRIMARY",
+          "publisher": "Orum Therapeutics",
+          "publicationDate": "2026-10-14",
+          "url": "https://www.orumrx.com/news/orum-therapeutics-doses-fir-phase-1-trial-of-orm-1153-a-cd123-gspt1-degrader-antibody-conjugatest-patient-in",
+          "supports": [
+            "first patient dosed",
+            "mechanism",
+            "phase",
+            "enrollment estimate",
+            "clinical sites initially in USA"
+          ]
+        },
+        {
+          "sourceType": "SPONSOR_DISTRIBUTION",
+          "publisher": "Orum Therapeutics/GlobeNewswire",
+          "publicationDate": "2026-10-13T19:00:00-04:00",
+          "url": "https://www.globenewswire.com/news-release/2026/10/13/3380286/0/en/orum-therapeutics-doses-first-patient-in-phase-1-trial-of-orm-1153-a-cd123-gspt1-degrader-antibody-conjugate.html",
+          "supports": [
+            "first patient dosed",
+            "program details",
+            "timestamp"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_PRIMARY_LINK_UNFETCHED",
+          "publisher": "ClinicalTrials.gov",
+          "url": "https://clinicaltrials.gov/study/NCT07809906",
+          "supports": [
+            "canonical trial identifier"
+          ],
+          "verification": "Direct record/API inaccessible during this run; authoritative status not independently confirmed"
+        },
+        {
+          "sourceType": "REGISTRY_MIRROR",
+          "publisher": "ICH GCP clinical-trial registry derivative",
+          "registryLastUpdate": "2026-09-09",
+          "url": "https://ichgcp.net/clinical-trials-registry/NCT07809906",
+          "supports": [
+            "historical status",
+            "biomarker eligibility",
+            "site list",
+            "primary outcome",
+            "study ID"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_MIRROR",
+          "publisher": "Syfrah",
+          "registryLastUpdate": "2026-09-09",
+          "url": "https://www.syfrah.com/trial/NCT07809906",
+          "supports": [
+            "historical status",
+            "sites",
+            "registration dates",
+            "identifier"
+          ]
+        }
+      ],
+      "limitations": "Uncontrolled Phase 1; no posted clinical efficacy results, safety outcomes or proof of benefit. September registry record predates sponsor's October dosing announcement; actual recruitment opening, actual start date and direct ClinicalTrials.gov registry state await verification.",
+      "ontologyDisposition": "PROVISIONAL_REVIEW_REQUIRED"
+    }
+  ]
+}
