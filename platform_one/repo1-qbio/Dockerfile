@@ -15,7 +15,6 @@ LABEL org.opencontainers.image.title="GPT-Doug QBio" \
 RUN microdnf -y update && \
     microdnf -y install python3 && \
     microdnf clean all && \
-    rm -rf /var/cache/dnf /var/cache/yum && \
     mkdir -p /opt/qbio && \
     chown -R ${APP_UID}:0 /opt/qbio && \
     chmod -R g=u /opt/qbio
