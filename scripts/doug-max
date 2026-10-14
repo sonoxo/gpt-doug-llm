@@ -26,8 +26,9 @@ case "$first_arg_lc" in
     read_only_mode=1
     ;;
   cot|tak-cot)
-    # XML preview/help never needs the execute-mode guardrail. Network sends do.
-    case "${2:-}" in preview|--help|-h) read_only_mode=1 ;; esac
+    # XML preview and localhost-only visual lab never contact external TAK systems.
+    # External UDP sends continue through guardrail preflight.
+    case "${2:-}" in preview|show|--help|-h) read_only_mode=1 ;; esac
     ;;
   video-evidence|youtube-short-ingest)
     # Actual public HTTPS crawling continues through canonical preflight.
@@ -86,6 +87,10 @@ case "$first_arg_lc" in
   cot|tak-cot)
     shift
     cd "$ROOT"
+    if [[ "${1:-}" == "show" ]]; then
+      shift
+      exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m tak_cot_visual "$@"
+    fi
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m tak_cot "$@"
     ;;
   biopineal-patent|hydrogen-patent)
