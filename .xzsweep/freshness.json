@@ -1,13 +1,34 @@
 {
-  "content_repairs": 1,
-  "cutoff_at": "2026-10-13T17:31:16Z",
-  "due_files_reviewed": 5,
+  "content_repairs": 0,
+  "cutoff_at": "2026-10-13T17:49:15Z",
+  "due_files_reviewed": 26,
   "due_paths": [
-    ".github/workflows/biopineal-phase2.yml",
-    "docs/BIOPINEAL_PHASE2.md",
-    "lunar_ops/lunar-command-live.html",
-    "research_lab/biopineal_phase2.py",
-    "tests/test_biopineal_phase2.py"
+    ".github/dependabot.yml",
+    ".github/workflows/sensor-swarm.yml",
+    ".github/workflows/sonoxo-fleet-upgrade-audit.yml",
+    ".github/workflows/tak-os-free.yml",
+    "docs/BIOCHIP_SWARM_PROTOTYPE.md",
+    "docs/SENSOR_SWARM.md",
+    "docs/SONOXO_FLEET_UPGRADES.md",
+    "docs/sensor-policy.json",
+    "docs/superpowers/plans/2026-10-13-sonoxo-fleet-upgrade-baseline.md",
+    "docs/tak-os/NASA_SATELLITE_README.md",
+    "docs/tak-os/nasa-layers.css",
+    "docs/tak-os/nasa-layers.js",
+    "docs/tak-os/sw.js",
+    "research_lab/biochip_swarm.py",
+    "scripts/sonoxo_fleet_upgrader.py",
+    "sensor_swarm/__init__.py",
+    "sensor_swarm/__main__.py",
+    "sensor_swarm/core.py",
+    "sensor_swarm/dashboard.py",
+    "sensor_swarm/ontology.py",
+    "tests/test_biochip_swarm.py",
+    "tests/test_sensor_swarm.py",
+    "tests/test_sonoxo_fleet_upgrader.py",
+    "tests/test_tak_os_nasa.py",
+    "tests/test_tak_os_static.py",
+    "tests/test_zyrapalantir_patent_intel.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -123,13 +144,13 @@
     ".github/dependabot.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-25T07:38:15Z",
-      "reviewed_at": "2026-10-14T00:21:21Z",
-      "sha256": "689838d271cf20d9eb15afb274ec1692d9c7a0fe23d7be9333ba9dfbf848e68c",
-      "size": 778,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T09:55:26Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "9646cede6b090a82d5dc5147b33386ba51ef7d09e237ac7d40c3cec5b825b83b",
+      "size": 995,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/pull_request_template.md": {
       "actions": [],
@@ -266,13 +287,13 @@
     ".github/workflows/biopineal-phase2.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:13:35Z",
       "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "8adb68c0173cba0fd06469dcaf181b5c3f90671a44b7abbdf24e0dc6d13b84b7",
       "size": 1156,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/black-house-cyber-learning.yml": {
       "actions": [],
@@ -604,6 +625,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    ".github/workflows/math-frontier-evidence.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:34:42Z",
+      "reviewed_at": null,
+      "sha256": "5c99e467ee6625a2012eedd29658e2f08a50c53f3254224f607d974d43bf62c0",
+      "size": 1806,
+      "validation_issues": [],
+      "was_due": false
+    },
     ".github/workflows/maven-live-sync.yml": {
       "actions": [],
       "binary": false,
@@ -873,11 +905,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:44:14Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "4804eb72a50a94be81e126bc9b16d7f698cc16972260fed8510bd9d841719c6e",
       "size": 2291,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/shaggoth-factory-tests.yml": {
       "actions": [],
@@ -911,6 +943,17 @@
       "size": 1837,
       "validation_issues": [],
       "was_due": false
+    },
+    ".github/workflows/sonoxo-fleet-upgrade-audit.yml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T10:06:19Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "592e975e738decd22d9a193ecc981d4730bfee53be984693cec60e8d8a22b29e",
+      "size": 1400,
+      "validation_issues": [],
+      "was_due": true
     },
     ".github/workflows/sonoxo-portfolio-audit.yml": {
       "actions": [],
@@ -961,11 +1004,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "f05cb77538b13b492571c1d049dce2e03d3fc456b0b41394836fbad81f5ab303",
       "size": 2892,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/tak-os-live3d.yml": {
       "actions": [],
@@ -3326,11 +3369,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:39:22Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "8fc313bc7587e6f11b3a2a56113443f20b280ecb5904bde90fac59be11c0447a",
       "size": 2122,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/BIOINTEL_FREE_RESEARCH_ROADMAP.md": {
       "actions": [],
@@ -3379,13 +3422,13 @@
     "docs/BIOPINEAL_PHASE2.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:13:32Z",
       "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "e1c11696ad71efa18ba6234446c6b1d6d775bd20319161b576a6434e6e14ada6",
       "size": 1741,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BIOPINEAL_RESEARCH_SOURCES.md": {
       "actions": [],
@@ -3915,6 +3958,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/MATH_FRONTIER_EVIDENCE.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:34:40Z",
+      "reviewed_at": null,
+      "sha256": "2cc93721373f88ea1734c2c0adaa7273547b37c0d85ebd71754e02205e174b20",
+      "size": 4476,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/MATH_MITOCHONDRIA_SPEC.md": {
       "actions": [],
       "binary": false,
@@ -4283,11 +4337,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:42:31Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "0e453a924b02755dd0e7bedd23499d44eb1aa168cb018e2f5c02185d1dc9a3f4",
       "size": 5725,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/SI_EO_14434_READINESS.md": {
       "actions": [],
@@ -4310,6 +4364,17 @@
       "size": 2519,
       "validation_issues": [],
       "was_due": false
+    },
+    "docs/SONOXO_FLEET_UPGRADES.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T10:06:51Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "2aec3a4898b74730e04db67828b1320db68f0e871338ef83f3e9d74957e5950b",
+      "size": 2654,
+      "validation_issues": [],
+      "was_due": true
     },
     "docs/SONOXO_PORTFOLIO_UPGRADE.md": {
       "actions": [],
@@ -5372,11 +5437,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:34:33Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "c3eb4f8ebf8b1d1066ddff5a5e52e59963134835872b8e29422db6eae6d9bab9",
       "size": 1408,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/status.html": {
       "actions": [],
@@ -5466,6 +5531,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/superpowers/plans/2026-10-13-sonoxo-fleet-upgrade-baseline.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T10:07:11Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "b10665f0552b477f49704005c442ef6d5992cf397859b4b58db3d7717acf0cf2",
+      "size": 3075,
+      "validation_issues": [],
+      "was_due": true
+    },
     "docs/superpowers/specs/2026-10-12-mecha-dual-repo-biopineal-design.md": {
       "actions": [],
       "binary": false,
@@ -5537,11 +5613,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "027c983f1305561f5d1230e1d6b86207ed667d266b721df88f0a2275f90610cb",
       "size": 4292,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/README.md": {
       "actions": [],
@@ -5779,22 +5855,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "67a5a4dd807362d86bc15abe4cce1c5a7a5198742ac7f9a9dd5c6fff61e6b717",
       "size": 3988,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/nasa-layers.js": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "d9b9662e51b491b6a24c8aa1f724f5b6024f9c3cc8d120c36340048473dcae65",
       "size": 16749,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/start.sh": {
       "actions": [],
@@ -5823,11 +5899,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "22945abd85a69879bfbfb12b921676d7a77963c71360741944c6e0bb46566d00",
       "size": 1592,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/swarm-ui.js": {
       "actions": [],
@@ -7344,6 +7420,17 @@
       "reviewed_at": "2026-10-14T12:47:02Z",
       "sha256": "2dd733120683ad5e998dedf1a9d53c31fe370f05264b871f600eb241a59e020f",
       "size": 7367,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "gpt_brain/math_frontier.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:34:36Z",
+      "reviewed_at": null,
+      "sha256": "27908e56a1c74db445dd6dca8f94dbebdeb85f2493f7b24087127cb93bfae92c",
+      "size": 11021,
       "validation_issues": [],
       "was_due": false
     },
@@ -11781,17 +11868,15 @@
       "was_due": false
     },
     "lunar_ops/lunar-command-live.html": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:15:02Z",
+      "git_touched_at": "2026-10-14T17:32:09Z",
       "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "ad45c5a602dd83d372269b143ca9a18c59686cdbd65c8a3b8539b890687131be",
       "size": 46026,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "market-terminal/README.md": {
       "actions": [],
@@ -12175,6 +12260,39 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "a2076228e2d44e02628c0ee9355aa83c904155b7374efb39a740d9aa1659e08f",
       "size": 4266,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "morph100/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T17:37:51Z",
+      "reviewed_at": null,
+      "sha256": "c13f189d041034bd6af16ffbaeb23410545bd188fe9d58b1506f214685ac5ed6",
+      "size": 1702,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "morph100/app.js": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T17:37:41Z",
+      "reviewed_at": null,
+      "sha256": "fd9d77c32bec9025d01e40d2a97f789884a81fde37135a47e0c2722d62a8316f",
+      "size": 24865,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "morph100/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T17:37:47Z",
+      "reviewed_at": null,
+      "sha256": "c492e8dbefe0a61de2b02f53b674fbe90f471989c8e424c9ba64075091d42e98",
+      "size": 4644,
       "validation_issues": [],
       "was_due": false
     },
@@ -13018,10 +13136,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T14:36:34Z",
+      "git_touched_at": "2026-10-14T17:31:29Z",
       "reviewed_at": null,
-      "sha256": "fb2fb5a6b236fe6a31d2cb97154745ceb4ecf721caecb5ffd92f54f3eff033c1",
-      "size": 3358,
+      "sha256": "753e0e7d6e209fb1124d1100913fcfdd8e0334a99edbc90fb1c09856cf93d8b5",
+      "size": 3585,
       "validation_issues": [],
       "was_due": false
     },
@@ -13393,11 +13511,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:39:00Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "a7f0f75ac911bb2cb9eeb0325c33f8e9f851f03729bc2d50e836d108bc9b9d8a",
       "size": 3817,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/biointel_atlas.py": {
       "actions": [],
@@ -13424,13 +13542,13 @@
     "research_lab/biopineal_phase2.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:13:05Z",
       "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "59bd6f8092fcf49114fee97c6a3952561d9b676388a97d47d331be94a74fbcdd",
       "size": 4703,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/cl1_breakthrough_engine.py": {
       "actions": [],
@@ -16589,6 +16707,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "scripts/sonoxo_fleet_upgrader.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T10:05:31Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "0d2f178d83065f3c4142f89ab86fee26813ddeb24952a8d7882a30a3849ead54",
+      "size": 8585,
+      "validation_issues": [],
+      "was_due": true
+    },
     "scripts/sonoxomus-research-bootstrap.sh": {
       "actions": [],
       "binary": false,
@@ -17177,55 +17306,55 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:34:07Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "44867d5278abbaf2c289c7664dc367646b71d3632950b919f69e391a51dd69f2",
       "size": 59,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "sensor_swarm/__main__.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:42:26Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "5de663af341a514d641127f16773629c4bdb4c1b28658961e9f9b84d06e026ba",
       "size": 5648,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "sensor_swarm/core.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:40:21Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "084d1c0341ec239b0d05b0d093691249233d6300aa893dc75931917c6bbef7b1",
       "size": 18340,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "sensor_swarm/dashboard.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:34:12Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "e785302dcd3572dd373fc146ab6fa1ed4663d26c2a14a32b7c0cdf0265b8779c",
       "size": 3929,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "sensor_swarm/ontology.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:38:37Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "98959f903a757f42241831b159759626037464616b4dee3cc7c48ae1564647d9",
       "size": 3023,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "shaggoth-swarm-gpt100/.env.example": {
       "actions": [],
@@ -18266,11 +18395,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:39:09Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "844c18a0753e0bbd81ac032e599bda0d90c28d82f474202e0ea623ffb5b05a2e",
       "size": 1638,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_biointel_atlas.py": {
       "actions": [],
@@ -18297,13 +18426,13 @@
     "tests/test_biopineal_phase2.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:13:08Z",
       "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "06b728db303e9ac2140e38c4e16681fe038f50f818e6065d6198bbf6568bd056",
       "size": 2253,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_black_house_policy_signals.py": {
       "actions": [],
@@ -19009,6 +19138,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_math_frontier.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T22:43:08Z",
+      "reviewed_at": null,
+      "sha256": "4de69dcade15848b6b19524e5e9ff26d991f3dfe6982881b823bcdda3c457089",
+      "size": 4511,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_math_mitochondria.py": {
       "actions": [],
       "binary": false,
@@ -19410,11 +19550,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:42:29Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "3ad8c9fac9909cd737dc8837efabaf39bd1e1ee8e843c876d6db23282e66fdca",
       "size": 14364,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_sfnn_monitor.py": {
       "actions": [],
@@ -19442,10 +19582,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T11:17:36Z",
+      "git_touched_at": "2026-10-14T17:31:29Z",
       "reviewed_at": null,
-      "sha256": "da5dfd9217dd35744214de15de4c70326c512516ca3069ed6aa09e7560541237",
-      "size": 2437,
+      "sha256": "afcc7a838d7ad85ff15f31e4e7f7e3963b08fa09d0fec17d933f7fbe1cc6654c",
+      "size": 2564,
       "validation_issues": [],
       "was_due": false
     },
@@ -19470,6 +19610,17 @@
       "size": 6411,
       "validation_issues": [],
       "was_due": false
+    },
+    "tests/test_sonoxo_fleet_upgrader.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-13T10:05:51Z",
+      "reviewed_at": "2026-10-14T17:49:15Z",
+      "sha256": "94cc9a07d2b5927f0fd61429c417f68a0e11d83ad158766b612250548dcefcd6",
+      "size": 5048,
+      "validation_issues": [],
+      "was_due": true
     },
     "tests/test_sovereignty_performance.py": {
       "actions": [],
@@ -19564,22 +19715,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "f7e3dd7d7838e1cddfaf651a6aa17619ab717ae62cb7f7ece88fc01c7ba8fced",
       "size": 3533,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_tak_os_static.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:45:54Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "d14450a0aa6209abffa34aa1bed913c257dcf5db29a84a306c207d4f01ca622e",
       "size": 5147,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_tak_os_swarm.py": {
       "actions": [],
@@ -20004,11 +20155,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:39:59Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:49:15Z",
       "sha256": "84bed1ffacac4cbe40d4800e014c37dba9b7826b4abbe755ff864695d8592b7c",
       "size": 7181,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_zyrapalantir_visual.py": {
       "actions": [],
@@ -22181,10 +22332,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T16:59:26Z",
+      "git_touched_at": "2026-10-14T17:32:17Z",
       "reviewed_at": null,
-      "sha256": "1d4977654c23ff335d97515121659d2451b32f3547062c6b3dadca5a7bcdd582",
-      "size": 5812,
+      "sha256": "00a41f0b32cc4240d4225739a5ae111b4dcf788a9829c3fa246f58f6c02e5114",
+      "size": 5813,
       "validation_issues": [],
       "was_due": false
     },
@@ -22203,10 +22354,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T16:59:26Z",
+      "git_touched_at": "2026-10-14T17:32:17Z",
       "reviewed_at": null,
-      "sha256": "43232bc9c2b124bdf66a8376e98a40c454f3a518fd0689adf362ed904027ded6",
-      "size": 6086,
+      "sha256": "8a0aaa4133aab0809c45a4a8c5f7bab35e03b43de774cca91a22fe363a9cc18d",
+      "size": 6087,
       "validation_issues": [],
       "was_due": false
     },
@@ -24676,13 +24827,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T17:31:16Z",
+  "generated_at": "2026-10-14T17:49:15Z",
   "mode": "apply",
-  "repaired_paths": [
-    "lunar_ops/lunar-command-live.html"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2242,
+  "tracked_files_reviewed": 2254,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
