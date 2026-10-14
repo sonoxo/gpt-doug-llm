@@ -84,3 +84,26 @@ through entire prompts.
 ```sh
 python -m unittest tests.test_almighty_sonoxo -v
 ```
+
+## Multi-model SAGIQI Council (separate from masked-token learning)
+
+SAGIQI includes an optional `SonoxoModelCouncil` that queries 1-4 explicitly
+registered models through GPT-Doug's existing `ProviderRegistry`. It performs
+bounded candidate-generation plus reviewer calls, returns source IDs and SHA-256
+packet digests, and labels model text **unverified** until grounded by external
+assessment. This satisfies the *multi-model* meaning of MLM, alongside the real
+trainable *masked-language-model* neural network above.
+
+Only use the explicit local Ollama route if the operator installed these models:
+
+```sh
+GPT_DOUG_PROVIDER=ollama gpt-almighty-sonoxo-mlm council \
+  --models 'llama3,qwen2.5:7b' \
+  --reviewers 'qwen2.5:7b' \
+  --task 'Compare source-grounded research architecture options'
+```
+
+The CLI rejects unavailable models; it never downloads them. No paid models are
+called by default. This mode uses GPT-Doug's real configured Ollama backend;
+it is not a simulation when those local models are present. It does not write
+code, browse networks, deploy services or approve model-derived claims.
