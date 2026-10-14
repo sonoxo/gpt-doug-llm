@@ -1,15 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T11:17:49Z",
-  "due_files_reviewed": 6,
-  "due_paths": [
-    ".gitignore",
-    "peace_impact/__init__.py",
-    "peace_impact/core.py",
-    "peace_impact/ontology.json",
-    "run-GPT-Doug-PeaceLab.command",
-    "tests/test_peace_impact.py"
-  ],
+  "cutoff_at": "2026-10-13T11:58:31Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -1224,13 +1217,13 @@
     ".gitignore": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:23:40Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "75cf907aabc0f9de9eb46c5e8fb6b9e72a035459a8d62ca36afa408cf593075f",
       "size": 750,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".gitmodules": {
       "actions": [],
@@ -3660,6 +3653,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "cabb5e9d2414c557ea35c475c3a2eec35682a10c6c28df89900137aa3991efd2",
       "size": 2693,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/GPT_DOUG_MAX_COT.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:58:20Z",
+      "reviewed_at": null,
+      "sha256": "78861909943bc9b0b7ddd13d238d75f8c4a03b62df8585a5447eb1fcf543c88a",
+      "size": 4579,
       "validation_issues": [],
       "was_due": false
     },
@@ -12389,13 +12393,13 @@
     "peace_impact/__init__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:22:51Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "2a746668cc3d80b0e5cd4bd758127ada7475063dda421aca575faec1a0a5dde5",
       "size": 65,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/cli.py": {
       "actions": [],
@@ -12411,13 +12415,13 @@
     "peace_impact/core.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:22:54Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "d6c75bf02b95912db573957791c5c3377b7ae7d5957c12ef7d7704133fb0ede4",
       "size": 14849,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/nobel_readiness.py": {
       "actions": [],
@@ -12433,13 +12437,13 @@
     "peace_impact/ontology.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:22:59Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "65b11d624caa1c6a2329cddee1f8d426bbbd83eb7768680e3b7a6d14a90a45a8",
       "size": 2202,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "peace_impact/ontology_graph.py": {
       "actions": [],
@@ -14358,13 +14362,13 @@
     "run-GPT-Doug-PeaceLab.command": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:23:06Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "92dfdc455f65ede36e6af24f57be687aed70e78d0e6baadaddd2e7cd82e67644",
       "size": 180,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "run-GPT-Doug-Shaggoth-Factory.command": {
       "actions": [],
@@ -15360,10 +15364,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T17:58:44Z",
+      "git_touched_at": "2026-10-14T11:58:20Z",
       "reviewed_at": null,
-      "sha256": "3b04831907890bc6b489515d58f1f03e1c44eb63809a5d8e8b4fb16f060ca02f",
-      "size": 11606,
+      "sha256": "ce14460ca69a380658efa784a8731cf1ed4fff9c559f5f61b3c71635137efff4",
+      "size": 11904,
       "validation_issues": [],
       "was_due": false
     },
@@ -17468,6 +17472,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tak_cot.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:58:20Z",
+      "reviewed_at": null,
+      "sha256": "f62f0671f241151d408d2772f70f07599bc62815239f9c73de4a9b9faa2f5d35",
+      "size": 8453,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/__init__.py": {
       "actions": [],
       "binary": false,
@@ -18626,13 +18641,13 @@
     "tests/test_peace_impact.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T10:23:01Z",
       "reviewed_at": "2026-10-14T11:17:49Z",
       "sha256": "a21cf947c415488ecae92fad722ea70aa9899f6ae5325476a9e8da022ad93bcb",
       "size": 8245,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_peace_ontology.py": {
       "actions": [],
@@ -18796,6 +18811,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "1c1c61590519936b209539b7e17af89364290adbdf3a924ab930e997d63286f1",
       "size": 3265,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_tak_cot.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T11:58:20Z",
+      "reviewed_at": null,
+      "sha256": "1b3769e974775037ded5cec3fcbe140fd3a0c446e42b57494267d1fa698b2c3f",
+      "size": 6886,
       "validation_issues": [],
       "was_due": false
     },
@@ -21465,9 +21491,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T00:21:20Z",
+      "git_touched_at": "2026-10-14T11:17:49Z",
       "reviewed_at": null,
-      "sha256": "451ce1a1dd3910485a165183601387a5269a6a02b73f252daa80d9cebe058b92",
+      "sha256": "dc546a653880f5be85af8c8d21814454bb2aa3df0eaa2e66997b0b9d732fa5da",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -21487,9 +21513,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T22:26:05Z",
+      "git_touched_at": "2026-10-14T11:17:49Z",
       "reviewed_at": null,
-      "sha256": "d0dd2a9fc7da6ff3192119c3dbf096b38663a890ac960d02d727c982a7148b15",
+      "sha256": "83d9ca858998c0222a6bbaa93fb1441cac15369897cebf0ea8946d21f0f4e65b",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -23949,11 +23975,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T11:17:49Z",
+  "generated_at": "2026-10-14T11:58:31Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2176,
+  "tracked_files_reviewed": 2179,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
