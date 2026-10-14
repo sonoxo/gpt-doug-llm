@@ -425,8 +425,8 @@ async function refreshItakMetrics(){
   };
   form.addEventListener('submit',event=>{
    event.preventDefault();
-   if(bearer)stop();
    const value=input.value;input.value='';
+   if(bearer)stop();
    if(value.length<32||value.length>256){result.textContent='Invalid private token. No request sent.';return;}
    bearer=value;generation++;
    result.textContent='Authenticating private TAK metrics…';
