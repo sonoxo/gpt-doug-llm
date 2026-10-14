@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 import json
-import math
 import os
 import secrets
 import ssl
@@ -64,9 +63,7 @@ def decode_network_metrics(value):
     counters = {}
     for name in FIELDS:
         raw = value.get(name)
-        if (isinstance(raw, bool) or not isinstance(raw, (int, float))
-                or not math.isfinite(raw) or raw < 0 or raw > MAX_COUNTER
-                or not float(raw).is_integer()):
+        if type(raw) is not int or raw < 0 or raw > MAX_COUNTER:
             raise MetricsSourceError("missing_or_invalid_counter")
         counters[name] = int(raw)
     return counters
@@ -111,6 +108,7 @@ class PrivateItakMetrics:
         self._previous = None
         self._last_attempt = None
         self._last_report = None
+        self._last_sample_monotonic = None
 
     def configured(self):
         return self._settings is not None
@@ -143,7 +141,9 @@ class PrivateItakMetrics:
             if self._last_attempt is not None and 0 <= now - self._last_attempt < 4.0:
                 if self._last_report is None:
                     return 502, {"status": "source_unavailable", "metrics": None}
-                return 200, dict(self._last_report)
+                cached = dict(self._last_report)
+                cached["sampleAgeSeconds"] = round(max(0, now - self._last_sample_monotonic), 2)
+                return 200, cached
             self._last_attempt = now
             start = self._monotonic()
             try:
@@ -151,6 +151,7 @@ class PrivateItakMetrics:
             except Exception:
                 # Fail closed; no stale counters and no server URL/cert/error strings.
                 self._last_report = None
+                self._last_sample_monotonic = None
                 self._previous = None
                 return 502, {"status": "source_unavailable", "metrics": None}
             elapsed = max(0.0, self._monotonic() - start)
@@ -185,4 +186,5 @@ class PrivateItakMetrics:
                 "mTLSVerifiedByPrivateGateway": True,
             }
             self._last_report = report
+            self._last_sample_monotonic = self._monotonic()
             return 200, dict(report)

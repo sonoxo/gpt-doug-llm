@@ -65,6 +65,10 @@ class PrivateMetricsUnitTests(unittest.TestCase):
         self.assertNotIn("secret-uid", json.dumps(report))
         self.assertNotIn("SENSITIVE", json.dumps(report))
         self.assertNotIn("clientCertificates", json.dumps(report))
+        current[0] = 11.5
+        _, cached = p.sample()
+        self.assertEqual(cached["sampleAgeSeconds"], 1.5)
+        self.assertIsNone(cached["itakClients"])
         current[0] = 20.0
         raw["numReads"] += 40
         raw["bytesRead"] += 5000
@@ -96,7 +100,7 @@ class PrivateMetricsUnitTests(unittest.TestCase):
 
     def test_reject_malformed_values(self):
         good = dict(numClients=1, bytesRead=1, bytesWritten=1, numReads=1, numWrites=1)
-        for x in (None, -1, "3", True, 1.4, float("inf"), 1e40):
+        for x in (None, -1, "3", True, 1.0, 1.4, float("inf"), 1e40):
             row = dict(good)
             row["numClients"] = x
             with self.subTest(value=x):
