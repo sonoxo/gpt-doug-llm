@@ -1,0 +1,72 @@
+name: Public Global Intel Evidence Integrity
+
+on:
+  pull_request:
+    paths:
+      - "agency_cloud/global_intel.py"
+      - "agency_cloud/intel_evidence.py"
+      - "agency_cloud/app.py"
+      - "agency_cloud/static/global-intel.html"
+      - "tests/test_global_intel_evidence.py"
+      - "GLOBAL_INTEL_BENCHMARK.md"
+      - ".github/workflows/global-intel-evidence.yml"
+  push:
+    branches: [main]
+    paths:
+      - "agency_cloud/global_intel.py"
+      - "agency_cloud/intel_evidence.py"
+      - "tests/test_global_intel_evidence.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-intel-evidence-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-evidence-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - name: Checkout without persistent credentials
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Prepare Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Syntax and evidence regression tests
+        run: |
+          python -m compileall -q agency_cloud/global_intel.py agency_cloud/intel_evidence.py
+          python -m unittest discover -s tests -p 'test_global_intel_evidence.py' -v
+      - name: Verify HTML script integrity offline
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html=Path('agency_cloud/static/global-intel.html').read_text(encoding='utf-8')
+          js=html.split('<script>',1)[1].split('</script>',1)[0]
+          assert '/api/v1/intel/global/evidence' in js
+          Path('/tmp/gpt-doug-intel-viewer.js').write_text(js,encoding='utf-8')
+          PY
+          node --check /tmp/gpt-doug-intel-viewer.js
+      - name: Check API route and no active retrieval in evidence transformation
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          app=Path('agency_cloud/app.py').read_text(encoding='utf-8')
+          assert '@app.get("/api/v1/intel/global/evidence")' in app
+          assert 'global_intel_evidence_summary(global_intel_benchmark())' in app
+          source=Path('agency_cloud/intel_evidence.py').read_text(encoding='utf-8')
+          ast.parse(source)
+          assert 'def summarize_benchmark(' in source
+          assert 'SOURCE_STATEMENT_UNCORROBORATED' in source
+          print('Read-only provenance transformation verified')
+          PY
