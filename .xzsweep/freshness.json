@@ -1,8 +1,21 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T15:14:29Z",
-  "due_files_reviewed": 0,
-  "due_paths": [],
+  "cutoff_at": "2026-10-13T15:43:56Z",
+  "due_files_reviewed": 12,
+  "due_paths": [
+    ".github/workflows/peace-impact-validation.yml",
+    "docs/NOBEL_2027_EVIDENCE_DOSSIER.md",
+    "docs/tak-os/.dockerignore",
+    "docs/tak-os/Dockerfile",
+    "docs/tak-os/LEGACY_COMPATIBILITY.md",
+    "docs/tak-os/compose.yaml",
+    "docs/tak-os/launch-macos.command",
+    "peace_impact/cli.py",
+    "peace_impact/nobel_readiness.py",
+    "tests/test_nobel_readiness.py",
+    "tests/test_tak_os_browser.py",
+    "tests/test_tak_os_gateway.py"
+  ],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -746,11 +759,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:38:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "fcfc08f321f26f0fb7f73943fa282fc4b110e49aa798851223ac1ce9ec1a3361",
       "size": 4495,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/pineal-cad-model.yml": {
       "actions": [],
@@ -4002,11 +4015,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:38:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "cf30e107f43228c63402e80c6a6926c25710a9e34730466e48b7635098a3a727",
       "size": 8970,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md": {
       "actions": [],
@@ -4148,6 +4161,17 @@
       "reviewed_at": "2026-10-14T14:36:46Z",
       "sha256": "548f9d60ab97b3365530053b58e0f9c3d18c0488fc78c5c8fddbcb7de9615aee",
       "size": 6053,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/PLATFORM_ONE_REPO1_FINAL_HANDOFF.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "bd5cf420b31fa6c5cac92cb4cb350cf12722b0717c109b8d09dc322d153e5c6e",
+      "size": 1702,
       "validation_issues": [],
       "was_due": false
     },
@@ -5476,33 +5500,33 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "c9921e7f607032bda185ccfcc3f7faefb72179a82d87de86ad03da1b551e4940",
       "size": 81,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/Dockerfile": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "2e5d6197399977a85b4f477cc013522cb164d192e01b31012cc2aea58bb9e3ef",
       "size": 395,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/LEGACY_COMPATIBILITY.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "11cbf1af9596c608c9068ac83fefaf4db60049605222508beb97c7091af57da4",
       "size": 1999,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/NASA_SATELLITE_README.md": {
       "actions": [],
@@ -5564,11 +5588,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "29e7f50553a9ac62112eb4578bd1f8cd41de7dfdc4e4f6e2d75c83f6ed0cba28",
       "size": 725,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/gateway.py": {
       "actions": [],
@@ -5608,11 +5632,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "db49e57c3057ad9fb9bc2ee96e56229c543c875db99be7554684fa646b1ccf52",
       "size": 511,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/tak-os/live-3d/README.md": {
       "actions": [],
@@ -12659,11 +12683,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:38:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "32c2ee84e7689f71525120fb917b33bb04e67b2d058361917f3aaed2eb278b48",
       "size": 5576,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/core.py": {
       "actions": [],
@@ -12681,11 +12705,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:38:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "72f30b093f218661e215cc0f9571bbaf75e2d8c5a2271c02123b199cb5b007ee",
       "size": 17651,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "peace_impact/ontology.json": {
       "actions": [],
@@ -12728,6 +12752,94 @@
       "reviewed_at": "2026-10-14T12:47:02Z",
       "sha256": "0b8ce24dd20204e467032fec9fcc27bae1ffc1fab0841ba11a873c864210ba6e",
       "size": 16569,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/.gitignore": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "af80b97265b25af16fea88ea40680a2965c96237c7b6812dd249d8e84d202d33",
+      "size": 9,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/Dockerfile": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "5d42c16b80f82bc2239a0ec3914914c81dbb02a13d708c50c01450ee37aa95a7",
+      "size": 667,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/LICENSE": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "18df46b456afeffde29c5bc0c5e108908c16ed3ea835f8f0b968d7f128ec3b90",
+      "size": 1063,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "6a85b40b4971618a25eef27465f473a9e9252aa4c426702410757fd1cd92aca5",
+      "size": 4669,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/SECURITY.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "aa7fe7544d72045fd44aee1d89c40b28aca51aedc63c1b4a688795bce5563699",
+      "size": 931,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/hardening_manifest.yaml": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "d3112581f830cc6a8ea92a818c7c07536dd95dfa134ba93719524f092c5a467f",
+      "size": 1161,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/renovate.json": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "29a431430356a3d2858bf913e4953de2c796ec657a23d6bd9bcc850d6943e719",
+      "size": 128,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "platform_one/repo1-hardening/scripts/service.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "d740c5c7db9f052cb02a3b465852fabde4f94ec1dd311f07855b3963bb5eefd1",
+      "size": 7239,
       "validation_issues": [],
       "was_due": false
     },
@@ -15775,6 +15887,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "6d53e3642da0d3c34f4ecbcb0f110ee0b28681c45f3c37c422ec0dd3d6ddf893",
       "size": 872,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "scripts/export-repo1-hardening.sh": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "aaf26b09eaa9d4ec4703f1b1dff11492cda71d9342108bebbb79fa93a93fe466",
+      "size": 581,
       "validation_issues": [],
       "was_due": false
     },
@@ -18984,11 +19107,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:38:53Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "d6f3450393626c5169f13769cdb09aeedd81ceba14fbebd45b276a947624bf72",
       "size": 11880,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_nrl_public_repository_ecosystem.py": {
       "actions": [],
@@ -19210,6 +19333,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "tests/test_repo1_hardening_only.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T15:43:44Z",
+      "reviewed_at": null,
+      "sha256": "65462559041ad4733c68c47d3e6369eff617be1feb858be21c9def6916429e2d",
+      "size": 2539,
+      "validation_issues": [],
+      "was_due": false
+    },
     "tests/test_revenue_swarm.py": {
       "actions": [],
       "binary": false,
@@ -19325,22 +19459,22 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "c1b79ae55857fe7516fdf466d07d4673107a6dd20693954cc13124fda1a10314",
       "size": 5663,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_tak_os_gateway.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T15:22:38Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T15:43:56Z",
       "sha256": "f4a3c353e7fc3a0ed0ee82967cd5007cffdfea229ef427dd465ebae7684fa60d",
       "size": 8648,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_tak_os_live3d.js": {
       "actions": [],
@@ -21986,9 +22120,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T15:08:32Z",
+      "git_touched_at": "2026-10-14T15:14:30Z",
       "reviewed_at": null,
-      "sha256": "b3104b5104850dd546bfcac337d2206e62ec5405526bdec6efcc30f97f37ded0",
+      "sha256": "223ce025d6568adac117785bec66ef6e9424c3bbc4616aeda311abecb53a831b",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -24470,11 +24604,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T15:14:29Z",
+  "generated_at": "2026-10-14T15:43:56Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2224,
+  "tracked_files_reviewed": 2235,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
