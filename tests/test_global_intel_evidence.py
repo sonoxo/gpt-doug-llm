@@ -9,7 +9,7 @@ import unittest
 from urllib.request import Request
 
 from agency_cloud.global_intel import (
-    SOURCE_DEFINITIONS, _point, _swpc, _validate_source_url,
+    SOURCE_DEFINITIONS, _point, _swpc, _usgs, _eonet, _world_bank, _validate_source_url,
     _PublicSourceRedirectHandler, build_benchmark, score_probe,
 )
 from agency_cloud.intel_evidence import EvidenceError, SCHEMA, main, summarize_benchmark
@@ -162,6 +162,30 @@ class IntelEvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             h.redirect_request(req, None, 302, "Found", {},
                                "https://attacker.example/untrusted")
+
+    def test_parsers_skip_malformed_feed_rows_and_nonfinite_world_bank(self):
+        usgs = _usgs({
+            "metadata": ["malformed-header"],
+            "features": [
+                {"properties": ["malformed"], "geometry": {}},
+                {"properties": {"mag": float("nan"), "place": "bad"},
+                 "geometry": {"coordinates": ["NaN", 10.0]}},
+            ],
+        })
+        self.assertEqual(usgs["summary"]["events24h"], 2)
+        self.assertEqual(usgs["summary"]["maxMagnitude"], None)
+        self.assertEqual(usgs["mapPoints"], [])
+        nasa = _eonet({"events": [{
+            "title": "bad-geometry", "categories": [], "geometry": {"unexpected": "dict"}
+        }]})
+        self.assertEqual(nasa["summary"]["openEvents"], 1)
+        self.assertEqual(nasa["mapPoints"], [])
+        wb = _world_bank([{}, [
+            {"value": float("nan"), "date": "2026"},
+            {"value": 86.5, "date": "2025", "indicator": {"value": "internet"}},
+        ]])
+        self.assertEqual(wb["summary"]["valuePercent"], 86.5)
+        self.assertEqual(wb["summary"]["year"], 2025)
 
     def test_future_dated_score_fails_freshness_dimension(self):
         score, detail = score_probe(
