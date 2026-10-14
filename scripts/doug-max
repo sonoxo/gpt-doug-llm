@@ -30,6 +30,10 @@ case "$first_arg_lc" in
     # External UDP sends continue through guardrail preflight.
     case "${2:-}" in preview|show|--help|-h) read_only_mode=1 ;; esac
     ;;
+  cl1|cl1-growth)
+    # Offline culture evidence assessment; never a physical device actuator.
+    read_only_mode=1
+    ;;
   video-evidence|youtube-short-ingest)
     # Actual public HTTPS crawling continues through canonical preflight.
     # Verifying a saved digest needs no network access.
@@ -92,6 +96,13 @@ case "$first_arg_lc" in
       exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m tak_cot_visual "$@"
     fi
     exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m tak_cot "$@"
+    ;;
+  cl1|cl1-growth)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- show; fi
+    if [[ "$1" == "grow" ]]; then shift; set -- show "$@"; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m research_lab.cl1_growth "$@"
     ;;
   biopineal-patent|hydrogen-patent)
     shift
