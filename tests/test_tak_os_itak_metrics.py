@@ -158,7 +158,8 @@ class MetricsRouteTests(unittest.TestCase):
                 self.assertEqual(response.headers["Cache-Control"], "no-store")
             self.assertEqual(payload["metrics"]["numClients"], 2)
             self.assertIsNone(payload["itakClients"])
-            self.assertNotIn("private", json.dumps(payload).lower())
+            self.assertNotIn("tak-authorized.test", json.dumps(payload))
+            self.assertNotIn("read-only-private-view-token", json.dumps(payload))
             with self.assertRaises(urllib.error.HTTPError) as rebinding:
                 urllib.request.urlopen(urllib.request.Request(
                     self.root + "/api/v1/itak/metrics",
