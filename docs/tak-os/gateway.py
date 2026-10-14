@@ -35,7 +35,7 @@ _SWARM_SPEC = importlib.util.spec_from_file_location("tak_os_swarm", _SWARM_FILE
 _SWARM_MODULE = importlib.util.module_from_spec(_SWARM_SPEC)
 _SWARM_SPEC.loader.exec_module(_SWARM_MODULE)
 SwarmKernel = _SWARM_MODULE.SwarmKernel
-_METRICS_SPEC = importlib.util.spec_from_file_location('tak_os_private_metrics', APP_ROOT / 'itak_metrics.py')
+_METRICS_SPEC = importlib.util.spec_from_file_location('tak_os_private_metrics', Path(__file__).resolve().parent / 'itak_metrics.py')
 _METRICS_MODULE = importlib.util.module_from_spec(_METRICS_SPEC)
 _METRICS_SPEC.loader.exec_module(_METRICS_MODULE)
 PrivateItakMetrics = _METRICS_MODULE.PrivateItakMetrics
