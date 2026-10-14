@@ -1,27 +1,13 @@
 {
-  "content_repairs": 0,
-  "cutoff_at": "2026-10-13T16:59:25Z",
-  "due_files_reviewed": 19,
+  "content_repairs": 1,
+  "cutoff_at": "2026-10-13T17:31:16Z",
+  "due_files_reviewed": 5,
   "due_paths": [
-    ".github/workflows/biopineal-nexus.yml",
-    ".github/workflows/biopineal-patent-research.yml",
-    "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md",
-    "docs/tak-os/SWARM_SECURITY.md",
-    "docs/tak-os/swarm-ui.js",
-    "docs/tak-os/swarm.py",
-    "integrations/gpt-doug-pineal/README.md",
-    "integrations/gpt-doug-pineal/docs/LITHIUM_PATENT_NEXUS.md",
-    "integrations/gpt-doug-pineal/pyproject.toml",
-    "integrations/gpt-doug-pineal/src/pineal/cli.py",
-    "integrations/gpt-doug-pineal/src/pineal/data/lithium_nexus_v1.json",
-    "integrations/gpt-doug-pineal/src/pineal/data/user-supplied-us12760393b1.jsonl",
-    "integrations/gpt-doug-pineal/src/pineal/innovation_nexus.py",
-    "integrations/gpt-doug-pineal/tests/test_innovation_nexus.py",
-    "research_lab/biopineal_patent.py",
-    "run-GPT-Doug-BioPineal.command",
-    "tests/test_biopineal_patent.py",
-    "tests/test_tak_os_swarm.py",
-    "tests/test_tak_os_swarm_browser.py"
+    ".github/workflows/biopineal-phase2.yml",
+    "docs/BIOPINEAL_PHASE2.md",
+    "lunar_ops/lunar-command-live.html",
+    "research_lab/biopineal_phase2.py",
+    "tests/test_biopineal_phase2.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -258,35 +244,35 @@
     ".github/workflows/biopineal-nexus.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "d62511f665527919d70704a3be0801a572c379fa18c9e2064ffea70335c35f55",
       "size": 3887,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/biopineal-patent-research.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:55:59Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "3fa7ef4b4a682ec4529c02a11a354311ce5c82ec8803a2a435f23d8afcdb312b",
       "size": 1162,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/biopineal-phase2.yml": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:13:35Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "8adb68c0173cba0fd06469dcaf181b5c3f90671a44b7abbdf24e0dc6d13b84b7",
       "size": 1156,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/black-house-cyber-learning.yml": {
       "actions": [],
@@ -3382,24 +3368,24 @@
     "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:55:59Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f2d9262c7555cc0cf7111cd0ce9a41432bd8eff4481e58b6f983c741e9fb9da5",
       "size": 2572,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BIOPINEAL_PHASE2.md": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:13:32Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "e1c11696ad71efa18ba6234446c6b1d6d775bd20319161b576a6434e6e14ada6",
       "size": 1741,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/BIOPINEAL_RESEARCH_SOURCES.md": {
       "actions": [],
@@ -5571,13 +5557,13 @@
     "docs/tak-os/SWARM_SECURITY.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:07:32Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "c7d481e8a9bf5df93a5dbddd00007dc1862fb57e8169c1b08609d0030895156b",
       "size": 6510,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/app.js": {
       "actions": [],
@@ -5846,24 +5832,24 @@
     "docs/tak-os/swarm-ui.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:07:32Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5012678343f248e4af06a60190c45eda867e78ab06f968a5cf7e203b9517abe7",
       "size": 12056,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/swarm.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:07:32Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "495fe7831e3fc0c293a13966fefbc73a1395db31cabfd6ebb339564afc06439b",
       "size": 20988,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/vm/README.md": {
       "actions": [],
@@ -8772,13 +8758,13 @@
     "integrations/gpt-doug-pineal/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f1f1c2a9c2996ea04839cd1f446dc46f5600a1186a6a9746457c874c01ad8af5",
       "size": 13928,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/cad/README.md": {
       "actions": [],
@@ -8882,13 +8868,13 @@
     "integrations/gpt-doug-pineal/docs/LITHIUM_PATENT_NEXUS.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "f8a23c30fd52706831d32bec27a29108be6551052842ca486dcb34f9a3479d6c",
       "size": 4725,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/docs/NEURO_BOUNDARIES.md": {
       "actions": [],
@@ -9003,13 +8989,13 @@
     "integrations/gpt-doug-pineal/pyproject.toml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "42a96aa904e153b358e86ec5f189b95adf46929d87e20bfcc84fac8c3fe65312",
       "size": 694,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/src/pineal/__init__.py": {
       "actions": [],
@@ -9069,13 +9055,13 @@
     "integrations/gpt-doug-pineal/src/pineal/cli.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "92a514c82dc1729341d9983cc152b63bf44477e8ef995b8742ea71e7acd147f2",
       "size": 17046,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/src/pineal/dashboard.py": {
       "actions": [],
@@ -9091,24 +9077,24 @@
     "integrations/gpt-doug-pineal/src/pineal/data/lithium_nexus_v1.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "7b3708c7cbb57d7dc19dc3dc988e65cbcdb42788e5697502805f7c757d66594e",
       "size": 5156,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/src/pineal/data/user-supplied-us12760393b1.jsonl": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "440385ef3afec3d91a620ce889fb75c0e10a8a3595fa23010b64b2972d226f7c",
       "size": 828,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/src/pineal/federation.py": {
       "actions": [],
@@ -9135,13 +9121,13 @@
     "integrations/gpt-doug-pineal/src/pineal/innovation_nexus.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5957f38c01f9617b9c686f426bfb66f1859d0b95c20843f38ca5f880cbf7fe8c",
       "size": 20622,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/src/pineal/kraken.py": {
       "actions": [],
@@ -9278,13 +9264,13 @@
     "integrations/gpt-doug-pineal/tests/test_innovation_nexus.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "2b0c10d7bcd37c917c6f1cd6476d7862eba782fa49b13002f201d1160f0bf80d",
       "size": 10577,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/gpt-doug-pineal/tests/test_kraken.py": {
       "actions": [],
@@ -11795,15 +11781,17 @@
       "was_due": false
     },
     "lunar_ops/lunar-command-live.html": {
-      "actions": [],
+      "actions": [
+        "append_eof_newline"
+      ],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:15:02Z",
-      "reviewed_at": null,
-      "sha256": "8f9b8d4dde6ea9f34da9ff79b8540787b0d18725715325ddeacc1fc89f23986f",
-      "size": 46025,
+      "reviewed_at": "2026-10-14T17:31:16Z",
+      "sha256": "ad45c5a602dd83d372269b143ca9a18c59686cdbd65c8a3b8539b890687131be",
+      "size": 46026,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "market-terminal/README.md": {
       "actions": [],
@@ -13425,24 +13413,24 @@
     "research_lab/biopineal_patent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:55:59Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "5e04d8cc69081b9cdad84c66661655b423afa1e6191fbc86e488189e445c4b35",
       "size": 5534,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/biopineal_phase2.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:13:05Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "59bd6f8092fcf49114fee97c6a3952561d9b676388a97d47d331be94a74fbcdd",
       "size": 4703,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "research_lab/cl1_breakthrough_engine.py": {
       "actions": [],
@@ -14888,13 +14876,13 @@
     "run-GPT-Doug-BioPineal.command": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:04:10Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "090437d94372f13cbdc79466d609fa4b57f3f20c7c6c3418c84994bc78b4c065",
       "size": 931,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "run-GPT-Doug-Chaos.command": {
       "actions": [],
@@ -17965,6 +17953,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "sonoxo-agency/README.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T17:10:13Z",
+      "reviewed_at": null,
+      "sha256": "3c2be4fcfa9111e32305381d0029bbf1e26e255bb4c56182df2b2eeb05375791",
+      "size": 1877,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "sonoxo-agency/index.html": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T17:10:11Z",
+      "reviewed_at": null,
+      "sha256": "ff82f0fc6f7acfdc35d65cf8b39fd9f65298966e8d3275d7f1cde6cf151fd35c",
+      "size": 5555,
+      "validation_issues": [],
+      "was_due": false
+    },
     "sonoxo_fleet/__init__.py": {
       "actions": [],
       "binary": false,
@@ -18276,24 +18286,24 @@
     "tests/test_biopineal_patent.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:55:59Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "d142e1b5a7e467c4605d821fcc6d4259dca9ec06a993d06335b2bbd7bd994056",
       "size": 3145,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_biopineal_phase2.py": {
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T17:13:08Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T17:31:16Z",
       "sha256": "06b728db303e9ac2140e38c4e16681fe038f50f818e6065d6198bbf6568bd056",
       "size": 2253,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "tests/test_black_house_policy_signals.py": {
       "actions": [],
@@ -19574,24 +19584,24 @@
     "tests/test_tak_os_swarm.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:07:32Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "8fdcde2280ee39f5503fc124c5245332df07437181572672517d39a4854dacea",
       "size": 15179,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_tak_os_swarm_browser.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T16:07:32Z",
       "reviewed_at": "2026-10-14T16:59:25Z",
       "sha256": "b32d4cebae9fe0720895aa8079000806d38048cca88b5ad9d57ca8a62fd29458",
       "size": 6456,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_time_jump_1000.py": {
       "actions": [],
@@ -22171,9 +22181,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T15:43:55Z",
+      "git_touched_at": "2026-10-14T16:59:26Z",
       "reviewed_at": null,
-      "sha256": "107ff2b9a375e97b37e0f24875542422c20188017d433c2ad73173844d22681b",
+      "sha256": "1d4977654c23ff335d97515121659d2451b32f3547062c6b3dadca5a7bcdd582",
       "size": 5812,
       "validation_issues": [],
       "was_due": false
@@ -22193,9 +22203,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T15:43:55Z",
+      "git_touched_at": "2026-10-14T16:59:26Z",
       "reviewed_at": null,
-      "sha256": "603302365ed4f1b18cdce8b74fbb641c87eca518e9d58bf29878f9b7a0422a4c",
+      "sha256": "43232bc9c2b124bdf66a8376e98a40c454f3a518fd0689adf362ed904027ded6",
       "size": 6086,
       "validation_issues": [],
       "was_due": false
@@ -24666,11 +24676,13 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T16:59:25Z",
+  "generated_at": "2026-10-14T17:31:16Z",
   "mode": "apply",
-  "repaired_paths": [],
+  "repaired_paths": [
+    "lunar_ops/lunar-command-live.html"
+  ],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2240,
+  "tracked_files_reviewed": 2242,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
