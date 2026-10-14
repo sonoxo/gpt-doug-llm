@@ -322,8 +322,46 @@ function registerShell(){
   navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
  }
 }
+async function refreshItakMetrics(){
+ const target=$('itak-metrics');if(!target)return;
+ target.textContent='Checking TAK metrics capability…';
+ try{
+  const response=await fetch('../api/v1/itak/capabilities',{cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(4500)});
+  if(!response.ok)throw Error('unavailable');
+  const capability=await response.json();
+  if(capability.schema!=='gpt-doug.tak-private-metrics.v1'||!capability.configured){
+   target.textContent='TAK SERVER: NOT CONNECTED · iTAK clients UNAVAILABLE. Private metrics not configured.';return;
+  }
+  target.replaceChildren();
+  const note=document.createElement('p');note.textContent='PRIVATE TAK SERVER · Aggregate data only · iTAK-only counts not supported.';target.append(note);
+  const form=document.createElement('form');form.autocomplete='off';
+  const input=document.createElement('input');input.type='password';input.required=true;input.autocomplete='off';
+  input.placeholder='Viewer token (private gateway only)';input.setAttribute('aria-label','Private TAK metrics viewer bearer token');
+  const button=document.createElement('button');button.type='submit';button.className='mini';button.textContent='LOAD VERIFIED COUNTERS';
+  const result=document.createElement('div');result.textContent='Not requested.';
+  form.append(input,button);target.append(form,result);
+  form.addEventListener('submit',async e=>{
+   e.preventDefault();const secret=input.value;input.value='';result.textContent='Reading TAK Server…';
+   try{
+    const res=await fetch('../api/v1/itak/metrics',{cache:'no-store',credentials:'same-origin',
+      headers:{Authorization:'Bearer '+secret},signal:AbortSignal.timeout(6500)});
+    if(!res.ok)throw Error('unavailable');
+    const info=await res.json();
+    if(info.status!=='current'||info.sourceScope!=='aggregate_all_tak_clients')throw Error('invalid');
+    result.replaceChildren();
+    const rows=[['Connected TAK clients (all types)',info.metrics.numClients],
+      ['Identified iTAK clients','UNAVAILABLE'],['Bytes read',info.metrics.bytesRead],
+      ['Bytes written',info.metrics.bytesWritten],['Read operations',info.metrics.numReads],
+      ['Write operations',info.metrics.numWrites],['Sample UTC',info.sampledAtUtc],
+      ['Scope','Authorized aggregate TAK Server']];
+    for(const [key,value] of rows){const row=document.createElement('p');row.textContent=key+': '+String(value);result.append(row);}
+   }catch(_){result.textContent='Private metrics unavailable or unauthorized. No values displayed.';}
+  });
+ }catch(_){target.textContent='TAK SERVER: NOT CONNECTED · iTAK metrics UNAVAILABLE. Public static site has no authenticated TAK gateway.';}
+}
 function bind(){
  $('refresh-all').addEventListener('click',()=>refreshAll(true));
+ $('itak-refresh').addEventListener('click',refreshItakMetrics);
  $('export-ontology').addEventListener('click',()=>download('gpt-doug-real-earth-ontology.jsonld',store.exportJsonLD()));
  $('record-search').addEventListener('input',renderRecords);$('record-type').addEventListener('change',renderRecords);
  for(const id of ['usgs','eonet','noaa','orbit'])$('toggle-'+id).addEventListener('change',event=>{
@@ -349,7 +387,7 @@ function init(){
  text('utc-clock',new Date().toISOString().slice(11,19)+' UTC');
  $('imagery-date').value=new Date(Date.now()-2*86400000).toISOString().slice(0,10);
  $('imagery-date').max=new Date().toISOString().slice(0,10);
- bind();switchMobilePanel('map');initGlobe();registerShell();renderHealth();renderRecords();store.restoreArchive().catch(()=>{});
+ bind();switchMobilePanel('map');initGlobe();registerShell();renderHealth();renderRecords();refreshItakMetrics();store.restoreArchive().catch(()=>{});
  if(mobileProfile.mobile){
   refresh('usgs',true);refresh('eonet',true);
   setTimeout(()=>{if(!document.hidden){refresh('noaa',true);refresh('orbit',true);}},1600);
