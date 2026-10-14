@@ -25,6 +25,10 @@ case "$first_arg_lc" in
   brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge|lateral-stability|mobility-test)
     read_only_mode=1
     ;;
+  cot|tak-cot)
+    # XML preview/help never needs the execute-mode guardrail. Network sends do.
+    case "${2:-}" in preview|--help|-h) read_only_mode=1 ;; esac
+    ;;
   video-evidence|youtube-short-ingest)
     # Actual public HTTPS crawling continues through canonical preflight.
     # Verifying a saved digest needs no network access.
@@ -78,6 +82,11 @@ case "$first_arg_lc" in
   invention-lab)
     shift
     exec python3 "$ROOT/scripts/invention_lab.py" "$@"
+    ;;
+  cot|tak-cot)
+    shift
+    cd "$ROOT"
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m tak_cot "$@"
     ;;
   biopineal-patent|hydrogen-patent)
     shift
