@@ -10,12 +10,16 @@ no stimulation path, no outbound network access, and no persistent storage.
 import json
 import os
 import re
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from socketserver import ThreadingMixIn
 
 from core import MAX_CHANNELS, MAX_FRAMES, SpikeFrame, analyze_sequence
 
 VERSION = "0.1.0"
 MAX_BODY_BYTES = 1_048_576
+REQUEST_TIMEOUT_SECONDS = 8.0
+MAX_CONNECTIONS = 32
 ALLOWED_SOURCE_CLASSES = {
     "SIMULATED",
     "MEASURED_READ_ONLY",
@@ -66,9 +70,39 @@ def analyze_payload(payload):
     return analyze_sequence(frames, window=window, source_class=source_class)
 
 
+class BoundedThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+    request_queue_size = MAX_CONNECTIONS
+
+    def __init__(self, server_address, handler_class):
+        super().__init__(server_address, handler_class)
+        self._slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
+
+    def process_request(self, request, client_address):
+        if not self._slots.acquire(blocking=False):
+            request.close()
+            return
+        try:
+            super().process_request(request, client_address)
+        except Exception:
+            self._slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._slots.release()
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "GPTDougQBio/%s" % VERSION
     sys_version = ""
+
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(REQUEST_TIMEOUT_SECONDS)
 
     def _send(self, status, payload):
         body = _json_bytes(payload)
@@ -148,7 +182,7 @@ def main():
     port = int(os.environ.get("PORT", "8080"))
     if not 1 <= port <= 65535:
         raise SystemExit("PORT must be 1..65535")
-    server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    server = BoundedThreadingHTTPServer(("0.0.0.0", port), Handler)
     print(
         json.dumps(
             {
