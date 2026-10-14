@@ -1,10 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T22:56:56Z",
-  "due_files_reviewed": 1,
-  "due_paths": [
-    "tests/test_math_frontier.py"
-  ],
+  "cutoff_at": "2026-10-13T22:58:13Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -2316,6 +2314,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/quantum_day.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:10:50Z",
+      "reviewed_at": null,
+      "sha256": "c6e4a22b544b00246c19a36ff946f84ddc316bd09f308e35eaa583fab1df1ffc",
+      "size": 15922,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agents/qwen_gateway.py": {
       "actions": [],
       "binary": false,
@@ -2511,6 +2520,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "02e0592b9e8d3ffdd5329aa6940540cb6b05965c307557078770176946855a79",
       "size": 1450,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agents/tests/test_quantum_day.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:10:54Z",
+      "reviewed_at": null,
+      "sha256": "44942e1c5a684044919512ac07394405da76a48fe366951cf3d375371326b66b",
+      "size": 6655,
       "validation_issues": [],
       "was_due": false
     },
@@ -3732,6 +3752,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "783a26435743121d6277dc713e69a41b97341adafbca034924726f8e3c4ac66f",
       "size": 5425,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/FEDERAL_QUANTUM_DAY_24.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:10:57Z",
+      "reviewed_at": null,
+      "sha256": "6b3907e5a19843392e9f77a607ead0bc37b7ae8bef49abfac9a70ce2e9aa4913",
+      "size": 7146,
       "validation_issues": [],
       "was_due": false
     },
@@ -19369,13 +19400,13 @@
     "tests/test_math_frontier.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:43:08Z",
       "reviewed_at": "2026-10-14T22:56:56Z",
       "sha256": "4de69dcade15848b6b19524e5e9ff26d991f3dfe6982881b823bcdda3c457089",
       "size": 4511,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_math_mitochondria.py": {
       "actions": [],
@@ -22582,9 +22613,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T22:26:28Z",
+      "git_touched_at": "2026-10-14T22:56:56Z",
       "reviewed_at": null,
-      "sha256": "808bbab6440510c8e4835256ea3060dd3763f007b9f954ccdb2559663d869d1f",
+      "sha256": "bbbf2b37e3c5c5859dd2e00ddba240cc28c977a7d83819486e12040f36f9d3e5",
       "size": 5813,
       "validation_issues": [],
       "was_due": false
@@ -22604,9 +22635,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T22:26:28Z",
+      "git_touched_at": "2026-10-14T22:56:56Z",
       "reviewed_at": null,
-      "sha256": "90718afecfc7ed2fc237445363fff7f4ec50e73122607e3311b393aa48c4d2bb",
+      "sha256": "4c8578d37551c4d055d796cb12a43faa4ec177918b2f5f0241d5a910b5b6e43a",
       "size": 6087,
       "validation_issues": [],
       "was_due": false
@@ -25077,11 +25108,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T22:56:56Z",
+  "generated_at": "2026-10-14T22:58:13Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2279,
+  "tracked_files_reviewed": 2282,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
