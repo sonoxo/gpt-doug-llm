@@ -60,6 +60,7 @@ class SpikeFrame:
 class SequenceFeatures:
     t_ms: float
     total_spikes: int
+    population_rate_hz: float
     active_ratio: float
     normalized_entropy: float
     temporal_persistence: float
@@ -148,6 +149,8 @@ def extract_features(frames: Sequence[SpikeFrame], index: int, window: int = 8) 
     previous = frames[index - 1] if index else None
     totals = [sum(item.counts) for item in frames[max(0, index - window + 1): index + 1]]
     total = totals[-1]
+    dt_ms = frame.t_ms - previous.t_ms if previous else 0.0
+    population_rate_hz = total * 1000.0 / dt_ms if dt_ms > 0 else 0.0
     active_ratio = sum(1 for value in frame.counts if value > 0) / len(frame.counts)
     entropy = _entropy(frame.counts)
     persistence = _active_jaccard(frame.counts, previous.counts) if previous else 0.0
@@ -181,6 +184,7 @@ def extract_features(frames: Sequence[SpikeFrame], index: int, window: int = 8) 
     return SequenceFeatures(
         t_ms=frame.t_ms,
         total_spikes=total,
+        population_rate_hz=round(population_rate_hz, 6),
         active_ratio=round(active_ratio, 6),
         normalized_entropy=round(entropy, 6),
         temporal_persistence=round(persistence, 6),
@@ -317,6 +321,29 @@ class SequentialSpikeModel:
         probabilities = _blend_probabilities(heuristic, empirical)
         quantum = quantum_inspired_projection(last)
         uncertainty = round(_uncertainty(probabilities), 6)
+        verification = (
+            "SIMULATED_DETERMINISTIC"
+            if source_class == "SIMULATED"
+            else "OPERATOR_DECLARED_NOT_INDEPENDENTLY_VERIFIED"
+        )
+        dimension_state = {
+            "time": {"value": last.t_ms, "unit": "ms"},
+            "channel_occupancy": {"value": last.active_ratio, "unit": "ratio"},
+            "population_rate": {"value": last.population_rate_hz, "unit": "spikes_per_second"},
+            "channel_entropy": {"value": last.normalized_entropy, "unit": "normalized"},
+            "temporal_persistence": {"value": last.temporal_persistence, "unit": "ratio"},
+            "vector_similarity": {"value": last.vector_similarity, "unit": "cosine"},
+            "rate_acceleration": {"value": last.acceleration, "unit": "bounded_score"},
+            "burst_index": {"value": last.burst_index, "unit": "bounded_score"},
+            "spectral_proxy": {"value": last.spectral_proxy, "unit": "bounded_proxy"},
+            "geometry_proxy": {"value": last.geometry_proxy, "unit": "bounded_proxy"},
+            "phase_proxy": {"value": last.phase_proxy, "unit": "bounded_proxy"},
+            "confluence": {"value": last.confluence, "unit": "bounded_index"},
+            "forecast_uncertainty": {"value": uncertainty, "unit": "normalized_entropy"},
+            "provenance": {"value": source_class, "unit": "label"},
+            "causal_status": {"value": "DESCRIPTIVE_ONLY", "unit": "label"},
+            "verification": {"value": verification, "unit": "label"},
+        }
 
         return {
             "schema": "gpt-doug-qbio-spike-confluence/v1",
@@ -339,6 +366,7 @@ class SequentialSpikeModel:
                 "next_state_probabilities": probabilities,
                 "most_probable_next_state": max(probabilities, key=probabilities.get),
                 "uncertainty": uncertainty,
+                "confidence_proxy": round(1.0 - uncertainty, 6),
                 "calibrated": False,
                 "note": "Probabilities are heuristic/sequence-derived research scores, not clinical or biological predictions.",
             },
@@ -346,6 +374,7 @@ class SequentialSpikeModel:
             "dimensions": {
                 "count": len(FEATURE_DIMENSIONS),
                 "axes": list(FEATURE_DIMENSIONS),
+                "state": dimension_state,
                 "interpretation": "classical feature projections; no extra physical dimensions are claimed",
             },
         }
