@@ -136,3 +136,21 @@ test('Streets overlay only requests source tiles on user action, never synthetic
  assert.ok(!sw.includes('tile.openstreetmap.org'));
  assert.ok(js.includes('Preset city, not device GPS.'));
 });
+
+test('iTAK metrics mobile tab remains source-verified and user-controlled',()=>{
+ const fs=require('node:fs');
+ const path=require('node:path');
+ const html=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/index.html'),'utf8');
+ const js=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/live-earth.js'),'utf8');
+ const css=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/iphone-grid.css'),'utf8');
+ const sw=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/sw.js'),'utf8');
+ assert.ok(html.includes('data-mobile-panel="itak"'));
+ assert.ok(html.includes('id="itak-metrics"'));
+ assert.ok(js.includes('setInterval(()=>{void poll();},10000)'));
+ assert.ok(js.includes('if(document.hidden)stopMetricsPolling()'));
+ assert.ok(js.includes("panel!=='itak')stopMetricsPolling()"));
+ assert.ok(js.includes("sourceScope!=='aggregate_all_tak_clients'"));
+ assert.ok(js.includes('iTAK-only count: UNAVAILABLE'));
+ assert.ok(css.includes('grid-template-columns:repeat(6,minmax(0,1fr))'));
+ assert.ok(!sw.includes('itak/metrics'));
+});
