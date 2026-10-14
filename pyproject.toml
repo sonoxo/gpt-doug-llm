@@ -32,6 +32,7 @@ classifiers = [
 
 [project.optional-dependencies]
 math = ["sympy>=1.12,<2"]
+mlm = ["torch>=2.1,<3", "safetensors>=0.4,<1"]
 web = ["cryptography"]
 test = ["pytest", "pytest-cov"]
 lint = ["ruff"]
@@ -55,6 +56,7 @@ zyra-sentinel = "golden_shield:start_247_monitoring"
 gpt-zyra-shaggoth = "gpt_zyra_shaggoth.cli:main"
 gpt-doug-ttd = "ttd_llm.__main__:main"
 gpt-doug-mlm = "gpt_doug_mlm.cli:main"
+gpt-almighty-sonoxo-mlm = "gpt_doug_mlm.almighty_cli:main"
 gpt-stark-llm = "agents.gpt_stark_llm:main"
 gpt-ironman-llm = "agents.gpt_ironman_llm:main"
 gpt-doug-qbio = "gpt_doug_qbio.cli:main"
