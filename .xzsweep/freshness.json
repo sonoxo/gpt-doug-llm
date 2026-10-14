@@ -1,64 +1,8 @@
 {
   "content_repairs": 0,
-  "cutoff_at": "2026-10-13T21:32:27Z",
-  "due_files_reviewed": 55,
-  "due_paths": [
-    ".github/workflows/cognitive-evidence-fusion.yml",
-    ".github/workflows/si-readiness-gate.yml",
-    "Modelfile.ttd",
-    "data/ttd_demo.csv",
-    "data/ttd_demo_plan.json",
-    "data/ttd_open_data_plan.json",
-    "docs/BIOINTEL_FREE_RESEARCH_ROADMAP.md",
-    "docs/BIOPINEAL_CL1_INTEGRATION.md",
-    "docs/COGNITIVE_EVIDENCE_FUSION.md",
-    "docs/KRAKEN_LATTICE_50_TOOLS.md",
-    "docs/KRAKEN_LATTICE_OFFLINE.md",
-    "docs/SI_EO_14434_READINESS.md",
-    "docs/TTD_LLM.md",
-    "docs/superpowers/specs/2026-10-13-gpt-doug-exoskeleton-digital-twin-design.md",
-    "free-video-studio/requirements.txt",
-    "gpt_brain/cognitive_dashboard.py",
-    "gpt_brain/evidence_fusion.py",
-    "gpt_doug_guardian/__init__.py",
-    "gpt_doug_guardian/__main__.py",
-    "gpt_doug_guardian/sim.py",
-    "guardian_ops/README.md",
-    "guardian_ops/guardian-command.html",
-    "integrations/pineal_osiris/bootstrap.sh",
-    "integrations/pineal_osiris/bridge.py",
-    "integrations/pineal_osiris/console.css",
-    "integrations/pineal_osiris/console.html",
-    "integrations/pineal_osiris/console.js",
-    "integrations/pineal_osiris/console.py",
-    "integrations/pineal_osiris/test_bridge.py",
-    "integrations/pineal_osiris/test_console.py",
-    "integrations/pineal_osiris/test_stack.py",
-    "intel/white-house/daily/2026-10-12.json",
-    "intel/white-house/daily/2026-10-12.md",
-    "intel/white-house/daily/2026-10-13.json",
-    "intel/white-house/daily/2026-10-13.md",
-    "research_lab/biointel_atlas.py",
-    "research_lab/cl1_simulator_bridge.py",
-    "research_lab/kraken_lattice_preview.py",
-    "research_lab/kraken_robot_sim.py",
-    "research_lab/lattice_50_tools.py",
-    "sonoxo_fleet/si_readiness.py",
-    "tests/test_biointel_atlas.py",
-    "tests/test_cognitive_dashboard.py",
-    "tests/test_cognitive_fusion.py",
-    "tests/test_gpt_doug_guardian.py",
-    "tests/test_kraken_lattice_preview.py",
-    "tests/test_kraken_robot_sim.py",
-    "tests/test_lattice_50_tools.py",
-    "tests/test_ttd_llm.py",
-    "tests/test_ttd_open_data.py",
-    "ttd_llm/__init__.py",
-    "ttd_llm/__main__.py",
-    "ttd_llm/engine.py",
-    "ttd_llm/ollama.py",
-    "ttd_llm/open_data.py"
-  ],
+  "cutoff_at": "2026-10-13T21:40:47Z",
+  "due_files_reviewed": 0,
+  "due_paths": [],
   "files": {
     ".doug/eval-history.jsonl": {
       "actions": [],
@@ -382,13 +326,13 @@
     ".github/workflows/cognitive-evidence-fusion.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:06:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "850e9bf1ff0ef8288f19b46c6f4f5ef2d96a49fd893dad81d1096109483575a3",
       "size": 1944,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/cyber-cpr-watch.yml": {
       "actions": [],
@@ -965,13 +909,13 @@
     ".github/workflows/si-readiness-gate.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:47:00Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "0a552d42b0ffdd5290d3436e7937c72c418b6975c029d1b397a3876cf5d8e333",
       "size": 1837,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/sonoxo-fleet-upgrade-audit.yml": {
       "actions": [],
@@ -1493,13 +1437,13 @@
     "Modelfile.ttd": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "1fe3deae24e190d2b67d3d34f4655751ad6659c588a500ab6fc282b5619a5e3d",
       "size": 613,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ORGANOID_INTELLIGENCE_PROJECT.md": {
       "actions": [],
@@ -2172,6 +2116,39 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/gpt_ironman_llm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:13:14Z",
+      "reviewed_at": null,
+      "sha256": "ab8d176ac0e560fe0332ae9b815db5cba488bef6079bf6aa7aa5876d081d2e03",
+      "size": 1036,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agents/gpt_orca_llm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:40:04Z",
+      "reviewed_at": null,
+      "sha256": "06c69b40add6367d3aaa35453f30a0084e12cc736ba4c924661d6c1f56c3605b",
+      "size": 5097,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agents/gpt_stark_llm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:13:11Z",
+      "reviewed_at": null,
+      "sha256": "a709b3594686f725c65c491fc99b402d91ace3ad5ab08bce1a1c8620435d958f",
+      "size": 958,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agents/live_feed_sync.py": {
       "actions": [],
       "binary": false,
@@ -2337,6 +2314,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/stark_ironman.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:13:08Z",
+      "reviewed_at": null,
+      "sha256": "e85cde43b4b9be1de750d720ed872c1516eff9d99d68a93834aba41c0daca0e6",
+      "size": 15139,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agents/synthetic_mission_sim.py": {
       "actions": [],
       "binary": false,
@@ -2447,6 +2435,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "agents/tests/test_gpt_orca_llm.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:40:08Z",
+      "reviewed_at": null,
+      "sha256": "90231d93594eff80a795bee2ce01b4289586f77aad50355e53d26cdf6fcb6ed1",
+      "size": 1444,
+      "validation_issues": [],
+      "was_due": false
+    },
     "agents/tests/test_ontology_master_lock.py": {
       "actions": [],
       "binary": false,
@@ -2488,6 +2487,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "02e0592b9e8d3ffdd5329aa6940540cb6b05965c307557078770176946855a79",
       "size": 1450,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "agents/tests/test_stark_ironman.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:13:17Z",
+      "reviewed_at": null,
+      "sha256": "a185ba16d9582f761594850144bf9b6778a16bbf77f94123773d698f66c2d9b6",
+      "size": 6240,
       "validation_issues": [],
       "was_due": false
     },
@@ -3242,35 +3252,35 @@
     "data/ttd_demo.csv": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "a32888fa98852b516f6a681d8400f95d9fc46dac40e49df7acc1cf226e3d9034",
       "size": 192,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "data/ttd_demo_plan.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "8010112e69be2447a99147596b6b5f9e2eecb79e551484aff92176993a75334e",
       "size": 150,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "data/ttd_open_data_plan.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:38:41Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "255c0d5b98885944391409f1b3ae0c0c9d8faa0f37771124c12e3659918ba42c",
       "size": 159,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "demo/zyrapalantir-intel-scenario.json": {
       "actions": [],
@@ -3407,13 +3417,13 @@
     "docs/BIOINTEL_FREE_RESEARCH_ROADMAP.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:53:10Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "d28307acb022fe5b9c2333c02cef1607f5eeae2bde49bb5eebb970eb83445654",
       "size": 2326,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BIOPINEAL_AGENT10.md": {
       "actions": [],
@@ -3429,13 +3439,13 @@
     "docs/BIOPINEAL_CL1_INTEGRATION.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:56:19Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "54e3172ddbbc1d947529630cd7f60bfdc19a01fb970271474ad33e19076b581c",
       "size": 2108,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/BIOPINEAL_LITHIUM_HYDROGEN_PATENT.md": {
       "actions": [],
@@ -3583,13 +3593,13 @@
     "docs/COGNITIVE_EVIDENCE_FUSION.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:06:26Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "51e6c23d5b692f1c69605e7e1a6554bb3abdc89b187dec8d802306a342e8d941",
       "size": 5545,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/COMMANDS.md": {
       "actions": [],
@@ -3855,6 +3865,17 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/GPT_STARK_IRONMAN.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:13:20Z",
+      "reviewed_at": null,
+      "sha256": "388956ed82cbcdaa7d97ebd81143744a0175d1f326060af7077bf6d0a53b2104",
+      "size": 3946,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/GPT_XUNIA_GODIS.md": {
       "actions": [],
       "binary": false,
@@ -3924,24 +3945,24 @@
     "docs/KRAKEN_LATTICE_50_TOOLS.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:20:40Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "04f80f97553e303a27ca4969bb1592608b074b9babc11d8c46354cf4a5c4ce06",
       "size": 4860,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/KRAKEN_LATTICE_OFFLINE.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:05:45Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "38e1b154ba2bdbd4b89d55831b4404ddbf82c275ebe10b16bea79fdce1067f34",
       "size": 1401,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/KRAKEN_US_DEFENSE_SUPPORT.md": {
       "actions": [],
@@ -4375,13 +4396,13 @@
     "docs/SI_EO_14434_READINESS.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:47:14Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "6d19ab8405a5aad07a0ef20ad4d8bce8adc5370d2c3f279566c092026ea90c63",
       "size": 2617,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/SONOXO_CASHAPP_REVENUE.md": {
       "actions": [],
@@ -4452,13 +4473,13 @@
     "docs/TTD_LLM.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:38:41Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "371382ab894446dcc2082cb4bcd1ca82622bb0d6135eb4233bbc66ecc9fe230c",
       "size": 8017,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/UAP_MATRIX_SHARED_SPACE.md": {
       "actions": [],
@@ -5596,13 +5617,13 @@
     "docs/superpowers/specs/2026-10-13-gpt-doug-exoskeleton-digital-twin-design.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:08:06Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "df8e90892c4361551545934b28da25f3b1eda2a75b3714254ef41206a7547229",
       "size": 19146,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/.dockerignore": {
       "actions": [],
@@ -7208,7 +7229,7 @@
       "sha256": "54f7248a4e464ebd92053e76610ee786f4c8c7e25e4745bbbfe24e2dab425da3",
       "size": 18,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "free-video-studio/run.sh": {
       "actions": [],
@@ -7433,24 +7454,24 @@
     "gpt_brain/cognitive_dashboard.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:07:53Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "1c00e40075aa4c04f12ab6901567f1d2f494b408054e203f0abdb3bf79ac42ce",
       "size": 11841,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt_brain/evidence_fusion.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:08:55Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "a1b2cf9836e2509d359fea45e381707cfb39f96877d539c709579ee049352e0d",
       "size": 25092,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt_brain/kernel.py": {
       "actions": [],
@@ -7521,11 +7542,11 @@
     "gpt_brain/router.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "xzsweep",
-      "git_touched_at": "2026-09-26T01:15:55Z",
-      "reviewed_at": "2026-10-14T00:21:21Z",
-      "sha256": "ba94a99cd93ecdf2dc4e47d25e3d94efa38b99c67142d7cb8bc9db02dbde7196",
-      "size": 2911,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:14:46Z",
+      "reviewed_at": null,
+      "sha256": "0bd757ed2d9f48e12898d0a23893f2844693658603e47b0ee3208a02357616d3",
+      "size": 4294,
       "validation_issues": [],
       "was_due": false
     },
@@ -7664,35 +7685,35 @@
     "gpt_doug_guardian/__init__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:50Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f89e2d23d16c7e5a229a7db9153b0a6c3a18652086f5ff65097f711c27e2ab2e",
       "size": 233,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt_doug_guardian/__main__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:52Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "3bed075f0f93a83525cda467c41d2adfbbbd1f5b43788ae0cbac67eecac0a133",
       "size": 840,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt_doug_guardian/sim.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "c8105753bd0ccb5da17c4e72fa54b75ebb2e3c8d0c8576ba485df0a8aaae4e47",
       "size": 18553,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "gpt_doug_max.py": {
       "actions": [],
@@ -8357,24 +8378,24 @@
     "guardian_ops/README.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:27Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "dfd23136234a01b78c7e2dfaafc9f3a02c195aefff794e482dac052ad090f2e3",
       "size": 5225,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "guardian_ops/guardian-command.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:23Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "dd8c8b2648be0d9e4fb4cc30a6e01a09acdb52b459d57fa38940b5b5c5b05f9d",
       "size": 39732,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "hackathon/__init__.py": {
       "actions": [],
@@ -9529,7 +9550,7 @@
       "sha256": "666969b993c786c2d1ab9d93d9c815ebd5a4984fb2e14f6e7a9780650e5e5969",
       "size": 1395,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/bridge.py": {
       "actions": [],
@@ -9540,40 +9561,40 @@
       "sha256": "be371309ccf0ff34f9d209e976266266b21073f75b513f939879d4790b895f8a",
       "size": 6311,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.css": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "9d6e514fe7e55e9bfd87b25ced7365eb8fbcdeb8accb2d56349fcf0c58f08809",
       "size": 6347,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "aa1d970e7b5511c8775db2d31e7bee7c673aef909bd098968519c8b897d1469f",
       "size": 5369,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T21:28:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "570afd830bcb67e317fa1ddcd87cdcca36797a68c28cb68db6db7cca0142c906",
       "size": 5247,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/console.py": {
       "actions": [],
@@ -9584,7 +9605,7 @@
       "sha256": "65bfbb9a0e91cf4ab92ec770a84e52a1314e527a9cb2491d7f7a20595387bbfa",
       "size": 3725,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/disk.py": {
       "actions": [],
@@ -9639,7 +9660,7 @@
       "sha256": "83e126e202fa7cf4c01e7c886777ee14035b837cd8d6c7ff42e13ccd8cc585dc",
       "size": 4303,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_console.py": {
       "actions": [],
@@ -9650,7 +9671,7 @@
       "sha256": "3da1b6c784c0757bc1e8fc1adf05e0af6ef4230f75583c4e9331ab80a15d4cbc",
       "size": 3030,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_disk.py": {
       "actions": [],
@@ -9672,7 +9693,7 @@
       "sha256": "b107061736f442d0cfed46d657442a53baab50d27dfba22a27b0452cdc49e002",
       "size": 5657,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/reef/README.md": {
       "actions": [],
@@ -11366,7 +11387,7 @@
       "sha256": "856d53a1439d050840210346a3126e16da9f5fc80e0af0b1759c5c20d1a391e3",
       "size": 352,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-12.md": {
       "actions": [],
@@ -11377,29 +11398,29 @@
       "sha256": "2d44a452114e00b0cce0562591660a54e8a32022168df32280d50d4db64dda2c",
       "size": 579,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-13.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:40:56Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "6a7d653f7dac76c228cfb3601da80cb16a83ab671244203af52072eb68dd804c",
       "size": 3613,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-13.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:40:56Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "520e2a72dc3929db059a8285fef9387694e19cebe13f4349af58dbb80ec611d6",
       "size": 2119,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-14.json": {
       "actions": [],
@@ -11933,10 +11954,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T17:59:01Z",
+      "git_touched_at": "2026-10-14T21:34:16Z",
       "reviewed_at": null,
-      "sha256": "1d663e199429cf2f61828db1916dadf4e394fba5d80e65708967923940c08a82",
-      "size": 11449,
+      "sha256": "4f421b25de74d10b03dd04360488c65ee643ada9b4d1da4f020fdd83d9622e69",
+      "size": 11283,
       "validation_issues": [],
       "was_due": false
     },
@@ -13176,10 +13197,10 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T17:31:29Z",
+      "git_touched_at": "2026-10-14T21:14:48Z",
       "reviewed_at": null,
-      "sha256": "753e0e7d6e209fb1124d1100913fcfdd8e0334a99edbc90fb1c09856cf93d8b5",
-      "size": 3585,
+      "sha256": "0ecbf85c42033fc3b6d4f9edc5646a831d42f99a10f1c5e6d0bbcf80f645dc8b",
+      "size": 3450,
       "validation_issues": [],
       "was_due": false
     },
@@ -13560,13 +13581,13 @@
     "research_lab/biointel_atlas.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:53:08Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f00996e0df3d4f9716a496c65e2476d8112611e4d0b339dcad2ee245101f1b66",
       "size": 3585,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/biopineal_patent.py": {
       "actions": [],
@@ -13637,13 +13658,13 @@
     "research_lab/cl1_simulator_bridge.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T17:56:08Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f303e2bf1aa9be2a2df56bfd2d70a12820759e362313934378fd31b69c1b39b3",
       "size": 2255,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/cli.py": {
       "actions": [],
@@ -13835,24 +13856,24 @@
     "research_lab/kraken_lattice_preview.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:05:30Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "23ed06870f4e84025a76d70e068da61de6edff872d31aafc588a2bc581c2306b",
       "size": 2278,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/kraken_robot_sim.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:04:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "1e40fda3e2474da21d6048096260c1da2ce78366eaa221c4efef78c14d263416",
       "size": 2057,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/lateral_stability.py": {
       "actions": [],
@@ -13868,13 +13889,13 @@
     "research_lab/lattice_50_tools.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:20:34Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f7709fa81e02c872feb370d196e0372507ba2e550b413f16275d2b7432e44b9c",
       "size": 19887,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "research_lab/lineage.py": {
       "actions": [],
@@ -13939,6 +13960,17 @@
       "reviewed_at": "2026-10-14T14:14:30Z",
       "sha256": "c95ec513407ba2c1666a4013605c5dae7e958a16a47cd83fb3609d36aa5af620",
       "size": 7858,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "research_lab/orca_neurocloud.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:40:12Z",
+      "reviewed_at": null,
+      "sha256": "52cede57fdbac785a2bacdf09c9db42c02686ca65081c10203cd49663ae96dae",
+      "size": 6352,
       "validation_issues": [],
       "was_due": false
     },
@@ -18191,13 +18223,13 @@
     "sonoxo_fleet/si_readiness.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:46:03Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "ff28a5d019b7bf4813d83d46b22faeed217d3c6fdeb67f6c3ed02baa2853f844",
       "size": 14470,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "sonoxo_fleet/viewer.py": {
       "actions": [],
@@ -18444,13 +18476,13 @@
     "tests/test_biointel_atlas.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:52:44Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "04dc1b41e3b1fa7d1f609525675c6876c56bf92f5004b8e6746c16dac8f6eb59",
       "size": 895,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_biopineal_patent.py": {
       "actions": [],
@@ -18554,24 +18586,24 @@
     "tests/test_cognitive_dashboard.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:07:56Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "deddcba7d1edd22411675841bf25248444b6541535a8bd9daa9734d135341683",
       "size": 5363,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_cognitive_fusion.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:08:57Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f181d12bf836f3574f40878d5593862ba36ee0cc631d2c2992449c2ced18eb6c",
       "size": 15619,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_cognitive_source_ontology.py": {
       "actions": [],
@@ -18884,13 +18916,13 @@
     "tests/test_gpt_doug_guardian.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T18:11:55Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "1fdb4e1533b59da02af74e6faacdf075727ce95b68e1198a63a47bbc51f4995a",
       "size": 3995,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_gpt_doug_max.py": {
       "actions": [],
@@ -19093,13 +19125,13 @@
     "tests/test_kraken_lattice_preview.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:05:36Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "9a72483027d5e853fcf308f85487d46ff7ab20709d7d3c7d1f624f4e35283767",
       "size": 724,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_kraken_narrative_intel.py": {
       "actions": [],
@@ -19115,13 +19147,13 @@
     "tests/test_kraken_robot_sim.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:04:39Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "8390d7dec050c89b959514c98b67e6ca8327aa4973e17a644e6a047eacb2d8dc",
       "size": 715,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_lateral_stability.py": {
       "actions": [],
@@ -19137,13 +19169,13 @@
     "tests/test_lattice_50_tools.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T20:20:37Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "4e75a5c668d7b9e3e32ac518c9f809223a779b6924b967e77c07eec2cd1fa114",
       "size": 2495,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_lightforce_terminal.py": {
       "actions": [],
@@ -19384,6 +19416,17 @@
       "reviewed_at": "2026-10-14T00:21:21Z",
       "sha256": "68deb5c4b5731a9fbe7c0ec64f1454dd8970078b98b26e52efe02476483a204a",
       "size": 3150,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "tests/test_orca_neurocloud.py": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T21:40:16Z",
+      "reviewed_at": null,
+      "sha256": "11a8d854ed2fc3c09197940f3e6c11b7fc81b173c703fd30c045354808849b4a",
+      "size": 1499,
       "validation_issues": [],
       "was_due": false
     },
@@ -19819,24 +19862,24 @@
     "tests/test_ttd_llm.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "11afc1496111162ec256bda2d42fa886d2c04928b98e5193d1a88e5e839dbefb",
       "size": 6703,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_ttd_open_data.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:40:22Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "f7c558c080e47ab7eb8903d15bfa17f73c55fbf7173d9f2bdbdd22af7c14fc1b",
       "size": 12578,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_uap_matrix.py": {
       "actions": [],
@@ -21546,57 +21589,57 @@
     "ttd_llm/__init__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "68119d3d87f3733507c62d538f954b3044ea8128954d9f34dd1007f8a8d1175f",
       "size": 229,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ttd_llm/__main__.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:38:41Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "54b434a52995678afee4891863e0663e2c61e4cde7322f82acdc724e1e7e7bb3",
       "size": 4467,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ttd_llm/engine.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:38:41Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "ce1b15ba1f1eddf0534067e160e3bb1d1a5254c1cabcdb2378d827e9bba7096a",
       "size": 12847,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ttd_llm/ollama.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:27:33Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "3367d5a0eed487623a1dcc9e9adae22b68d3fe6dc12315b323ea4e9d68f982b9",
       "size": 2131,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "ttd_llm/open_data.py": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T19:40:22Z",
       "reviewed_at": "2026-10-14T21:32:27Z",
       "sha256": "6b725ae4b6469168d22000123bf31e58a4805a63d1204b7dcb2f1ec4323edf38",
       "size": 20040,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "uap_matrix/__init__.py": {
       "actions": [],
@@ -22383,9 +22426,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T17:32:17Z",
+      "git_touched_at": "2026-10-14T21:32:28Z",
       "reviewed_at": null,
-      "sha256": "00a41f0b32cc4240d4225739a5ae111b4dcf788a9829c3fa246f58f6c02e5114",
+      "sha256": "878c9bb3dfc4771fa98cda1d8abd5cb820ef5137187c4fe70ada45f7bd1be557",
       "size": 5813,
       "validation_issues": [],
       "was_due": false
@@ -22405,9 +22448,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T17:32:17Z",
+      "git_touched_at": "2026-10-14T21:32:28Z",
       "reviewed_at": null,
-      "sha256": "8a0aaa4133aab0809c45a4a8c5f7bab35e03b43de774cca91a22fe363a9cc18d",
+      "sha256": "57c7844d1465309bcbbb37bd206b934f8948e9af9081c94328ebf62bc49519ad",
       "size": 6087,
       "validation_issues": [],
       "was_due": false
@@ -24878,11 +24921,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T21:32:27Z",
+  "generated_at": "2026-10-14T21:40:47Z",
   "mode": "apply",
   "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2256,
+  "tracked_files_reviewed": 2265,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
