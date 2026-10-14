@@ -73,3 +73,66 @@ test('ontology export has explicit linked sources and timestamps',()=>{
  assert.equal(record['tak:observedAt'],new Date(ts).toISOString());
  assert.equal(record['tak:geometry'],null);
 });
+
+const I=require(path.resolve(__dirname,'../docs/tak-os/live-3d/iphone-grid.js'));
+test('iPhone resource budget preserves bounded GPU load',()=>{
+ const phone=I.chooseProfile({width:393,dpr:3,coarse:true,iosPhone:true});
+ const desktop=I.chooseProfile({width:1440,dpr:2,coarse:false});
+ assert.equal(phone.mobile,true);
+ assert.ok(phone.resolutionScale<desktop.resolutionScale);
+ assert.ok(phone.tileCacheSize<desktop.tileCacheSize);
+ assert.ok(phone.orbitTickMs>desktop.orbitTickMs);
+ assert.equal(I.chooseProfile({width:844,dpr:3,coarse:true,iosPhone:true}).mobile,true);
+ assert.equal(I.chooseProfile({width:390,coarse:false}).mobile,false);
+ assert.equal(I.chooseProfile({width:390,coarse:true,saveData:true}).resolutionScale,0.58);
+});
+test('cloud feed status is calculated only from actual feed status',()=>{
+ assert.equal(I.summarize({usgs:'NOT_CONNECTED'}).online,0);
+ const v=I.summarize({usgs:'OK',eonet:'STALE',noaa:'ERROR',orbit:'CONNECTING',buildings:'OK'});
+ assert.equal(v.online,1);assert.equal(v.total,4);
+ assert.equal(v.stale,1);assert.equal(v.failed,1);
+ assert.match(v.label,/1\/4/);
+ assert.equal(I.summarize({usgs:'ERROR'}).label,'PUBLIC CLOUD: NO CURRENT SOURCES');
+});
+test('coordinate grid is reference geometry, never generated observations',()=>{
+ const lines=I.graticule(30);
+ assert.ok(lines.length>=15);
+ for(const line of lines){
+  assert.equal(line.length%2,0);
+  for(let i=0;i<line.length;i+=2){
+   assert.ok(line[i]>=-180&&line[i]<=180);
+   assert.ok(line[i+1]>=-90&&line[i+1]<=90);
+  }
+ }
+ assert.throws(()=>I.graticule(7));
+});
+
+const fs=require('node:fs');
+test('iPhone displays full-viewport globe with panels closed by default',()=>{
+ const css=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/iphone-grid.css'),'utf8');
+ const html=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/index.html'),'utf8');
+ const js=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/live-earth.js'),'utf8');
+ assert.ok(css.includes('#globe{position:fixed!important;inset:0!important'));
+ assert.ok(css.includes('.leftpanel,.rightpanel,.leftpanel.hidden,.rightpanel.open{display:none!important}'));
+ assert.ok(css.includes('.leftpanel.mobile-open,.rightpanel.mobile-open'));
+ assert.ok(css.includes('env(safe-area-inset-bottom'));
+ for(const action of ['map','layers','intel'])assert.ok(html.includes('data-mobile-panel="'+action+'"'));
+ for(const action of ['zoom-in','zoom-out','center'])assert.ok(html.includes('data-map-action="'+action+'"'));
+ assert.ok(html.includes('data-close-panel'));
+ assert.ok(js.includes("setCamera(mobileProfile.mobile?'north-america':'earth')"));
+ assert.ok(js.includes("button.addEventListener('click',()=>switchMobilePanel('map'))"));
+});
+test('Streets overlay only requests source tiles on user action, never synthetic telemetry',()=>{
+ const html=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/index.html'),'utf8');
+ const js=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/live-earth.js'),'utf8');
+ const sw=fs.readFileSync(path.resolve(__dirname,'../docs/tak-os/live-3d/sw.js'),'utf8');
+ assert.ok(html.includes('id="street-mobile"'));
+ assert.ok(html.includes('id="street-toggle"'));
+ assert.ok(js.includes('function toggleStreets()'));
+ assert.ok(js.includes('new C.UrlTemplateImageryProvider'));
+ assert.ok(js.includes('https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
+ assert.ok(js.includes('OpenStreetMap contributors'));
+ assert.ok(js.includes("addEventListener('click',toggleStreets)"));
+ assert.ok(!sw.includes('tile.openstreetmap.org'));
+ assert.ok(js.includes('Preset city, not device GPS.'));
+});

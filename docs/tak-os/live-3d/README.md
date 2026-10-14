@@ -66,3 +66,28 @@ These test only local code and local gateway. They include **synthetic fixtures 
 - [CelesTrak GP data](https://celestrak.org/NORAD/documentation/gp-data-formats.php)
 - [satellite.js](https://github.com/shashwatak/satellite-js) — MIT, SGP4/SDP4
 - [OpenStreetMap](https://www.openstreetmap.org/copyright) and [Overpass API](https://wiki.openstreetmap.org/wiki/Overpass_API)
+
+## iPhone Cloud Grid — October 2026
+
+The public Live Earth workspace is an installable iPhone Safari web application, **not** a native iTAK replacement. Open a separately deployed HTTPS page in Safari and use **Share > Add to Home Screen**; the route-specific manifest launches the **real-source** Live Earth interface, never the synthetic training simulator.
+
+- Full-screen touch globe with **MAP**, **LAYERS**, **ONTOLOGY** and **GRID** controls, iOS safe-area insets, landscape view and accessible control labels.
+- iPhone Cesium profile bounds GPU resolution, globe tile cache and geometry error. Civil satellite SGP4 redraws less frequently, and USGS/NASA loading begins before secondary providers.
+- The WGS84 30-degree coordinate grid is a **reference overlay**, not telemetry, a sensor-coverage estimate or inferred threat zone.
+- Cloud badge shows actual **USGS/NASA/NOAA/CelesTrak source health (0-4)**. On-demand OSM buildings are not counted as a live connected source; failures never promote missing data.
+- The service worker stores only same-origin UI code for shell recovery, **not** external provider responses, Cesium CDN assets, tokens, private CoT, or TAK Server data. Offline shell access **is not** offline live telemetry.
+- Read-only public APIs are fetched directly by each active browser. There is **no centralized persistent collector** or guaranteed 24/7 relay.
+
+**iTAK interoperability:** Apple iOS uses official **iTAK**, whereas ATAK-CIV is Android-only. A real iTAK-to-TAK-Server connection requires an owned/authorized deployment, separate identities and client certificate enrollment, TLS, applicable organizational policy and approval. This public web page holds no TAK credentials and never claims to have joined a TAK Server. Authorized operational layers should never be published into this public source-data map.
+
+### iPhone validation
+
+`node --test tests/test_tak_os_live3d.js` and `python3 -m unittest discover -s tests -p 'test_tak_os_live3d.py' -v` check the PWA manifest, static-route allowlist, shell-only cache, source-health math, mobile resource limits, and the new controls. Actual Safari WebGL fidelity, live provider availability and iOS Add to Home Screen installation require real-device testing after deployment.
+
+### ATAK-style iPhone scaling (map-first)
+
+The iPhone viewport opens on the real Cesium 3D globe with **no large control drawer covering the map**. MAP closes drawers; LAYERS and DATA open bounded, scrollable bottom sheets with a close button. Three touch-sized floating controls zoom or recenter the map, while the top status and bottom five-button dock respect the device safe areas. Cesium continues handling touch/pinch gestures.
+
+The mobile initial camera now frames **North America**, not an overly distant full-Earth sphere or the user's private device location. An optional, user-triggered **STREETS** layer requests OpenStreetMap raster tiles. The selected preset city (Richmond, Virginia by default) is shown when streets are enabled; camera coordinates are explicitly camera position, never the device GPS location. NASA historical imagery is restored when streets are disabled. OSM contributor attribution and tile request errors are visible. Tiles are not locally cached by the service worker; see the [OpenStreetMap tile policy](https://operations.osmfoundation.org/policies/tiles/).
+
+Before production acceptance, confirm on physical iPhones in portrait, landscape, Safari with its bars expanded/collapsed, and standalone Add to Home Screen. Automated route and JavaScript tests cannot replace physical Safari WebGL testing.
