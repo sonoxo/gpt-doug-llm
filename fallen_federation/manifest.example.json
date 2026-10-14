@@ -1,0 +1,17 @@
+{
+  "schema": "gpt-doug.fallen-federation.v1",
+  "name": "THE FALLEN",
+  "max_workers": 555,
+  "repositories": [
+    {"repository": "sonoxo/gpt-doug-llm", "authorized": true, "integration_mode": "pull_request"},
+    {"repository": "sonoxo/xuniadao", "authorized": true, "integration_mode": "pull_request"},
+    {"repository": "sonoxo/zyra", "authorized": true, "integration_mode": "pull_request"}
+  ],
+  "bio_sources": ["clinicaltrials", "gdc", "geo", "sra", "pubmed", "uniprot"],
+  "controls": {
+    "human_merge_required": true,
+    "self_propagation": false,
+    "physical_actuation": false,
+    "private_bio_data": false
+  }
+}
