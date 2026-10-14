@@ -5,6 +5,9 @@ on:
     paths:
       - 'gpt_doug_mlm/biochip_research.py'
       - 'tests/test_biochip_research.py'
+      - 'gpt_doug_mlm/biopineal.py'
+      - 'tests/test_biopineal_integration.py'
+      - 'pyproject.toml'
       - '.github/workflows/multimodel-biochip-research.yml'
   workflow_dispatch:
 
@@ -29,6 +32,6 @@ jobs:
       - name: Install test dependency
         run: python -m pip install 'pytest>=7,<10'
       - name: Validate Python source
-        run: python -m compileall -q gpt_doug_mlm/biochip_research.py tests/test_biochip_research.py
+        run: python -m compileall -q gpt_doug_mlm/biochip_research.py gpt_doug_mlm/biopineal.py tests/test_biochip_research.py tests/test_biopineal_integration.py
       - name: Run isolated research tests
-        run: python -m pytest -q tests/test_biochip_research.py
+        run: python -m pytest -q tests/test_biochip_research.py tests/test_biopineal_integration.py
