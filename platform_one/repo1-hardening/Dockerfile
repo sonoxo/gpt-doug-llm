@@ -6,7 +6,6 @@ FROM ${BASE_REGISTRY}/${BASE_IMAGE}:${BASE_TAG}
 
 ARG APP_UID=1001
 ARG CORE_FILE=core.py
-ARG SERVICE_FILE=service.py
 
 RUN microdnf -y update && \
     microdnf -y install python3 && \
@@ -18,7 +17,7 @@ RUN microdnf -y update && \
 WORKDIR /opt/qbio
 
 COPY --chown=${APP_UID}:0 ${CORE_FILE} /opt/qbio/core.py
-COPY --chown=${APP_UID}:0 ${SERVICE_FILE} /opt/qbio/service.py
+COPY --chown=${APP_UID}:0 scripts/service.py /opt/qbio/service.py
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
