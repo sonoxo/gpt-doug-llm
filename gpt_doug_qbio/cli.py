@@ -6,7 +6,7 @@ import math
 import random
 from pathlib import Path
 
-from .core import SpikeFrame, analyze_sequence
+from .core import MAX_FRAMES, SpikeFrame, analyze_sequence
 
 
 def _demo_frames(frame_count: int, channel_count: int, seed: int) -> list[SpikeFrame]:
@@ -33,6 +33,8 @@ def _read_jsonl(path: Path) -> list[SpikeFrame]:
         for line_number, line in enumerate(handle, 1):
             if not line.strip():
                 continue
+            if len(frames) >= MAX_FRAMES:
+                raise ValueError(f"input exceeds {MAX_FRAMES} frames")
             row = json.loads(line)
             try:
                 raw_t = row["t_ms"]
