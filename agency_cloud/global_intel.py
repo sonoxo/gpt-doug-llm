@@ -189,7 +189,8 @@ def _usgs(payload: object) -> dict:
     if not isinstance(payload, dict) or not isinstance(payload.get("features"), list):
         raise ValueError("unexpected USGS GeoJSON schema")
     features = payload["features"]
-    generated = payload.get("metadata", {}).get("generated")
+    metadata = payload.get("metadata")
+    generated = metadata.get("generated") if isinstance(metadata, dict) else None
     observed_at = None
     if isinstance(generated, (int, float)):
         observed_at = datetime.fromtimestamp(float(generated) / 1000, timezone.utc)
@@ -200,9 +201,13 @@ def _usgs(payload: object) -> dict:
     for feature in features:
         if not isinstance(feature, dict):
             continue
-        props = feature.get("properties") or {}
-        geometry = feature.get("geometry") or {}
-        coordinates = geometry.get("coordinates") or []
+        props = feature.get("properties")
+        geometry = feature.get("geometry")
+        if not isinstance(props, dict) or not isinstance(geometry, dict):
+            continue
+        coordinates = geometry.get("coordinates")
+        if not isinstance(coordinates, (list, tuple)):
+            continue
         magnitude = props.get("mag")
         if isinstance(magnitude, (int, float)) and not isinstance(magnitude, bool) and math.isfinite(float(magnitude)):
             magnitudes.append(float(magnitude))
@@ -247,14 +252,14 @@ def _eonet(payload: object) -> dict:
         cats = event.get("categories") or []
         category = cats[0].get("title") if cats and isinstance(cats[0], dict) else "Natural Event"
         categories[str(category)] += 1
-        geometry = event.get("geometry") or []
-        if geometry:
+        geometry = event.get("geometry")
+        if isinstance(geometry, list) and geometry:
             last = geometry[-1] if isinstance(geometry[-1], dict) else {}
             observed = _parse_iso(last.get("date"))
             if observed and (latest is None or observed > latest):
                 latest = observed
-            coordinates = last.get("coordinates") or []
-            if len(coordinates) >= 2 and len(points) < 80:
+            coordinates = last.get("coordinates")
+            if isinstance(coordinates, (list, tuple)) and len(coordinates) >= 2 and len(points) < 80:
                 item = _point(
                     "nasa-eonet",
                     event.get("title") or "Natural event",
@@ -363,7 +368,10 @@ def _world_bank(payload: object) -> dict:
         (
             item
             for item in rows
-            if isinstance(item, dict) and isinstance(item.get("value"), (int, float))
+            if isinstance(item, dict)
+            and isinstance(item.get("value"), (int, float))
+            and not isinstance(item.get("value"), bool)
+            and math.isfinite(float(item["value"]))
         ),
         None,
     )
