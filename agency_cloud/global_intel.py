@@ -311,7 +311,7 @@ def _swpc(payload: object) -> dict:
         "summary": {
             "planetaryKp": round(kp_value, 2) if kp_value is not None else None,
             "stormScale": (
-                "G5"
+                None if kp_value is None else "G5"
                 if kp_value is not None and kp_value >= 9
                 else "G4"
                 if kp_value is not None and kp_value >= 8
