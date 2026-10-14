@@ -44,7 +44,25 @@ class ServiceTests(unittest.TestCase):
             analyze_payload(payload)
 
     def test_json_serializable(self):
-        json.dumps(analyze_payload(self.sample_payload()))
+        json.dumps(analyze_payload(self.sample_payload()), allow_nan=False)
+
+    def test_rejects_subnormal_timestamp_interval(self):
+        payload = self.sample_payload()
+        payload["frames"] = [
+            {"t_ms": 0.0, "counts": [1, 1]},
+            {"t_ms": 5e-324, "counts": [1, 1]},
+        ]
+        with self.assertRaises(ValueError):
+            analyze_payload(payload)
+
+    def test_rejects_timestamp_that_overflows_float_conversion(self):
+        payload = self.sample_payload()
+        payload["frames"] = [
+            {"t_ms": 0, "counts": [1, 1]},
+            {"t_ms": 10 ** 400, "counts": [1, 1]},
+        ]
+        with self.assertRaises(ValueError):
+            analyze_payload(payload)
 
 
 if __name__ == "__main__":
