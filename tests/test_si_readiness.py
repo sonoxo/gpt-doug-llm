@@ -2,8 +2,10 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+
 from sonoxo_fleet import si_readiness as si
 from sonoxo_fleet.cli import SNAPSHOT, load_snapshot
+
 
 class SIReadinessTests(unittest.TestCase):
     def setUp(self):
@@ -43,7 +45,9 @@ class SIReadinessTests(unittest.TestCase):
             raise RuntimeError("secret in token")
         report=si.build_report(self.snapshot,limit=1,fetch_text=bad)
         self.assertEqual(report["counts"]["incomplete_evidence"],1)
-        self.assertNotIn("secret",json.dumps(report))
+        serialized=json.dumps(report)
+        self.assertNotIn("secret in token",serialized)
+        self.assertNotIn("RuntimeError",serialized)
 
     def test_local_output_only(self):
         with tempfile.TemporaryDirectory() as td:
