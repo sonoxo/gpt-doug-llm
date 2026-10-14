@@ -6,7 +6,6 @@ import io
 import json
 import socket
 import subprocess
-import sys
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
