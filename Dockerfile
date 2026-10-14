@@ -1,22 +1,30 @@
-FROM python:3.14-slim
+ARG BASE_REGISTRY=registry1.dso.mil
+ARG BASE_IMAGE=ironbank/redhat/ubi/ubi9-minimal
+ARG BASE_TAG=9.8
 
-LABEL org.opencontainers.image.title="GPT Doug LLM"
-LABEL org.opencontainers.image.description="Unified local-first agentic AI system"
-LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.source="https://github.com/sonoxo/gpt-doug-llm"
+FROM ${BASE_REGISTRY}/${BASE_IMAGE}:${BASE_TAG}
 
-WORKDIR /app
+ARG APP_UID=1001
+ARG CORE_FILE=core.py
 
-# Install Python dependencies
-RUN pip install --no-cache-dir pytest cryptography
+RUN microdnf -y update && \
+    microdnf -y install python3 && \
+    microdnf clean all && \
+    mkdir -p /opt/qbio && \
+    chown -R ${APP_UID}:0 /opt/qbio && \
+    chmod -R g=u /opt/qbio
 
-# Copy project
-COPY . .
+WORKDIR /opt/qbio
 
-# Create runtime directories
-RUN mkdir -p /root/.gpt-doug /app/workers/tasks /app/workers/claimed \
-    /app/workers/processed /app/workers/results /app/workers/live
+COPY --chown=${APP_UID}:0 ${CORE_FILE} /opt/qbio/core.py
+COPY --chown=${APP_UID}:0 scripts/service.py /opt/qbio/service.py
 
-# Default to the provider-neutral web interface.
-ENV GPT_DOUG_PROVIDER=none
-CMD ["python3", "web/server.py"]
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
+
+EXPOSE 8080
+
+USER 1001
+
+ENTRYPOINT ["python3", "/opt/qbio/service.py"]
