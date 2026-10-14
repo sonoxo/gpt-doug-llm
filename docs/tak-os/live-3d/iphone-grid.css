@@ -1,38 +1,53 @@
-/* Source-backed live Earth only; layout supports iOS safe areas and touch. */
+/* Mobile-first, full-viewport civilian Earth viewer. No TAK Server integration. */
 .cloud-grid-badge{position:absolute;z-index:10;top:111px;left:379px;max-width:calc(100% - 755px);padding:6px 10px;background:#071523e8;border:1px solid #315469;border-radius:6px;color:#a4e9db;font:700 10px/1.4 ui-monospace,monospace;pointer-events:none}
-.iphone-grid-nav{display:none}
-@media(max-width:850px){.cloud-grid-badge{top:104px;left:12px;max-width:calc(100% - 24px)}}
-@media(max-width:700px), (max-width:1100px) and (max-height:600px) and (pointer:coarse){
- html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
- .topbar{top:0;height:calc(54px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;align-items:center}
- .brandmark{font-size:12px;min-width:0}.brandmark b{font-size:10px}.brandmark small,.clock,.return-link{display:none!important}
- .statuschip{font-size:9px;max-width:125px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
- #globe{inset:calc(54px + env(safe-area-inset-top)) 0 calc(83px + env(safe-area-inset-bottom))}
- .globe-caption{top:calc(60px + env(safe-area-inset-top));left:9px;right:9px;max-width:none;padding:6px 8px;font-size:9px;line-height:1.35}
- .cloud-grid-badge{top:calc(118px + env(safe-area-inset-top));left:9px;right:9px;max-width:none;font-size:9px;padding:6px}
- .leftpanel,.rightpanel,.leftpanel.hidden,.rightpanel.open{display:none}
+.iphone-grid-nav,.mobile-map-caption,.mobile-map-tools,.mobile-camera-readout,.sheet-close{display:none}
+@media(max-width:850px), (max-width:1180px) and (max-height:620px) and (pointer:coarse){
+ :root{--phone-top:calc(52px + env(safe-area-inset-top,0px));--phone-nav:calc(63px + env(safe-area-inset-bottom,0px))}
+ html,body{position:fixed!important;inset:0;width:100%;height:100%;height:100dvh;margin:0;overflow:hidden!important;overscroll-behavior:none;background:#020914;-webkit-text-size-adjust:100%}
+ #globe{position:fixed!important;inset:0!important;z-index:0;width:100vw;height:100%;height:100dvh;min-height:0}
+ #globe .cesium-viewer,#globe .cesium-widget,#globe canvas{width:100%;height:100%}
+ #globe canvas{touch-action:none}
+ .topbar{position:fixed;z-index:30;left:0;right:0;top:0;height:var(--phone-top);padding:env(safe-area-inset-top,0px) 12px 0;min-height:0;gap:8px;background:linear-gradient(180deg,#04101cf7,#071722e9);box-shadow:0 2px 18px #0005;backdrop-filter:blur(14px)}
+ .brandmark{font-size:12px;letter-spacing:.005em;min-width:0;gap:5px;overflow:hidden;text-overflow:ellipsis}
+ .brandmark b{font-size:10px;white-space:nowrap}.brandmark small,.clock,.return-link{display:none!important}
+ .topstatus{flex:none;gap:0}.statuschip{font-size:9px;line-height:1.25;padding:5px 7px;max-width:120px;text-align:center;overflow:hidden;text-overflow:ellipsis}
+ .globe-caption{display:none!important}
+ .mobile-map-caption{display:block;position:fixed;z-index:12;top:calc(var(--phone-top) + 8px);left:8px;right:8px;padding:5px 8px;border:1px solid #2d5369;background:#071b2bdc;color:#b9e5ed;border-radius:6px;font:700 10px/1.4 ui-monospace,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+ .cloud-grid-badge{position:fixed;z-index:12;top:calc(var(--phone-top) + 40px);left:8px;right:8px;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:6px;padding:5px 8px;font-size:9px;background:#061c29d9}
+ .mobile-map-tools{display:flex;position:fixed;z-index:19;right:9px;top:48%;transform:translateY(-50%);flex-direction:column;gap:7px}
+ .mobile-map-tools button{height:46px;width:46px;min-height:46px;padding:0;border:1px solid #4e8392;border-radius:10px;background:#0a2131eb;color:#e7ffff;box-shadow:0 2px 12px #000a;font:800 20px ui-monospace,monospace;touch-action:manipulation}
+ .mobile-map-tools button:active{background:#26868a}.mobile-map-tools button:focus-visible,.iphone-grid-nav button:focus-visible,.sheet-close:focus-visible{outline:3px solid #6cebd9;outline-offset:1px}
+ .leftpanel,.rightpanel,.leftpanel.hidden,.rightpanel.open{display:none!important}
  .leftpanel.mobile-open,.rightpanel.mobile-open,.leftpanel.mobile-open.hidden,.rightpanel.mobile-open.open{
-  position:fixed;display:block;z-index:35;top:auto;bottom:calc(83px + env(safe-area-inset-bottom));left:8px;right:8px;width:auto;
-  height:min(56dvh,560px);max-height:min(56dvh,560px);padding:15px 14px;border-radius:15px 15px 8px 8px;
-  background:#071421f4;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-shadow:0 -10px 45px #000c
+  display:block!important;position:fixed;z-index:42;left:8px;right:8px;top:auto;bottom:calc(var(--phone-nav) + 30px);width:auto;max-width:none;
+  height:auto;max-height:min(56dvh,540px);padding:10px 14px 18px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-shadow:0 -13px 50px #000d;background:#071421f8;border:1px solid #396173;border-radius:13px
  }
- .iphone-grid-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;position:fixed;z-index:50;
-  bottom:calc(32px + env(safe-area-inset-bottom));left:0;right:0;height:52px;padding:4px 8px;
-  border-top:1px solid #274957;background:#061522f5;backdrop-filter:blur(12px)}
- .iphone-grid-nav button{touch-action:manipulation;min-width:0;min-height:44px;border:1px solid #345d6b;
-  border-radius:9px;background:#142938;color:#d8eff5;font-weight:750;font-size:11px}
- .iphone-grid-nav button[aria-pressed="true"]{color:#05141a;background:#5ce5ce;border-color:#77f5df}
- .bottomhud{height:calc(32px + env(safe-area-inset-bottom));padding:0 8px env(safe-area-inset-bottom);font-size:9px;gap:5px}
- .bottomhud .bottomnote,#toggle-hud{display:none!important}.bottomhud .mini{min-height:26px}
- .topstatus{gap:5px}.globe-caption b{font-size:9px}.cesium-viewer-bottom{bottom:0!important}
- button,.mini,.feedrow,input,select{min-height:44px}.feedrow input{min-height:20px;width:20px;height:20px}
- .records{max-height:28dvh}.camera-row .mini{flex:1 1 30%}
- .toast{bottom:calc(145px + env(safe-area-inset-bottom));width:calc(100% - 32px);max-width:none}
+ .sheet-close{display:block;position:sticky;z-index:2;top:0;margin:-4px -5px 7px auto;min-width:75px;height:36px;min-height:36px;padding:6px 12px;border-radius:7px;background:#18384b;border:1px solid #44758a;color:#e3fafb;font:700 11px ui-monospace,monospace}
+ .leftpanel h1{font-size:21px;margin:6px 0 11px}.leftpanel h1 span{font-size:10px}
+ .section-heading{margin:14px 0 7px}.feedrow{min-height:53px;gap:8px}
+ .feedrow input{min-height:20px;min-width:20px;width:20px;height:20px}
+ .hero-stats{margin:8px 0 12px}.hero-stats strong{font-size:19px}
+ .compactline{flex-wrap:wrap}.compactline select{flex:1 1 155px}.compactline .mini{flex:0 0 auto}
+ .camera-row{gap:7px}.camera-row .mini{flex:1 1 35%;min-height:43px}
+ .records{max-height:30dvh}.search-row input,.search-row select{min-height:44px}
+ .iphone-grid-nav{display:grid;position:fixed;z-index:50;left:0;right:0;bottom:0;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;height:var(--phone-nav);padding:6px 7px calc(6px + env(safe-area-inset-bottom,0px));background:#041522f5;border-top:1px solid #376478;backdrop-filter:blur(12px)}
+ .iphone-grid-nav button{min-width:0;min-height:43px;height:100%;padding:4px 1px;border:1px solid #315467;border-radius:9px;background:#112e40;color:#daedf5;font:750 clamp(9px,2.6vw,12px)/1.05 ui-sans-serif,system-ui,sans-serif;touch-action:manipulation}
+ .iphone-grid-nav button[aria-pressed="true"]{color:#02151c;background:#65e8d0;border-color:#93fff0}
+ .bottomhud{position:fixed;z-index:18;left:0;right:0;bottom:var(--phone-nav);height:26px;padding:2px 12px;gap:7px;overflow:hidden;background:#041522d9;border-top:1px solid #1b3545;font-size:9px;line-height:1.35;pointer-events:none}
+ .bottomhud #global-status{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;max-width:100%}
+ .bottomhud .bottomnote,.bottomhud #reset-camera,.bottomhud #toggle-hud{display:none!important}
+ .mobile-camera-readout{display:block;position:fixed;z-index:12;bottom:calc(var(--phone-nav) + 34px);left:8px;max-width:calc(100% - 88px);padding:5px 8px;border:1px solid #29566c;border-radius:5px;background:#071d2ce2;color:#b9e4eb;font:700 9px/1.4 ui-monospace,monospace;pointer-events:none}
+ .cesium-viewer-bottom{bottom:calc(var(--phone-nav) + 67px)!important;left:8px!important;z-index:11;max-width:calc(100% - 75px)}
+ .cesium-credit-logoContainer,.cesium-credit-textContainer{max-width:100%}
+ .toast{position:fixed;z-index:75;bottom:calc(var(--phone-nav) + 42px);left:8px;right:8px;transform:none;max-width:none;width:auto;font-size:11px}
+ button,input,select{touch-action:manipulation}
 }
-@media(max-width:1100px) and (max-height:600px) and (orientation:landscape) and (pointer:coarse){
+@media(max-width:1180px) and (max-height:620px) and (pointer:coarse) and (orientation:landscape){
+ .mobile-map-caption{top:calc(var(--phone-top) + 5px);left:8px;right:auto;max-width:60vw}
+ .cloud-grid-badge{top:calc(var(--phone-top) + 39px);left:8px;right:auto;max-width:61vw}
  .leftpanel.mobile-open,.rightpanel.mobile-open,.leftpanel.mobile-open.hidden,.rightpanel.mobile-open.open{
-   height:calc(100dvh - 150px);max-height:calc(100dvh - 150px);width:min(430px,60vw);right:auto}
- .globe-caption{max-width:56vw}
- .cloud-grid-badge{top:calc(96px + env(safe-area-inset-top));max-width:55vw}
+  left:8px;right:auto;bottom:calc(var(--phone-nav) + 8px);width:min(415px,65vw);max-height:calc(100dvh - var(--phone-top) - var(--phone-nav) - 18px)}
+ .mobile-map-tools{right:10px;top:55%}
 }
-@media(prefers-reduced-motion:reduce){.iphone-grid-nav button{transition:none}}
+@media(prefers-reduced-motion:reduce){.iphone-grid-nav button,.mobile-map-tools button{transition:none}}
