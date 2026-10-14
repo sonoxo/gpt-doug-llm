@@ -51,4 +51,6 @@ jobs:
           test -s docs/tak-os/live-3d/index.html
           test -s docs/tak-os/live-3d/manifest.webmanifest
           test -s docs/tak-os/live-3d/iphone-grid.css
+          grep -q 'mobile-map-tools' docs/tak-os/live-3d/index.html
+          grep -q 'data-close-panel' docs/tak-os/live-3d/index.html
           grep -q 'NO FAKE FALLBACK' docs/tak-os/live-3d/index.html
