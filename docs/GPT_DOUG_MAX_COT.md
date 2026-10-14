@@ -1,7 +1,21 @@
 # GPT-Doug-MAX CoT XML: training preview and authorized UDP interop
 
-`bash scripts/doug-max cot` now has two explicit modes:
+## See an actual CoT marker in your browser immediately
 
+```sh
+cd ~/Downloads/gpt-doug-llm
+bash scripts/doug-max cot show
+```
+
+`cot show` starts a loopback-only CoT UDP listener and the existing TAK-OS HTTP dashboard, sends a `LAB-VISIBLE-001` exercise medical event to the listener, **verifies receipt in the HTTP snapshot**, opens your default browser, and pans the map to the received marker. The example coordinates (34.6100, -86.5900) are operator-supplied training coordinates, **not** a verified medical incident. Nothing is sent to an external ATAK/iTAK device or TAK Server.
+
+Keep the Terminal running. To open the browser manually, use the printed `OPEN THIS MAP: http://127.0.0.1:<random-port>/?cot=LAB-VISIBLE-001` URL. Ctrl+C shuts down the local listener and gateway. If you are running remotely or headless, use `bash scripts/doug-max cot show --no-open`; the local URL may require SSH forwarding to be accessible from another machine.
+
+Use `--lat`, `--lon`, `--uid`, `--kind`, or `--callsign` to change the training event. No paid services, credentials, or external TAK access are needed.
+
+`bash scripts/doug-max cot` now has three modes:
+
+- `show`: open a local CoT map and verify one exercise event end to end.
 - `preview`: generate CoT 2.0 XML with real UTC `time`, `start` and `stale` values. No socket is opened.
 - `send`: send exactly **one** UDP datagram to a specified loopback or RFC1918 private IPv4 host, or to the approved one-hop exercise multicast group. Requires `--authorize`.
 
