@@ -1,0 +1,182 @@
+{
+  "schema": "xunia.fabrication.design.v1",
+  "name": "Civilian Indoor Inspection Rover",
+  "intent": "Supervised low speed inspection demonstrator, no road use or physical actuation",
+  "category": "mobile_robot",
+  "units": "mm",
+  "workspace": {
+    "printer_bed_mm": [
+      220,
+      220,
+      250
+    ],
+    "print_materials": [
+      "pla",
+      "petg"
+    ],
+    "robot_reach_mm": 900
+  },
+  "parts": [
+    {
+      "id": "chassis",
+      "name": "Steel chassis platform",
+      "material": "mild_steel",
+      "process": "stock",
+      "size_mm": [
+        540,
+        360,
+        30
+      ],
+      "center_mm": [
+        0,
+        0,
+        0
+      ],
+      "quantity": 1,
+      "mass_kg": 5.1,
+      "load_bearing": true
+    },
+    {
+      "id": "crossmember",
+      "name": "Steel crossmember",
+      "material": "mild_steel",
+      "process": "machined",
+      "size_mm": [
+        45,
+        340,
+        35
+      ],
+      "center_mm": [
+        0,
+        0,
+        25
+      ],
+      "mass_kg": 1,
+      "depends_on": [
+        "chassis"
+      ]
+    },
+    {
+      "id": "sensor_mount",
+      "name": "Printed sensor bracket",
+      "material": "petg",
+      "process": "fdm_print",
+      "size_mm": [
+        140,
+        90,
+        38
+      ],
+      "center_mm": [
+        80,
+        45,
+        70
+      ],
+      "mass_kg": 0.22,
+      "depends_on": [
+        "crossmember"
+      ]
+    },
+    {
+      "id": "electronics_case",
+      "name": "Printed electronics enclosure",
+      "material": "petg",
+      "process": "fdm_print",
+      "size_mm": [
+        120,
+        100,
+        80
+      ],
+      "center_mm": [
+        -120,
+        -35,
+        80
+      ],
+      "mass_kg": 0.34,
+      "depends_on": [
+        "chassis"
+      ]
+    },
+    {
+      "id": "left_wheel",
+      "name": "Left non-road wheel",
+      "material": "rubber",
+      "process": "purchased",
+      "size_mm": [
+        70,
+        170,
+        170
+      ],
+      "center_mm": [
+        -230,
+        -210,
+        -40
+      ],
+      "mass_kg": 2.1,
+      "depends_on": [
+        "chassis"
+      ]
+    },
+    {
+      "id": "right_wheel",
+      "name": "Right non-road wheel",
+      "material": "rubber",
+      "process": "purchased",
+      "size_mm": [
+        70,
+        170,
+        170
+      ],
+      "center_mm": [
+        230,
+        210,
+        -40
+      ],
+      "mass_kg": 2.1,
+      "depends_on": [
+        "chassis"
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "id": "joint_frame",
+      "kind": "weld",
+      "connects": [
+        "chassis",
+        "crossmember"
+      ]
+    },
+    {
+      "id": "joint_sensor",
+      "kind": "bolt",
+      "connects": [
+        "sensor_mount",
+        "crossmember"
+      ]
+    },
+    {
+      "id": "joint_electronics",
+      "kind": "bolt",
+      "connects": [
+        "electronics_case",
+        "chassis"
+      ]
+    },
+    {
+      "id": "joint_left_wheel",
+      "kind": "bolt",
+      "connects": [
+        "left_wheel",
+        "chassis"
+      ]
+    },
+    {
+      "id": "joint_right_wheel",
+      "kind": "bolt",
+      "connects": [
+        "right_wheel",
+        "chassis"
+      ]
+    }
+  ]
+}

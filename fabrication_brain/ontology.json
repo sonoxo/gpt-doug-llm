@@ -1,0 +1,35 @@
+{
+  "schema": "xunia.fabrication.ontology.v1",
+  "ontology_id": "GPT_DOUG_FABRICATION_BRAIN",
+  "status": "ENGINEERING_DRAFT_ONLY",
+  "domains": [
+    "mechanical_design",
+    "welding",
+    "vehicle_subsystems",
+    "robotics",
+    "mechatronics",
+    "fdm_3d_printing",
+    "assembly_qa"
+  ],
+  "entities": [
+    "Design",
+    "Part",
+    "Joint",
+    "ProcessCapability",
+    "ReviewGate",
+    "AssemblyTask"
+  ],
+  "relations": [
+    "DESIGN_HAS_PART",
+    "PART_JOINED_TO_PART",
+    "TASK_DEPENDS_ON_TASK",
+    "PART_REQUIRES_PROCESS",
+    "REVIEW_GOVERNS_RELEASE"
+  ],
+  "execution_policy": {
+    "machine_control": false,
+    "gcode_generated": false,
+    "weld_settings_generated": false,
+    "human_review_required": true
+  }
+}

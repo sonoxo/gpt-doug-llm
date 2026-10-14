@@ -1,0 +1,141 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "demo-01",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.441,
+          37.543
+        ]
+      },
+      "properties": {
+        "name": "Sample Weather Sensor",
+        "category": "sensor",
+        "source_kind": "SYNTHETIC",
+        "observed_at": "2026-10-13T10:00:00Z",
+        "description": "Invented classroom observation"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "demo-02",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.426,
+          37.548
+        ]
+      },
+      "properties": {
+        "name": "Sample Field Kit",
+        "category": "asset",
+        "source_kind": "SYNTHETIC",
+        "observed_at": "2026-10-13T10:05:00Z",
+        "description": "Fictional inspection kit"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "demo-03",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.449,
+          37.535
+        ]
+      },
+      "properties": {
+        "name": "Sample Survey Station",
+        "category": "site",
+        "source_kind": "SYNTHETIC",
+        "observed_at": "2026-10-13T10:07:00Z",
+        "description": "Illustrative measurement site"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "demo-04",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.429,
+          37.535
+        ]
+      },
+      "properties": {
+        "name": "Sample Field Observation",
+        "category": "event",
+        "source_kind": "SYNTHETIC",
+        "observed_at": "2026-10-13T10:09:00Z",
+        "description": "Invented exercise event"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "route-01",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -77.449,
+            37.535
+          ],
+          [
+            -77.441,
+            37.543
+          ],
+          [
+            -77.426,
+            37.548
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Illustrative Survey Path",
+        "category": "route",
+        "source_kind": "SYNTHETIC",
+        "description": "Drawing demonstration only - not navigation guidance"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "area-01",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -77.44,
+              37.529
+            ],
+            [
+              -77.425,
+              37.529
+            ],
+            [
+              -77.425,
+              37.54
+            ],
+            [
+              -77.44,
+              37.54
+            ],
+            [
+              -77.44,
+              37.529
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "name": "Illustrative Polygon",
+        "category": "area",
+        "source_kind": "SYNTHETIC",
+        "description": "Not an incident or operational boundary"
+      }
+    }
+  ]
+}

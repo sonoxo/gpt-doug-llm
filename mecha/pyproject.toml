@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpt-doug-mecha"
+version = "1.0.0"
+description = "Offline synthetic MECHA robotics and classical mathematics research"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+[tool.setuptools.packages.find]
+include = ["mecha*"]

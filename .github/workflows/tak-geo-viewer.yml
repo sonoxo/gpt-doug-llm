@@ -1,0 +1,65 @@
+name: TAK-GEO Offline Viewer
+
+on:
+  pull_request:
+    paths:
+      - 'tak_geo/**'
+      - 'examples/tak_geo/**'
+      - 'tests/test_tak_geo.py'
+      - 'gpt_brain/router.py'
+      - 'scripts/doug-max'
+      - '.github/workflows/tak-geo-viewer.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tak_geo/**'
+      - 'examples/tak_geo/**'
+      - 'tests/test_tak_geo.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-viewer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test runner
+        run: python -m pip install 'pytest>=7,<10'
+      - name: Python compile and isolated geospatial tests
+        run: |
+          python -m compileall -q tak_geo
+          python -m pytest -q tests/test_tak_geo.py tests/test_gpt_brain.py
+      - name: Parse JavaScript in standalone map viewer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('tak_geo/dashboard.html').read_text()
+          script = text.split('<script>',1)[1].split('</script>',1)[0]
+          Path('/tmp/tak-geo-viewer.js').write_text(script)
+          PY
+          node --check /tmp/tak-geo-viewer.js
+      - name: Check guarded launcher and generate real local demo
+        run: |
+          bash -n scripts/doug-max
+          bash scripts/doug-max tak-geo status > /tmp/tak-geo-status.json
+          bash scripts/doug-max tak-geo demo --output /tmp/tak-geo-dashboard
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          status = json.loads(Path('/tmp/tak-geo-status.json').read_text())
+          assert status['authorized_tak_server_connection'] is False
+          manifest = json.loads(Path('/tmp/tak-geo-dashboard/manifest.json').read_text())
+          assert manifest['feature_count'] == 6
+          assert not manifest['external_requests_by_default']
+          assert Path('/tmp/tak-geo-dashboard/index.html').is_file()
+          PY

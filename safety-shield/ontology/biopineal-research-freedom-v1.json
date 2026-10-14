@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "id": "BIOPINEAL_NO_UNNECESSARY_GUARDRAILS_V1",
+  "authority": "RESEARCH_ONLY",
+  "scope": "LOCAL_SYNTHETIC_RESEARCH_ONLY",
+  "no_extra_review_actions": [
+    "source_search",
+    "read_heartbeat",
+    "operator_show",
+    "simulate_classical_quantum",
+    "validate_synthetic_scenario",
+    "validate_research_ontology"
+  ],
+  "disables_existing_security_controls": false,
+  "grants_government_authority": false,
+  "grants_patent_or_third_party_rights": false,
+  "automatic_publication": false,
+  "requires_input_validation": true,
+  "requires_bounded_resources": true,
+  "third_party_system_access": false,
+  "human_review_for_publication": true
+}
