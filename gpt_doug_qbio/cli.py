@@ -35,7 +35,15 @@ def _read_jsonl(path: Path) -> list[SpikeFrame]:
                 continue
             row = json.loads(line)
             try:
-                frame = SpikeFrame(t_ms=float(row["t_ms"]), counts=tuple(int(v) for v in row["counts"]))
+                raw_t = row["t_ms"]
+                raw_counts = row["counts"]
+                if isinstance(raw_t, bool) or not isinstance(raw_t, (int, float)):
+                    raise TypeError("t_ms must be numeric")
+                if not isinstance(raw_counts, list) or not raw_counts:
+                    raise TypeError("counts must be a non-empty JSON array")
+                if any(type(value) is not int or value < 0 for value in raw_counts):
+                    raise TypeError("counts must contain non-negative JSON integers only")
+                frame = SpikeFrame(t_ms=float(raw_t), counts=tuple(raw_counts))
             except Exception as exc:
                 raise ValueError(f"invalid frame on line {line_number}") from exc
             frames.append(frame)
