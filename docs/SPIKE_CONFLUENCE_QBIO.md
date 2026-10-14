@@ -24,7 +24,7 @@ module itself does not open a physical device or stimulate tissue.
 
 For every frame the engine derives:
 
-- population spike count;
+- population spike count and frame-normalized population rate;
 - active-channel ratio;
 - normalized channel entropy;
 - active-channel persistence;
@@ -58,7 +58,7 @@ vector. This is ordinary complex arithmetic on a classical CPU.
 
 ## Sixteen dimensions
 
-The report exposes:
+The report exposes a final `dimensions.state` object with a concrete value/provenance label for every axis. The sixteen dimensions are:
 
 1. time
 2. channel occupancy
@@ -101,3 +101,11 @@ gpt-doug-qbio analyze spike-counts.jsonl --window 8 --source-class OPERATOR_DECL
 
 For real CL1 data, preserve upstream provenance. A source label alone does not prove
 that data are biological.
+
+
+## Deterministic reference outcome
+
+The bundled `demo --frames 64 --channels 64 --seed 42` sequence is designed only
+as a software reference. Its exact forecast may change if the scoring equations are
+revised; it must never be interpreted as a biological prediction or quantum-hardware
+measurement.
