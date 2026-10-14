@@ -77,8 +77,30 @@ class Live3DRoutes(unittest.TestCase):
             except subprocess.TimeoutExpired:proc.kill();proc.wait(timeout=2)
             proc.stdout.close();proc.stderr.close()
 
+    def test_iphone_grid_routes_and_real_only_install(self):
+        import json
+        for filename in ('iphone-grid.js','iphone-grid.css','manifest.webmanifest','sw.js'):
+            with self.subTest(file=filename):
+                status, _, body=self.get('/live-3d/'+filename)
+                self.assertEqual(status,200)
+                self.assertGreater(len(body),100)
+        _, _, manifest_text=self.get('/live-3d/manifest.webmanifest')
+        manifest=json.loads(manifest_text)
+        self.assertEqual(manifest['start_url'],'./')
+        self.assertEqual(manifest['display'],'standalone')
+        self.assertNotIn('synthetic',manifest['name'].lower())
+        _, _, page=self.get('/live-3d/')
+        self.assertIn('viewport-fit=cover',page)
+        self.assertIn('iphone-grid-nav',page)
+        self.assertIn('TAK SERVER: NOT CONNECTED',page)
+        _, _, worker=self.get('/live-3d/sw.js')
+        self.assertNotIn('earthquake.usgs.gov',worker)
+        self.assertNotIn('/api/',worker)
+        self.assertNotIn('gibs.earthdata.nasa.gov',worker)
+        self.assertIn('ALLOWED',worker)
+
     def test_static_js_syntax_and_real_data_guards(self):
-        for file in ('ontology.js','live-earth.js','cesium-config.js'):
+        for file in ('ontology.js','live-earth.js','cesium-config.js','iphone-grid.js','sw.js'):
             subprocess.run(['node','--check',str(APP/'live-3d'/file)],check=True,timeout=5)
         data=(APP/'live-3d/ontology.js').read_text()
         self.assertNotIn('sampleEvents',data)
