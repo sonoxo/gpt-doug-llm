@@ -341,7 +341,10 @@ def quantum_inspired_projection(features: SequenceFeatures) -> dict:
     probabilities = [abs(value) ** 2 for value in transformed]
     norm = sum(probabilities) or 1.0
     probabilities = [value / norm for value in probabilities]
-    dominant = 0\n    for index in range(1, n):\n        if probabilities[index] > probabilities[dominant]:\n            dominant = index
+    dominant = 0
+    for index in range(1, n):
+        if probabilities[index] > probabilities[dominant]:
+            dominant = index
     return {
         "mode": "CLASSICAL_QUANTUM_INSPIRED",
         "hardware_quantum": False,
