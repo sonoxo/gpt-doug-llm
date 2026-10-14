@@ -83,6 +83,7 @@ class BrainRouter:
         for name in chosen:
             if name not in unique:
                 unique.append(name)
-        if max_agents > 1 and "critic" in unique and "critic" not in unique[:max_agents]:
+        required_roles = {name for name in ("stark", "ironman") if name in words}
+        if max_agents > len(required_roles) and "critic" in unique and "critic" not in unique[:max_agents]:
             unique = unique[: max_agents - 1] + ["critic"]
         return [AGENTS[name] for name in unique[:max_agents]]
