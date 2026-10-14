@@ -156,12 +156,18 @@ def extract_features(frames: Sequence[SpikeFrame], index: int, window: int = 8) 
     persistence = _active_jaccard(frame.counts, previous.counts) if previous else 0.0
     similarity = _cosine(frame.counts, previous.counts) if previous else 0.0
 
-    if previous is None:
-        acceleration = 0.0
+    if previous is None or index < 2:
+        acceleration = 0.5
     else:
-        prev_total = sum(previous.counts)
-        scale = max(1.0, float(prev_total + total))
-        acceleration = _clamp(0.5 + (total - prev_total) / (2.0 * scale))
+        previous_previous = frames[index - 2]
+        previous_dt_ms = previous.t_ms - previous_previous.t_ms
+        previous_rate_hz = (
+            sum(previous.counts) * 1000.0 / previous_dt_ms if previous_dt_ms > 0 else 0.0
+        )
+        rate_scale = max(1.0, abs(population_rate_hz) + abs(previous_rate_hz))
+        acceleration = _clamp(
+            0.5 + (population_rate_hz - previous_rate_hz) / (2.0 * rate_scale)
+        )
 
     baseline = fmean(totals[:-1]) if len(totals) > 1 else float(total)
     burst_index = _clamp(total / max(1.0, 3.0 * baseline))
