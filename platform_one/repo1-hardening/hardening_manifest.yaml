@@ -9,7 +9,6 @@ args:
   BASE_IMAGE: "redhat/ubi/ubi9-minimal"
   BASE_TAG: "9.8"
   CORE_FILE: "core.py"
-  SERVICE_FILE: "service.py"
 
 labels:
   org.opencontainers.image.title: "GPT-Doug QBio"
@@ -28,11 +27,6 @@ resources:
     validation:
       type: "sha256"
       value: "399803ff384c77d15cf285b5597985b86e790fda25bb4cd31482051195f0095d"
-  - url: "https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/ae81a7dcceac5d27b5d42d9614a71d296abc6f18/platform_one/repo1-qbio/src/service.py"
-    filename: "service.py"
-    validation:
-      type: "sha256"
-      value: "d740c5c7db9f052cb02a3b465852fabde4f94ec1dd311f07855b3963bb5eefd1"
 
 maintainers:
   - email: "REPLACE_WITH_REPO1_EMAIL"
