@@ -2,6 +2,16 @@
 
 **Status: working independent civilian synthetic lab. No live TAK.gov, military, government, or third-party systems connected.** This is not a substitute for TAK Server, WebTAK, ATAK, WinTAK, or TAKX and is not an official TAK Product Center product.
 
+## CoT marker not visible? Use the one-command map launch
+
+From the repository root, run:
+
+```sh
+bash scripts/doug-max cot show
+```
+
+The command launches an isolated localhost UDP listener, sends an exercise CoT event, confirms it reached the gateway, opens a browser, and centers the map on the received marker (even if its coordinates are far from Richmond). It prints a manual browser URL if auto-open is unavailable. The marker is a local training event, not a real-world report. See [GPT-Doug-MAX CoT visualization](../GPT_DOUG_MAX_COT.md).
+
 ## One-command launch (Mac, Linux, Windows with Python)
 
 From the project folder:
