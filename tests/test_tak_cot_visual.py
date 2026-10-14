@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import http.client
-import json
 import subprocess
 import unittest
 from pathlib import Path
