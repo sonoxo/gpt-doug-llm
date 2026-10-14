@@ -6,12 +6,6 @@ FROM ${BASE_REGISTRY}/${BASE_IMAGE}:${BASE_TAG}
 
 ARG APP_UID=1001
 
-LABEL org.opencontainers.image.title="GPT-Doug QBio" \
-      org.opencontainers.image.description="Read-only spike-confluence research analytics service" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.vendor="Sonoxo" \
-      org.opencontainers.image.version="0.1.0"
-
 RUN microdnf -y update && \
     microdnf -y install python3 && \
     microdnf clean all && \
