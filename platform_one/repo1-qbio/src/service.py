@@ -10,6 +10,7 @@ no stimulation path, no outbound network access, and no persistent storage.
 import json
 import os
 import re
+import socket
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from socketserver import ThreadingMixIn
@@ -166,6 +167,9 @@ class Handler(BaseHTTPRequestHandler):
             result = analyze_payload(payload)
         except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             self._send(400, {"error": "invalid_request", "detail": str(exc)[:240]})
+            return
+        except socket.timeout:
+            self.close_connection = True
             return
         except Exception:
             self._send(500, {"error": "internal_error"})
