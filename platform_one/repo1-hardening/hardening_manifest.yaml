@@ -1,0 +1,35 @@
+apiVersion: v1
+name: "opensource/sonoxo/gpt-doug-qbio"
+
+tags:
+  - "0.1.0"
+  - "latest"
+
+args:
+  BASE_IMAGE: "redhat/ubi/ubi9-minimal"
+  BASE_TAG: "9.8"
+  CORE_FILE: "core.py"
+
+labels:
+  org.opencontainers.image.title: "GPT-Doug QBio"
+  org.opencontainers.image.description: "Read-only spike-confluence research analytics service"
+  org.opencontainers.image.licenses: "MIT"
+  org.opencontainers.image.url: "https://github.com/sonoxo/gpt-doug-llm"
+  org.opencontainers.image.vendor: "Sonoxo"
+  org.opencontainers.image.version: "0.1.0"
+  mil.dso.ironbank.image.keywords: "research,analytics,neural,spike,provenance"
+  mil.dso.ironbank.image.type: "opensource"
+  mil.dso.ironbank.product.name: "GPT-Doug QBio"
+
+resources:
+  - url: "https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/ae81a7dcceac5d27b5d42d9614a71d296abc6f18/platform_one/repo1-qbio/src/core.py"
+    filename: "core.py"
+    validation:
+      type: "sha256"
+      value: "399803ff384c77d15cf285b5597985b86e790fda25bb4cd31482051195f0095d"
+
+maintainers:
+  - email: "REPLACE_WITH_REPO1_EMAIL"
+    name: "REPLACE_WITH_MAINTAINER_NAME"
+    username: "REPLACE_WITH_REPO1_USERNAME"
+    cht_member: false

@@ -471,6 +471,21 @@
       setMapCenter({lat,lon}); navigate('map'); return true;
     },
     resetPublicView(){state.zoom=8;setMapCenter({lat:37.75,lon:-77.27});navigate('map');},
+    // A URL-selected CoT training marker must be visible even outside Richmond.
+    // Never display a point unless it was actually received by the local gateway.
+    focusGatewayUnit(uid) {
+      if (typeof uid !== 'string' || !/^(?:LAB|DEMO)-[A-Za-z0-9_.:@/-]{1,120}$/.test(uid)) return false;
+      const unit = state.gatewayUnits.find((item) => item.id === uid && item.synthetic === true);
+      if (!unit) return false;
+      state.selected = unit.id;
+      state.search = ''; state.filter = 'all';
+      $('#unit-search').value = ''; $('#type-filter').value = 'all';
+      state.zoom = 11;
+      navigate('map');
+      setMapCenter({lat: unit.lat, lon: unit.lon});
+      renderInspector();
+      return true;
+    },
     setGatewayConnection(connected) {
       state.gatewayConnected = !!connected;
       renderTopology();

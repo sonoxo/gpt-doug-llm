@@ -43,8 +43,14 @@ jobs:
           node --check docs/tak-os/live-3d/ontology.js
           node --check docs/tak-os/live-3d/live-earth.js
           node --check docs/tak-os/live-3d/cesium-config.js
+          node --check docs/tak-os/live-3d/iphone-grid.js
+          node --check docs/tak-os/live-3d/sw.js
       - name: Ensure no real-world fake-fallback records
         run: |
           ! grep -E 'const demoUnits|seed = \[|const fakeEvents|Math.random\(' docs/tak-os/live-3d/live-earth.js
           test -s docs/tak-os/live-3d/index.html
+          test -s docs/tak-os/live-3d/manifest.webmanifest
+          test -s docs/tak-os/live-3d/iphone-grid.css
+          grep -q 'mobile-map-tools' docs/tak-os/live-3d/index.html
+          grep -q 'data-close-panel' docs/tak-os/live-3d/index.html
           grep -q 'NO FAKE FALLBACK' docs/tak-os/live-3d/index.html

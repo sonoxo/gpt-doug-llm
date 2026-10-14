@@ -47,6 +47,9 @@ class SIReadinessTests(unittest.TestCase):
         self.assertEqual(report["counts"]["incomplete_evidence"],1)
         self.assertNotIn("secret in token",json.dumps(report))
         self.assertFalse(report["policy"]["secret_collection"])
+        serialized=json.dumps(report)
+        self.assertNotIn("secret in token",serialized)
+        self.assertNotIn("RuntimeError",serialized)
 
     def test_local_output_only(self):
         with tempfile.TemporaryDirectory() as td:

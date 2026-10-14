@@ -6,8 +6,17 @@
 const $=id=>document.getElementById(id), cfg=window.TAKLiveOntology;
 if(!cfg){$('global-status').textContent='ONTOLOGY MODULE FAILED TO LOAD';return;}
 const {PROVIDERS,Ontology,parseEonet,parseUsgs,parseNoaa,parseOrbits,parseBuildings}=cfg;
+const mobileTools=window.TAKIphoneGrid;
+const mobileProfile=mobileTools?mobileTools.chooseProfile({
+ width:window.innerWidth,dpr:window.devicePixelRatio,
+ coarse:window.matchMedia?.('(pointer:coarse)').matches,
+ iosPhone:/iPhone/i.test(navigator.userAgent),
+ saveData:navigator.connection?.saveData,
+ reducedMotion:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+}):{mobile:false,resolutionScale:1,tileCacheSize:110,maximumScreenSpaceError:2,orbitTickMs:12000,cameraDuration:1.4};
+let gridVisible=false;
 const store=new Ontology(), statusNodes=['usgs','eonet','noaa','orbit','buildings'];
-const ui={enabled:{usgs:true,eonet:true,noaa:true,orbit:true,buildings:true},lastRequested:new Map(),inFlight:new Set(),lastFly:null,selected:null,orbitPositions:new Map(),camera:'earth',viewer:null,dataSources:{},serviceTimers:[],orbitLibrary:null,originError:null,imagery:null,imagesInError:0,buildingsRunAt:0};
+const ui={enabled:{usgs:true,eonet:true,noaa:true,orbit:true,buildings:true},lastRequested:new Map(),inFlight:new Set(),lastFly:null,selected:null,orbitPositions:new Map(),camera:'earth',viewer:null,dataSources:{},serviceTimers:[],orbitLibrary:null,originError:null,imagery:null,imagesInError:0,buildingsRunAt:0,gridSource:null,baseLayer:null,streetsLayer:null,streetFailures:0};
 const cities={richmond:{lat:37.5407,lon:-77.436},dc:{lat:38.9072,lon:-77.0369},nyc:{lat:40.7128,lon:-74.006},sf:{lat:37.7749,lon:-122.4194}};
 const colors={usgs:'#ff897f',eonet:'#fac675',orbit:'#70fbef',buildings:'#a1e4ff'};
 const countString=(n)=>Number(n).toLocaleString();
@@ -28,9 +37,11 @@ function renderHealth(){
   row.append(label,right);row.title=m.error||`Last ingested ${stamp(m.fetchedAt)}. Provider refresh status, not a guarantee of live telemetry.`;health.append(row);
   text('status-'+id,formatStatus(m.state));
  }
- text('feed-count',`${current}/5`);const counts=store.counts();text('live-count',Object.values(counts).reduce((a,b)=>a+b,0));
+ const cloud=mobileTools?mobileTools.summarize(Object.fromEntries(['usgs','eonet','noaa','orbit'].map(id=>[id,store.status(id).state]))):{online:current,total:5,label:'PUBLIC CLOUD '+current+'/5'};
+ text('cloud-grid-status',cloud.label+' · TAK SERVER: NOT CONNECTED');
+ text('feed-count',`${cloud.online}/${cloud.total}`);const counts=store.counts();text('live-count',Object.values(counts).reduce((a,b)=>a+b,0));
  const kp=store.current('noaa')[0];text('global-kp',kp?Number(kp.properties.kp).toFixed(2):'—');
- const anyone=current>0;text('global-status',anyone?'PUBLIC FEEDS RECEIVED · INSPECT SOURCE AGES': 'NO VERIFIED LIVE FEED · CHECK CONNECTION');
+ const anyone=cloud.online>0;text('global-status',anyone?'PUBLIC FEEDS RECEIVED · INSPECT SOURCE AGES': 'NO VERIFIED LIVE FEED · CHECK CONNECTION');
  text('health-updated',new Date().toISOString().slice(11,19)+' UTC');
  $('ontology-stats').replaceChildren();
  for (const [title,value] of Object.entries({'source entities':5,'observation nodes':store.records.size,'active nodes':Object.values(counts).reduce((a,b)=>a+b,0)})){
@@ -57,8 +68,8 @@ function inspect(r){
  const orbit=ui.orbitPositions.get(r.id);if(orbit){fields.push(['ORBIT STATE','SGP4 MODEL, NOT LIVE TRACK'],['Computed at',stamp(orbit.calculatedAt)],['Model latitude',orbit.lat.toFixed(3)+'°'],['Model longitude',orbit.lon.toFixed(3)+'°'],['Model height',Math.round(orbit.altitudeMeters/1000)+' km']);}
  for(const [key,value] of fields){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=key;dd.textContent=value??'unavailable';list.append(dt,dd);}el.append(list);
  const link=safeLink(r.sourceUrl);if(link){let a=document.createElement('a');a.href=link;a.target='_blank';a.rel='noopener noreferrer';a.textContent='OPEN ORIGINAL PROVIDER RECORD ↗';a.style.cssText='display:block;margin-top:11px;font-size:10px';el.append(a);}
- const p=r.geometry?.point;if(p&&ui.viewer){ui.viewer.camera.flyTo({destination:window.Cesium.Cartesian3.fromDegrees(p.lon,p.lat,r.type==='BuildingFootprint'?2400:950000),duration:1.1});}
- else if(orbit && ui.viewer){ui.viewer.camera.flyTo({destination:window.Cesium.Cartesian3.fromDegrees(orbit.lon,orbit.lat,orbit.altitudeMeters+1200000),duration:1.1});}
+ const p=r.geometry?.point;if(p&&ui.viewer){ui.viewer.camera.flyTo({destination:window.Cesium.Cartesian3.fromDegrees(p.lon,p.lat,r.type==='BuildingFootprint'?2400:950000),duration:mobileProfile.cameraDuration});}
+ else if(orbit && ui.viewer){ui.viewer.camera.flyTo({destination:window.Cesium.Cartesian3.fromDegrees(orbit.lon,orbit.lat,orbit.altitudeMeters+1200000),duration:mobileProfile.cameraDuration});}
 }
 function rendererReady(){return Boolean(ui.viewer&&window.Cesium);}
 function sourceData(id){const C=window.Cesium;return new C.CustomDataSource(id);}
@@ -166,7 +177,7 @@ function setCamera(target){
  const C=window.Cesium;
  const views={earth:{lon:-22,lat:18,height:21000000},'north-america':{lon:-95,lat:38,height:7000000},atlantic:{lon:-37,lat:30,height:12500000},city:{...cities[$('city-select').value],height:13000}};
  const p=views[target]||views.earth;
- ui.viewer.camera.flyTo({destination:C.Cartesian3.fromDegrees(p.lon,p.lat,p.height),duration:1.4});
+ ui.viewer.camera.flyTo({destination:C.Cartesian3.fromDegrees(p.lon,p.lat,p.height),duration:mobileProfile.cameraDuration});
 }
 function initGlobe(){
  const C=window.Cesium;
@@ -178,11 +189,30 @@ function initGlobe(){
  ui.viewer=new C.Viewer('globe',{baseLayer:new C.ImageryLayer(wms),terrainProvider:new C.EllipsoidTerrainProvider(),timeline:false,animation:false,
   baseLayerPicker:false,geocoder:false,homeButton:false,fullscreenButton:false,sceneModePicker:false,navigationHelpButton:false,
   selectionIndicator:true,infoBox:false,requestRenderMode:true,maximumRenderTimeChange:Infinity});
+ ui.viewer.resolutionScale=mobileProfile.resolutionScale;
+ ui.viewer.scene.globe.tileCacheSize=mobileProfile.tileCacheSize;
+ ui.viewer.scene.globe.maximumScreenSpaceError=mobileProfile.maximumScreenSpaceError;
+ ui.baseLayer=ui.viewer.imageryLayers.get(0);
+ if(mobileProfile.mobile){
+   ui.viewer.scene.fog.enabled=false;
+   if(ui.viewer.scene.skyAtmosphere)ui.viewer.scene.skyAtmosphere.show=false;
+ }
  ui.viewer.scene.globe.baseColor=C.Color.fromCssColorString('#152334');ui.viewer.scene.globe.depthTestAgainstTerrain=false;
  ui.viewer.scene.requestRenderMode=true;
  const ds=ui.dataSources;for(const id of ['usgs','eonet','orbit','buildings']){ds[id]=sourceData(id);ui.viewer.dataSources.add(ds[id]);}
+ const reference=new C.CustomDataSource('wgs84-reference-grid');
+ if(mobileTools){
+  for(const degrees of mobileTools.graticule(30)){
+   reference.entities.add({polyline:{positions:C.Cartesian3.fromDegreesArray(degrees),width:1,material:C.Color.fromCssColorString('#77e8ed').withAlpha(.32)}});
+  }
+ }
+ ui.viewer.dataSources.add(reference);
+ reference.show=false;
+ ui.gridSource=reference;
  ui.viewer.selectedEntityChanged.addEventListener(entity=>{if(entity){const r=store.records.get(entity.id);if(r)inspectNoFly(r);}});
- text('render-status','CESIUM 3D ACTIVE');text('imagery-state','NASA HISTORICAL BASE REQUESTED');setCamera('earth');
+ ui.viewer.camera.moveEnd.addEventListener(updateCameraReadout);
+ text('render-status',mobileProfile.mobile?'3D ACTIVE · iPHONE':'CESIUM 3D ACTIVE');text('imagery-state','NASA HISTORICAL BASE REQUESTED');
+ setCamera(mobileProfile.mobile?'north-america':'earth');updateCameraReadout();
  }catch(err){text('render-status','CESIUM ERROR');text('imagery-state','GLOBE UNAVAILABLE');toast(`Cesium failed: ${err.message}`);}
 }
 function overlayImagery(){
@@ -215,6 +245,83 @@ async function loadBuildings(){
  }catch(err){store.failure('buildings',err);rebuildSource('buildings');text('building-note',`OSM Overpass unavailable: ${err.message}. No estimated heights generated.`);
  }finally{ui.inFlight.delete('buildings');renderHealth();}
 }
+function updateCameraReadout(){
+ if(!rendererReady())return;
+ const c=ui.viewer.camera.positionCartographic,C=window.Cesium;
+ if(!c)return;
+ const latitude=C.Math.toDegrees(c.latitude),longitude=C.Math.toDegrees(c.longitude);
+ const altitude=Math.max(0,c.height)/1000;
+ text('mobile-camera-readout','CAMERA '+Math.abs(latitude).toFixed(1)+'°'+(latitude<0?'S':'N')+' · '+Math.abs(longitude).toFixed(1)+'°'+(longitude<0?'W':'E')+' · '+altitude.toFixed(altitude<100?1:0)+' km ALT');
+}
+function toggleStreets(){
+ if(!rendererReady()){toast('3D map unavailable.');return;}
+ const C=window.Cesium;
+ if(ui.streetsLayer){
+  ui.viewer.imageryLayers.remove(ui.streetsLayer,true);ui.streetsLayer=null;
+  if(ui.baseLayer)ui.baseLayer.show=true;
+  $('street-toggle').textContent='OSM STREETS OFF';
+  $('street-mobile').textContent='STREETS';
+  $('street-toggle').setAttribute('aria-pressed','false');
+  $('street-mobile').setAttribute('aria-pressed','false');
+  text('streets-note','OSM street tiles OFF. NASA GIBS historical composite selected.');
+ }else{
+  try{
+   const provider=new C.UrlTemplateImageryProvider({
+    url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    tilingScheme:new C.WebMercatorTilingScheme(),maximumLevel:18,
+    credit:new C.Credit('© OpenStreetMap contributors')
+   });
+   provider.errorEvent.addEventListener(()=>{
+    ui.streetFailures++;
+    if(ui.streetFailures===1){
+     text('streets-note','OSM imagery request failed; check network or tile service. No replacement tiles generated.');
+     toast('OSM tile request failed. Check source access.');
+    }
+   });
+   ui.streetFailures=0;
+   ui.streetsLayer=ui.viewer.imageryLayers.addImageryProvider(provider);
+   if(ui.baseLayer)ui.baseLayer.show=false;
+   $('street-toggle').textContent='OSM STREETS ON';
+   $('street-mobile').textContent='STREETS ON';
+   $('street-toggle').setAttribute('aria-pressed','true');
+   $('street-mobile').setAttribute('aria-pressed','true');
+   text('streets-note','OSM street tiles requested for this view only. © OpenStreetMap contributors. Network and usage policy apply.');
+   if(mobileProfile.mobile)setCamera('city'); // Preset city, not device GPS.
+  }catch(err){toast('OSM streets unavailable: '+err.message);}
+ }
+ ui.viewer.scene.requestRender();
+}
+function moveCamera(action){
+ if(!rendererReady())return;
+ if(action==='center'){setCamera('north-america');return;}
+ const height=ui.viewer.camera.positionCartographic?.height;
+ if(!Number.isFinite(height))return;
+ const step=Math.max(300,Math.min(6000000,Math.abs(height)*0.33));
+ if(action==='zoom-in')ui.viewer.camera.zoomIn(step);
+ else if(action==='zoom-out')ui.viewer.camera.zoomOut(step);
+ ui.viewer.scene.requestRender();updateCameraReadout();
+}
+function switchMobilePanel(panel){
+ const left=document.querySelector('.leftpanel'),right=document.querySelector('.rightpanel');
+ left.classList.toggle('mobile-open',panel==='layers');
+ right.classList.toggle('mobile-open',panel==='intel');
+ document.querySelectorAll('[data-mobile-panel]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mobilePanel===panel)));
+ if(rendererReady())ui.viewer.scene.requestRender();
+}
+function toggleReferenceGrid(){
+ if(!ui.gridSource){toast('3D map unavailable: cannot draw coordinate grid.');return;}
+ gridVisible=!gridVisible;ui.gridSource.show=gridVisible;
+ $('grid-toggle').textContent=gridVisible?'30° GRID ON':'30° GRID OFF';
+ $('grid-toggle').setAttribute('aria-pressed',String(gridVisible));
+ $('grid-mobile').textContent=gridVisible?'GRID ON':'GRID OFF';
+ $('grid-mobile').setAttribute('aria-pressed',String(gridVisible));
+ ui.viewer.scene.requestRender();
+}
+function registerShell(){
+ if('serviceWorker' in navigator && (location.protocol==='https:'||['localhost','127.0.0.1'].includes(location.hostname))){
+  navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+ }
+}
 function bind(){
  $('refresh-all').addEventListener('click',()=>refreshAll(true));
  $('export-ontology').addEventListener('click',()=>download('gpt-doug-real-earth-ontology.jsonld',store.exportJsonLD()));
@@ -228,17 +335,28 @@ function bind(){
  $('buildings-load').addEventListener('click',loadBuildings);
  document.querySelectorAll('[data-camera]').forEach(btn=>btn.addEventListener('click',()=>setCamera(btn.dataset.camera)));
  $('reset-camera').addEventListener('click',()=>setCamera('earth'));
- $('toggle-hud').addEventListener('click',()=>{const right=document.querySelector('.rightpanel');right.classList.toggle('open');document.querySelector('.leftpanel').classList.toggle('hidden');});
+ document.querySelectorAll('[data-mobile-panel]').forEach(button=>button.addEventListener('click',()=>switchMobilePanel(button.dataset.mobilePanel)));
+ $('grid-toggle').addEventListener('click',toggleReferenceGrid);
+ $('street-toggle').addEventListener('click',toggleStreets);
+ $('street-mobile').addEventListener('click',toggleStreets);
+ document.querySelectorAll('[data-map-action]').forEach(button=>button.addEventListener('click',()=>moveCamera(button.dataset.mapAction)));
+ document.querySelectorAll('[data-close-panel]').forEach(button=>button.addEventListener('click',()=>switchMobilePanel('map')));
+ $('grid-mobile').addEventListener('click',toggleReferenceGrid);
+ $('toggle-hud').addEventListener('click',()=>switchMobilePanel('intel'));
  document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHealth();refreshAll(false);orbitalRender();}});
 }
 function init(){
  text('utc-clock',new Date().toISOString().slice(11,19)+' UTC');
  $('imagery-date').value=new Date(Date.now()-2*86400000).toISOString().slice(0,10);
  $('imagery-date').max=new Date().toISOString().slice(0,10);
- bind();initGlobe();renderHealth();renderRecords();store.restoreArchive().catch(()=>{});refreshAll(true);
+ bind();switchMobilePanel('map');initGlobe();registerShell();renderHealth();renderRecords();store.restoreArchive().catch(()=>{});
+ if(mobileProfile.mobile){
+  refresh('usgs',true);refresh('eonet',true);
+  setTimeout(()=>{if(!document.hidden){refresh('noaa',true);refresh('orbit',true);}},1600);
+ }else refreshAll(true);
  setInterval(()=>text('utc-clock',new Date().toISOString().slice(11,19)+' UTC'),1000);
  setInterval(()=>{if(!document.hidden)refreshAll(false);renderHealth();},30000);
- setInterval(()=>{if(!document.hidden)orbitalRender();},12000);
+ setInterval(()=>{if(!document.hidden)orbitalRender();},mobileProfile.orbitTickMs);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();

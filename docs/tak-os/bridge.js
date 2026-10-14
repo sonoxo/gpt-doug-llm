@@ -5,6 +5,13 @@
   const base = new URL('./api/v1/', window.location.href);
   const state = { token: '', connected: false, attempts: 0, stream: null, units: new Map(), records: [], health: null, lastEvent: null };
   const safe = (v) => String(v === undefined || v === null ? '' : v).slice(0, 180);
+  // Focus is requested by the local CLI; it is never a source of telemetry.
+  let pendingFocus = new URL(window.location.href).searchParams.get('cot') || '';
+  function focusReceived() {
+    if (pendingFocus && window.TAKOSApp?.focusGatewayUnit?.(pendingFocus)) {
+      pendingFocus = '';
+    }
+  }
 
   function appendInterface() {
     const container = document.createElement('section');
@@ -67,6 +74,7 @@
     const units = frame.units.filter((u) => u && typeof u.id === 'string' && Number.isFinite(Number(u.lat)) && Number.isFinite(Number(u.lon)));
     units.forEach((u) => state.units.set(u.id, u));
     window.TAKOSApp?.setGatewayUnits?.(Array.from(state.units.values()));
+    focusReceived();
     if (Array.isArray(frame.events)) {
       state.records = frame.events;
       renderRecords();
@@ -77,6 +85,7 @@
     if (!unit || typeof unit.id !== 'string') return;
     state.units.set(unit.id, unit);
     window.TAKOSApp?.setGatewayUnits?.(Array.from(state.units.values()));
+    focusReceived();
   }
 
   function renderRecords() {

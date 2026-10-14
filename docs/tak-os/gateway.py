@@ -292,11 +292,11 @@ def handler_factory(state: State):
                 csp = ("default-src 'self'; "
                     "script-src 'self' https://cdn.jsdelivr.net https://esm.sh; "
                     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
-                    "img-src 'self' data: blob: https://cdn.jsdelivr.net https://gibs.earthdata.nasa.gov; "
+                    "img-src 'self' data: blob: https://cdn.jsdelivr.net https://gibs.earthdata.nasa.gov https://tile.openstreetmap.org; "
                     "connect-src 'self' https://cdn.jsdelivr.net https://esm.sh "
                     "https://gibs.earthdata.nasa.gov https://earthquake.usgs.gov "
                     "https://eonet.gsfc.nasa.gov https://services.swpc.noaa.gov "
-                    "https://celestrak.org https://overpass-api.de; "
+                    "https://celestrak.org https://overpass-api.de https://tile.openstreetmap.org; "
                     "worker-src 'self' blob: https://cdn.jsdelivr.net; "
                     "font-src 'self' data: https://cdn.jsdelivr.net; "
                     "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
@@ -350,7 +350,7 @@ def handler_factory(state: State):
                 return self.respond(404, {"error": "unknown API endpoint"})
             target = path.lstrip("/") or "index.html"
             if target in ("live-3d", "live-3d/"): target = "live-3d/index.html"
-            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js", "live-3d/index.html", "live-3d/style.css", "live-3d/cesium-config.js", "live-3d/ontology.js", "live-3d/live-earth.js"}:
+            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js", "live-3d/index.html", "live-3d/style.css", "live-3d/cesium-config.js", "live-3d/ontology.js", "live-3d/live-earth.js", "live-3d/iphone-grid.js", "live-3d/iphone-grid.css", "live-3d/manifest.webmanifest", "live-3d/sw.js"}:
                 return self.respond(404, {"error": "file not available"})
             file = APP_ROOT / target
             if not file.is_file(): return self.respond(404, {"error": "file not found"})

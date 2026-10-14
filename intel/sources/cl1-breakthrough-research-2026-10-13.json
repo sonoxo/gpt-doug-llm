@@ -1,0 +1,84 @@
+{
+  "schema": "gpt-doug-cl1-breakthrough-evidence/v1",
+  "captured_at": "2026-10-13",
+  "mode": "COMPUTATIONAL_RESEARCH_ONLY",
+  "sources": [
+    {
+      "id": "cl1-dev-guide",
+      "url": "https://docs.corticallabs.com/",
+      "authority": "FIRST_PARTY_VENDOR_DOCUMENTATION",
+      "published": "2026",
+      "claims": [
+        "CL API supports recording, stimulation, and real-time closed-loop workflows on CL1.",
+        "The CL SDK simulator is a drop-in development environment and generates non-learning control data."
+      ]
+    },
+    {
+      "id": "cl-api-preprint",
+      "url": "https://arxiv.org/abs/2602.11632",
+      "authority": "TECHNICAL_PREPRINT",
+      "published": "2026-02-12",
+      "claims": [
+        "CL API supports sub-millisecond closed-loop interaction with biological neural networks.",
+        "The interface emphasizes deterministic stimulation semantics and synchronization."
+      ]
+    },
+    {
+      "id": "nature-computing-organoids-2026",
+      "url": "https://www.nature.com/articles/s43588-026-01012-x",
+      "authority": "PEER_REVIEWED_REVIEW",
+      "published": "2026-07-03",
+      "claims": [
+        "Organoid intelligence is an emerging computing paradigm linking biological neural systems with computation.",
+        "Translation requires progress in interfaces, reproducibility, scaling, and benchmarking."
+      ]
+    },
+    {
+      "id": "tumor-organoid-dmf-2026",
+      "url": "https://www.nature.com/articles/s41378-026-01215-2",
+      "authority": "PEER_REVIEWED_ARTICLE",
+      "published": "2026-04-15",
+      "claims": [
+        "Patient-derived tumor organoids can be used for automated functional drug sensitivity screening on digital microfluidics.",
+        "Functional assays can reveal response heterogeneity not captured by genomics alone."
+      ]
+    },
+    {
+      "id": "pdo-miniaturized-2026",
+      "url": "https://www.nature.com/articles/s44385-026-00067-9",
+      "authority": "PEER_REVIEWED_ARTICLE",
+      "published": "2026-02-20",
+      "claims": [
+        "Miniaturized patient-derived organoid drug screening can reduce sample requirements.",
+        "Organoid response measurements were compared with standard screens and patient outcomes."
+      ]
+    },
+    {
+      "id": "gbm-organoid-screen-2026",
+      "url": "https://www.nature.com/articles/s41698-026-01552-5",
+      "authority": "PEER_REVIEWED_ARTICLE",
+      "published": "2026",
+      "claims": [
+        "Automated high-throughput screening was demonstrated on patient-derived glioblastoma tumor organoids.",
+        "The study identified heterogeneous drug-sensitivity patterns across organoids."
+      ]
+    }
+  ],
+  "research_gaps": [
+    {
+      "id": "gap-cl1-metabolism",
+      "statement": "Public CL1 interfaces expose neural electrical activity but not mitochondrion-resolved ATP, ROS, membrane-potential, or microscopy telemetry.",
+      "importance": "HIGH"
+    },
+    {
+      "id": "gap-multimodal-causality",
+      "statement": "Electrical activity and mitochondrial state should not be causally linked without matched multimodal measurements.",
+      "importance": "HIGH"
+    },
+    {
+      "id": "gap-organoid-validation",
+      "statement": "Organoid response models need independent replication and prospective clinical validation before treatment claims.",
+      "importance": "HIGH"
+    }
+  ]
+}
