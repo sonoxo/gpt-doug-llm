@@ -38,7 +38,7 @@ function renderHealth(){
   text('status-'+id,formatStatus(m.state));
  }
  const cloud=mobileTools?mobileTools.summarize(Object.fromEntries(['usgs','eonet','noaa','orbit'].map(id=>[id,store.status(id).state]))):{online:current,total:5,label:'PUBLIC CLOUD '+current+'/5'};
- text('cloud-grid-status',cloud.label+' · TAK SERVER: NOT CONNECTED');
+ text('cloud-grid-status',cloud.label+' · LIVE TAK COT: NOT CONNECTED');
  text('feed-count',`${cloud.online}/${cloud.total}`);const counts=store.counts();text('live-count',Object.values(counts).reduce((a,b)=>a+b,0));
  const kp=store.current('noaa')[0];text('global-kp',kp?Number(kp.properties.kp).toFixed(2):'—');
  const anyone=cloud.online>0;text('global-status',anyone?'PUBLIC FEEDS RECEIVED · INSPECT SOURCE AGES': 'NO VERIFIED LIVE FEED · CHECK CONNECTION');
@@ -301,10 +301,13 @@ function moveCamera(action){
  else if(action==='zoom-out')ui.viewer.camera.zoomOut(step);
  ui.viewer.scene.requestRender();updateCameraReadout();
 }
+let stopMetricsPolling=()=>{};
 function switchMobilePanel(panel){
+ if(mobileProfile.mobile&&panel!=='itak')stopMetricsPolling();
  const left=document.querySelector('.leftpanel'),right=document.querySelector('.rightpanel');
  left.classList.toggle('mobile-open',panel==='layers');
- right.classList.toggle('mobile-open',panel==='intel');
+ right.classList.toggle('mobile-open',panel==='intel'||panel==='itak');
+ right.classList.toggle('metrics-focus',panel==='itak');
  document.querySelectorAll('[data-mobile-panel]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.mobilePanel===panel)));
  if(rendererReady())ui.viewer.scene.requestRender();
 }
@@ -323,41 +326,116 @@ function registerShell(){
  }
 }
 async function refreshItakMetrics(){
+ stopMetricsPolling();
  const target=$('itak-metrics');if(!target)return;
- target.textContent='Checking TAK metrics capability…';
+ target.textContent='CHECKING PRIVATE TAK METRICS CAPABILITY…';
  try{
-  const response=await fetch('../api/v1/itak/capabilities',{cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(4500)});
+  const response=await fetch('../api/v1/itak/capabilities',{
+   cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(4500)});
   if(!response.ok)throw Error('unavailable');
   const capability=await response.json();
   if(capability.schema!=='gpt-doug.tak-private-metrics.v1'||!capability.configured){
-   target.textContent='TAK SERVER: NOT CONNECTED · iTAK clients UNAVAILABLE. Private metrics not configured.';return;
+   target.textContent='TAK SERVER: NOT CONNECTED. iTAK-only clients and device telemetry: UNAVAILABLE. No authenticated metrics provider configured.';
+   return;
   }
   target.replaceChildren();
-  const note=document.createElement('p');note.textContent='PRIVATE TAK SERVER · Aggregate data only · iTAK-only counts not supported.';target.append(note);
+  const explanation=document.createElement('p');
+  explanation.className='itak-metric-note';
+  explanation.textContent='AUTHORIZED PRIVATE TAK SERVER · Read-only aggregate totals for ALL TAK clients. iTAK-only identification not supported.';
+  target.append(explanation);
   const form=document.createElement('form');form.autocomplete='off';
-  const input=document.createElement('input');input.type='password';input.required=true;input.autocomplete='off';
-  input.placeholder='Viewer token (private gateway only)';input.setAttribute('aria-label','Private TAK metrics viewer bearer token');
-  const button=document.createElement('button');button.type='submit';button.className='mini';button.textContent='LOAD VERIFIED COUNTERS';
-  const result=document.createElement('div');result.textContent='Not requested.';
-  form.append(input,button);target.append(form,result);
-  form.addEventListener('submit',async e=>{
-   e.preventDefault();const secret=input.value;input.value='';result.textContent='Reading TAK Server…';
+  const input=document.createElement('input');input.type='password';
+  input.required=true;input.autocomplete='off';input.placeholder='Private viewer token';
+  input.setAttribute('aria-label','Private TAK metrics bearer token');
+  const startButton=document.createElement('button');startButton.type='submit';
+  startButton.className='mini';startButton.textContent='START VERIFIED METRICS';
+  const stopButton=document.createElement('button');stopButton.type='button';
+  stopButton.className='mini';stopButton.textContent='STOP / CLEAR METRICS';
+  const result=document.createElement('div');
+  result.setAttribute('role','status');result.setAttribute('aria-live','polite');
+  result.textContent='Not authorized. No real TAK Server measurements available.';
+  form.append(input,startButton,stopButton);target.append(form,result);
+  let bearer='',timer=null,controller=null,busy=false,generation=0;
+  const stop=()=>{
+   generation++;clearInterval(timer);timer=null;bearer='';
+   if(controller)controller.abort();controller=null;
+   input.value='';
+   result.textContent='METRICS STOPPED. Measurements and viewer token cleared. Reauthorize to resume.';
+  };
+  stopMetricsPolling=stop;
+  const display=info=>{
+   const m=info.metrics||{};
+   const required=['numClients','bytesRead','bytesWritten','numReads','numWrites'];
+   if(info.schema!=='gpt-doug.tak-private-metrics.v1'||info.status!=='current'||
+      info.sourceScope!=='aggregate_all_tak_clients'||
+      info.mTLSVerifiedByPrivateGateway!==true||
+      required.some(key=>!Number.isSafeInteger(m[key])||m[key]<0))throw Error('invalid counters');
+   result.replaceChildren();
+   const status=document.createElement('p');status.className='itak-metric-note';
+   status.textContent='PRIVATE TAK SERVER VERIFIED · '+String(info.sampledAtUtc||'UTC TIME UNAVAILABLE')+
+     ' · Scope: ALL TAK CLIENTS · iTAK-only count: UNAVAILABLE';
+   result.append(status);
+   const cards=document.createElement('div');cards.className='itak-metric-cards';
+   const readings=[
+    ['Connected TAK clients',m.numClients],
+    ['iTAK clients only','NOT REPORTED'],
+    ['Received bytes',m.bytesRead],
+    ['Sent bytes',m.bytesWritten],
+    ['Read operations',m.numReads],
+    ['Write operations',m.numWrites],
+    ['Inbound bytes/sec',info.rates?.bytesReceivedPerSecond],
+    ['Outbound bytes/sec',info.rates?.bytesSentPerSecond],
+    ['Read ops/sec',info.rates?.readsPerSecond],
+    ['Write ops/sec',info.rates?.writesPerSecond]
+   ];
+   for(const [name,value] of readings){
+    const card=document.createElement('div');card.className='itak-metric-card';
+    const num=document.createElement('b');
+    num.textContent=value==null?'—':typeof value==='number'&&Number.isFinite(value)?
+      value.toLocaleString():String(value);
+    const label=document.createElement('small');label.textContent=name;
+    card.append(num,label);cards.append(card);
+   }
+   result.append(cards);
+   const note=document.createElement('p');note.className='itak-metric-note';
+   note.textContent='Source: TAK Server aggregate admin metrics via private mTLS gateway. No CoT, identities, locations, credentials or iPhone telemetry.';
+   result.append(note);
+  };
+  const poll=async()=>{
+   if(!bearer||busy||document.hidden)return;
+   const requestGeneration=generation,currentToken=bearer;
+   busy=true;const ac=new AbortController();controller=ac;
+   const timeout=setTimeout(()=>ac.abort(),6500);
    try{
-    const res=await fetch('../api/v1/itak/metrics',{cache:'no-store',credentials:'same-origin',
-      headers:{Authorization:'Bearer '+secret},signal:AbortSignal.timeout(6500)});
+    const res=await fetch('../api/v1/itak/metrics',{
+     cache:'no-store',credentials:'same-origin',
+     headers:{Authorization:'Bearer '+currentToken},signal:ac.signal});
     if(!res.ok)throw Error('unavailable');
     const info=await res.json();
-    if(info.status!=='current'||info.sourceScope!=='aggregate_all_tak_clients')throw Error('invalid');
-    result.replaceChildren();
-    const rows=[['Connected TAK clients (all types)',info.metrics.numClients],
-      ['Identified iTAK clients','UNAVAILABLE'],['Bytes read',info.metrics.bytesRead],
-      ['Bytes written',info.metrics.bytesWritten],['Read operations',info.metrics.numReads],
-      ['Write operations',info.metrics.numWrites],['Sample UTC',info.sampledAtUtc],
-      ['Scope','Authorized aggregate TAK Server']];
-    for(const [key,value] of rows){const row=document.createElement('p');row.textContent=key+': '+String(value);result.append(row);}
-   }catch(_){result.textContent='Private metrics unavailable or unauthorized. No values displayed.';}
+    if(generation!==requestGeneration||bearer!==currentToken)return;
+    display(info);
+   }catch(_){
+    if(generation===requestGeneration&&bearer===currentToken){
+     stop();result.textContent='TAK METRICS UNAVAILABLE OR ACCESS DENIED. No stale or unverifiable readings shown.';
+    }
+   }finally{
+    clearTimeout(timeout);busy=false;
+    if(controller===ac)controller=null;
+   }
+  };
+  form.addEventListener('submit',event=>{
+   event.preventDefault();
+   if(bearer)stop();
+   const value=input.value;input.value='';
+   if(value.length<32||value.length>256){result.textContent='Invalid private token. No request sent.';return;}
+   bearer=value;generation++;
+   result.textContent='Authenticating private TAK metrics…';
+   void poll();timer=setInterval(()=>{void poll();},10000);
   });
- }catch(_){target.textContent='TAK SERVER: NOT CONNECTED · iTAK metrics UNAVAILABLE. Public static site has no authenticated TAK gateway.';}
+  stopButton.addEventListener('click',stop);
+ }catch(_){
+  target.textContent='TAK SERVER: NOT CONNECTED · iTAK metrics UNAVAILABLE. Public xunia.org has no authenticated private TAK gateway.';
+ }
 }
 function bind(){
  $('refresh-all').addEventListener('click',()=>refreshAll(true));
@@ -381,7 +459,7 @@ function bind(){
  document.querySelectorAll('[data-close-panel]').forEach(button=>button.addEventListener('click',()=>switchMobilePanel('map')));
  $('grid-mobile').addEventListener('click',toggleReferenceGrid);
  $('toggle-hud').addEventListener('click',()=>switchMobilePanel('intel'));
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){renderHealth();refreshAll(false);orbitalRender();}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMetricsPolling();else{renderHealth();refreshAll(false);orbitalRender();}});
 }
 function init(){
  text('utc-clock',new Date().toISOString().slice(11,19)+' UTC');
