@@ -3,7 +3,7 @@
 There are now two separate deliverables:
 
 1. `platform_one/repo1-qbio/` — upstream application/source seed and local tests.
-2. `platform_one/repo1-hardening/` — **Repo One hardening-only project**.
+2. `platform_one/repo1-hardening/` — **Repo One hardening project**.
 
 Use the second one for current Iron Bank onboarding.
 
@@ -11,9 +11,7 @@ Current Iron Bank repository guidance says the onboarding team creates the Repo 
 project, the integration branch is `development`, contributors work on feature
 branches, and the security team performs the merge to `master`.
 
-The hardening-only project therefore contains no application source or binary files.
-Instead, its manifest downloads the two required source files from an immutable GitHub
-commit and validates each with SHA-256 before the Docker build.
+The hardening project contains the permitted runtime entrypoint under `scripts/` and no binary payloads. Its manifest downloads the QBio analysis library from an immutable GitHub commit and validates it with SHA-256 before the Docker build.
 
 ## Export
 
