@@ -14,6 +14,7 @@ from typing import Callable, Final
 
 CACHE_TTL_SECONDS: Final = 300
 HTTP_TIMEOUT_SECONDS: Final = 8
+MAX_FEED_BYTES: Final = 6 * 1024 * 1024
 USER_AGENT: Final = "GPT-DOUG-Global-Intel/1.0 (+public-source; read-only)"
 ALLOWED_SOURCE_HOSTS: Final = {
     "earthquake.usgs.gov",
@@ -123,10 +124,24 @@ def _parse_iso(value: object) -> datetime | None:
         return None
 
 
-def _fetch_json(url: str) -> tuple[object, int]:
+class _PublicSourceRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Allow an HTTP redirect only if the destination remains approved HTTPS."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        _validate_source_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def _validate_source_url(url: str) -> None:
     parts = urllib.parse.urlsplit(url)
-    if parts.scheme != "https" or parts.hostname not in ALLOWED_SOURCE_HOSTS:
+    if (parts.scheme != "https" or parts.hostname not in ALLOWED_SOURCE_HOSTS
+            or parts.username is not None or parts.password is not None
+            or parts.port not in (None, 443)):
         raise ValueError("source URL is outside the approved HTTPS allowlist")
+
+
+def _fetch_json(url: str) -> tuple[object, int]:
+    _validate_source_url(url)
     request = urllib.request.Request(
         url,
         headers={
@@ -135,10 +150,11 @@ def _fetch_json(url: str) -> tuple[object, int]:
         },
     )
     started = time.perf_counter()
-    with urllib.request.urlopen(  # nosec B310 - HTTPS host allowlist validated above
-        request, timeout=HTTP_TIMEOUT_SECONDS
-    ) as response:
-        payload = response.read(6 * 1024 * 1024)
+    opener = urllib.request.build_opener(_PublicSourceRedirectHandler())
+    with opener.open(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
+        payload = response.read(MAX_FEED_BYTES + 1)
+        if len(payload) > MAX_FEED_BYTES:
+            raise ValueError("public feed exceeds bounded response limit")
     elapsed_ms = int((time.perf_counter() - started) * 1000)
     return json.loads(payload.decode("utf-8")), elapsed_ms
 
@@ -156,7 +172,8 @@ def _point(
         latitude = float(lat)
     except (TypeError, ValueError):
         return None
-    if not (-180 <= longitude <= 180 and -90 <= latitude <= 90):
+    if (not math.isfinite(longitude) or not math.isfinite(latitude)
+            or not (-180 <= longitude <= 180 and -90 <= latitude <= 90)):
         return None
     return {
         "sourceId": source_id,
@@ -187,13 +204,13 @@ def _usgs(payload: object) -> dict:
         geometry = feature.get("geometry") or {}
         coordinates = geometry.get("coordinates") or []
         magnitude = props.get("mag")
-        if isinstance(magnitude, (int, float)):
+        if isinstance(magnitude, (int, float)) and not isinstance(magnitude, bool) and math.isfinite(float(magnitude)):
             magnitudes.append(float(magnitude))
             if magnitude >= 4.5:
                 significant += 1
         if len(coordinates) >= 2 and len(points) < 80:
-            severity = "HIGH" if isinstance(magnitude, (int, float)) and magnitude >= 6 else (
-                "MEDIUM" if isinstance(magnitude, (int, float)) and magnitude >= 4.5 else "INFO"
+            severity = "HIGH" if isinstance(magnitude, (int, float)) and math.isfinite(float(magnitude)) and magnitude >= 6 else (
+                "MEDIUM" if isinstance(magnitude, (int, float)) and math.isfinite(float(magnitude)) and magnitude >= 4.5 else "INFO"
             )
             item = _point(
                 "usgs-earthquakes",
@@ -282,8 +299,10 @@ def _swpc(payload: object) -> dict:
     for key, value in record.items():
         if "kp" in key or "k-index" in key or "k_index" in key:
             try:
-                kp_value = float(value)
-                break
+                candidate = float(value)
+                if math.isfinite(candidate) and 0 <= candidate <= 9:
+                    kp_value = candidate
+                    break
             except (TypeError, ValueError):
                 continue
     return {
@@ -401,18 +420,17 @@ def score_probe(
     if not available:
         freshness_score = 0
         freshness_age = None
-    elif cadence == "annual":
-        freshness_score = 20
-        freshness_age = (
-            int((_utc_now() - observed_at).total_seconds()) if observed_at else None
-        )
     elif observed_at is None:
         freshness_score = 8
         freshness_age = None
     else:
-        freshness_age = max(0, int((_utc_now() - observed_at).total_seconds()))
-        ratio = freshness_age / max(1, expected_freshness_seconds)
-        freshness_score = max(0, round(20 * math.exp(-0.65 * max(0.0, ratio - 1.0))))
+        freshness_age = int((_utc_now() - observed_at).total_seconds())
+        if freshness_age < -300:
+            # Future-dated data cannot be promoted to recent evidence.
+            freshness_score = 0
+        else:
+            ratio = max(0, freshness_age) / max(1, expected_freshness_seconds)
+            freshness_score = max(0, round(20 * math.exp(-0.65 * max(0.0, ratio - 1.0))))
 
     provenance_score = 10 if available else 0
     score = availability_score + schema_score + latency_score + freshness_score + provenance_score
