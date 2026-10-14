@@ -25,7 +25,7 @@ SOURCE_RE = re.compile(r"^[A-Z0-9_]{1,64}$")
 
 
 def _json_bytes(payload):
-    return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
 def build_frames(payload):
