@@ -1,40 +1,11 @@
 {
-  "content_repairs": 3,
-  "cutoff_at": "2026-10-13T22:26:26Z",
-  "due_files_reviewed": 32,
+  "content_repairs": 0,
+  "cutoff_at": "2026-10-13T22:39:22Z",
+  "due_files_reviewed": 3,
   "due_paths": [
-    ".github/workflows/ai-killswitch-gate.yml",
-    ".github/workflows/pages-museum-hq.yml",
-    ".github/workflows/pineal-osiris-smoke.yml",
-    "ai_killswitch.py",
-    "docs/AI_KILLSWITCH.md",
-    "docs/index.html",
-    "docs/resources.json",
-    "docs/supergame/catalog.json",
-    "docs/supergame/genesis/index.html",
-    "docs/supergame/index.html",
-    "docs/supergame/launcher.js",
-    "docs/tak-os/index.html",
-    "docs/tak-os/live-3d/cesium-config.js",
-    "docs/tak-os/live-3d/ontology.js",
-    "docs/tak-os/live-3d/start-local.sh",
-    "docs/tak-os/live-3d/style.css",
-    "docs/tak-os/start.sh",
-    "docs/tak-os/styles.css",
-    "integrations/pineal_osiris/README.md",
-    "integrations/pineal_osiris/disk.py",
-    "integrations/pineal_osiris/recover.sh",
-    "integrations/pineal_osiris/run.sh",
-    "integrations/pineal_osiris/stack.py",
-    "integrations/pineal_osiris/test_disk.py",
-    "intel/white-house/daily/2026-10-11.json",
-    "intel/white-house/daily/2026-10-11.md",
-    "local_repo_agent.py",
-    "tests/test_ai_killswitch_direct_paths.py",
-    "tests/test_ai_killswitch_strict.py",
-    "xunia_godis.py",
-    "zyra_agent.py",
-    "zyra_chat.py"
+    ".github/workflows/math-frontier-evidence.yml",
+    "docs/MATH_FRONTIER_EVIDENCE.md",
+    "gpt_brain/math_frontier.py"
   ],
   "files": {
     ".doug/eval-history.jsonl": {
@@ -211,7 +182,7 @@
       "sha256": "cf64258966478d71811171ae0fdd3f431075efcbccd95136a9601045e1b89687",
       "size": 2495,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/ai-layer-gate.yml": {
       "actions": [],
@@ -647,11 +618,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T22:34:42Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T22:39:22Z",
       "sha256": "5c99e467ee6625a2012eedd29658e2f08a50c53f3254224f607d974d43bf62c0",
       "size": 1806,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     ".github/workflows/maven-live-sync.yml": {
       "actions": [],
@@ -744,13 +715,13 @@
     ".github/workflows/pages-museum-hq.yml": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "0e474c3bf3fd39dcb7e983394cf8ef127ed42487f87333c15f42245ced189be0",
       "size": 12813,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/palantir-ecosystem-graph.yml": {
       "actions": [],
@@ -849,7 +820,7 @@
       "sha256": "7b14476592e09fb16d40339c2cc911a399d6096ecbda9819e74011ffd981398e",
       "size": 1544,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     ".github/workflows/pineal-patent-connectors.yml": {
       "actions": [],
@@ -2653,7 +2624,7 @@
       "sha256": "c72a9a0dffc688a36df5a31d48a88c0eef46eb4b726567b9956fdbb08d963689",
       "size": 10389,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "api_gateway/__init__.py": {
       "actions": [],
@@ -3406,13 +3377,13 @@
     "docs/AI_KILLSWITCH.md": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T21:58:18Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "2f2049fdd04d6da3922e99b149e0c67004e9215a5c57149e6e0f5ffa937712c0",
       "size": 9388,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/ALM_OGA_ACCESS_ROUTE.md": {
       "actions": [],
@@ -3931,6 +3902,28 @@
       "validation_issues": [],
       "was_due": false
     },
+    "docs/GPT_ORCA_LLM.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T19:58:22Z",
+      "reviewed_at": null,
+      "sha256": "17730af4b23dbf49a1dd2d13f494725ad4f3b9fb11b534edfa98250fed3eb6fe",
+      "size": 1277,
+      "validation_issues": [],
+      "was_due": false
+    },
+    "docs/GPT_ORCA_NEUROCLOUD.md": {
+      "actions": [],
+      "binary": false,
+      "freshness_source_before_review": "git",
+      "git_touched_at": "2026-10-14T20:19:17Z",
+      "reviewed_at": null,
+      "sha256": "2c86123fc7f2e376ed58b47891584a7bbef56ffe36e2f282c09a2b320ae87d98",
+      "size": 1374,
+      "validation_issues": [],
+      "was_due": false
+    },
     "docs/GPT_STARK_IRONMAN.md": {
       "actions": [],
       "binary": false,
@@ -4079,11 +4072,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T22:34:40Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T22:39:22Z",
       "sha256": "2cc93721373f88ea1734c2c0adaa7273547b37c0d85ebd71754e02205e174b20",
       "size": 4476,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "docs/MATH_MITOCHONDRIA_SPEC.md": {
       "actions": [],
@@ -5034,13 +5027,13 @@
     "docs/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "ff08d31de5c9286289eaaf8e3a5a0a6f3da80231c2cb8c6c54b03c45481daa01",
       "size": 13087,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/jukebox/app.js": {
       "actions": [],
@@ -5540,13 +5533,13 @@
     "docs/resources.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "b32984e655f6946ee6d076ad1f7ccbc5845d70b69d47943afdef5be96397562c",
       "size": 10560,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/sensor-policy.json": {
       "actions": [],
@@ -5573,52 +5566,46 @@
     "docs/supergame/catalog.json": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:05:19Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "42d6af808d56502df7d67ca2d8ccfbacf9cec13157d9fe92d2cc8cb9bee90ee2",
       "size": 6151,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/supergame/genesis/index.html": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T22:05:19Z",
+      "git_touched_at": "2026-10-14T22:27:20Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "5a8201c03f59ef8707e2e3a247146c9890dd316f07a7e659e73bdf3804b02aa0",
       "size": 47830,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/supergame/index.html": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T22:05:19Z",
+      "git_touched_at": "2026-10-14T22:27:20Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "0a1d13e48408faa05d08526e9834bfb280f39cf64c4e93778cc4a913c92b534a",
       "size": 11794,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/supergame/launcher.js": {
-      "actions": [
-        "append_eof_newline"
-      ],
+      "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-13T22:05:19Z",
+      "git_touched_at": "2026-10-14T22:27:20Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "226f6b93afc5c0c0402aaeec2fa58d109ba454115c4b205d1dfa1f0bc5cb6610",
       "size": 4042,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/superpowers/plans/2026-10-09-math-mitochondria.md": {
       "actions": [],
@@ -5821,13 +5808,13 @@
     "docs/tak-os/index.html": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "def59e907efdcbfbad9185f6b421f5e07dc7d70a867adb472b858e9fa14badcf",
       "size": 32726,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/itak_metrics.py": {
       "actions": [],
@@ -5865,13 +5852,13 @@
     "docs/tak-os/live-3d/cesium-config.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:16:58Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "6f1bb13b1bdafb1aee7b5c0d214d5a9267ee9bc377160ddf3d6e0b4f4b74fd3f",
       "size": 166,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/live-3d/index.html": {
       "actions": [],
@@ -5931,35 +5918,35 @@
     "docs/tak-os/live-3d/ontology.js": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:21:36Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "303077677529de73c0a0cebfadab934b8dcae887d1f63123f57f6e2afc77ceee",
       "size": 15597,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/live-3d/start-local.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:16:58Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "181f8a4fa21e44efdea2a3d7382d0efd12ae1bc601e39a56c8d16555e0cd760d",
       "size": 697,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/live-3d/style.css": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:16:58Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "55ed137740d98edd04c48f13752050cb37073bf5b21a48ed1d24c8e797ecbe40",
       "size": 7899,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/live-3d/sw.js": {
       "actions": [],
@@ -6008,24 +5995,24 @@
     "docs/tak-os/start.sh": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "6b3238c050d766bb9dedbf4b9dacaef1a5afcc7ceb5b3768a0dcff8785a6e2dd",
       "size": 3094,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/styles.css": {
       "actions": [],
       "binary": false,
-      "freshness_source_before_review": "git",
+      "freshness_source_before_review": "xzsweep",
       "git_touched_at": "2026-10-13T22:18:05Z",
       "reviewed_at": "2026-10-14T22:26:26Z",
       "sha256": "c69896a0e4fc8d82a0452160d9e69ca58d9f931f6afdc8beb6844f350ac51754",
       "size": 28469,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "docs/tak-os/sw.js": {
       "actions": [],
@@ -7561,11 +7548,11 @@
       "binary": false,
       "freshness_source_before_review": "git",
       "git_touched_at": "2026-10-13T22:34:36Z",
-      "reviewed_at": null,
+      "reviewed_at": "2026-10-14T22:39:22Z",
       "sha256": "27908e56a1c74db445dd6dca8f94dbebdeb85f2493f7b24087127cb93bfae92c",
       "size": 11021,
       "validation_issues": [],
-      "was_due": false
+      "was_due": true
     },
     "gpt_brain/math_mitochondria.py": {
       "actions": [],
@@ -9644,7 +9631,7 @@
       "sha256": "ba092010def55bf241e1021fd11aee9c0d5a2aa19971222cedd20cd7c98a5ab7",
       "size": 9366,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/bootstrap.sh": {
       "actions": [],
@@ -9721,7 +9708,7 @@
       "sha256": "d971ff371d72f914dc00eb7ea9d5b7a44d5aebf20cf5695c33d7a6463e17b776",
       "size": 6166,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/recover.sh": {
       "actions": [],
@@ -9732,7 +9719,7 @@
       "sha256": "26d569d58cbeaa7d8da7f55ff82d98b82710f95a80323e2537a99f444091fb39",
       "size": 4156,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/run.sh": {
       "actions": [],
@@ -9743,7 +9730,7 @@
       "sha256": "9f7390d6470e4df0f5a8f7c5f0424a3296ad2adf68123584bbf9405f563ec6ee",
       "size": 5095,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/stack.py": {
       "actions": [],
@@ -9754,7 +9741,7 @@
       "sha256": "6f560850b4f76f7a363fc48371cf01fd9ce893218386447b1a9b8c71ec01f382",
       "size": 10533,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_bridge.py": {
       "actions": [],
@@ -9787,7 +9774,7 @@
       "sha256": "51b5cb81d5b8eed42787b15bf8a12895c358eb01b848a76dc7cb0cc85dea8305",
       "size": 4287,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "integrations/pineal_osiris/test_stack.py": {
       "actions": [],
@@ -11470,7 +11457,7 @@
       "sha256": "f1c6a0989850d46b02ebf96920bd8fc061488db29fb6b33303ae043994a5b424",
       "size": 1063,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-11.md": {
       "actions": [],
@@ -11481,7 +11468,7 @@
       "sha256": "984e77b2dc4193f99b142a4e023dccac587e44dff0becf1620897c9ecfd919a9",
       "size": 819,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "intel/white-house/daily/2026-10-12.json": {
       "actions": [],
@@ -12031,7 +12018,7 @@
       "sha256": "060abaf3fe913d97c7f8a63a5f7ba7d6b66059e8343da47167d65aeec431d951",
       "size": 8014,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "lunar_ops/lunar-command-live.html": {
       "actions": [],
@@ -18433,7 +18420,7 @@
       "sha256": "e1e084d9ca7052bec65b6a1450cfac9b0a9eb97ebc31bf3cc44995d07629945a",
       "size": 3431,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_ai_killswitch_integrations.py": {
       "actions": [],
@@ -18455,7 +18442,7 @@
       "sha256": "d5a698be85b4c599a5466774a96b68319eea40f8f7c11f8fc75ec742e58acbdd",
       "size": 4620,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "tests/test_almighty_ensemble.py": {
       "actions": [],
@@ -22553,9 +22540,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T21:40:49Z",
+      "git_touched_at": "2026-10-14T22:26:28Z",
       "reviewed_at": null,
-      "sha256": "240acc625495a0ec0ef0eb6a3313e39855c62916e3de0a7be1fe5e4ee52e7b55",
+      "sha256": "808bbab6440510c8e4835256ea3060dd3763f007b9f954ccdb2559663d869d1f",
       "size": 5813,
       "validation_issues": [],
       "was_due": false
@@ -22575,9 +22562,9 @@
       "actions": [],
       "binary": false,
       "freshness_source_before_review": "git",
-      "git_touched_at": "2026-10-14T21:40:49Z",
+      "git_touched_at": "2026-10-14T22:26:28Z",
       "reviewed_at": null,
-      "sha256": "c0b85595bb931ff4554f0a1a10d26bb7354732c12a2524094a6fa7c446556757",
+      "sha256": "90718afecfc7ed2fc237445363fff7f4ec50e73122607e3311b393aa48c4d2bb",
       "size": 6087,
       "validation_issues": [],
       "was_due": false
@@ -24263,7 +24250,7 @@
       "sha256": "1c25eb7b6f5389e4fa241cca1a73c52527504737651ed5a78a8de3a68aba8631",
       "size": 16825,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "xunia_security.py": {
       "actions": [],
@@ -24714,7 +24701,7 @@
       "sha256": "e969a73b8373555bb0fac1fdd1f9e660586169c114d85cbb99801687d4760c32",
       "size": 25078,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra_chat.py": {
       "actions": [],
@@ -24725,7 +24712,7 @@
       "sha256": "ae2fe28982479b66db2f0928260caa3e0abc349678f1d4933304adac6da8d6be",
       "size": 18736,
       "validation_issues": [],
-      "was_due": true
+      "was_due": false
     },
     "zyra_control.py": {
       "actions": [],
@@ -25048,15 +25035,11 @@
     }
   },
   "freshness_window_hours": 24.0,
-  "generated_at": "2026-10-14T22:26:26Z",
+  "generated_at": "2026-10-14T22:39:22Z",
   "mode": "apply",
-  "repaired_paths": [
-    "docs/supergame/genesis/index.html",
-    "docs/supergame/index.html",
-    "docs/supergame/launcher.js"
-  ],
+  "repaired_paths": [],
   "schema": "xzsweep.freshness.v1",
-  "tracked_files_reviewed": 2273,
+  "tracked_files_reviewed": 2275,
   "validation_issue_files": 0,
   "validation_issues": {}
 }
