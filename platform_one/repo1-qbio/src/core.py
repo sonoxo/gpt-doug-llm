@@ -226,7 +226,7 @@ def _softmax(logits: dict[str, float]) -> dict[str, float]:
     maximum = max(logits.values())
     exps = {key: math.exp(value - maximum) for key, value in logits.items()}
     total = sum(exps.values())
-    return {key: value / total for key, value in exps.items()}
+    return {state: value / total for state, value in exps.items()}
 
 
 def heuristic_outcome_probabilities(features: SequenceFeatures) -> dict[str, float]:
@@ -242,7 +242,7 @@ def heuristic_outcome_probabilities(features: SequenceFeatures) -> dict[str, flo
         "BURST_CONFLUENT": 1.8 * burst + 1.2 * conf + 0.5 * features.acceleration,
     }
     probs = _softmax(logits)
-    return {key: round(probs[key], 6) for key in OUTCOME_STATES}
+    return {state: round(probs[state], 6) for state in OUTCOME_STATES}
 
 
 def _transition_matrix(states: Sequence[str]) -> dict[str, dict[str, float]]:
@@ -276,15 +276,23 @@ def _propagate(
         for target in OUTCOME_STATES
     }
     total = sum(result.values()) or 1.0
-    return {key: result[key] / total for key in OUTCOME_STATES}
+    return {state: result[state] / total for state in OUTCOME_STATES}
 
 
 def _blend_probabilities(a: dict[str, float], b: dict[str, float], weight_a: float = 0.65) -> dict[str, float]:
     weight_a = _clamp(weight_a)
-    values = {key: weight_a * a[key] + (1.0 - weight_a) * b[key] for key in OUTCOME_STATES}
+    values = {state: weight_a * a[state] + (1.0 - weight_a) * b[state] for state in OUTCOME_STATES}
     total = sum(values.values())
-    return {key: round(values[key] / total, 6) for key in OUTCOME_STATES}
+    return {state: round(values[state] / total, 6) for state in OUTCOME_STATES}
 
+
+
+def _most_probable_state(probabilities: dict[str, float]) -> str:
+    winner = OUTCOME_STATES[0]
+    for state in OUTCOME_STATES[1:]:
+        if probabilities[state] > probabilities[winner]:
+            winner = state
+    return winner
 
 def _uncertainty(probabilities: dict[str, float]) -> float:
     entropy = -sum(p * math.log(p) for p in probabilities.values() if p > 0)
@@ -325,7 +333,7 @@ def quantum_inspired_projection(features: SequenceFeatures) -> dict:
     probabilities = [abs(value) ** 2 for value in transformed]
     norm = sum(probabilities) or 1.0
     probabilities = [value / norm for value in probabilities]
-    dominant = max(range(n), key=lambda i: probabilities[i])
+    dominant = 0\n    for index in range(1, n):\n        if probabilities[index] > probabilities[dominant]:\n            dominant = index
     return {
         "mode": "CLASSICAL_QUANTUM_INSPIRED",
         "hardware_quantum": False,
@@ -411,7 +419,7 @@ class SequentialSpikeModel:
             ],
             "forecast": {
                 "next_state_probabilities": probabilities,
-                "most_probable_next_state": max(probabilities, key=probabilities.get),
+                "most_probable_next_state": _most_probable_state(probabilities),
                 "uncertainty": uncertainty,
                 "confidence_proxy": round(1.0 - uncertainty, 6),
                 "calibrated": False,
