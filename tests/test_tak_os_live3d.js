@@ -73,3 +73,36 @@ test('ontology export has explicit linked sources and timestamps',()=>{
  assert.equal(record['tak:observedAt'],new Date(ts).toISOString());
  assert.equal(record['tak:geometry'],null);
 });
+
+const I=require(path.resolve(__dirname,'../docs/tak-os/live-3d/iphone-grid.js'));
+test('iPhone resource budget preserves bounded GPU load',()=>{
+ const phone=I.chooseProfile({width:393,dpr:3,coarse:true,iosPhone:true});
+ const desktop=I.chooseProfile({width:1440,dpr:2,coarse:false});
+ assert.equal(phone.mobile,true);
+ assert.ok(phone.resolutionScale<desktop.resolutionScale);
+ assert.ok(phone.tileCacheSize<desktop.tileCacheSize);
+ assert.ok(phone.orbitTickMs>desktop.orbitTickMs);
+ assert.equal(I.chooseProfile({width:844,dpr:3,coarse:true,iosPhone:true}).mobile,true);
+ assert.equal(I.chooseProfile({width:390,coarse:false}).mobile,false);
+ assert.equal(I.chooseProfile({width:390,coarse:true,saveData:true}).resolutionScale,0.58);
+});
+test('cloud feed status is calculated only from actual feed status',()=>{
+ assert.equal(I.summarize({usgs:'NOT_CONNECTED'}).online,0);
+ const v=I.summarize({usgs:'OK',eonet:'STALE',noaa:'ERROR',orbit:'CONNECTING',buildings:'OK'});
+ assert.equal(v.online,1);assert.equal(v.total,4);
+ assert.equal(v.stale,1);assert.equal(v.failed,1);
+ assert.match(v.label,/1\/4/);
+ assert.equal(I.summarize({usgs:'ERROR'}).label,'PUBLIC CLOUD: NO CURRENT SOURCES');
+});
+test('coordinate grid is reference geometry, never generated observations',()=>{
+ const lines=I.graticule(30);
+ assert.ok(lines.length>=15);
+ for(const line of lines){
+  assert.equal(line.length%2,0);
+  for(let i=0;i<line.length;i+=2){
+   assert.ok(line[i]>=-180&&line[i]<=180);
+   assert.ok(line[i+1]>=-90&&line[i+1]<=90);
+  }
+ }
+ assert.throws(()=>I.graticule(7));
+});
