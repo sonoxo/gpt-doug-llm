@@ -20,6 +20,10 @@ OUTCOME_STATES = (
     "BURST_CONFLUENT",
 )
 
+MAX_FRAMES = 10_000
+MAX_CHANNELS = 256
+MAX_COUNT_PER_CHANNEL = 1_000_000
+
 FEATURE_DIMENSIONS = (
     "time",
     "channel_occupancy",
@@ -46,14 +50,18 @@ class SpikeFrame:
     counts: tuple[int, ...]
 
     def __post_init__(self) -> None:
-        if not math.isfinite(self.t_ms):
+        if isinstance(self.t_ms, bool) or not isinstance(self.t_ms, (int, float)):
+            raise ValueError("t_ms must be numeric")
+        if not math.isfinite(float(self.t_ms)):
             raise ValueError("t_ms must be finite")
         if not self.counts:
             raise ValueError("counts cannot be empty")
-        if len(self.counts) > 256:
-            raise ValueError("at most 256 channels are supported")
-        if any((not isinstance(v, int)) or v < 0 for v in self.counts):
-            raise ValueError("counts must be non-negative integers")
+        if len(self.counts) > MAX_CHANNELS:
+            raise ValueError(f"at most {MAX_CHANNELS} channels are supported")
+        if any(type(v) is not int or v < 0 or v > MAX_COUNT_PER_CHANNEL for v in self.counts):
+            raise ValueError(
+                f"counts must be non-negative integers <= {MAX_COUNT_PER_CHANNEL}"
+            )
 
 
 @dataclass(frozen=True)
@@ -237,14 +245,38 @@ def heuristic_outcome_probabilities(features: SequenceFeatures) -> dict[str, flo
     return {key: round(probs[key], 6) for key in OUTCOME_STATES}
 
 
-def _transition_model(states: Sequence[str], current: str) -> dict[str, float]:
-    # Laplace-smoothed first-order transition model from the observed sequence.
-    counts = {state: 1.0 for state in OUTCOME_STATES}
+def _transition_matrix(states: Sequence[str]) -> dict[str, dict[str, float]]:
+    """Laplace-smoothed first-order transition matrix from the observed sequence."""
+    counts = {
+        left: {right: 1.0 for right in OUTCOME_STATES}
+        for left in OUTCOME_STATES
+    }
     for left, right in zip(states, states[1:]):
-        if left == current:
-            counts[right] += 1.0
-    total = sum(counts.values())
-    return {key: counts[key] / total for key in OUTCOME_STATES}
+        counts[left][right] += 1.0
+
+    matrix: dict[str, dict[str, float]] = {}
+    for left in OUTCOME_STATES:
+        total = sum(counts[left].values())
+        matrix[left] = {
+            right: counts[left][right] / total
+            for right in OUTCOME_STATES
+        }
+    return matrix
+
+
+def _propagate(
+    distribution: dict[str, float],
+    matrix: dict[str, dict[str, float]],
+) -> dict[str, float]:
+    result = {
+        target: sum(
+            distribution[source] * matrix[source][target]
+            for source in OUTCOME_STATES
+        )
+        for target in OUTCOME_STATES
+    }
+    total = sum(result.values()) or 1.0
+    return {key: result[key] / total for key in OUTCOME_STATES}
 
 
 def _blend_probabilities(a: dict[str, float], b: dict[str, float], weight_a: float = 0.65) -> dict[str, float]:
@@ -323,8 +355,17 @@ class SequentialSpikeModel:
         states = [classify(item) for item in features]
         last = features[-1]
         heuristic = heuristic_outcome_probabilities(last)
-        empirical = _transition_model(states, states[-1])
+        transition_matrix = _transition_matrix(states)
+        empirical = transition_matrix[states[-1]]
         probabilities = _blend_probabilities(heuristic, empirical)
+        horizons: dict[str, dict[str, float]] = {"1": probabilities}
+        propagated = probabilities
+        for step in range(2, 6):
+            propagated = _propagate(propagated, transition_matrix)
+            horizons[str(step)] = {
+                key: round(value, 6)
+                for key, value in propagated.items()
+            }
         quantum = quantum_inspired_projection(last)
         uncertainty = round(_uncertainty(probabilities), 6)
         verification = (
@@ -374,6 +415,14 @@ class SequentialSpikeModel:
                 "uncertainty": uncertainty,
                 "confidence_proxy": round(1.0 - uncertainty, 6),
                 "calibrated": False,
+                "transition_matrix": {
+                    left: {
+                        right: round(value, 6)
+                        for right, value in row.items()
+                    }
+                    for left, row in transition_matrix.items()
+                },
+                "horizon_steps_1_to_5": horizons,
                 "note": "Probabilities are heuristic/sequence-derived research scores, not clinical or biological predictions.",
             },
             "quantum_inspired": quantum,
@@ -392,4 +441,9 @@ def analyze_sequence(
     window: int = 8,
     source_class: str = "SIMULATED",
 ) -> dict:
-    return SequentialSpikeModel(window=window).analyze(list(frames), source_class=source_class)
+    bounded: list[SpikeFrame] = []
+    for frame in frames:
+        if len(bounded) >= MAX_FRAMES:
+            raise ValueError(f"at most {MAX_FRAMES} frames are supported per analysis")
+        bounded.append(frame)
+    return SequentialSpikeModel(window=window).analyze(bounded, source_class=source_class)
