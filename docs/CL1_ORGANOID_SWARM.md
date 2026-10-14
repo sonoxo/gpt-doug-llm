@@ -60,3 +60,7 @@ living tissue. A physical organoid requires wet-lab cell culture, sterile
 handling, biological provenance, ethics/biosafety review, and institutionally
 approved procedures. This repository therefore keeps software simulation and
 biological experimentation as separate domains.
+
+## Culture-growth evidence dashboard
+
+Run `bash scripts/doug-max cl1 grow` to open the new offline [CL1 Culture Growth Evidence](CL1_CULTURE_GROWTH.md) viewer. It starts with no biological measurements and never simulates living-tissue growth. Lab-provided microscopy, viability and MEA evidence can be reviewed with provenance labels; CL1 simulator events can never be promoted into biological growth claims.
