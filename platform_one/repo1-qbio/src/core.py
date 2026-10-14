@@ -224,7 +224,7 @@ def classify(features: SequenceFeatures) -> str:
 
 def _softmax(logits: dict[str, float]) -> dict[str, float]:
     maximum = max(logits.values())
-    exps = {key: math.exp(value - maximum) for key, value in logits.items()}
+    exps = {state: math.exp(value - maximum) for state, value in logits.items()}
     total = sum(exps.values())
     return {state: value / total for state, value in exps.items()}
 
