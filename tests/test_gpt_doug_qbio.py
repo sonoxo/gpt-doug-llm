@@ -95,3 +95,22 @@ def test_rate_trend_changes_with_nonuniform_timing():
     slow_report = analyze_sequence(slow_last, window=3)
     assert fast_report["sequence"][-1]["population_rate_hz"] != slow_report["sequence"][-1]["population_rate_hz"]
     assert fast_report["sequence"][-1]["acceleration"] != slow_report["sequence"][-1]["acceleration"]
+
+
+def test_spikeframe_rejects_boolean_counts_directly():
+    with pytest.raises(ValueError):
+        SpikeFrame(0.0, (True, 1))
+
+
+def test_forecast_contains_stochastic_transition_matrix_and_five_horizons():
+    report = analyze_sequence(frames(), window=3)
+    matrix = report["forecast"]["transition_matrix"]
+    assert set(matrix) == set(OUTCOME_STATES)
+    for row in matrix.values():
+        assert set(row) == set(OUTCOME_STATES)
+        assert math.isclose(sum(row.values()), 1.0, abs_tol=1e-5)
+
+    horizons = report["forecast"]["horizon_steps_1_to_5"]
+    assert set(horizons) == {"1", "2", "3", "4", "5"}
+    for distribution in horizons.values():
+        assert math.isclose(sum(distribution.values()), 1.0, abs_tol=1e-5)
