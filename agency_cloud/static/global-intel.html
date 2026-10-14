@@ -63,6 +63,10 @@ footer{display:flex;justify-content:space-between;gap:10px;padding:9px 14px;bord
 <h2>STRATEGIC SIGNALS</h2><div class="pad"><div id="signals"></div>
 <h2 style="margin:12px -9px 0">BENCHMARK DIMENSIONS</h2>
 <div class="card"><div class="row"><span>Availability</span><b>30</b></div><div class="row"><span>Schema integrity</span><b>25</b></div><div class="row"><span>Latency</span><b>15</b></div><div class="row"><span>Freshness</span><b>20</b></div><div class="row"><span>Provenance</span><b>10</b></div></div>
+<h2 style="margin:12px -9px 0">EVIDENCE HEALTH</h2>
+<div class="notice" id="evidenceStatus">Evidence freshness is not claim verification. Awaiting assessment.</div>
+<div id="evidenceSources" aria-live="polite"></div>
+<a class="btn" href="/api/v1/intel/global/evidence">VIEW PROVENANCE ONTOLOGY JSON</a>
 <h2 style="margin:12px -9px 0">EVENT STREAM</h2><div id="events" class="log"><div class="event">Global benchmark console initialized.</div></div>
 </div></section>
 </main>
@@ -104,7 +108,29 @@ async function load(){
    $('sourceList').innerHTML=(data.sources||[]).map(s=>'<div class="source"><b>'+esc(s.name)+'</b><small>'+esc(s.authority)+' • '+esc(s.cadence)+'</small><br><span class="pill domain">'+esc(s.domain)+'</span><span class="pill '+(s.status==='ONLINE'?'online':'degraded')+'">'+esc(s.status)+' '+esc(s.score)+'</span></div>').join('');
    $('domains').innerHTML=Object.entries(data.domains||{}).map(([k,v])=>'<div class="domainRow"><b>'+esc(k)+'</b><span>'+esc(v.score)+'</span></div>').join('');
    $('signals').innerHTML=Object.entries(data.signals||{}).map(([k,v])=>'<div class="signal"><b>'+esc(k)+'</b><pre>'+esc(JSON.stringify(v,null,2))+'</pre></div>').join('');
-   points=data.mapPoints||[];log('Benchmark complete: '+b.onlineSources+'/'+b.sourceCount+' sources online; score '+b.overallScore+' '+b.grade);
+   points=(data.mapPoints||[]).filter(p=>Number.isFinite(Number(p.longitude))&&Number.isFinite(Number(p.latitude)));log('Benchmark complete: '+b.onlineSources+'/'+b.sourceCount+' sources online; score '+b.overallScore+' '+b.grade);
+   try {
+     const evidenceResponse=await fetch('/api/v1/intel/global/evidence',{cache:'no-store'});
+     if(!evidenceResponse.ok)throw new Error('HTTP '+evidenceResponse.status);
+     const e=await evidenceResponse.json();
+     $('evidenceStatus').textContent='PUBLIC SOURCE STATUS · '+(e.sourceCount||0)+' recognized · '+(e.rejectedSourceCount||0)+' rejected · INDEPENDENT CORROBORATION NOT PERFORMED';
+     const pane=$('evidenceSources');pane.replaceChildren();
+     for (const item of (e.sources||[])) {
+       const card=document.createElement('div');card.className='card';
+       const label=document.createElement('b');label.textContent=item.sourceId;
+       const state=document.createElement('div');state.className='row';
+       const stateA=document.createElement('span');stateA.textContent=item.fetchState;
+       const stateB=document.createElement('span');stateB.textContent=item.lastEntryState;
+       state.append(stateA,stateB);
+       const context=document.createElement('div');context.className='row';
+       context.textContent=item.lastEntryTimeMeaning||'Source observation date';
+       card.append(label,state,context);pane.append(card);
+     }
+     log('Evidence quality assessed separately from claim truth');
+   } catch(e) {
+     $('evidenceStatus').textContent='EVIDENCE CHECK UNAVAILABLE · '+String(e.message).slice(0,80)+' · NO CLAIM VERIFICATION';
+     log('Evidence-health endpoint unavailable');
+   }
  }catch(e){$('coreState').textContent='● BENCHMARK DEGRADED';$('coreState').style.color='var(--red)';log('Benchmark load failed: '+e.message)}
 }
 $('refresh').onclick=load;setInterval(()=>{$('clock').textContent=new Date().toISOString().replace('T',' ').slice(0,19)+'Z'},1000);addEventListener('resize',fit);load();draw();
