@@ -23,6 +23,8 @@ OUTCOME_STATES = (
 MAX_FRAMES = 10_000
 MAX_CHANNELS = 256
 MAX_COUNT_PER_CHANNEL = 1_000_000
+MAX_ABS_TIMESTAMP_MS = 1_000_000_000_000.0
+MIN_INTERVAL_MS = 0.000001
 
 FEATURE_DIMENSIONS = (
     "time",
@@ -52,8 +54,12 @@ class SpikeFrame:
     def __post_init__(self) -> None:
         if isinstance(self.t_ms, bool) or not isinstance(self.t_ms, (int, float)):
             raise ValueError("t_ms must be numeric")
-        if not math.isfinite(float(self.t_ms)):
-            raise ValueError("t_ms must be finite")
+        try:
+            numeric_t = float(self.t_ms)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("t_ms must be representable as a finite float") from exc
+        if not math.isfinite(numeric_t) or abs(numeric_t) > MAX_ABS_TIMESTAMP_MS:
+            raise ValueError("t_ms is outside the supported finite range")
         if not self.counts:
             raise ValueError("counts cannot be empty")
         if len(self.counts) > MAX_CHANNELS:
@@ -157,8 +163,8 @@ def extract_features(frames: Sequence[SpikeFrame], index: int, window: int = 8) 
     previous = frames[index - 1] if index else None
     totals = [sum(item.counts) for item in frames[max(0, index - window + 1): index + 1]]
     total = totals[-1]
-    dt_ms = frame.t_ms - previous.t_ms if previous else 0.0
-    population_rate_hz = total * 1000.0 / dt_ms if dt_ms > 0 else 0.0
+    dt_ms = float(frame.t_ms) - float(previous.t_ms) if previous else 0.0
+    population_rate_hz = total * 1000.0 / dt_ms if dt_ms >= MIN_INTERVAL_MS else 0.0
     active_ratio = sum(1 for value in frame.counts if value > 0) / len(frame.counts)
     entropy = _entropy(frame.counts)
     persistence = _active_jaccard(frame.counts, previous.counts) if previous else 0.0
@@ -168,9 +174,11 @@ def extract_features(frames: Sequence[SpikeFrame], index: int, window: int = 8) 
         acceleration = 0.5
     else:
         previous_previous = frames[index - 2]
-        previous_dt_ms = previous.t_ms - previous_previous.t_ms
+        previous_dt_ms = float(previous.t_ms) - float(previous_previous.t_ms)
         previous_rate_hz = (
-            sum(previous.counts) * 1000.0 / previous_dt_ms if previous_dt_ms > 0 else 0.0
+            sum(previous.counts) * 1000.0 / previous_dt_ms
+            if previous_dt_ms >= MIN_INTERVAL_MS
+            else 0.0
         )
         rate_scale = max(1.0, abs(population_rate_hz) + abs(previous_rate_hz))
         acceleration = _clamp(
@@ -356,8 +364,12 @@ class SequentialSpikeModel:
         channel_count = len(frames[0].counts)
         if any(len(frame.counts) != channel_count for frame in frames):
             raise ValueError("all frames must have the same channel count")
-        if any(right.t_ms <= left.t_ms for left, right in zip(frames, frames[1:])):
-            raise ValueError("timestamps must be strictly increasing")
+        for left, right in zip(frames, frames[1:]):
+            interval_ms = float(right.t_ms) - float(left.t_ms)
+            if interval_ms < MIN_INTERVAL_MS:
+                raise ValueError(
+                    "timestamps must increase by at least %.9f ms" % MIN_INTERVAL_MS
+                )
 
         features = [extract_features(frames, i, self.window) for i in range(len(frames))]
         states = [classify(item) for item in features]
