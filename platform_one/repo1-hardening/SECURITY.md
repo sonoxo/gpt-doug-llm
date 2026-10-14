@@ -2,9 +2,7 @@
 
 **UNCLASSIFIED — NO CUI**
 
-The hardening repository contains no application source or binary payloads.
-Application inputs are checksum-pinned resources declared in
-`hardening_manifest.yaml`.
+The hardening repository contains the permitted runtime entrypoint under `scripts/` and no binary payloads. The QBio analysis library is a checksum-pinned resource declared in `hardening_manifest.yaml`.
 
 Container properties:
 
@@ -16,7 +14,7 @@ Container properties:
 - no application secrets;
 - bounded request body, connection count, and socket read time;
 - strict provenance-label allowlist;
-- no Internet download commands in the Dockerfile;
+- no Internet download commands in the Dockerfile or runtime entrypoint;
 - no `ADD` instruction;
 - no Dockerfile OCI labels.
 
