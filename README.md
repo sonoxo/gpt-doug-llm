@@ -1,474 +1,91 @@
-<div align="center">
+# GPT-Doug QBio // Repo One seed project
 
-<img width="100%" src="docs/assets/sonoxo-ecosystem-orbit.svg" alt="ZYRA product ecosystem" />
+**Classification:** UNCLASSIFIED - NO CUI
 
-### ECOSYSTEM INSIGNIA ROUTER
+This directory is a **standalone project seed** for Repo One / Platform One. It is
+intentionally separated from the GPT-Doug monorepo because current Party Bus
+onboarding guidance prohibits monolithic repositories for deployment pipelines.
 
-<table>
-<tr>
-<td align="center">
-<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/the-black-house"><img width="210" src="docs/assets/insignia-black-house.svg" alt="The Black House project insignia" /></a><br />
-<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/the-black-house">THE BLACK HOUSE</a></strong><br />
-<sub>Governance · ontology · mission root</sub>
-</td>
-<td align="center">
-<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/kraken_jutsu"><img width="210" src="docs/assets/insignia-kraken-jutsu.svg" alt="Kraken Jutsu project insignia" /></a><br />
-<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/kraken_jutsu">KRAKEN JUTSU</a></strong><br />
-<sub>Provenance-first judgment · defensive orchestration</sub>
-</td>
-<td align="center">
-<a href="https://github.com/sonoxo/zyra"><img width="210" src="docs/assets/insignia-zyra.svg" alt="ZYRA project insignia" /></a><br />
-<strong><a href="https://github.com/sonoxo/zyra">ZYRA</a></strong><br />
-<sub>Bounded agentic execution</sub>
-</td>
-<td align="center">
-<a href="https://github.com/sonoxo/gpt-doug-llm"><img width="210" src="docs/assets/insignia-gpt-doug-llm-max.svg" alt="GPT-Doug-LLM-Max project insignia" /></a><br />
-<strong><a href="docs/INSIGNIAS.md#gpt-doug-llm-max">GPT-DOUG-LLM-MAX</a></strong><br />
-<sub>Hybrid collective intelligence · people + agents + evidence</sub>
-</td>
-<td align="center">
-<a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo"><img width="210" src="docs/assets/insignia-aeo.svg" alt="A.E.O. All Eyes Open RVIA-INTEL insignia" /></a><br />
-<strong><a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/rvia-intel/aeo">A.E.O. // RVIA-INTEL</a></strong><br />
-<sub>All Eyes Open · provenance-first intelligence accountability</sub>
-</td>
-</tr>
-</table>
+## Scope
 
-<sub>Click an insignia to open its canonical code home. These are project insignias, not government credentials or endorsements.</sub>
+The service exposes only:
 
-<a href="https://neptuneshield.com/index.html#contact"><img width="118" src="https://neptuneshield.com/assets/images/neptuneshield-logo.png" alt="Neptune Shield official insignia" /></a>
+- `GET /healthz`
+- `GET /readyz`
+- `GET /v1/capabilities`
+- `POST /v1/analyze`
 
-<a href="https://www.youtube.com/watch?v=jK5k9_Gql-I"><img width="760" src="https://img.youtube.com/vi/jK5k9_Gql-I/maxresdefault.jpg" alt="Public infrastructure resilience reference video — Palantir / Gallatin AI" /></a>
+The analysis endpoint accepts ordered spike-count frames and returns the existing
+GPT-Doug QBio descriptive analytics. It has **no stimulation, hardware-control,
+autonomous-actuation, outbound-network, or persistent-storage path**.
 
-**▶ PUBLIC RESILIENCE REFERENCE — human-controlled forecasting, course-of-action generation, simulation, and approval-gated execution**
+Simulator output remains explicitly distinct from measured read-only data.
 
-<a href="https://www.youtube.com/watch?v=qYByk5cwaWg"><img width="760" src="https://img.youtube.com/vi/qYByk5cwaWg/maxresdefault.jpg" alt="Public infrastructure resilience reference video II" /></a>
+## Local validation
 
-**▶ PUBLIC RESILIENCE REFERENCE II — additional external architecture and infrastructure-protection reference**
+~~~sh
+python3 -m unittest discover -s tests -v
+python3 -m py_compile src/core.py src/service.py
+~~~
 
-[![GPT-Doug-LLM-Max](https://img.shields.io/badge/GPT--DOUG--LLM--MAX-HYBRID%20INTELLIGENCE-d4af37?style=for-the-badge)](docs/INSIGNIAS.md#gpt-doug-llm-max)
-[![Infrastructure Resilience](https://img.shields.io/badge/BLACK%20HOUSE-INFRA%20RESILIENCE-0ea5e9?style=for-the-badge)](.github/workflows/black-house-resilience-gate.yml)
-[![A.E.O. Governance](https://img.shields.io/badge/A.E.O.-RVIA--INTEL-00bfff?style=for-the-badge)](rvia-intel/aeo/README.md)
+## Container build
 
-<sub>Neptune Shield and the linked public reference materials are external sources. Their inclusion does not imply affiliation, endorsement, contract status, clearance, authorization, or third-party access.</sub>
+The Dockerfile is shaped for the Iron Bank / Repo One hardening workflow and uses
+the Iron Bank UBI 9 minimal base image arguments.
 
-# THE BLACK HOUSE // GPT-DOUG-LLM MAX
+~~~sh
+docker build -t gpt-doug-qbio:0.1.0 .
+docker run --rm -p 8080:8080 gpt-doug-qbio:0.1.0
+~~~
 
-### ZYRA · Wakeup3lm · Ontology · Palantir AIP/Foundry · governed agentic infrastructure
+Then:
 
-**Build with AI. Keep execution visible. Keep authority explicit.**
+~~~sh
+curl -fsS http://127.0.0.1:8080/healthz
+curl -fsS http://127.0.0.1:8080/v1/capabilities
+~~~
 
-[![Security Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/security-gate.yml?branch=main&style=for-the-badge&label=Security%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/security-gate.yml)
-[![Palantir Full Stack](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/palantir-full-stack.yml?branch=main&style=for-the-badge&label=Palantir%20Full%20Stack)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/palantir-full-stack.yml)
-[![Federal IC Gate](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/palantir-federal-compliance.yml?branch=main&style=for-the-badge&label=Federal%20IC%20Gate)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/palantir-federal-compliance.yml)
-[![Wakeup3lm](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/wakeup3lm.yml?branch=main&style=for-the-badge&label=Wakeup3lm)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/wakeup3lm.yml)
-[![Ecosystem Docs](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/ecosystem-readme-refresh.yml?branch=main&style=for-the-badge&label=Adaptive%20Docs)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/ecosystem-readme-refresh.yml)
-[![Unified Tests](https://img.shields.io/github/actions/workflow/status/sonoxo/gpt-doug-llm/unified-tests.yml?branch=main&style=for-the-badge&label=Unified%20Tests)](https://github.com/sonoxo/gpt-doug-llm/actions/workflows/unified-tests.yml)
-[![MIT](https://img.shields.io/github/license/sonoxo/gpt-doug-llm?style=for-the-badge)](LICENSE)
+Example analysis:
 
-[Ecosystem](#ecosystem-at-a-glance) · [Vibe-code loop](#how-wakeup3lm-builds-an-app) · [Security](#security-control-plane) · [Products](#products) · [Architecture](#architecture) · [Palantir](#palantir-foundry--aip-integration) · [Quick Start](#quick-start) · [Docs](#documentation)
+~~~sh
+curl -fsS -X POST http://127.0.0.1:8080/v1/analyze \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "source_class": "SIMULATED",
+    "window": 3,
+    "frames": [
+      {"t_ms": 0, "counts": [0,0,0,0]},
+      {"t_ms": 20, "counts": [1,0,1,0]},
+      {"t_ms": 40, "counts": [1,1,1,0]}
+    ]
+  }'
+~~~
 
-</div>
+## Repo One / Iron Bank submission checklist
 
----
+Before submitting this project, replace the placeholder maintainer in
+`hardening_manifest.yaml` with the actual Repo One account information.
 
-## The product in one minute
+This seed intentionally contains **no `.gitlab-ci.yml`**. Party Bus documentation
+states that Mission DevOps creates the deployment pipeline and that product-team
+GitLab CI files are not used for that flow.
 
-**GPT-DOUG-LLM MAX** is the orchestration layer. **Wakeup3lm** is the IDE-native LLM execution kernel. **The Ontology** gives the system typed operational context. **ZYRA** provides bounded agentic execution. **SHADOW GLASS / GLASS ONION** provide policy, provenance, and defensive controls. Authorized **Palantir AIP / Foundry** connections can supply model, Logic, and Ontology context while the external tenant remains authoritative.
+The standalone Repo One project root must contain:
 
-The execution contract is deliberately simple:
+- `Dockerfile`
+- `hardening_manifest.yaml`
+- `LICENSE`
+- `README.md`
+- `renovate.json`
+- `src/`
+- `tests/`
 
-> **AI proposes → Ontology grounds → policy bounds → approved tools execute → tests and probes produce proof → humans retain control of material actions.**
+## Platform One deployment assumptions
 
-This repository is designed to make that entire path visible instead of hiding execution behind a chat response.
+Authentication, DNS, ingress, Keycloak roles, staging/production manifests, and any
+RDS/S3 resources are deployment-environment concerns and should be configured through
+the Platform One onboarding/Mission DevOps process. This service itself requires no
+database or S3 bucket.
 
----
-
-## Public project research specification: Quantum Warfighter Ontology
-
-The [**Quantum Warfighter Ontology — canonical public project specification (v1.0.0)**](docs/WARFIGHTER_RESEARCH_ONTOLOGY.md) defines the **research-only design** for synthetic operational support, defensive-system exercises, mathematical verification, and separately human-reviewed ontology findings. Read the [full 19-section architecture](docs/superpowers/specs/2026-10-12-quantum-warfighter-ontology-design.md).
-
-**Publication status:** adopted design, **not yet implemented as a complete subsystem**, not an operational readiness source, military authorization, endorsement, or scientific proof. The existing [ZYRA_MSS_V1 ontology](safety-shield/ontology/zyra-mss-v1.json) remains unchanged and authoritative for its own existing software contract.
-
----
-
-## Ecosystem at a glance
-
-<div align="center">
-
-<img width="100%" src="docs/assets/ecosystem-flow.svg" alt="The Black House ecosystem flow from GPT-DOUG-LLM MAX through Wakeup3lm, Ontology, Palantir, tools, security, evidence, and deployment" />
-
-</div>
-
-### Read the diagram left-to-right, then down
-
-| Layer | Beginner translation | What it owns |
-| --- | --- | --- |
-| **GPT-DOUG-LLM MAX** | The coordinator | Breaks the goal into a governed engineering mission |
-| **Wakeup3lm** | The coding brain inside the IDE | Structured decisions, file/tool operations, repair loops, audit state |
-| **Ontology** | The system's shared map of reality | Projects, files, decisions, tool calls, builds, previews, checkpoints, deployments |
-| **Palantir AIP / Foundry** | Optional authorized enterprise intelligence plane | Model proxy, published Logic/functions, Foundry Ontology objects/actions |
-| **Agent + tools** | The hands | Read/edit files, run commands, build, test, inspect, validate |
-| **Security gates** | The guard rails around execution | Least privilege, approval gates, fail-closed checks, CI, compliance mappings |
-| **Evidence** | Proof that the change works | Tests, logs, previews, probes, audit records |
-| **Ship** | Controlled release | Checkpoint, deployment adapter, rollback path |
-
-**The important idea:** the model never becomes authority simply because it generated an answer. State is grounded, actions are explicit, and results have to survive verification.
-
----
-
-## How Wakeup3lm builds an app
-
-<div align="center">
-
-<img width="100%" src="docs/assets/wakeup3lm-agent-loop.svg" alt="Wakeup3lm vibe coding loop showing ask, plan, ground, act, verify, repair, checkpoint, and ship" />
-
-</div>
-
-For a beginner, one prompt such as **“build me a responsive mobile web app”** becomes this engineering loop:
-
-```text
-ASK
- ↓
-PLAN
- ↓
-GROUND IN ONTOLOGY / AUTHORIZED CONTEXT
- ↓
-EDIT + RUN + BUILD
- ↓
-TEST + SECURITY + PREVIEW
- ↓
-PASS? ── yes ──→ CHECKPOINT → SHIP
-  │
-  no
-  ↓
-DIAGNOSE → REPAIR → VERIFY AGAIN
-```
-
-Wakeup3lm records structured `AgentDecision` and `ToolCall` state so malformed model output becomes a governed failure that can be repaired instead of crashing the IDE.
-
-Deep dive: [Wakeup3lm README](wakeup3lm/README.md) · [Wakeup3lm Ontology](wakeup3lm/ontology.py) · [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md)
-
----
-
-## Security control plane
-
-<div align="center">
-
-<img width="100%" src="docs/assets/security-gates.svg" alt="Repository-derived security and compliance gate map" />
-
-</div>
-
-The infographic is **generated from the repository itself**. `scripts/generate_ecosystem_diagrams.py` scans the live codebase, Ontology, tests, and `.github/workflows/` definitions. The `Ecosystem README Refresh` workflow regenerates the SVGs after repository changes, so the diagrams are not intended to become a manually maintained architecture snapshot.
-
-A green GitHub badge means the corresponding workflow passed its latest applicable run. The diagram itself means the gate is configured; it does not fabricate a passing result.
-
-Security design rules:
-
-- least privilege and explicit capability boundaries;
-- path and host boundary enforcement;
-- writes disabled or human-gated where consequences are material;
-- malformed or unknown agent actions fail closed;
-- tests, audits, and probes are evidence, not decoration;
-- no repository setting can manufacture external Palantir entitlement or government authorization.
-
-### Infrastructure resilience gate
-
-The Black House resilience policy turns public logistics/decision-workflow lessons into a defensive software-infrastructure contract: telemetry first, configurable thresholds, forecast confidence, dry-run/simulation before material mutation, snapshots, rollback, least privilege, explicit human override, and default-disabled autonomous external dispatch.
-
-- [Infrastructure resilience policy](safety-shield/policies/infrastructure-resilience.json)
-- [Deterministic validator](scripts/validate_infrastructure_resilience.py)
-- [CI resilience gate](.github/workflows/black-house-resilience-gate.yml)
-- [Public reference video I](https://www.youtube.com/watch?v=jK5k9_Gql-I)
-- [Public reference video II](https://www.youtube.com/watch?v=qYByk5cwaWg)
-
-Read [SECURITY.md](SECURITY.md), [Federal / IC alignment](docs/FEDERAL_IC_ALIGNMENT.md), and [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md).
-
----
-
-## ◼️ SHADOW GLASS // Federal Mission Nexus
-
-<div align="center">
-
-<img width="100%" src="safety-shield/assets/shadow-glass-federal-nexus.svg" alt="SHADOW GLASS Federal Mission Nexus" />
-
-[![SHADOW GLASS](https://img.shields.io/badge/SHADOW%20GLASS-ONLINE-111111?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
-[![GLASS ONION](https://img.shields.io/badge/GLASS%20ONION-PROTECTED-7c3aed?style=for-the-badge)](safety-shield/ontology/safety-shield.ttl)
-[![USSF](https://img.shields.io/badge/SPACE%20FORCE-MISSION%20MAPPED-0284c7?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
-[![NSA](https://img.shields.io/badge/NSA-DEFENSIVE%20CYBER-6d28d9?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
-[![NASA](https://img.shields.io/badge/NASA-OPEN%20MISSION%20DATA-f97316?style=for-the-badge)](safety-shield/SHADOW_GLASS.md)
-
-**SHADOW GLASS shields GLASS ONION. GLASS ONION makes authority observable.**
-
-</div>
-
-```text
-PUBLIC / AUTHORIZED SOURCES
-            ↓
-      SHADOW GLASS
- identity • provenance • confidence • policy
-            ↓
-       GLASS ONION
- intent • context • execution • evidence
-            ↓
-  PALANTIR-STYLE ONTOLOGY
-            ↓
-     THE BLACK HOUSE
-            ↓
-GPT-DOUG-MAX → WAKEUP3LM → ZYRA / XUNIA
-```
-
-Public U.S. Space Force mission concepts, NSA defensive cybersecurity guidance, NASA public mission data/software, NIST controls, and public IC directives can be mapped into the project's provenance-first control model. **These are independent software mappings, not agency credentials or endorsements.**
-
-[Open SHADOW GLASS →](safety-shield/SHADOW_GLASS.md) · [Machine-readable ontology →](safety-shield/ontology/shadow-glass-palantir.json)
-
----
-
-## GPT-NEDU / Novice EDU
-
-The beginner education module inside GPT-Doug, ZYRA, and XUNIA.
-[Learning page](https://xunia.org/learn/nedu/) · [Source and launch guide](gpt_nedu/README.md).
-Run `bash scripts/doug-max nedu` or type `/nedu` in ZYRA chat.
-The browser page becomes available after the Pages deployment containing this module.
-
-## Products
-
-| Product | What it does | Best fit | Readiness |
-| --- | --- | --- | --- |
-| **Wakeup3lm** | Ontology-first IDE LLM kernel with structured agent decisions, secure workspace tools, persistence, and audit state | AI-native browser IDE / vibe coding | **Implemented kernel** |
-| **ZYRA Core** | Bounded agentic software-engineering runtime with planning, repository edits, checkpoints, validation, rollback, self-heal, and defensive policy controls | Developers and technical teams building agentic workflows | **Implemented runtime** |
-| **GPT-DOUG ↔ Palantir Full Stack** | Foundry Ontology, AIP proxy/Logic, eval runner, Automate effects, Gotham adapter, Apollo adapter, and tenant probes | Authorized Palantir deployments | **Integration-ready** |
-| **NXYZ Mouse Mic** | Voice/keyboard browser guidance that finds, highlights, and activates visible Foundry controls with high-impact confirmation | Accessibility, operator assistance, dense enterprise UI navigation | **v1.0.2 shipping candidate** |
-| **Watch Dog** | Local dog detection + temporal scoring + alerting for suspected bathroom events | Edge-AI / smart-camera experimentation | **Experimental prototype** |
-
-**Full portfolio:** [docs/PRODUCTS.md](docs/PRODUCTS.md)
-
----
-
-## Why this architecture
-
-Most AI tooling optimizes for generating an answer. This ecosystem focuses on the harder step: **turning a model recommendation into a controlled operation with evidence.**
-
-| Value | Approach |
-| --- | --- |
-| **Execution control** | Deterministic policy and allowlisted tools sit between model output and mutation |
-| **Recoverability** | Checkpoint before mission-owned writes; rollback when final validation fails |
-| **Operational evidence** | Tests, logs, previews, reports, and runtime state are treated as proof |
-| **Ontology grounding** | Operational nouns become typed objects and governed verbs become explicit actions/tool calls |
-| **Enterprise context** | Foundry integration retrieves only context exposed to the configured authorized identity |
-| **Local-first options** | Provider-neutral runtime paths reduce dependence on one hosted model vendor |
-| **Human authority** | Material external writes remain gated rather than silently delegated to the model |
-
----
-
-## Architecture
-
-```mermaid
-flowchart TD
-    U[User / Developer] --> D[GPT-DOUG-LLM MAX]
-    D --> W[Wakeup3lm IDE LLM]
-    W --> O[Ontology Control Plane]
-    O --> P[Policy + Capability Boundary]
-    O --> AIP[Authorized Palantir AIP / Foundry]
-    P --> R[Agent Runtime + Allowlisted Tools]
-    R --> F[Files / Terminal / Build / Preview]
-    F --> V[Tests + Security Gates + Evidence]
-    V -->|pass| C[Checkpoint]
-    V -->|fail| W
-    C --> DEP[Approved Deployment]
-    AIP --> O
-```
-
-**Design rule:** reasoning is flexible; execution authority is explicit; evidence determines whether the result survives.
-
-Deep dive: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/AGENTIC_RUNTIME.md](docs/AGENTIC_RUNTIME.md)
-
----
-
-## Palantir Foundry + AIP integration
-
-The repository contains software adapters for an **authorized Palantir enrollment**.
-
-Implemented code planes include:
-
-- Foundry OAuth/bearer configuration and exact-host HTTPS transport boundaries;
-- Ontology listing, object types, object reads/searches, Query/Logic execution, and gated Actions;
-- AIP provider-compatible model proxy invocation;
-- published AIP Logic/function invocation;
-- external regression eval runner against published Logic targets;
-- Automate-compatible Action / Logic effect bridge;
-- Gotham REST adapter;
-- Apollo GraphQL adapter and explicitly approved Product Release publishing path;
-- live tenant/resource probes;
-- Wakeup3lm audit recording around external AIP/Logic operations.
-
-```text
-/palantir stack
-/palantir probe
-/palantir probe-model
-/palantir query-types <ontology>
-/palantir aip-logic <ontology> <query_api_name> <parameters_json>
-/palantir aip-chat <model_rid> <prompt>
-```
-
-The repository does **not** manufacture credentials, licenses, tenant permissions, ATOs, clearances, or agency affiliation. External authorization remains authoritative.
-
-Integration guides: [Palantir Foundry](docs/PALANTIR_FOUNDRY.md) · [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md)
-
----
-
-## Quick Start
-
-```bash
-git clone https://github.com/sonoxo/gpt-doug-llm.git
-cd gpt-doug-llm
-python3 dougctl.py heal
-python3 zyra_chat.py
-```
-
-Verify the native runtime:
-
-```text
-/status
-/agent-test
-/laser-test
-```
-
-Typical mission:
-
-```text
-/plan add structured mission telemetry
-/do add structured mission telemetry
-/mission-status
-```
-
-Mission lifecycle:
-
-```text
-OBSERVE → PLAN → GROUND → EDIT → TEST → REVIEW → KEEP / REPAIR / ROLLBACK
-```
-
-Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
-
----
-
-## Trust and control
-
-Built-in boundaries include repository-scoped agent tools, mission budgets, checkpoint-before-write behavior, validation gates, rollback, defensive circuit breakers, explicit Foundry write enablement, human confirmation for configured material actions, secret-aware configuration, and rejection of unrestricted external offensive behavior.
-
-Read [SECURITY.md](SECURITY.md) and [docs/SECURE_DEVELOPMENT_BASELINE.md](docs/SECURE_DEVELOPMENT_BASELINE.md).
-
----
-
-## Product readiness
-
-| Label | Meaning |
-| --- | --- |
-| **Implemented kernel/runtime** | Code exists and is covered by its repository test/CI contract |
-| **Shipping candidate** | Product package/specs exist and are being prepared for external distribution |
-| **Integration-ready** | Connector/runtime exists but requires external tenant authorization/configuration |
-| **Experimental prototype** | R&D code; not represented as production-grade assurance |
-| **Planned** | Architecture or roadmap item; do not treat it as currently deployed |
-
-A code-side ✅ and a live-tenant ✅ are deliberately different concepts.
-
----
-
-## Repository map
-
-```text
-gpt-doug-llm/
-├── wakeup3lm/                   # IDE LLM + local Ontology kernel
-├── zyra_chat.py                 # Interactive ZYRA runtime
-├── zyra_agent.py                # Bounded repository Agent Core
-├── zyra_laser.py                # Defensive circuit breaker
-├── palantir_foundry.py          # Hardened Foundry REST client
-├── palantir_stack.py            # Palantir capability/control registry
-├── federal_compliance.py        # Public federal/IC alignment gate
-├── agents/                      # Planner / executor / reviewer components
-├── workers/                     # Worker and orchestration services
-├── tools/nxyz-mouse-mic/        # Browser-guidance product
-├── safety-shield/               # SHADOW GLASS + GLASS ONION control plane
-├── scripts/generate_ecosystem_diagrams.py
-├── scripts/validate_infrastructure_resilience.py
-├── docs/assets/                 # Auto-generated responsive SVG infographics
-├── tests/                       # Regression tests
-└── .github/workflows/           # CI / security / release / adaptive-doc automation
-```
-
----
-
-## Documentation
-
-| Start here | Purpose |
-| --- | --- |
-| [Wakeup3lm](wakeup3lm/README.md) | IDE-LLM kernel and Ontology-first execution model |
-| [Palantir Full Stack](docs/PALANTIR_FULL_STACK.md) | AIP, Logic, Foundry, Gotham, Apollo and tenant verification |
-| [Federal / IC Alignment](docs/FEDERAL_IC_ALIGNMENT.md) | Public control alignment and explicit authorization boundaries |
-| [SHADOW GLASS](safety-shield/SHADOW_GLASS.md) | Defensive mission nexus and Glass Onion shield |
-| [Infrastructure Resilience](safety-shield/policies/infrastructure-resilience.json) | Human-governed infrastructure protection contract |
-| [Product Portfolio](docs/PRODUCTS.md) | Products, buyer value, and readiness |
-| [Architecture](docs/ARCHITECTURE.md) | Runtime layers and trust boundaries |
-| [Agentic Runtime](docs/AGENTIC_RUNTIME.md) | Mission budgets, tools, checkpointing, rollback |
-| [OPERATIONDINNER](docs/OPERATIONDINNER.md) | Pinned Black House graph of verified public DoD-source fork lineage |
-| [LLMs-at-DoD Ontology](docs/LLMS_AT_DOD_ONTOLOGY.md) | Cell-level, source-grounded public tutorial ontology |
-| [NRL Repository Ecosystem](docs/NRL_PUBLIC_REPOSITORY_ECOSYSTEM.md) | Complete pinned public NRL catalog and metadata ontology |
-| [Commands](docs/COMMANDS.md) | Terminal command reference |
-| [Security](SECURITY.md) | Security limitations and vulnerability reporting |
-| [Contributing](CONTRIBUTING.md) | Development workflow |
-
----
-
-## Independence statement
-
-**ZYRA, GPT-DOUG-LLM, Wakeup3lm, NXYZ, SHADOW GLASS, GLASS ONION, The Black House, and repository-issued RVIA materials are independent software/project artifacts.** References to Palantir, Neptune Shield, the U.S. Space Force, NSA, NASA, government systems, intelligence/security disciplines, or external organizations describe integrations, public mission/reference mappings, research, interoperability goals, or design context. They do **not** imply federal-agency status, congressional authority, security clearance, certification, endorsement, contract award, or affiliation.
-
----
-
-## Invention Lab
-
-The [GPT-Doug Invention Lab](research_lab/README.md) contains
-four local research prototypes for evidence-bound admission, dependency-aware
-repair planning, offline reconciliation, and citation lineage. Run
-`bash scripts/doug-max invention-lab demo` for the synthetic end-to-end checks.
-These are experimental tools, not patentability findings or live execution gates.
-
----
-
-## Visual GPT-Doug + Global Skill Lattice
-
-GPT-Doug now has a documented **local visual foundation** and a **lazy 100,000,000-address global skill lattice**.
-
-```text
-ONTOLOGY
-   ↓
-GENOME / PHENOTYPE
-   ↓
-EMBODIMENT
-   ↓
-HUD + MATRIX
-   ↓
-KNOWLEDGE + SKILLS + RESEARCH
-   ↓
-MAX CONTROL
-   ↓
-USER-AUTHORIZED ADMIN
-```
-
-The visual shell is documented separately from the canonical runtime so a HUD failure cannot overwrite the core. The skill lattice exposes exactly `100 × 100 × 100 × 100 = 100,000,000` deterministic workflow addresses across the global economy, AI infrastructure, public-sector operations, defensive intelligence, musicians, artists, developers, research, infrastructure, and the creative economy. It is **lazy and compositional**: GPT-Doug generates skill descriptors on demand instead of pretending to ship 100 million pretrained expert models or storing 100 million files.
-
-Quick checks:
-
-```bash
-python3 skills/global_skill_lattice.py count
-python3 skills/global_skill_lattice.py show 54217804
-python3 skills/global_skill_lattice.py search music release
-python3 skills/global_skill_lattice.py search ai-infrastructure reliability
-```
-
-Read: [GPT-Doug MAX Foundation](docs/GPTDOUG_MAX_FOUNDATION.md) · [Visual GPT-Doug](docs/VISUAL_GPTDOUG.md) · [Global Skill Lattice](docs/GLOBAL_SKILL_LATTICE.md)
-
-
-## License
-
-MIT — see [LICENSE](LICENSE).
+The container runs as UID 1001, includes a Docker health check, and does not use
+Dockerfile `ADD` instructions.
