@@ -1,0 +1,50 @@
+name: Universal Council focused tests
+
+on:
+  push:
+    paths:
+      - 'agents/universal_council.py'
+      - 'agents/gpt_orca_llm.py'
+      - 'agents/stark_ironman.py'
+      - 'research_lab/orca_neurocloud.py'
+      - 'agents/tests/test_universal_council.py'
+      - 'pyproject.toml'
+      - '.github/workflows/universal-council.yml'
+  pull_request:
+    paths:
+      - 'agents/universal_council.py'
+      - 'agents/gpt_orca_llm.py'
+      - 'agents/stark_ironman.py'
+      - 'research_lab/orca_neurocloud.py'
+      - 'agents/tests/test_universal_council.py'
+      - 'pyproject.toml'
+      - '.github/workflows/universal-council.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-boundary-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run offline council, Stark, Orca and synthetic neuron regressions
+        env:
+          GPT_DOUG_PROVIDER: none
+          PAID_MODE: 'false'
+        run: |
+          python -m unittest \
+            agents.tests.test_universal_council \
+            agents.tests.test_stark_ironman \
+            agents.tests.test_gpt_orca_llm \
+            tests.test_orca_neurocloud -v
+          python -m agents.universal_council 'Review a local simulated research system' --neurons 12 --cycles 2 > /tmp/universal-council.json
+          python -c "import json; r=json.load(open('/tmp/universal-council.json')); assert r['schema']=='gpt-doug.universal-council.v1'; assert not r['permissions']['external_tool_execution']"
