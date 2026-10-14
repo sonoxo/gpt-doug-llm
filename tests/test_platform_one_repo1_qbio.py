@@ -28,6 +28,7 @@ def test_dockerfile_matches_iron_bank_baseline_controls():
     assert "HEALTHCHECK" in text
     assert "USER 1001" in text
     assert "\nADD " not in "\n" + text
+    assert "\nLABEL " not in "\n" + text
 
 
 def test_hardening_manifest_contains_required_sections():
