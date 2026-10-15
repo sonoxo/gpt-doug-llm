@@ -1,0 +1,295 @@
+{
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "schemaVersion": "1.0.0",
+  "artifactType": "GMRO_EVIDENCE_DELTA",
+  "artifactId": "gmro:oncology:2026-10-15:NCT07811193:first-dose-announcement",
+  "observedAtUTC": "2026-10-15T08:33:03Z",
+  "eventKeys": [
+    "NCT07811193:2026-10-15:SPONSOR_ANNOUNCED_FIRST_PATIENT_DOSED"
+  ],
+  "events": [
+    {
+      "eventKey": "NCT07811193:2026-10-15:SPONSOR_ANNOUNCED_FIRST_PATIENT_DOSED",
+      "announcementDate": "2026-10-15",
+      "eventType": "SPONSOR_CONFIRMED_FIRST_PATIENT_DOSING",
+      "materiality": "HIGH_FOR_BIOMARKER_TRIAL_MATCHING",
+      "nctId": "NCT07811193",
+      "otherIds": [
+        {
+          "system": "CTIS",
+          "value": "2026-525507-26-00"
+        },
+        {
+          "system": "Bayer trial",
+          "value": "23236"
+        },
+        {
+          "system": "Sponsor protocol",
+          "value": "VVD-133214-02"
+        }
+      ],
+      "cancer": "First-line advanced MSI-H/dMMR colorectal adenocarcinoma",
+      "intervention": "Oral VVD-214 (registered VVD-133214) + pembrolizumab vs pembrolizumab alone",
+      "phase": "PHASE2",
+      "sponsor": "Vividion Therapeutics, Inc., Bayer AG subsidiary",
+      "geography": "Global; sponsor approximately 21 countries; secondary snapshot 22",
+      "enrollmentTarget": 140,
+      "primaryEndpoint": "Landmark PFS at 6 months",
+      "globalRecruitmentStatus": "RECRUITING",
+      "registryFirstStudyStart": "2026-09-11",
+      "firstDosingDateIndependentVerified": false,
+      "clinicalTrialsGovCurrentAPIQueriedSuccessfully": false,
+      "resultsStatus": "NO_NEW_PHASE2_EFFICACY_RESULTS",
+      "evidenceIds": [
+        "sponsor_20261015",
+        "bayer_23236",
+        "ctg_derived_sep16"
+      ],
+      "caveats": [
+        "Announcement date is not the first dosing date.",
+        "No newly proven registry recruitment transition on Oct 15.",
+        "Status and site availability vary by location.",
+        "No Phase 2 efficacy result has been released."
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "trial:NCT07811193",
+      "type": "ClinicalTrial",
+      "label": "NCT07811193",
+      "attributes": {
+        "phase": "PHASE2",
+        "overallStatus": "RECRUITING",
+        "plannedEnrollment": 140,
+        "trialResultsPosted": false,
+        "studyStartReported": "2026-09-11",
+        "primaryCompletionEstimated": "2028-06-30",
+        "studyCompletionEstimated": "2030-12-31",
+        "design": "Randomized, open-label",
+        "NCTCurrentAPIReconciled": false
+      }
+    },
+    {
+      "id": "disease:advanced_colorectal_adenocarcinoma",
+      "type": "CancerType",
+      "label": "Advanced unresectable or metastatic colorectal adenocarcinoma",
+      "attributes": {
+        "setting": "First-line systemic therapy"
+      }
+    },
+    {
+      "id": "biomarker:msi_h_or_dmmr",
+      "type": "MolecularEligibility",
+      "label": "MSI-high and/or deficient mismatch repair",
+      "attributes": {
+        "required": true,
+        "confirmation": "Locally confirmed in certified laboratory",
+        "ECOG": "0-1",
+        "priorSystemicTherapyForMetastaticDisease": false
+      }
+    },
+    {
+      "id": "drug:vvd_133214",
+      "type": "Intervention",
+      "label": "VVD-133214",
+      "attributes": {
+        "aliases": [
+          "VVD-214",
+          "RO7589831",
+          "BAY 3772392"
+        ],
+        "mechanism": "Oral WRN helicase inhibitor",
+        "investigational": true
+      }
+    },
+    {
+      "id": "drug:pembrolizumab",
+      "type": "Intervention",
+      "label": "Pembrolizumab",
+      "attributes": {
+        "target": "PD-1",
+        "arms": [
+          "experimental with VVD-133214",
+          "active comparator monotherapy"
+        ]
+      }
+    },
+    {
+      "id": "sponsor:vividion",
+      "type": "Sponsor",
+      "label": "Vividion Therapeutics, Inc.",
+      "attributes": {
+        "parent": "Bayer AG"
+      }
+    },
+    {
+      "id": "institution:bayer",
+      "type": "Institution",
+      "label": "Bayer AG",
+      "attributes": {
+        "role": "Parent organization and sponsor trial registry"
+      }
+    },
+    {
+      "id": "institution:national_cancer_centre_singapore",
+      "type": "TrialSite",
+      "label": "National Cancer Centre Singapore",
+      "attributes": {
+        "siteStatusInBayerListing": "RECRUITING",
+        "country": "Singapore"
+      }
+    },
+    {
+      "id": "institution:university_of_arizona_cancer_center",
+      "type": "TrialSite",
+      "label": "University of Arizona Cancer Center - North Campus",
+      "attributes": {
+        "siteStatusInBayerListing": "NOT_YET_RECRUITING",
+        "country": "United States"
+      }
+    },
+    {
+      "id": "institution:uz_leuven",
+      "type": "TrialSite",
+      "label": "UZ Leuven",
+      "attributes": {
+        "siteStatusInBayerListing": "NOT_YET_RECRUITING",
+        "country": "Belgium"
+      }
+    },
+    {
+      "id": "endpoint:pfs_6_month",
+      "type": "PrimaryEndpoint",
+      "label": "Landmark PFS rate at 6 months",
+      "attributes": {
+        "assessment": "Investigator assessed, RECIST v1.1"
+      }
+    },
+    {
+      "id": "endpoint:secondary",
+      "type": "SecondaryEndpoints",
+      "label": "ORR, disease control, DoR, OS, safety, PK and recommended Phase 2 dose",
+      "attributes": {}
+    },
+    {
+      "id": "geography:global",
+      "type": "GeographicScope",
+      "label": "Multinational trial",
+      "attributes": {
+        "countriesSponsorApprox": 21,
+        "countriesRegistryMirror": 22,
+        "regions": [
+          "North America",
+          "Latin America",
+          "Europe",
+          "Asia"
+        ],
+        "countryCountDiscrepancyUnresolved": true
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "from": "trial:NCT07811193",
+      "kind": "STUDIES_DISEASE",
+      "to": "disease:advanced_colorectal_adenocarcinoma"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "REQUIRES_BIOMARKER",
+      "to": "biomarker:msi_h_or_dmmr"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "USES",
+      "to": "drug:vvd_133214"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "USES",
+      "to": "drug:pembrolizumab"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "SPONSORED_BY",
+      "to": "sponsor:vividion"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_PRIMARY_ENDPOINT",
+      "to": "endpoint:pfs_6_month"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_SECONDARY_ENDPOINT",
+      "to": "endpoint:secondary"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_SITE",
+      "to": "institution:national_cancer_centre_singapore"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_SITE",
+      "to": "institution:university_of_arizona_cancer_center"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_SITE",
+      "to": "institution:uz_leuven"
+    },
+    {
+      "from": "trial:NCT07811193",
+      "kind": "HAS_GEOGRAPHY",
+      "to": "geography:global"
+    },
+    {
+      "from": "sponsor:vividion",
+      "kind": "OWNED_BY",
+      "to": "institution:bayer"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "sponsor_20261015",
+      "kind": "primary_sponsor_announcement",
+      "date": "2026-10-15T06:30:00Z",
+      "url": "https://www.businesswire.com/news/home/20261014687653/en/Vividion-Therapeutics-Expands-Clinical-Development-of-WRN-Inhibitor-VVD-214-with-Phase-2-Combination-Study-in-First-Line-Patients-with-Advanced-Colorectal-Cancer"
+    },
+    {
+      "id": "bayer_23236",
+      "kind": "primary_sponsor_registry",
+      "dateRetrieved": "2026-10-15",
+      "url": "https://clinicaltrials.bayer.com/study/23236"
+    },
+    {
+      "id": "ctg_derived_sep16",
+      "kind": "secondary_registry_mirror",
+      "registryLastUpdated": "2026-09-16",
+      "url": "https://www.syfrah.com/trial/NCT07811193"
+    },
+    {
+      "id": "pubmed_40964743",
+      "kind": "peer_reviewed_mechanistic_research",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40964743/"
+    }
+  ],
+  "normalization": {
+    "sourceConflictNote": "Sponsor announcement calls study drug VVD-214; study registration calls it VVD-133214; matching NCT identifies same program.",
+    "independentSponsorRegistrySupportsRecruiting": true,
+    "CTISIdentifierValidatedViaBayerRegistry": true,
+    "directCTGAPIReconciliationPending": true,
+    "manualCuratorialReviewRequired": true
+  },
+  "integration": {
+    "state": "STAGED_IN_PR",
+    "productionOntologyWritten": false
+  },
+  "limitations": [
+    "Targeted, not exhaustive global registry sweep.",
+    "Direct ClinicalTrials.gov API and independent CTIS records not fetched.",
+    "Phase 2 first dosing announcement only; not a clinical efficacy result."
+  ]
+}
