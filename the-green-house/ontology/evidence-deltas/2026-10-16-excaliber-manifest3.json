@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "1.0.0",
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "artifactType": "gmro.ClinicalTrialEvidenceDelta",
+  "asOf": "2026-10-16T09:29:10Z",
+  "reportCount": 2,
+  "records": [
+    {
+      "id": "gmr.Study:NCT04975997",
+      "recordType": "gmr.Study",
+      "title": "EXCALIBER-RRMM: iberdomide+daratumumab+dexamethasone vs DVd",
+      "status": "ACTIVE_NOT_RECRUITING (published investigator report)",
+      "phase": "Phase 3",
+      "sponsor": "Celgene / Bristol Myers Squibb",
+      "disease": "Relapsed or refractory multiple myeloma",
+      "molecularEligibility": {
+        "mandatoryBiomarker": null,
+        "notes": "No specific molecular mutation required; MRD is a response endpoint."
+      },
+      "eligibility": "Adults, 1-2 prior lines of therapy; progressive multiple myeloma; anti-CD38 and bortezomib refractory excluded.",
+      "intervention": "iberdomide + daratumumab + dexamethasone",
+      "comparator": "daratumumab + bortezomib + dexamethasone",
+      "institutionExamples": [
+        "Winship Cancer Institute, Emory University"
+      ],
+      "geography": "Multinational; 31 countries reported in publication",
+      "primaryEndpoints": [
+        "MRD-negative complete response",
+        "Progression-free survival"
+      ],
+      "secondaryEndpoints": [
+        "Overall survival",
+        "Overall response rate",
+        "Safety"
+      ],
+      "sourceRefs": [
+        "bms-excaliber-20261008",
+        "pubmed-excaliber-20260925"
+      ]
+    },
+    {
+      "id": "gmr.TrialRegistration:NCT04975997",
+      "recordType": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT04975997",
+      "studyId": "gmr.Study:NCT04975997",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "sourceRefs": [
+        "pubmed-excaliber-20260925"
+      ]
+    },
+    {
+      "id": "gmr.EvidenceAssertion:NCT04975997:PFS:2026-10-08",
+      "recordType": "gmr.EvidenceAssertion",
+      "statement": "Phase 3 confirmatory PFS endpoint met: median 42 vs 20 months, HR 0.49, p<0.000001; 800 patients (400 per arm); 23-month median follow-up.",
+      "eventDate": "2026-10-08",
+      "eventType": "POSITIVE_PRIMARY_ENDPOINT",
+      "priority": "HIGH",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "supportLevel": "SPONSOR_REPORTED_TOPLINE",
+      "uncertainty": "Detailed PFS peer-reviewed report unavailable; no claim of new OS benefit or regulatory indication.",
+      "sourceRefs": [
+        "bms-excaliber-20261008"
+      ]
+    },
+    {
+      "id": "gmr.Study:NCT07357727",
+      "recordType": "gmr.Study",
+      "title": "MANIFEST-3: pelabresib plus ruxolitinib in myelofibrosis",
+      "status": "RECRUITING (registry-derived)",
+      "phase": "Phase 3",
+      "sponsor": "Novartis Pharmaceuticals",
+      "disease": "Primary, post-polycythemia vera, or post-essential thrombocythemia myelofibrosis",
+      "molecularEligibility": {
+        "mandatoryBiomarker": null,
+        "notes": "JAK-inhibitor-naive is a therapy-exposure criterion, not a JAK2-mutation requirement."
+      },
+      "eligibility": "Adults >=18 years; intermediate-1/2/high-risk myelofibrosis, JAK-inhibitor naive.",
+      "intervention": "pelabresib (DAK539) + ruxolitinib",
+      "comparator": "placebo + ruxolitinib",
+      "institutionExamples": [
+        "Yale University School of Medicine",
+        "MD Anderson Cancer Center",
+        "Winship Cancer Institute, Emory University",
+        "Jewish General Hospital (Canada)"
+      ],
+      "geography": "134 recruiting sites in 22 countries (2026-10-15 third-party registry-derived snapshot)",
+      "primaryEndpoints": [
+        "Week-24 SVR35 with TSS>=25",
+        "Week-24 symptom TSS change with TSS>=25",
+        "Week-24 SVR35 with TSS>=15",
+        "Week-24 symptom TSS change with TSS>=15"
+      ],
+      "secondaryEndpoints": [
+        "Overall survival",
+        "Progression-free survival",
+        "Leukemia-free survival",
+        "Safety"
+      ],
+      "sourceRefs": [
+        "clinicaltrialsgg-manifest-20261015",
+        "clinicaltrialsfind-manifest-20261009"
+      ]
+    },
+    {
+      "id": "gmr.TrialRegistration:NCT07357727",
+      "recordType": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07357727",
+      "otherIds": {
+        "EU_CTIS": "2025-523555-66-00",
+        "protocol": "CDAK539A12303"
+      },
+      "studyId": "gmr.Study:NCT07357727",
+      "status": "RECRUITING",
+      "lastUpdated": "2026-10-15 (derived tracker)",
+      "sourceRefs": [
+        "clinicaltrialsgg-manifest-20261015"
+      ]
+    },
+    {
+      "id": "gmr.EvidenceAssertion:NCT07357727:SITES:2026-10-15",
+      "recordType": "gmr.EvidenceAssertion",
+      "eventDate": "2026-10-15",
+      "eventType": "GLOBAL_RECRUITMENT_FOOTPRINT_EXPANSION",
+      "priority": "MODERATE",
+      "statement": "50 sites added and 6 removed across nine updates Sep25-Oct15, including first country sites in Czechia, Germany, Netherlands, Canada, and Belgium. Latest snapshot: 134 recruiting sites in 22 countries. On Oct15 alone: 15 sites added, 6 removed, first Belgium site.",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "REGISTRY_DERIVED_NOT_API_RECONCILED",
+      "uncertainty": "Some apparent additions replace generic site labels with named sites. This does not indicate a formal recruitment status or phase transition.",
+      "sourceRefs": [
+        "clinicaltrialsgg-manifest-20261015"
+      ]
+    }
+  ],
+  "provenance": [
+    {
+      "id": "bms-excaliber-20261008",
+      "recordType": "gmr.ProvenanceRecord",
+      "sourceUri": "https://news.bms.com/news/details/2026/Bristol-Myers-Squibb-Announces-ZENBEXUSTM-iberdomide-in-Combination-with-Daratumumab-and-Dexamethasone-ZDd-Demonstrates-Superior-Progression-Free-Survival-vs--Standard-of-Care-in-Relapsed-and-Refractory-Multiple-Myeloma-in-Phase-3---/default.aspx",
+      "retrievedAt": "2026-10-16",
+      "verificationState": "SOURCE_VERIFIED",
+      "transformation": "Capture Oct 8 sponsor topline outcome"
+    },
+    {
+      "id": "pubmed-excaliber-20260925",
+      "recordType": "gmr.ProvenanceRecord",
+      "sourceUri": "https://pubmed.ncbi.nlm.nih.gov/42790445/",
+      "retrievedAt": "2026-10-16",
+      "verificationState": "SOURCE_VERIFIED",
+      "transformation": "Use investigator-published trial design and previous MRD analysis, not as PFS verification"
+    },
+    {
+      "id": "clinicaltrialsgg-manifest-20261015",
+      "recordType": "gmr.ProvenanceRecord",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07357727",
+      "retrievedAt": "2026-10-16",
+      "verificationState": "UNVERIFIED",
+      "transformation": "Registry-derived indexed Oct15 version; direct ClinicalTrials.gov API version diff blocked"
+    },
+    {
+      "id": "clinicaltrialsfind-manifest-20261009",
+      "recordType": "gmr.ProvenanceRecord",
+      "sourceUri": "https://clinicaltrialsfind.com/trial/NCT07357727/",
+      "retrievedAt": "2026-10-16",
+      "verificationState": "SOURCE_VERIFIED",
+      "transformation": "Corroborate phase, sponsor, study and recruited institutions from prior Oct9 registry snapshot"
+    }
+  ],
+  "links": [
+    {
+      "from": "gmr.TrialRegistration:NCT04975997",
+      "type": "gmr.REGISTERS",
+      "to": "gmr.Study:NCT04975997"
+    },
+    {
+      "from": "gmr.Study:NCT04975997",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "to": "gmr.EvidenceAssertion:NCT04975997:PFS:2026-10-08"
+    },
+    {
+      "from": "gmr.TrialRegistration:NCT07357727",
+      "type": "gmr.REGISTERS",
+      "to": "gmr.Study:NCT07357727"
+    },
+    {
+      "from": "gmr.Study:NCT07357727",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "to": "gmr.EvidenceAssertion:NCT07357727:SITES:2026-10-15"
+    }
+  ],
+  "guardrails": [
+    "No patient-specific medical advice",
+    "No unverified recruitment transition claims",
+    "Preserve sponsor topline vs published results",
+    "Require direct registry API reconciliation before escalating third-party historical status data"
+  ]
+}
