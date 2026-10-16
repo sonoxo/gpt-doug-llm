@@ -27,6 +27,14 @@ OFFICIAL = {
  "performance": ["https://www.sba.gov/federal-contracting/contracting-guide"],
  "clearance": ["https://www.dcsa.mil/Industrial-Security/Entity-Vetting-Facility-Clearances/"],
 }
+# Canonical project identifiers are not independent deployability or biology claims.
+PROJECTS = {
+    "gpt-doug-llm": {"type": "software", "readiness": "requires_evidence"},
+    "gpt-biochip": {"type": "software_research_concept", "readiness": "requires_evidence"},
+    "gpt-humanoid": {"type": "robotics_research_concept", "readiness": "requires_evidence"},
+    "gpt-organoid": {"type": "biocomputing_research_concept", "readiness": "requires_evidence"},
+}
+DEFAULT_REPOSITORY = "sonoxo/gpt-doug-llm"
 # This is observational metadata, not an attestation of federal readiness.
 def repo_metadata(repo, timeout=8):
     if not repo or "/" not in repo:
@@ -52,12 +60,12 @@ def audit(manifest, repository=None):
             items[field] = {"status": "verified" if good else "unverified", "reference": entry.get("reference") if good else None}
             complete = complete and good
         output[key] = {"name": title, "status": "evidence_reviewed" if complete else "incomplete", "evidence": items, "official_sources": OFFICIAL[key]}
-    return {"schema_version": 1, "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(), "status": "evidence_review_only", "warning": "Reviewer assertions are not agency certification. Independently confirm registration, authorization, past performance and clearance using official channels.", "gates": output, "github": repo_metadata(repository) if repository else {"status": "not_requested"}}
+    return {"schema_version": 1, "generated_at": dt.datetime.now(dt.timezone.utc).isoformat(), "status": "evidence_review_only", "warning": "Reviewer assertions are not agency certification. Independently confirm registration, authorization, past performance and clearance using official channels.", "gates": output, "projects": PROJECTS, "github": repo_metadata(repository) if repository else {"status": "not_requested"}}
 
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--manifest", type=pathlib.Path, help="Locally stored JSON evidence manifest; never commit confidential records")
-    p.add_argument("--repository", default=None, help="Optional owner/repo for public GitHub metadata")
+    p.add_argument("--repository", default=DEFAULT_REPOSITORY, help="Optional owner/repo for public GitHub metadata")
     p.add_argument("--output", type=pathlib.Path, help="Optional report JSON path")
     args = p.parse_args()
     data = json.loads(args.manifest.read_text()) if args.manifest else {"evidence": {}}
