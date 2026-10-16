@@ -38,7 +38,8 @@ class RouterTests(unittest.TestCase):
                            chip=chip, actor="owner", memory_key="note")
             self.assertEqual(result, "answer")
             self.assertEqual(chip.writes, [])
-            self.assertIn("untrusted", call.call_args.kwargs["system"])
+            self.assertIn("UNTRUSTED_REFERENCE_JSON", call.call_args.args[1])
+            self.assertEqual(call.call_args.kwargs["system"], "")
             self.router.chat_with_memory(Model("ollama", "test"), "question",
                            chip=chip, actor="owner", save_reply_key="answer")
             self.assertEqual(chip.writes[0][0], "answer")
