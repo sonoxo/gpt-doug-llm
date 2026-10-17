@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "1.0.0",
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "recordType": "gmr.ClinicalTrialEvidenceDelta",
+  "date": "2026-10-14",
+  "assessment": "Material changes not included in preceding October 14 clinical-trial scout reports; these milestones were first publicized October 2 and October 8, respectively, and are NOT newly announced October 14.",
+  "updates": [
+    {
+      "id": "NCT05023980",
+      "otherIdentifiers": [
+        "BRUIN CLL-313",
+        "LOXO-BTK-20023"
+      ],
+      "trialName": "BRUIN CLL-313",
+      "diagnosis": "Previously untreated chronic lymphocytic leukemia or small lymphocytic lymphoma (CLL/SLL), without del(17p)",
+      "cancerType": [
+        "chronic lymphocytic leukemia",
+        "small lymphocytic lymphoma"
+      ],
+      "molecularEligibility": {
+        "required": "No known 17p deletion / del(17p) negative; IGHV mutation status was stratification factor, not inclusion requirement",
+        "excluded": [
+          "del(17p)"
+        ]
+      },
+      "intervention": "Pirtobrutinib (Jaypirca/LOXO-305; oral noncovalent BTK inhibitor) 200 mg daily versus bendamustine plus rituximab",
+      "mechanism": "Noncovalent reversible Bruton tyrosine kinase (BTK) inhibitor",
+      "phase": "Phase 3",
+      "studyDesign": "Global randomized open-label active-controlled 1:1 trial; 282 randomized (141/arm)",
+      "sponsor": "Loxo Oncology, Inc. (Eli Lilly and Company)",
+      "collaborators": [
+        "Eli Lilly and Company"
+      ],
+      "institution": [
+        "Multicenter participating institutions in international site network; individually validated institutional site names pending direct ClinicalTrials.gov reconciliation"
+      ],
+      "geography": [
+        "International: 20 registered countries and 108 listed sites per September 25 registry-derived record; individual site opening status not implied"
+      ],
+      "endpoint": {
+        "primary": "Independent review committee-assessed progression-free survival",
+        "secondary": [
+          "Overall survival",
+          "Overall response rate",
+          "Duration of response",
+          "Investigator-assessed PFS",
+          "Safety",
+          "Time to next treatment"
+        ]
+      },
+      "status": {
+        "trial": "Active, not recruiting (registry-derived as of Sept 25, 2026)",
+        "results": "Results first posted Sept 25, 2026 (registry-derived); Phase 3 efficacy published in Journal of Clinical Oncology",
+        "regulatory": "FDA approved pirtobrutinib for adults with previously untreated CLL/SLL and no known del(17p) on Oct 2, 2026",
+        "recruitmentStatusChange": "No new October 14 recruitment change asserted"
+      },
+      "efficacy": {
+        "endpoint": "PFS",
+        "hazardRatio": 0.2,
+        "ci95": [
+          0.11,
+          0.37
+        ],
+        "pValue": "<0.0001",
+        "medianPFS": "not estimable for pirtobrutinib; 33.5 months (95% CI 32.7–not estimable) for bendamustine/rituximab",
+        "survivalMaturity": "Overall survival immature at primary analysis"
+      },
+      "safety": {
+        "seriousAdverseReactionsPercent": 28,
+        "source": "FDA prescribing approval summary"
+      },
+      "eventDate": "2026-10-02",
+      "event": "U.S. FDA approval of an additional biomarker-defined, first-line CLL/SLL indication for pirtobrutinib based on BRUIN CLL-313.",
+      "evidenceClass": "REGULATORY_AUTHORITY_CONFIRMED_PHASE3_BENEFIT",
+      "priority": "HIGH",
+      "provenance": [
+        {
+          "sourceType": "REGULATORY_PRIMARY",
+          "publisher": "U.S. FDA",
+          "publicationDate": "2026-10-02",
+          "url": "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pirtobrutinib-previously-untreated-chronic-lymphocytic-leukemia-or-small-lymphocytic",
+          "supports": [
+            "approval",
+            "exact eligibility",
+            "study sample size",
+            "PFS estimates",
+            "adverse reactions"
+          ]
+        },
+        {
+          "sourceType": "PEER_REVIEWED",
+          "publisher": "Journal of Clinical Oncology (PubMed)",
+          "publicationDate": "2026",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/41363773/",
+          "supports": [
+            "design",
+            "eligibility",
+            "Phase 3 findings",
+            "endpoint definitions"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_MIRROR",
+          "publisher": "ClinicalTrials.gg (ClinicalTrials.gov derivative)",
+          "registryLastUpdated": "2026-09-25",
+          "url": "https://clinicaltrials.gg/study/NCT05023980",
+          "supports": [
+            "registered trial ID",
+            "last known status",
+            "sites/country count",
+            "posted results Sept 25"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_PRIMARY_LINK_NOT_DIRECTLY_FETCHED",
+          "publisher": "ClinicalTrials.gov",
+          "url": "https://clinicaltrials.gov/study/NCT05023980",
+          "verification": "Direct web/API retrieval unavailable during this run"
+        }
+      ],
+      "limitations": "Approval and efficacy confirmed by FDA; actual current site-by-site status not confirmed directly against ClinicalTrials.gov API. Regulatory approval is dated October 2, not October 14.",
+      "ontologyDisposition": "HIGH_CONFIDENCE_REGULATORY_EVIDENCE"
+    },
+    {
+      "id": "SPONSOR_CULLINAN_CLN049_PHASE2_20261008",
+      "otherIdentifiers": [],
+      "relatedTrialIdentifiersNotSameStudy": [
+        "NCT05143996 (separate Phase 1 CLN-049 monotherapy study)",
+        "NCT07722767 (separate Phase 1b CLN-049 plus azacitidine/venetoclax study)"
+      ],
+      "trialName": "CLN-049 potentially registrational Phase 2 in relapsed/refractory acute myeloid leukemia",
+      "diagnosis": "Relapsed/refractory acute myeloid leukemia after up to two lines of prior therapy; exploratory newly diagnosed TP53-mutated AML cohort",
+      "cancerType": [
+        "acute myeloid leukemia"
+      ],
+      "molecularEligibility": {
+        "required": "No FLT3 mutation requirement reported; intended to bind FLT3-expressing cells with wild-type or mutant FLT3",
+        "exploratory": "TP53 mutation for separate newly diagnosed exploratory cohort",
+        "uncertainty": "Full official eligibility for new Phase 2 not independently verified"
+      },
+      "intervention": "CLN-049 FLT3×CD3 bispecific T-cell engager, investigational; doses optimized before recommended Phase 2 single-arm expansion",
+      "mechanism": "FLT3xCD3-directed T cell engager",
+      "phase": "Phase 2 (sponsor-confirmed, potentially registrational)",
+      "studyDesign": "Dose optimization of two target levels followed by single-arm expansion; exploratory TP53-mutated newly diagnosed AML cohort",
+      "sponsor": "Cullinan Therapeutics, Inc.",
+      "institution": [],
+      "geography": [
+        "Geography and institutions for the new Phase 2 not disclosed in the reviewed sponsor announcement"
+      ],
+      "endpoint": {
+        "primary": "Not verified for new Phase 2; sponsor describes dose optimization then expansion",
+        "additional": [
+          "Efficacy/safety to be evaluated; exact registered endpoint wording not verified"
+        ]
+      },
+      "status": {
+        "sponsorObserved": "First Phase 2 patient dosed, announced October 8, 2026",
+        "registry": "New Phase 2 unique registry number not confirmed in accessible records",
+        "relatedPhase1": "NCT05143996 recruiting per older registry-derived record",
+        "relatedPhase1b": "NCT07722767 not yet recruiting per July 23 registry-derived record; estimated Oct 15 start, not a verified opening"
+      },
+      "eventDate": "2026-10-08",
+      "event": "Sponsor announced first patient dosed in potentially registrational Phase 2 CLN-049 AML trial; this is a development transition, not Phase 2 success.",
+      "evidenceClass": "SPONSOR_CONFIRMED_PHASE2_FIRST_PATIENT_DOSED",
+      "priority": "MEDIUM_HIGH",
+      "provenance": [
+        {
+          "sourceType": "SPONSOR_PRIMARY_DISTRIBUTION",
+          "publisher": "Cullinan Therapeutics / GlobeNewswire",
+          "publicationDate": "2026-10-08",
+          "url": "https://www.globenewswire.com/news-release/2026/10/08/3377131/0/en/Cullinan-Therapeutics-Announces-First-Patient-Dosed-in-Planned-Registrational-Phase-2-Study-of-CLN-049-in-Relapsed-Refractory-Acute-Myeloid-Leukemia.html",
+          "supports": [
+            "first Phase 2 dose",
+            "study stage",
+            "trial population",
+            "investigational mechanism",
+            "exploratory TP53 cohort"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_MIRROR_RELATED_STUDY",
+          "publisher": "ICH GCP derivative / ClinicalTrials.gov",
+          "registryLastUpdated": "2026-07-23",
+          "url": "https://ichgcp.net/amp/clinical-trials-registry/NCT07722767",
+          "supports": [
+            "distinct investigational combination study",
+            "sponsor",
+            "estimated recruitment timing"
+          ]
+        },
+        {
+          "sourceType": "REGISTRY_PRIMARY_LINK_RELATED_STUDY_NOT_FETCHED",
+          "publisher": "ClinicalTrials.gov",
+          "url": "https://clinicaltrials.gov/study/NCT05143996",
+          "verification": "This refers to the earlier Phase 1; NOT established as new Phase 2 identifier"
+        }
+      ],
+      "limitations": "No independently confirmed NCT identifier, site list or exact primary endpoint for the newly initiated Phase 2. Do not infer a registry recruitment change for the separate earlier Phase 1/1b studies.",
+      "ontologyDisposition": "PROVISIONAL_REGISTRY_RECONCILIATION_REQUIRED"
+    }
+  ],
+  "alertPolicy": "Only changes affecting approved indications, Phase 2/3 program progression, trial access, safety signals, or statistically significant clinical outcomes. Older known events are included only if not present in prior scout reports."
+}
