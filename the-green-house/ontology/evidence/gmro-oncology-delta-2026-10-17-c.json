@@ -1,0 +1,1555 @@
+{
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "schemaVersion": "1.0.0",
+  "batchDate": "2026-10-17",
+  "batchId": "GMRO_2026-10-17_C",
+  "origin": "GPT-Doug Clinical Trial Scout",
+  "reviewStatus": "PROPOSED_RESEARCH_EVIDENCE",
+  "sourceBoundary": "Selective evidence surveillance, not exhaustive global registry indexing. Direct ClinicalTrials.gov API/history reconciliation unavailable; mirrors identified as such. FDA approvals are not trial recruitment changes. No clinical guidance or patient-level records.",
+  "studies": [
+    {
+      "nct": "NCT05023980",
+      "name": "BRUIN CLL-313",
+      "cancer": "Previously untreated chronic lymphocytic leukemia or small lymphocytic lymphoma",
+      "molecularEligibility": "No known chromosome 17p deletion; del(17p) excluded",
+      "biomarker": "del(17p) negative or not known to be present (eligibility exclusion)",
+      "interventions": [
+        "Pirtobrutinib (Jaypirca)",
+        "Bendamustine plus rituximab"
+      ],
+      "phase": "3",
+      "sponsors": [
+        "Loxo Oncology, Inc.",
+        "Eli Lilly and Company"
+      ],
+      "institutions": [],
+      "geography": "Multinational randomized trial; site-level locations not independently reconciled",
+      "endpoints": [
+        "Independent-review progression-free survival (primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "status": "Active, not recruiting (secondary registry snapshot; not an Oct 2026 transition)",
+      "eventType": "US_REGULATORY_APPROVAL",
+      "eventDate": "2026-10-02",
+      "priority": "HIGH",
+      "finding": "FDA approved pirtobrutinib for previously untreated CLL/SLL without known 17p deletion. Randomized n=282. Median PFS not estimable vs 33.5 months; HR 0.20 (95% CI 0.11-0.37), p<0.0001. Overall survival immature.",
+      "limitations": "FDA approval is an indication-level regulatory event, not a new trial status transition.",
+      "sources": [
+        {
+          "id": "fda-bruin",
+          "uri": "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pirtobrutinib-previously-untreated-chronic-lymphocytic-leukemia-or-small-lymphocytic",
+          "class": "REGULATORY_RECORD",
+          "verified": "SOURCE_VERIFIED"
+        },
+        {
+          "id": "ctg-bruin",
+          "uri": "https://clinicaltrials.gov/study/NCT05023980",
+          "class": "CURATED_DATABASE_RECORD",
+          "verified": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "nct": "NCT05048797",
+      "name": "DESTINY-Lung04",
+      "cancer": "Advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "molecularEligibility": "Activating ERBB2/HER2 exon 19 or exon 20 mutation",
+      "biomarker": "ERBB2 activating exon 19 or 20 mutation",
+      "interventions": [
+        "Trastuzumab deruxtecan (T-DXd)",
+        "Pembrolizumab plus platinum/pemetrexed chemotherapy"
+      ],
+      "phase": "3",
+      "sponsors": [
+        "AstraZeneca",
+        "Daiichi Sankyo"
+      ],
+      "institutions": [
+        "Dana-Farber Cancer Institute"
+      ],
+      "geography": "Global Phase 3 multicenter study",
+      "endpoints": [
+        "Blinded independent central review PFS (primary)",
+        "Overall survival",
+        "Objective response rate",
+        "ILD/pneumonitis safety"
+      ],
+      "status": "Active, not recruiting (registry-derived; status transition not confirmed)",
+      "eventType": "PHASE3_POSITIVE_PFS_AND_SAFETY_DISCLOSURE",
+      "eventDate": "2026-09-14",
+      "priority": "HIGH",
+      "finding": "n=454; median PFS 14.3 vs 8.3 months (HR 0.63); response 70.0% vs 44.5%. In T-DXd arm 20.8% ILD/pneumonitis, including 4 fatal grade 5 events (1.8%). First-line indication investigational; OS interpretation immature.",
+      "limitations": "Preserve fatal pulmonary toxicity and do not infer first-line approval or proven overall-survival advantage.",
+      "sources": [
+        {
+          "id": "dfci-dlung",
+          "uri": "https://www.dana-farber.org/newsroom/news-releases/2026/phase-3-destiny-lung04-trial-shows-first-line-trastuzumab-deruxtecan-improves-progression-free-survival-in-her2-mutant-nsclc",
+          "class": "SOURCE_STATEMENT",
+          "verified": "SOURCE_VERIFIED"
+        },
+        {
+          "id": "az-dlung",
+          "uri": "https://www.astrazeneca-us.com/content/az-us/media/press-releases/2026/ENHERTU-fam-trastuzumab-deruxtecan-nxki-demonstrated-a-median-progression-free-survival-of-14-3-months-as-1st-line-therapy-in-patients-with-HER2-mutant-advanced-non-small-cell-lung-cancer-in-DESTINY-Lung04-Phase-III-trial.html",
+          "class": "SOURCE_STATEMENT",
+          "verified": "SOURCE_VERIFIED"
+        }
+      ]
+    },
+    {
+      "nct": "NCT05973773",
+      "name": "REZILIENT3",
+      "cancer": "Untreated locally advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "molecularEligibility": "EGFR exon 20 insertion mutation",
+      "biomarker": "EGFR exon 20 insertion",
+      "interventions": [
+        "Zipalertinib 100 mg twice daily plus platinum chemotherapy",
+        "Platinum chemotherapy alone"
+      ],
+      "phase": "3",
+      "sponsors": [
+        "Taiho Oncology, Inc.",
+        "Taiho Pharmaceutical Co., Ltd.",
+        "Cullinan Therapeutics"
+      ],
+      "institutions": [
+        "Memorial Sloan Kettering Cancer Center",
+        "Duke Health Singapore"
+      ],
+      "geography": "Global multicenter Phase 3 study",
+      "endpoints": [
+        "Progression-free survival (primary)",
+        "Overall survival",
+        "Objective response rate",
+        "Adverse events"
+      ],
+      "status": "Active, not recruiting (secondary registry snapshot; unconfirmed transition)",
+      "eventType": "PHASE3_POSITIVE_INTERIM_RESULTS",
+      "eventDate": "2026-09-14",
+      "priority": "HIGH",
+      "finding": "279 randomized after six-person safety lead-in. Median PFS 14.5 vs 8.5 months; HR 0.50 (95% CI 0.34-0.73), p=0.00015. ORR 65% vs 40.3%. Grade>=3 adverse events 87.1% vs 54.4%; OS immature.",
+      "limitations": "Data are interim sponsor-reported. Zipalertinib investigational, no regulatory approval claimed.",
+      "sources": [
+        {
+          "id": "taiho-rez",
+          "uri": "https://www.taiho.co.jp/en/release/2026/20260914.html",
+          "class": "SOURCE_STATEMENT",
+          "verified": "SOURCE_VERIFIED"
+        }
+      ]
+    },
+    {
+      "nct": "NCT06158841",
+      "name": "CERVINO",
+      "cancer": "Triple-class-exposed relapsed/refractory multiple myeloma",
+      "molecularEligibility": "Prior exposure to PI, IMiD and anti-CD38; no genomically mandated mutation stated",
+      "biomarker": "BCMA (therapeutic target; not a mandatory tumor-genetic eligibility mutation)",
+      "interventions": [
+        "Etentamig (ABBV-383), BCMA x CD3 bispecific",
+        "Investigator choice of available combinations"
+      ],
+      "phase": "3",
+      "sponsors": [
+        "AbbVie"
+      ],
+      "institutions": [
+        "Atrium Health Levine Cancer Institute"
+      ],
+      "geography": "Global, multicenter",
+      "endpoints": [
+        "Overall response rate (co-primary)",
+        "Progression-free survival (co-primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "status": "Recruitment status not independently reconciled",
+      "eventType": "PHASE3_POSITIVE_DUAL_PRIMARY_ENDPOINTS",
+      "eventDate": "2026-09-03",
+      "priority": "HIGH",
+      "finding": "n=393 in interim data; ORR 74.0% vs 45.7%; PFS HR 0.40 (95% CI 0.29-0.54), p<0.0001. OS prespecified efficacy boundary not crossed. Etentamig unapproved and investigational.",
+      "limitations": "Do not treat nominal OS p-value as success against prespecified statistical boundary.",
+      "sources": [
+        {
+          "id": "abbvie-cervino",
+          "uri": "https://news.abbvie.com/2026-09-03-AbbVie-Announces-Positive-Topline-Results-from-the-Phase-3-CERVINO-Trial-Showing-Etentamig-Significantly-Improved-Response-Rate-and-Progression-Free-Survival-in-Patients-with-Relapsed-Refractory-Multiple-Myeloma",
+          "class": "SOURCE_STATEMENT",
+          "verified": "SOURCE_VERIFIED"
+        }
+      ]
+    },
+    {
+      "nct": "NCT07569263",
+      "name": "IMPACT MET",
+      "cancer": "Brain metastases from solid primary cancers",
+      "molecularEligibility": "Tumor CD70 immunohistochemical expression >=5% of tumor cells at any intensity",
+      "biomarker": "CD70 protein expression IHC >=5%",
+      "interventions": [
+        "Autologous CXCR2 (IL-8 receptor)-modified CD70 CAR T cells (8R-70CAR)",
+        "Investigational CD70 immunohistochemistry assay"
+      ],
+      "phase": "1",
+      "sponsors": [
+        "University of Florida"
+      ],
+      "institutions": [
+        "UF Health, Gainesville, Florida"
+      ],
+      "geography": "United States; Gainesville, Florida; one currently recruiting site",
+      "endpoints": [
+        "28-day dose-limiting toxicity",
+        "Feasibility proportion receiving CAR-T infusion"
+      ],
+      "status": "Recruiting since Oct 16, 2026 (ClinicalTrials.gov-derived record-history mirror); formerly not yet recruiting",
+      "eventType": "RECRUITMENT_OPENED_AND_PROTOCOL_REVISED",
+      "eventDate": "2026-10-16",
+      "priority": "MODERATE",
+      "finding": "Phase 1, target enrollment 12. Not yet recruiting -> Recruiting on Oct 16; UF Health recruiting. Eligibility and interventions revised. Tissue CD70 IHC >=5% eligibility. No clinical outcomes posted.",
+      "limitations": "Source is a registry-history mirror; direct ClinicalTrials.gov history version not independently verified.",
+      "sources": [
+        {
+          "id": "mirror-impact",
+          "uri": "https://clinicaltrials.gg/study/NCT07569263",
+          "class": "CURATED_DATABASE_RECORD",
+          "verified": "SOURCE_VERIFIED"
+        },
+        {
+          "id": "ctg-impact",
+          "uri": "https://clinicaltrials.gov/study/NCT07569263",
+          "class": "CURATED_DATABASE_RECORD",
+          "verified": "UNVERIFIED"
+        }
+      ]
+    },
+    {
+      "nct": "NCT07822399",
+      "name": "MGC030 Phase 1",
+      "cancer": "Refractory advanced urothelial, colorectal, gastric/GEJ, esophageal and pancreatic carcinomas",
+      "molecularEligibility": "No target-specific molecular selection requirement publicly established",
+      "biomarker": "MGC030 antigen target undisclosed",
+      "interventions": [
+        "MGC030 antibody-drug conjugate with exatecan-based topoisomerase-I inhibitor payload"
+      ],
+      "phase": "1",
+      "sponsors": [
+        "MacroGenics, Inc."
+      ],
+      "institutions": [],
+      "geography": "Site geography not listed in last registry-derived snapshot",
+      "endpoints": [
+        "Dose-limiting toxicity and safety",
+        "Tolerability",
+        "Pharmacokinetics",
+        "Preliminary tumor response"
+      ],
+      "status": "Sponsor reports first participant dosed Oct 15; dated Sep 16 registry-derived snapshot still says Not yet recruiting. Reconciliation needed.",
+      "eventType": "FIRST_PATIENT_DOSED_REGISTRY_STATUS_DISCORDANCE",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE",
+      "finding": "MacroGenics reported first MGC030 participant dosed Oct 15. Registry-derived Sept 16 version says not yet recruiting, planned n=314 with no study sites listed. Drug targets undisclosed tumor antigen; no human efficacy data.",
+      "limitations": "Do not infer current recruitment eligibility from first-dose event; sponsor and registry statements have distinct timestamps.",
+      "sources": [
+        {
+          "id": "macrogenics-mgc",
+          "uri": "https://macrogenicsinc.gcs-web.com/news-releases/news-release-details/macrogenics-announces-first-patient-dosed-phase-1-study-mgc030",
+          "class": "SOURCE_STATEMENT",
+          "verified": "SOURCE_VERIFIED"
+        },
+        {
+          "id": "mirror-mgc",
+          "uri": "https://clinicaltrials.gg/study/NCT07822399",
+          "class": "CURATED_DATABASE_RECORD",
+          "verified": "SOURCE_VERIFIED"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "gmr:event:NCT05023980:US_REGULATORY_APPROVAL",
+      "type": "US_REGULATORY_APPROVAL",
+      "eventDate": "2026-10-02",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT05023980",
+      "nct": "NCT05023980",
+      "finding": "FDA approved pirtobrutinib for previously untreated CLL/SLL without known 17p deletion. Randomized n=282. Median PFS not estimable vs 33.5 months; HR 0.20 (95% CI 0.11-0.37), p<0.0001. Overall survival immature.",
+      "limitations": "FDA approval is an indication-level regulatory event, not a new trial status transition.",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05048797:PHASE3_POSITIVE_PFS_AND_SAFETY_DISCLOSURE",
+      "type": "PHASE3_POSITIVE_PFS_AND_SAFETY_DISCLOSURE",
+      "eventDate": "2026-09-14",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT05048797",
+      "nct": "NCT05048797",
+      "finding": "n=454; median PFS 14.3 vs 8.3 months (HR 0.63); response 70.0% vs 44.5%. In T-DXd arm 20.8% ILD/pneumonitis, including 4 fatal grade 5 events (1.8%). First-line indication investigational; OS interpretation immature.",
+      "limitations": "Preserve fatal pulmonary toxicity and do not infer first-line approval or proven overall-survival advantage.",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05973773:PHASE3_POSITIVE_INTERIM_RESULTS",
+      "type": "PHASE3_POSITIVE_INTERIM_RESULTS",
+      "eventDate": "2026-09-14",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT05973773",
+      "nct": "NCT05973773",
+      "finding": "279 randomized after six-person safety lead-in. Median PFS 14.5 vs 8.5 months; HR 0.50 (95% CI 0.34-0.73), p=0.00015. ORR 65% vs 40.3%. Grade>=3 adverse events 87.1% vs 54.4%; OS immature.",
+      "limitations": "Data are interim sponsor-reported. Zipalertinib investigational, no regulatory approval claimed.",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT06158841:PHASE3_POSITIVE_DUAL_PRIMARY_ENDPOINTS",
+      "type": "PHASE3_POSITIVE_DUAL_PRIMARY_ENDPOINTS",
+      "eventDate": "2026-09-03",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT06158841",
+      "nct": "NCT06158841",
+      "finding": "n=393 in interim data; ORR 74.0% vs 45.7%; PFS HR 0.40 (95% CI 0.29-0.54), p<0.0001. OS prespecified efficacy boundary not crossed. Etentamig unapproved and investigational.",
+      "limitations": "Do not treat nominal OS p-value as success against prespecified statistical boundary.",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07569263:RECRUITMENT_OPENED_AND_PROTOCOL_REVISED",
+      "type": "RECRUITMENT_OPENED_AND_PROTOCOL_REVISED",
+      "eventDate": "2026-10-16",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT07569263",
+      "nct": "NCT07569263",
+      "finding": "Phase 1, target enrollment 12. Not yet recruiting -> Recruiting on Oct 16; UF Health recruiting. Eligibility and interventions revised. Tissue CD70 IHC >=5% eligibility. No clinical outcomes posted.",
+      "limitations": "Source is a registry-history mirror; direct ClinicalTrials.gov history version not independently verified.",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07822399:FIRST_PATIENT_DOSED_REGISTRY_STATUS_DISCORDANCE",
+      "type": "FIRST_PATIENT_DOSED_REGISTRY_STATUS_DISCORDANCE",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT07822399",
+      "nct": "NCT07822399",
+      "finding": "MacroGenics reported first MGC030 participant dosed Oct 15. Registry-derived Sept 16 version says not yet recruiting, planned n=314 with no study sites listed. Drug targets undisclosed tumor antigen; no human efficacy data.",
+      "limitations": "Do not infer current recruitment eligibility from first-dose event; sponsor and registry statements have distinct timestamps.",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gmr:study:NCT05023980",
+      "type": "gmr.Study",
+      "title": "BRUIN CLL-313",
+      "registryId": "NCT05023980",
+      "phase": "3",
+      "cancer": "Previously untreated chronic lymphocytic leukemia or small lymphocytic lymphoma",
+      "molecularEligibility": "No known chromosome 17p deletion; del(17p) excluded",
+      "sponsors": [
+        "Loxo Oncology, Inc.",
+        "Eli Lilly and Company"
+      ],
+      "institutions": [],
+      "geography": "Multinational randomized trial; site-level locations not independently reconciled",
+      "endpoints": [
+        "Independent-review progression-free survival (primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "status": "Active, not recruiting (secondary registry snapshot; not an Oct 2026 transition)",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05023980",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05023980",
+      "status": "Active, not recruiting (secondary registry snapshot; not an Oct 2026 transition)",
+      "studyId": "gmr:study:NCT05023980",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT05023980",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Previously untreated chronic lymphocytic leukemia or small lymphocytic lymphoma",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT05023980",
+      "type": "gmr.Biomarker",
+      "label": "del(17p) negative or not known to be present (eligibility exclusion)",
+      "biologicalContext": "No known chromosome 17p deletion; del(17p) excluded",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05023980:pirtobrutinib-jaypirca",
+      "type": "gmr.Intervention",
+      "label": "Pirtobrutinib (Jaypirca)",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05023980:bendamustine-plus-rituximab",
+      "type": "gmr.Intervention",
+      "label": "Bendamustine plus rituximab",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:organization:loxo-oncology-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "Loxo Oncology, Inc.",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:organization:eli-lilly-and-company",
+      "type": "gmr.ResearchOrganization",
+      "name": "Eli Lilly and Company",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05023980",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "FDA approved pirtobrutinib for previously untreated CLL/SLL without known 17p deletion. Randomized n=282. Median PFS not estimable vs 33.5 months; HR 0.20 (95% CI 0.11-0.37), p<0.0001. Overall survival immature.",
+      "evidenceClass": "REGULATORY_RECORD",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "FDA approval is an indication-level regulatory event, not a new trial status transition.",
+      "sourceRefs": [
+        "gmr:provenance:fda-bruin",
+        "gmr:provenance:ctg-bruin"
+      ]
+    },
+    {
+      "id": "gmr:provenance:fda-bruin",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "fda-bruin",
+      "sourceUri": "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pirtobrutinib-previously-untreated-chronic-lymphocytic-leukemia-or-small-lymphocytic",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "REGULATORY_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:ctg-bruin",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "ctg-bruin",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT05023980",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "UNVERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:study:NCT05048797",
+      "type": "gmr.Study",
+      "title": "DESTINY-Lung04",
+      "registryId": "NCT05048797",
+      "phase": "3",
+      "cancer": "Advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "molecularEligibility": "Activating ERBB2/HER2 exon 19 or exon 20 mutation",
+      "sponsors": [
+        "AstraZeneca",
+        "Daiichi Sankyo"
+      ],
+      "institutions": [
+        "Dana-Farber Cancer Institute"
+      ],
+      "geography": "Global Phase 3 multicenter study",
+      "endpoints": [
+        "Blinded independent central review PFS (primary)",
+        "Overall survival",
+        "Objective response rate",
+        "ILD/pneumonitis safety"
+      ],
+      "status": "Active, not recruiting (registry-derived; status transition not confirmed)",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05048797",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05048797",
+      "status": "Active, not recruiting (registry-derived; status transition not confirmed)",
+      "studyId": "gmr:study:NCT05048797",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT05048797",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT05048797",
+      "type": "gmr.Biomarker",
+      "label": "ERBB2 activating exon 19 or 20 mutation",
+      "biologicalContext": "Activating ERBB2/HER2 exon 19 or exon 20 mutation",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05048797:trastuzumab-deruxtecan-t-dxd",
+      "type": "gmr.Intervention",
+      "label": "Trastuzumab deruxtecan (T-DXd)",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05048797:pembrolizumab-plus-platinum-pemetrexed-chemotherapy",
+      "type": "gmr.Intervention",
+      "label": "Pembrolizumab plus platinum/pemetrexed chemotherapy",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:organization:astrazeneca",
+      "type": "gmr.ResearchOrganization",
+      "name": "AstraZeneca",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:organization:daiichi-sankyo",
+      "type": "gmr.ResearchOrganization",
+      "name": "Daiichi Sankyo",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:organization:dana-farber-cancer-institute",
+      "type": "gmr.ResearchOrganization",
+      "name": "Dana-Farber Cancer Institute",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05048797",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "n=454; median PFS 14.3 vs 8.3 months (HR 0.63); response 70.0% vs 44.5%. In T-DXd arm 20.8% ILD/pneumonitis, including 4 fatal grade 5 events (1.8%). First-line indication investigational; OS interpretation immature.",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "Preserve fatal pulmonary toxicity and do not infer first-line approval or proven overall-survival advantage.",
+      "sourceRefs": [
+        "gmr:provenance:dfci-dlung",
+        "gmr:provenance:az-dlung"
+      ]
+    },
+    {
+      "id": "gmr:provenance:dfci-dlung",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "dfci-dlung",
+      "sourceUri": "https://www.dana-farber.org/newsroom/news-releases/2026/phase-3-destiny-lung04-trial-shows-first-line-trastuzumab-deruxtecan-improves-progression-free-survival-in-her2-mutant-nsclc",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:az-dlung",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "az-dlung",
+      "sourceUri": "https://www.astrazeneca-us.com/content/az-us/media/press-releases/2026/ENHERTU-fam-trastuzumab-deruxtecan-nxki-demonstrated-a-median-progression-free-survival-of-14-3-months-as-1st-line-therapy-in-patients-with-HER2-mutant-advanced-non-small-cell-lung-cancer-in-DESTINY-Lung04-Phase-III-trial.html",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:study:NCT05973773",
+      "type": "gmr.Study",
+      "title": "REZILIENT3",
+      "registryId": "NCT05973773",
+      "phase": "3",
+      "cancer": "Untreated locally advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "molecularEligibility": "EGFR exon 20 insertion mutation",
+      "sponsors": [
+        "Taiho Oncology, Inc.",
+        "Taiho Pharmaceutical Co., Ltd.",
+        "Cullinan Therapeutics"
+      ],
+      "institutions": [
+        "Memorial Sloan Kettering Cancer Center",
+        "Duke Health Singapore"
+      ],
+      "geography": "Global multicenter Phase 3 study",
+      "endpoints": [
+        "Progression-free survival (primary)",
+        "Overall survival",
+        "Objective response rate",
+        "Adverse events"
+      ],
+      "status": "Active, not recruiting (secondary registry snapshot; unconfirmed transition)",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05973773",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05973773",
+      "status": "Active, not recruiting (secondary registry snapshot; unconfirmed transition)",
+      "studyId": "gmr:study:NCT05973773",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT05973773",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Untreated locally advanced/metastatic nonsquamous non-small cell lung carcinoma",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT05973773",
+      "type": "gmr.Biomarker",
+      "label": "EGFR exon 20 insertion",
+      "biologicalContext": "EGFR exon 20 insertion mutation",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05973773:zipalertinib-100-mg-twice-daily-plus-platinum-chemotherapy",
+      "type": "gmr.Intervention",
+      "label": "Zipalertinib 100 mg twice daily plus platinum chemotherapy",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT05973773:platinum-chemotherapy-alone",
+      "type": "gmr.Intervention",
+      "label": "Platinum chemotherapy alone",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:organization:taiho-oncology-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "Taiho Oncology, Inc.",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:organization:taiho-pharmaceutical-co-ltd",
+      "type": "gmr.ResearchOrganization",
+      "name": "Taiho Pharmaceutical Co., Ltd.",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:organization:cullinan-therapeutics",
+      "type": "gmr.ResearchOrganization",
+      "name": "Cullinan Therapeutics",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:organization:memorial-sloan-kettering-cancer-center",
+      "type": "gmr.ResearchOrganization",
+      "name": "Memorial Sloan Kettering Cancer Center",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:organization:duke-health-singapore",
+      "type": "gmr.ResearchOrganization",
+      "name": "Duke Health Singapore",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05973773",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "279 randomized after six-person safety lead-in. Median PFS 14.5 vs 8.5 months; HR 0.50 (95% CI 0.34-0.73), p=0.00015. ORR 65% vs 40.3%. Grade>=3 adverse events 87.1% vs 54.4%; OS immature.",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "Data are interim sponsor-reported. Zipalertinib investigational, no regulatory approval claimed.",
+      "sourceRefs": [
+        "gmr:provenance:taiho-rez"
+      ]
+    },
+    {
+      "id": "gmr:provenance:taiho-rez",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "taiho-rez",
+      "sourceUri": "https://www.taiho.co.jp/en/release/2026/20260914.html",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:study:NCT06158841",
+      "type": "gmr.Study",
+      "title": "CERVINO",
+      "registryId": "NCT06158841",
+      "phase": "3",
+      "cancer": "Triple-class-exposed relapsed/refractory multiple myeloma",
+      "molecularEligibility": "Prior exposure to PI, IMiD and anti-CD38; no genomically mandated mutation stated",
+      "sponsors": [
+        "AbbVie"
+      ],
+      "institutions": [
+        "Atrium Health Levine Cancer Institute"
+      ],
+      "geography": "Global, multicenter",
+      "endpoints": [
+        "Overall response rate (co-primary)",
+        "Progression-free survival (co-primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "status": "Recruitment status not independently reconciled",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT06158841",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT06158841",
+      "status": "Recruitment status not independently reconciled",
+      "studyId": "gmr:study:NCT06158841",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT06158841",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Triple-class-exposed relapsed/refractory multiple myeloma",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT06158841",
+      "type": "gmr.Biomarker",
+      "label": "BCMA (therapeutic target; not a mandatory tumor-genetic eligibility mutation)",
+      "biologicalContext": "Prior exposure to PI, IMiD and anti-CD38; no genomically mandated mutation stated",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT06158841:etentamig-abbv-383-bcma-x-cd3-bispecific",
+      "type": "gmr.Intervention",
+      "label": "Etentamig (ABBV-383), BCMA x CD3 bispecific",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT06158841:investigator-choice-of-available-combinations",
+      "type": "gmr.Intervention",
+      "label": "Investigator choice of available combinations",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:organization:abbvie",
+      "type": "gmr.ResearchOrganization",
+      "name": "AbbVie",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:organization:atrium-health-levine-cancer-institute",
+      "type": "gmr.ResearchOrganization",
+      "name": "Atrium Health Levine Cancer Institute",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT06158841",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "n=393 in interim data; ORR 74.0% vs 45.7%; PFS HR 0.40 (95% CI 0.29-0.54), p<0.0001. OS prespecified efficacy boundary not crossed. Etentamig unapproved and investigational.",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "Do not treat nominal OS p-value as success against prespecified statistical boundary.",
+      "sourceRefs": [
+        "gmr:provenance:abbvie-cervino"
+      ]
+    },
+    {
+      "id": "gmr:provenance:abbvie-cervino",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "abbvie-cervino",
+      "sourceUri": "https://news.abbvie.com/2026-09-03-AbbVie-Announces-Positive-Topline-Results-from-the-Phase-3-CERVINO-Trial-Showing-Etentamig-Significantly-Improved-Response-Rate-and-Progression-Free-Survival-in-Patients-with-Relapsed-Refractory-Multiple-Myeloma",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:study:NCT07569263",
+      "type": "gmr.Study",
+      "title": "IMPACT MET",
+      "registryId": "NCT07569263",
+      "phase": "1",
+      "cancer": "Brain metastases from solid primary cancers",
+      "molecularEligibility": "Tumor CD70 immunohistochemical expression >=5% of tumor cells at any intensity",
+      "sponsors": [
+        "University of Florida"
+      ],
+      "institutions": [
+        "UF Health, Gainesville, Florida"
+      ],
+      "geography": "United States; Gainesville, Florida; one currently recruiting site",
+      "endpoints": [
+        "28-day dose-limiting toxicity",
+        "Feasibility proportion receiving CAR-T infusion"
+      ],
+      "status": "Recruiting since Oct 16, 2026 (ClinicalTrials.gov-derived record-history mirror); formerly not yet recruiting",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT07569263",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07569263",
+      "status": "Recruiting since Oct 16, 2026 (ClinicalTrials.gov-derived record-history mirror); formerly not yet recruiting",
+      "studyId": "gmr:study:NCT07569263",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT07569263",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Brain metastases from solid primary cancers",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT07569263",
+      "type": "gmr.Biomarker",
+      "label": "CD70 protein expression IHC >=5%",
+      "biologicalContext": "Tumor CD70 immunohistochemical expression >=5% of tumor cells at any intensity",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT07569263:autologous-cxcr2-il-8-receptor-modified-cd70-car-t-cells-8r-70car",
+      "type": "gmr.Intervention",
+      "label": "Autologous CXCR2 (IL-8 receptor)-modified CD70 CAR T cells (8R-70CAR)",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT07569263:investigational-cd70-immunohistochemistry-assay",
+      "type": "gmr.Intervention",
+      "label": "Investigational CD70 immunohistochemistry assay",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:organization:university-of-florida",
+      "type": "gmr.ResearchOrganization",
+      "name": "University of Florida",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:organization:uf-health-gainesville-florida",
+      "type": "gmr.ResearchOrganization",
+      "name": "UF Health, Gainesville, Florida",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07569263",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Phase 1, target enrollment 12. Not yet recruiting -> Recruiting on Oct 16; UF Health recruiting. Eligibility and interventions revised. Tissue CD70 IHC >=5% eligibility. No clinical outcomes posted.",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "Source is a registry-history mirror; direct ClinicalTrials.gov history version not independently verified.",
+      "sourceRefs": [
+        "gmr:provenance:mirror-impact",
+        "gmr:provenance:ctg-impact"
+      ]
+    },
+    {
+      "id": "gmr:provenance:mirror-impact",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "mirror-impact",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07569263",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:ctg-impact",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "ctg-impact",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07569263",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "UNVERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:study:NCT07822399",
+      "type": "gmr.Study",
+      "title": "MGC030 Phase 1",
+      "registryId": "NCT07822399",
+      "phase": "1",
+      "cancer": "Refractory advanced urothelial, colorectal, gastric/GEJ, esophageal and pancreatic carcinomas",
+      "molecularEligibility": "No target-specific molecular selection requirement publicly established",
+      "sponsors": [
+        "MacroGenics, Inc."
+      ],
+      "institutions": [],
+      "geography": "Site geography not listed in last registry-derived snapshot",
+      "endpoints": [
+        "Dose-limiting toxicity and safety",
+        "Tolerability",
+        "Pharmacokinetics",
+        "Preliminary tumor response"
+      ],
+      "status": "Sponsor reports first participant dosed Oct 15; dated Sep 16 registry-derived snapshot still says Not yet recruiting. Reconciliation needed.",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT07822399",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07822399",
+      "status": "Sponsor reports first participant dosed Oct 15; dated Sep 16 registry-derived snapshot still says Not yet recruiting. Reconciliation needed.",
+      "studyId": "gmr:study:NCT07822399",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:disease:NCT07822399",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Refractory advanced urothelial, colorectal, gastric/GEJ, esophageal and pancreatic carcinomas",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:NCT07822399",
+      "type": "gmr.Biomarker",
+      "label": "MGC030 antigen target undisclosed",
+      "biologicalContext": "No target-specific molecular selection requirement publicly established",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:intervention:NCT07822399:mgc030-antibody-drug-conjugate-with-exatecan-based-topoisomerase-i-inh",
+      "type": "gmr.Intervention",
+      "label": "MGC030 antibody-drug conjugate with exatecan-based topoisomerase-I inhibitor payload",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:organization:macrogenics-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "MacroGenics, Inc.",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07822399",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "MacroGenics reported first MGC030 participant dosed Oct 15. Registry-derived Sept 16 version says not yet recruiting, planned n=314 with no study sites listed. Drug targets undisclosed tumor antigen; no human efficacy data.",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "supportLevel": "SOURCE_REPORTED",
+      "uncertainty": "Do not infer current recruitment eligibility from first-dose event; sponsor and registry statements have distinct timestamps.",
+      "sourceRefs": [
+        "gmr:provenance:macrogenics-mgc",
+        "gmr:provenance:mirror-mgc"
+      ]
+    },
+    {
+      "id": "gmr:provenance:macrogenics-mgc",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "macrogenics-mgc",
+      "sourceUri": "https://macrogenicsinc.gcs-web.com/news-releases/news-release-details/macrogenics-announces-first-patient-dosed-phase-1-study-mgc030",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:mirror-mgc",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "mirror-mgc",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07822399",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    }
+  ],
+  "links": [
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05023980",
+      "to": "gmr:study:NCT05023980"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:disease:NCT05023980"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:biomarker:NCT05023980"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:intervention:NCT05023980:pirtobrutinib-jaypirca"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:intervention:NCT05023980:bendamustine-plus-rituximab"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:assertion:NCT05023980"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05023980",
+      "to": "gmr:assertion:NCT05023980"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:provenance:fda-bruin"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05023980",
+      "to": "gmr:provenance:fda-bruin"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05023980",
+      "to": "gmr:provenance:fda-bruin"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05023980",
+      "to": "gmr:provenance:ctg-bruin"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05023980",
+      "to": "gmr:provenance:ctg-bruin"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05023980",
+      "to": "gmr:provenance:ctg-bruin"
+    },
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05048797",
+      "to": "gmr:study:NCT05048797"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:disease:NCT05048797"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:biomarker:NCT05048797"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:intervention:NCT05048797:trastuzumab-deruxtecan-t-dxd"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:intervention:NCT05048797:pembrolizumab-plus-platinum-pemetrexed-chemotherapy"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:assertion:NCT05048797"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05048797",
+      "to": "gmr:assertion:NCT05048797"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:provenance:dfci-dlung"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05048797",
+      "to": "gmr:provenance:dfci-dlung"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05048797",
+      "to": "gmr:provenance:dfci-dlung"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05048797",
+      "to": "gmr:provenance:az-dlung"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05048797",
+      "to": "gmr:provenance:az-dlung"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05048797",
+      "to": "gmr:provenance:az-dlung"
+    },
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05973773",
+      "to": "gmr:study:NCT05973773"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:disease:NCT05973773"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:biomarker:NCT05973773"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:intervention:NCT05973773:zipalertinib-100-mg-twice-daily-plus-platinum-chemotherapy"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:intervention:NCT05973773:platinum-chemotherapy-alone"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:assertion:NCT05973773"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05973773",
+      "to": "gmr:assertion:NCT05973773"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05973773",
+      "to": "gmr:provenance:taiho-rez"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05973773",
+      "to": "gmr:provenance:taiho-rez"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05973773",
+      "to": "gmr:provenance:taiho-rez"
+    },
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT06158841",
+      "to": "gmr:study:NCT06158841"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:disease:NCT06158841"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:biomarker:NCT06158841"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:intervention:NCT06158841:etentamig-abbv-383-bcma-x-cd3-bispecific"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:intervention:NCT06158841:investigator-choice-of-available-combinations"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:assertion:NCT06158841"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT06158841",
+      "to": "gmr:assertion:NCT06158841"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT06158841",
+      "to": "gmr:provenance:abbvie-cervino"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT06158841",
+      "to": "gmr:provenance:abbvie-cervino"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT06158841",
+      "to": "gmr:provenance:abbvie-cervino"
+    },
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT07569263",
+      "to": "gmr:study:NCT07569263"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:disease:NCT07569263"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:biomarker:NCT07569263"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:intervention:NCT07569263:autologous-cxcr2-il-8-receptor-modified-cd70-car-t-cells-8r-70car"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:intervention:NCT07569263:investigational-cd70-immunohistochemistry-assay"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:assertion:NCT07569263"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07569263",
+      "to": "gmr:assertion:NCT07569263"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:provenance:mirror-impact"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07569263",
+      "to": "gmr:provenance:mirror-impact"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07569263",
+      "to": "gmr:provenance:mirror-impact"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07569263",
+      "to": "gmr:provenance:ctg-impact"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07569263",
+      "to": "gmr:provenance:ctg-impact"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07569263",
+      "to": "gmr:provenance:ctg-impact"
+    },
+    {
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT07822399",
+      "to": "gmr:study:NCT07822399"
+    },
+    {
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:disease:NCT07822399"
+    },
+    {
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:biomarker:NCT07822399"
+    },
+    {
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:intervention:NCT07822399:mgc030-antibody-drug-conjugate-with-exatecan-based-topoisomerase-i-inh"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:assertion:NCT07822399"
+    },
+    {
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07822399",
+      "to": "gmr:assertion:NCT07822399"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:provenance:macrogenics-mgc"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07822399",
+      "to": "gmr:provenance:macrogenics-mgc"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07822399",
+      "to": "gmr:provenance:macrogenics-mgc"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07822399",
+      "to": "gmr:provenance:mirror-mgc"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07822399",
+      "to": "gmr:provenance:mirror-mgc"
+    },
+    {
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07822399",
+      "to": "gmr:provenance:mirror-mgc"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "gmr:provenance:fda-bruin",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "fda-bruin",
+      "sourceUri": "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-pirtobrutinib-previously-untreated-chronic-lymphocytic-leukemia-or-small-lymphocytic",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "REGULATORY_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:ctg-bruin",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "ctg-bruin",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT05023980",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "UNVERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:dfci-dlung",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "dfci-dlung",
+      "sourceUri": "https://www.dana-farber.org/newsroom/news-releases/2026/phase-3-destiny-lung04-trial-shows-first-line-trastuzumab-deruxtecan-improves-progression-free-survival-in-her2-mutant-nsclc",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:az-dlung",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "az-dlung",
+      "sourceUri": "https://www.astrazeneca-us.com/content/az-us/media/press-releases/2026/ENHERTU-fam-trastuzumab-deruxtecan-nxki-demonstrated-a-median-progression-free-survival-of-14-3-months-as-1st-line-therapy-in-patients-with-HER2-mutant-advanced-non-small-cell-lung-cancer-in-DESTINY-Lung04-Phase-III-trial.html",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:taiho-rez",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "taiho-rez",
+      "sourceUri": "https://www.taiho.co.jp/en/release/2026/20260914.html",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:abbvie-cervino",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "abbvie-cervino",
+      "sourceUri": "https://news.abbvie.com/2026-09-03-AbbVie-Announces-Positive-Topline-Results-from-the-Phase-3-CERVINO-Trial-Showing-Etentamig-Significantly-Improved-Response-Rate-and-Progression-Free-Survival-in-Patients-with-Relapsed-Refractory-Multiple-Myeloma",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:mirror-impact",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "mirror-impact",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07569263",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:ctg-impact",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "ctg-impact",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07569263",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "UNVERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:macrogenics-mgc",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "macrogenics-mgc",
+      "sourceUri": "https://macrogenicsinc.gcs-web.com/news-releases/news-release-details/macrogenics-announces-first-patient-dosed-phase-1-study-mgc030",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "SOURCE_STATEMENT",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    },
+    {
+      "id": "gmr:provenance:mirror-mgc",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "mirror-mgc",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07822399",
+      "retrievedAt": "2026-10-17T22:22:17Z",
+      "verificationState": "SOURCE_VERIFIED",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "transformation": "Curated verbatim-fact normalization; raw source available by URI. Not an official registry API snapshot."
+    }
+  ],
+  "validation": {
+    "trialIdsUnique": true,
+    "nodeIdsUnique": true,
+    "allLinksResolve": true,
+    "allEventsHaveProvenance": true,
+    "counts": {
+      "studies": 6,
+      "events": 6,
+      "nodes": 66,
+      "links": 71,
+      "provenance": 10
+    }
+  }
+}
