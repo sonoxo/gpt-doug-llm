@@ -1,0 +1,1459 @@
+{
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "schemaVersion": "1.0.0",
+  "batchDate": "2026-10-18",
+  "batchId": "GMRO_2026-10-18_SCOUT_12_ACTION1_TARGETD_HER2",
+  "origin": "GPT-Doug Clinical Trial Scout",
+  "reviewStatus": "PROPOSED_RESEARCH_EVIDENCE",
+  "sourceBoundary": "Targeted global oncology surveillance via sponsor primary announcements, FDA primary regulatory record, ClinicalTrials.gov indexed records and dated CTG/CTIS mirrors. No exhaustive worldwide reconciliation. Current CTG API unavailable; treat mirror-only protocol/status transitions as provisional. Identified on October 18 but source events dated Oct 5-15. No medical treatment or individual matching claims.",
+  "studies": [
+    {
+      "nct": "NCT05477576",
+      "name": "ACTION-1 — RYZ101 following Lu-177-based radiopharmaceutical therapy",
+      "identifiers": {
+        "NCT": "NCT05477576",
+        "sponsorProtocol": "RYZ101-301",
+        "EU_CT": "2023-509334-19-00",
+        "EudraCT": "2022-000507-12"
+      },
+      "cancer": [
+        "Well-differentiated gastroenteropancreatic neuroendocrine tumors"
+      ],
+      "molecularEligibility": "Somatostatin receptor-positive (SSTR+) advanced inoperable GEP-NET; prior progression after 177Lu-labeled somatostatin analog therapy; SSTR is an expression/imaging biomarker, not a genomic mutation.",
+      "biomarkers": [
+        "Somatostatin receptor-positive (SSTR+)"
+      ],
+      "interventions": [
+        "RYZ101 (actinium-225 DOTATATE)",
+        "Investigator-selected everolimus, sunitinib or long-acting somatostatin analogue"
+      ],
+      "phase": "3 (Phase 1b/3 protocol)",
+      "sponsors": [
+        "RayzeBio, Inc. (Bristol Myers Squibb company)"
+      ],
+      "institutions": [
+        "Sunnybrook Health Sciences Centre / University of Toronto (principal investigator institution)"
+      ],
+      "geography": [
+        "Multinational: eight countries, 54 sites (registry-derived)",
+        "EU/EEA: four countries (CTIS-derived)"
+      ],
+      "endpoints": [
+        "Progression-free survival by blinded independent central review (primary, Phase 3)",
+        "Overall survival follow-up",
+        "Phase 1b safety, tolerability and recommended Phase 3 dose"
+      ],
+      "status": "ACTIVE_NOT_RECRUITING",
+      "previousStatus": "RECRUITING (mirror history)",
+      "statusAsOf": "2026-10-05",
+      "enrollment": {
+        "actual": 343,
+        "previousEstimated": 338
+      },
+      "sourceRefs": [
+        "action-sponsor",
+        "action-registry",
+        "action-ctis",
+        "action-history"
+      ],
+      "limitations": "Primary numerical PFS data not disclosed; FDA authorization not granted. Exact site statuses and transition date require official registry history reconciliation."
+    },
+    {
+      "nct": "NCT07020221",
+      "name": "TARGET-D 101 — VS-7375 in KRAS G12D-mutant solid tumors",
+      "identifiers": {
+        "NCT": "NCT07020221",
+        "sponsorProtocol": "VS-7375-101"
+      },
+      "cancer": [
+        "Metastatic pancreatic ductal adenocarcinoma",
+        "Advanced non-small-cell lung cancer",
+        "Metastatic colorectal adenocarcinoma",
+        "Other advanced KRAS G12D-mutated solid tumors"
+      ],
+      "molecularEligibility": "Documented KRAS G12D mutation in advanced unresectable or metastatic solid tumors; RECIST-measurable disease; ECOG performance status 0-1 and protocol-specific prior-treatment and CNS criteria.",
+      "biomarkers": [
+        "KRAS p.G12D mutation",
+        "Circulating tumor DNA KRAS G12D VAF (exploratory)"
+      ],
+      "interventions": [
+        "VS-7375 oral KRAS G12D ON/OFF inhibitor",
+        "VS-7375 plus cetuximab",
+        "VS-7375 plus carboplatin, pemetrexed and pembrolizumab",
+        "VS-7375 plus gemcitabine/nab-paclitaxel"
+      ],
+      "phase": "1/2",
+      "sponsors": [
+        "Verastem, Inc."
+      ],
+      "institutions": [
+        "NYU Langone Health / Perlmutter Cancer Center",
+        "University of Texas MD Anderson Cancer Center",
+        "Cedars-Sinai Medical Center",
+        "Johns Hopkins University",
+        "Macquarie University (Sydney, mirror)"
+      ],
+      "geography": [
+        "United States",
+        "Australia"
+      ],
+      "endpoints": [
+        "Dose-limiting toxicities, safety, tolerability, maximum tolerated/feasible dose",
+        "Objective response rate by RECIST v1.1",
+        "Duration of response, disease control, progression-free survival",
+        "Exploratory circulating tumor DNA response"
+      ],
+      "status": "RECRUITING",
+      "previousStatus": null,
+      "statusAsOf": "2026-10-15 (registry-derived mirror)",
+      "enrollment": {
+        "estimatedCurrentProvisional": 616,
+        "previousEstimated": 295
+      },
+      "sourceRefs": [
+        "target-sponsor",
+        "target-registry",
+        "target-history"
+      ],
+      "limitations": "Sponsor data are early nonrandomized cohorts. The Oct 15 enrollment expansion is mirror-derived; official CTG search excerpt still reflects Apr 22 enrollment of 295. No Phase 3 study activation is established."
+    },
+    {
+      "nct": "NCT05132582",
+      "name": "HER2CLIMB-05 — tucatinib maintenance in HER2-positive metastatic breast cancer",
+      "identifiers": {
+        "NCT": "NCT05132582",
+        "sponsorProtocol": "SGNTUC-028",
+        "alias": "C4251007",
+        "EU_CT": "2023-503826-37-00"
+      },
+      "cancer": [
+        "HER2-positive unresectable locally advanced or metastatic breast cancer"
+      ],
+      "molecularEligibility": "HER2-positive tumor after 4-8 cycles of trastuzumab, pertuzumab and taxane induction without progression; HER2 positivity is a receptor-based tumor marker, not necessarily an ERBB2 point mutation.",
+      "biomarkers": [
+        "HER2-positive by accepted testing"
+      ],
+      "interventions": [
+        "Tucatinib with trastuzumab and pertuzumab (maintenance)",
+        "Placebo with trastuzumab and pertuzumab"
+      ],
+      "phase": "3",
+      "sponsors": [
+        "Seagen Inc. (Pfizer)"
+      ],
+      "institutions": [
+        "Multinational study; individual institution list not independently reconciled"
+      ],
+      "geography": [
+        "Multinational; site-level country reconciliation pending"
+      ],
+      "endpoints": [
+        "Investigator-assessed progression-free survival (primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "status": "ACTIVE_NOT_RECRUITING",
+      "previousStatus": null,
+      "statusAsOf": "2026-07-22 (no October status change established)",
+      "enrollment": {
+        "actual": 654
+      },
+      "sourceRefs": [
+        "her2-fda",
+        "her2-registry"
+      ],
+      "limitations": "New event is US regulatory authorization on Oct 7; not an October recruitment or phase transition. Overall survival immature at PFS analysis. Different EU process was already separately tracked."
+    }
+  ],
+  "events": [
+    {
+      "id": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "type": "PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE",
+      "eventDate": "2026-10-12",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT05477576",
+      "nct": "NCT05477576",
+      "finding": "Bristol Myers Squibb announced statistically significant, clinically meaningful improvement in BICR progression-free survival for RYZ101 versus investigator-selected SoC in SSTR+ GEP-NETs after prior 177Lu therapy.",
+      "limitations": "No numerical PFS effect size, confidence interval, detailed safety dataset or mature overall-survival results released; investigational product not yet approved.",
+      "researchAction": "Update alpha-emitting radiopharmaceutical evidence tier; track detailed presentation, OS and regulatory review.",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "type": "RECRUITMENT_CLOSED",
+      "eventDate": "2026-10-05",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT05477576",
+      "nct": "NCT05477576",
+      "finding": "ClinicalTrials.gov-derived history reports Recruiting to Active, not recruiting and estimated 338 to actual 343 participants, posted October 5.",
+      "limitations": "Transition established through registry-derived mirror rather than a direct ClinicalTrials.gov version download; do not activate recruitment matching.",
+      "researchAction": "Disable new-participant matching for ACTION-1 and require current site confirmation.",
+      "sourceRefs": [
+        "gmr:provenance:action-history",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "type": "EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA",
+      "eventDate": "2026-10-14",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT07020221",
+      "nct": "NCT07020221",
+      "finding": "Verastem reported 900 mg VS-7375 monotherapy confirmed ORR 50% (4/8) in second-line PDAC and 41% (9/22) in second-or-later-line PDAC; at 600 mg, confirmed ORR 43% (10/23) in previously treated NSCLC. In 12 evaluable KRAS G12D PDAC ctDNA-positive participants, 7/12 had undetectable KRAS G12D ctDNA by C3D1.",
+      "limitations": "Small uncontrolled sponsor-reported cohorts; ctDNA is exploratory and not a validated survival surrogate; there is no Phase 3 efficacy result or approval.",
+      "researchAction": "Add mutation-specific cohort estimates with denominator and dose; keep nonrandomized evidence tier and experimental status.",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "type": "PROTOCOL_ENROLLMENT_EXPANSION",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT07020221",
+      "nct": "NCT07020221",
+      "finding": "Registry-derived October 15 version records planned enrollment increased from 295 to 616 and revised eligibility, outcomes and interventions; Macquarie University Sydney site added.",
+      "limitations": "Primary registry accessible indexed excerpt was dated April 22 and still displayed 295; direct current ClinicalTrials.gov version-history/API reconciliation unavailable. This is not a phase transition.",
+      "researchAction": "Version-control amended registry details; flag planned enrollment as provisional and reconfirm molecular criteria for patient matching.",
+      "sourceRefs": [
+        "gmr:provenance:target-history",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "type": "US_FDA_APPROVAL_NEW_INDICATION",
+      "eventDate": "2026-10-07",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT05132582",
+      "nct": "NCT05132582",
+      "finding": "FDA approved tucatinib with trastuzumab and pertuzumab following induction for adults with unresectable or metastatic HER2-positive breast cancer. In 654-patient HER2CLIMB-05, median PFS 24.9 vs 16.3 months; HR 0.64 (95% CI 0.51-0.80), p<0.0001.",
+      "limitations": "US approval only; no implication of another jurisdiction's authorization. OS data immature and study not currently recruiting.",
+      "researchAction": "Add US indication-level authorization distinct from previously tracked EU CHMP recommendation; retain biomarker, prior-treatment and OS caveats.",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gmr:provenance:action-sponsor",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "action-sponsor",
+      "sourceUri": "https://news.bms.com/news/details/2026/Bristol-Myers-Squibb-Announces-Positive-Topline-Results-from-the-Interim-Analysis-of-Phase-3-ACTION-1-for-RYZ101-RayzeBios-Radiopharmaceutical-Therapy-in-Patients-with-GEP-NETs/default.aspx",
+      "evidenceClass": "SPONSOR_PRIMARY_DISCLOSURE",
+      "publicationDate": "2026-10-12",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Planned Phase 3 interim PFS endpoint success; no numerical HR/PFS reported",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:action-registry",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "action-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT05477576",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY",
+      "publicationDate": "2026-10-05",
+      "verificationState": "INDEXED_ONLY",
+      "scope": "NCT identifier and sponsor-submitted metadata; direct API was inaccessible",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:action-ctis",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "action-ctis",
+      "sourceUri": "https://www.ctis.eu/trial/2023-509334-19-00",
+      "evidenceClass": "CTIS_DERIVED_MIRROR",
+      "publicationDate": null,
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "EU CT and EudraCT cross-identifiers; EU recruitment ended",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:action-history",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "action-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT05477576",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-05",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Recruitment closed, actual enrollment 343, 54 study sites in eight countries; historical transition requires official API version check",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:target-sponsor",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "target-sponsor",
+      "sourceUri": "https://verastem.gcs-web.com/news-releases/news-release-details/vs-7375-demonstrates-robust-anti-tumor-activity-across-advanced",
+      "evidenceClass": "SPONSOR_PRIMARY_DISCLOSURE",
+      "publicationDate": "2026-10-14",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "TARGET-D 101 preliminary single-arm October 7 response and ctDNA findings; planned Phase 3 design, not activation",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:target-registry",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "target-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07020221",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY",
+      "publicationDate": "2026-04-22",
+      "verificationState": "INDEXED_OLDER_SNAPSHOT",
+      "scope": "NCT, molecular criteria, treatment arms, endpoints, institution contacts; indexed record is older than dated mirror",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:target-history",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "target-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07020221",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-15",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Protocol and enrollment 295 to 616 and Sydney site addition; direct current primary API still unverified",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:her2-fda",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "her2-fda",
+      "sourceUri": "https://www.fda.gov/drugs/resources-information-approved-drugs/fda-approves-tucatinib-trastuzumab-and-pertuzumab-maintenance-treatment-her2-positive-breast-cancer",
+      "evidenceClass": "FDA_PRIMARY_REGULATORY_RECORD",
+      "publicationDate": "2026-10-07",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "US approval and efficacy in HER2CLIMB-05; PFS HR 0.64, immature OS",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:her2-registry",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "her2-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT05132582",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY",
+      "publicationDate": "2026-07-22",
+      "verificationState": "SOURCE_INDEXED_VERIFIED",
+      "scope": "Trial identity, phase, actual enrollment 654, sponsor, current recruitment status, EU CT identifier",
+      "retrievedAt": "2026-10-18",
+      "transformation": "Curated field-level normalization; no patient information; source URLs retained",
+      "version": "2026-10-18"
+    },
+    {
+      "id": "gmr:study:NCT05477576",
+      "type": "gmr.Study",
+      "title": "ACTION-1 — RYZ101 following Lu-177-based radiopharmaceutical therapy",
+      "studyType": "Interventional",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "phase": "3 (Phase 1b/3 protocol)",
+      "populationSummary": "Well-differentiated gastroenteropancreatic neuroendocrine tumors",
+      "methodsSummary": "RYZ101 (actinium-225 DOTATATE); Investigator-selected everolimus, sunitinib or long-acting somatostatin analogue",
+      "sponsorNames": [
+        "RayzeBio, Inc. (Bristol Myers Squibb company)"
+      ],
+      "institutionNames": [
+        "Sunnybrook Health Sciences Centre / University of Toronto (principal investigator institution)"
+      ],
+      "geography": [
+        "Multinational: eight countries, 54 sites (registry-derived)",
+        "EU/EEA: four countries (CTIS-derived)"
+      ],
+      "biomarkerEligibility": "Somatostatin receptor-positive (SSTR+) advanced inoperable GEP-NET; prior progression after 177Lu-labeled somatostatin analog therapy; SSTR is an expression/imaging biomarker, not a genomic mutation.",
+      "primaryAndSecondaryEndpoints": [
+        "Progression-free survival by blinded independent central review (primary, Phase 3)",
+        "Overall survival follow-up",
+        "Phase 1b safety, tolerability and recommended Phase 3 dose"
+      ],
+      "enrollment": {
+        "actual": 343,
+        "previousEstimated": 338
+      },
+      "limitations": "Primary numerical PFS data not disclosed; FDA authorization not granted. Exact site statuses and transition date require official registry history reconciliation.",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05477576",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05477576",
+      "studyId": "gmr:study:NCT05477576",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "lastUpdated": "2026-10-05",
+      "additionalIdentifiers": {
+        "NCT": "NCT05477576",
+        "sponsorProtocol": "RYZ101-301",
+        "EU_CT": "2023-509334-19-00",
+        "EudraCT": "2022-000507-12"
+      },
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:condition:well-differentiated-gastroenteropancreatic-neuroendocrine-tumors",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Well-differentiated gastroenteropancreatic neuroendocrine tumors",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:somatostatin-receptor-positive-sstr",
+      "type": "gmr.Biomarker",
+      "label": "Somatostatin receptor-positive (SSTR+)",
+      "biologicalContext": "Somatostatin receptor-positive (SSTR+) advanced inoperable GEP-NET; prior progression after 177Lu-labeled somatostatin analog therapy; SSTR is an expression/imaging biomarker, not a genomic mutation.",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:ryz101-actinium-225-dotatate",
+      "type": "gmr.Intervention",
+      "label": "RYZ101 (actinium-225 DOTATATE)",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:investigator-selected-everolimus-sunitinib-or-long-acting-somatostatin-analogue",
+      "type": "gmr.Intervention",
+      "label": "Investigator-selected everolimus, sunitinib or long-acting somatostatin analogue",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:organization:rayzebio-inc-bristol-myers-squibb-company",
+      "type": "gmr.ResearchOrganization",
+      "name": "RayzeBio, Inc. (Bristol Myers Squibb company)",
+      "role": "Sponsor",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:sunnybrook-health-sciences-centre-university-of-toronto-principal-investigator-institution",
+      "type": "gmr.ResearchOrganization",
+      "name": "Sunnybrook Health Sciences Centre / University of Toronto (principal investigator institution)",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis",
+        "gmr:provenance:action-history"
+      ]
+    },
+    {
+      "id": "gmr:study:NCT07020221",
+      "type": "gmr.Study",
+      "title": "TARGET-D 101 — VS-7375 in KRAS G12D-mutant solid tumors",
+      "studyType": "Interventional",
+      "status": "RECRUITING",
+      "phase": "1/2",
+      "populationSummary": "Metastatic pancreatic ductal adenocarcinoma; Advanced non-small-cell lung cancer; Metastatic colorectal adenocarcinoma; Other advanced KRAS G12D-mutated solid tumors",
+      "methodsSummary": "VS-7375 oral KRAS G12D ON/OFF inhibitor; VS-7375 plus cetuximab; VS-7375 plus carboplatin, pemetrexed and pembrolizumab; VS-7375 plus gemcitabine/nab-paclitaxel",
+      "sponsorNames": [
+        "Verastem, Inc."
+      ],
+      "institutionNames": [
+        "NYU Langone Health / Perlmutter Cancer Center",
+        "University of Texas MD Anderson Cancer Center",
+        "Cedars-Sinai Medical Center",
+        "Johns Hopkins University",
+        "Macquarie University (Sydney, mirror)"
+      ],
+      "geography": [
+        "United States",
+        "Australia"
+      ],
+      "biomarkerEligibility": "Documented KRAS G12D mutation in advanced unresectable or metastatic solid tumors; RECIST-measurable disease; ECOG performance status 0-1 and protocol-specific prior-treatment and CNS criteria.",
+      "primaryAndSecondaryEndpoints": [
+        "Dose-limiting toxicities, safety, tolerability, maximum tolerated/feasible dose",
+        "Objective response rate by RECIST v1.1",
+        "Duration of response, disease control, progression-free survival",
+        "Exploratory circulating tumor DNA response"
+      ],
+      "enrollment": {
+        "estimatedCurrentProvisional": 616,
+        "previousEstimated": 295
+      },
+      "limitations": "Sponsor data are early nonrandomized cohorts. The Oct 15 enrollment expansion is mirror-derived; official CTG search excerpt still reflects Apr 22 enrollment of 295. No Phase 3 study activation is established.",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT07020221",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07020221",
+      "studyId": "gmr:study:NCT07020221",
+      "status": "RECRUITING",
+      "lastUpdated": "2026-10-15 (registry-derived mirror)",
+      "additionalIdentifiers": {
+        "NCT": "NCT07020221",
+        "sponsorProtocol": "VS-7375-101"
+      },
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:condition:metastatic-pancreatic-ductal-adenocarcinoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Metastatic pancreatic ductal adenocarcinoma",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:condition:advanced-non-small-cell-lung-cancer",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Advanced non-small-cell lung cancer",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:condition:metastatic-colorectal-adenocarcinoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Metastatic colorectal adenocarcinoma",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:condition:other-advanced-kras-g12d-mutated-solid-tumors",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Other advanced KRAS G12D-mutated solid tumors",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:kras-p-g12d-mutation",
+      "type": "gmr.Biomarker",
+      "label": "KRAS p.G12D mutation",
+      "biologicalContext": "Documented KRAS G12D mutation in advanced unresectable or metastatic solid tumors; RECIST-measurable disease; ECOG performance status 0-1 and protocol-specific prior-treatment and CNS criteria.",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:circulating-tumor-dna-kras-g12d-vaf-exploratory",
+      "type": "gmr.Biomarker",
+      "label": "Circulating tumor DNA KRAS G12D VAF (exploratory)",
+      "biologicalContext": "Documented KRAS G12D mutation in advanced unresectable or metastatic solid tumors; RECIST-measurable disease; ECOG performance status 0-1 and protocol-specific prior-treatment and CNS criteria.",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:vs-7375-oral-kras-g12d-on-off-inhibitor",
+      "type": "gmr.Intervention",
+      "label": "VS-7375 oral KRAS G12D ON/OFF inhibitor",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:vs-7375-plus-cetuximab",
+      "type": "gmr.Intervention",
+      "label": "VS-7375 plus cetuximab",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:vs-7375-plus-carboplatin-pemetrexed-and-pembrolizumab",
+      "type": "gmr.Intervention",
+      "label": "VS-7375 plus carboplatin, pemetrexed and pembrolizumab",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:intervention:vs-7375-plus-gemcitabine-nab-paclitaxel",
+      "type": "gmr.Intervention",
+      "label": "VS-7375 plus gemcitabine/nab-paclitaxel",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:organization:verastem-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "Verastem, Inc.",
+      "role": "Sponsor",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:nyu-langone-health-perlmutter-cancer-center",
+      "type": "gmr.ResearchOrganization",
+      "name": "NYU Langone Health / Perlmutter Cancer Center",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:university-of-texas-md-anderson-cancer-center",
+      "type": "gmr.ResearchOrganization",
+      "name": "University of Texas MD Anderson Cancer Center",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:cedars-sinai-medical-center",
+      "type": "gmr.ResearchOrganization",
+      "name": "Cedars-Sinai Medical Center",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:johns-hopkins-university",
+      "type": "gmr.ResearchOrganization",
+      "name": "Johns Hopkins University",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:institution:macquarie-university-sydney-mirror",
+      "type": "gmr.ResearchOrganization",
+      "name": "Macquarie University (Sydney, mirror)",
+      "role": "Study institution or named investigator institution",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry",
+        "gmr:provenance:target-history"
+      ]
+    },
+    {
+      "id": "gmr:study:NCT05132582",
+      "type": "gmr.Study",
+      "title": "HER2CLIMB-05 — tucatinib maintenance in HER2-positive metastatic breast cancer",
+      "studyType": "Interventional",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "phase": "3",
+      "populationSummary": "HER2-positive unresectable locally advanced or metastatic breast cancer",
+      "methodsSummary": "Tucatinib with trastuzumab and pertuzumab (maintenance); Placebo with trastuzumab and pertuzumab",
+      "sponsorNames": [
+        "Seagen Inc. (Pfizer)"
+      ],
+      "institutionNames": [
+        "Multinational study; individual institution list not independently reconciled"
+      ],
+      "geography": [
+        "Multinational; site-level country reconciliation pending"
+      ],
+      "biomarkerEligibility": "HER2-positive tumor after 4-8 cycles of trastuzumab, pertuzumab and taxane induction without progression; HER2 positivity is a receptor-based tumor marker, not necessarily an ERBB2 point mutation.",
+      "primaryAndSecondaryEndpoints": [
+        "Investigator-assessed progression-free survival (primary)",
+        "Overall survival",
+        "Safety"
+      ],
+      "enrollment": {
+        "actual": 654
+      },
+      "limitations": "New event is US regulatory authorization on Oct 7; not an October recruitment or phase transition. Overall survival immature at PFS analysis. Different EU process was already separately tracked.",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05132582",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05132582",
+      "studyId": "gmr:study:NCT05132582",
+      "status": "ACTIVE_NOT_RECRUITING",
+      "lastUpdated": "2026-07-22 (no October status change established)",
+      "additionalIdentifiers": {
+        "NCT": "NCT05132582",
+        "sponsorProtocol": "SGNTUC-028",
+        "alias": "C4251007",
+        "EU_CT": "2023-503826-37-00"
+      },
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:condition:her2-positive-unresectable-locally-advanced-or-metastatic-breast-cancer",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "HER2-positive unresectable locally advanced or metastatic breast cancer",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:her2-positive-by-accepted-testing",
+      "type": "gmr.Biomarker",
+      "label": "HER2-positive by accepted testing",
+      "biologicalContext": "HER2-positive tumor after 4-8 cycles of trastuzumab, pertuzumab and taxane induction without progression; HER2 positivity is a receptor-based tumor marker, not necessarily an ERBB2 point mutation.",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:intervention:tucatinib-with-trastuzumab-and-pertuzumab-maintenance",
+      "type": "gmr.Intervention",
+      "label": "Tucatinib with trastuzumab and pertuzumab (maintenance)",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:intervention:placebo-with-trastuzumab-and-pertuzumab",
+      "type": "gmr.Intervention",
+      "label": "Placebo with trastuzumab and pertuzumab",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:organization:seagen-inc-pfizer",
+      "type": "gmr.ResearchOrganization",
+      "name": "Seagen Inc. (Pfizer)",
+      "role": "Sponsor",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Bristol Myers Squibb announced statistically significant, clinically meaningful improvement in BICR progression-free survival for RYZ101 versus investigator-selected SoC in SSTR+ GEP-NETs after prior 177Lu therapy.",
+      "evidenceClass": "PRIMARY_SPONSOR_OR_REGULATORY",
+      "supportLevel": "HIGH",
+      "uncertainty": "No numerical PFS effect size, confidence interval, detailed safety dataset or mature overall-survival results released; investigational product not yet approved.",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "type": "gmr.ResearchEvent",
+      "eventDate": "2026-10-12",
+      "eventType": "PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE",
+      "priority": "HIGH",
+      "sourceRefs": [
+        "gmr:provenance:action-sponsor",
+        "gmr:provenance:action-registry",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "ClinicalTrials.gov-derived history reports Recruiting to Active, not recruiting and estimated 338 to actual 343 participants, posted October 5.",
+      "evidenceClass": "REGISTRY_DERIVED_RECORD",
+      "supportLevel": "MODERATE",
+      "uncertainty": "Transition established through registry-derived mirror rather than a direct ClinicalTrials.gov version download; do not activate recruitment matching.",
+      "sourceRefs": [
+        "gmr:provenance:action-history",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "type": "gmr.ResearchEvent",
+      "eventDate": "2026-10-05",
+      "eventType": "RECRUITMENT_CLOSED",
+      "priority": "MODERATE",
+      "sourceRefs": [
+        "gmr:provenance:action-history",
+        "gmr:provenance:action-ctis"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Verastem reported 900 mg VS-7375 monotherapy confirmed ORR 50% (4/8) in second-line PDAC and 41% (9/22) in second-or-later-line PDAC; at 600 mg, confirmed ORR 43% (10/23) in previously treated NSCLC. In 12 evaluable KRAS G12D PDAC ctDNA-positive participants, 7/12 had undetectable KRAS G12D ctDNA by C3D1.",
+      "evidenceClass": "PRIMARY_SPONSOR_OR_REGULATORY",
+      "supportLevel": "HIGH",
+      "uncertainty": "Small uncontrolled sponsor-reported cohorts; ctDNA is exploratory and not a validated survival surrogate; there is no Phase 3 efficacy result or approval.",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "type": "gmr.ResearchEvent",
+      "eventDate": "2026-10-14",
+      "eventType": "EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA",
+      "priority": "HIGH",
+      "sourceRefs": [
+        "gmr:provenance:target-sponsor",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Registry-derived October 15 version records planned enrollment increased from 295 to 616 and revised eligibility, outcomes and interventions; Macquarie University Sydney site added.",
+      "evidenceClass": "REGISTRY_DERIVED_RECORD",
+      "supportLevel": "MODERATE",
+      "uncertainty": "Primary registry accessible indexed excerpt was dated April 22 and still displayed 295; direct current ClinicalTrials.gov version-history/API reconciliation unavailable. This is not a phase transition.",
+      "sourceRefs": [
+        "gmr:provenance:target-history",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "type": "gmr.ResearchEvent",
+      "eventDate": "2026-10-15",
+      "eventType": "PROTOCOL_ENROLLMENT_EXPANSION",
+      "priority": "MODERATE",
+      "sourceRefs": [
+        "gmr:provenance:target-history",
+        "gmr:provenance:target-registry"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "FDA approved tucatinib with trastuzumab and pertuzumab following induction for adults with unresectable or metastatic HER2-positive breast cancer. In 654-patient HER2CLIMB-05, median PFS 24.9 vs 16.3 months; HR 0.64 (95% CI 0.51-0.80), p<0.0001.",
+      "evidenceClass": "PRIMARY_SPONSOR_OR_REGULATORY",
+      "supportLevel": "HIGH",
+      "uncertainty": "US approval only; no implication of another jurisdiction's authorization. OS data immature and study not currently recruiting.",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "type": "gmr.ResearchEvent",
+      "eventDate": "2026-10-07",
+      "eventType": "US_FDA_APPROVAL_NEW_INDICATION",
+      "priority": "HIGH",
+      "sourceRefs": [
+        "gmr:provenance:her2-fda",
+        "gmr:provenance:her2-registry"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT05477576->gmr:study:NCT05477576",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:study:NCT05477576"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT05477576->gmr:condition:well-differentiated-gastroenteropancreatic-neuroendocrine-tumors",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:condition:well-differentiated-gastroenteropancreatic-neuroendocrine-tumors"
+    },
+    {
+      "id": "gmr.HAS_BIOMARKER_ELIGIBILITY:gmr:study:NCT05477576->gmr:biomarker:somatostatin-receptor-positive-sstr",
+      "type": "gmr.HAS_BIOMARKER_ELIGIBILITY",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:biomarker:somatostatin-receptor-positive-sstr"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05477576->gmr:intervention:ryz101-actinium-225-dotatate",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:intervention:ryz101-actinium-225-dotatate"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05477576->gmr:intervention:investigator-selected-everolimus-sunitinib-or-long-acting-somatostatin-analogue",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:intervention:investigator-selected-everolimus-sunitinib-or-long-acting-somatostatin-analogue"
+    },
+    {
+      "id": "gmr.SPONSORED_BY:gmr:study:NCT05477576->gmr:organization:rayzebio-inc-bristol-myers-squibb-company",
+      "type": "gmr.SPONSORED_BY",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:organization:rayzebio-inc-bristol-myers-squibb-company"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT05477576->gmr:institution:sunnybrook-health-sciences-centre-university-of-toronto-principal-investigator-institution",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:institution:sunnybrook-health-sciences-centre-university-of-toronto-principal-investigator-institution"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05477576->gmr:provenance:action-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:provenance:action-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05477576->gmr:provenance:action-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:provenance:action-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05477576->gmr:provenance:action-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:provenance:action-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05477576->gmr:provenance:action-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:provenance:action-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05477576->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05477576->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05477576->gmr:provenance:action-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05477576",
+      "to": "gmr:provenance:action-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05477576->gmr:provenance:action-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:provenance:action-history"
+    },
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT07020221->gmr:study:NCT07020221",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:study:NCT07020221"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07020221->gmr:condition:metastatic-pancreatic-ductal-adenocarcinoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:condition:metastatic-pancreatic-ductal-adenocarcinoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07020221->gmr:condition:advanced-non-small-cell-lung-cancer",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:condition:advanced-non-small-cell-lung-cancer"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07020221->gmr:condition:metastatic-colorectal-adenocarcinoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:condition:metastatic-colorectal-adenocarcinoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07020221->gmr:condition:other-advanced-kras-g12d-mutated-solid-tumors",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:condition:other-advanced-kras-g12d-mutated-solid-tumors"
+    },
+    {
+      "id": "gmr.HAS_BIOMARKER_ELIGIBILITY:gmr:study:NCT07020221->gmr:biomarker:kras-p-g12d-mutation",
+      "type": "gmr.HAS_BIOMARKER_ELIGIBILITY",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:biomarker:kras-p-g12d-mutation"
+    },
+    {
+      "id": "gmr.HAS_BIOMARKER_ELIGIBILITY:gmr:study:NCT07020221->gmr:biomarker:circulating-tumor-dna-kras-g12d-vaf-exploratory",
+      "type": "gmr.HAS_BIOMARKER_ELIGIBILITY",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:biomarker:circulating-tumor-dna-kras-g12d-vaf-exploratory"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07020221->gmr:intervention:vs-7375-oral-kras-g12d-on-off-inhibitor",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:intervention:vs-7375-oral-kras-g12d-on-off-inhibitor"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07020221->gmr:intervention:vs-7375-plus-cetuximab",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:intervention:vs-7375-plus-cetuximab"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07020221->gmr:intervention:vs-7375-plus-carboplatin-pemetrexed-and-pembrolizumab",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:intervention:vs-7375-plus-carboplatin-pemetrexed-and-pembrolizumab"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07020221->gmr:intervention:vs-7375-plus-gemcitabine-nab-paclitaxel",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:intervention:vs-7375-plus-gemcitabine-nab-paclitaxel"
+    },
+    {
+      "id": "gmr.SPONSORED_BY:gmr:study:NCT07020221->gmr:organization:verastem-inc",
+      "type": "gmr.SPONSORED_BY",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:organization:verastem-inc"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT07020221->gmr:institution:nyu-langone-health-perlmutter-cancer-center",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:institution:nyu-langone-health-perlmutter-cancer-center"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT07020221->gmr:institution:university-of-texas-md-anderson-cancer-center",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:institution:university-of-texas-md-anderson-cancer-center"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT07020221->gmr:institution:cedars-sinai-medical-center",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:institution:cedars-sinai-medical-center"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT07020221->gmr:institution:johns-hopkins-university",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:institution:johns-hopkins-university"
+    },
+    {
+      "id": "gmr.HAS_INSTITUTION:gmr:study:NCT07020221->gmr:institution:macquarie-university-sydney-mirror",
+      "type": "gmr.HAS_INSTITUTION",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:institution:macquarie-university-sydney-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07020221->gmr:provenance:target-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:provenance:target-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07020221->gmr:provenance:target-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:provenance:target-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07020221->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07020221->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07020221->gmr:provenance:target-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07020221",
+      "to": "gmr:provenance:target-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07020221->gmr:provenance:target-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:provenance:target-history"
+    },
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT05132582->gmr:study:NCT05132582",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05132582",
+      "to": "gmr:study:NCT05132582"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT05132582->gmr:condition:her2-positive-unresectable-locally-advanced-or-metastatic-breast-cancer",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:condition:her2-positive-unresectable-locally-advanced-or-metastatic-breast-cancer"
+    },
+    {
+      "id": "gmr.HAS_BIOMARKER_ELIGIBILITY:gmr:study:NCT05132582->gmr:biomarker:her2-positive-by-accepted-testing",
+      "type": "gmr.HAS_BIOMARKER_ELIGIBILITY",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:biomarker:her2-positive-by-accepted-testing"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05132582->gmr:intervention:tucatinib-with-trastuzumab-and-pertuzumab-maintenance",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:intervention:tucatinib-with-trastuzumab-and-pertuzumab-maintenance"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05132582->gmr:intervention:placebo-with-trastuzumab-and-pertuzumab",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:intervention:placebo-with-trastuzumab-and-pertuzumab"
+    },
+    {
+      "id": "gmr.SPONSORED_BY:gmr:study:NCT05132582->gmr:organization:seagen-inc-pfizer",
+      "type": "gmr.SPONSORED_BY",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:organization:seagen-inc-pfizer"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05132582->gmr:provenance:her2-fda",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:provenance:her2-fda"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05132582->gmr:provenance:her2-fda",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05132582",
+      "to": "gmr:provenance:her2-fda"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05132582->gmr:provenance:her2-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05132582",
+      "to": "gmr:provenance:her2-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05132582->gmr:provenance:her2-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05132582",
+      "to": "gmr:provenance:her2-registry"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT05477576->gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12"
+    },
+    {
+      "id": "gmr.EVENT_IN_STUDY:gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:study:NCT05477576",
+      "type": "gmr.EVENT_IN_STUDY",
+      "from": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:study:NCT05477576"
+    },
+    {
+      "id": "gmr.ASSERTS_EVENT:gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "type": "gmr.ASSERTS_EVENT",
+      "from": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05477576:PHASE3_PRIMARY_ENDPOINT_MET_TOPLINE:2026-10-12",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT05477576->gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05477576",
+      "to": "gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05"
+    },
+    {
+      "id": "gmr.EVENT_IN_STUDY:gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:study:NCT05477576",
+      "type": "gmr.EVENT_IN_STUDY",
+      "from": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:study:NCT05477576"
+    },
+    {
+      "id": "gmr.ASSERTS_EVENT:gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "type": "gmr.ASSERTS_EVENT",
+      "from": "gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:provenance:action-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:provenance:action-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:provenance:action-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:provenance:action-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05->gmr:provenance:action-ctis",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05477576:RECRUITMENT_CLOSED:2026-10-05",
+      "to": "gmr:provenance:action-ctis"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT07020221->gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14"
+    },
+    {
+      "id": "gmr.EVENT_IN_STUDY:gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:study:NCT07020221",
+      "type": "gmr.EVENT_IN_STUDY",
+      "from": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:study:NCT07020221"
+    },
+    {
+      "id": "gmr.ASSERTS_EVENT:gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "type": "gmr.ASSERTS_EVENT",
+      "from": "gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:provenance:target-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:provenance:target-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:provenance:target-sponsor",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:provenance:target-sponsor"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT07020221:EARLY_COHORT_EFFICACY_AND_BIOMARKER_DATA:2026-10-14",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT07020221->gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07020221",
+      "to": "gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15"
+    },
+    {
+      "id": "gmr.EVENT_IN_STUDY:gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:study:NCT07020221",
+      "type": "gmr.EVENT_IN_STUDY",
+      "from": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:study:NCT07020221"
+    },
+    {
+      "id": "gmr.ASSERTS_EVENT:gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "type": "gmr.ASSERTS_EVENT",
+      "from": "gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:provenance:target-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:provenance:target-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:provenance:target-history",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:provenance:target-history"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15->gmr:provenance:target-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT07020221:PROTOCOL_ENROLLMENT_EXPANSION:2026-10-15",
+      "to": "gmr:provenance:target-registry"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT05132582->gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05132582",
+      "to": "gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07"
+    },
+    {
+      "id": "gmr.EVENT_IN_STUDY:gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:study:NCT05132582",
+      "type": "gmr.EVENT_IN_STUDY",
+      "from": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:study:NCT05132582"
+    },
+    {
+      "id": "gmr.ASSERTS_EVENT:gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "type": "gmr.ASSERTS_EVENT",
+      "from": "gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:provenance:her2-fda",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:provenance:her2-fda"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:provenance:her2-fda",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:provenance:her2-fda"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:provenance:her2-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:provenance:her2-registry"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07->gmr:provenance:her2-registry",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:event:NCT05132582:US_FDA_APPROVAL_NEW_INDICATION:2026-10-07",
+      "to": "gmr:provenance:her2-registry"
+    }
+  ],
+  "validation": {
+    "studyCount": 3,
+    "eventCount": 5,
+    "nodeCount": 52,
+    "typedRelationshipCount": 85,
+    "provenanceCount": 9,
+    "uniqueNctCount": 3,
+    "uniqueEventCount": 5,
+    "allGraphReferencesResolve": true,
+    "allEventSourcesResolve": true,
+    "notes": "Local structural and referential checks; not independent medical data validation."
+  }
+}
