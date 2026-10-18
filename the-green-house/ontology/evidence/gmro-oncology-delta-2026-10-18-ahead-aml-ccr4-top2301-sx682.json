@@ -1,0 +1,1442 @@
+{
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "schemaVersion": "1.0.0",
+  "batchDate": "2026-10-18",
+  "batchId": "GMRO_2026-10-18_SCOUT_11_AHEAD_AML_CCR4_TOP2301_SX682",
+  "origin": "GPT-Doug Clinical Trial Scout",
+  "reviewStatus": "PROPOSED_RESEARCH_EVIDENCE",
+  "sourceBoundary": "Targeted oncology surveillance: BioNTech primary Oct 13 release and dated ClinicalTrials.gov-derived mirrors through Oct 16. Official CTG API and direct version history inaccessible; registry status transitions are provisional. Reviewed global news/registries selectively; not exhaustive global monitoring, not individual medical advice.",
+  "studies": [
+    {
+      "nct": "NCT04534205",
+      "name": "AHEAD-MERIT",
+      "identifiers": {
+        "NCT": "NCT04534205",
+        "sponsorProtocol": "BNT113-01",
+        "EudraCT": "2020-001400-41",
+        "EU_CT": "2024-512671-12-00"
+      },
+      "cancer": [
+        "Unresectable recurrent or metastatic head and neck squamous-cell carcinoma"
+      ],
+      "molecularEligibility": "HPV16-positive tumor and PD-L1 combined positive score >=1. HPV16 is a viral biomarker, not a somatic oncogenic mutation.",
+      "biomarkers": [
+        "HPV16-positive",
+        "PD-L1 CPS >=1"
+      ],
+      "interventions": [
+        "BNT113 (tenumomeran/raplemomeran) plus pembrolizumab",
+        "Pembrolizumab monotherapy comparator"
+      ],
+      "phase": "2/3",
+      "sponsors": [
+        "BioNTech SE"
+      ],
+      "institutions": [
+        "Multicenter international study; site list not fully reconciled"
+      ],
+      "geography": [
+        "Multinational; 138 sites in Oct 2026 indexed record, country distribution not fully reconciled"
+      ],
+      "endpoints": [
+        "Progression-free survival (dual primary, Part B)",
+        "Overall survival (dual primary, Part B)",
+        "Treatment-emergent adverse events (Part A)"
+      ],
+      "status": "ACTIVE_NOT_RECRUITING",
+      "statusAsOf": "2026-10-14",
+      "enrollment": {
+        "actual": 358
+      },
+      "limitations": "Sponsor disclosure contains no PFS hazard ratio, medians, event count or mature OS data. Not terminated; trial continuing for OS. Registry status derived from mirror; direct API not available.",
+      "sourceRefs": [
+        "ahead-sponsor",
+        "ahead-registry",
+        "ahead-history"
+      ]
+    },
+    {
+      "nct": "NCT04062266",
+      "name": "Azacitidine plus venetoclax maintenance in AML remission",
+      "identifiers": {
+        "NCT": "NCT04062266",
+        "sponsorProtocol": "2019-0226",
+        "NCI": "NCI-2019-04987"
+      },
+      "cancer": [
+        "Acute myeloid leukemia in remission"
+      ],
+      "molecularEligibility": "First CR/CRi after intensive or low-intensity treatment, not immediately an allogeneic transplant candidate; MRD-positive patients permitted. FLT3 mutation appears as a registry condition, not confirmed as a mandatory inclusion criterion.",
+      "biomarkers": [
+        "MRD persistence (subgroup/exploratory)",
+        "FLT3 mutation listed in condition vocabulary only"
+      ],
+      "interventions": [
+        "Azacitidine SC/IV, days 1-5",
+        "Venetoclax oral, days 1-14 (28-day cycles)"
+      ],
+      "phase": "2",
+      "sponsors": [
+        "M.D. Anderson Cancer Center"
+      ],
+      "collaborators": [
+        "National Cancer Institute",
+        "Genentech"
+      ],
+      "institutions": [
+        "University of Texas MD Anderson Cancer Center"
+      ],
+      "geography": [
+        "Houston, Texas, USA"
+      ],
+      "endpoints": [
+        "Relapse-free survival (primary)",
+        "Overall survival",
+        "Event-free survival",
+        "Adverse events",
+        "MRD dynamics"
+      ],
+      "status": "TERMINATED",
+      "previousStatus": "ACTIVE_NOT_RECRUITING",
+      "statusAsOf": "2026-10-16",
+      "enrollment": {
+        "actual": 36,
+        "previousEstimated": 50
+      },
+      "limitations": "Registry-listed reason is '<75% participation'; this does not establish safety or efficacy failure. 2024 Lancet Haematology article predates this registry termination and is not a newly posted 2026 efficacy endpoint.",
+      "sourceRefs": [
+        "aml-registry",
+        "aml-history"
+      ]
+    },
+    {
+      "nct": "NCT07055477",
+      "name": "Autologous CCR4 CAR-T for mature T-cell malignancies",
+      "identifiers": {
+        "NCT": "NCT07055477",
+        "NIHProtocol": "001774-C"
+      },
+      "cancer": [
+        "Relapsed or refractory mature T-cell malignancies",
+        "Peripheral T-cell lymphoma",
+        "Cutaneous T-cell lymphoma"
+      ],
+      "molecularEligibility": "CCR4 surface-protein expression on malignant T cells required; no specific genomic mutation required.",
+      "biomarkers": [
+        "CCR4 tumor-cell protein expression"
+      ],
+      "interventions": [
+        "Autologous anti-CCR4 CAR T cells",
+        "Cyclophosphamide and fludarabine lymphodepletion"
+      ],
+      "phase": "1",
+      "sponsors": [
+        "National Cancer Institute (NCI)"
+      ],
+      "institutions": [
+        "NIH Clinical Center"
+      ],
+      "geography": [
+        "Bethesda, Maryland, USA"
+      ],
+      "endpoints": [
+        "Adverse event type, grade, frequency through 12 weeks (primary)",
+        "Dose-limiting toxicity / maximum tolerated dose",
+        "Manufacturing feasibility",
+        "Preliminary response rates",
+        "Long-term safety"
+      ],
+      "status": "SUSPENDED",
+      "previousStatus": "RECRUITING",
+      "statusAsOf": "2026-10-01",
+      "enrollment": {
+        "estimated": 60
+      },
+      "limitations": "Record says hold for review of events on study; no particular adverse event, fatality, or causal safety issue has been established. It is not open to enrollment.",
+      "sourceRefs": [
+        "ccr4-registry",
+        "ccr4-history"
+      ]
+    },
+    {
+      "nct": "NCT06385262",
+      "name": "TOP 2301: Neoadjuvant alirocumab plus cemiplimab and platinum chemotherapy",
+      "identifiers": {
+        "NCT": "NCT06385262",
+        "institutionProtocol": "Pro00114645"
+      },
+      "cancer": [
+        "Resectable stage IB-III non-small-cell lung cancer"
+      ],
+      "molecularEligibility": "Known EGFR mutation, ALK translocation, or ROS1 translocation excluded. No positively selected oncogenic mutation.",
+      "biomarkers": [
+        "EGFR alteration exclusion",
+        "ALK rearrangement exclusion",
+        "ROS1 rearrangement exclusion"
+      ],
+      "interventions": [
+        "Alirocumab (PCSK9 inhibitor)",
+        "Cemiplimab (PD-1 inhibitor)",
+        "Platinum-doublet chemotherapy"
+      ],
+      "phase": "2",
+      "sponsors": [
+        "Duke University"
+      ],
+      "collaborators": [
+        "Regeneron Pharmaceuticals"
+      ],
+      "institutions": [
+        "Duke University"
+      ],
+      "geography": [
+        "Durham, North Carolina, USA"
+      ],
+      "endpoints": [
+        "Pathologic complete response (primary)",
+        "Safety and tolerability (primary)",
+        "Objective response rate",
+        "Event-free survival"
+      ],
+      "status": "RECRUITING",
+      "previousStatus": "SUSPENDED",
+      "statusAsOf": "2026-10-16",
+      "enrollment": {
+        "estimated": 63
+      },
+      "limitations": "Protocol changed to single treatment arm on July 20, 2026; do not treat historical closed comparison arm as currently available. Status restart derives from registry mirror and awaits official API history confirmation.",
+      "sourceRefs": [
+        "duke-registry",
+        "duke-history"
+      ]
+    },
+    {
+      "nct": "NCT07667400",
+      "name": "SX-682 plus docetaxel in advanced head and neck and prostate cancers",
+      "identifiers": {
+        "NCT": "NCT07667400",
+        "NIHProtocol": "002319-C",
+        "sponsorProtocol": "10002319"
+      },
+      "cancer": [
+        "Recurrent or metastatic head and neck squamous-cell carcinoma",
+        "Salivary gland carcinoma",
+        "Metastatic castration-resistant prostate cancer"
+      ],
+      "molecularEligibility": "No mandatory molecular alteration identified; cohort-specific disease and prior-treatment requirements apply.",
+      "biomarkers": [
+        "No mandatory tumor genomic biomarker identified"
+      ],
+      "interventions": [
+        "SX-682 oral investigational CXCR1/2 inhibitor",
+        "Docetaxel IV"
+      ],
+      "phase": "1/2",
+      "sponsors": [
+        "National Cancer Institute (NCI)"
+      ],
+      "institutions": [
+        "NIH Clinical Center"
+      ],
+      "geography": [
+        "Bethesda, Maryland, USA"
+      ],
+      "endpoints": [
+        "Recommended Phase 2 dose and dose-limiting toxicity (Phase 1 primary)",
+        "Objective response rate by cohort (Phase 2 primary)",
+        "Progression-free survival",
+        "Overall survival"
+      ],
+      "status": "RECRUITING",
+      "previousStatus": "NOT_YET_RECRUITING",
+      "statusAsOf": "2026-10-15",
+      "enrollment": {
+        "estimated": 120
+      },
+      "limitations": "Trial start date estimated Oct 21, 2026, despite registry label Recruiting since Oct 15; institutional confirmation required before active patient referral. No efficacy outcomes are reported.",
+      "sourceRefs": [
+        "sx-registry",
+        "sx-history"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "nct": "NCT04534205",
+      "type": "PRIMARY_ENDPOINT_NOT_MET",
+      "eventDate": "2026-10-13",
+      "priority": "HIGH",
+      "finding": "BioNTech's topline Phase 2/3 AHEAD-MERIT analysis did not demonstrate statistically significant PFS benefit of BNT113 plus pembrolizumab over pembrolizumab alone in first-line HPV16-positive, PD-L1-positive recurrent/metastatic HNSCC.",
+      "limitations": "Overall survival co-primary analysis pending, independent monitoring committee recommended continuing; no numerical efficacy effect size released. Not a trial termination.",
+      "researchAction": "Revise HPV16-targeted mRNA-vaccine efficacy evidence downward for PFS only; maintain watch for OS, not interpret PFS miss as final study failure.",
+      "sourceRefs": [
+        "ahead-sponsor",
+        "ahead-registry"
+      ],
+      "studyId": "gmr:study:NCT04534205",
+      "id": "gmr:event:NCT04534205:PRIMARY_ENDPOINT_NOT_MET:2026-10-13"
+    },
+    {
+      "nct": "NCT04062266",
+      "type": "TRIAL_TERMINATED_LOW_PARTICIPATION",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH",
+      "finding": "Status Active, not recruiting -> Terminated; enrolled 36 actual vs 50 projected, sponsor reason '<75% participation'; study completion revised to Oct 12, 2026.",
+      "limitations": "Enrollment-related termination, no safety or efficacy failure established; direct official version history not fetched.",
+      "researchAction": "Exclude from participant matching and label findings/2024 publication separately; do not extrapolate failure of AZA+venetoclax as treatment.",
+      "sourceRefs": [
+        "aml-registry",
+        "aml-history"
+      ],
+      "studyId": "gmr:study:NCT04062266",
+      "id": "gmr:event:NCT04062266:TRIAL_TERMINATED_LOW_PARTICIPATION:2026-10-16"
+    },
+    {
+      "nct": "NCT07055477",
+      "type": "TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW",
+      "eventDate": "2026-10-01",
+      "priority": "HIGH",
+      "finding": "Recruiting -> Suspended; recorded sponsor reason 'Placed on hold to conduct a review of events on study.' October 16 re-verification did not reverse suspension.",
+      "limitations": "Specific event(s) and any relationship to investigational CAR-T safety are undisclosed; no confirmation of formal regulatory clinical hold.",
+      "researchAction": "Hard-stop all CCR4 CAR-T enrollment matches, flag reason pending independent verification and watch for reopen or revised protocol.",
+      "sourceRefs": [
+        "ccr4-registry",
+        "ccr4-history"
+      ],
+      "studyId": "gmr:study:NCT07055477",
+      "id": "gmr:event:NCT07055477:TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW:2026-10-01"
+    },
+    {
+      "nct": "NCT06385262",
+      "type": "RECRUITMENT_REOPENED_AFTER_SUSPENSION",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH",
+      "finding": "Registry-derived update Suspended -> Recruiting at Duke University, one site; previous stopping reason removed.",
+      "limitations": "ClinicalTrials.gov API history inaccessible, confirmation of site appointment availability needed; comparator arm closed July 20.",
+      "researchAction": "Re-enable provisional site-specific eligibility only for current single alirocumab/cemiplimab/chemotherapy arm and EGFR/ALK/ROS1 exclusions.",
+      "sourceRefs": [
+        "duke-registry",
+        "duke-history"
+      ],
+      "studyId": "gmr:study:NCT06385262",
+      "id": "gmr:event:NCT06385262:RECRUITMENT_REOPENED_AFTER_SUSPENSION:2026-10-16"
+    },
+    {
+      "nct": "NCT07667400",
+      "type": "RECRUITMENT_OPENED",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE",
+      "finding": "Not yet recruiting -> Recruiting at NIH Clinical Center for Phase 1/2 SX-682 plus docetaxel in head/neck cancer and mCRPC.",
+      "limitations": "Study start date still estimated Oct 21; site's operational acceptance not independently verified.",
+      "researchAction": "Add provisional trial-matching path by cancer cohort and site; require live NIH confirmation prior to referral.",
+      "sourceRefs": [
+        "sx-registry",
+        "sx-history"
+      ],
+      "studyId": "gmr:study:NCT07667400",
+      "id": "gmr:event:NCT07667400:RECRUITMENT_OPENED:2026-10-15"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gmr:study:NCT04534205",
+      "type": "gmr.ClinicalTrial",
+      "label": "AHEAD-MERIT",
+      "nct": "NCT04534205",
+      "phase": "2/3",
+      "status": "ACTIVE_NOT_RECRUITING"
+    },
+    {
+      "id": "gmr:cancer:unresectable-recurrent-or-metastatic-head-and-neck-squamous-cell-carcinoma",
+      "type": "gmr.CancerType",
+      "label": "Unresectable recurrent or metastatic head and neck squamous-cell carcinoma"
+    },
+    {
+      "id": "gmr:biomarkers:hpv16-positive",
+      "type": "gmr.Biomarker",
+      "label": "HPV16-positive"
+    },
+    {
+      "id": "gmr:biomarkers:pd-l1-cps-1",
+      "type": "gmr.Biomarker",
+      "label": "PD-L1 CPS >=1"
+    },
+    {
+      "id": "gmr:interventions:bnt113-tenumomeran-raplemomeran-plus-pembrolizumab",
+      "type": "gmr.Intervention",
+      "label": "BNT113 (tenumomeran/raplemomeran) plus pembrolizumab"
+    },
+    {
+      "id": "gmr:interventions:pembrolizumab-monotherapy-comparator",
+      "type": "gmr.Intervention",
+      "label": "Pembrolizumab monotherapy comparator"
+    },
+    {
+      "id": "gmr:sponsors:biontech-se",
+      "type": "gmr.Organization",
+      "label": "BioNTech SE"
+    },
+    {
+      "id": "gmr:institutions:multicenter-international-study-site-list-not-fully-reconciled",
+      "type": "gmr.Institution",
+      "label": "Multicenter international study; site list not fully reconciled"
+    },
+    {
+      "id": "gmr:geography:multinational-138-sites-in-oct-2026-indexed-record-country-distribution-not-fully-reconcil",
+      "type": "gmr.Geography",
+      "label": "Multinational; 138 sites in Oct 2026 indexed record, country distribution not fully reconciled"
+    },
+    {
+      "id": "gmr:endpoints:progression-free-survival-dual-primary-part-b",
+      "type": "gmr.Endpoint",
+      "label": "Progression-free survival (dual primary, Part B)"
+    },
+    {
+      "id": "gmr:endpoints:overall-survival-dual-primary-part-b",
+      "type": "gmr.Endpoint",
+      "label": "Overall survival (dual primary, Part B)"
+    },
+    {
+      "id": "gmr:endpoints:treatment-emergent-adverse-events-part-a",
+      "type": "gmr.Endpoint",
+      "label": "Treatment-emergent adverse events (Part A)"
+    },
+    {
+      "id": "gmr:phase:2-3",
+      "type": "gmr.StudyPhase",
+      "label": "2/3"
+    },
+    {
+      "id": "gmr:study:NCT04062266",
+      "type": "gmr.ClinicalTrial",
+      "label": "Azacitidine plus venetoclax maintenance in AML remission",
+      "nct": "NCT04062266",
+      "phase": "2",
+      "status": "TERMINATED"
+    },
+    {
+      "id": "gmr:cancer:acute-myeloid-leukemia-in-remission",
+      "type": "gmr.CancerType",
+      "label": "Acute myeloid leukemia in remission"
+    },
+    {
+      "id": "gmr:biomarkers:mrd-persistence-subgroup-exploratory",
+      "type": "gmr.Biomarker",
+      "label": "MRD persistence (subgroup/exploratory)"
+    },
+    {
+      "id": "gmr:biomarkers:flt3-mutation-listed-in-condition-vocabulary-only",
+      "type": "gmr.Biomarker",
+      "label": "FLT3 mutation listed in condition vocabulary only"
+    },
+    {
+      "id": "gmr:interventions:azacitidine-sc-iv-days-1-5",
+      "type": "gmr.Intervention",
+      "label": "Azacitidine SC/IV, days 1-5"
+    },
+    {
+      "id": "gmr:interventions:venetoclax-oral-days-1-14-28-day-cycles",
+      "type": "gmr.Intervention",
+      "label": "Venetoclax oral, days 1-14 (28-day cycles)"
+    },
+    {
+      "id": "gmr:sponsors:m-d-anderson-cancer-center",
+      "type": "gmr.Organization",
+      "label": "M.D. Anderson Cancer Center"
+    },
+    {
+      "id": "gmr:institutions:university-of-texas-md-anderson-cancer-center",
+      "type": "gmr.Institution",
+      "label": "University of Texas MD Anderson Cancer Center"
+    },
+    {
+      "id": "gmr:geography:houston-texas-usa",
+      "type": "gmr.Geography",
+      "label": "Houston, Texas, USA"
+    },
+    {
+      "id": "gmr:endpoints:relapse-free-survival-primary",
+      "type": "gmr.Endpoint",
+      "label": "Relapse-free survival (primary)"
+    },
+    {
+      "id": "gmr:endpoints:overall-survival",
+      "type": "gmr.Endpoint",
+      "label": "Overall survival"
+    },
+    {
+      "id": "gmr:endpoints:event-free-survival",
+      "type": "gmr.Endpoint",
+      "label": "Event-free survival"
+    },
+    {
+      "id": "gmr:endpoints:adverse-events",
+      "type": "gmr.Endpoint",
+      "label": "Adverse events"
+    },
+    {
+      "id": "gmr:endpoints:mrd-dynamics",
+      "type": "gmr.Endpoint",
+      "label": "MRD dynamics"
+    },
+    {
+      "id": "gmr:phase:2",
+      "type": "gmr.StudyPhase",
+      "label": "2"
+    },
+    {
+      "id": "gmr:study:NCT07055477",
+      "type": "gmr.ClinicalTrial",
+      "label": "Autologous CCR4 CAR-T for mature T-cell malignancies",
+      "nct": "NCT07055477",
+      "phase": "1",
+      "status": "SUSPENDED"
+    },
+    {
+      "id": "gmr:cancer:relapsed-or-refractory-mature-t-cell-malignancies",
+      "type": "gmr.CancerType",
+      "label": "Relapsed or refractory mature T-cell malignancies"
+    },
+    {
+      "id": "gmr:cancer:peripheral-t-cell-lymphoma",
+      "type": "gmr.CancerType",
+      "label": "Peripheral T-cell lymphoma"
+    },
+    {
+      "id": "gmr:cancer:cutaneous-t-cell-lymphoma",
+      "type": "gmr.CancerType",
+      "label": "Cutaneous T-cell lymphoma"
+    },
+    {
+      "id": "gmr:biomarkers:ccr4-tumor-cell-protein-expression",
+      "type": "gmr.Biomarker",
+      "label": "CCR4 tumor-cell protein expression"
+    },
+    {
+      "id": "gmr:interventions:autologous-anti-ccr4-car-t-cells",
+      "type": "gmr.Intervention",
+      "label": "Autologous anti-CCR4 CAR T cells"
+    },
+    {
+      "id": "gmr:interventions:cyclophosphamide-and-fludarabine-lymphodepletion",
+      "type": "gmr.Intervention",
+      "label": "Cyclophosphamide and fludarabine lymphodepletion"
+    },
+    {
+      "id": "gmr:sponsors:national-cancer-institute-nci",
+      "type": "gmr.Organization",
+      "label": "National Cancer Institute (NCI)"
+    },
+    {
+      "id": "gmr:institutions:nih-clinical-center",
+      "type": "gmr.Institution",
+      "label": "NIH Clinical Center"
+    },
+    {
+      "id": "gmr:geography:bethesda-maryland-usa",
+      "type": "gmr.Geography",
+      "label": "Bethesda, Maryland, USA"
+    },
+    {
+      "id": "gmr:endpoints:adverse-event-type-grade-frequency-through-12-weeks-primary",
+      "type": "gmr.Endpoint",
+      "label": "Adverse event type, grade, frequency through 12 weeks (primary)"
+    },
+    {
+      "id": "gmr:endpoints:dose-limiting-toxicity-maximum-tolerated-dose",
+      "type": "gmr.Endpoint",
+      "label": "Dose-limiting toxicity / maximum tolerated dose"
+    },
+    {
+      "id": "gmr:endpoints:manufacturing-feasibility",
+      "type": "gmr.Endpoint",
+      "label": "Manufacturing feasibility"
+    },
+    {
+      "id": "gmr:endpoints:preliminary-response-rates",
+      "type": "gmr.Endpoint",
+      "label": "Preliminary response rates"
+    },
+    {
+      "id": "gmr:endpoints:long-term-safety",
+      "type": "gmr.Endpoint",
+      "label": "Long-term safety"
+    },
+    {
+      "id": "gmr:phase:1",
+      "type": "gmr.StudyPhase",
+      "label": "1"
+    },
+    {
+      "id": "gmr:study:NCT06385262",
+      "type": "gmr.ClinicalTrial",
+      "label": "TOP 2301: Neoadjuvant alirocumab plus cemiplimab and platinum chemotherapy",
+      "nct": "NCT06385262",
+      "phase": "2",
+      "status": "RECRUITING"
+    },
+    {
+      "id": "gmr:cancer:resectable-stage-ib-iii-non-small-cell-lung-cancer",
+      "type": "gmr.CancerType",
+      "label": "Resectable stage IB-III non-small-cell lung cancer"
+    },
+    {
+      "id": "gmr:biomarkers:egfr-alteration-exclusion",
+      "type": "gmr.Biomarker",
+      "label": "EGFR alteration exclusion"
+    },
+    {
+      "id": "gmr:biomarkers:alk-rearrangement-exclusion",
+      "type": "gmr.Biomarker",
+      "label": "ALK rearrangement exclusion"
+    },
+    {
+      "id": "gmr:biomarkers:ros1-rearrangement-exclusion",
+      "type": "gmr.Biomarker",
+      "label": "ROS1 rearrangement exclusion"
+    },
+    {
+      "id": "gmr:interventions:alirocumab-pcsk9-inhibitor",
+      "type": "gmr.Intervention",
+      "label": "Alirocumab (PCSK9 inhibitor)"
+    },
+    {
+      "id": "gmr:interventions:cemiplimab-pd-1-inhibitor",
+      "type": "gmr.Intervention",
+      "label": "Cemiplimab (PD-1 inhibitor)"
+    },
+    {
+      "id": "gmr:interventions:platinum-doublet-chemotherapy",
+      "type": "gmr.Intervention",
+      "label": "Platinum-doublet chemotherapy"
+    },
+    {
+      "id": "gmr:sponsors:duke-university",
+      "type": "gmr.Organization",
+      "label": "Duke University"
+    },
+    {
+      "id": "gmr:institutions:duke-university",
+      "type": "gmr.Institution",
+      "label": "Duke University"
+    },
+    {
+      "id": "gmr:geography:durham-north-carolina-usa",
+      "type": "gmr.Geography",
+      "label": "Durham, North Carolina, USA"
+    },
+    {
+      "id": "gmr:endpoints:pathologic-complete-response-primary",
+      "type": "gmr.Endpoint",
+      "label": "Pathologic complete response (primary)"
+    },
+    {
+      "id": "gmr:endpoints:safety-and-tolerability-primary",
+      "type": "gmr.Endpoint",
+      "label": "Safety and tolerability (primary)"
+    },
+    {
+      "id": "gmr:endpoints:objective-response-rate",
+      "type": "gmr.Endpoint",
+      "label": "Objective response rate"
+    },
+    {
+      "id": "gmr:study:NCT07667400",
+      "type": "gmr.ClinicalTrial",
+      "label": "SX-682 plus docetaxel in advanced head and neck and prostate cancers",
+      "nct": "NCT07667400",
+      "phase": "1/2",
+      "status": "RECRUITING"
+    },
+    {
+      "id": "gmr:cancer:recurrent-or-metastatic-head-and-neck-squamous-cell-carcinoma",
+      "type": "gmr.CancerType",
+      "label": "Recurrent or metastatic head and neck squamous-cell carcinoma"
+    },
+    {
+      "id": "gmr:cancer:salivary-gland-carcinoma",
+      "type": "gmr.CancerType",
+      "label": "Salivary gland carcinoma"
+    },
+    {
+      "id": "gmr:cancer:metastatic-castration-resistant-prostate-cancer",
+      "type": "gmr.CancerType",
+      "label": "Metastatic castration-resistant prostate cancer"
+    },
+    {
+      "id": "gmr:biomarkers:no-mandatory-tumor-genomic-biomarker-identified",
+      "type": "gmr.Biomarker",
+      "label": "No mandatory tumor genomic biomarker identified"
+    },
+    {
+      "id": "gmr:interventions:sx-682-oral-investigational-cxcr1-2-inhibitor",
+      "type": "gmr.Intervention",
+      "label": "SX-682 oral investigational CXCR1/2 inhibitor"
+    },
+    {
+      "id": "gmr:interventions:docetaxel-iv",
+      "type": "gmr.Intervention",
+      "label": "Docetaxel IV"
+    },
+    {
+      "id": "gmr:endpoints:recommended-phase-2-dose-and-dose-limiting-toxicity-phase-1-primary",
+      "type": "gmr.Endpoint",
+      "label": "Recommended Phase 2 dose and dose-limiting toxicity (Phase 1 primary)"
+    },
+    {
+      "id": "gmr:endpoints:objective-response-rate-by-cohort-phase-2-primary",
+      "type": "gmr.Endpoint",
+      "label": "Objective response rate by cohort (Phase 2 primary)"
+    },
+    {
+      "id": "gmr:endpoints:progression-free-survival",
+      "type": "gmr.Endpoint",
+      "label": "Progression-free survival"
+    },
+    {
+      "id": "gmr:phase:1-2",
+      "type": "gmr.StudyPhase",
+      "label": "1/2"
+    },
+    {
+      "id": "gmr:provenance:ahead-sponsor",
+      "type": "gmr.ProvenanceRecord",
+      "label": "ahead-sponsor",
+      "sourceUri": "https://www.biontech.com/us/en/home/mediaroom/news/press-releases/2026/10/BioNTech-Provides-Update-on-Phase-2-3-Clinical-Trial-for-mRNA-Cancer-Immunotherapy-Candidate-BNT113-in-Metastatic-HPV16-positive-Head-and-Neck-Cancer.html",
+      "evidenceClass": "SPONSOR_PRIMARY_DISCLOSURE",
+      "publicationDate": "2026-10-13",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "PFS primary endpoint miss and OS continuation",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:ahead-registry",
+      "type": "gmr.ProvenanceRecord",
+      "label": "ahead-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT04534205",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-14",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Trial metadata and NCT identifier; direct API unavailable",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:ahead-history",
+      "type": "gmr.ProvenanceRecord",
+      "label": "ahead-history",
+      "sourceUri": "https://dashboard.datalookout.com/trial/NCT04534205",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-14",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Active not recruiting, enrollment 358, global site summary",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:aml-registry",
+      "type": "gmr.ProvenanceRecord",
+      "label": "aml-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT04062266",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Sponsor-submitted metadata; direct API unavailable",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:aml-history",
+      "type": "gmr.ProvenanceRecord",
+      "label": "aml-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT04062266",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-16",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Termination, rationale, actual enrollment, disease criteria",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:ccr4-registry",
+      "type": "gmr.ProvenanceRecord",
+      "label": "ccr4-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07055477",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "NCI-sponsored trial and eligibility",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:ccr4-history",
+      "type": "gmr.ProvenanceRecord",
+      "label": "ccr4-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07055477",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-01",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Recruiting to suspended reason; Oct 16 re-verification",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:duke-registry",
+      "type": "gmr.ProvenanceRecord",
+      "label": "duke-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT06385262",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Current biomarker exclusions, single-arm amendment",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:duke-history",
+      "type": "gmr.ProvenanceRecord",
+      "label": "duke-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT06385262",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-16",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Suspended to recruiting transition and Durham site status",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:sx-registry",
+      "type": "gmr.ProvenanceRecord",
+      "label": "sx-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07667400",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Phase 1/2 protocol, NCT record",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:provenance:sx-history",
+      "type": "gmr.ProvenanceRecord",
+      "label": "sx-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07667400",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-15",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "NIH recruitment opening, planned 120, projected start Oct 21",
+      "retrievedAt": "2026-10-18"
+    },
+    {
+      "id": "gmr:event:NCT04534205:PRIMARY_ENDPOINT_NOT_MET:2026-10-13",
+      "type": "gmr.MaterialResearchEvent",
+      "label": "PRIMARY_ENDPOINT_NOT_MET",
+      "eventDate": "2026-10-13",
+      "priority": "HIGH"
+    },
+    {
+      "id": "gmr:event:NCT04062266:TRIAL_TERMINATED_LOW_PARTICIPATION:2026-10-16",
+      "type": "gmr.MaterialResearchEvent",
+      "label": "TRIAL_TERMINATED_LOW_PARTICIPATION",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH"
+    },
+    {
+      "id": "gmr:event:NCT07055477:TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW:2026-10-01",
+      "type": "gmr.MaterialResearchEvent",
+      "label": "TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW",
+      "eventDate": "2026-10-01",
+      "priority": "HIGH"
+    },
+    {
+      "id": "gmr:event:NCT06385262:RECRUITMENT_REOPENED_AFTER_SUSPENSION:2026-10-16",
+      "type": "gmr.MaterialResearchEvent",
+      "label": "RECRUITMENT_REOPENED_AFTER_SUSPENSION",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH"
+    },
+    {
+      "id": "gmr:event:NCT07667400:RECRUITMENT_OPENED:2026-10-15",
+      "type": "gmr.MaterialResearchEvent",
+      "label": "RECRUITMENT_OPENED",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE"
+    }
+  ],
+  "edges": [
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:cancer:unresectable-recurrent-or-metastatic-head-and-neck-squamous-cell-carcinoma",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:biomarkers:hpv16-positive",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:biomarkers:pd-l1-cps-1",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:interventions:bnt113-tenumomeran-raplemomeran-plus-pembrolizumab",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:interventions:pembrolizumab-monotherapy-comparator",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:sponsors:biontech-se",
+      "type": "SPONSORED_BY"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:institutions:multicenter-international-study-site-list-not-fully-reconciled",
+      "type": "CONDUCTED_AT"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:geography:multinational-138-sites-in-oct-2026-indexed-record-country-distribution-not-fully-reconcil",
+      "type": "OPERATES_IN"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:endpoints:progression-free-survival-dual-primary-part-b",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:endpoints:overall-survival-dual-primary-part-b",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:endpoints:treatment-emergent-adverse-events-part-a",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:phase:2-3",
+      "type": "HAS_PHASE"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:provenance:ahead-sponsor",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:provenance:ahead-registry",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:provenance:ahead-history",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:cancer:acute-myeloid-leukemia-in-remission",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:biomarkers:mrd-persistence-subgroup-exploratory",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:biomarkers:flt3-mutation-listed-in-condition-vocabulary-only",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:interventions:azacitidine-sc-iv-days-1-5",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:interventions:venetoclax-oral-days-1-14-28-day-cycles",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:sponsors:m-d-anderson-cancer-center",
+      "type": "SPONSORED_BY"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:institutions:university-of-texas-md-anderson-cancer-center",
+      "type": "CONDUCTED_AT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:geography:houston-texas-usa",
+      "type": "OPERATES_IN"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:endpoints:relapse-free-survival-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:endpoints:overall-survival",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:endpoints:event-free-survival",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:endpoints:adverse-events",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:endpoints:mrd-dynamics",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:phase:2",
+      "type": "HAS_PHASE"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:provenance:aml-registry",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:provenance:aml-history",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:cancer:relapsed-or-refractory-mature-t-cell-malignancies",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:cancer:peripheral-t-cell-lymphoma",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:cancer:cutaneous-t-cell-lymphoma",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:biomarkers:ccr4-tumor-cell-protein-expression",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:interventions:autologous-anti-ccr4-car-t-cells",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:interventions:cyclophosphamide-and-fludarabine-lymphodepletion",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:sponsors:national-cancer-institute-nci",
+      "type": "SPONSORED_BY"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:institutions:nih-clinical-center",
+      "type": "CONDUCTED_AT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:geography:bethesda-maryland-usa",
+      "type": "OPERATES_IN"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:endpoints:adverse-event-type-grade-frequency-through-12-weeks-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:endpoints:dose-limiting-toxicity-maximum-tolerated-dose",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:endpoints:manufacturing-feasibility",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:endpoints:preliminary-response-rates",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:endpoints:long-term-safety",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:phase:1",
+      "type": "HAS_PHASE"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:provenance:ccr4-registry",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:provenance:ccr4-history",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:cancer:resectable-stage-ib-iii-non-small-cell-lung-cancer",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:biomarkers:egfr-alteration-exclusion",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:biomarkers:alk-rearrangement-exclusion",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:biomarkers:ros1-rearrangement-exclusion",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:interventions:alirocumab-pcsk9-inhibitor",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:interventions:cemiplimab-pd-1-inhibitor",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:interventions:platinum-doublet-chemotherapy",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:sponsors:duke-university",
+      "type": "SPONSORED_BY"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:institutions:duke-university",
+      "type": "CONDUCTED_AT"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:geography:durham-north-carolina-usa",
+      "type": "OPERATES_IN"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:endpoints:pathologic-complete-response-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:endpoints:safety-and-tolerability-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:endpoints:objective-response-rate",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:endpoints:event-free-survival",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:phase:2",
+      "type": "HAS_PHASE"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:provenance:duke-registry",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:provenance:duke-history",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:cancer:recurrent-or-metastatic-head-and-neck-squamous-cell-carcinoma",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:cancer:salivary-gland-carcinoma",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:cancer:metastatic-castration-resistant-prostate-cancer",
+      "type": "HAS_CANCER"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:biomarkers:no-mandatory-tumor-genomic-biomarker-identified",
+      "type": "HAS_BIOMARKER_ELIGIBILITY"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:interventions:sx-682-oral-investigational-cxcr1-2-inhibitor",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:interventions:docetaxel-iv",
+      "type": "EVALUATES_INTERVENTION"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:sponsors:national-cancer-institute-nci",
+      "type": "SPONSORED_BY"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:institutions:nih-clinical-center",
+      "type": "CONDUCTED_AT"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:geography:bethesda-maryland-usa",
+      "type": "OPERATES_IN"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:endpoints:recommended-phase-2-dose-and-dose-limiting-toxicity-phase-1-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:endpoints:objective-response-rate-by-cohort-phase-2-primary",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:endpoints:progression-free-survival",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:endpoints:overall-survival",
+      "type": "MEASURES_ENDPOINT"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:phase:1-2",
+      "type": "HAS_PHASE"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:provenance:sx-registry",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:provenance:sx-history",
+      "type": "RECONCILED_FROM"
+    },
+    {
+      "from": "gmr:study:NCT04534205",
+      "to": "gmr:event:NCT04534205:PRIMARY_ENDPOINT_NOT_MET:2026-10-13",
+      "type": "HAS_MATERIAL_EVENT"
+    },
+    {
+      "from": "gmr:event:NCT04534205:PRIMARY_ENDPOINT_NOT_MET:2026-10-13",
+      "to": "gmr:provenance:ahead-sponsor",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:event:NCT04534205:PRIMARY_ENDPOINT_NOT_MET:2026-10-13",
+      "to": "gmr:provenance:ahead-registry",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:study:NCT04062266",
+      "to": "gmr:event:NCT04062266:TRIAL_TERMINATED_LOW_PARTICIPATION:2026-10-16",
+      "type": "HAS_MATERIAL_EVENT"
+    },
+    {
+      "from": "gmr:event:NCT04062266:TRIAL_TERMINATED_LOW_PARTICIPATION:2026-10-16",
+      "to": "gmr:provenance:aml-registry",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:event:NCT04062266:TRIAL_TERMINATED_LOW_PARTICIPATION:2026-10-16",
+      "to": "gmr:provenance:aml-history",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:study:NCT07055477",
+      "to": "gmr:event:NCT07055477:TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW:2026-10-01",
+      "type": "HAS_MATERIAL_EVENT"
+    },
+    {
+      "from": "gmr:event:NCT07055477:TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW:2026-10-01",
+      "to": "gmr:provenance:ccr4-registry",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:event:NCT07055477:TRIAL_SUSPENDED_EVENTS_UNDER_REVIEW:2026-10-01",
+      "to": "gmr:provenance:ccr4-history",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:study:NCT06385262",
+      "to": "gmr:event:NCT06385262:RECRUITMENT_REOPENED_AFTER_SUSPENSION:2026-10-16",
+      "type": "HAS_MATERIAL_EVENT"
+    },
+    {
+      "from": "gmr:event:NCT06385262:RECRUITMENT_REOPENED_AFTER_SUSPENSION:2026-10-16",
+      "to": "gmr:provenance:duke-registry",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:event:NCT06385262:RECRUITMENT_REOPENED_AFTER_SUSPENSION:2026-10-16",
+      "to": "gmr:provenance:duke-history",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:study:NCT07667400",
+      "to": "gmr:event:NCT07667400:RECRUITMENT_OPENED:2026-10-15",
+      "type": "HAS_MATERIAL_EVENT"
+    },
+    {
+      "from": "gmr:event:NCT07667400:RECRUITMENT_OPENED:2026-10-15",
+      "to": "gmr:provenance:sx-registry",
+      "type": "SUPPORTED_BY"
+    },
+    {
+      "from": "gmr:event:NCT07667400:RECRUITMENT_OPENED:2026-10-15",
+      "to": "gmr:provenance:sx-history",
+      "type": "SUPPORTED_BY"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "ahead-sponsor",
+      "sourceUri": "https://www.biontech.com/us/en/home/mediaroom/news/press-releases/2026/10/BioNTech-Provides-Update-on-Phase-2-3-Clinical-Trial-for-mRNA-Cancer-Immunotherapy-Candidate-BNT113-in-Metastatic-HPV16-positive-Head-and-Neck-Cancer.html",
+      "evidenceClass": "SPONSOR_PRIMARY_DISCLOSURE",
+      "publicationDate": "2026-10-13",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "PFS primary endpoint miss and OS continuation"
+    },
+    {
+      "id": "ahead-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT04534205",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-14",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Trial metadata and NCT identifier; direct API unavailable"
+    },
+    {
+      "id": "ahead-history",
+      "sourceUri": "https://dashboard.datalookout.com/trial/NCT04534205",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-14",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Active not recruiting, enrollment 358, global site summary"
+    },
+    {
+      "id": "aml-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT04062266",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Sponsor-submitted metadata; direct API unavailable"
+    },
+    {
+      "id": "aml-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT04062266",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-16",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Termination, rationale, actual enrollment, disease criteria"
+    },
+    {
+      "id": "ccr4-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07055477",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "NCI-sponsored trial and eligibility"
+    },
+    {
+      "id": "ccr4-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07055477",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-01",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Recruiting to suspended reason; Oct 16 re-verification"
+    },
+    {
+      "id": "duke-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT06385262",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Current biomarker exclusions, single-arm amendment"
+    },
+    {
+      "id": "duke-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT06385262",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-16",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "Suspended to recruiting transition and Durham site status"
+    },
+    {
+      "id": "sx-registry",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07667400",
+      "evidenceClass": "PRIMARY_TRIAL_REGISTRY_LINK",
+      "publicationDate": "2026-10-16",
+      "verificationState": "INDEXED_MIRROR_ONLY",
+      "scope": "Phase 1/2 protocol, NCT record"
+    },
+    {
+      "id": "sx-history",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07667400",
+      "evidenceClass": "CTG_DERIVED_MIRROR",
+      "publicationDate": "2026-10-15",
+      "verificationState": "MIRROR_VERIFIED",
+      "scope": "NIH recruitment opening, planned 120, projected start Oct 21"
+    }
+  ],
+  "validation": {
+    "studyCount": 5,
+    "eventCount": 5,
+    "nodeCount": 85,
+    "edgeCount": 96,
+    "provenanceCount": 11,
+    "uniqueNCTs": 5,
+    "referentialIntegrity": true,
+    "duplicateNodeIDs": false,
+    "unconfirmedRegistryHistory": true
+  },
+  "integrationStatus": "RESEARCH_BRANCH_ONLY_NOT_PRODUCTION"
+}
