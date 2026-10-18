@@ -1,0 +1,1255 @@
+{
+  "ontologyId": "GLOBAL_MEDICAL_RESEARCH_ONTOLOGY_V1",
+  "schemaVersion": "1.0.0",
+  "batchDate": "2026-10-18",
+  "batchId": "GMRO_2026-10-18_SCOUT_11_NEW_FINDINGS",
+  "origin": "GPT-Doug Clinical Trial Scout",
+  "reviewStatus": "PROPOSED_RESEARCH_EVIDENCE",
+  "sourceBoundary": "Targeted October 14-18 oncology surveillance. Dated ClinicalTrials.gov-derived mirrors provide transitions and results. Direct official ClinicalTrials.gov API/version reconciliation and global ICTRP/CTIS/ChiCTR completeness not established. No patient-specific clinical decisions or notifications from raw research evidence.",
+  "studies": [
+    {
+      "nct": "NCT06566092",
+      "name": "IOV-PED-101 — Autologous tumor-infiltrating lymphocyte therapy in pediatric/AYA solid tumors",
+      "identifiers": {
+        "NCT": "NCT06566092",
+        "sponsorProtocol": "IOV-PED-101"
+      },
+      "cancer": [
+        "Rhabdomyosarcoma",
+        "Ewing sarcoma",
+        "Primary CNS malignancy",
+        "Melanoma",
+        "Soft tissue sarcoma"
+      ],
+      "molecularEligibility": "No required tumor genomic variant identified; relapsed/refractory solid tumor and resectable lesion for TIL generation; age range 6 months–21 years (weight at least 8 kg).",
+      "biomarkers": [],
+      "interventions": [
+        "Autologous LN-145/LN-144 expanded tumor-infiltrating lymphocytes"
+      ],
+      "phase": "1",
+      "sponsors": [
+        "Iovance Biotherapeutics, Inc."
+      ],
+      "institutions": [
+        "Children's Hospital Colorado",
+        "Johns Hopkins All Children's Hospital",
+        "Rutgers Cancer Institute",
+        "Roswell Park Comprehensive Cancer Center",
+        "Memorial Sloan Kettering Cancer Center"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "endpoints": [
+        "Treatment-emergent adverse events (primary)",
+        "Objective response rate",
+        "Duration of response",
+        "Progression-free survival",
+        "Overall survival"
+      ],
+      "status": "TERMINATED",
+      "previousStatus": "ACTIVE_NOT_RECRUITING",
+      "enrollment": {
+        "actual": 5,
+        "previousEstimated": 40
+      },
+      "statusAsOf": "2026-10-16",
+      "eventType": "RECRUITMENT_STATUS_TERMINATED",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH",
+      "finding": "Registry-derived version history records active/not recruiting to terminated; sponsor decided to conclude remaining participant visits after reviewing available safety and efficacy data. 5 actual participants versus 40 previously planned.",
+      "limitations": "Specific adverse events, efficacy failure, or safety causality have not been disclosed; do not infer these from the sponsor's broad rationale.",
+      "action": "Exclude from study enrollment matching; preserve termination reason verbatim and monitor any final results.",
+      "sources": [
+        "iov-mirror",
+        "iov-corroboration"
+      ]
+    },
+    {
+      "nct": "NCT07052383",
+      "name": "DIT309T-IS001 — DIT309 CAR-T in advanced bone and soft tissue sarcoma",
+      "identifiers": {
+        "NCT": "NCT07052383",
+        "sponsorProtocol": "DIT309T-IS001"
+      },
+      "cancer": [
+        "Osteosarcoma",
+        "Advanced soft tissue sarcoma"
+      ],
+      "molecularEligibility": "Protocol-defined positive tumor target-antigen expression required; a prior secondary mirror names B7-H3 IHC >=20%, but latest dated registry mirror only states target-antigen positivity, so exact threshold requires reconciliation.",
+      "biomarkers": [
+        "Protocol-defined tumor antigen positive by tissue test"
+      ],
+      "interventions": [
+        "DIT309 CAR-T cell injection"
+      ],
+      "phase": "1",
+      "sponsors": [
+        "Tcelltech Inc."
+      ],
+      "institutions": [
+        "Shanghai General Hospital, Shanghai Jiao Tong University School of Medicine"
+      ],
+      "geography": [
+        "China; Shanghai"
+      ],
+      "endpoints": [
+        "Dose-limiting toxicity within first 28 days",
+        "Treatment-emergent adverse events",
+        "Maximum tolerated dose / recommended Phase 2 dose",
+        "Objective response rate",
+        "Progression-free survival"
+      ],
+      "status": "SUSPENDED",
+      "previousStatus": "RECRUITING",
+      "enrollment": {
+        "estimated": 15
+      },
+      "statusAsOf": "2026-10-14",
+      "eventType": "RECRUITMENT_STATUS_SUSPENDED",
+      "eventDate": "2026-10-14",
+      "priority": "HIGH",
+      "finding": "Recruiting -> Suspended in the October 14 ClinicalTrials.gov-derived change record; sponsor reason: 'Data update in progress.'",
+      "limitations": "Administrative reason given; there is no confirmed safety signal or clinical hold cause. Inconsistent age criterion (structured 8 years vs free text 8 weeks) should be reconciled.",
+      "action": "Suspend clinical-trial matching for this study; check future registry/sponsor update for restart and reconcile target-antigen requirement.",
+      "sources": [
+        "dit-mirror",
+        "dit-corroboration"
+      ]
+    },
+    {
+      "nct": "NCT05664217",
+      "name": "NKTR-255 following CD19 CAR-T in relapsed/refractory LBCL",
+      "identifiers": {
+        "NCT": "NCT05664217",
+        "sponsorProtocol": "18-255-01"
+      },
+      "cancer": [
+        "Relapsed or refractory large B-cell lymphoma",
+        "Diffuse large B-cell lymphoma"
+      ],
+      "molecularEligibility": "Prior CD19-directed CAR-T treatment (axi-cel or liso-cel) required; no universal somatic mutation specified.",
+      "biomarkers": [],
+      "interventions": [
+        "NKTR-255 (IL-15 receptor agonist), three stage-1 dose groups",
+        "Placebo comparator after CD19-directed CAR-T"
+      ],
+      "phase": "2/3 (only Phase 2 Stage 1 conducted)",
+      "sponsors": [
+        "Nektar Therapeutics"
+      ],
+      "institutions": [
+        "University of Kansas Cancer Center",
+        "UMass Memorial Medical Center",
+        "Washington University School of Medicine",
+        "NYU Langone Medical Center",
+        "Novant Health Cancer Institute",
+        "Oncology Hematology Care Cincinnati",
+        "University of Texas MD Anderson Cancer Center"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "endpoints": [
+        "Month-6 complete response by blinded independent central review (primary)",
+        "Treatment-emergent adverse events"
+      ],
+      "status": "TERMINATED (previously; not a new status change)",
+      "previousStatus": null,
+      "enrollment": {
+        "actual": 15,
+        "stage1Experimental": 11,
+        "stage1Placebo": 4,
+        "stage2Enrolled": 0
+      },
+      "statusAsOf": "2026-10-16",
+      "eventType": "RESULTS_FIRST_POSTED",
+      "eventDate": "2026-10-16",
+      "priority": "MODERATE",
+      "finding": "First posted results show 15 Stage 1 participants; 8/11 NKTR-255-assigned participants and 2/4 placebo-assigned participants listed with complete response at 6 months. Stage 2 never enrolled; trial termination was a prior event.",
+      "limitations": "Extremely small, early-ended multi-dose Stage 1; observed counts are descriptive, not proof of efficacy or a statistically supported comparison. Do not label termination as a new Oct 16 change.",
+      "action": "Store posted results as a descriptive evidence update with small-sample and early-termination flags; retain protocol outcome definitions.",
+      "sources": [
+        "nktr-mirror"
+      ]
+    },
+    {
+      "nct": "NCT07864701",
+      "name": "PANGU-1 — JMBI-001 in MYC-positive solid tumors and NHL",
+      "identifiers": {
+        "NCT": "NCT07864701",
+        "sponsorProtocol": "PANGU-1",
+        "chinaCDE": "CTR20263562"
+      },
+      "cancer": [
+        "MYC-positive advanced solid tumors",
+        "Relapsed/refractory non-Hodgkin lymphoma"
+      ],
+      "molecularEligibility": "Except Phase Ia accelerated titration, MYC-positive nuclei by immunohistochemistry: >=10% in solid tumors and >=40% in non-Hodgkin lymphoma; age 18–75. Biomarker is protein expression, not proof of MYC gene mutation.",
+      "biomarkers": [
+        "MYC protein IHC positivity"
+      ],
+      "interventions": [
+        "Oral JMBI-001 tablets"
+      ],
+      "phase": "1/2",
+      "sponsors": [
+        "Chengdu Anticancer Bioscience, Ltd."
+      ],
+      "institutions": [
+        "Peking University Cancer Hospital & Institute"
+      ],
+      "geography": [
+        "China; Beijing"
+      ],
+      "endpoints": [
+        "Phase Ia dose-limiting toxicity, maximum tolerated dose, recommended expansion dose",
+        "Phase Ib recommended Phase 2 dose",
+        "Phase II objective response rate",
+        "Safety and pharmacokinetics"
+      ],
+      "status": "RECRUITING (registry-history mirror October 15; primary-search snapshot October 8 was not yet recruiting)",
+      "previousStatus": "NOT_YET_RECRUITING",
+      "enrollment": {
+        "estimated": 150
+      },
+      "statusAsOf": "2026-10-15",
+      "eventType": "NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "eventDate": "2026-10-15",
+      "firstPosted": "2026-10-08",
+      "priority": "MODERATE",
+      "finding": "New MYC-expression-defined Phase 1/2 study first posted Oct 8; Oct 15 registry-history mirror records transition to Recruiting and first Beijing site added. Secondary registry identifier CTR20263562 is in ClinicalTrials.gov metadata.",
+      "limitations": "The directly indexed primary registry excerpt predates the recruitment transition. Confirm the current primary record and site contact before using for enrollment matching.",
+      "action": "Register MYC IHC-stratified research cohort and China CDE cross-identifier; mark site enrollment provisional pending direct primary-record refresh.",
+      "sources": [
+        "pangu-mirror",
+        "pangu-primary-indexed"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "gmr:event:NCT06566092:RECRUITMENT_STATUS_TERMINATED",
+      "type": "RECRUITMENT_STATUS_TERMINATED",
+      "eventDate": "2026-10-16",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT06566092",
+      "nct": "NCT06566092",
+      "finding": "Registry-derived version history records active/not recruiting to terminated; sponsor decided to conclude remaining participant visits after reviewing available safety and efficacy data. 5 actual participants versus 40 previously planned.",
+      "limitations": "Specific adverse events, efficacy failure, or safety causality have not been disclosed; do not infer these from the sponsor's broad rationale.",
+      "researchAction": "Exclude from study enrollment matching; preserve termination reason verbatim and monitor any final results.",
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07052383:RECRUITMENT_STATUS_SUSPENDED",
+      "type": "RECRUITMENT_STATUS_SUSPENDED",
+      "eventDate": "2026-10-14",
+      "priority": "HIGH",
+      "studyId": "gmr:study:NCT07052383",
+      "nct": "NCT07052383",
+      "finding": "Recruiting -> Suspended in the October 14 ClinicalTrials.gov-derived change record; sponsor reason: 'Data update in progress.'",
+      "limitations": "Administrative reason given; there is no confirmed safety signal or clinical hold cause. Inconsistent age criterion (structured 8 years vs free text 8 weeks) should be reconciled.",
+      "researchAction": "Suspend clinical-trial matching for this study; check future registry/sponsor update for restart and reconcile target-antigen requirement.",
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT05664217:RESULTS_FIRST_POSTED",
+      "type": "RESULTS_FIRST_POSTED",
+      "eventDate": "2026-10-16",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT05664217",
+      "nct": "NCT05664217",
+      "finding": "First posted results show 15 Stage 1 participants; 8/11 NKTR-255-assigned participants and 2/4 placebo-assigned participants listed with complete response at 6 months. Stage 2 never enrolled; trial termination was a prior event.",
+      "limitations": "Extremely small, early-ended multi-dose Stage 1; observed counts are descriptive, not proof of efficacy or a statistically supported comparison. Do not label termination as a new Oct 16 change.",
+      "researchAction": "Store posted results as a descriptive evidence update with small-sample and early-termination flags; retain protocol outcome definitions.",
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:event:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "type": "NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "eventDate": "2026-10-15",
+      "priority": "MODERATE",
+      "studyId": "gmr:study:NCT07864701",
+      "nct": "NCT07864701",
+      "finding": "New MYC-expression-defined Phase 1/2 study first posted Oct 8; Oct 15 registry-history mirror records transition to Recruiting and first Beijing site added. Secondary registry identifier CTR20263562 is in ClinicalTrials.gov metadata.",
+      "limitations": "The directly indexed primary registry excerpt predates the recruitment transition. Confirm the current primary record and site contact before using for enrollment matching.",
+      "researchAction": "Register MYC IHC-stratified research cohort and China CDE cross-identifier; mark site enrollment provisional pending direct primary-record refresh.",
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "gmr:provenance:iov-mirror",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "iov-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT06566092",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived registry history and structured study fields",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:iov-corroboration",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "iov-corroboration",
+      "sourceUri": "https://spzco.com/biotech/trial/NCT06566092",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Independent registry-derived mirror confirming status, participant count, and sponsor rationale",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:dit-mirror",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "dit-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07052383",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived Oct 14 status transition and study metadata",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:dit-corroboration",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "dit-corroboration",
+      "sourceUri": "https://eichor.com/study/NCT07052383",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Second mirror explicitly synced Oct 16, confirming suspended status",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:nktr-mirror",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "nktr-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT05664217",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived Oct 16 posted summary results",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:pangu-mirror",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "pangu-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07864701",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Oct 15 dated recruitment transition and Peking University Cancer Hospital site",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:provenance:pangu-primary-indexed",
+      "type": "gmr.ProvenanceRecord",
+      "sourceId": "pangu-primary-indexed",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07864701",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Search-indexed first Oct 8 registration and CTR20263562 cross-identifier; not the current status",
+      "retrievedAt": "2026-10-18T18:03:15Z",
+      "transformation": "Curated transcription and type normalization; source snapshot not downloaded; provenance URI retained.",
+      "version": "2026-10-18-surveillance",
+      "license": null,
+      "contentHash": null
+    },
+    {
+      "id": "gmr:study:NCT06566092",
+      "type": "gmr.Study",
+      "title": "IOV-PED-101 — Autologous tumor-infiltrating lymphocyte therapy in pediatric/AYA solid tumors",
+      "studyType": "Interventional",
+      "status": "TERMINATED",
+      "phase": "1",
+      "populationSummary": "Rhabdomyosarcoma; Ewing sarcoma; Primary CNS malignancy; Melanoma; Soft tissue sarcoma",
+      "methodsSummary": "Autologous LN-145/LN-144 expanded tumor-infiltrating lymphocytes",
+      "sponsorNames": [
+        "Iovance Biotherapeutics, Inc."
+      ],
+      "institutionNames": [
+        "Children's Hospital Colorado",
+        "Johns Hopkins All Children's Hospital",
+        "Rutgers Cancer Institute",
+        "Roswell Park Comprehensive Cancer Center",
+        "Memorial Sloan Kettering Cancer Center"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "biomarkerEligibility": "No required tumor genomic variant identified; relapsed/refractory solid tumor and resectable lesion for TIL generation; age range 6 months–21 years (weight at least 8 kg).",
+      "primaryAndSecondaryEndpoints": [
+        "Treatment-emergent adverse events (primary)",
+        "Objective response rate",
+        "Duration of response",
+        "Progression-free survival",
+        "Overall survival"
+      ],
+      "enrollment": {
+        "actual": 5,
+        "previousEstimated": 40
+      },
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT06566092",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT06566092",
+      "studyId": "gmr:study:NCT06566092",
+      "status": "TERMINATED",
+      "firstPosted": null,
+      "lastUpdated": "2026-10-16",
+      "additionalIdentifiers": {
+        "NCT": "NCT06566092",
+        "sponsorProtocol": "IOV-PED-101"
+      },
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:rhabdomyosarcoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Rhabdomyosarcoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:ewing-sarcoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Ewing sarcoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:primary-cns-malignancy",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Primary CNS malignancy",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:melanoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Melanoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:soft-tissue-sarcoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Soft tissue sarcoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:intervention:autologous-ln-145-ln-144-expanded-tumor-infiltrating-lymphocytes",
+      "type": "gmr.Intervention",
+      "label": "Autologous LN-145/LN-144 expanded tumor-infiltrating lymphocytes",
+      "interventionType": "Investigational research intervention or comparator",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:organization:iovance-biotherapeutics-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "Iovance Biotherapeutics, Inc.",
+      "organizationIdentifiers": [],
+      "countryOrRegion": null,
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Registry-derived version history records active/not recruiting to terminated; sponsor decided to conclude remaining participant visits after reviewing available safety and efficacy data. 5 actual participants versus 40 previously planned.",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "HIGH",
+      "uncertainty": "Specific adverse events, efficacy failure, or safety causality have not been disclosed; do not infer these from the sponsor's broad rationale.",
+      "sourceRefs": [
+        "gmr:provenance:iov-mirror",
+        "gmr:provenance:iov-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:study:NCT07052383",
+      "type": "gmr.Study",
+      "title": "DIT309T-IS001 — DIT309 CAR-T in advanced bone and soft tissue sarcoma",
+      "studyType": "Interventional",
+      "status": "SUSPENDED",
+      "phase": "1",
+      "populationSummary": "Osteosarcoma; Advanced soft tissue sarcoma",
+      "methodsSummary": "DIT309 CAR-T cell injection",
+      "sponsorNames": [
+        "Tcelltech Inc."
+      ],
+      "institutionNames": [
+        "Shanghai General Hospital, Shanghai Jiao Tong University School of Medicine"
+      ],
+      "geography": [
+        "China; Shanghai"
+      ],
+      "biomarkerEligibility": "Protocol-defined positive tumor target-antigen expression required; a prior secondary mirror names B7-H3 IHC >=20%, but latest dated registry mirror only states target-antigen positivity, so exact threshold requires reconciliation.",
+      "primaryAndSecondaryEndpoints": [
+        "Dose-limiting toxicity within first 28 days",
+        "Treatment-emergent adverse events",
+        "Maximum tolerated dose / recommended Phase 2 dose",
+        "Objective response rate",
+        "Progression-free survival"
+      ],
+      "enrollment": {
+        "estimated": 15
+      },
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT07052383",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07052383",
+      "studyId": "gmr:study:NCT07052383",
+      "status": "SUSPENDED",
+      "firstPosted": null,
+      "lastUpdated": "2026-10-14",
+      "additionalIdentifiers": {
+        "NCT": "NCT07052383",
+        "sponsorProtocol": "DIT309T-IS001"
+      },
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:osteosarcoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Osteosarcoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:condition:advanced-soft-tissue-sarcoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Advanced soft tissue sarcoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:intervention:dit309-car-t-cell-injection",
+      "type": "gmr.Intervention",
+      "label": "DIT309 CAR-T cell injection",
+      "interventionType": "Investigational research intervention or comparator",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:protocol-defined-tumor-antigen-positive-by-tissue-test",
+      "type": "gmr.Biomarker",
+      "label": "Protocol-defined tumor antigen positive by tissue test",
+      "biologicalContext": "Protocol-defined positive tumor target-antigen expression required; a prior secondary mirror names B7-H3 IHC >=20%, but latest dated registry mirror only states target-antigen positivity, so exact threshold requires reconciliation.",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:organization:tcelltech-inc",
+      "type": "gmr.ResearchOrganization",
+      "name": "Tcelltech Inc.",
+      "organizationIdentifiers": [],
+      "countryOrRegion": null,
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "Recruiting -> Suspended in the October 14 ClinicalTrials.gov-derived change record; sponsor reason: 'Data update in progress.'",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "HIGH",
+      "uncertainty": "Administrative reason given; there is no confirmed safety signal or clinical hold cause. Inconsistent age criterion (structured 8 years vs free text 8 weeks) should be reconciled.",
+      "sourceRefs": [
+        "gmr:provenance:dit-mirror",
+        "gmr:provenance:dit-corroboration"
+      ]
+    },
+    {
+      "id": "gmr:study:NCT05664217",
+      "type": "gmr.Study",
+      "title": "NKTR-255 following CD19 CAR-T in relapsed/refractory LBCL",
+      "studyType": "Interventional",
+      "status": "TERMINATED (previously; not a new status change)",
+      "phase": "2/3 (only Phase 2 Stage 1 conducted)",
+      "populationSummary": "Relapsed or refractory large B-cell lymphoma; Diffuse large B-cell lymphoma",
+      "methodsSummary": "NKTR-255 (IL-15 receptor agonist), three stage-1 dose groups; Placebo comparator after CD19-directed CAR-T",
+      "sponsorNames": [
+        "Nektar Therapeutics"
+      ],
+      "institutionNames": [
+        "University of Kansas Cancer Center",
+        "UMass Memorial Medical Center",
+        "Washington University School of Medicine",
+        "NYU Langone Medical Center",
+        "Novant Health Cancer Institute",
+        "Oncology Hematology Care Cincinnati",
+        "University of Texas MD Anderson Cancer Center"
+      ],
+      "geography": [
+        "United States"
+      ],
+      "biomarkerEligibility": "Prior CD19-directed CAR-T treatment (axi-cel or liso-cel) required; no universal somatic mutation specified.",
+      "primaryAndSecondaryEndpoints": [
+        "Month-6 complete response by blinded independent central review (primary)",
+        "Treatment-emergent adverse events"
+      ],
+      "enrollment": {
+        "actual": 15,
+        "stage1Experimental": 11,
+        "stage1Placebo": 4,
+        "stage2Enrolled": 0
+      },
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT05664217",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT05664217",
+      "studyId": "gmr:study:NCT05664217",
+      "status": "TERMINATED (previously; not a new status change)",
+      "firstPosted": null,
+      "lastUpdated": "2026-10-16",
+      "additionalIdentifiers": {
+        "NCT": "NCT05664217",
+        "sponsorProtocol": "18-255-01"
+      },
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:condition:relapsed-or-refractory-large-b-cell-lymphoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Relapsed or refractory large B-cell lymphoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:condition:diffuse-large-b-cell-lymphoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Diffuse large B-cell lymphoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:intervention:nktr-255-il-15-receptor-agonist-three-stage-1-dose-groups",
+      "type": "gmr.Intervention",
+      "label": "NKTR-255 (IL-15 receptor agonist), three stage-1 dose groups",
+      "interventionType": "Investigational research intervention or comparator",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:intervention:placebo-comparator-after-cd19-directed-car-t",
+      "type": "gmr.Intervention",
+      "label": "Placebo comparator after CD19-directed CAR-T",
+      "interventionType": "Investigational research intervention or comparator",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:organization:nektar-therapeutics",
+      "type": "gmr.ResearchOrganization",
+      "name": "Nektar Therapeutics",
+      "organizationIdentifiers": [],
+      "countryOrRegion": null,
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT05664217:RESULTS_FIRST_POSTED",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "First posted results show 15 Stage 1 participants; 8/11 NKTR-255-assigned participants and 2/4 placebo-assigned participants listed with complete response at 6 months. Stage 2 never enrolled; trial termination was a prior event.",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "MODERATE",
+      "uncertainty": "Extremely small, early-ended multi-dose Stage 1; observed counts are descriptive, not proof of efficacy or a statistically supported comparison. Do not label termination as a new Oct 16 change.",
+      "sourceRefs": [
+        "gmr:provenance:nktr-mirror"
+      ]
+    },
+    {
+      "id": "gmr:study:NCT07864701",
+      "type": "gmr.Study",
+      "title": "PANGU-1 — JMBI-001 in MYC-positive solid tumors and NHL",
+      "studyType": "Interventional",
+      "status": "RECRUITING (registry-history mirror October 15; primary-search snapshot October 8 was not yet recruiting)",
+      "phase": "1/2",
+      "populationSummary": "MYC-positive advanced solid tumors; Relapsed/refractory non-Hodgkin lymphoma",
+      "methodsSummary": "Oral JMBI-001 tablets",
+      "sponsorNames": [
+        "Chengdu Anticancer Bioscience, Ltd."
+      ],
+      "institutionNames": [
+        "Peking University Cancer Hospital & Institute"
+      ],
+      "geography": [
+        "China; Beijing"
+      ],
+      "biomarkerEligibility": "Except Phase Ia accelerated titration, MYC-positive nuclei by immunohistochemistry: >=10% in solid tumors and >=40% in non-Hodgkin lymphoma; age 18–75. Biomarker is protein expression, not proof of MYC gene mutation.",
+      "primaryAndSecondaryEndpoints": [
+        "Phase Ia dose-limiting toxicity, maximum tolerated dose, recommended expansion dose",
+        "Phase Ib recommended Phase 2 dose",
+        "Phase II objective response rate",
+        "Safety and pharmacokinetics"
+      ],
+      "enrollment": {
+        "estimated": 150
+      },
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:registration:NCT07864701",
+      "type": "gmr.TrialRegistration",
+      "registry": "ClinicalTrials.gov",
+      "registryId": "NCT07864701",
+      "studyId": "gmr:study:NCT07864701",
+      "status": "RECRUITING (registry-history mirror October 15; primary-search snapshot October 8 was not yet recruiting)",
+      "firstPosted": "2026-10-08",
+      "lastUpdated": "2026-10-15",
+      "additionalIdentifiers": {
+        "NCT": "NCT07864701",
+        "sponsorProtocol": "PANGU-1",
+        "chinaCDE": "CTR20263562"
+      },
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:condition:myc-positive-advanced-solid-tumors",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "MYC-positive advanced solid tumors",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:condition:relapsed-refractory-non-hodgkin-lymphoma",
+      "type": "gmr.DiseaseOrCondition",
+      "label": "Relapsed/refractory non-Hodgkin lymphoma",
+      "identifiers": [],
+      "classificationVersion": null,
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:intervention:oral-jmbi-001-tablets",
+      "type": "gmr.Intervention",
+      "label": "Oral JMBI-001 tablets",
+      "interventionType": "Investigational research intervention or comparator",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:biomarker:myc-protein-ihc-positivity",
+      "type": "gmr.Biomarker",
+      "label": "MYC protein IHC positivity",
+      "biologicalContext": "Except Phase Ia accelerated titration, MYC-positive nuclei by immunohistochemistry: >=10% in solid tumors and >=40% in non-Hodgkin lymphoma; age 18–75. Biomarker is protein expression, not proof of MYC gene mutation.",
+      "identifiers": [],
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:organization:chengdu-anticancer-bioscience-ltd",
+      "type": "gmr.ResearchOrganization",
+      "name": "Chengdu Anticancer Bioscience, Ltd.",
+      "organizationIdentifiers": [],
+      "countryOrRegion": null,
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    },
+    {
+      "id": "gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "type": "gmr.EvidenceAssertion",
+      "statement": "New MYC-expression-defined Phase 1/2 study first posted Oct 8; Oct 15 registry-history mirror records transition to Recruiting and first Beijing site added. Secondary registry identifier CTR20263562 is in ClinicalTrials.gov metadata.",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "supportLevel": "MODERATE",
+      "uncertainty": "The directly indexed primary registry excerpt predates the recruitment transition. Confirm the current primary record and site contact before using for enrollment matching.",
+      "sourceRefs": [
+        "gmr:provenance:pangu-mirror",
+        "gmr:provenance:pangu-primary-indexed"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT06566092->gmr:study:NCT06566092",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT06566092",
+      "to": "gmr:study:NCT06566092"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT06566092->gmr:condition:rhabdomyosarcoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:condition:rhabdomyosarcoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT06566092->gmr:condition:ewing-sarcoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:condition:ewing-sarcoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT06566092->gmr:condition:primary-cns-malignancy",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:condition:primary-cns-malignancy"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT06566092->gmr:condition:melanoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:condition:melanoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT06566092->gmr:condition:soft-tissue-sarcoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:condition:soft-tissue-sarcoma"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT06566092->gmr:intervention:autologous-ln-145-ln-144-expanded-tumor-infiltrating-lymphocytes",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:intervention:autologous-ln-145-ln-144-expanded-tumor-infiltrating-lymphocytes"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT06566092->gmr:provenance:iov-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:provenance:iov-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT06566092->gmr:provenance:iov-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT06566092",
+      "to": "gmr:provenance:iov-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT06566092->gmr:provenance:iov-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT06566092",
+      "to": "gmr:provenance:iov-corroboration"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT06566092->gmr:provenance:iov-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT06566092",
+      "to": "gmr:provenance:iov-corroboration"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT06566092->gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT06566092",
+      "to": "gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED->gmr:provenance:iov-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED",
+      "to": "gmr:provenance:iov-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED->gmr:provenance:iov-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT06566092:RECRUITMENT_STATUS_TERMINATED",
+      "to": "gmr:provenance:iov-corroboration"
+    },
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT07052383->gmr:study:NCT07052383",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT07052383",
+      "to": "gmr:study:NCT07052383"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07052383->gmr:condition:osteosarcoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:condition:osteosarcoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07052383->gmr:condition:advanced-soft-tissue-sarcoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:condition:advanced-soft-tissue-sarcoma"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07052383->gmr:intervention:dit309-car-t-cell-injection",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:intervention:dit309-car-t-cell-injection"
+    },
+    {
+      "id": "gmr.MEASURES_BIOMARKER:gmr:study:NCT07052383->gmr:biomarker:protocol-defined-tumor-antigen-positive-by-tissue-test",
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:biomarker:protocol-defined-tumor-antigen-positive-by-tissue-test"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07052383->gmr:provenance:dit-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:provenance:dit-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07052383->gmr:provenance:dit-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07052383",
+      "to": "gmr:provenance:dit-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07052383->gmr:provenance:dit-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07052383",
+      "to": "gmr:provenance:dit-corroboration"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07052383->gmr:provenance:dit-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07052383",
+      "to": "gmr:provenance:dit-corroboration"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT07052383->gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07052383",
+      "to": "gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED->gmr:provenance:dit-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED",
+      "to": "gmr:provenance:dit-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED->gmr:provenance:dit-corroboration",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07052383:RECRUITMENT_STATUS_SUSPENDED",
+      "to": "gmr:provenance:dit-corroboration"
+    },
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT05664217->gmr:study:NCT05664217",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT05664217",
+      "to": "gmr:study:NCT05664217"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT05664217->gmr:condition:relapsed-or-refractory-large-b-cell-lymphoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05664217",
+      "to": "gmr:condition:relapsed-or-refractory-large-b-cell-lymphoma"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT05664217->gmr:condition:diffuse-large-b-cell-lymphoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT05664217",
+      "to": "gmr:condition:diffuse-large-b-cell-lymphoma"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05664217->gmr:intervention:nktr-255-il-15-receptor-agonist-three-stage-1-dose-groups",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05664217",
+      "to": "gmr:intervention:nktr-255-il-15-receptor-agonist-three-stage-1-dose-groups"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT05664217->gmr:intervention:placebo-comparator-after-cd19-directed-car-t",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT05664217",
+      "to": "gmr:intervention:placebo-comparator-after-cd19-directed-car-t"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT05664217->gmr:provenance:nktr-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT05664217",
+      "to": "gmr:provenance:nktr-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT05664217->gmr:provenance:nktr-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT05664217",
+      "to": "gmr:provenance:nktr-mirror"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT05664217->gmr:assertion:NCT05664217:RESULTS_FIRST_POSTED",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT05664217",
+      "to": "gmr:assertion:NCT05664217:RESULTS_FIRST_POSTED"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT05664217:RESULTS_FIRST_POSTED->gmr:provenance:nktr-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT05664217:RESULTS_FIRST_POSTED",
+      "to": "gmr:provenance:nktr-mirror"
+    },
+    {
+      "id": "gmr.REGISTERS:gmr:registration:NCT07864701->gmr:study:NCT07864701",
+      "type": "gmr.REGISTERS",
+      "from": "gmr:registration:NCT07864701",
+      "to": "gmr:study:NCT07864701"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07864701->gmr:condition:myc-positive-advanced-solid-tumors",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:condition:myc-positive-advanced-solid-tumors"
+    },
+    {
+      "id": "gmr.INVESTIGATES_CONDITION:gmr:study:NCT07864701->gmr:condition:relapsed-refractory-non-hodgkin-lymphoma",
+      "type": "gmr.INVESTIGATES_CONDITION",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:condition:relapsed-refractory-non-hodgkin-lymphoma"
+    },
+    {
+      "id": "gmr.EVALUATES_INTERVENTION:gmr:study:NCT07864701->gmr:intervention:oral-jmbi-001-tablets",
+      "type": "gmr.EVALUATES_INTERVENTION",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:intervention:oral-jmbi-001-tablets"
+    },
+    {
+      "id": "gmr.MEASURES_BIOMARKER:gmr:study:NCT07864701->gmr:biomarker:myc-protein-ihc-positivity",
+      "type": "gmr.MEASURES_BIOMARKER",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:biomarker:myc-protein-ihc-positivity"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07864701->gmr:provenance:pangu-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:provenance:pangu-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07864701->gmr:provenance:pangu-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07864701",
+      "to": "gmr:provenance:pangu-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:study:NCT07864701->gmr:provenance:pangu-primary-indexed",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:study:NCT07864701",
+      "to": "gmr:provenance:pangu-primary-indexed"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:registration:NCT07864701->gmr:provenance:pangu-primary-indexed",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:registration:NCT07864701",
+      "to": "gmr:provenance:pangu-primary-indexed"
+    },
+    {
+      "id": "gmr.SUPPORTS_ASSERTION:gmr:registration:NCT07864701->gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "type": "gmr.SUPPORTS_ASSERTION",
+      "from": "gmr:registration:NCT07864701",
+      "to": "gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED->gmr:provenance:pangu-mirror",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "to": "gmr:provenance:pangu-mirror"
+    },
+    {
+      "id": "gmr.PROVENANCE:gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED->gmr:provenance:pangu-primary-indexed",
+      "type": "gmr.PROVENANCE",
+      "from": "gmr:assertion:NCT07864701:NEW_BIOMARKER_TRIAL_RECRUITMENT_OPENED",
+      "to": "gmr:provenance:pangu-primary-indexed"
+    }
+  ],
+  "provenance": [
+    {
+      "id": "gmr:provenance:iov-mirror",
+      "sourceId": "iov-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT06566092",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived registry history and structured study fields",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:iov-corroboration",
+      "sourceId": "iov-corroboration",
+      "sourceUri": "https://spzco.com/biotech/trial/NCT06566092",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Independent registry-derived mirror confirming status, participant count, and sponsor rationale",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:dit-mirror",
+      "sourceId": "dit-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07052383",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived Oct 14 status transition and study metadata",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:dit-corroboration",
+      "sourceId": "dit-corroboration",
+      "sourceUri": "https://eichor.com/study/NCT07052383",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Second mirror explicitly synced Oct 16, confirming suspended status",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:nktr-mirror",
+      "sourceId": "nktr-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT05664217",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "ClinicalTrials.gov-derived Oct 16 posted summary results",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:pangu-mirror",
+      "sourceId": "pangu-mirror",
+      "sourceUri": "https://clinicaltrials.gg/study/NCT07864701",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Oct 15 dated recruitment transition and Peking University Cancer Hospital site",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    },
+    {
+      "id": "gmr:provenance:pangu-primary-indexed",
+      "sourceId": "pangu-primary-indexed",
+      "sourceUri": "https://clinicaltrials.gov/study/NCT07864701",
+      "evidenceClass": "CURATED_DATABASE_RECORD",
+      "verificationState": "SOURCE_VERIFIED",
+      "scope": "Search-indexed first Oct 8 registration and CTR20263562 cross-identifier; not the current status",
+      "retrievedAt": "2026-10-18T18:03:15Z"
+    }
+  ],
+  "validation": {
+    "schemaAlignedTo": "the-green-house/ontology/global-medical-research-ontology.json",
+    "structuralValidation": "PASSED",
+    "studies": 4,
+    "materialEvents": 4,
+    "nodes": 41,
+    "typedRelationships": 47,
+    "provenanceRecords": 7,
+    "uniqueNCTs": true,
+    "noOrphanRelationships": true,
+    "approvedForClinicalUse": false,
+    "productionMerged": false,
+    "reviewRequired": true
+  }
+}
