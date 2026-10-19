@@ -1,0 +1,67 @@
+name: XUNIA READYROOM public health and contract gates
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/readyroom/**'
+      - 'docs/morpho-bit/**'
+      - 'docs/index.html'
+      - 'tests/xunia-readyroom.test.mjs'
+      - '.github/workflows/xunia-readyroom-health.yml'
+  pull_request:
+    paths:
+      - 'docs/readyroom/**'
+      - 'docs/morpho-bit/**'
+      - 'docs/index.html'
+      - 'tests/xunia-readyroom.test.mjs'
+      - '.github/workflows/xunia-readyroom-health.yml'
+  schedule:
+    - cron: '37 */6 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: xunia-readyroom-health-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify JavaScript policy and site contracts
+        run: node --test tests/xunia-readyroom.test.mjs
+      - name: Check module syntax and static HTML contents
+        run: |
+          set -eu
+          node --check docs/readyroom/policy.mjs
+          test -s docs/morpho-bit/index.html
+          test -s docs/readyroom/index.html
+          test -f docs/CNAME
+          grep -q '^xunia.org$' docs/CNAME
+          grep -q 'NOT GOVERNMENT CERTIFIED' docs/readyroom/index.html
+          grep -q 'SIMULATION ONLY' docs/morpho-bit/index.html
+  public_probe:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Read-only public HTTP checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in / /readyroom/ /morpho-bit/; do
+            url="https://xunia.org${path}"
+            echo "::group::GET ${url}"
+            curl --proto '=https' --tlsv1.2 --retry 2 --retry-delay 2 --connect-timeout 10 --max-time 30 \
+              --fail --silent --show-error --location -A 'XUNIA-READYROOM-ReadOnly-Probe/1' \
+              -o /tmp/xunia_readyroom_response -w 'HTTP %{http_code} bytes %{size_download}\n' "$url"
+            test -s /tmp/xunia_readyroom_response
+            if [ "$path" = '/readyroom/' ]; then grep -q 'XUNIA READYROOM' /tmp/xunia_readyroom_response; fi
+            if [ "$path" = '/morpho-bit/' ]; then grep -q 'MORPHO' /tmp/xunia_readyroom_response; fi
+            echo 'Public page responds; this does not verify security posture, government authorization or staffing.'
+            echo '::endgroup::'
+          done
