@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>MORPHO-BIT // Universal Drone Binary Interface</title>
+  <meta name="description" content="Offline drone-class fleet simulator and verifiable experimental binary telemetry protocol.">
+  <style>
+:root { --bg:#070c14; --panel:#0b121d; --panel2:#0f1926; --border:#203044; --muted:#748ba4; --text:#e5effb; --ice:#8adfff; --cyan:#56d7ff; --green:#6cf5bc; --amber:#f9c37d; --violet:#b1a5ff; --font:ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+* { box-sizing:border-box; }
+html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:var(--font); }
+body { background: radial-gradient(ellipse 900px 440px at 50% -30%,#1b3144 0%,transparent 72%),var(--bg); }
+button { font:inherit; cursor:pointer; }
+button:focus-visible, canvas:focus-visible, .import-button:focus-within { outline:2px solid #6feaff;outline-offset:3px; }
+.shell { min-height:100vh; display:flex; flex-direction:column; }
+.topbar { min-height:83px; background:#0a111aef; display:flex; align-items:center; justify-content:space-between; padding:0 28px; border-bottom:1px solid #273548; gap:22px; }
+.brand { display:flex;align-items:center;gap:12px;min-width:276px; }
+.brand-mark { width:42px;height:43px;position:relative;filter:drop-shadow(0 0 10px #43c9f771); }
+.wing { position:absolute; width:18px;height:26px; top:7px; background:linear-gradient(145deg,#41d9ee 0%,#715ce2 53%,#76f2e1 96%);border:1px solid #98d9fb;clip-path:polygon(48% 0,99% 9%,100% 66%,48% 100%,12% 76%,0 22%); }
+.wing-l { left:3px;transform:rotate(-28deg); }.wing-r { right:3px;transform:scaleX(-1) rotate(-28deg); }
+.body-dot { position:absolute;width:4px;height:30px;left:19px;top:6px;background:#c9f5f9;border-radius:2px;box-shadow:0 0 8px #a6fcf4; }
+.brand-title { font-size:19px;letter-spacing:2.5px;font-weight:850;color:#f1f8ff;line-height:1.2;white-space:nowrap; }.brand-sep { color:#48c4e9;padding:0 2px; }.version { font-size:10px;border:1px solid #30465c;border-radius:3px;color:#9cbad1;padding:2px 5px;letter-spacing:0;margin-left:3px;vertical-align:middle; }.brand-sub { font-size:8.5px;letter-spacing:1.55px;color:#6b8ba7;margin-top:5px;white-space:nowrap; }
+.top-center,.top-right { display:flex;align-items:center;gap:13px;color:#94aabc;font-size:10px;font-weight:700;letter-spacing:1.15px;white-space:nowrap; }.top-center{justify-content:center;flex:1}.top-right{justify-content:flex-end}.top-divider { height:13px;width:1px;background:#304050; }.dot { display:inline-block;border-radius:50%;width:7px;height:7px;flex-shrink:0;background:#62778c; }.dot.alive,.dot.green { background:var(--green);box-shadow:0 0 11px #6cf5bc80; }.dot.amber { background:var(--amber);box-shadow:0 0 8px #f9c37d55; }.sim-tag { background:#2b231a;border:1px solid #5a4631;border-radius:5px;color:#e5b67b;padding:8px 10px;display:flex;align-items:center;gap:8px; }.mono { font-family:var(--mono); }.clock{letter-spacing:.2px;color:#b3c6d6;}
+.workspace { display:grid;grid-template-columns:264px minmax(0,1fr) 303px;max-width:1960px;width:100%;margin:0 auto;flex:1; }
+.sidebar { background:#0b121cf2;padding:25px 18px 24px;min-width:0; }.left-panel { border-right:1px solid var(--border); }.right-panel{border-left:1px solid var(--border);padding-left:19px;padding-right:19px;}
+.panel-title-row{display:flex;align-items:center;justify-content:space-between;gap:7px;}.eyebrow,.label-overline{color:#65a8c4;font-size:9px;font-weight:800;letter-spacing:1.65px;}.panel-title-row h2{margin:5px 0 0;font-size:19px;letter-spacing:-.3px;}.micro-chip{font-family:var(--mono);font-size:9px;color:#8fb6cd;border:1px solid #2b4053;padding:7px 8px;border-radius:5px;white-space:nowrap;}.subcopy{font-size:11px;line-height:1.7;color:var(--muted);margin:10px 0 16px;}
+.fleet-list{display:flex;flex-direction:column;gap:7px;}.fleet-item{border:1px solid #233346;background:#0f1a28;border-radius:8px;display:flex;align-items:center;gap:10px;padding:10px 9px;min-height:62px;text-align:left;color:#e2eef8;transition:border-color .15s,background .15s;width:100%;}.fleet-item:hover{background:#16273a}.fleet-item.selected{border-color:#55cbea;background:linear-gradient(105deg,#102a3c,#152033);box-shadow:inset 2px 0 0 #5adffa;}.fleet-glyph{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;background:color-mix(in srgb,var(--node-color) 12%,#101c2b);border:1px solid color-mix(in srgb,var(--node-color) 35%,#1d3345);font-size:23px;color:var(--node-color);line-height:1;}.fleet-copy{min-width:0;flex:1;}.fleet-copy strong{display:block;font-size:11px;letter-spacing:.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.fleet-copy small{display:block;margin-top:5px;color:#819aaf;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.fleet-status{font-size:8px;color:#7af1ba;font-weight:800;letter-spacing:.55px;}.fleet-status.return{color:var(--amber)}.fleet-status.fault{color:#ff9898}.fleet-status.hold{color:var(--violet)}
+.section-rule{height:1px;background:#263549;margin:22px 0;}.new-label{font-size:8px;color:#78d9bd;background:#163e37;border-radius:3px;margin-left:5px;padding:3px 5px;}.missions{display:flex;flex-direction:column;gap:8px;margin-top:13px;}.mission-btn{width:100%;background:#101d2c;color:#deeff9;border:1px solid #293c52;border-radius:7px;text-align:left;display:flex;gap:10px;align-items:center;padding:12px 10px;transition:background .16s,border .16s;}.mission-btn:hover{border-color:#70d1f2;background:#153046;}.mission-btn.active{border-color:#65dbc1;background:#11382f;}.mission-btn strong{display:block;font-size:11px;margin-bottom:4px;}.mission-btn small{font-size:9px;color:#8096ac;white-space:nowrap;}.mission-icon{font-size:21px;font-weight:bold;width:31px;text-align:center}.mission-icon.green{color:var(--green)}.mission-icon.blue{color:var(--ice)}.mission-icon.purple{color:var(--violet)}.mission-arrow{margin-left:auto;color:#669ab5;font-size:18px;}.safety-controls{margin-top:11px;display:flex;flex-direction:column;gap:8px;}.action-btn{background:#111c2c;color:#bad0e4;border:1px solid #2b4156;border-radius:6px;padding:11px 9px;font-weight:700;font-size:11px;}.action-btn:hover{background:#20384e;}.action-return{border-color:#594b38;background:#282118;color:#ffe0ab;font-size:12px;}.action-return:hover{background:#3a2b19;}.action-row{display:flex;gap:7px;}.action-row button{flex:1}.action-btn.reset{font-weight:500;color:#839fb6}.policy-card{display:flex;gap:10px;margin-top:18px;padding:11px;background:#111e2c;border:1px solid #23374c;border-radius:6px;}.policy-icon{font-size:18px;color:var(--green);}.policy-card strong{font-size:10px;color:#b4dccb;}.policy-card p{font-size:9px;color:#809bae;line-height:1.7;margin:5px 0 0;}
+.main-panel{min-width:0;padding:28px clamp(15px,2.5vw,34px) 25px;}.hero-label{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:20px;}.hero-label h1{margin:7px 0 0;font-size:clamp(24px,2.15vw,32px);letter-spacing:-1.1px;font-weight:770;}.hero-label h1 span{color:#74cdef;}.hero-status{color:#70d9ac;display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:1.2px;font-weight:800;white-space:nowrap;padding-bottom:5px;}.pulse-ring{width:10px;height:10px;border:2px solid #6ce6b8;border-radius:50%;box-shadow:0 0 0 4px #6ce6b81e;animation:pulse 2.8s ease infinite;}@keyframes pulse{50%{box-shadow:0 0 0 8px #6ce6b800;}}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px;}.metric{background:linear-gradient(125deg,#111d2c,#0e1724);border:1px solid #28374a;border-radius:8px;padding:14px 14px 12px;min-width:0;}.metric-label{display:flex;align-items:center;justify-content:space-between;color:#819eb9;font-size:9px;font-weight:800;letter-spacing:1.1px;white-space:nowrap;}.metric-label span{color:#426a86;font-size:14px;}.metric-value{font-family:var(--mono);font-size:27px;font-weight:750;letter-spacing:-1px;color:#eaf7ff;margin:12px 0 10px;white-space:nowrap;}.metric-value small{font-size:12px;color:#7693ab;}.metric-value.metric-text{color:#75edbf;font-size:24px;letter-spacing:1px;}.metric-foot{font-size:9px;color:#86a0b3;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.radar-card,.protocol-card{background:#0e1723;border:1px solid #283b50;border-radius:9px;overflow:hidden;}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;padding:16px 18px;}.heading-main{display:flex;align-items:center;gap:13px;}.heading-main h2{font-size:14px;margin:0 0 5px;font-weight:750;}.heading-description{font-size:10px;color:#7897b0;}.tiny-ticks{font-family:var(--mono);color:#79e5de;border:1px solid #294a56;background:#13303a;font-size:23px;padding:6px 9px;border-radius:6px;}.radar-toolbar{display:flex;gap:7px;}.map-pill{display:flex;gap:7px;align-items:center;font-size:9px;color:#8de0bb;letter-spacing:.5px;border:1px solid #2b5548;background:#16352d;padding:8px 10px;border-radius:5px;white-space:nowrap;}.map-pill.grid-pill{color:#8facbf;background:#142333;border-color:#31465b;}
+.map-container{width:100%;height:390px;position:relative;overflow:hidden;background: radial-gradient(ellipse 60% 75% at 50% 44%,#14283a 0%,#0a1828 58%,#071422 100%);border-top:1px solid #23394d;border-bottom:1px solid #23394d;}.map-container::before{content:"";position:absolute;inset:0;opacity:.17;background-image:repeating-linear-gradient(0deg,transparent 0,transparent 37px,#2d5970 38px),repeating-linear-gradient(90deg,transparent 0,transparent 37px,#2d5970 38px);pointer-events:none;}.map-container canvas{width:100%;height:100%;display:block;position:absolute;inset:0;cursor:crosshair;}.map-corner{position:absolute;z-index:1;pointer-events:none;font-family:var(--mono);font-size:9px;letter-spacing:.8px;color:#7c9ab1;}.map-corner strong{display:block;font-size:10px;margin-top:4px;color:#c0e4f5;font-weight:600;}.map-top-left{left:16px;top:15px;}.map-top-right{right:16px;top:15px;text-align:right;}.map-bottom-left{display:flex;align-items:center;gap:15px;left:16px;bottom:15px;}.legend-key{display:inline-block;width:8px;height:8px;margin-right:4px;border-radius:1px;}.legend-key.air{background:#7edcfa;}.legend-key.ground{background:#ffbe80;}.legend-key.marine{background:#ae9cff;}.map-bottom-right{right:16px;bottom:15px;color:#91c3d3;}.map-footer{display:flex;align-items:center;justify-content:space-between;gap:9px;color:#7c95a9;font-family:var(--mono);font-size:9px;padding:13px 17px;white-space:nowrap;}.map-footer>span:first-child{display:flex;align-items:center;gap:6px;color:#82d7b1;}.map-footer b{color:#bbd2df;font-weight:550;}.map-footer-hint{color:#5b788f;}
+.protocol-card{margin-top:18px;}.protocol-card .panel-heading{min-height:72px;}.code-ticks{font-size:15px;font-weight:800;padding:10px;color:#b5a8ff;border-color:#493b6d;background:#2a233e;}.live-text{display:flex;gap:7px;align-items:center;font-size:9px;color:#85e4be;font-weight:700;letter-spacing:1px;}.packet-layout{display:grid;grid-template-columns:minmax(0,1fr) 150px;border-top:1px solid #223347;}.packet-stream{padding:14px 15px 12px;min-width:0;}.packet-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;}.packet-label{color:#91b6ce;font-family:var(--mono);font-size:9px;letter-spacing:.8px;}.view-switch{display:flex;border:1px solid #2c465e;border-radius:5px;overflow:hidden;flex-shrink:0;}.view-switch button{border:0;background:#132132;color:#7898b0;padding:6px 9px;font-size:9px;font-weight:700;letter-spacing:.4px;}.view-switch button.view-active{color:#c0f7fc;background:#24455c;}.byte-display{font:11px/1.8 var(--mono);color:#9be5f0;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0;padding:13px 12px;height:116px;border:1px solid #294257;border-radius:6px;background:#071522;letter-spacing:1px;}.frame-strip{display:flex;height:23px;overflow:hidden;border-radius:4px;gap:3px;}.segment{display:flex;align-items:center;justify-content:center;font-size:8px;font-family:var(--mono);font-weight:700;letter-spacing:.4px;white-space:nowrap;}.segment-header{flex:1.5;background:#19445a;color:#84deed;}.segment-data{flex:3.6;background:#23514b;color:#9ce4c5;}.segment-crc{flex:1;background:#443c58;color:#d0b6f9;}.packet-result{margin-top:12px;font-size:10px;display:flex;align-items:center;gap:8px;color:#a0bea9;}.packet-result.invalid{color:#eea2a2;}.packet-result.invalid .dot{background:#f18f8f;box-shadow:0 0 7px #f18f8f77;}.packet-tools{padding:15px 12px;border-left:1px solid #26384c;background:#111d2b;display:flex;flex-direction:column;gap:7px;}.packet-stat{margin-bottom:5px;}.packet-stat span{display:block;color:#7092aa;font-size:8px;letter-spacing:1.05px;}.packet-stat strong{display:block;color:#dfedfa;font:700 19px var(--mono);margin-top:4px;}.packet-stat strong small{font-size:9px;color:#8ca8bc;}.packet-stat strong.crc-ok{color:#74e5b1;font-size:13px;}.packet-stat strong.crc-bad{color:#f4a4a4;font-size:13px;}.tool-button{width:100%;border:1px solid #344b62;background:#1a2b3e;color:#c5dbea;border-radius:4px;font-size:10px;padding:9px 4px;text-align:center;display:block;}.tool-button:hover{background:#24405a;}.tool-button.subtle{color:#debfa2;border-color:#514333;background:#2b261d;}.tool-button.subtle:hover{background:#413523;}.protocol-disclaimer{padding:10px 15px 12px;color:#8b99a9;font-size:9px;line-height:1.5;background:#0c1520;border-top:1px solid #1e2e3f;}
+.twin-card{border:1px solid #2b415a;border-radius:8px;overflow:hidden;background:#101f2d;margin-top:18px;}.twin-backdrop{height:140px;position:relative;overflow:hidden;display:grid;place-items:center;background:radial-gradient(ellipse at center,#183c54,#102333 53%,#0e1c2b);}.twin-backdrop::before{content:"";position:absolute;inset:0;opacity:.4;background:repeating-linear-gradient(0deg,transparent 0,transparent 24px,#2d5269 25px),repeating-linear-gradient(90deg,transparent 0,transparent 24px,#2d5269 25px);}.twin-backdrop::after{content:"";position:absolute;top:11px;left:32%;width:120px;height:120px;border:1px dashed #44809f50;border-radius:50%;box-shadow:0 0 0 23px #2d658718;}.twin-silhouette{font-size:95px;line-height:1;color:#b9f3ff;position:relative;z-index:1;text-shadow:0 0 16px #5ad0ec99,0 0 45px #5291f160;filter:drop-shadow(0 0 6px #4eb6d7);}.twin-index{position:absolute;bottom:11px;right:12px;font:9px var(--mono);color:#83abc0;letter-spacing:.6px;z-index:2;}.twin-meta{padding:14px 12px;display:flex;justify-content:space-between;align-items:center;gap:5px;}.twin-type{font-size:8px;letter-spacing:1.5px;color:#7eb2cb;font-weight:750;}.twin-meta h3{font-size:19px;margin:5px 0;letter-spacing:.5px;}.twin-desc{font-size:10px;color:#7694aa;}.state-chip{font-size:8px;padding:5px 7px;border:1px solid #356f57;background:#194b38;color:#8cf0ba;border-radius:4px;letter-spacing:.5px;white-space:nowrap;}.state-chip.warning{border-color:#795637;background:#46351d;color:#edc58d;}.readout-heading{display:flex;justify-content:space-between;align-items:center;color:#89bad3;font-size:9px;letter-spacing:1.2px;font-weight:750;margin:22px 0 14px;}.readout-heading span{color:#55778e;font-size:8px;}.health-box{border:1px solid #273b51;border-radius:7px;padding:12px 12px 7px;background:#111c2b;}.health-row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#9ab4ca;margin-bottom:7px;}.health-row b{color:#dceaf5;font-family:var(--mono);font-size:12px;}.track{height:5px;background:#213347;border-radius:12px;margin-bottom:15px;overflow:hidden;}.fill{height:100%;border-radius:12px;transition:width .45s;}.battery-fill{background:linear-gradient(90deg,#20cbb3,#92f0aa)}.link-fill{background:linear-gradient(90deg,#476fe7,#66dafa)}.spatial-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}.spatial-grid>div{background:#111d2b;border:1px solid #283c50;padding:11px 8px;border-radius:5px;min-width:0;}.spatial-grid span{display:block;color:#7496af;font-size:8px;font-weight:750;letter-spacing:.8px;white-space:nowrap;}.spatial-grid strong{display:block;font:750 16px var(--mono);color:#d5f0f9;margin-top:7px;white-space:nowrap;}.spatial-grid strong small{color:#7e9ab0;font-size:9px;}.policy-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px;}.policy-buttons button{border:1px solid #3a4a5f;border-radius:5px;background:#1c2938;color:#b4cbd9;font-size:9px;font-weight:700;padding:9px 6px;}.policy-buttons button:last-child{grid-column:span 2;}.policy-buttons button:hover{background:#2a3f54;}.event-feed{display:flex;flex-direction:column;gap:0;max-height:210px;overflow:auto;}.event-item{display:flex;gap:9px;border-bottom:1px solid #213246;padding:9px 2px;}.event-item:last-child{border:0;}.event-symbol{font-size:11px;color:#73dfb3;line-height:1.45;}.event-symbol.warn{color:#eab87d;}.event-item p{margin:0;font-size:9px;color:#a8bfce;line-height:1.5;}.event-item small{font-size:8px;color:#627c91;display:block;margin-top:3px;font-family:var(--mono);}.identity-card{margin-top:22px;position:relative;overflow:hidden;border:1px solid #355166;border-radius:7px;background:linear-gradient(125deg,#112b35,#222240 57%,#0c222d);padding:14px 12px 13px;}.identity-shimmer{position:absolute;right:-26px;top:-29px;width:130px;height:130px;background:radial-gradient(circle,#6ef5ea8c,transparent 60%);mix-blend-mode:screen;opacity:.36;pointer-events:none;}.identity-card strong{display:block;font-size:12px;letter-spacing:1.2px;margin-top:10px;color:#c3f4f3;}.identity-card p{font-size:9px;line-height:1.7;color:#a8c0ca;margin:7px 0;}.identity-serial{display:block;font:8px/1.5 var(--mono);color:#7298ac;letter-spacing:.3px;}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #223142;padding:13px 25px;background:#0a111a;color:#718aa2;font:9px var(--mono);letter-spacing:.2px;}.footer b{color:#84dbe5;}
+@media(max-width:1350px){.workspace{grid-template-columns:234px minmax(0,1fr) 267px}.sidebar{padding-left:12px;padding-right:12px}.main-panel{padding:24px 15px}.metric{padding:11px 10px}.metric-label{font-size:8px}.metric-value{font-size:23px}.map-container{height:360px}.radar-toolbar{gap:4px}.map-pill{padding:7px}.map-footer-hint{display:none}.twin-meta h3{font-size:16px}}
+@media(max-width:1060px){.workspace{grid-template-columns:224px minmax(0,1fr)}.right-panel{grid-column:1/-1;border-top:1px solid var(--border);border-left:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}.right-panel>.panel-title-row{grid-column:1/-1}.right-panel>.section-rule{display:none}.right-panel>.readout-heading{margin:8px 0 3px}.right-panel>.twin-card{grid-column:1;grid-row:2/6;margin-top:0}.right-panel>.health-box{grid-column:2;grid-row:3}.right-panel>.spatial-grid{grid-column:3;grid-row:3}.right-panel>.policy-buttons{grid-column:2/4;grid-row:4}.right-panel>.event-feed{grid-column:2/4;grid-row:6}.right-panel>.identity-card{grid-column:1;grid-row:6;margin-top:0}.top-center{display:none}.topbar{min-height:70px}}
+@media(max-width:760px){.topbar{padding:11px 13px;min-height:66px}.top-right{gap:7px}.clock{display:none}.brand-title{font-size:17px}.brand-sub{font-size:7.5px}.workspace{display:flex;flex-direction:column}.left-panel{border-right:0;border-bottom:1px solid var(--border);padding:16px}.fleet-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.fleet-item{padding:8px 5px;flex-direction:column;gap:4px;text-align:center}.fleet-glyph{width:33px;height:32px;font-size:21px}.fleet-copy strong{font-size:9px}.fleet-copy small{font-size:8px}.fleet-status{font-size:7px}.missions{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.mission-btn{padding:8px;flex-direction:column;align-items:flex-start}.mission-btn small{white-space:normal}.mission-icon{font-size:17px}.mission-arrow{display:none}.section-rule{margin:14px 0}.safety-controls{display:grid;grid-template-columns:1fr 1fr 1fr}.safety-controls>.action-row{grid-column:2;}.action-btn{font-size:9px;padding:9px 4px}.policy-card{margin-top:12px}.main-panel{padding:18px 12px}.hero-label h1{font-size:23px}.hero-status{font-size:8px}.metrics{gap:7px;grid-template-columns:repeat(2,minmax(0,1fr))}.metric-value{font-size:25px}.map-container{height:350px}.panel-heading{padding:12px}.heading-description{font-size:9px}.radar-toolbar .grid-pill{display:none}.map-footer{flex-wrap:wrap;gap:10px}.packet-layout{grid-template-columns:1fr}.packet-tools{border-left:0;border-top:1px solid #28384c;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.packet-stat{grid-column:span 1}.packet-stat strong{font-size:15px}.tool-button{padding:8px 3px;font-size:9px}.right-panel{display:block;padding:16px}.right-panel>.readout-heading{margin:20px 0 12px}.right-panel>.section-rule{display:block}.right-panel>.twin-card{margin-top:15px}.twin-backdrop{height:165px}.event-feed{max-height:140px}.footer{font-size:8px;flex-wrap:wrap;padding:11px}.map-bottom-left{gap:8px}.map-bottom-right{display:none}}
+@media(max-width:390px){.sim-tag{padding:6px;font-size:8px}.brand-mark{width:35px}.brand-title{font-size:15px}.brand-sub{letter-spacing:.7px}.mission-btn strong{font-size:9px}.mission-btn small{font-size:8px}.map-pill{font-size:8px}.map-container{height:280px}.map-corner{font-size:8px}.heading-main h2{font-size:12px}.heading-description{font-size:8px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* On narrow screens, allow the brand to shrink next to the simulation badge. */
+@media(max-width:760px){
+  .topbar{gap:7px;}
+  .brand{min-width:0;flex:1;gap:7px;}
+  .top-right{flex-shrink:0;}
+}
+@media(max-width:360px){
+  .brand-title{font-size:13px;letter-spacing:1px;}
+  .brand-sub{font-size:6px;letter-spacing:.35px;}
+  .sim-tag{font-size:7px;padding:5px;}
+}
+
+/* WARLENS: the historical ontology workbench deliberately distinguishes sources from simulation. */
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.history-quick-link{display:block;text-decoration:none;margin:0 0 17px;padding:13px 12px;border-radius:8px;background:linear-gradient(115deg,#18283c,#1c213c);border:1px solid #3c5a77;color:#c6e8f4;transition:background .2s}
+.history-quick-link:hover{background:#28405a}.history-quick-link span{display:block;font:800 11px var(--mono);letter-spacing:1.6px;color:#93e4e4}.history-quick-link strong{display:block;font-size:9px;font-weight:550;margin-top:5px;color:#89aeca}
+.history-card{margin:0 0 19px;overflow:hidden;border:1px solid #31495f;background:#101b29;border-radius:10px;box-shadow:0 5px 35px #00000018}
+.history-head{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:21px 22px;background:linear-gradient(115deg,#132a3d,#1b2338 58%,#151d2b);border-bottom:1px solid #314459;position:relative;overflow:hidden}
+.history-head::after{content:'';position:absolute;right:165px;top:-75px;width:260px;height:240px;border-radius:50%;background:radial-gradient(circle,#518cd322,transparent 65%);pointer-events:none}
+.history-head h2{font-size:25px;letter-spacing:-.7px;margin:6px 0 5px;font-weight:780;color:#f4fbff}.history-head h2 em{font-style:normal;color:#86ecdc}.history-head p{max-width:560px;margin:0;font-size:10px;line-height:1.6;color:#91adc0}
+.history-head-tags{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex-shrink:0}.history-count{font:800 9px var(--mono);color:#a5cbde;border:1px solid #3b5c70;border-radius:6px;background:#15293a;padding:9px 11px;white-space:nowrap}.history-count strong{font-size:16px;color:#d4f6ff;margin-right:5px}.history-sim-label{font:750 9px var(--mono);color:#e9be89;letter-spacing:.35px;display:flex;gap:7px;align-items:center;white-space:nowrap}
+.war-filters{padding:13px 15px;background:#101b28;display:flex;align-items:center;gap:7px;border-bottom:1px solid #273b50}.war-filters input,.war-filters select{background:#091725;color:#d4e9f8;border:1px solid #314a60;border-radius:6px;font-family:var(--font);font-size:11px;height:37px;padding:0 10px;min-width:0;outline:none}.war-filters input:focus,.war-filters select:focus{border-color:#63d5e2}.war-filters input{flex:1}.war-filters select{max-width:130px}.war-filters button{height:37px;padding:0 11px;background:#1b2b3a;border:1px solid #31475a;border-radius:6px;color:#9fb8cc;font-size:10px}.war-filters button:hover{color:white}
+.history-browser{display:grid;grid-template-columns:40% 60%;min-height:295px;border-bottom:1px solid #304357}.war-registry{border-right:1px solid #304357;min-width:0;background:#0d1826;padding:13px}.war-section-label{display:flex;justify-content:space-between;align-items:center;gap:6px;color:#80aac2;font-size:9px;font-weight:800;letter-spacing:1.25px}.war-section-label span{font:650 8px var(--mono);letter-spacing:.1px;color:#7698af;text-align:right}.war-list{margin-top:11px;display:flex;flex-direction:column;gap:5px;height:258px;max-height:258px;overflow:auto;padding-right:4px;scrollbar-width:thin;scrollbar-color:#456578 #142536}.war-item{display:grid;grid-template-columns:46px minmax(0,1fr) 13px;gap:10px;align-items:center;width:100%;padding:9px 9px;text-align:left;border:1px solid #22384d;background:#132130;color:#dbe8f6;border-radius:6px;min-height:45px}.war-item:hover{background:#1a3345}.war-item.active{background:#174255;border-color:#64c2d5;box-shadow:inset 2px 0 0 #91f3de}.war-item-year{font:700 10px var(--mono);color:#72bacc}.war-item-body{min-width:0}.war-item-name{display:block;font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.war-item-type{font-size:8px;text-transform:uppercase;color:#7391a5;margin-top:3px}.war-item-chevron{font:14px var(--mono);color:#7fcdbb}.war-empty{color:#9fb8c7;font-size:11px;line-height:1.6;padding:17px 7px}
+.war-detail{padding:20px 22px;background:radial-gradient(circle at 92% 4%,#193e4e,#102134 45%,#101c2a 100%);min-width:0}.war-top{display:flex;align-items:center;justify-content:space-between;gap:9px}.war-class{font:800 9px var(--mono);text-transform:uppercase;letter-spacing:1px;color:#8ff2d0;background:#1d453d;border:1px solid #3a7a69;border-radius:4px;padding:6px 8px}.war-period{font:700 13px var(--mono);color:#9dc8dc}.war-detail h3{font-size:clamp(18px,1.6vw,23px);letter-spacing:-.3px;line-height:1.2;margin:14px 0 10px;color:#f1faff}.war-region{display:flex;gap:9px;align-items:center}.war-region span{font:800 8px var(--mono);color:#7da7bd;letter-spacing:1px}.war-region strong{font-size:10px;color:#cbdee9;font-weight:600}.war-detail p{font-size:11px;line-height:1.7;color:#a5bcd0;margin:13px 0 17px;max-width:610px}.theme-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;margin-bottom:16px}.theme-pill{font:700 8px var(--mono);color:#9bd6df;background:#163042;border:1px solid #38637b;border-radius:4px;padding:7px 7px}.war-era-label{display:flex;justify-content:space-between;font:8px var(--mono);color:#7292a9;margin-bottom:5px}.war-era-track{height:8px;border-radius:5px;position:relative;background:linear-gradient(90deg,#1c3e54,#1c3147);border:1px solid #3c5367}.war-era-range{position:absolute;top:-2px;height:10px;left:70%;width:6%;border-radius:4px;background:linear-gradient(90deg,#5fcee3,#9de9c7);box-shadow:0 0 10px #56bfda88;min-width:4px}.war-source-link{display:inline-block;font:650 9px var(--mono);color:#89cfe2;text-decoration:none;margin-top:13px}.war-source-link:hover{text-decoration:underline}
+.warlens-workbench{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr)}.warlens-telemetry,.warlens-ontology{min-width:0;padding:18px;border-bottom:1px solid #273e52}.warlens-telemetry{border-right:1px solid #304458;background:#0e1b29}.warlens-ontology{background:#101c2b}.warlens-panel-top{display:flex;justify-content:space-between;align-items:center;gap:9px}.warlens-panel-top h3{font-size:17px;margin:6px 0 0}.sim-day,.ontology-tag{font:700 9px var(--mono);color:#9bd9e3;border:1px solid #38566a;padding:7px 8px;border-radius:4px;white-space:nowrap}.exercise-controls{display:grid;grid-template-columns:1.2fr .8fr .8fr 1.2fr;gap:5px;margin:16px 0}.exercise-controls button{border:1px solid #365367;background:#1c3143;color:#cadfec;font:750 9px var(--font);border-radius:5px;padding:10px 5px;white-space:nowrap}.exercise-controls button:hover{background:#2c4b60}.exercise-controls button.exercise-play{background:#1a5447;border-color:#347e69;color:#b8fbd6}.exercise-controls button.exercise-play.playing{background:#4f3925;border-color:#946540;color:#f6dbb1}
+.resilience-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.resilience-item{border:1px solid #294054;border-radius:6px;padding:10px 8px;background:#132436;min-width:0}.resilience-item span{display:block;color:#88aabc;font-size:8px;font-weight:750;letter-spacing:.5px}.resilience-item b{font:750 22px var(--mono);display:block;margin:6px 0 6px;color:#dff3fb;white-space:nowrap}.resilience-item b small{font-size:10px;color:#7495aa}.resilience-meter{height:3px;background:#243e52;border-radius:4px;overflow:hidden}.resilience-meter i{display:block;height:100%;background:var(--meter);width:50%;transition:width .3s}
+.warlens-chart{height:128px;margin:14px 0 6px;border:1px solid #2d435a;background:linear-gradient(180deg,#10283a,#0a1724);border-radius:6px;overflow:hidden}.warlens-chart canvas{display:block;width:100%;height:100%}.chart-key{display:flex;flex-wrap:wrap;gap:12px}.chart-key span{font:8px var(--mono);color:#97b4c5}.chart-key i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c);margin-right:4px}.stress-label{margin:19px 0 10px}.stress-actions{display:flex;gap:6px;flex-wrap:wrap}.stress-actions button{font:700 9px var(--font);color:#c8bacc;padding:8px 9px;border:1px solid #635167;background:#282336;border-radius:4px}.stress-actions button:hover{background:#3b304c;color:#fff}.binary-action{margin-top:14px;padding-top:12px;border-top:1px solid #253b50;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.binary-action button{font-size:10px;color:#9be5d8;border:1px solid #376a66;background:#1b3638;border-radius:5px;padding:9px 11px}.binary-action span{font-size:8px;color:#829aac}
+.ontology-canvas{height:160px;display:block;width:100%;background:radial-gradient(ellipse at center,#1c3349 0%,#111f30 60%,#0c1927);border:1px solid #31475b;border-radius:6px;margin:14px 0 8px}.ontology-legend{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}.ontology-legend span{font:8px var(--mono);color:#8ba6bd}.ontology-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}.o-historic{background:#8becdf}.o-analytical{background:#d3b6ff}.o-synth{background:#f7c37c}.graph-relations{display:flex;flex-wrap:wrap;gap:4px;max-height:54px;overflow:auto}.graph-relations span{font:8px var(--mono);background:#172e42;color:#9ec3d5;border:1px solid #315069;border-radius:3px;padding:5px 6px}.history-events-label{margin:17px 0 8px}.history-events{height:114px;max-height:114px;overflow:auto;scrollbar-width:thin}.history-event{display:flex;gap:9px;padding:7px 3px;border-bottom:1px solid #26384b}.history-event span{font:750 9px var(--mono);color:#79c3d2;white-space:nowrap}.history-event p{font-size:9px;color:#a9c0d1;line-height:1.5;margin:0}.history-disclaimer{padding:12px 17px;color:#9babbb;line-height:1.6;font-size:9px;background:#0c1520}.history-disclaimer strong{color:#b8cbdc}
+@media(max-width:1330px){.history-head{padding:16px}.warlens-workbench{grid-template-columns:1fr}.warlens-telemetry{border-right:0;border-bottom:1px solid #304458}.resilience-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.resilience-item b{font-size:19px}.war-detail{padding:17px}.history-browser{grid-template-columns:43% 57%}}
+@media(max-width:1060px){.history-head{padding:20px}.warlens-workbench{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.warlens-telemetry{border-right:1px solid #304458}.resilience-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:880px){.warlens-workbench{grid-template-columns:1fr}.warlens-telemetry{border-right:0}.resilience-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){.history-head{align-items:flex-start;padding:15px}.history-head h2{font-size:22px}.history-head p{font-size:9px}.history-head-tags{gap:6px}.history-count{font-size:7px;padding:6px}.history-count strong{font-size:13px}.history-sim-label{font-size:7px}.war-filters{display:grid;grid-template-columns:1fr 1fr 60px;gap:6px;padding:10px}.war-filters input{grid-column:1/-1}.war-filters select{max-width:none;width:100%}.history-browser{grid-template-columns:1fr}.war-registry{border-right:0;border-bottom:1px solid #304357;padding:10px}.war-list{height:170px;max-height:170px}.war-detail{padding:16px}.war-detail h3{font-size:21px}.warlens-telemetry,.warlens-ontology{padding:14px}.resilience-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.resilience-item b{font-size:19px}.exercise-controls{grid-template-columns:1.2fr .8fr .8fr 1.2fr}.stress-actions button{font-size:9px}.ontology-canvas{height:175px}}
+@media(max-width:390px){.history-head{flex-direction:column;gap:10px}.history-head-tags{flex-direction:row;align-items:center;flex-wrap:wrap}.resilience-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.exercise-controls{grid-template-columns:1fr 1fr}.war-detail h3{font-size:19px}.history-count{font-size:8px}}
+
+</style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><span class="wing wing-l"></span><span class="wing wing-r"></span><span class="body-dot"></span></div>
+        <div><div class="brand-title">MORPHO<span class="brand-sep">/</span>BIT <span class="version">v2.0</span></div><div class="brand-sub">UNIVERSAL BINARY · CONFLICT ONTOLOGY</div></div>
+      </div>
+      <div class="top-center"><span class="dot alive"></span><span>LOCAL CORE ONLINE</span><span class="top-divider"></span><span>UBI-1 / 6 CLASSES</span></div>
+      <div class="top-right"><span class="sim-tag"><span class="dot amber"></span> SIMULATION ONLY</span><span id="utcClock" class="mono clock">00:00:00 UTC</span></div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar left-panel">
+        <div class="panel-title-row"><div><div class="eyebrow">COMMAND DECK</div><h2>Fleet registry</h2></div><span class="micro-chip">06 NODES</span></div>
+        <p class="subcopy">One data language across air, ground and water.</p>
+        <a class="history-quick-link" href="#historicalAtlas"><span>◈ WARLENS</span><strong>49 U.S. conflicts · ontology lab ↗</strong></a>
+        <div id="fleetList" class="fleet-list" role="listbox" aria-label="Simulated vehicles"></div>
+
+        <div class="section-rule"></div>
+        <div class="label-overline">MISSION PRESETS <span class="new-label">VIRTUAL</span></div>
+        <div class="missions">
+          <button class="mission-btn" data-mission="survey"><span class="mission-icon green">◎</span><span><strong>Environment survey</strong><small>Distributed sampling lanes</small></span><span class="mission-arrow">↗</span></button>
+          <button class="mission-btn" data-mission="inspect"><span class="mission-icon blue">⌗</span><span><strong>Infrastructure inspect</strong><small>Multi-platform inspection</small></span><span class="mission-arrow">↗</span></button>
+          <button class="mission-btn" data-mission="search"><span class="mission-icon purple">✦</span><span><strong>Search & rescue</strong><small>Area coverage simulation</small></span><span class="mission-arrow">↗</span></button>
+        </div>
+        <div class="section-rule"></div>
+        <div class="label-overline">OPERATOR SAFETY</div>
+        <div class="safety-controls">
+          <button id="returnButton" class="action-btn action-return" title="Return all simulated vehicles to their starting positions">↶ <span>Return all to home</span></button>
+          <div class="action-row"><button id="holdButton" class="action-btn">Ⅱ Hold</button><button id="resumeButton" class="action-btn">▷ Resume</button></div>
+          <button id="resetButton" class="action-btn reset">↺ Reset sandbox</button>
+        </div>
+        <div class="policy-card"><span class="policy-icon">◈</span><div><strong>Hardware link disabled</strong><p>All commands terminate inside this browser. Flight-critical interfaces are not connected.</p></div></div>
+      </aside>
+
+      <main class="main-panel">
+        <div class="hero-label"><div><div class="eyebrow">UNIFIED OPERATIONS OVERVIEW</div><h1>One protocol. <span>Every platform.</span></h1></div><div class="hero-status"><span class="pulse-ring"></span> LIVE SANDBOX</div></div>
+        <div class="metrics" aria-label="Fleet metrics">
+          <div class="metric"><span class="metric-label">NODES REGISTERED <span>▣</span></span><div class="metric-value" id="metricNodes">06 <small>/ 06</small></div><div class="metric-foot"><span class="dot green"></span> Available locally</div></div>
+          <div class="metric"><span class="metric-label">DATA FRAMES <span>⌁</span></span><div class="metric-value" id="metricFrames">000000</div><div class="metric-foot">UBI-1 packets encoded</div></div>
+          <div class="metric"><span class="metric-label">MEAN BATTERY <span>▰</span></span><div class="metric-value" id="metricBattery">81<small>%</small></div><div class="metric-foot">Synthetic energy model</div></div>
+          <div class="metric"><span class="metric-label">FLEET STATUS <span>◉</span></span><div class="metric-value metric-text" id="metricState">READY</div><div class="metric-foot" id="metricStateFoot">Waiting for mission</div></div>
+        </div>
+
+        <section class="history-card" id="historicalAtlas" aria-label="Historical conflict ontology and telemetry laboratory">
+          <div class="history-head">
+            <div><div class="eyebrow">WARLENS // HISTORICAL CONFLICT INTELLIGENCE</div>
+              <h2>History into <em>resilience.</em></h2>
+              <p>Search conflicts, trace source-linked ontology, and run synthetic communications, supply and medical-response exercises.</p></div>
+            <div class="history-head-tags"><span class="history-count"><strong id="warTotal">49</strong> INDEXED CONFLICTS</span><span class="history-sim-label"><span class="dot amber"></span> SYNTHETIC EXERCISE</span></div>
+          </div>
+          <div class="war-filters">
+            <label class="sr-only" for="warSearch">Search historical conflicts</label>
+            <input id="warSearch" type="search" placeholder="Search wars, operations, places, years..." autocomplete="off" aria-label="Search historical conflicts">
+            <label class="sr-only" for="warEra">Filter by era</label>
+            <select id="warEra" aria-label="Filter conflicts by era"><option value="all">All eras</option><option value="pre1900">Before 1900</option><option value="1900to1945">1900–1945</option><option value="post1945">After 1945</option></select>
+            <label class="sr-only" for="warKind">Filter by type</label>
+            <select id="warKind" aria-label="Filter conflicts by type"><option value="all">All kinds</option><option value="war">Wars</option><option value="conflict">Other conflicts</option><option value="operation">Operations</option><option value="intervention">Interventions</option></select>
+            <button id="warClear" class="war-clear" title="Reset historical conflict filters">Clear</button>
+          </div>
+          <div class="history-browser">
+            <div class="war-registry"><div class="war-section-label">HISTORICAL RECORDS <span id="warMatches">49 MATCHES</span></div><div id="warList" class="war-list" role="listbox" aria-label="Historic U.S. conflicts"></div></div>
+            <div class="war-detail" aria-live="polite">
+              <div class="war-top"><span id="warCategory" class="war-class">WAR</span><span id="warPeriod" class="war-period">1941 – 1945</span></div>
+              <h3 id="warTitle">World War II (U.S. participation)</h3>
+              <div class="war-region"><span>THEATER</span><strong id="warRegion">Global</strong></div>
+              <p id="warSummary">Historical context loading…</p>
+              <div class="war-section-label">ANALYTICAL THEMES <span>NOT EMPIRICAL RATINGS</span></div>
+              <div id="warThemes" class="theme-pills"></div>
+              <div class="war-era-label"><span>1775</span><span>1865</span><span>1945</span><span>2021</span></div>
+              <div class="war-era-track"><div id="warEraRange" class="war-era-range"></div></div>
+              <a id="warSourceLink" class="war-source-link" href="https://history.state.gov/milestones/all" rel="noopener noreferrer" target="_blank">↗ Open historical reference</a>
+            </div>
+          </div>
+          <div class="warlens-workbench">
+            <div class="warlens-telemetry">
+              <div class="warlens-panel-top"><div><div class="eyebrow">COUNTERFACTUAL TRAINING // ABSTRACT ARENA</div><h3>Resilience telemetry</h3></div><span class="sim-day" id="exerciseDay">DAY 0 / 100</span></div>
+              <div class="exercise-controls"><button id="exerciseToggle" class="exercise-play">▷ Run exercise</button><button id="exerciseReset">↺ Reset</button><button id="exerciseSpeed">1× speed</button><button id="exerciseExport">↓ Ontology JSON</button></div>
+              <div class="resilience-grid" id="resilienceMetrics" aria-live="off"></div>
+              <div class="warlens-chart"><canvas id="historyTelemetryCanvas" aria-label="Five streams of synthetic resilience telemetry over simulated days"></canvas></div>
+              <div class="chart-key"><span><i style="--c:#6bd9ef"></i>Comms</span><span><i style="--c:#92edbb"></i>Supply</span><span><i style="--c:#e5b7ff"></i>Medical</span><span><i style="--c:#f4bd87"></i>Civilian</span><span><i style="--c:#7da9ff"></i>Infrastructure</span></div>
+              <div class="war-section-label stress-label">INJECT SYNTHETIC STRESS <span>RECOVERY EXERCISES</span></div>
+              <div class="stress-actions"><button data-stress="communications">⌁ Signal outage</button><button data-stress="logistics">◈ Supply delay</button><button data-stress="medical">✚ Care surge</button><button data-stress="civilian">◉ Access restriction</button><button data-stress="environment">▤ Infrastructure failure</button></div>
+              <div class="binary-action"><button id="historyPacket">⌗ Inspect UBI-1 event packet</button><span id="historyPacketStatus">No live radios or vehicles are controlled</span></div>
+            </div>
+            <div class="warlens-ontology">
+              <div class="warlens-panel-top"><div><div class="eyebrow">PROVENANCE-AWARE KNOWLEDGE GRAPH</div><h3>Ontology telemetry</h3></div><span class="ontology-tag" id="ontologyNodeCount">NODES / 00</span></div>
+              <canvas id="historyOntologyCanvas" class="ontology-canvas" aria-label="Network diagram connecting historical conflict to analytical themes and synthetic telemetry"></canvas>
+              <div class="ontology-legend"><span><i class="o-historic"></i>Historical context</span><span><i class="o-analytical"></i>Analytical theme</span><span><i class="o-synth"></i>Synthetic signal</span></div>
+              <div class="graph-relations" id="ontologyRelations"></div>
+              <div class="war-section-label history-events-label">EXERCISE EVENT LEDGER <span>ALL EVENTS GENERATED</span></div>
+              <div id="historyEvents" class="history-events" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="history-disclaimer"><strong>PROVENANCE GUARANTEE:</strong> Titles, dates and context are curated historical summaries with source links. The scenario values, disturbances, risk lenses, graph interpretations and events are <strong>invented training signals</strong> and must not be treated as historical observations or forecasts. No targeting, weapons, tactical engagement models or hardware control.</div>
+        </section>
+
+        <section class="radar-card">
+          <div class="panel-heading"><div class="heading-main"><span class="tiny-ticks">▦</span><div><h2>Operational geometry</h2><div class="heading-description">Synthetic local-coordinate arena · 600 m diameter</div></div></div><div class="radar-toolbar"><span class="map-pill"><span class="dot green"></span> GEOFENCE ON</span><span class="map-pill grid-pill">2D LIVE</span></div></div>
+          <div class="map-container" id="radarContainer"><canvas id="radarCanvas" tabindex="0" aria-label="Interactive overhead view of six simulated drones, selectable by clicking markers"></canvas>
+            <div class="map-corner map-top-left"><span>SIM GRID // 00</span><strong>LOCAL WORLD FRAME</strong></div>
+            <div class="map-corner map-top-right"><span>RANGE</span><strong>±300 M</strong></div>
+            <div class="map-corner map-bottom-left"><div><span class="legend-key air"></span> AIR</div><div><span class="legend-key ground"></span> GROUND</div><div><span class="legend-key marine"></span> MARINE</div></div>
+            <div class="map-corner map-bottom-right" id="mapMode">IDLE // ALL 6 STANDBY</div>
+          </div>
+          <div class="map-footer"><span><span class="dot green"></span> NOMINAL SANDBOX</span><span>GEOFENCE RADIUS <b>300 m</b></span><span>SIM TIME <b id="simTime">00:00</b></span><span class="map-footer-hint">Select a node on the map</span></div>
+        </section>
+
+        <section class="protocol-card">
+          <div class="panel-heading"><div class="heading-main"><span class="tiny-ticks code-ticks">{ }</span><div><h2>Binary protocol lab</h2><div class="heading-description">UBI-1 / Versioned frame with typed TLV telemetry and CRC32</div></div></div><span class="live-text"><span class="dot alive"></span> ENCODING</span></div>
+          <div class="packet-layout">
+            <div class="packet-stream">
+              <div class="packet-actions"><span class="packet-label" id="packetLabel">SELECTED NODE / TELEMETRY</span><div class="view-switch" role="group" aria-label="Packet display format"><button id="hexButton" class="view-active">HEX</button><button id="binaryButton">BINARY</button></div></div>
+              <pre id="packetOutput" class="byte-display" aria-live="off">Preparing packet...</pre>
+              <div class="frame-strip" aria-label="Binary frame sections"><span class="segment segment-header">HEADER · 24 B</span><span class="segment segment-data">TYPED PAYLOAD</span><span class="segment segment-crc">CRC · 4 B</span></div>
+              <div class="packet-result" id="packetResult"><span class="dot green"></span> Last received synthetic frame validated</div>
+            </div>
+            <div class="packet-tools"><div class="packet-stat"><span>FRAME LENGTH</span><strong id="frameLength">000 <small>B</small></strong></div><div class="packet-stat"><span>MESSAGE TYPE</span><strong>02 <small>TELEMETRY</small></strong></div><div class="packet-stat"><span>INTEGRITY</span><strong id="crcStatus" class="crc-ok">CRC32 ✓</strong></div>
+              <button id="copyButton" class="tool-button">⧉ Copy bytes</button><button id="exportButton" class="tool-button">↓ Export .bin</button><label class="tool-button import-button" for="importInput">↑ Inspect .bin<input type="file" id="importInput" accept=".bin,application/octet-stream" hidden></label><button id="corruptButton" class="tool-button subtle">⚠ Test corruption</button>
+            </div>
+          </div>
+          <div class="protocol-disclaimer">DATA DEMO ONLY: checksum detects corruption, not forgery. Encrypted transport, authorization, and a safety-certified controller are prerequisites for real-world operation.</div>
+        </section>
+      </main>
+
+      <aside class="sidebar right-panel">
+        <div class="panel-title-row"><div><div class="eyebrow">NODE INTELLIGENCE</div><h2>Digital twin</h2></div><span class="micro-chip">INSPECTOR</span></div>
+        <div class="twin-card"><div class="twin-backdrop"><span class="twin-grid"></span><span id="twinSilhouette" class="twin-silhouette" aria-hidden="true">✦</span><div class="twin-index">MB // 00<span id="twinNumber">01</span></div></div><div class="twin-meta"><div><div class="twin-type" id="twinClass">MULTIROTOR</div><h3 id="twinName">MORPHO-01</h3><div class="twin-desc" id="twinDescription">Morpho Scout</div></div><span class="state-chip" id="twinState">STANDBY</span></div></div>
+        <div class="readout-heading">LIVE HEALTH VECTORS</div>
+        <div class="health-box"><div class="health-row"><span>Energy capacity</span><b id="batteryReadout">91%</b></div><div class="track"><div id="batteryFill" class="fill battery-fill" style="width:91%"></div></div><div class="health-row"><span>Data-link quality</span><b id="linkReadout">96%</b></div><div class="track"><div id="linkFill" class="fill link-fill" style="width:96%"></div></div></div>
+        <div class="readout-heading">SPATIAL TELEMETRY <span>LOCAL / METRIC</span></div>
+        <div class="spatial-grid"><div><span>X AXIS</span><strong id="xReadout">-135.0 <small>m</small></strong></div><div><span>Y AXIS</span><strong id="yReadout">-95.0 <small>m</small></strong></div><div><span>ALTITUDE / DEPTH</span><strong id="altReadout">25.0 <small>m</small></strong></div><div><span>GROUNDSPEED</span><strong id="speedReadout">0.0 <small>m/s</small></strong></div></div>
+        <div class="policy-buttons"><button id="faultLinkButton" title="Simulate loss of data link on selected node">Drop sim link</button><button id="faultBatteryButton" title="Simulate critically low battery on selected node">Low sim battery</button><button id="faultRestoreButton" title="Clear simulated faults on selected node">Clear faults</button></div>
+        <div class="section-rule"></div>
+        <div class="readout-heading">MISSION EVENTS <span>LOCAL FEED</span></div><div id="eventFeed" class="event-feed" aria-live="polite"></div>
+        <div class="identity-card"><span class="identity-shimmer"></span><div class="label-overline">MORPHO IDENTITY LAYER</div><strong>OPTICAL / DIGITAL</strong><p>Concept: a distinct visual surface signature paired with authenticated digital identity. No physical anti-counterfeit implementation is claimed.</p><span class="identity-serial">CONCEPT MODULE · NOT LICENSED PATENT TECHNOLOGY</span></div>
+      </aside>
+    </div>
+    <footer class="footer"><span>MORPHO-BIT <b>UBI-1</b> · OPEN PROTOTYPE</span><span>SIMULATION / NO ACTUATOR OUTPUT</span><span>Designed for civilian inspection, science & rescue research</span></footer>
+  </div>
+  <script>
+/*
+ * MORPHO-BIT / UBI-1 (Universal Binary Interface v1)
+ * Copyright (c) 2026 MORPHO-BIT contributors. MIT license.
+ * Simulator-oriented experimental protocol; not MAVLink, Remote ID, or flight firmware.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (root) root.MorphoProtocol = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = 1;
+  const HEADER_BYTES = 24;
+  const TRAILER_BYTES = 4;
+  const MAX_PAYLOAD = 4096;
+  const MAGIC = Object.freeze([0x4d, 0x42]); // MB
+  const MESSAGES = Object.freeze({ HELLO: 1, TELEMETRY: 2, HEARTBEAT: 3, EVENT: 4, INTENT: 5, ACK: 6 });
+  const PLATFORMS = Object.freeze({ MULTIROTOR: 1, FIXED_WING: 2, VTOL: 3, GROUND: 4, SURFACE: 5, UNDERWATER: 6 });
+  const VALUE_TYPES = Object.freeze({ U8: 1, U16: 2, U32: 3, I16: 4, F32: 5, F64: 6, UTF8: 7, BOOL: 8, BYTES: 9 });
+
+  const fieldsArray = [
+    [1, 'x_m', VALUE_TYPES.F32], [2, 'y_m', VALUE_TYPES.F32],
+    [3, 'altitude_m', VALUE_TYPES.F32], [4, 'speed_mps', VALUE_TYPES.F32],
+    [5, 'heading_deg', VALUE_TYPES.F32], [6, 'battery_pct', VALUE_TYPES.U8],
+    [7, 'link_pct', VALUE_TYPES.U8], [8, 'state', VALUE_TYPES.UTF8],
+    [9, 'label', VALUE_TYPES.UTF8], [10, 'platform_name', VALUE_TYPES.UTF8],
+    [11, 'mission', VALUE_TYPES.UTF8], [12, 'uptime_s', VALUE_TYPES.U32],
+    [13, 'alert', VALUE_TYPES.UTF8], [14, 'target_x_m', VALUE_TYPES.F32],
+    [15, 'target_y_m', VALUE_TYPES.F32], [16, 'intent', VALUE_TYPES.UTF8],
+    [17, 'latitude_deg', VALUE_TYPES.F64], [18, 'longitude_deg', VALUE_TYPES.F64],
+    [19, 'capabilities', VALUE_TYPES.U32], [20, 'armed', VALUE_TYPES.BOOL],
+    [21, 'device_id', VALUE_TYPES.BYTES], [22, 'temperature_c', VALUE_TYPES.I16],
+    [23, 'conflict_id', VALUE_TYPES.UTF8], [24, 'exercise_day', VALUE_TYPES.F32],
+    [25, 'supply_pct', VALUE_TYPES.U8], [26, 'care_pct', VALUE_TYPES.U8],
+    [27, 'protection_pct', VALUE_TYPES.U8], [28, 'infrastructure_pct', VALUE_TYPES.U8],
+    [29, 'synthetic', VALUE_TYPES.BOOL], [30, 'provenance', VALUE_TYPES.UTF8],
+    [31, 'graph_schema', VALUE_TYPES.UTF8]
+  ];
+  const BY_NAME = Object.create(null);
+  const BY_TAG = Object.create(null);
+  for (const [tag, name, type] of fieldsArray) {
+    const spec = Object.freeze({ tag, name, type });
+    BY_NAME[name] = spec;
+    BY_TAG[tag] = spec;
+  }
+  const FIELDS = Object.freeze(BY_NAME);
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+
+  function integer(n, min, max, label) {
+    if (!Number.isInteger(n) || n < min || n > max) throw new RangeError(label + ' out of range');
+    return n;
+  }
+  function checksum(input) {
+    let crc = 0xffffffff;
+    for (let i = 0; i < input.length; i++) {
+      crc ^= input[i];
+      for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+    }
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+  function encodeValue(spec, value) {
+    const t = spec.type;
+    let bytes;
+    let view;
+    switch (t) {
+      case VALUE_TYPES.U8: bytes = new Uint8Array(1); bytes[0] = integer(value, 0, 255, spec.name); break;
+      case VALUE_TYPES.U16: bytes = new Uint8Array(2); new DataView(bytes.buffer).setUint16(0, integer(value, 0, 65535, spec.name), true); break;
+      case VALUE_TYPES.U32: bytes = new Uint8Array(4); new DataView(bytes.buffer).setUint32(0, integer(value, 0, 0xffffffff, spec.name), true); break;
+      case VALUE_TYPES.I16: bytes = new Uint8Array(2); new DataView(bytes.buffer).setInt16(0, integer(value, -32768, 32767, spec.name), true); break;
+      case VALUE_TYPES.F32:
+      case VALUE_TYPES.F64:
+        if (!Number.isFinite(value)) throw new RangeError(spec.name + ' must be finite');
+        bytes = new Uint8Array(t === VALUE_TYPES.F32 ? 4 : 8);
+        view = new DataView(bytes.buffer);
+        if (t === VALUE_TYPES.F32) view.setFloat32(0, value, true);
+        else view.setFloat64(0, value, true);
+        break;
+      case VALUE_TYPES.UTF8:
+        if (typeof value !== 'string') throw new TypeError(spec.name + ' must be a string');
+        bytes = encoder.encode(value);
+        break;
+      case VALUE_TYPES.BOOL:
+        if (typeof value !== 'boolean') throw new TypeError(spec.name + ' must be boolean');
+        bytes = new Uint8Array([value ? 1 : 0]);
+        break;
+      case VALUE_TYPES.BYTES:
+        if (!(value instanceof Uint8Array)) throw new TypeError(spec.name + ' must be Uint8Array');
+        bytes = new Uint8Array(value);
+        break;
+      default: throw new Error('Unsupported type');
+    }
+    if (bytes.length > 0xffff) throw new RangeError('TLV value too long');
+    return bytes;
+  }
+  function decodeValue(type, bytes) {
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const exact = (n) => { if (bytes.length !== n) throw new Error('Invalid scalar length'); };
+    switch (type) {
+      case VALUE_TYPES.U8: exact(1); return bytes[0];
+      case VALUE_TYPES.U16: exact(2); return view.getUint16(0, true);
+      case VALUE_TYPES.U32: exact(4); return view.getUint32(0, true);
+      case VALUE_TYPES.I16: exact(2); return view.getInt16(0, true);
+      case VALUE_TYPES.F32: exact(4); { const n = view.getFloat32(0, true); if (!Number.isFinite(n)) throw new Error('Invalid finite value'); return n; }
+      case VALUE_TYPES.F64: exact(8); { const n = view.getFloat64(0, true); if (!Number.isFinite(n)) throw new Error('Invalid finite value'); return n; }
+      case VALUE_TYPES.UTF8: return decoder.decode(bytes);
+      case VALUE_TYPES.BOOL: exact(1); if (bytes[0] > 1) throw new Error('Invalid bool'); return bytes[0] === 1;
+      case VALUE_TYPES.BYTES: return new Uint8Array(bytes);
+      default: throw new Error('Unknown TLV type');
+    }
+  }
+  function encodeFrame({ messageType, platform, droneId, sequence, timestamp = Date.now(), fields = {}, flags = 0 }) {
+    integer(messageType, 1, 6, 'messageType');
+    integer(platform, 1, 6, 'platform');
+    integer(droneId, 0, 0xffffffff, 'droneId');
+    integer(sequence, 0, 0xffffffff, 'sequence');
+    if (flags !== 0) throw new Error('Reserved flags must be zero in UBI-1');
+    if (!Number.isSafeInteger(timestamp) || timestamp < 0) throw new RangeError('Invalid timestamp');
+    if (fields === null || typeof fields !== 'object' || Array.isArray(fields)) throw new TypeError('fields must be object');
+    const parts = [];
+    let size = 0;
+    for (const key of Object.keys(fields)) {
+      const spec = BY_NAME[key];
+      if (!spec) throw new Error('Unknown field: ' + key);
+      const value = encodeValue(spec, fields[key]);
+      size += 4 + value.length;
+      if (size > MAX_PAYLOAD) throw new RangeError('Payload too large');
+      parts.push({ spec, value });
+    }
+    parts.sort((a, b) => a.spec.tag - b.spec.tag);
+    const out = new Uint8Array(HEADER_BYTES + size + TRAILER_BYTES);
+    const view = new DataView(out.buffer);
+    out[0] = MAGIC[0]; out[1] = MAGIC[1]; out[2] = VERSION;
+    out[3] = flags; out[4] = messageType; out[5] = platform;
+    view.setUint32(6, droneId, true);
+    view.setUint32(10, sequence, true);
+    view.setBigUint64(14, BigInt(timestamp), true);
+    view.setUint16(22, size, true);
+    let offset = HEADER_BYTES;
+    for (const { spec, value } of parts) {
+      out[offset] = spec.tag; out[offset + 1] = spec.type;
+      view.setUint16(offset + 2, value.length, true);
+      out.set(value, offset + 4);
+      offset += 4 + value.length;
+    }
+    view.setUint32(offset, checksum(out.subarray(0, offset)), true);
+    return out;
+  }
+  function decodeFrame(data) {
+    const bytes = data instanceof Uint8Array ? data : (data instanceof ArrayBuffer ? new Uint8Array(data) : null);
+    if (!bytes) throw new TypeError('Expected Uint8Array or ArrayBuffer');
+    if (bytes.length < HEADER_BYTES + TRAILER_BYTES) throw new Error('Frame too short');
+    if (bytes[0] !== MAGIC[0] || bytes[1] !== MAGIC[1]) throw new Error('Magic mismatch: not a MORPHO-BIT frame');
+    if (bytes[2] !== VERSION) throw new Error('Unsupported UBI version: ' + bytes[2]);
+    if (bytes[3] !== 0) throw new Error('Unknown frame flags');
+    if (!Object.values(MESSAGES).includes(bytes[4])) throw new Error('Unknown message type');
+    if (!Object.values(PLATFORMS).includes(bytes[5])) throw new Error('Unknown platform class');
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const length = view.getUint16(22, true);
+    if (length > MAX_PAYLOAD) throw new RangeError('Payload too large');
+    if (bytes.length !== HEADER_BYTES + length + TRAILER_BYTES) throw new Error('Frame length mismatch');
+    const claimed = view.getUint32(HEADER_BYTES + length, true);
+    const actual = checksum(bytes.subarray(0, HEADER_BYTES + length));
+    if (claimed !== actual) throw new Error('CRC32 mismatch: frame was corrupted');
+    const rawTime = view.getBigUint64(14, true);
+    if (rawTime > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error('Timestamp not representable');
+    const fields = {};
+    let offset = HEADER_BYTES;
+    while (offset < HEADER_BYTES + length) {
+      if (offset + 4 > HEADER_BYTES + length) throw new Error('Truncated TLV header');
+      const tag = bytes[offset], type = bytes[offset + 1], fieldLength = view.getUint16(offset + 2, true);
+      const spec = BY_TAG[tag];
+      if (!spec) throw new Error('Unknown field tag ' + tag + ' in UBI-1');
+      if (spec.type !== type) throw new Error('Field type mismatch: ' + spec.name);
+      if (Object.prototype.hasOwnProperty.call(fields, spec.name)) throw new Error('Duplicate field: ' + spec.name);
+      offset += 4;
+      if (offset + fieldLength > HEADER_BYTES + length) throw new Error('Truncated TLV value');
+      fields[spec.name] = decodeValue(type, bytes.subarray(offset, offset + fieldLength));
+      offset += fieldLength;
+    }
+    return Object.freeze({
+      version: bytes[2], flags: bytes[3], messageType: bytes[4], platform: bytes[5],
+      droneId: view.getUint32(6, true), sequence: view.getUint32(10, true),
+      timestamp: Number(rawTime), payloadBytes: length, checksum: claimed, fields
+    });
+  }
+  function hex(bytes, maxBytes = bytes.length) {
+    return Array.from(bytes.subarray(0, maxBytes), n => n.toString(16).padStart(2, '0').toUpperCase()).join(' ');
+  }
+  function binary(bytes, maxBytes = bytes.length) {
+    return Array.from(bytes.subarray(0, maxBytes), n => n.toString(2).padStart(8, '0')).join(' ');
+  }
+  return Object.freeze({ VERSION, MAGIC, HEADER_BYTES, TRAILER_BYTES, MAX_PAYLOAD,
+    MESSAGES, PLATFORMS, VALUE_TYPES, FIELDS, checksum, encodeFrame, decodeFrame, hex, binary });
+});
+
+</script>
+  <script>
+/* Deterministic local sandbox with conservative, simulated motion policies. */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (root) root.MorphoSimulator = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const RADIUS = 300;
+  const MIN_SEPARATION = 19;
+  const PROFILES = Object.freeze([
+    { id: 1, code: 'MORPHO-01', name: 'Morpho Scout', type: 'Multirotor', platform: 1, x: -135, y: -95, alt: 25, speed: 9, color: '#77e2ff' },
+    { id: 2, code: 'KITE-02', name: 'Kite Mapper', type: 'Fixed wing', platform: 2, x: 145, y: -113, alt: 42, speed: 13, color: '#b2a0ff' },
+    { id: 3, code: 'PELICAN-03', name: 'Pelican VTOL', type: 'VTOL', platform: 3, x: -148, y: 126, alt: 31, speed: 10, color: '#73efc9' },
+    { id: 4, code: 'TERRA-04', name: 'Terra Rover', type: 'Ground rover', platform: 4, x: 144, y: 108, alt: 0, speed: 5, color: '#ffbb81' },
+    { id: 5, code: 'NEREID-05', name: 'Nereid Surface', type: 'Surface vessel', platform: 5, x: 42, y: 185, alt: 0, speed: 5.5, color: '#6eb7ff' },
+    { id: 6, code: 'ABYSS-06', name: 'Abyss AUV', type: 'Underwater', platform: 6, x: -55, y: -184, alt: -12, speed: 3.6, color: '#e19bff' }
+  ]);
+  const MISSION_LABELS = Object.freeze({ search: 'Search & rescue pattern', survey: 'Environmental survey', inspect: 'Infrastructure inspection' });
+  const round = n => Math.round(n * 10) / 10;
+  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+  function copy(v) { return JSON.parse(JSON.stringify(v)); }
+
+  class FleetSimulator {
+    constructor() { this.reset(); }
+    reset() {
+      this.tick = 0;
+      this.running = true;
+      this.mission = '';
+      this.paused = false;
+      this.events = [];
+      this.vehicles = PROFILES.map((v, idx) => ({ ...v, homeX: v.x, homeY: v.y, battery: 91 - idx * 4,
+        link: 96 - idx * 2, heading: (idx * 53) % 360, velocity: 0, state: 'STANDBY',
+        previous: 'STANDBY', route: [], routeIndex: 0, distance: 0, trips: 0,
+        failLink: false, lowBattery: false, alert: '', uptime: 0 }));
+      this.log('SYSTEM', 'UBI-1 simulation initialized; no live hardware connected.');
+      return this.snapshot();
+    }
+    log(kind, message) {
+      this.events.unshift({ kind, message, second: Math.floor(this.tick), key: ++FleetSimulator.logKey });
+      this.events.length = Math.min(this.events.length, 45);
+    }
+    find(id) { return this.vehicles.find(v => v.id === Number(id)); }
+    plan(v, kind) {
+      const n = v.id - 1;
+      const angle = n * Math.PI / 3 + 0.32;
+      const at = (r, offset) => ({ x: round(r * Math.cos(angle + offset)), y: round(r * Math.sin(angle + offset)) });
+      if (kind === 'search') return [at(158, -0.48), at(235, -0.26), at(235, 0.02), at(235, 0.30), at(159, 0.46)];
+      if (kind === 'survey') return [at(128, -0.65), at(210, -0.30), at(270, 0.05), at(209, 0.39), at(120, 0.7)];
+      if (kind === 'inspect') return [at(112, -0.20), at(172, 0.05), at(205, 0.28), at(162, 0.49)];
+      throw new Error('Unknown mission');
+    }
+    dispatch(kind) {
+      if (!MISSION_LABELS[kind]) throw new Error('Unsupported mission');
+      this.mission = kind;
+      this.paused = false;
+      for (const v of this.vehicles) {
+        if (v.battery <= 18 || v.failLink) {
+          v.state = 'RETURN'; v.route = []; v.routeIndex = 0;
+          v.alert = 'Mission declined: health policy';
+        } else {
+          v.route = this.plan(v, kind);
+          v.routeIndex = 0;
+          v.state = 'MISSION';
+          v.alert = '';
+        }
+      }
+      this.log('MISSION', MISSION_LABELS[kind] + ' queued for eligible nodes.');
+    }
+    returnAll() {
+      this.mission = '';
+      this.paused = false;
+      for (const v of this.vehicles) {
+        v.route = []; v.routeIndex = 0;
+        v.state = 'RETURN';
+        v.alert = '';
+      }
+      this.log('SAFETY', 'Return-to-home initiated for all simulated nodes.');
+    }
+    holdAll() {
+      if (this.paused) return;
+      this.paused = true;
+      for (const v of this.vehicles) { v.previous = v.state; v.state = 'HOLD'; v.velocity = 0; }
+      this.log('OPERATOR', 'Operator hold: all simulated motion paused.');
+    }
+    resume() {
+      if (!this.paused) return;
+      this.paused = false;
+      for (const v of this.vehicles) {
+        v.state = v.battery <= 15 || v.failLink ? 'RETURN' : (v.previous === 'HOLD' ? 'STANDBY' : v.previous);
+      }
+      this.log('OPERATOR', 'Operator hold released.');
+    }
+    injectFault(id, fault) {
+      const v = this.find(id);
+      if (!v) throw new Error('Node not found');
+      if (fault === 'link') { v.failLink = true; v.link = 0; v.alert = 'Simulated data-link failure'; }
+      else if (fault === 'battery') { v.lowBattery = true; v.battery = 12; v.alert = 'Simulated low battery'; }
+      else if (fault === 'restore') { v.failLink = false; if (v.lowBattery) v.battery = Math.max(v.battery, 72); v.lowBattery = false; v.link = 92; v.alert = ''; }
+      else throw new Error('Unsupported fault');
+      if (fault !== 'restore') { v.state = 'RETURN'; v.route = []; v.routeIndex = 0; }
+      this.log('SAFETY', v.code + ': ' + (v.alert || 'Fault injection cleared') + '.');
+    }
+    step(dt) {
+      if (!Number.isFinite(dt) || dt < 0 || dt > 1.0) throw new RangeError('Invalid simulator timestep');
+      this.tick += dt;
+      const targets = this.vehicles.map(v => {
+        if (this.paused) return null;
+        if (v.failLink || v.battery <= 15) {
+          if (v.state !== 'RETURN' && v.state !== 'LANDED') {
+            v.state = 'RETURN'; v.route = []; v.routeIndex = 0;
+            v.alert = v.failLink ? 'Link loss: returning' : 'Low power: returning';
+            this.log('SAFETY', v.code + ': ' + v.alert);
+          }
+        }
+        if (v.state === 'RETURN') return { x: v.homeX, y: v.homeY };
+        if (v.state === 'MISSION') return v.route[v.routeIndex] || { x: v.homeX, y: v.homeY };
+        return null;
+      });
+      for (let i = 0; i < this.vehicles.length; i++) {
+        const v = this.vehicles[i];
+        v.uptime += dt;
+        if (!v.failLink) v.link = clamp(Math.round(91 - 0.045 * Math.hypot(v.x, v.y) + 4 * Math.sin(this.tick / 4 + i)), 48, 99);
+        if (this.paused) { v.velocity = 0; continue; }
+        let target = targets[i];
+        if (!target) { v.velocity = 0; continue; }
+        const dx = target.x - v.x, dy = target.y - v.y;
+        const length = Math.hypot(dx, dy);
+        if (length < 3) {
+          v.velocity = 0;
+          if (v.state === 'RETURN') {
+            v.x = v.homeX; v.y = v.homeY; v.state = 'LANDED'; v.alert = v.failLink ? 'Offline at home' : '';
+          } else if (v.state === 'MISSION') {
+            v.routeIndex += 1;
+            v.trips += 1;
+            if (v.routeIndex >= v.route.length) { v.state = 'RETURN'; v.routeIndex = 0; this.log('MISSION', v.code + ' completed assigned route.'); }
+          }
+          continue;
+        }
+        // Proximity avoidance is conservative: later numbered nodes yield to earlier nodes.
+        // This is a 2D simulation policy, not a certified collision-avoidance controller.
+        let yieldNode = false;
+        for (let j = 0; j < i; j++) {
+          const other = this.vehicles[j];
+          const sameMedium = (v.platform <= 3 && other.platform <= 3 && Math.abs(v.alt - other.alt) < 8)
+            || (v.platform === other.platform && v.platform > 3);
+          if (!sameMedium) continue;
+          const dist = Math.hypot(v.x - other.x, v.y - other.y);
+          const nextX = v.x + dx / length * Math.min(v.speed * dt, length);
+          const nextY = v.y + dy / length * Math.min(v.speed * dt, length);
+          const closing = Math.hypot(nextX - other.x, nextY - other.y) < dist;
+          if (dist < MIN_SEPARATION && closing) { yieldNode = true; break; }
+        }
+        if (yieldNode) { v.velocity = 0; continue; }
+        const increment = Math.min(v.speed * dt, length);
+        const nx = v.x + dx / length * increment, ny = v.y + dy / length * increment;
+        if (Math.hypot(nx, ny) > RADIUS) {
+          v.state = 'RETURN'; v.route = []; v.routeIndex = 0; v.velocity = 0;
+          v.alert = 'Geofence: simulated return';
+          this.log('SAFETY', v.code + ': geofence containment triggered.');
+          continue;
+        }
+        v.x = nx; v.y = ny; v.velocity = v.speed;
+        v.heading = ((Math.atan2(dy, dx) * 180 / Math.PI) + 90 + 360) % 360;
+        v.distance += increment;
+        v.battery = Math.max(0, v.battery - dt * (v.platform <= 3 ? 0.020 : 0.009));
+      }
+    }
+    snapshot() { return { tick: this.tick, paused: this.paused, mission: this.mission, vehicles: copy(this.vehicles), events: copy(this.events) }; }
+  }
+  FleetSimulator.logKey = 0;
+  return Object.freeze({ FleetSimulator, PROFILES, MISSION_LABELS, RADIUS, MIN_SEPARATION });
+});
+
+</script>
+  <script>
+/* MORPHO-BIT / WARLENS v1: historical learning + synthetic civil protection telemetry.
+ * Dated conflicts are curated historical entries, not an exhaustive list of all deployments.
+ * Risk weights / events are pedagogical counterfactuals, NOT historical measurements.
+ * No combat tactics, targets, weapon systems, or live external controls.
+ */
+(function (root, factory) {
+  const api = factory();
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  if (root) root.MorphoHistory = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const SOURCES = Object.freeze({
+    crsCasualties: { title: 'Congressional Research Service: American War and Military Operations Casualties (RL32492)', url: 'https://www.everycrsreport.com/reports/RL32492.html' },
+    crsUses: { title: 'Congressional Research Service: Instances of Use of U.S. Armed Forces Abroad, 1798-2023 (R42738)', url: 'https://www.everycrsreport.com/reports/R42738.html' },
+    state: { title: 'U.S. State Department Office of the Historian: Diplomatic history milestones', url: 'https://history.state.gov/milestones/all' },
+    navy: { title: 'Naval History and Heritage Command: Instances of Use of Armed Forces Abroad, 1798-2004', url: 'https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/i/use-of-armed-forces-abroad-1798-2004.html' }
+  });
+  const AXES = Object.freeze([
+    { id: 'communications', short: 'COMMS', label: 'Communications continuity', color: '#6bd9ef', channel: 'link_pct', meaning: 'Synthetic connection reliability in an abstract exercise' },
+    { id: 'logistics', short: 'SUPPLY', label: 'Supply continuity', color: '#92edbb', channel: 'supply_pct', meaning: 'Synthetic essential supplies available' },
+    { id: 'medical', short: 'MEDICAL', label: 'Medical capacity', color: '#e5b7ff', channel: 'care_pct', meaning: 'Synthetic capacity to deliver emergency care' },
+    { id: 'civilian', short: 'CIVILIAN', label: 'Civilian protection', color: '#f4bd87', channel: 'protection_pct', meaning: 'Synthetic safe-access indicator, not historical casualty data' },
+    { id: 'environment', short: 'TERRAIN', label: 'Environment resilience', color: '#7da9ff', channel: 'infrastructure_pct', meaning: 'Synthetic infrastructure and adverse-condition indicator' }
+  ]);
+  // Record shape: slug | name | start | end | category | region | thematic axes | summary | primary source.
+  // Calendar-year boundaries describe approximate U.S. participation, not every theater or treaty date.
+  const RECORDS = [
+    ['revolution','American Revolutionary War',1775,1783,'war','North America','communications,logistics,medical,civilian','War for independence involving colonial, British, and allied forces across North America.','crsCasualties'],
+    ['northwest-indian','Northwest Indian War',1785,1795,'conflict','Old Northwest','logistics,medical,civilian,environment','Conflict over Indigenous sovereignty and U.S. expansion in the Ohio Country.','state'],
+    ['quasi','Quasi-War with France',1798,1800,'conflict','Atlantic Ocean','communications,logistics,environment','Undeclared naval conflict between the United States and France.','crsUses'],
+    ['barbary-one','First Barbary War',1801,1805,'war','Mediterranean','logistics,communications,medical','War involving the United States and Tripoli in North Africa.','crsUses'],
+    ['war-1812','War of 1812',1812,1815,'war','North America / Atlantic','communications,logistics,civilian,environment','War between the United States and Britain, fought across several regions.','crsCasualties'],
+    ['barbary-two','Second Barbary War',1815,1815,'war','Mediterranean','communications,logistics','U.S. naval expedition against Algiers after renewed disputes.','crsUses'],
+    ['seminole-one','First Seminole War',1817,1818,'conflict','Florida','logistics,civilian,environment','Conflict involving Seminole communities and U.S. military forces.','state'],
+    ['black-hawk','Black Hawk War',1832,1832,'conflict','Upper Mississippi','medical,civilian,environment','Conflict following the return of Sauk and Meskwaki people to contested homelands.','state'],
+    ['seminole-two','Second Seminole War',1835,1842,'conflict','Florida','logistics,medical,civilian,environment','Long conflict tied to U.S. efforts to remove Seminole people from Florida.','state'],
+    ['mexican-american','Mexican-American War',1846,1848,'war','North America','communications,logistics,medical,civilian','War between Mexico and the United States that reshaped territorial boundaries.','crsCasualties'],
+    ['apache','Apache Wars',1849,1886,'conflict','Southwestern U.S.','logistics,civilian,environment','Series of conflicts involving Apache peoples, U.S. forces, and regional authorities; dates vary by account.','state'],
+    ['seminole-three','Third Seminole War',1855,1858,'conflict','Florida','logistics,civilian,environment','Later armed confrontation involving Seminole communities in Florida.','state'],
+    ['utah','Utah War',1857,1858,'conflict','Utah Territory','communications,logistics,civilian,environment','Federal military expedition and territorial standoff, with limited combat.','state'],
+    ['civil-war','American Civil War',1861,1865,'war','United States','communications,logistics,medical,civilian,environment','War over secession and slavery; profound military and civilian impacts.','crsCasualties'],
+    ['dakota','Dakota War of 1862',1862,1862,'conflict','Minnesota','medical,civilian,environment','War involving Dakota people, settlers and U.S. forces amid treaty violations and deprivation.','state'],
+    ['red-cloud','Red Cloud’s War',1866,1868,'conflict','Northern Plains','communications,logistics,civilian,environment','Conflict over the Bozeman Trail and Lakota, Northern Cheyenne, and Arapaho lands.','state'],
+    ['great-sioux','Great Sioux War',1876,1877,'conflict','Northern Plains','logistics,medical,civilian,environment','Major Plains conflict involving Lakota, Northern Cheyenne, allied communities and U.S. forces.','state'],
+    ['nez-perce','Nez Perce War',1877,1877,'conflict','Northwestern U.S.','logistics,medical,civilian,environment','Campaign during the attempted displacement of Nez Perce groups from ancestral lands.','state'],
+    ['spanish-american','Spanish-American War',1898,1898,'war','Caribbean / Pacific','communications,logistics,medical,civilian','War between Spain and the United States across the Caribbean and Pacific.','crsCasualties'],
+    ['philippine-american','Philippine-American War',1899,1902,'war','Philippines','communications,logistics,medical,civilian,environment','War over Philippine independence and American colonial rule; resistance continued afterward.','state'],
+    ['boxer','China Relief Expedition',1900,1901,'operation','China','logistics,medical,civilian','U.S. participation in multinational operations during the Boxer Uprising.','crsUses'],
+    ['cuba-pacification','Second Occupation of Cuba',1906,1909,'intervention','Cuba','communications,logistics,civilian','U.S. military occupation following domestic instability in Cuba.','crsUses'],
+    ['nicaragua','Nicaragua interventions',1912,1933,'intervention','Nicaragua','logistics,medical,civilian,environment','Long period of intermittent U.S. military involvement and occupation in Nicaragua.','crsUses'],
+    ['veracruz','U.S. occupation of Veracruz',1914,1914,'intervention','Mexico','medical,logistics,civilian','U.S. military occupation of Veracruz amid the Mexican Revolution.','crsUses'],
+    ['haiti','U.S. occupation of Haiti',1915,1934,'intervention','Haiti','logistics,medical,civilian,environment','U.S. occupation of Haiti with long-term political and social consequences.','crsUses'],
+    ['mexico-expedition','Mexican Punitive Expedition',1916,1917,'operation','Northern Mexico','communications,logistics,medical,environment','U.S. cross-border expedition led by John J. Pershing.','crsUses'],
+    ['ww1','World War I (U.S. participation)',1917,1918,'war','Europe / Atlantic','communications,logistics,medical,civilian','U.S. entry into World War I occurred in 1917; armistice in 1918.','crsCasualties'],
+    ['north-russia','North Russia Intervention',1918,1919,'intervention','Northern Russia','logistics,medical,environment','Allied intervention in northern Russia following World War I.','crsUses'],
+    ['siberia','American Expeditionary Force Siberia',1918,1920,'intervention','Siberia','communications,logistics,medical,environment','U.S. forces joined an international intervention in Siberia after the Russian Revolution.','crsUses'],
+    ['ww2','World War II (U.S. participation)',1941,1945,'war','Global','communications,logistics,medical,civilian,environment','Global war; the United States entered after the attack on Pearl Harbor.','crsCasualties'],
+    ['korean','Korean War',1950,1953,'war','Korean Peninsula','communications,logistics,medical,civilian,environment','War on the Korean Peninsula ending in an armistice rather than a peace treaty.','crsCasualties'],
+    ['lebanon-1958','Lebanon intervention of 1958',1958,1958,'intervention','Lebanon','communications,logistics,civilian','U.S. military deployment during Lebanon’s 1958 political crisis.','crsUses'],
+    ['vietnam','Vietnam War (major U.S. combat phase)',1965,1973,'war','Southeast Asia','communications,logistics,medical,civilian,environment','Major period of U.S. ground combat and air operations; the wider war spanned more years.','crsCasualties'],
+    ['dominican-1965','Dominican Republic intervention',1965,1966,'intervention','Dominican Republic','communications,logistics,medical,civilian','U.S. intervention during the Dominican civil war.','crsUses'],
+    ['eagle-claw','Iran hostage rescue attempt',1980,1980,'operation','Iran','communications,logistics,medical,environment','Failed U.S. operation to rescue hostages held in Iran.','crsCasualties'],
+    ['lebanon-1982','Multinational Force in Lebanon',1982,1984,'operation','Lebanon','communications,logistics,medical,civilian','U.S. participation in a multinational peacekeeping force in Lebanon.','crsCasualties'],
+    ['grenada','Grenada intervention',1983,1983,'operation','Grenada','communications,medical,civilian','U.S.-led military intervention known as Operation Urgent Fury.','crsCasualties'],
+    ['libya-1986','Libya air strikes of 1986',1986,1986,'operation','Libya','communications,civilian','U.S. air strikes known as Operation El Dorado Canyon.','crsUses'],
+    ['persian-gulf-escort','Persian Gulf escort operations',1987,1988,'operation','Persian Gulf','communications,logistics,environment','U.S. maritime protection operations during the Iran-Iraq War.','crsUses'],
+    ['panama','Panama intervention',1989,1990,'operation','Panama','communications,medical,civilian','U.S. intervention known as Operation Just Cause.','crsCasualties'],
+    ['gulf-war','Persian Gulf War',1990,1991,'war','Kuwait / Iraq / Gulf','communications,logistics,medical,civilian,environment','U.S.-led coalition operations after Iraq invaded Kuwait.','crsCasualties'],
+    ['somalia','Somalia humanitarian intervention',1992,1994,'operation','Somalia','logistics,medical,civilian,environment','U.S. and multinational intervention involving humanitarian aid and conflict.','crsCasualties'],
+    ['haiti-1994','Operation Uphold Democracy',1994,1995,'operation','Haiti','communications,logistics,medical,civilian','Multinational intervention to restore Haiti’s elected government.','crsCasualties'],
+    ['bosnia','Bosnia stabilization operations',1995,2004,'operation','Bosnia and Herzegovina','communications,logistics,medical,civilian','U.S. forces participated in NATO-led peace implementation and stabilization.','crsUses'],
+    ['desert-fox','Operation Desert Fox',1998,1998,'operation','Iraq','communications,civilian','U.S.-British military strikes in Iraq in December 1998.','crsUses'],
+    ['kosovo','Kosovo conflict / NATO operation',1999,1999,'operation','Balkans','communications,logistics,medical,civilian','U.S. participated in NATO’s air campaign during the Kosovo conflict.','crsUses'],
+    ['afghanistan','War in Afghanistan (U.S. campaign)',2001,2021,'war','Afghanistan','communications,logistics,medical,civilian,environment','Long U.S. military campaign spanning 2001 to the 2021 withdrawal.','crsCasualties'],
+    ['iraq-war','Iraq War / Operation Iraqi Freedom–New Dawn',2003,2011,'war','Iraq','communications,logistics,medical,civilian,environment','U.S.-led invasion and subsequent conflict; later U.S. operations are cataloged separately in official sources.','crsCasualties'],
+    ['libya-2011','Libya intervention of 2011',2011,2011,'operation','Libya','communications,medical,civilian','U.S. joined multinational military operations during the Libyan uprising.','crsUses']
+  ];
+  const AXIS_SET = new Set(AXES.map(x => x.id));
+  const CATEGORY_SET = new Set(['war', 'conflict', 'operation', 'intervention']);
+  function entryFrom(r) {
+    const [id, name, start, end, category, region, tags, summary, source] = r;
+    if (!/^[a-z0-9-]+$/.test(id) || !name || !Number.isInteger(start) || end < start ||
+        !CATEGORY_SET.has(category) || !SOURCES[source]) throw new Error('Invalid historical entry: ' + id);
+    const topics = tags.split(',');
+    if (!topics.every(tag => AXIS_SET.has(tag))) throw new Error('Invalid topics for ' + id);
+    return Object.freeze({ id, name, start, end, category, region,
+      topics: Object.freeze(topics), summary, source, provenance: 'curated_historical_context' });
+  }
+  const CONFLICTS = Object.freeze(RECORDS.map(entryFrom).sort((a,b) => a.start - b.start || a.name.localeCompare(b.name)));
+  function getConflict(id) { return CONFLICTS.find(item => item.id === id) || null; }
+  function findConflicts(query = '', period = 'all', category = 'all') {
+    const q = String(query).toLocaleLowerCase().trim();
+    return CONFLICTS.filter(item =>
+      (period === 'all' || (period === 'pre1900' && item.start < 1900) ||
+        (period === '1900to1945' && item.start >= 1900 && item.start <= 1945) ||
+        (period === 'post1945' && item.start > 1945)) &&
+      (category === 'all' || item.category === category) &&
+      (!q || (item.name + ' ' + item.region + ' ' + item.summary + ' ' + item.start + ' ' + item.end).toLocaleLowerCase().includes(q))
+    );
+  }
+  function seedOf(id) { let h = 2166136261; for (let i=0;i<id.length;i++) {h ^= id.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0; }
+  const clamp = x => Math.max(0, Math.min(100, x));
+  const rounded = x => Math.round(x*10)/10;
+  const CHANNELS = Object.freeze({communications:'link_pct',logistics:'supply_pct',medical:'care_pct',civilian:'protection_pct',environment:'infrastructure_pct'});
+  const CHALLENGES = Object.freeze({
+    communications: 'Loss of coordination and delayed messages',
+    logistics: 'Interrupted essential deliveries and distribution',
+    medical: 'Overloaded emergency-care capacity',
+    civilian: 'Reduced safe civilian access to services',
+    environment: 'Damage to infrastructure or severe conditions'
+  });
+  class HistoricalExercise {
+    constructor(id = 'ww2') { this.select(id); }
+    select(id) {
+      const conflict = getConflict(id);
+      if (!conflict) throw new RangeError('Unknown conflict');
+      this.conflict = conflict;
+      this.reset();
+    }
+    reset() {
+      this.day = 0;this.playing = false;this.speed = 1;
+      this.sequence = 0;this.elapsed = 0;this.history=[];
+      this.failures = { communications: 0, logistics: 0, medical: 0, civilian: 0, environment: 0 };
+      this.seed = seedOf(this.conflict.id);
+      // NOT historical observations: illustrative training starting points.
+      this.baseline = {};
+      AXES.forEach((axis, i) => {
+        const isFeatured = this.conflict.topics.includes(axis.id);
+        this.baseline[axis.id] = 84 - (isFeatured ? 12 : 2) - ((this.seed >>> (i*5)) & 7);
+      });
+      this.values = {...this.baseline};
+      this.events = [];
+      this.log('INIT','Loaded curated historical context; synthetic exercise initialized.');
+      this.record();
+      return this.snapshot();
+    }
+    log(type, message) {
+      const event = Object.freeze({ id: 'synthetic:'+this.conflict.id+':'+(++this.sequence), day:rounded(this.day), type, message, synthetic:true });
+      this.events.unshift(event); if (this.events.length > 45) this.events.pop();
+    }
+    toggle() {this.playing=!this.playing;this.log('CONTROL',this.playing?'Exercise running':'Exercise paused');return this.playing;}
+    setSpeed(n) {if (![1,2,4].includes(n)) throw new RangeError('Invalid speed');this.speed=n;}
+    inject(axisId) {
+      if (!Object.prototype.hasOwnProperty.call(this.failures,axisId)) throw new RangeError('Invalid stress axis');
+      this.failures[axisId] = Math.min(100, this.failures[axisId]+(axisId==='medical'?36:48));
+      this.values[axisId] = clamp(this.values[axisId]- (axisId==='medical'?12:19));
+      this.log('STRESS','Synthetic '+axisId+' disruption: '+CHALLENGES[axisId]+'.');
+      this.record();
+    }
+    step(dt) {
+      if (!Number.isFinite(dt) || dt < 0 || dt > 1) throw new RangeError('Invalid timestep');
+      if (!this.playing) return;
+      const advance = dt*this.speed*2.7;
+      const oldDay = this.day;
+      this.day = Math.min(100,this.day+advance);
+      for (const [i,axis] of AXES.entries()) {
+        const f = this.failures[axis.id];
+        const oscillation = Math.sin(this.day/11 + i*1.5 + (this.seed % 37))*1.7;
+        const target = clamp(this.baseline[axis.id] - f*.62 + oscillation);
+        this.values[axis.id] = clamp(this.values[axis.id] + (target-this.values[axis.id])*Math.min(1, dt*.7));
+        this.failures[axis.id] = Math.max(0, f-dt*1.75*this.speed);
+      }
+      if (Math.floor(oldDay/20) !== Math.floor(this.day/20) && this.day < 100) {
+        const lowest = AXES.reduce((a,b)=>this.values[a.id]<this.values[b.id]?a:b);
+        this.log('OBSERVE','Synthetic review: '+lowest.label.toLowerCase()+' has the lowest continuity.');
+      }
+      if (this.day-oldDay > 0.0001) {this.elapsed += dt;if(this.elapsed >= .5){this.elapsed = 0;this.record();}}
+      if (this.day >= 100) {this.playing = false;this.log('COMPLETE','100 simulated exercise days completed; export report for review.');this.record();}
+    }
+    record() {
+      this.history.push({day:rounded(this.day), ...Object.fromEntries(AXES.map(a=>[a.channel,rounded(this.values[a.id])]))});
+      if (this.history.length > 360) this.history.shift();
+    }
+    graph() {
+      const conf = this.conflict;
+      const nodes = [
+        {id:'conflict:'+conf.id,label:conf.name,type:'historical',provenance:conf.source},
+        {id:'region:'+conf.region,label:conf.region,type:'historical',provenance:conf.source},
+        {id:'period:'+conf.start+'-'+conf.end,label:conf.start+'–'+conf.end,type:'historical',provenance:conf.source}
+      ];
+      const edges = [
+        {from:nodes[0].id,to:nodes[1].id,relation:'LOCATED_IN'},
+        {from:nodes[0].id,to:nodes[2].id,relation:'DATES'}
+      ];
+      AXES.forEach(axis => {
+        if (!conf.topics.includes(axis.id)) return;
+        const issue='challenge:'+axis.id,channel='telemetry:'+axis.channel;
+        nodes.push({id:issue,label:axis.label,type:'analyst_lens',provenance:'illustrative_theme'});
+        nodes.push({id:channel,label:axis.channel,type:'synthetic_telemetry',provenance:'local_simulator'});
+        edges.push({from:nodes[0].id,to:issue,relation:'ANALYZED_FOR'});
+        edges.push({from:issue,to:channel,relation:'MONITORED_BY'});
+      });
+      return {schema:'morpho.warlens.graph.v1',nodes,edges};
+    }
+    snapshot() {
+      return { schema:'morpho.warlens.telemetry.v1',source:this.conflict.source,synthetic:true,
+        historicalConflict:this.conflict.id,exerciseDay:rounded(this.day),playing:this.playing,speed:this.speed,
+        values:Object.fromEntries(AXES.map(a=>[a.channel,rounded(this.values[a.id])])),
+        disruptions:{...this.failures},events:this.events.map(e=>({...e})),
+        readings:this.history.map(x=>({...x})) };
+    }
+    exportReport() {
+      const result={generatedAt:new Date().toISOString(),schema:'morpho.warlens.report.v1',
+        notice:'HISTORICAL CONTEXT IS CURATED; ALL NUMERIC EXERCISE VALUES AND EVENTS ARE SYNTHETIC AND NOT HISTORICAL FACTS.',
+        historicalContext:this.conflict,source:SOURCES[this.conflict.source],graph:this.graph(),exercise:this.snapshot(),
+        taxonomy:AXES.map(a=>({...a}))};
+      return result;
+    }
+  }
+  return Object.freeze({SOURCES,AXES,CONFLICTS,CHANNELS,findConflicts,getConflict,HistoricalExercise});
+});
+
+</script>
+  <script>
+/* WARLENS user interface. Browser-only code; deterministic local training, no external calls. */
+(function () {
+  'use strict';
+  const history = globalThis.MorphoHistory;
+  const protocol = globalThis.MorphoProtocol;
+  if (!history || !protocol) throw new Error('WARLENS requires MORPHO-BIT history/protocol modules');
+  const $ = id => document.getElementById(id);
+  if (!$('historicalAtlas')) return;
+  const training = new history.HistoricalExercise('ww2');
+  const colors = Object.fromEntries(history.AXES.map(a => [a.id,a.color]));
+  const themeNames = Object.fromEntries(history.AXES.map(a => [a.id,a.short]));
+  const graphCanvas = $('historyOntologyCanvas');
+  const graphCtx = graphCanvas.getContext('2d');
+  const chartCanvas = $('historyTelemetryCanvas');
+  const chartCtx = chartCanvas.getContext('2d');
+  let matches = history.CONFLICTS;
+  let uiTime = 0;
+  let prevFrame = performance.now();
+  let sizes = { chart: {width:0,height:0}, graph: {width:0,height:0} };
+  let lastPacket = null;
+
+  function resizeCanvas(element, context) {
+    const rect = element.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width=Math.max(1,Math.round(rect.width)),height=Math.max(1,Math.round(rect.height));
+    element.width = Math.round(width*dpr);element.height=Math.round(height*dpr);
+    context.setTransform(dpr,0,0,dpr,0,0);
+    return {width,height};
+  }
+  function resize() {
+    sizes.chart=resizeCanvas(chartCanvas,chartCtx);
+    sizes.graph=resizeCanvas(graphCanvas,graphCtx);
+    drawHistoryChart();drawOntologyGraph();
+  }
+  function makeEntry(conflict) {
+    const button=document.createElement('button');button.type='button';button.className='war-item'+(conflict.id===training.conflict.id?' active':'');
+    button.setAttribute('role','option');button.setAttribute('aria-selected',conflict.id===training.conflict.id?'true':'false');
+    button.dataset.war=conflict.id;
+    const year=document.createElement('span');year.className='war-item-year';year.textContent=String(conflict.start);
+    const body=document.createElement('span');body.className='war-item-body';
+    const title=document.createElement('span');title.className='war-item-name';title.textContent=conflict.name;
+    const sub=document.createElement('span');sub.className='war-item-type';sub.textContent=conflict.category+' · '+conflict.region;
+    const chevron=document.createElement('span');chevron.className='war-item-chevron';chevron.textContent='›';
+    body.append(title,sub);button.append(year,body,chevron);
+    button.addEventListener('click',()=>choose(conflict.id));
+    return button;
+  }
+  function updateRegistry() {
+    const query=$('warSearch').value;
+    matches=history.findConflicts(query,$('warEra').value,$('warKind').value);
+    const list=$('warList');
+    if (!matches.length) {const empty=document.createElement('div');empty.className='war-empty';empty.textContent='No matching historical entries. Clear filters to see the archive.';list.replaceChildren(empty);}
+    else list.replaceChildren(...matches.map(makeEntry));
+    $('warMatches').textContent=matches.length+' MATCH'+(matches.length===1?'':'ES');
+    $('warTotal').textContent=history.CONFLICTS.length;
+  }
+  function choose(id) {
+    if (id !== training.conflict.id) training.select(id);
+    updateRegistry();updateConflict();updateSynthetic();drawHistoryChart();drawOntologyGraph();
+  }
+  function updateConflict() {
+    const c=training.conflict;
+    $('warCategory').textContent=c.category.toUpperCase();
+    $('warPeriod').textContent=c.start===c.end?String(c.start):c.start+'–'+c.end;
+    $('warTitle').textContent=c.name;
+    $('warRegion').textContent=c.region;
+    $('warSummary').textContent=c.summary;
+    $('warThemes').replaceChildren(...c.topics.map(axis => {const el=document.createElement('span');el.className='theme-pill';el.textContent=themeNames[axis];return el;}));
+    const lo=1775,hi=2021,span=hi-lo;
+    $('warEraRange').style.left=((c.start-lo)/span*100).toFixed(2)+'%';
+    $('warEraRange').style.width=(Math.max(.5,(c.end-c.start)/span*100)).toFixed(2)+'%';
+    const source=history.SOURCES[c.source];$('warSourceLink').href=source.url;
+    $('warSourceLink').textContent='↗ Historical source / '+(c.source.startsWith('crs')?'Congressional Research Service':c.source==='state'?'Office of the Historian':'Naval History');
+    $('exerciseSpeed').textContent=training.speed+'× speed';
+    updatePlayButton();
+    const graph=training.graph();$('ontologyNodeCount').textContent=graph.nodes.length+' NODES / '+graph.edges.length+' EDGES';
+    const relations=$('ontologyRelations');
+    relations.replaceChildren(...c.topics.map(axis => {const el=document.createElement('span');el.textContent='ANALYZED_FOR › '+themeNames[axis]+' › '+history.CHANNELS[axis];return el;}));
+  }
+  function updatePlayButton() {
+    $('exerciseToggle').textContent=training.playing?'Ⅱ Pause exercise':'▷ Run exercise';
+    $('exerciseToggle').classList.toggle('playing',training.playing);
+  }
+  function updateSynthetic() {
+    $('exerciseDay').textContent='DAY '+Math.floor(training.day)+' / 100';
+    const grid=$('resilienceMetrics');
+    for (const axis of history.AXES) {
+      const value=training.values[axis.id];
+      let cell=grid.querySelector('[data-axis="'+axis.id+'"]');
+      if (!cell) {
+        cell=document.createElement('div');cell.className='resilience-item';cell.dataset.axis=axis.id;
+        const name=document.createElement('span');name.textContent=axis.short;
+        const metric=document.createElement('b');metric.dataset.number=axis.id;
+        const bar=document.createElement('div');bar.className='resilience-meter';
+        const indicator=document.createElement('i');bar.append(indicator);
+        cell.append(name,metric,bar);grid.append(cell);
+      }
+      cell.style.setProperty('--meter',axis.color);
+      cell.querySelector('b').textContent=Math.round(value)+'%';
+      cell.querySelector('.resilience-meter i').style.width=value+'%';
+    }
+    const feed=$('historyEvents');
+    const events=training.events.slice(0,5).map(event=>{
+      const row=document.createElement('div');row.className='history-event';
+      const label=document.createElement('span');label.textContent='D'+String(Math.floor(event.day)).padStart(2,'0');
+      const text=document.createElement('p');text.textContent='['+event.type+'] '+event.message;
+      row.append(label,text);return row;
+    });feed.replaceChildren(...events);
+  }
+  function drawHistoryChart() {
+    const w=sizes.chart.width,h=sizes.chart.height;if (!w||!h)return;
+    const ctx=chartCtx;ctx.clearRect(0,0,w,h);
+    const x0=28,y0=11,innerW=w-40,innerH=h-31;
+    ctx.save();ctx.font='9px ui-monospace,monospace';ctx.textBaseline='middle';
+    for (const value of [0,25,50,75,100]) {
+      const y=y0+(100-value)/100*innerH;
+      ctx.strokeStyle='#35566b';ctx.lineWidth=.7;ctx.setLineDash([3,5]);
+      ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x0+innerW,y);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#668ba1';ctx.textAlign='right';ctx.fillText(String(value),x0-6,y);
+    }
+    for (const value of [0,25,50,75,100]) {
+      const x=x0+(value/100)*innerW;
+      ctx.fillStyle='#7391a9';ctx.textAlign='center';ctx.fillText(String(value),x,h-11);
+    }
+    const readings=training.history;
+    for (const axis of history.AXES) {
+      const field=axis.channel;ctx.beginPath();ctx.strokeStyle=axis.color;ctx.lineWidth=1.8;ctx.lineJoin='round';
+      readings.forEach((pt,i)=>{
+        const x=x0+(pt.day/100)*innerW,y=y0+((100-pt[field])/100)*innerH;
+        if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+      });ctx.stroke();
+      const last=readings[readings.length-1];
+      if(last){ctx.fillStyle=axis.color;ctx.beginPath();ctx.arc(x0+(last.day/100)*innerW,y0+((100-last[field])/100)*innerH,2.8,0,Math.PI*2);ctx.fill();}
+    }
+    ctx.restore();
+  }
+  function drawOntologyGraph() {
+    const ctx=graphCtx,w=sizes.graph.width,h=sizes.graph.height;if(!w||!h)return;
+    ctx.clearRect(0,0,w,h);ctx.save();
+    const x0=Math.max(60,w*.18),x1=w*.51,x2=w*.83;
+    const active=training.conflict.topics;
+    const rows=active.length;
+    const positions=active.map((axis,i)=>({axis,y:22+((i+.5)/rows)*(h-48)}));
+    const cy=h*.51;
+    for(const pos of positions){
+      ctx.lineWidth=1.1;ctx.strokeStyle='#406c7f';ctx.beginPath();ctx.moveTo(x0,cy);ctx.bezierCurveTo(x0+40,cy,x1-40,pos.y,x1,pos.y);ctx.stroke();
+      ctx.setLineDash([3,4]);ctx.strokeStyle='#6c597d';ctx.beginPath();ctx.moveTo(x1,pos.y);ctx.lineTo(x2,pos.y);ctx.stroke();ctx.setLineDash([]);
+    }
+    ctx.lineWidth=1;ctx.strokeStyle='#76e2d5';ctx.fillStyle='#244d52';ctx.beginPath();ctx.arc(x0,cy,17,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#dafaf7';ctx.font='800 9px ui-monospace,monospace';ctx.fillText('WAR',x0,cy);
+    ctx.font='8px ui-monospace,monospace';ctx.fillStyle='#95d4d3';ctx.fillText('SOURCE',x0,cy+27);
+    for(const pos of positions){
+      ctx.fillStyle='#2d2942';ctx.strokeStyle='#b6a0eb';ctx.beginPath();ctx.arc(x1,pos.y,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#cba465';ctx.beginPath();ctx.arc(x2,pos.y,8,0,Math.PI*2);ctx.fill();
+      ctx.font='700 8px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#ded1fd';ctx.fillText(themeNames[pos.axis],x1,pos.y-16);
+      ctx.fillStyle='#f6d5ae';ctx.fillText('SIM',x2,pos.y-15);
+    }
+    ctx.restore();
+  }
+  function download(content,name,type) {
+    const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  function inspectHistoricalPacket() {
+    const values=training.snapshot().values;
+    const packet=protocol.encodeFrame({messageType:protocol.MESSAGES.EVENT,
+      platform:protocol.PLATFORMS.MULTIROTOR,droneId:0,sequence:Math.floor(training.day),
+      fields:{label:'WARLENS / SYNTHETIC',mission:'HISTORICAL_RESILIENCE',state:'EXERCISE_ONLY',
+        platform_name:'ONTOLOGY SIMULATOR',uptime_s:Math.floor(training.day),
+        conflict_id:training.conflict.id,exercise_day:training.day,
+        link_pct:Math.round(values.link_pct),supply_pct:Math.round(values.supply_pct),
+        care_pct:Math.round(values.care_pct),protection_pct:Math.round(values.protection_pct),
+        infrastructure_pct:Math.round(values.infrastructure_pct),
+        synthetic:true,provenance:'local_simulator',graph_schema:'morpho.warlens.graph.v1',
+        alert:'Historical context; synthetic resilience values; no live hardware.'}});
+    const result=protocol.decodeFrame(packet);
+    if (result.fields.state!=='EXERCISE_ONLY' || result.fields.synthetic!==true || result.fields.conflict_id!==training.conflict.id) throw new Error('Event encoding failed');
+    lastPacket=packet;
+    $('historyPacketStatus').textContent='VALID EVENT / '+packet.length+' BYTES / CRC32 VERIFIED';
+    if(globalThis.MorphoUI && globalThis.MorphoUI.inspectHistoricalFrame){
+      globalThis.MorphoUI.inspectHistoricalFrame(new Uint8Array(packet));
+    }
+    $('packetOutput').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function bind() {
+    for(const id of ['warSearch','warEra','warKind']){
+      $(id).addEventListener(id==='warSearch'?'input':'change',updateRegistry);
+    }
+    $('warClear').addEventListener('click',()=>{
+      $('warSearch').value='';$('warEra').value='all';$('warKind').value='all';updateRegistry();
+    });
+    $('exerciseToggle').addEventListener('click',()=>{if(training.day===100)training.reset();training.toggle();updatePlayButton();updateSynthetic();});
+    $('exerciseReset').addEventListener('click',()=>{training.reset();updatePlayButton();updateSynthetic();drawHistoryChart();});
+    $('exerciseSpeed').addEventListener('click',()=>{training.setSpeed(training.speed===1?2:training.speed===2?4:1);$('exerciseSpeed').textContent=training.speed+'× speed';});    $('exerciseExport').addEventListener('click',()=>{
+      const report=training.exportReport();download(JSON.stringify(report,null,2),'warlens-'+training.conflict.id+'-ontology.json','application/json');
+    });
+    document.querySelectorAll('[data-stress]').forEach(button=>button.addEventListener('click',()=>{
+      training.inject(button.dataset.stress);updateSynthetic();drawHistoryChart();
+    }));
+    $('historyPacket').addEventListener('click',inspectHistoricalPacket);
+    window.addEventListener('resize',resize);
+    if(typeof ResizeObserver === 'function') new ResizeObserver(resize).observe($('historyTelemetryCanvas').parentElement);
+  }
+  function loop(now) {
+    const dt=Math.max(0,Math.min(.08,(now-prevFrame)/1000));prevFrame=now;
+    training.step(dt);
+    if(now-uiTime > 225){uiTime=now;updateSynthetic();drawHistoryChart();updatePlayButton();}
+    requestAnimationFrame(loop);
+  }
+  bind();updateRegistry();updateConflict();updateSynthetic();resize();requestAnimationFrame(loop);
+  globalThis.WarLensDebug=Object.freeze({getSnapshot:()=>training.snapshot(),getGraph:()=>training.graph(),getConflict:()=>({...training.conflict}),getCatalogCount:()=>history.CONFLICTS.length,
+    getLastPacket:()=>lastPacket?new Uint8Array(lastPacket):null});
+})();
+
+</script>
+  <script>
+/* MORPHO-BIT console: offline-only simulator UI. Never connects to actuators. */
+(function () {
+  'use strict';
+  const protocol = globalThis.MorphoProtocol;
+  const engine = globalThis.MorphoSimulator;
+  if (!protocol || !engine) throw new Error('Required local MORPHO-BIT modules not found');
+  const sim = new engine.FleetSimulator();
+  const $ = id => document.getElementById(id);
+  const setText = (id, value) => { $(id).textContent = value; };
+  const ctx = $('radarCanvas').getContext('2d');
+  const canvas = $('radarCanvas');
+  const profileGlyphs = ['✣','➤','✧','▣','⛵','◉'];
+  const missionNames = engine.MISSION_LABELS;
+  const statusColor = state => state === 'RETURN' ? 'return' : state === 'HOLD' ? 'hold' : state === 'FAULT' ? 'fault' : '';
+  const statePretty = state => state === 'MISSION' ? 'ACTIVE' : state;
+  const isAir = v => v.platform <= 3;
+  let selectedId = 1;
+  let inspectBytes = null;
+  let packetBytes = null;
+  let sequence = 0;
+  let packetCount = 0;
+  let view = 'hex';
+  let lastUi = 0;
+  let lastTx = 0;
+  let lastClock = 0;
+  let lastNow = performance.now();
+  let mapGeometry = { cx: 0, cy: 0, scale: 1 };
+  let alertTimeout;
+
+  function notify(message, bad = false) {
+    const result = $('packetResult');
+    result.classList.toggle('invalid', bad);
+    result.replaceChildren();
+    const dot = document.createElement('span'); dot.className = 'dot ' + (bad ? '' : 'green');
+    result.appendChild(dot);
+    result.appendChild(document.createTextNode(message));
+  }
+  function telemetryFields(v) {
+    return {
+      x_m: v.x, y_m: v.y, altitude_m: v.alt,
+      speed_mps: v.velocity, heading_deg: v.heading,
+      battery_pct: Math.round(v.battery), link_pct: v.link,
+      state: v.state, label: v.code, platform_name: v.type,
+      mission: v.state === 'MISSION' ? missionNames[sim.mission] || 'Manual sandbox' : 'NONE',
+      uptime_s: Math.floor(v.uptime), alert: v.alert
+    };
+  }
+  function updateLivePacket() {
+    const v = sim.find(selectedId);
+    if (!v) return;
+    packetBytes = protocol.encodeFrame({ messageType: protocol.MESSAGES.TELEMETRY,
+      platform: v.platform, droneId: v.id, sequence: sequence++, fields: telemetryFields(v) });
+    packetCount++;
+    if (!inspectBytes) drawInspector(packetBytes, 'Live synthetic frame');
+  }
+  function packetLines(bytes, mode) {
+    const stop = Math.min(bytes.length, mode === 'binary' ? 68 : 240);
+    const stride = mode === 'binary' ? 6 : 12;
+    const lines = [];
+    for (let i = 0; i < stop; i += stride) {
+      const part = bytes.subarray(i, Math.min(i + stride, stop));
+      lines.push(i.toString(16).padStart(4, '0').toUpperCase() + '  ' +
+        (mode === 'binary' ? protocol.binary(part) : protocol.hex(part)));
+    }
+    if (stop < bytes.length) lines.push('… ' + (bytes.length - stop) + ' more bytes (export to inspect full frame)');
+    return lines.join('\n');
+  }
+  function drawInspector(bytes, label) {
+    setText('packetOutput', packetLines(bytes, view));
+    setText('packetLabel', label.toUpperCase());
+    setText('frameLength', String(bytes.length).padStart(3, '0') + ' B');
+    try {
+      const decoded = protocol.decodeFrame(bytes);
+      const checksumHex = decoded.checksum.toString(16).toUpperCase().padStart(8, '0');
+      setText('crcStatus', 'CRC32 ✓');
+      $('crcStatus').className = 'crc-ok';
+      notify('CRC valid • node ' + decoded.droneId + ' • sequence ' + decoded.sequence + ' • 0x' + checksumHex);
+    } catch (error) {
+      setText('crcStatus', 'CRC32 / ERROR');
+      $('crcStatus').className = 'crc-bad';
+      notify(error.message, true);
+    }
+  }
+  function selected() { return sim.find(selectedId) || sim.vehicles[0]; }
+  function showVehicle() {
+    const v = selected();
+    setText('twinClass', v.type.toUpperCase());
+    setText('twinName', v.code);
+    setText('twinDescription', v.name);
+    setText('twinNumber', String(v.id).padStart(2, '0'));
+    setText('twinSilhouette', profileGlyphs[v.platform - 1]);
+    $('twinSilhouette').style.color = v.color;
+    setText('twinState', statePretty(v.state));
+    $('twinState').classList.toggle('warning', ['RETURN', 'HOLD'].includes(v.state));
+    setText('batteryReadout', Math.round(v.battery) + '%');
+    setText('linkReadout', v.link + '%');
+    $('batteryFill').style.width = Math.max(0, v.battery) + '%';
+    $('linkFill').style.width = v.link + '%';
+    setText('xReadout', v.x.toFixed(1) + ' m');
+    setText('yReadout', v.y.toFixed(1) + ' m');
+    setText('altReadout', v.alt.toFixed(1) + ' m');
+    setText('speedReadout', v.velocity.toFixed(1) + ' m/s');
+  }
+  function makeFleetItem(v) {
+    const button = document.createElement('button');
+    button.className = 'fleet-item' + (selectedId === v.id ? ' selected' : '');
+    button.setAttribute('role', 'option');
+    button.setAttribute('aria-selected', selectedId === v.id ? 'true' : 'false');
+    button.style.setProperty('--node-color', v.color);
+    button.dataset.id = v.id;
+    const icon = document.createElement('span'); icon.className = 'fleet-glyph'; icon.textContent = profileGlyphs[v.platform - 1];
+    const copy = document.createElement('span'); copy.className = 'fleet-copy';
+    const title = document.createElement('strong'); title.textContent = v.code;
+    const sub = document.createElement('small'); sub.textContent = v.type;
+    copy.append(title, sub);
+    const status = document.createElement('span'); status.className = 'fleet-status ' + statusColor(v.state);
+    status.textContent = statePretty(v.state);
+    button.append(icon, copy, status);
+    button.addEventListener('click', () => selectVehicle(v.id));
+    return button;
+  }
+  function updateFleetList() {
+    const list = $('fleetList');
+    list.replaceChildren(...sim.vehicles.map(makeFleetItem));
+  }
+  function selectVehicle(id) {
+    if (!sim.find(id)) return;
+    selectedId = id;
+    inspectBytes = null;
+    updateFleetList();
+    showVehicle();
+    updateLivePacket();
+  }
+  function updateMetrics() {
+    const moving = sim.vehicles.filter(v => v.state === 'MISSION').length;
+    const returning = sim.vehicles.filter(v => v.state === 'RETURN').length;
+    const mean = sim.vehicles.reduce((acc, v) => acc + v.battery, 0) / sim.vehicles.length;
+    setText('metricNodes', String(sim.vehicles.length).padStart(2, '0') + ' / 06');
+    setText('metricFrames', String(packetCount).padStart(6, '0'));
+    setText('metricBattery', Math.round(mean) + '%');
+    if (sim.paused) { setText('metricState', 'HOLD'); setText('metricStateFoot', 'Operator paused all nodes'); }
+    else if (returning) { setText('metricState', 'RETURN'); setText('metricStateFoot', returning + ' nodes going home'); }
+    else if (moving) { setText('metricState', 'ACTIVE'); setText('metricStateFoot', moving + ' paths executing'); }
+    else { setText('metricState', 'READY'); setText('metricStateFoot', 'No active trajectories'); }
+    const mode = sim.paused ? 'OPERATOR HOLD' : sim.mission ? missionNames[sim.mission].toUpperCase() : 'IDLE // NO ACTIVE MISSION';
+    setText('mapMode', mode);
+    const minutes = Math.floor(sim.tick / 60).toString().padStart(2, '0');
+    const seconds = Math.floor(sim.tick % 60).toString().padStart(2, '0');
+    setText('simTime', minutes + ':' + seconds);
+    document.querySelectorAll('.mission-btn').forEach(button => button.classList.toggle('active', button.dataset.mission === sim.mission));
+  }
+  function updateEvents() {
+    const feed = $('eventFeed');
+    feed.replaceChildren(...sim.events.slice(0, 6).map(event => {
+      const row = document.createElement('div'); row.className = 'event-item';
+      const icon = document.createElement('span'); icon.className = 'event-symbol' + (event.kind === 'SAFETY' ? ' warn' : '');
+      icon.textContent = event.kind === 'SAFETY' ? '◇' : '◆';
+      const body = document.createElement('div');
+      const p = document.createElement('p'); p.textContent = event.message;
+      const label = document.createElement('small'); label.textContent = 'T+' + event.second.toString().padStart(4, '0') + 's  /  ' + event.kind;
+      body.append(p, label); row.append(icon, body); return row;
+    }));
+  }
+  function repaintUI() { updateMetrics(); updateFleetList(); showVehicle(); updateEvents(); }
+
+  function resizeCanvas() {
+    const bounds = canvas.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.max(1, Math.round(bounds.width * ratio));
+    canvas.height = Math.max(1, Math.round(bounds.height * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    mapGeometry = { cx: bounds.width / 2, cy: bounds.height / 2, scale: Math.min(bounds.width * 0.44, bounds.height * 0.46) / engine.RADIUS,
+      width: bounds.width, height: bounds.height };
+  }
+  function point(x, y) { return { x: mapGeometry.cx + x * mapGeometry.scale, y: mapGeometry.cy - y * mapGeometry.scale }; }
+  function pathCircle(x, y, radius) { ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); }
+  function drawShape(v, isSelected) {
+    const at = point(v.x, v.y), r = isSelected ? 9 : 7;
+    ctx.save();ctx.translate(at.x,at.y);ctx.rotate(v.heading*Math.PI/180);
+    ctx.lineWidth = 1.8;
+    ctx.strokeStyle = v.color;
+    ctx.fillStyle = '#0e2835';
+    if (v.platform === 1) {
+      for(const [rx,ry] of [[-7,-7],[7,-7],[-7,7],[7,7]]){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(rx,ry);ctx.stroke();pathCircle(rx,ry,2.6);ctx.stroke();}
+      ctx.fillRect(-3,-3,6,6);
+    } else if (v.platform === 2) {
+      ctx.beginPath();ctx.moveTo(0,-r*1.75);ctx.lineTo(3,-2);ctx.lineTo(13,3);ctx.lineTo(13,6);ctx.lineTo(2,4);ctx.lineTo(2,11);ctx.lineTo(-2,11);ctx.lineTo(-2,4);ctx.lineTo(-13,6);ctx.lineTo(-13,3);ctx.lineTo(-3,-2);ctx.closePath();ctx.fill();ctx.stroke();
+    } else if (v.platform === 3) {
+      ctx.beginPath();ctx.moveTo(0,-11);ctx.lineTo(8,4);ctx.lineTo(0,10);ctx.lineTo(-8,4);ctx.closePath();ctx.fill();ctx.stroke();
+      pathCircle(-11,-1,3.5);ctx.stroke();pathCircle(11,-1,3.5);ctx.stroke();
+    } else if (v.platform === 4) {
+      ctx.fillRect(-7,-8,14,16);ctx.strokeRect(-7,-8,14,16);ctx.fillStyle=v.color;ctx.fillRect(-11,-7,3,14);ctx.fillRect(8,-7,3,14);
+    } else if (v.platform === 5) {
+      ctx.beginPath();ctx.moveTo(0,-12);ctx.lineTo(8,-3);ctx.lineTo(6,10);ctx.lineTo(-6,10);ctx.lineTo(-8,-3);ctx.closePath();ctx.fill();ctx.stroke();
+    } else {
+      ctx.beginPath();ctx.ellipse(0,0,6,11,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.beginPath();ctx.moveTo(-10,7);ctx.lineTo(10,7);ctx.stroke();
+    }
+    ctx.restore();
+    if (isSelected) {
+      ctx.save();ctx.strokeStyle='#e1fcff';ctx.setLineDash([3,4]);ctx.lineWidth=1;
+      pathCircle(at.x,at.y,18);ctx.stroke();ctx.restore();
+    }
+    ctx.fillStyle=isSelected?'#e9f9ff':'#a2c3d3';ctx.font=(isSelected?'bold 10px':'9px')+' ui-monospace, SFMono-Regular, Menlo, monospace';
+    ctx.textAlign='center';ctx.fillText(v.code,at.x,at.y+28);
+    if (v.state==='RETURN') {
+      ctx.fillStyle='#f7bf87';ctx.font='9px monospace';ctx.fillText('↶ RTH',at.x,at.y-18);
+    }
+  }
+  function drawRadar(now) {
+    const g=mapGeometry;if(!g.width)return;
+    const { width:w,height:h,cx,cy,scale:s }=g;
+    ctx.clearRect(0,0,w,h);
+    const r=engine.RADIUS*s;
+    // Static coordinate lines and bearing markings.
+    ctx.save();
+    ctx.strokeStyle='#24506a';ctx.lineWidth=1;
+    for(const distance of [100,200,300]){
+      ctx.beginPath();ctx.arc(cx,cy,distance*s,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#4a7690';ctx.font='9px monospace';ctx.fillText(distance+'m',cx+distance*s+5,cy-5);
+    }
+    ctx.setLineDash([3,7]);
+    ctx.strokeStyle='#30617a';
+    ctx.beginPath();ctx.moveTo(cx-r-11,cy);ctx.lineTo(cx+r+11,cy);ctx.moveTo(cx,cy-r-11);ctx.lineTo(cx,cy+r+11);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle='#3c789b';
+    for(let deg=0;deg<360;deg+=30){
+      const a=deg*Math.PI/180;
+      ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*(r-5),cy+Math.sin(a)*(r-5));ctx.lineTo(cx+Math.cos(a)*(r+5),cy+Math.sin(a)*(r+5));ctx.stroke();
+    }
+    // Soft scanning effect, bounded to synthetic arena.
+    const theta = now * 0.00018;
+    const grd=ctx.createRadialGradient(cx,cy,4,cx,cy,r);
+    grd.addColorStop(0,'rgba(78,193,208,.085)');grd.addColorStop(1,'rgba(78,193,208,0)');
+    ctx.fillStyle=grd;pathCircle(cx,cy,r);ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,theta-.27,theta+.08);ctx.closePath();
+    ctx.fillStyle='rgba(73,194,207,.050)';ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(theta+.08)*r,cy+Math.sin(theta+.08)*r);
+    ctx.strokeStyle='rgba(104,228,225,.15)';ctx.stroke();
+    ctx.restore();
+    // Design-only synthetic landmarks, never geographical map data.
+    ctx.save();
+    const landmarks = [[-210,-30,'SENSOR A'],[205,25,'NODE B'],[10,240,'SITE C']];
+    for(const [x,y,name] of landmarks){const p=point(x,y);ctx.strokeStyle='#345e75';ctx.strokeRect(p.x-5,p.y-5,10,10);ctx.fillStyle='#597f95';ctx.font='8px monospace';ctx.fillText(name,p.x+9,p.y-6);}
+    ctx.restore();
+    // Planned paths are visible and show exactly the simulation's target positions.
+    for(const v of sim.vehicles){
+      if(v.state!=='MISSION'||!v.route.length)continue;
+      const start=point(v.x,v.y);ctx.save();ctx.beginPath();ctx.moveTo(start.x,start.y);
+      for(let j=v.routeIndex;j<v.route.length;j++){let q=point(v.route[j].x,v.route[j].y);ctx.lineTo(q.x,q.y);}
+      ctx.setLineDash([5,6]);ctx.strokeStyle=v.id===selectedId?v.color:v.color+'65';ctx.lineWidth=v.id===selectedId?1.4:0.9;ctx.stroke();ctx.setLineDash([]);
+      for(let j=v.routeIndex;j<v.route.length;j++){const p=point(v.route[j].x,v.route[j].y);ctx.fillStyle=v.color;pathCircle(p.x,p.y,2);ctx.fill();}
+      ctx.restore();
+    }
+    for(const v of sim.vehicles)drawShape(v,v.id===selectedId);
+    // Scale bar and north marker.
+    ctx.save();ctx.strokeStyle='#4f839c';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(w/2-25,16);ctx.lineTo(w/2,8);ctx.lineTo(w/2+25,16);ctx.stroke();ctx.fillStyle='#6f9bb0';ctx.textAlign='center';ctx.font='9px monospace';ctx.fillText('LOCAL +Y',w/2,28);ctx.restore();
+  }
+  function handleCanvasClick(event) {
+    const rect=canvas.getBoundingClientRect();const px=event.clientX-rect.left,py=event.clientY-rect.top;
+    let nearest=null,dist=18;
+    for(const v of sim.vehicles){const p=point(v.x,v.y);const d=Math.hypot(px-p.x,py-p.y);if(d<dist){nearest=v;dist=d;}}
+    if(nearest)selectVehicle(nearest.id);
+  }
+  function refreshClock() { setText('utcClock', new Date().toISOString().slice(11,19)+' UTC'); }
+  function setInspectMode(mode) {
+    view=mode;
+    $('hexButton').classList.toggle('view-active',mode==='hex');
+    $('binaryButton').classList.toggle('view-active',mode==='binary');
+    drawInspector(inspectBytes || packetBytes,'SELECTED NODE / '+(inspectBytes?'INSPECTION':'TELEMETRY'));
+  }
+  function setMission(kind) {
+    inspectBytes=null;
+    sim.dispatch(kind);
+    repaintUI();updateLivePacket();
+  }
+  function bindUi() {
+    document.querySelectorAll('.mission-btn').forEach(button=>button.addEventListener('click',()=>setMission(button.dataset.mission)));
+    $('returnButton').addEventListener('click',()=>{sim.returnAll();inspectBytes=null;repaintUI();updateLivePacket();});
+    $('holdButton').addEventListener('click',()=>{sim.holdAll();repaintUI();updateLivePacket();});
+    $('resumeButton').addEventListener('click',()=>{sim.resume();repaintUI();updateLivePacket();});
+    $('resetButton').addEventListener('click',()=>{sim.reset();selectedId=1;sequence=0;packetCount=0;inspectBytes=null;repaintUI();updateLivePacket();});
+    for(const [id,fault] of [['faultLinkButton','link'],['faultBatteryButton','battery'],['faultRestoreButton','restore']]){
+      $(id).addEventListener('click',()=>{sim.injectFault(selectedId,fault);repaintUI();inspectBytes=null;updateLivePacket();});
+    }
+    $('hexButton').addEventListener('click',()=>setInspectMode('hex'));
+    $('binaryButton').addEventListener('click',()=>setInspectMode('binary'));
+    $('corruptButton').addEventListener('click',()=>{
+      const original=inspectBytes || packetBytes;if(!original)return;
+      inspectBytes=new Uint8Array(original);
+      inspectBytes[17]^=0x01; // trigger integrity failure in a copied frame, never in a live stream
+      drawInspector(inspectBytes,'CORRUPTED TEST FRAME');
+    });
+    $('copyButton').addEventListener('click',async()=>{
+      const bytes=inspectBytes||packetBytes;
+      if(!bytes)return;
+      const text=protocol.hex(bytes);
+      try{
+        if(navigator.clipboard && navigator.clipboard.writeText) await navigator.clipboard.writeText(text);
+        else throw new Error('Clipboard API unavailable');
+        notify('Copied '+bytes.length+' encoded bytes to clipboard.');
+      }catch(_err){
+        const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+        const copied=document.execCommand('copy');ta.remove();notify(copied?'Copied frame via fallback clipboard.':'Copy unavailable; select the inspector text instead.',!copied);
+      }
+    });
+    $('exportButton').addEventListener('click',()=>{
+      const bytes=inspectBytes||packetBytes;if(!bytes)return;
+      const blob=new Blob([bytes],{type:'application/octet-stream'}),url=URL.createObjectURL(blob);
+      const anchor=document.createElement('a');anchor.href=url;anchor.download='morpho-ubi1-'+String(selectedId).padStart(2,'0')+'.bin';
+      document.body.appendChild(anchor);anchor.click();anchor.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+      notify('Exported '+bytes.length+' frame bytes.');
+    });
+    $('importInput').addEventListener('change',async event=>{
+      const file=event.target.files[0];
+      if(!file)return;
+      try{
+        if(file.size>protocol.HEADER_BYTES+protocol.MAX_PAYLOAD+protocol.TRAILER_BYTES)throw new Error('File exceeds UBI-1 packet maximum');
+        const bytes=new Uint8Array(await file.arrayBuffer());
+        protocol.decodeFrame(bytes); // fail-closed before showing imported frame
+        inspectBytes=bytes;drawInspector(inspectBytes,'IMPORTED FRAME / '+file.name.slice(0,36));
+      }catch(error){notify('Import rejected: '+error.message,true);}
+      event.target.value='';
+    });
+    canvas.addEventListener('click',handleCanvasClick);
+    canvas.addEventListener('keydown',event=>{
+      if(['ArrowRight','ArrowDown','ArrowLeft','ArrowUp'].includes(event.key)){
+        event.preventDefault();selectVehicle(1+(selectedId-1+(event.key==='ArrowRight'||event.key==='ArrowDown'?1:5))%6);
+      }
+    });
+    window.addEventListener('resize',resizeCanvas);
+    if(typeof ResizeObserver==='function')new ResizeObserver(resizeCanvas).observe($('radarContainer'));
+  }
+  function loop(now) {
+    const dt=Math.min(0.075,Math.max(0,(now-lastNow)/1000));lastNow=now;
+    sim.step(dt);
+    if(now-lastTx>=560){
+      lastTx=now;
+      // Each frame is independently encoded and validated; lab displays selected node only.
+      for(const v of sim.vehicles){
+        const frame=protocol.encodeFrame({messageType:protocol.MESSAGES.TELEMETRY,platform:v.platform,
+          droneId:v.id,sequence:sequence++,fields:telemetryFields(v)});
+        protocol.decodeFrame(frame);
+        packetCount++;
+        if(v.id===selectedId){packetBytes=frame;if(!inspectBytes)drawInspector(frame,'SELECTED NODE / TELEMETRY');}
+      }
+    }
+    if(now-lastUi>=250){lastUi=now;repaintUI();}
+    if(now-lastClock>=1000){lastClock=now;refreshClock();}
+    drawRadar(now);
+    requestAnimationFrame(loop);
+  }
+  bindUi();
+  repaintUI();
+  resizeCanvas();
+  updateLivePacket();
+  refreshClock();
+  requestAnimationFrame(loop);
+  // Browser-only packet inspector bridge; deliberately no external command path.
+  globalThis.MorphoUI = Object.freeze({ inspectHistoricalFrame: bytes => {
+    const frame = protocol.decodeFrame(bytes);
+    if (frame.messageType !== protocol.MESSAGES.EVENT || frame.fields.state !== 'EXERCISE_ONLY' ||
+        frame.fields.synthetic !== true || frame.fields.provenance !== 'local_simulator' ||
+        !String(frame.fields.label || '').startsWith('WARLENS')) throw new Error('Not a WARLENS synthetic event');
+    inspectBytes = new Uint8Array(bytes);
+    drawInspector(inspectBytes, 'WARLENS / SYNTHETIC ONTOLOGY EVENT');
+  }});
+  // Expose read-only diagnostics for local browser QA, not a control endpoint.
+  globalThis.MorphoDebug=Object.freeze({ getSnapshot:()=>sim.snapshot(), getPacket:()=>new Uint8Array(packetBytes), protocol });
+})();
+
+</script>
+</body>
+</html>
