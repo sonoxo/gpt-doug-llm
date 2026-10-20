@@ -62,7 +62,7 @@ test('HIBP adapter sends only a five-character hash prefix over HTTPS',async({pa
   let request;
   await page.route('https://api.pwnedpasswords.com/range/*',async route=>{
     request=route.request();
-    await route.fulfill({status:200,contentType:'text/plain',body:'1E4C9B93F3F0682250B6CF8331B7EE68FD8:4242\n'});
+    await route.fulfill({status:200,contentType:'text/plain',headers:{'access-control-allow-origin':'*'},body:'1E4C9B93F3F0682250B6CF8331B7EE68FD8:4242\n'});
   });
   await page.goto(PATH);
   await page.getByRole('button',{name:'Open Have I Been Pwned'}).click();
@@ -74,7 +74,7 @@ test('HIBP adapter sends only a five-character hash prefix over HTTPS',async({pa
 });
 test('CISA adapter renders and filters actual-format official feed data',async({page})=>{
   await page.route('https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json',route=>route.fulfill({
-    status:200,contentType:'application/json',body:JSON.stringify({vulnerabilities:[
+    status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({vulnerabilities:[
       {cveID:'CVE-2026-0001',vendorProject:'ExampleCo',product:'Portal',vulnerabilityName:'Example issue',dateAdded:'2026-10-19'},
       {cveID:'CVE-2026-0002',vendorProject:'AnotherCo',product:'Widget',vulnerabilityName:'Another issue',dateAdded:'2026-10-18'}]})
   }));
@@ -97,7 +97,7 @@ test('CISA adapter displays failures instead of invented data',async({page})=>{
 test('OpenPGP browser operations: keygen, encrypt, decrypt, sign, verify',async({page})=>{
   test.setTimeout(120000);
   const js=await readFile(new URL('./node_modules/openpgp/dist/openpgp.min.js',import.meta.url));
-  await page.route('https://unpkg.com/openpgp@5.11.3/dist/openpgp.min.js',route=>route.fulfill({status:200,contentType:'text/javascript',body:js}));
+  await page.route('https://unpkg.com/openpgp@5.11.3/dist/openpgp.min.js',route=>route.fulfill({status:200,contentType:'text/javascript',headers:{'access-control-allow-origin':'*'},body:js}));
   await page.goto(PATH);
   await page.getByRole('button',{name:'Open PGP Tool'}).click();
   await page.locator('#pgp-name').fill('XUNIA Test');
