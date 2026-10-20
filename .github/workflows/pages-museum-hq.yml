@@ -75,6 +75,9 @@ jobs:
         run: |
           node --check docs/zyra-shell.js
           node --check docs/museum.js
+          node --check docs/cyber-swarm/engine.mjs
+          node --check docs/cyber-swarm/app.mjs
+          node --test tests/cyber_swarm.test.mjs
           node --check _site/holo/holo.js
 
       - name: Interactive resource hub contract
@@ -182,6 +185,8 @@ jobs:
           grep -q 'arcade/' /tmp/xunia-home.html
           grep -q 'museum.js' /tmp/xunia-home.html
           curl -fsS http://127.0.0.1:8080/resources.html | grep -q 'Interactive Tools & Resources'
+          curl -fsS http://127.0.0.1:8080/cyber-swarm/ | grep -q 'DEFENSE SWARM'
+          curl -fsS http://127.0.0.1:8080/cyber-swarm/curriculum.json | grep -q 'xunia.cyber.swarm.curriculum.v1'
           curl -fsS http://127.0.0.1:8080/resources.json | grep -q 'green-house'
           curl -fsS http://127.0.0.1:8080/museum.js | grep -q 'STATIC_REPOS'
           curl -fsS http://127.0.0.1:8080/experiments.html | grep -q 'XUNIA Sightline'
@@ -338,3 +343,35 @@ jobs:
           done
           curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" | grep -q 'href="./tasmania/"'
           echo 'CANONICAL_XUNIA_TASMANIA_LIVE=PASS'
+
+      - name: Verify cyber learning swarm public release
+        run: |
+          set -euo pipefail
+          cyber_ok=0
+          for attempt in $(seq 1 25); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/cyber-swarm/?v=${GITHUB_SHA}" -o /tmp/xunia-cyber-swarm.html \
+              && grep -q 'XUNIA CYBER DEFENSE LAB' /tmp/xunia-cyber-swarm.html \
+              && grep -q 'SYNTHETIC ONLY' /tmp/xunia-cyber-swarm.html; then
+              cyber_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$cyber_ok" -eq 1
+          curl -fsSL --max-redirs 8 "https://xunia.org/cyber-swarm/curriculum.json?v=${GITHUB_SHA}" -o /tmp/xunia-cyber-curriculum.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('/tmp/xunia-cyber-curriculum.json').read_text())
+          assert data['schema']=='xunia.cyber.swarm.curriculum.v1'
+          assert data['mode']=='synthetic-defensive-training'
+          assert data['provenance']['no_live_targets'] is True
+          assert len(data['scenarios'])==15
+          assert len({x['tactic'] for x in data['scenarios']})==15
+          PY
+          for asset in app.mjs engine.mjs style.css; do
+            curl -fsSL --max-redirs 8 "https://xunia.org/cyber-swarm/$asset?v=${GITHUB_SHA}" -o /tmp/xunia-cyber-asset
+            test -s /tmp/xunia-cyber-asset
+          done
+          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" | grep -q 'href="./cyber-swarm/"'
+          echo 'CANONICAL_XUNIA_CYBER_SWARM_LIVE=PASS'
