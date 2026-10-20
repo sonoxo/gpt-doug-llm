@@ -17,6 +17,7 @@ def build_parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run", help="run an ontology-first multi-agent task")
     run.add_argument("task", nargs="+", help="task text")
     run.add_argument("--json", action="store_true", dest="as_json")
+    run.add_argument("--repo-index", help="opt-in path to a pinned full-repository index")
 
     clone = sub.add_parser("ingest-clone", help="seed behavioral memory from a transcript/export")
     clone.add_argument("path", help="path to a text transcript/export")
@@ -25,6 +26,9 @@ def build_parser() -> argparse.ArgumentParser:
     recall = sub.add_parser("recall", help="inspect recalled brain memory")
     recall.add_argument("query", nargs="+")
     recall.add_argument("--limit", type=int, default=8)
+
+    repo = sub.add_parser("repo", help="full recursive repository index, query, tree and verify")
+    repo.add_argument("repo_args", nargs=argparse.REMAINDER)
 
     math = sub.add_parser("math", help="verified bounded symbolic equations and conjecture triage")
     math.add_argument("math_args", nargs=argparse.REMAINDER)
@@ -50,6 +54,10 @@ def main() -> int:
     if args.command == "math":
         from .math_mitochondria import math_cli
         return math_cli(args.math_args)
+    if args.command == "repo":
+        from .recursive_repo import main as repo_main
+
+        return repo_main(args.repo_args)
     memory = BrainMemory()
 
     if args.command in {None, "status", "doctor"}:
@@ -93,7 +101,15 @@ def main() -> int:
         return 0
 
     try:
-        result = BrainKernel(memory=memory).run(" ".join(args.task))
+        ontology = None
+        if args.repo_index:
+            from .recursive_repo import RecursiveRepoModel, RepoAugmentedOntology
+
+            ontology = RepoAugmentedOntology(RecursiveRepoModel(args.repo_index))
+        kwargs = {"memory": memory}
+        if ontology is not None:
+            kwargs["ontology"] = ontology
+        result = BrainKernel(**kwargs).run(" ".join(args.task))
     except (OSError, RuntimeError, ValueError) as exc:
         return _error("brain_run_failed", str(exc))
 
