@@ -316,3 +316,25 @@ jobs:
           test "$live_earth_ok" -eq 1
           echo 'CANONICAL_XUNIA_LIVE_EARTH_3D=PASS'
 
+      - name: Verify Tasmania Cesium Ontology public release
+        run: |
+          set -euo pipefail
+          route_ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/tasmania/?v=${GITHUB_SHA}" -o /tmp/xunia-tasmania.html \
+              && grep -q 'TASMANIA / CESIUM ONTOLOGY' /tmp/xunia-tasmania.html \
+              && grep -q 'ontology-data.js' /tmp/xunia-tasmania.html; then
+              route_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$route_ok" -eq 1
+          curl -fsSL --max-redirs 8 "https://xunia.org/tasmania/data/ontology.json?v=${GITHUB_SHA}" -o /tmp/xunia-tasmania-ontology.json
+          python3 -c 'import json; x=json.load(open("/tmp/xunia-tasmania-ontology.json")); assert x["schema"]=="xunia.tasmania.ontology.v1"; assert x["mode"]=="simulation"'
+          for asset in app.js kraken-core.js models/DEVIL-01.glb; do
+            curl -fsSL --max-redirs 8 "https://xunia.org/tasmania/$asset?v=${GITHUB_SHA}" -o /tmp/xunia-tasmania-asset
+            test -s /tmp/xunia-tasmania-asset
+          done
+          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" | grep -q 'href="./tasmania/"'
+          echo 'CANONICAL_XUNIA_TASMANIA_LIVE=PASS'
