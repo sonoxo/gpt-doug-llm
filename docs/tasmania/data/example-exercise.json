@@ -1,0 +1,74 @@
+{
+  "schema": "xunia.kraken.ground-training.v1",
+  "mode": "simulation",
+  "time": 19.35,
+  "phase": "RETURN",
+  "coverage_pct": 34,
+  "beacons_secured": 0,
+  "assets": [
+    {
+      "id": "DEVIL-01",
+      "role": "SEARCH / SURVEY",
+      "x": 26.478,
+      "y": 11,
+      "depth_m": 0,
+      "energy_pct": 97.7,
+      "link_pct": 89.6,
+      "status": "RETURNING WITH BEACON"
+    },
+    {
+      "id": "DRILL-02",
+      "role": "VIRTUAL SUBSURFACE",
+      "x": 8,
+      "y": 16,
+      "depth_m": 1.8,
+      "energy_pct": 97.9,
+      "link_pct": 95.2,
+      "status": "VIRTUAL TUNNEL SURVEY"
+    },
+    {
+      "id": "MAP-03",
+      "role": "TERRAIN MAPPING",
+      "x": 23.901,
+      "y": 7.099,
+      "depth_m": 0,
+      "energy_pct": 97.7,
+      "link_pct": 92.2,
+      "status": "AUTONOMOUS SURVEY"
+    },
+    {
+      "id": "SAFE-04",
+      "role": "SAFETY OBSERVER",
+      "x": 5.705,
+      "y": 15.295,
+      "depth_m": 0,
+      "energy_pct": 97.7,
+      "link_pct": 89,
+      "status": "AUTONOMOUS SURVEY"
+    }
+  ],
+  "events": [
+    {
+      "t": 17.69999999999998,
+      "type": "BEACON TAGGED",
+      "message": "Exercise capture registered virtually; robot returns to home pad"
+    },
+    {
+      "t": 14.099999999999966,
+      "type": "BEACON DETECTED",
+      "message": "Inert exercise beacon detected by synthetic proximity sensor"
+    },
+    {
+      "t": 0,
+      "type": "SAFETY ENFORCED",
+      "message": "Human tracking, restraints, hardware control disabled"
+    },
+    {
+      "t": 0,
+      "type": "EXERCISE INITIALIZED",
+      "message": "4 synthetic ground assets online"
+    }
+  ],
+  "physical_control": false,
+  "person_tracking": false
+}

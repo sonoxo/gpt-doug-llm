@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07121b" />
+  <meta name="description" content="XUNIA Tasmanian Devil / Kraken 3D Cesium ontology explorer. All tracks and geospatial coordinates are synthetic." />
+  <title>XUNIA · TASMANIA / CESIUM ONTOLOGY</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.146/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <script>window.CESIUM_BASE_URL='https://cesium.com/downloads/cesiumjs/releases/1.146/Build/Cesium/';</script>
+  <script async src="https://cesium.com/downloads/cesiumjs/releases/1.146/Build/Cesium/Cesium.js" onload="window.dispatchEvent(new Event('cesium-ready'))" onerror="window.dispatchEvent(new Event('cesium-unavailable'))"></script>
+  <script defer src="ontology-data.js"></script>
+  <script defer src="kraken-core.js"></script>
+  <script defer src="asset-previews.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <header class="global-head">
+    <div class="head-left">
+      <div class="brand-symbol"><svg viewBox="0 0 44 44" width="33" height="33" fill="none" aria-hidden="true"><path d="M22 3L39 12V32L22 41L5 32V12L22 3Z" stroke="#82ffdc" stroke-width="1.7"/><path d="M12 14L22 32L32 14M22 32V11M14 23H30" stroke="#82ffdc" stroke-width="1.9"/><circle cx="22" cy="9" r="2" fill="#82ffdc"/></svg></div>
+      <div class="brand-title">XUNIA <span class="brand-star">✳</span> <b>GODSEYE</b><small>TASMANIA / SPATIAL ONTOLOGY ENGINE</small></div>
+      <div class="head-separator"></div>
+      <div class="signal"><span class="pulse-dot"></span><span>EXERCISE TELEMETRY / SYNTHETIC</span></div>
+    </div>
+    <div class="head-right"><span class="head-build">KRKN.3D <b>V1.0</b></span><span class="utc-clock mono" id="utcClock">--:--:-- UTC</span><span class="sim-label">● SIMULATION ONLY</span></div>
+  </header>
+  <aside class="side-nav">
+    <div class="nav-section"><div class="nav-kicker">MISSION WORKSPACE / 01</div>
+      <button class="nav-btn active" type="button" data-screen="globe" aria-pressed="true"><span class="nav-ico">◈</span> CESIUM 3D WORLD <span class="num">01</span></button>
+      <button class="nav-btn" type="button" data-screen="ontology" aria-pressed="false"><span class="nav-ico">⬡</span> ONTOLOGY NETWORK <span class="num">02</span></button>
+      <button class="nav-btn" type="button" data-screen="creations" aria-pressed="false"><span class="nav-ico">▦</span> ALL CREATIONS <span class="num">03</span></button>
+      <button class="nav-btn" type="button" data-screen="telemetry" aria-pressed="false"><span class="nav-ico">⌁</span> DATA / EVENTS <span class="num">04</span></button>
+    </div>
+    <div class="nav-section nav-fleet"><div class="nav-kicker nav-flex">TASMANIAN FLEET <strong>04 SIMULATED</strong></div>
+      <div id="fleetRoster" role="listbox" aria-label="Select simulated ground robot"><div class="skeleton-row">Loading fleet ontology…</div></div>
+    </div>
+    <div class="nav-section"><div class="nav-kicker">CONNECTED CREATIONS</div>
+      <a class="source-link" href="legacy/kraken-offline.html" target="_blank" rel="noopener"><span>↗</span> KRAKEN ground sim</a>
+      <a class="source-link" href="legacy/aegis-defense.html" target="_blank" rel="noopener"><span>↗</span> AEGIS monitor</a>
+      <a class="source-link" href="legacy/airspace-ctf.html" target="_blank" rel="noopener"><span>↗</span> Drone CTF arena</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-policy"><div class="nav-policy-label">✧ POLICY: OBSERVE & SIMULATE</div><b>Digital twins, not weapons.</b><p>Virtual terrain and beacon recovery. No people, physical drilling or external robot commands.</p><span>SAFETY GATE / ACTIVE</span></div>
+    <div class="rail-bottom mono">XUNIA MUSEUM / CESIUM SERIES<br>NO LIVE GEOSPATIAL INPUTS</div>
+  </aside>
+  <main class="main-area">
+    <div class="page-intro"><div><div class="bread mono">XUNIA MUSEUM &nbsp;/&nbsp; GEOSPATIAL INTELLIGENCE &nbsp;/&nbsp; <span>KRKN·01</span></div><h1>Tasmanian Devil <em>Ontology<span>.</span></em></h1><div class="intro-sub">The complete synthetic ground-fleet digital twin — 3D models, topology, simulations, traceable source artifacts.</div></div><div class="intro-actions"><button id="centerBtn" class="btn accent" type="button">◎ &nbsp; FOCUS TASMANIA</button><button id="downloadAll" class="btn" type="button">↓ &nbsp; EXPORT DATA</button></div></div>
+    <div class="stat-row" aria-label="Current digital twin metrics">
+      <div class="metric"><div class="metric-top">DIGITAL TWIN ASSETS <span class="metric-icon">◇</span></div><div class="metric-val" id="metricAssets">04 <span>/ 04 ROVERS</span></div><div class="metric-rail mint"></div></div>
+      <div class="metric"><div class="metric-top">ONTOLOGY NODES <span class="metric-icon">⬡</span></div><div class="metric-val" id="metricNodes">22 <span>DOCUMENTED NODES</span></div><div class="metric-rail blue"></div></div>
+      <div class="metric"><div class="metric-top">SEMANTIC CONNECTIONS <span class="metric-icon">⌁</span></div><div class="metric-val" id="metricEdges">37 <span>RELATIONSHIPS</span></div><div class="metric-rail purple"></div></div>
+      <div class="metric"><div class="metric-top">EXERCISE CLOCK <span class="metric-icon">◷</span></div><div class="metric-val mono" id="metricClock">00:00 <span id="clockRate">1× SPEED</span></div><div class="metric-rail gold"></div></div>
+    </div>
+    <section id="screen-globe" class="screen active" aria-label="Cesium globe and fictional exercise twin">
+      <div class="split-main"><div class="main-canvas-panel">
+        <div class="panel-titlebar"><div class="panel-title"><span class="panel-num">01</span><div><strong>3D earth / Tasmania exercise twin</strong><small>CESIUMJS + GENERATED GLB MODELS / VIEWER FALLBACK</small></div></div><div class="panel-tools"><span class="mini-live"><i></i> SYNTHETIC LIVE</span><button id="layerSurface" class="tool-btn selected" type="button" aria-pressed="true">SURFACE</button><button id="layerSubsurface" class="tool-btn" type="button" aria-pressed="false">VIRTUAL DEPTH</button></div></div>
+        <div class="map-viewport" id="mapViewport"><div id="cesiumContainer" role="img" aria-label="Cesium 3D virtual Tasmania exercise scene"></div><canvas id="fallbackCanvas" aria-label="Interactive 2.5D visualization when external CesiumJS is unavailable" tabindex="0"></canvas>
+          <div class="map-top-left"><span class="map-codex mono">TASMANIA / DEMONSTRATION COORDINATES</span><span class="map-codex mono" id="renderEngine">INITIALIZING 3D ENGINE</span></div>
+          <div class="map-top-right"><button type="button" id="zoomIn" class="map-tool" aria-label="Zoom in">+</button><button type="button" id="zoomOut" class="map-tool" aria-label="Zoom out">−</button><button type="button" id="recenter" class="map-tool" aria-label="Recenter view">⌾</button></div>
+          <div class="map-legend"><span><i style="--dot:#81f6d4"></i> FRIENDLY ROBOTS</span><span><i style="--dot:#ffc57d"></i> NO-GO ZONES</span><span><i style="--dot:#7db6ff"></i> BEACON</span><span><i style="--dot:#8198a8"></i> SIMULATED TRACKS</span></div>
+          <div class="map-bottom-right"><span>↥ N</span><small id="mapCoords">36 × 24 VIRTUAL GRID</small></div>
+          <div class="depth-viz" id="depthViz" hidden><span>VIRTUAL CROSS SECTION // NOT A GEOTECHNICAL SURVEY</span><svg viewBox="0 0 500 95" preserveAspectRatio="none"><path d="M0 45 Q30 21 62 43 T135 43 T210 46 T289 39 T365 45 T450 37 T500 39 L500 95L0 95Z" fill="rgba(56,122,123,.30)" stroke="#4f9c99" stroke-width="2"/><path d="M0 64 Q40 53 82 70 T170 65 T258 70 T350 62 T500 70" stroke="#87abd0" stroke-dasharray="4 5" fill="none"/><path d="M15 35Q110 112 242 70" stroke="#ffc57d" stroke-width="4" fill="none" stroke-dasharray="7 7"/><circle cx="242" cy="70" r="6" fill="#ffc57d"/></svg><small>DRILL-02 = illustrative 1.8 m depth · NO PHYSICAL DRILL</small></div>
+        </div>
+        <div class="map-footer"><span><i class="foot-led"></i><span id="engineStatus">Initializing viewer. Offline fallback available.</span></span><span class="mono">NO ACTUAL ROBOT POSITIONS / SYNTHETIC DATUM</span></div>
+      </div>
+      <aside class="inspection-panel"><div class="panel-titlebar"><div class="panel-title"><span class="panel-num">02</span><div><strong>Digital twin inspector</strong><small>ASSET ONTOLOGY / MODEL VIEW</small></div></div><span class="status-pill">SIM ACTIVE</span></div>
+        <div class="inspector-asset"><div class="selected-heading"><div><span>SELECTED ASSET</span><h2 id="assetTitle">DEVIL 01</h2><small id="assetSubtitle">SEARCH / SURVEY</small></div><span id="assetCode" class="asset-code">DEVIL-01</span></div>
+          <div class="rover-preview"><img src="previews/model-DEVIL-01.png" id="assetPortrait" alt="Low-poly concept rendering of simulated ground rover" /><span class="model-caption">GENERATED LOW-POLY MESH · NOT HARDWARE CAD</span></div>
+          <div class="bio-tag"><span id="assetBadge">● AUTONOMOUS SURVEY</span><span id="assetDepth">SURFACE</span></div>
+          <div class="twin-metrics"><div><label>SIM ENERGY</label><strong id="batteryNum">98%</strong><div class="bar"><i id="batteryBar" style="width:98%"></i></div></div><div><label>VIRTUAL LINK</label><strong id="linkNum">97%</strong><div class="bar blue"><i id="linkBar" style="width:97%"></i></div></div></div>
+          <div class="mini-specs"><div><label>GRID POSITION</label><strong id="assetPosition">4.8 / 12.7</strong></div><div><label>SIMULATED ROLE</label><strong id="assetRole">SCOUT</strong></div><div><label>MODEL SOURCE</label><strong>GENERATED GLB</strong></div><div><label>PROVENANCE</label><strong>KRKN CORE / V1</strong></div></div>
+          <button type="button" class="inspect-link" id="findOntology">VIEW THIS NODE IN ONTOLOGY <span>↗</span></button>
+        </div>
+        <div class="inspector-objective"><div class="sub-panel-kicker">VIRTUAL RECOVERY OBJECTIVE</div><strong id="missionPhase">SURVEY</strong><p>Safely locate the inert training beacon, tag it digitally, and return to the simulated home pad.</p><div class="mission-progress"><i id="missionProgress" style="width:24%"></i></div><div class="mission-bottom"><span id="coverageLabel">0% GRID COVERAGE</span><span id="beaconLabel">0/1 RECOVERED</span></div></div>
+      </aside></div>
+      <div class="lower-grid"><section class="data-panel"><div class="lower-head"><div><div class="sub-panel-kicker">03 / DATA FUSION</div><strong>Ontology / source trace</strong></div><button id="openOntology" class="text-btn" type="button">OPEN FULL GRAPH ↗</button></div><div class="mini-graph" id="miniGraph" aria-label="Ontology graph preview"></div><div class="legend-under">22 documented entities &nbsp; · &nbsp; 37 typed relations &nbsp; · &nbsp; Verified files separated from roadmap concepts</div></section><section class="data-panel"><div class="lower-head"><div><div class="sub-panel-kicker">04 / AUDIT STREAM</div><strong>Recent simulation events</strong></div><button id="pauseBtn" class="tiny-btn" type="button">Ⅱ PAUSE</button></div><div class="events-list" id="eventList" aria-live="polite"></div><div class="event-footer"><button type="button" id="speedBtn" class="tiny-btn">SPEED 1×</button><button type="button" id="resetBtn" class="tiny-btn">↺ RESTART</button><button type="button" id="snapshotBtn" class="tiny-btn">↓ SNAPSHOT</button></div></section></div>
+    </section>
+    <section id="screen-ontology" class="screen" aria-label="Ontology network graph"><div class="wide-panel"><div class="panel-titlebar"><div class="panel-title"><span class="panel-num">02</span><div><strong>Kraken / XUNIA semantic ontology</strong><small>FROM VERIFIED RELEASE ARTIFACTS + SEPARATELY LABELED CONCEPTS</small></div></div><div class="panel-tools"><input type="search" id="graphSearch" placeholder="Search entities…" aria-label="Filter ontology entities" /><button id="graphReset" type="button" class="tool-btn">RESET VIEW</button></div></div><div class="graph-area"><svg id="ontologySvg" role="img" aria-label="Interactive 22-node relationship graph" viewBox="0 0 1100 590"><g id="edgeLayer"></g><g id="nodeLayer"></g></svg><div id="graphInfo" class="graph-info"><span>SELECT AN ENTITY</span><strong>XUNIA / GPT-DOUG</strong><p>Explore simulation assets, system components, data flows and provenance. Select a node to inspect its relationships.</p></div></div><div class="graph-key"><span><i class="mint-dot"></i> Rover</span><span><i class="blue-dot"></i> Software</span><span><i class="amber-dot"></i> Policies / objectives</span><span><i class="violet-dot"></i> Concept only</span><span class="graph-help">CLICK A NODE TO INSPECT · ALL LINKS ARE SEMANTIC, NOT LIVE CONNECTIONS</span></div></div></section>
+    <section id="screen-creations" class="screen" aria-label="All creations and concept catalogue"><div class="section-intro"><div><div class="sub-panel-kicker">XUNIA MUSEUM / BUILD REGISTRY</div><h2>Creations <em>archive.</em></h2><p>Actual bundled demonstrations appear separately from referenced integration ideas. Open each archived prototype directly.</p></div><div class="creation-stat">03 <span>BUNDLED SOFTWARE BUILDS</span></div></div><div id="creationsGrid" class="creation-grid"></div><div class="concept-panel"><div class="lower-head"><div><div class="sub-panel-kicker">FUTURE INTEGRATIONS / NOT VERIFIED AS BUILDS</div><strong>Referenced ecosystem concepts</strong></div><span class="status-pill muted-pill">ROADMAP ONLY</span></div><div class="concept-grid" id="conceptGrid"></div></div></section>
+    <section id="screen-telemetry" class="screen" aria-label="Simulation data and provenance"><div class="wide-panel"><div class="panel-titlebar"><div class="panel-title"><span class="panel-num">04</span><div><strong>Traceable exercise data & simulation telemetry</strong><small>REAL-TIME LOCAL DEMO OUTPUT FROM REUSED KRAKEN CORE</small></div></div><div class="panel-tools"><button id="exportGeojson" type="button" class="tool-btn">↓ SIM GEOJSON</button><button id="exportOntology" type="button" class="tool-btn">↓ ONTOLOGY JSON</button></div></div><div class="table-wrap"><table class="data-table"><thead><tr><th>SIMULATED UNIT</th><th>GRID X / Y</th><th>ENERGY</th><th>LINK</th><th>DEPTH</th><th>STATUS</th></tr></thead><tbody id="telemetryRows"></tbody></table></div></div><div class="lower-grid"><section class="data-panel"><div class="lower-head"><div><div class="sub-panel-kicker">DATA PROVENANCE</div><strong>Verified inputs</strong></div></div><div id="sourcesList" class="sources-list"></div></section><section class="data-panel"><div class="lower-head"><div><div class="sub-panel-kicker">SAFETY / DISCLOSURE</div><strong>Simulated versus real</strong></div></div><div class="limitations"><p>All routes and locations originate in the fictional <b>36 × 24 Kraken training grid</b>. The Cesium coordinate anchor near Tasmania is an illustrative projection, not a measurement.</p><p>No robots, drilling motors, excavation sensors, military TAK servers, or real-world people are connected. This interface makes no claim of operational readiness.</p><p class="dim">The original KRAKEN synthetic CoT XML uses artificial near-0° coordinates, distinct from the Cesium display projection. Neither denotes true physical positions.</p></div></section></div></section>
+    <footer class="main-footer mono"><span>XUNIA / TASMANIA DIGITAL TWIN · SIMULATION-ONLY · NO LIVE PHYSICAL SYSTEMS</span><span>BUILD: KRKN-CESIUM-01 · ARTIFACT PROVENANCE INCLUDED</span></footer>
+  </main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

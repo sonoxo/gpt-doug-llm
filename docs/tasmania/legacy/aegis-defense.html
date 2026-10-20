@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080f19">
+<meta name="description" content="XUNIA AEGIS: passive, non-kinetic friendly-drone monitoring training console.">
+<title>XUNIA AEGIS | Passive Airspace Monitoring</title>
+<style>
+:root{color-scheme:dark;--bg:#070d16;--layer:#0c1723;--layer2:#0b1520;--line:#213747;--white:#e9f5fd;--muted:#8498a9;--mint:#70ecd3;--blue:#4ca7f5;--amber:#fac775;--red:#fb7c83;--radius:15px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.4;cursor:not-allowed}a{color:var(--mint);text-decoration:none}a:hover{text-decoration:underline}
+.mono{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}.upper{letter-spacing:.16em;text-transform:uppercase}.small{font-size:11px}.muted{color:var(--muted)}.panel{background:linear-gradient(150deg,rgba(19,34,49,.96),rgba(10,20,31,.98));border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 12px 36px rgba(0,0,0,.13)}.label{color:#94a9ba;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:750}.row{display:flex;align-items:center;gap:12px}.spread{justify-content:space-between}.chip{border-radius:8px;border:1px solid #34505c;color:#cce9e9;background:rgba(41,83,88,.18);font-size:10px;font-weight:800;letter-spacing:.12em;padding:6px 9px;text-transform:uppercase;white-space:nowrap}.chip.warn{color:var(--amber);border-color:#7a5f39;background:rgba(125,81,28,.15)}.chip.good{color:var(--mint);border-color:#2a7065;background:rgba(22,98,82,.16)}.chip.off{color:#a2aebf;border-color:#334150}
+.app{display:grid;grid-template-columns:228px minmax(0,1fr);min-height:100vh}.rail{border-right:1px solid var(--line);background:#0b1420;padding:26px 15px 18px;display:flex;flex-direction:column;gap:17px}.logo{display:flex;align-items:center;gap:10px;padding:0 8px 18px;border-bottom:1px solid var(--line)}.symbol{height:43px;width:43px;background:radial-gradient(circle at 50% 45%,#143e43,#081823);border:1px solid #336d68;display:grid;place-items:center;border-radius:13px;flex-shrink:0}.logo h1{font-size:17px;letter-spacing:.14em;line-height:1.1;margin:0}.logo p{font-size:9px;color:#7f9f9f;letter-spacing:.2em;margin:6px 0 0}.railGroup{padding:1px 4px;display:grid;gap:7px}.railGroup>.label{padding:9px 9px 5px}.navBtn{background:transparent;color:#b0c0cf;border:1px solid transparent;padding:12px 11px;border-radius:9px;text-align:left;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:650}.navBtn[aria-pressed="true"]{background:rgba(56,183,177,.10);border-color:rgba(67,181,181,.3);color:#c2fff2}.navBtn svg{opacity:.9}.navNumber{margin-left:auto;color:#7c9d9e;font-size:10px}.railFoot{margin-top:auto;padding:17px 10px 7px;border-top:1px solid var(--line);font-size:11px;line-height:1.7;color:#8298aa}.indicator{width:7px;height:7px;background:#faaf69;border-radius:50%;display:inline-block;box-shadow:0 0 13px currentColor;color:#faaf69}.indicator.online{background:var(--mint);color:var(--mint)}
+.main{min-width:0;padding:25px clamp(14px,2.4vw,35px) 22px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:19px;flex-wrap:wrap}.bread{font-size:11px;color:#89a7ad;letter-spacing:.15em;font-weight:800}.top h2{font-weight:730;font-size:clamp(19px,2vw,26px);letter-spacing:-.035em;margin:6px 0 2px}.sub{font-size:12px;color:#829db2;margin:0}.topRight{display:flex;align-items:center;gap:13px;flex-wrap:wrap}.clock{border-left:1px solid #30434e;padding-left:16px}.clock strong{display:block;font-size:15px;font-weight:800;letter-spacing:.04em}.clock span{font-size:9px;color:#8ca4b3;letter-spacing:.12em}.button{background:rgba(28,48,61,.84);border:1px solid #304a59;border-radius:9px;color:#d7ebf1;padding:10px 13px;font-weight:700;font-size:11px;letter-spacing:.04em}.button:hover{border-color:#5a968e;background:#1a3340}.button.primary{border-color:#33897e;background:linear-gradient(110deg,#2b8e85,#17585a);color:#edfffc}.button.amber{color:var(--amber);border-color:#735d3d}.button.tiny{padding:6px 8px;font-size:10px}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:14px}.stat{padding:16px 17px;min-height:102px;position:relative;overflow:hidden}.stat .statNum{font-size:30px;font-weight:780;letter-spacing:-.07em;margin:5px 0 4px;line-height:1.05}.stat .statNote{font-size:10px;color:#7896a8}.stat .corner{position:absolute;top:16px;right:15px;opacity:.65}.stat[data-type="warning"] .statNum{color:var(--amber)}.stat[data-type="good"] .statNum{color:var(--mint)}
+.cols{display:grid;grid-template-columns:minmax(0,1.72fr) minmax(280px,.93fr);gap:13px;align-items:stretch}.mapPanel{overflow:hidden;display:flex;flex-direction:column}.panelHead{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}.panelTitle{font-size:12px;letter-spacing:.05em;font-weight:800}.panelCaption{font-size:10px;color:#8ca4b1;margin-top:6px}.mapWrap{position:relative;min-height:410px;flex:1;background:radial-gradient(ellipse at 50% 55%,#102937 0,#091924 44%,#07131e 100%);overflow:hidden}.mapWrap:before{content:"";pointer-events:none;position:absolute;z-index:2;inset:0;background:linear-gradient(0deg,rgba(5,11,17,.18),transparent 40%,rgba(5,11,17,.18))}.mapWrap canvas{display:block;width:100%;height:100%;min-height:410px;position:absolute;inset:0}.mapBadge{position:absolute;top:13px;left:15px;display:flex;gap:7px;z-index:3;flex-wrap:wrap}.mapBadge span{border-radius:5px;border:1px solid #32546a;padding:5px 7px;font-size:9px;background:rgba(8,23,33,.82);color:#b4d3de;letter-spacing:.1em}.mapBottom{position:absolute;bottom:15px;left:17px;right:17px;z-index:3;display:flex;gap:13px;justify-content:space-between;align-items:end;pointer-events:none}.mapScale{font-size:10px;color:#a4bdc3;background:rgba(6,20,29,.65);padding:8px 10px;border-radius:7px;border:1px solid #325167}.north{font-size:16px;color:var(--mint);font-weight:800}.mapFooter{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;gap:9px;flex-wrap:wrap}.legend{display:flex;gap:13px;flex-wrap:wrap;font-size:10px;color:#9cb1bf}.leg{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--mint)}.leg.alert{background:var(--amber)}.leg.zone{border-radius:0;border:1px dashed #8ecdbc;background:transparent}
+.rightStack{display:grid;grid-template-rows:minmax(235px,auto) minmax(270px,1fr);gap:13px}.assetList{padding:10px;display:grid;gap:7px;max-height:288px;overflow:auto}.asset{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid transparent;border-radius:10px;padding:10px;background:rgba(21,39,53,.62);text-align:left;color:#d9ebf6;width:100%}.asset.selected{border-color:#4c9b95;background:rgba(29,78,82,.38)}.asset .miniDrone{width:29px;height:29px;border-radius:8px;border:1px solid #366573;background:#183742;display:grid;place-items:center;color:#93e8dc}.asset strong{font-size:12px}.asset .subtext{font-size:10px;color:#8ea7b5;margin-top:4px}.asset .measure{font-size:11px;font-weight:700;color:var(--mint)}.asset .measure.warn{color:var(--amber)}.asset .measure.bad{color:var(--red)}.detailRow{padding:11px 15px;border-top:1px solid var(--line);font-size:10px;color:#9cafbc;line-height:1.6;min-height:42px}.alertList{padding:10px;display:grid;gap:8px;max-height:312px;overflow:auto}.alertCard{background:rgba(54,37,28,.38);border:1px solid #614b38;border-left:3px solid var(--amber);border-radius:8px;padding:10px 11px}.alertCard.high{border-left-color:var(--red);background:rgba(69,34,40,.3)}.alertCard.acknowledged{opacity:.66}.alertCard .alertTitle{display:flex;justify-content:space-between;gap:10px;color:#f5dbc1;font-size:11px;font-weight:760;align-items:center}.alertCard p{color:#b9a99c;font-size:10px;margin:7px 0 10px;line-height:1.45}.empty{padding:22px 14px;text-align:center;color:#7f9cac;font-size:12px;line-height:1.7}.empty strong{display:block;color:#b6d4d8;font-size:12px;margin-bottom:5px}.lower{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:13px;margin-top:13px}.events{padding:9px 17px 13px;max-height:212px;min-height:160px;overflow:auto}.event{padding:10px 0;display:grid;grid-template-columns:62px 1fr;gap:12px;border-bottom:1px solid rgba(47,71,82,.52)}.event:last-child{border-bottom:0}.event time{font-size:10px;color:#7295a3;margin-top:2px}.event p{font-size:11px;color:#bbd0da;margin:0;line-height:1.5}.event.alert p{color:#f4c28d}.policy{padding:14px 17px;line-height:1.6;font-size:11px;color:#a3b9c4}.policy strong{color:#d3e7e9}.policy .section{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}.policy form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:12px}.policy input,.connectBox input{background:#08141e;border:1px solid #304c58;border-radius:8px;color:#e1f2f5;padding:9px 10px;font-size:12px;min-width:0}.footer{margin-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:10px;color:#668899}.connectBox{display:none;margin-bottom:13px;padding:16px}.connectBox.active{display:block}.connectFields{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}.connectFields input{min-width:220px;flex:1}.connectStatus{font-size:10px;color:#b2aa92;margin:10px 0 0}
+body.embedded .rail{display:none}body.embedded .app{display:block}body.embedded .main{padding:13px}body.embedded .top h2{font-size:19px}body.embedded .sub,body.embedded .topRight .clock{display:none}body.embedded .stats{grid-template-columns:repeat(4,minmax(0,1fr))}body.embedded .stat{min-height:78px;padding:10px}body.embedded .stat .statNum{font-size:23px}body.embedded .cols{grid-template-columns:1fr}body.embedded .rightStack{grid-template-columns:1fr 1fr;grid-template-rows:auto}body.embedded .mapWrap,body.embedded .mapWrap canvas{min-height:280px}body.embedded .lower{grid-template-columns:1fr}body.embedded .footer{padding-bottom:15px}
+@media(max-width:1200px){.app{grid-template-columns:185px minmax(0,1fr)}.rail{padding:17px 10px}.cols{grid-template-columns:minmax(0,1fr) minmax(245px,.9fr)}.main{padding:18px}.mapWrap,.mapWrap canvas{min-height:370px}}@media(max-width:960px){.app{display:block}.rail{border-right:0;border-bottom:1px solid var(--line);padding:10px 18px;display:block}.logo{border:0;padding:0}.railGroup,.railFoot{display:none}.cols,.lower{grid-template-columns:1fr}.rightStack{grid-template-columns:1fr 1fr;grid-template-rows:auto}.assetList,.alertList{max-height:245px}.top{margin-top:5px}}@media(max-width:580px){.main{padding:13px}.topRight{width:100%}.clock{margin-left:auto}.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{min-height:85px;padding:12px}.stat .statNum{font-size:25px}.mapWrap,.mapWrap canvas{min-height:315px}.rightStack{grid-template-columns:1fr}.top h2{font-size:21px}.logo h1{font-size:16px}.panelHead{padding:12px}.events{min-height:120px}.stat .statNote{font-size:9px}body.embedded .stats{grid-template-columns:1fr 1fr}body.embedded .rightStack{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="rail">
+  <div class="logo"><div class="symbol"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#89efdc" stroke-width="1.7"><path d="M16 2 29 9v14L16 30 3 23V9Z"/><circle cx="16" cy="16" r="5"/><path d="M16 3v8m0 10v8M3 16h8m10 0h8"/></svg></div><div><h1>XUNIA AEGIS</h1><p>DEFENSE AWARENESS</p></div></div>
+  <div class="railGroup"><div class="label">Operations</div><button class="navBtn" aria-pressed="true" type="button">&#9678; &nbsp; Live overview <span class="navNumber">01</span></button><button class="navBtn" id="showAlerts" type="button">&#9671; &nbsp; Incident queue <span class="navNumber" id="railAlerts">0</span></button><button class="navBtn" id="showSources" type="button">&#8942; &nbsp; Source configuration</button></div>
+  <div class="railGroup"><div class="label">Exercise feed</div><button class="navBtn modeBtn" data-mode="demo" type="button" aria-pressed="true">&#9679; &nbsp; Simulation lab</button><button class="navBtn modeBtn" data-mode="arena" type="button" aria-pressed="false">&#9679; &nbsp; CTF arena link</button><button class="navBtn modeBtn" data-mode="server" type="button" aria-pressed="false">&#9679; &nbsp; Local live service</button></div>
+  <div class="railFoot"><span class="indicator online"></span> PASSIVE OBSERVATION<br>NO KINETIC / RF MITIGATION<br>NO LIVE TARGETING<br><br><a href="arena.html" target="_blank" rel="noopener">OPEN DRONE CTF ARENA &rarr;</a><br><a href="kraken.html" target="_blank" rel="noopener">OPEN KRAKEN GROUND SIM &rarr;</a><br><span class="mono" style="font-size:10px">XUNIA MUSEUM // LAB SERIES</span></div>
+</aside>
+<main class="main">
+  <header class="top"><div><div class="bread upper mono">OPERATIONS / MONITORING / TRAINING</div><h2>Airspace defense awareness</h2><p class="sub">Passive telemetry &middot; Geofence oversight &middot; Human-reviewed incidents</p></div><div class="topRight"><span id="modeChip" class="chip good">TRAINING SIMULATION</span><span id="liveChip" class="chip off">LOCAL SIM</span><div class="clock mono"><strong id="localClock">--:--:--</strong><span>LOCAL TIME / EXERCISE GRID</span></div><button class="button" id="exportBtn" type="button">EXPORT AUDIT &darr;</button></div></header>
+  <section class="connectBox panel" id="connectBox" aria-label="Connect to local feed"><div class="label">Local real-time service</div><p style="margin:8px 0 0;color:#9ab0bc;font-size:12px">Start <code>python3 defense_server.py</code>, then enter the access token printed in your terminal. Server is bound to 127.0.0.1 only.</p><div class="connectFields"><input id="tokenInput" type="password" autocomplete="off" placeholder="Paste local service access token" aria-label="Local access token"><button id="connectBtn" class="button primary">CONNECT FEED</button></div><p id="connectStatus" class="connectStatus" role="status">No connection established.</p></section>
+  <section class="stats" aria-label="Live system counts"><div class="panel stat" data-type="good"><div class="label">Friendly assets</div><div class="statNum mono" id="statAssets">00</div><div class="statNote" id="assetsNote">Awaiting telemetry</div><span class="corner">&#9702;</span></div><div class="panel stat" data-type="warning"><div class="label">Open advisories</div><div class="statNum mono" id="statAlerts">00</div><div class="statNote">Require operator review</div><span class="corner">&#9651;</span></div><div class="panel stat"><div class="label">Feed rate</div><div class="statNum mono" id="statRate">0.0</div><div class="statNote">Updates per second</div><span class="corner">&#8645;</span></div><div class="panel stat"><div class="label">Latest sample</div><div class="statNum mono" id="statAge">--</div><div class="statNote">Age in seconds</div><span class="corner">&#9680;</span></div></section>
+  <section class="cols"><section class="panel mapPanel" aria-label="Friendly aircraft training grid"><header class="panelHead"><div><div class="panelTitle">Exercise airspace &middot; local coordinate grid</div><div class="panelCaption">X/Z in simulated meters, Y altitude. Not latitude/longitude.</div></div><div class="row"><span class="chip good" id="mapStatus">OBSERVATION ONLY</span></div></header><div class="mapWrap" id="mapWrap"><canvas id="map" aria-label="Real-time top-down friendly asset display"></canvas><div class="mapBadge"><span>GEOGRID / DEMO</span><span>NO WEAPON SYSTEM INTERFACE</span></div><div class="mapBottom"><div class="mapScale mono">LOCAL TRAINING BOUNDS &nbsp; -60 to +60 X / -50 to +50 Z</div><div class="north mono">N &uarr;</div></div></div><div class="mapFooter"><div class="legend"><span><i class="leg"></i>Friendly-owned exercise asset</span><span><i class="leg alert"></i>Advisory</span><span><i class="leg zone"></i>Exercise boundary</span></div><span class="mono muted small">UPDATE <span id="tickId">000000</span></span></div></section>
+  <div class="rightStack"><section class="panel"><header class="panelHead"><div><div class="panelTitle">Friendly fleet telemetry</div><div class="panelCaption">Training or explicitly owned test feed</div></div><span class="chip" id="fleetChip">0 UNITS</span></header><div class="assetList" id="assetList"><div class="empty">Awaiting flight telemetry...</div></div><div class="detailRow mono" id="assetDetail">Select an asset for observation details.</div></section><section class="panel" id="alertPanel"><header class="panelHead"><div><div class="panelTitle">Incident review queue</div><div class="panelCaption">Alerts do not initiate automated responses</div></div><span class="chip good" id="alertChip">CLEAR</span></header><div class="alertList" id="alertList"><div class="empty"><strong>No open advisories</strong>Monitor is assessing training geofence and asset status.</div></div></section></div></section>
+  <section class="lower"><section class="panel"><header class="panelHead"><div><div class="panelTitle">Audit and system events</div><div class="panelCaption">Timestamped operator and monitoring events</div></div><button class="button tiny" id="clearViewBtn" type="button">CLEAR VIEW</button></header><div class="events" id="events"></div></section><section class="panel"><header class="panelHead"><div><div class="panelTitle">Observation policy</div><div class="panelCaption">Non-kinetic, training-only boundary</div></div><span class="chip good">SAFE MODE</span></header><div class="policy"><strong>Read-only awareness.</strong> This console can observe exercise telemetry, highlight a boundary crossing, detect stale feeds and low simulated energy, and record operator acknowledgements. It cannot send flight commands, jam or spoof radios, locate a pilot, or engage a target.<div class="section"><div class="label">Exercise rules</div>Boundary X = -53 to +53 m, Z = -39 to +39 m<br>Altitude advisory &gt; 17 m<br>Stale feed &ge; 4 seconds<br>Low simulated energy &lt; 20%</div><form id="operatorForm" onsubmit="return false"><input id="operator" maxlength="45" minlength="2" required aria-label="Operator initials or name" value="DEMO-OP"><button id="injectBtn" class="button amber" type="button">TEST ALERT</button></form></div></section></section>
+  <footer class="footer mono"><span>XUNIA AEGIS / VERSION 1.0 / NOT AN ACCREDITED DEFENSE SYSTEM</span><span id="statusText" role="status">TRAINING DATA ONLY - NO REAL AIRSPACE DATA</span></footer>
+</main>
+</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const SCHEMA='xunia.friendly-telemetry.v1';
+const colors={mint:'#70ecd3',amber:'#fac775',red:'#fb7c83',grid:'#24404d',muted:'#819aaa'};
+const embedded=new URLSearchParams(location.search).get('embedded')==='1';
+if(embedded)document.body.classList.add('embedded');
+const state={mode:embedded?'arena':'demo',assets:[],events:[],alerts:new Map(),trails:new Map(),selected:null,sequence:0,latest:0,rate:[],source:'none',connected:false,serverToken:'',streamController:null,demoLoop:null,demoStart:performance.now(),injectUntil:0,revision:0,lastFrameTs:0};
+const canvas=$('map'),ctx=canvas.getContext('2d');
+const clamp=(n,l,h)=>Math.min(h,Math.max(l,n));
+const formatTime=(timestamp)=>new Date(timestamp).toLocaleTimeString('en-US',{hour12:false});
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now=()=>Date.now();
+function addEvent(text,type='info'){
+ state.events.unshift({id:++state.revision,ts:new Date().toISOString(),type,detail:text});
+ if(state.events.length>250)state.events.pop();
+ renderEvents();
+}
+function freshAlert(id,code,severity,message){
+ const key=id+':'+code;
+ const existing=state.alerts.get(key);
+ if(existing&&existing.state!=='resolved')return;
+ state.alerts.set(key,{id:key,asset_id:id,code,severity,message,state:'active',first_seen:now(),acknowledged_at:null,operator:null});
+ addEvent(id+': '+message,'alert');
+}
+function resolveAlert(id,code){const a=state.alerts.get(id+':'+code);if(a&&a.state!=='resolved'){a.state='resolved';addEvent(id+': '+code+' cleared','info');}}
+function checkPolicy(asset){
+ const p=asset.position,age=now()-asset.receivedMs;
+ const conditions=[
+  ['OUTER_BOUNDARY',p.x < -53||p.x > 53||p.z < -39||p.z > 39,'high','Friendly asset outside exercise geofence'],
+  ['ALTITUDE',p.y>17,'medium','Friendly asset above exercise altitude advisory'],
+  ['LOW_ENERGY',asset.energy_pct<20,'medium','Low simulated flight energy'],
+  ['LINK_DEGRADED',asset.link_pct<45,'medium','Exercise link-quality warning'],
+  ['FEED_STALE',age>=4000,'high','Friendly telemetry feed stale for 4+ seconds']
+ ];
+ for(const [code,bad,sev,message] of conditions){if(bad)freshAlert(asset.id,code,sev,message);else resolveAlert(asset.id,code);}
+}
+function acceptTrainingFrame(frame,source='arena'){
+ if(state.mode!==source)return;
+ if(!frame||frame.schema!==SCHEMA||frame.mode!=='training'||!Array.isArray(frame.assets)||frame.assets.length>24)return;
+ let assets=[];
+ for(const a of frame.assets){
+  if(!a||a.kind!=='friendly'||typeof a.id!=='string'||!/^[A-Z][A-Z0-9_-]{1,23}$/.test(a.id))return;
+  const p=a.position||{},x=Number(p.x),z=Number(p.z),y=Number(p.y),energy=Number(a.energy_pct),link=Number(a.link_pct);
+  if(![x,z,y,energy,link].every(Number.isFinite)||Math.abs(x)>60||Math.abs(z)>50||y<0||y>30||energy<0||energy>100||link<0||link>100)return;
+  assets.push({id:a.id,label:String(a.label||a.id).slice(0,30),kind:'friendly',position:{x,z,y},energy_pct:energy,link_pct:link,source,receivedMs:now()});
+ }
+ state.assets=assets;
+ state.source=source;
+ state.latest=now();
+ state.sequence=Number(frame.sequence)||state.sequence+1;
+ state.rate.push(state.latest);state.rate=state.rate.filter(t=>t>=now()-10000);
+ for(const a of assets){trackAsset(a);checkPolicy(a);}
+ state.connected=true;
+ renderData();
+}
+function trackAsset(a){const trail=state.trails.get(a.id)||[];const last=trail.at(-1);if(!last||Math.hypot(last.x-a.position.x,last.z-a.position.z)>.7){trail.push({x:a.position.x,z:a.position.z});if(trail.length>36)trail.shift();}state.trails.set(a.id,trail);}
+function demoFrame(){
+ const t=(performance.now()-state.demoStart)/1000;
+ const active=performance.now()<state.injectUntil;
+ const assets=Array.from({length:4},(_,i)=>{
+  const ang=t*(.12+i*.035)+i*1.5;
+  let x=34*Math.cos(ang),z=24*Math.sin(ang),y=7.5+2.5*Math.sin(ang*.8);
+  let energy=50+27*Math.cos(ang*.5),link=91+6*Math.sin(ang*.7);
+  if(active&&i===1){x=56.5;y=18.5;energy=13;}
+  return {id:'SIM-'+String(i+1).padStart(2,'0'),kind:'friendly',label:['ECHO-01','SKY-02','NOVA-03','VECT-04'][i],position:{x,z,y},energy_pct:energy,link_pct:link};
+ });
+ acceptTrainingFrame({schema:SCHEMA,mode:'training',source:'browser_demo',sequence:++state.sequence,assets},'demo');
+}
+function renderStats(){
+ const open=[...state.alerts.values()].filter(a=>a.state==='active'||a.state==='acknowledged');
+ $('statAssets').textContent=String(state.assets.length).padStart(2,'0');
+ $('statAlerts').textContent=String(open.length).padStart(2,'0');
+ $('railAlerts').textContent=String(open.length);
+ $('statRate').textContent=(state.mode==='server'?state.serverRate??0:state.rate.length/10).toFixed(1);
+ $('statAge').textContent=state.latest?Math.max(0,(now()-state.latest)/1000).toFixed(1)+'s':'--';
+ $('assetsNote').textContent=state.connected?'Passive friendly tracks':'Awaiting connection';
+ $('fleetChip').textContent=state.assets.length+' UNITS';
+ $('alertChip').textContent=open.length?open.length+' ADVISORY':'CLEAR';
+ $('alertChip').className='chip '+(open.length?'warn':'good');
+ $('liveChip').textContent=state.mode==='demo'?'LOCAL SIM':state.mode==='arena'?(state.connected?'ARENA LINK':'WAITING FOR ARENA'):(state.connected?'SERVER LIVE':'SERVER OFFLINE');
+ $('liveChip').className='chip '+(state.connected?'good':'off');
+ $('tickId').textContent=String(state.sequence).padStart(6,'0').slice(-6);
+}
+function renderAssets(){
+ const rows=state.assets.map(a=>{
+  const warning=[...state.alerts.values()].some(w=>w.asset_id===a.id&&w.state!=='resolved');
+  const signal=a.link_pct<45?'bad':a.energy_pct<20||warning?'warn':'';
+  const safeId=escapeHtml(a.id),label=escapeHtml(a.label);
+  return `<button class="asset ${state.selected===a.id?'selected':''}" data-id="${safeId}" type="button"><span class="miniDrone">&#10022;</span><span><strong>${label}</strong><div class="subtext mono">${safeId} / ${a.position.y.toFixed(1)} m altitude</div></span><span class="measure mono ${signal}">${Math.round(a.link_pct)}%<div style="font-size:9px;color:#7e9baa;margin-top:4px">LINK</div></span></button>`;
+ });
+ $('assetList').innerHTML=rows.join('')||'<div class="empty">Awaiting friendly exercise telemetry...</div>';
+ for(const b of $('assetList').querySelectorAll('button[data-id]'))b.onclick=()=>{state.selected=b.dataset.id;renderAssets();drawMap(performance.now());};
+ if(!state.selected&&state.assets.length)state.selected=state.assets[0].id;
+ const a=state.assets.find(a=>a.id===state.selected);
+ $('assetDetail').textContent=a?`${a.label} | X ${a.position.x.toFixed(1)} / Z ${a.position.z.toFixed(1)} / Y ${a.position.y.toFixed(1)} m | ENERGY ${Math.round(a.energy_pct)}%`:'Select an asset for observation details.';
+}
+function renderAlerts(){
+ const active=[...state.alerts.values()].filter(a=>a.state!=='resolved').sort((a,b)=>(a.state==='acknowledged')-(b.state==='acknowledged')||b.first_seen-a.first_seen);
+ $('alertList').innerHTML=active.length?active.slice(0,14).map(a=>`<div class="alertCard ${a.severity==='high'?'high':''} ${a.state==='acknowledged'?'acknowledged':''}"><div class="alertTitle"><span>${escapeHtml(a.code.replaceAll('_',' '))}</span><span class="mono">${escapeHtml(a.asset_id)}</span></div><p>${escapeHtml(a.message)}. Training advisory only.</p><div class="row spread"><span class="small muted mono">${formatTime(a.first_seen)}</span><button class="button tiny" ${a.state==='acknowledged'?'disabled':''} data-alert="${escapeHtml(a.id)}" type="button">${a.state==='acknowledged'?'REVIEWED':'ACKNOWLEDGE'}</button></div></div>`).join(''):'<div class="empty"><strong>All exercise advisories clear</strong>No abnormal friendly telemetry is currently detected.</div>';
+ for(const b of $('alertList').querySelectorAll('button[data-alert]'))b.onclick=()=>ackAlert(b.dataset.alert);
+}
+function renderEvents(){
+ $('events').innerHTML=state.events.length?state.events.slice(0,25).map(e=>`<div class="event ${e.type==='alert'||e.severity==='high'?'alert':''}"><time class="mono">${formatTime(e.ts)}</time><p>${escapeHtml(e.detail)}</p></div>`).join(''):'<div class="empty">No events recorded yet.</div>';
+}
+function renderData(){renderStats();renderAssets();renderAlerts();}
+async function ackAlert(id){
+ const operator=$('operator').value.trim();
+ if(operator.length<2){$('statusText').textContent='ENTER OPERATOR INITIALS BEFORE REVIEW';$('operator').focus();return;}
+ if(state.mode==='server'){
+  try{
+   const r=await fetch('/api/v1/ack',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+state.serverToken},body:JSON.stringify({id,operator})});
+   if(!r.ok)throw new Error('Server rejected acknowledgement ('+r.status+')');
+   const a=await r.json();state.alerts.set(id,{...a,first_seen:a.first_seen*1000,acknowledged_at:a.acknowledged_at*1000});
+   addEvent('Alert '+id+' reviewed by '+operator,'review');
+  }catch(e){$('statusText').textContent=e.message;return;}
+ }else{
+  const a=state.alerts.get(id);if(!a||a.state==='resolved')return;
+  a.state='acknowledged';a.operator=operator;a.acknowledged_at=now();addEvent('Alert '+id+' reviewed by '+operator,'review');
+ }
+ renderAlerts();renderStats();
+}
+function normalizeServer(payload){
+ if(payload.schema!=='xunia.defense-monitor.v1'||payload.mode!=='training')return;
+ state.latest=now();state.connected=true;state.sequence=payload.revision||state.sequence;
+ state.serverRate=Number(payload.telemetry_hz)||0;
+ state.assets=(payload.assets||[]).map(a=>({...a,receivedMs:now()-(a.age_ms||0)}));
+ state.alerts=new Map((payload.alerts||[]).map(a=>[a.id,{...a,first_seen:a.first_seen*1000,acknowledged_at:a.acknowledged_at?1000*a.acknowledged_at:null}]));
+ state.events=(payload.events||[]).map(e=>({...e}));
+ for(const a of state.assets)trackAsset(a);
+ renderData();renderEvents();
+}
+function stopStream(){if(state.streamController){state.streamController.abort();state.streamController=null;}}
+function stopLoops(){clearInterval(state.demoLoop);state.demoLoop=null;stopStream();state.connected=false;state.rate=[];state.latest=0;state.trails=new Map();state.alerts=new Map();state.events=[];state.assets=[];state.selected=null;state.sequence=0;state.serverRate=0;renderData();renderEvents();}
+function setMode(mode){
+ if(!['demo','arena','server'].includes(mode))return;
+ stopLoops();state.mode=mode;
+ document.querySelectorAll('.modeBtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===mode?'true':'false'));
+ $('modeChip').textContent=mode==='demo'?'TRAINING SIMULATION':mode==='arena'?'CTF TRAINING LINK':'LOCAL SERVICE / TRAINING';
+ $('connectBox').classList.toggle('active',mode==='server');
+ $('injectBtn').disabled=mode==='server';
+ if(mode==='demo'){
+  state.demoStart=performance.now();state.connected=true;demoFrame();state.demoLoop=setInterval(demoFrame,340);
+  addEvent('Browser-only owned-fleet training simulation started');
+ }else if(mode==='arena'){
+  state.source='arena';addEvent('Waiting for CTF arena training telemetry. Open arena.html in the same tab/site.');
+ }else{state.source='server';addEvent('Awaiting token-authenticated localhost monitor connection.');}
+ renderData();
+}
+async function startServer(){
+ const token=$('tokenInput').value.trim();
+ if(token.length<16){$('connectStatus').textContent='Paste the 16+ character token printed by defense_server.py';return;}
+ if(location.protocol==='file:'){$('connectStatus').textContent='Open the localhost HTTP page printed by defense_server.py, not file://';return;}
+ stopStream();state.serverToken=token;const controller=new AbortController();state.streamController=controller;
+ $('connectStatus').textContent='Connecting to local streaming service...';
+ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+ async function loop(){
+  while(!controller.signal.aborted&&state.mode==='server'){
+   try{
+    const res=await fetch('/api/v1/events',{headers:{'Authorization':'Bearer '+token,'Accept':'text/event-stream'},signal:controller.signal,cache:'no-store'});
+    if(res.status===401)throw new Error('Invalid token (401). Copy the token from the server terminal.');
+    if(!res.ok||!res.body)throw new Error('Connection failed: HTTP '+res.status);
+    $('connectStatus').textContent='Authenticated: streaming friendly training telemetry.';
+    const reader=res.body.getReader();const decoder=new TextDecoder();let buffer='';
+    while(!controller.signal.aborted){
+     const {done,value}=await reader.read();if(done)break;
+     buffer+=decoder.decode(value,{stream:true}).replaceAll('\r\n','\n');
+     let sep;
+     while((sep=buffer.indexOf('\n\n'))>=0){
+      const msg=buffer.slice(0,sep);buffer=buffer.slice(sep+2);
+      const line=msg.split('\n').find(l=>l.startsWith('data: '));
+      if(line){try{normalizeServer(JSON.parse(line.slice(6)));}catch(e){console.error('Invalid feed frame',e);}}
+     }
+     if(buffer.length>500000){buffer='';throw new Error('Stream frame exceeded limit');}
+    }
+    if(!controller.signal.aborted)throw new Error('Feed disconnected');
+   }catch(e){
+    if(controller.signal.aborted)break;
+    state.connected=false;$('connectStatus').textContent=e.message+' - retry in 2 seconds';renderStats();
+    if(String(e.message).includes('401'))break;
+   }
+   await sleep(2000);
+  }
+ }
+ loop();
+}
+function tickStatus(){
+ $('localClock').textContent=formatTime(now());
+ if(state.mode!=='server'){
+  for(const a of state.assets)checkPolicy(a);
+  if(state.mode==='arena'&&state.latest&&now()-state.latest>4000){state.connected=false;$('statusText').textContent='EXERCISE LINK STALE - NO CONTROL ACTIONS TAKEN';}
+ }
+ if(state.mode==='arena'&&!state.latest)$('statusText').textContent='AWAITING FRIENDLY CTF TELEMETRY';
+ else if(state.mode==='demo')$('statusText').textContent='SYNTHETIC TRAINING DATA ONLY - NO PHYSICAL DRONES';
+ else if(state.mode==='server'&&state.connected)$('statusText').textContent='LOCAL FEED AUTHENTICATED - TRAINING ONLY';
+ renderStats();renderAlerts();
+}
+function drawMap(time){
+ const rect=canvas.getBoundingClientRect();const dpr=Math.min(window.devicePixelRatio||1,2);
+ if(rect.width<1||rect.height<1){requestAnimationFrame(drawMap);return;}
+ const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);
+ if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const cw=w/dpr,ch=h/dpr,scale=Math.min((cw-55)/120,(ch-35)/100);
+ const px=x=>cw/2+x*scale,py=z=>ch/2+z*scale;
+ ctx.clearRect(0,0,cw,ch);
+ ctx.strokeStyle='rgba(66,115,133,.23)';ctx.lineWidth=1;
+ for(let x=-60;x<=60;x+=10){ctx.beginPath();ctx.moveTo(px(x),py(-50));ctx.lineTo(px(x),py(50));ctx.stroke();}
+ for(let z=-50;z<=50;z+=10){ctx.beginPath();ctx.moveTo(px(-60),py(z));ctx.lineTo(px(60),py(z));ctx.stroke();}
+ ctx.strokeStyle='rgba(82,202,187,.17)';ctx.lineWidth=1;
+ for(let r=15;r<=55;r+=20){ctx.beginPath();ctx.ellipse(cw/2,ch/2,r*scale,r*scale,0,0,Math.PI*2);ctx.stroke();}
+ const scan=(time*0.00024)%(Math.PI*2);ctx.beginPath();ctx.moveTo(cw/2,ch/2);ctx.lineTo(cw/2+Math.cos(scan)*64*scale,ch/2+Math.sin(scan)*64*scale);
+ ctx.strokeStyle='rgba(89,228,206,.11)';ctx.lineWidth=1.5;ctx.stroke();
+ ctx.strokeStyle='rgba(119,242,204,.72)';ctx.setLineDash([8,6]);ctx.lineWidth=1.5;
+ ctx.strokeRect(px(-53),py(-39),106*scale,78*scale);ctx.setLineDash([]);
+ ctx.fillStyle='rgba(10,37,42,.13)';ctx.fillRect(px(-53),py(-39),106*scale,78*scale);
+ ctx.font='10px ui-monospace,monospace';ctx.fillStyle='#6e9ba5';ctx.fillText('EXERCISE GEOFENCE',px(-53)+6,py(-39)+13);
+ ctx.fillStyle='#7493a0';ctx.fillText('N',cw/2-4,15);
+ for(const a of state.assets){
+  const warn=[...state.alerts.values()].some(v=>v.asset_id===a.id&&v.state==='active');
+  const col=warn?colors.amber:colors.mint;
+  const trail=state.trails.get(a.id)||[];
+  if(trail.length>=2){ctx.beginPath();for(let i=0;i<trail.length;i++){const p=trail[i];if(i===0)ctx.moveTo(px(p.x),py(p.z));else ctx.lineTo(px(p.x),py(p.z));}ctx.strokeStyle=warn?'rgba(250,199,117,.26)':'rgba(112,236,211,.28)';ctx.lineWidth=1.9;ctx.stroke();}
+  const x=px(a.position.x),y=py(a.position.z),selected=state.selected===a.id;
+  ctx.beginPath();ctx.arc(x,y,selected?15:11,0,Math.PI*2);ctx.strokeStyle=warn?'rgba(250,199,117,.5)':'rgba(112,236,211,.3)';ctx.lineWidth=1;ctx.stroke();
+  if(warn){ctx.beginPath();ctx.arc(x,y,16+Math.sin(time/320)*3,0,Math.PI*2);ctx.strokeStyle='rgba(250,199,117,.45)';ctx.stroke();}
+  ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/4);ctx.fillStyle=col;ctx.fillRect(-4,-4,8,8);ctx.fillStyle='#0b1c20';ctx.fillRect(-2,-2,4,4);ctx.restore();
+  ctx.font=(selected?'bold ':'')+'10px ui-monospace,monospace';ctx.fillStyle=selected?'#e5fffb':'#91c7c0';ctx.fillText(a.label,x+13,y-9);
+  ctx.fillStyle=warn?colors.amber:'#6babb0';ctx.fillText(a.position.y.toFixed(1)+'m',x+13,y+4);
+ }
+ requestAnimationFrame(drawMap);
+}
+let channel=null;
+try{if(typeof BroadcastChannel!=='undefined'){channel=new BroadcastChannel('xunia-defense-training-v1');channel.onmessage=e=>acceptTrainingFrame(e.data,'arena');}}catch(e){console.warn('BroadcastChannel unavailable; in-page embed still supported',e);}
+window.addEventListener('message',e=>{if(e.source===window.parent&&e.data?.channel==='xunia-defense-training-v1')acceptTrainingFrame(e.data.payload,'arena');});
+$('showAlerts').onclick=()=>$('alertPanel').scrollIntoView({behavior:'smooth',block:'center'});
+$('showSources').onclick=()=>{setMode('server');$('connectBox').scrollIntoView({behavior:'smooth',block:'center'});};
+for(const b of document.querySelectorAll('.modeBtn'))b.addEventListener('click',()=>setMode(b.dataset.mode));
+$('connectBtn').onclick=startServer;
+$('tokenInput').addEventListener('keydown',e=>{if(e.key==='Enter')startServer();});
+$('injectBtn').onclick=()=>{
+ if(state.mode==='demo'){state.injectUntil=performance.now()+7000;demoFrame();addEvent('Operator injected training-only geofence, altitude and energy anomalies.','review');}
+ else if(state.mode==='arena'){addEvent('Training anomaly injection is available in browser simulation mode only.','info');}
+};
+$('clearViewBtn').onclick=()=>{state.events=[];renderEvents();};
+$('exportBtn').onclick=async()=>{
+ let data={schema:'xunia.defense-monitor.export.v1',mode:'training',exported_at:new Date().toISOString(),source:state.source,assets:state.assets,alerts:[...state.alerts.values()],events:state.events};
+ if(state.mode==='server'&&state.connected){try{const r=await fetch('/api/v1/export',{headers:{Authorization:'Bearer '+state.serverToken}});if(r.ok)data=await r.json();}catch(e){console.warn(e);}}
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=u;a.download='xunia-aegis-exercise-audit.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);
+};
+setMode(embedded?'arena':'demo');
+setInterval(tickStatus,500);
+requestAnimationFrame(drawMap);
+tickStatus();
+window.__aegisTest={getState:()=>({mode:state.mode,assets:state.assets.length,openAlerts:[...state.alerts.values()].filter(a=>a.state!=='resolved').map(a=>({...a})),events:state.events.slice(),connected:state.connected,selected:state.selected}),
+ setMode,inject:()=>{$('injectBtn').click();},receive:p=>acceptTrainingFrame(p,'arena'),ack:ackAlert};
+</script>
+</body>
+</html>

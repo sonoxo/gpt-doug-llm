@@ -1,0 +1,521 @@
+/* Generated ontology; bundled for file:// and offline fallback. */
+window.XUNIA_ONTOLOGY = {
+  "schema": "xunia.tasmania.ontology.v1",
+  "mode": "simulation",
+  "source_files": [
+    {
+      "name": "kraken-core.js",
+      "sha256": "36b5b1a468ca81813b626e7e25665913b1deb48a4c13411f64ff45a6c2720781",
+      "source": "XUNIA_KRAKEN_GROUND_V1/source/kraken-core.js"
+    },
+    {
+      "name": "kraken-museum-entry.json",
+      "sha256": "d6c0487974cff1422d3e2a523dffb23c40428c8e2fe04a68b6b25fabace40e78",
+      "source": "XUNIA_KRAKEN_GROUND_V1/source/kraken-museum-entry.json"
+    }
+  ],
+  "description": "Visual catalogue of documented XUNIA software artifacts and simulated Tasmanian Devil ground rover fleet; no live positions, actual subsurface measurements, or person tracking.",
+  "scene": {
+    "width": 36,
+    "height": 24,
+    "base": {
+      "x": 4,
+      "y": 12.5
+    },
+    "beacon": {
+      "x": 29.3,
+      "y": 10.6
+    },
+    "zones": [
+      {
+        "id": "habitat",
+        "label": "PROTECTED HABITAT",
+        "x": 17,
+        "y": 5.4,
+        "rx": 3.1,
+        "ry": 2.8
+      },
+      {
+        "id": "utility",
+        "label": "NO-GO / UTILITY",
+        "x": 21.5,
+        "y": 18.3,
+        "rx": 3.1,
+        "ry": 2.9
+      }
+    ],
+    "synthetic_presentation_anchor": {
+      "lat": -42.89,
+      "lon": 147.27,
+      "step_lon": 0.00027,
+      "step_lat": 0.00019,
+      "label": "Fictional 3D exercise overlay, Tasmania region \u2014 no real ground tracks"
+    },
+    "origin": "abstract training grid; display coordinates are fabricated for geographic visualization"
+  },
+  "assets": [
+    {
+      "id": "DEVIL-01",
+      "name": "DEVIL 01",
+      "role": "Search & survey",
+      "form": "Scout",
+      "theme": "mint",
+      "color": "#81f6d4",
+      "model": "models/DEVIL-01.glb",
+      "speed_cells_s": 1.65,
+      "model_status": "conceptual visualization, not engineering CAD"
+    },
+    {
+      "id": "DRILL-02",
+      "name": "BORER 02",
+      "role": "Virtual subsurface",
+      "form": "Borer",
+      "theme": "amber",
+      "color": "#efbd7d",
+      "model": "models/DRILL-02.glb",
+      "speed_cells_s": 1.35,
+      "model_status": "conceptual visualization, not engineering CAD"
+    },
+    {
+      "id": "MAP-03",
+      "name": "MAPPER 03",
+      "role": "Terrain mapping",
+      "form": "Mapper",
+      "theme": "blue",
+      "color": "#76b6ff",
+      "model": "models/MAP-03.glb",
+      "speed_cells_s": 1.5,
+      "model_status": "conceptual visualization, not engineering CAD"
+    },
+    {
+      "id": "SAFE-04",
+      "name": "SENTINEL 04",
+      "role": "Safety observer",
+      "form": "Guardian",
+      "theme": "violet",
+      "color": "#c3a7ff",
+      "model": "models/SAFE-04.glb",
+      "speed_cells_s": 1.05,
+      "model_status": "conceptual visualization, not engineering CAD"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "xunia",
+      "type": "ecosystem",
+      "label": "XUNIA / GPT-DOUG",
+      "description": "Software ecosystem and research showcase."
+    },
+    {
+      "id": "kraken",
+      "type": "application",
+      "label": "KRAKEN GROUND",
+      "description": "Training-only ground robotics simulator."
+    },
+    {
+      "id": "aegis",
+      "type": "application",
+      "label": "AEGIS MONITOR",
+      "description": "Passive friendly-asset exercise monitoring."
+    },
+    {
+      "id": "ctf",
+      "type": "application",
+      "label": "AIRSPACE CTF",
+      "description": "3D drone capture-the-flag game."
+    },
+    {
+      "id": "cesium",
+      "type": "presentation",
+      "label": "CESIUM TWIN",
+      "description": "Visual geospatial display with synthetic Tasmania exercise overlay; not a survey."
+    },
+    {
+      "id": "tak",
+      "type": "integration",
+      "label": "CoT EXPORT",
+      "description": "Offline synthetic-friendly XML file only; no TAK server connection."
+    },
+    {
+      "id": "sim",
+      "type": "simulation",
+      "label": "36\u00d724 GRID",
+      "description": "Abstract coordinate grid from verified Kraken engine; not geographic."
+    },
+    {
+      "id": "beacon",
+      "type": "objective",
+      "label": "EXERCISE BEACON",
+      "description": "Inert digital exercise marker, virtual recovery only."
+    },
+    {
+      "id": "habitat",
+      "type": "policy",
+      "label": "PROTECTED HABITAT",
+      "description": "Simulation route exclusion ellipse; no real habitat mapping."
+    },
+    {
+      "id": "utility",
+      "type": "policy",
+      "label": "NO-GO / UTILITY",
+      "description": "Simulation route exclusion ellipse; no real infrastructure mapping."
+    },
+    {
+      "id": "sensor",
+      "type": "sensor",
+      "label": "VIRTUAL SCAN",
+      "description": "Model-based proximity and coverage, not external sensor readings."
+    },
+    {
+      "id": "telemetry",
+      "type": "data",
+      "label": "FRIENDLY TELEMETRY",
+      "description": "Synthetic energy, simulated link, grid position and event history."
+    },
+    {
+      "id": "ontology",
+      "type": "data",
+      "label": "ONTOLOGY GRAPH",
+      "description": "Traceable concepts, relations and artifact provenance."
+    },
+    {
+      "id": "policy",
+      "type": "policy",
+      "label": "SAFE MODE",
+      "description": "No human tracking, physical drilling, command interface or countermeasures."
+    },
+    {
+      "id": "DEVIL-01",
+      "type": "rover",
+      "label": "DEVIL 01",
+      "description": "Search & survey",
+      "color": "#81f6d4",
+      "model": "models/DEVIL-01.glb",
+      "speed_cells_s": 1.65,
+      "source": "kraken-core.js",
+      "status": "Simulated"
+    },
+    {
+      "id": "DRILL-02",
+      "type": "rover",
+      "label": "BORER 02",
+      "description": "Virtual subsurface",
+      "color": "#efbd7d",
+      "model": "models/DRILL-02.glb",
+      "speed_cells_s": 1.35,
+      "source": "kraken-core.js",
+      "status": "Simulated"
+    },
+    {
+      "id": "MAP-03",
+      "type": "rover",
+      "label": "MAPPER 03",
+      "description": "Terrain mapping",
+      "color": "#76b6ff",
+      "model": "models/MAP-03.glb",
+      "speed_cells_s": 1.5,
+      "source": "kraken-core.js",
+      "status": "Simulated"
+    },
+    {
+      "id": "SAFE-04",
+      "type": "rover",
+      "label": "SENTINEL 04",
+      "description": "Safety observer",
+      "color": "#c3a7ff",
+      "model": "models/SAFE-04.glb",
+      "speed_cells_s": 1.05,
+      "source": "kraken-core.js",
+      "status": "Simulated"
+    },
+    {
+      "id": "godseye",
+      "type": "concept",
+      "label": "GODSEYE",
+      "description": "Future fusion console for sensors, telemetry, provenance and policy.",
+      "status": "Concept / integration target"
+    },
+    {
+      "id": "warhawk",
+      "type": "concept",
+      "label": "WARHAWK",
+      "description": "Referenced defensive monitoring and observation module; no deployed build verified here.",
+      "status": "Concept / integration target"
+    },
+    {
+      "id": "voltron",
+      "type": "concept",
+      "label": "VOLTRON / TAK",
+      "description": "Interoperability design target. No connected ATAK/iTAK device or server verified.",
+      "status": "Concept / integration target"
+    },
+    {
+      "id": "museum",
+      "type": "concept",
+      "label": "XUNIA MUSEUM",
+      "description": "Static showcase target. Not currently published by this package.",
+      "status": "Prepared integration assets"
+    }
+  ],
+  "relations": [
+    {
+      "from": "xunia",
+      "to": "kraken",
+      "relation": "contains"
+    },
+    {
+      "from": "xunia",
+      "to": "aegis",
+      "relation": "contains"
+    },
+    {
+      "from": "xunia",
+      "to": "ctf",
+      "relation": "contains"
+    },
+    {
+      "from": "xunia",
+      "to": "cesium",
+      "relation": "contains"
+    },
+    {
+      "from": "xunia",
+      "to": "ontology",
+      "relation": "contains"
+    },
+    {
+      "from": "xunia",
+      "to": "policy",
+      "relation": "contains"
+    },
+    {
+      "from": "kraken",
+      "to": "sim",
+      "relation": "uses"
+    },
+    {
+      "from": "kraken",
+      "to": "beacon",
+      "relation": "simulates"
+    },
+    {
+      "from": "kraken",
+      "to": "sensor",
+      "relation": "simulates"
+    },
+    {
+      "from": "kraken",
+      "to": "telemetry",
+      "relation": "emits"
+    },
+    {
+      "from": "kraken",
+      "to": "tak",
+      "relation": "exports"
+    },
+    {
+      "from": "kraken",
+      "to": "aegis",
+      "relation": "can_publish_training_feed_to"
+    },
+    {
+      "from": "cesium",
+      "to": "sim",
+      "relation": "visualizes"
+    },
+    {
+      "from": "cesium",
+      "to": "ontology",
+      "relation": "renders"
+    },
+    {
+      "from": "cesium",
+      "to": "telemetry",
+      "relation": "visualizes"
+    },
+    {
+      "from": "sim",
+      "to": "habitat",
+      "relation": "excludes"
+    },
+    {
+      "from": "sim",
+      "to": "utility",
+      "relation": "excludes"
+    },
+    {
+      "from": "policy",
+      "to": "kraken",
+      "relation": "constrains"
+    },
+    {
+      "from": "policy",
+      "to": "aegis",
+      "relation": "constrains"
+    },
+    {
+      "from": "kraken",
+      "to": "DEVIL-01",
+      "relation": "simulates"
+    },
+    {
+      "from": "DEVIL-01",
+      "to": "telemetry",
+      "relation": "emits"
+    },
+    {
+      "from": "DEVIL-01",
+      "to": "sensor",
+      "relation": "uses_simulated"
+    },
+    {
+      "from": "kraken",
+      "to": "DRILL-02",
+      "relation": "simulates"
+    },
+    {
+      "from": "DRILL-02",
+      "to": "telemetry",
+      "relation": "emits"
+    },
+    {
+      "from": "DRILL-02",
+      "to": "sensor",
+      "relation": "uses_simulated"
+    },
+    {
+      "from": "kraken",
+      "to": "MAP-03",
+      "relation": "simulates"
+    },
+    {
+      "from": "MAP-03",
+      "to": "telemetry",
+      "relation": "emits"
+    },
+    {
+      "from": "MAP-03",
+      "to": "sensor",
+      "relation": "uses_simulated"
+    },
+    {
+      "from": "kraken",
+      "to": "SAFE-04",
+      "relation": "simulates"
+    },
+    {
+      "from": "SAFE-04",
+      "to": "telemetry",
+      "relation": "emits"
+    },
+    {
+      "from": "SAFE-04",
+      "to": "sensor",
+      "relation": "uses_simulated"
+    },
+    {
+      "from": "DEVIL-01",
+      "to": "beacon",
+      "relation": "virtually_recovers"
+    },
+    {
+      "from": "DRILL-02",
+      "to": "sim",
+      "relation": "illustrates_virtual_depth"
+    },
+    {
+      "from": "xunia",
+      "to": "godseye",
+      "relation": "references"
+    },
+    {
+      "from": "xunia",
+      "to": "warhawk",
+      "relation": "references"
+    },
+    {
+      "from": "xunia",
+      "to": "voltron",
+      "relation": "references"
+    },
+    {
+      "from": "xunia",
+      "to": "museum",
+      "relation": "references"
+    }
+  ],
+  "creations": [
+    {
+      "id": "kraken",
+      "title": "KRAKEN Ground Systems",
+      "type": "verified_software_artifact",
+      "status": "Simulation tested",
+      "version": "1.0",
+      "summary": "Four simulated ground robots, safe route planning, inert digital beacon exercise, CoT XML export.",
+      "path": "legacy/kraken-offline.html",
+      "image": "previews/kraken-original.png",
+      "source_name": "XUNIA_KRAKEN_GROUND_V1",
+      "source_hash": "36b5b1a468ca81813b626e7e25665913b1deb48a4c13411f64ff45a6c2720781"
+    },
+    {
+      "id": "aegis",
+      "title": "AEGIS Passive Monitoring",
+      "type": "verified_software_artifact",
+      "status": "Prototype tested",
+      "version": "1.1",
+      "summary": "Friendly telemetry monitoring, geofence advisories, manual incident review and JSON export.",
+      "path": "legacy/aegis-defense.html",
+      "image": "previews/aegis-original.png",
+      "source_name": "XUNIA_AEGIS_COMPILED_V1_1",
+      "source_hash": "9bbe27b46584697165acb29f46cc188c59cab37cf5a064ea268a69370d180eab"
+    },
+    {
+      "id": "ctf",
+      "title": "Airspace CTF Arena",
+      "type": "verified_software_artifact",
+      "status": "Simulation tested",
+      "version": "1.0",
+      "summary": "Eight simulated aerial drones, two teams, flag capture, autopilot and 3D flight.",
+      "path": "legacy/airspace-ctf.html",
+      "image": "previews/ctf-original.png",
+      "source_name": "DRONE_CTF_AIRSPACE_ARENA",
+      "source_hash": "b137d5f126f676ee8c5322e49dc119a0a6d31729ce77e6df951436f8b157e0a5"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "godseye",
+      "title": "GoDsEye",
+      "status": "Concept / integration target",
+      "summary": "Future fusion console for sensors, telemetry, provenance and policy."
+    },
+    {
+      "id": "warhawk",
+      "title": "WarHawk",
+      "status": "Concept / integration target",
+      "summary": "Referenced defensive monitoring and observation module; no deployed build verified here."
+    },
+    {
+      "id": "voltron",
+      "title": "VOLTRON / TAK",
+      "status": "Concept / integration target",
+      "summary": "Interoperability design target. No connected ATAK/iTAK device or server verified."
+    },
+    {
+      "id": "museum",
+      "title": "XUNIA Museum",
+      "status": "Prepared integration assets",
+      "summary": "Static showcase target. Not currently published by this package."
+    }
+  ],
+  "operational_limitations": [
+    "synthetic grid and Tasmania presentation anchor only",
+    "no physical vehicle control",
+    "no people tracking",
+    "no excavation hardware specification",
+    "no real-world target capture",
+    "no ATAK/iTAK network integration",
+    "no intelligence sensor connection",
+    "no field readiness certification"
+  ]
+};

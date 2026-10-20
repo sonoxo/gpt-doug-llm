@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090f19"><meta name="description" content="XUNIA KRAKEN: free offline ground-robot capture-the-beacon training simulator. Synthetic telemetry only; no physical robot or human targeting.">
+<title>XUNIA KRAKEN | Ground Systems Training</title>
+<style>
+:root{color-scheme:dark;--bg:#08111b;--surface:#0e1924;--panel:#101e2a;--border:#23394a;--ink:#edf6f6;--muted:#92a6b2;--sub:#627e8d;--mint:#92f3cf;--cyan:#76baf6;--amber:#f4bb75;--purple:#bd9fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);font:13px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-width:330px}body:before{position:fixed;inset:0;z-index:-2;content:"";background:radial-gradient(ellipse at 44% -30%,#164053 0,transparent 52%),linear-gradient(110deg,#0b1722,#060d16 75%);pointer-events:none}.ambientGlow{position:fixed;z-index:-1;inset:0;background-image:linear-gradient(#1b354113 1px,transparent 1px),linear-gradient(90deg,#1b354113 1px,transparent 1px);background-size:40px 40px;pointer-events:none}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,canvas:focus-visible{outline:2px solid var(--mint);outline-offset:3px}button:disabled{opacity:.45;cursor:not-allowed}a{color:inherit;text-decoration:none}.mono,.nowMono,.mapStatusBar,.gridCoordinate,.brandSub,.overline,.stat small{font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace}.masthead{height:76px;display:flex;align-items:center;gap:30px;padding:0 28px;border-bottom:1px solid #1b3340;background:rgba(8,17,27,.88);position:sticky;top:0;z-index:20;backdrop-filter:blur(16px)}.identity{width:245px;display:flex;align-items:center;gap:12px;flex-shrink:0}.sigil{color:var(--mint);width:46px;height:46px;display:grid;place-items:center}.sigil svg{width:37px}.brand{font-weight:900;font-size:15px;letter-spacing:.16em;white-space:nowrap}.brand em{font-style:normal;color:var(--mint);font-size:17px}.brandSub{font-size:9px;letter-spacing:.22em;font-weight:700;color:#7594a6}.centerTitle{display:flex;align-items:center;gap:14px;color:#829ba8;letter-spacing:.17em;font-size:10px;font-weight:800;flex:1;min-width:0}.softPulse,.glowDot,.indicator{width:7px;height:7px;display:inline-block;flex-shrink:0;border-radius:50%;background:var(--mint);box-shadow:0 0 12px #8afacf77}.softPulse{animation:pulse 1.8s infinite}.middleLine{height:1px;background:#28404a;flex:1;max-width:360px}.nowMono{color:#bad5dc;letter-spacing:.03em}.headerActions{display:flex;align-items:center;gap:18px}.quietLink{font-size:10px;letter-spacing:.15em;font-weight:800;color:#acc5cc;white-space:nowrap}.quietLink:hover{color:var(--mint)}.pillWarn{border:1px solid #6d5033;background:#422e1c55;color:#f4c18a;font-size:10px;letter-spacing:.15em;font-weight:850;padding:9px 12px;border-radius:7px;white-space:nowrap}.appFrame{display:grid;grid-template-columns:246px minmax(0,1fr) 304px;max-width:1950px;min-height:calc(100vh - 76px);margin:auto}.sideRail{border-right:1px solid #1b3340;background:linear-gradient(180deg,#0b1722,#0a131f);padding:25px 18px 18px;display:flex;flex-direction:column;gap:23px;min-width:0}.railLabel{color:#7190a1;font-size:10px;letter-spacing:.17em;font-weight:800;margin:0 9px 14px}.railLink{display:flex;align-items:center;gap:10px;padding:12px 9px;border-radius:8px;margin:2px 0;color:#93aab9;font-size:10px;letter-spacing:.045em;font-weight:800}.railLink.active,.railLink:hover{color:var(--mint);background:linear-gradient(90deg,#1a3c3d55,transparent)}.railLink.active{border-left:2px solid var(--mint)}.navGlyph{font-size:20px;line-height:10px;width:23px;color:#82abac}.navNum{margin-left:auto;color:#617e8b;font:10px ui-monospace,monospace}.railDivider{border-top:1px solid #233844;margin:0 5px}.fleetNav .railLabel{display:flex;justify-content:space-between;align-items:center}.fleetNav .railLabel span{font-size:9px;color:var(--mint);letter-spacing:0}.fleetUnit{border:1px solid transparent;border-radius:8px;width:100%;text-align:left;background:none;color:#b8cbd1;padding:11px 8px;display:flex;gap:10px;align-items:center;transition:background .16s,border-color .16s}.fleetUnit:hover,.fleetUnit.selected{background:#122936;border-color:#2e5360}.fleetBadge{flex-shrink:0;width:37px;height:37px;border-radius:8px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--unitColor),transparent 61%);color:var(--unitColor);background:color-mix(in srgb,var(--unitColor),transparent 94%);font-weight:900;letter-spacing:.04em}.fleetName{display:block;font-weight:900;font-size:11px;letter-spacing:.05em}.fleetRole{display:block;font-size:9px;letter-spacing:.03em;color:#7d98a5;margin-top:1px}.fleetArrow{margin-left:auto;color:#6c97a0;font-size:14px}.railSpacer{flex:1}.scopePanel{border-radius:12px;background:linear-gradient(145deg,#132e2e,#10212c);border:1px solid #28504d;padding:18px}.scopeFlag{color:var(--mint);font-size:9px;letter-spacing:.17em;font-weight:900;display:flex;gap:9px;align-items:center}.miniBeacon{height:7px;width:7px;box-shadow:0 0 0 4px #7aefc622;border:1px solid var(--mint);border-radius:50%}.scopePanel h3{font-size:17px;line-height:1.25;margin:14px 0 10px}.scopePanel p{font-size:11px;color:#a3b7bd;line-height:1.65;margin:0}.scopeLine{border-top:1px solid #32605c;margin-top:16px;padding-top:12px;color:#7fd7c2;font:9px/1.8 ui-monospace,monospace;letter-spacing:.025em}.railFooter{display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap;color:#617d8e;font-size:9px;letter-spacing:.07em}.railFooter strong{color:#aac6c7;font-weight:700}.mainBoard{padding:31px 24px 35px;min-width:0;display:flex;flex-direction:column;gap:19px}.pageHead{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:100px}.overline{font-size:10px;color:#7595a5;letter-spacing:.17em;font-weight:800}.pageHead h1{font-size:clamp(28px,2.75vw,42px);margin:4px 0 2px;font-weight:900;letter-spacing:-.055em;line-height:1.2}.gradientText{background:linear-gradient(90deg,#a0f4dc,#71b9ee);background-clip:text;-webkit-background-clip:text;color:transparent}.pageHead p{margin:6px 0 0;color:#98aebb;font-size:12px;max-width:650px}.statusPanel{display:flex;align-items:center;gap:10px;background:#152b31;border:1px solid #295450;border-radius:9px;padding:12px 14px;white-space:nowrap}.statusPanel b{display:block;font-size:10px;letter-spacing:.09em;color:#9ff2d6}.statusPanel small{display:block;color:#769f9c;font-size:9px;letter-spacing:.12em;margin-top:3px}.statsStrip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{border:1px solid #213d4a;background:linear-gradient(145deg,#11232e,#0b1a26);border-radius:10px;padding:15px 17px 12px;min-width:0}.stat>span{display:block;color:#8ba5b2;font-size:9px;font-weight:850;letter-spacing:.13em}.stat>div:nth-child(2){margin:10px 0 8px;display:flex;gap:9px;align-items:baseline}.stat strong{font-size:29px;letter-spacing:-.05em;line-height:1;font-weight:850}.stat strong.time{font-family:ui-monospace,monospace;font-size:23px;letter-spacing:-.06em}.stat small{font-size:9px;color:#6f8d9e;white-space:nowrap}.statUnderline{height:2px;background:#263d48;position:relative;margin-top:13px}.statUnderline:before{content:"";position:absolute;inset:0 auto 0 0;width:42%;background:var(--under);box-shadow:0 0 10px var(--under)}.statUnderline.mint{--under:#83e6c0}.statUnderline.blue{--under:#5f9ae7}.statUnderline.orange{--under:#e2a869}.statUnderline.purple{--under:#a48ce4}.panel{border:1px solid #26404e;background:linear-gradient(145deg,#101f2b,#0c1925);border-radius:11px;overflow:hidden;min-width:0}.panelHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid #203b4a}.panelEyebrow{font-family:ui-monospace,monospace;letter-spacing:.14em;font-size:9px;font-weight:800;color:#70adad}.panelTitle{font-size:15px;font-weight:850;letter-spacing:-.015em;margin-top:3px}.tagTiny{font:9px ui-monospace,monospace;letter-spacing:.04em;color:#91aebb;border:1px solid #34505c;background:#172b36;border-radius:5px;padding:5px 7px;white-space:nowrap;margin-left:8px}.tagTiny.orangeTag{color:var(--amber);border-color:#765c3c;background:#44322540}.panelTools{display:flex;gap:7px;align-items:center}.toolButton,.iconButton{background:#122936;color:#9db8c2;border:1px solid #34515c;border-radius:5px;font-size:10px;font-weight:850;letter-spacing:.05em;padding:8px 11px;white-space:nowrap}.toolButton.selected{background:#204740;border-color:#58a28c;color:#b1f5df}.toolButton:hover,.iconButton:hover{border-color:#86c9c0;color:white}.iconButton{font-size:15px;line-height:16px;padding:8px 11px}.mapStage{height:clamp(360px,36vw,520px);position:relative;overflow:hidden;background:#08141e}.mapStage canvas{display:block;width:100%;height:100%;cursor:crosshair;touch-action:manipulation}.mapTopOverlay{position:absolute;pointer-events:none;top:16px;left:17px;right:18px;display:flex;justify-content:space-between;align-items:center;color:#abdcd3;font-size:10px;letter-spacing:.15em;font-weight:850;text-shadow:0 1px 4px #020809}.mapTopOverlay .mono{display:flex;gap:9px;align-items:center}.gridCoordinate{color:#71969f;font-size:10px}.mapNorth{position:absolute;right:20px;top:48px;color:#c4ebe1;pointer-events:none;display:flex;flex-direction:column;align-items:center;font-size:13px;line-height:1.1;text-shadow:0 0 7px #0c0e14}.mapNorth div{font-size:20px}.mapFooterOverlay{position:absolute;bottom:16px;left:16px;right:16px;display:flex;align-items:end;justify-content:space-between;gap:8px;pointer-events:none}.mapLegend{display:flex;flex-wrap:wrap;gap:14px;font-size:10px;color:#bfd1cb;text-shadow:0 1px 5px #020b12}.mapLegend span{display:flex;align-items:center;gap:6px}.pin{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pin);box-shadow:0 0 12px var(--pin)}.pin.mint{--pin:var(--mint)}.pin.amber{--pin:var(--amber)}.pin.cyan{--pin:var(--cyan)}.waypointHint{font:9px ui-monospace,monospace;letter-spacing:.11em;background:#071925aa;border:1px solid #4a777f;padding:7px 9px;border-radius:4px;color:#c2e3e3}.mapStatusBar{height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 17px;background:#0a1923;border-top:1px solid #2b4450;color:#7299a8;font-size:9px;letter-spacing:.055em}.commandBar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,#193032,#102632);border:1px solid #39605b;border-radius:10px;padding:15px 16px}.commandMeta{min-width:160px}.commandMeta strong{font-size:10px;color:#b5d9d2;letter-spacing:.05em;display:block;margin-top:5px}.commandButtons{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}.actionButton{background:#152e39;border:1px solid #3d5965;border-radius:6px;color:#c5d6dd;padding:11px 13px;font-weight:850;font-size:10px;letter-spacing:.035em;white-space:nowrap}.actionButton:hover{background:#25404c;color:white}.actionButton.primary{background:#8ceac8;color:#08231e;border-color:#8ceac8}.actionButton.primary:hover{background:#c6fbe6}.actionButton.downloadButton{border-color:#52716f;color:#b8e9d9}.lowerGrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:13px}.depthPanel canvas{width:100%;display:block;height:168px;background:#081822}.profileFoot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;border-top:1px solid #263d49;padding:10px 15px;color:#62889c;font:9px ui-monospace,monospace;letter-spacing:.04em}.activityList{height:212px;overflow:auto;padding:2px 15px}.event{padding:12px 0;border-bottom:1px solid #263945;display:flex;gap:13px;align-items:flex-start}.event .when{font:10px ui-monospace,monospace;color:#6c95a4;width:42px;flex-shrink:0;padding-top:1px}.event strong{display:block;font-size:10px;font-weight:850;color:#9de5d1;letter-spacing:.07em}.event p{margin:3px 0 0;color:#9db1bb;font-size:10px;line-height:1.4}.inspector{border-left:1px solid #1c3343;background:linear-gradient(180deg,#0c1925,#0b1722);padding:24px 16px;display:flex;flex-direction:column;gap:14px;min-width:0}.inspector .panelHead{padding:15px 14px}.greenChip{background:#1b463b;border:1px solid #396e5d;border-radius:5px;color:#97f2c9;letter-spacing:.04em;font-size:9px;font-weight:850;padding:6px 7px;white-space:nowrap}.roverIllustration{background:radial-gradient(ellipse at 50% 75%,#244447,#0c1d28 66%);padding:11px 15px 8px;border-bottom:1px solid #2d4551;position:relative}.roverIllustration svg{width:100%;max-height:151px}.roverIllustrationCaption{text-align:right;font:8px ui-monospace,monospace;color:#709699;letter-spacing:.05em}.roverMeta{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:13px 16px;color:#94c9bc;font:9px ui-monospace,monospace;letter-spacing:.05em;border-bottom:1px solid #253f4c}.roverMeta span:last-child{color:#648c9d}.robotMetrics{padding:17px}.mRow{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:750;letter-spacing:.04em;color:#8da6b2}.mRow strong{color:#d4e9e7}.progressRail{height:5px;border-radius:5px;background:#243e45;margin:10px 0 19px;overflow:hidden}.progressRail:last-child{margin-bottom:0}.progressRail i{display:block;height:100%;background:linear-gradient(90deg,#348e79,#a1f3c5);border-radius:5px}.progressRail.blueRail i{background:linear-gradient(90deg,#3d76a9,#82c9f9)}.dataPairs{display:grid;grid-template-columns:1fr 1fr;gap:15px 7px;padding:16px;border-top:1px solid #28414f}.dataPairs span{display:block;font-size:9px;color:#7292a2;letter-spacing:.06em}.dataPairs strong{display:block;font-size:10px;color:#d0e9e8;white-space:nowrap;margin-top:4px}.missionSteps{padding:19px 16px}.missionStep{display:flex;gap:13px;align-items:center;position:relative;padding:7px 0 13px;color:#6f929b}.missionStep:not(:last-child):before{content:"";position:absolute;left:13px;top:37px;height:25px;border-left:1px dashed #436571}.missionStep i{font:10px ui-monospace,monospace;flex-shrink:0;border:1px solid #3d5a66;background:#142a37;width:27px;height:27px;display:grid;place-items:center;border-radius:50%;font-style:normal}.missionStep strong{display:block;color:#b2c9cc;font-size:11px}.missionStep span{display:block;color:#678b9b;font-size:10px}.missionStep.active i,.missionStep.done i{background:#21453f;color:#98efc9;border-color:#67b7a0}.missionStep.active strong,.missionStep.done strong{color:#b6eed8}.linkCard{padding:18px 16px}.linkInfo{font-size:11px;color:#a2bdc4;line-height:1.55;margin:10px 0 18px}.linkCard label{display:block;font-size:9px;letter-spacing:.12em;color:#7598a8;font-weight:850;margin:0 0 7px}.linkCard input{width:100%;background:#081620;border:1px solid #34505d;border-radius:6px;padding:12px 10px;color:#cbece5;min-width:0}.linkButton{margin-top:8px;width:100%;background:#174738;border:1px solid #4e977e;border-radius:6px;padding:12px;color:#b4f7db;font-size:10px;font-weight:900;letter-spacing:.08em}.linkButton:hover{background:#1d5a47}.linkState{text-align:center;margin:11px 0 0;font:9px ui-monospace,monospace;color:#87a2aa;min-height:28px;overflow-wrap:anywhere}.toast{position:fixed;bottom:27px;left:50%;transform:translateX(-50%) translateY(30px);max-width:min(90vw,480px);padding:13px 20px;border-radius:8px;border:1px solid #69b39b;background:#0b2a2b;color:#d7fff0;box-shadow:0 15px 50px #0008;font-size:12px;font-weight:750;opacity:0;transition:transform .25s,opacity .25s;pointer-events:none;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@keyframes pulse{50%{opacity:.3;box-shadow:0 0 2px #8afacf44}}
+@media(max-width:1450px){.appFrame{grid-template-columns:208px minmax(0,1fr) 275px}.mainBoard{padding:24px 17px;gap:14px}.sideRail{padding:21px 12px}.inspector{padding:19px 10px}.brand{font-size:13px}.identity{width:196px}.centerTitle{letter-spacing:.11em}.commandBar{align-items:flex-start;flex-direction:column}.commandButtons{justify-content:flex-start}}
+@media(max-width:1150px){.appFrame{grid-template-columns:188px minmax(0,1fr)}.inspector{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-left:0;border-top:1px solid #1b3340;padding:16px}.linkCard{grid-column:1/-1}.pageHead{align-items:flex-start}.statusPanel{display:none}.masthead{padding:0 15px}.identity{width:188px}}
+@media(max-width:800px){.appFrame{display:block}.sideRail{padding:13px 15px 4px;display:block;border:0;border-bottom:1px solid #23404c}.railGroup,.railDivider,.railSpacer,.scopePanel,.railFooter{display:none}.fleetNav .railLabel{margin-bottom:5px}.fleetNav #fleetItems{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.fleetUnit{flex-direction:column;gap:5px;align-items:flex-start;padding:8px}.fleetUnit .fleetBadge{width:30px;height:30px}.fleetRole,.fleetArrow{display:none}.fleetName{font-size:9px}.mainBoard{padding:19px 12px;gap:12px}.inspector{padding:12px}.masthead{height:67px}.identity{width:auto;flex:1}.centerTitle{display:none}.headerActions{gap:8px}.quietLink{font-size:9px}.pillWarn{padding:7px;font-size:9px}.pageHead{min-height:0}.pageHead h1{font-size:32px}.pageHead p{font-size:11px}.statsStrip{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:12px}.stat strong{font-size:25px}.mapStage{height:clamp(340px,62vw,470px)}.mapFooterOverlay{flex-direction:column;align-items:flex-start}.lowerGrid{grid-template-columns:1fr}.activityList{height:170px}.commandButtons{justify-content:stretch;width:100%}.actionButton{flex:1;min-width:105px}.profileFoot{font-size:8px}}
+@media(max-width:490px){.masthead{padding:0 10px}.sigil{width:35px;height:35px}.sigil svg{width:30px}.identity{gap:5px}.brand{font-size:12px}.brandSub{font-size:8px;letter-spacing:.1em}.quietLink{display:none}.pageHead h1{font-size:30px}.overline{font-size:8px}.statsStrip{gap:7px}.stat>span{font-size:8px}.stat small{font-size:8px}.fleetUnit{padding:6px 5px}.fleetName{font-size:8px}.fleetBadge{width:27px!important;height:27px!important}.panelHead{padding:12px;flex-wrap:wrap}.panelTools{width:100%}.toolButton{flex:1}.mapStage{height:385px}.mapTopOverlay{font-size:8px}.mapLegend{gap:7px;font-size:9px}.mapStatusBar{font-size:7px;padding:0 8px}.mapStatusBar span:nth-child(2){display:none}.inspector{grid-template-columns:1fr}.linkCard{grid-column:1}.dataPairs strong{font-size:11px}.actionButton{font-size:9px}.commandMeta strong{font-size:9px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+</style>
+
+</head>
+<body>
+<div class="ambientGlow" aria-hidden="true"></div>
+<header class="masthead">
+  <div class="identity">
+    <div class="sigil" aria-hidden="true"><svg viewBox="0 0 42 42" fill="none"><path d="M21 2 38 12v18L21 40 4 30V12L21 2Z" stroke="currentColor" stroke-width="1.4"/><path d="m11 12 10 17 10-17M21 29V9" stroke="currentColor" stroke-width="2.1" stroke-linecap="square"/><circle cx="21" cy="21" r="3" fill="currentColor"/></svg></div>
+    <div><span class="brand">XUNIA <em>×</em> AEGIS</span><div class="brandSub">KRAKEN GROUND SYSTEMS</div></div>
+  </div>
+  <div class="centerTitle"><span class="softPulse"></span><span>TACTICAL EXERCISE LAB</span><span class="middleLine"></span><span class="nowMono" id="headerClock">00:00:00</span></div>
+  <div class="headerActions"><span class="quietLink" title="Included in the complete Python package">AEGIS MONITOR / FULL PACKAGE</span><div class="pillWarn">SIMULATION ONLY</div></div>
+</header>
+<div class="appFrame">
+  <aside class="sideRail" aria-label="Navigation and fleet">
+    <div class="railGroup"><div class="railLabel">WORKSPACE  /  01</div><a class="railLink active" href="#operations"><span class="navGlyph">⌖</span><span>GROUND OPERATIONS</span><span class="navNum">01</span></a><a class="railLink" href="#fleet"><span class="navGlyph">▤</span><span>ROBOT ROSTER</span><span class="navNum">02</span></a><a class="railLink" href="#telemetry"><span class="navGlyph">≋</span><span>EXERCISE EVIDENCE</span><span class="navNum">03</span></a></div>
+    <div class="railDivider"></div>
+    <div id="fleet" class="fleetNav"><div class="railLabel">GROUND FLEET  <span id="fleetTotal">04 ONLINE</span></div><div id="fleetItems"></div></div>
+    <div class="railSpacer"></div>
+    <div class="scopePanel"><div class="scopeFlag"><span class="miniBeacon"></span> PERMITTED EXERCISE</div><h3>Capture the beacon</h3><p>Autonomous scouting and retrieval of an inert digital marker on a fictional terrain grid.</p><div class="scopeLine">No people · No real drilling<br>No hardware control · No live tracking</div></div>
+    <div class="railFooter"><span>BUILD</span><strong>KRKN / 01.0</strong><span>100% FREE · OFFLINE</span></div>
+  </aside>
+  <main class="mainBoard" id="operations">
+    <div class="pageHead"><div><div class="overline">XUNIA MUSEUM  /  GROUND ROBOTICS  /  R&D</div><h1>Release the <span class="gradientText">Kraken.</span></h1><p>Tasmanian Devil training swarm · virtual subsurface survey · autonomous beacon recovery</p></div><div class="statusPanel"><span class="indicator"></span><div><b id="missionStage">SURVEY IN PROGRESS</b><small>ALL ACTIVITY IS SYNTHETIC</small></div></div></div>
+    <section class="statsStrip" aria-label="Mission summary">
+      <article class="stat"><span>FRIENDLY ASSETS</span><div><strong id="statUnits">04</strong><small>/ 04 READY</small></div><div class="statUnderline mint"></div></article>
+      <article class="stat"><span>GRID COVERAGE</span><div><strong id="statCoverage">00%</strong><small>SCANNED</small></div><div class="statUnderline blue"></div></article>
+      <article class="stat"><span>BEACONS RECOVERED</span><div><strong id="statBeacons">00</strong><small>/ 01</small></div><div class="statUnderline orange"></div></article>
+      <article class="stat"><span>SIMULATION TIME</span><div><strong class="time" id="statTime">00:00</strong><small id="statSpeed">1× SPEED</small></div><div class="statUnderline purple"></div></article>
+    </section>
+    <section class="panel mapPanel" aria-label="Training terrain map">
+      <div class="panelHead"><div><div class="panelEyebrow">01 — LIVE GROUND GRID</div><div class="panelTitle">Training terrain <span class="tagTiny">36 × 24 VIRTUAL CELLS</span></div></div><div class="panelTools"><button id="surfaceBtn" class="toolButton selected" type="button" aria-pressed="true">SURFACE</button><button id="undergroundBtn" class="toolButton" type="button" aria-pressed="false">SUBSURFACE</button><button id="zoomOut" class="iconButton" title="Zoom out" aria-label="Zoom out" type="button">−</button><button id="zoomIn" class="iconButton" title="Zoom in" aria-label="Zoom in" type="button">+</button></div></div>
+      <div class="mapStage" id="mapStage"><canvas id="terrainMap" aria-label="Synthetic terrain training grid; select a friendly robot then click a safe cell for a virtual waypoint" tabindex="0"></canvas><div class="mapTopOverlay"><span class="mono"><span class="glowDot"></span> SYNTHETIC GROUND TRACKS</span><span class="gridCoordinate">GRID / VX-036</span></div><div class="mapNorth" aria-hidden="true"><b>N</b><div>↑</div></div><div class="mapFooterOverlay"><div class="mapLegend"><span><i class="pin mint"></i>Friendly rover</span><span><i class="pin amber"></i>No-go habitat</span><span><i class="pin cyan"></i>Training beacon</span></div><div class="waypointHint" id="waypointHint">SELECT ROVER → CLICK MAP FOR WAYPOINT</div></div></div>
+      <div class="mapStatusBar"><span id="pointerReadout">POINTER  — / —</span><span>SAFE GRID ENFORCED · NO REAL GEOLOCATION</span><span id="mapStatus">SURFACE VIEW</span></div>
+    </section>
+    <section class="commandBar"><div class="commandMeta"><div class="panelEyebrow">MISSION COMMAND // <span id="selectedName">DEVIL 01</span></div><strong id="commandStatus">AUTONOMOUS SURVEY READY</strong></div><div class="commandButtons"><button class="actionButton primary" id="runBtn" type="button"><span id="playIcon">Ⅱ</span> <span id="runLabel">PAUSE SIM</span></button><button class="actionButton" id="speedBtn" type="button">SPEED <span id="speedLabel">1×</span></button><button class="actionButton" id="resetBtn" type="button">↺ RESET</button><button class="actionButton downloadButton" id="jsonBtn" type="button">↓ TELEMETRY</button><button class="actionButton downloadButton" id="cotBtn" type="button">↓ TAK CoT</button></div></section>
+    <div class="lowerGrid">
+      <section class="panel depthPanel" id="telemetry"><div class="panelHead"><div><div class="panelEyebrow">02 — DEPTH TELEMETRY</div><div class="panelTitle">Virtual subsurface profile</div></div><span class="tagTiny orangeTag">ILLUSTRATIVE ONLY</span></div><canvas id="depthCanvas" aria-label="Fictional underground strata and virtual drill rover illustration"></canvas><div class="profileFoot"><span>0–3m VIRTUAL DEPTH</span><span>NO GEOLOGICAL SURVEY DATA</span><span>NO DRILL MOTOR OUTPUT</span></div></section>
+      <section class="panel activityPanel"><div class="panelHead"><div><div class="panelEyebrow">03 — SYSTEM EVENTS</div><div class="panelTitle">Mission activity</div></div><span class="tagTiny" id="eventCount">0 EVENTS</span></div><div class="activityList" id="eventList"></div></section>
+    </div>
+  </main>
+  <aside class="inspector" aria-label="Selected robot and export settings">
+    <section class="panel inspectCard"><div class="panelHead"><div><div class="panelEyebrow">SELECTED ASSET</div><div class="panelTitle" id="inspectorName">DEVIL 01</div></div><span class="greenChip" id="inspectorStatus">SIM ACTIVE</span></div>
+      <div class="roverIllustration"><svg viewBox="0 0 300 138" width="100%" aria-label="Conceptual Tasmanian Devil ground rover with cylindrical sensors and nonfunctional auger illustration" role="img"><defs><linearGradient id="shellGrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3c5e69"/><stop offset=".42" stop-color="#182e3c"/><stop offset="1" stop-color="#071722"/></linearGradient><linearGradient id="drillGrad"><stop stop-color="#90dacc"/><stop offset="1" stop-color="#335e63"/></linearGradient></defs><ellipse cx="146" cy="121" rx="113" ry="10" fill="#86ffee" fill-opacity=".045"/><g transform="translate(8 5)"><path d="M47 90H228L249 80H53Z" fill="#0e2930" stroke="#43757b"/><path d="m63 52 22-22h111l25 22 12 38H48Z" fill="url(#shellGrad)" stroke="#70a5a5" stroke-width="1.5"/><path d="M83 49h101l15 30H68Z" fill="#213f4a" stroke="#8bb6bc"/><path d="M98 59h66" stroke="#9af2c7" stroke-width="4" stroke-linecap="round" opacity=".9"/><rect x="104" y="39" width="56" height="8" rx="3" fill="#173641" stroke="#629698"/><path d="m132 40 4-23h23" fill="none" stroke="#b0ebe1" stroke-width="2"/><circle cx="159" cy="17" r="4" fill="#98f4d4"/><path d="M217 67h26l25 14-25 13h-26" fill="url(#drillGrad)" stroke="#86cec6"/><path d="m243 73 16 12-16 2-15-7 14-2 10 7" fill="none" stroke="#ccf7e8" stroke-width="1.5"/><g fill="#111e2a" stroke="#5c9194" stroke-width="4"><circle cx="86" cy="95" r="18"/><circle cx="186" cy="95" r="18"/></g><g fill="#28404a" stroke="#81bfc1" stroke-width="1.8"><circle cx="86" cy="95" r="8"/><circle cx="186" cy="95" r="8"/></g><path d="M46 84 30 95l18 7m-5-18-24 14" stroke="#8fbfc0" fill="none" stroke-width="2"/><path d="M58 115h181" stroke="#416a6d" stroke-dasharray="3 8"/></g></svg><div class="roverIllustrationCaption">CONCEPT MODEL • NOT HARDWARE</div></div>
+      <div class="roverMeta"><span id="inspectorRole">SEARCH / SURVEY</span><span id="inspectorId">DEVIL-01</span></div>
+      <div class="robotMetrics"><div class="mRow"><span>BATTERY (SIM)</span><strong id="batteryVal">98%</strong></div><div class="progressRail"><i id="batteryBar" style="width:98%"></i></div><div class="mRow"><span>LINK QUALITY (SIM)</span><strong id="linkVal">97%</strong></div><div class="progressRail blueRail"><i id="linkBar" style="width:97%"></i></div></div>
+      <div class="dataPairs"><div><span>GRID POSITION</span><strong class="mono" id="posVal">04.8 / 12.7</strong></div><div><span>VIRTUAL DEPTH</span><strong class="mono" id="depthVal">0.0 m</strong></div><div><span>ROUTE STATUS</span><strong class="mono" id="routeVal">AUTO</strong></div><div><span>TRACK ORIGIN</span><strong class="mono">SYNTHETIC</strong></div></div>
+    </section>
+    <section class="panel missionCard"><div class="panelHead"><div><div class="panelEyebrow">MISSION OBJECTIVE</div><div class="panelTitle">Digital beacon recovery</div></div></div><div class="missionSteps"><div class="missionStep active" id="phaseSurvey"><i>01</i><div><strong>Map terrain</strong><span>Autonomous grid survey</span></div></div><div class="missionStep" id="phaseDetect"><i>02</i><div><strong>Locate beacon</strong><span>Simulated detection only</span></div></div><div class="missionStep" id="phaseCapture"><i>03</i><div><strong>Tag & return</strong><span>Virtual flag transfer</span></div></div><div class="missionStep" id="phaseComplete"><i>04</i><div><strong>Exercise complete</strong><span>Logged and auditable</span></div></div></div></section>
+    <section class="panel linkCard"><div class="panelEyebrow">OPTIONAL AEGIS LINK</div><div class="linkInfo">Publish <b>synthetic friendly telemetry only</b> to the existing local AEGIS service. Opt-in and bearer-token protected.</div><label for="tokenInput">LOCAL SERVICE TOKEN</label><input id="tokenInput" type="password" autocomplete="off" placeholder="Paste local training token" aria-label="Local AEGIS training token"/><button id="linkBtn" type="button" class="linkButton">LINK TRAINING FEED ↗</button><div class="linkState" id="linkState">OFFLINE · NOT CONNECTED</div></section>
+  </aside>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+/* XUNIA KRAKEN ground-drone exercise simulation. No physical robot, tracking, or pursuit interfaces. */
+(function(root,factory){
+  const api=factory();
+  if(typeof module==='object'&&module.exports) module.exports=api;
+  else root.KrakenCore=api;
+})(typeof globalThis!=='undefined'?globalThis:this,function(){
+  'use strict';
+  const W=36,H=24;
+  const zones=[{x:17.0,y:5.4,rx:3.1,ry:2.8,label:'PROTECTED HABITAT'},
+               {x:21.5,y:18.3,rx:3.1,ry:2.9,label:'NO-GO / UTILITY'}];
+  const base={x:4,y:12.5};
+  const beacon={x:29.3,y:10.6};
+  const template=[
+    {id:'DEVIL-01',name:'DEVIL 01',role:'SEARCH / SURVEY',color:'#90f6cf',x:4.8,y:12.7,speed:1.65,patrol:[[9,12],[15,12],[21,10],[27,10],[31,14],[26,14]]},
+    {id:'DRILL-02',name:'BORER 02',role:'VIRTUAL SUBSURFACE',color:'#f4bb75',x:3.8,y:13.6,speed:1.35,patrol:[[8,16],[13,19],[19,12],[25,12],[30,16]]},
+    {id:'MAP-03',name:'MAPPER 03',role:'TERRAIN MAPPING',color:'#78b6ff',x:4.4,y:11.2,speed:1.5,patrol:[[8,6],[13,10],[18,12],[24,7],[31,7]]},
+    {id:'SAFE-04',name:'SENTINEL 04',role:'SAFETY OBSERVER',color:'#bd9fff',x:4.0,y:12.3,speed:1.05,patrol:[[7,14],[7,10],[5,8],[5,16]]}
+  ];
+  function key(x,y){return x+','+y}
+  function terrain(x,y){return Math.sin(x*.48+Math.cos(y*.31))*.52+Math.cos(y*.67-x*.12)*.26+Math.sin(x*.19+y*.37)*.22}
+  function inBounds(x,y){return x>=1&&y>=1&&x<W-1&&y<H-1}
+  function inNoGo(x,y){return zones.some(z=>((x-z.x)/z.rx)**2+((y-z.y)/z.ry)**2<=1)}
+  function isRock(x,y){
+    // Abstract rock patches drawn on the training grid; never terrain survey data.
+    return (x>=11&&x<=13&&y>=3&&y<=8)||(x>=13&&x<=15&&y>=17&&y<=20)||
+      (x>=25&&x<=27&&y>=3&&y<=5)||(x>=28&&x<=31&&y>=17&&y<=19)||
+      (x>=20&&x<=22&&y>=2&&y<=3);
+  }
+  function isBlocked(x,y){
+    x=Math.round(x);y=Math.round(y);
+    return !inBounds(x,y)||inNoGo(x,y)||isRock(x,y);
+  }
+  const directions=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  function findPath(from,to){
+    const sx=Math.round(from.x),sy=Math.round(from.y),tx=Math.round(to.x),ty=Math.round(to.y);
+    if(isBlocked(tx,ty)||isBlocked(sx,sy))return [];
+    const origin=key(sx,sy),target=key(tx,ty);
+    const open=[{x:sx,y:sy,f:0}],best=new Map([[origin,0]]),parent=new Map(),closed=new Set();
+    while(open.length){
+      open.sort((a,b)=>a.f-b.f);const cur=open.shift(),ck=key(cur.x,cur.y);
+      if(closed.has(ck))continue;
+      if(ck===target){let node=target,path=[];while(node!==origin){const [x,y]=node.split(',').map(Number);path.push({x,y});node=parent.get(node);if(!node)return []}return path.reverse()}
+      closed.add(ck);
+      for(const [dx,dy] of directions){
+        const nx=cur.x+dx,ny=cur.y+dy,nk=key(nx,ny);
+        if(isBlocked(nx,ny)||closed.has(nk))continue;
+        if(dx&&dy&&(isBlocked(cur.x+dx,cur.y)||isBlocked(cur.x,cur.y+dy)))continue;
+        const tentative=best.get(ck)+(dx&&dy?Math.SQRT2:1)+(terrain(nx,ny)+1)*.04;
+        if(tentative>=(best.get(nk)??Infinity))continue;
+        parent.set(nk,ck);best.set(nk,tentative);
+        const heuristic=Math.hypot(nx-tx,ny-ty);
+        open.push({x:nx,y:ny,f:tentative+heuristic});
+      }
+    }
+    return [];
+  }
+  function escapeXml(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]))}
+  function clamp(n,min,max){return Math.min(max,Math.max(min,n))}
+  class Mission{
+    constructor(){this.reset()}
+    reset(){
+      this.time=0;this.speed=1;this.running=true;this.phase='SURVEY';this.discovered=false;this.secured=false;this.carrier=null;
+      this.beacons=0;this.selected='DEVIL-01';this.covered=new Set();this.events=[];this.seq=0;
+      this.robots=template.map(t=>({...t,battery:98,link:97,patrolIndex:0,path:[],goal:null,manual:null,
+        status:'SURVEYING',heading:0,history:[{x:t.x,y:t.y}],depth:t.id==='DRILL-02'?1.8:0}));
+      this.log('EXERCISE INITIALIZED','4 synthetic ground assets online');
+      this.log('SAFETY ENFORCED','Human tracking, restraints, hardware control disabled');
+      this.scanAll();
+    }
+    get selectedRobot(){return this.robots.find(r=>r.id===this.selected)||this.robots[0]}
+    select(id){if(!this.robots.some(r=>r.id===id))return false;this.selected=id;return true}
+    log(type,message){this.events.unshift({t:this.time,type,message});this.events.length=Math.min(this.events.length,80)}
+    setManualWaypoint(id,x,y){
+      const robot=this.robots.find(r=>r.id===id);
+      if(!robot||!Number.isFinite(x)||!Number.isFinite(y)||isBlocked(x,y)){
+        this.log('WAYPOINT REJECTED','Outside simulation grid, obstacle, or protected zone');return false;
+      }
+      const p=findPath(robot,{x,y});if(!p.length&&Math.hypot(robot.x-x,robot.y-y)>.9){this.log('WAYPOINT REJECTED','No safe simulated path');return false}
+      robot.manual={x:Math.round(x),y:Math.round(y)};robot.goal=null;robot.path=[];
+      this.log('WAYPOINT ACCEPTED',`${robot.id} rerouted on abstract training grid`);
+      return true;
+    }
+    robotTarget(r){
+      if(r.manual)return r.manual;
+      if(this.phase==='RETURN'&&r.id===this.carrier)return base;
+      if(this.phase==='RECOVERED'&&r.id===this.carrier)return null;
+      if(this.discovered&&!this.secured&&r.id==='DEVIL-01')return beacon;
+      const points=r.patrol;
+      return {x:points[r.patrolIndex%points.length][0],y:points[r.patrolIndex%points.length][1]};
+    }
+    scanAll(){
+      for(const r of this.robots){
+        const radius=r.role.includes('MAPPING')?3.4:2.8;
+        for(let x=Math.floor(r.x-radius);x<=Math.ceil(r.x+radius);x++)for(let y=Math.floor(r.y-radius);y<=Math.ceil(r.y+radius);y++){
+          if(x>=0&&y>=0&&x<W&&y<H&&Math.hypot(x-r.x,y-r.y)<=radius)this.covered.add(key(x,y));
+        }
+        if(!this.discovered&&Math.hypot(r.x-beacon.x,r.y-beacon.y)<5.3){
+          this.discovered=true;this.phase='BEACON FOUND';
+          this.log('BEACON DETECTED','Inert exercise beacon detected by synthetic proximity sensor');
+        }
+      }
+    }
+    step(delta){
+      if(!this.running)return;
+      const dt=clamp(delta,0,.25)*this.speed;this.time+=dt;
+      for(const r of this.robots){
+        if(r.battery<=6){r.status='STANDBY / LOW ENERGY';continue}
+        let dest=this.robotTarget(r);
+        if(!dest){r.status='MISSION COMPLETE';continue}
+        const destinationChanged=!r.goal||Math.hypot(r.goal.x-dest.x,r.goal.y-dest.y)>.12;
+        if(destinationChanged){r.goal={x:dest.x,y:dest.y};r.path=findPath(r,dest)}
+        if(r.path.length){
+          const p=r.path[0],vx=p.x-r.x,vy=p.y-r.y,d=Math.hypot(vx,vy);
+          const stride=r.speed*dt;
+          if(d<=stride+.0001){r.x=p.x;r.y=p.y;r.path.shift()}
+          else{r.x+=vx/d*stride;r.y+=vy/d*stride}
+          if(d>.002)r.heading=Math.atan2(vy,vx);
+          r.battery=Math.max(0,r.battery-dt*.018*(r.id==='DRILL-02'?1.2:1));
+          r.link=clamp(94+Math.sin(this.time*.16+r.x*.28)*5,65,99);
+          if(r.history.length===0||Math.hypot(r.x-r.history[r.history.length-1].x,r.y-r.history[r.history.length-1].y)>.28){
+            r.history.push({x:r.x,y:r.y});if(r.history.length>75)r.history.shift();
+          }
+          r.status=r.manual?'MANUAL WAYPOINT':this.phase==='RETURN'&&r.id===this.carrier?'RETURNING WITH BEACON':r.id==='DRILL-02'?'VIRTUAL TUNNEL SURVEY':'AUTONOMOUS SURVEY';
+        }
+        const dist=Math.hypot(r.x-dest.x,r.y-dest.y);
+        if(!r.path.length&&dist<1.2){
+          if(r.manual){r.manual=null;r.goal=null;r.status='WAYPOINT REACHED';this.log('WAYPOINT REACHED',r.id+' completed simulated waypoint')}
+          else if(this.phase==='RETURN'&&r.id===this.carrier){
+            this.secured=true;this.beacons=1;this.phase='RECOVERED';r.status='MISSION COMPLETE';r.goal=null;
+            this.log('EXERCISE COMPLETE','Inert beacon returned to home pad; no person or object was physically contacted');
+          } else if(this.discovered&&!this.secured&&r.id==='DEVIL-01'&&dest===beacon){
+            this.phase='RETURN';this.carrier=r.id;r.goal=null;r.path=[];r.status='SIMULATED BEACON PICKUP';
+            this.log('BEACON TAGGED','Exercise capture registered virtually; robot returns to home pad');
+          } else {r.patrolIndex++;r.goal=null}
+        }
+      }
+      this.scanAll();
+    }
+    get coverage(){return Math.round(100*this.covered.size/(W*H))}
+    get snapshot(){return {schema:'xunia.kraken.ground-training.v1',mode:'simulation',time:Math.round(this.time*100)/100,
+      phase:this.phase,coverage_pct:this.coverage,beacons_secured:this.beacons,assets:this.robots.map(r=>({id:r.id,
+        role:r.role,x:+r.x.toFixed(3),y:+r.y.toFixed(3),depth_m:r.depth,energy_pct:+r.battery.toFixed(1),link_pct:+r.link.toFixed(1),
+        status:r.status})),events:this.events.slice(),physical_control:false,person_tracking:false}}
+    get aegisFrame(){
+      return {schema:'xunia.friendly-telemetry.v1',mode:'training',source:'kraken_sim',sequence:this.seq++,assets:this.robots.map(r=>({
+        id:r.id,kind:'friendly',label:r.name,position:{x:+((r.x-18)*2.4).toFixed(4),z:+((r.y-12)*2.4).toFixed(4),y:0},
+        energy_pct:+r.battery.toFixed(2),link_pct:+r.link.toFixed(2)}))};
+    }
+  }
+  function cotForRobot(robot,clock=new Date()){
+    if(!robot||!template.some(r=>r.id===robot.id)||!Number.isFinite(robot.x)||!Number.isFinite(robot.y))throw new TypeError('Known simulated friendly robot required');
+    const timestamp=new Date(clock);if(!Number.isFinite(timestamp.getTime()))throw new TypeError('Valid clock required');
+    const start=timestamp.toISOString(),stale=new Date(timestamp.getTime()+30000).toISOString();
+    // Explicitly synthetic coordinates near 0/0 (NOT geographic asset positions), do not use operationally.
+    const lat=(robot.y-12)*0.00011,lon=(robot.x-18)*0.00011;
+    return '<?xml version="1.0" encoding="UTF-8"?>\n'+
+      `<event version="2.0" uid="XUNIA-SIM-${escapeXml(robot.id)}" type="a-f-G" how="h-e" time="${start}" start="${start}" stale="${stale}">`+
+      `<point lat="${lat.toFixed(6)}" lon="${lon.toFixed(6)}" hae="0" ce="9999999" le="9999999"/>`+
+      `<detail><contact callsign="SIM-${escapeXml(robot.id)}"/>`+
+      '<remarks>SIMULATION ONLY - SYNTHETIC NON-GEOGRAPHIC EXERCISE COORDINATES. No actual robot or human location; not for operational use.</remarks>'+
+      '</detail></event>';
+  }
+  return Object.freeze({Mission,W,H,zones,base,beacon,terrain,inBounds,inNoGo,isRock,isBlocked,findPath,cotForRobot});
+});
+
+</script>
+<script>
+/* XUNIA KRAKEN user interface: browser-only training simulator; no device/hardware APIs. */
+(function(){
+  'use strict';
+  const C=window.KrakenCore;
+  if(!C){document.body.textContent='Simulation engine missing';return}
+  const mission=new C.Mission();
+  window.__kraken=mission; // Browser smoke tests / developer inspection only; no external API.
+  const $=id=>document.getElementById(id);
+  const $map=$('terrainMap'),$depth=$('depthCanvas'), mapCtx=$map.getContext('2d',{alpha:false}),depthCtx=$depth.getContext('2d',{alpha:false});
+  let layer='surface',zoom=1,prevTick=performance.now(),lastUI=0,lastEvent=-1,toastTimeout,linkTimer=null,linkToken='',linkPending=false;
+  const format=t=>{const seconds=Math.floor(t);return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')};
+  const round=n=>Number(n).toFixed(1);
+  function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('show'),3100)}
+  function gridTransform(w,h){const s=Math.min((w-44)/C.W,(h-36)/C.H)*zoom;return {s,x:w/2-C.W*s/2,y:h/2-C.H*s/2}}
+  function sizeCanvas(canvas,ctx){const box=canvas.getBoundingClientRect();const dpr=Math.min(window.devicePixelRatio||1,2);const w=Math.max(1,Math.round(box.width*dpr)),h=Math.max(1,Math.round(box.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}ctx.setTransform(dpr,0,0,dpr,0,0);return {w:box.width,h:box.height}}
+  const safeCanvasText=t=>String(t).replace(/[<>]/g,'');
+  function drawMap(){
+    if(!mapCtx)return;
+    const {w,h}=sizeCanvas($map,mapCtx),ctx=mapCtx;
+    const background=ctx.createLinearGradient(0,0,w,h);background.addColorStop(0,'#112633');background.addColorStop(.65,'#0a1926');background.addColorStop(1,'#132632');ctx.fillStyle=background;ctx.fillRect(0,0,w,h);
+    let tr=gridTransform(w,h),s=tr.s;
+    ctx.save();ctx.translate(tr.x,tr.y);ctx.scale(s,s);
+    const underground=layer==='subsurface';
+    for(let y=0;y<C.H;y++)for(let x=0;x<C.W;x++){
+      const n=C.terrain(x,y),covered=mission.covered.has(x+','+y),ridge=C.isRock(x,y);
+      ctx.fillStyle=ridge?'#304251':underground?(covered?'#21343c':'#172532'):covered?(n>.35?'#233d42':'#21404a'):(n>.45?'#172b36':'#142733');
+      ctx.fillRect(x,y,1.02,1.02);
+      if(n>.42&&!ridge){ctx.strokeStyle=underground?'#5a65543b':'#95b39025';ctx.lineWidth=.04;ctx.beginPath();ctx.moveTo(x+.15,y+.26);ctx.bezierCurveTo(x+.35,y-.02,x+.7,y+.53,x+1.06,y+.32);ctx.stroke()}
+    }
+    // Frame, guide grid, and virtual coordinate cells.
+    ctx.strokeStyle='#7fbdbb1c';ctx.lineWidth=.027;ctx.beginPath();for(let x=0;x<=C.W;x+=2){ctx.moveTo(x,0);ctx.lineTo(x,C.H)}for(let y=0;y<=C.H;y+=2){ctx.moveTo(0,y);ctx.lineTo(C.W,y)}ctx.stroke();
+    ctx.strokeStyle='#8fead977';ctx.lineWidth=.085;ctx.strokeRect(0,0,C.W,C.H);
+    for(let x=0;x<=C.W;x+=6){ctx.font='500 .58px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#84bac099';ctx.fillText(String(x).padStart(2,'0'),x+.2,-.42)}
+    for(let y=0;y<=C.H;y+=6){ctx.font='500 .58px ui-monospace,monospace';ctx.textAlign='right';ctx.fillStyle='#84bac099';ctx.fillText(String(y).padStart(2,'0'),-.45,y+.2)}
+    // Protected zones cannot be entered by waypoints or planned rover routes.
+    for(const z of C.zones){
+      ctx.save();ctx.beginPath();ctx.ellipse(z.x,z.y,z.rx,z.ry,0,0,Math.PI*2);ctx.fillStyle=underground?'#ad704825':'#f3ab5720';ctx.fill();ctx.clip();
+      ctx.strokeStyle='#e4a36334';ctx.lineWidth=.07;for(let i=-20;i<55;i+=.9){ctx.beginPath();ctx.moveTo(i,-5);ctx.lineTo(i+15,30);ctx.stroke()}ctx.restore();
+      ctx.beginPath();ctx.ellipse(z.x,z.y,z.rx,z.ry,0,0,Math.PI*2);ctx.strokeStyle='#f0bd747e';ctx.setLineDash([.31,.19]);ctx.lineWidth=.10;ctx.stroke();ctx.setLineDash([]);
+      ctx.font='bold .61px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#f4ce93';ctx.fillText(z.label,z.x,z.y-.22);
+      ctx.font='.5px ui-monospace,monospace';ctx.fillStyle='#b58a5c';ctx.fillText('NO ENTRY',z.x,z.y+.6);
+    }
+    if(underground){
+      ctx.fillStyle='#a6775d2d';for(let x=1;x<C.W;x++){let y=4+Math.sin(x*.46)*.8;ctx.fillRect(x,y,.7,C.H-y-4)}
+      ctx.strokeStyle='#f8bf7488';ctx.lineWidth=.23;ctx.setLineDash([.4,.23]);
+      const digger=mission.robots[1];ctx.beginPath();ctx.moveTo(C.base.x,C.base.y+1);ctx.lineTo(digger.x,digger.y+1);ctx.stroke();ctx.setLineDash([]);
+    }
+    // The home pad and a simulated beacon never represent a real physical location.
+    ctx.save();ctx.translate(C.base.x,C.base.y);ctx.fillStyle='#6ef5ca16';ctx.strokeStyle='#9bf2dacc';ctx.lineWidth=.1;ctx.strokeRect(-1.42,-1.45,2.9,2.9);ctx.fillRect(-1.37,-1.37,2.76,2.76);
+    ctx.strokeStyle='#8ce8caaa';ctx.beginPath();ctx.moveTo(-.73,0);ctx.lineTo(.73,0);ctx.moveTo(0,-.73);ctx.lineTo(0,.73);ctx.stroke();ctx.font='bold .61px ui-monospace,monospace';ctx.fillStyle='#c1fce7';ctx.textAlign='center';ctx.fillText('HOME',0,-1.8);ctx.restore();
+    const b=C.beacon,t=performance.now()/1000;
+    if(mission.discovered&&!mission.secured){
+      ctx.strokeStyle='#7ebeffcc';ctx.lineWidth=.10;for(let i=0;i<3;i++){ctx.globalAlpha=1-i*.26;ctx.beginPath();ctx.arc(b.x,b.y,.58+i*.4+Math.sin(t*3)*.07,0,Math.PI*2);ctx.stroke()}ctx.globalAlpha=1;ctx.fillStyle='#8bcafd';ctx.beginPath();ctx.moveTo(b.x,b.y-.47);ctx.lineTo(b.x+.45,b.y);ctx.lineTo(b.x,b.y+.47);ctx.lineTo(b.x-.45,b.y);ctx.closePath();ctx.fill();
+      ctx.font='bold .7px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#d9eefd';ctx.fillText('TRAINING BEACON',b.x,b.y-1.75);
+    }else if(!mission.discovered){ctx.strokeStyle='#6082a855';ctx.lineWidth=.06;ctx.setLineDash([.2,.3]);ctx.beginPath();ctx.arc(b.x,b.y,.85,0,Math.PI*2);ctx.stroke();ctx.setLineDash([])}
+    if(mission.phase==='RECOVERED'){
+      ctx.strokeStyle='#8bf7d6';ctx.lineWidth=.15;ctx.beginPath();ctx.arc(C.base.x,C.base.y,2.1+Math.sin(t*4)*.09,0,Math.PI*2);ctx.stroke();
+      ctx.font='bold .65px ui-monospace,monospace';ctx.textAlign='center';ctx.fillStyle='#a0f9dc';ctx.fillText('BEACON RECOVERED',C.base.x,C.base.y+2.6);
+    }
+    // Virtual sensor sweeps and rover trails.
+    for(const r of mission.robots){
+      const selected=r.id===mission.selected;
+      if(r.history.length>1){ctx.strokeStyle=r.color+(selected?'a0':'40');ctx.lineWidth=selected?.13:.07;ctx.beginPath();for(let i=0;i<r.history.length;i++){const p=r.history[i];if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)}ctx.stroke()}
+      if(selected&&r.path.length){ctx.beginPath();ctx.setLineDash([.24,.18]);ctx.strokeStyle='#d5faf1aa';ctx.lineWidth=.10;ctx.moveTo(r.x,r.y);for(const p of r.path)ctx.lineTo(p.x,p.y);ctx.stroke();ctx.setLineDash([])}
+      const angle=performance.now()*.0004+(r.x%4);
+      ctx.beginPath();ctx.arc(r.x,r.y,2.7,angle,angle+Math.PI*.64);ctx.strokeStyle=r.color+(selected?'99':'3d');ctx.lineWidth=selected?.075:.045;ctx.stroke();
+      ctx.save();ctx.translate(r.x,r.y);ctx.rotate(r.heading);
+      if(selected){ctx.strokeStyle=r.color;ctx.lineWidth=.10;ctx.beginPath();ctx.arc(0,0,1.18,0,Math.PI*2);ctx.stroke()}
+      ctx.fillStyle='#081923';ctx.strokeStyle=r.color;ctx.lineWidth=.09;
+      ctx.beginPath();ctx.moveTo(-.75,-.48);ctx.lineTo(.54,-.48);ctx.lineTo(.87,0);ctx.lineTo(.54,.48);ctx.lineTo(-.75,.48);ctx.closePath();ctx.fill();ctx.stroke();
+      ctx.fillStyle=r.color+'5a';ctx.fillRect(-.45,-.28,.68,.56);
+      ctx.strokeStyle='#c4ede5';ctx.lineWidth=.06;ctx.beginPath();ctx.moveTo(.89,0);ctx.lineTo(1.25,-.18);ctx.lineTo(1.25,.18);ctx.closePath();ctx.stroke();
+      ctx.fillStyle=r.color;ctx.beginPath();ctx.arc(-.5,0,.12,0,Math.PI*2);ctx.fill();ctx.restore();
+      ctx.font='bold .64px ui-monospace,monospace';ctx.fillStyle=r.color;ctx.textAlign='center';ctx.fillText(r.name,r.x,r.y-1.3);
+      if(selected){ctx.font='.48px ui-monospace,monospace';ctx.fillStyle='#c5f0e2';ctx.fillText(r.role,r.x,r.y+1.65)}
+    }
+    ctx.restore();
+    const vignette=ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.max(w,h)*.79);vignette.addColorStop(0,'#00000000');vignette.addColorStop(1,'#07131c99');ctx.fillStyle=vignette;ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='#4a8b81';ctx.lineWidth=2;const corners=[[15,15,1,1],[w-15,15,-1,1],[15,h-15,1,-1],[w-15,h-15,-1,-1]];for(const [x,y,a,b] of corners){ctx.beginPath();ctx.moveTo(x+8*a,y);ctx.lineTo(x,y);ctx.lineTo(x,y+8*b);ctx.stroke()}
+  }
+  function drawDepth(){
+    if(!depthCtx)return;const {w,h}=sizeCanvas($depth,depthCtx),ctx=depthCtx;
+    ctx.fillStyle='#081722';ctx.fillRect(0,0,w,h);
+    const surface=y=>h*.31+Math.sin(y*.035)*8+Math.sin(y*.087)*3;
+    function band(offset,color){ctx.beginPath();ctx.moveTo(0,h);ctx.lineTo(0,surface(0)+offset);for(let x=4;x<=w+4;x+=4)ctx.lineTo(x,surface(x)+offset);ctx.lineTo(w,h);ctx.closePath();ctx.fillStyle=color;ctx.fill()}
+    band(0,'#1b3940');band(31,'#22323d');band(75,'#202a34');band(115,'#1b2531');
+    ctx.strokeStyle='#7ba2a74a';ctx.lineWidth=1.4;ctx.beginPath();for(let x=0;x<=w;x+=4){if(x===0)ctx.moveTo(x,surface(x));else ctx.lineTo(x,surface(x))}ctx.stroke();
+    for(let offset of [31,75]){ctx.beginPath();for(let x=0;x<=w;x+=4){if(x===0)ctx.moveTo(x,surface(x)+offset);else ctx.lineTo(x,surface(x)+offset)}ctx.strokeStyle='#9a7e6953';ctx.lineWidth=1;ctx.stroke()}
+    ctx.strokeStyle='#9eb6b320';ctx.setLineDash([3,7]);for(let y=30;y<h;y+=25){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.setLineDash([]);
+    // Virtual drilling rover - image only; no excavation commands.
+    const r=mission.robots[1],cx=Math.min(w-40,Math.max(45,r.x/C.W*w)),cy=surface(cx)+51;
+    ctx.beginPath();ctx.moveTo(17,surface(17)+17);ctx.bezierCurveTo(cx*.45,surface(cx*.45)+47,cx*.7,cy,cx,cy);ctx.strokeStyle='#e7a76f99';ctx.lineWidth=8;ctx.stroke();
+    ctx.strokeStyle='#f6c48e';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.stroke();ctx.setLineDash([]);
+    ctx.save();ctx.translate(cx,cy);ctx.shadowColor='#efb679';ctx.shadowBlur=19;ctx.fillStyle='#f0b66f';ctx.beginPath();ctx.moveTo(-12,-8);ctx.lineTo(11,-8);ctx.lineTo(23,0);ctx.lineTo(11,8);ctx.lineTo(-12,8);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#142735';ctx.fillRect(-8,-5,15,10);ctx.restore();
+    ctx.font='bold 10px ui-monospace,monospace';ctx.fillStyle='#f3c68b';ctx.fillText('DRILL-02 · VIRTUAL TUNNEL',Math.max(14,cx-64),Math.max(17,cy-18));
+    ctx.font='9px ui-monospace,monospace';ctx.fillStyle='#b2d3c7';ctx.fillText('ILLUSTRATIVE CROSS SECTION',15,20);
+    ctx.textAlign='right';ctx.fillStyle='#7196a2';ctx.fillText('LOCAL TRAINING GRID',w-15,20);ctx.textAlign='left';
+  }
+  function fleetRow(r){return `<button type="button" class="fleetUnit${mission.selected===r.id?' selected':''}" data-select="${r.id}" style="--unitColor:${r.color}" aria-pressed="${mission.selected===r.id}"><span class="fleetBadge">${r.id.slice(0,2)}</span><span class="fleetText"><span class="fleetName">${r.name}</span><span class="fleetRole">${r.role}</span></span><span class="fleetArrow">›</span></button>`}
+  function renderUI(){
+    const selected=mission.selectedRobot;
+    $('fleetItems').innerHTML=mission.robots.map(fleetRow).join('');
+    $('statCoverage').textContent=String(mission.coverage).padStart(2,'0')+'%';
+    $('statBeacons').textContent=String(mission.beacons).padStart(2,'0');
+    $('statTime').textContent=format(mission.time);$('statSpeed').textContent=mission.speed+'× SPEED';
+    $('missionStage').textContent=mission.phase==='RECOVERED'?'EXERCISE COMPLETE':mission.phase==='RETURN'?'BEACON RETURN IN PROGRESS':mission.phase==='BEACON FOUND'?'BEACON IDENTIFIED':'SURVEY IN PROGRESS';
+    $('selectedName').textContent=selected.name;$('commandStatus').textContent=selected.status;
+    $('inspectorName').textContent=selected.name;$('inspectorRole').textContent=selected.role;$('inspectorId').textContent=selected.id;
+    $('batteryVal').textContent=Math.round(selected.battery)+'%';$('batteryBar').style.width=selected.battery+'%';
+    $('linkVal').textContent=Math.round(selected.link)+'%';$('linkBar').style.width=selected.link+'%';
+    $('posVal').textContent=round(selected.x)+' / '+round(selected.y);$('depthVal').textContent=round(selected.depth)+' m';
+    $('routeVal').textContent=selected.manual?'WAYPOINT':'AUTO';
+    let phase=mission.phase==='SURVEY'?0:mission.phase==='BEACON FOUND'?1:mission.phase==='RETURN'?2:3;
+    for(const [i,id] of ['phaseSurvey','phaseDetect','phaseCapture','phaseComplete'].entries()){
+      const el=$(id);el.classList.toggle('done',i<phase);el.classList.toggle('active',i===phase);
+    }
+    if(lastEvent!==mission.events.length||mission.events[0]?.t!==Number($('eventList').dataset.last)){lastEvent=mission.events.length;
+      $('eventCount').textContent=mission.events.length+' EVENTS';
+      $('eventList').dataset.last=String(mission.events[0]?.t??0);
+      $('eventList').innerHTML=mission.events.slice(0,12).map(e=>`<article class="event"><span class="when">${format(e.t)}</span><div><strong>${safeCanvasText(e.type)}</strong><p>${safeCanvasText(e.message)}</p></div></article>`).join('');
+    }
+    $('runLabel').textContent=mission.running?'PAUSE SIM':'RESUME SIM';$('playIcon').textContent=mission.running?'Ⅱ':'▶';$('speedLabel').textContent=mission.speed+'×';
+    $('headerClock').textContent=new Date().toLocaleTimeString('en-US',{hour12:false});
+  }
+  function animate(t){const delta=Math.max(0,Math.min(.10,(t-prevTick)/1000));prevTick=t;mission.step(delta);drawMap();drawDepth();if(t-lastUI>200){lastUI=t;renderUI()}requestAnimationFrame(animate)}
+  function fileDownload(name,type,data){const blob=new Blob([data],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+  $('runBtn').addEventListener('click',()=>{mission.running=!mission.running;toast(mission.running?'SIMULATION RESUMED':'SIMULATION PAUSED');renderUI()});
+  $('speedBtn').addEventListener('click',()=>{mission.speed=mission.speed===1?2:mission.speed===2?4:1;renderUI();toast('SIMULATED SPEED '+mission.speed+'×')});
+  $('resetBtn').addEventListener('click',()=>{mission.reset();toast('EXERCISE RESET • SYNTHETIC DATA ONLY');renderUI()});
+  $('surfaceBtn').addEventListener('click',()=>setLayer('surface'));
+  $('undergroundBtn').addEventListener('click',()=>setLayer('subsurface'));
+  function setLayer(value){layer=value;$('surfaceBtn').classList.toggle('selected',value==='surface');$('undergroundBtn').classList.toggle('selected',value==='subsurface');$('surfaceBtn').setAttribute('aria-pressed',value==='surface');$('undergroundBtn').setAttribute('aria-pressed',value==='subsurface');$('mapStatus').textContent=value.toUpperCase()+' VIEW';toast(value==='subsurface'?'VIRTUAL SUBSURFACE • NO REAL GEOLOGY':'SURFACE TRAINING GRID')}
+  $('zoomIn').addEventListener('click',()=>{zoom=Math.min(1.6,zoom+.15);toast('MAP ZOOM '+Math.round(zoom*100)+'%')});
+  $('zoomOut').addEventListener('click',()=>{zoom=Math.max(.75,zoom-.15);toast('MAP ZOOM '+Math.round(zoom*100)+'%')});
+  $('fleetItems').addEventListener('click',ev=>{const button=ev.target.closest('[data-select]');if(button){mission.select(button.dataset.select);renderUI();toast(mission.selectedRobot.name+' SELECTED')}});
+  function cursorGrid(ev){const rect=$map.getBoundingClientRect(),tr=gridTransform(rect.width,rect.height),x=(ev.clientX-rect.left-tr.x)/tr.s,y=(ev.clientY-rect.top-tr.y)/tr.s;return {x,y}}
+  $map.addEventListener('pointermove',ev=>{const {x,y}=cursorGrid(ev);$('pointerReadout').textContent=`POINTER  ${round(x)} / ${round(y)}`});
+  $map.addEventListener('pointerleave',()=>{$('pointerReadout').textContent='POINTER  — / —'});
+  $map.addEventListener('click',ev=>{const {x,y}=cursorGrid(ev);if(mission.setManualWaypoint(mission.selected,x,y))toast('SAFE VIRTUAL WAYPOINT ADDED · '+round(x)+' / '+round(y));else toast('WAYPOINT BLOCKED · PROTECTED ZONE / OUT OF BOUNDS');renderUI()});
+  $map.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();toast('Click or tap a safe map cell to issue a simulated waypoint')}});
+  $('jsonBtn').addEventListener('click',()=>{fileDownload('XUNIA-KRAKEN-EXERCISE-TELEMETRY.json','application/json',JSON.stringify(mission.snapshot,null,2)+'\n');toast('SYNTHETIC TELEMETRY DOWNLOADED')});
+  $('cotBtn').addEventListener('click',()=>{const xml=C.cotForRobot(mission.selectedRobot);fileDownload('XUNIA-SIM-'+mission.selected+'.cot','application/xml',xml);toast('TRAINING-ONLY CoT EXPORTED · SYNTHETIC COORDINATES')});
+  async function publishTrainingFrame(){
+    if(linkPending||!linkToken)return;
+    linkPending=true;
+    try{const response=await fetch('/api/v1/telemetry',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+linkToken},body:JSON.stringify(mission.aegisFrame()),cache:'no-store'});
+      if(!response.ok)throw new Error('Service rejected frame (HTTP '+response.status+')');
+      $('linkState').textContent='LOCAL AEGIS LINKED • SYNTHETIC TRACKS ONLY';$('linkState').style.color='#92f3cf';
+    }catch(err){clearInterval(linkTimer);linkTimer=null;linkToken='';$('linkState').textContent='DISCONNECTED: '+err.message;$('linkState').style.color='#f4bb75';$('linkBtn').textContent='LINK TRAINING FEED ↗'}
+    finally{linkPending=false}
+  }
+  $('linkBtn').addEventListener('click',async()=>{
+    if(linkTimer){clearInterval(linkTimer);linkTimer=null;linkToken='';$('linkBtn').textContent='LINK TRAINING FEED ↗';$('linkState').textContent='LINK DISCONNECTED';return}
+    if(location.protocol!=='http:'&&location.protocol!=='https:'){toast('OPEN VIA AEGIS PYZ LAUNCHER FOR LOCAL API LINK');return}
+    const input=$('tokenInput').value.trim();if(input.length<16){toast('PASTE YOUR LOCAL AEGIS ACCESS TOKEN');return}
+    linkToken=input;$('tokenInput').value='';$('linkBtn').textContent='UNLINK TRAINING FEED';
+    await publishTrainingFrame();if(linkToken)linkTimer=setInterval(publishTrainingFrame,1200);
+  });
+  window.addEventListener('keydown',ev=>{if(['INPUT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName))return;
+    if(ev.key.toLowerCase()==='p'){mission.running=!mission.running;renderUI()}if(ev.key.toLowerCase()==='r'){mission.reset();renderUI()}});
+  renderUI();requestAnimationFrame(animate);
+})();
+
+</script>
+</body></html>
