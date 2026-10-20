@@ -44,6 +44,35 @@ jobs:
           python3 -m gpt_brain.recursive_repo index --repo . --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-index.json"
           python3 -m gpt_brain.recursive_repo verify --repo . --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-verified.json"
           python3 -m gpt_brain.recursive_repo query ontology --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-query.json"
+      - name: Verify GPT-Doug CLI integration and ontology retrieval
+        run: |
+          python3 -m gpt_brain.cli repo stats --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-stats.json"
+          python3 -m gpt_brain.cli repo query ontology --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-query.json"
+          python3 -m gpt_brain.cli repo tree --depth 1 --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-tree.json"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from gpt_brain.cli import build_parser
+          from gpt_brain.kernel import BrainKernel
+          from gpt_brain.memory import BrainMemory
+          from gpt_brain.recursive_repo import RecursiveRepoModel, RepoAugmentedOntology
+          db = Path(os.environ['RUNNER_TEMP']) / 'recursive-repo.sqlite'
+          parsed = build_parser().parse_args(['run', '--repo-index', str(db), 'ontology'])
+          assert parsed.repo_index == str(db)
+          model = RecursiveRepoModel(db)
+          def fake_chat(messages, _model, _options):
+              return {'message': {'content': 'Synthetic test answer; no LLM or network called.'}}
+          brain = BrainKernel(
+              chat_fn=fake_chat,
+              memory=BrainMemory(Path(os.environ['RUNNER_TEMP']) / 'test-memory.jsonl'),
+              ontology=RepoAugmentedOntology(model),
+          )
+          result = brain.run('ontology')
+          assert any(item['path'].startswith('repo-source:') for item in result.ontology_context)
+          assert any('repo-source:' in item for item in result.provenance)
+          print(f"GPT-Doug ontology adapter verified: {len(result.ontology_context)} context items")
+          PY
       - name: Confirm Git tree and database completeness
         run: |
           python3 - <<'PY'
