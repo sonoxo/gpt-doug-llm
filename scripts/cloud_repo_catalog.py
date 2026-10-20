@@ -100,7 +100,7 @@ def main() -> int:
     try:
         target_text = args.targets.read_text(encoding="utf-8")
         targets = json.loads(target_text)
-        targets["cache_version"] = hashlib.sha256(target_text.encode("utf-8")).hexdigest()
+        targets["cache_version"] = hashlib.sha256(hashlib.sha256(target_text.encode("utf-8")).digest()).hexdigest()
         clones = load_reports(args.clone_reports, "clone-report.json")
         verifies = load_reports(args.verify_reports, "verify-report.json")
         catalog = compile_catalog(targets, clones, verifies, shards=args.shards, run_url=args.run_url)
