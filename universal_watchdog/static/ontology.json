@@ -1,0 +1,29 @@
+{
+  "schema":"xunia.watchtower.ontology.v1",
+  "mode":"architecture_and_synthetic_demonstration",
+  "truth_boundary":"Dynamic monitoring requires per-model registration and instrumented, authenticated local runtime calls.",
+  "nodes":[
+    {"id":"xunia-watchtower","type":"oversight_gateway","status":"local_prototype"},
+    {"id":"zyra-3","type":"existing_policy_inspector","status":"separate_existing_component"},
+    {"id":"ai-killswitch","type":"existing_operator_stop","status":"cooperative_if_installed"},
+    {"id":"universal-hive","type":"agent_federation","status":"logical_architecture"},
+    {"id":"model-registry","type":"model_identity_store","status":"implemented"},
+    {"id":"rsi-review-gate","type":"operator_approval_workflow","status":"implemented"},
+    {"id":"hmac-ledger","type":"integrity_record","status":"implemented"},
+    {"id":"public-museum","type":"static_synthetic_interface","status":"implemented"}
+  ],
+  "edges":[
+    {"source":"model-registry","target":"xunia-watchtower","relationship":"authenticates_before_action"},
+    {"source":"xunia-watchtower","target":"rsi-review-gate","relationship":"requires_human_review_for_high_impact"},
+    {"source":"xunia-watchtower","target":"hmac-ledger","relationship":"appends_redacted_decision"},
+    {"source":"xunia-watchtower","target":"ai-killswitch","relationship":"checks_existing_stop_when_available"},
+    {"source":"xunia-watchtower","target":"zyra-3","relationship":"complements_not_replaces"},
+    {"source":"universal-hive","target":"xunia-watchtower","relationship":"future_instrumentation_intent"},
+    {"source":"public-museum","target":"xunia-watchtower","relationship":"demonstrates_policy_without_live_connection"}
+  ],
+  "sources":[
+    "https://www.nist.gov/itl/ai-risk-management-framework",
+    "https://genai.owasp.org/llm-top-10/",
+    "https://opentelemetry.io/docs/specs/semconv/gen-ai/"
+  ]
+}

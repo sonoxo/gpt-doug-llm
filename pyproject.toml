@@ -41,6 +41,7 @@ all = ["cryptography", "pytest", "pytest-cov", "ruff"]
 [project.scripts]
 # Operator-owned emergency-stop command: gpt-doug-llm stop the kraken
 gpt-doug-llm = "ai_killswitch:main"
+gpt-doug-watchtower = "universal_watchdog.__main__:main"
 gpt-nedu = "gpt_nedu.cli:main"
 gpt-doug = "gpt_brain.cli:main"
 gpt-doug-math = "gpt_brain.math_mitochondria:math_cli"
@@ -71,7 +72,7 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 [tool.setuptools]
 # Top-level AI stop module must be included in installed wheels, not only source checkouts.
 py-modules = ["ai_killswitch"]
-packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio", "research_lab"]
+packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio", "research_lab", "universal_watchdog"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
@@ -89,3 +90,6 @@ ignore = ["E501"]
 
 [tool.coverage.run]
 source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astral", "eureka", "dev_terminal", "secret_store", "foundry_guard", "hivemind", "cloud_nxyz", "universal_hive", "uap_matrix"]
+
+[tool.setuptools.package-data]
+universal_watchdog = ["static/*.html", "static/*.js", "static/*.css", "static/*.json"]

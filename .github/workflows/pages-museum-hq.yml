@@ -77,6 +77,9 @@ jobs:
           node --check docs/museum.js
           node --check docs/cyber-swarm/engine.mjs
           node --check docs/cyber-swarm/app.mjs
+          node --check docs/watchtower/app.js
+          python3 -m unittest tests.test_universal_watchdog tests.test_watchtower_ontology tests.test_watchtower_client -v
+          python3 -m compileall -q universal_watchdog
           node --test tests/cyber_swarm.test.mjs
           node --check _site/holo/holo.js
 
@@ -184,6 +187,10 @@ jobs:
           grep -q 'The XUNIAverse Museum + HQ' /tmp/xunia-home.html
           grep -q 'arcade/' /tmp/xunia-home.html
           grep -q 'museum.js' /tmp/xunia-home.html
+          curl -fsS http://127.0.0.1:8080/watchtower/ -o /tmp/xunia-watchtower.html
+          grep -q 'RSI-01 // UNIVERSAL OVERSIGHT ENGINE' /tmp/xunia-watchtower.html
+          curl -fsS http://127.0.0.1:8080/watchtower/ontology.json -o /tmp/xunia-watchtower-ontology.json
+          python3 -c 'import json; x=json.load(open("/tmp/xunia-watchtower-ontology.json")); assert x["schema"]=="xunia.watchtower.ontology.v1"'
           curl -fsS http://127.0.0.1:8080/resources.html | grep -q 'Interactive Tools & Resources'
           curl -fsS http://127.0.0.1:8080/cyber-swarm/ | grep -q 'DEFENSE SWARM'
           curl -fsS http://127.0.0.1:8080/cyber-swarm/curriculum.json | grep -q 'xunia.cyber.swarm.curriculum.v1'
@@ -377,3 +384,26 @@ jobs:
           curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" -o /tmp/xunia-home-cyber-swarm.html
           grep -q 'href="./cyber-swarm/"' /tmp/xunia-home-cyber-swarm.html
           echo 'CANONICAL_XUNIA_CYBER_SWARM_LIVE=PASS'
+
+      - name: Verify Universal RSI Watchtower public release
+        run: |
+          set -euo pipefail
+          watchtower_ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL -H 'Cache-Control: no-cache' "https://xunia.org/watchtower/?v=${GITHUB_SHA}" -o /tmp/live-watchtower.html \
+              && grep -q 'RSI-01 // UNIVERSAL OVERSIGHT ENGINE' /tmp/live-watchtower.html; then
+              watchtower_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$watchtower_ok" -eq 1
+          curl -fsSL "https://xunia.org/watchtower/ontology.json?v=${GITHUB_SHA}" -o /tmp/live-watchtower-ontology.json
+          python3 -c 'import json; x=json.load(open("/tmp/live-watchtower-ontology.json")); assert x["schema"]=="xunia.watchtower.ontology.v1"'
+          for asset in app.js style.css demo.json; do
+            curl -fsSL "https://xunia.org/watchtower/$asset?v=${GITHUB_SHA}" -o /tmp/live-watchtower-asset
+            test -s /tmp/live-watchtower-asset
+          done
+          curl -fsSL "https://xunia.org/?v=${GITHUB_SHA}" -o /tmp/live-watchtower-home.html
+          grep -q 'href="./watchtower/"' /tmp/live-watchtower-home.html
+          echo 'CANONICAL_XUNIA_WATCHTOWER_LIVE=PASS'

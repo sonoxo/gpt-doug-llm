@@ -1,0 +1,36 @@
+name: Universal Watchtower Governance Gates
+on:
+  push:
+    paths:
+      - 'universal_watchdog/**'
+      - 'docs/watchtower/**'
+      - 'tests/test_universal_watchdog.py'
+      - 'tests/test_watchtower_client.py'
+      - 'tests/test_watchtower_ontology.py'
+      - '.github/workflows/universal-watchtower.yml'
+  pull_request:
+    paths:
+      - 'universal_watchdog/**'
+      - 'docs/watchtower/**'
+      - 'tests/test_universal_watchdog.py'
+      - 'tests/test_watchtower_client.py'
+      - 'tests/test_watchtower_ontology.py'
+      - '.github/workflows/universal-watchtower.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Unit and policy regression
+        run: python3 -m unittest tests.test_universal_watchdog tests.test_watchtower_ontology tests.test_watchtower_client -v
+      - name: Compile Python
+        run: python3 -m compileall -q universal_watchdog
+      - name: Browser script syntax
+        run: node --check docs/watchtower/app.js

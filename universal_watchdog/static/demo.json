@@ -1,0 +1,23 @@
+{
+  "schema":"xunia.watchtower.demo.v1",
+  "mode":"synthetic_only",
+  "note":"These events and model labels are invented for the public demonstration. No provider is connected.",
+  "models":[
+    {"model_id":"gpt-doug-llm","provider":"XUNIA / local","agent_id":"orchestrator","grants":["inference:chat","model_update:self_modify"],"scopes":["public"]},
+    {"model_id":"gpt-6","provider":"OpenAI / illustrative","agent_id":"reviewer","grants":["inference:chat"],"scopes":["public"]},
+    {"model_id":"claude","provider":"Anthropic / illustrative","agent_id":"analyst","grants":["inference:chat"],"scopes":["public"]},
+    {"model_id":"gemini","provider":"Google / illustrative","agent_id":"summarizer","grants":["inference:chat"],"scopes":["public"]},
+    {"model_id":"llama3:8b","provider":"Ollama / illustrative","agent_id":"local-worker","grants":["inference:chat"],"scopes":["public"]},
+    {"model_id":"qwen3:4b","provider":"Open weights / illustrative","agent_id":"critic","grants":["telemetry:heartbeat"],"scopes":["public"]}
+  ],
+  "events":[
+    {"id":"SIM-301","model_id":"gpt-doug-llm","kind":"inference","action":"chat","verdict":"allow","reason":"within_registered_policy","risk":"low"},
+    {"id":"SIM-302","model_id":"llama3:8b","kind":"telemetry","action":"heartbeat","verdict":"allow","reason":"within_registered_policy","risk":"low"},
+    {"id":"SIM-303","model_id":"gpt-doug-llm","kind":"model_update","action":"self_modify","verdict":"review","reason":"human_approval_required","risk":"high"},
+    {"id":"SIM-304","model_id":"gemini","kind":"tool_call","action":"execute","verdict":"deny","reason":"capability_not_granted","risk":"high"},
+    {"id":"SIM-305","model_id":"claude","kind":"inference","action":"chat","verdict":"allow","reason":"within_registered_policy","risk":"low"},
+    {"id":"SIM-306","model_id":"qwen3:4b","kind":"retrieval","action":"read_internal","verdict":"deny","reason":"data_scope_not_granted","risk":"high"},
+    {"id":"SIM-307","model_id":"gpt-6","kind":"inference","action":"chat","verdict":"allow","reason":"within_registered_policy","risk":"low"},
+    {"id":"SIM-308","model_id":"gpt-doug-llm","kind":"policy_change","action":"activate","verdict":"review","reason":"human_approval_required","risk":"high"}
+  ]
+}
