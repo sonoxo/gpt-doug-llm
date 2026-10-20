@@ -1,0 +1,158 @@
+{
+  "schema": "xunia.cyber.swarm.curriculum.v1",
+  "release": "2026-10-20",
+  "mode": "synthetic-defensive-training",
+  "provenance": {
+    "method": "original bounded training scenarios; technique categories and links reference public standards",
+    "accuracy_note": "This learning set covers 15 MITRE ATT&CK Enterprise tactics, not every sub-technique. Always consult the linked current source.",
+    "no_live_targets": true,
+    "no_autonomous_intrusion": true,
+    "sources": [
+      {"name": "MITRE ATT&CK Enterprise tactics", "url": "https://attack.mitre.org/tactics/", "publisher": "MITRE"},
+      {"name": "MITRE D3FEND defensive countermeasures", "url": "https://d3fend.mitre.org/", "publisher": "MITRE"},
+      {"name": "NIST Cybersecurity Framework 2.0", "url": "https://www.nist.gov/cyberframework", "publisher": "NIST"},
+      {"name": "OWASP Web Security Testing Guide", "url": "https://owasp.org/www-project-web-security-testing-guide/", "publisher": "OWASP"},
+      {"name": "CISA Known Exploited Vulnerabilities", "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", "publisher": "CISA"},
+      {"name": "XUNIA Universal Hive architecture", "url": "https://xunia.org/hive.html", "publisher": "XUNIA"},
+      {"name": "XUNIA Glass Onion defensive research", "url": "https://xunia.org/darkweb/", "publisher": "XUNIA"}
+    ]
+  },
+  "nist_functions": ["Govern", "Identify", "Protect", "Detect", "Respond", "Recover"],
+  "scenarios": [
+    {
+      "id": "LAB-01", "tactic": "TA0043", "tactic_name": "Reconnaissance", "domain": "External exposure", "title": "Unexpected public asset discovery", "nist": ["Identify", "Govern"],
+      "brief": "In a fictional enterprise, an internet-facing sandbox application appears in an asset inventory report without an owner.",
+      "signals": ["ASSET_DISCOVERED service=training-portal environment=lab owner=unknown", "ASSET_TAG classification=unknown last-review=expired", "EXPOSURE_REPORT unauthenticated-page=present impact=unconfirmed"],
+      "controls": ["Maintain an owner-backed external asset inventory", "Classify data and remove unnecessary public exposure", "Review change and publication records"],
+      "critic": "A public service is not automatically a compromise; establish ownership and scope before risk scoring.",
+      "question": "What should the analyst do first?", "choices": ["Attempt access against the unfamiliar service", "Validate ownership and business need, then classify exposure", "Assume the host is hostile and publish its address"], "answer": 1,
+      "rationale": "Inventory and ownership validation establish scope and reduce false assumptions.", "source": "https://attack.mitre.org/tactics/TA0043/"
+    },
+    {
+      "id": "LAB-02", "tactic": "TA0042", "tactic_name": "Resource Development", "domain": "Brand defense", "title": "Lookalike domain awareness", "nist": ["Identify", "Protect"],
+      "brief": "A synthetic brand-protection feed reports a newly registered lookalike domain; its owner and intent are unknown.",
+      "signals": ["BRAND_WATCH similar-label=training-support.example status=new", "CERT_OBSERVED tls-issuance=recent", "EMAIL_LOG matched-message-count=0"],
+      "controls": ["Review authorized brand-protection intelligence", "Improve mail-domain authentication and user reporting", "Track suspicious indicators with uncertainty labels"],
+      "critic": "String similarity and a certificate are indicators, not proof of malicious intent.",
+      "question": "Which evidence standard fits?", "choices": ["Classify as confirmed compromise", "Collect corroborating public evidence and label as unverified", "Launch traffic against the domain"], "answer": 1,
+      "rationale": "Corroborate signals and preserve confidence before escalation.", "source": "https://attack.mitre.org/tactics/TA0042/"
+    },
+    {
+      "id": "LAB-03", "tactic": "TA0001", "tactic_name": "Initial Access", "domain": "Identity & email", "title": "Suspicious sign-in lure", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "A fictional employee reports an email requesting an urgent MFA approval for an unrecognized sign-in.",
+      "signals": ["MAIL_REPORT category=suspicious urgency=high", "MFA_PUSH request=unexpected user-confirmed=no", "IDP_EVENT sign-in=denied anomaly=geography"],
+      "controls": ["Teach independent verification of sign-in prompts", "Use phishing-resistant authentication where appropriate", "Revoke compromised sessions if confirmed"],
+      "critic": "Do not assume credential theft from one unapproved MFA push; correlate authentication events.",
+      "question": "What is the safe immediate action?", "choices": ["Approve the request to stop notifications", "Report the lure and deny unexpected MFA prompts", "Send your password to helpdesk by email"], "answer": 1,
+      "rationale": "User reporting and denying unfamiliar approvals avoid authorizing unwanted access.", "source": "https://attack.mitre.org/tactics/TA0001/"
+    },
+    {
+      "id": "LAB-04", "tactic": "TA0002", "tactic_name": "Execution", "domain": "Endpoint telemetry", "title": "Unexpected script process", "nist": ["Detect", "Respond"],
+      "brief": "An authorized test laptop logs a script engine launched from a temporary directory during a simulation.",
+      "signals": ["PROCESS_EVENT host=training-laptop child=script-engine", "PROCESS_PARENT app=mail-client", "FILE_CONTEXT location=temp signature=unverified"],
+      "controls": ["Correlate process lineage and signed-file evidence", "Check endpoint policy and approved software inventory", "Escalate a documented suspicious execution for triage"],
+      "critic": "A script process alone cannot prove malicious execution; validate origin and approved workflows.",
+      "question": "Which triage artifact is most useful?", "choices": ["Process ancestry and approved-software context", "A random unrelated account password", "Unattributed social-media speculation"], "answer": 0,
+      "rationale": "Process lineage and allowlisting context help distinguish administrative work from suspicious activity.", "source": "https://attack.mitre.org/tactics/TA0002/"
+    },
+    {
+      "id": "LAB-05", "tactic": "TA0003", "tactic_name": "Persistence", "domain": "System integrity", "title": "Unplanned startup entry", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "A test image receives an unexpected startup entry outside the approved configuration baseline.",
+      "signals": ["CONFIG_DIFF object=startup-entry approved-change=no", "SIGNATURE_STATUS unknown", "CHANGE_RECORD matching-request=none"],
+      "controls": ["Audit startup mechanisms against a change baseline", "Check software signing and owner approval", "Document rollback under approved change procedures"],
+      "critic": "Updates and vendor installers also create startup entries; validate provenance.",
+      "question": "What best prevents recurring drift?", "choices": ["Disable audit logs", "Baseline startup configurations and alert on unauthorized changes", "Ignore new entries for 90 days"], "answer": 1,
+      "rationale": "Baseline and change approval make unauthorized persistence visible without blanket assumptions.", "source": "https://attack.mitre.org/tactics/TA0003/"
+    },
+    {
+      "id": "LAB-06", "tactic": "TA0004", "tactic_name": "Privilege Escalation", "domain": "Authorization", "title": "Unreviewed privileged role grant", "nist": ["Govern", "Protect", "Detect"],
+      "brief": "A synthetic identity record shows a privileged cloud role grant that lacks a matching approval ticket.",
+      "signals": ["IAM_CHANGE role=administrator approved=false", "ACCESS_REVIEW reviewer=missing", "AUTH_CONTEXT session-risk=elevated"],
+      "controls": ["Apply just-in-time and least-privilege access", "Require approval and review logs for role grants", "Remove unauthorized privileges through change-controlled response"],
+      "critic": "Absence of an approval ticket may indicate lagging paperwork; validate owner before attribution.",
+      "question": "Which control most directly limits this risk?", "choices": ["Permanent standing admin access for everyone", "Least privilege with audited role elevation", "Turn off access reviews"], "answer": 1,
+      "rationale": "Controlled elevation and auditability reduce privileged access exposure.", "source": "https://attack.mitre.org/tactics/TA0004/"
+    },
+    {
+      "id": "LAB-07", "tactic": "TA0005", "tactic_name": "Stealth", "domain": "Monitoring resilience", "title": "Unexpected telemetry blind spot", "nist": ["Detect", "Respond"],
+      "brief": "A fictional fleet-health service reports a silent host sensor while network monitoring still sees the device online.",
+      "signals": ["SENSOR_HEARTBEAT device=lab-07 stale=true", "NET_HEARTBEAT device=lab-07 online=true", "MAINTENANCE_WINDOW approved=false"],
+      "controls": ["Alert on missing and degraded telemetry", "Use independent sensor-health evidence", "Investigate planned maintenance and logging configuration"],
+      "critic": "Sensor outage is not evidence of intentional hiding unless corroborated.",
+      "question": "What evidence should be checked first?", "choices": ["Only the last application message", "Sensor health and maintenance/change history", "A vulnerability scanner against unrelated networks"], "answer": 1,
+      "rationale": "Independent health and maintenance records help isolate telemetry failures.", "source": "https://attack.mitre.org/tactics/TA0005/"
+    },
+    {
+      "id": "LAB-08", "tactic": "TA0112", "tactic_name": "Defense Impairment", "domain": "Endpoint integrity", "title": "Disabled protective control", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "In a sandbox, a protection agent is disabled after an unexplained configuration change.",
+      "signals": ["CONTROL_STATE endpoint-protection=disabled", "CONFIG_AUDIT changed-by=unknown", "MANAGEMENT_TICKET match=false"],
+      "controls": ["Alert on security-control state changes", "Protect monitoring configurations from unauthorized edits", "Restore approved baselines after operator review"],
+      "critic": "Maintenance and compatibility incidents may disable controls legitimately; confirm change ownership.",
+      "question": "Which response is most appropriate?", "choices": ["Silently delete all configuration evidence", "Confirm authorization, preserve logs, and restore a known-good policy", "Disable monitoring on other systems"], "answer": 1,
+      "rationale": "Preserving evidence and controlled restoration address the incident without erasing context.", "source": "https://attack.mitre.org/tactics/TA0112/"
+    },
+    {
+      "id": "LAB-09", "tactic": "TA0006", "tactic_name": "Credential Access", "domain": "Account protection", "title": "Unusual authentication failures", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "Synthetic identity logs show many unsuccessful sign-ins to a lab-only account followed by one success.",
+      "signals": ["AUTH_REJECT account=lab-user count=44", "AUTH_SUCCESS account=lab-user mfa=present", "SESSION_CONTEXT device=new trust=unknown"],
+      "controls": ["Use phishing-resistant MFA and risk-based authentication", "Correlate session, device, and location changes", "Review and terminate suspicious sessions when substantiated"],
+      "critic": "A failed-login spike could be user error or testing; correlate activity before declaring takeover.",
+      "question": "Which step strengthens the assessment?", "choices": ["Correlate successful session with MFA and device provenance", "Publish the credential for others to test", "Suppress authentication logs"], "answer": 0,
+      "rationale": "Session provenance can distinguish anomalous access from normal recovery.", "source": "https://attack.mitre.org/tactics/TA0006/"
+    },
+    {
+      "id": "LAB-10", "tactic": "TA0007", "tactic_name": "Discovery", "domain": "Identity monitoring", "title": "Unusual directory enumeration", "nist": ["Identify", "Detect"],
+      "brief": "A simulated audit observes a service account reading far more directory objects than normal.",
+      "signals": ["DIRECTORY_QUERY account=service-example objects=1400", "BASELINE account=service-example average=42", "WORK_ORDER change-authorized=unknown"],
+      "controls": ["Apply minimal directory read permissions", "Use per-identity behavior baselines", "Verify approved discovery and inventory jobs"],
+      "critic": "An approved inventory sync might be expected; compare schedule and ownership.",
+      "question": "How should this be handled?", "choices": ["Delete the service account immediately with no review", "Compare against job schedule and permissions, then triage anomalies", "Give the service account global admin"], "answer": 1,
+      "rationale": "Authorized discovery may produce spikes; context supports proportional action.", "source": "https://attack.mitre.org/tactics/TA0007/"
+    },
+    {
+      "id": "LAB-11", "tactic": "TA0008", "tactic_name": "Lateral Movement", "domain": "Network segmentation", "title": "Unexpected internal connection pattern", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "A fictional segmented lab records remote-session attempts between two systems that normally do not communicate.",
+      "signals": ["NETFLOW source=lab-a dest=lab-b service=remote-admin", "BASELINE allowed-flow=false", "TICKET approved-transition=none"],
+      "controls": ["Apply zero-trust segmentation rules", "Audit remote administration paths", "Validate lateral connections against approved workflows"],
+      "critic": "Network migration can generate atypical flows; check deployment status before attribution.",
+      "question": "Which defensive design best limits movement?", "choices": ["Open all internal ports to every host", "Least-privilege segmentation with remote-access logging", "Turn off east-west network logs"], "answer": 1,
+      "rationale": "Segmentation and visibility reduce unauthorized cross-system traversal.", "source": "https://attack.mitre.org/tactics/TA0008/"
+    },
+    {
+      "id": "LAB-12", "tactic": "TA0009", "tactic_name": "Collection", "domain": "Data governance", "title": "Abnormal archive creation", "nist": ["Govern", "Protect", "Detect"],
+      "brief": "An approved test account generates a large archive from a restricted lab directory outside a documented job.",
+      "signals": ["FILE_ARCHIVE directory=restricted-lab count=990", "JOB_SCHEDULE expected=false", "DATA_CLASSIFICATION restricted=true"],
+      "controls": ["Classify and govern sensitive data locations", "Monitor unusual bulk access and archive events", "Use role-based access with evidence retention"],
+      "critic": "Backups can look like large collections; verify schedule and authorization.",
+      "question": "Which signal is key for triage?", "choices": ["Data classification and approved job context", "Screen resolution of the workstation", "Public IPs of unrelated organizations"], "answer": 0,
+      "rationale": "Classification and workload approvals establish whether collection was authorized.", "source": "https://attack.mitre.org/tactics/TA0009/"
+    },
+    {
+      "id": "LAB-13", "tactic": "TA0011", "tactic_name": "Command and Control", "domain": "DNS monitoring", "title": "Regular uncommon DNS lookups", "nist": ["Detect", "Respond"],
+      "brief": "A mock resolver sees highly regular lookups to a rarely used domain from one lab host.",
+      "signals": ["DNS_PATTERN source=lab-cadence interval=60s", "DOMAIN_REPUTATION unknown", "PROCESS_CONTEXT owner=unresolved"],
+      "controls": ["Correlate DNS timing with application inventory", "Establish expected outbound-domain policy", "Review endpoint and resolver evidence jointly"],
+      "critic": "Scheduled update checks often look periodic; timing is not sufficient proof.",
+      "question": "What is a grounded next step?", "choices": ["Correlate resolver logs with known installed software", "Block all DNS everywhere permanently", "Claim confirmed command-and-control from timing alone"], "answer": 0,
+      "rationale": "Process and software context distinguish expected periodic lookups from unexplained traffic.", "source": "https://attack.mitre.org/tactics/TA0011/"
+    },
+    {
+      "id": "LAB-14", "tactic": "TA0010", "tactic_name": "Exfiltration", "domain": "Outbound data protection", "title": "Unexpected outbound upload", "nist": ["Protect", "Detect", "Respond"],
+      "brief": "Synthetic network telemetry flags an unusual upload volume from a test workstation to an unclassified destination.",
+      "signals": ["FLOW_SUMMARY source=lab-client outbound=large", "APPROVAL destination-class=unknown", "DLP_EVENT policy-review=pending"],
+      "controls": ["Classify authorized egress destinations", "Use privacy-aware network and DLP signals", "Preserve evidence and follow incident escalation policy"],
+      "critic": "Legitimate media exports and backups can be large; validate user intent and destination.",
+      "question": "What should be established before concluding exfiltration?", "choices": ["Destination authorization, data category and related change records", "Only the volume in bytes", "Whether unrelated social posts mention the company"], "answer": 0,
+      "rationale": "Flow size alone cannot determine the purpose or classification of transferred information.", "source": "https://attack.mitre.org/tactics/TA0010/"
+    },
+    {
+      "id": "LAB-15", "tactic": "TA0040", "tactic_name": "Impact", "domain": "Business continuity", "title": "Unexpected backup retention change", "nist": ["Govern", "Protect", "Respond", "Recover"],
+      "brief": "A resilience exercise injects a fictional backup-policy change reducing retention from 30 days to 0.",
+      "signals": ["BACKUP_POLICY retention_days=0 previous=30", "CHANGE_CONTROL ticket=absent", "RECOVERY_TEST last-success=recent"],
+      "controls": ["Protect immutable or isolated recovery copies", "Require dual approval for retention policy changes", "Verify restoration through periodic recovery exercises"],
+      "critic": "A configuration diff is not proof of actual data destruction; test restore availability before impact claims.",
+      "question": "Which control best preserves recoverability?", "choices": ["Disable all recovery testing", "Maintain protected backups and test restoration", "Keep the only backup on the same device"], "answer": 1,
+      "rationale": "Protected, tested recovery paths reduce the impact of destructive changes.", "source": "https://attack.mitre.org/tactics/TA0040/"
+    }
+  ]
+}

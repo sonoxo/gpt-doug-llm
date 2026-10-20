@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080c10">
+  <meta name="description" content="XUNIA Glass Onion — free, attribution-first cyber intelligence and privacy research workspace with 21 tool references and native defensive utilities.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.pwnedpasswords.com https://raw.githubusercontent.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="no-referrer">
+  <title>XUNIA // GLASS ONION — Cyber Intelligence Toolkit</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://unpkg.com/openpgp@5.11.3/dist/openpgp.min.js" crossorigin="anonymous" defer></script>
+  <script src="./app.mjs" type="module"></script>
+</head>
+<body>
+  <a class="skip" href="#toolkit">Skip to tools</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="https://xunia.org/" aria-label="XUNIA Museum and HQ">
+        <span class="brand-mark" aria-hidden="true">X</span>
+        <span class="brand-copy"><strong>XUNIA<span class="brand-accent">/</span>GLASS ONION</strong><small>DEFENSIVE INTELLIGENCE LAB</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#toolkit">Tools</a>
+        <a href="#workspace">Workbench</a>
+        <a href="#evidence">Evidence</a>
+        <a href="https://xunia.org/" class="nav-exit">Museum <span aria-hidden="true">↗</span></a>
+      </nav>
+      <span class="header-state"><span class="pulse-dot" aria-hidden="true"></span> RESEARCH MODE</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="slash">//</span> XUNIAverse / Research Division / Exhibit 021</div>
+        <h1 id="hero-title">SEE THE<br><span>UNSEEN.</span><br>PROVE WHAT<br>YOU KNOW.</h1>
+        <p class="hero-lead">A source-attributed cyber research command center. Twenty-one reference tools, one governed workspace, and zero harvested credential databases.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#toolkit">Explore 21 tools <span aria-hidden="true">↗</span></a>
+          <a class="btn btn-outline" href="#workspace">Open research console <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="ethics">Independent XUNIA interface. No affiliation with referenced services. Public sources, locally supplied evidence, and authorized targets only.</p>
+      </div>
+      <div class="hero-visual" aria-label="XUNIA Glass Onion readiness diagram">
+        <div class="radar-corners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        <div class="visual-top"><span><i class="pulse-dot"></i> SOURCE / ANALYSIS</span><span>GLASS_ONION : 01</span></div>
+        <div class="orb-zone" aria-hidden="true">
+          <div class="orb-ring r1"></div><div class="orb-ring r2"></div><div class="orb-ring r3"></div>
+          <div class="orb"><div class="orb-inner">X<span>◉</span></div></div>
+          <span class="orb-label l1">DISCOVERY</span><span class="orb-label l2">EVIDENCE</span><span class="orb-label l3">IDENTITY</span><span class="orb-label l4">PROVENANCE</span>
+        </div>
+        <div class="visual-bottom">
+          <div><span>DATA POLICY</span><strong>LOCAL FIRST</strong></div>
+          <div><span>ACCESS GATE</span><strong>AUTHORIZED</strong></div>
+          <div><span>STATUS</span><strong>CLIENT READY</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="metrics wrap" aria-label="Catalog overview">
+      <div class="metric"><strong id="catalog-total">21</strong><span>CATALOGED REFERENCES</span></div>
+      <div class="metric"><strong>08</strong><span>RESEARCH CATEGORIES</span></div>
+      <div class="metric"><strong>06</strong><span>WORKSPACE ENGINES</span></div>
+      <div class="metric"><strong>0</strong><span>STOLEN-DATA FEEDS</span></div>
+    </section>
+
+    <section id="toolkit" class="section wrap" aria-labelledby="toolkit-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">01 / SERVICE INTELLIGENCE</p><h2 id="toolkit-title">The toolkit<span class="section-highlight">.</span></h2><p>Search and filter all 21 references. Status labels distinguish working features from third-party references.</p></div>
+        <span class="section-coord">CATALOG // V1.0</span>
+      </div>
+      <div class="toolkit-shell">
+        <aside class="filter-rail">
+          <div class="rail-title"><span>FILTER / CLASSIFY</span><span aria-hidden="true">⌘</span></div>
+          <div class="filter-list" id="group-filters" role="group" aria-label="Filter tools by category"></div>
+          <div class="rail-note"><span class="rail-note-icon" aria-hidden="true">!</span><div>Independent workbench. Reference names and descriptions do not imply proprietary backend access.</div></div>
+        </aside>
+        <div class="toolkit-main">
+          <div class="tool-bar">
+            <label class="search-field"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search tools</span><input id="tool-search" type="search" placeholder="Search tools, research methods, categories..." autocomplete="off" maxlength="120"></label>
+            <span class="tool-count" id="tool-count" aria-live="polite">21 / 21</span>
+          </div>
+          <div class="tool-grid" id="tool-grid" aria-live="polite"></div>
+          <p class="empty-message" id="tool-empty" hidden>No tools match this filter.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="workspace" class="section wrap" aria-labelledby="workspace-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">02 / RESEARCH OPERATIONS</p><h2 id="workspace-title">Live workbench<span class="section-highlight">.</span></h2><p>Choose any catalog card to switch the active research engine.</p></div>
+        <span class="section-coord">NO SERVER SECRETS</span>
+      </div>
+      <div class="console">
+        <div class="console-titlebar"><span><i class="pulse-dot"></i> XUNIA / RESEARCH CONSOLE</span><span class="mono">READ-ONLY NETWORK ADAPTERS</span></div>
+        <div class="console-intro"><div class="console-symbol" id="active-glyph" aria-hidden="true">A</div><div class="console-details"><p id="active-category" class="section-kicker">DISCOVERY</p><h3 id="active-title">Ahmia</h3><p id="active-description">Query attributed public research sources.</p></div><span id="active-status" class="status status-integration">PUBLIC INTEGRATION</span></div>
+
+        <div class="engine-pane" data-engine="discovery">
+          <div class="pane-head"><h4>Federated public search</h4><span>Queries launch in official services</span></div>
+          <form id="search-form" class="search-form">
+            <label for="global-query">Public research query</label>
+            <div class="field-inline"><input id="global-query" type="search" placeholder="CVE, company, topic, document..." maxlength="240" required><button class="btn btn-primary" type="submit">Search Ahmia ↗</button></div>
+          </form>
+          <div class="quick-actions"><button id="search-aleph" class="btn btn-outline" type="button">Search OCCRP Aleph ↗</button><button id="search-local" class="btn btn-subtle" type="button">Search local evidence →</button></div>
+          <p class="helper">Only official public search endpoints are wired. Results open in a new tab; XUNIA does not index or proxy .onion content.</p>
+          <p class="feedback" id="search-feedback" role="status"></p>
+        </div>
+
+        <div class="engine-pane" data-engine="evidence" hidden>
+          <div class="pane-head"><h4>Private evidence index</h4><span>Browser storage / authorized data only</span></div>
+          <p>Search your own incident summaries, consented public messages, and source notes. Nothing here is sent to the named reference services.</p>
+          <div class="field-inline"><input id="quick-evidence-query" type="search" placeholder="Search local records..." maxlength="200"><button id="quick-evidence-find" class="btn btn-primary" type="button">Find in evidence →</button></div>
+          <p class="helper">The XUNIA index is not a copy of a leaked database, Telegram bot, or proprietary monitoring provider.</p>
+          <div class="research-subpanel">
+            <h4>Authorized Telegram Desktop export analyzer</h4>
+            <p>Analyze only your own or consented Telegram Desktop JSON export. Data stays in browser memory, is never saved to the vault, and is cleared on refresh.</p>
+            <label for="telegram-file">Choose JSON export (up to 1.5 MB)</label>
+            <input id="telegram-file" type="file" accept=".json,application/json">
+            <label for="telegram-search">Find messages locally</label>
+            <input id="telegram-search" type="search" maxlength="150" placeholder="Search chat, author or message..." autocomplete="off">
+            <p id="telegram-feedback" class="feedback" role="status" aria-live="polite">No archive loaded.</p>
+            <div id="telegram-results" class="record-list" aria-live="polite"></div>
+            <button id="telegram-clear" class="btn btn-subtle" type="button">Clear archive from memory</button>
+          </div>
+        </div>
+
+        <div class="engine-pane" data-engine="exposure" hidden>
+          <div class="pane-head"><h4>Pwned Passwords / privacy-preserving check</h4><span>Free public HIBP range API</span></div>
+          <p>Check a disposable or test password against known exposed password hashes. Your browser computes SHA-1 and sends only five hash characters. Never enter an active account password into an unfamiliar webpage.</p>
+          <form id="password-form" class="search-form">
+            <label for="password-input">Test password — never stored</label>
+            <div class="field-inline"><input id="password-input" type="password" autocomplete="off" spellcheck="false" maxlength="256" required placeholder="Enter a test-only password"><button class="btn btn-primary" type="submit">Check exposure</button></div>
+          </form>
+          <p class="feedback" id="password-feedback" role="status" aria-live="polite"></p>
+          <p class="helper">Account/email breach lookups are available at <a href="https://haveibeenpwned.com/" target="_blank" rel="noopener noreferrer">the original HIBP service ↗</a>; paid APIs are not embedded or bypassed.</p>
+        </div>
+
+        <div class="engine-pane" data-engine="threat" hidden>
+          <div class="pane-head"><h4>Known exploited vulnerabilities</h4><span>Live CISA mirror · CC0 data</span></div>
+          <div class="field-inline"><input id="kev-query" type="search" maxlength="180" placeholder="Filter by CVE, vendor, product..."><button id="load-kev" class="btn btn-primary" type="button">Load live CISA feed ↻</button></div>
+          <p class="feedback" id="kev-feedback" role="status">Not loaded. Select “Load live CISA feed” to request public data.</p>
+          <div id="kev-results" class="intel-list" aria-live="polite"></div>
+          <p class="helper">Source: <a href="https://github.com/cisagov/kev-data" target="_blank" rel="noopener noreferrer">cisagov/kev-data ↗</a> (official mirror); failed fetches remain visibly failed, never replaced by made-up results.</p>
+        </div>
+
+        <div class="engine-pane" data-engine="directory" hidden>
+          <div class="pane-head"><h4>Verified research directory</h4><span>Attribution and official links only</span></div>
+          <div id="verified-links" class="link-directory"></div>
+          <p class="helper">Links are reviewed public-source references. No hidden wiki mirrors or unverified .onion links are hosted.</p>
+          <div class="research-subpanel">
+            <h4>Your verified HTTPS bookmarks</h4>
+            <p>Save your own attributed public research links in this browser. This is not an onion proxy or an anonymous search index.</p>
+            <form id="bookmark-form" class="search-form">
+              <label for="bookmark-title">Source title</label><input id="bookmark-title" maxlength="120" required placeholder="Official bulletin">
+              <label for="bookmark-url">HTTPS URL</label><input id="bookmark-url" type="url" required placeholder="https://example.org/advisory">
+              <label for="bookmark-notes">Source notes (optional)</label><input id="bookmark-notes" maxlength="500" placeholder="Authoritative source or context">
+              <button class="btn btn-outline" type="submit">Save local bookmark +</button>
+            </form>
+            <p id="bookmark-feedback" class="feedback" role="status"></p>
+            <div id="bookmark-list" class="link-directory"></div>
+          </div>
+        </div>
+
+        <div class="engine-pane" data-engine="collection" hidden>
+          <div class="pane-head"><h4>Authorized site audit crawler</h4><span>Python · local execution</span></div>
+          <p>Run on your own or explicitly permitted domains. The crawler follows robots.txt, stays on a named host, limits pages and response size, and exports source-linked JSONL records.</p>
+          <div class="command-line"><code id="crawl-command">python3 scripts/xunia_authorized_crawl.py --base-url https://example.org --allow-host example.org --max-pages 10 --authorized</code><button id="copy-crawl" class="btn btn-outline" type="button">Copy</button></div>
+          <a class="inline-link" href="https://github.com/sonoxo/gpt-doug-llm/blob/main/scripts/xunia_authorized_crawl.py" target="_blank" rel="noopener noreferrer">Inspect the crawler source ↗</a>
+          <p id="copy-feedback" class="feedback" role="status"></p>
+        </div>
+
+        <div class="engine-pane" data-engine="privacy" hidden>
+          <div class="pane-head"><h4>Tor privacy boundary</h4><span>External, official software only</span></div>
+          <p>A normal HTTPS site cannot safely provide a real Tor circuit or run an anonymous .onion browser. Use the official Tor Browser and independently assess the sites you visit.</p>
+          <div class="quick-actions"><a class="btn btn-primary" href="https://www.torproject.org/download/" target="_blank" rel="noopener noreferrer">Get official Tor Browser ↗</a><a class="btn btn-outline" href="https://ssd.eff.org/" target="_blank" rel="noopener noreferrer">EFF privacy guidance ↗</a></div>
+          <p class="helper">TOR2web-style gateways are intentionally not provided: browser proxying is not equivalent to Tor anonymity.</p>
+          <div class="research-subpanel">
+            <h4>Local privacy capability diagnostics</h4>
+            <p>This diagnostic describes what your current browser can and cannot guarantee. It performs no network reconnaissance.</p>
+            <button id="privacy-run" class="btn btn-outline" type="button">Run browser privacy checks</button>
+            <div id="privacy-results" class="intel-list" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="engine-pane" data-engine="pgp" hidden>
+          <div class="pane-head"><h4>OpenPGP message station</h4><span>Runs in this browser</span></div>
+          <p>Generate an ECC key pair, encrypt/decrypt messages, and sign/verify cleartext with pinned OpenPGP.js. Keys and passphrases are not uploaded or saved by XUNIA.</p>
+          <div class="form-grid">
+            <label>Identity label <input id="pgp-name" maxlength="80" placeholder="Researcher"></label>
+            <label>Email (optional) <input id="pgp-email" type="email" maxlength="120" placeholder="researcher@example.org"></label>
+            <label>Key passphrase <input id="pgp-passphrase" type="password" autocomplete="new-password" placeholder="Strong passphrase"></label>
+          </div>
+          <button id="pgp-generate" class="btn btn-outline" type="button">Generate new ECC key pair</button>
+          <div class="form-grid pgp-key-grid">
+            <label>Recipient / signer public key <textarea id="pgp-public" spellcheck="false" rows="5" placeholder="-----BEGIN PGP PUBLIC KEY BLOCK-----"></textarea></label>
+            <label>Your private key (never stored) <textarea id="pgp-private" spellcheck="false" rows="5" placeholder="-----BEGIN PGP PRIVATE KEY BLOCK-----"></textarea></label>
+          </div>
+          <label class="block-label">Input message / armored text <textarea id="pgp-input" spellcheck="false" rows="4" placeholder="Message to encrypt, decrypt, sign, or verify"></textarea></label>
+          <div class="quick-actions"><button id="pgp-encrypt" class="btn btn-primary" type="button">Encrypt</button><button id="pgp-decrypt" class="btn btn-outline" type="button">Decrypt</button><button id="pgp-sign" class="btn btn-outline" type="button">Sign</button><button id="pgp-verify" class="btn btn-outline" type="button">Verify signature</button></div>
+          <label class="block-label">Output <textarea id="pgp-output" rows="5" readonly spellcheck="false" placeholder="Cryptographic output appears here"></textarea></label>
+          <p class="feedback" id="pgp-feedback" role="status" aria-live="polite"></p>
+          <p class="helper">For high-risk key material, use an audited, installed OpenPGP client. This hosted page loads an open-source third-party cryptographic library.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="evidence" class="section wrap" aria-labelledby="evidence-title">
+      <div class="section-heading"><div><p class="section-kicker">03 / GLASS ONION PROVENANCE</p><h2 id="evidence-title">Evidence vault<span class="section-highlight">.</span></h2><p>Capture source and context for each authorized observation. Stored only in this browser.</p></div><span class="section-coord">LOCAL / NO ACCOUNT</span></div>
+      <div class="evidence-layout">
+        <form class="evidence-form panel" id="evidence-form">
+          <h3>Add an observation</h3>
+          <label>Record title <input name="title" maxlength="180" placeholder="Incident bulletin or public-source record" required></label>
+          <div class="form-grid">
+            <label>Source / provenance <input name="source" maxlength="120" placeholder="Official source" required></label>
+            <label>Category <select name="category"><option>Observation</option><option>Threat advisory</option><option>Public document</option><option>Authorized message</option><option>Exposure report</option></select></label>
+          </div>
+          <label>HTTPS source URL (optional) <input name="url" type="url" placeholder="https://example.org/advisory"></label>
+          <label>Notes <textarea name="notes" maxlength="3500" rows="4" placeholder="Summarize what was observed and what remains unverified"></textarea></label>
+          <button class="btn btn-primary" type="submit">Add to local vault +</button>
+          <p class="helper">Do not upload secrets, access tokens, stolen passwords, or data you lack authority to collect.</p>
+        </form>
+        <div class="panel evidence-results">
+          <div class="evidence-topline"><h3>Local index <span id="evidence-total">0</span></h3><div class="quick-actions compact"><button class="btn btn-outline" id="export-evidence" type="button">Export JSON ↓</button><button class="btn btn-subtle" id="clear-evidence" type="button">Clear</button></div></div>
+          <label class="search-field"><span aria-hidden="true">⌕</span><span class="visually-hidden">Search evidence</span><input id="evidence-search" type="search" maxlength="200" placeholder="Filter records..."></label>
+          <label class="file-upload">Import your own JSON / CSV records <input id="import-evidence" type="file" accept=".json,.csv,application/json,text/csv"></label>
+          <p class="feedback" id="evidence-feedback" role="status" aria-live="polite"></p>
+          <div class="record-list" id="evidence-list" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-inner"><span><span class="brand-accent">X/</span> XUNIA GLASS ONION · INDEPENDENT RESEARCH EXHIBIT</span><span>Public-source, authorized-only research · <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/docs/darkweb" target="_blank" rel="noopener noreferrer">Source code ↗</a> · <a href="https://xunia.org/">XUNIA Museum ↗</a></span></div></footer>
+</body>
+</html>

@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#071023" />
+<meta name="description" content="Drone CTF: a free offline-capable 3D capture-the-flag flight simulation." />
+<title>DRONE CTF // AIRSPACE ARENA</title>
+<style>
+:root { --cyan:#5cf5ea; --blue:#48a8ff; --red:#ff5e82; --gold:#ffc56a; --white:#e7f3ff; --muted:#8296b4; --panel:rgba(7,17,37,.78); --line:rgba(135,204,255,.19); }
+* { box-sizing:border-box; }
+html,body { margin:0; width:100%; height:100%; overflow:hidden; background:#030710; color:var(--white); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; -webkit-tap-highlight-color:transparent; touch-action:none; }
+button { font:inherit; cursor:pointer; user-select:none; -webkit-user-select:none; }
+button:focus-visible { outline:2px solid var(--cyan); outline-offset:3px; }
+canvas#arena { display:block; position:fixed; inset:0; width:100%; height:100%; }
+#ambient { position:fixed; inset:0; pointer-events:none; background: radial-gradient(circle at 55% 45%,transparent 20%,rgba(1,5,16,.38) 92%), linear-gradient(180deg,rgba(2,8,24,.20),transparent 40%,rgba(2,8,20,.44)); }
+#scanlines { position:fixed; inset:0; pointer-events:none; opacity:.15; background:repeating-linear-gradient(180deg,transparent 0,transparent 3px,rgba(97,160,210,.08) 4px); }
+#hud { position:fixed; inset:0; pointer-events:none; }
+#hud button, #hud input, #hud [role=button] { pointer-events:auto; }
+.glass { background:var(--panel); border:1px solid var(--line); box-shadow:0 9px 44px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.035); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.mono { font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+.mini { font-size:10px; text-transform:uppercase; letter-spacing:.17em; font-weight:750; }
+.muted { color:var(--muted); }
+#topbar { position:absolute; left:25px; top:22px; right:25px; display:grid; grid-template-columns:minmax(180px,1fr) auto minmax(180px,1fr); gap:16px; align-items:start; }
+#brand { display:flex; align-items:center; gap:12px; padding-top:4px; }
+#brandIcon { flex:0 0 auto; width:38px; height:38px; border-radius:12px; border:1px solid rgba(92,245,234,.38); display:grid; place-items:center; background:linear-gradient(135deg,rgba(47,187,210,.18),rgba(20,57,115,.16)); box-shadow:0 0 28px rgba(17,184,223,.12); }
+#brandIcon svg { width:24px; height:24px; }
+#brand strong { display:block; font-size:15px; letter-spacing:.1em; font-weight:850; }
+#brand small { display:block; color:#7b9bb5; font-size:10px; letter-spacing:.12em; margin-top:4px; }
+#scorebar { display:flex; align-items:center; gap:0; border-radius:14px; padding:8px 11px; min-height:58px; }
+.scoreTeam { display:flex; align-items:center; gap:12px; padding:0 13px; }
+.scoreTeam span { font-size:10px; font-weight:800; letter-spacing:.16em; }
+.scoreTeam b { font-size:30px; line-height:1; font-variant-numeric:tabular-nums; font-weight:800; }
+.scoreTeam.blue span, .scoreTeam.blue b { color:var(--blue); }
+.scoreTeam.red span, .scoreTeam.red b { color:var(--red); }
+#clockblock { min-width:99px; text-align:center; border-left:1px solid var(--line); border-right:1px solid var(--line); padding:1px 18px; }
+#clock { font-size:23px; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums; }
+#clockblock small { font-size:9px; color:var(--muted); letter-spacing:.13em; font-weight:700; }
+#topactions { justify-self:end; display:flex; gap:8px; }
+.iconbtn { border:1px solid var(--line); background:rgba(9,21,45,.80); color:#b6c9db; border-radius:11px; height:42px; min-width:42px; padding:0 12px; transition:border-color .2s,background .2s,color .2s; }
+.iconbtn:hover,.iconbtn.active { border-color:rgba(92,245,234,.6); color:var(--cyan); background:rgba(12,50,66,.8); }
+.iconbtn svg { width:17px; height:17px; vertical-align:middle; }
+#leftPanel { position:absolute; left:25px; top:111px; width:244px; border-radius:16px; padding:17px 17px 14px; }
+#missionLabel { color:var(--cyan); display:flex; align-items:center; gap:8px; }
+.pulse { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan); animation:blink 2s infinite; }
+@keyframes blink { 50% {opacity:.3;} }
+#missionTitle { font-size:19px; margin:13px 0 6px; line-height:1.2; letter-spacing:-.02em; }
+#missionDescription { color:#9eb2cb; font-size:12px; line-height:1.55; margin:0 0 18px; }
+.rule { height:1px; background:var(--line); margin:13px 0; }
+.objective { display:flex; align-items:center; gap:10px; font-size:11px; margin:12px 0; color:#c7d7e8; }
+.bullet { display:inline-grid; place-items:center; height:22px; width:22px; border:1px solid rgba(72,168,255,.4); border-radius:7px; color:var(--blue); font-size:11px; font-weight:800; }
+#flagStatus { font-weight:800; font-size:12px; color:#b2f4fa; }
+#rightPanel { position:absolute; right:25px; top:111px; width:216px; border-radius:16px; padding:16px; }
+#rightPanel .heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+#roster { display:grid; gap:9px; }
+.pilot { display:flex; align-items:center; gap:8px; font-size:11px; }
+.pilotDot { width:7px; height:7px; flex:0 0 7px; border-radius:100%; box-shadow:0 0 7px currentColor; }
+.pilotName { flex:1; color:#bfd0e2; }
+.pilotStatus { color:#718ca9; font-size:9px; letter-spacing:.05em; }
+#activity { position:absolute; left:25px; bottom:145px; width:min(350px,35vw); padding:13px 15px; border-radius:13px; min-height:75px; }
+#activityItems { margin-top:8px; font-size:11px; line-height:1.7; color:#aebfd3; }
+#activityItems>div { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#activityItems>div:first-child { color:#dbf6ff; }
+#minimapBox { position:absolute; right:25px; bottom:24px; width:214px; padding:11px; border-radius:14px; }
+#mapTitle { display:flex; justify-content:space-between; align-items:center; margin-bottom:9px; }
+#minimap { display:block; width:190px; height:130px; border:1px solid rgba(95,145,196,.15); border-radius:8px; background:#051023; }
+#telemetry { position:absolute; left:25px; bottom:24px; display:flex; align-items:stretch; gap:0; border-radius:14px; padding:11px 5px; }
+.telemet { min-width:99px; padding:1px 16px; border-right:1px solid var(--line); }
+.telemet:last-child { border:0; min-width:150px; }
+.telemet .val { margin-top:5px; display:block; font-weight:850; font-size:18px; font-variant-numeric:tabular-nums; }
+#energyRail { width:108px; height:4px; border-radius:100px; background:#1b3850; margin-top:7px; overflow:hidden; }
+#energyFill { width:100%; height:100%; border-radius:100px; background:linear-gradient(90deg,#4d88ff,#67fff0); }
+#cameraBadge { position:absolute; left:50%; bottom:34px; transform:translateX(-50%); padding:9px 15px; border-radius:100px; color:#a7dbe9; font-size:10px; text-align:center; letter-spacing:.1em; background:rgba(5,17,32,.68); border:1px solid rgba(100,182,211,.17); }
+#toast { position:absolute; top:102px; left:50%; transform:translateX(-50%); border-radius:9px; border:1px solid rgba(92,245,234,.4); padding:12px 23px; color:#eaffff; background:rgba(5,31,43,.92); opacity:0; transition:opacity .3s; font-size:13px; font-weight:700; white-space:nowrap; text-align:center; box-shadow:0 0 35px rgba(34,192,219,.13); }
+#toast.show { opacity:1; }
+.flagMarker { position:absolute; transform:translate(-50%,-110%); pointer-events:none; white-space:nowrap; font-size:9px; font-weight:850; letter-spacing:.16em; text-shadow:0 2px 10px #000; }
+.flagMarker::after { content:""; display:block; margin:5px auto 0; width:1px; height:15px; opacity:.6; background:currentColor; }
+#blueMarker { color:#72c2ff; }
+#redMarker { color:#ff85a0; }
+#overlay { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:22px; z-index:4; background:radial-gradient(circle at 50% 40%,rgba(3,12,29,.24),rgba(2,5,15,.60)); }
+#overlay.hidden { display:none; }
+#startCard { width:min(540px,100%); border-radius:25px; padding:31px 34px 29px; background:linear-gradient(141deg,rgba(9,27,54,.97),rgba(5,12,28,.97)); border:1px solid rgba(120,201,242,.34); box-shadow:0 30px 100px rgba(0,0,0,.6),0 0 60px rgba(19,90,161,.15); position:relative; overflow:hidden; }
+#startCard:before { content:""; position:absolute; inset:0 auto auto 0; height:2px; width:100%; background:linear-gradient(90deg,transparent,#53f0f8 25%,#479aff 75%,transparent); }
+#startCard .eyebrow { color:var(--cyan); display:flex; align-items:center; gap:11px; }
+#startCard h1 { font-size:clamp(33px,5vw,51px); margin:25px 0 9px; line-height:1.01; letter-spacing:-.045em; font-weight:900; }
+#startCard h1 span { display:block; color:var(--cyan); }
+#startCard p { color:#a8bad1; font-size:13px; line-height:1.75; max-width:460px; margin:16px 0; }
+#featureChips { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 25px; }
+.chip { border:1px solid rgba(116,163,199,.23); background:rgba(75,138,191,.07); color:#adc9dc; padding:7px 9px; border-radius:7px; font-size:10px; letter-spacing:.06em; font-weight:700; }
+#startButtons { display:flex; gap:10px; }
+.primary { flex:1; border:0; padding:15px 20px; border-radius:10px; color:#051423; background:linear-gradient(110deg,#68e9f5,#67aefa); font-size:12px; font-weight:900; letter-spacing:.13em; box-shadow:0 9px 30px rgba(29,164,228,.18); }
+.primary:hover { filter:brightness(1.12); }
+.secondary { padding:12px 14px; border:1px solid rgba(131,191,230,.29); border-radius:10px; background:rgba(9,31,56,.67); color:#c0d9eb; font-size:11px; font-weight:800; letter-spacing:.08em; }
+#overlayFine { color:#64859d; font-size:10px; margin-top:19px; }
+#pausePill { position:absolute; top:70px; left:50%; transform:translateX(-50%); padding:8px 14px; display:none; border-radius:100px; background:rgba(5,12,28,.9); border:1px solid rgba(246,197,111,.4); color:var(--gold); font-size:11px; }
+#touchControls { display:none; position:absolute; inset:auto 0 0; height:205px; pointer-events:none; }
+#joystick { position:absolute; bottom:37px; left:26px; height:124px; width:124px; border:1px solid rgba(125,214,242,.43); border-radius:100%; background:radial-gradient(circle,rgba(62,163,208,.11),rgba(15,52,88,.20)); pointer-events:auto; touch-action:none; }
+#joystick:before,#joystick:after { content:""; position:absolute; background:rgba(125,214,242,.22); }
+#joystick:before { left:50%; width:1px; top:13px; bottom:13px; }
+#joystick:after { top:50%; height:1px; left:13px; right:13px; }
+#stick { height:55px; width:55px; position:absolute; left:34px; top:34px; border-radius:100%; border:1px solid rgba(139,237,251,.8); background:linear-gradient(130deg,rgba(92,212,238,.43),rgba(31,82,142,.53)); box-shadow:0 0 24px rgba(72,202,246,.18); }
+#touchActions { position:absolute; right:20px; bottom:30px; display:grid; grid-template-columns:55px 55px; gap:9px; pointer-events:auto; }
+.touchBtn { height:54px; border-radius:12px; border:1px solid rgba(134,200,247,.40); background:rgba(9,29,54,.73); color:#ceebfa; font-size:10px; font-weight:850; letter-spacing:.06em; touch-action:none; }
+.touchBtn.boost { background:rgba(17,100,138,.55); color:#8cfaff; border-color:rgba(85,230,246,.65); }
+.touchBtn.pressed { background:rgba(54,157,210,.64); }
+#unsupported { position:fixed; z-index:8; inset:0; background:#050d1c; color:#fff; display:none; place-items:center; padding:25px; text-align:center; }
+@media(max-width:1100px) { #rightPanel { display:none; } #leftPanel { width:220px; } #cameraBadge {display:none;} }
+@media(max-width:700px) {
+  #topbar { left:12px; right:12px; top:13px; grid-template-columns:1fr auto; gap:7px; align-items:center; }
+  #brand { gap:6px; padding:0; } #brandIcon {width:30px;height:30px;border-radius:9px;} #brandIcon svg { width:20px;height:20px; } #brand strong {font-size:11px;} #brand small {font-size:8px;}
+  #scorebar {grid-row:2;grid-column:1/-1;justify-self:center;min-height:45px;padding:4px 7px;} #scorebar .scoreTeam {padding:0 9px;gap:9px;} .scoreTeam b {font-size:23px;} .scoreTeam span {font-size:9px;} #clockblock {min-width:85px;padding:0 11px;} #clock {font-size:20px;}
+  #topactions {grid-column:2;grid-row:1;gap:5px;} .iconbtn {height:33px;min-width:33px;padding:0 8px;font-size:10px;}
+  #leftPanel { left:12px; top:112px; width:172px; padding:11px; } #missionTitle {font-size:15px;margin:8px 0 3px;} #missionDescription {font-size:10px;margin:0 0 7px;} .objective {font-size:9px;margin:8px 0;gap:6px;} .bullet {width:18px;height:18px;} #flagStatus {font-size:10px;}
+  #activity {display:none;} #minimapBox {right:12px;bottom:285px;width:142px;padding:7px;} #minimap {width:126px;height:86px;} #mapTitle {margin-bottom:5px;} #mapTitle .mini {font-size:8px;}
+  #telemetry {left:12px;right:12px;bottom:192px;justify-content:space-around;padding:7px 1px;gap:0;} .telemet {min-width:0;flex:1;padding:1px 8px;} .telemet:last-child{min-width:0;} .telemet .mini {font-size:8px;} .telemet .val {font-size:13px;margin-top:4px;} #energyRail {width:65px;}
+  #touchControls {display:block;} #toast {top:165px;max-width:92vw;white-space:normal;font-size:11px;} #pausePill {top:105px;}
+  body.inMatch #leftPanel {top:114px;width:158px;padding:10px 11px;}
+  body.inMatch #leftPanel .objective, body.inMatch #leftPanel .rule, body.inMatch #missionDescription, body.inMatch #leftPanel .mini.muted {display:none;}
+  body.inMatch #missionTitle {font-size:13px;margin:7px 0 0;}
+  body.inMatch #flagStatus {font-size:9px;margin-top:8px;}
+  body.inMatch #missionLabel {font-size:8px;}
+  #startCard {padding:23px 22px 22px;} #startCard h1 {margin:16px 0 10px;} #startCard p {font-size:12px;} #startButtons {flex-direction:column;} .primary {flex:auto;}
+}
+@media(max-width:700px) and (max-height:720px) {#leftPanel {display:none;} #minimapBox {bottom:155px;} }
+@media (pointer:coarse) and (min-width:701px) {#touchControls {display:block;}}
+@media (prefers-reduced-motion:reduce) {.pulse {animation:none;} }
+</style>
+</head>
+<body>
+<canvas id="arena" aria-label="3D drone capture the flag arena"></canvas>
+<div id="ambient"></div><div id="scanlines"></div>
+<div id="hud">
+  <div id="topbar">
+    <div id="brand"><div id="brandIcon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#70e9ee" stroke-width="2"><circle cx="6" cy="7" r="4"/><circle cx="26" cy="7" r="4"/><circle cx="6" cy="25" r="4"/><circle cx="26" cy="25" r="4"/><path d="M11 12L16 15L21 12M11 20L16 17L21 20M10 9L14 14M22 9L18 14M10 23L14 18M22 23L18 18"/><rect x="13" y="13" width="6" height="6" rx="2" fill="#70e9ee"/></svg></div><div><strong>DRONE CTF</strong><small class="mono">AIRSPACE ARENA / V1.0</small></div></div>
+    <div id="scorebar" class="glass"><div class="scoreTeam blue"><span>AZURE</span><b id="blueScore">0</b></div><div id="clockblock"><div id="clock" class="mono">04:00</div><small>MATCH TIMER</small></div><div class="scoreTeam red"><b id="redScore">0</b><span>CRIMSON</span></div></div>
+    <div id="topactions"><button class="iconbtn" id="autoBtn" title="Toggle autopilot (T)" aria-label="Toggle autopilot">AUTO</button><button class="iconbtn" id="camBtn" title="Cycle cameras (C)" aria-label="Cycle cameras">CAM</button><button class="iconbtn" id="soundBtn" title="Toggle sound" aria-label="Toggle sound">SFX</button><button class="iconbtn" id="pauseBtn" title="Pause or resume (P)" aria-label="Pause or resume">Ⅱ</button></div>
+  </div>
+  <aside id="leftPanel" class="glass"><div class="mini" id="missionLabel"><i class="pulse"></i> MISSION ACTIVE</div><h2 id="missionTitle">Capture the flag.</h2><p id="missionDescription">Fly to the enemy base, retrieve their flag, and return it to AZURE. First to 3 captures wins.</p><div class="rule"></div><div class="objective"><span class="bullet">01</span> Infiltrate CRIMSON base</div><div class="objective"><span class="bullet">02</span> Pick up enemy flag</div><div class="objective"><span class="bullet">03</span> Return to AZURE base</div><div class="rule"></div><div class="mini muted">FLAG INTELLIGENCE</div><div id="flagStatus" style="margin-top:8px">BOTH FLAGS SECURE</div></aside>
+  <aside id="rightPanel" class="glass"><div class="heading"><span class="mini">ACTIVE AIRCRAFT</span><span class="mono muted" style="font-size:10px">8 ONLINE</span></div><div id="roster"></div><div class="rule"></div><span class="mini muted">MODE</span><div style="color:#dcecf5;font-size:12px;margin-top:8px">Autonomous 4v4 arena</div><div style="font-size:10px;color:#7590a7;margin-top:5px">Non-kinetic flag-tag simulation</div></aside>
+  <div id="activity" class="glass"><div class="mini muted">FLIGHT ACTIVITY / LIVE</div><div id="activityItems"><div>All systems nominal. Awaiting launch.</div></div></div>
+  <div id="minimapBox" class="glass"><div id="mapTitle"><span class="mini">TACTICAL RADAR</span><span class="mini" style="color:var(--cyan)">LIVE</span></div><canvas id="minimap" width="380" height="260" aria-label="Top-down tactical minimap"></canvas></div>
+  <div id="telemetry" class="glass"><div class="telemet"><span class="mini muted">ALTITUDE</span><span class="val mono" id="altitude">5.0 <small>m</small></span></div><div class="telemet"><span class="mini muted">GROUND SPEED</span><span class="val mono" id="speed">0.0 <small>m/s</small></span></div><div class="telemet"><span class="mini muted">BOOST</span><span class="val mono" id="boostPct" style="color:var(--cyan)">100%</span><div id="energyRail"><div id="energyFill"></div></div></div><div class="telemet"><span class="mini muted">FLIGHT CONTROL</span><span class="val mono" id="flightMode" style="font-size:12px;color:var(--cyan);margin-top:10px">MANUAL</span></div></div>
+  <div id="cameraBadge" class="mono">WASD MOVE · SPACE UP · Q DOWN · SHIFT BOOST · C CAMERA · T AUTOPILOT</div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="blueMarker" class="flagMarker">AZURE // FLAG</div><div id="redMarker" class="flagMarker">CRIMSON // FLAG</div>
+  <div id="pausePill" class="mini">SIMULATION PAUSED</div>
+  <div id="touchControls"><div id="joystick" aria-label="Flight movement joystick"><div id="stick"></div></div><div id="touchActions"><button class="touchBtn" id="upTouch" aria-label="Ascend">UP ↑</button><button class="touchBtn boost" id="boostTouch" aria-label="Boost">BOOST</button><button class="touchBtn" id="downTouch" aria-label="Descend">DOWN ↓</button><button class="touchBtn" id="cameraTouch" aria-label="Change camera">CAM</button></div></div>
+</div>
+<div id="overlay"><div id="startCard"><div class="mini eyebrow"><i class="pulse"></i><span id="overlayEyebrow">XUNIA SIMULATION // ARCADE FLIGHT</span></div><h1 id="overlayTitle">DRONE <span>CAPTURE THE FLAG.</span></h1><p id="overlayText">Command an autonomous drone squad across a 3D neon airspace arena. Steal the opposing team's flag, fly it home, defend your own, and race to three captures.</p><div id="featureChips"><span class="chip">4v4 AI DRONES</span><span class="chip">3D FLIGHT</span><span class="chip">MOBILE + CONTROLLER</span><span class="chip">OFFLINE PLAY</span></div><div id="startButtons"><button id="startBtn" class="primary">LAUNCH MISSION →</button><button id="exportBtn" class="secondary" title="Export match telemetry as JSON">EXPORT TELEMETRY</button></div><div id="overlayFine" class="mono">WASD / ARROWS — FLY · SPACE / E — ASCEND · Q — DESCEND · SHIFT — BOOST · ENTER — LAUNCH</div></div></div>
+<div id="unsupported"><div><h2>WebGL is not available.</h2><p>This game requires a browser with 3D acceleration, such as recent Chrome, Edge, Firefox, or Safari.</p></div></div>
+<script>
+'use strict';
+const $ = (id) => document.getElementById(id);
+const canvas = $('arena');
+const mini = $('minimap');
+const miniCtx = mini.getContext('2d');
+const WORLD = { width:116, depth:88, minY:2.3, maxY:20 };
+const HEX = { blue:'#48a8ff', red:'#ff5e82', cyan:'#5cf5ea', gold:'#ffc56a' };
+const STATIC_OBSTACLES = [
+  {x:-16,z:-25,r:4.0,h:13},{x:-16,z:25,r:4.0,h:13},
+  {x:16,z:-25,r:4.0,h:13},{x:16,z:25,r:4.0,h:13},
+  {x:-4,z:-12,r:3.4,h:9},{x:4,z:12,r:3.4,h:9},
+  {x:-28,z:0,r:3.1,h:10},{x:28,z:0,r:3.1,h:10}
+];
+const TEAMS = ['blue','red'];
+const CAMERA_MODES = ['CHASE','TACTICAL','ORBIT'];
+const keys = Object.create(null);
+const touch = {ax:0, ay:0, up:false, down:false, boost:false};
+let cameraMode = 0;
+let autoPilot = false;
+let soundEnabled = false;
+let audioCtx = null;
+let toastExpire = 0;
+let simClock = 0;
+let viewWidth = innerWidth;
+let viewHeight = innerHeight;
+let renderer = null;
+let previousFrame = 0;
+let camera = { eye:[-45,69,63], target:[0,0,0], view:null, projection:null };
+let audioAvailable = true;
+let game = null;
+const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
+const lerp = (a,b,t) => a+(b-a)*t;
+const dist2 = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
+const dist3 = (a,b) => Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
+const teamOther = team => team==='blue'?'red':'blue';
+const displayTeam = team => team==='blue'?'AZURE':'CRIMSON';
+const readable = n => Number(n).toFixed(1);
+
+function newDrone(team,index){
+  const sign = team==='blue'?-1:1;
+  const dronesNames = team==='blue'?['ECHO-01','SKY-02','NOVA-03','VECT-04']:['RIFT-01','FANG-02','VOLT-03','RAZE-04'];
+  return {
+    id:(team==='blue'?'B':'R')+(index+1), name:dronesNames[index], team, index,
+    isPlayer:team==='blue'&&index===0,
+    role:index===3?'defender':index===2?'escort':'attacker',
+    x:sign*43-sign*index*1.5, z:(index-1.5)*8.5, y:5.3+index*.5,
+    vx:0,vy:0,vz:0, heading:team==='blue'?0:Math.PI, lean:0,
+    energy:100, flag:null, shield:3.5, stun:0, tagCooldown:0,
+    phase:index*1.8+(team==='red'?0.7:0), boosting:false
+  };
+}
+function newGame(){
+  const drones=[];
+  for(const team of TEAMS){ for(let i=0;i<4;i++) drones.push(newDrone(team,i)); }
+  return {
+    phase:'ready', t:0, remaining:240, targetScore:3,
+    score:{blue:0,red:0}, drones,
+    flags:{
+      blue:{team:'blue',home:{x:-43,z:0},x:-43,z:0,carrier:null,droppedAt:null},
+      red:{team:'red',home:{x:43,z:0},x:43,z:0,carrier:null,droppedAt:null}
+    },
+    events:[], bursts:[], winner:null, message:'', lastHud:0
+  };
+}
+function getPlayer(){ return game.drones[0]; }
+function writeLog(message,team=null,type='info'){
+  const event={time:Math.round(game.t*10)/10, message, team, type};
+  game.events.unshift(event);
+  if(game.events.length>250) game.events.pop();
+  $('activityItems').innerHTML=game.events.slice(0,3).map(e=>`<div>${escapeHtml(e.message)}</div>`).join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showToast(message,duration=2.4){
+  $('toast').textContent=message;
+  $('toast').classList.add('show');
+  toastExpire=performance.now()/1000+duration;
+}
+function playTone(freq=610,length=.095,type='sine'){
+  if(!soundEnabled||!audioAvailable) return;
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const oscillator=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    oscillator.type=type;
+    oscillator.frequency.setValueAtTime(freq,audioCtx.currentTime);
+    gain.gain.setValueAtTime(.045,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+length);
+    oscillator.connect(gain).connect(audioCtx.destination);
+    oscillator.start();oscillator.stop(audioCtx.currentTime+length);
+  }catch(e){audioAvailable=false;}
+}
+function burst(x,y,z,team='cyan',count=24){
+  const color=HEX[team]||HEX.cyan;
+  for(let i=0;i<count;i++){
+    const theta=i*2.399963+Math.random()*.32;
+    const v=4+Math.random()*13;
+    game.bursts.push({x,y,z,vx:Math.cos(theta)*v,vy:Math.random()*10-2,vz:Math.sin(theta)*v,life:.6+Math.random()*.75,maxLife:1.35,color,size:.16+Math.random()*.22});
+  }
+}
+function flagPos(flag){
+  if(flag.carrier){const d=game.drones.find(drone=>drone.id===flag.carrier);if(d)return {x:d.x,y:d.y+4.2,z:d.z};}
+  return {x:flag.x,y:7,z:flag.z};
+}
+function isFlagHome(flag){return !flag.carrier && flag.droppedAt===null;}
+function returnFlag(flag,reason=''){
+  flag.carrier=null;flag.droppedAt=null;flag.x=flag.home.x;flag.z=flag.home.z;
+  if(reason){writeLog(`${displayTeam(flag.team)} flag returned ${reason}`,flag.team,'return');playTone(720,.13);}
+}
+function dropFlag(carrier){
+  if(!carrier.flag)return;
+  const flag=game.flags[carrier.flag];
+  flag.carrier=null;flag.x=carrier.x;flag.z=carrier.z;flag.droppedAt=game.t;
+  writeLog(`${displayTeam(flag.team)} flag dropped by ${carrier.name}`,flag.team,'drop');
+  burst(carrier.x,carrier.y+3,carrier.z,flag.team,16);
+  carrier.flag=null;
+  showToast('FLAG DROPPED — RECOVER IT',2.1);
+  playTone(175,.16,'sawtooth');
+}
+function pickupFlag(drone,flag){
+  flag.carrier=drone.id;
+  flag.droppedAt=null;
+  drone.flag=flag.team;
+  drone.shield=Math.max(drone.shield,3.0);
+  writeLog(`${drone.name} acquired ${displayTeam(flag.team)} flag`,drone.team,'pickup');
+  burst(drone.x,drone.y+1,drone.z,flag.team,20);
+  showToast(drone.isPlayer?'FLAG ACQUIRED — RETURN TO AZURE!':`${displayTeam(drone.team)} STOLE THE FLAG!`,2.8);
+  playTone(820,.12);playTone(1020,.17);
+}
+function spawnDrone(drone,shield=2.8){
+  const sign=drone.team==='blue'?-1:1;
+  drone.x=sign*43-sign*drone.index*1.5;
+  drone.z=(drone.index-1.5)*8.5;
+  drone.y=5.3+drone.index*.5;
+  drone.vx=drone.vy=drone.vz=0;
+  drone.shield=shield;drone.stun=.7;
+  drone.energy=100;
+}
+function scoreFlag(drone){
+  game.score[drone.team]++;
+  const winning=game.score[drone.team]>=game.targetScore;
+  writeLog(`${displayTeam(drone.team)} SCORES! ${game.score.blue} – ${game.score.red}`,drone.team,'score');
+  showToast(`${displayTeam(drone.team)} CAPTURED THE FLAG!`,3);
+  burst(drone.x,9,drone.z,drone.team,65);
+  playTone(1000,.22);setTimeout(()=>playTone(1320,.25),150);
+  for(const flag of Object.values(game.flags)) returnFlag(flag);
+  for(const pilot of game.drones){pilot.flag=null;spawnDrone(pilot,4.0);}
+  $('blueScore').textContent=game.score.blue;
+  $('redScore').textContent=game.score.red;
+  if(winning) finishGame(drone.team);
+}
+function finishGame(winner=null){
+  if(game.phase==='finished')return;
+  game.phase='finished';game.winner=winner;document.body.classList.remove('inMatch');
+  $('overlayEyebrow').textContent='MISSION DEBRIEF // COMPLETE';
+  $('overlayTitle').innerHTML=winner===null?'MATCH <span>COMPLETE.</span>':winner==='blue'?'AZURE <span>VICTORY.</span>':'CRIMSON <span>VICTORY.</span>';
+  $('overlayText').textContent=`Final score: AZURE ${game.score.blue} — CRIMSON ${game.score.red}. ${game.events.filter(e=>e.type==='score').length} flag capture(s), ${game.events.filter(e=>e.type==='tag').length} drone tag(s). Export match telemetry or launch another round.`;
+  $('startBtn').textContent='LAUNCH REMATCH →';
+  $('featureChips').innerHTML='<span class="chip">MATCH COMPLETE</span><span class="chip">TELEMETRY READY</span><span class="chip">REPLAY AVAILABLE</span>';
+  $('overlay').classList.remove('hidden');
+  playTone(winner==='blue'?880:360,.23);
+}
+function startGame(){
+  game=newGame();game.phase='playing';simClock=0;document.body.classList.add('inMatch');
+  autoPilot=false;cameraMode=0;
+  $('autoBtn').classList.remove('active');
+  $('overlay').classList.add('hidden');
+  $('pausePill').style.display='none';
+  $('blueScore').textContent='0';$('redScore').textContent='0';
+  writeLog('AZURE squad airborne. Mission initialized.','blue','start');
+  writeLog('CRIMSON defenders detected.','red');
+  showToast('MISSION LIVE — GET THE RED FLAG',2.5);
+  playTone(630,.12);
+  updateHud(true);
+}
+function togglePause(){
+  if(game.phase==='finished'||game.phase==='ready')return;
+  game.phase=game.phase==='paused'?'playing':'paused';
+  $('pausePill').style.display=game.phase==='paused'?'block':'none';
+  $('pauseBtn').textContent=game.phase==='paused'?'▶':'Ⅱ';
+  if(game.phase==='playing')previousFrame=performance.now();
+}
+function toggleAuto(){autoPilot=!autoPilot;$('autoBtn').classList.toggle('active',autoPilot);updateHud(true);showToast(autoPilot?'AUTOPILOT ENGAGED':'MANUAL FLIGHT CONTROL',1.5);}
+function cycleCam(){cameraMode=(cameraMode+1)%CAMERA_MODES.length;showToast(`CAMERA: ${CAMERA_MODES[cameraMode]}`,1.3);}
+function setSound(){soundEnabled=!soundEnabled;$('soundBtn').classList.toggle('active',soundEnabled);$('soundBtn').textContent=soundEnabled?'♪':'SFX';if(soundEnabled)playTone(800,.11);}
+function exportTelemetry(){
+  const payload={
+    name:'DRONE CTF — AIRSPACE ARENA', version:'1.0.0', mode:'simulated non-kinetic capture the flag',
+    exportedAt:new Date().toISOString(), matchDurationSeconds:Math.round(game.t*10)/10,
+    state:game.phase, score:game.score, winner:game.winner,
+    pilots:game.drones.map(d=>({id:d.id,name:d.name,team:d.team,role:d.role,position:{x:Math.round(d.x*10)/10,y:Math.round(d.y*10)/10,z:Math.round(d.z*10)/10}})),
+    events:[...game.events].reverse()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement('a');link.href=url;link.download='drone-ctf-telemetry.json';document.body.append(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function aiTarget(drone){
+  const own=game.flags[drone.team];
+  const enemy=game.flags[teamOther(drone.team)];
+  const teammateCarrier=enemy.carrier?game.drones.find(d=>d.id===enemy.carrier):null;
+  const enemyCarrier=own.carrier?game.drones.find(d=>d.id===own.carrier):null;
+  const ownBase=own.home;
+  if(drone.flag) return {x:ownBase.x,z:ownBase.z,y:5.2,reason:'exfil'};
+  if(enemyCarrier){
+    const enemyInOurHalf=drone.team==='blue'?enemyCarrier.x<5:enemyCarrier.x>-5;
+    if(enemyInOurHalf && (drone.role==='defender'||drone.role==='escort'))
+      return {x:enemyCarrier.x,z:enemyCarrier.z,y:enemyCarrier.y,reason:'intercept'};
+  }
+  if(drone.role==='defender'){
+    const invaders=game.drones.filter(d=>d.team!==drone.team && (drone.team==='blue'?d.x<0:d.x>0));
+    const nearest=invaders.sort((a,b)=>dist2(a,ownBase)-dist2(b,ownBase))[0];
+    if(nearest && dist2(nearest,ownBase)<29) return {x:nearest.x,z:nearest.z,y:nearest.y,reason:'defend'};
+    return {x:ownBase.x+(drone.team==='blue'?12:-12)+Math.sin(game.t*.4+drone.phase)*5,z:Math.sin(game.t*.7+drone.phase)*17,y:6.5,reason:'patrol'};
+  }
+  if(drone.role==='escort'){
+    if(teammateCarrier && teammateCarrier.id!==drone.id){
+      return {x:teammateCarrier.x+(drone.team==='blue'?5:-5),z:teammateCarrier.z+Math.sin(game.t+drone.phase)*7,y:teammateCarrier.y+1,reason:'escort'};
+    }
+    if(!isFlagHome(own)&&!own.carrier) return {x:own.x,z:own.z,y:5.1,reason:'recover'};
+  }
+  if(teammateCarrier && teammateCarrier.id!==drone.id){
+    return {x:ownBase.x+(drone.team==='blue'?7:-7),z:Math.sin(game.t+drone.phase)*12,y:6,reason:'defend return'};
+  }
+  return {x:enemy.x,z:enemy.z,y:5.2,reason:'raid'};
+}
+function getGamepadAxes(){
+  const connected=navigator.getGamepads?.();
+  if(!connected)return null;
+  const pad=[...connected].find(p=>p&&p.connected);
+  if(!pad)return null;
+  const deadzone = a => Math.abs(a)<.14?0:a;
+  return {x:-deadzone(pad.axes[1]||0),z:deadzone(pad.axes[0]||0),up:pad.buttons[5]?.pressed||false,down:pad.buttons[4]?.pressed||false,boost:pad.buttons[0]?.pressed||pad.buttons[7]?.pressed||false};
+}
+function controlsForPlayer(){
+  const pad=getGamepadAxes();
+  let x=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-touch.ay;
+  let z=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+touch.ax;
+  if(pad){x+=pad.x;z+=pad.z;}
+  const len=Math.hypot(x,z);
+  if(len>1){x/=len;z/=len;}
+  return {
+    x,z,
+    up:!!(keys.Space||keys.KeyE||touch.up||pad?.up),
+    down:!!(keys.KeyQ||keys.ControlLeft||keys.ControlRight||touch.down||pad?.down),
+    boost:!!(keys.ShiftLeft||keys.ShiftRight||touch.boost||pad?.boost)
+  };
+}
+function steerDrone(drone,dt){
+  if(drone.stun>0){drone.vx*=Math.max(0,1-dt*7);drone.vz*=Math.max(0,1-dt*7);drone.vy*=Math.max(0,1-dt*7);return;}
+  const ai=!drone.isPlayer||autoPilot;
+  let dx=0,dz=0,vertical=0,boost=false;
+  if(ai){
+    const target=aiTarget(drone);
+    const dist=Math.hypot(target.x-drone.x,target.z-drone.z);
+    dx=dist>1?(target.x-drone.x)/dist:0;
+    dz=dist>1?(target.z-drone.z)/dist:0;
+    vertical=clamp((target.y-drone.y)*.65,-1,1);
+    if(dist<3){dx*=dist/3;dz*=dist/3;}
+    // Potential-field steering avoids obstacle towers without path-planning services.
+    for(const obs of STATIC_OBSTACLES){
+      const rx=drone.x-obs.x,rz=drone.z-obs.z;
+      const d=Math.hypot(rx,rz);
+      if(d<obs.r+8.3 && drone.y<obs.h+3 && d>.001){
+        const force=Math.pow((obs.r+8.3-d)/8.3,2)*2.4;
+        dx+=(rx/d)*force;dz+=(rz/d)*force;
+        vertical=Math.max(vertical,drone.y<obs.h?0.16:vertical);
+      }
+    }
+    const mag=Math.hypot(dx,dz);
+    if(mag>1){dx/=mag;dz/=mag;}
+    boost=!!drone.flag&&dist>10&&drone.energy>20;
+  }else{
+    const input=controlsForPlayer();dx=input.x;dz=input.z;
+    vertical=(input.up?1:0)-(input.down?1:0);
+    boost=input.boost;
+  }
+  const activeBoost=boost&&drone.energy>2;
+  drone.energy=clamp(drone.energy+(activeBoost?-28:18)*dt,0,100);
+  drone.boosting=activeBoost;
+  const maxSpeed=(drone.isPlayer&&!ai?18.6:drone.role==='defender'?13.1:14.1)*(activeBoost?1.62:1);
+  const speedLen=Math.hypot(dx,dz);
+  const targetVX=dx*maxSpeed, targetVZ=dz*maxSpeed;
+  const inertia=1-Math.exp(-dt*4.7);
+  drone.vx=lerp(drone.vx,targetVX,inertia);
+  drone.vz=lerp(drone.vz,targetVZ,inertia);
+  drone.vy=lerp(drone.vy,vertical*10.5,1-Math.exp(-dt*5.3));
+  drone.x+=drone.vx*dt;drone.z+=drone.vz*dt;drone.y+=drone.vy*dt;
+  drone.x=clamp(drone.x,-WORLD.width/2+3,WORLD.width/2-3);
+  drone.z=clamp(drone.z,-WORLD.depth/2+3,WORLD.depth/2-3);
+  drone.y=clamp(drone.y,WORLD.minY,WORLD.maxY);
+  // Physical collision against unarmed obstacle towers.
+  for(const obs of STATIC_OBSTACLES){
+    if(drone.y>obs.h+1.7)continue;
+    const ox=drone.x-obs.x,oz=drone.z-obs.z,dist=Math.hypot(ox,oz),min=obs.r+1.65;
+    if(dist<min){
+      const nx=ox/(dist||1),nz=oz/(dist||1);
+      drone.x=obs.x+nx*min;drone.z=obs.z+nz*min;
+      drone.vx*=.15;drone.vz*=.15;
+    }
+  }
+  const moving=Math.hypot(drone.vx,drone.vz);
+  if(moving>1.6){
+    const heading=-Math.atan2(drone.vz,drone.vx);
+    let difference=((heading-drone.heading+Math.PI*3)%(Math.PI*2))-Math.PI;
+    drone.heading+=difference*Math.min(1,dt*3.7);
+  }
+  drone.lean=lerp(drone.lean,clamp(-drone.vz*.018,-.30,.30),1-Math.exp(-dt*5));
+}
+function handleTagging(){
+  for(const defender of game.drones){
+    if(defender.stun>0||defender.tagCooldown>0)continue;
+    const inHome=defender.team==='blue'?defender.x<0:defender.x>0;
+    if(!inHome)continue;
+    for(const intruder of game.drones){
+      if(intruder.team===defender.team||intruder.shield>0||intruder.stun>0)continue;
+      const invaded=intruder.team==='red'?intruder.x<0:intruder.x>0;
+      if(!invaded)continue;
+      if(dist3(defender,intruder)<3.5){
+        const x=intruder.x,y=intruder.y,z=intruder.z;
+        dropFlag(intruder);
+        spawnDrone(intruder,3.1);
+        defender.tagCooldown=4.5;
+        writeLog(`${defender.name} tagged ${intruder.name} in home airspace`,defender.team,'tag');
+        burst(x,y,z,defender.team,20);
+        if(intruder.isPlayer)showToast('TAGGED — DRONE RETURNING TO BASE',2.4);
+        playTone(240,.14,'triangle');
+        break;
+      }
+    }
+  }
+}
+function handleFlags(){
+  for(const flag of Object.values(game.flags)){
+    if(flag.carrier)continue;
+    if(flag.droppedAt!==null&&game.t-flag.droppedAt>18){returnFlag(flag,'automatically');continue;}
+    for(const drone of game.drones){
+      if(drone.stun>0||drone.y>11.8)continue;
+      if(Math.hypot(drone.x-flag.x,drone.z-flag.z)<3.75){
+        if(drone.team===flag.team){
+          if(flag.droppedAt!==null){returnFlag(flag,`by ${drone.name}`);burst(drone.x,4,drone.z,drone.team,12);}
+        }else if(!drone.flag){pickupFlag(drone,flag);}
+        break;
+      }
+    }
+  }
+  for(const drone of game.drones){
+    if(!drone.flag)continue;
+    const own=game.flags[drone.team];
+    if(!isFlagHome(own))continue;
+    if(drone.y>12)continue;
+    if(Math.hypot(drone.x-own.home.x,drone.z-own.home.z)<5.4){scoreFlag(drone);return;}
+  }
+}
+function simulate(dt){
+  if(game.phase!=='playing')return;
+  dt=Math.max(0,Math.min(.07,dt));
+  simClock+=dt;
+  game.t+=dt;
+  game.remaining-=dt;
+  if(game.remaining<=0){game.remaining=0;finishGame(game.score.blue===game.score.red?null:game.score.blue>game.score.red?'blue':'red');return;}
+  for(const drone of game.drones){
+    drone.shield=Math.max(0,drone.shield-dt);
+    drone.stun=Math.max(0,drone.stun-dt);
+    drone.tagCooldown=Math.max(0,drone.tagCooldown-dt);
+    steerDrone(drone,dt);
+  }
+  handleTagging();
+  handleFlags();
+  for(const p of game.bursts){
+    p.life-=dt;p.vy-=8.0*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.z+=p.vz*dt;
+  }
+  game.bursts=game.bursts.filter(p=>p.life>0);
+}
+function updateHud(force=false){
+  if(!force&&game.t-game.lastHud<.13)return;
+  game.lastHud=game.t;
+  const player=getPlayer();
+  const remaining=Math.max(0,Math.ceil(game.remaining));
+  $('clock').textContent=`${String(Math.floor(remaining/60)).padStart(2,'0')}:${String(remaining%60).padStart(2,'0')}`;
+  $('altitude').innerHTML=`${readable(player.y)} <small>m</small>`;
+  $('speed').innerHTML=`${readable(Math.hypot(player.vx,player.vz))} <small>m/s</small>`;
+  $('boostPct').textContent=`${Math.round(player.energy)}%`;
+  $('energyFill').style.width=`${Math.round(player.energy)}%`;
+  $('flightMode').textContent=autoPilot?'AUTONOMOUS':'MANUAL';
+  const b=game.flags.blue,r=game.flags.red;
+  $('flagStatus').textContent=player.flag?'YOU HAVE THE FLAG':r.carrier?'RED FLAG IN TRANSIT':b.carrier?'BLUE FLAG STOLEN':!isFlagHome(b)||!isFlagHome(r)?'DROPPED FLAG DETECTED':'BOTH FLAGS SECURE';
+  $('flagStatus').style.color=player.flag?'#ffc56a':b.carrier?'#ff5e82':'#86e7f5';
+  const status=d=>d.flag?'FLAG':d.stun>0?'RESET':d.isPlayer?'YOU':d.role==='defender'?'GUARD':'ACTIVE';
+  $('roster').innerHTML=game.drones.map(d=>`<div class="pilot"><i class="pilotDot" style="color:${HEX[d.team]};background:${HEX[d.team]}"></i><span class="pilotName">${d.name}</span><span class="mono pilotStatus">${status(d)}</span></div>`).join('');
+}
+// Self-contained WebGL2 rendering engine: no CDN, npm package, account, or paid API.
+const M4={
+  id(){return new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);},
+  mul(a,b){
+    const out=new Float32Array(16);
+    for(let col=0;col<4;col++)for(let row=0;row<4;row++){
+      let sum=0;
+      for(let k=0;k<4;k++)sum+=a[k*4+row]*b[col*4+k];
+      out[col*4+row]=sum;
+    }
+    return out;
+  },
+  T(x,y,z){let m=this.id();m[12]=x;m[13]=y;m[14]=z;return m;},
+  S(x,y,z){let m=this.id();m[0]=x;m[5]=y;m[10]=z;return m;},
+  Ry(r){const m=this.id(),c=Math.cos(r),s=Math.sin(r);m[0]=c;m[2]=-s;m[8]=s;m[10]=c;return m;},
+  Rx(r){const m=this.id(),c=Math.cos(r),s=Math.sin(r);m[5]=c;m[6]=s;m[9]=-s;m[10]=c;return m;},
+  Rz(r){const m=this.id(),c=Math.cos(r),s=Math.sin(r);m[0]=c;m[1]=s;m[4]=-s;m[5]=c;return m;},
+  TRS(x,y,z,sx=1,sy=1,sz=1,yaw=0){return this.mul(this.mul(this.T(x,y,z),this.Ry(yaw)),this.S(sx,sy,sz));},
+  perspective(degrees,aspect,near,far){
+    const f=1/Math.tan(degrees*Math.PI/360),nf=1/(near-far),m=new Float32Array(16);
+    m[0]=f/aspect;m[5]=f;m[10]=(far+near)*nf;m[11]=-1;m[14]=2*far*near*nf;
+    return m;
+  },
+  lookAt(eye,center){
+    const normalize=v=>{let n=Math.hypot(...v)||1;return v.map(q=>q/n);};
+    const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    const f=normalize([center[0]-eye[0],center[1]-eye[1],center[2]-eye[2]]);
+    const s=normalize(cross(f,[0,1,0]));
+    const u=cross(s,f);
+    return new Float32Array([
+      s[0],u[0],-f[0],0,
+      s[1],u[1],-f[1],0,
+      s[2],u[2],-f[2],0,
+      -dot(s,eye),-dot(u,eye),dot(f,eye),1
+    ]);
+  }
+};
+const compose=(...matrices)=>matrices.reduce((a,b)=>M4.mul(a,b),M4.id());
+const color = hex => {
+  let value=hex.replace('#','');
+  if(value.length===3)value=value.split('').map(c=>c+c).join('');
+  return [parseInt(value.slice(0,2),16)/255,parseInt(value.slice(2,4),16)/255,parseInt(value.slice(4,6),16)/255];
+};
+function buildMeshTriangles(){
+  const meshes={};
+  function addTri(dst,a,b,c,na,nb=na,nc=na){
+    for(const [p,n] of [[a,na],[b,nb],[c,nc]])dst.push(...p,...n);
+  }
+  function addQuad(dst,a,b,c,d,n){addTri(dst,a,b,c,n);addTri(dst,a,c,d,n);}
+  const box=[];
+  addQuad(box,[-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5],[0,0,1]);
+  addQuad(box,[.5,-.5,-.5],[-.5,-.5,-.5],[-.5,.5,-.5],[.5,.5,-.5],[0,0,-1]);
+  addQuad(box,[.5,-.5,.5],[.5,-.5,-.5],[.5,.5,-.5],[.5,.5,.5],[1,0,0]);
+  addQuad(box,[-.5,-.5,-.5],[-.5,-.5,.5],[-.5,.5,.5],[-.5,.5,-.5],[-1,0,0]);
+  addQuad(box,[-.5,.5,.5],[.5,.5,.5],[.5,.5,-.5],[-.5,.5,-.5],[0,1,0]);
+  addQuad(box,[-.5,-.5,-.5],[.5,-.5,-.5],[.5,-.5,.5],[-.5,-.5,.5],[0,-1,0]);
+  meshes.box=box;
+  const plane=[];
+  addQuad(plane,[-.5,0,-.5],[.5,0,-.5],[.5,0,.5],[-.5,0,.5],[0,1,0]);
+  meshes.plane=plane;
+  function surfaceCylinder(n=18,topR=.5,bottomR=.5){
+    const a=[];
+    for(let i=0;i<n;i++){
+      const phi=2*Math.PI*i/n,psi=2*Math.PI*(i+1)/n;
+      const c=Math.cos(phi),s=Math.sin(phi),c2=Math.cos(psi),s2=Math.sin(psi);
+      const p=[c*bottomR,-.5,s*bottomR],p2=[c2*bottomR,-.5,s2*bottomR];
+      const q=[c*topR,.5,s*topR],q2=[c2*topR,.5,s2*topR];
+      const normal=[c,(bottomR-topR)*.8,s],normal2=[c2,(bottomR-topR)*.8,s2];
+      addTri(a,p,q,p2,normal,normal,normal2);
+      if(topR>0)addTri(a,p2,q,q2,normal2,normal,normal2);
+      addTri(a,[0,-.5,0],p2,p,[0,-1,0]);
+      if(topR>0)addTri(a,[0,.5,0],q,q2,[0,1,0]);
+    }
+    return a;
+  }
+  meshes.cylinder=surfaceCylinder(18);
+  meshes.cone=surfaceCylinder(20,0,.5);
+  const sphere=[];
+  const steps=12,rings=9;
+  for(let lat=0;lat<rings;lat++)for(let lon=0;lon<steps;lon++){
+    const spherePoint=(l,o)=>{
+      const p=Math.PI*(l/rings-.5),t=2*Math.PI*o/steps;
+      return [Math.cos(p)*Math.cos(t)*.5,Math.sin(p)*.5,Math.cos(p)*Math.sin(t)*.5];
+    };
+    const a=spherePoint(lat,lon),b=spherePoint(lat+1,lon),c=spherePoint(lat+1,lon+1),d=spherePoint(lat,lon+1);
+    const normal=p=>p.map(v=>v*2);
+    addTri(sphere,a,b,c,normal(a),normal(b),normal(c));
+    addTri(sphere,a,c,d,normal(a),normal(c),normal(d));
+  }
+  meshes.sphere=sphere;
+  const torus=[];
+  const maj=28,min=8,majorR=.50,tubeR=.065;
+  const torPt=(i,j)=>{
+    const u=i*2*Math.PI/maj,v=j*2*Math.PI/min;
+    const nr=[Math.cos(u)*Math.cos(v),Math.sin(v),Math.sin(u)*Math.cos(v)];
+    const pos=[(majorR+tubeR*Math.cos(v))*Math.cos(u),tubeR*Math.sin(v),(majorR+tubeR*Math.cos(v))*Math.sin(u)];
+    return {pos,nr};
+  };
+  for(let i=0;i<maj;i++)for(let j=0;j<min;j++){
+    const a=torPt(i,j),b=torPt(i+1,j),c=torPt(i+1,j+1),d=torPt(i,j+1);
+    addTri(torus,a.pos,b.pos,c.pos,a.nr,b.nr,c.nr);
+    addTri(torus,a.pos,c.pos,d.pos,a.nr,c.nr,d.nr);
+  }
+  meshes.torus=torus;
+  return meshes;
+}
+const MESH_DATA=buildMeshTriangles();
+class WebGLArena{
+  constructor(element){
+    this.canvas=element;
+    this.gl=element.getContext('webgl2',{antialias:true,alpha:false,depth:true,powerPreference:'high-performance'});
+    if(!this.gl)throw new Error('WebGL2 unavailable');
+    const gl=this.gl;
+    const vs=`#version 300 es
+      precision highp float;
+      layout(location=0) in vec3 aPosition;
+      layout(location=1) in vec3 aNormal;
+      uniform mat4 uMVP, uModel;
+      out vec3 vNormal,vWorld;
+      void main(){vec4 p=uModel*vec4(aPosition,1.0);vWorld=p.xyz;vNormal=mat3(uModel)*aNormal;gl_Position=uMVP*vec4(aPosition,1.0);}
+    `;
+    const fs=`#version 300 es
+      precision highp float;
+      in vec3 vNormal,vWorld;
+      uniform vec3 uColor,uEye;
+      uniform float uEmissive,uAlpha,uFloor;
+      out vec4 fragColor;
+      void main(){
+        vec3 n=normalize(vNormal);
+        float diffuse=max(dot(n,normalize(vec3(-.32,.86,.47))),0.0);
+        vec3 col=uColor*(.55+.52*diffuse+uEmissive*1.2);
+        if(uFloor>.5){
+          vec2 uv=abs(vWorld.xz)/5.0;
+          vec2 t=fract(uv);
+          float gridX=1.0-smoothstep(.008,.026,min(t.x,1.0-t.x));
+          float gridZ=1.0-smoothstep(.008,.026,min(t.y,1.0-t.y));
+          float line=max(gridX,gridZ);
+          float axisX=1.0-smoothstep(.03,.11,abs(vWorld.x));
+          float axisZ=1.0-smoothstep(.03,.11,abs(vWorld.z));
+          col=mix(col,vec3(.066,.20,.31),line*.7);
+          col=mix(col,vec3(.09,.32,.43),max(axisX,axisZ)*.40);
+          float radial=length(vWorld.xz);
+          col+=vec3(.018,.03,.043)*(1.0-smoothstep(0.0,78.0,radial));
+        }
+        float fog=clamp((distance(vWorld,uEye)-37.0)/175.0,0.0,.47);
+        col=mix(col,vec3(.020,.029,.065),fog);
+        fragColor=vec4(col,uAlpha);
+      }
+    `;
+    const shader=(type,source)=>{
+      const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);
+      if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));
+      return s;
+    };
+    const program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vs));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,fs));gl.linkProgram(program);
+    if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+    this.program=program;gl.useProgram(program);
+    this.uniform={};
+    for(const name of ['uMVP','uModel','uColor','uEye','uEmissive','uAlpha','uFloor'])this.uniform[name]=gl.getUniformLocation(program,name);
+    this.meshes={};
+    for(const [name,arr] of Object.entries(MESH_DATA)){
+      const vao=gl.createVertexArray();gl.bindVertexArray(vao);
+      const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
+      gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(arr),gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,24,0);
+      gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,24,12);
+      this.meshes[name]={vao,count:arr.length/6};
+    }
+    gl.bindVertexArray(null);
+    gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(.014,.024,.058,1);
+    this.cachedColors={};
+    this.vp=M4.id();
+  }
+  rgb(hex){return this.cachedColors[hex]||(this.cachedColors[hex]=color(hex));}
+  begin(view,projection,eye){
+    const gl=this.gl;
+    gl.viewport(0,0,this.canvas.width,this.canvas.height);
+    gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    this.vp=M4.mul(projection,view);
+    gl.useProgram(this.program);
+    gl.uniform3fv(this.uniform.uEye,new Float32Array(eye));
+  }
+  mesh(name,model,tint='#ffffff',emissive=0,alpha=1,floor=0){
+    const gl=this.gl,obj=this.meshes[name];
+    if(alpha<.995)gl.depthMask(false);
+    gl.uniformMatrix4fv(this.uniform.uMVP,false,M4.mul(this.vp,model));
+    gl.uniformMatrix4fv(this.uniform.uModel,false,model);
+    gl.uniform3fv(this.uniform.uColor,new Float32Array(this.rgb(tint)));
+    gl.uniform1f(this.uniform.uEmissive,emissive);
+    gl.uniform1f(this.uniform.uAlpha,alpha);
+    gl.uniform1f(this.uniform.uFloor,floor);
+    gl.bindVertexArray(obj.vao);gl.drawArrays(gl.TRIANGLES,0,obj.count);
+    if(alpha<.995)gl.depthMask(true);
+  }
+  part(name,x,y,z,sx,sy,sz,tint,glow=0,alpha=1,yaw=0){this.mesh(name,M4.TRS(x,y,z,sx,sy,sz,yaw),tint,glow,alpha);}
+  local(name,parent,x,y,z,sx,sy,sz,tint,glow=0,alpha=1,yaw=0){
+    this.mesh(name,compose(parent,M4.T(x,y,z),M4.Ry(yaw),M4.S(sx,sy,sz)),tint,glow,alpha);
+  }
+  ground(){
+    this.mesh('plane',M4.TRS(0,0,0,116,1,88),'#0b162a',0,1,1);
+    this.part('cylinder',0,-.2,0,37,.25,37,'#071c34',.2);
+    this.part('cylinder',0,-.11,0,14,.17,14,'#0c263b',.15);
+    this.part('torus',0,.15,0,27,1.2,27,'#1b5270',.4,.55);
+    this.part('torus',0,.16,0,7,1.2,7,'#42bbc9',1.15,.65);
+    for(const t of TEAMS){
+      const flag=game.flags[t], x=flag.home.x, c=HEX[t];
+      this.part('cylinder',x,.14,0,20,.24,20,t==='blue'?'#15345e':'#52152f',.34);
+      this.part('torus',x,.28,0,19,1.3,19,c,1.22,.90);
+      this.part('torus',x,.30,0,11,1.2,11,c,1.1,.75);
+      this.part('box',x,.25,0,2,.30,12,c,1.15,.8);
+      this.part('box',x,.25,0,12,.30,2,c,1.15,.8);
+      for(let j=0;j<4;j++){
+        const a=j*Math.PI/2+Math.PI/4;
+        const px=x+Math.cos(a)*10,pz=Math.sin(a)*10;
+        this.part('cylinder',px,1.9,pz,.95,3.7,.95,'#172944',.0);
+        this.part('sphere',px,4.0,pz,1.15,1.15,1.15,c,1.9);
+      }
+    }
+    for(const side of [-1,1]){
+      this.part('box',0,1.0,side*44,116,1.3,.75,'#1b3658',.05);
+      this.part('box',0,1.85,side*44,116,.17,.36,'#4bcad8',1.6,.76);
+      this.part('box',side*58,1.0,0,.75,1.3,88,'#1b3658',.05);
+      this.part('box',side*58,1.85,0,.36,.17,88,'#4bcad8',1.6,.76);
+    }
+    for(let x=-55;x<=55;x+=11){
+      this.part('cylinder',x,1.1,43.6,.35,2.2,.35,'#24445d',.3);
+      this.part('cylinder',x,1.1,-43.6,.35,2.2,.35,'#24445d',.3);
+      this.part('sphere',x,2.34,43.6,.75,.75,.75,x>0?HEX.red:HEX.blue,1.8);
+      this.part('sphere',x,2.34,-43.6,.75,.75,.75,x>0?HEX.red:HEX.blue,1.8);
+    }
+  }
+  structures(time){
+    for(const [i,obs] of STATIC_OBSTACLES.entries()){
+      this.part('cylinder',obs.x,obs.h*.45,obs.z,obs.r*1.62,obs.h*.9,obs.r*1.62,'#172a42',.06);
+      this.part('box',obs.x,obs.h*.59,obs.z,obs.r*1.23,obs.h*.71,obs.r*1.15,'#203c55',.04,1,i%2?.24:-.24);
+      this.part('box',obs.x,obs.h*.90,obs.z,obs.r*1.6,.27,obs.r*1.6,'#3a6880',.48,1,i%2?.24:-.24);
+      this.part('torus',obs.x,obs.h*.94,obs.z,obs.r*1.75,1.2,obs.r*1.75,i%2?'#5eeada':'#54a7ff',1.25,.80);
+      this.part('cylinder',obs.x,obs.h+.45,obs.z,.48,.9,.48,'#87c1cf',.8);
+      this.part('sphere',obs.x,obs.h+.98,obs.z,.85,.85,.85,i%2?'#5feede':'#f5b65a',1.8);
+      for(const side of [-1,1]){
+        this.part('box',obs.x+side*obs.r*.77,obs.h*.50,obs.z,.26,obs.h*.64,.26,i%2?'#2d8a9b':'#396c9c',.6);
+      }
+    }
+    for(const s of [-1,1]){
+      for(const z of [-35,35]){
+        this.part('box',s*52,4,z,2.5,8,2.5,'#193253',.2);
+        this.part('cone',s*52,9,z,2.7,3,2.7,s<0?'#49bfff':'#ff658a',.95);
+        this.part('sphere',s*52,11+Math.sin(time*2+z)*.15,z,1.15,1.15,1.15,s<0?HEX.blue:HEX.red,2.0);
+      }
+    }
+  }
+  flags(time){
+    for(const flag of Object.values(game.flags)){
+      const pos=flagPos(flag),c=HEX[flag.team],carry=!!flag.carrier;
+      const bob=Math.sin(time*3+(flag.team==='blue'?0:1.3))*.22;
+      const yy=pos.y+bob;
+      if(!carry){
+        this.part('cylinder',pos.x,yy-2.6,pos.z,.17,5.2,.17,'#b6d1e6',.7);
+        this.part('cylinder',pos.x,.5,pos.z,1.9,.55,1.9,c,.85);
+      }
+      this.part('box',pos.x+1.10,yy+.7,pos.z,2.2,1.4,.16,c,1.85);
+      this.part('box',pos.x+1.66,yy+.7,pos.z,.17,1.35,.28,'#fff7fc',1.4);
+      this.part('sphere',pos.x,yy+1.65,pos.z,.76,.76,.76,c,2.0);
+      this.part('torus',pos.x,yy-1.4,pos.z,2.0,1,2.0,c,1.75,.8,time*.4);
+      if(flag.droppedAt!==null){
+        this.part('torus',pos.x,.36,pos.z,5.2,1,5.2,c,2.0,.65);
+      }
+    }
+  }
+  drone(d,time){
+    const teamColor=HEX[d.team],main=d.team==='blue'?'#253f66':'#552941';
+    const w=Math.sin(time*2.8+d.phase)*.12;
+    const base=compose(M4.T(d.x,d.y+w,d.z),M4.Ry(d.heading),M4.Rz(d.lean));
+    this.local('box',base,0,0,0,3.6,.65,1.72,main,.22);
+    this.local('box',base,.28,.42,0,1.65,.42,1.32,'#738eaa',.16);
+    this.local('box',base,1.16,.08,0,.55,.35,1.45,teamColor,1.45);
+    this.local('box',base,-1.30,-.04,0,.56,.6,1.32,'#1e314c',.15);
+    this.local('sphere',base,.2,.77,0,1.05,.65,1.00,'#a7eaff',1.2);
+    this.local('sphere',base,1.72,.13,0,.48,.48,.48,teamColor,1.7);
+    for(const sx of [-1,1])for(const sz of [-1,1]){
+      const mx=sx*1.58,mz=sz*1.58;
+      this.local('box',base,mx*.53,-.05,mz*.55,1.65,.23,.24,'#66849c',.25);
+      this.local('cylinder',base,mx,.13,mz,.53,.4,.53,'#101b31',.12);
+      this.local('torus',base,mx,.24,mz,2.0,1.0,2.0,teamColor,1.4);
+      this.local('sphere',base,mx,.25,mz,.44,.20,.44,'#d1fcff',1.2);
+      const spin=time*20*(sx===sz?1:-1)+d.phase;
+      this.local('box',base,mx,.37,mz,2.02,.045,.13,'#c8edff',.70,1,spin);
+      this.local('box',base,mx,.37,mz,.13,.045,2.02,'#c8edff',.70,1,spin);
+      this.local('cone',base,mx,-.56,mz,.28,.73,.28,teamColor,1.2,.65);
+    }
+    this.local('box',base,-1.35,.22,-.6,.62,.18,.24,teamColor,1.8);
+    this.local('box',base,-1.35,.22,.6,.62,.18,.24,teamColor,1.8);
+    if(d.boosting){
+      this.local('cone',base,-1.95,-.14,0,1.1,2,1.1,'#4aefff',2.4,.65,Math.PI/2);
+    }
+    if(d.flag){
+      this.local('sphere',base,0,3,0,1.9,1.9,1.9,HEX[d.flag],2.2);
+      this.local('torus',base,0,2.4,0,3.6,1.5,3.6,HEX[d.flag],2.1,.72);
+    }
+    if(d.isPlayer){
+      this.part('torus',d.x,d.y-1.4,d.z,5.2,.6,5.2,'#62f7ef',1.65,.85);
+    }
+    if(d.shield>0&&d.shield<3.2){
+      this.part('torus',d.x,d.y+.1,d.z,5.0,.9,5.0,'#b9faff',2.2,.28+Math.sin(time*12)*.1);
+    }
+  }
+  effects(time){
+    for(const d of game.drones){
+      this.part('torus',d.x,.12,d.z,4.4,1.1,4.4,d.team==='blue'?'#1c7ca8':'#a73e5b',.6,.22);
+    }
+    for(const p of game.bursts){
+      this.part('sphere',p.x,p.y,p.z,p.size,p.size,p.size,p.color,2.4,clamp(p.life/p.maxLife,0,1));
+    }
+    for(const team of TEAMS){
+      const x=game.flags[team].home.x,c=HEX[team];
+      this.part('torus',x,9.0+Math.sin(time*2)*.25,0,10,1.5,10,c,1.7,.18,time);
+      this.part('torus',x,13.0+Math.cos(time*1.2)*.35,0,7,1.5,7,c,1.4,.15,time);
+    }
+  }
+  render(time,dt){
+    const c=getCameraMatrices(dt);
+    this.begin(c.view,c.projection,c.eye);
+    this.ground();this.structures(time);this.flags(time);
+    // Front-to-back ordering is resolved by hardware depth testing.
+    for(const d of game.drones)this.drone(d,time);
+    this.effects(time);
+    camera.view=c.view;camera.projection=c.projection;
+  }
+}
+function getCameraMatrices(dt){
+  const player=getPlayer();
+  let desiredEye, desiredTarget;
+  const active=game.phase!=='ready';
+  if(!active||cameraMode===1){
+    desiredEye=[-18,116,64];desiredTarget=[0,0,0];
+  }else if(cameraMode===2){
+    const theta=performance.now()/1000*.19;
+    desiredEye=[player.x+Math.cos(theta)*36,player.y+30,player.z+Math.sin(theta)*43];
+    desiredTarget=[player.x,player.y,player.z];
+  }else{
+    desiredEye=[player.x-35,player.y+32,player.z+40];
+    desiredTarget=[player.x+14,player.y*.3,player.z];
+  }
+  const t=1-Math.exp(-Math.min(dt||.016,.08)*(active?3.4:1.9));
+  for(let i=0;i<3;i++){
+    camera.eye[i]=lerp(camera.eye[i],desiredEye[i],t);
+    camera.target[i]=lerp(camera.target[i],desiredTarget[i],t);
+  }
+  const vfov=active&&cameraMode===0?51:57;
+  return {
+    eye:camera.eye,view:M4.lookAt(camera.eye,camera.target),
+    projection:M4.perspective(vfov,viewWidth/Math.max(1,viewHeight),.3,360)
+  };
+}
+function screenPosition(pos){
+  if(!camera.view||!camera.projection)return null;
+  const m=M4.mul(camera.projection,camera.view), p=[pos.x,pos.y,pos.z,1];
+  const out=new Array(4);
+  for(let row=0;row<4;row++)out[row]=m[row]*p[0]+m[4+row]*p[1]+m[8+row]*p[2]+m[12+row]*p[3];
+  if(out[3]<=0.001)return null;
+  const x=(out[0]/out[3]*.5+.5)*viewWidth,y=(.5-out[1]/out[3]*.5)*viewHeight;
+  return x>-30&&x<viewWidth+30&&y>-30&&y<viewHeight+30?{x,y}:null;
+}
+function updateMarkers(){
+  if(!renderer||!(renderer instanceof WebGLArena)){
+    $('blueMarker').style.display='none';$('redMarker').style.display='none';return;
+  }
+  for(const team of TEAMS){
+    const marker=$(team+'Marker'),flag=game.flags[team];
+    const location=screenPosition(flagPos(flag));
+    if(location){marker.style.display='block';marker.style.left=location.x+'px';marker.style.top=location.y+'px';}
+    else marker.style.display='none';
+  }
+}
+function drawMiniMap(){
+  const ctx=miniCtx,w=mini.width,h=mini.height,px=x=>(x/WORLD.width+.5)*w,pz=z=>(z/WORLD.depth+.5)*h;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#06172d';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='rgba(25,84,130,.10)';ctx.fillRect(0,0,w/2,h);
+  ctx.fillStyle='rgba(155,41,87,.10)';ctx.fillRect(w/2,0,w/2,h);
+  ctx.strokeStyle='rgba(115,166,196,.16)';ctx.lineWidth=1;
+  for(let i=0;i<=10;i++){const x=i*w/10;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let i=0;i<=8;i++){const y=i*h/8;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  ctx.setLineDash([5,5]);ctx.strokeStyle='rgba(215,236,245,.26)';ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.stroke();ctx.setLineDash([]);
+  for(const obs of STATIC_OBSTACLES){
+    ctx.fillStyle='#294966';ctx.fillRect(px(obs.x)-obs.r*2,pz(obs.z)-obs.r*2,obs.r*4,obs.r*4);
+  }
+  for(const flag of Object.values(game.flags)){
+    const pos=flagPos(flag),c=HEX[flag.team];
+    ctx.strokeStyle=c;ctx.lineWidth=2.2;ctx.beginPath();ctx.arc(px(flag.home.x),pz(flag.home.z),16,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle=c;ctx.beginPath();ctx.arc(px(pos.x),pz(pos.z),5.5,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#ffffff';ctx.fillRect(px(pos.x)+4,pz(pos.z)-6,1.8,7.8);
+  }
+  for(const pilot of game.drones){
+    const x=px(pilot.x),z=pz(pilot.z);
+    ctx.fillStyle=pilot.isPlayer?'#ffffff':HEX[pilot.team];
+    ctx.globalAlpha=pilot.stun>0?.43:1;
+    ctx.beginPath();ctx.arc(x,z,pilot.isPlayer?5.1:3.4,0,Math.PI*2);ctx.fill();
+    if(pilot.isPlayer){
+      ctx.strokeStyle='#81fff0';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,z,9,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x,z);ctx.lineTo(x+Math.cos(-pilot.heading)*13,z+Math.sin(-pilot.heading)*13);ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+}
+class FlatArena{
+  constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');if(!this.ctx)throw Error('Canvas 2D unavailable');}
+  render(time){
+    const ctx=this.ctx,w=this.canvas.width,h=this.canvas.height;
+    ctx.clearRect(0,0,w,h);
+    const gradient=ctx.createLinearGradient(0,0,w,h);
+    gradient.addColorStop(0,'#071d39');gradient.addColorStop(.5,'#071125');gradient.addColorStop(1,'#220e24');
+    ctx.fillStyle=gradient;ctx.fillRect(0,0,w,h);
+    const s=Math.min((w-28)/116,(h-90)/88),cx=w/2,cy=h/2;
+    const X=x=>cx+x*s,Z=z=>cy+z*s;
+    ctx.strokeStyle='#133351';ctx.lineWidth=1;
+    for(let x=-58;x<=58;x+=5){ctx.beginPath();ctx.moveTo(X(x),Z(-44));ctx.lineTo(X(x),Z(44));ctx.stroke();}
+    for(let z=-44;z<=44;z+=5){ctx.beginPath();ctx.moveTo(X(-58),Z(z));ctx.lineTo(X(58),Z(z));ctx.stroke();}
+    ctx.strokeStyle='#5cbbd5';ctx.strokeRect(X(-58),Z(-44),116*s,88*s);
+    ctx.setLineDash([7,10]);ctx.beginPath();ctx.moveTo(X(0),Z(-44));ctx.lineTo(X(0),Z(44));ctx.stroke();ctx.setLineDash([]);
+    for(const team of TEAMS){
+      const flag=game.flags[team];
+      ctx.strokeStyle=HEX[team];ctx.lineWidth=4;
+      ctx.beginPath();ctx.arc(X(flag.home.x),Z(0),9.4*s,0,Math.PI*2);ctx.stroke();
+      const pos=flagPos(flag);ctx.fillStyle=HEX[team];
+      ctx.beginPath();ctx.arc(X(pos.x),Z(pos.z),5,0,Math.PI*2);ctx.fill();
+    }
+    for(const o of STATIC_OBSTACLES){
+      ctx.fillStyle='#38526c';ctx.fillRect(X(o.x-o.r),Z(o.z-o.r),o.r*2*s,o.r*2*s);
+      ctx.strokeStyle='#6bafbb';ctx.strokeRect(X(o.x-o.r),Z(o.z-o.r),o.r*2*s,o.r*2*s);
+    }
+    for(const d of game.drones){
+      const x=X(d.x),z=Z(d.z);
+      ctx.save();ctx.translate(x,z);ctx.rotate(-d.heading);
+      ctx.fillStyle=HEX[d.team];ctx.shadowBlur=18;ctx.shadowColor=HEX[d.team];
+      ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(-5,-5);ctx.lineTo(-3,0);ctx.lineTo(-5,5);ctx.closePath();ctx.fill();
+      ctx.shadowBlur=0;
+      if(d.isPlayer){ctx.strokeStyle='#ffffff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,11,0,Math.PI*2);ctx.stroke();}
+      ctx.restore();
+    }
+  }
+}
+function resize(){
+  const dpr=Math.min(1.8,devicePixelRatio||1);
+  viewWidth=innerWidth;viewHeight=innerHeight;
+  canvas.width=Math.max(1,Math.round(viewWidth*dpr));
+  canvas.height=Math.max(1,Math.round(viewHeight*dpr));
+}
+function frame(now){
+  const dt=Math.min(Math.max(0,(now-(previousFrame||now))/1000),.30);
+  previousFrame=now;
+  // Fixed-size physics substeps preserve real match time at low rendering FPS.
+  if(game.phase==='playing'){
+    let remainingStep=dt;
+    while(remainingStep>.00001 && game.phase==='playing'){
+      const step=Math.min(.04,remainingStep);
+      simulate(step);
+      remainingStep-=step;
+    }
+  }
+  try{renderer.render(now/1000,dt);}catch(error){
+    console.error('Renderer failed:',error);
+    $('unsupported').style.display='grid';
+    return;
+  }
+  drawMiniMap();updateMarkers();
+  if(game.phase==='playing')updateHud();
+  if(now/1000>toastExpire)$('toast').classList.remove('show');
+  requestAnimationFrame(frame);
+}
+function bindHoldButton(id,key){
+  const node=$(id);
+  const release=()=>{touch[key]=false;node.classList.remove('pressed');};
+  node.addEventListener('pointerdown',e=>{e.preventDefault();node.setPointerCapture(e.pointerId);touch[key]=true;node.classList.add('pressed');});
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])node.addEventListener(event,release);
+}
+function bindControls(){
+  const movable=new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight','ControlLeft','ControlRight']);
+  window.addEventListener('keydown',e=>{
+    if(movable.has(e.code))e.preventDefault();
+    keys[e.code]=true;
+    if(e.repeat)return;
+    if(e.code==='Enter'&&game.phase!=='playing'&&game.phase!=='paused')startGame();
+    else if(e.code==='KeyP'||e.code==='Escape')togglePause();
+    else if(e.code==='KeyC')cycleCam();
+    else if(e.code==='KeyT')toggleAuto();
+    else if(e.code==='KeyM')setSound();
+  });
+  window.addEventListener('keyup',e=>{keys[e.code]=false;});
+  window.addEventListener('blur',()=>{for(const key of Object.keys(keys))keys[key]=false;touch.ax=touch.ay=0;touch.up=touch.down=touch.boost=false;if(game.phase==='playing')togglePause();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&game.phase==='playing')togglePause();});
+  $('startBtn').addEventListener('click',startGame);
+  $('pauseBtn').addEventListener('click',togglePause);
+  $('autoBtn').addEventListener('click',toggleAuto);
+  $('camBtn').addEventListener('click',cycleCam);
+  $('cameraTouch').addEventListener('click',cycleCam);
+  $('soundBtn').addEventListener('click',setSound);
+  $('exportBtn').addEventListener('click',exportTelemetry);
+  bindHoldButton('upTouch','up');bindHoldButton('downTouch','down');bindHoldButton('boostTouch','boost');
+  const zone=$('joystick'),knob=$('stick');
+  let joystickPointer=null;
+  const move=e=>{
+    if(joystickPointer!==e.pointerId)return;
+    const rect=zone.getBoundingClientRect();
+    let dx=e.clientX-(rect.left+rect.width/2),dy=e.clientY-(rect.top+rect.height/2);
+    const max=rect.width*.38,mag=Math.hypot(dx,dy);
+    if(mag>max){dx=dx/mag*max;dy=dy/mag*max;}
+    knob.style.transform=`translate(${dx}px,${dy}px)`;
+    touch.ax=dx/max;touch.ay=dy/max;
+  };
+  zone.addEventListener('pointerdown',e=>{e.preventDefault();if(joystickPointer!==null)return;joystickPointer=e.pointerId;zone.setPointerCapture(e.pointerId);move(e);});
+  zone.addEventListener('pointermove',move);
+  const resetJoystick=e=>{
+    if(e.pointerId!==joystickPointer)return;
+    joystickPointer=null;touch.ax=touch.ay=0;knob.style.transform='translate(0,0)';
+  };
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])zone.addEventListener(event,resetJoystick);
+  window.addEventListener('resize',resize);
+}
+function initialize(){
+  game=newGame();
+  resize();
+  try{renderer=new WebGLArena(canvas);}catch(error){
+    console.warn('3D WebGL unavailable; running fully playable 2D fallback:',error);
+    renderer=new FlatArena(canvas);
+  }
+  bindControls();
+  writeLog('Systems nominal. Awaiting mission launch.');
+  updateHud(true);
+  if(new URLSearchParams(location.search).has('test')){
+    window.__ctfTest={
+      start:startGame, snapshot:()=>({
+        phase:game.phase,time:game.t,remaining:game.remaining,score:{...game.score},cameraMode:CAMERA_MODES[cameraMode],
+        autoPilot,renderer:renderer instanceof WebGLArena?'webgl2':'canvas2d',
+        flags:Object.fromEntries(Object.entries(game.flags).map(([k,f])=>[k,{carrier:f.carrier,x:f.x,z:f.z,home:isFlagHome(f),droppedAt:f.droppedAt}])),
+        drones:game.drones.map(d=>({id:d.id,x:d.x,y:d.y,z:d.z,flag:d.flag,energy:d.energy,role:d.role})),
+        events:game.events.map(e=>({...e}))
+      }),
+      moveDrone:(id,x,z,y=5.2)=>{const d=game.drones.find(d=>d.id===id);if(!d)return false;Object.assign(d,{x,z,y,vx:0,vz:0,vy:0,stun:0,shield:5});return true;},
+      setRole:(id,role)=>{const d=game.drones.find(d=>d.id===id);if(d)d.role=role;},
+      step:(seconds=.017)=>simulate(seconds),
+      forceTime:(seconds)=>{game.remaining=seconds;},
+      pause:togglePause,
+      cycleCam,
+      auto:toggleAuto
+    };
+  }
+  requestAnimationFrame(frame);
+}
+initialize();
+</script>
+</body>
+</html>

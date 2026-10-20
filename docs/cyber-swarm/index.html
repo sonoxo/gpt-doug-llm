@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#081018">
+<meta name="description" content="XUNIA Cyber Learning Swarm: free browser-first cybersecurity defensive training, six transparent simulated analytical roles, 15 MITRE ATT&CK tactics and evidence-based exercises.">
+<title>XUNIA // CYBER DEFENSE SWARM</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<div class="app">
+ <aside class="sidebar" aria-label="XUNIA navigation">
+  <a class="brand" href="/" aria-label="XUNIA Museum"><span class="brand-mark">X</span><span><b>XUNIA</b><small>UNIVERSAL HIVE</small></span></a>
+  <div class="sideline"></div>
+  <div class="section-tag">COMMAND / ACADEMY</div>
+  <nav class="navlist" aria-label="Application views">
+   <button class="navitem active" data-view="mission"><span class="navicon">◈</span><span>Mission Control</span><small>01</small></button>
+   <button class="navitem" data-view="atlas"><span class="navicon">▦</span><span>Technique Atlas</span><small>02</small></button>
+   <button class="navitem" data-view="records"><span class="navicon">▤</span><span>Evidence Room</span><small>03</small></button>
+  </nav>
+  <div class="section-tag" style="margin-top:30px">CONNECTED XUNIA MODULES</div>
+  <nav class="navlist external" aria-label="Related XUNIA modules">
+   <a href="/hive.html"><span class="navicon">⌘</span>Universal Hive <span class="arrow">↗</span></a>
+   <a href="/darkweb/"><span class="navicon">◎</span>Glass Onion <span class="arrow">↗</span></a>
+   <a href="/tasmania/"><span class="navicon">◇</span>Tasmania 3D <span class="arrow">↗</span></a>
+   <a href="/resources.html"><span class="navicon">▥</span>Resource Hub <span class="arrow">↗</span></a>
+  </nav>
+  <div class="sidebar-bottom"><span class="live-dot"></span><b>LOCAL ANALYSIS MODE</b><p>Six deterministic training roles. No background workers, account access, scanning, or production targets.</p><span class="version">BUILD CYBER.SWARM.1</span></div>
+ </aside>
+ <div class="main-wrap">
+  <header class="topbar"><div class="breadcrumb">XUNIA <span>/</span> GPT-DOUG-LLM <span>/</span> <strong>CYBER LEARNING</strong></div><div class="topright"><span class="connection">CONNECTED TO XUNIA MUSEUM</span><span class="clock" id="clock">00:00:00 UTC</span><span class="sim-chip">SYNTHETIC ONLY</span></div></header>
+  <main class="main">
+   <section class="intro"><div class="eyebrow"><span class="square"></span> XUNIA CYBER DEFENSE LAB / RELEASE 01 <span class="mini-rule"></span> INTERACTIVE TRAINING</div><div class="headline-row"><div><h1>SUMMON THE<br><em>DEFENSE SWARM.</em></h1><p>Train GPT-Doug concepts across cyber tactics without touching real targets. Six inspectable local roles analyze fictional incidents, map official frameworks, challenge assumptions and require your verification before completion.</p></div><div class="hero-stamp"><div class="hex-glyph">✳</div><b>6</b><small>LOGICAL ROLES<br>0 REAL-WORLD ACTIONS</small></div></div></section>
+   <section class="metric-grid" aria-label="Academy metrics">
+    <div class="metric"><span>ENTERPRISE TACTICS</span><strong id="tactic-count">15</strong><small>MITRE ATT&CK coverage</small></div>
+    <div class="metric"><span>DEFENSIVE LABS</span><strong id="lab-count">15</strong><small>Fictional event datasets</small></div>
+    <div class="metric"><span>HIVE ROLES</span><strong>06</strong><small>Deterministic & auditable</small></div>
+    <div class="metric"><span>EXERCISES PASSED</span><strong id="passed-count">00</strong><small>Stored in this browser only</small></div>
+   </section>
+   <div id="load-error" class="failure" role="alert" hidden>Curriculum could not be loaded or failed its integrity checks. No training actions are available.</div>
+   <section id="mission" class="view active" aria-label="Mission Control">
+    <div class="dashboard-grid">
+     <div class="col-main">
+      <div class="panel network-panel"><div class="panel-top"><div><div class="small-kicker">SWARM TOPOLOGY / LOCAL</div><h2>Six-role verification mesh</h2></div><span class="tag safe">NO EXTERNAL EXECUTION</span></div><div class="network-wrap"><canvas id="swarm-graph" width="970" height="380" role="img" aria-label="Diagram of six simulated cyber-defense roles connected to one verified evidence node"></canvas><div class="network-legend"><span><i class="legend-n"></i>Training role</span><span><i class="legend-c"></i>Evidence gate</span><span class="state"><span class="live-dot"></span><b id="mesh-status">IDLE / READY</b></span></div></div><div class="role-strip" id="role-strip"></div></div>
+      <div class="panel pipeline-panel"><div class="panel-top"><div><div class="small-kicker">REPRODUCIBLE RUN / 6 STAGES</div><h2>Swarm execution log</h2></div><span id="stage-count" class="tag">0 / 6 COMPLETE</span></div><div class="pipeline-list" id="pipeline-list" aria-live="polite"><div class="empty">Select an exercise and summon the logical roles to inspect their work.</div></div></div>
+     </div>
+     <div class="col-side">
+      <div class="panel mission-panel"><div class="panel-top"><div><div class="small-kicker">MISSION SELECTOR</div><h2>Defensive exercise</h2></div><span class="tag">AUTHORIZED LAB</span></div><label class="fieldlabel" for="exercise">Training scenario</label><select id="exercise" aria-label="Select a defensive training scenario" disabled><option>Loading exercises…</option></select><div class="briefcard"><div class="mission-no" id="mission-no">LAB --</div><h3 id="exercise-title">Curriculum loading</h3><p id="exercise-brief">Preparing synthetic training data.</p><div class="chips" id="nist-tags"></div><div class="tactic-link"><span id="tactic-name">MITRE mapping</span><a id="tactic-url" href="https://attack.mitre.org/tactics/" target="_blank" rel="noopener noreferrer">OFFICIAL SOURCE ↗</a></div></div><div class="controls"><button id="summon" class="primary" disabled>SUMMON SIX ROLES <span>→</span></button><button id="reset" class="ghost" disabled>RESET RUN</button></div><div class="progress-block"><div class="progress-row"><span>PROGRESS</span><span id="progress-label">0 / 6</span></div><div class="progress-track"><div id="progress-fill"></div></div></div></div>
+      <div class="panel logs-panel"><div class="panel-top"><div><div class="small-kicker">SYNTHETIC SENSOR INPUT</div><h2>Exercise event stream</h2></div><span class="tag">3 EVENTS</span></div><div id="signals" class="signals" aria-live="polite"></div><p class="tiny">Fabricated data only. No queries to IP addresses, accounts, sensors, or real systems.</p></div>
+      <div class="panel quiz-panel"><div class="panel-top"><div><div class="small-kicker">HUMAN REVIEW REQUIRED</div><h2>Analyst checkpoint</h2></div><span id="quiz-status" class="tag">AWAITING</span></div><p class="question" id="question">Choose a training scenario to begin.</p><fieldset id="choices" disabled><legend class="sr-only">Choose an answer</legend></fieldset><div id="quiz-feedback" class="feedback" role="status"></div><button id="submit-answer" class="secondary" disabled>VERIFY ANALYST DECISION</button></div>
+     </div>
+    </div>
+   </section>
+   <section id="atlas" class="view" aria-label="Technique Atlas"><div class="panel"><div class="panel-top"><div><div class="small-kicker">SOURCE-ATTRIBUTED THREAT MODEL</div><h2>MITRE ATT&CK Enterprise tactic atlas</h2></div><span class="tag">15 / 15 TACTICS</span></div><p class="muted">The atlas maps all 15 current Enterprise tactic categories to fictional defense labs. It is not a complete catalog of every ATT&CK technique or sub-technique.</p><label class="fieldlabel" for="atlas-search">Search tactics, roles or topics</label><input id="atlas-search" type="search" placeholder="Search: identity, detection, impact…"><div id="tactic-grid" class="tactic-grid"></div></div></section>
+   <section id="records" class="view" aria-label="Evidence Room"><div class="panel"><div class="panel-top"><div><div class="small-kicker">AUDITABLE TRAINING STATE</div><h2>Evidence and provenance</h2></div><span class="tag safe">LOCAL-ONLY RECORDS</span></div><p class="muted">The app runs six scripted roles within your browser. A role result is a worked example, not an independent model inference. Analyst approvals are quiz answers, not operational authorizations. Download reports only when you want a copy.</p><div class="record-grid"><div><h3>Current run</h3><pre id="report-preview" class="report-preview">No run yet.</pre><button id="export-report" class="secondary" disabled>EXPORT CURRENT JSON REPORT</button></div><div><h3>Previously completed labs</h3><div id="completion-list" class="completions">No completed exercises in this browser.</div><button id="clear-progress" class="ghost danger">CLEAR LOCAL TRAINING PROGRESS</button></div></div></div></section>
+   <section class="sources panel"><div class="panel-top"><div><div class="small-kicker">PROVENANCE / HUMAN LEARNING</div><h2>Official source library</h2></div><span class="tag">OPEN REFERENCES</span></div><div id="sources" class="source-grid"></div><div class="disclaimer"><strong>Truth boundary</strong> — The training data, telemetry and six roles are simulated; no LLM API, external crawler, scanner, malware lab, privileged shell, or autonomous attack capability is deployed here. Source links provide the full official taxonomies, which evolve independently. Use real testing only on systems you own or are explicitly authorized to assess.</div></section>
+   <footer>XUNIA / GPT-DOUG-LLM · DEFENSIVE KNOWLEDGE LAB · <a href="/tasmania/">Tasmania Ontology</a> · <a href="/hive.html">Universal Hive</a> · <a href="/darkweb/">Glass Onion</a> · 2026</footer>
+  </main>
+ </div>
+</div>
+</body>
+</html>

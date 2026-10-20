@@ -1,0 +1,21 @@
+{
+  "id": "xunia-tasmanian-devil-cesium-ontology",
+  "title": "Tasmanian Devil / XUNIA Kraken Cesium Ontology",
+  "version": "1.0.0",
+  "category": "Geospatial visualization and simulated ground robotics",
+  "status": "interactive offline simulator tested; Cesium external runtime unverified; no real field use",
+  "scope": "4 fictional rover 3D concept models, synthetic terrain, semantic provenance graph, archived creations",
+  "standalone": "TASMANIA_ONTOLOGY_OFFLINE.html",
+  "demo": "index.html",
+  "preview": "previews/tasmania-desktop.png",
+  "gallery": ["previews/ontology-desktop.png", "previews/creations-desktop.png", "previews/tasmania-mobile.png"],
+  "ontology": "data/ontology.json",
+  "model_files": ["models/DEVIL-01.glb","models/DRILL-02.glb","models/MAP-03.glb","models/SAFE-04.glb","models/TRAINING-BEACON.glb"],
+  "nodes": 22,
+  "relationships": 37,
+  "creations_bundled": ["kraken", "aegis", "ctf"],
+  "source_of_truth": "Unmodified KrakenCore ground training simulator; positions mapped to fictional display anchor for Cesium visualization",
+  "license": "license not specified",
+  "publication": "integration assets prepared, not uploaded to xunia.org or GitHub",
+  "safety": "Training-only, non-geographic, non-operational, no human targeting, no drilling motor or vehicle commands"
+}
