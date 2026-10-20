@@ -1,0 +1,94 @@
+name: Recursive repository model integrity
+
+on:
+  push:
+    paths:
+      - "gpt_brain/recursive_repo.py"
+      - "gpt_brain/cli.py"
+      - "tests/test_recursive_repo.py"
+      - ".github/workflows/recursive-repo-model.yml"
+  pull_request:
+    paths:
+      - "gpt_brain/recursive_repo.py"
+      - "gpt_brain/cli.py"
+      - "tests/test_recursive_repo.py"
+      - ".github/workflows/recursive-repo-model.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-snapshot:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Regression suite and syntax
+        run: |
+          python3 -m unittest tests.test_recursive_repo -v
+          python3 -m compileall -q gpt_brain/recursive_repo.py tests/test_recursive_repo.py
+      - name: Index every tracked Git blob (outside checkout)
+        run: |
+          python3 -m gpt_brain.recursive_repo index --repo . --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-index.json"
+          python3 -m gpt_brain.recursive_repo verify --repo . --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-verified.json"
+          python3 -m gpt_brain.recursive_repo query ontology --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/repo-query.json"
+      - name: Verify GPT-Doug CLI integration and ontology retrieval
+        run: |
+          python3 -m gpt_brain.cli repo stats --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-stats.json"
+          python3 -m gpt_brain.cli repo query ontology --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-query.json"
+          python3 -m gpt_brain.cli repo tree --depth 1 --db "$RUNNER_TEMP/recursive-repo.sqlite" > "$RUNNER_TEMP/cli-tree.json"
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from gpt_brain.cli import build_parser
+          from gpt_brain.kernel import BrainKernel
+          from gpt_brain.memory import BrainMemory
+          from gpt_brain.recursive_repo import RecursiveRepoModel, RepoAugmentedOntology
+          db = Path(os.environ['RUNNER_TEMP']) / 'recursive-repo.sqlite'
+          parsed = build_parser().parse_args(['run', '--repo-index', str(db), 'ontology'])
+          assert parsed.repo_index == str(db)
+          model = RecursiveRepoModel(db)
+          def fake_chat(messages, _model, _options):
+              return {'message': {'content': 'Synthetic test answer; no LLM or network called.'}}
+          brain = BrainKernel(
+              chat_fn=fake_chat,
+              memory=BrainMemory(Path(os.environ['RUNNER_TEMP']) / 'test-memory.jsonl'),
+              ontology=RepoAugmentedOntology(model),
+          )
+          result = brain.run('ontology')
+          assert any(item['path'].startswith('repo-source:') for item in result.ontology_context)
+          assert any('repo-source:' in item for item in result.provenance)
+          print(f"GPT-Doug ontology adapter verified: {len(result.ontology_context)} context items")
+          PY
+      - name: Confirm Git tree and database completeness
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import pathlib
+          import subprocess
+          root = pathlib.Path(os.environ['RUNNER_TEMP'])
+          built = json.loads((root / 'repo-index.json').read_text())
+          verified = json.loads((root / 'repo-verified.json').read_text())
+          raw = subprocess.check_output(['git', 'ls-tree', '-r', '-z', 'HEAD'])
+          tracked = len([entry for entry in raw.split(b'\0') if entry])
+          assert built['complete'] is True
+          assert verified['ok'] is True and verified['complete'] is True
+          assert int(built['tracked_count']) == tracked == verified['tracked_count']
+          assert built['commit'] == verified['commit']
+          print(f"FULL TRACKED GIT TREE VERIFIED: {tracked} paths at {verified['commit']}")
+          print(f"External submodules: {built['submodule_count']}; LFS pointers: {built['lfs_pointer_count']}")
+          PY
