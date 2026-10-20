@@ -1,4 +1,4 @@
-name: XUNIA Glass Onion validation
+name: XUNIA Glass Onion end-to-end validation
 
 on:
   pull_request:
@@ -6,7 +6,10 @@ on:
       - 'docs/darkweb/**'
       - 'docs/index.html'
       - 'scripts/xunia_authorized_crawl.py'
+      - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
+      - 'tests/test_xunia_authorized_crawl.py'
+      - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
   push:
     branches: [main]
@@ -14,7 +17,10 @@ on:
       - 'docs/darkweb/**'
       - 'docs/index.html'
       - 'scripts/xunia_authorized_crawl.py'
+      - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
+      - 'tests/test_xunia_authorized_crawl.py'
+      - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
   workflow_dispatch:
 
@@ -29,24 +35,99 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate scripts and catalog
+      - name: Verify source and every catalog entry
         run: |
           node --check docs/darkweb/core.mjs
           node --check docs/darkweb/app.mjs
           node --test tests/xunia_glass_onion.test.mjs
-          python3 -m py_compile scripts/xunia_authorized_crawl.py
-      - name: Verify public site contract
+          python3 -m py_compile scripts/xunia_authorized_crawl.py scripts/xunia_glass_onion_verify.py
+          python3 -m unittest discover -s tests -p 'test_xunia_authorized_crawl.py' -v
+      - name: Verify deployed artifact contract
         run: |
           test -s docs/darkweb/index.html
           test -s docs/darkweb/styles.css
+          test -s docs/darkweb/app.mjs
+          test -s docs/darkweb/core.mjs
           grep -q './darkweb/' docs/index.html
           grep -q 'XUNIA // GLASS ONION' docs/darkweb/index.html
           python3 - <<'PY'
           from pathlib import Path
           html=Path("docs/darkweb/index.html").read_text()
+          app=Path("docs/darkweb/app.mjs").read_text()
           assert "Content-Security-Policy" in html
           assert "no-referrer" in html
           for module in ["discovery","exposure","evidence","threat","directory","collection","privacy","pgp"]:
               assert f'data-engine="{module}"' in html, module
+          for feature in ["telegram-file","bookmark-form","privacy-run"]:
+              assert feature in html, feature
+              assert feature in app, feature
           assert "--authorized" in html
           PY
+
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install pinned open-source test dependencies
+        run: |
+          cd tests/glass-onion-browser
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          mkdir -p artifacts
+      - name: Run real browser user journeys
+        run: |
+          cd tests/glass-onion-browser
+          npm test
+      - name: Publish browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xunia-glass-onion-browser-evidence
+          path: |
+            tests/glass-onion-browser/artifacts/
+            tests/glass-onion-browser/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  official-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify real official public endpoints
+        run: |
+          python3 scripts/xunia_glass_onion_verify.py --mode sources --retries 2 --interval 4 --output glass-onion-source-evidence.json
+      - name: Upload source verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xunia-glass-onion-source-evidence
+          path: glass-onion-source-evidence.json
+          if-no-files-found: ignore
+          retention-days: 14
+
+  live-site:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [verify, browser, official-sources]
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verify site after main merge and Pages publish
+        run: |
+          python3 scripts/xunia_glass_onion_verify.py --mode site --retries 30 --interval 12 --output glass-onion-live-evidence.json
+      - name: Upload published-site verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xunia-glass-onion-live-evidence
+          path: glass-onion-live-evidence.json
+          if-no-files-found: ignore
+          retention-days: 14

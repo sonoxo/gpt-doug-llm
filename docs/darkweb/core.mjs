@@ -128,3 +128,50 @@ export function filterKev(vulnerabilities,query=""){
   const q=String(query).trim().toLocaleLowerCase();
   return vulnerabilities.filter(v=>!q||[v.cve,v.vendor,v.product,v.name,v.action].join(" ").toLocaleLowerCase().includes(q));
 }
+
+
+// Authorized, local-only Telegram Desktop JSON archive research.
+// Importing an archive does not authorize publishing any messages.
+export function parseTelegramArchive(data, maxMessages=2000) {
+  if (!data || typeof data !== "object") throw new Error("Expected a Telegram Desktop JSON export.");
+  const chats = Array.isArray(data?.chats?.list) ? data.chats.list : Array.isArray(data?.messages) ? [data] : [];
+  if (!chats.length) throw new Error("No Telegram chats/messages found in the selected archive.");
+  const limit=Math.min(2000,Math.max(1,Number(maxMessages)||2000));
+  const result=[];
+  for(const chat of chats) {
+    const name=String(chat.name||chat.title||"Unnamed chat").slice(0,120);
+    for(const msg of (Array.isArray(chat.messages)?chat.messages:[])) {
+      if(result.length>=limit)return result;
+      if(!msg||typeof msg!=="object")continue;
+      const content=typeof msg.text==="string" ? msg.text :
+        Array.isArray(msg.text)?msg.text.map(item=>typeof item==="string"?item:typeof item?.text==="string"?item.text:"").join("") : "";
+      if(!content.trim())continue;
+      result.push({
+        chat:name,
+        date:String(msg.date||"").slice(0,40),
+        sender:String(msg.from||"Unknown").slice(0,120),
+        text:content.slice(0,3500)
+      });
+    }
+  }
+  return result;
+}
+export function searchTelegramArchive(rows, query="") {
+  const q=String(query).trim().toLocaleLowerCase();
+  return (Array.isArray(rows)?rows:[]).filter(x=>!q||[x.chat,x.sender,x.date,x.text].join(" ").toLocaleLowerCase().includes(q));
+}
+export function normalizeBookmark(input) {
+  if(!input||typeof input!=="object")return null;
+  const url=safeUrl(input.url||"");
+  const title=String(input.title||"").trim().slice(0,120);
+  if(!title||!url)return null;
+  return {title,url,notes:String(input.notes||"").slice(0,500)};
+}
+export function privacyDiagnostics(info) {
+  return [
+    {label:"HTTPS / secure context",pass:!!info.secureContext,note:"Required for Web Crypto API"},
+    {label:"Browser cryptography",pass:!!info.webCrypto,note:"Necessary for exposure hashing and key operations"},
+    {label:"Persistent browser storage",pass:!!info.localStorage,note:"Local evidence records are not encrypted"},
+    {label:"Tor anonymity",pass:false,note:"A standard web page is not Tor Browser and cannot provide Tor routing"}
+  ];
+}

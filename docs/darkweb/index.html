@@ -112,6 +112,17 @@
           <p>Search your own incident summaries, consented public messages, and source notes. Nothing here is sent to the named reference services.</p>
           <div class="field-inline"><input id="quick-evidence-query" type="search" placeholder="Search local records..." maxlength="200"><button id="quick-evidence-find" class="btn btn-primary" type="button">Find in evidence →</button></div>
           <p class="helper">The XUNIA index is not a copy of a leaked database, Telegram bot, or proprietary monitoring provider.</p>
+          <div class="research-subpanel">
+            <h4>Authorized Telegram Desktop export analyzer</h4>
+            <p>Analyze only your own or consented Telegram Desktop JSON export. Data stays in browser memory, is never saved to the vault, and is cleared on refresh.</p>
+            <label for="telegram-file">Choose JSON export (up to 1.5 MB)</label>
+            <input id="telegram-file" type="file" accept=".json,application/json">
+            <label for="telegram-search">Find messages locally</label>
+            <input id="telegram-search" type="search" maxlength="150" placeholder="Search chat, author or message..." autocomplete="off">
+            <p id="telegram-feedback" class="feedback" role="status" aria-live="polite">No archive loaded.</p>
+            <div id="telegram-results" class="record-list" aria-live="polite"></div>
+            <button id="telegram-clear" class="btn btn-subtle" type="button">Clear archive from memory</button>
+          </div>
         </div>
 
         <div class="engine-pane" data-engine="exposure" hidden>
@@ -137,6 +148,18 @@
           <div class="pane-head"><h4>Verified research directory</h4><span>Attribution and official links only</span></div>
           <div id="verified-links" class="link-directory"></div>
           <p class="helper">Links are reviewed public-source references. No hidden wiki mirrors or unverified .onion links are hosted.</p>
+          <div class="research-subpanel">
+            <h4>Your verified HTTPS bookmarks</h4>
+            <p>Save your own attributed public research links in this browser. This is not an onion proxy or an anonymous search index.</p>
+            <form id="bookmark-form" class="search-form">
+              <label for="bookmark-title">Source title</label><input id="bookmark-title" maxlength="120" required placeholder="Official bulletin">
+              <label for="bookmark-url">HTTPS URL</label><input id="bookmark-url" type="url" required placeholder="https://example.org/advisory">
+              <label for="bookmark-notes">Source notes (optional)</label><input id="bookmark-notes" maxlength="500" placeholder="Authoritative source or context">
+              <button class="btn btn-outline" type="submit">Save local bookmark +</button>
+            </form>
+            <p id="bookmark-feedback" class="feedback" role="status"></p>
+            <div id="bookmark-list" class="link-directory"></div>
+          </div>
         </div>
 
         <div class="engine-pane" data-engine="collection" hidden>
@@ -152,6 +175,12 @@
           <p>A normal HTTPS site cannot safely provide a real Tor circuit or run an anonymous .onion browser. Use the official Tor Browser and independently assess the sites you visit.</p>
           <div class="quick-actions"><a class="btn btn-primary" href="https://www.torproject.org/download/" target="_blank" rel="noopener noreferrer">Get official Tor Browser ↗</a><a class="btn btn-outline" href="https://ssd.eff.org/" target="_blank" rel="noopener noreferrer">EFF privacy guidance ↗</a></div>
           <p class="helper">TOR2web-style gateways are intentionally not provided: browser proxying is not equivalent to Tor anonymity.</p>
+          <div class="research-subpanel">
+            <h4>Local privacy capability diagnostics</h4>
+            <p>This diagnostic describes what your current browser can and cannot guarantee. It performs no network reconnaissance.</p>
+            <button id="privacy-run" class="btn btn-outline" type="button">Run browser privacy checks</button>
+            <div id="privacy-results" class="intel-list" aria-live="polite"></div>
+          </div>
         </div>
 
         <div class="engine-pane" data-engine="pgp" hidden>
