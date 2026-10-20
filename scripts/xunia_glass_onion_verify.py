@@ -18,7 +18,7 @@ OPENPGP = "https://unpkg.com/openpgp@5.11.3/dist/openpgp.min.js"
 SITE = "https://xunia.org/darkweb/"
 
 
-def fetch(url, timeout=18, limit=2_000_000):
+def fetch(url, timeout=18, limit=8_000_000):
     req = Request(url, headers={"User-Agent": "XUNIA-GlassOnion-Verification/1.0", "Cache-Control": "no-cache"})
     with urlopen(req, timeout=timeout) as response:
         if response.status != 200:
