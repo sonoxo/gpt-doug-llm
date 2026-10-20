@@ -1,0 +1,169 @@
+name: Cloud GitHub Repository Library
+
+on:
+  push:
+    branches:
+      - ops/cloud-github-library-20261020
+    paths:
+      - .github/workflows/cloud-top-github-library.yml
+      - scripts/cloud_repo_cloner.py
+      - scripts/cloud_repo_catalog.py
+      - data/github-cloud-library-targets.json
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloud-github-library-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unit:
+    name: Offline cloud clone and restore unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run isolated restoration and safety tests
+        run: python3 -m unittest discover -s tests -p test_cloud_repo_cloner.py -v
+
+  clone:
+    needs: unit
+    name: Clone and compact ${{ matrix.category }} shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [global, ai, pqc, sonoxo]
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Restore matching cache if it exists
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
+          key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
+      - name: Clone complete shallow checkouts and store Git objects
+        if: steps.cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          python3 scripts/cloud_repo_cloner.py \
+            --category '${{ matrix.category }}' --shard '${{ matrix.shard }}' \
+            --shard-count 4 --destination '${{ runner.temp }}/gpt-doug-cloud'
+      - name: Offline-verify an existing cache
+        if: steps.cache.outputs.cache-hit == 'true'
+        shell: bash
+        run: |
+          python3 scripts/cloud_repo_cloner.py \
+            --category '${{ matrix.category }}' --shard '${{ matrix.shard }}' \
+            --shard-count 4 --destination '${{ runner.temp }}/gpt-doug-cloud' --verify-only
+      - name: Enforce individual shard storage cap and print size
+        id: size
+        shell: bash
+        run: |
+          root='${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}'
+          size=$(du -sm "$root" | cut -f1)
+          echo "Cloud Git shard ${{ matrix.category }}/${{ matrix.shard }}: $size MiB"
+          echo "size_mib=$size" >> "$GITHUB_OUTPUT"
+          if [ "$size" -gt 1700 ]; then
+            echo "ERROR: shard exceeds 1700 MiB no-cost safety cap; must split further" >&2
+            exit 1
+          fi
+      - name: Save verified shard in GitHub cache
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
+          key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
+      - name: Publish clone inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clone-report-${{ matrix.category }}-${{ matrix.shard }}
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}/clone-report.json
+          if-no-files-found: error
+          retention-days: 2
+
+  verify:
+    name: Independently restore ${{ matrix.category }} shard ${{ matrix.shard }}
+    needs: clone
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [global, ai, pqc, sonoxo]
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download Git object cache on a fresh runner
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
+          key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
+      - name: Verify restore of every repository without fetching code
+        shell: bash
+        run: |
+          test '${{ steps.cache.outputs.cache-hit }}' = 'true' || { echo 'Missing persisted Git object cache'; exit 1; }
+          python3 scripts/cloud_repo_cloner.py \
+            --category '${{ matrix.category }}' --shard '${{ matrix.shard }}' \
+            --shard-count 4 --destination '${{ runner.temp }}/gpt-doug-cloud' --verify-only
+      - name: Publish independent restore evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-report-${{ matrix.category }}-${{ matrix.shard }}
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}/verify-report.json
+          if-no-files-found: warn
+          retention-days: 2
+
+  catalog:
+    name: Commit proven cloud library catalog
+    needs: [clone, verify]
+    if: ${{ needs.clone.result == 'success' && needs.verify.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: clone-report-*
+          path: ${{ runner.temp }}/cloud-reports/clones
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: verify-report-*
+          path: ${{ runner.temp }}/cloud-reports/verifies
+      - name: Fail-closed aggregation of all 85 operations
+        shell: bash
+        run: |
+          python3 scripts/cloud_repo_catalog.py \
+            --targets data/github-cloud-library-targets.json \
+            --clone-reports '${{ runner.temp }}/cloud-reports/clones' \
+            --verify-reports '${{ runner.temp }}/cloud-reports/verifies' \
+            --shards 4 --run-url '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
+            --output data/github-cloud-library-catalog.json
+      - name: Commit durable pinned SHAs without executing third-party code
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/github-cloud-library-catalog.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: verify cloud library clone and offline restore catalog [skip ci]'
+            git push origin 'HEAD:${{ github.ref_name }}'
+          fi
