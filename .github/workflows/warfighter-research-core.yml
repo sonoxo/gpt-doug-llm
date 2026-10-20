@@ -26,12 +26,16 @@ concurrency:
 jobs:
   synthetic-core:
     name: Synthetic core (Python ${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.13"]
+        include:
+          - python-version: "3.9"
+            runner: ubuntu-22.04
+          - python-version: "3.13"
+            runner: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:

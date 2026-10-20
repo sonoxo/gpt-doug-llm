@@ -50,6 +50,12 @@ def _parser():
         if name=='pineal-project':
             cmd.add_argument('publication_id')
             cmd.add_argument('--pineal-db',type=Path,required=True)
+    course=sub.add_parser('course',help='offline synthetic training and assessment')
+    course.add_argument('course_action',choices=('sources','validate','grade'))
+    course.add_argument('--pack',type=Path)
+    course.add_argument('--input-root',type=Path)
+    course.add_argument('--responses',type=Path)
+
     operator=sub.add_parser('operator',help='local self-declared research operator alias')
     op_sub=operator.add_subparsers(dest='operator_action',required=True)
     for name in ('register','show'):
@@ -99,6 +105,10 @@ def _workspace(args):
 
 
 def _run(args):
+    if args.cmd=='course':
+        from .coursekit import command
+        return command(args.course_action, pack=args.pack,
+                       input_root=args.input_root, responses=args.responses)
     if args.cmd=='operator':
         from .operator_profile import register_operator, read_operator
         if args.operator_action=='register':

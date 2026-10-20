@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "course_id": "wr:course:defensive-foundations-v1",
+  "authority": "RESEARCH_ONLY",
+  "source_kind": "SYNTHETIC",
+  "classification": "SYNTHETIC",
+  "synthetic": true,
+  "title": "GPT-Doug Warfighter: Defensive Foundations (Synthetic)",
+  "items": [
+    {
+      "id": "q001",
+      "domain": "opsec",
+      "prompt": "A fictional trainee receives an unexpected email requesting a roster of exercise participants. What is the safest action?",
+      "choices": [
+        "Send the roster immediately to avoid delay",
+        "Verify the requester via an approved channel and report the message if suspicious",
+        "Post the roster in a public group",
+        "Forward it to everyone for confirmation"
+      ],
+      "correct_choice": 1,
+      "rationale": "Verify identity and need-to-know independently; do not release participant data on an untrusted request."
+    },
+    {
+      "id": "q002",
+      "domain": "defensive-cyber",
+      "prompt": "In a synthetic lab, a workstation displays a ransomware warning. Which response best supports containment?",
+      "choices": [
+        "Ignore the notice until the next shift",
+        "Disable audit logging",
+        "Follow the local incident-response plan and isolate the affected workstation through approved procedures",
+        "Delete all backups"
+      ],
+      "correct_choice": 2,
+      "rationale": "An authorized incident-response procedure preserves evidence and limits spread; backup deletion worsens recovery."
+    },
+    {
+      "id": "q003",
+      "domain": "communications",
+      "prompt": "A simulated emergency message lacks origin, timestamp, and confidence. How should an analyst record it?",
+      "choices": [
+        "Treat it as confirmed",
+        "Assign an invented source",
+        "Mark it unverified and request provenance before relying on it",
+        "Share it as an operational order"
+      ],
+      "correct_choice": 2,
+      "rationale": "Unverified information should retain an explicit uncertainty and source gap."
+    },
+    {
+      "id": "q004",
+      "domain": "logistics",
+      "prompt": "A synthetic supply dashboard shows stale inventory data. What is the appropriate interpretation?",
+      "choices": [
+        "Inventory is guaranteed accurate",
+        "Do not make a readiness claim; request a fresh authorized inventory check",
+        "Assume every item is unavailable",
+        "Auto-order every possible replacement"
+      ],
+      "correct_choice": 1,
+      "rationale": "Stale or incomplete evidence is insufficient to assert readiness."
+    },
+    {
+      "id": "q005",
+      "domain": "continuity",
+      "prompt": "A tabletop exercise loses primary network access. What is the first safe preparedness action?",
+      "choices": [
+        "Bypass all access controls",
+        "Publish all cached records publicly",
+        "Use the preapproved continuity checklist and establish an alternate documented reporting channel",
+        "Issue unsanctioned instructions to external systems"
+      ],
+      "correct_choice": 2,
+      "rationale": "Continuity should use approved procedures and document the degraded communications state."
+    },
+    {
+      "id": "q006",
+      "domain": "readiness",
+      "prompt": "An offline simulator reproduces the same numeric result twice. What does this demonstrate?",
+      "choices": [
+        "Field-readiness certification",
+        "Verified accuracy against real-world conditions",
+        "Reproducibility of the specified synthetic computation only",
+        "Government authorization"
+      ],
+      "correct_choice": 2,
+      "rationale": "A reproduced model result does not establish operational effectiveness or external certification."
+    },
+    {
+      "id": "q007",
+      "domain": "opsec",
+      "prompt": "A classroom material is labeled CUI in a hypothetical situation. Which action follows the CourseKit boundary?",
+      "choices": [
+        "Upload it to a public repository",
+        "Convert it to a synthetic exercise only after rights and classification review; do not ingest the original",
+        "Send it to all students",
+        "Remove its label and reclassify it as public"
+      ],
+      "correct_choice": 1,
+      "rationale": "The public research-only system does not accept controlled source material."
+    },
+    {
+      "id": "q008",
+      "domain": "defensive-cyber",
+      "prompt": "An exercise audit trail has inconsistent hashes. What should the analyst do?",
+      "choices": [
+        "Silently rewrite all old records",
+        "Mark the integrity check failed and quarantine the finding pending review",
+        "Skip verification",
+        "Declare the exercise approved"
+      ],
+      "correct_choice": 1,
+      "rationale": "Failed evidence-integrity checks block confident claims and require review."
+    },
+    {
+      "id": "q009",
+      "domain": "communications",
+      "prompt": "During a synthetic drill, two reports disagree about the same outage. What should the team record?",
+      "choices": [
+        "Only the louder report",
+        "Both reports with separate source and confidence labels, pending reconciliation",
+        "The first report as permanent truth",
+        "An invented consensus"
+      ],
+      "correct_choice": 1,
+      "rationale": "Keep conflicting claims separately attributable until evidence resolves them."
+    },
+    {
+      "id": "q010",
+      "domain": "continuity",
+      "prompt": "A mock evacuation drill ends early. What belongs in its after-action review?",
+      "choices": [
+        "Only successful outcomes",
+        "Observed limitations, timestamps, corrective actions, and owners",
+        "Secret personally identifying records",
+        "Automatic field deployment"
+      ],
+      "correct_choice": 1,
+      "rationale": "After-action evidence includes shortcomings, accountable follow-up, and reproducible observations."
+    }
+  ]
+}
