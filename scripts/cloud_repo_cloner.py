@@ -28,7 +28,7 @@ SHA_RE = re.compile(r"[0-9a-f]{40}\Z")
 def git(args: list[str], *, cwd: Path | None = None, timeout: int = 120,
         extra_env: dict[str, str] | None = None, stdin: bytes | None = None) -> subprocess.CompletedProcess:
     env = os.environ.copy()
-    env.update({"GIT_TERMINAL_PROMPT": "0", "GIT_LFS_SKIP_SMUDGE": "1", "GIT_NO_LAZY_FETCH": "1"})
+    env.update({"GIT_TERMINAL_PROMPT": "0", "GIT_LFS_SKIP_SMUDGE": "1"})
     if extra_env:
         env.update(extra_env)
     return subprocess.run(["git", "-c", "core.hooksPath=/dev/null", *args],
@@ -88,7 +88,8 @@ def tracked_blobs_present(repo: Path) -> int:
             blobs.add(metadata[2])
     if blobs:
         check = must(git(["cat-file", "--batch-check=%(objectname) %(objecttype)"],
-                         cwd=repo, timeout=240, stdin=b"\n".join(sorted(blobs)) + b"\n"),
+                         cwd=repo, timeout=240, extra_env={"GIT_NO_LAZY_FETCH": "1"},
+                         stdin=b"\n".join(sorted(blobs)) + b"\n"),
                      "git cat-file")
         for line in check.splitlines():
             if not line.endswith(b" blob"):
