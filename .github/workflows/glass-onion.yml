@@ -1,0 +1,52 @@
+name: XUNIA Glass Onion validation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/darkweb/**'
+      - 'docs/index.html'
+      - 'scripts/xunia_authorized_crawl.py'
+      - 'tests/xunia_glass_onion.test.mjs'
+      - '.github/workflows/glass-onion.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/darkweb/**'
+      - 'docs/index.html'
+      - 'scripts/xunia_authorized_crawl.py'
+      - 'tests/xunia_glass_onion.test.mjs'
+      - '.github/workflows/glass-onion.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate scripts and catalog
+        run: |
+          node --check docs/darkweb/core.mjs
+          node --check docs/darkweb/app.mjs
+          node --test tests/xunia_glass_onion.test.mjs
+          python3 -m py_compile scripts/xunia_authorized_crawl.py
+      - name: Verify public site contract
+        run: |
+          test -s docs/darkweb/index.html
+          test -s docs/darkweb/styles.css
+          grep -q './darkweb/' docs/index.html
+          grep -q 'XUNIA // GLASS ONION' docs/darkweb/index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path("docs/darkweb/index.html").read_text()
+          assert "Content-Security-Policy" in html
+          assert "no-referrer" in html
+          for module in ["discovery","exposure","evidence","threat","directory","collection","privacy","pgp"]:
+              assert f'data-engine="{module}"' in html, module
+          assert "--authorized" in html
+          PY
