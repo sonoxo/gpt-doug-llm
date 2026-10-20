@@ -1,0 +1,47 @@
+name: Cloud GitHub Repository Library
+on:
+  push:
+    branches: [ops/cloud-github-library-20261020]
+    paths: ['.github/workflows/cloud-top-github-library.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  clone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [global, ai, pqc, sonoxo]
+    env:
+      GH_READ_TOKEN: ${{ github.token }}
+    steps:
+      - name: Clone repositories
+        shell: bash
+        run: |
+          python3 scripts/cloud_repo_cloner.py --category '${{ matrix.category }}' --destination '${{ runner.temp }}/gpt-doug-cloud'
+      - name: Check archive size
+        if: always()
+        id: storage
+        shell: bash
+        run: |
+          dir='${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/repos'
+          if [ -d "$dir" ]; then size=$(du -sm "$dir" | cut -f1); else size=0; fi
+          echo "size_mb=$size" >> "$GITHUB_OUTPUT"
+          if [ "$size" -gt 0 ] && [ "$size" -le 1900 ]; then echo 'save=yes' >> "$GITHUB_OUTPUT"; else echo 'save=no' >> "$GITHUB_OUTPUT"; fi
+          echo "Clone size ${size} MB; persistence only within 1900 MB per category" >> "$GITHUB_STEP_SUMMARY"
+      - name: Cache clones when within storage cap
+        if: always() && steps.storage.outputs.save == 'yes'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/repos
+          key: cloud-library-${{ matrix.category }}-${{ github.sha }}
+      - name: Save report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clone-report-${{ matrix.category }}
+          path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/clone-report.json
+          if-no-files-found: error
+          retention-days: 1
