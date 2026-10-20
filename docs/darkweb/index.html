@@ -142,7 +142,7 @@
         <div class="engine-pane" data-engine="collection" hidden>
           <div class="pane-head"><h4>Authorized site audit crawler</h4><span>Python · local execution</span></div>
           <p>Run on your own or explicitly permitted domains. The crawler follows robots.txt, stays on a named host, limits pages and response size, and exports source-linked JSONL records.</p>
-          <div class="command-line"><code id="crawl-command">python3 scripts/xunia_authorized_crawl.py --base-url https://example.org --allow-host example.org --max-pages 10</code><button id="copy-crawl" class="btn btn-outline" type="button">Copy</button></div>
+          <div class="command-line"><code id="crawl-command">python3 scripts/xunia_authorized_crawl.py --base-url https://example.org --allow-host example.org --max-pages 10 --authorized</code><button id="copy-crawl" class="btn btn-outline" type="button">Copy</button></div>
           <a class="inline-link" href="https://github.com/sonoxo/gpt-doug-llm/blob/main/scripts/xunia_authorized_crawl.py" target="_blank" rel="noopener noreferrer">Inspect the crawler source ↗</a>
           <p id="copy-feedback" class="feedback" role="status"></p>
         </div>
