@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {TOOLS,GROUPS,VERIFIED_LINKS,searchToolCatalog,searchEvidence,publicQueryUrl,safeUrl,normalizeEvidence,parseEvidenceImport,hibpCount,parseKev,filterKev} from "../docs/darkweb/core.mjs";
+import {TOOLS,GROUPS,VERIFIED_LINKS,searchToolCatalog,searchEvidence,publicQueryUrl,safeUrl,normalizeEvidence,parseEvidenceImport,hibpCount,parseKev,filterKev,parseTelegramArchive,searchTelegramArchive,normalizeBookmark,privacyDiagnostics} from "../docs/darkweb/core.mjs";
 test("21 unique referenced tools and valid engine bindings",()=>{
   assert.equal(TOOLS.length,21);
   assert.equal(new Set(TOOLS.map(t=>t.id)).size,21);
@@ -61,4 +61,38 @@ test("CISA KEV parsing rejects failures and preserves public source",()=>{
   assert.equal(filterKev(rows,"vendor").length,2);
   assert.equal(filterKev(rows,"CVE-2026-0001").length,1);
   assert.throws(()=>parseKev({}));
+});
+
+test("consented Telegram Desktop chat export is locally parseable and search-enabled",()=>{
+  const archive={chats:{list:[{name:"Public channel",messages:[
+    {date:"2026-10-20T12:00:00",from:"Researcher",text:"Public vulnerability advisory"},
+    {date:"2026-10-20T13:00:00",from:"Moderator",text:["Test ",{type:"bold",text:"message"}]},
+    {text:[{type:"photo",media_type:"image"}]}]},
+    {name:"Other chat",messages:[{from:"Reporter",text:"Second bulletin"}]}]}};
+  const rows=parseTelegramArchive(archive);
+  assert.equal(rows.length,3);
+  assert.equal(rows[1].text,"Test message");
+  assert.equal(searchTelegramArchive(rows,"reporter").length,1);
+  assert.equal(searchTelegramArchive(rows,"advisory").length,1);
+  assert.equal(parseTelegramArchive(archive,1).length,1);
+  assert.throws(()=>parseTelegramArchive({}));
+});
+test("Telegram export does not retain attachments or privileged export metadata",()=>{
+  const exportData={chats:{list:[{name:"A",messages:[
+    {id:1,from:"Test",text:"Hello",file:"/secret/path",photo:"private"},
+    {id:2,text:"",file:"/secret/only-media"}]}]}};
+  assert.deepEqual(Object.keys(parseTelegramArchive(exportData)[0]).sort(),["chat","date","sender","text"]);
+  assert.equal(parseTelegramArchive(exportData).length,1);
+});
+test("personal bookmarks refuse plaintext and credentialed URLs",()=>{
+  assert.deepEqual(normalizeBookmark({title:"Source",url:"https://example.org/"}),{title:"Source",url:"https://example.org/",notes:""});
+  assert.equal(normalizeBookmark({title:"Source",url:"http://example.org"}),null);
+  assert.equal(normalizeBookmark({title:"Source",url:"https://username:secret@example.org"}),null);
+  assert.equal(normalizeBookmark({title:"",url:"https://example.org"}),null);
+});
+test("privacy diagnostics never claim a normal web page is Tor",()=>{
+  const checks=privacyDiagnostics({secureContext:true,webCrypto:true,localStorage:true});
+  assert.equal(checks.length,4);
+  assert.deepEqual(checks.slice(0,3).map(x=>x.pass),[true,true,true]);
+  assert.equal(checks[3].pass,false);
 });
