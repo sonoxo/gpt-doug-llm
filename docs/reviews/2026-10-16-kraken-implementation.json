@@ -1,0 +1,133 @@
+{
+  "status": "implementation tested; draft release; live acceptance pending",
+  "source_base": "a09ae92e61c5ea389e5fa774bbffebde669f90e7",
+  "approved_plans_revision": "47197766ffaaa90a40a00253a17cd78281d53336",
+  "published_code_commit": "32333e5184140ce50819853a94e36377dfc904b9",
+  "local_tested_commit": "4ee990c649f8501afcadfc87873307f7d70b56b3",
+  "scope": "BioChip and foreground local planning fleet; verified partial source snapshot, not full repository checkout",
+  "environment": {
+    "python": "3.13.5",
+    "sqlite": "3.46.1",
+    "os": "Linux-6.18.44-x86_64-with-glibc2.41"
+  },
+  "checks": [
+    {
+      "command": "python3 -I -W error::ResourceWarning -m unittest discover -s biochip/tests -t . -v",
+      "tests": 102,
+      "failures": 0,
+      "errors": 0,
+      "exit_code": 0
+    },
+    {
+      "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q",
+      "tests": 102,
+      "subtests": 103,
+      "failures": 0,
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "Python ast.parse(feature_version=(3,10)) on BioChip Python files",
+      "result": "passed; syntax only, not Python 3.10 runtime acceptance"
+    },
+    {
+      "command": "python3 -m biochip.fleet --help",
+      "exit_code": 0
+    }
+  ],
+  "remote_fidelity": {
+    "method": "GitHub returned file Git blob IDs and fleet/tests subtree IDs compared with the tested local tree",
+    "fleet_tree": "1c7d15119d1fcd66472081ed69e8a096e18ce9a6",
+    "tests_tree": "2376c813ef16ad365ba3fdd9383d682da8ff3439",
+    "matched": true
+  },
+  "fixed_regressions": [
+    "K-01 durable denial audit without denied mutation",
+    "K-02 finite TTL and computed expiry",
+    "K-03 malformed provider isolation",
+    "K-04 no HTTP redirects",
+    "legacy schema primary-key/nullability validation",
+    "reject symlinked state directory before database creation",
+    "reject non-path database arguments",
+    "isolate finite timeout beyond platform range"
+  ],
+  "review": {
+    "method": "author self-review; no independent subagent available",
+    "important_findings_remaining": 0,
+    "deferred_minors": [
+      "Diagnostic doctor/inventory requests have socket inactivity timeouts, not absolute deadlines; a drip-feeding local server may delay diagnostics.",
+      "FleetSupervisor is imported from biochip.fleet.supervisor, not the package root."
+    ]
+  },
+  "rulings": [
+    "Use a Git-blob-verified partial snapshot because direct clone/download failed; full remote base tree preserved on publication. Cost: repository-wide integration remains unverified.",
+    "Use equivalent manual task/commit/red-green ledgers because execution helper scripts were not installed. Cost: bookkeeping checked during final review.",
+    "Share private storage helpers across core and ledger. Cost: helper changes can affect both; both suites executed.",
+    "Perform current model discovery inside the supervised child. Cost: one extra discovery request per role; admission is covered by the execution deadline.",
+    "Start the 600-second deadline at execution, excluding queue wait. Cost: queued work can wait longer than ten minutes.",
+    "Report independent_models as null for distinct IDs and false for identical names; different names do not prove independent intelligence."
+  ],
+  "pending": [
+    "actual macOS run",
+    "real selected local-model inference",
+    "repository-wide CI",
+    "independent code/security review",
+    "HeyPCB integration and combined Mac/Node build"
+  ],
+  "disabled": [
+    "external tool execution",
+    "paid API fallback",
+    "model downloads",
+    "hardware actuation",
+    "background service",
+    "automatic rearm"
+  ],
+  "limits": {
+    "max_inflight": 1,
+    "queue_capacity": 32,
+    "max_model_calls": 8,
+    "max_output_tokens": 1024,
+    "deadline_seconds": 600,
+    "max_message_bytes": 1048576,
+    "external_tool_calls": 0
+  },
+  "logs": {
+    "unittest": {
+      "sha256": "0de5ef254e0e5da3f0a5d1f12405d1a7b22ac77a109863c9bfde05511ab4dfbf",
+      "filename": "unittest.log"
+    },
+    "pytest": {
+      "sha256": "8fd2bc0fb49a969dcba72b549c93d517030ad28987edc4f48354250669c87963",
+      "filename": "pytest.log"
+    }
+  },
+  "source_git_blobs": {
+    "biochip/__init__.py": "8da528eb536ee29eca32ef243ea6238b53d6c575",
+    "biochip/core.py": "8179a83b6195aa405a9dcba6615cb80c8e1267e1",
+    "biochip/fleet/__init__.py": "f424ddd9e6e360e2fa228c76c2868e0fe8b80890",
+    "biochip/fleet/__main__.py": "233e18b50f37af83a87964253c0132e9cb7039eb",
+    "biochip/fleet/config.py": "0b411816f1de520e316ef3e5d53a5bad45ce265b",
+    "biochip/fleet/ledger.py": "cd6fe8cd0b4e192330accb105922c2e95104c58d",
+    "biochip/fleet/supervisor.py": "9ce48dd1497fe85d66b9930396cd98d0f011aa41",
+    "biochip/fleet/worker.py": "d39e341a86377df5091ee9dbadb16840b14761b9",
+    "biochip/models.py": "848872abcfd14148a81cbeda62e57a3e5c6408cb",
+    "biochip/storage.py": "7307ea44da7f477507e975b845611420dec0f35a",
+    "biochip/tests/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "biochip/tests/helpers.py": "300b0ef25a1b35fd6da9ac2ed8c2d9caa65d0da7",
+    "biochip/tests/test_core.py": "d062408883c20708efa424e79e5dce782b467ece",
+    "biochip/tests/test_fleet_cli.py": "eb1d903e5daf91e0452cd7fdc2eb080e5474d8a8",
+    "biochip/tests/test_fleet_config.py": "1afb920de1924ad34a150146cab101c793699c2f",
+    "biochip/tests/test_fleet_ledger.py": "255184a3383e27f5c1cb4a91170fd04b21ba6e0f",
+    "biochip/tests/test_fleet_supervisor.py": "f63c68cbd803ced897a78de24e872fbe2f42f6af",
+    "biochip/tests/test_fleet_worker.py": "bf5a78aa33a42229b6d2793a949a34447900a194",
+    "biochip/tests/test_memory_security.py": "59b410258356836cd3c3927b5489d7bd030b3043",
+    "biochip/tests/test_model_security.py": "4be6b90519c9ab23dee01034c1ea0d0b89c086fa",
+    "biochip/tests/test_models.py": "5fbea80ff2599ea5ceb63c34988ae7895d50da11",
+    "biochip/transport.py": "db5c418498faecb016e825d418b5c108f6b460c6",
+    "biochip/validation.py": "630e4fed41bc6c49be53b99870e0ae467920fe6a",
+    "ai_killswitch.py": "f56aaf74320be9c77ec919da48ad73dd55af4bb2"
+  }
+}
