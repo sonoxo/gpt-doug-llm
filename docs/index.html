@@ -10,6 +10,14 @@
   <link rel="stylesheet" href="./museum.css">
   <script src="./zyra-shell-v2.js" defer></script>
   <script src="./museum.js" defer></script>
+<style>
+/* XUNIA World: entry point; the original museum and catalog remain available. */
+.xw-entry{position:relative;overflow:hidden;display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin:0 0 27px;padding:clamp(22px,4vw,42px);border:1px solid #3b7089;border-radius:18px;background:radial-gradient(ellipse at 80% 50%,#28366085,transparent 60%),linear-gradient(125deg,#0d2639,#101b36 65%,#1b1640);box-shadow:0 12px 66px #0005}
+.xw-entry:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(#76ffff08 1px,transparent 1px),linear-gradient(90deg,#76ffff08 1px,transparent 1px);background-size:32px 32px}
+.xw-copy{position:relative;z-index:1}.xw-eyebrow{font-size:11px;color:#9dffba;letter-spacing:.2em;font-weight:900;text-transform:uppercase}.xw-entry h2{margin:8px 0 12px;font-size:clamp(30px,4vw,58px);line-height:1;letter-spacing:-.055em;color:#f5faff}.xw-entry h2 span{color:#50f5f4}.xw-entry p{max-width:640px;color:#bfd4e3;line-height:1.55;font-size:14px;margin:0 0 20px}.xw-actions{display:flex;gap:15px;align-items:center;flex-wrap:wrap}.xw-play{display:inline-flex;gap:13px;align-items:center;border:0;border-radius:7px;padding:16px 20px;text-decoration:none!important;color:#031522!important;background:linear-gradient(100deg,#50f5f4,#77caff);font-weight:1000;letter-spacing:.075em;font-size:12px;box-shadow:0 5px 24px #3cdbed42}.xw-play:hover{filter:brightness(1.13)}.xw-textlink{font-size:12px;color:#ccddf4!important;font-weight:800}.xw-diorama{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;transform:perspective(850px) rotateY(-8deg)}.xw-world{min-height:94px;padding:17px 16px;background:linear-gradient(125deg,#0b1327c9,#182b40a6);border:1px solid #38627d;border-radius:9px;box-shadow:0 8px 20px #0005}.xw-world strong{display:block;font-size:12px;letter-spacing:.06em;color:#ecfcff}.xw-world small{display:block;margin-top:9px;letter-spacing:.12em;font-size:10px;color:#aac1d0}.xw-glyph{font-size:23px;margin-bottom:6px;color:#50f5f4}.xw-world:nth-child(2) .xw-glyph{color:#9dffba}.xw-world:nth-child(3) .xw-glyph{color:#ad80ff}.xw-world:nth-child(4) .xw-glyph{color:#ffbf83}
+@media(max-width:760px){.xw-entry{grid-template-columns:1fr}.xw-world{min-height:78px;padding:10px}.xw-diorama{transform:none}.xw-entry h2{font-size:34px}.xw-entry p{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.xw-diorama{transform:none}}
+</style>
 </head>
 <body>
   <main class="wrap">
@@ -19,7 +27,7 @@
       <p>This is the public front door to the ecosystem: a searchable repository museum, architecture map, experimental-project gallery, build evidence center, operating record, and launch surface for XUNIA products.</p>
       <div class="zyra-badges" aria-label="Museum characteristics">
         <span class="zyra-badge live">● HQ ONLINE</span>
-        <span class="zyra-badge">XUNIA PRODUCTS</span>
+        <span class="zyra-badge">XUNIA PRODUCTS</span><span class="zyra-badge">PLAYABLE WORLD · 4 SECTORS</span>
         <span class="zyra-badge">62 PUBLIC EXHIBITS</span>
         <span class="zyra-badge">LIVE GITHUB INVENTORY</span>
         <span class="zyra-badge">UPSTREAM ATTRIBUTION PRESERVED</span>
@@ -34,6 +42,21 @@
       </div>
       <p class="hq-note"><strong>What “connected” means:</strong> a repository belongs to the connected Sonoxo GitHub inventory or XUNIAverse source graph. It does not automatically mean the repository is actively wired into one runtime, nor does it transfer upstream ownership or imply vendor/government endorsement.</p>
     </section>
+
+<section id="xunia-world" class="xw-entry" aria-labelledby="xunia-world-title">
+  <div class="xw-copy">
+    <div class="xw-eyebrow">● NEW // PLAY XUNIA WORLD PROTOCOL</div>
+    <h2 id="xunia-world-title">THE XUNIAVERSE<br>IS <span>PLAYABLE.</span></h2>
+    <p>A real browser game inside XUNIA HQ. Pilot a red-panda scout through four interconnected worlds, recover data cores, evade anomalies, and unlock gateways to real museum exhibits. Free, keyboard and touch ready.</p>
+    <div class="xw-actions"><a class="xw-play" href="./play/" aria-label="Start XUNIA World Protocol browser game">▶ ENTER XUNIA WORLD</a><a class="xw-textlink" href="./arcade/">Browse existing arcade ↗</a></div>
+  </div>
+  <div class="xw-diorama" aria-label="Four playable XUNIA worlds">
+    <div class="xw-world"><div class="xw-glyph">⬡</div><strong>01 NEXUS HQ</strong><small>IGNITION PROTOCOL</small></div>
+    <div class="xw-world"><div class="xw-glyph">✧</div><strong>02 BIOPINEAL</strong><small>LIVING CIRCUITS</small></div>
+    <div class="xw-world"><div class="xw-glyph">◈</div><strong>03 ZYRA CITADEL</strong><small>DEFENSE GRID</small></div>
+    <div class="xw-world"><div class="xw-glyph">⌾</div><strong>04 ORBITAL ATLAS</strong><small>RESTORE THE SIGNAL</small></div>
+  </div>
+</section>
 
     <section class="zyra-grid" aria-label="Headquarters operational rooms and products">
       <a class="zyra-card" href="./readyroom/"><span class="arrow" aria-hidden="true">↗</span><div class="kicker">NEW · FEDERAL READINESS SELF-ASSESSMENT · PUBLIC DEMO</div><h2>XUNIA READYROOM</h2><p>Run synthetic resilience drills, inspect evidence-gated NIST security controls, and export after-action reports. Not CIA-authorized, classified, or connected to military equipment.</p></a>
