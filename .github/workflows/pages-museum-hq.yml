@@ -341,7 +341,8 @@ jobs:
             curl -fsSL --max-redirs 8 "https://xunia.org/tasmania/$asset?v=${GITHUB_SHA}" -o /tmp/xunia-tasmania-asset
             test -s /tmp/xunia-tasmania-asset
           done
-          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" | grep -q 'href="./tasmania/"'
+          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" -o /tmp/xunia-home-tasmania.html
+          grep -q 'href="./tasmania/"' /tmp/xunia-home-tasmania.html
           echo 'CANONICAL_XUNIA_TASMANIA_LIVE=PASS'
 
       - name: Verify cyber learning swarm public release
@@ -373,5 +374,6 @@ jobs:
             curl -fsSL --max-redirs 8 "https://xunia.org/cyber-swarm/$asset?v=${GITHUB_SHA}" -o /tmp/xunia-cyber-asset
             test -s /tmp/xunia-cyber-asset
           done
-          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" | grep -q 'href="./cyber-swarm/"'
+          curl -fsSL --max-redirs 8 "https://xunia.org/?v=${GITHUB_SHA}" -o /tmp/xunia-home-cyber-swarm.html
+          grep -q 'href="./cyber-swarm/"' /tmp/xunia-home-cyber-swarm.html
           echo 'CANONICAL_XUNIA_CYBER_SWARM_LIVE=PASS'
