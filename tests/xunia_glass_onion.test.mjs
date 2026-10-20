@@ -42,7 +42,7 @@ test("JSON evidence import validates records",()=>{
   assert.throws(()=>parseEvidenceImport('{"records":{}}'));
 });
 test("CSV evidence handles escaped quotes and quoted newlines",()=>{
-  const result=parseEvidenceImport('title,source,notes\n"Item ""A""",test,"first\nsecond"\n');
+  const result=parseEvidenceImport('title,source,notes\n"Item ""A""",test,"first\nsecond"\n',"data.csv");
   assert.equal(result[0].title,'Item "A"');
   assert.equal(result[0].notes,"first\nsecond");
   assert.throws(()=>parseEvidenceImport("notes\nvalue","data.csv"));
