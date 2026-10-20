@@ -122,3 +122,48 @@ test('OpenPGP browser operations: keygen, encrypt, decrypt, sign, verify',async(
   await page.locator('#pgp-verify').click();
   await expect(page.locator('#pgp-output')).toHaveValue(/Signature verified successfully/);
 });
+
+
+test('authorized Telegram export is searchable and remains memory-only',async({page})=>{
+  await page.goto(PATH);
+  await page.getByRole('button',{name:'Open Telemetry'}).click();
+  const archive={chats:{list:[{name:'Public demo chat',messages:[
+    {date:'2026-10-20T12:00:00',from:'Tester',text:'Advisory about patching'},
+    {date:'2026-10-20T12:01:00',from:'Researcher',text:'Synthetic note'}]}]}};
+  await page.locator('#telegram-file').setInputFiles({
+    name:'consented-telegram-export.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(archive))
+  });
+  await expect(page.locator('#telegram-results .record')).toHaveCount(2);
+  await page.locator('#telegram-search').fill('patching');
+  await expect(page.locator('#telegram-results .record')).toHaveCount(1);
+  await expect(page.locator('#telegram-feedback')).toContainText('1 matching messages / 2');
+  await page.reload();
+  await page.getByRole('button',{name:'Open Telemetry'}).click();
+  await expect(page.locator('#telegram-results .record')).toHaveCount(0);
+  await expect(page.locator('#telegram-feedback')).toHaveText('No archive loaded.');
+});
+test('HTTPS source bookmarks persist locally and reject unsafe URL schemes',async({page})=>{
+  await page.goto(PATH);
+  await page.getByRole('button',{name:'Open Onion.live'}).click();
+  await page.locator('#bookmark-title').fill('Official source note');
+  await page.locator('#bookmark-url').fill('https://example.org/official/');
+  await page.locator('#bookmark-notes').fill('Locally verified example');
+  await page.getByRole('button',{name:'Save local bookmark'}).click();
+  await expect(page.locator('#bookmark-list .directory-link')).toHaveCount(1);
+  await page.reload();
+  await page.getByRole('button',{name:'Open Onion.live'}).click();
+  await expect(page.locator('#bookmark-list .directory-link')).toHaveCount(1);
+  await page.locator('#bookmark-title').fill('Invalid source');
+  await page.locator('#bookmark-url').fill('http://example.org/insecure');
+  await page.getByRole('button',{name:'Save local bookmark'}).click();
+  await expect(page.locator('#bookmark-feedback')).toContainText('valid HTTPS');
+  await expect(page.locator('#bookmark-list .directory-link')).toHaveCount(1);
+});
+test('privacy diagnostics accurately disclaim Tor routing',async({page})=>{
+  await page.goto(PATH);
+  await page.getByRole('button',{name:'Open Tor Browser'}).click();
+  await page.locator('#privacy-run').click();
+  await expect(page.locator('#privacy-results .privacy-check')).toHaveCount(4);
+  await expect(page.locator('#privacy-results')).toContainText('Tor anonymity');
+  await expect(page.locator('#privacy-results')).toContainText('NOT PROVIDED');
+});
