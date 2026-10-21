@@ -1,0 +1,639 @@
+{
+  "schema": "xunia.embodied-os.public-reference.v1",
+  "id": "AGIBOT_LINK_U_OS_AND_X1_PUBLIC_REFERENCE",
+  "title": "AGIBOT Link-U OS Alpha and X1 source-grounded robotics research",
+  "observedDate": "2026-10-21",
+  "mode": "READ_ONLY_SOURCE_GROUNDED_REFERENCE",
+  "upstreamRepositories": [
+    {
+      "repository": "Link-U-OS/Link-U-OS",
+      "headCommit": "64ac7b08dd609dfb463310945856419be470315a",
+      "role": "Link-U OS alpha repository; uses Git submodules",
+      "licenseAtRepositoryRoot": "MulanPSL-2.0"
+    },
+    {
+      "repository": "AgibotTech/agibot_x1_infer",
+      "headCommit": "9e0b818804d644fb9c9663e932dd33b03b24dfa4",
+      "role": "Separate X1 inference and driver software",
+      "licenseAtRepositoryRoot": "MulanPSL-2.0"
+    },
+    {
+      "repository": "AgibotTech/agibot_x1_train",
+      "headCommit": "e6651b9ab843fd1b1be70c087bfb7e8b28e44ccd",
+      "role": "Separate X1 RL training source",
+      "licenseAtRepositoryRoot": "NOT_REVIEWED"
+    }
+  ],
+  "sources": [
+    {
+      "id": "agibot-open-docs",
+      "kind": "official_vendor_page",
+      "url": "https://www.agibot.com/DOCS/OS",
+      "note": "Open Source Doc entry whose visible body is the AGIBOT X1 development guide; must not be mistaken for the Link-U OS technical guide."
+    },
+    {
+      "id": "agibot-link-u-page",
+      "kind": "official_vendor_page",
+      "url": "https://www.agibot.com/filepage/282.html",
+      "note": "Link-U OS Alpha product and framework description, dated 2026-01-06."
+    },
+    {
+      "id": "linku-readme",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/README.md",
+      "note": "Link-U OS framework features and roles.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-submodules",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/.gitmodules",
+      "note": "Integration, middleware, robotics, and simulation modules are separate upstream Git submodules; their individual licenses and runtime compatibility were not audited.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-setup",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/document/en/setup_environment.md",
+      "note": "VS Code dev-container and setup-init documentation.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-build",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/document/en/build_package.md",
+      "note": "Bazel-related integration build, product package modes and x86_64/aarch64 context.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-deploy",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/document/en/deploy_package.md",
+      "note": "A2 Flagship Ubuntu 22.04 and AimStudio deployment workflow; no deployment performed.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-operation",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/document/en/robot_operation.md",
+      "note": "Emergency stop, operator attention and simulation-before-hardware guidance.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "linku-license",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/Link-U-OS/Link-U-OS/blob/64ac7b08dd609dfb463310945856419be470315a/LICENSE",
+      "note": "Root repository Mulan Permissive Software License v2; submodule license coverage must be separately checked.",
+      "repository": "Link-U-OS/Link-U-OS",
+      "commit": "64ac7b08dd609dfb463310945856419be470315a"
+    },
+    {
+      "id": "x1-infer-readme",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/AgibotTech/agibot_x1_infer/blob/9e0b818804d644fb9c9663e932dd33b03b24dfa4/README.md",
+      "note": "X1 AimRT-based model inference, driver, software simulation, ROS2 Humble and ONNX Runtime software description.",
+      "repository": "AgibotTech/agibot_x1_infer",
+      "commit": "9e0b818804d644fb9c9663e932dd33b03b24dfa4"
+    },
+    {
+      "id": "x1-infer-license",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/AgibotTech/agibot_x1_infer/blob/9e0b818804d644fb9c9663e932dd33b03b24dfa4/LICENSE.txt",
+      "note": "X1 inference repository Mulan Permissive Software License v2.",
+      "repository": "AgibotTech/agibot_x1_infer",
+      "commit": "9e0b818804d644fb9c9663e932dd33b03b24dfa4"
+    },
+    {
+      "id": "x1-train-readme",
+      "kind": "pinned_upstream_file",
+      "url": "https://github.com/AgibotTech/agibot_x1_train/blob/e6651b9ab843fd1b1be70c087bfb7e8b28e44ccd/README.md",
+      "note": "X1 reinforcement-learning training, Isaac Gym, checkpoint/export and MuJoCo sim2sim documentation.",
+      "repository": "AgibotTech/agibot_x1_train",
+      "commit": "e6651b9ab843fd1b1be70c087bfb7e8b28e44ccd"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "linku-os",
+      "family": "link_u_os",
+      "kind": "platform",
+      "label": "Link-U OS Alpha",
+      "description": "Embodied software framework described by AGIBOT for hardware-side adaptation, intelligent applications, development and simulation; not a universal installable phone operating system.",
+      "tags": [
+        "robotics",
+        "operating-system",
+        "embodied-ai"
+      ],
+      "evidence": [
+        "agibot-link-u-page",
+        "linku-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "linku-hardware-abstraction",
+      "family": "link_u_os",
+      "kind": "architecture",
+      "label": "Hardware abstraction",
+      "description": "Southbound abstraction separates hardware-specific interfaces from higher-level robotics services.",
+      "tags": [
+        "hardware-abstraction",
+        "southbound"
+      ],
+      "evidence": [
+        "linku-readme",
+        "agibot-link-u-page"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "linku-agent-service",
+      "family": "link_u_os",
+      "kind": "architecture",
+      "label": "Agent service framework",
+      "description": "Northbound integration target for intelligent applications and foundation-model-backed behaviors as described by AGIBOT; exact live API wiring not verified.",
+      "tags": [
+        "agent",
+        "northbound",
+        "foundation-model"
+      ],
+      "evidence": [
+        "linku-readme",
+        "agibot-link-u-page"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "aimrt",
+      "family": "shared",
+      "kind": "middleware",
+      "label": "AimRT middleware",
+      "description": "Communication foundation described in Link-U OS and X1 inference, with RPC and Topic communication patterns.",
+      "tags": [
+        "middleware",
+        "rpc",
+        "topic"
+      ],
+      "evidence": [
+        "linku-readme",
+        "x1-infer-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "aimrt-formats",
+      "family": "link_u_os",
+      "kind": "interface",
+      "label": "Protobuf and ROS 2 message formats",
+      "description": "Link-U OS documents support for Protobuf and ROS2 Message types and compatibility with native ROS2 ecosystem.",
+      "tags": [
+        "protobuf",
+        "ros2",
+        "messaging"
+      ],
+      "evidence": [
+        "linku-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "bazel-integration",
+      "family": "link_u_os",
+      "kind": "toolchain",
+      "label": "Bazel packaging",
+      "description": "Link-U OS documentation identifies Bazel-based multi-repository builds and platform compilation for heterogeneous targets.",
+      "tags": [
+        "bazel",
+        "x86_64",
+        "aarch64"
+      ],
+      "evidence": [
+        "linku-readme",
+        "linku-build"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "devcontainer",
+      "family": "link_u_os",
+      "kind": "toolchain",
+      "label": "Docker and VS Code devcontainer",
+      "description": "Documented development environment uses Docker, VS Code containers and setup-init.",
+      "tags": [
+        "docker",
+        "vs-code",
+        "development"
+      ],
+      "evidence": [
+        "linku-setup",
+        "linku-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "aimstudio",
+      "family": "link_u_os",
+      "kind": "toolchain",
+      "label": "AimStudio deployment management",
+      "description": "Graphical tool documented for package deployment and process verification on supported A2 hardware, not used here.",
+      "tags": [
+        "deployment",
+        "macos",
+        "windows",
+        "linux"
+      ],
+      "evidence": [
+        "linku-deploy",
+        "linku-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "linku-simulation",
+      "family": "link_u_os",
+      "kind": "simulation",
+      "label": "MuJoCo / Isaac Gym simulation",
+      "description": "AGIBOT documents simulator-oriented reinforcement-learning and validation for bipedal locomotion.",
+      "tags": [
+        "mujoco",
+        "isaac-gym",
+        "simulation"
+      ],
+      "evidence": [
+        "linku-readme",
+        "agibot-link-u-page"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "linku-ppo",
+      "family": "link_u_os",
+      "kind": "research_workflow",
+      "label": "PPO locomotion learning",
+      "description": "AGIBOT lists proximal policy optimization as an approach for locomotion policy training.",
+      "tags": [
+        "ppo",
+        "reinforcement-learning",
+        "locomotion"
+      ],
+      "evidence": [
+        "linku-readme",
+        "agibot-link-u-page"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "a2-platform",
+      "family": "link_u_os",
+      "kind": "hardware_target",
+      "label": "AGIBOT Expedition A2 target",
+      "description": "The Link-U OS Alpha and English deployment guide reference AGIBOT Expedition A2 Flagship hardware with Ubuntu 22.04.",
+      "tags": [
+        "a2",
+        "ubuntu-22.04",
+        "robotics"
+      ],
+      "evidence": [
+        "linku-readme",
+        "linku-deploy"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "a2-safety",
+      "family": "link_u_os",
+      "kind": "safety_control",
+      "label": "Emergency stop and supervised operation",
+      "description": "Operator documentation explicitly requires accessible emergency stop and controlled transitions; simulation-first familiarity is recommended.",
+      "tags": [
+        "emergency-stop",
+        "human-supervision",
+        "safety"
+      ],
+      "evidence": [
+        "linku-operation"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "x1-platform",
+      "family": "agibot_x1",
+      "kind": "hardware_target",
+      "label": "AGIBOT X1 humanoid",
+      "description": "AGIBOT X1 guide describes a 29-joint body with two grippers and optional three-axis head expansion; separate from A2-oriented Link-U OS Alpha.",
+      "tags": [
+        "x1",
+        "humanoid",
+        "robotics"
+      ],
+      "evidence": [
+        "agibot-open-docs",
+        "x1-infer-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "x1-inference",
+      "family": "agibot_x1",
+      "kind": "software",
+      "label": "X1 inference and driver software",
+      "description": "Separate upstream X1 source repository includes model inference, platform drivers, and a software simulation project using AimRT.",
+      "tags": [
+        "inference",
+        "drivers",
+        "simulation"
+      ],
+      "evidence": [
+        "x1-infer-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "x1-training",
+      "family": "agibot_x1",
+      "kind": "research_workflow",
+      "label": "X1 reinforcement-learning training",
+      "description": "Separate upstream training project documents reinforcement learning, Isaac Gym training, checkpoint creation and policy export.",
+      "tags": [
+        "reinforcement-learning",
+        "isaac-gym",
+        "policy"
+      ],
+      "evidence": [
+        "x1-train-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "x1-sim2sim",
+      "family": "agibot_x1",
+      "kind": "simulation",
+      "label": "X1 MuJoCo sim-to-sim evaluation",
+      "description": "X1 training README includes a MuJoCo-based sim2sim workflow for exported policy testing.",
+      "tags": [
+        "mujoco",
+        "sim2sim",
+        "evaluation"
+      ],
+      "evidence": [
+        "x1-train-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    },
+    {
+      "id": "x1-onnx-export",
+      "family": "agibot_x1",
+      "kind": "artifact",
+      "label": "X1 ONNX / JIT exports",
+      "description": "X1 training documentation describes exporting learned locomotion policies to JIT and ONNX files; no model weights were fetched or executed.",
+      "tags": [
+        "onnx",
+        "jit",
+        "model-export"
+      ],
+      "evidence": [
+        "x1-train-readme"
+      ],
+      "claimClass": "SOURCE_DOCUMENTED"
+    }
+  ],
+  "edges": [
+    {
+      "from": "linku-os",
+      "to": "linku-hardware-abstraction",
+      "relation": "PROVIDES",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "linku-agent-service",
+      "relation": "PROVIDES",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "aimrt",
+      "relation": "USES",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "aimrt-formats",
+      "relation": "SUPPORTS",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "bazel-integration",
+      "relation": "BUILDS_WITH",
+      "evidence": [
+        "linku-readme",
+        "linku-build"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "devcontainer",
+      "relation": "DEVELOPED_WITH",
+      "evidence": [
+        "linku-setup"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "aimstudio",
+      "relation": "DEPLOYMENT_TOOL",
+      "evidence": [
+        "linku-deploy"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "linku-simulation",
+      "relation": "DOCUMENTS_SIMULATION",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-simulation",
+      "to": "linku-ppo",
+      "relation": "INCLUDES_TRAINING_PATTERN",
+      "evidence": [
+        "linku-readme"
+      ]
+    },
+    {
+      "from": "linku-os",
+      "to": "a2-platform",
+      "relation": "ALPHA_HARDWARE_CONTEXT",
+      "evidence": [
+        "linku-readme",
+        "linku-deploy"
+      ]
+    },
+    {
+      "from": "a2-platform",
+      "to": "a2-safety",
+      "relation": "REQUIRES_SAFETY_REVIEW",
+      "evidence": [
+        "linku-operation"
+      ]
+    },
+    {
+      "from": "x1-platform",
+      "to": "x1-inference",
+      "relation": "HAS_SEPARATE_REFERENCE_REPOSITORY",
+      "evidence": [
+        "x1-infer-readme"
+      ]
+    },
+    {
+      "from": "x1-platform",
+      "to": "x1-training",
+      "relation": "HAS_SEPARATE_REFERENCE_REPOSITORY",
+      "evidence": [
+        "x1-train-readme"
+      ]
+    },
+    {
+      "from": "x1-inference",
+      "to": "aimrt",
+      "relation": "USES",
+      "evidence": [
+        "x1-infer-readme"
+      ]
+    },
+    {
+      "from": "x1-training",
+      "to": "x1-sim2sim",
+      "relation": "DOCUMENTS",
+      "evidence": [
+        "x1-train-readme"
+      ]
+    },
+    {
+      "from": "x1-training",
+      "to": "x1-onnx-export",
+      "relation": "DOCUMENTS",
+      "evidence": [
+        "x1-train-readme"
+      ]
+    }
+  ],
+  "sourceCoverage": {
+    "reviewed": "Official vendor document center and Link-U OS page, root project README, linked English setup/build/deploy/operator docs, Git submodules and root license, X1 inference/training READMEs and inference license.",
+    "notReviewed": [
+      "complete transitive source code",
+      "per-submodule licenses and source",
+      "model checkpoints and weights",
+      "live hardware endpoints",
+      "deployment execution and electrical safety certification",
+      "latest upstream changes after pinned commits"
+    ],
+    "independentlyBenchmarked": false,
+    "liveConnected": false
+  },
+  "gptDougIntegrationProposal": {
+    "status": "DESIGN_ONLY_NOT_IMPLEMENTED",
+    "name": "ONTOLOGY_FIRST_ROBOTICS_SIMULATION_RESEARCH_ADAPTER",
+    "proposedDataflow": [
+      "trusted source manifests",
+      "evidence-backed semantic graph",
+      "simulator-only interface proposals",
+      "policy and safety validation",
+      "human-approved future integration"
+    ],
+    "enabledCapabilities": [
+      "offline source search",
+      "provenance graph",
+      "architecture compatibility review",
+      "non-executing simulation design"
+    ],
+    "unavailableCapabilities": [
+      "live ROS2 subscription",
+      "AimRT RPC execution",
+      "actuator control",
+      "robot discovery",
+      "teleoperation",
+      "hardware deployment",
+      "source-code cloning",
+      "remote execution"
+    ],
+    "simulatorConnected": false,
+    "hardwareConnected": false,
+    "robotCommandsEnabled": false,
+    "humanApprovalRequiredForExpansion": true
+  },
+  "actions": [
+    {
+      "name": "status",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "robotControl": false
+    },
+    {
+      "name": "graph",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "robotControl": false
+    },
+    {
+      "name": "search",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "robotControl": false
+    },
+    {
+      "name": "show",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "robotControl": false
+    },
+    {
+      "name": "doctor",
+      "readOnly": true,
+      "networkEgress": false,
+      "externalMutation": false,
+      "robotControl": false
+    }
+  ],
+  "guardrails": {
+    "sourceDataNotExecutable": true,
+    "noExternalNetworkAtRuntime": true,
+    "noSubmoduleExecution": true,
+    "noAutomaticDependencyInstall": true,
+    "noModelWeightsImported": true,
+    "noTrainingExecuted": true,
+    "noHardwareControl": true,
+    "noTeleoperation": true,
+    "noRobotDeployment": true,
+    "noMilitaryOrWeaponIntegration": true,
+    "noAffiliationOrEndorsementClaim": true,
+    "licenseReviewRequiredBeforeCodeReuse": true,
+    "separateSubmoduleLicenseReviewRequired": true,
+    "safetyReviewRequiredBeforeHardwareUse": true,
+    "humanReviewRequiredBeforePromotion": true,
+    "simulatorFirstForFutureWork": true,
+    "operationalAuthority": "none",
+    "sourceCoverageClaim": "LIMITED_DOCUMENTATION_REVIEW"
+  }
+}
