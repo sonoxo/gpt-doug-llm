@@ -47,7 +47,20 @@ def main() -> int:
         help="Optional idempotency key. Reusing it returns the original swarm without a duplicate reward event.",
     )
 
+    rea = sub.add_parser("rea", help="Bounded local REA static analysis (plan-only by default).")
+    rea.add_argument("--mode", choices=("javascript", "desktop"), default="javascript")
+    rea.add_argument("--target", action="append", required=True, help="Authorized absolute local path; repeatable.")
+    rea.add_argument("--output", required=True, help="Existing absolute evidence directory.")
+    rea.add_argument("--workers", type=int, default=2)
+    rea.add_argument("--timeout", type=int, default=120)
+    rea.add_argument("--max-evidence-mib", type=int, default=16)
+    rea.add_argument("--execute", action="store_true")
+    rea.add_argument("--authorized", action="store_true", help="Declare explicit authority to analyze targets.")
+
     args = parser.parse_args()
+    if args.command == "rea":
+        from .rea_swarm import run_cli
+        return run_cli(args)
     chaos = GPTChaos()
 
     if args.command == "status":
