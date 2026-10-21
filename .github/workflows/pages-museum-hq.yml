@@ -361,6 +361,28 @@ jobs:
           grep -q 'href="./tasmania/"' /tmp/xunia-home-tasmania.html
           echo 'CANONICAL_XUNIA_TASMANIA_LIVE=PASS'
 
+      - name: Verify REA Kraken evidence console public release
+        run: |
+          set -euo pipefail
+          kraken_ok=0
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/rea-kraken/?v=${GITHUB_SHA}" -o /tmp/xunia-rea-kraken.html \
+              && grep -Fq 'OFFLINE EVIDENCE CONSOLE' /tmp/xunia-rea-kraken.html \
+              && grep -Fq 'app.mjs' /tmp/xunia-rea-kraken.html; then
+              kraken_ok=1
+              break
+            fi
+            sleep 3
+          done
+          test "$kraken_ok" -eq 1
+          grep -Fq "default-src 'none'" /tmp/xunia-rea-kraken.html
+          for asset in app.mjs style.css; do
+            curl -fsSL --max-redirs 8 -H 'Cache-Control: no-cache' "https://xunia.org/rea-kraken/$asset?v=${GITHUB_SHA}" -o "/tmp/rea-kraken-$asset"
+            test -s "/tmp/rea-kraken-$asset"
+          done
+          grep -Fq 'verifyBundle' /tmp/rea-kraken-app.mjs
+          echo 'CANONICAL_XUNIA_REA_KRAKEN_LIVE=PASS'
+
       - name: Verify cyber learning swarm public release
         run: |
           set -euo pipefail
