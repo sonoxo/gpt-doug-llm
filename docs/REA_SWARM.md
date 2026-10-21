@@ -30,3 +30,19 @@ Use desktop mode for local installed application directories. You may repeat the
 ## XUNIA Museum record
 
 SONOXO_REA_KRAKEN_SWARM; category Software Research; layer GPT-Chaos; state PROTOTYPE; museum publication NOT PERFORMED. Only publish a redacted manifest following authorization.
+
+## Global, offline evidence consolidation (no remote execution)
+
+Copy each approved machine's complete private `rea-swarm-*` directory to a trusted verification workstation. The verifier uses relative evidence filenames, so bundles may be relocated without relying on source machine paths. Then run:
+
+    gpt-chaos rea-verify --manifest "/absolute/path/to/site-A/manifest.json" --manifest "/absolute/path/to/site-B/manifest.json"
+
+The resulting `SONOXO_REA_EVIDENCE_FEDERATION` report checks JSON schema, job state, SHA-256 and byte lengths, rejects evidence symlinks and filename traversal, and distinguishes VERIFIED, PARTIAL, and BLOCKED. Maximum: 32 manifests per invocation. There is no synchronization client, hosted coordinator, remote scanner, message bus or cloud deployment. An exported or forged manifest is **not authenticated** solely by its checksum; trusted origin and operator approval require separate controls. Do not publish private paths or application evidence to the XUNIA site.
+
+## Verification gates
+
+- Local integration tests: **22/22 passed** on a disposable mock REA executable and imported bundle fixtures. Real REA execution has not passed yet.
+- Dedicated CI: `.github/workflows/rea-kraken-swarm.yml` runs Python 3.11–3.13 offline contract checks and CLI dry-run smoke without the REA npm package.
+- Optional real-provider test: explicitly dispatch that workflow with `run_real_rea=true`; it installs official REA into an ephemeral GitHub runner and inspects only a harmless checked-in fixture. This is **not** a global production deployment.
+- Independent shared-suite blocker: the optional PyTorch MLM test module was updated to skip test collection on runners without the `.[mlm]` extra; the specialized MLM training workflow still executes its real torch tests.
+- Both general CI and the dedicated REA gate must pass, and the real fixture test must produce an inspected evidence bundle, before release readiness can be claimed.
