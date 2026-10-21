@@ -15,8 +15,17 @@ except ImportError as exc:
     raise unittest.SkipTest("optional torch dependency not installed: pip install -e .[mlm]") from exc
 
 from gpt_doug_mlm.almighty_sonoxo import (
-    AlmightySonoxoMLM, MASK, MODEL_ID, ModelConfig, WordTokenizer,
-    fill_mask, load_model, mask_batch, register_as_provider, tokenize, train_model,
+    MASK,
+    MODEL_ID,
+    AlmightySonoxoMLM,
+    ModelConfig,
+    WordTokenizer,
+    fill_mask,
+    load_model,
+    mask_batch,
+    register_as_provider,
+    tokenize,
+    train_model,
 )
 from gpt_doug_mlm.providers import ProviderRegistry
 
