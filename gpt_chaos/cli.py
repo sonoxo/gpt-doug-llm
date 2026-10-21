@@ -4,7 +4,6 @@ import argparse
 import json
 
 
-
 def _print(payload: object) -> None:
     print(json.dumps(payload, indent=2, sort_keys=False))
 
