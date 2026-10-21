@@ -29,7 +29,6 @@ from gpt_doug_mlm.almighty_sonoxo import (
 )
 from gpt_doug_mlm.providers import ProviderRegistry
 
-
 CORPUS = [
     "the ontology stores evidence with provenance and context .",
     "the ontology links evidence to source identifiers .",
