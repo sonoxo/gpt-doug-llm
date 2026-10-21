@@ -1,12 +1,12 @@
 """Defensive offline REA multi-host evidence checks."""
 import json
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 import pytest
 
-from gpt_chaos.rea_swarm import execute, make_plan
 from gpt_chaos.rea_federation import verify_manifests
+from gpt_chaos.rea_swarm import execute, make_plan
 from tests.test_rea_swarm import fake_rea
 
 
