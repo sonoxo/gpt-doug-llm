@@ -7,7 +7,7 @@ import pytest
 
 from gpt_chaos.rea_swarm import execute, make_plan
 from gpt_chaos.rea_federation import verify_manifests
-from test_rea_swarm import fake_rea
+from tests.test_rea_swarm import fake_rea
 
 
 def fixture_manifest(tmp_path, monkeypatch):
