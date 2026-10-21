@@ -1,0 +1,38 @@
+name: AGIBOT OS source knowledge tests
+
+on:
+  pull_request:
+    paths:
+      - 'foundry/ontology/agibot-link-u-os-ontology.json'
+      - 'scripts/agibot_os_knowledge.py'
+      - 'scripts/doug-max'
+      - 'tests/test_agibot_os_knowledge.py'
+      - 'docs/AGIBOT_LINK_U_OS_LEARNING.md'
+      - 'docs/museum/agibot-link-u-os-research.md'
+      - '.github/workflows/agibot-os-knowledge.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-knowledge:
+    name: AGIBOT OS reference validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out immutable PR snapshot
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Compile Python and validate CLI (no robot access)
+        shell: bash
+        run: |
+          python3 --version
+          python3 -m compileall -q scripts/agibot_os_knowledge.py tests/test_agibot_os_knowledge.py
+          bash scripts/doug-max agibot-os doctor
+          bash scripts/doug-max agibot-os status --json
+          bash scripts/doug-max agibot-os search "AimRT ROS2 middleware" --json
+      - name: Run dedicated provenance and safety regression tests
+        shell: bash
+        run: |
+          python3 -m pip install --disable-pip-version-check pytest==8.4.2
+          python3 -m pytest -q tests/test_agibot_os_knowledge.py
