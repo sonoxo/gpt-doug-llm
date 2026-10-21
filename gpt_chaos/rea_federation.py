@@ -7,8 +7,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import stat
 
 MAX_MANIFESTS = 32
 MAX_MANIFEST_BYTES = 1024 * 1024
@@ -18,11 +20,13 @@ _EVIDENCE = re.compile(r"[0-9]{2}\.json\Z")
 
 
 def _load(path: Path, limit: int):
-    if path.is_symlink() or not path.is_file():
+    if path.is_symlink():
         raise ValueError("regular non-symlink file required")
-    if path.stat().st_size > limit:
-        raise ValueError("file exceeds size limit")
-    raw = path.read_bytes()
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0)
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            raise ValueError("regular non-symlink file required")
+        raw = stream.read(limit + 1)
     if not raw or len(raw) > limit:
         raise ValueError("empty or oversized file")
     return raw, json.loads(raw)
