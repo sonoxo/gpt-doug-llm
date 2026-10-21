@@ -39,6 +39,8 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/rea-kraken/index.html
+          test -f _site/rea-kraken/app.mjs
           test -f _site/experiments.html
           test -f _site/status.html
           test -f _site/metrics.html
@@ -47,6 +49,9 @@ jobs:
           test -f _site/zyra-shell.js
           test -f _site/museum.css
           test -f _site/museum.js
+          test -f _site/rea-kraken/index.html
+          test -f _site/rea-kraken/app.mjs
+          test -f _site/rea-kraken/style.css
           test -f _site/holo/index.html
           test -f _site/holo/holo.ts
           test -f _site/arcade/index.html
@@ -74,6 +79,8 @@ jobs:
       - name: JavaScript syntax
         run: |
           node --check docs/zyra-shell.js
+          node --check docs/rea-kraken/app.mjs
+          node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
           node --check docs/cyber-swarm/engine.mjs
           node --check docs/cyber-swarm/app.mjs
@@ -195,6 +202,8 @@ jobs:
           curl -fsS http://127.0.0.1:8080/cyber-swarm/ | grep -q 'DEFENSE SWARM'
           curl -fsS http://127.0.0.1:8080/cyber-swarm/curriculum.json | grep -q 'xunia.cyber.swarm.curriculum.v1'
           curl -fsS http://127.0.0.1:8080/resources.json | grep -q 'green-house'
+          curl -fsS http://127.0.0.1:8080/rea-kraken/ | grep -q 'OFFLINE EVIDENCE CONSOLE'
+          curl -fsS http://127.0.0.1:8080/rea-kraken/app.mjs | grep -q 'verifyBundle'
           curl -fsS http://127.0.0.1:8080/museum.js | grep -q 'STATIC_REPOS'
           curl -fsS http://127.0.0.1:8080/experiments.html | grep -q 'XUNIA Sightline'
           curl -fsS http://127.0.0.1:8080/status.html | grep -q 'XUNIAverse build status'
