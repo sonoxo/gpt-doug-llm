@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 
-from .runtime import GPTChaos
 
 
 def _print(payload: object) -> None:
@@ -61,6 +60,7 @@ def main() -> int:
     if args.command == "rea":
         from .rea_swarm import run_cli
         return run_cli(args)
+    from .runtime import GPTChaos
     chaos = GPTChaos()
 
     if args.command == "status":
