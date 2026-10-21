@@ -5,6 +5,8 @@ on:
     paths:
       - "integrations/openai_model_mirror/**"
       - "tests/test_openai_model_mirror.py"
+      - "tests/test_openai_model_swarm.py"
+      - "scripts/doug-rea-swarm"
       - ".github/workflows/openai-model-mirror.yml"
   workflow_dispatch:
 
@@ -29,5 +31,12 @@ jobs:
         run: python -m compileall -q integrations/openai_model_mirror
       - name: Run isolated offline contracts
         run: python -m unittest discover -s tests -p 'test_openai_model_mirror.py' -v
+      - name: Run 99M virtual swarm contract
+        run: python -m unittest discover -s tests -p 'test_openai_model_swarm.py' -v
+      - name: Validate Mac launcher syntax
+        run: bash -n scripts/doug-rea-swarm
       - name: Verify CLI help
-        run: python -m integrations.openai_model_mirror --help
+        run: |
+          python -m integrations.openai_model_mirror --help
+          python -m integrations.openai_model_mirror.swarm --help
+          bash scripts/doug-rea-swarm --count 99999999 --slots 8 --sample 1 > /tmp/doug-swarm.json
