@@ -78,6 +78,8 @@ export async function verifyBundle(files) {
 function text(id, value) { const element = document.getElementById(id); if (element) element.textContent = value; }
 function render(label, state, message, outcome) {
   const list = document.getElementById('runs');
+  const placeholder = list.querySelector('.empty');
+  if (placeholder) placeholder.remove();
   const article = document.createElement('article');
   article.className = 'run';
   const heading = document.createElement('h3');
@@ -95,7 +97,7 @@ function render(label, state, message, outcome) {
     article.append(fine);
   }
   list.prepend(article);
-  text('run-count', String(list.children.length));
+  text('run-count', String(list.querySelectorAll('.run').length));
   text('last-state', state);
   text('last-state-note', state === 'VERIFIED' ? 'Integrity verified, authenticity not established' : message);
 }
@@ -126,7 +128,12 @@ if (typeof document !== 'undefined') {
     } catch (error) { render('SYNTHETIC DEMO', 'BLOCKED', String(error)); }
   });
   document.getElementById('clear').addEventListener('click', () => {
-    document.getElementById('runs').replaceChildren();
+    const runs = document.getElementById('runs');
+    runs.replaceChildren();
+    const placeholder = document.createElement('p');
+    placeholder.className = 'empty';
+    placeholder.textContent = 'No evidence has been opened in this session. Select a bundle or run the labeled synthetic demo.';
+    runs.append(placeholder);
     text('run-count', '0');
     text('last-state', 'NOT CONNECTED');
     text('last-state-note', 'No local evidence loaded');
