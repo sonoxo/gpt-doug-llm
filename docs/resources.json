@@ -10,17 +10,16 @@
   "items": [
     {
       "id": "sonoxo-rea-kraken",
-      "name": "Sonoxo REA Kraken Swarm (prototype)",
+      "name": "Sonoxo REA Kraken Evidence Console (prototype)",
       "category": "Developer Tools",
-      "type": "offline-software-evidence-verifier",
-      "access": "local-required",
+      "type": "client-side-evidence-verifier",
+      "access": "public",
       "free": true,
-      "interactive": false,
-      "url": "./REA_SWARM.md",
+      "interactive": true,
+      "url": "./rea-kraken/",
       "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/gpt_chaos",
-      "description": "Authorized local REA software analysis with bounded GPT-Chaos workers and an offline multi-site evidence integrity verifier. Prototype only, not hosted scanning or global deployment.",
-      "localOnlyReason": "Requires an operator-owned desktop environment, separately installed official REA CLI and authorized local analysis targets.",
-      "engine": "REA CLI + Python 3.9+; explicit execution approval; local JSON/SHA-256 evidence"
+      "description": "Responsive browser-only JSON/SHA-256 verification of local REA evidence. No evidence upload, remote scanner, or global agent deployment; software inspection requires the separately installed official REA CLI and local authorization.",
+      "engine": "Web Crypto + client-side local files; optional official local REA CLI"
     },
     {
       "id": "gpt-doug-maven",
