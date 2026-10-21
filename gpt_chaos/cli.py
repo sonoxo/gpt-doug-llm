@@ -56,9 +56,15 @@ def main() -> int:
     rea.add_argument("--execute", action="store_true")
     rea.add_argument("--authorized", action="store_true", help="Declare explicit authority to analyze targets.")
 
+    verifier = sub.add_parser("rea-verify", help="Offline verification of imported REA evidence bundles.")
+    verifier.add_argument("--manifest", action="append", required=True, help="Absolute path to manifest.json; repeat for other approved machines.")
+
     args = parser.parse_args()
     if args.command == "rea":
         from .rea_swarm import run_cli
+        return run_cli(args)
+    if args.command == "rea-verify":
+        from .rea_federation import run_cli
         return run_cli(args)
     from .runtime import GPTChaos
     chaos = GPTChaos()
