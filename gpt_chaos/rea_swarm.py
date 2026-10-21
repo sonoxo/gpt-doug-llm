@@ -8,7 +8,6 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-from pathlib import Path
 import shutil
 import signal
 import subprocess
@@ -16,6 +15,7 @@ import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
+from pathlib import Path
 
 MODES = {
     "javascript": "analyze-javascript-application",
