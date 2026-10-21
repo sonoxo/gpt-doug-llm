@@ -54,3 +54,9 @@ The static, mobile-responsive site source is at `docs/rea-kraken/`. After the PR
 The viewer accepts a single selected `manifest.json` together with its numbered `01.json` / `02.json` evidence files; it verifies their byte lengths and SHA-256 digests using browser Web Crypto without uploading them. Its demo generates purely synthetic evidence inside the browser. Loading different bundles one at a time creates a session-only local history, not a remote evidence repository. The site has `connect-src 'none'` content-security policy, and the JavaScript uses no remote API requests. Do not confuse browser evidence verification with installed REA execution, producer authentication, or operational deployment.
 
 The XUNIA Pages CI workflow checks the HTML, JavaScript syntax, four Node verification tests, and static HTTP route before the site can publish.
+
+## Verified cross-repository security dependency
+
+The GPT-Doug Full Completion workflow checks out `sonoxo/zyra@main` and runs a high-severity npm audit. On October 21, 2026, Vite 7.3.6 caused that external audit to fail. The corrected ZYRA dependency (Vite 7.3.7, GitHub advisory GHSA-587h-7wmj-h5pm) passed its test, build, audit, quality and CodeQL gates in [ZYRA PR #104](https://github.com/sonoxo/zyra/pull/104). The patch was merged to `sonoxo/zyra` as `f7b059b0d58257ab94b6a0c0f4c232a89ec0def3`.
+
+A fresh GPT-Doug CI run is still necessary because older REA PR checks read the vulnerable previous version of ZYRA's `main` branch. This dependency patch does not add runtime authority or distributed execution.
