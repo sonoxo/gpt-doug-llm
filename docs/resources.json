@@ -9,6 +9,20 @@
   },
   "items": [
     {
+      "id": "sonoxo-rea-kraken",
+      "name": "Sonoxo REA Kraken Swarm (prototype)",
+      "category": "Developer Tools",
+      "type": "offline-software-evidence-verifier",
+      "access": "local-required",
+      "free": true,
+      "interactive": false,
+      "url": "./REA_SWARM.md",
+      "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/gpt_chaos",
+      "description": "Authorized local REA software analysis with bounded GPT-Chaos workers and an offline multi-site evidence integrity verifier. Prototype only, not hosted scanning or global deployment.",
+      "localOnlyReason": "Requires an operator-owned desktop environment, separately installed official REA CLI and authorized local analysis targets.",
+      "engine": "REA CLI + Python 3.9+; explicit execution approval; local JSON/SHA-256 evidence"
+    },
+    {
       "id": "gpt-doug-maven",
       "name": "GPT-MAVEN OPS LIVE",
       "category": "Operations + Geospatial",
