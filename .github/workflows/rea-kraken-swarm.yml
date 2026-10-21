@@ -71,7 +71,7 @@ jobs:
           test -z "$(ls -A "$RUNNER_TEMP/rea-out")"
 
   real-rea-fixture:
-    name: Real REA fixture (explicit dispatch only)
+    name: Real REA fixture (in-repo PR / explicit dispatch)
     if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && inputs.run_real_rea == true)
     needs: offline-contract
     runs-on: ubuntu-latest
@@ -92,6 +92,8 @@ jobs:
           set -euo pipefail
           python -m pip install --disable-pip-version-check -e .
           mkdir -p "$RUNNER_TEMP/rea-proof"
+          FIXTURE="$GITHUB_WORKSPACE/tests/fixtures/rea-kraken/main.js"
+          FIXTURE_SHA_BEFORE="$(sha256sum "$FIXTURE" | cut -d' ' -f1)"
           gpt-chaos rea --mode javascript --target "$GITHUB_WORKSPACE/tests/fixtures/rea-kraken" --output "$RUNNER_TEMP/rea-proof" --timeout 120 --execute --authorized > "$RUNNER_TEMP/rea-result.json"
           python - "$RUNNER_TEMP/rea-result.json" <<'PY'
           import json
@@ -106,3 +108,7 @@ jobs:
           test -n "$MANIFEST"
           gpt-chaos rea-verify --manifest "$MANIFEST" > "$RUNNER_TEMP/rea-verified.json"
           python -c 'import json,sys; assert json.load(open(sys.argv[1]))["integrity"] == "VERIFIED"' "$RUNNER_TEMP/rea-verified.json"
+          test "$FIXTURE_SHA_BEFORE" = "$(sha256sum "$FIXTURE" | cut -d' ' -f1)"
+          test "$(find "$GITHUB_WORKSPACE/tests/fixtures/rea-kraken" -type f | wc -l)" -eq 1
+          test "$(stat -c '%a' "$(dirname "$MANIFEST")")" = 700
+          test "$(stat -c '%a' "$MANIFEST")" = 600
