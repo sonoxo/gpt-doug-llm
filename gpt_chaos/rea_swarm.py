@@ -63,7 +63,7 @@ def make_plan(targets: list[str], mode: str, output: str, workers: int = 2) -> d
         "output_root": str(dest),
         "jobs": jobs,
         "model_inference": False,
-        "external_access": False,
+        "adapter_network_access": False,
     }
 
 
@@ -95,6 +95,8 @@ def _inspect(job: dict, run_dir: Path, rea: str, timeout: int, max_bytes: int) -
     try:
         require_ai_allowed("REA static analysis")
         with temporary.open("xb") as output, error_file.open("xb") as error:
+            os.chmod(temporary, 0o600)
+            os.chmod(error_file, 0o600)
             proc = subprocess.Popen(cmd, stdout=output, stderr=error,
                                     start_new_session=(os.name == "posix"))
             while proc.poll() is None:
@@ -159,6 +161,7 @@ def execute(plan: dict, *, authorized: bool, timeout: int = 120,
                                                     max_evidence_mib * 1024 * 1024), plan["jobs"]))
     manifest = {
         "system": plan["system"],
+        "schema_version": 1,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "state": "PASS" if all(j["state"] == "PASS" for j in results) else "BLOCKED",
         "scope": "operator-authorized local static analysis only",
@@ -170,6 +173,7 @@ def execute(plan: dict, *, authorized: bool, timeout: int = 120,
         "deployment": "NOT_PERFORMED",
     }
     with (run_dir / "manifest.json").open("x", encoding="utf-8") as f:
+        os.chmod(run_dir / "manifest.json", 0o600)
         json.dump(manifest, f, indent=2, sort_keys=True)
         f.write("\n")
     return manifest
