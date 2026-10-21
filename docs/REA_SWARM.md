@@ -25,7 +25,7 @@ Use desktop mode for local installed application directories. You may repeat the
 - Invokes only documented static workflows: analyze-javascript-application and inspect-desktop-application, through the local REA CLI.
 - Private, fresh evidence directory contains SHA-256 verified JSON and manifest. Invalid JSON, error results, timeout, size overflow and denied scope become BLOCKED.
 - This is local process concurrency, not remote model inference. No external discovery, installer, deployment, credential collection, self-propagation or publishing.
-- The 14 local acceptance tests passed using mock REA. Live-provider/real REA and complete integration tests remain unverified.
+- The mock-boundary and federation tests passed. The real upstream REA 6.7.0 synthetic-fixture smoke passed in GitHub CI; real third-party desktop application coverage, binary provider support, and production deployment remain unverified.
 
 ## XUNIA Museum record
 
@@ -41,8 +41,8 @@ The resulting `SONOXO_REA_EVIDENCE_FEDERATION` report checks JSON schema, job st
 
 ## Verification gates
 
-- Local integration tests: **22/22 passed** on a disposable mock REA executable and imported bundle fixtures. Real REA execution has not passed yet.
-- Dedicated CI: `.github/workflows/rea-kraken-swarm.yml` runs Python 3.11–3.13 offline contract checks and CLI dry-run smoke without the REA npm package.
-- Optional real-provider test: explicitly dispatch that workflow with `run_real_rea=true`; it installs official REA into an ephemeral GitHub runner and inspects only a harmless checked-in fixture. This is **not** a global production deployment.
+- Local integration tests: **22/22 passed** on a disposable mock REA executable and imported bundle fixtures. A separate **real REA 6.7.0 smoke test passed** against the harmless committed fixture in a disposable GitHub runner. This does not prove universal application compatibility.
+- Dedicated CI: `.github/workflows/rea-kraken-swarm.yml` runs Python 3.11–3.13 Linux and Python 3.12 macOS offline contract checks and CLI dry-run smoke without the REA npm package. The real fixture job pins `rea-agents@6.7.0`.
+- Real-provider test: executes on trusted in-repository PRs, or by explicit workflow dispatch with `run_real_rea=true`. It installs official REA into an ephemeral GitHub runner and inspects only a harmless checked-in fixture. Successful test evidence: https://github.com/sonoxo/gpt-doug-llm/actions/runs/39689543406. This is **not** a global production deployment.
 - Independent shared-suite blocker: the optional PyTorch MLM test module was updated to skip test collection on runners without the `.[mlm]` extra; the specialized MLM training workflow still executes its real torch tests.
-- Both general CI and the dedicated REA gate must pass, and the real fixture test must produce an inspected evidence bundle, before release readiness can be claimed.
+- A reviewed merge and subsequent authorized site deployment are still required; CI passing does not mean the global fleet or public site has been deployed.
