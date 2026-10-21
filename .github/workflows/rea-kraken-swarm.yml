@@ -72,7 +72,7 @@ jobs:
 
   real-rea-fixture:
     name: Real REA fixture (explicit dispatch only)
-    if: github.event_name == 'workflow_dispatch' && inputs.run_real_rea == true
+    if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && inputs.run_real_rea == true)
     needs: offline-contract
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: '24.11.0'
       - name: Install official REA CLI in disposable runner only
-        run: npm install --global --no-audit --no-fund rea-agents@latest
+        run: npm install --global --no-audit --no-fund rea-agents@6.7.0
       - name: Inspect only repository-owned synthetic fixture
         shell: bash
         run: |
