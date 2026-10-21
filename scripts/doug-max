@@ -18,6 +18,10 @@ fi
 # guardrail preflight is the component that needs diagnosis.
 read_only_mode=0
 case "$first_arg_lc" in
+  agibot-os|agibot|robot-os)
+    # Offline, provenance-backed read-only reference; no robot or network access.
+    read_only_mode=1
+    ;;
   biopineal-patent|hydrogen-patent|biopineal-phase2|swarm-sensors|data-swarm|super-ai|cognitive-fusion)
     # Only bounded offline public-excerpt inspection; no device control.
     read_only_mode=1
@@ -79,6 +83,11 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case "$first_arg_lc" in
+  agibot-os|agibot|robot-os)
+    shift
+    cd "$ROOT"
+    exec python3 "$ROOT/scripts/agibot_os_knowledge.py" "$@"
+    ;;
   nedu|gpt-nedu|novice|novice-edu)
     shift
     cd "$ROOT"
