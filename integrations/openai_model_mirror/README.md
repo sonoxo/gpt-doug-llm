@@ -28,3 +28,7 @@ The default destination is `~/.cache/gpt-doug/openai-models`, outside GitHub. Ev
 The gpt-oss models use Apache 2.0 with a usage policy. Review https://openai.com/open-models/ and https://github.com/openai/gpt-oss . Other OpenAI models retain their own applicable licenses and restrictions.
 
 No credential bypass, token scraping, private access, autonomous replication or remote deployment. Network use occurs only after catalog/plan/sync commands and only through the official Hugging Face client with anonymous `token=False`. Review model licenses, source trust, disk requirements and security policies before downloading.
+
+## 99,999,999 virtual GPT-Doug agents (bounded, no replication)
+
+Use `bash scripts/doug-rea-swarm --count 99999999 --slots 8` from the repository, or use the absolute launcher path from any Mac folder. This creates a deterministic logical index that uses constant-size memory and does not spawn 99,999,999 processes or copy model weights. To persist a compressed state file, add `--output /path/to/new-file.json` (refuses overwrites). Optional `--inspect-rea` uses locally downloaded and verified open-weight model files; it does not recover proprietary models. See [SWARM.md](SWARM.md) and [the XUNIA Museum entry](../../docs/museum/gpt-doug-99m-virtual-swarm.md).
