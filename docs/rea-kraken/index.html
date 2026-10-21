@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#080c13">
+  <meta name="description" content="XUNIA Kraken - offline, local-only verification of REA software research evidence bundles.">
+  <title>XUNIA | KRAKEN Evidence Console</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="top"><a href="../" class="brand"><span class="orb">X</span> XUNIA / MUSEUM</a><span class="top-status">OFFLINE EVIDENCE CONSOLE <span class="dot"></span></span></header>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">SONOXO // GPT-CHAOS-DOUG-MLM</div>
+        <h1>KRAKEN<span> / </span>SWARM</h1>
+        <p class="deck">Investigate software on systems you own or are authorized to analyze. Verify REA evidence locally. Review provenance boundaries without sending files to a server.</p>
+        <div class="tags"><span>REA 6.7.0</span><span>LOCAL-FIRST</span><span>SHA-256</span><span>HUMAN APPROVAL</span></div>
+      </section>
+      <section class="metric-grid" aria-label="Current local console state">
+        <article class="metric"><div class="metric-label">LOADED RUNS</div><div class="metric-number" id="run-count">0</div><div class="metric-foot">Only in this browser session</div></article>
+        <article class="metric"><div class="metric-label">EVIDENCE STATE</div><div class="metric-number small" id="last-state">NOT CONNECTED</div><div class="metric-foot" id="last-state-note">No local evidence loaded</div></article>
+        <article class="metric"><div class="metric-label">REMOTE EXECUTION</div><div class="metric-number small">DISABLED</div><div class="metric-foot">No evidence uploads or remote agent launch</div></article>
+      </section>
+      <section class="workspace">
+        <div class="panel primary">
+          <div class="section-head"><span class="eyebrow">01 / VERIFY A BUNDLE</span><span class="indicator">LOCAL</span></div>
+          <h2>Open REA evidence</h2>
+          <p>Select one <code>manifest.json</code> and its numbered evidence files (<code>01.json</code>, <code>02.json</code>, etc.) together. Your browser checks contents and hashes without uploading them.</p>
+          <label class="upload" for="local-files"><span class="upload-icon">↥</span><strong>Choose JSON evidence files</strong><small>Up to eight job files per bundle; 64 MiB each</small></label>
+          <input id="local-files" type="file" accept=".json,application/json" multiple aria-label="Choose local REA evidence files">
+          <div class="actions"><button type="button" id="demo">RUN SYNTHETIC DEMO</button><button type="button" id="clear" class="secondary">CLEAR RESULTS</button></div>
+          <p class="notice">Integrity is not authenticity. Hash agreement does not establish the identity of the source system or correctness of a reverse-engineering conclusion.</p>
+        </div>
+        <div class="panel secondary-panel">
+          <div class="section-head"><span class="eyebrow">02 / SWARM STAGES</span><span class="indicator">BOUNDED</span></div>
+          <h2>Evidence-first workflow</h2>
+          <ol class="pipeline">
+            <li><b>PLAN</b><span>Explicit local sources and operator authorization</span></li>
+            <li><b>INSPECT</b><span>Official REA CLI; maximum four local subprocess workers</span></li>
+            <li><b>VERIFY</b><span>Validate JSON and record evidence SHA-256</span></li>
+            <li><b>FEDERATE</b><span>Manually copied bundles; offline integrity summary</span></li>
+          </ol>
+          <a class="docs" href="../REA_SWARM.md">Read operator instructions →</a>
+          <p class="boundary">STATUS: validated prototype. Real CI fixture passed; no global production deployment or live device control.</p>
+        </div>
+      </section>
+      <section class="results"><div class="section-head"><h2>Verification history</h2><span class="indicator">IN MEMORY ONLY</span></div><div id="runs" aria-live="polite"><p class="empty">No evidence has been opened in this session. Select a bundle or run the labeled synthetic demo.</p></div></section>
+    </main>
+    <footer><span>SONOXO / XUNIA // KRAKEN</span><span>OFFLINE-ONLY VIEWER • NO EVIDENCE TRANSFER • NO MODEL INFERENCE</span></footer>
+  </div>
+</body>
+</html>

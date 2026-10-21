@@ -3,8 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 
-from .runtime import GPTChaos
-
 
 def _print(payload: object) -> None:
     print(json.dumps(payload, indent=2, sort_keys=False))
@@ -47,7 +45,27 @@ def main() -> int:
         help="Optional idempotency key. Reusing it returns the original swarm without a duplicate reward event.",
     )
 
+    rea = sub.add_parser("rea", help="Bounded local REA static analysis (plan-only by default).")
+    rea.add_argument("--mode", choices=("javascript", "desktop"), default="javascript")
+    rea.add_argument("--target", action="append", required=True, help="Authorized absolute local path; repeatable.")
+    rea.add_argument("--output", required=True, help="Existing absolute evidence directory.")
+    rea.add_argument("--workers", type=int, default=2)
+    rea.add_argument("--timeout", type=int, default=120)
+    rea.add_argument("--max-evidence-mib", type=int, default=16)
+    rea.add_argument("--execute", action="store_true")
+    rea.add_argument("--authorized", action="store_true", help="Declare explicit authority to analyze targets.")
+
+    verifier = sub.add_parser("rea-verify", help="Offline verification of imported REA evidence bundles.")
+    verifier.add_argument("--manifest", action="append", required=True, help="Absolute path to manifest.json; repeat for other approved machines.")
+
     args = parser.parse_args()
+    if args.command == "rea":
+        from .rea_swarm import run_cli
+        return run_cli(args)
+    if args.command == "rea-verify":
+        from .rea_federation import run_cli
+        return run_cli(args)
+    from .runtime import GPTChaos
     chaos = GPTChaos()
 
     if args.command == "status":

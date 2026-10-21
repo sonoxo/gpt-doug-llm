@@ -8,14 +8,26 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import torch
+try:
+    import torch
+except ImportError as exc:
+    # The MLM model is an opt-in dependency, covered by its dedicated CI workflow.
+    raise unittest.SkipTest("optional torch dependency not installed: pip install -e .[mlm]") from exc
 
 from gpt_doug_mlm.almighty_sonoxo import (
-    AlmightySonoxoMLM, MASK, MODEL_ID, ModelConfig, WordTokenizer,
-    fill_mask, load_model, mask_batch, register_as_provider, tokenize, train_model,
+    MASK,
+    MODEL_ID,
+    AlmightySonoxoMLM,
+    ModelConfig,
+    WordTokenizer,
+    fill_mask,
+    load_model,
+    mask_batch,
+    register_as_provider,
+    tokenize,
+    train_model,
 )
 from gpt_doug_mlm.providers import ProviderRegistry
-
 
 CORPUS = [
     "the ontology stores evidence with provenance and context .",

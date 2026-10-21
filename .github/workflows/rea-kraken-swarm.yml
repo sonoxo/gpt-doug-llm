@@ -1,0 +1,114 @@
+name: REA Kraken Swarm - isolated integration gate
+
+on:
+  push:
+    paths:
+      - 'gpt_chaos/rea_swarm.py'
+      - 'gpt_chaos/rea_federation.py'
+      - 'gpt_chaos/cli.py'
+      - 'tests/test_rea_swarm.py'
+      - 'tests/test_rea_federation.py'
+      - 'tests/fixtures/rea-kraken/**'
+      - 'docs/REA_SWARM.md'
+      - '.github/workflows/rea-kraken-swarm.yml'
+  pull_request:
+    paths:
+      - 'gpt_chaos/rea_swarm.py'
+      - 'gpt_chaos/rea_federation.py'
+      - 'gpt_chaos/cli.py'
+      - 'tests/test_rea_swarm.py'
+      - 'tests/test_rea_federation.py'
+      - 'tests/fixtures/rea-kraken/**'
+      - 'docs/REA_SWARM.md'
+      - '.github/workflows/rea-kraken-swarm.yml'
+  workflow_dispatch:
+    inputs:
+      run_real_rea:
+        type: boolean
+        required: false
+        default: false
+        description: 'Opt-in real REA static analysis of the harmless checked-in fixture'
+
+permissions:
+  contents: read
+
+jobs:
+  offline-contract:
+    name: Offline REA contract
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: '3.11'
+          - os: ubuntu-latest
+            python-version: '3.12'
+          - os: ubuntu-latest
+            python-version: '3.13'
+          - os: macos-latest
+            python-version: '3.12'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install test-only dependencies
+        run: python -m pip install --disable-pip-version-check pytest
+      - name: REA bounded-worker and federation acceptance tests
+        run: python -m pytest -q tests/test_rea_swarm.py tests/test_rea_federation.py
+      - name: Python compile contracts
+        run: python -m compileall -q gpt_chaos/rea_swarm.py gpt_chaos/rea_federation.py gpt_chaos/cli.py
+      - name: Installed CLI plan smoke (must not execute REA)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -e .
+          mkdir -p "$RUNNER_TEMP/rea-src" "$RUNNER_TEMP/rea-out"
+          gpt-chaos rea --target "$RUNNER_TEMP/rea-src" --output "$RUNNER_TEMP/rea-out" > "$RUNNER_TEMP/plan.json"
+          python -c 'import json,sys; p=json.load(open(sys.argv[1])); assert p["state"]=="PLAN_ONLY" and len(p["jobs"])==1' "$RUNNER_TEMP/plan.json"
+          test -z "$(ls -A "$RUNNER_TEMP/rea-out")"
+
+  real-rea-fixture:
+    name: Real REA fixture (in-repo PR / explicit dispatch)
+    if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'workflow_dispatch' && inputs.run_real_rea == true)
+    needs: offline-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.0'
+      - name: Install official REA CLI in disposable runner only
+        run: npm install --global --no-audit --no-fund rea-agents@6.7.0
+      - name: Inspect only repository-owned synthetic fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -e .
+          mkdir -p "$RUNNER_TEMP/rea-proof"
+          FIXTURE="$GITHUB_WORKSPACE/tests/fixtures/rea-kraken/main.js"
+          FIXTURE_SHA_BEFORE="$(sha256sum "$FIXTURE" | cut -d' ' -f1)"
+          gpt-chaos rea --mode javascript --target "$GITHUB_WORKSPACE/tests/fixtures/rea-kraken" --output "$RUNNER_TEMP/rea-proof" --timeout 120 --execute --authorized > "$RUNNER_TEMP/rea-result.json"
+          python - "$RUNNER_TEMP/rea-result.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          r = json.loads(Path(sys.argv[1]).read_text())
+          assert r["state"] == "PASS", r
+          assert len(r["results"]) == 1
+          assert Path(r["output_directory"], "manifest.json").is_file()
+          PY
+          MANIFEST="$(find "$RUNNER_TEMP/rea-proof" -name manifest.json -type f -print -quit)"
+          test -n "$MANIFEST"
+          gpt-chaos rea-verify --manifest "$MANIFEST" > "$RUNNER_TEMP/rea-verified.json"
+          python -c 'import json,sys; assert json.load(open(sys.argv[1]))["integrity"] == "VERIFIED"' "$RUNNER_TEMP/rea-verified.json"
+          test "$FIXTURE_SHA_BEFORE" = "$(sha256sum "$FIXTURE" | cut -d' ' -f1)"
+          test "$(find "$GITHUB_WORKSPACE/tests/fixtures/rea-kraken" -type f | wc -l)" -eq 1
+          test "$(stat -c '%a' "$(dirname "$MANIFEST")")" = 700
+          test "$(stat -c '%a' "$MANIFEST")" = 600
