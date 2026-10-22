@@ -65,3 +65,7 @@
 #itak-metrics form{display:flex;flex-direction:column;gap:6px}
 #itak-metrics button{min-height:44px;text-align:center}
 #itak-metrics .itak-metric-note{line-height:1.5;color:#adc9d5;font-size:11px}
+
+.live-date-time{display:inline-block;max-width:300px;font:700 10px/1.4 ui-monospace,monospace;color:#b8e7e5;white-space:normal}
+.live-source-row{border-bottom:1px solid #1b4354;padding:7px 0;margin:0}.live-source-row b{display:block;color:#a0dfdf;font-size:11px}.live-source-row small{display:block;color:#a5bfca;font-size:10px;overflow-wrap:anywhere}
+@media(max-width:850px), (max-width:1180px) and (max-height:620px) and (pointer:coarse){.live-date-time{position:fixed;top:calc(var(--phone-top) + 73px);left:8px;right:75px;z-index:12;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#051725df;border:1px solid #275667;padding:4px 6px;border-radius:5px;font-size:9px;pointer-events:none}}

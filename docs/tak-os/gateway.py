@@ -368,7 +368,7 @@ def handler_factory(state: State):
                 return self.respond(404, {"error": "unknown API endpoint"})
             target = path.lstrip("/") or "index.html"
             if target in ("live-3d", "live-3d/"): target = "live-3d/index.html"
-            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js", "live-3d/index.html", "live-3d/style.css", "live-3d/cesium-config.js", "live-3d/ontology.js", "live-3d/live-earth.js", "live-3d/iphone-grid.js", "live-3d/iphone-grid.css", "live-3d/manifest.webmanifest", "live-3d/sw.js"}:
+            if target not in {"index.html", "app.js", "styles.css", "bridge.js", "swarm-ui.js", "nasa-layers.js", "nasa-layers.css", "icon.svg", "manifest.webmanifest", "sw.js", "live-3d/index.html", "live-3d/style.css", "live-3d/cesium-config.js", "live-3d/ontology.js", "live-3d/live-freshness.js", "live-3d/live-earth.js", "live-3d/iphone-grid.js", "live-3d/iphone-grid.css", "live-3d/manifest.webmanifest", "live-3d/sw.js"}:
                 return self.respond(404, {"error": "file not available"})
             file = APP_ROOT / target
             if not file.is_file(): return self.respond(404, {"error": "file not found"})

@@ -1,6 +1,6 @@
 /* Public app shell only. No source responses, geolocation, TAK data or credentials cached. */
 const CACHE='gpt-doug-live-earth-iphone-shell-v1';
-const SHELL=['./index.html','./style.css','./iphone-grid.css','./iphone-grid.js','./ontology.js','./live-earth.js','./cesium-config.js','./manifest.webmanifest'];
+const SHELL=['./index.html','./style.css','./iphone-grid.css','./iphone-grid.js','./ontology.js','./live-freshness.js','./live-earth.js','./cesium-config.js','./manifest.webmanifest'];
 const ALLOWED=new Set(SHELL.map(x=>x.slice(2)));
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('gpt-doug-live-earth-iphone-shell-')&&k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
