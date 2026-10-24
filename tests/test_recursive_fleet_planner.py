@@ -26,6 +26,10 @@ class RecursivePlannerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             RecursivePlanner(max_nodes=0)
         with self.assertRaises(ValueError):
+            RecursivePlanner(max_nodes=10001)
+        with self.assertRaises(ValueError):
+            RecursivePlanner(max_depth=17)
+        with self.assertRaises(ValueError):
             RecursivePlanner().plan("  ")
 
     def test_rotation_plan_holds_unconfirmed_credentials(self):
