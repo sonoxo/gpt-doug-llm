@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "ontology": "GPT-DOUG-LLM",
+  "object_type": "ModelProvider",
+  "canonical_id": "model-provider:kimi-k3",
+  "name": "Kimi K3",
+  "status": "proposed",
+  "ownership": {
+    "integration_repository": "sonoxo/gpt-doug-llm",
+    "upstream_repository": "sonoxo/Kimi-K3",
+    "upstream_authority": "upstream project and its license"
+  },
+  "capabilities_reported_upstream": [
+    "multimodal-text-image-video",
+    "long-context-reasoning",
+    "agentic-coding",
+    "mixture-of-experts"
+  ],
+  "integration": {
+    "adapter_path": "integrations/kimi-k3/README.md",
+    "runtime_configured": false,
+    "weights_vendored": false,
+    "production_enabled": false,
+    "requires_operator_approval": true
+  },
+  "governance": {
+    "secrets_in_repository": false,
+    "model_output_is_untrusted": true,
+    "permission_escalation_from_model_output": false,
+    "human_approval_for_consequential_actions": true,
+    "audit_provenance": true
+  },
+  "dependencies": [
+    "validated-inference-runtime",
+    "provider-adapter-interface",
+    "license-review",
+    "security-and-performance-tests"
+  ],
+  "source": {
+    "repository": "https://github.com/sonoxo/Kimi-K3",
+    "readme": "https://github.com/sonoxo/Kimi-K3/blob/main/README.md",
+    "technical_report": "https://github.com/sonoxo/Kimi-K3/blob/main/k3_tech_report.pdf",
+    "license": "https://github.com/sonoxo/Kimi-K3/blob/main/LICENSE"
+  }
+}
