@@ -1,4 +1,5 @@
-"""GPT-DOUG bounded recursive fleet planning utilities."""
-from .planner import PlanNode, PlanResult, RecursivePlanner, build_rotation_plan, default_decomposer
+"""GPT-DOUG bounded recursive fleet planning utilities.
 
-__all__ = ["PlanNode", "PlanResult", "RecursivePlanner", "build_rotation_plan", "default_decomposer"]
+Import symbols from recursive_fleet.planner. Keeping this initializer lightweight
+avoids pre-importing the module when invoking it with python -m.
+"""
