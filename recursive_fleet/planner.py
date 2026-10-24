@@ -104,10 +104,10 @@ class RecursivePlanner:
     """Depth-first planner with hard node/depth budgets and cycle detection."""
 
     def __init__(self, decomposer: Decomposer = default_decomposer, *, max_depth: int = 4, max_nodes: int = 64):
-        if max_depth < 0:
-            raise ValueError("max_depth must be >= 0")
-        if max_nodes < 1:
-            raise ValueError("max_nodes must be >= 1")
+        if max_depth < 0 or max_depth > 16:
+            raise ValueError("max_depth must be between 0 and 16")
+        if max_nodes < 1 or max_nodes > 10000:
+            raise ValueError("max_nodes must be between 1 and 10000")
         self.decomposer = decomposer
         self.max_depth = max_depth
         self.max_nodes = max_nodes
@@ -215,6 +215,10 @@ def build_rotation_plan(records: list[dict], *, batch_size: int = 5) -> dict:
             "batch": len(batches) + 1,
             "mode": "DRY_RUN_ONLY",
             "credential_ids": [item["credential_id"] for item in batch_records],
+            "review_records": [
+                {key: item[key] for key in ("credential_id", "provider", "alias", "environment", "consumers")}
+                for item in batch_records
+            ],
             "steps": [
                 "operator reviews provider, owner, environment, consumers, and dependency graph",
                 "authorized operator issues replacement through provider control plane",
