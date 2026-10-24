@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Launch from any working directory, without pip installs or online calls.
+set -euo pipefail
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -x "$ROOT/.venv/bin/python" ]; then
+  PYTHON="$ROOT/.venv/bin/python"
+elif command -v python3 >/dev/null 2>&1; then
+  PYTHON="$(command -v python3)"
+else
+  printf '%s\n' 'Python 3 is required.' >&2
+  exit 2
+fi
+cd -- "$ROOT"
+exec "$PYTHON" -m integrations.openai_model_mirror.swarm "$@"

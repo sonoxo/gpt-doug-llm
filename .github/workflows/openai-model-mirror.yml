@@ -1,0 +1,42 @@
+name: OpenAI Open-Weight Mirror Contract
+
+on:
+  pull_request:
+    paths:
+      - "integrations/openai_model_mirror/**"
+      - "tests/test_openai_model_mirror.py"
+      - "tests/test_openai_model_swarm.py"
+      - "scripts/doug-rea-swarm"
+      - ".github/workflows/openai-model-mirror.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-contract:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Select Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile bridge
+        run: python -m compileall -q integrations/openai_model_mirror
+      - name: Run isolated offline contracts
+        run: python -m unittest discover -s tests -p 'test_openai_model_mirror.py' -v
+      - name: Run 99M virtual swarm contract
+        run: python -m unittest discover -s tests -p 'test_openai_model_swarm.py' -v
+      - name: Validate Mac launcher syntax
+        run: bash -n scripts/doug-rea-swarm
+      - name: Verify CLI help
+        run: |
+          python -m integrations.openai_model_mirror --help
+          python -m integrations.openai_model_mirror.swarm --help
+          bash scripts/doug-rea-swarm --count 99999999 --slots 8 --sample 1 > /tmp/doug-swarm.json
