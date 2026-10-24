@@ -8,7 +8,8 @@ read raw secrets, or mutate provider credentials.
 ## Why "recursive"
 
 A goal is expanded into subgoals, then expanded again by a caller-supplied
-decomposer until the node budget, depth budget, or a leaf is reached. Stable
+decomposer until the node budget, depth budget, or a leaf is reached. Hard ceilings
+are 16 levels and 10,000 nodes per plan (defaults: 4 levels and 64 nodes). Stable
 node IDs make a plan traceable. Cycles and repeated sibling tasks are skipped.
 The default decomposer supplies inspectable starting workstreams for fleet
 scaling, key rotation, and public communications. It makes no model calls.
