@@ -10,11 +10,12 @@
 <script defer src="https://cdn.jsdelivr.net/npm/cesium@1.145.0/Build/Cesium/Cesium.js"></script>
 <script defer src="./ontology.js"></script>
 <script defer src="./iphone-grid.js"></script>
+<script defer src="./live-freshness.js"></script>
 <script defer src="./live-earth.js"></script>
 </head><body>
 <header class="topbar">
   <div class="brandmark">◈ <span>GPT-DOUG</span><b>// LIVE EARTH 3D</b><small>ZYRA · REAL PUBLIC OBSERVATIONS</small></div>
-  <div class="topstatus"><span class="statuschip" id="render-status">3D ENGINE: LOADING</span><span class="clock" id="utc-clock">UTC --:--:--</span><a href="../" class="return-link">TAK-OS ↗</a></div>
+  <div class="topstatus"><span class="statuschip" id="render-status">3D ENGINE: LOADING</span><span class="clock" id="utc-clock">UTC --:--:--</span><time class="live-date-time" id="live-date-time" aria-label="Current local and UTC dates">DATE INITIALIZING</time><a href="../" class="return-link">TAK-OS ↗</a></div>
 </header>
 <div id="globe" aria-label="Interactive Cesium 3D NASA Earth globe"></div>
 <div class="globe-caption"><b>WGS84 THREE-DIMENSIONAL EARTH</b> · NASA GIBS historical composite imagery · ellipsoid surface (not terrain height model) · <span id="imagery-state">IMAGERY: PENDING</span></div>
@@ -44,6 +45,7 @@
  <div id="entity-inspector" class="entity-inspector"><p>Select a verified map observation, building, or orbital element to view evidence and timestamps.</p></div>
  <div class="section-heading" id="itak-metrics-heading">iTAK / TAK METRICS <button type="button" class="mini" id="itak-refresh">RECONNECT</button></div>
  <div class="panel-section" id="itak-metrics" aria-live="polite">Checking private TAK metrics capability. No iTAK session inferred.</div>
+ <div class="section-heading">LIVE SOURCE ONTOLOGY <button class="mini" id="ontology-refresh" type="button">REFRESH</button><button class="mini" id="ontology-export" type="button">EXPORT PUBLIC</button></div><div id="live-source-ontology" class="panel-section" aria-live="polite">Source health awaiting public retrieval.</div>
  <div class="section-heading">SOURCE HEALTH <span id="health-updated">—</span></div><div id="feed-health" class="feed-health" aria-live="polite"></div>
  <div class="section-heading">KNOWLEDGE GRAPH <button type="button" class="mini" id="export-ontology">⇩ JSON-LD</button></div>
  <div id="ontology-stats" class="ontology-stats"></div>

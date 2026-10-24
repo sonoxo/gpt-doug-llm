@@ -110,3 +110,9 @@ An authorized operator can run the Python gateway on a protected host with the T
 The operator explicitly submits a viewer token from the private page. The browser keeps it only in volatile memory and polls verified counters at ten-second intervals. STOP clears the token and all displayed totals. Backgrounding the app or leaving the iTAK panel also ends polling. Counter resets and transport failures never return stale measurements as current. If the private gateway reuses a recent report, sampleAgeSeconds reflects the true monotonic elapsed time rather than zero.
 
 Displayed counters are **all connected TAK client types**, not iTAK-only devices. Native iTAK client identities, CoT positions, GPS, message bodies, video, and device-battery metrics are not ingested.
+
+## Live public ontology and date telemetry (Oct 2026)
+
+The public Live Earth iPhone DATA panel contains a **Live Source Ontology** reporting provider state, current record count, retrieval timestamp, last provider observation time, and on-demand status. The source taxonomy is preserved in JSON-LD with explicit PROV/source identity edges. Public source summaries are exportable. Never interpret a successfully retrieved old provider observation as a real-time measurement. The UTC and device-local dates displayed in the HUD are current **browser clock time** and do not attest that any provider feed or private TAK Server is connected.
+
+A separate in-memory private ontology projection validates source-scoped mTLS-confirmed TAK Server aggregate measurements, evaluates sample freshness and exposes only the five allowlisted counters. It does not enter public exports, IndexedDB or service-worker caches. An unverified, future, malformed or stale private reading causes the private metrics display to fail closed. No iTAK-specific connection or military operational feed is inferred.

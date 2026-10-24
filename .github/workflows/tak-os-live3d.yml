@@ -47,6 +47,8 @@ jobs:
           node --check docs/tak-os/live-3d/live-earth.js
           node --check docs/tak-os/live-3d/cesium-config.js
           node --check docs/tak-os/live-3d/iphone-grid.js
+          node --check docs/tak-os/live-3d/live-freshness.js
+          node --test tests/test_tak_live_freshness.js
           grep -q 'data-mobile-panel="itak"' docs/tak-os/live-3d/index.html
           node --check docs/tak-os/live-3d/sw.js
       - name: Private iTAK metric aggregation and strict access contract
