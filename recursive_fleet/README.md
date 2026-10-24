@@ -13,6 +13,16 @@ node IDs make a plan traceable. Cycles and repeated sibling tasks are skipped.
 The default decomposer supplies inspectable starting workstreams for fleet
 scaling, key rotation, and public communications. It makes no model calls.
 
+## Ontology and Hivemind integration
+
+`ontology.json` defines the Mission, PlanNode, WorkerPool, CredentialRecord, RotationBatch, Approval, and Evidence object types and their governed links. The CLI is integrated into the existing Hivemind module:
+
+```bash
+python3 -m hivemind.cli recursive-plan "Build a bounded worker fleet" --max-depth 4 --max-nodes 64
+```
+
+This command plans only; it does not summon or execute a swarm.
+
 ## Quick start
 
 From the repository root:
