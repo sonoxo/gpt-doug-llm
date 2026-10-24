@@ -5,6 +5,7 @@ import json
 
 from .capabilities import doctor
 from .orchestrator import Hivemind
+from recursive_fleet.planner import RecursivePlanner
 
 
 def _print_json(payload: object) -> None:
@@ -20,6 +21,11 @@ def main() -> int:
     plan = sub.add_parser("plan", help="Build the deterministic swarm DAG for a job.")
     plan.add_argument("job")
     plan.add_argument("--workers", type=int, default=8)
+
+    recursive_plan = sub.add_parser("recursive-plan", help="Create a bounded recursive plan without executing tasks.")
+    recursive_plan.add_argument("job")
+    recursive_plan.add_argument("--max-depth", type=int, default=4)
+    recursive_plan.add_argument("--max-nodes", type=int, default=64)
 
     status = sub.add_parser("status", help="Show Universal Hive + GPT-Chaos runtime status.")
 
@@ -47,6 +53,11 @@ def main() -> int:
 
     if args.command == "doctor":
         _print_json([cap.to_dict() for cap in doctor()])
+        return 0
+
+    if args.command == "recursive-plan":
+        result = RecursivePlanner(max_depth=args.max_depth, max_nodes=args.max_nodes).plan(args.job)
+        _print_json(result.to_dict())
         return 0
 
     hive = Hivemind(max_workers=getattr(args, "workers", 8))
