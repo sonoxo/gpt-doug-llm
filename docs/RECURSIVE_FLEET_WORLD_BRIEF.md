@@ -13,7 +13,9 @@ The aspiration is enormous scale. The engineering method is deliberately measura
 ## What this increment adds
 
 - A standard-library recursive planner with maximum depth, maximum node count, deterministic node identifiers, and cycle suppression.
+- A machine-readable ontology for Mission, PlanNode, WorkerPool, CredentialRecord, RotationBatch, Approval, and Evidence.
 - A metadata-only credential rotation planner that requires both an explicit rotation request and owner confirmation.
+- A `python -m hivemind.cli recursive-plan` command path for bounded recursive plans without executing tasks.
 - A phased rollout contract: inventory, verify ownership and consumers, stage replacement, validate, migrate, monitor, revoke only after success, and preserve an audit trail.
 - Tests for recursion, node-budget enforcement, cycle detection, and credential-planning guardrails.
 
