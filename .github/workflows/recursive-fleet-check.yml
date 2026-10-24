@@ -1,0 +1,32 @@
+name: Recursive Fleet Planner Checks
+
+on:
+  pull_request:
+    paths:
+      - "recursive_fleet/**"
+      - "tests/test_recursive_fleet_planner.py"
+      - "docs/RECURSIVE_FLEET_WORLD_BRIEF.md"
+      - ".github/workflows/recursive-fleet-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  planner-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run recursive fleet planner tests
+        run: python -m unittest tests.test_recursive_fleet_planner -v
+      - name: Validate CLI plan output
+        run: |
+          python -m recursive_fleet.planner plan "Build a bounded worker fleet" --max-depth 3 --max-nodes 32 > /tmp/plan.json
+          python -c "import json; d=json.load(open('/tmp/plan.json')); assert d['node_count'] <= 32; assert d['schema'] == 'gpt-doug/recursive-plan/v1'"
