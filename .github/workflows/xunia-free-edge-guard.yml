@@ -1,0 +1,52 @@
+name: XUNIA Free Edge Guard
+
+on:
+  pull_request:
+    paths:
+      - 'xunia-edge/**'
+      - '.github/workflows/xunia-free-edge-guard.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'xunia-edge/**'
+      - '.github/workflows/xunia-free-edge-guard.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify Geo Guard policy
+        run: node --test xunia-edge/worker.test.mjs
+      - name: Validate Wrangler configs
+        run: python3 -c 'import tomllib; [tomllib.load(open(p,"rb")) for p in ("xunia-edge/wrangler.toml","xunia-edge/wrangler.preview.toml")]'
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Require operator-provisioned Cloudflare credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo 'Missing CLOUDFLARE_API_TOKEN secret'; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID secret'; exit 1; }
+      - name: Deploy production Worker Routes
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4.102.0 deploy --config xunia-edge/wrangler.toml
