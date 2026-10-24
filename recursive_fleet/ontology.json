@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_id": "gpt-doug/recursive-fleet-ontology/v1",
+  "purpose": "Governed recursive planning and bounded worker fleet metadata; no raw secrets.",
+  "object_types": {
+    "Mission": {
+      "primary_key": "mission_id",
+      "properties": {
+        "mission_id": {"type": "string"},
+        "goal": {"type": "string", "minLength": 1},
+        "status": {"enum": ["PLANNED", "REVIEW_REQUIRED", "APPROVED", "RUNNING", "BLOCKED", "COMPLETE", "FAILED"]},
+        "max_depth": {"type": "integer", "minimum": 0, "maximum": 16},
+        "max_nodes": {"type": "integer", "minimum": 1, "maximum": 10000},
+        "owner_id": {"type": "string"}
+      }
+    },
+    "PlanNode": {
+      "primary_key": "node_id",
+      "properties": {
+        "node_id": {"type": "string"},
+        "mission_id": {"type": "string"},
+        "parent_node_id": {"type": ["string", "null"]},
+        "goal": {"type": "string"},
+        "depth": {"type": "integer", "minimum": 0},
+        "status": {"enum": ["PLANNED", "READY", "RUNNING", "PASSED", "FAILED", "SKIPPED"]},
+        "evidence_refs": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "WorkerPool": {
+      "primary_key": "pool_id",
+      "properties": {
+        "pool_id": {"type": "string"},
+        "provider": {"type": "string"},
+        "environment": {"type": "string"},
+        "active_worker_limit": {"type": "integer", "minimum": 1, "maximum": 64},
+        "virtual_slot_target": {"type": "string", "pattern": "^[0-9]{1,30}$"},
+        "status": {"enum": ["PLANNED", "PAUSED", "READY", "RUNNING", "DEGRADED", "STOPPED"]}
+      }
+    },
+    "CredentialRecord": {
+      "primary_key": "credential_id",
+      "properties": {
+        "credential_id": {"type": "string"},
+        "provider": {"type": "string"},
+        "alias": {"type": "string"},
+        "environment": {"type": "string"},
+        "owner_id": {"type": "string"},
+        "rotation_requested": {"type": "boolean"},
+        "owner_confirmed": {"type": "boolean"},
+        "secret_value_present": {"const": false}
+      }
+    },
+    "RotationBatch": {
+      "primary_key": "batch_id",
+      "properties": {
+        "batch_id": {"type": "string"},
+        "credential_ids": {"type": "array", "items": {"type": "string"}},
+        "status": {"enum": ["DRY_RUN", "PENDING_APPROVAL", "APPROVED", "IN_PROGRESS", "VERIFIED", "ROLLED_BACK", "CLOSED"]},
+        "provider_mutation_performed": {"const": false}
+      }
+    },
+    "Approval": {
+      "primary_key": "approval_id",
+      "properties": {
+        "approval_id": {"type": "string"},
+        "action": {"type": "string"},
+        "approved_by": {"type": ["string", "null"]},
+        "status": {"enum": ["PENDING", "APPROVED", "REJECTED", "EXPIRED"]},
+        "scope": {"type": "string"}
+      }
+    },
+    "Evidence": {
+      "primary_key": "evidence_id",
+      "properties": {
+        "evidence_id": {"type": "string"},
+        "source_uri": {"type": ["string", "null"]},
+        "sha256": {"type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "trust_level": {"enum": ["UNASSESSED", "LOW", "MEDIUM", "HIGH", "VERIFIED"]},
+        "redacted": {"type": "boolean"}
+      }
+    }
+  },
+  "link_types": {
+    "HAS_PLAN_NODE": {"from": "Mission", "to": "PlanNode", "cardinality": "one-to-many"},
+    "PARENT_OF": {"from": "PlanNode", "to": "PlanNode", "cardinality": "one-to-many"},
+    "DISPATCHED_TO": {"from": "PlanNode", "to": "WorkerPool", "cardinality": "many-to-one"},
+    "ROTATES_IN": {"from": "CredentialRecord", "to": "RotationBatch", "cardinality": "many-to-one"},
+    "REQUIRES_APPROVAL": {"from": "RotationBatch", "to": "Approval", "cardinality": "many-to-one"},
+    "SUPPORTED_BY": {"from": "PlanNode", "to": "Evidence", "cardinality": "many-to-many"}
+  },
+  "governance": {
+    "recursive_expansion_bounded": true,
+    "provider_side_credential_mutation": "requires provider authorization and separate human approval",
+    "raw_secrets_in_ontology": false,
+    "virtual_capacity_is_not_running_capacity": true,
+    "automatic_external_publication": false
+  }
+}
