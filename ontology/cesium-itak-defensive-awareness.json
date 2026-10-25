@@ -1,0 +1,100 @@
+{
+  "ontology_version": "1.0.0",
+  "object_type": "DefensiveGeospatialPlatform",
+  "canonical_id": "gpt-doug:platform:cesium-itak-defensive-awareness",
+  "name": "CESIUM-ITAK Global Defensive Situational Awareness",
+  "status": "proposed",
+  "deployment_state": "not_deployed",
+  "mission": "Geospatial hazard awareness, authorized defensive monitoring, incident coordination, and resilience simulation",
+  "user_interfaces": [
+    {
+      "id": "cesium-globe",
+      "technology": "CesiumJS",
+      "mode": "read_only_map_and_event_review"
+    }
+  ],
+  "optional_interoperability": [
+    {
+      "id": "tak-style-adapter",
+      "status": "not_configured",
+      "requirement": "separate authorization and compatibility review"
+    }
+  ],
+  "components": [
+    {
+      "id": "source-adapters",
+      "mode": "read_only_by_default",
+      "trust": "untrusted_until_validated"
+    },
+    {
+      "id": "schema-validator",
+      "required": true
+    },
+    {
+      "id": "normalizer-deduplicator",
+      "required": true
+    },
+    {
+      "id": "policy-gate",
+      "fail_closed": true
+    },
+    {
+      "id": "event-store",
+      "access": "role_gated"
+    },
+    {
+      "id": "audit-service",
+      "append_only": true
+    },
+    {
+      "id": "incident-workflow",
+      "human_approval_for_escalation": true
+    },
+    {
+      "id": "synthetic-simulation",
+      "external_commands": false
+    }
+  ],
+  "event_schema": "schemas/defense/incident-event.schema.json",
+  "architecture_doc": "docs/defense/CESIUM_GLOBAL_DEFENSIVE_AWARENESS.md",
+  "security_controls": {
+    "authentication_required": true,
+    "least_privilege": true,
+    "role_based_access_control": true,
+    "egress_default": "deny",
+    "secrets_in_source_control": false,
+    "provenance_required": true,
+    "stale_data_indication_required": true,
+    "audit_exports": true,
+    "fail_closed_on_policy_failure": true
+  },
+  "prohibited_capabilities": [
+    "weapon_control",
+    "automated_target_selection",
+    "fire_control_or_engagement",
+    "jamming_or_spoofing",
+    "malware_or_exploit_delivery",
+    "autonomous_destructive_external_action"
+  ],
+  "human_oversight": {
+    "consequential_escalations": "approval_required",
+    "external_side_effects": "disabled_by_default",
+    "production_release": "owner_approval_and_verification_required"
+  },
+  "data_policy": {
+    "development_default": "synthetic_data",
+    "live_feeds": "explicit_authorization_required",
+    "classification_enforcement": true,
+    "retention_policy_required": true
+  },
+  "acceptance_gates": [
+    "schema_tests_pass",
+    "access_control_tests_pass",
+    "provenance_and_freshness_visible",
+    "audit_and_redaction_verified",
+    "simulation_has_no_external_command_path",
+    "recovery_and_retention_documented",
+    "human_approval_before_production"
+  ],
+  "note": "Architecture metadata only. No weapons, live sensor feeds, TAK network, or production system has been deployed or connected."
+}
