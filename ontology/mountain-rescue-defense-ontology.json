@@ -1,0 +1,395 @@
+{
+  "schema_version": "1.0.0",
+  "ontology_id": "sonoxo://ontology/mountain-rescue-defense",
+  "title": "Mountain Rescue and Civilian Protection",
+  "purpose": "Govern a fictional training simulation for protecting occupants and responders, stabilizing hazards, coordinating extraction, and supporting lawful apprehension through authorized human-led processes.",
+  "scope": {
+    "mode": "simulation_and_defensive_coordination",
+    "data": "synthetic_by_default",
+    "allowed_capabilities": [
+      "hazard_observation",
+      "occupant_and_responder_safety_tracking",
+      "communications_continuity",
+      "medical_and_rescue_coordination",
+      "route_safety_assessment_by_qualified_personnel",
+      "evidence_provenance_and_uncertainty_tracking",
+      "lawful_human_authorized_apprehension_coordination",
+      "tabletop_rehearsal_and_after_action_review"
+    ],
+    "prohibited_capabilities": [
+      "mountain_or_cave_collapse_planning",
+      "structural_destabilization_or_breach_instructions",
+      "weapon_targeting_or_employment",
+      "autonomous_use_of_force",
+      "unapproved_electromagnetic_interference",
+      "covert_manipulation_or_deception",
+      "live_control_of_weapons_or_hazardous_equipment"
+    ]
+  },
+  "object_types": [
+    {
+      "id": "obj:incident",
+      "name": "Incident",
+      "required": [
+        "canonical_id",
+        "status",
+        "created_at",
+        "owner_id"
+      ],
+      "fields": [
+        "scenario_id",
+        "priority",
+        "summary",
+        "jurisdiction_id",
+        "decision_log_id"
+      ]
+    },
+    {
+      "id": "obj:person",
+      "name": "Person",
+      "required": [
+        "canonical_id",
+        "role_status"
+      ],
+      "fields": [
+        "role_status",
+        "safety_status",
+        "last_confirmed_at",
+        "privacy_classification"
+      ],
+      "notes": "Use synthetic identifiers in training; restrict personal data in real deployments."
+    },
+    {
+      "id": "obj:location_zone",
+      "name": "LocationZone",
+      "required": [
+        "canonical_id",
+        "zone_type",
+        "hazard_status"
+      ],
+      "fields": [
+        "access_status",
+        "occupancy_estimate",
+        "confidence",
+        "last_assessed_at",
+        "source_ids"
+      ]
+    },
+    {
+      "id": "obj:hazard_observation",
+      "name": "HazardObservation",
+      "required": [
+        "canonical_id",
+        "source_id",
+        "observed_at",
+        "confidence"
+      ],
+      "fields": [
+        "hazard_type",
+        "measurement_summary",
+        "integrity_status",
+        "uncertainty",
+        "reviewer_id"
+      ]
+    },
+    {
+      "id": "obj:rescue_resource",
+      "name": "RescueResource",
+      "required": [
+        "canonical_id",
+        "resource_type",
+        "availability_status"
+      ],
+      "fields": [
+        "qualified_lead_id",
+        "capability_summary",
+        "location_zone_id",
+        "communications_status"
+      ]
+    },
+    {
+      "id": "obj:route_assessment",
+      "name": "RouteAssessment",
+      "required": [
+        "canonical_id",
+        "assessor_id",
+        "assessment_time",
+        "status"
+      ],
+      "fields": [
+        "origin_zone_id",
+        "destination_zone_id",
+        "hazards",
+        "confidence",
+        "valid_until",
+        "requires_qualified_review"
+      ]
+    },
+    {
+      "id": "obj:communications_link",
+      "name": "CommunicationsLink",
+      "required": [
+        "canonical_id",
+        "status",
+        "last_checked_at"
+      ],
+      "fields": [
+        "link_type",
+        "owner_id",
+        "backup_link_id",
+        "approved_contingency_id"
+      ]
+    },
+    {
+      "id": "obj:medical_case",
+      "name": "MedicalCase",
+      "required": [
+        "canonical_id",
+        "triage_status",
+        "assigned_resource_id"
+      ],
+      "fields": [
+        "synthetic_person_id",
+        "privacy_classification",
+        "last_update",
+        "evacuation_priority"
+      ]
+    },
+    {
+      "id": "obj:swarm_recommendation",
+      "name": "SwarmRecommendation",
+      "required": [
+        "canonical_id",
+        "agent_ids",
+        "evidence_refs",
+        "confidence",
+        "created_at"
+      ],
+      "fields": [
+        "options_summary",
+        "dissent_summary",
+        "known_unknowns",
+        "risk_flags",
+        "expires_at"
+      ]
+    },
+    {
+      "id": "obj:policy_decision",
+      "name": "PolicyDecision",
+      "required": [
+        "canonical_id",
+        "policy_version",
+        "decision",
+        "decider_id",
+        "decided_at"
+      ],
+      "fields": [
+        "scope_check",
+        "authority_check",
+        "risk_tier",
+        "reason",
+        "expiry",
+        "rollback_or_stop_condition"
+      ]
+    },
+    {
+      "id": "obj:action_record",
+      "name": "ActionRecord",
+      "required": [
+        "canonical_id",
+        "action_class",
+        "status",
+        "authorization_ref"
+      ],
+      "fields": [
+        "responsible_owner_id",
+        "start_time",
+        "end_time",
+        "observed_outcome",
+        "reversal_or_stop_plan"
+      ]
+    },
+    {
+      "id": "obj:evidence_record",
+      "name": "EvidenceRecord",
+      "required": [
+        "canonical_id",
+        "source_id",
+        "captured_at",
+        "integrity_status"
+      ],
+      "fields": [
+        "hash_or_integrity_ref",
+        "chain_of_custody_ref",
+        "access_classification",
+        "retention_policy_id"
+      ]
+    },
+    {
+      "id": "obj:after_action_review",
+      "name": "AfterActionReview",
+      "required": [
+        "canonical_id",
+        "exercise_id",
+        "review_lead_id"
+      ],
+      "fields": [
+        "outcomes",
+        "near_misses",
+        "policy_gaps",
+        "lessons",
+        "corrective_actions"
+      ]
+    }
+  ],
+  "link_types": [
+    {
+      "id": "link:observed_in",
+      "from": "obj:hazard_observation",
+      "to": "obj:location_zone"
+    },
+    {
+      "id": "link:affects",
+      "from": "obj:hazard_observation",
+      "to": "obj:rescue_resource"
+    },
+    {
+      "id": "link:occupies",
+      "from": "obj:person",
+      "to": "obj:location_zone"
+    },
+    {
+      "id": "link:assigned_to",
+      "from": "obj:medical_case",
+      "to": "obj:rescue_resource"
+    },
+    {
+      "id": "link:assesses",
+      "from": "obj:route_assessment",
+      "to": "obj:location_zone"
+    },
+    {
+      "id": "link:depends_on",
+      "from": "obj:communications_link",
+      "to": "obj:communications_link"
+    },
+    {
+      "id": "link:recommends",
+      "from": "obj:swarm_recommendation",
+      "to": "obj:action_record"
+    },
+    {
+      "id": "link:governed_by",
+      "from": "obj:action_record",
+      "to": "obj:policy_decision"
+    },
+    {
+      "id": "link:supported_by",
+      "from": "obj:policy_decision",
+      "to": "obj:evidence_record"
+    },
+    {
+      "id": "link:documents",
+      "from": "obj:after_action_review",
+      "to": "obj:action_record"
+    }
+  ],
+  "governed_action_classes": [
+    {
+      "id": "action:read_only_assessment",
+      "autonomy": "allowed_within_preapproved_scope",
+      "examples": [
+        "deduplicate alerts",
+        "summarize sensor status",
+        "identify missing evidence"
+      ],
+      "human_approval_required": false
+    },
+    {
+      "id": "action:rescue_coordination",
+      "autonomy": "recommendation_only",
+      "examples": [
+        "suggest resource coordination",
+        "draft a communications update"
+      ],
+      "human_approval_required": true
+    },
+    {
+      "id": "action:route_or_structural_safety",
+      "autonomy": "qualified_human_assessment_required",
+      "examples": [
+        "review route safety",
+        "review structural hazard report"
+      ],
+      "human_approval_required": true
+    },
+    {
+      "id": "action:law_enforcement_coordination",
+      "autonomy": "authorized_human_only",
+      "examples": [
+        "record handoff status",
+        "coordinate with designated authority"
+      ],
+      "human_approval_required": true
+    },
+    {
+      "id": "action:force_or_structural_damage",
+      "autonomy": "prohibited",
+      "examples": [
+        "collapse mountain",
+        "destabilize structure",
+        "weapon employment"
+      ],
+      "human_approval_required": true
+    }
+  ],
+  "swarm_governance": {
+    "role": "advisory_only",
+    "agent_roles": [
+      "evidence_quality",
+      "rescue_continuity",
+      "medical_coordination",
+      "communications_resilience",
+      "legal_policy_review",
+      "red_team_safety"
+    ],
+    "consensus_rule": "Consensus ranks recommendations; it never creates authority.",
+    "mandatory_dissent": true,
+    "confidence_and_unknowns_required": true,
+    "policy_self_modification": false,
+    "permission_self_escalation": false,
+    "fail_closed_conditions": [
+      "unknown authority",
+      "conflicting evidence",
+      "stale hazard data",
+      "missing provenance",
+      "policy mismatch",
+      "audit failure",
+      "unsafe operating boundary"
+    ],
+    "human_authority": "Named incident commander and relevant qualified specialists retain decision authority.",
+    "stop_control": "Any authorized safety lead can pause the simulation or response workflow."
+  },
+  "event_contract": {
+    "required_fields": [
+      "event_id",
+      "canonical_object_id",
+      "event_type",
+      "occurred_at",
+      "source_id",
+      "provenance_status",
+      "confidence",
+      "policy_version",
+      "correlation_id"
+    ],
+    "integrity": "Append-only audit events; corrections are new linked events, not silent overwrites."
+  },
+  "safety_invariants": [
+    "Preserve life and avoid collapse, destabilization, or deliberate entrapment.",
+    "Do not infer hostile identity or intent from a single uncorroborated observation.",
+    "No live operational control is exposed by this ontology.",
+    "Use synthetic identities and locations in the training simulator.",
+    "Every consequential action requires explicit human authorization and a recorded stop condition.",
+    "Protect civilian, medical, responder, and detainee safety; preserve lawful process and evidence integrity."
+  ]
+}
