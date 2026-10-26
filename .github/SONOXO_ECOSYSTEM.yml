@@ -1,0 +1,25 @@
+schema_version: "1.0"
+ecosystem_id: "sonoxo://ecosystem/north-star"
+canonical_control_plane:
+  repository: "sonoxo/gpt-doug-llm"
+  url: "https://github.com/sonoxo/gpt-doug-llm"
+repository:
+  name: "gpt-doug-llm"
+  full_name: "sonoxo/gpt-doug-llm"
+  default_branch: "main"
+  visibility: "public"
+  archived: false
+registration:
+  status: "registered"
+  purpose: "unclassified; determine from repository contents before assigning dependencies"
+  integration_status: "registry-only; no runtime integration is implied"
+  last_inventory_date: "2026-10-26"
+  update_policy: "propose changes on a branch and review via pull request; do not overwrite project-specific files or secrets"
+shared_contract:
+  canonical_ids: required-for-new-integrations
+  provenance: required-for-external-data
+  secrets: never-commit
+  execution: least-privilege-and-human-approval-for-external-side-effects
+  safety: fail-closed-on-unknown-capabilities
+  deployment: separate-from-code-review-and-authorization
+  provider_constraint: "No Vercel dependency"
