@@ -1,0 +1,233 @@
+{
+  "ontology_id": "sonoxo://ontology/humanoid-robotics-learning",
+  "version": "1.0.0",
+  "title": "XUNIA Humanoid Robotics Learning Ontology",
+  "status": "proposed-educational",
+  "purpose": "Connect publicly sourced humanoid robotics anatomy, component families, supply-chain evidence, learning paths, simulations and provenance inside GPT-DOUG-LLM / XUNIA.",
+  "inspiration": {
+    "name": "RoboDienst",
+    "url": "https://robodienst.com/",
+    "relationship": "Feature-concept inspiration only; independent implementation; no source-code copying, affiliation, or endorsement implied."
+  },
+  "boundaries": {
+    "hardware_control": false,
+    "weaponization": false,
+    "autonomous_motion_commands": false,
+    "live_vendor_claims_without_evidence": false,
+    "synthetic_examples_allowed": true,
+    "human_review_required_for_physical_testing": true
+  },
+  "object_types": [
+    {
+      "id": "RobotPlatform",
+      "key": "platform_id",
+      "fields": [
+        "manufacturer",
+        "model",
+        "revision",
+        "official_source",
+        "evidence_status"
+      ]
+    },
+    {
+      "id": "RobotSubsystem",
+      "key": "subsystem_id",
+      "fields": [
+        "name",
+        "function",
+        "interfaces",
+        "safety_notes"
+      ]
+    },
+    {
+      "id": "Component",
+      "key": "component_id",
+      "fields": [
+        "category",
+        "manufacturer",
+        "model",
+        "revision",
+        "specifications",
+        "source_refs"
+      ]
+    },
+    {
+      "id": "Material",
+      "key": "material_id",
+      "fields": [
+        "name",
+        "origin_status",
+        "source_refs"
+      ]
+    },
+    {
+      "id": "Supplier",
+      "key": "supplier_id",
+      "fields": [
+        "name",
+        "relationship_status",
+        "source_refs"
+      ]
+    },
+    {
+      "id": "EvidenceRecord",
+      "key": "evidence_id",
+      "fields": [
+        "source_url",
+        "publisher",
+        "published_at",
+        "retrieved_at",
+        "claim",
+        "confidence",
+        "verification_status"
+      ]
+    },
+    {
+      "id": "LearningPath",
+      "key": "path_id",
+      "fields": [
+        "level",
+        "steps",
+        "acceptance_checks"
+      ]
+    },
+    {
+      "id": "Simulation",
+      "key": "simulation_id",
+      "fields": [
+        "scope",
+        "synthetic_only",
+        "validation_status"
+      ]
+    },
+    {
+      "id": "SafetyConstraint",
+      "key": "constraint_id",
+      "fields": [
+        "scope",
+        "rule",
+        "verification_method"
+      ]
+    }
+  ],
+  "link_types": [
+    {
+      "id": "HAS_SUBSYSTEM",
+      "from": "RobotPlatform",
+      "to": "RobotSubsystem"
+    },
+    {
+      "id": "USES_COMPONENT",
+      "from": "RobotSubsystem",
+      "to": "Component"
+    },
+    {
+      "id": "CONTAINS_MATERIAL",
+      "from": "Component",
+      "to": "Material"
+    },
+    {
+      "id": "SUPPLIED_BY",
+      "from": "Component",
+      "to": "Supplier",
+      "requires_evidence": true
+    },
+    {
+      "id": "SUPPORTED_BY",
+      "from": "Component",
+      "to": "EvidenceRecord"
+    },
+    {
+      "id": "DESCRIBES",
+      "from": "EvidenceRecord",
+      "to": "RobotPlatform"
+    },
+    {
+      "id": "TEACHES",
+      "from": "LearningPath",
+      "to": "RobotSubsystem"
+    },
+    {
+      "id": "SIMULATES",
+      "from": "Simulation",
+      "to": "RobotSubsystem"
+    },
+    {
+      "id": "CONSTRAINS",
+      "from": "SafetyConstraint",
+      "to": "Simulation"
+    }
+  ],
+  "governed_actions": [
+    {
+      "id": "INGEST_PUBLIC_SOURCE",
+      "mode": "read-only",
+      "requires": [
+        "public_url",
+        "retrieval_timestamp",
+        "license_review"
+      ]
+    },
+    {
+      "id": "NORMALIZE_COMPONENT",
+      "mode": "reviewable",
+      "requires": [
+        "component_identity",
+        "source_refs"
+      ]
+    },
+    {
+      "id": "ASSERT_SUPPLIER_LINK",
+      "mode": "human-reviewed",
+      "requires": [
+        "primary_evidence",
+        "reviewer"
+      ]
+    },
+    {
+      "id": "EXPORT_LEARNING_RECORD",
+      "mode": "local-browser",
+      "requires": [
+        "user_initiated_export"
+      ]
+    },
+    {
+      "id": "PHYSICAL_TEST",
+      "mode": "blocked-by-this-ontology",
+      "requires": [
+        "separate authorized lab process",
+        "manufacturer procedures",
+        "qualified human oversight"
+      ]
+    }
+  ],
+  "provenance_rules": [
+    "Separate manufacturer statements, independent measurements, inference, and synthetic demonstration data.",
+    "Do not infer a supplier, material origin, specification, or capability from a generic component category.",
+    "Preserve source URL, publisher, publication/revision date, retrieval time, and claim-level evidence.",
+    "Keep model and hardware revisions distinct.",
+    "A simulation is not proof of hardware safety or performance."
+  ],
+  "integration_points": [
+    {
+      "system": "GPT-DOUG-LLM",
+      "role": "source-grounded synthesis and learning workflow",
+      "state": "proposed"
+    },
+    {
+      "system": "XUNIA.org",
+      "role": "public browser learning surface and resource catalog",
+      "state": "proposed"
+    },
+    {
+      "system": "ZYRA",
+      "role": "policy, provenance and evidence gate",
+      "state": "proposed"
+    },
+    {
+      "system": "XuniaDAO",
+      "role": "canonical domain ontology and registry",
+      "state": "proposed"
+    }
+  ]
+}
