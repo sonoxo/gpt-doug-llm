@@ -24,56 +24,112 @@
       "repo": "sonoxo/gpt-doug-llm",
       "role": "governance-orchestration",
       "label": "THE BLACK HOUSE // GPT-DOUG-LLM MAX",
-      "responsibilities": ["ontology", "agent orchestration", "AI-layer contract", "policy", "evidence", "cross-repo architecture"]
+      "responsibilities": [
+        "ontology",
+        "agent orchestration",
+        "AI-layer contract",
+        "policy",
+        "evidence",
+        "cross-repo architecture"
+      ]
     },
     {
       "id": "xunia-hq",
       "repo": "sonoxo/xuniahub",
       "role": "mission-interface-hub",
       "label": "XUNIA HUB // HOLO FORGE",
-      "responsibilities": ["operator UI", "RVIA", "HOLO/digital twin", "learning surfaces", "mission visualization", "hub navigation"]
+      "responsibilities": [
+        "operator UI",
+        "RVIA",
+        "HOLO/digital twin",
+        "learning surfaces",
+        "mission visualization",
+        "hub navigation"
+      ]
     },
     {
       "id": "xunia-domain-root",
       "repo": "sonoxo/xuniadao",
       "role": "domain-ontology-registry",
       "label": "XUNIA // XuniaDAO",
-      "responsibilities": ["XUNIAverse domain ontology", "repository registry", "identity graph", "CRM", "compliance", "licensing", "domain governance"]
+      "responsibilities": [
+        "XUNIAverse domain ontology",
+        "repository registry",
+        "identity graph",
+        "CRM",
+        "compliance",
+        "licensing",
+        "domain governance"
+      ]
     },
     {
       "id": "zyra",
       "repo": "sonoxo/zyra",
       "role": "governed-execution",
       "label": "ZYRA",
-      "responsibilities": ["security gate", "approval", "bounded execution", "audit", "cloud CI evidence", "tool integrations"]
+      "responsibilities": [
+        "security gate",
+        "approval",
+        "bounded execution",
+        "audit",
+        "cloud CI evidence",
+        "tool integrations"
+      ]
     },
     {
       "id": "red-house",
       "repo": "sonoxo/theredhouse",
       "role": "authorized-security",
       "label": "THE RED HOUSE",
-      "responsibilities": ["authorized assessment", "finding normalization", "risk", "security knowledge graph", "remediation", "reviewable fixes"]
+      "responsibilities": [
+        "authorized assessment",
+        "finding normalization",
+        "risk",
+        "security knowledge graph",
+        "remediation",
+        "reviewable fixes"
+      ]
     },
     {
       "id": "green-house",
       "repo": "sonoxo/thegreenhouse",
       "role": "public-situational-intelligence",
       "label": "THE GREEN HOUSE",
-      "responsibilities": ["environment", "bio/pharma public context", "regulatory awareness", "global events", "maps", "public-source correlation"]
+      "responsibilities": [
+        "environment",
+        "bio/pharma public context",
+        "regulatory awareness",
+        "global events",
+        "maps",
+        "public-source correlation"
+      ]
     },
     {
       "id": "orange-house",
       "repo": "sonoxo/theorangehouse",
       "role": "economic-scenario-planning",
       "label": "THE ORANGE HOUSE",
-      "responsibilities": ["local projections", "stress bands", "scenario analysis", "economic planning interfaces", "deterministic outputs"]
+      "responsibilities": [
+        "local projections",
+        "stress bands",
+        "scenario analysis",
+        "economic planning interfaces",
+        "deterministic outputs"
+      ]
     },
     {
       "id": "glass-onion-spatial",
       "repo": "sonoxo/gods-eye-viewXUNIA",
       "role": "geospatial-public-source-visualization",
       "label": "GLASS ONION // GOD'S EYE VIEW",
-      "responsibilities": ["3D Earth", "public aviation/maritime/orbital context", "provenance", "freshness labels", "spatial correlation", "human review"]
+      "responsibilities": [
+        "3D Earth",
+        "public aviation/maritime/orbital context",
+        "provenance",
+        "freshness labels",
+        "spatial correlation",
+        "human review"
+      ]
     }
   ],
   "internal_divisions": [
@@ -97,7 +153,15 @@
       "path": "divisions/chaotic-good",
       "role": "experimental-r-and-d",
       "label": "CHAOTIC GOOD DVSN",
-      "responsibilities": ["unconventional AI research", "rapid prototyping", "scenario experimentation", "adversarial evaluation", "failure-mode discovery", "reproducibility", "prototype transfer"],
+      "responsibilities": [
+        "unconventional AI research",
+        "rapid prototyping",
+        "scenario experimentation",
+        "adversarial evaluation",
+        "failure-mode discovery",
+        "reproducibility",
+        "prototype transfer"
+      ],
       "authority_boundary": "Research division only; no independent execution authority. Consequential actions remain gated by ZYRA and human review."
     }
   ],
@@ -116,6 +180,13 @@
       "repo": "sonoxo/AI-Pentest",
       "category": "authorized-security-reference",
       "boundary": "Lab/reference use only on systems owned by the operator or explicitly authorized for testing."
+    },
+    {
+      "repo": "sonoxo/gpt-doug-llm",
+      "category": "humanoid-robotics-learning-lab",
+      "path": "docs/robotics-lab/",
+      "ontology": "foundry/ontology/humanoid-robotics-learning-ontology.json",
+      "boundary": "Independent educational concept inspired by RoboDienst public feature categories. Preserve attribution; source-ground every product/supply-chain claim; no robot control or weaponization."
     }
   ],
   "canonical_flow": [
