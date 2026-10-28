@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "object_types": [
+    {
+      "id": "EngineeringAgentProvider",
+      "description": "External provider capable of performing bounded engineering work.",
+      "primary_key": "canonical_id",
+      "required_properties": ["canonical_id", "name", "status", "owner"],
+      "properties": {
+        "canonical_id": "string",
+        "name": "string",
+        "status": "enum: proposed|configured|connected|suspended",
+        "owner": "string",
+        "provider_session_id": "string|null"
+      }
+    },
+    {
+      "id": "GovernedEngineeringTask",
+      "description": "A scoped task delegated to an engineering agent with acceptance and review requirements.",
+      "primary_key": "task_id",
+      "required_properties": ["task_id", "title", "prompt", "acceptance_criteria", "approval_status"],
+      "properties": {
+        "task_id": "string",
+        "title": "string",
+        "prompt": "string",
+        "acceptance_criteria": "array<string>",
+        "repository": "string",
+        "branch": "string|null",
+        "approval_status": "enum: draft|approved|submitted|review_required|accepted|rejected",
+        "test_evidence": "array<string>",
+        "reviewer": "string|null"
+      }
+    }
+  ],
+  "link_types": [
+    {
+      "id": "DELEGATES_TO",
+      "from": "GovernedEngineeringTask",
+      "to": "EngineeringAgentProvider",
+      "description": "Task was explicitly approved for submission to this provider."
+    },
+    {
+      "id": "PRODUCES_CHANGE_FOR",
+      "from": "EngineeringAgentProvider",
+      "to": "GitHubRepository",
+      "description": "Provider output targets a repository; this link does not imply merge or deployment authority."
+    },
+    {
+      "id": "VALIDATED_BY",
+      "from": "GovernedEngineeringTask",
+      "to": "ValidationRun",
+      "description": "CI or security validation evidence associated with a task."
+    }
+  ],
+  "governed_actions": [
+    {
+      "id": "submit_approved_task",
+      "preconditions": [
+        "approval_status == approved",
+        "acceptance_criteria is non-empty",
+        "provider status == connected",
+        "credentials available through environment, not task text"
+      ],
+      "effects": ["approval_status = submitted", "record provider session ID"],
+      "prohibited_effects": ["merge pull request", "deploy to production", "grant permissions"]
+    }
+  ]
+}
