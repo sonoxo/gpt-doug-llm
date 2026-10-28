@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_id": "sonoxo:gpt-doug-llm:integration:devin-enterprise",
+  "name": "Devin Enterprise Adapter",
+  "kind": "engineering-agent-adapter",
+  "status": "proposed",
+  "owner": "sonoxo/gpt-doug-llm",
+  "purpose": "Delegate bounded software engineering tasks to Devin while preserving GPT-DOUG-LLM governance.",
+  "capabilities": [
+    "submit_approved_engineering_task",
+    "retrieve_provider_session_response"
+  ],
+  "non_capabilities": [
+    "automatic_pull_request_merge",
+    "automatic_production_deploy",
+    "autonomous_permission_grant",
+    "secret_distribution"
+  ],
+  "interfaces": {
+    "runtime": "Python 3.10+ standard library",
+    "entrypoint": "integrations/devin-enterprise/adapter.py",
+    "configuration": [
+      "DEVIN_API_KEY",
+      "DEVIN_API_BASE_URL",
+      "DEVIN_API_PATH"
+    ]
+  },
+  "governance": {
+    "human_review_required": true,
+    "ci_required_before_merge": true,
+    "production_deploy_requires_separate_authorization": true,
+    "credentials_must_not_be_committed": true
+  },
+  "dependencies": [
+    "Devin API access configured by an authorized administrator",
+    "GitHub repository permissions configured independently"
+  ]
+}
