@@ -1,0 +1,42 @@
+{
+  "ontology_id": "sonoxo.gpt-doug.golden-biochip-swarm-brain.v1",
+  "status": "proposed",
+  "canonical_namespace": "sonoxo://gpt-doug/swarm",
+  "scale": {
+    "logical_agent_identities": 99999999999,
+    "interpretation": "virtual identity namespace, not simultaneous running agents",
+    "default_active_worker_cap": 8,
+    "hard_active_worker_cap": 256
+  },
+  "object_types": [
+    {"id": "SwarmTask", "key": "task_id", "properties": ["objective", "required_capabilities", "risk", "owner", "acceptance_tests"]},
+    {"id": "LogicalAgent", "key": "agent_id", "properties": ["role", "capabilities", "status"]},
+    {"id": "WorkerLease", "key": "lease_id", "properties": ["worker_id", "task_id", "expires_at", "capability_scope"]},
+    {"id": "ReviewArtifact", "key": "artifact_id", "properties": ["task_id", "evidence_refs", "criticisms", "verification_status"]},
+    {"id": "PolicyDecision", "key": "decision_id", "properties": ["risk", "approved", "approver", "audit_ref"]}
+  ],
+  "link_types": [
+    {"id": "TaskAssignedTo", "from": "SwarmTask", "to": "LogicalAgent"},
+    {"id": "TaskLeasedBy", "from": "SwarmTask", "to": "WorkerLease"},
+    {"id": "TaskProducesReview", "from": "SwarmTask", "to": "ReviewArtifact"},
+    {"id": "TaskRequiresPolicyDecision", "from": "SwarmTask", "to": "PolicyDecision"}
+  ],
+  "roles": ["planner", "builder", "critic", "evidence_auditor", "verifier", "integrator", "policy_gate"],
+  "ecosystem_candidates": [
+    {"repo": "sonoxo/gpt-doug-llm", "role": "orchestrator"},
+    {"repo": "sonoxo/zyra", "role": "ontology_and_operations_candidate"},
+    {"repo": "sonoxo/thegreenhouse", "role": "sandbox_and_execution_gate"},
+    {"repo": "sonoxo/xuniadao", "role": "governance_candidate"},
+    {"repo": "sonoxo/Sonoxomus", "role": "media_and_generation_candidate"}
+  ],
+  "guardrails": {
+    "external_calls_default": false,
+    "self_modifying_code": false,
+    "autonomous_production_deploy": false,
+    "high_or_critical_risk": "hold_without_explicit_policy_approval",
+    "unverified_worker_outputs": "untrusted",
+    "audit_required": true
+  },
+  "integration_state": "candidate repositories identified; interfaces and permissions not yet verified",
+  "events": ["task.queued", "worker.assigned", "review.submitted", "policy.denied", "task.verified"]
+}
