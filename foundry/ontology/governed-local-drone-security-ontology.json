@@ -1,0 +1,319 @@
+{
+  "ontology_id": "sonoxo://ontology/governed-local-drone-security",
+  "version": "1.0.0",
+  "title": "XUNIA Governed Local Drone Security Ontology",
+  "status": "proposed-educational",
+  "purpose": "Model a privacy-conscious, human-governed local security-drone workflow using documented manufacturer interfaces, local perception, event integration, safety constraints, and auditable evidence.",
+  "inspiration": {
+    "name": "Codez @0xCodez social post, 2026-10-26",
+    "url": "https://x.com/0xCodez/status/2114762819371680110",
+    "relationship": "Concept reference only. Independent design; no source code or unpublished prompt copied; no affiliation or endorsement implied."
+  },
+  "boundaries": {
+    "physical_drone_control": false,
+    "firmware_modification": false,
+    "autonomous_person_pursuit": false,
+    "cross_occlusion_person_identity_tracking": false,
+    "property_boundary_pursuit": false,
+    "face_recognition": false,
+    "human_approval_for_launch": true,
+    "synthetic_simulation_allowed": true,
+    "manufacturer_sdk_only": true,
+    "privacy_by_default": true
+  },
+  "object_types": [
+    {
+      "id": "DronePlatform",
+      "key": "drone_id",
+      "fields": [
+        "manufacturer",
+        "model",
+        "firmware_version",
+        "official_sdk_support_status",
+        "evidence_refs"
+      ]
+    },
+    {
+      "id": "MobileStation",
+      "key": "station_id",
+      "fields": [
+        "platform",
+        "os_version",
+        "app_version",
+        "local_processing_capabilities"
+      ]
+    },
+    {
+      "id": "AlarmEvent",
+      "key": "alarm_event_id",
+      "fields": [
+        "source_system",
+        "event_time",
+        "event_type",
+        "verification_state",
+        "acknowledged_by"
+      ]
+    },
+    {
+      "id": "LaunchApproval",
+      "key": "approval_id",
+      "fields": [
+        "operator_id",
+        "decision",
+        "decision_time",
+        "scope",
+        "expiry",
+        "reason"
+      ]
+    },
+    {
+      "id": "PerceptionResult",
+      "key": "perception_id",
+      "fields": [
+        "model_version",
+        "class_labels",
+        "confidence",
+        "synthetic_or_live",
+        "retention_policy"
+      ]
+    },
+    {
+      "id": "Geofence",
+      "key": "geofence_id",
+      "fields": [
+        "authorized_area",
+        "boundary_policy",
+        "altitude_limits",
+        "source",
+        "reviewed_at"
+      ]
+    },
+    {
+      "id": "FlightSafetyState",
+      "key": "safety_state_id",
+      "fields": [
+        "battery_state",
+        "link_state",
+        "position_validity",
+        "obstacle_status",
+        "failsafe_state",
+        "timestamp"
+      ]
+    },
+    {
+      "id": "EvidenceRecord",
+      "key": "evidence_id",
+      "fields": [
+        "capture_time",
+        "source_device",
+        "integrity_hash",
+        "retention_expiry",
+        "access_log",
+        "synthetic_or_live"
+      ]
+    },
+    {
+      "id": "SafetyConstraint",
+      "key": "constraint_id",
+      "fields": [
+        "rule",
+        "scope",
+        "verification_method",
+        "failure_behavior"
+      ]
+    },
+    {
+      "id": "IntegrationEndpoint",
+      "key": "endpoint_id",
+      "fields": [
+        "system",
+        "interface",
+        "auth_method",
+        "data_scope",
+        "health_state"
+      ]
+    }
+  ],
+  "link_types": [
+    {
+      "id": "EMITS_ALARM",
+      "from": "IntegrationEndpoint",
+      "to": "AlarmEvent"
+    },
+    {
+      "id": "REQUIRES_APPROVAL",
+      "from": "AlarmEvent",
+      "to": "LaunchApproval"
+    },
+    {
+      "id": "TARGETS_PLATFORM",
+      "from": "LaunchApproval",
+      "to": "DronePlatform"
+    },
+    {
+      "id": "RUNS_ON",
+      "from": "PerceptionResult",
+      "to": "MobileStation"
+    },
+    {
+      "id": "BOUNDED_BY",
+      "from": "DronePlatform",
+      "to": "Geofence"
+    },
+    {
+      "id": "REPORTS_STATE",
+      "from": "DronePlatform",
+      "to": "FlightSafetyState"
+    },
+    {
+      "id": "SUPPORTED_BY",
+      "from": "DronePlatform",
+      "to": "EvidenceRecord"
+    },
+    {
+      "id": "CONSTRAINS",
+      "from": "SafetyConstraint",
+      "to": "DronePlatform"
+    },
+    {
+      "id": "GENERATES",
+      "from": "PerceptionResult",
+      "to": "EvidenceRecord"
+    }
+  ],
+  "governed_actions": [
+    {
+      "id": "INGEST_ALARM",
+      "mode": "read-only",
+      "requires": [
+        "authenticated_endpoint",
+        "timestamp",
+        "deduplication_key"
+      ]
+    },
+    {
+      "id": "REQUEST_LAUNCH",
+      "mode": "human-approval-required",
+      "requires": [
+        "verified_alarm",
+        "operator_confirmation",
+        "manufacturer-supported_platform",
+        "preflight_check"
+      ]
+    },
+    {
+      "id": "SIMULATE_RESPONSE",
+      "mode": "local-synthetic-only",
+      "requires": [
+        "synthetic_scene",
+        "visible_simulation_label"
+      ]
+    },
+    {
+      "id": "RECORD_EVENT",
+      "mode": "privacy-limited",
+      "requires": [
+        "authorized_area",
+        "retention_policy",
+        "access_audit"
+      ]
+    },
+    {
+      "id": "ABORT_OR_RETURN",
+      "mode": "safety-priority",
+      "requires": [
+        "manufacturer_failsafe",
+        "operator_override",
+        "validated_home_location"
+      ]
+    },
+    {
+      "id": "PHYSICAL_TEST",
+      "mode": "blocked-by-this-ontology",
+      "requires": [
+        "separate_authorized_test_plan",
+        "manufacturer_procedures",
+        "qualified_operator",
+        "local_regulatory_review"
+      ]
+    }
+  ],
+  "safety_constraints": [
+    {
+      "id": "SC-001",
+      "rule": "No autonomous pursuit or following of a person; detections may raise an alert for human review only.",
+      "verification_method": "policy and test assertion",
+      "failure_behavior": "stop simulated tracking and notify operator"
+    },
+    {
+      "id": "SC-002",
+      "rule": "Geofence is a hard boundary; never cross it to maintain visual contact.",
+      "verification_method": "boundary unit tests and manufacturer-supported geofence",
+      "failure_behavior": "hold, land, or return using validated manufacturer failsafe"
+    },
+    {
+      "id": "SC-003",
+      "rule": "Launch requires a deliberate operator action after alarm review; an alarm alone never arms motors.",
+      "verification_method": "state-machine tests",
+      "failure_behavior": "remain grounded"
+    },
+    {
+      "id": "SC-004",
+      "rule": "Do not bypass firmware, unsupported SDK restrictions, or manufacturer safety controls.",
+      "verification_method": "compatibility gate and dependency review",
+      "failure_behavior": "disable aircraft integration"
+    },
+    {
+      "id": "SC-005",
+      "rule": "Lost link, invalid position, low battery, or obstacle uncertainty triggers documented failsafe, not improvised navigation.",
+      "verification_method": "bench/simulation tests before any flight",
+      "failure_behavior": "manufacturer-defined failsafe"
+    },
+    {
+      "id": "SC-006",
+      "rule": "Prefer event metadata over continuous recording; encrypt local evidence and apply a short configurable retention period.",
+      "verification_method": "data-flow and deletion tests",
+      "failure_behavior": "disable capture"
+    },
+    {
+      "id": "SC-007",
+      "rule": "Synthetic simulation output must never be presented as live aircraft telemetry.",
+      "verification_method": "persistent UI labeling and schema flag",
+      "failure_behavior": "reject unlabeled data"
+    }
+  ],
+  "provenance_rules": [
+    "Manufacturer compatibility and SDK support must be verified against current official documentation; never infer support from model family alone.",
+    "Separate official documentation, observed device behavior, inference, and synthetic data.",
+    "Store source URL, retrieval timestamp, SDK version, app version, and hardware/firmware revision.",
+    "A simulation is not evidence of flight safety, legal compliance, or hardware compatibility.",
+    "Apply applicable aviation rules, local ordinances, privacy law, and property permissions before any physical deployment."
+  ],
+  "integration_points": [
+    {
+      "system": "GPT-DOUG-LLM",
+      "role": "research synthesis, test planning, and evidence review",
+      "state": "proposed"
+    },
+    {
+      "system": "XUNIA.org",
+      "role": "interactive local-first learning lab",
+      "state": "proposed"
+    },
+    {
+      "system": "ZYRA",
+      "role": "policy gate, operator approval, and audit boundary",
+      "state": "proposed"
+    },
+    {
+      "system": "Home Assistant",
+      "role": "optional authenticated alarm-event source; no direct aircraft authority",
+      "state": "design-only"
+    },
+    {
+      "system": "Official manufacturer mobile SDK",
+      "role": "future compatibility-checked adapter only",
+      "state": "not-connected"
+    }
+  ]
+}
