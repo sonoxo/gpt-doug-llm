@@ -1,0 +1,60 @@
+{
+  "ontology_id": "sonoxo.gpt-doug.metacognition-biochip-swarm.v1",
+  "title": "GPT-DOUG Metacognition Bio-Chip Swarm",
+  "status": "proposed",
+  "purpose": "Coordinate bounded planning, critique, evidence checks, and verification across specialized reasoning workers.",
+  "guardrails": {
+    "max_review_rounds": 5,
+    "external_calls_default": "disabled",
+    "self_modifying_code": false,
+    "autonomous_deploy": false,
+    "human_approval_required_for": [
+      "production_changes",
+      "credential_access",
+      "external_side_effects",
+      "policy_exceptions"
+    ],
+    "low_evidence_decision": "hold"
+  },
+  "object_types": [
+    {
+      "id": "ReasoningTask",
+      "canonical_id_pattern": "task:{uuid}",
+      "properties": ["goal", "constraints", "risk_level", "acceptance_tests", "owner"]
+    },
+    {
+      "id": "CandidateArtifact",
+      "canonical_id_pattern": "artifact:{uuid}",
+      "properties": ["content", "evidence_refs", "assumptions", "risks", "test_plan", "version"]
+    },
+    {
+      "id": "ReviewSignal",
+      "canonical_id_pattern": "review:{uuid}",
+      "properties": ["reviewer_role", "evidence_score", "blockers", "confidence", "timestamp"]
+    },
+    {
+      "id": "ExecutionGate",
+      "canonical_id_pattern": "gate:{uuid}",
+      "properties": ["policy_result", "approval_state", "permitted_actions", "audit_ref"]
+    }
+  ],
+  "link_types": [
+    {"id": "TaskProducesArtifact", "from": "ReasoningTask", "to": "CandidateArtifact"},
+    {"id": "ArtifactReviewedBy", "from": "CandidateArtifact", "to": "ReviewSignal"},
+    {"id": "ArtifactRequiresGate", "from": "CandidateArtifact", "to": "ExecutionGate"}
+  ],
+  "worker_roles": [
+    {"id": "planner", "responsibility": "decompose objective and define acceptance criteria"},
+    {"id": "critic", "responsibility": "surface assumptions, contradictions, and risks"},
+    {"id": "evidence_auditor", "responsibility": "check provenance and evidence sufficiency"},
+    {"id": "verifier", "responsibility": "design and assess tests"},
+    {"id": "policy_gate", "responsibility": "deny execution when authorization or safety checks fail"}
+  ],
+  "events": ["task.created", "candidate.proposed", "review.completed", "gate.denied", "gate.approved"],
+  "integration_points": {
+    "repository": "sonoxo/gpt-doug-llm",
+    "sandbox": "THEGREENHOUSE",
+    "ontology_family": "Sonoxo / ZYRA-PALANTIR",
+    "external_model_adapters": "not configured"
+  }
+}
