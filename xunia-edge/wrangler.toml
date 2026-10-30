@@ -1,0 +1,14 @@
+name = "xunia-geo-guard"
+main = "worker.mjs"
+compatibility_date = "2026-10-22"
+workers_dev = false
+
+# Activate only after Cloudflare is authoritative for the domain and
+# proxied DNS records still serve the existing GitHub Pages origin.
+[[routes]]
+pattern = "xunia.org/*"
+zone_name = "xunia.org"
+
+[[routes]]
+pattern = "www.xunia.org/*"
+zone_name = "xunia.org"
