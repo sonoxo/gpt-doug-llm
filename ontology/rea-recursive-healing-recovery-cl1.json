@@ -1,0 +1,46 @@
+{
+  "ontology_id": "sonoxo.gpt-doug.rea-recursive-healing-recovery.cl1.v1",
+  "name": "REA Recursive Evaluation and Recovery",
+  "status": "proposed",
+  "purpose": "Detect component degradation, evaluate evidence, recommend bounded recovery, and verify restoration.",
+  "cl1_profile": {
+    "mode": "closed_loop_reliability",
+    "cycles_default": 3,
+    "cycles_max": 5,
+    "backoff": "bounded_exponential",
+    "checkpoint_requirement": "verified_before_retry",
+    "circuit_breaker": true
+  },
+  "object_types": [
+    {"id": "ComponentHealth", "key": "component_id", "properties": ["state", "observed_at", "details", "evidence_refs"]},
+    {"id": "VerifiedCheckpoint", "key": "checkpoint_id", "properties": ["component_id", "integrity_digest", "verified_at", "source_version"]},
+    {"id": "RecoveryDecision", "key": "audit_id", "properties": ["decision", "recommended_action", "retry_after_seconds", "reason_codes"]},
+    {"id": "RecoveryAuditEvent", "key": "event_id", "properties": ["component_id", "event", "timestamp"]}
+  ],
+  "link_types": [
+    {"id": "HealthObservedFor", "from": "ComponentHealth", "to": "Component"},
+    {"id": "CheckpointProtects", "from": "VerifiedCheckpoint", "to": "Component"},
+    {"id": "DecisionRespondsTo", "from": "RecoveryDecision", "to": "ComponentHealth"},
+    {"id": "DecisionRecordedAs", "from": "RecoveryDecision", "to": "RecoveryAuditEvent"}
+  ],
+  "recovery_states": ["healthy", "degraded", "failed", "unknown"],
+  "decision_states": ["stable", "observe", "recommend", "hold"],
+  "worker_roles": ["health_probe", "diagnostician", "checkpoint_verifier", "recovery_planner", "post_recovery_verifier"],
+  "guardrails": {
+    "arbitrary_shell_execution": false,
+    "automatic_file_mutation": false,
+    "automatic_rollback": false,
+    "autonomous_deployment": false,
+    "secrets_in_audit": false,
+    "missing_evidence": "hold",
+    "retry_budget_exhaustion": "open_circuit_and_escalate",
+    "human_approval_for_high_impact_actions": true
+  },
+  "integration_candidates": [
+    {"repo": "sonoxo/gpt-doug-llm", "role": "recovery_orchestrator"},
+    {"repo": "sonoxo/thegreenhouse", "role": "isolated_execution_and_policy_gate"},
+    {"repo": "sonoxo/zyra", "role": "ontology_and_operational_context"}
+  ],
+  "events": ["component.degraded", "component.failed", "checkpoint.verified", "recovery.recommended", "recovery.held", "component.restored"],
+  "implementation_state": "reference_engine_and_tests_added; live probes and service adapters not connected"
+}
