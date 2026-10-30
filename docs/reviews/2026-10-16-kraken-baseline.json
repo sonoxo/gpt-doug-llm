@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-16",
+  "status": "release-blocked; documentation-only review",
+  "source_manifest": {
+    "commit": "a09ae92e61c5ea389e5fa774bbffebde669f90e7",
+    "retrieval": "GitHub connector; copied bytes checked against returned Git blob IDs; not a full clone",
+    "files": [
+      {
+        "path": "biochip/core.py",
+        "github_blob_sha": "4f80d0e3d9097afaf884b5a256c283593bab92cd",
+        "sha256": "594af664711899dd08770441fafa07b1694289a81c47e05074bb27b8373b43e0"
+      },
+      {
+        "path": "biochip/models.py",
+        "github_blob_sha": "01c01fe500153ef925d3a05e66fcba3e39531992",
+        "sha256": "7174fd506887d5d9223ec4fdf747bb6f030b738f9649a349ad01b1eda54e0968"
+      },
+      {
+        "path": "biochip/tests/test_core.py",
+        "github_blob_sha": "d062408883c20708efa424e79e5dce782b467ece",
+        "sha256": "74aada98d5dccb9e103b5121cedfab4e281c4075e562db8029fa1d29fb5ff4c1"
+      },
+      {
+        "path": "biochip/tests/test_models.py",
+        "github_blob_sha": "4f6b05ca743039adb84ae1bc0fae64afc7ec961c",
+        "sha256": "fcff030ebbc5586e7b09f4f0bf7cf6f29d463f2aedf7a352ae3113daadd05598"
+      },
+      {
+        "path": "biochip/__init__.py",
+        "github_blob_sha": "8da528eb536ee29eca32ef243ea6238b53d6c575",
+        "sha256": "8f89eb79819f7a48f92194e1391484dcbcef851a0ea3ff20996ae4b723861ade"
+      }
+    ]
+  },
+  "environment": {
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "sqlite": "3.46.1",
+    "scope": "Five GitHub-blob-verified source files plus empty test package marker; no full repository, macOS, live LLM, or HeyPCB execution."
+  },
+  "baseline": {
+    "command": "python3 -I -m unittest discover -s biochip/tests -t . -v",
+    "tests_run": 11,
+    "failures": 0,
+    "errors": 0,
+    "exit_code": 0,
+    "output": "test_deletion_and_audit (biochip.tests.test_core.BioChipTests.test_deletion_and_audit) ... ok\ntest_invalid_inputs (biochip.tests.test_core.BioChipTests.test_invalid_inputs) ... ok\ntest_persistence_and_provenance (biochip.tests.test_core.BioChipTests.test_persistence_and_provenance) ... ok\ntest_private_memory_rejects_other_agent (biochip.tests.test_core.BioChipTests.test_private_memory_rejects_other_agent) ... ok\ntest_shared_memory (biochip.tests.test_core.BioChipTests.test_shared_memory) ... ok\ntest_ttl_and_heartbeat (biochip.tests.test_core.BioChipTests.test_ttl_and_heartbeat) ... ok\ntest_chat_compatible (biochip.tests.test_models.RouterTests.test_chat_compatible) ... ok\ntest_chat_ollama (biochip.tests.test_models.RouterTests.test_chat_ollama) ... ok\ntest_discovery_multiple_backends (biochip.tests.test_models.RouterTests.test_discovery_multiple_backends) ... ok\ntest_explicit_memory (biochip.tests.test_models.RouterTests.test_explicit_memory) ... ok\ntest_no_remote_hosts (biochip.tests.test_models.RouterTests.test_no_remote_hosts) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.069s\n\nOK\n"
+  },
+  "diagnostics": {
+    "source_commit": "a09ae92e61c5ea389e5fa774bbffebde669f90e7",
+    "scope": "Additional diagnostic checks against unchanged source; not product tests or fixes.",
+    "checks": [
+      {
+        "check": "denied_actions_persist_in_audit",
+        "expected": 3,
+        "actual": 0,
+        "passed": false,
+        "detail": "All three actions raised PermissionError, but their audit insertions rolled back."
+      },
+      {
+        "check": "reject_nonfinite_ttl",
+        "expected": "ValueError",
+        "actual": {
+          "stored_expires_at": null
+        },
+        "passed": false,
+        "detail": "NaN TTL was accepted and SQLite stored NULL: the record no longer expires."
+      },
+      {
+        "check": "malformed_provider_isolated",
+        "expected": "other provider discovered with diagnostic",
+        "actual": "AttributeError",
+        "passed": false,
+        "detail": "A malformed model entry aborts the full discovery loop."
+      },
+      {
+        "check": "redirect_target_stays_within_allowlist",
+        "expected": "no request to rejected target",
+        "actual": {
+          "direct_target_rejected": true,
+          "redirected_requests": 1,
+          "discovered_fixture_models": 1,
+          "errors": {}
+        },
+        "passed": false,
+        "detail": "Live HTTP probe used only 127.0.0.1 and 127.0.0.2. No internet host was contacted."
+      }
+    ],
+    "passed": 0,
+    "failed": 4
+  },
+  "verification_limits": [
+    "Not a full repository checkout or full CI run.",
+    "No macOS execution, Node repair verification, live LLM inference or authenticated HeyPCB calls.",
+    "Source unchanged; no defect fixes, runtime deployment or agent launch performed."
+  ]
+}
