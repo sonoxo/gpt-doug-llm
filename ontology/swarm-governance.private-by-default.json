@@ -1,0 +1,160 @@
+{
+  "ontology_version": "1.0.0",
+  "object_type": "SwarmGovernanceProfile",
+  "canonical_id": "gpt-doug:swarm-governance:private-by-default",
+  "name": "GPT-DOUG Swarm Governance",
+  "status": "proposed",
+  "deployment_state": "not_deployed",
+  "visibility_policy": {
+    "internal_data_default": "restricted",
+    "repository_visibility_change": "requires_explicit_owner_action",
+    "public_egress_default": "deny",
+    "approved_egress_requires": [
+      "task_scope",
+      "policy_check",
+      "audit_event"
+    ]
+  },
+  "orchestration": {
+    "mode": "bounded_task_orchestration",
+    "lifecycle": [
+      "REQUESTED",
+      "POLICY_CHECKED",
+      "PLANNED",
+      "EXECUTING",
+      "VERIFIED",
+      "AWAITING_APPROVAL",
+      "RELEASED"
+    ],
+    "failure_states": [
+      "BLOCKED",
+      "FAILED",
+      "CANCELLED"
+    ],
+    "auto_promotion": false,
+    "retries": {
+      "bounded": true,
+      "max_attempts_configured_at_runtime": true
+    },
+    "cancellation_supported": true
+  },
+  "agent_roles": [
+    {
+      "id": "orchestrator",
+      "side_effects": "policy_gated",
+      "capabilities": [
+        "plan",
+        "dispatch",
+        "reconcile"
+      ]
+    },
+    {
+      "id": "planner",
+      "side_effects": "none",
+      "capabilities": [
+        "decompose",
+        "prioritize"
+      ]
+    },
+    {
+      "id": "research-worker",
+      "side_effects": "read_only_allowlisted",
+      "capabilities": [
+        "retrieve",
+        "cite",
+        "summarize"
+      ]
+    },
+    {
+      "id": "builder-worker",
+      "side_effects": "isolated_branch_or_sandbox_only",
+      "capabilities": [
+        "propose_patch",
+        "run_tests"
+      ]
+    },
+    {
+      "id": "verifier",
+      "side_effects": "none",
+      "capabilities": [
+        "validate",
+        "reject",
+        "report"
+      ]
+    },
+    {
+      "id": "release-controller",
+      "side_effects": "approval_gated",
+      "capabilities": [
+        "propose_release",
+        "rollback_plan"
+      ]
+    }
+  ],
+  "controls": {
+    "least_privilege": true,
+    "task_scoped_capabilities": true,
+    "secrets_in_logs_or_prompts": false,
+    "untrusted_input_boundary": true,
+    "audit_events": true,
+    "provenance_hashes": true,
+    "redaction": true,
+    "resource_budgets": true,
+    "fail_closed_on_policy_unavailable": true,
+    "human_approval_for_production_changes": true,
+    "unauthorized_stealth_or_monitoring_evasion": false
+  },
+  "required_task_fields": [
+    "task_id",
+    "goal",
+    "owner",
+    "classification",
+    "allowed_tools",
+    "inputs",
+    "budget",
+    "approval_required",
+    "outputs",
+    "status",
+    "audit_ref"
+  ],
+  "release_gates": [
+    "tests_pass",
+    "security_checks_pass",
+    "contracts_valid",
+    "permissions_validated",
+    "audit_complete",
+    "human_approval",
+    "rollback_ready"
+  ],
+  "dependencies": [
+    {
+      "id": "policy-engine",
+      "status": "required"
+    },
+    {
+      "id": "audit-sink",
+      "status": "required"
+    },
+    {
+      "id": "isolated-worker-runtime",
+      "status": "required"
+    },
+    {
+      "id": "secret-manager",
+      "status": "required_for_secret-bearing_integrations"
+    }
+  ],
+  "provider_policy": {
+    "default": "current_configured_provider",
+    "kimi_k3": {
+      "status": "proposed",
+      "runtime_enabled": false,
+      "weights_vendored": false,
+      "production_routing": false,
+      "requires_license_and_runtime_review": true
+    }
+  },
+  "source_of_truth": "docs/swarm/GOVERNANCE.md",
+  "created_by": "gpt-doug-llm integration workflow",
+  "notes": "Metadata proposal only; does not assert deployed agents, live infrastructure, or changed repository visibility."
+}
