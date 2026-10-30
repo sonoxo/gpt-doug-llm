@@ -7,6 +7,7 @@ const $=id=>document.getElementById(id), cfg=window.TAKLiveOntology;
 if(!cfg){$('global-status').textContent='ONTOLOGY MODULE FAILED TO LOAD';return;}
 const {PROVIDERS,Ontology,parseEonet,parseUsgs,parseNoaa,parseOrbits,parseBuildings}=cfg;
 const mobileTools=window.TAKIphoneGrid;
+const freshnessTools=window.TAKLiveFreshness;
 const mobileProfile=mobileTools?mobileTools.chooseProfile({
  width:window.innerWidth,dpr:window.devicePixelRatio,
  coarse:window.matchMedia?.('(pointer:coarse)').matches,
@@ -27,6 +28,26 @@ let toastHandle;function toast(message){const el=$('toast');el.textContent=messa
 function safeLink(url){try{const u=new URL(url);return u.protocol==='https:'?u.href:null;}catch(_){return null;}}
 function download(name,data){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/ld+json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}
 function formatStatus(state){return state==='OK'?'CURRENT':state==='ERROR'?'FAILED':state==='STALE'?'STALE':state==='CONNECTING'?'LOADING':state;}
+function updateLiveDate(){
+ const now=new Date();
+ text('utc-clock',now.toISOString().slice(11,19)+' UTC');
+ const el=$('live-date-time');if(el){
+   el.dateTime=now.toISOString();
+   el.textContent=now.toLocaleString(undefined,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',timeZoneName:'short'})+' | '+now.toISOString().slice(0,16).replace('T',' ')+' UTC';
+ }
+}
+function renderLiveOntology(){
+ const target=$('live-source-ontology');if(!target||!freshnessTools)return;
+ const snapshot=freshnessTools.publicSnapshot(store,PROVIDERS);
+ target.replaceChildren();
+ const summary=document.createElement('p');summary.textContent='PUBLIC SOURCES CURRENT: '+snapshot.connectedContinuous+'/'+snapshot.continuousTotal+' | SNAPSHOT: '+snapshot.generatedAtUtc+' | PRIVATE TAK DATA EXCLUDED';target.append(summary);
+ for(const source of snapshot.sources){
+   const row=document.createElement('p');row.className='live-source-row';
+   const label=document.createElement('b');label.textContent=source.label+' — '+source.state;
+   const details=document.createElement('small');details.textContent=' '+source.currentRecordCount+' current records | fetched '+(source.fetchedAtUtc||'NOT AVAILABLE')+' | observed '+(source.latestObservationAtUtc||'NOT AVAILABLE')+(source.onDemand?' | ON DEMAND':'');
+   row.append(label,details);target.append(row);
+ }
+}
 function renderHealth(){
  const health=$('feed-health');health.replaceChildren();let current=0;
  for(const id of statusNodes){
@@ -43,6 +64,7 @@ function renderHealth(){
  const kp=store.current('noaa')[0];text('global-kp',kp?Number(kp.properties.kp).toFixed(2):'—');
  const anyone=cloud.online>0;text('global-status',anyone?'PUBLIC FEEDS RECEIVED · INSPECT SOURCE AGES': 'NO VERIFIED LIVE FEED · CHECK CONNECTION');
  text('health-updated',new Date().toISOString().slice(11,19)+' UTC');
+ renderLiveOntology();
  $('ontology-stats').replaceChildren();
  for (const [title,value] of Object.entries({'source entities':5,'observation nodes':store.records.size,'active nodes':Object.values(counts).reduce((a,b)=>a+b,0)})){
    const el=document.createElement('span');el.textContent=`${title.toUpperCase()}: ${countString(value)}`;$('ontology-stats').append(el);
@@ -364,7 +386,9 @@ async function refreshItakMetrics(){
   };
   stopMetricsPolling=stop;
   const display=info=>{
-   const m=info.metrics||{};
+   const privateGraph=freshnessTools.privateSnapshot(info);
+   if(privateGraph.freshness!=='CURRENT')throw Error('stale private TAK source');
+   const m=privateGraph.readings;
    const required=['numClients','bytesRead','bytesWritten','numReads','numWrites'];
    if(info.schema!=='gpt-doug.tak-private-metrics.v1'||info.status!=='current'||
       info.sourceScope!=='aggregate_all_tak_clients'||
@@ -439,6 +463,8 @@ async function refreshItakMetrics(){
 }
 function bind(){
  $('refresh-all').addEventListener('click',()=>refreshAll(true));
+ $('ontology-refresh').addEventListener('click',()=>{renderLiveOntology();refreshAll(false);});
+ $('ontology-export').addEventListener('click',()=>{const graph=freshnessTools.publicSnapshot(store,PROVIDERS);download('gpt-doug-public-live-source-ontology.jsonld',graph);});
  $('itak-refresh').addEventListener('click',refreshItakMetrics);
  $('export-ontology').addEventListener('click',()=>download('gpt-doug-real-earth-ontology.jsonld',store.exportJsonLD()));
  $('record-search').addEventListener('input',renderRecords);$('record-type').addEventListener('change',renderRecords);
@@ -462,7 +488,7 @@ function bind(){
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMetricsPolling();else{renderHealth();refreshAll(false);orbitalRender();}});
 }
 function init(){
- text('utc-clock',new Date().toISOString().slice(11,19)+' UTC');
+ updateLiveDate();
  $('imagery-date').value=new Date(Date.now()-2*86400000).toISOString().slice(0,10);
  $('imagery-date').max=new Date().toISOString().slice(0,10);
  bind();switchMobilePanel('map');initGlobe();registerShell();renderHealth();renderRecords();refreshItakMetrics();store.restoreArchive().catch(()=>{});
@@ -470,7 +496,7 @@ function init(){
   refresh('usgs',true);refresh('eonet',true);
   setTimeout(()=>{if(!document.hidden){refresh('noaa',true);refresh('orbit',true);}},1600);
  }else refreshAll(true);
- setInterval(()=>text('utc-clock',new Date().toISOString().slice(11,19)+' UTC'),1000);
+ setInterval(updateLiveDate,1000);
  setInterval(()=>{if(!document.hidden)refreshAll(false);renderHealth();},30000);
  setInterval(()=>{if(!document.hidden)orbitalRender();},mobileProfile.orbitTickMs);
 }
