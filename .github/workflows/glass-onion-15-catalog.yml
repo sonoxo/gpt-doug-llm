@@ -1,0 +1,26 @@
+name: Glass Onion 15 Source Evidence Gate
+on:
+  push:
+    paths:
+      - 'catalog/glass-onion-15.json'
+      - 'scripts/glass_onion_15_catalog.py'
+      - 'tests/test_glass_onion_15_catalog.py'
+      - '.github/workflows/glass-onion-15-catalog.yml'
+  pull_request:
+    paths:
+      - 'catalog/glass-onion-15.json'
+      - 'scripts/glass_onion_15_catalog.py'
+      - 'tests/test_glass_onion_15_catalog.py'
+      - '.github/workflows/glass-onion-15-catalog.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source inventory offline
+        run: |
+          python3 scripts/glass_onion_15_catalog.py --validate --report
+          python3 -m unittest discover -s tests -p test_glass_onion_15_catalog.py -v
