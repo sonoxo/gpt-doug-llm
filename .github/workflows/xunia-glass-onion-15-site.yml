@@ -1,0 +1,30 @@
+name: XUNIA Glass Onion 15 Source Site Gate
+on:
+  pull_request:
+    paths:
+      - 'docs/darkweb/15-source-atlas/**'
+      - 'docs/darkweb/index.html'
+      - 'docs/index.html'
+      - 'docs/resources.json'
+      - 'catalog/glass-onion-15.json'
+      - 'tests/test_xunia_glass_onion_15_site.py'
+  push:
+    paths:
+      - 'docs/darkweb/15-source-atlas/**'
+      - 'docs/darkweb/index.html'
+      - 'docs/index.html'
+      - 'docs/resources.json'
+      - 'catalog/glass-onion-15.json'
+      - 'tests/test_xunia_glass_onion_15_site.py'
+permissions:
+  contents: read
+jobs:
+  verify-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify XUNIA Glass Onion route, 15 sources and policy
+        run: python3 -m unittest discover -s tests -p test_xunia_glass_onion_15_site.py -v
+      - name: Validate public JavaScript
+        run: node --check docs/darkweb/15-source-atlas/atlas.js
