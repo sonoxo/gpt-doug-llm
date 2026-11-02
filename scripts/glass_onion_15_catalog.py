@@ -11,7 +11,7 @@ from urllib.request import Request,urlopen
 from urllib.error import HTTPError,URLError
 
 CATALOG=Path(__file__).resolve().parents[1]/"catalog/glass-onion-15.json"
-GITHUB=re.compile(r"^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+GITHUB=re.compile(r"^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 GITLAB="https://gitlab.com/exploit-database/exploitdb"
 GATES={"allowExecution":False,"allowAutoCloning":False,"allowCredentialCollection":False,"allowTargetScanning":False,"allowPayloadDeployment":False,"requireHumanReviewForSourceImport":True,"requireLicenseReview":True}
 
@@ -80,13 +80,13 @@ def main():
             print(f'#{s["rank"]:02d} {s["name"]}: '+", ".join(r["url"] for r in s["selectedRepos"])+" [READ ONLY]")
     if a.ontology_out:
         a.ontology_out.parent.mkdir(parents=True,exist_ok=True)
-        a.ontology_out.write_text(json.dumps(ontology(data),indent=2)+"\\n")
+        a.ontology_out.write_text(json.dumps(ontology(data),indent=2)+"\n")
         print("Wrote ontology:",a.ontology_out)
     if a.probe:
         results=[probe(r["url"]) for s in data["slots"] for r in s["selectedRepos"]]
         output=json.dumps({"checkedAt":datetime.now(timezone.utc).isoformat(),"results":results,"readOnly":True},indent=2)
         if a.probe_out:
-            a.probe_out.parent.mkdir(parents=True,exist_ok=True);a.probe_out.write_text(output+"\\n")
+            a.probe_out.parent.mkdir(parents=True,exist_ok=True);a.probe_out.write_text(output+"\n")
         else: print(output)
     return 0
 
