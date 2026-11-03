@@ -4,11 +4,15 @@ on:
     paths:
       - 'open_video_model/**'
       - 'tests/test_gpt_doug_motion_one.py'
+      - 'tests/test_gpt_doug_motion_server.py'
+      - 'docs/motion-1/**'
       - '.github/workflows/gpt-doug-motion-one.yml'
   pull_request:
     paths:
       - 'open_video_model/**'
       - 'tests/test_gpt_doug_motion_one.py'
+      - 'tests/test_gpt_doug_motion_server.py'
+      - 'docs/motion-1/**'
       - 'free-video-studio/README.md'
       - '.github/workflows/gpt-doug-motion-one.yml'
 permissions:
@@ -28,6 +32,10 @@ jobs:
           python -m pip install "Pillow>=10,<13"
       - name: Run original training and inference tests offline
         run: python -m unittest discover -s tests -p test_gpt_doug_motion_one.py -v
+      - name: Verify loopback browser studio and origin security
+        run: python -m unittest discover -s tests -p test_gpt_doug_motion_server.py -v
+      - name: Check public browser controls
+        run: node --check docs/motion-1/app.js
       - name: Verify shell bootstrap and model CLI
         run: |
           bash -n open_video_model/setup_mac.sh
