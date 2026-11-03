@@ -1,0 +1,68 @@
+{
+  "schema": "gpt-doug.dataset-fleet.manifest.v1",
+  "policy": {
+    "mode": "local-only",
+    "publicOnly": true,
+    "externalAPIs": false,
+    "automaticDiscovery": false,
+    "executeDatasetContent": false,
+    "approval": "explicit-file-manifest",
+    "boundedRetries": true
+  },
+  "datasets": [
+    {
+      "id": "sonoxo-public-repos",
+      "name": "Sonoxo Public Repository Universe",
+      "path": "docs/ecosystem-observatory/snapshot.json",
+      "format": "json",
+      "rows_key": "repositories",
+      "category": "repository-topology",
+      "sensitivity": "public",
+      "approved": true,
+      "provenance": "https://github.com/sonoxo/gpt-doug-llm/blob/main/docs/ecosystem-observatory/snapshot.json",
+      "related_to": [
+        "xunia-resource-registry"
+      ]
+    },
+    {
+      "id": "glass-onion-sources",
+      "name": "Glass Onion Public Source Atlas",
+      "path": "catalog/glass-onion-15.json",
+      "format": "json",
+      "rows_key": "slots",
+      "category": "source-attribution",
+      "sensitivity": "public",
+      "approved": true,
+      "provenance": "https://github.com/sonoxo/gpt-doug-llm/blob/main/catalog/glass-onion-15.json",
+      "related_to": [
+        "xunia-resource-registry"
+      ]
+    },
+    {
+      "id": "xunia-resource-registry",
+      "name": "XUNIA Interactive Resource Directory",
+      "path": "docs/resources.json",
+      "format": "json",
+      "rows_key": "items",
+      "category": "application-registry",
+      "sensitivity": "public",
+      "approved": true,
+      "provenance": "https://github.com/sonoxo/gpt-doug-llm/blob/main/docs/resources.json",
+      "related_to": []
+    },
+    {
+      "id": "xunia-openweb-routes",
+      "name": "XUNIA Public Route Reference Map",
+      "path": "docs/open-web-atlas/seed-map.json",
+      "format": "json",
+      "rows_key": "pages",
+      "category": "documented-routes",
+      "sensitivity": "public",
+      "approved": true,
+      "provenance": "https://github.com/sonoxo/gpt-doug-llm/blob/main/docs/open-web-atlas/seed-map.json",
+      "related_to": [
+        "xunia-resource-registry"
+      ]
+    }
+  ]
+}
