@@ -1,0 +1,41 @@
+name: GPT-DOUG Dataset Civilization Gate
+on:
+  push:
+    paths:
+      - 'data_fleet/**'
+      - 'docs/dataset-fleet/**'
+      - 'tests/test_data_fleet.py'
+      - '.github/workflows/data-fleet.yml'
+  pull_request:
+    paths:
+      - 'data_fleet/**'
+      - 'docs/dataset-fleet/**'
+      - 'docs/index.html'
+      - 'docs/resources.json'
+      - 'tests/test_data_fleet.py'
+      - '.github/workflows/data-fleet.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run local fleet regression tests
+        run: python3 -m unittest discover -s tests -p test_data_fleet.py -v
+      - name: Run fleet on approved public metadata
+        run: |
+          python3 -m data_fleet manifest
+          python3 -m data_fleet run --db /tmp/gpt-doug-fleet-ci.sqlite --out /tmp/gpt-doug-fleet-ci.json
+          python3 -m data_fleet search sonoxo --db /tmp/gpt-doug-fleet-ci.sqlite
+          python3 - <<'PY'
+          import json
+          x=json.load(open("/tmp/gpt-doug-fleet-ci.json"))
+          assert x["summary"]["datasets"] == 4
+          assert x["summary"]["rows"] >= 280
+          assert x["statuses"] == {"completed":4}
+          assert not x["networkAccess"] and x["modelAPICalls"] == 0
+          PY
+      - name: Verify client script
+        run: node --check docs/dataset-fleet/app.js
