@@ -14,6 +14,8 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="gpt-doug-motion-1", description="Original trainable text-conditioned video diffusion")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("doctor", help="Check local PyTorch and MPS, without downloading any model weights")
+    studio = sub.add_parser("studio", help="Start free local browser studio, localhost only")
+    studio.add_argument("--port", type=int, default=8792)
     builder = sub.add_parser("train", help="Train on local synthetic or authorized video frames")
     builder.add_argument("--steps", type=int, default=500)
     builder.add_argument("--batch", type=int, default=2)
@@ -54,6 +56,10 @@ def main(argv: list[str] | None = None) -> int:
                       "default_checkpoint": str(DEFAULT_CHECKPOINT),
                       "checkpoint_exists": DEFAULT_CHECKPOINT.exists(),
                       "cinematic_pretrained_weights_bundled": False, "paid_apis": 0}
+        elif args.command == "studio":
+            from .studio import serve
+            serve(port=args.port)
+            return 0
         elif args.command == "train":
             config=MotionConfig(frames=args.frames,size=args.size,width=args.width,timesteps=args.timesteps)
             result=train(config,steps=args.steps,batch_size=args.batch,lr=args.lr,seed=args.seed,
