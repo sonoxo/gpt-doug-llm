@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XUNIA / Ecosystem Observatory — Public GitHub Repository Graph</title>
+<meta name="theme-color" content="#06131b"><meta name="referrer" content="no-referrer">
+<meta name="description" content="Interactive XUNIA ecosystem map of public Sonoxo GitHub repositories, documented membership, categories, activity, and opt-in workflow status.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.github.com; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="stylesheet" href="./style.css"><script src="./app.js" defer></script></head>
+<body><div class="shell">
+<header class="top"><div class="identity"><span class="hex" aria-hidden="true">✧</span><div><div class="eyebrow">SONOXO / XUNIA // GLASS ONION</div><a class="home-title" href="../">ECOSYSTEM <span>OBSERVATORY</span></a></div></div><nav aria-label="Ecosystem navigation"><a href="../">Museum</a><a href="../darkweb/">Glass Onion</a><a href="../darkweb/15-source-atlas/">Source Atlas</a><a href="https://github.com/sonoxo" rel="noopener noreferrer" target="_blank">GitHub</a></nav></header>
+<section class="hero"><div><div class="eyebrow"><span class="signal"></span> PUBLIC-SOURCE INTELLIGENCE / OBSERVABLE, NOT ASSUMED</div><h1>SEE THE <span>WHOLE</span> ECOSYSTEM.</h1><p>Trace GitHub ownership, curated exhibits, repository clusters and observed delivery signals. This view never executes code, scans third-party networks, or presents a guessed dependency as fact.</p></div><div class="actionbar"><button id="refreshBtn" class="primary" type="button">↻ Scan GitHub now</button><button id="exportBtn" type="button">Export evidence JSON</button></div></section>
+<div class="status" id="status" role="status" aria-live="polite">Loading public repository inventory…</div>
+<section class="metric-grid" aria-label="Repository metrics">
+<div class="metric"><span>PUBLIC REPOSITORIES</span><strong id="total">—</strong><small>Verified GitHub ownership</small></div>
+<div class="metric"><span>CURATED MUSEUM EXHIBITS</span><strong id="curated">—</strong><small>Explicit catalog classification</small></div>
+<div class="metric"><span>NAME-BASED / UNCLASSIFIED</span><strong id="inferred">—</strong><small>Not proven runtime dependencies</small></div>
+<div class="metric"><span>RECENT PUSHES (30 DAYS)</span><strong id="active">—</strong><small id="activeHint">Available after live scan</small></div>
+<div class="metric"><span>PUBLIC ARCHIVED</span><strong id="archived">—</strong><small>GitHub archival metadata</small></div>
+</section>
+<section class="workbench" aria-label="Interactive ecosystem atlas">
+<div class="panel graph-panel"><div class="panel-head"><div><div class="eyebrow">01 // TOPOLOGY</div><h2>Public repository constellation</h2><p>Lines connect ownership and visual categories, <b>not</b> dependency imports or network access.</p></div><div class="legend"><span><i class="l-core"></i>Owner / root</span><span><i class="l-curated"></i>Museum category</span><span><i class="l-inferred"></i>Name inference</span></div></div>
+<div class="tools"><input id="search" type="search" placeholder="Find repository, category, or branch…" aria-label="Search repositories"><select id="category" aria-label="Filter category"><option value="">All groups</option></select><button id="fitBtn" type="button">Fit graph</button></div>
+<div id="graphWrap" class="graph-wrap"><canvas id="graph" aria-label="Interactive repository network graph. Use the accessible repository list below for keyboard navigation." role="img"></canvas><div class="graph-help">DRAG TO PAN · SCROLL TO ZOOM · CLICK NODE TO INSPECT</div><div id="tooltip" class="tooltip" hidden></div></div>
+<div class="panel-bottom"><span id="matching">Loading…</span><span id="graphScale">100%</span></div></div>
+<aside class="side">
+<div class="panel inspect"><div class="eyebrow">02 // SOURCE EVIDENCE</div><h2>Repository inspector</h2><div id="inspector" class="inspector-body"><p>Select a repository node or list item.</p></div></div>
+<div class="panel distribution"><div class="eyebrow">03 // CLASSIFICATION</div><h2>Public repository distribution</h2><div id="bars"></div><p class="fine">Curated mappings come from the existing XUNIA museum; other labels are name heuristics, not technical dependency claims.</p></div>
+<div class="panel health"><div class="eyebrow">04 // GITHUB ACTIONS</div><h2>Delivery signals</h2><div id="workflows"><p class="fine">Check a repository from the inspector or run a live scan to inspect selected core projects.</p></div><p class="fine">Latest observed workflow result ≠ overall repository security or production health.</p></div>
+</aside></section>
+<section class="panel inventory"><div class="panel-head"><div><div class="eyebrow">05 // REPOSITORY INDEX</div><h2>Source inventory</h2></div><span class="fine" id="timestamp"></span></div><div class="table-wrap"><table><thead><tr><th>Repository</th><th>Category and evidence</th><th>Language</th><th>Latest push</th><th>Status</th></tr></thead><tbody id="table"></tbody></table></div><p class="fine" id="tableCount"></p></section>
+<footer>Free public GitHub metadata only. No GitHub tokens, paid APIs, external scripts, private repositories, credential collection, source-code execution or vulnerability assertions. <a href="https://github.com/sonoxo/gpt-doug-llm" target="_blank" rel="noopener noreferrer">Review source and evidence</a>.</footer></div></body></html>
