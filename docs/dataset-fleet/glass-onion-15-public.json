@@ -1,0 +1,409 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "Glass Onion / 15 Public Cybersecurity Source References",
+  "source": {
+    "videoId": "rmkXyB6JBX8",
+    "videoUrl": "https://www.youtube.com/watch?v=rmkXyB6JBX8&t=166s",
+    "transcriptSha256": "3d54ddbab62c36dcdfa643b2c3ea1cdc2c2ae3e09e712bf2dd710c2890bb87ed",
+    "transcriptProvidedByUser": true,
+    "speakerClaimsIndependentlyVerified": false
+  },
+  "policies": {
+    "readOnlyEvidence": true,
+    "copyCodeIntoSuperRepo": false,
+    "runExternalTool": false,
+    "automatedTargeting": false,
+    "allowedActions": [
+      "read local catalog",
+      "validate provenance",
+      "export ontology",
+      "opt-in check public repository metadata"
+    ]
+  },
+  "slots": [
+    {
+      "rank": 15,
+      "id": "social-engineer-toolkit",
+      "name": "Social Engineer Toolkit",
+      "videoMentions": "Social Engineer Toolkit",
+      "category": "social-engineering",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/trustedsec/social-engineer-toolkit",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 14,
+      "id": "metasploit",
+      "name": "Metasploit Framework",
+      "videoMentions": "Metasploit Framework",
+      "category": "exploitation-framework",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/rapid7/metasploit-framework",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 13,
+      "id": "aircrack-ng",
+      "name": "Aircrack-ng",
+      "videoMentions": "Aircrack-ng",
+      "category": "wireless-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/aircrack-ng/aircrack-ng",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 12,
+      "id": "hydra",
+      "name": "THC Hydra",
+      "videoMentions": "THC Hydra",
+      "category": "authentication-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/vanhauser-thc/thc-hydra",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 11,
+      "id": "john-the-ripper",
+      "name": "John the Ripper",
+      "videoMentions": "John the Ripper",
+      "category": "password-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/openwall/john",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 10,
+      "id": "zaproxy",
+      "name": "OWASP ZAP",
+      "videoMentions": "Burp Suite Community Edition",
+      "category": "web-security-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/zaproxy/zaproxy",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": true,
+      "note": "Open-source substitute, not an equivalent codebase. No executable migration is included."
+    },
+    {
+      "rank": 9,
+      "id": "sqlmap",
+      "name": "sqlmap",
+      "videoMentions": "sqlmap",
+      "category": "database-security-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/sqlmapproject/sqlmap",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 8,
+      "id": "mimikatz",
+      "name": "Mimikatz",
+      "videoMentions": "Mimikatz",
+      "category": "windows-credential-research",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/gentilkiwi/mimikatz",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 7,
+      "id": "nmap",
+      "name": "Nmap",
+      "videoMentions": "Nmap",
+      "category": "network-inventory",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/nmap/nmap",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 6,
+      "id": "wireshark",
+      "name": "Wireshark",
+      "videoMentions": "Wireshark",
+      "category": "packet-analysis",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/wireshark/wireshark",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false,
+      "note": "GitHub is read-only mirror; upstream development is on GitLab: https://gitlab.com/wireshark/wireshark"
+    },
+    {
+      "rank": 5,
+      "id": "hashcat",
+      "name": "Hashcat",
+      "videoMentions": "Hashcat",
+      "category": "password-audit",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/hashcat/hashcat",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 4,
+      "id": "exploit-db",
+      "name": "Exploit Database",
+      "videoMentions": "Exploit Database",
+      "category": "vulnerability-research",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://gitlab.com/exploit-database/exploitdb",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false,
+      "note": "The old Github official exploitdb repository was archived; canonical source is now GitLab."
+    },
+    {
+      "rank": 3,
+      "id": "beef",
+      "name": "BeEF",
+      "videoMentions": "BeEF",
+      "category": "browser-threat-research",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/beefproject/beef",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    },
+    {
+      "rank": 2,
+      "id": "atomic-red-team",
+      "name": "Atomic Red Team",
+      "videoMentions": "Cobalt Strike",
+      "category": "detection-validation",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/redcanaryco/atomic-red-team",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": true,
+      "note": "Open-source substitute, not an equivalent codebase. No executable migration is included."
+    },
+    {
+      "rank": 1,
+      "id": "empire-starkiller",
+      "name": "Empire and Starkiller",
+      "videoMentions": "Empire and Starkiller",
+      "category": "post-exploitation-research",
+      "status": "reference_only",
+      "policy": {
+        "allowExecution": false,
+        "allowAutoCloning": false,
+        "allowCredentialCollection": false,
+        "allowTargetScanning": false,
+        "allowPayloadDeployment": false,
+        "requireHumanReviewForSourceImport": true,
+        "requireLicenseReview": true
+      },
+      "selectedRepos": [
+        {
+          "url": "https://github.com/BC-SECURITY/Empire",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        },
+        {
+          "url": "https://github.com/BC-SECURITY/Starkiller",
+          "licenseReviewRequired": true,
+          "status": "public_source_reference_unpinned"
+        }
+      ],
+      "replacesProprietary": false
+    }
+  ]
+}
