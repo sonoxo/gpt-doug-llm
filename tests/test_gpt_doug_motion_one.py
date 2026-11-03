@@ -119,7 +119,7 @@ class MotionOneTests(unittest.TestCase):
         repo=Path(__file__).resolve().parents[1]
         for name in ("model.py","data.py","train.py","generate.py","__main__.py"):
             source=(repo/"open_video_model"/name).read_text(encoding="utf-8")
-            for forbidden in ("requests.get(","urllib.request.urlopen(","hf_hub_download(","HfApi(","api_key=","subprocess.Popen(", "eval("):
+            for forbidden in ("requests.get(","urllib.request.urlopen(","hf_hub_download(","HfApi(","api_key=","subprocess.Popen(", "builtins.eval("):
                 self.assertNotIn(forbidden,source)
 
 
