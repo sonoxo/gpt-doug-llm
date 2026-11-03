@@ -39,6 +39,10 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/darkweb/15-source-atlas/index.html
+          test -f _site/darkweb/15-source-atlas/atlas.css
+          test -f _site/darkweb/15-source-atlas/atlas.js
+          grep -q '15 Source Atlas' _site/darkweb/15-source-atlas/index.html
           test -f _site/rea-kraken/index.html
           test -f _site/rea-kraken/app.mjs
           test -f _site/experiments.html
@@ -82,6 +86,8 @@ jobs:
           node --check docs/rea-kraken/app.mjs
           node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
+          node --check docs/darkweb/15-source-atlas/atlas.js
+          python3 -m unittest discover -s tests -p test_xunia_glass_onion_15_site.py -v
           node --check docs/cyber-swarm/engine.mjs
           node --check docs/cyber-swarm/app.mjs
           node --check docs/watchtower/app.js
@@ -269,6 +275,33 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  verify-glass-onion-atlas-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify publicly deployed Glass Onion atlas and its assets
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --retry 2 --max-time 15 -H 'Cache-Control: no-cache' "https://xunia.org/darkweb/15-source-atlas/?v=${CACHE_BUST}" -o /tmp/xunia-glass-onion-atlas.html \
+              && grep -q '15 Source Atlas' /tmp/xunia-glass-onion-atlas.html \
+              && grep -q 'id="inventory"' /tmp/xunia-glass-onion-atlas.html \
+              && curl -fsSL --max-time 15 "https://xunia.org/darkweb/15-source-atlas/atlas.js?v=${CACHE_BUST}" -o /tmp/xunia-glass-onion-atlas.js \
+              && grep -q 'NO AUTO-CLONE' /tmp/xunia-glass-onion-atlas.js \
+              && curl -fsSL --max-time 15 "https://xunia.org/darkweb/15-source-atlas/atlas.css?v=${CACHE_BUST}" -o /tmp/xunia-glass-onion-atlas.css \
+              && test -s /tmp/xunia-glass-onion-atlas.css; then
+              echo 'XUNIA_GLASS_ONION_ATLAS_LIVE=PASS'
+              exit 0
+            fi
+            sleep 3
+          done
+          echo 'XUNIA_GLASS_ONION_ATLAS_LIVE=FAIL' >&2
+          exit 1
 
   verify-public:
     if: github.event_name != 'pull_request'
