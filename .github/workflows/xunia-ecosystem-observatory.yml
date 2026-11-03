@@ -1,0 +1,31 @@
+name: XUNIA Public Ecosystem Observatory Gate
+on:
+  push:
+    paths:
+      - 'docs/ecosystem-observatory/**'
+      - 'scripts/scan_sonoxo_public_repos.py'
+      - 'tests/test_xunia_ecosystem_observatory.py'
+      - '.github/workflows/xunia-ecosystem-observatory.yml'
+  pull_request:
+    paths:
+      - 'docs/ecosystem-observatory/**'
+      - 'docs/index.html'
+      - 'docs/darkweb/index.html'
+      - 'docs/resources.json'
+      - 'scripts/scan_sonoxo_public_repos.py'
+      - 'tests/test_xunia_ecosystem_observatory.py'
+      - '.github/workflows/xunia-ecosystem-observatory.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify public-only inventory and website navigation
+        run: python3 -m unittest discover -s tests -p test_xunia_ecosystem_observatory.py -v
+      - name: Check web application JavaScript
+        run: node --check docs/ecosystem-observatory/app.js
+      - name: Check scanner Python
+        run: python3 -m py_compile scripts/scan_sonoxo_public_repos.py
