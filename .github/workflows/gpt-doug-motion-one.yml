@@ -1,0 +1,45 @@
+name: GPT-DOUG Motion-1 Open Model Gate
+on:
+  push:
+    paths:
+      - 'open_video_model/**'
+      - 'tests/test_gpt_doug_motion_one.py'
+      - 'tests/test_gpt_doug_motion_server.py'
+      - 'docs/motion-1/**'
+      - '.github/workflows/gpt-doug-motion-one.yml'
+  pull_request:
+    paths:
+      - 'open_video_model/**'
+      - 'tests/test_gpt_doug_motion_one.py'
+      - 'tests/test_gpt_doug_motion_server.py'
+      - 'docs/motion-1/**'
+      - 'free-video-studio/README.md'
+      - '.github/workflows/gpt-doug-motion-one.yml'
+permissions:
+  contents: read
+jobs:
+  test-original-model:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install free CPU PyTorch and Pillow
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.5,<3"
+          python -m pip install "Pillow>=10,<13"
+      - name: Run original training and inference tests offline
+        run: python -m unittest discover -s tests -p test_gpt_doug_motion_one.py -v
+      - name: Verify loopback browser studio and origin security
+        run: python -m unittest discover -s tests -p test_gpt_doug_motion_server.py -v
+      - name: Check public browser controls
+        run: node --check docs/motion-1/app.js
+      - name: Verify shell bootstrap and model CLI
+        run: |
+          bash -n open_video_model/setup_mac.sh
+          bash -n open_video_model/run_mac.sh
+          python -m open_video_model doctor
+          python -m open_video_model preview --prompt "red circle moving right" --out /tmp/gpt-doug-original-preview.gif
+          test -s /tmp/gpt-doug-original-preview.gif

@@ -39,6 +39,9 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/motion-1/index.html
+          test -f _site/motion-1/app.js
+          test -f _site/motion-1/style.css
           test -f _site/dataset-fleet/index.html
           test -f _site/dataset-fleet/app.js
           test -f _site/dataset-fleet/style.css
@@ -98,6 +101,7 @@ jobs:
           node --check docs/rea-kraken/app.mjs
           node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
+          node --check docs/motion-1/app.js
           node --check docs/dataset-fleet/app.js
           python3 -m unittest discover -s tests -p test_data_fleet.py -v
           node --check docs/open-web-atlas/app.js
@@ -377,6 +381,34 @@ jobs:
             sleep 3
           done
           echo GPT_DOUG_DATA_FLEET_LIVE=FAIL >&2
+          exit 1
+
+  verify-motion-one-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify public GPT-DOUG Motion-1 model card and static studio assets
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-time 15 "https://xunia.org/motion-1/?v=${CACHE_BUST}" -o /tmp/xunia-motion1.html \
+              && grep -q 'MOTION-1' /tmp/xunia-motion1.html \
+              && grep -q 'id="generator"' /tmp/xunia-motion1.html \
+              && grep -q 'Actual model execution happens only' /tmp/xunia-motion1.html \
+              && curl -fsSL --max-time 15 "https://xunia.org/motion-1/app.js?v=${CACHE_BUST}" -o /tmp/xunia-motion1.js \
+              && grep -q '/api/generate' /tmp/xunia-motion1.js \
+              && curl -fsSL --max-time 15 "https://xunia.org/motion-1/style.css?v=${CACHE_BUST}" -o /tmp/xunia-motion1.css \
+              && test -s /tmp/xunia-motion1.css; then
+              echo XUNIA_MOTION_ONE_LIVE=PASS
+              exit 0
+            fi
+            sleep 3
+          done
+          echo XUNIA_MOTION_ONE_LIVE=FAIL >&2
           exit 1
 
   verify-glass-onion-atlas-live:
