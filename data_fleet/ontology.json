@@ -1,0 +1,75 @@
+{
+  "schema": "gpt-doug.dataset-civilization.ontology.v1",
+  "purpose": "Model approved, read-only public datasets as one governed evidence civilization",
+  "authority": "THEGREENHOUSE + SHADOW_GLASS",
+  "boundary": {
+    "explicitHumanApproval": true,
+    "networkAccess": false,
+    "authorizedLocalFilesOnly": true,
+    "automaticSelfReplication": false,
+    "executePayloads": false,
+    "privateDataBlocked": true,
+    "paidAPIs": false
+  },
+  "nodes": [
+    {
+      "id": "SHADOW_GLASS",
+      "type": "policy",
+      "role": "deny_by_default"
+    },
+    {
+      "id": "THEGREENHOUSE",
+      "type": "sandbox",
+      "role": "resource_limits"
+    },
+    {
+      "id": "GLASS_ONION",
+      "type": "provenance",
+      "role": "source_lineage"
+    },
+    {
+      "id": "THE_BLACK_HOUSE",
+      "type": "review",
+      "role": "verified_reports"
+    },
+    {
+      "id": "GPT_DOUG",
+      "type": "orchestrator",
+      "role": "bounded_scheduling"
+    },
+    {
+      "id": "XUNIA",
+      "type": "visualization",
+      "role": "published_metadata_only"
+    },
+    {
+      "id": "ZYRA",
+      "type": "governed_consumer",
+      "role": "reviewed_actions"
+    }
+  ],
+  "agents": [
+    "DISCOVER",
+    "VERIFY",
+    "INDEX",
+    "RELATE",
+    "AUDIT"
+  ],
+  "datasetTypes": [
+    "public-repository-topology",
+    "source-attribution",
+    "public-resource-registry",
+    "documented-routes"
+  ],
+  "edgeTypes": {
+    "curated_reference": "Editorial relationship, not proof of a code dependency",
+    "produces_report": "Derived local public metadata report",
+    "governed_by": "Explicit safety scope and human review"
+  },
+  "integration": {
+    "existingRuntime": "shaggoth-swarm-gpt100",
+    "integrationMode": "ontology reference only; no automatic agent handoff",
+    "datasetEngine": "data_fleet/engine.py",
+    "site": "docs/dataset-fleet/"
+  }
+}
