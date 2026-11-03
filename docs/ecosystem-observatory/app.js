@@ -132,7 +132,7 @@
     if(!graph.scale||graph.scale===1)fitGraph();else drawGraph();
   }
   function drawGraph() {
-    if(!viewWidth)return;
+    if(!viewWidth||!graph.owner)return;
     ctx.clearRect(0,0,viewWidth,viewHeight);
     const gridStep=90*graph.scale;
     if(gridStep>15){ctx.strokeStyle="#18384b55";ctx.lineWidth=.5;for(let x=(viewWidth/2+graph.panX)%gridStep;x<viewWidth;x+=gridStep){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,viewHeight);ctx.stroke();}for(let y=(viewHeight/2+graph.panY)%gridStep;y<viewHeight;y+=gridStep){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(viewWidth,y);ctx.stroke();}}
