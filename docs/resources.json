@@ -9,6 +9,19 @@
   },
   "items": [
     {
+      "id": "gpt-doug-dataset-civilization",
+      "name": "GPT-DOUG Dataset Civilization — Free Local Data Fleet",
+      "category": "Data & Observability",
+      "type": "sqlite-public-dataset-fleet-with-visual-ontology",
+      "access": "public",
+      "free": true,
+      "interactive": true,
+      "url": "./dataset-fleet/",
+      "source": "https://github.com/sonoxo/gpt-doug-llm/tree/main/data_fleet",
+      "description": "Four approved public metadata sources; deterministic five-role dataset fleet with local SQLite, provenance SHA-256, bounded parallelism and retries, idempotent indexing, quarantine and ontology references. Interactive web report viewer; not an autonomous cloud swarm or private data crawler.",
+      "engine": "Python 3.11+ standard library SQLite + browser-only Canvas/JS"
+    },
+    {
       "id": "xunia-open-web-atlas",
       "name": "XUNIA Open Web Atlas — Authorized Public Website Archive",
       "category": "Observability",
