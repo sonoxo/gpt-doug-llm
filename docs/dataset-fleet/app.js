@@ -21,6 +21,8 @@
     if(!data||typeof data!=="object")throw Error("JSON object required");
     if(mode==="preview"){
       if(data.schema!=="gpt-doug.dataset-fleet.preview.v1"||data.status!=="reference_only_not_executed")throw Error("Unknown preview schema");
+    } else if(mode==="web") {
+      if(data.schema!=="gpt-doug.dataset-fleet.browser-snapshot.v1" || data.publicSourceOnly!==true || data.modelAPICalls!==0)throw Error("Invalid public browser dataset scan");
     } else if(data.schema!=="gpt-doug.dataset-fleet.report.v1"||data.networkAccess!==false||data.modelAPICalls!==0) {
       throw Error("Not an approved local GPT-DOUG data fleet report");
     }
@@ -42,15 +44,16 @@
     state.query="";$("search").value="";
     const totalRows=state.datasets.reduce((n,d)=>n+(d.rows||0),0);
     $("datasets").textContent=String(state.datasets.length);
-    $("rows").textContent=mode==="report"?totalRows.toLocaleString():"—";
+    $("rows").textContent=mode==="preview"?"—":totalRows.toLocaleString();
     $("edges").textContent=String(state.lineage.length);
-    $("mode").textContent=mode==="report"?"LOCAL REPORT IMPORTED":"REFERENCE PREVIEW";
-    $("stamp").textContent=mode==="report"?"Local report "+(data.generatedAt||""):"Checked-in source manifest preview";
-    $("export").disabled=mode!=="report";
+    $("mode").textContent=mode==="report"?"LOCAL SQLITE REPORT":mode==="web"?"PUBLIC BROWSER SNAPSHOT":"REFERENCE PREVIEW";
+    $("stamp").textContent=mode==="report"?"Local report "+(data.generatedAt||""):mode==="web"?"Public data read "+(data.generatedAt||""):"Checked-in source manifest preview";
+    $("export").disabled=mode==="preview";
     layout();renderTable();renderDetails();renderDistribution();fit();
     status(mode==="report"?
-      "Verified local report imported. Displaying measured records, hashes and declared lineage. The report stays in this browser.":
-      "Reference topology loaded: four approved public source definitions. No dataset pipeline has run in this browser. Import a local report to see real results.");
+      "Local SQLite fleet report imported: measured records and hashes. No report data is uploaded.":
+      mode==="web"?"Browser scan complete: four public XUNIA JSON catalogs checked on this site. Counts and SHA-256 are real; this is not a persistent SQLite run.":
+      "Reference topology loaded: four approved public source definitions. Use Scan public datasets for immediate counts and checksums, or import your local SQLite report.");
   }
   function layout() {
     const n=state.datasets.length;
@@ -109,7 +112,7 @@
       const d=node.source;
       ctx.fillText(d.name.length>27?d.name.slice(0,25)+"…":d.name,p.x,p.y+radius+8);
       ctx.font="11px system-ui";ctx.fillStyle="#a8d2dd";
-      ctx.fillText(state.mode==="report"?String(d.rows||0)+" rows":"Configured / not run",p.x,p.y+radius+25);
+      ctx.fillText(state.mode!=="preview"?String(d.rows||0)+" rows":"Configured / not run",p.x,p.y+radius+25);
     });
     $("matches").textContent=state.datasets.filter(match).length+" / "+state.datasets.length+" public datasets";
   }
@@ -151,8 +154,8 @@
     if(!d){root.append(el("p","Select a public dataset."));return;}
     root.append(el("h3",d.name));
     const details=[
-      ["ID",d.id],["Class",d.category],["State",state.mode==="report"?"Indexed report":"Approved reference"],
-      ["Records",state.mode==="report"?d.rows:"Not measured"],["Bytes",d.bytes??"Not measured"],
+      ["ID",d.id],["Class",d.category],["State",state.mode==="report"?"Local SQLite indexed":state.mode==="web"?"Public browser-read JSON":"Approved reference"],
+      ["Records",state.mode!=="preview"?d.rows:"Not measured"],["Bytes",d.bytes??"Not measured"],
       ["SHA-256",d.sha256??"Not measured"],["Provenance",d.provenance??d.path??"See manifest"],
       ["Fields",Array.isArray(d.fields)?d.fields.slice(0,18).join(", "):"Only after local run"]
     ];
@@ -179,12 +182,50 @@
       const activate=()=>{state.selected=d.id;renderDetails();draw();};
       tr.addEventListener("click",activate);
       tr.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate();}});
-      tr.append(el("td",d.name),el("td",d.category),el("td",state.mode==="report"?(d.rows||0).toLocaleString():"—"),
-        el("td",state.mode==="report"?"Indexed":"Configured"),
-        el("td",state.mode==="report"?"SHA-256 verified":"Source manifest"));
+      tr.append(el("td",d.name),el("td",d.category),el("td",state.mode!=="preview"?(d.rows||0).toLocaleString():"—"),
+        el("td",state.mode==="report"?"Indexed":state.mode==="web"?"Browser checked":"Configured"),
+        el("td",state.mode==="preview"?"Source manifest":"SHA-256 measured"));
       body.append(tr);
     });
   }
+
+  async function scanPublicCatalogs() {
+    const btn=$("webScan");btn.disabled=true;
+    const specs=[
+      ["sonoxo-public-repos","Sonoxo Public Repository Universe","repository-topology","../ecosystem-observatory/snapshot.json","repositories"],
+      ["glass-onion-sources","Glass Onion Public Source Atlas","source-attribution","./glass-onion-15-public.json","slots"],
+      ["xunia-resource-registry","XUNIA Interactive Resource Directory","application-registry","../resources.json","items"],
+      ["xunia-openweb-routes","XUNIA Public Route Reference Map","documented-routes","../open-web-atlas/seed-map.json","pages"]
+    ];
+    try {
+      if(!globalThis.crypto?.subtle)throw Error("Browser Web Crypto is unavailable. Open this application over HTTPS.");
+      status("Reading four approved same-origin public metadata catalogs…");
+      const previewResponse=await fetch("./preview.json",{cache:"no-store"});
+      if(!previewResponse.ok)throw Error("Manifest preview HTTP "+previewResponse.status);
+      const preview=validate(await previewResponse.json(),"preview");
+      const datasets=await Promise.all(specs.map(async([id,name,category,url,key])=>{
+        const response=await fetch(url,{cache:"no-store"});
+        if(!response.ok)throw Error(name+" HTTP "+response.status);
+        const buffer=await response.arrayBuffer();
+        if(buffer.byteLength>8_000_000)throw Error(name+" exceeds source size limit");
+        const data=JSON.parse(new TextDecoder().decode(buffer));
+        const records=data?.[key];
+        if(!Array.isArray(records)||records.length<1||records.length>10_000||records.some(row=>!row||typeof row!=="object"||Array.isArray(row)))throw Error(name+" has an unexpected row schema");
+        const fields=[...new Set(records.flatMap(row=>Object.keys(row)))].sort().slice(0,100);
+        const hash=await crypto.subtle.digest("SHA-256",buffer);
+        const sha256=[...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,"0")).join("");
+        return{id,name,category,rows:records.length,bytes:buffer.byteLength,sha256,fields,
+          provenance:"https://github.com/sonoxo/gpt-doug-llm/blob/main/"+(id==="glass-onion-sources"?"catalog/glass-onion-15.json":url.replace(/^\.\.?\//,"docs/").replace(/^\.\.?\//,"docs/"))};
+      }));
+      load({schema:"gpt-doug.dataset-fleet.browser-snapshot.v1",generatedAt:new Date().toISOString(),
+        publicSourceOnly:true,modelAPICalls:0,networkAccess:true,
+        disclaimers:["Public same-origin source bytes read in browser; not a local SQLite index","Curated references are not technical dependencies"],
+        datasets,lineage:preview.lineage},"web");
+    } catch(error) {
+      status("Public browser scan failed: "+error.message+". The existing preview or imported report is still available.",true);
+    } finally {btn.disabled=false;}
+  }
+  $("webScan").addEventListener("click",scanPublicCatalogs);
   $("search").addEventListener("input",e=>{state.query=e.target.value.trim().toLowerCase();renderTable();draw();});
   $("fit").addEventListener("click",fit);
   $("load").addEventListener("click",()=>$("file").click());
@@ -200,9 +241,9 @@
     catch(error){status("Could not restore source preview: "+error.message,true);}
   });
   $("export").addEventListener("click",()=>{
-    if(state.mode!=="report")return;
+    if(state.mode==="preview")return;
     const blob=new Blob([JSON.stringify(state.source,null,2)],{type:"application/json"});
-    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="gpt-doug-dataset-fleet-evidence.json";document.body.append(a);a.click();a.remove();
+    const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=state.mode==="web"?"gpt-doug-public-browser-scan.json":"gpt-doug-dataset-fleet-evidence.json";document.body.append(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
   $("copy").addEventListener("click",async()=>{
