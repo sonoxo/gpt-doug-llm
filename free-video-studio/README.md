@@ -115,3 +115,15 @@ contract are implemented and tested; UI-only model labels are not real engines.
 ## Licensing note
 
 The studio introduces no paid-service dependency. Wan2.2's upstream repository is Apache-2.0. MLX-Gen is MIT. MMAudio code is MIT; its upstream documentation separately cautions that pretrained-model/data licensing should be reviewed for the intended commercial use. Model weights remain subject to their upstream model-card/license terms.
+
+## GPT-DOUG Motion-1: original open-source trainable model
+
+The repository also contains [GPT-DOUG Motion-1](../open_video_model/README.md), an **original MIT-licensed 3D spatiotemporal diffusion network**, with offline PyTorch training from scratch, a synthetic moving-shape curriculum, optional authorized local frame datasets, and a localhost browser studio.
+
+```bash
+bash open_video_model/setup_mac.sh
+open_video_model/.venv/bin/python -m open_video_model train --steps 500
+open_video_model/.venv/bin/python -m open_video_model studio
+```
+
+Run from the repository root. **Motion-1 is separate from this Wan2.2 rendering backend.** It is a small research model with no bundled photorealistic weights; it is not a drop-in replacement for Wan2.2 or Higgsfield commercial video generation. This distinction prevents an untrained model from being advertised as cinematic. Both paths are free of paid inference API calls.
