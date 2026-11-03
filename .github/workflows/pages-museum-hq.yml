@@ -297,7 +297,7 @@ jobs:
             if curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/?v=${CACHE_BUST}" -o /tmp/eo.html \
               && grep -q 'id="graph"' /tmp/eo.html \
               && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/app.js?v=${CACHE_BUST}" -o /tmp/eo.js \
-              && grep -q 'Scan GitHub' /tmp/eo.js \
+              && grep -q 'async function scanGithub' /tmp/eo.js \
               && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/style.css?v=${CACHE_BUST}" -o /tmp/eo.css \
               && test -s /tmp/eo.css \
               && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/snapshot.json?v=${CACHE_BUST}" -o /tmp/eo.json \
