@@ -4,6 +4,11 @@
   const local = ["127.0.0.1", "localhost"].includes(location.hostname) && location.protocol === "http:";
   const setStatus=(text,error=false)=>{$("status").textContent=text;$("status").classList.toggle("error",error);};
   const setEnabled=enabled=>{$("generate").disabled=!enabled;$("preview").disabled=!local;};
+  let healthTimer = null;
+  function checkAgain() {
+    if(healthTimer) clearTimeout(healthTimer);
+    healthTimer = setTimeout(health, 5000);
+  }
   async function health(){
     if(!local){
       setStatus("PUBLIC SOURCE VIEW. Neural video runs on your Mac, not on GitHub Pages. Install the free model and open http://127.0.0.1:8792/ for working generation.");
@@ -19,9 +24,10 @@
       $("modelReady").textContent=data.trained_checkpoint_present?"TRAINED":"SETUP";
       $("modelHint").textContent=data.trained_checkpoint_present?"Checkpoint detected":"Train original model to unlock neural generation";
       setEnabled(data.trained_checkpoint_present);
+      if (!data.trained_checkpoint_present) checkAgain();
       setStatus(data.trained_checkpoint_present?
         "LOCAL MODEL ONLINE. A trained Motion-1 checkpoint is available. Select Generate from trained weights.":
-        "LOCAL STUDIO ONLINE. Procedural preview works now; train Motion-1 first to enable neural generation.");
+        "LOCAL STUDIO ONLINE. Starter training may be running in Terminal. This page checks automatically and unlocks neural generation when the checkpoint is ready.");
     }catch(error){setStatus("Local model unavailable: "+error.message,true);setEnabled(false);}
   }
   async function create(preview){
