@@ -1,0 +1,30 @@
+name: XUNIA Open Web Atlas Gate
+on:
+  push:
+    paths:
+      - 'docs/open-web-atlas/**'
+      - 'scripts/xunia_web_mirror.py'
+      - 'tests/test_xunia_web_mirror.py'
+      - '.github/workflows/xunia-open-web-atlas.yml'
+  pull_request:
+    paths:
+      - 'docs/open-web-atlas/**'
+      - 'docs/index.html'
+      - 'docs/resources.json'
+      - 'scripts/xunia_web_mirror.py'
+      - 'tests/test_xunia_web_mirror.py'
+      - '.github/workflows/xunia-open-web-atlas.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test bounded mirror and existing guard
+        run: |
+          python3 -m unittest discover -s tests -p test_xunia_web_mirror.py -v
+          python3 -m unittest discover -s tests -p test_xunia_authorized_crawl.py -v
+      - name: Validate browser archive viewer
+        run: node --check docs/open-web-atlas/app.js
