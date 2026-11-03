@@ -39,6 +39,10 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/open-web-atlas/index.html
+          test -f _site/open-web-atlas/app.js
+          test -f _site/open-web-atlas/style.css
+          test -f _site/open-web-atlas/seed-map.json
           test -f _site/ecosystem-observatory/index.html
           test -f _site/ecosystem-observatory/app.js
           test -f _site/ecosystem-observatory/style.css
@@ -90,6 +94,8 @@ jobs:
           node --check docs/rea-kraken/app.mjs
           node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
+          node --check docs/open-web-atlas/app.js
+          python3 -m unittest discover -s tests -p test_xunia_web_mirror.py -v
           node --check docs/ecosystem-observatory/app.js
           python3 -m unittest discover -s tests -p test_xunia_ecosystem_observatory.py -v
           node --check docs/darkweb/15-source-atlas/atlas.js
@@ -308,6 +314,34 @@ jobs:
             sleep 3
           done
           echo XUNIA_ECOSYSTEM_OBSERVATORY_LIVE=FAIL >&2
+          exit 1
+
+  verify-open-web-atlas-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify public web atlas viewer and honest preview
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-time 15 "https://xunia.org/open-web-atlas/?v=${CACHE_BUST}" -o /tmp/open-web.html \
+              && grep -q 'id="graph"' /tmp/open-web.html \
+              && curl -fsSL --max-time 15 "https://xunia.org/open-web-atlas/app.js?v=${CACHE_BUST}" -o /tmp/open-web.js \
+              && grep -q 'function validate(snapshot)' /tmp/open-web.js \
+              && curl -fsSL --max-time 15 "https://xunia.org/open-web-atlas/style.css?v=${CACHE_BUST}" -o /tmp/open-web.css \
+              && test -s /tmp/open-web.css \
+              && curl -fsSL --max-time 15 "https://xunia.org/open-web-atlas/seed-map.json?v=${CACHE_BUST}" -o /tmp/open-web-preview.json \
+              && python3 -c 'import json; x=json.load(open("/tmp/open-web-preview.json")); assert x["schema"]=="xunia.open-web-mirror.v1" and x["coverage"]["pagesStored"]==0'; then
+              echo XUNIA_OPEN_WEB_ATLAS_LIVE=PASS
+              exit 0
+            fi
+            sleep 3
+          done
+          echo XUNIA_OPEN_WEB_ATLAS_LIVE=FAIL >&2
           exit 1
 
   verify-glass-onion-atlas-live:
