@@ -128,6 +128,29 @@ class DatasetFleetTests(unittest.TestCase):
         self.assertEqual(result["statuses"],{"completed":1})
         self.assertEqual(calls["n"],2)
 
+    def test_public_dashboard_assets_and_source_parity(self):
+        repo=Path(__file__).resolve().parents[1]
+        site=repo/"docs/dataset-fleet"
+        for name in ("index.html","app.js","style.css","preview.json","glass-onion-15-public.json"):
+            self.assertTrue((site/name).is_file(),name)
+        preview=json.loads((site/"preview.json").read_text(encoding="utf-8"))
+        manifest=fleet.manifest_from_file(repo/"data_fleet/manifest.json")
+        self.assertEqual({x["id"] for x in preview["datasets"]},{x["id"] for x in manifest["datasets"]})
+        self.assertEqual(preview["status"],"reference_only_not_executed")
+        self.assertEqual(json.loads((site/"glass-onion-15-public.json").read_text(encoding="utf-8")),
+                         json.loads((repo/"catalog/glass-onion-15.json").read_text(encoding="utf-8")))
+        html=(site/"index.html").read_text(encoding="utf-8")
+        script=(site/"app.js").read_text(encoding="utf-8")
+        self.assertIn("id=\"webScan\"",html)
+        self.assertIn("crypto.subtle.digest",script)
+        self.assertIn("Scan public datasets",html)
+        self.assertIn("connect-src 'self'",html)
+        self.assertIn('href="./dataset-fleet/"',(repo/"docs/index.html").read_text(encoding="utf-8"))
+        resources=json.loads((repo/"docs/resources.json").read_text(encoding="utf-8"))["items"]
+        entries=[x for x in resources if x["id"]=="gpt-doug-dataset-civilization"]
+        self.assertEqual(len(entries),1)
+        self.assertTrue(entries[0]["free"])
+
     def test_actual_repository_public_sources(self):
         repo=Path(__file__).resolve().parents[1]
         mf=repo/"data_fleet/manifest.json"
