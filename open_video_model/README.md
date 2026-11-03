@@ -32,13 +32,27 @@ Default: 8 RGB frames at 32×32, 48 diffusion steps, 24 hidden channels. Configu
 
 ## One-command Mac start
 
-From an existing checkout of `gpt-doug-llm`, run:
+Paste this into Mac Terminal even when a non-Git folder already exists at `~/gpt-doug-llm`:
 
 ```bash
+cd "$HOME"
+if [ -d "$HOME/gpt-doug-llm/.git" ]; then
+  cd "$HOME/gpt-doug-llm"
+else
+  if [ -d "$HOME/GPT-DOUG-Motion1/.git" ]; then
+    cd "$HOME/GPT-DOUG-Motion1"
+  else
+    git clone https://github.com/sonoxo/gpt-doug-llm.git "$HOME/GPT-DOUG-Motion1"
+    cd "$HOME/GPT-DOUG-Motion1"
+  fi
+fi
+git pull --ff-only
 bash open_video_model/run_mac.sh
 ```
 
-This script checks free Python 3.11/3.12, creates the isolated environment if needed, trains a starter synthetic checkpoint if none exists, and launches the local browser studio. A starter checkpoint is **not** photorealistic. No paid API keys or hosting.
+**Your existing non-Git `~/gpt-doug-llm` folder is never deleted or overwritten.** If it exists without `.git`, Motion-1 uses the separate `~/GPT-DOUG-Motion1` checkout instead. An existing Motion-1 clone is updated with `git pull --ff-only`.
+
+The launcher sets up Python 3.11/3.12 as needed, then **starts the local studio first**. If there is no checkpoint, a bounded original moving-shapes training run starts concurrently under the same Terminal session. Chrome at `http://127.0.0.1:8792/` is usable immediately after setup for procedural preview and shows when neural generation becomes available. Training logs are saved to `~/.local/share/gpt-doug/motion-1/training.log`; closing the Terminal stops the supervised background trainer. To skip automatic training use `MOTION_AUTOTRAIN=0 bash open_video_model/run_mac.sh`. A starter checkpoint is **not photorealistic**. No paid API keys or hosting.
 
 ## Free Mac setup
 
