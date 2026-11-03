@@ -1,0 +1,64 @@
+{
+  "schema": "gpt-doug.dataset-fleet.preview.v1",
+  "status": "reference_only_not_executed",
+  "source": "data_fleet/manifest.json",
+  "description": "Approved input definitions only. Import an actual local fleet report to see measured records and checksums.",
+  "agents": [
+    "DISCOVER",
+    "VERIFY",
+    "INDEX",
+    "RELATE",
+    "AUDIT"
+  ],
+  "datasets": [
+    {
+      "id": "sonoxo-public-repos",
+      "name": "Sonoxo Public Repository Universe",
+      "category": "repository-topology",
+      "path": "docs/ecosystem-observatory/snapshot.json",
+      "rows": null,
+      "status": "configured"
+    },
+    {
+      "id": "glass-onion-sources",
+      "name": "Glass Onion Public Source Atlas",
+      "category": "source-attribution",
+      "path": "catalog/glass-onion-15.json",
+      "rows": null,
+      "status": "configured"
+    },
+    {
+      "id": "xunia-resource-registry",
+      "name": "XUNIA Interactive Resource Directory",
+      "category": "application-registry",
+      "path": "docs/resources.json",
+      "rows": null,
+      "status": "configured"
+    },
+    {
+      "id": "xunia-openweb-routes",
+      "name": "XUNIA Public Route Reference Map",
+      "category": "documented-routes",
+      "path": "docs/open-web-atlas/seed-map.json",
+      "rows": null,
+      "status": "configured"
+    }
+  ],
+  "lineage": [
+    {
+      "source_id": "sonoxo-public-repos",
+      "target_id": "xunia-resource-registry",
+      "kind": "curated-reference"
+    },
+    {
+      "source_id": "glass-onion-sources",
+      "target_id": "xunia-resource-registry",
+      "kind": "curated-reference"
+    },
+    {
+      "source_id": "xunia-openweb-routes",
+      "target_id": "xunia-resource-registry",
+      "kind": "curated-reference"
+    }
+  ]
+}

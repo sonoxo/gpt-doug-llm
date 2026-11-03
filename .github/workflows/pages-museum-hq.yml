@@ -39,6 +39,10 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/dataset-fleet/index.html
+          test -f _site/dataset-fleet/app.js
+          test -f _site/dataset-fleet/style.css
+          test -f _site/dataset-fleet/preview.json
           test -f _site/open-web-atlas/index.html
           test -f _site/open-web-atlas/app.js
           test -f _site/open-web-atlas/style.css
@@ -94,6 +98,8 @@ jobs:
           node --check docs/rea-kraken/app.mjs
           node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
+          node --check docs/dataset-fleet/app.js
+          python3 -m unittest discover -s tests -p test_data_fleet.py -v
           node --check docs/open-web-atlas/app.js
           python3 -m unittest discover -s tests -p test_xunia_web_mirror.py -v
           node --check docs/ecosystem-observatory/app.js
@@ -342,6 +348,35 @@ jobs:
             sleep 3
           done
           echo XUNIA_OPEN_WEB_ATLAS_LIVE=FAIL >&2
+          exit 1
+
+  verify-dataset-fleet-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify live data fleet command center, JS, CSS and public preview
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-time 15 "https://xunia.org/dataset-fleet/?v=${CACHE_BUST}" -o /tmp/xunia-fleet.html \
+              && grep -q 'id="graph"' /tmp/xunia-fleet.html \
+              && grep -q 'DATASET CIVILIZATION' /tmp/xunia-fleet.html \
+              && curl -fsSL --max-time 15 "https://xunia.org/dataset-fleet/app.js?v=${CACHE_BUST}" -o /tmp/xunia-fleet.js \
+              && grep -q 'function validate(data,mode)' /tmp/xunia-fleet.js \
+              && curl -fsSL --max-time 15 "https://xunia.org/dataset-fleet/style.css?v=${CACHE_BUST}" -o /tmp/xunia-fleet.css \
+              && test -s /tmp/xunia-fleet.css \
+              && curl -fsSL --max-time 15 "https://xunia.org/dataset-fleet/preview.json?v=${CACHE_BUST}" -o /tmp/xunia-fleet-preview.json \
+              && python3 -c 'import json; x=json.load(open("/tmp/xunia-fleet-preview.json")); assert x["schema"]=="gpt-doug.dataset-fleet.preview.v1" and x["status"]=="reference_only_not_executed" and len(x["datasets"])==4'; then
+              echo GPT_DOUG_DATA_FLEET_LIVE=PASS
+              exit 0
+            fi
+            sleep 3
+          done
+          echo GPT_DOUG_DATA_FLEET_LIVE=FAIL >&2
           exit 1
 
   verify-glass-onion-atlas-live:
