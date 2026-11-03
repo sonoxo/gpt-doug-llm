@@ -39,6 +39,7 @@ jobs:
       - name: Verify shell bootstrap and model CLI
         run: |
           bash -n open_video_model/setup_mac.sh
+          bash -n open_video_model/run_mac.sh
           python -m open_video_model doctor
           python -m open_video_model preview --prompt "red circle moving right" --out /tmp/gpt-doug-original-preview.gif
           test -s /tmp/gpt-doug-original-preview.gif
