@@ -30,6 +30,16 @@ Real local frames → GIF (Pillow) or MP4 (FFmpeg)
 
 Default: 8 RGB frames at 32×32, 48 diffusion steps, 24 hidden channels. Configurable 4–16 frames, 16–64 pixels, 4–128 diffusion steps. It is deliberately small and learnable on an Apple Silicon Mac. **A short demonstration training run will not produce cinematic video.** Meaningful results require additional authorized training clips, long training, validation and larger models.
 
+## One-command Mac start
+
+From an existing checkout of `gpt-doug-llm`, run:
+
+```bash
+bash open_video_model/run_mac.sh
+```
+
+This script checks free Python 3.11/3.12, creates the isolated environment if needed, trains a starter synthetic checkpoint if none exists, and launches the local browser studio. A starter checkpoint is **not** photorealistic. No paid API keys or hosting.
+
 ## Free Mac setup
 
 Use **Python 3.11 or 3.12** (not your earlier Python 3.15 dependency environment), Apple Silicon PyTorch with MPS where available. No account, paid API or credit card.
