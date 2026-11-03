@@ -39,6 +39,10 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/ecosystem-observatory/index.html
+          test -f _site/ecosystem-observatory/app.js
+          test -f _site/ecosystem-observatory/style.css
+          test -f _site/ecosystem-observatory/snapshot.json
           test -f _site/darkweb/15-source-atlas/index.html
           test -f _site/darkweb/15-source-atlas/atlas.css
           test -f _site/darkweb/15-source-atlas/atlas.js
@@ -86,6 +90,8 @@ jobs:
           node --check docs/rea-kraken/app.mjs
           node --test tests/rea_kraken_dashboard.test.mjs
           node --check docs/museum.js
+          node --check docs/ecosystem-observatory/app.js
+          python3 -m unittest discover -s tests -p test_xunia_ecosystem_observatory.py -v
           node --check docs/darkweb/15-source-atlas/atlas.js
           python3 -m unittest discover -s tests -p test_xunia_glass_onion_15_site.py -v
           node --check docs/cyber-swarm/engine.mjs
@@ -275,6 +281,34 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  verify-ecosystem-observatory-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify published public repository atlas
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/?v=${CACHE_BUST}" -o /tmp/eo.html \
+              && grep -q 'id="graph"' /tmp/eo.html \
+              && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/app.js?v=${CACHE_BUST}" -o /tmp/eo.js \
+              && grep -q 'async function scanGithub' /tmp/eo.js \
+              && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/style.css?v=${CACHE_BUST}" -o /tmp/eo.css \
+              && test -s /tmp/eo.css \
+              && curl -fsSL --max-time 15 "https://xunia.org/ecosystem-observatory/snapshot.json?v=${CACHE_BUST}" -o /tmp/eo.json \
+              && python3 -c 'import json; x=json.load(open("/tmp/eo.json")); assert x["schema"]=="xunia.public-repo-scan.v1" and len(x["repositories"])>=100'; then
+              echo XUNIA_ECOSYSTEM_OBSERVATORY_LIVE=PASS
+              exit 0
+            fi
+            sleep 3
+          done
+          echo XUNIA_ECOSYSTEM_OBSERVATORY_LIVE=FAIL >&2
+          exit 1
 
   verify-glass-onion-atlas-live:
     if: github.event_name != 'pull_request'
