@@ -42,6 +42,13 @@ case "$1" in
         exit 0
         ;;
       studio)
+        # Allow the OS to schedule the supervised trainer; never wait for completion.
+        count=0
+        while [ ! -f "$HOME/train.started" ] && [ "$count" -lt 40 ]; do
+          sleep 0.025
+          count=$((count + 1))
+          if [ "${MOTION_AUTOTRAIN:-1}" = "0" ]; then break; fi
+        done
         touch "$HOME/studio.started"
         if [ -f "$HOME/train.finished" ]; then
           touch "$HOME/studio.started.after.training"
