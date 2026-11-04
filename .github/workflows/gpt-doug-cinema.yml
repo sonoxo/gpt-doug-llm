@@ -42,7 +42,8 @@ jobs:
           for name in ('engine.py','server.py'):
               ast.parse((Path('cinema_studio') / name).read_text())
           s=(Path('cinema_studio')/'server.py').read_text()
-          assert 'ThreadingHTTPServer(("127.0.0.1", port)' in s
+          assert 'if host != "127.0.0.1"' in s
+          assert 'ThreadingHTTPServer((host, port)' in s
           assert '/api/jobs' in s and '/api/assets/' in s
           print('Cinema OS: local-only server and output routes validated.')
           PY
