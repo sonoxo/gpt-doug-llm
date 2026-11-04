@@ -6,6 +6,7 @@ on:
       - 'tests/test_gpt_doug_motion_one.py'
       - 'tests/test_gpt_doug_motion_server.py'
       - 'tests/test_motion_mac_launcher.py'
+      - 'tests/test_motion_revamp.py'
       - 'docs/motion-1/**'
       - '.github/workflows/gpt-doug-motion-one.yml'
   pull_request:
@@ -14,6 +15,7 @@ on:
       - 'tests/test_gpt_doug_motion_one.py'
       - 'tests/test_gpt_doug_motion_server.py'
       - 'tests/test_motion_mac_launcher.py'
+      - 'tests/test_motion_revamp.py'
       - 'docs/motion-1/**'
       - 'free-video-studio/README.md'
       - '.github/workflows/gpt-doug-motion-one.yml'
@@ -36,6 +38,8 @@ jobs:
         run: python -m unittest discover -s tests -p test_gpt_doug_motion_one.py -v
       - name: Regression-test Mac launch order and non-destructive clone recovery
         run: python -m unittest discover -s tests -p test_motion_mac_launcher.py -v
+      - name: Verify stdlib-first studio startup and browser revamp
+        run: python -m unittest discover -s tests -p test_motion_revamp.py -v
       - name: Verify loopback browser studio and origin security
         run: python -m unittest discover -s tests -p test_gpt_doug_motion_server.py -v
       - name: Check public browser controls
@@ -44,6 +48,7 @@ jobs:
         run: |
           bash -n open_video_model/setup_mac.sh
           bash -n open_video_model/run_mac.sh
+          bash -n open_video_model/bootstrap_mac.sh
           python -m open_video_model doctor
           python -m open_video_model preview --prompt "red circle moving right" --out /tmp/gpt-doug-original-preview.gif
           test -s /tmp/gpt-doug-original-preview.gif
