@@ -30,29 +30,21 @@ Real local frames → GIF (Pillow) or MP4 (FFmpeg)
 
 Default: 8 RGB frames at 32×32, 48 diffusion steps, 24 hidden channels. Configurable 4–16 frames, 16–64 pixels, 4–128 diffusion steps. It is deliberately small and learnable on an Apple Silicon Mac. **A short demonstration training run will not produce cinematic video.** Meaningful results require additional authorized training clips, long training, validation and larger models.
 
-## One-command Mac start
+## One-command Mac start — revised
 
-Paste this into Mac Terminal even when a non-Git folder already exists at `~/gpt-doug-llm`:
+Open Mac Terminal, paste this **single command**, and press Return:
 
 ```bash
-cd "$HOME"
-if [ -d "$HOME/gpt-doug-llm/.git" ]; then
-  cd "$HOME/gpt-doug-llm"
-else
-  if [ -d "$HOME/GPT-DOUG-Motion1/.git" ]; then
-    cd "$HOME/GPT-DOUG-Motion1"
-  else
-    git clone https://github.com/sonoxo/gpt-doug-llm.git "$HOME/GPT-DOUG-Motion1"
-    cd "$HOME/GPT-DOUG-Motion1"
-  fi
-fi
-git pull --ff-only
-bash open_video_model/run_mac.sh
+curl -fsSLo "$HOME/Downloads/gpt-doug-motion1-start.sh" https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/open_video_model/bootstrap_mac.sh && bash "$HOME/Downloads/gpt-doug-motion1-start.sh"
 ```
 
-**Your existing non-Git `~/gpt-doug-llm` folder is never deleted or overwritten.** If it exists without `.git`, Motion-1 uses the separate `~/GPT-DOUG-Motion1` checkout instead. An existing Motion-1 clone is updated with `git pull --ff-only`.
+This script is published in this repository as `open_video_model/bootstrap_mac.sh`, so you can review the source before running it. It uses Git to clone just the Motion-1 application files, never deletes or renames your existing `~/gpt-doug-llm` folder, and falls back to a fresh dedicated checkout if `~/GPT-DOUG-Motion1` is occupied or cannot fast-forward. The launcher installs **free** Python 3.12 if needed, then creates an isolated venv and **starts the localhost studio before downloading PyTorch or training weights**. You can try the procedural browser demo immediately.
 
-The launcher sets up Python 3.11/3.12 as needed, then **starts the local studio first**. If there is no checkpoint, a bounded original moving-shapes training run starts concurrently under the same Terminal session. Chrome at `http://127.0.0.1:8792/` is usable immediately after setup for procedural preview and shows when neural generation becomes available. Training logs are saved to `~/.local/share/gpt-doug/motion-1/training.log`; closing the Terminal stops the supervised background trainer. To skip automatic training use `MOTION_AUTOTRAIN=0 bash open_video_model/run_mac.sh`. A starter checkpoint is **not photorealistic**. No paid API keys or hosting.
+Actual neural GIF generation unlocks only after PyTorch/Pillow finish installing and a local starter checkpoint is trained. The dashboard reports `installing`, `training`, `ready`, or `failed`, with progress when available. Logs are local at `~/.local/share/gpt-doug/motion-1/install.log` and `training.log`. Starter weights only learn moving shapes and are not photorealistic.
+
+The working local URL is `http://127.0.0.1:8792/` **while the Terminal server is open**. The public exhibit `https://xunia.org/motion-1/` has an interactive browser-only geometric demo but cannot run GPU neural inference. No paid accounts, inference APIs or subscriptions.
+
+If you already have a verified checkout, `cd "$HOME/GPT-DOUG-Motion1" && bash open_video_model/run_mac.sh` works too. To disable starter training: `MOTION_AUTOTRAIN=0 bash open_video_model/run_mac.sh` from that checkout.
 
 ## Free Mac setup
 
