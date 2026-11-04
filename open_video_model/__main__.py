@@ -5,9 +5,8 @@ import json
 from pathlib import Path
 import sys
 
-from .model import MotionConfig, MotionDiffusion, trained_parameter_count
-from .train import DEFAULT_CHECKPOINT, select_device, train
-from .generate import render
+# Studio startup deliberately uses Python stdlib only; ML imports are lazy.
+DEFAULT_CHECKPOINT = Path.home() / ".local/share/gpt-doug/motion-1/motion1.pt"
 
 
 def parse(argv: list[str] | None = None) -> argparse.Namespace:
@@ -46,6 +45,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "doctor":
             import platform
             import torch
+            from .model import MotionConfig, MotionDiffusion, trained_parameter_count
+            from .train import select_device
             model = MotionDiffusion(MotionConfig())
             result = {"name": "GPT-DOUG Motion-1", "license": "MIT implementation",
                       "python": sys.version.split()[0], "torch": torch.__version__,
@@ -61,10 +62,13 @@ def main(argv: list[str] | None = None) -> int:
             serve(port=args.port)
             return 0
         elif args.command == "train":
+            from .model import MotionConfig
+            from .train import train
             config=MotionConfig(frames=args.frames,size=args.size,width=args.width,timesteps=args.timesteps)
             result=train(config,steps=args.steps,batch_size=args.batch,lr=args.lr,seed=args.seed,
                          checkpoint=args.checkpoint,dataset=args.data_dir,device_name=args.device)
         else:
+            from .generate import render
             result=render(prompt=args.prompt,output=args.out,seed=args.seed,fps=args.fps,
                           device_name=args.device,preview=args.command=="preview",
                           checkpoint=getattr(args,"checkpoint",None))

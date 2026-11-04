@@ -78,7 +78,7 @@ exit 13
         self.assertTrue((self.home/"train.started").exists())
         self.assertFalse((self.home/"studio.started.after.training").exists())
         self.assertFalse((self.home/"train.finished").exists())
-        self.assertIn("Launching free local studio",result.stdout)
+        self.assertIn("STUDIO LIVE AT",result.stdout)
 
     def test_autotrain_opt_out_still_launches_server(self):
         result=self.launch({"MOTION_AUTOTRAIN":"0"})
@@ -94,10 +94,11 @@ exit 13
     def test_recovery_documentation_does_not_overwrite_non_git_folder(self):
         docs=(ROOT/"open_video_model/README.md").read_text(encoding="utf-8")
         page=(ROOT/"docs/motion-1/index.html").read_text(encoding="utf-8")
-        self.assertIn('if [ -d "$HOME/gpt-doug-llm/.git" ]',docs)
-        self.assertIn('git clone https://github.com/sonoxo/gpt-doug-llm.git "$HOME/GPT-DOUG-Motion1"',docs)
-        self.assertIn('if [ -d "$HOME/gpt-doug-llm/.git" ]',page)
-        self.assertIn("checkAgain()", (ROOT/"docs/motion-1/app.js").read_text(encoding="utf-8"))
+        self.assertIn("bootstrap_mac.sh",docs)
+        self.assertIn("never deletes or renames",docs)
+        self.assertIn("existing",docs)
+        self.assertIn("bootstrap_mac.sh",page)
+        self.assertIn("scheduleHealth()", (ROOT/"docs/motion-1/app.js").read_text(encoding="utf-8"))
 
 
 if __name__=="__main__":

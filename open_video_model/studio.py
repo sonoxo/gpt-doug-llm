@@ -5,15 +5,45 @@ Run: python -m open_video_model studio
 """
 from __future__ import annotations
 
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from threading import BoundedSemaphore
 import json
 from pathlib import Path
 import re
 import secrets
 import webbrowser
 
-from .generate import render
-from .train import DEFAULT_CHECKPOINT
+DEFAULT_CHECKPOINT = Path.home() / ".local/share/gpt-doug/motion-1/motion1.pt"
+STATUS_FILE = DEFAULT_CHECKPOINT.parent / "setup-status"
+TRAIN_LOG = DEFAULT_CHECKPOINT.parent / "training.log"
+RENDER_LOCK = BoundedSemaphore(1)
+
+
+def pipeline_status() -> dict:
+    """Return stage and numbers only; never expose local logs or filesystem paths."""
+    ready = DEFAULT_CHECKPOINT.is_file()
+    stage = "ready" if ready else "not-started"
+    if not ready:
+        try:
+            candidate = STATUS_FILE.read_text(encoding="utf-8").strip()
+            if candidate in ("installing", "training", "failed", "not-started"):
+                stage = candidate
+        except OSError:
+            pass
+    steps = total = None
+    if stage in ("training", "ready", "failed"):
+        try:
+            with TRAIN_LOG.open("rb") as source:
+                end = source.seek(0, 2)
+                source.seek(max(0, end - 8192))
+                last_lines = source.read().decode("utf-8", "replace")
+            matches = re.findall(r"Motion-1\s*\|\s*(\d+)/(\d+)\s*\|\s*loss=", last_lines)
+            if matches:
+                steps, total = map(int, matches[-1])
+        except OSError:
+            pass
+    return {"stage": stage, "completed_steps": steps, "total_steps": total}
+
 
 
 SITE_DIR = Path(__file__).resolve().parents[1] / "docs" / "motion-1"
@@ -58,6 +88,7 @@ class MotionHandler(BaseHTTPRequestHandler):
                 "trained_checkpoint_present": DEFAULT_CHECKPOINT.is_file(),
                 "generation_requires_training": True,
                 "remote_inference": False,
+                "pipeline": pipeline_status(),
             })
         elif path in MIME:
             filename, mime = MIME[path]
@@ -108,13 +139,22 @@ class MotionHandler(BaseHTTPRequestHandler):
                 return
             OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
             filename = "motion1-" + secrets.token_hex(8) + ".gif"
-            receipt = render(prompt=prompt, output=OUTPUT_DIR / filename,
+            if not RENDER_LOCK.acquire(blocking=False):
+                self.json_response(429, {"error": "A local render is already running."})
+                return
+            try:
+                from .generate import render
+                receipt = render(prompt=prompt, output=OUTPUT_DIR / filename,
                              checkpoint=DEFAULT_CHECKPOINT if route == "/api/generate" else None,
                              seed=seed, fps=fps, preview=route == "/api/preview")
+            finally:
+                RENDER_LOCK.release()
             self.json_response(200, {"ok": True, "url": "/renders/" + filename,
                                      "preview_not_ml": receipt["preview_not_ml"], "receipt": receipt})
         except (ValueError, TypeError, json.JSONDecodeError) as exc:
             self.json_response(400, {"error": str(exc)[:300]})
+        except ImportError:
+            self.json_response(503, {"error": "Model dependencies are installing; the browser-only preview works immediately."})
         except (RuntimeError, OSError, FileNotFoundError) as exc:
             # Paths and platform internals need not be shown to a browser.
             print("Local render error:", type(exc).__name__)
@@ -126,10 +166,11 @@ def serve(port: int = 8792, open_browser: bool = True) -> None:
         raise ValueError("port must be 1024-65535")
     if not (SITE_DIR / "index.html").is_file():
         raise FileNotFoundError("Studio source assets missing in docs/motion-1")
-    server = HTTPServer(("127.0.0.1", port), MotionHandler)
+    server = ThreadingHTTPServer(("127.0.0.1", port), MotionHandler)
+    server.daemon_threads = True
     link = f"http://127.0.0.1:{port}/"
     print("GPT-DOUG MOTION-1 LOCAL STUDIO // " + link, flush=True)
-    print("Train first for neural video; procedural preview works before training.", flush=True)
+    print("The browser loads before free dependencies and training finish.", flush=True)
     if open_browser:
         webbrowser.open(link)
     try:
