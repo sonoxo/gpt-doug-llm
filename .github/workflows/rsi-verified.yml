@@ -1,0 +1,45 @@
+name: Verified RSI regression
+
+on:
+  pull_request:
+    paths:
+      - "scripts/rsi_verified.py"
+      - "scripts/install_rsi_evaluator.py"
+      - "benchmarks/zyra_action_quality.py"
+      - "tests/test_rsi_verified.py"
+      - "tests/test_rsi_supervisor.py"
+      - "rsi_supervisor.py"
+      - ".github/workflows/rsi-verified.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scripts/rsi_verified.py"
+      - "scripts/install_rsi_evaluator.py"
+      - "benchmarks/zyra_action_quality.py"
+      - "tests/test_rsi_verified.py"
+      - "tests/test_rsi_supervisor.py"
+      - "rsi_supervisor.py"
+      - ".github/workflows/rsi-verified.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-rsi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile the standalone RSI components
+        run: python -m compileall -q scripts/rsi_verified.py scripts/install_rsi_evaluator.py benchmarks/zyra_action_quality.py tests/test_rsi_verified.py
+      - name: New RSI verification tests (stdlib only)
+        run: python -m unittest discover -s tests -p 'test_rsi_verified.py' -v
+      - name: Existing supervisor regression tests
+        run: python -m unittest discover -s tests -p 'test_rsi_supervisor.py' -v
