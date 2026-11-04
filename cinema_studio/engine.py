@@ -155,6 +155,8 @@ def _motion(ffmpeg: str, output: Path, request: dict, index: int) -> None:
         "amber": ("0x251608", "0xffbb66"),
         "scarlet": ("0x240c16", "0xff668a"),
     }[request["palette"]]
+    r, g, b = {"aqua": (70, 248, 213), "violet": (189, 145, 255),
+               "amber": (255, 188, 92), "scarlet": (255, 92, 135)}[request["palette"]]
     phase = 1 + (index % 3) * .3
     if request["camera"] == "static":
         xx, yy = "(W-w)/2", "(H-h)/2"
@@ -167,7 +169,7 @@ def _motion(ffmpeg: str, output: Path, request: dict, index: int) -> None:
     orb = min(w, h) // 3
     # A real FFmpeg-generated kinetic film. Not a text-to-video neural model.
     filt = (f"[0:v]drawgrid=w=32:h=32:t=1:c=0x427689@0.19[base];"
-            f"[1:v]format=rgba,geq=r='75':g='220':b='220':"
+            f"[1:v]format=rgba,geq=r='{r}':g='{g}':b='{b}':"
             f"a='if(lte((X-W/2)^2+(Y-H/2)^2,(W*.42)^2),225,0)'[orb];"
             f"[base][orb]overlay=x='{xx}':y='{yy}':shortest=1:eval=frame,format=yuv420p[v]")
     cmd = [ffmpeg, "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
