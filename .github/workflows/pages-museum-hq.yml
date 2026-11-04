@@ -39,6 +39,7 @@ jobs:
           test -f _site/index.html
           test -f _site/resources.html
           test -f _site/resources.json
+          test -f _site/cinema-studio/index.html
           test -f _site/motion-1/index.html
           test -f _site/motion-1/app.js
           test -f _site/motion-1/style.css
@@ -381,6 +382,30 @@ jobs:
             sleep 3
           done
           echo GPT_DOUG_DATA_FLEET_LIVE=FAIL >&2
+          exit 1
+
+  verify-cinema-studio-live:
+    if: github.event_name != 'pull_request'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify Cinema OS public launch page after production deployment
+        env:
+          CACHE_BUST: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 20); do
+            if curl -fsSL --max-time 15 "https://xunia.org/cinema-studio/?v=${CACHE_BUST}" -o /tmp/cinema-live.html \
+              && grep -q 'GPT-DOUG CINEMA OS' /tmp/cinema-live.html \
+              && grep -q '127.0.0.1:8793' /tmp/cinema-live.html \
+              && grep -q 'bootstrap_mac.sh' /tmp/cinema-live.html; then
+              echo GPT_DOUG_CINEMA_PUBLIC_LANDING_LIVE=PASS
+              exit 0
+            fi
+            sleep 3
+          done
+          echo GPT_DOUG_CINEMA_PUBLIC_LANDING_LIVE=FAIL >&2
           exit 1
 
   verify-motion-one-live:
