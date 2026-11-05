@@ -151,14 +151,16 @@ class Handler(BaseHTTPRequestHandler):
         if not self._allowed_host():
             self._json(403, {"error": "loopback host required"})
             return
-        if self.path == "/api/health":
+        # Ignore URL query parameters (including browser-added tracking strings).
+        path = urlsplit(self.path).path
+        if path == "/api/health":
             self._json(200, {"app": "gpt-sonoxo", "version": "0.1.0", "local_only": True,
                              "blocked": blocked(), "model": DEFAULT_MODEL})
             return
-        if self.path == "/api/ontology":
+        if path == "/api/ontology":
             self._json(200, ONTOLOGY)
             return
-        if self.path == "/api/models":
+        if path == "/api/models":
             try:
                 self._json(200, {"models": local_models(), "default": DEFAULT_MODEL,
                                  "engine": "ollama", "connected": True})
@@ -169,8 +171,8 @@ class Handler(BaseHTTPRequestHandler):
         assets = {"/": ("index.html", "text/html; charset=utf-8"),
                   "/app.css": ("app.css", "text/css; charset=utf-8"),
                   "/app.js": ("app.js", "text/javascript; charset=utf-8")}
-        if self.path in assets:
-            name, mime = assets[self.path]
+        if path in assets:
+            name, mime = assets[path]
             self._send(200, (STATIC / name).read_bytes(), mime)
         else:
             self._json(404, {"error": "not found"})
