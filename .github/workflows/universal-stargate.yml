@@ -1,0 +1,42 @@
+name: Universal Stargate focused gate
+
+on:
+  pull_request:
+    paths:
+      - 'universal_stargate/**'
+      - 'tests/test_universal_stargate.py'
+      - 'pyproject.toml'
+      - '.github/workflows/universal-stargate.yml'
+  push:
+    branches:
+      - 'feat/universal-stargate-si-v1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stargate-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests (mocked local inference)
+        run: python -m unittest tests.test_universal_stargate -v
+      - name: Python syntax
+        run: python -m compileall -q universal_stargate
+      - name: Package static assets exist
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import universal_stargate
+          root = Path(universal_stargate.__file__).parent / 'static'
+          assert all((root / name).is_file() for name in ('index.html','app.js','app.css'))
+          print('Stargate UI assets verified')
+          PY
