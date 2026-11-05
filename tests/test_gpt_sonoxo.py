@@ -42,6 +42,11 @@ class GPTSonoxoTests(unittest.TestCase):
         self.assertIn(b"GPT-SONOXO", body)
         self.assertIn("default-src 'none'", headers["Content-Security-Policy"])
 
+    def test_browser_link_with_tracking_query(self):
+        code, body, _ = self.request("/?utm_source=chatgpt.com")
+        self.assertEqual(code, 200)
+        self.assertIn(b"GPT-SONOXO", body)
+
     def test_ontology_is_conceptual(self):
         code, body, _ = self.request("/api/ontology")
         self.assertEqual(code, 200)
