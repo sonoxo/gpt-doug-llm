@@ -4,25 +4,39 @@ GPT-SONOXO is a local, **read-only**, responsive web application inside
 sonoxo/gpt-doug-llm. It uses free [Ollama](https://ollama.com/) inference and
 the existing GPT-DOUG BrainRouter for *advisory role routing*.
 
-## macOS quick start
+## macOS quick start (Apple Silicon or Intel)
 
-Install Ollama using Homebrew, then run it (Terminal tab 1):
+Ollama's API listens on **127.0.0.1:11434**; GPT-Sonoxo listens on
+**127.0.0.1:8765**. These are separate processes.
 
-    brew install ollama
-    ollama serve
+1. Install Ollama if missing: `brew install ollama`.
+   Check it with `curl -fsS http://127.0.0.1:11434/api/tags`.
+   If that returns JSON, **Ollama is already running**; do not run
+   `ollama serve` again. The `address already in use` message on port
+   11434 is normal when a service already owns the port.
+2. Get the GPT-Sonoxo development branch and pull the local model:
 
-In Terminal tab 2, download the model and install GPT-Sonoxo:
+   ```sh
+   git clone --depth 1 --branch feat/gpt-sonoxo-local-command-center \
+     https://github.com/sonoxo/gpt-doug-llm.git ~/Downloads/gpt-sonoxo-local
+   cd ~/Downloads/gpt-sonoxo-local
+   ollama pull qwen2.5:3b
+   python3 -m gpt_sonoxo
+   ```
 
-    ollama pull qwen2.5:3b
-    cd gpt-doug-llm
-    python3 -m pip install -e .
-    gpt-sonoxo
+3. Keep that terminal open and visit http://127.0.0.1:8765/ .
+   The browser URL may carry a harmless tracking query parameter; the server
+   serves the homepage regardless of that parameter.
 
-Open http://127.0.0.1:8765 in a browser.
+No pip installation is required when using `python3 -m gpt_sonoxo` from the
+repository root. Alternatively `python3 -m pip install -e .` installs the
+`gpt-sonoxo` console command. Set `GPT_SONOXO_MODEL` to the name of
+another local Ollama chat model if preferred.
 
-You can also use python3 -m gpt_sonoxo from the repository root.
-Set GPT_SONOXO_MODEL=llama3.2:3b to select another Ollama model
-that has already been downloaded.
+If the browser says `ERR_CONNECTION_REFUSED` on **8765**, GPT-Sonoxo
+itself is not listening. Run `python3 -m gpt_sonoxo` from the repository
+root and check for its ready message. This is unrelated to Ollama's
+different port 11434.
 
 ## Features
 
