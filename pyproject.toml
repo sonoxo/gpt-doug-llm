@@ -64,6 +64,7 @@ gpt-ironman-llm = "agents.gpt_ironman_llm:main"
 gpt-orca-llm = "agents.gpt_orca_llm:main"
 gpt-universal-council = "agents.universal_council:main"
 gpt-doug-qbio = "gpt_doug_qbio.cli:main"
+gpt-sonoxo = "gpt_sonoxo.server:main"
 
 [project.urls]
 Homepage = "https://github.com/sonoxo/gpt-doug-llm"
@@ -73,7 +74,7 @@ Issues = "https://github.com/sonoxo/gpt-doug-llm/issues"
 [tool.setuptools]
 # Top-level AI stop module must be included in installed wheels, not only source checkouts.
 py-modules = ["ai_killswitch"]
-packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio", "research_lab", "universal_watchdog"]
+packages = ["gpt_nedu", "agents", "web", "workers", "tests", "models", "hivemind", "gpt_brain", "gpt_chaos", "universal_hive", "cloud_nxyz", "body_link", "monero_neural", "uap_matrix", "gpt_zyra_shaggoth", "ttd_llm", "gpt_doug_guardian", "gpt_doug_mlm", "gpt_doug_qbio", "gpt_sonoxo", "research_lab", "universal_watchdog"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "agents/tests", "google/tests", "hackathon/tests"]
@@ -94,3 +95,4 @@ source = ["zyra", "golden_shield", "ontology", "compliance", "auth_gate", "astra
 
 [tool.setuptools.package-data]
 universal_watchdog = ["static/*.html", "static/*.js", "static/*.css", "static/*.json"]
+gpt_sonoxo = ["static/*.html", "static/*.js", "static/*.css"]
