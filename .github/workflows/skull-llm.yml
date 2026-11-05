@@ -1,0 +1,57 @@
+name: SKULL-LLM neural and local runtime
+
+on:
+  pull_request:
+    paths:
+      - "skull_llm/**"
+      - "tests/test_skull_llm.py"
+      - "pyproject.toml"
+      - "docs/SKULL_LLM.md"
+      - ".github/workflows/skull-llm.yml"
+  push:
+    branches: [main]
+    paths:
+      - "skull_llm/**"
+      - "tests/test_skull_llm.py"
+      - "pyproject.toml"
+      - ".github/workflows/skull-llm.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate syntax and package installation
+        run: |
+          python -m compileall -q skull_llm tests/test_skull_llm.py
+          python -m pip install -e .
+          skull-llm --help
+      - name: Offline runtime tests (no network or keys)
+        run: python -m unittest tests.test_skull_llm -v
+
+  neural-training:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install open-source CPU PyTorch
+        run: |
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+          python -m pip install -e .
+      - name: Execute causal attention, gradient and checkpoint tests
+        run: python -m unittest tests.test_skull_llm -v
