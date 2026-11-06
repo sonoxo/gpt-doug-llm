@@ -93,16 +93,12 @@ def render_anatomical_skull(
                 luminance = max(luminance, 0.80)
 
             # Maxillary tooth crowns, separations and oral shadow.
-            if 0.51 < y < 0.76 and abs(x) < 0.40:
-                if 0.585 < y < 0.655:
-                    luminance = 0.03
-                else:
-                    arc = (abs(x) / 0.42) ** 2
-                    top = 0.51 + 0.035 * arc
-                    bottom = 0.78 - 0.12 * arc
-                    if top < y < bottom:
-                        gap = abs((x + 0.40) / 0.10 - round((x + 0.40) / 0.10))
-                        luminance = 0.08 if gap < 0.08 else 0.94 - 0.26 * arc
+            if 0.51 < y < 0.77 and abs(x) < 0.41:
+                arc = (abs(x) / 0.42) ** 2
+                gap = abs((x + 0.40) / 0.105 - round((x + 0.40) / 0.105))
+                luminance = 0.11 if gap < 0.075 else 0.89 - 0.22 * arc
+                if 0.610 < y < 0.650:
+                    luminance *= 0.14
             if 0.73 < y < 0.86 and abs(x) < 0.30:
                 luminance = min(0.98, luminance + 0.12)
             if 0.68 < y < 0.83 and 0.38 < abs(x) < 0.51:
