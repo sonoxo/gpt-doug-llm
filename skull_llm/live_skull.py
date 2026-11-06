@@ -133,10 +133,13 @@ def render_frame(
     rows: int = 30,
     tick: int = 0,
     fusion: bool = True,
+    zoom: float = 1.0,
 ) -> str:
     """Rotate and perspective-project real 3D points through a z-buffer."""
     if not 36 <= columns <= 140 or not 18 <= rows <= 54:
         raise ValueError("frame dimensions out of range")
+    if not math.isfinite(zoom) or not 0.55 <= zoom <= 2.0:
+        raise ValueError("zoom must be in [0.55, 2]")
     pixels = [[" "] * columns for _ in range(rows)]
     zbuf = [[-99.0] * columns for _ in range(rows)]
     for idx, p in enumerate(skull_cloud()):
@@ -147,8 +150,8 @@ def render_frame(
             # A deliberately visible graphics overlay, not internal measurements.
             z += 0.62
         perspective = max(1.5, 3.8 - z * 0.28)
-        col = int(columns / 2 + (x / perspective) * columns * 1.44)
-        row = int(rows / 2 + (y / perspective) * rows * 1.37)
+        col = int(columns / 2 + zoom * (x / perspective) * columns * 1.44)
+        row = int(rows / 2 + zoom * (y / perspective) * rows * 1.37)
         if not (0 <= col < columns and 0 <= row < rows):
             continue
         if z <= zbuf[row][col]:
