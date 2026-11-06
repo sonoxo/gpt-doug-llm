@@ -33,6 +33,12 @@ def build_parser() -> argparse.ArgumentParser:
     math = sub.add_parser("math", help="verified bounded symbolic equations and conjecture triage")
     math.add_argument("math_args", nargs=argparse.REMAINDER)
 
+    skull = sub.add_parser("skull", help="3D SKULL-LLM: live, doctor, ask, serve, train, bench")
+    skull.add_argument("skull_args", nargs=argparse.REMAINDER)
+
+    health = sub.add_parser("health", help="read-only cross-module health matrix")
+    health.add_argument("health_args", nargs=argparse.REMAINDER)
+
     sub.add_parser("status", help="show brain readiness without running a model")
     sub.add_parser("doctor", help="show detailed readiness diagnostics")
     return parser
@@ -51,6 +57,14 @@ def _error(kind: str, message: str) -> int:
 
 def main() -> int:
     args = build_parser().parse_args()
+    if args.command == "skull":
+        from skull_llm.cli import main as skull_main
+
+        return skull_main(args.skull_args or ["live"])
+    if args.command == "health":
+        from .framework_health import main as health_main
+
+        return health_main(args.health_args)
     if args.command == "math":
         from .math_mitochondria import math_cli
         return math_cli(args.math_args)
