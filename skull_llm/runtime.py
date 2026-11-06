@@ -69,7 +69,9 @@ class SkullEngine:
         memory: Optional[BrainMemory] = None,
         ontology: Optional[OntologyIndex] = None,
         config: Optional[SkullConfig] = None,
+        on_progress: Optional[Callable[[str, str], None]] = None,
     ) -> None:
+        self.on_progress = on_progress
         self.chat_fn = chat_fn or self._ollama_chat
         self.memory = memory or BrainMemory()
         self.ontology = ontology or OntologyIndex()
@@ -126,11 +128,16 @@ class SkullEngine:
         )[: self.config.max_context_chars]
         return evidence, memories, ontology, provenance
 
+    def _progress(self, phase: str, message: str) -> None:
+        if self.on_progress is not None:
+            self.on_progress(phase, message)
+
     def run(self, task: str) -> SkullResult:
         require_ai_allowed("SKULL-LLM task")
         task = (task or "").strip()
         if not task or len(task) > 8000:
             raise ValueError("task must contain 1..8000 non-whitespace characters")
+        self._progress("retrieve", "Retrieving local ontology and memory")
         evidence, memories, ontology, provenance = self._retrieve(task)
         system = (
             "You are SKULL-LLM, the local intelligence core of GPT-DOUG-LLM and XUNIA. "
@@ -147,11 +154,13 @@ class SkullEngine:
         calls = 0
         plan = ""
         if self.config.depth == 3:
+            self._progress("draft", "Planning bounded reasoning")
             plan = self._ask(
                 system + " Produce a short execution plan, assumptions and checks, not hidden reasoning.",
                 context,
             )
             calls += 1
+        self._progress("draft", "Generating first answer")
         draft = self._ask(
             system + " Return a usable, specific answer, with important caveats.",
             context + ("\n\nVERIFICATION PLAN:\n" + plan if plan else ""),
@@ -160,6 +169,7 @@ class SkullEngine:
         critique = None
         answer = draft
         if self.config.depth >= 2:
+            self._progress("critique", "Checking assumptions and evidence")
             critique = self._ask(
                 system + " Audit the draft. Identify only specific factual, logic, safety and "
                 "provenance problems. You cannot execute tools or verify external facts.",
@@ -167,6 +177,7 @@ class SkullEngine:
                 + "\n\nREFERENCE DATA:\n" + evidence,
             )
             calls += 1
+            self._progress("revise", "Synthesizing reviewed answer")
             answer = self._ask(
                 system + " Rewrite the answer to address valid critique. Do not blindly "
                 "accept criticism; preserve what is supported. Output the final answer only.",
@@ -187,6 +198,7 @@ class SkullEngine:
             except (OSError, ValueError) as exc:
                 warnings.append("memory_not_saved:" + type(exc).__name__)
         require_ai_allowed("SKULL-LLM completion")
+        self._progress("complete", "Local reasoning completed")
         return SkullResult(
             answer=answer,
             model=self.config.model or "ollama-default",
