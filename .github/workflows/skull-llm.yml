@@ -41,6 +41,13 @@ jobs:
           skull-llm dashboard --width 80 > /tmp/skull-dashboard.txt
       - name: Offline runtime tests (no network or keys)
         run: python -m unittest tests.test_skull_llm -v
+      - name: 3D cockpit loopback HTTP API and static asset tests
+        run: python -m unittest tests.test_skull_3d -v
+      - name: Validate interactive 3D JavaScript syntax
+        run: |
+          node --check skull_llm/static/skull.js
+          node --check skull_llm/static/fallback.js
+          skull-llm serve --help
 
   neural-training:
     runs-on: ubuntu-latest
