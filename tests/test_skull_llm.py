@@ -124,5 +124,72 @@ class NeuralTests(unittest.TestCase):
             self.assertTrue(sample.startswith("SKULL"))
 
 
+class TerminalAsciiTests(unittest.TestCase):
+    def test_banner_and_network_use_fixed_width_printable_ascii(self):
+        from skull_llm.terminal import render_banner, render_network
+
+        for render in (render_banner, render_network):
+            output = render(columns=80)
+            self.assertTrue(all(len(line) == 80 for line in output.splitlines()))
+            self.assertTrue(all(ch == "\\n" or 32 <= ord(ch) <= 126 for ch in output))
+        self.assertIn("SKULL-LLM", render_banner(columns=80))
+        self.assertIn("ORCHESTRATOR", render_network(columns=80))
+        self.assertIn("REFERENCE TOPOLOGY", render_network(columns=80))
+
+    def test_dashboard_shows_actual_status_and_never_invents_metrics(self):
+        from skull_llm.terminal import render_dashboard
+
+        snapshot = {
+            "ollama": {
+                "configured": False, "model_available": False,
+                "model": "qwen2.5-coder:7b", "message": "Ollama is not running",
+            },
+            "stopped": True, "pytorch_installed": False,
+            "ready_for_inference": False,
+        }
+        output = render_dashboard(snapshot, columns=80)
+        self.assertIn("OLLAMA        : OFFLINE", output)
+        self.assertIn("EMERGENCY STOP: ENGAGED", output)
+        self.assertIn("MODEL         : qwen2.5-coder:7b", output)
+        self.assertIn("TRAINED WEIGHTS: NOT PROVIDED", output)
+        self.assertTrue(all(len(line) == 80 for line in output.splitlines()))
+
+    def test_terminal_strips_unsafe_control_characters_from_model_status(self):
+        from skull_llm.terminal import render_dashboard
+
+        output = render_dashboard({
+            "ollama": {
+                "configured": True, "model_available": True,
+                "model": "evil\\x1b[31m\\x00\\nmodel",
+                "message": "test\\x1b[2J\\nlog",
+            },
+            "ready_for_inference": True,
+        })
+        self.assertNotIn("\\x1b", output)
+        self.assertNotIn("\\x00", output)
+        self.assertIn("CORE          : READY", output)
+
+    def test_cli_ascii_modes_are_accessible_without_models(self):
+        from contextlib import redirect_stdout
+        from io import StringIO
+        from unittest.mock import patch
+
+        from skull_llm.cli import main
+
+        for command in ("banner", "network"):
+            out = StringIO()
+            with redirect_stdout(out):
+                self.assertEqual(main([command, "--width", "70"]), 0)
+            self.assertIn("SKULL-LLM", out.getvalue())
+        out = StringIO()
+        stub = {
+            "ollama": {"configured": False, "model_available": False},
+            "stopped": False, "ready_for_inference": False,
+        }
+        with patch("skull_llm.cli.doctor", return_value=stub), redirect_stdout(out):
+            self.assertEqual(main(["dashboard", "--width", "70"]), 0)
+        self.assertIn("NOT READY", out.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()
