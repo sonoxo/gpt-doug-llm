@@ -65,8 +65,8 @@ def parser() -> argparse.ArgumentParser:
 
 
 def doctor() -> dict:
-    from ai_killswitch import status as stop_status
     from agents.llm_backend import OllamaProvider
+    from ai_killswitch import status as stop_status
 
     url = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
     parsed = urllib.parse.urlsplit(url)
@@ -106,7 +106,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command in {"banner", "portrait", "network", "dashboard"}:
             from .terminal import (
-                render_banner, render_dashboard, render_network, render_portrait,
+                render_banner,
+                render_dashboard,
+                render_network,
+                render_portrait,
             )
 
             if args.command == "banner":
