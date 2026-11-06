@@ -10,19 +10,6 @@ import shutil
 from typing import Any
 
 
-SKULL_ART = r'''
-                 .-""""""""-.
-               .'  _      _  '.
-              /   / \    / \   \
-             |   | O |  | O |   |
-             |   |___|  |___|   |
-             |        /\        |
-             |     .-____-.     |
-              \    |_|__|_|    /
-               '.__._______.__.'
-                   /_|__|_\
-'''.strip("\n")
-
 NETWORK_ART = r"""
                       [ USER / TERMINAL ]
                                |
@@ -81,16 +68,44 @@ def _panel(title: str, lines: list[str], *, columns: int | None = None) -> str:
     return "\n".join(body)
 
 
-def _skull_block(columns: int | None = None) -> list[str]:
+def _skull_block(columns: int | None = None, *, compact: bool = False) -> list[str]:
+    from .anatomy import render_anatomical_skull
+
     width = _width(columns) - 4
-    raw = SKULL_ART.splitlines()
-    return [line.strip().center(width) for line in raw]
+    height = max(19, min(24 if compact else 36, width // (3 if compact else 2)))
+    return render_anatomical_skull(width, height).splitlines()
 
 
 def render_banner(columns: int | None = None) -> str:
     lines = _skull_block(columns)
-    lines += ["", "NEURAL INTELLIGENCE / GPT-DOUG-LLM / XUNIA", "ASCII CONSOLE / LOCAL FIRST"]
+    lines += [
+        "", "NEURAL INTELLIGENCE / GPT-DOUG-LLM / XUNIA",
+        "VOLUMETRIC ASCII SKULL / LOCAL FIRST",
+    ]
     return _panel("SKULL-LLM :: SYSTEM BANNER", lines, columns=columns)
+
+
+def render_portrait(
+    columns: int | None = None, *, image_path: str | None = None, invert: bool = False,
+) -> str:
+    """Highest-detail anatomical view or optional local photo reconstruction."""
+    if image_path:
+        from .anatomy import render_photo_ascii
+
+        art = render_photo_ascii(image_path, width=_width(columns) - 4, invert=invert)
+        origin = "LOCAL IMAGE TO ASCII (NO FILE UPLOAD)"
+    else:
+        from .anatomy import render_anatomical_skull
+
+        art = render_anatomical_skull(
+            width=_width(columns) - 4, height=44,
+        )
+        origin = "PROCEDURAL ANATOMY-INSPIRED ART / NOT MEDICAL IMAGING"
+    return _panel(
+        "SKULL-LLM :: SHADED ANATOMICAL PORTRAIT",
+        art.splitlines() + ["", origin],
+        columns=columns,
+    )
 
 
 def render_network(columns: int | None = None) -> str:
@@ -120,7 +135,7 @@ def render_dashboard(snapshot: dict[str, Any], columns: int | None = None) -> st
     ready = bool(snapshot.get("ready_for_inference"))
     system = "STOPPED" if stopped else _state_label(ready, "READY", "NOT READY")
     detail = _ascii(state.get("message", "No model diagnostics"), 140)
-    lines = _skull_block(columns) + [
+    lines = _skull_block(columns, compact=True) + [
         "",
         "CORE          : " + system,
         "PROVIDER      : OLLAMA / LOOPBACK ONLY",
