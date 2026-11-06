@@ -36,6 +36,9 @@ jobs:
           python -m compileall -q skull_llm tests/test_skull_llm.py
           python -m pip install -e .
           skull-llm --help
+          skull-llm banner --width 80 > /tmp/skull-banner.txt
+          skull-llm network --width 80 > /tmp/skull-network.txt
+          skull-llm dashboard --width 80 > /tmp/skull-dashboard.txt
       - name: Offline runtime tests (no network or keys)
         run: python -m unittest tests.test_skull_llm -v
 
