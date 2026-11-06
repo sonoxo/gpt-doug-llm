@@ -25,6 +25,12 @@ updated. No paid APIs or cloud service credentials are required.
   reports broken importability without executing agents.
 - **Consistent licensing:** npm metadata and the lockfile now declare MIT,
   matching the repository LICENSE and Python package metadata.
+- **npm vulnerability remediation:** pinned safe dependency floors through npm
+  overrides and regenerated the lockfile with no install scripts. Confirmed
+  `body-parser` **2.4.0** (GHSA-27r3-jxmh-p828) and `qs` **6.17.1**
+  (GHSA-6pq8-jhm2-2vcw), with `npm ci` and `npm audit --audit-level=high`
+  passing on the Node 22 runner. Existing root npm security CI remains the
+  ongoing check; its suppression level was not weakened.
 
 ## Mac terminal commands
 
