@@ -9,7 +9,6 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from hashlib import sha256
-from typing import Iterable
 
 
 class HealthState(str, Enum):
