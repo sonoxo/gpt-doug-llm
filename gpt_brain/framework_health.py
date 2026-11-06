@@ -15,7 +15,7 @@ import os
 import sys
 from typing import Any
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
+from http.client import HTTPConnection
 
 
 # These are installable modules in pyproject.toml on main. The checks use
@@ -59,36 +59,43 @@ def _stop_check() -> dict[str, Any]:
 
 
 def _ollama_check(base_url: str) -> dict[str, Any]:
-    """Opt-in, strictly HTTP loopback only. Never forwards env credentials."""
-    parsed = urlsplit(base_url)
-    if (
-        parsed.scheme != "http"
-        or parsed.hostname not in {"127.0.0.1", "::1", "localhost"}
-        or parsed.username is not None
-        or parsed.password is not None
-        or parsed.path not in ("", "/")
-        or parsed.query
-        or parsed.fragment
-    ):
-        return {"status": "REJECTED", "reason": "Only plain HTTP loopback is allowed"}
+    """Opt-in HTTP loopback only, no URL redirects or credential forwarding."""
     try:
-        request = Request(
-            f"http://{parsed.netloc}/api/tags",
-            headers={"Accept": "application/json"},
-            method="GET",
-        )
-        with urlopen(request, timeout=1.5) as response:
-            body = response.read(65537)
-            if response.status != 200 or len(body) > 65536:
-                return {"status": "INVALID_RESPONSE"}
+        parsed = urlsplit(base_url)
+        port = parsed.port or 11434
+        if (
+            parsed.scheme != "http"
+            or parsed.hostname not in {"127.0.0.1", "::1", "localhost"}
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.path not in ("", "/")
+            or parsed.query
+            or parsed.fragment
+            or not 1 <= port <= 65535
+        ):
+            return {"status": "REJECTED", "reason": "Only plain HTTP loopback is allowed"}
+    except ValueError:
+        return {"status": "REJECTED", "reason": "Malformed Ollama endpoint"}
+
+    # Using http.client deliberately avoids automatic 3xx redirect following.
+    # A local fake Ollama server cannot redirect the diagnostic to the Internet.
+    connection = None
+    try:
+        connection = HTTPConnection(parsed.hostname, port, timeout=1.5)
+        connection.request("GET", "/api/tags", headers={"Accept": "application/json"})
+        response = connection.getresponse()
+        body = response.read(65537)
+        if response.status != 200 or len(body) > 65536:
+            return {"status": "INVALID_RESPONSE"}
         data = json.loads(body.decode("utf-8"))
         if not isinstance(data, dict) or not isinstance(data.get("models"), list):
             return {"status": "INVALID_RESPONSE"}
-        model_count = len(data["models"])
-        return {"status": "REACHABLE", "model_count": model_count}
+        return {"status": "REACHABLE", "model_count": len(data["models"])}
     except (OSError, RuntimeError, ValueError, UnicodeError, TimeoutError):
         return {"status": "OFFLINE"}
-
+    finally:
+        if connection is not None:
+            connection.close()
 
 def collect_status(*, check_ollama: bool = False) -> dict[str, Any]:
     modules = [
