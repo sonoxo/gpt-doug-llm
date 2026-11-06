@@ -37,7 +37,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install framework (no cloud dependencies)
-        run: python -m pip install -e .
+        run: |
+          python -m pip install --upgrade "setuptools>=84.1.0"
+          python -m pip install -e .
       - name: Check offline framework health tests
         run: python -m unittest tests.test_framework_health -v
       - name: Confirm installed cross-component health command
