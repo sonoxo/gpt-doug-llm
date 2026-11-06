@@ -31,6 +31,14 @@ updated. No paid APIs or cloud service credentials are required.
   (GHSA-6pq8-jhm2-2vcw), with `npm ci` and `npm audit --audit-level=high`
   passing on the Node 22 runner. Existing root npm security CI remains the
   ongoing check; its suppression level was not weakened.
+- **REA recovery correctness:** once the ML collection failure was fixed,
+  the broad test run exposed a genuine `ValueError` in the failed-health
+  decision path. Both hold paths now explicitly emit zero retry delay,
+  preserving the human-approval and verified-checkpoint gates. Dedicated
+  tests cover these no-retry results.
+- **GitHub Actions runtime:** modernize the touched unified, npm security,
+  and framework health workflows to official maintained checkout/setup
+  actions powered by Node 24; unrelated workflows are unchanged.
 
 ## Mac terminal commands
 
