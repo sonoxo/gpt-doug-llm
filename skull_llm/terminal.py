@@ -10,7 +10,7 @@ import shutil
 from typing import Any
 
 
-SKULL_ART = r"""
+SKULL_ART = r'''
                  .-""""""""-.
                .'  _      _  '.
               /   / \    / \   \
@@ -21,7 +21,7 @@ SKULL_ART = r"""
               \    |_|__|_|    /
                '.__._______.__.'
                    /_|__|_\
-""".strip("\n")
+'''.strip("\n")
 
 NETWORK_ART = r"""
                       [ USER / TERMINAL ]
