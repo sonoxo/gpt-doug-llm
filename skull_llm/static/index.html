@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b12">
+  <title>SKULL-LLM // Neural Command Center</title>
+  <link rel="stylesheet" href="/static/skull.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="SKULL LLM command center home">
+        <span class="brandmark" aria-hidden="true">◈</span>
+        <span class="brandtype">SKULL<span class="muted-brand">/</span>LLM<small>BY GPT-DOUG</small></span>
+      </a>
+      <div class="top-center"><span class="live-dot"></span> NEURAL INTERFACE <span class="top-separator">/</span> V 0.1 ALPHA</div>
+      <div class="top-actions"><span class="status-pill" id="connection"><span class="live-dot off" id="connection-dot"></span> CHECKING LOCAL MODEL</span><button class="small-outline" id="refresh-status" aria-label="Refresh local model status">↻</button></div>
+    </header>
+
+    <main class="workspace">
+      <aside class="left-rail" aria-label="SKULL module controls">
+        <div class="rail-heading"><span class="rule"></span> VISUALIZATION MODE</div>
+        <div class="mode-stack" role="group" aria-label="3D visualization mode">
+          <button class="mode-button active" data-mode="fusion" aria-pressed="true"><span class="mode-symbol">◉</span><span><strong>Neural fusion</strong><small>Skull + synapses</small></span><span class="mode-arrow">›</span></button>
+          <button class="mode-button" data-mode="anatomy" aria-pressed="false"><span class="mode-symbol">◇</span><span><strong>Anatomical</strong><small>Structural detail</small></span><span class="mode-arrow">›</span></button>
+          <button class="mode-button" data-mode="xray" aria-pressed="false"><span class="mode-symbol">✳</span><span><strong>Neural X-ray</strong><small>Transparent cortex</small></span><span class="mode-arrow">›</span></button>
+        </div>
+        <div class="thin-line"></div>
+        <div class="rail-heading"><span class="rule"></span> CORE SYSTEMS</div>
+        <div class="metric"><span>LOCAL INFERENCE</span><b id="metric-model">NOT CONNECTED</b></div>
+        <div class="metric"><span>MEMORY</span><b id="metric-memory">OPT-IN</b></div>
+        <div class="metric"><span>MODEL CHECK</span><b id="metric-ready">PENDING</b></div>
+        <div class="metric"><span>PIPELINE</span><b id="metric-phase">IDLE</b></div>
+        <div class="thin-line"></div>
+        <div class="rail-heading"><span class="rule"></span> INTERACTION</div>
+        <p class="helper">DRAG TO ROTATE<br>SCROLL TO ZOOM<br>DOUBLE-CLICK TO RECENTER</p>
+        <button class="outline-button" id="reset-view"><span>↺</span> RESET VIEW</button>
+        <label class="toggle-line"><input type="checkbox" id="autorotate" checked> <span>ORBIT MOTION</span><span class="onoff" id="orbit-value">ON</span></label>
+        <label class="toggle-line"><input type="checkbox" id="show-nodes" checked> <span>SYNAPTIC SIGNALS</span><span class="onoff" id="node-value">ON</span></label>
+        <div class="rail-foot">BUILD 001 <span>·</span> OFFLINE 3D RENDERER<br>FREE / OPEN COMPONENTS</div>
+      </aside>
+
+      <section class="scene-pane" aria-label="Interactive 3D SKULL LLM neural sculpture">
+        <div class="scene-grid"></div>
+        <div class="halo halo-1"></div><div class="halo halo-2"></div>
+        <canvas id="brain-scene" aria-label="Rotatable 3D holographic skull and neural network" role="img"></canvas>
+        <div class="scene-head">
+          <div><div class="eyebrow"><span class="line-dot"></span> BIO-DIGITAL INTELLIGENCE <span class="dot-sep">/</span> SCENE 01</div><h1>THE SKULL<br><span>IS ONLINE<span class="headline-period">.</span></span></h1></div>
+          <div class="scene-counter">001<span>/</span>003</div>
+        </div>
+        <div class="scene-markers"><div class="marker m-one"><span>01</span><b>CRANIAL SHELL</b><i></i></div><div class="marker m-two"><span>02</span><b>NEURAL MATRIX</b><i></i></div><div class="marker m-three"><span>03</span><b>INTELLIGENCE CORE</b><i></i></div></div>
+        <div class="scene-foot">
+          <span class="coordinate">X <strong id="yaw-label">000.0°</strong> &nbsp; Y <strong id="pitch-label">000.0°</strong> &nbsp; Z <strong id="zoom-label">04.8</strong></span>
+          <span class="scene-hint"><span class="glyph-circle"></span> REAL-TIME WEBGL <span class="scene-separator">/</span> PROCEDURAL MESH</span>
+        </div>
+        <div class="webgl-fallback" id="webgl-error" role="status" hidden>WebGL is unavailable. The LLM chat controls remain usable.</div>
+      </section>
+
+      <aside class="right-rail" aria-label="Live intelligence chat">
+        <div class="chat-heading"><div><div class="eyebrow">INTELLIGENCE LINK / 01</div><h2>Command stream</h2></div><span class="mini-signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+        <div class="system-card"><span class="sys-icon">✦</span><div><b>SKULL NEURAL CORE</b><p id="system-intro">Local inference. Live processing visualization. No cloud credentials required.</p></div></div>
+        <div class="transcript" id="transcript" role="log" aria-live="polite" aria-relevant="additions text"><div class="transcript-empty"><span class="empty-sigil">⌁</span><span>AWAITING NEURAL INPUT</span><small>Type a prompt to wake the network.</small></div></div>
+        <div class="phase-box"><span class="phase-label">COGNITIVE PIPELINE</span><div id="phase-track" class="phase-track"><span class="phase active" data-phase="retrieve">01 <b>RETRIEVE</b></span><span class="phase" data-phase="draft">02 <b>REASON</b></span><span class="phase" data-phase="critique">03 <b>CRITIQUE</b></span><span class="phase" data-phase="revise">04 <b>SYNTHESIZE</b></span></div><span class="phase-detail" id="phase-detail">Waiting for task</span></div>
+        <form id="chat-form" class="composer"><div class="compose-meta"><label for="prompt">NEURAL COMMAND INPUT</label><span><span class="blink-caret">▊</span> LOCAL ONLY</span></div><textarea id="prompt" name="prompt" maxlength="8000" rows="3" placeholder="Ask SKULL-LLM to reason, design, or build..." required></textarea><div class="compose-actions"><label class="remember-label" title="Store this request and response in your local GPT-Doug memory"><input type="checkbox" id="remember"> REMEMBER</label><label class="depth-label" for="depth">DEPTH <select id="depth" aria-label="Reasoning depth"><option value="1">01 / FAST</option><option value="2" selected>02 / ANALYZE</option><option value="3">03 / DEEP</option></select></label><button class="send-button" id="send" type="submit"><span id="send-text">EXECUTE</span> <span aria-hidden="true">↗</span></button></div></form>
+      </aside>
+    </main>
+    <footer class="bottom-bar"><span>SONOXO LABS <span class="slash">/</span> GPT-DOUG-LLM</span><span>PROCEDURAL 3D · LOCAL INTELLIGENCE · NO EXTERNAL SCRIPTS</span><span>SKULL-LLM SYSTEM <b>ALPHA 0.1</b></span></footer>
+  </div>
+  <script src="/static/fallback.js" defer></script>
+  <script src="/static/skull.js" defer></script>
+</body>
+</html>
