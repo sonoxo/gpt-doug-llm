@@ -16,7 +16,6 @@ from http.client import HTTPConnection
 from typing import Any
 from urllib.parse import urlsplit
 
-
 # These are installable modules in pyproject.toml on main. The checks use
 # find_spec, so nothing in the agent/fleet is executed by the diagnosis.
 _COMPONENTS = (
