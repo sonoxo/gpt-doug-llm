@@ -12,6 +12,7 @@ import time
 from typing import Any, Callable
 
 from ai_killswitch import require_ai_allowed
+
 from .runtime import SkullConfig, SkullEngine
 
 DEFAULT_PROMPT = "In one sentence, define a knowledge graph."
