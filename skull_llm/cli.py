@@ -21,6 +21,11 @@ def parser() -> argparse.ArgumentParser:
     ask.add_argument("--remember", action="store_true", help="opt in to writing episodic memory")
     ask.add_argument("--json", action="store_true", dest="as_json")
     cmds.add_parser("doctor", help="inspect dependency and Ollama readiness")
+    live_tui = cmds.add_parser("live", help="launch terminal-first rotating 3D ASCII skull")
+    live_tui.add_argument("--once", action="store_true", help="print one frame and exit")
+    live_tui.add_argument("--frames", type=int, default=0)
+    live_tui.add_argument("--fps", type=float, default=12)
+    live_tui.add_argument("--depth", type=int, choices=[1, 2, 3], default=2)
     web = cmds.add_parser("serve", help="launch interactive local 3D skull command center")
     web.add_argument("--port", type=int, default=7861, help="local loopback HTTP port")
     for name, help_text in (
@@ -86,6 +91,10 @@ def doctor() -> dict:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == "live":
+            from .live_skull import live
+
+            return live(frames=args.frames, once=args.once, fps=args.fps, depth=args.depth)
         if args.command == "serve":
             from .server import serve
             serve(port=args.port)
