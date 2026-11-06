@@ -1,4 +1,47 @@
-# SKULL-LLM // Live 3D Neural Command Center
+# SKULL-LLM // Terminal-first 3D Neural Command Center
+
+**Primary entrypoint:** `biochip-cl1-skull-gpt-skull`. The terminal-based 3D
+experience runs locally without a browser, WebGL, paid token, or cloud account.
+The browser console remains available as an optional alternate view.
+
+## Terminal first: BIOCHIP-CL1-SKULL-GPT-SKULL
+
+From the checked-out SKULL-LLM feature branch:
+
+```bash
+python3 -m pip install -e .
+biochip-cl1-skull-gpt-skull                 # interactive rotating 3D ASCII skull
+biochip-cl1-skull-gpt-skull --once          # one static 3D snapshot, no TTY required
+biochip-cl1-skull-gpt-skull --frames 24     # 24 real rotated frames, then exit
+biochip-cl1-skull-gpt-skull status          # observed Ollama readiness; no fabricated CL1 readings
+skull-llm live --once                      # same interactive renderer via existing CLI
+```
+
+In the live cockpit: **a/d** rotate, **w/s** tilt, **n** toggle the synthetic
+neural overlay, **p** pause/resume, **r** reset view, **i** enter a local LLM
+prompt, **q** quit. Terminal settings are restored on exit. Redirected output
+or a non-TTY defaults to a single static frame. The renderer uses an actual
+yaw/pitch perspective transformation and depth buffer over thousands of
+procedurally sampled 3D bone points; it is not a pre-rendered ASCII image.
+
+Local inference (requires Ollama running and the configured model installed):
+
+```bash
+ollama pull qwen2.5-coder:7b
+OLLAMA_MODEL=qwen2.5-coder:7b biochip-cl1-skull-gpt-skull ask "Design the neural ontology"
+```
+
+`--depth 1|2|3` controls bounded inference passes. Memory is not written
+unless `--remember` is explicitly used with the `ask` command.
+
+**CL1 truth boundary:** this command implements a simulated *biochip-inspired*
+visualization. It has no API link to a physical CL1 device, does not measure
+neuronal action potentials, and never labels generated activity as live
+hardware telemetry. The actual Ollama model readiness is independently
+reported as READY/OFFLINE/STOPPED. No invasive or laboratory operation is
+performed.
+
+## Optional browser experience
 
 An original, interactive **3D skull and neural-network interface** integrated with the existing SKULL-LLM local inference engine in `sonoxo/gpt-doug-llm`. Free, self-hosted, and intended to run on the owner's Mac. No API tokens, paid APIs, CDN scripts, proprietary model cloning, or unrestricted external actions.
 
