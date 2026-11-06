@@ -56,6 +56,17 @@ def _error(kind: str, message: str) -> int:
 
 
 def main() -> int:
+    # argparse.REMAINDER does not consume unknown option flags immediately
+    # after a subcommand (e.g. "gpt-doug health --json"). Delegate before
+    # parsing so each module owns its complete argument grammar.
+    if len(sys.argv) > 1 and sys.argv[1] == "skull":
+        from skull_llm.cli import main as skull_main
+
+        return skull_main(sys.argv[2:] or ["live"])
+    if len(sys.argv) > 1 and sys.argv[1] == "health":
+        from .framework_health import main as health_main
+
+        return health_main(sys.argv[2:])
     args = build_parser().parse_args()
     if args.command == "skull":
         from skull_llm.cli import main as skull_main
