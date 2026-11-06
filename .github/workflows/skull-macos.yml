@@ -1,0 +1,43 @@
+name: SKULL OS native macOS desktop
+
+on:
+  pull_request:
+    paths:
+      - "macos/**"
+      - "docs/SKULL_MACOS.md"
+      - "tests/test_skull_macos_packaging.py"
+      - ".github/workflows/skull-macos.yml"
+  push:
+    branches: [main]
+    paths:
+      - "macos/**"
+      - "tests/test_skull_macos_packaging.py"
+      - ".github/workflows/skull-macos.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos-desktop:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify native source, local-only policy and shell safety
+        run: |
+          python3 -m unittest tests.test_skull_macos_packaging -v
+          bash -n macos/build-app.sh
+          plutil -lint macos/SkullOS/Info.plist
+      - name: Compile real SwiftUI and WebKit macOS desktop executable
+        run: swift build --package-path macos/SkullOS --configuration release
+      - name: Build local unsigned-distribution macOS app bundle
+        run: |
+          python3 -m venv .venv
+          .venv/bin/python -m pip install -e .
+          bash macos/build-app.sh
+          test -x 'dist/SKULL OS.app/Contents/MacOS/SkullOS'
+          test -f 'dist/SKULL OS.app/Contents/Resources/SkullConfig.json'
+          codesign --verify 'dist/SKULL OS.app'
