@@ -21,6 +21,8 @@ def parser() -> argparse.ArgumentParser:
     ask.add_argument("--remember", action="store_true", help="opt in to writing episodic memory")
     ask.add_argument("--json", action="store_true", dest="as_json")
     cmds.add_parser("doctor", help="inspect dependency and Ollama readiness")
+    web = cmds.add_parser("serve", help="launch interactive local 3D skull command center")
+    web.add_argument("--port", type=int, default=7861, help="local loopback HTTP port")
     for name, help_text in (
         ("banner", "show the anatomically shaded skull banner"),
         ("portrait", "render a full shaded skull or a user-provided local image"),
@@ -84,6 +86,10 @@ def doctor() -> dict:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == "serve":
+            from .server import serve
+            serve(port=args.port)
+            return 0
         if args.command in {"banner", "portrait", "network", "dashboard"}:
             from .terminal import (
                 render_banner, render_dashboard, render_network, render_portrait,
