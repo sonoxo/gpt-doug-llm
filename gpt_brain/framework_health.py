@@ -185,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         print(format_terminal(report))
-    return 1 if args.strict and (not report["core_complete"] or report["skull_projection"]["status"] == "FAILED") else 0
+    return 1 if args.strict and (not report["core_complete"] or report.get("skull_projection", {}).get("status") == "FAILED") else 0
 
 
 if __name__ == "__main__":
