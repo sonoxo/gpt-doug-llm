@@ -21,6 +21,13 @@ def parser() -> argparse.ArgumentParser:
     ask.add_argument("--remember", action="store_true", help="opt in to writing episodic memory")
     ask.add_argument("--json", action="store_true", dest="as_json")
     cmds.add_parser("doctor", help="inspect dependency and Ollama readiness")
+    for name, help_text in (
+        ("banner", "show SKULL-LLM ASCII skull identity"),
+        ("network", "show the static neural architecture in ASCII"),
+        ("dashboard", "show actual local readiness in an ASCII console"),
+    ):
+        visual = cmds.add_parser(name, help=help_text)
+        visual.add_argument("--width", type=int, default=None, help="ASCII display width (42..100)")
     train = cmds.add_parser("train", help="train a small byte-level Transformer from local text")
     train.add_argument("corpus", help="authorized local UTF-8 text file")
     train.add_argument("--out", default="skull-local.pt")
@@ -73,11 +80,25 @@ def doctor() -> dict:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command in {"banner", "network", "dashboard"}:
+            from .terminal import render_banner, render_dashboard, render_network
+
+            if args.command == "banner":
+                print(render_banner(columns=args.width))
+            elif args.command == "network":
+                print(render_network(columns=args.width))
+            else:
+                print(render_dashboard(doctor(), columns=args.width))
+            return 0
         if args.command == "doctor":
             print(json.dumps(doctor(), indent=2))
             return 0
         if args.command == "ask":
             config = SkullConfig(model=args.model, depth=args.depth, remember=args.remember)
+            if sys.stdout.isatty() and not args.as_json:
+                from .terminal import render_banner
+
+                print(render_banner())
             result = SkullEngine(config=config).run(" ".join(args.task))
             print(json.dumps(result.to_dict(), indent=2, ensure_ascii=False) if args.as_json
                   else result.answer)
