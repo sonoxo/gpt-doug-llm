@@ -176,7 +176,7 @@ class TerminalAsciiTests(unittest.TestCase):
 
         from skull_llm.cli import main
 
-        for command in ("banner", "network"):
+        for command in ("banner", "portrait", "network"):
             out = StringIO()
             with redirect_stdout(out):
                 self.assertEqual(main([command, "--width", "70"]), 0)
@@ -189,6 +189,61 @@ class TerminalAsciiTests(unittest.TestCase):
         with patch("skull_llm.cli.doctor", return_value=stub), redirect_stdout(out):
             self.assertEqual(main(["dashboard", "--width", "70"]), 0)
         self.assertIn("NOT READY", out.getvalue())
+
+
+class AnatomicalAsciiTests(unittest.TestCase):
+    def test_skull_is_shaded_anatomical_shape(self):
+        from skull_llm.anatomy import render_anatomical_skull
+
+        art = render_anatomical_skull(72, 36)
+        rows = art.splitlines()
+        self.assertEqual(len(rows), 36)
+        self.assertTrue(all(len(row) <= 72 for row in rows))
+        self.assertTrue(all(32 <= ord(char) <= 126 for char in art if char != "\n"))
+        self.assertGreater(len(set("".join(rows)) - {" "}), 5, "shading must have depth")
+        self.assertIn(" ", rows[16], "orbital sockets must be recessed")
+        self.assertTrue(rows[-1].strip(), "lower jaw should be visible")
+        self.assertNotIn("\x1b", art)
+
+    def test_procedural_portrait_and_banner_fit_narrow_terminals(self):
+        from skull_llm.terminal import render_banner, render_dashboard, render_portrait
+
+        for width in (42, 72, 100):
+            for output in (
+                render_banner(columns=width),
+                render_portrait(columns=width),
+                render_dashboard({"ollama": {}, "stopped": False}, columns=width),
+            ):
+                self.assertTrue(all(len(line) == width for line in output.splitlines()))
+                self.assertNotIn("\x1b", output)
+        self.assertIn("PROCEDURAL ANATOMY", render_portrait(columns=80))
+
+    def test_bad_dimensions_are_rejected(self):
+        from skull_llm.anatomy import render_anatomical_skull, render_photo_ascii
+
+        with self.assertRaises(ValueError):
+            render_anatomical_skull(width=17)
+        with self.assertRaises(ValueError):
+            render_anatomical_skull(width=70, height=65)
+        with self.assertRaises(ValueError):
+            render_photo_ascii("not-a-real-file.png", width=300)
+
+    def test_photo_ascii_optional_pillow(self):
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("optional Pillow not installed")
+        from skull_llm.anatomy import render_photo_ascii
+
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "bone.png"
+            image = Image.new("L", (80, 80), color=180)
+            image.putpixel((40, 40), 0)
+            image.save(path)
+            art = render_photo_ascii(str(path), width=50)
+            self.assertEqual(len(art.splitlines()), 26)
+            self.assertTrue(all(len(line) <= 50 for line in art.splitlines()))
+            self.assertNotIn("\x1b", art)
 
 
 if __name__ == "__main__":
