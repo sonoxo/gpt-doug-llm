@@ -7,6 +7,8 @@ on:
       - "tests/test_skull_llm.py"
       - "tests/test_skull_terminal_live.py"
       - "tests/test_skull_cockpit_v2.py"
+      - "tests/test_skull_framework_bridge.py"
+      - "tests/test_framework_health_skull.py"
       - "pyproject.toml"
       - "docs/SKULL_LLM.md"
       - ".github/workflows/skull-llm.yml"
@@ -17,6 +19,8 @@ on:
       - "tests/test_skull_llm.py"
       - "tests/test_skull_terminal_live.py"
       - "tests/test_skull_cockpit_v2.py"
+      - "tests/test_skull_framework_bridge.py"
+      - "tests/test_framework_health_skull.py"
       - "pyproject.toml"
       - ".github/workflows/skull-llm.yml"
   workflow_dispatch:
@@ -29,10 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Validate syntax and package installation
@@ -40,6 +44,9 @@ jobs:
           python -m compileall -q skull_llm tests/test_skull_llm.py
           python -m pip install -e .
           skull-llm --help
+          skull-llm bench --help
+          gpt-doug skull --help
+          gpt-doug health --json > /tmp/skull-framework-health.json
           biochip-cl1-skull-gpt-skull --help
           biochip-cl1-skull-gpt-skull --once > /tmp/skull-terminal-frame.txt
           biochip-cl1-skull-gpt-skull --frames 2 --fps 24 > /tmp/skull-terminal-twice.txt
@@ -54,6 +61,10 @@ jobs:
         run: python -m unittest tests.test_skull_terminal_live -v
       - name: Adaptive terminal HUD, zoom, snapshots and phase trace
         run: python -m unittest tests.test_skull_cockpit_v2 -v
+      - name: Integration bridge, bounded benchmark and graphics status
+        run: |
+          python -m unittest tests.test_skull_framework_bridge tests.test_framework_health_skull -v
+          gpt-doug health --verify-skull --strict
       - name: 3D cockpit loopback HTTP API and static asset tests
         run: python -m unittest tests.test_skull_3d -v
       - name: Validate interactive 3D JavaScript syntax
@@ -66,10 +77,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Install open-source CPU PyTorch
