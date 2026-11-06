@@ -92,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
         if args.command == "live":
-            from .live_skull import live
+            from .cockpit_v2 import live
 
             return live(frames=args.frames, once=args.once, fps=args.fps, depth=args.depth)
         if args.command == "serve":
