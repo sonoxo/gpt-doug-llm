@@ -8,14 +8,13 @@ endpoint validation.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import importlib.util
 import json
 import os
-import sys
+from datetime import datetime, timezone
+from http.client import HTTPConnection
 from typing import Any
 from urllib.parse import urlsplit
-from http.client import HTTPConnection
 
 
 # These are installable modules in pyproject.toml on main. The checks use
