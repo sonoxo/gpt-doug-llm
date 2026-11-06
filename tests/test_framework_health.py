@@ -1,10 +1,10 @@
 """Offline tests for installed GPT-DOUG framework cross-module health."""
 from __future__ import annotations
 
-from io import StringIO
 import contextlib
 import json
 import unittest
+from io import StringIO
 from unittest.mock import patch
 
 from gpt_brain import framework_health as health
