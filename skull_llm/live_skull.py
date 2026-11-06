@@ -143,6 +143,9 @@ def render_frame(
         if p.layer == "sim-neuron" and (not fusion or (idx + tick * 7) % 5):
             continue
         x, y, z, normal = _rotate(p, yaw, pitch)
+        if p.layer == "sim-neuron":
+            # A deliberately visible graphics overlay, not internal measurements.
+            z += 0.62
         perspective = max(1.5, 3.8 - z * 0.28)
         col = int(columns / 2 + (x / perspective) * columns * 1.44)
         row = int(rows / 2 + (y / perspective) * rows * 1.37)
