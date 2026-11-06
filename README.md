@@ -350,6 +350,19 @@ OBSERVE → PLAN → GROUND → EDIT → TEST → REVIEW → KEEP / REPAIR / ROL
 
 Full command reference: [docs/COMMANDS.md](docs/COMMANDS.md)
 
+Verify the installed GPT-DOUG module framework without running agents or using paid APIs:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/gpt-doug-health --strict
+# Optional local Ollama status: .venv/bin/gpt-doug-health --ollama
+```
+
+See [Framework Health & CI Upgrade](docs/FRAMEWORK_HEALTH.md) for test
+coverage, the model dependency fix, and the distinction between importable
+modules and verified live operation.
+
 ---
 
 ## Trust and control

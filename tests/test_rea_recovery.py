@@ -21,6 +21,8 @@ class RecoveryEngineTests(unittest.TestCase):
         result = engine.evaluate(signal(HealthState.FAILED))
         self.assertEqual(result.decision, "hold")
         self.assertEqual(result.recommended_action, "create_and_verify_checkpoint")
+        self.assertEqual(result.retry_after_seconds, 0)
+        self.assertIn("verified_checkpoint_missing", result.reason_codes)
 
     def test_verified_checkpoint_allows_bounded_retry_recommendation(self):
         engine = RecoveryEngine()
@@ -29,6 +31,17 @@ class RecoveryEngineTests(unittest.TestCase):
         self.assertEqual(result.decision, "recommend")
         self.assertEqual(result.retry_after_seconds, 1)
         self.assertEqual(result.checkpoint_id, "checkpoint:stable-1")
+
+    def test_approval_required_holds_without_retry_or_delay(self):
+        engine = RecoveryEngine(
+            policy=RecoveryPolicy(allow_automatic_low_risk_retry=False)
+        )
+        engine.register_verified_checkpoint("component:api", "checkpoint:stable-1", "a" * 64)
+        result = engine.evaluate(signal(HealthState.FAILED))
+        self.assertEqual(result.decision, "hold")
+        self.assertEqual(result.recommended_action, "human_approval_for_retry")
+        self.assertEqual(result.retry_after_seconds, 0)
+        self.assertEqual(engine.attempts.get("component:api", 0), 0)
 
     def test_retry_budget_opens_circuit(self):
         engine = RecoveryEngine(policy=RecoveryPolicy(max_cycles=1))

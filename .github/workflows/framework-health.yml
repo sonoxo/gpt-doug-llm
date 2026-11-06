@@ -1,0 +1,58 @@
+name: GPT-DOUG Framework Readiness
+
+on:
+  pull_request:
+    paths:
+      - "gpt_brain/framework_health.py"
+      - "tests/test_framework_health.py"
+      - "pyproject.toml"
+      - ".github/workflows/framework-health.yml"
+  push:
+    branches: [main]
+    paths:
+      - "gpt_brain/framework_health.py"
+      - "tests/test_framework_health.py"
+      - "pyproject.toml"
+      - ".github/workflows/framework-health.yml"
+  schedule:
+    - cron: "23 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-framework-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install framework (no cloud dependencies)
+        run: |
+          python -m pip install --upgrade "setuptools>=84.1.0"
+          python -m pip install -e .
+      - name: Check offline framework health tests
+        run: python -m unittest tests.test_framework_health -v
+      - name: Confirm installed cross-component health command
+        run: |
+          gpt-doug-health --strict --json > /tmp/gpt-doug-framework-status.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          status = json.loads(Path("/tmp/gpt-doug-framework-status.json").read_text())
+          assert status["schema"] == "gpt-doug-framework-health-v1"
+          assert status["core_complete"]
+          assert status["ollama"]["status"] == "NOT_CHECKED"
+          assert status["checks_are_read_only"]
+          assert status["emergency_stop"]["status"] in {"CLEAR", "STOPPED"}
+          print("GPT-DOUG FRAMEWORK MATRIX VERIFIED")
+          PY
