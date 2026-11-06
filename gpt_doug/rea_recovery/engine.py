@@ -100,10 +100,10 @@ class RecoveryEngine:
                 decision, action, delay = "hold", "manual_diagnosis", 0
                 reasons.extend(("retry_budget_exhausted", "circuit_breaker_open"))
             elif self.policy.require_verified_checkpoint and not checkpoint:
-                decision, action, delay = "hold", "create_and_verify_checkpoint"
+                decision, action, delay = "hold", "create_and_verify_checkpoint", 0
                 reasons.append("verified_checkpoint_missing")
             elif not self.policy.allow_automatic_low_risk_retry:
-                decision, action, delay = "hold", "human_approval_for_retry"
+                decision, action, delay = "hold", "human_approval_for_retry", 0
                 reasons.append("automatic_retry_disabled")
             else:
                 self.attempts[component] = count + 1
