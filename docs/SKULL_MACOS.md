@@ -16,7 +16,7 @@ cd ~/gpt-doug-skull
 git pull --ff-only origin feature/skull-llm-neural-core-20261105
 # Reuse the existing .venv; it won't modify Homebrew's system Python.
 .venv/bin/python -m pip install -e .
-./macos/build-app.sh --open
+bash macos/build-app.sh --open
 ```
 
 The build script produces **`dist/SKULL OS.app`** and launches it as a real
