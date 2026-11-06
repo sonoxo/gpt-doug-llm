@@ -30,7 +30,7 @@ _COMPONENTS = (
     ("biochip_simulation", "gpt_doug_qbio", True),
     ("watchtower", "universal_watchdog", True),
     ("uap_matrix", "uap_matrix", True),
-    ("skull_3d", "skull_llm", False),  # Separate PR #503 until integrated.
+    ("skull_3d", "skull_llm", False),  # Integrated; optional graphics/ML functionality.
     ("va3lm_control_plane", "va3lm", False),  # Independently packaged.
     ("pytorch", "torch", False),  # Large optional ML dependency.
 )
@@ -95,7 +95,26 @@ def _ollama_check(base_url: str) -> dict[str, Any]:
         if connection is not None:
             connection.close()
 
-def collect_status(*, check_ollama: bool = False) -> dict[str, Any]:
+def _skull_projection_check() -> dict[str, Any]:
+    """Render two genuine 3D views without model loading or network calls."""
+    try:
+        from skull_llm.live_skull import render_frame
+
+        front = render_frame(0.0, 0.0, columns=60, rows=26, fusion=False)
+        angle = render_frame(0.65, 0.0, columns=60, rows=26, fusion=False)
+        if front == angle or not front.strip() or any(ord(char) > 127 for char in front):
+            return {"status": "FAILED", "reason": "3d_frame_validation_failed"}
+        if len(front.splitlines()) != 26 or len(angle.splitlines()) != 26:
+            return {"status": "FAILED", "reason": "3d_frame_dimensions_failed"}
+    except (ImportError, OSError, RuntimeError, ValueError, TypeError):
+        return {"status": "FAILED", "reason": "skull_renderer_unavailable"}
+    return {
+        "status": "PASS", "views_checked": 2, "model_calls": 0,
+        "cl1": "SIMULATED", "network_calls": 0,
+    }
+
+
+def collect_status(*, check_ollama: bool = False, verify_skull: bool = False) -> dict[str, Any]:
     modules = [
         {
             "component": label,
@@ -121,6 +140,10 @@ def collect_status(*, check_ollama: bool = False) -> dict[str, Any]:
         report["ollama"] = _ollama_check(os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434"))
     else:
         report["ollama"] = {"status": "NOT_CHECKED", "reason": "Use --ollama to probe loopback"}
+    report["skull_projection"] = (
+        _skull_projection_check() if verify_skull
+        else {"status": "NOT_CHECKED"}
+    )
     return report
 
 
@@ -141,6 +164,7 @@ def format_terminal(report: dict[str, Any]) -> str:
         f"CORE COMPONENTS  {'COMPLETE' if report['core_complete'] else 'INCOMPLETE'}",
         f"EMERGENCY STOP   {report['emergency_stop']['status']}",
         f"OLLAMA           {report['ollama']['status']}",
+        f"SKULL 3D         {report.get('skull_projection', {}).get('status', 'NOT_CHECKED')}",
         "No jobs launched. No cloud tokens or credentials accessed.",
     ]
     return "\n".join(lines)
@@ -154,13 +178,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--json", action="store_true", dest="as_json")
     parser.add_argument("--strict", action="store_true", help="fail on missing core modules")
     parser.add_argument("--ollama", action="store_true", help="probe local loopback Ollama")
+    parser.add_argument("--verify-skull", action="store_true", help="render two offline 3D frames")
     args = parser.parse_args(argv)
-    report = collect_status(check_ollama=args.ollama)
+    report = collect_status(check_ollama=args.ollama, verify_skull=args.verify_skull)
     if args.as_json:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
         print(format_terminal(report))
-    return 1 if args.strict and not report["core_complete"] else 0
+    return 1 if args.strict and (not report["core_complete"] or report["skull_projection"]["status"] == "FAILED") else 0
 
 
 if __name__ == "__main__":
