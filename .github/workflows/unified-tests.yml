@@ -46,6 +46,12 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e "./va3lm[dev]"
           python -m pip install pytest-cov cryptography
+          # The unified suite includes real Delta/MLM and Motion-1 CPU tests.
+          # Torch must be installed BEFORE pytest collection; use free CPU wheels
+          # to avoid inadvertently downloading CUDA stacks on Ubuntu runners.
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.3,<3"
+          python -m pip install -e ".[mlm]" "Pillow>=10,<13"
+          python -c "import torch, safetensors, PIL; print('ML test deps ready:', torch.__version__)"
 
       - name: Verify Black House runtime dependency contract
         run: |
