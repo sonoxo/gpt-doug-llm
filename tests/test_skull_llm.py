@@ -131,7 +131,7 @@ class TerminalAsciiTests(unittest.TestCase):
         for render in (render_banner, render_network):
             output = render(columns=80)
             self.assertTrue(all(len(line) == 80 for line in output.splitlines()))
-            self.assertTrue(all(ch == "\\n" or 32 <= ord(ch) <= 126 for ch in output))
+            self.assertTrue(all(ch == "\n" or 32 <= ord(ch) <= 126 for ch in output))
         self.assertIn("SKULL-LLM", render_banner(columns=80))
         self.assertIn("ORCHESTRATOR", render_network(columns=80))
         self.assertIn("REFERENCE TOPOLOGY", render_network(columns=80))
@@ -160,13 +160,13 @@ class TerminalAsciiTests(unittest.TestCase):
         output = render_dashboard({
             "ollama": {
                 "configured": True, "model_available": True,
-                "model": "evil\\x1b[31m\\x00\\nmodel",
-                "message": "test\\x1b[2J\\nlog",
+                "model": "evil\x1b[31m\x00\nmodel",
+                "message": "test\x1b[2J\nlog",
             },
             "ready_for_inference": True,
         })
-        self.assertNotIn("\\x1b", output)
-        self.assertNotIn("\\x00", output)
+        self.assertNotIn("\x1b", output)
+        self.assertNotIn("\x00", output)
         self.assertIn("CORE          : READY", output)
 
     def test_cli_ascii_modes_are_accessible_without_models(self):
