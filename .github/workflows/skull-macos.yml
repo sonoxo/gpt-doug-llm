@@ -37,7 +37,7 @@ jobs:
         run: |
           python3 -m venv .venv
           .venv/bin/python -m pip install -e .
-          ./macos/build-app.sh
+          bash macos/build-app.sh
           test -x 'dist/SKULL OS.app/Contents/MacOS/SkullOS'
           test -f 'dist/SKULL OS.app/Contents/Resources/SkullConfig.json'
           codesign --verify 'dist/SKULL OS.app'
