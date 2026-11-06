@@ -160,7 +160,7 @@ def render_frame(
             lighting = max(0.0, min(1.0, 0.42 + 0.32 * normal - 0.12 * x + 0.11 * y))
             character = RAMP[min(len(RAMP) - 1, int(lighting * (len(RAMP) - 1)))]
         pixels[row][col] = character
-    return "\n".join("".join(line).rstrip() for line in pixels)
+    return "\n".join("".join(line) for line in pixels)
 
 
 def status_snapshot() -> dict:
