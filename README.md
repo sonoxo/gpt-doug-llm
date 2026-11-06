@@ -359,6 +359,12 @@ python3 -m venv .venv
 # Optional local Ollama status: .venv/bin/gpt-doug-health --ollama
 ```
 
+**Integrated MAX shortcuts:** `.venv/bin/gpt-doug skull live` starts the
+interactive 3D terminal, `.venv/bin/gpt-doug skull bench --iterations 1`
+measures real local inference latency, and `.venv/bin/gpt-doug health
+--verify-skull` runs the offline 3D health check. See
+[GPT-DOUG MAX Integration](docs/FRAMEWORK_MAX_INTEGRATION.md).
+
 See [Framework Health & CI Upgrade](docs/FRAMEWORK_HEALTH.md) for test
 coverage, the model dependency fix, and the distinction between importable
 modules and verified live operation.
