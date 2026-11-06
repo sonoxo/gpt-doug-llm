@@ -56,7 +56,7 @@ class FrameworkHealthTests(unittest.TestCase):
             self.assertEqual(result, 0)
 
     def test_non_loopback_ollama_is_rejected_without_network(self):
-        with patch.object(health, "urlopen", side_effect=AssertionError("network used")):
+        with patch.object(health, "HTTPConnection", side_effect=AssertionError("network used")):
             for url in (
                 "https://127.0.0.1:11434",
                 "http://ollama.example.com:11434",
@@ -69,18 +69,49 @@ class FrameworkHealthTests(unittest.TestCase):
     def test_opt_in_ollama_returns_grounded_response_count(self):
         class FakeResponse:
             status = 200
-            def __enter__(self):
-                return self
-            def __exit__(self, *args):
-                return False
+
             def read(self, size):
                 return b'{"models": [{"name": "local"}, {"name": "other"}]}'
-        with patch.object(health, "urlopen", return_value=FakeResponse()) as web:
+
+        class FakeConnection:
+            def __init__(self, *args, **kwargs):
+                self.requested = None
+            def request(self, method, path, headers=None):
+                self.requested = (method, path)
+            def getresponse(self):
+                return FakeResponse()
+            def close(self):
+                pass
+
+        connection = FakeConnection()
+        with patch.object(health, "HTTPConnection", return_value=connection) as connect:
             result = health._ollama_check("http://127.0.0.1:11434")
             self.assertEqual(result, {"status": "REACHABLE", "model_count": 2})
-            self.assertIn("/api/tags", web.call_args.args[0].full_url)
-        with patch.object(health, "urlopen", side_effect=OSError("no server")):
+            self.assertEqual(connection.requested, ("GET", "/api/tags"))
+            self.assertEqual(connect.call_args.args[:2], ("127.0.0.1", 11434))
+        with patch.object(health, "HTTPConnection", side_effect=OSError("no server")):
             self.assertEqual(health._ollama_check("http://localhost:11434")["status"], "OFFLINE")
+
+    def test_malformed_ollama_endpoint_rejected(self):
+        with patch.object(health, "HTTPConnection", side_effect=AssertionError("network used")):
+            self.assertEqual(health._ollama_check("http://[bad")["status"], "REJECTED")
+            self.assertEqual(health._ollama_check("http://localhost:invalid")["status"], "REJECTED")
+
+    def test_ollama_redirect_is_not_followed(self):
+        class RedirectResponse:
+            status = 302
+
+            def read(self, size):
+                return b""
+        class FakeConnection:
+            def request(self, *args, **kwargs):
+                pass
+            def getresponse(self):
+                return RedirectResponse()
+            def close(self):
+                pass
+        with patch.object(health, "HTTPConnection", return_value=FakeConnection()):
+            self.assertEqual(health._ollama_check("http://127.0.0.1:11434")["status"], "INVALID_RESPONSE")
 
     def test_console_sanitizes_model_status_and_only_adds_optional_probe_on_request(self):
         report = {
