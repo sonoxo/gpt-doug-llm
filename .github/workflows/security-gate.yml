@@ -14,12 +14,12 @@ jobs:
   secure-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
@@ -37,6 +37,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e "./va3lm[dev]"
           python -m pip install ruff pip-audit bandit cyclonedx-bom cryptography
+          # The security gate collects the same CPU ML tests as unified CI.
+          python -m pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.3,<3"
+          python -m pip install -e ".[mlm]" "Pillow>=10,<13"
 
       - name: Verify Black House runtime dependency contract
         run: |
