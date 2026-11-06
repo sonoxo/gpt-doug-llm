@@ -22,12 +22,16 @@ def parser() -> argparse.ArgumentParser:
     ask.add_argument("--json", action="store_true", dest="as_json")
     cmds.add_parser("doctor", help="inspect dependency and Ollama readiness")
     for name, help_text in (
-        ("banner", "show SKULL-LLM ASCII skull identity"),
+        ("banner", "show the anatomically shaded skull banner"),
+        ("portrait", "render a full shaded skull or a user-provided local image"),
         ("network", "show the static neural architecture in ASCII"),
         ("dashboard", "show actual local readiness in an ASCII console"),
     ):
         visual = cmds.add_parser(name, help=help_text)
         visual.add_argument("--width", type=int, default=None, help="ASCII display width (42..100)")
+        if name == "portrait":
+            visual.add_argument("--image", default=None, help="optional local skull photo (requires Pillow)")
+            visual.add_argument("--invert", action="store_true", help="invert photo grayscale")
     train = cmds.add_parser("train", help="train a small byte-level Transformer from local text")
     train.add_argument("corpus", help="authorized local UTF-8 text file")
     train.add_argument("--out", default="skull-local.pt")
@@ -80,11 +84,17 @@ def doctor() -> dict:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
-        if args.command in {"banner", "network", "dashboard"}:
-            from .terminal import render_banner, render_dashboard, render_network
+        if args.command in {"banner", "portrait", "network", "dashboard"}:
+            from .terminal import (
+                render_banner, render_dashboard, render_network, render_portrait,
+            )
 
             if args.command == "banner":
                 print(render_banner(columns=args.width))
+            elif args.command == "portrait":
+                print(render_portrait(
+                    columns=args.width, image_path=args.image, invert=args.invert,
+                ))
             elif args.command == "network":
                 print(render_network(columns=args.width))
             else:
