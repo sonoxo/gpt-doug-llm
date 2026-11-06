@@ -4,6 +4,48 @@
 experience runs locally without a browser, WebGL, paid token, or cloud account.
 The browser console remains available as an optional alternate view.
 
+## V2 unlocked: real terminal command center
+
+**Your Mac screenshot confirmed** the previous standalone cockpit rendering with
+the local model showing READY. The V2 launcher keeps the same command and adds:
+
+- **Adaptive HUD:** a widescreen status rail, or compact terminal fallback.
+- **Perspective camera:** \`+\`/\`-\` zoom; \`1\` front, \`2\` three-quarter, \`3\` profile.
+- **Real reasoning events:** the \`i\` command prints actual retrieve/draft/critique/
+  revise phases. With \`ask --trace\`, phases are sent to stderr; generated
+  answer stays on stdout. No simulated model tokens or fabricated token rates.
+- **Status refresh:** \`g\` rechecks local Ollama readiness and the killswitch.
+- **Safe snapshot:** \`v\` creates a new \`skull-snapshot-*.txt\` in the current
+  directory, mode 0600, without overwriting existing files. An explicit
+  \`snapshot --out FILE\` command also works.
+- **Diagnostics:** display model, inference state, camera angle and measured
+  rendering time (milliseconds) without claiming CL1 hardware data.
+
+\`\`\`bash
+# Update existing local feature-branch checkout:
+cd ~/gpt-doug-skull && git pull --ff-only origin feature/skull-llm-neural-core-20261105
+.venv/bin/python -m pip install -e .
+
+# Run the upgraded cockpit:
+OLLAMA_MODEL=qwen2.5-coder:7b .venv/bin/biochip-cl1-skull-gpt-skull
+
+# Observe actual reasoning phases:
+OLLAMA_MODEL=qwen2.5-coder:7b .venv/bin/biochip-cl1-skull-gpt-skull ask \
+  "Describe the neural ontology" --trace
+
+# Save ASCII visualization only (not prompts or conversations):
+.venv/bin/biochip-cl1-skull-gpt-skull snapshot --out ./skull-view.txt
+\`\`\`
+
+The dedicated CLI is the preferred interface; \`skull-llm live\` also uses V2.
+If the script is running from \`~\` in a different project, first \`cd\` into
+your \`gpt-doug-skull\` checkout. Do not recreate the virtual environment if
+it is already installed.
+
+No physical CL1 hardware connection exists; the visible signals remain a
+synthetic visual effect. Use hardware-specific interfaces only after separate
+documented integration and verification.
+
 ## Terminal first: BIOCHIP-CL1-SKULL-GPT-SKULL
 
 From the checked-out SKULL-LLM feature branch:
