@@ -76,6 +76,19 @@ class RuntimeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.engine().run(" ")
 
+
+    def test_live_phase_events_match_real_reasoning_stages(self):
+        observed = []
+        engine = SkullEngine(
+            chat_fn=self.fake_chat, memory=self.memory, ontology=self.ontology,
+            config=SkullConfig(depth=2),
+            on_progress=lambda phase, message: observed.append(phase),
+        )
+        result = engine.run("Explain the XUNIA ontology")
+        self.assertEqual(result.calls, 3)
+        self.assertEqual(observed, ["retrieve", "draft", "critique", "revise", "complete"])
+        self.assertTrue(result.answer)
+
     def test_backend_error_fails_visibly(self):
         engine = SkullEngine(
             chat_fn=lambda *_: {"error": "model_unavailable"},
