@@ -39,6 +39,11 @@ def parser() -> argparse.ArgumentParser:
         if name == "portrait":
             visual.add_argument("--image", default=None, help="optional local skull photo (requires Pillow)")
             visual.add_argument("--invert", action="store_true", help="invert photo grayscale")
+    bench = cmds.add_parser("bench", help="measure local Ollama inference latency without logging prompts")
+    bench.add_argument("--iterations", type=int, choices=range(1, 6), default=1)
+    bench.add_argument("--prompt", default=None, help="bounded local benchmark text")
+    bench.add_argument("--model", default=os.environ.get("SKULL_MODEL"))
+
     train = cmds.add_parser("train", help="train a small byte-level Transformer from local text")
     train.add_argument("corpus", help="authorized local UTF-8 text file")
     train.add_argument("--out", default="skull-local.pt")
@@ -60,8 +65,8 @@ def parser() -> argparse.ArgumentParser:
 
 
 def doctor() -> dict:
-    from ai_killswitch import status as stop_status
     from agents.llm_backend import OllamaProvider
+    from ai_killswitch import status as stop_status
 
     url = os.environ.get("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
     parsed = urllib.parse.urlsplit(url)
@@ -101,7 +106,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command in {"banner", "portrait", "network", "dashboard"}:
             from .terminal import (
-                render_banner, render_dashboard, render_network, render_portrait,
+                render_banner,
+                render_dashboard,
+                render_network,
+                render_portrait,
             )
 
             if args.command == "banner":
@@ -127,6 +135,16 @@ def main(argv: list[str] | None = None) -> int:
             result = SkullEngine(config=config).run(" ".join(args.task))
             print(json.dumps(result.to_dict(), indent=2, ensure_ascii=False) if args.as_json
                   else result.answer)
+            return 0
+        if args.command == "bench":
+            from .benchmark import DEFAULT_PROMPT, benchmark
+
+            result = benchmark(
+                prompt=args.prompt if args.prompt is not None else DEFAULT_PROMPT,
+                repetitions=args.iterations,
+                model=args.model,
+            )
+            print(json.dumps(result, indent=2))
             return 0
         if args.command == "train":
             from .train import train_file

@@ -1,0 +1,69 @@
+name: GPT-DOUG MAX Integrated Offline Gate
+
+on:
+  push:
+    branches: [main, "feat/**"]
+    paths:
+      - "gpt_brain/cli.py"
+      - "gpt_brain/framework_health.py"
+      - "skull_llm/cli.py"
+      - "skull_llm/benchmark.py"
+      - "tests/test_framework_health_skull.py"
+      - "tests/test_skull_framework_bridge.py"
+      - ".github/workflows/max-integrated-ci.yml"
+  pull_request:
+    paths:
+      - "gpt_brain/cli.py"
+      - "gpt_brain/framework_health.py"
+      - "skull_llm/cli.py"
+      - "skull_llm/benchmark.py"
+      - "tests/test_framework_health_skull.py"
+      - "tests/test_skull_framework_bridge.py"
+      - ".github/workflows/max-integrated-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  end-to-end-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install open-source framework tooling (no model downloads)
+        run: |
+          python -m pip install --upgrade "setuptools>=84.1.0"
+          python -m pip install -e . ruff
+      - name: Enforce changed-module lint
+        run: |
+          ruff check gpt_brain/cli.py gpt_brain/framework_health.py skull_llm/benchmark.py skull_llm/cli.py tests/test_framework_health_skull.py tests/test_skull_framework_bridge.py
+      - name: Test GPT-DOUG, SKULL bridge, local metrics and 3D diagnostics
+        run: |
+          python -m unittest tests.test_framework_health tests.test_framework_health_skull tests.test_skull_framework_bridge -v
+      - name: Installed cross-system smoke test
+        run: |
+          gpt-doug health --json --strict --verify-skull > /tmp/gpt-doug-max-health.json
+          gpt-doug skull live --once > /tmp/gpt-doug-max-3d.txt
+          gpt-doug skull bench --help > /tmp/gpt-doug-max-bench-help.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          obj = json.loads(Path("/tmp/gpt-doug-max-health.json").read_text(encoding="utf-8"))
+          assert obj["core_complete"] is True
+          assert obj["skull_projection"]["status"] == "PASS"
+          assert obj["skull_projection"]["model_calls"] == 0
+          assert obj["skull_projection"]["network_calls"] == 0
+          assert obj["ollama"]["status"] == "NOT_CHECKED"
+          assert "BIOCHIP-CL1" in Path("/tmp/gpt-doug-max-3d.txt").read_text(encoding="utf-8")
+          print("GPT-DOUG MAX integrated OFFLINE smoke PASS")
+          PY

@@ -5,6 +5,7 @@ on:
     paths:
       - "gpt_brain/framework_health.py"
       - "tests/test_framework_health.py"
+      - "tests/test_framework_health_skull.py"
       - "pyproject.toml"
       - ".github/workflows/framework-health.yml"
   push:
@@ -12,6 +13,7 @@ on:
     paths:
       - "gpt_brain/framework_health.py"
       - "tests/test_framework_health.py"
+      - "tests/test_framework_health_skull.py"
       - "pyproject.toml"
       - ".github/workflows/framework-health.yml"
   schedule:
@@ -41,15 +43,16 @@ jobs:
           python -m pip install --upgrade "setuptools>=84.1.0"
           python -m pip install -e .
       - name: Check offline framework health tests
-        run: python -m unittest tests.test_framework_health -v
+        run: python -m unittest tests.test_framework_health tests.test_framework_health_skull -v
       - name: Confirm installed cross-component health command
         run: |
-          gpt-doug-health --strict --json > /tmp/gpt-doug-framework-status.json
+          gpt-doug-health --strict --verify-skull --json > /tmp/gpt-doug-framework-status.json
           python - <<'PY'
           import json
           from pathlib import Path
           status = json.loads(Path("/tmp/gpt-doug-framework-status.json").read_text())
           assert status["schema"] == "gpt-doug-framework-health-v1"
+          assert status["skull_projection"]["status"] == "PASS"
           assert status["core_complete"]
           assert status["ollama"]["status"] == "NOT_CHECKED"
           assert status["checks_are_read_only"]
