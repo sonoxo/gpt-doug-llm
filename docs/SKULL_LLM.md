@@ -16,6 +16,30 @@ benchmarking that has not actually been run.
    from random weights. Its tiny example will **not** match a pretrained
    model's language capabilities.
 
+## SKULL ASCII command deck
+
+The terminal UI uses **plain 7-bit ASCII** with no curses, colors, animation,
+Unicode glyphs, external terminal dependencies, or paid API calls.
+Three commands are available:
+
+```bash
+skull-llm banner                  # skull insignia and identity
+skull-llm network                 # static architecture of neural pipeline
+skull-llm dashboard               # real local Ollama / PyTorch readiness
+skull-llm dashboard --width 80    # force a fixed console width
+```
+
+`python3 -m skull_llm banner` (or `network` or `dashboard`) works from a
+source checkout without installing the CLI. `banner` and `network` have
+no backend requirements; `dashboard` queries only the configured loopback
+Ollama endpoint and the local emergency-stop flag. If Ollama is unavailable,
+it shows **OFFLINE** rather than pretending to be connected. The output
+strips escape/control characters from model names and provider messages.
+
+Interactive `skull-llm ask` sessions automatically show the banner when
+standard output is a TTY; JSON and redirected command output remain clean.
+The topology diagram is architectural, *not* a live network traffic map.
+
 ## Run local inference on a Mac — no API key
 
 Install Ollama from its official distribution, start it, then pull an
