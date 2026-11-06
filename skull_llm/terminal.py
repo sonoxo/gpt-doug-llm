@@ -51,10 +51,10 @@ NETWORK_ART = r"""
 """.strip("\n")
 
 
-def _ascii(value: Any, maximum: int = 200) -> str:
+def _ascii(value: Any, maximum: int = 200, preserve_space: bool = False) -> str:
     """Make status strings safe for terminal display (no escape injection)."""
     cleaned = "".join(ch if 32 <= ord(ch) <= 126 else " " for ch in str(value))
-    return " ".join(cleaned.split())[:maximum]
+    return (cleaned if preserve_space else " ".join(cleaned.split()))[:maximum]
 
 
 def _width(columns: int | None) -> int:
@@ -70,8 +70,8 @@ def _panel(title: str, lines: list[str], *, columns: int | None = None) -> str:
     heading = " " + _ascii(title, inner)[:inner].ljust(inner) + " "
     body = [border, "|" + heading + "|", border]
     for line in lines:
-        safe = _ascii(line, 1000)
-        if not safe:
+        safe = _ascii(line, 1000, preserve_space=True)
+        if not safe.strip():
             body.append("|" + " " * (width - 2) + "|")
             continue
         while safe:
