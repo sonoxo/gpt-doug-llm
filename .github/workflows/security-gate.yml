@@ -45,9 +45,6 @@ jobs:
         run: |
           python -c "import fastapi, httpx, pydantic, va3lm; print('VA3LM runtime dependencies OK')"
 
-      - name: Tests
-        run: python -m pytest tests agents/tests google/tests hackathon/tests -q
-
       - name: Ruff — changed Python files
         shell: bash
         run: |
@@ -98,6 +95,9 @@ jobs:
 
       - name: Dependency audit
         run: pip-audit
+
+      - name: Tests
+        run: python -m pytest tests agents/tests google/tests hackathon/tests -q
 
       - name: Generate CycloneDX SBOM
         run: cyclonedx-py environment --output-file sbom.cdx.json
