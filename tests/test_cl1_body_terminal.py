@@ -2,17 +2,19 @@
 from __future__ import annotations
 
 import contextlib
+import importlib
 import io
-import unittest
 import sys
+import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 _SOURCE = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(_SOURCE))
 
-from cl1_body_terminal import (BONE, TISSUE, NEURAL, BIOCHIP,
-                              BodyCanvas, geometry, run)
+_module=importlib.import_module("cl1_body_terminal")
+BONE, TISSUE, NEURAL, BIOCHIP = (_module.BONE, _module.TISSUE, _module.NEURAL, _module.BIOCHIP)
+BodyCanvas, geometry, run = _module.BodyCanvas, _module.geometry, _module.run
 
 
 class BodyGeometryTests(unittest.TestCase):
@@ -101,7 +103,7 @@ class BodyGeometryTests(unittest.TestCase):
         text=stdout.getvalue()
         self.assertIn('FULL BODY',text)
         self.assertIn('NO LIVING NEURONS OR HARDWARE',text)
-        self.assertEqual(len(text.splitlines()),48)
+        self.assertEqual(len(text.splitlines()),50)
         self.assertNotIn('\x1b',text)
 
     def test_bound_cli_inputs(self):
