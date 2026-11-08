@@ -18,6 +18,7 @@ import sys
 import time
 from dataclasses import dataclass
 
+CL1_RELEASE = "2026.11.07-ontology.2"
 BONE, TISSUE, NEURAL, BIOCHIP = 1, 2, 3, 4
 COLORS = {
     'CYAN': (70, 236, 231), 'BONE': (232, 221, 195),
@@ -610,6 +611,7 @@ class BodyCanvas:
 
 def run(argv=None):
     p=argparse.ArgumentParser(description='Full-body 3D anatomical-inspired CL1 binary terminal. Offline; no dependencies.')
+    p.add_argument('--version',action='version',version='CL1 FULL BODY ' + CL1_RELEASE)
     p.add_argument('--once',action='store_true',help='render a single frame')
     p.add_argument('--frames',type=int,default=0)
     p.add_argument('--width',type=int,default=0,help='40..180 characters')
