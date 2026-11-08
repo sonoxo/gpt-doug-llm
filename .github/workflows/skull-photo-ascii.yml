@@ -1,0 +1,45 @@
+name: SKULL photographic ASCII renderer
+
+on:
+  push:
+    branches: [main, "fix/skull-photo-ascii-bootstrap-*"]
+    paths:
+      - "scripts/skull_ascii_ultra.py"
+      - "tests/test_skull_photo_ascii.py"
+      - ".github/workflows/skull-photo-ascii.yml"
+  pull_request:
+    paths:
+      - "scripts/skull_ascii_ultra.py"
+      - "tests/test_skull_photo_ascii.py"
+      - ".github/workflows/skull-photo-ascii.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-reference-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install free image processor
+        run: python -m pip install "Pillow>=13,<14"
+      - name: Validate source syntax
+        run: python -m py_compile scripts/skull_ascii_ultra.py
+      - name: Test photographic skull rendering offline
+        run: python -m unittest tests.test_skull_photo_ascii -v
+      - name: Verify standalone help and input errors
+        run: |
+          python scripts/skull_ascii_ultra.py --help > /tmp/skull-photo-help.txt
+          grep -q -- '--demo' /tmp/skull-photo-help.txt
+          test -s /tmp/skull-photo-help.txt
