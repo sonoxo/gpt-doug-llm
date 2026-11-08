@@ -4,7 +4,12 @@ from __future__ import annotations
 import contextlib
 import io
 import unittest
+import sys
+from pathlib import Path
 from unittest.mock import patch
+
+_SOURCE = Path(__file__).resolve().parents[1] / "scripts"
+sys.path.insert(0, str(_SOURCE))
 
 from cl1_body_terminal import (BONE, TISSUE, NEURAL, BIOCHIP,
                               BodyCanvas, geometry, run)
