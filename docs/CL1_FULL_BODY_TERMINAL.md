@@ -9,6 +9,12 @@ no opaque tissue shell, and a small simulated biochip core. Separate optional
 neural and body-surface layers remain available only when selected. The simulated
 neural network runs from the cranium through an abdominal hub to the limbs.
 
+**Mechanical ontology:** inspect 19 skeletal links, joint degrees of freedom,
+movement constraints and simulation-only spring/damping properties directly
+in the Terminal using **O** and **[ / ]**. See
+[CL1 Mechanical Ontology](CL1_MECHANICAL_ONTOLOGY.md) for JSON graph export,
+joint inspection and calibrated-vs-synthetic distinctions.
+
 **Truth boundary:** the full-body geometry is generated algorithmically, not
 scanned anatomy or a clinical 3D medical model. The CL1-inspired computational
 and neural layers are **software simulations only**, with no biological CL1
