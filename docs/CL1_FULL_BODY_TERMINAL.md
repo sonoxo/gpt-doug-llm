@@ -21,6 +21,48 @@ and neural layers are **software simulations only**, with no biological CL1
 neurons or hardware attached. The offline 3D rotation is real geometry,
 perspective projection and a CPU depth buffer, drawn as terminal glyphs.
 
+## Repair an outdated Mac copy (recommended)
+
+The terminal error `unrecognized arguments: --inspect ... --ontology-json`
+means the installed `~/Downloads/cl1_body_terminal.py` is **older than the
+merged mechanical ontology release**. Repeating commands against the old file
+cannot fix it.
+
+Use this one command in Terminal, from **any working directory**:
+
+```bash
+curl -fLsS --retry 2 \
+  https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/install_cl1_terminal.py \
+  -o "$HOME/Downloads/install_cl1_terminal.py" &&
+python3 "$HOME/Downloads/install_cl1_terminal.py"
+```
+
+The repair script fetches the official latest renderer over HTTPS, checks its
+release marker and Python syntax, and **runs actual CLI tests** for elbow
+inspection, JSON ontology export, and bone-white skeleton rendering. It stages
+the new renderer first; it does not overwrite the old one when a test fails.
+If the update succeeds, it creates a uniquely named backup of the previous
+file and starts **SKELETON | 01 | BONE**, front-facing and stationary.
+
+To repair without starting animation:
+
+```bash
+python3 "$HOME/Downloads/install_cl1_terminal.py" --install-only
+```
+
+To verify a named mechanical part without entering the viewer:
+
+```bash
+python3 "$HOME/Downloads/install_cl1_terminal.py" --inspect left_forearm
+python3 "$HOME/Downloads/cl1_body_terminal.py" --inspect left_forearm --joint-angle 65 --joint-speed 15
+python3 "$HOME/Downloads/cl1_body_terminal.py" --ontology-json > "$HOME/Desktop/CL1-MECH-ONTOLOGY.json"
+python3 "$HOME/Downloads/cl1_body_terminal.py" --version
+```
+
+The versioned repair script requires no pip, ZIP, Git clone, cloud account or
+external 3D model. It does require temporary network access to retrieve the
+two official repository scripts. The physical CL1 device is **not connected**.
+
 ## Mac terminal: one command, no ZIP or Python packages
 
 If you are currently running the skull, press **Q** first. Paste this in
