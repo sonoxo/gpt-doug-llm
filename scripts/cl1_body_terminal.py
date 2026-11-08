@@ -12,7 +12,6 @@ import argparse
 import functools
 import json
 import math
-import os
 import select
 import shutil
 import sys
@@ -666,7 +665,8 @@ def run(argv=None):
     original=None
     try:
         if interactive:
-            import termios,tty
+            import termios
+            import tty
             fd=sys.stdin.fileno()
             original=termios.tcgetattr(fd)
             tty.setcbreak(fd)
@@ -692,25 +692,44 @@ def run(argv=None):
                 ready,_,_=select.select([sys.stdin],[],[],wait)
                 if ready:
                     key=sys.stdin.read(1).lower()
-                    if key in ('q','\x03'): break
-                    if key=='a': canvas.yaw-=.16
-                    if key=='d': canvas.yaw+=.16
-                    if key=='w': canvas.pitch=max(-1.1,canvas.pitch-.11)
-                    if key=='s': canvas.pitch=min(1.1,canvas.pitch+.11)
-                    if key in ('+','='): canvas.zoom=min(2.4,canvas.zoom+.14)
-                    if key in ('-','_'): canvas.zoom=max(.5,canvas.zoom-.14)
-                    if key=='1': canvas.mode='FUSION'
-                    if key=='2': canvas.mode='SKELETON'
-                    if key=='3': canvas.mode='NEURAL'
-                    if key=='4': canvas.mode='BODY'
-                    if key=='h': canvas.view='HEAD'
-                    if key=='t': canvas.view='TORSO'
-                    if key=='f': canvas.view='FULL'
-                    if key=='o': canvas.ontology_enabled=not canvas.ontology_enabled
-                    if key==']': canvas.ontology_selection=(canvas.ontology_selection+1)%len(MECHANICAL_NODES)
-                    if key=='[': canvas.ontology_selection=(canvas.ontology_selection-1)%len(MECHANICAL_NODES)
-                    if key=='p': canvas.spin=not canvas.spin
-                    if key=='b': canvas.binary=not canvas.binary
+                    if key in ('q','\x03'):
+                        break
+                    if key=='a':
+                        canvas.yaw-=.16
+                    if key=='d':
+                        canvas.yaw+=.16
+                    if key=='w':
+                        canvas.pitch=max(-1.1,canvas.pitch-.11)
+                    if key=='s':
+                        canvas.pitch=min(1.1,canvas.pitch+.11)
+                    if key in ('+','='):
+                        canvas.zoom=min(2.4,canvas.zoom+.14)
+                    if key in ('-','_'):
+                        canvas.zoom=max(.5,canvas.zoom-.14)
+                    if key=='1':
+                        canvas.mode='FUSION'
+                    if key=='2':
+                        canvas.mode='SKELETON'
+                    if key=='3':
+                        canvas.mode='NEURAL'
+                    if key=='4':
+                        canvas.mode='BODY'
+                    if key=='h':
+                        canvas.view='HEAD'
+                    if key=='t':
+                        canvas.view='TORSO'
+                    if key=='f':
+                        canvas.view='FULL'
+                    if key=='o':
+                        canvas.ontology_enabled=not canvas.ontology_enabled
+                    if key==']':
+                        canvas.ontology_selection=(canvas.ontology_selection+1)%len(MECHANICAL_NODES)
+                    if key=='[':
+                        canvas.ontology_selection=(canvas.ontology_selection-1)%len(MECHANICAL_NODES)
+                    if key=='p':
+                        canvas.spin=not canvas.spin
+                    if key=='b':
+                        canvas.binary=not canvas.binary
                     if key=='c':
                         options=list(COLORS)
                         canvas.tint=options[(options.index(canvas.tint)+1)%len(options)]
