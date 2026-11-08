@@ -58,7 +58,7 @@ class BodyGeometryTests(unittest.TestCase):
         self.assertNotEqual(frame,c.render(color=False))
 
     def test_views_and_layer_filters_change_appearance(self):
-        c=BodyCanvas(self.points,100,52)
+        c=BodyCanvas(self.points,100,52,mode='FUSION')
         fusion=c.render(color=False)
         c.mode='SKELETON'
         skeleton=c.render(color=False)
@@ -71,6 +71,27 @@ class BodyGeometryTests(unittest.TestCase):
         self.assertNotEqual(neural,body)
         c.view='HEAD'
         self.assertNotEqual(neural,c.render(color=False))
+
+    def test_default_appearance_is_bone_white_exposed_skeleton(self):
+        c=BodyCanvas(self.points,110,58)
+        self.assertEqual(c.mode,'SKELETON')
+        self.assertEqual(c.tint,'BONE')
+        # The starting view may include a subtle simulated biochip, but
+        # never the solid-body shell or neural network mesh.
+        just_bones=tuple(p for p in self.points if p[3] in (BONE,BIOCHIP))
+        bone_canvas=BodyCanvas(just_bones,110,58,mode='SKELETON')
+        self.assertEqual(c.render(color=False),bone_canvas.render(color=False))
+        self.assertNotEqual(c.render(color=False),BodyCanvas(self.points,110,58,mode='BODY').render(color=False))
+
+    def test_cli_defaults_and_custom_tint_keep_skeleton(self):
+        out=io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(run(['--once','--no-color','--width','90','--height','42']),0)
+        self.assertIn('SKELETON | 01 | BONE',out.getvalue())
+        out=io.StringIO()
+        with contextlib.redirect_stdout(out):
+            self.assertEqual(run(['--once','--no-color','--color','cyan','--width','90','--height','42']),0)
+        self.assertIn('SKELETON | 01 | CYAN',out.getvalue())
 
     def test_single_frame_needs_no_model_or_network(self):
         stdout=io.StringIO()
@@ -85,7 +106,7 @@ class BodyGeometryTests(unittest.TestCase):
 
     def test_bound_cli_inputs(self):
         for flags in (["--fps","0"],["--height","9"],["--width","220"],
-                      ["--frames","99999"]):
+                      ["--frames","99999"],["--color","magenta"]):
             with contextlib.redirect_stderr(io.StringIO()):
                 with self.assertRaises(SystemExit):
                     run(list(flags))
