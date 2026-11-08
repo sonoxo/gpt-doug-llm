@@ -10,12 +10,14 @@ from __future__ import annotations
 
 import argparse
 import functools
+import json
 import math
 import os
 import select
 import shutil
 import sys
 import time
+from dataclasses import dataclass
 
 BONE, TISSUE, NEURAL, BIOCHIP = 1, 2, 3, 4
 COLORS = {
@@ -23,6 +25,189 @@ COLORS = {
     'AMBER': (255, 167, 65), 'GREEN': (125, 252, 154),
 }
 
+
+# -----------------------------------------------------------------------------
+# CL1 mechanical ontology: a constrained *illustrative* kinematic model.
+# These are not bone density measurements, medical reference values, actuator
+# specifications, or observations from living CL1 hardware.
+# -----------------------------------------------------------------------------
+MECH_WORLD_SCALE_M = 0.315  # model coordinate -> nominal metre (artistic scale)
+SKELETAL_MASS_SHARE = 0.15  # configurable proxy, NOT a measured body composition
+
+
+@dataclass(frozen=True)
+class MechanicalNode:
+    key: str
+    parent: str | None
+    joint: str
+    anchor: tuple[float, float, float]
+    length_units: float
+    mass_share: float
+    axes: tuple[tuple[str, float, float], ...] = ()
+    stiffness_nm_rad: float = 0.0
+    damping_nms_rad: float = 0.0
+
+
+MECHANICAL_NODES = (
+    MechanicalNode('pelvis', None, 'fixed', (0, -.10, -.10), .65, .132),
+    MechanicalNode('lumbar_spine', 'pelvis', 'ball_socket', (0, .20, -.12), .45, .060,
+                   (('flexion', -25, 25), ('lateral', -18, 18), ('twist', -20, 20)), 18, 1.2),
+    MechanicalNode('thoracic_cage', 'lumbar_spine', 'fixed', (0, 1.15, .0), .85, .170),
+    MechanicalNode('cervical_spine', 'thoracic_cage', 'ball_socket', (0, 1.82, -.03), .27, .040,
+                   (('flexion', -40, 40), ('lateral', -30, 30), ('twist', -50, 50)), 7, .45),
+    MechanicalNode('cranium', 'cervical_spine', 'fixed', (0, 2.47, .02), .75, .110),
+    MechanicalNode('left_clavicle', 'thoracic_cage', 'fixed', (-.48, 1.73, .13), .64, .025),
+    MechanicalNode('right_clavicle', 'thoracic_cage', 'fixed', (.48, 1.73, .13), .64, .025),
+    MechanicalNode('left_humerus', 'left_clavicle', 'ball_socket', (-.72, 1.59, .02), 1.10, .035,
+                   (('flexion', -110, 110), ('abduction', -80, 100), ('rotation', -65, 65)), 9, .60),
+    MechanicalNode('right_humerus', 'right_clavicle', 'ball_socket', (.72, 1.59, .02), 1.10, .035,
+                   (('flexion', -110, 110), ('abduction', -80, 100), ('rotation', -65, 65)), 9, .60),
+    MechanicalNode('left_forearm', 'left_humerus', 'hinge', (-.91, .52, .02), .82, .022,
+                   (('elbow_flexion', 0, 140),), 5, .25),
+    MechanicalNode('right_forearm', 'right_humerus', 'hinge', (.91, .52, .02), .82, .022,
+                   (('elbow_flexion', 0, 140),), 5, .25),
+    MechanicalNode('left_hand', 'left_forearm', 'universal', (-1.06, -.29, .13), .40, .012,
+                   (('wrist_flexion', -70, 70), ('deviation', -25, 25)), 2, .12),
+    MechanicalNode('right_hand', 'right_forearm', 'universal', (1.06, -.29, .13), .40, .012,
+                   (('wrist_flexion', -70, 70), ('deviation', -25, 25)), 2, .12),
+    MechanicalNode('left_femur', 'pelvis', 'ball_socket', (-.42, -.36, .04), 1.07, .070,
+                   (('hip_flexion', -35, 120), ('abduction', -35, 45), ('rotation', -35, 35)), 22, 1.4),
+    MechanicalNode('right_femur', 'pelvis', 'ball_socket', (.42, -.36, .04), 1.07, .070,
+                   (('hip_flexion', -35, 120), ('abduction', -35, 45), ('rotation', -35, 35)), 22, 1.4),
+    MechanicalNode('left_lower_leg', 'left_femur', 'hinge', (-.42, -1.43, .13), 1.12, .055,
+                   (('knee_flexion', 0, 135),), 17, 1.1),
+    MechanicalNode('right_lower_leg', 'right_femur', 'hinge', (.42, -1.43, .13), 1.12, .055,
+                   (('knee_flexion', 0, 135),), 17, 1.1),
+    MechanicalNode('left_foot', 'left_lower_leg', 'universal', (-.44, -2.54, .05), .50, .025,
+                   (('ankle_flexion', -35, 45), ('inversion', -20, 20)), 5, .35),
+    MechanicalNode('right_foot', 'right_lower_leg', 'universal', (.44, -2.54, .05), .50, .025,
+                   (('ankle_flexion', -35, 45), ('inversion', -20, 20)), 5, .35),
+)
+
+NODE_BY_KEY = {node.key: node for node in MECHANICAL_NODES}
+
+
+def validate_mechanical_graph():
+    """Reject orphan joints, invalid constraints and mechanical graph cycles."""
+    if len(NODE_BY_KEY) != len(MECHANICAL_NODES):
+        raise ValueError('Duplicate mechanical entity ID')
+    if not math.isclose(sum(n.mass_share for n in MECHANICAL_NODES), 1.0, abs_tol=1e-9):
+        raise ValueError('Bone proxy mass fractions must sum to 1')
+    for node in MECHANICAL_NODES:
+        if node.parent is not None and node.parent not in NODE_BY_KEY:
+            raise ValueError('Orphan joint: ' + node.key)
+        if node.parent == node.key or node.mass_share <= 0 or node.length_units <= 0:
+            raise ValueError('Invalid rigid segment: ' + node.key)
+        if node.joint == 'fixed' and node.axes:
+            raise ValueError('Fixed joint has degrees of freedom')
+        if node.joint != 'fixed' and not node.axes:
+            raise ValueError('Moving joint without limits')
+        if any(lo >= hi or not all(map(math.isfinite, (lo, hi))) for _, lo, hi in node.axes):
+            raise ValueError('Invalid angular limits')
+        seen = set()
+        cur = node.key
+        while cur is not None:
+            if cur in seen:
+                raise ValueError('Cycle in rigid-link ontology')
+            seen.add(cur)
+            cur = NODE_BY_KEY[cur].parent
+    return True
+
+
+def _body_mass(body_mass_kg):
+    if isinstance(body_mass_kg, bool) or not isinstance(body_mass_kg, (int, float)):
+        raise ValueError('Body mass must be numeric')
+    if not math.isfinite(body_mass_kg) or not 20 <= body_mass_kg <= 300:
+        raise ValueError('Illustrative body mass must be 20..300 kg')
+    return float(body_mass_kg)
+
+
+def mechanical_properties(key, body_mass_kg=70.0):
+    """Estimate proxy link mass/inertia, not clinical biomechanics."""
+    body_mass_kg = _body_mass(body_mass_kg)
+    if key not in NODE_BY_KEY:
+        raise ValueError('Unknown mechanical entity: ' + str(key))
+    n = NODE_BY_KEY[key]
+    mass = body_mass_kg * SKELETAL_MASS_SHARE * n.mass_share
+    length = n.length_units * MECH_WORLD_SCALE_M
+    return {
+        'id': 'cl1:segment/' + n.key,
+        'label': n.key.replace('_', ' ').title(),
+        'class': 'cl1:SkeletalRigidLink',
+        'parent_id': 'cl1:segment/' + n.parent if n.parent else None,
+        'joint_type': n.joint,
+        'degrees_of_freedom': len(n.axes),
+        'axes_limits_deg': [{'axis': axis, 'min': lo, 'max': hi} for axis, lo, hi in n.axes],
+        'anchor_model_xyz': list(n.anchor),
+        'nominal_length_m': round(length, 5),
+        'estimated_bone_proxy_mass_kg': round(mass, 5),
+        'mass_fraction_of_skeleton': n.mass_share,
+        'rod_axis_inertia_kg_m2': round(mass * length * length / 12.0, 8),
+        'joint_stiffness_nm_per_rad': n.stiffness_nm_rad,
+        'joint_damping_nms_per_rad': n.damping_nms_rad,
+        'collision_proxy': 'ellipsoid' if n.key in ('pelvis', 'cranium', 'thoracic_cage') else 'capsule',
+        'material': 'idealized rigid bone proxy',
+        'provenance': 'illustrative procedural simulation, NOT measured',
+    }
+
+
+def mech_ontology(body_mass_kg=70.0):
+    """Locally serializable graph for downstream GPT-DOUG/XUNIA ontology APIs."""
+    body_mass_kg = _body_mass(body_mass_kg)
+    validate_mechanical_graph()
+    components = [mechanical_properties(n.key, body_mass_kg) for n in MECHANICAL_NODES]
+    return {
+        '@context': {
+            'cl1': 'urn:gpt-doug:cl1:mechanics:',
+            'schema': 'https://schema.org/',
+        },
+        'schema_version': 'cl1-mechanics/v1',
+        'entity_count': len(components),
+        'ontology_type': 'ArticulatedSkeletalKinematicGraph',
+        'simulation_only': True,
+        'hardware_connected': False,
+        'reference_body_mass_kg': body_mass_kg,
+        'bone_system_mass_fraction_assumed': SKELETAL_MASS_SHARE,
+        'reference_metre_per_model_unit': MECH_WORLD_SCALE_M,
+        'inertia_model': 'uniform slender rod I = m * L^2 / 12 (illustrative)',
+        'source': 'procedural full-body CL1 terminal model; no anatomical scan',
+        'components': components,
+        'relations': [
+            {'source': c['parent_id'], 'type': 'HAS_CHILD_SEGMENT', 'target': c['id']}
+            for c in components if c['parent_id'] is not None
+        ],
+    }
+
+
+def evaluate_joint(key, angle_deg, speed_deg_s=0.0, body_mass_kg=70.0):
+    """Evaluate a 1-axis *virtual spring-damper*; no actuation or motor control."""
+    p = mechanical_properties(key, body_mass_kg)
+    if not p['axes_limits_deg']:
+        raise ValueError('Fixed link cannot be flexed: ' + key)
+    if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v)
+               for v in (angle_deg, speed_deg_s)):
+        raise ValueError('Angle and speed must be finite numbers')
+    if abs(angle_deg) > 360 or abs(speed_deg_s) > 720:
+        raise ValueError('Simulation angle/speed are outside bounded inputs')
+    axis = p['axes_limits_deg'][0]
+    allowed = axis['min'] <= angle_deg <= axis['max']
+    if not allowed:
+        torque = None  # unsafe state; never fabricate an admissible actuator command
+    else:
+        torque = -(p['joint_stiffness_nm_per_rad'] * math.radians(angle_deg) +
+                   p['joint_damping_nms_per_rad'] * math.radians(speed_deg_s))
+    return {
+        'entity_id': p['id'],
+        'axis': axis['axis'],
+        'input_angle_deg': angle_deg,
+        'input_speed_deg_s': speed_deg_s,
+        'limit_min_deg': axis['min'],
+        'limit_max_deg': axis['max'],
+        'within_limits': allowed,
+        'virtual_restoring_torque_nm': round(torque, 5) if torque is not None else None,
+        'simulation_only': True,
+        'hardware_command_sent': False,
+    }
 
 def _add_ellipsoid(points, x, y, z, rx, ry, rz, kind=BONE, lat=19, lon=48,
                    mask=None):
@@ -196,7 +381,7 @@ def _head(points):
 
 
 def _body_shell(points):
-    # Optional tissue layer. Hidden in the default skeleton-only presentation.
+    # Surface under-sampling deliberately leaves bones and neurons visible.
     _add_ellipsoid(points,0,1.17,0,.67,.79,.38,TISSUE,lat=45,lon=85)
     _add_ellipsoid(points,0,-.10,.005,.58,.43,.37,TISSUE,lat=23,lon=57)
     _add_ellipsoid(points,0,2.46,.01,.375,.46,.35,TISSUE,lat=38,lon=74)
@@ -271,6 +456,9 @@ class BodyCanvas:
         self.tint='BONE'
         self.frame=0
         self.view='FULL'
+        self.ontology_enabled=True
+        self.ontology_selection=0
+        self.simulated_body_mass_kg=70.0
 
     def render(self, color=False):
         w,h=self.width,self.height
@@ -324,6 +512,30 @@ class BodyCanvas:
             layers[at]=kind
             intensity=.43+.19*(z+1)+.11*(x+.6)-.08*abs(y)
             intens[at]=max(1,min(6,int(intensity*5.5)))
+        # Project the currently selected ontology joint locator onto the same
+        # 3D scene (not a separate flat ASCII skull). The locator is a simulated
+        # reference marker, not a calibrated skeletal measurement.
+        locator_pixels=set()
+        locator_center=None
+        if self.ontology_enabled:
+            selected = MECHANICAL_NODES[self.ontology_selection]
+            x0, y0, z0 = selected.anchor
+            px = cy*x0 + sy*z0
+            pz = -sy*x0 + cy*z0
+            py = cp*(y0-focus)-sp*pz
+            pz = sp*(y0-focus)+cp*pz
+            d = camera-pz
+            if d > .8:
+                col = int(w*.5 + px/d*focal*2.0)
+                row = int(h*.5 - py/d*focal*.92)
+                locator_center=row*w+col
+                for dr, dc in ((0,0),(-1,0),(1,0),(0,-1),(0,1)):
+                    rr, cc = row+dr, col+dc
+                    if 0<=rr<h and 0<=cc<w:
+                        at=rr*w+cc
+                        locator_pixels.add(at)
+                        intens[at] = 6
+                        layers[at] = BONE
         lines=[]
         rgb=COLORS[self.tint]
         for row in range(h):
@@ -336,18 +548,23 @@ class BodyCanvas:
                 if not level:
                     char=' '
                 elif self.binary:
-                    char='1' if ((row*3+col*5+self.frame//4)%7)<4 else '0'
+                    if i in locator_pixels:
+                        char='1' if i==locator_center else '0'
+                    else:
+                        char='1' if ((row*3+col*5+self.frame//4)%7)<4 else '0'
                 else:
                     ramp=' .:+*#@'
                     char=ramp[level]
                 if color:
-                    new=(kind,level)
+                    new=(kind,level,i in locator_pixels)
                     if new!=last:
                         last=new
                         if not level:
                             cells.append('\x1b[0m')
                         else:
-                            if kind in (BIOCHIP,NEURAL):
+                            if i in locator_pixels:
+                                base=(255,204,128)
+                            elif kind in (BIOCHIP,NEURAL):
                                 base=(105,255,181) if self.tint!='AMBER' else (255,240,150)
                             elif kind==TISSUE:
                                 base=tuple(int(v*.53) for v in rgb)
@@ -365,11 +582,31 @@ class BodyCanvas:
         stats='MODEL: %s | %s | %s | %s | %d VERTICES | YAW %03d'%(
             self.view,self.mode,'01' if self.binary else 'SHADE',self.tint,
             len(self.points),int(math.degrees(self.yaw))%360)
-        footer='A/D ORBIT  W/S TILT  +/- ZOOM  1/2/3/4 MODE  H HEAD  T TORSO  F FULL  B BINARY  C COLOR  P PAUSE  Q EXIT'
+        footer='A/D ORBIT W/S TILT +/- ZOOM 1-4 MODE [/] SELECT O ONTOLOGY H/T/F VIEW B/C RENDER P PAUSE Q EXIT'
         notice='CL1 NEURAL/BIOCHIP LAYER IS SIMULATED. NO LIVING NEURONS OR HARDWARE CONNECTED.'
         head=('\x1b[1;36m' if color else '')+hdr[:w].ljust(w)+('\x1b[0m' if color else '')
+        if self.ontology_enabled:
+            part=mechanical_properties(
+                MECHANICAL_NODES[self.ontology_selection].key,
+                self.simulated_body_mass_kg,
+            )
+            joint=part['axes_limits_deg']
+            limits=(' | '.join('%s[%g,%g]' % (a['axis'],a['min'],a['max'])
+                     for a in joint) if joint else 'LOCKED')
+            info1='ONTOLOGY %02d/%02d  %s -> %s  %s / DOF %d' % (
+                self.ontology_selection+1,len(MECHANICAL_NODES),part['label'].upper(),
+                (part['parent_id'] or 'ROOT').rsplit('/',1)[-1].upper(),
+                part['joint_type'].upper(),part['degrees_of_freedom'])
+            info2='MECH SIM  MASS %.2f kg  L %.2f m  I %.4f kg.m2  K %g  D %g  %s' % (
+                part['estimated_bone_proxy_mass_kg'],part['nominal_length_m'],
+                part['rod_axis_inertia_kg_m2'],part['joint_stiffness_nm_per_rad'],
+                part['joint_damping_nms_per_rad'],limits)
+        else:
+            info1='ONTOLOGY HIDDEN - PRESS O TO INSPECT MECHANICAL PROPERTIES'
+            info2='MECHANICAL PARAMETERS: ILLUSTRATIVE SIMULATION; NOT MEASURED.'
         return '\n'.join((head,stats[:w].ljust(w),'='*w,self.render(color),
-                          '='*w,footer[:w].ljust(w),notice[:w].ljust(w)))
+                          '='*w,info1[:w].ljust(w),info2[:w].ljust(w),
+                          footer[:w].ljust(w),notice[:w].ljust(w)))
 
 
 def run(argv=None):
@@ -380,8 +617,12 @@ def run(argv=None):
     p.add_argument('--height',type=int,default=0,help='24..90 text rows')
     p.add_argument('--fps',type=int,default=9)
     p.add_argument('--mode',choices=('fusion','body','skeleton','neural'),default='skeleton')
-    p.add_argument('--color',choices=('bone','cyan','amber','green'),default='bone',
-                   help='terminal skeletal tint (bone-white by default)')
+    p.add_argument('--color',choices=('bone','cyan','amber','green'),default='bone')
+    p.add_argument('--ontology-json',action='store_true',help='export local skeletal mechanical ontology JSON')
+    p.add_argument('--inspect',choices=tuple(NODE_BY_KEY),help='print properties of a single entity')
+    p.add_argument('--joint-angle',type=float,help='evaluate virtual spring/limits at this angle in degrees')
+    p.add_argument('--joint-speed',type=float,default=0.0,help='simulated angular speed in degrees/s')
+    p.add_argument('--body-mass',type=float,default=70.0,help='nominal simulated mass 20..300 kg')
     p.add_argument('--detail',choices=('normal','light'),default='normal')
     p.add_argument('--no-color',action='store_true')
     p.add_argument('--no-spin',action='store_true')
@@ -392,12 +633,33 @@ def run(argv=None):
         p.error('height must be 24..90')
     if not 1<=args.fps<=20 or not 0<=args.frames<=3600:
         p.error('FPS 1..20, frame count 0..3600')
+    try:
+        _body_mass(args.body_mass)
+        if args.ontology_json:
+            if args.inspect or args.joint_angle is not None:
+                p.error('--ontology-json cannot be combined with --inspect/--joint-angle')
+            print(json.dumps(mech_ontology(args.body_mass),indent=2))
+            return 0
+        if args.joint_angle is not None and not args.inspect:
+            p.error('--joint-angle requires --inspect')
+        if args.joint_speed and args.joint_angle is None:
+            p.error('--joint-speed requires --joint-angle and --inspect')
+        if args.inspect:
+            payload=mechanical_properties(args.inspect,args.body_mass)
+            if args.joint_angle is not None:
+                payload['joint_evaluation']=evaluate_joint(args.inspect,args.joint_angle,
+                                                          args.joint_speed,args.body_mass)
+            print(json.dumps(payload,indent=2))
+            return 0
+    except ValueError as exc:
+        p.error(str(exc))
     points=geometry(args.detail)
     terminal=shutil.get_terminal_size((116,54))
     cols=args.width or max(60,min(140,terminal.columns-2))
     rows=args.height or max(24,min(74,terminal.lines-8))
     canvas=BodyCanvas(points,width=cols,height=rows,mode=args.mode)
     canvas.tint=args.color.upper()
+    canvas.simulated_body_mass_kg=args.body_mass
     canvas.spin=not args.no_spin
     interactive=sys.stdout.isatty() and sys.stdin.isatty() and args.frames==0 and not args.once
     maximum=1 if (args.once or (not interactive and args.frames==0)) else args.frames
@@ -444,6 +706,9 @@ def run(argv=None):
                     if key=='h': canvas.view='HEAD'
                     if key=='t': canvas.view='TORSO'
                     if key=='f': canvas.view='FULL'
+                    if key=='o': canvas.ontology_enabled=not canvas.ontology_enabled
+                    if key==']': canvas.ontology_selection=(canvas.ontology_selection+1)%len(MECHANICAL_NODES)
+                    if key=='[': canvas.ontology_selection=(canvas.ontology_selection-1)%len(MECHANICAL_NODES)
                     if key=='p': canvas.spin=not canvas.spin
                     if key=='b': canvas.binary=not canvas.binary
                     if key=='c':
