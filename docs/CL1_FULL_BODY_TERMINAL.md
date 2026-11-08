@@ -4,8 +4,10 @@ An offline **full-body 3D** binary renderer for GPT-DOUG-LLM. It extends the
 existing [real-mesh skull terminal](SKULL_BINARY_TERMINAL.md) with an
 anatomy-*inspired* articulated whole figure: cranium, jaw, vertebrae, paired
 ribs, sternum, clavicles, pelvis, arms, hands, individual digits, femurs,
-kneecaps, lower legs, ankles and feet. A separate simulated neural network
-runs from the cranium through an abdominal hub to the limbs.
+kneecaps, lower legs, ankles and feet. The **default aesthetic is the exposed skeleton**: bone-white binary shading,
+no opaque tissue shell, and a small simulated biochip core. Separate optional
+neural and body-surface layers remain available only when selected. The simulated
+neural network runs from the cranium through an abdominal hub to the limbs.
 
 **Truth boundary:** the full-body geometry is generated algorithmically, not
 scanned anatomy or a clinical 3D medical model. The CL1-inspired computational
@@ -22,7 +24,7 @@ your existing terminal from **any directory**:
 curl -fL --retry 2 \
   https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/scripts/cl1_body_terminal.py \
   -o "$HOME/cl1_body_terminal.py" &&
-python3 "$HOME/cl1_body_terminal.py"
+python3 "$HOME/cl1_body_terminal.py" --mode skeleton --color bone
 \`\`\`
 
 While this file is in an open PR and not yet merged, use the feature branch
@@ -40,14 +42,14 @@ offline with \`python3 ~/cl1_body_terminal.py\`.
 | W / S | Tilt |
 | + / - | Zoom |
 | 1 | Fusion: skeletal structure + simulated CL1/neural layer |
-| 2 | Skeleton: ribs, skull, spine, hands, legs, pelvis |
+| 2 | Skeleton: ribs, skull, spine, hands, legs, pelvis **(default)** |
 | 3 | Neural simulation |
 | 4 | Body/surface contours |
 | H | Zoom to head |
 | T | Zoom to torso |
 | F | Restore entire full-body camera |
 | B | Switch 0/1 binary / depth-shaded glyph mode |
-| C | Cycle cyan, bone, amber, green |
+| C | Cycle bone, amber, green, cyan |
 | P | Pause or resume |
 | Q | Exit and restore terminal |
 
@@ -55,7 +57,7 @@ offline with \`python3 ~/cl1_body_terminal.py\`.
 
 \`\`\`bash
 python3 ~/cl1_body_terminal.py --once --no-color --width 110 --height 56
-python3 ~/cl1_body_terminal.py --once --mode skeleton --no-color
+python3 ~/cl1_body_terminal.py --once --mode skeleton --color bone --no-color
 python3 ~/cl1_body_terminal.py --frames 24 --fps 10 --detail light
 \`\`\`
 
