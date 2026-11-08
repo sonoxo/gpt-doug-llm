@@ -1,0 +1,43 @@
+name: SKULL Binary Terminal
+
+on:
+  pull_request:
+    paths:
+      - "scripts/skull_binary_terminal.py"
+      - "tests/test_skull_binary_terminal.py"
+      - "docs/SKULL_BINARY_TERMINAL.md"
+      - ".github/workflows/skull-binary-terminal.yml"
+  push:
+    branches: [main, "feat/**"]
+    paths:
+      - "scripts/skull_binary_terminal.py"
+      - "tests/test_skull_binary_terminal.py"
+      - ".github/workflows/skull-binary-terminal.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terminal-only-renderer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify real GLB parser and binary terminal without network or Pillow
+        run: python -m unittest tests.test_skull_binary_terminal -v
+      - name: Check standalone script interface and syntax
+        run: |
+          python -m py_compile scripts/skull_binary_terminal.py
+          python scripts/skull_binary_terminal.py --help >/tmp/skull-binary-help.txt
+          grep -q "\-\-model" /tmp/skull-binary-help.txt
+          grep -q "\-\-no-color" /tmp/skull-binary-help.txt
