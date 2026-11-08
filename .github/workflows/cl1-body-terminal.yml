@@ -6,6 +6,8 @@ on:
       - "scripts/cl1_body_terminal.py"
       - "tests/test_cl1_body_terminal.py"
       - "tests/test_cl1_mech_ontology.py"
+      - "scripts/install_cl1_terminal.py"
+      - "tests/test_cl1_installer.py"
       - "docs/CL1_FULL_BODY_TERMINAL.md"
       - "docs/CL1_MECHANICAL_ONTOLOGY.md"
       - ".github/workflows/cl1-body-terminal.yml"
@@ -15,6 +17,8 @@ on:
       - "scripts/cl1_body_terminal.py"
       - "tests/test_cl1_body_terminal.py"
       - "tests/test_cl1_mech_ontology.py"
+      - "scripts/install_cl1_terminal.py"
+      - "tests/test_cl1_installer.py"
       - ".github/workflows/cl1-body-terminal.yml"
   workflow_dispatch:
 
@@ -38,6 +42,22 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Verify full-body geometry and binary CPU renderer offline
         run: python -m unittest tests.test_cl1_body_terminal tests.test_cl1_mech_ontology -v
+      - name: Verify atomic installer, stale-version repair and real ontology commands
+        run: |
+          python -m unittest tests.test_cl1_installer -v
+          python scripts/cl1_body_terminal.py --version
+          python scripts/cl1_body_terminal.py --inspect left_forearm --joint-angle 65 --joint-speed 15 > /tmp/cl1-joint.json
+          python scripts/cl1_body_terminal.py --ontology-json > /tmp/cl1-graph.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          joint = json.loads(Path("/tmp/cl1-joint.json").read_text())
+          graph = json.loads(Path("/tmp/cl1-graph.json").read_text())
+          assert joint["id"] == "cl1:segment/left_forearm"
+          assert joint["joint_evaluation"]["hardware_command_sent"] is False
+          assert graph["entity_count"] >= 19
+          assert graph["hardware_connected"] is False
+          PY
       - name: Verify standalone program syntax and one-frame rendering
         run: |
           python -m py_compile scripts/cl1_body_terminal.py
