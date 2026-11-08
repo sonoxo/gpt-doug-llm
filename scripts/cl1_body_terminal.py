@@ -196,7 +196,7 @@ def _head(points):
 
 
 def _body_shell(points):
-    # Surface under-sampling deliberately leaves bones and neurons visible.
+    # Optional tissue layer. Hidden in the default skeleton-only presentation.
     _add_ellipsoid(points,0,1.17,0,.67,.79,.38,TISSUE,lat=45,lon=85)
     _add_ellipsoid(points,0,-.10,.005,.58,.43,.37,TISSUE,lat=23,lon=57)
     _add_ellipsoid(points,0,2.46,.01,.375,.46,.35,TISSUE,lat=38,lon=74)
@@ -259,7 +259,7 @@ def geometry(detail='normal'):
 
 
 class BodyCanvas:
-    def __init__(self, points, width=108, height=47, mode='FUSION'):
+    def __init__(self, points, width=108, height=47, mode='SKELETON'):
         self.points=points
         self.width,self.height=width,height
         self.mode=mode.upper()
@@ -268,7 +268,7 @@ class BodyCanvas:
         self.zoom=1.0
         self.spin=True
         self.binary=True
-        self.tint='CYAN'
+        self.tint='BONE'
         self.frame=0
         self.view='FULL'
 
@@ -379,7 +379,9 @@ def run(argv=None):
     p.add_argument('--width',type=int,default=0,help='40..180 characters')
     p.add_argument('--height',type=int,default=0,help='24..90 text rows')
     p.add_argument('--fps',type=int,default=9)
-    p.add_argument('--mode',choices=('fusion','body','skeleton','neural'),default='fusion')
+    p.add_argument('--mode',choices=('fusion','body','skeleton','neural'),default='skeleton')
+    p.add_argument('--color',choices=('bone','cyan','amber','green'),default='bone',
+                   help='terminal skeletal tint (bone-white by default)')
     p.add_argument('--detail',choices=('normal','light'),default='normal')
     p.add_argument('--no-color',action='store_true')
     p.add_argument('--no-spin',action='store_true')
@@ -395,6 +397,7 @@ def run(argv=None):
     cols=args.width or max(60,min(140,terminal.columns-2))
     rows=args.height or max(24,min(74,terminal.lines-8))
     canvas=BodyCanvas(points,width=cols,height=rows,mode=args.mode)
+    canvas.tint=args.color.upper()
     canvas.spin=not args.no_spin
     interactive=sys.stdout.isatty() and sys.stdin.isatty() and args.frames==0 and not args.once
     maximum=1 if (args.once or (not interactive and args.frames==0)) else args.frames
