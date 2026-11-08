@@ -101,7 +101,7 @@ class BodyGeometryTests(unittest.TestCase):
         text=stdout.getvalue()
         self.assertIn('FULL BODY',text)
         self.assertIn('NO LIVING NEURONS OR HARDWARE',text)
-        self.assertEqual(len(text.splitlines()),48)
+        self.assertEqual(len(text.splitlines()),50)
         self.assertNotIn('\x1b',text)
 
     def test_bound_cli_inputs(self):
