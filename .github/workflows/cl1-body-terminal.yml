@@ -1,0 +1,43 @@
+name: CL1 Full Body Binary Terminal
+
+on:
+  pull_request:
+    paths:
+      - "scripts/cl1_body_terminal.py"
+      - "tests/test_cl1_body_terminal.py"
+      - "docs/CL1_FULL_BODY_TERMINAL.md"
+      - ".github/workflows/cl1-body-terminal.yml"
+  push:
+    branches: [main, "feat/**"]
+    paths:
+      - "scripts/cl1_body_terminal.py"
+      - "tests/test_cl1_body_terminal.py"
+      - ".github/workflows/cl1-body-terminal.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  body-renderer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify full-body geometry and binary CPU renderer offline
+        run: python -m unittest tests.test_cl1_body_terminal -v
+      - name: Verify standalone program syntax and one-frame rendering
+        run: |
+          python -m py_compile scripts/cl1_body_terminal.py
+          python scripts/cl1_body_terminal.py --once --width 105 --height 55 --mode skeleton --no-color > /tmp/cl1-body-frame.txt
+          grep -q "FULL BODY" /tmp/cl1-body-frame.txt
+          grep -q "CL1 NEURAL/BIOCHIP LAYER IS SIMULATED" /tmp/cl1-body-frame.txt
