@@ -459,6 +459,51 @@ class BodyCanvas:
         self.ontology_enabled=True
         self.ontology_selection=0
         self.simulated_body_mass_kg=70.0
+        # Adaptive raster budget: project only enough 3D samples to fill
+        # character cells. Source geometry and mechanical ontology stay intact.
+        self.render_quality='auto'
+        self._sampling_key=None
+        self._samples=()
+        self._sample_count=0
+
+    def _render_samples(self):
+        # Filter invisible layers once per mode/view/resolution, rather than
+        # scanning all ~80k source points on every frame.
+        key=(self.mode,self.view,self.width,self.height,self.render_quality)
+        if self._sampling_key==key:
+            return self._samples
+        if self.mode=='SKELETON':
+            allowed=(BONE,BIOCHIP)
+        elif self.mode=='BODY':
+            allowed=(TISSUE,BIOCHIP)
+        elif self.mode=='NEURAL':
+            allowed=(NEURAL,BIOCHIP,BONE)
+        else:
+            allowed=(BONE,TISSUE,NEURAL,BIOCHIP)
+        points=[]
+        for index,point in enumerate(self.points):
+            x,y,z,kind=point
+            if kind not in allowed:
+                continue
+            if self.mode=='FUSION' and kind==TISSUE and index%6:
+                continue
+            # The HEAD / TORSO camera crops these parts of the figure.
+            if self.view=='HEAD' and y<1.45:
+                continue
+            if self.view=='TORSO' and not -.65<y<2.25:
+                continue
+            points.append(point)
+        if self.render_quality=='auto':
+            # Each output glyph only stores its nearest sample in the z-buffer.
+            # ~4 samples/cell is a useful cost/detail compromise.
+            limit=max(3500,min(28000,4*self.width*self.height))
+            if len(points)>limit:
+                step=len(points)/limit
+                points=[points[int(i*step)] for i in range(limit)]
+        self._samples=tuple(points)
+        self._sampling_key=key
+        self._sample_count=len(points)
+        return self._samples
 
     def render(self, color=False):
         w,h=self.width,self.height
@@ -480,15 +525,7 @@ class BodyCanvas:
         # Character cells are typically ~twice as high as wide. Compensation
         # protects full-body skeletal proportions on the terminal.
         focal=min((w-4)*camera/9.0,(h-3)*camera/5.55)*zoomscale
-        for idx,(x0,y0,z0,kind) in enumerate(self.points):
-            if self.mode=='SKELETON' and kind not in (BONE,BIOCHIP):
-                continue
-            if self.mode=='BODY' and kind not in (TISSUE,BIOCHIP):
-                continue
-            if self.mode=='NEURAL' and kind not in (NEURAL,BIOCHIP,BONE):
-                continue
-            if self.mode=='FUSION' and kind==TISSUE and idx%6:
-                continue
+        for x0,y0,z0,kind in self._render_samples():
             x=cy*x0+sy*z0
             z=-sy*x0+cy*z0
             yc=y0-focus
@@ -556,7 +593,9 @@ class BodyCanvas:
                     ramp=' .:+*#@'
                     char=ramp[level]
                 if color:
-                    new=(kind,level,i in locator_pixels)
+                    # Group adjacent depth levels to limit expensive ANSI
+                    # color escape churn without removing bone shading.
+                    new=(kind,(level+1)//2,i in locator_pixels)
                     if new!=last:
                         last=new
                         if not level:
@@ -579,9 +618,10 @@ class BodyCanvas:
     def dashboard(self, color=False):
         w=self.width
         hdr='BIOCHIP-CL1 // GPT-DOUG FULL BODY // 3D BINARY ANATOMY'
-        stats='MODEL: %s | %s | %s | %s | %d VERTICES | YAW %03d'%(
+        stats='MODEL: %s | %s | %s | %s | %d SOURCE / %d DRAW | YAW %03d'%(
             self.view,self.mode,'01' if self.binary else 'SHADE',self.tint,
-            len(self.points),int(math.degrees(self.yaw))%360)
+            len(self.points),len(self._render_samples()),
+            int(math.degrees(self.yaw))%360)
         footer='A/D ORBIT W/S TILT +/- ZOOM 1-4 MODE [/] SELECT O ONTOLOGY H/T/F VIEW B/C RENDER P PAUSE Q EXIT'
         notice='CL1 NEURAL/BIOCHIP LAYER IS SIMULATED. NO LIVING NEURONS OR HARDWARE CONNECTED.'
         head=('\x1b[1;36m' if color else '')+hdr[:w].ljust(w)+('\x1b[0m' if color else '')
@@ -625,6 +665,8 @@ def run(argv=None):
     p.add_argument('--joint-speed',type=float,default=0.0,help='simulated angular speed in degrees/s')
     p.add_argument('--body-mass',type=float,default=70.0,help='nominal simulated mass 20..300 kg')
     p.add_argument('--detail',choices=('normal','light'),default='normal')
+    p.add_argument('--quality',choices=('auto','full'),default='auto',
+                   help='auto caps projection points by text resolution; full renders all source points')
     p.add_argument('--no-color',action='store_true')
     p.add_argument('--no-spin',action='store_true')
     args=p.parse_args(argv)
@@ -659,6 +701,7 @@ def run(argv=None):
     cols=args.width or max(60,min(140,terminal.columns-2))
     rows=args.height or max(24,min(74,terminal.lines-8))
     canvas=BodyCanvas(points,width=cols,height=rows,mode=args.mode)
+    canvas.render_quality=args.quality
     canvas.tint=args.color.upper()
     canvas.simulated_body_mass_kg=args.body_mass
     canvas.spin=not args.no_spin
@@ -689,7 +732,10 @@ def run(argv=None):
                 break
             if canvas.spin:
                 canvas.yaw+=.032
-            wait=max(0,1/args.fps-(time.monotonic()-started))
+            # A stationary scene does not require repeated expensive redraw.
+            # Wait for the next key instead of repainting 9 times/second.
+            wait=(None if interactive and not canvas.spin else
+                  max(0,1/args.fps-(time.monotonic()-started)))
             if interactive:
                 ready,_,_=select.select([sys.stdin],[],[],wait)
                 if ready:
