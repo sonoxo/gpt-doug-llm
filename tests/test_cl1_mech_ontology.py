@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import contextlib
+import importlib
 import io
 import json
 import math
@@ -11,7 +12,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-import cl1_body_terminal as mech
+mech = importlib.import_module("cl1_body_terminal")
 
 
 class MechanicalOntologyTests(unittest.TestCase):
