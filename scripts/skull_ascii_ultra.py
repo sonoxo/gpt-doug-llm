@@ -68,7 +68,7 @@ def demo_image() -> Path:
     target_dir = Path.home() / "Library" / "Caches" / "gpt-doug-skull"
     target_dir.mkdir(parents=True, exist_ok=True)
     target = target_dir / "skullfront-cropped.png"
-    if target.exists() and target.stat().st_size > 10000:
+    if target.exists() and target.stat().st_size > 1024:
         return target
     request = Request(DEMO_URL, headers={"User-Agent": "GPT-DOUG-SKULL-ASCII/1.0 (Wikimedia Commons preview)"})
     with urlopen(request, timeout=25) as response:
