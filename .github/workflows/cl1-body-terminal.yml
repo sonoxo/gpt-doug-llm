@@ -5,13 +5,16 @@ on:
     paths:
       - "scripts/cl1_body_terminal.py"
       - "tests/test_cl1_body_terminal.py"
+      - "tests/test_cl1_mech_ontology.py"
       - "docs/CL1_FULL_BODY_TERMINAL.md"
+      - "docs/CL1_MECHANICAL_ONTOLOGY.md"
       - ".github/workflows/cl1-body-terminal.yml"
   push:
     branches: [main, "feat/**"]
     paths:
       - "scripts/cl1_body_terminal.py"
       - "tests/test_cl1_body_terminal.py"
+      - "tests/test_cl1_mech_ontology.py"
       - ".github/workflows/cl1-body-terminal.yml"
   workflow_dispatch:
 
@@ -34,10 +37,23 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Verify full-body geometry and binary CPU renderer offline
-        run: python -m unittest tests.test_cl1_body_terminal -v
+        run: python -m unittest tests.test_cl1_body_terminal tests.test_cl1_mech_ontology -v
       - name: Verify standalone program syntax and one-frame rendering
         run: |
           python -m py_compile scripts/cl1_body_terminal.py
           python scripts/cl1_body_terminal.py --once --width 105 --height 55 --mode skeleton --no-color > /tmp/cl1-body-frame.txt
           grep -q "FULL BODY" /tmp/cl1-body-frame.txt
           grep -q "CL1 NEURAL/BIOCHIP LAYER IS SIMULATED" /tmp/cl1-body-frame.txt
+          python scripts/cl1_body_terminal.py --ontology-json > /tmp/cl1-mech.json
+          python scripts/cl1_body_terminal.py --inspect left_forearm --joint-angle 45 > /tmp/cl1-elbow.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          doc=json.loads(Path("/tmp/cl1-mech.json").read_text())
+          joint=json.loads(Path("/tmp/cl1-elbow.json").read_text())
+          assert doc["entity_count"] == 19 and len(doc["relations"]) == 18
+          assert doc["simulation_only"] and not doc["hardware_connected"]
+          assert joint["joint_evaluation"]["within_limits"]
+          assert not joint["joint_evaluation"]["hardware_command_sent"]
+          print("CL1 simulated mechanics ontology smoke PASS")
+          PY
