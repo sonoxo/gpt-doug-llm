@@ -8,6 +8,7 @@ on:
       - "tests/test_cl1_mech_ontology.py"
       - "scripts/install_cl1_terminal.py"
       - "tests/test_cl1_installer.py"
+      - "tests/test_cl1_performance.py"
       - "docs/CL1_FULL_BODY_TERMINAL.md"
       - "docs/CL1_MECHANICAL_ONTOLOGY.md"
       - ".github/workflows/cl1-body-terminal.yml"
@@ -19,6 +20,7 @@ on:
       - "tests/test_cl1_mech_ontology.py"
       - "scripts/install_cl1_terminal.py"
       - "tests/test_cl1_installer.py"
+      - "tests/test_cl1_performance.py"
       - ".github/workflows/cl1-body-terminal.yml"
   workflow_dispatch:
 
@@ -42,6 +44,21 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Verify full-body geometry and binary CPU renderer offline
         run: python -m unittest tests.test_cl1_body_terminal tests.test_cl1_mech_ontology -v
+      - name: Verify adaptive projection, cached skeletal layers and measured CPU FPS
+        run: |
+          python -m unittest tests.test_cl1_performance -v
+          python scripts/cl1_body_terminal.py --benchmark 3 --width 90 --height 42 --quality auto > /tmp/cl1-perf.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("/tmp/cl1-perf.json").read_text())
+          assert report["frames_measured"] == 3
+          assert report["projected_points_per_frame"] <= 4*90*42
+          assert report["projected_points_per_frame"] < report["source_points"]
+          assert report["measured_fps"] > 0
+          assert report["simulation_only"] is True
+          print("Real CPU CL1 rendering benchmark:", report["measured_fps"], "frames/s")
+          PY
       - name: Verify atomic installer, stale-version repair and real ontology commands
         run: |
           python -m unittest tests.test_cl1_installer -v

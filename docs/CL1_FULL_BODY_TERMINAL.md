@@ -21,6 +21,46 @@ and neural layers are **software simulations only**, with no biological CL1
 neurons or hardware attached. The offline 3D rotation is real geometry,
 perspective projection and a CPU depth buffer, drawn as terminal glyphs.
 
+## Faster skeleton rendering — CPU-adaptive mode
+
+The full source figure contains roughly **80,000 3D vertices**. The latest
+CPU renderer keeps all original skeletal geometry and mechanical-ontology
+properties, but by default projects a **screen-resolution-aware subset**
+(about four candidate points per terminal text cell). It caches selected
+bone layers across rotations and **sleeps instead of repeatedly redrawing**
+when rotation is paused or `--no-spin` is used.
+
+Use the verified installer below to update an existing older Mac copy. Then:
+
+```bash
+# Recommended: bone-white skeleton and adaptive 3D point projection
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --color bone --quality auto --fps 9
+
+# Smoothest on older machines (about one-third initial geometry):
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --color bone --detail light --quality auto \
+  --width 90 --height 42 --fps 6
+
+# Static inspection: draw once, then block until a key is pressed.
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --color bone --quality auto --no-spin
+
+# Actual, local CPU benchmark. Does not use Ollama or CL1 hardware:
+python3 "$HOME/Downloads/cl1_body_terminal.py" --benchmark 5 \
+  --width 90 --height 42 --quality auto
+
+# Override sampling if you need all points (slower):
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --quality full
+```
+
+`--benchmark` reports measured milliseconds per frame and software FPS,
+alongside both the unmodified source point count and points actually projected.
+Frame rate depends on your Mac, font/terminal settings and display size; it is
+**not** a hardware or GPU benchmark. Head, torso, skeletal modes and
+**O / [ / ]** mechanical inspection remain supported.
+
 ## Repair an outdated Mac copy (recommended)
 
 The terminal error `unrecognized arguments: --inspect ... --ontology-json`
