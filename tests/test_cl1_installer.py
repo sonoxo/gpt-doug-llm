@@ -61,6 +61,48 @@ class CL1InstallerTests(unittest.TestCase):
             self.assertFalse(result["changed"])
             self.assertIsNone(result["backup"])
 
+    def test_fixed_https_download_requires_expected_source(self):
+        class Response:
+            status = 200
+            def read(self, max_size):
+                self.max_size = max_size
+                return self_payload
+        class Connection:
+            def __init__(self):
+                self.path = None
+                self.closed = False
+            def request(self, method, path, headers=None):
+                self.path = (method, path)
+            def getresponse(self):
+                return Response()
+            def close(self):
+                self.closed = True
+        self_payload = self.source_bytes
+        connection = Connection()
+        with patch.object(installer, "HTTPSConnection", return_value=connection) as tls:
+            result = installer.fetch_official_source()
+        self.assertEqual(result, self.source_bytes)
+        self.assertEqual(connection.path[0], "GET")
+        self.assertEqual(connection.path[1], "/sonoxo/gpt-doug-llm/main/scripts/cl1_body_terminal.py")
+        self.assertTrue(connection.closed)
+        self.assertEqual(tls.call_args.args, ("raw.githubusercontent.com",))
+
+    def test_http_redirect_is_rejected_without_following(self):
+        class Response:
+            status = 302
+        class Connection:
+            def request(self, *args, **kwargs):
+                pass
+            def getresponse(self):
+                return Response()
+            def close(self):
+                self.closed = True
+        connection = Connection()
+        with patch.object(installer, "HTTPSConnection", return_value=connection):
+            with self.assertRaisesRegex(OSError, "not HTTP 200"):
+                installer.fetch_official_source()
+        self.assertTrue(connection.closed)
+
     def test_bad_download_preserves_existing_renderer(self):
         with tempfile.TemporaryDirectory() as directory:
             destination = Path(directory) / "cl1_body_terminal.py"
