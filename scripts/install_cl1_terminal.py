@@ -24,7 +24,7 @@ SOURCE_URL = (
     "https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/"
     "scripts/cl1_body_terminal.py"
 )
-RELEASE = "2026.11.07-speed.3"
+RELEASE = "2026.11.09-terminal.4"
 MAX_SOURCE_BYTES = 160_000
 
 
