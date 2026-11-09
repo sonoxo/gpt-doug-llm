@@ -16,9 +16,9 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from http.client import HTTPSConnection
 from pathlib import Path
 from urllib.parse import urlsplit
-from urllib.request import Request, urlopen
 
 SOURCE_URL = (
     "https://raw.githubusercontent.com/sonoxo/gpt-doug-llm/main/"
@@ -56,18 +56,25 @@ def _validate_source(content: bytes) -> str:
 
 
 def fetch_official_source() -> bytes:
-    request = Request(SOURCE_URL, headers={"User-Agent": "GPT-DOUG-CL1-Installer/1"})
-    with urlopen(request, timeout=20) as response:
-        final = urlsplit(response.geturl())
-        expected = urlsplit(SOURCE_URL)
-        if (
-            final.scheme != "https"
-            or final.hostname != expected.hostname
-            or final.path != expected.path
-            or final.query or final.fragment
-        ):
-            raise ValueError("Unexpected download redirect; existing script preserved")
+    # HTTPSConnection deliberately does NOT auto-follow redirects to another
+    # host or scheme, even if the endpoint is compromised. Fail closed.
+    expected = urlsplit(SOURCE_URL)
+    if (expected.scheme != "https" or expected.hostname != "raw.githubusercontent.com"
+            or expected.port is not None or expected.username is not None
+            or expected.password is not None or expected.query or expected.fragment):
+        raise ValueError("Unsafe renderer source URL")
+    connection = HTTPSConnection(expected.hostname, timeout=20)
+    try:
+        connection.request(
+            "GET", expected.path,
+            headers={"User-Agent": "GPT-DOUG-CL1-Installer/1"},
+        )
+        response = connection.getresponse()
+        if response.status != 200:
+            raise OSError("GitHub source download was not HTTP 200; previous copy preserved")
         content = response.read(MAX_SOURCE_BYTES + 1)
+    finally:
+        connection.close()
     _validate_source(content)
     return content
 
