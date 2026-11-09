@@ -5,7 +5,6 @@ import contextlib
 import importlib.util
 import io
 import json
-import math
 import sys
 import unittest
 from pathlib import Path
