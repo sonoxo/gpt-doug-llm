@@ -764,15 +764,30 @@ def run(argv=None):
             canvas.frame=i
             canvas.render(color=False)
         elapsed=time.perf_counter()-start
+        # The historical FPS figure only times projection without color
+        # formatting or actual Terminal I/O. Expose those costs separately.
+        color_start=time.perf_counter()
+        colored_previous=canvas.dashboard(color=True)
+        canvas.yaw+=.035
+        colored_next=canvas.dashboard(color=True)
+        colored_cpu_ms=1000*(time.perf_counter()-color_start)/2
+        diff_text,_=build_terminal_delta(tuple(colored_previous.splitlines()),colored_next)
+        full_text='\x1b[H'+colored_next+'\x1b[0m\x1b[J'
         print(json.dumps({
             'renderer':'CL1 software 3D CPU z-buffer',
             'release':CL1_RELEASE,
             'quality':canvas.render_quality,
+            'color_detail':canvas.color_detail,
             'source_points':len(points),
             'projected_points_per_frame':canvas._sample_count,
             'frames_measured':args.benchmark,
             'mean_ms_per_frame':round(1000*elapsed/args.benchmark,2),
             'measured_fps':round(args.benchmark/elapsed,2) if elapsed>0 else None,
+            'colored_format_mean_ms':round(colored_cpu_ms,2),
+            'full_colored_frame_bytes':len(full_text.encode('utf-8')),
+            'changed_rows_frame_bytes':len(diff_text.encode('utf-8')),
+            'terminal_io_measured':False,
+            'fps_is_projection_only':True,
             'simulation_only':True,
         },indent=2))
         return 0
