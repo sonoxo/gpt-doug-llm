@@ -9,6 +9,7 @@ on:
       - "scripts/install_cl1_terminal.py"
       - "tests/test_cl1_installer.py"
       - "tests/test_cl1_performance.py"
+      - "tests/test_cl1_terminal_updates.py"
       - "docs/CL1_FULL_BODY_TERMINAL.md"
       - "docs/CL1_MECHANICAL_ONTOLOGY.md"
       - ".github/workflows/cl1-body-terminal.yml"
@@ -21,6 +22,7 @@ on:
       - "scripts/install_cl1_terminal.py"
       - "tests/test_cl1_installer.py"
       - "tests/test_cl1_performance.py"
+      - "tests/test_cl1_terminal_updates.py"
       - ".github/workflows/cl1-body-terminal.yml"
   workflow_dispatch:
 
@@ -44,6 +46,21 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Verify full-body geometry and binary CPU renderer offline
         run: python -m unittest tests.test_cl1_body_terminal tests.test_cl1_mech_ontology -v
+      - name: Verify low-bandwidth Terminal updates and realistic colored-display metrics
+        run: |
+          python -m unittest tests.test_cl1_terminal_updates -v
+          python scripts/cl1_body_terminal.py --benchmark 3 --width 90 --height 42 --color-detail fast > /tmp/cl1-terminal-io.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path("/tmp/cl1-terminal-io.json").read_text())
+          assert report["terminal_io_measured"] is False
+          assert report["fps_is_projection_only"] is True
+          assert report["changed_rows_frame_bytes"] <= report["full_colored_frame_bytes"]
+          assert report["colored_format_mean_ms"] > 0
+          print("CL1 colored bytes (full, diff):",
+                report["full_colored_frame_bytes"], report["changed_rows_frame_bytes"])
+          PY
       - name: Verify adaptive projection, cached skeletal layers and measured CPU FPS
         run: |
           python -m unittest tests.test_cl1_performance -v
