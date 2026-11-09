@@ -4,14 +4,11 @@ from __future__ import annotations
 import contextlib
 import importlib.util
 import io
-import json
-import os
-from pathlib import Path
-import shutil
 import sys
 import tempfile
 import unittest
-from unittest.mock import Mock, patch
+from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "scripts" / "cl1_body_terminal.py"
