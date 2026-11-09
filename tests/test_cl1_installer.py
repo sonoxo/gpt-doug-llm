@@ -29,7 +29,7 @@ class CL1InstallerTests(unittest.TestCase):
     def test_local_current_source_has_expected_release_and_ontology(self):
         sha = installer._validate_source(self.source_bytes)
         self.assertEqual(len(sha), 64)
-        self.assertEqual(installer.RELEASE, "2026.11.07-speed.3")
+        self.assertEqual(installer.RELEASE, "2026.11.09-terminal.4")
 
     def test_actual_commands_work_before_update(self):
         result = installer.verify_candidate(SOURCE)
