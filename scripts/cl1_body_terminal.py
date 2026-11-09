@@ -443,6 +443,11 @@ def geometry(detail='normal'):
     return tuple(points)
 
 
+def rotation_delta(elapsed_seconds):
+    """Time-based yaw with a 0.5s safety cap after a suspended frame."""
+    return min(.50,max(0.0,elapsed_seconds))*.288
+
+
 def build_terminal_delta(previous, frame_text):
     """Return a cursor-addressed update plus the current screen rows.
 
@@ -810,7 +815,7 @@ def run(argv=None):
             if interactive and canvas.spin:
                 # Rotate in real elapsed time, not "one angle increment per
                 # frame", so slower hardware doesn't make rotation crawl.
-                canvas.yaw+=min(.20,max(0.0,started-last_tick))*.288
+                canvas.yaw+=rotation_delta(started-last_tick)
             last_tick=started
             if interactive:
                 size=shutil.get_terminal_size((cols,rows+8))
