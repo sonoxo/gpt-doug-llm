@@ -21,6 +21,51 @@ and neural layers are **software simulations only**, with no biological CL1
 neurons or hardware attached. The offline 3D rotation is real geometry,
 perspective projection and a CPU depth buffer, drawn as terminal glyphs.
 
+## macOS Terminal frame-rate and screen-output upgrade (November 9)
+
+The old CPU benchmark reported how fast the **uncolored 3D projection** runs
+in memory, not how fast macOS Terminal can display colored frames. The
+optimized renderer now reports the distinction and improves the actual
+Terminal output path:
+
+- **Dirty-row redraw:** update only text rows that changed; remove blank left
+  margins and padding in changed rows. The renderer can still fall back to a
+  full frame if it would use fewer bytes.
+- **Fast colors by default:** retain bone-white anatomy and accent markers,
+  but avoid hundreds of expensive per-depth RGB escape sequences per frame.
+  Use `--color-detail detailed` to restore the older richer depth tint.
+- **Actual elapsed-time rotation:** avoid slow-motion rotation if real frame
+  rate is below the requested target.
+- **No-spin remains event-driven:** when paused, don't redraw until a key is
+  pressed.
+- **Ontology remains intact:** O to show/hide; [ and ] to select the 19
+  mechanical components; full source geometry and all joint properties remain.
+
+Use the **versioned installer** below to upgrade an existing Mac copy first;
+the expected version is `2026.11.09-terminal.4`.
+
+```bash
+# Recommended for a Mac Terminal window: faster colored skeletal view
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --color bone --quality auto \
+  --color-detail fast --fps 9
+
+# Lower bandwidth / slower computers
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --mode skeleton --color bone --detail light \
+  --width 90 --height 42 --fps 6
+
+# Compare local projection time and colored Terminal payload
+python3 "$HOME/Downloads/cl1_body_terminal.py" \
+  --benchmark 5 --width 90 --height 42 --color-detail fast
+```
+
+Benchmarks report separate fields for projection time, colored formatting
+time, whole-frame bytes, and changed-row bytes. `terminal_io_measured=false`
+means the benchmark **does not measure** how quickly the macOS Terminal
+application actually paints those bytes. Confirm final responsiveness on
+your Mac; do not interpret benchmark FPS as guaranteed display FPS.
+
 ## Faster skeleton rendering — CPU-adaptive mode
 
 The full source figure contains roughly **80,000 3D vertices**. The latest
