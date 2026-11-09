@@ -18,7 +18,7 @@ import sys
 import time
 from dataclasses import dataclass
 
-CL1_RELEASE = "2026.11.07-speed.3"
+CL1_RELEASE = "2026.11.09-terminal.4"
 BONE, TISSUE, NEURAL, BIOCHIP = 1, 2, 3, 4
 COLORS = {
     'CYAN': (70, 236, 231), 'BONE': (232, 221, 195),
@@ -443,6 +443,27 @@ def geometry(detail='normal'):
     return tuple(points)
 
 
+def build_terminal_delta(previous, frame_text):
+    """Return a cursor-addressed update plus the current screen rows.
+
+    Only changed text rows are emitted. Entire-frame redraw is chosen if it
+    would be smaller. This only formats ANSI text; it never writes to stdout.
+    The caller owns the single write/flush per frame.
+    """
+    current=tuple(frame_text.splitlines())
+    full='\x1b[H'+frame_text+'\x1b[0m\x1b[J'
+    if previous is None:
+        return full,current
+    changes=[]
+    for row,line in enumerate(current):
+        if row>=len(previous) or previous[row]!=line:
+            changes.append('\x1b[%d;1H%s\x1b[0m\x1b[K'%(row+1,line))
+    if len(previous)>len(current):
+        changes.append('\x1b[%d;1H\x1b[J'%(len(current)+1))
+    delta=''.join(changes)
+    return (full if len(delta)>=len(full) else delta),current
+
+
 class BodyCanvas:
     def __init__(self, points, width=108, height=47, mode='SKELETON'):
         self.points=points
@@ -462,6 +483,7 @@ class BodyCanvas:
         # Adaptive raster budget: project only enough 3D samples to fill
         # character cells. Source geometry and mechanical ontology stay intact.
         self.render_quality='auto'
+        self.color_detail='fast'  # High-contrast bone/green/locator, fewer ANSI sequences
         self._sampling_key=None
         self._samples=()
         self._sample_count=0
@@ -595,7 +617,13 @@ class BodyCanvas:
                 if color:
                     # Group adjacent depth levels to limit expensive ANSI
                     # color escape churn without removing bone shading.
-                    new=(kind,(level+1)//2,i in locator_pixels)
+                    if self.color_detail=='fast':
+                        # Skip per-pixel RGB shading changes; highlight the
+                        # simulated biochip and selected mechanical locator.
+                        new=(bool(level),kind in (BIOCHIP,NEURAL),
+                             i in locator_pixels)
+                    else:
+                        new=(kind,(level+1)//2,i in locator_pixels)
                     if new!=last:
                         last=new
                         if not level:
@@ -609,7 +637,8 @@ class BodyCanvas:
                                 base=tuple(int(v*.53) for v in rgb)
                             else:
                                 base=rgb
-                            brightness=min(1.0,.32+.14*level)
+                            brightness=(.91 if self.color_detail=='fast' else
+                                        min(1.0,.32+.14*level))
                             cells.append('\x1b[38;2;%d;%d;%dm'%tuple(int(v*brightness) for v in base))
                 cells.append(char)
             lines.append(''.join(cells)+('\x1b[0m' if color else ''))
@@ -665,6 +694,8 @@ def run(argv=None):
     p.add_argument('--joint-speed',type=float,default=0.0,help='simulated angular speed in degrees/s')
     p.add_argument('--body-mass',type=float,default=70.0,help='nominal simulated mass 20..300 kg')
     p.add_argument('--detail',choices=('normal','light'),default='normal')
+    p.add_argument('--color-detail',choices=('fast','detailed'),default='fast',
+                   help='fast minimizes terminal ANSI escape traffic; detailed uses per-depth RGB')
     p.add_argument('--quality',choices=('auto','full'),default='auto',
                    help='auto caps projection points by text resolution; full renders all source points')
     p.add_argument('--no-color',action='store_true')
@@ -706,6 +737,7 @@ def run(argv=None):
     rows=args.height or max(24,min(74,terminal.lines-8))
     canvas=BodyCanvas(points,width=cols,height=rows,mode=args.mode)
     canvas.render_quality=args.quality
+    canvas.color_detail=args.color_detail
     canvas.tint=args.color.upper()
     canvas.simulated_body_mass_kg=args.body_mass
     canvas.spin=not args.no_spin
@@ -734,6 +766,8 @@ def run(argv=None):
     interactive=sys.stdout.isatty() and sys.stdin.isatty() and args.frames==0 and not args.once
     maximum=1 if (args.once or (not interactive and args.frames==0)) else args.frames
     original=None
+    previous_screen=None
+    last_tick=time.monotonic()
     try:
         if interactive:
             import termios
@@ -745,19 +779,29 @@ def run(argv=None):
         frame=0
         while True:
             started=time.monotonic()
+            if interactive and canvas.spin:
+                # Rotate in real elapsed time, not "one angle increment per
+                # frame", so slower hardware doesn't make rotation crawl.
+                canvas.yaw+=min(.20,max(0.0,started-last_tick))*.288
+            last_tick=started
             if interactive:
                 size=shutil.get_terminal_size((cols,rows+8))
                 canvas.width=args.width or max(60,min(140,size.columns-2))
                 canvas.height=args.height or max(24,min(74,size.lines-8))
-                sys.stdout.write('\x1b[H\x1b[J')
-            sys.stdout.write(canvas.dashboard(color=not args.no_color and sys.stdout.isatty())+'\n')
+            frame_text=canvas.dashboard(
+                color=not args.no_color and sys.stdout.isatty()
+            )
+            if interactive:
+                update,previous_screen=build_terminal_delta(previous_screen,frame_text)
+                if update:
+                    sys.stdout.write(update)
+            else:
+                sys.stdout.write(frame_text+'\n')
             sys.stdout.flush()
             frame+=1
             canvas.frame=frame
             if maximum and frame>=maximum:
                 break
-            if canvas.spin:
-                canvas.yaw+=.032
             # A stationary scene does not require repeated expensive redraw.
             # Wait for the next key instead of repainting 9 times/second.
             wait=(None if interactive and not canvas.spin else
@@ -802,6 +846,7 @@ def run(argv=None):
                         canvas.ontology_selection=(canvas.ontology_selection-1)%len(MECHANICAL_NODES)
                     if key=='p':
                         canvas.spin=not canvas.spin
+                        last_tick=time.monotonic()
                     if key=='b':
                         canvas.binary=not canvas.binary
                     if key=='c':
