@@ -457,7 +457,20 @@ def build_terminal_delta(previous, frame_text):
     changes=[]
     for row,line in enumerate(current):
         if row>=len(previous) or previous[row]!=line:
-            changes.append('\x1b[%d;1H%s\x1b[0m\x1b[K'%(row+1,line))
+            # Clear the previous row, then skip huge blank left margins
+            # around the centered skeleton. Removing trailing padding is
+            # safe because the row has already been erased.
+            payload=line
+            if payload.endswith('\x1b[0m'):
+                payload=payload[:-4]
+            payload=payload.rstrip(' ')
+            leading=len(payload)-len(payload.lstrip(' '))
+            payload=payload[leading:]
+            if payload:
+                changes.append('\x1b[%d;1H\x1b[2K\x1b[%dG%s\x1b[0m'%
+                               (row+1,leading+1,payload))
+            else:
+                changes.append('\x1b[%d;1H\x1b[2K'%(row+1))
     if len(previous)>len(current):
         changes.append('\x1b[%d;1H\x1b[J'%(len(current)+1))
     delta=''.join(changes)
