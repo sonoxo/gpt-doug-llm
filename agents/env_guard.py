@@ -13,6 +13,10 @@ import sys
 _PAID_KEYS_TO_BLOCK = (
     "OPENAI_API_KEY",
     "ANTHROPIC_API_KEY",
+    "GEMINI_API_KEY",
+    "QWEN_API_KEY",
+    "TWILIO_AUTH_TOKEN",
+    "TWILIO_ACCOUNT_SID",
     "STRIPE_SECRET_KEY",
     "STRIPE_WEBHOOK_SECRET",
     "RESEND_API_KEY",
@@ -21,9 +25,12 @@ _PAID_KEYS_TO_BLOCK = (
     "AWS_SECRET_ACCESS_KEY",
 )
 
+_BLOCKED_KEY_NAMES: list[str] = []
+
 for _key in _PAID_KEYS_TO_BLOCK:
     if _key in os.environ:
         os.environ.pop(_key, None)
+        _BLOCKED_KEY_NAMES.append(_key)
         print(f"CL1 FREE ONLY: disabled billed-service credential {_key}", file=sys.stderr)
 
 os.environ["PAID_MODE"] = "false"
@@ -35,7 +42,7 @@ def is_free_mode() -> bool:
 
 
 def get_blocked_keys() -> list[str]:
-    return [key for key in _PAID_KEYS_TO_BLOCK if key not in os.environ]
+    return list(_BLOCKED_KEY_NAMES)
 
 
 def enable_paid_mode() -> None:
