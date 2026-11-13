@@ -24,10 +24,12 @@ TASK_PRICE_CENTS = 100  # $1.00 flat per agent-chain task
 
 
 def enabled():
-    return bool(STRIPE_SECRET_KEY)
+    # CL1 free-only: no checkout or paid-task creation, even with legacy keys.
+    return False
 
 
 def _post(path, params):
+    raise RuntimeError("CL1 free-only policy disables Stripe API calls")
     body = urllib.parse.urlencode(params, doseq=True).encode()
     req = urllib.request.Request(
         f"{STRIPE_API_BASE}/{path}",
@@ -53,7 +55,7 @@ def create_checkout_session(task_id, task_description, success_url, cancel_url):
     """Creates a Stripe Checkout Session for one $1 agent-chain task run.
     Returns the session dict (session['url'] is where to send the buyer)."""
     if not enabled():
-        raise RuntimeError("Stripe not configured (STRIPE_SECRET_KEY unset)")
+        raise RuntimeError("CL1 free-only policy disables Stripe checkout")
     params = {
         "mode": "payment",
         "success_url": success_url,
