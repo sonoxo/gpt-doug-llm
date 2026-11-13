@@ -1,0 +1,35 @@
+name: CL1 Free-Only Inference Guard
+
+on:
+  pull_request:
+    paths:
+      - 'agents/cl1_free_policy.py'
+      - 'agents/llm_backend.py'
+      - 'agents/llm_backend_free.py'
+      - 'agents/env_guard.py'
+      - 'tests/test_cl1_free_only.py'
+      - '.github/workflows/cl1-free-only.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'agents/cl1_free_policy.py'
+      - 'agents/llm_backend.py'
+      - 'agents/llm_backend_free.py'
+      - 'agents/env_guard.py'
+      - 'tests/test_cl1_free_only.py'
+      - '.github/workflows/cl1-free-only.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reject-billed-inference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Test CL1 free-only boundary without network or keys
+        run: python3 -m unittest discover -s tests -p 'test_cl1_free_only.py' -v
