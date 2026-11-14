@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
-from agents.cl1_free_policy import is_local_inference_url, provider_is_cloud
+from agents.cl1_free_policy import is_local_inference_url, is_local_ollama_model, provider_is_cloud
 from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed
 from ai_killswitch import status as ai_stop_status
 
@@ -303,7 +303,7 @@ class OllamaProvider(Provider):
         except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError):
             reachable = False
         wanted = self.config.model
-        model_available = reachable and any(
+        model_available = is_local_ollama_model(wanted) and reachable and any(
             name == wanted or name.startswith(wanted + ":") for name in models
         )
         return {
@@ -330,6 +330,12 @@ class OllamaProvider(Provider):
                 "error": "provider_unreachable",
             }
         used_model = model or self.config.model
+        if not is_local_ollama_model(used_model):
+            return {
+                "message": {"role": "assistant", "content": "CL1 blocks Ollama cloud models."},
+                "done": True,
+                "error": "cloud_model_blocked",
+            }
         if used_model == self.config.model and not state["model_available"]:
             return {
                 "message": {
