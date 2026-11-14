@@ -75,6 +75,37 @@
       "type": "control",
       "name": "Explicit operator approval gate",
       "default": "DENY"
+    },
+    {
+      "id": "glass-onion",
+      "type": "control",
+      "name": "Glass Onion Service Perimeter",
+      "default": "DENY",
+      "external_account_control": false
+    },
+    {
+      "id": "music-sector",
+      "type": "service-sector",
+      "name": "Music Service Integrations",
+      "scope": "reviewed public navigation only"
+    },
+    {
+      "id": "bank-sector",
+      "type": "service-sector",
+      "name": "Bank Service Integrations",
+      "scope": "policy inventory only; no bank connector authorized"
+    },
+    {
+      "id": "service-policy",
+      "type": "policy",
+      "name": "Exact HTTPS destination and action allowlist",
+      "credential_storage": false
+    },
+    {
+      "id": "service-review",
+      "type": "human-gate",
+      "name": "Operator approval and verified per-provider adapter before any sensitive operation",
+      "implemented": false
     }
   ],
   "edges": [
@@ -127,6 +158,36 @@
       "kraken",
       "actions",
       "advisory-only"
+    ],
+    [
+      "kraken",
+      "glass-onion",
+      "audit_service_decision"
+    ],
+    [
+      "glass-onion",
+      "music-sector",
+      "govern"
+    ],
+    [
+      "glass-onion",
+      "bank-sector",
+      "default-deny"
+    ],
+    [
+      "music-sector",
+      "service-policy",
+      "url_and_action_check"
+    ],
+    [
+      "bank-sector",
+      "service-review",
+      "missing_verified_connector"
+    ],
+    [
+      "glass-onion",
+      "audit",
+      "hash_linked_policy_decision"
     ]
   ],
   "safety_boundaries": {
@@ -134,12 +195,17 @@
     "no_shell_execution": true,
     "no_cloud_provisioning": true,
     "no_billing": true,
-    "no_autonomous_mutation": true
+    "no_autonomous_mutation": true,
+    "no_bank_transactions": true,
+    "no_music_account_mutation": true,
+    "unauthorized_oauth_blocked": true
   },
   "limitations": [
     "Only integrated entry points are gated; unrelated processes are not controlled",
     "Existing local audit file chain cannot prove that the log was not truncated or deleted",
     "Existing streaming output audit remains post-delivery; shield is an inbound gate",
-    "Persistent audit state must be backed up by the operator"
+    "Persistent audit state must be backed up by the operator",
+    "Music URLs are reviewed for initial destinations only; provider redirects and third-party accounts are out of scope",
+    "Banking account protection requires separately connected authorized provider interfaces; none are linked by this change"
   ]
 }
