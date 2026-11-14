@@ -70,10 +70,11 @@ class XuniaHandler(base.Handler):
             "",
         )
 
+        kraken_denial = base.kraken_preflight(last_user)
         input_verdict = base.zyra.inspect(last_user, direction="input")
-        if not input_verdict.allowed:
+        if kraken_denial or not input_verdict.allowed:
             reason = "; ".join(input_verdict.reasons) or "blocked by policy"
-            blocked_message = f"Zyra blocked this request: {reason}"
+            blocked_message = kraken_denial or f"Zyra blocked this request: {reason}"
             output_verdict = base.zyra.inspect(blocked_message, direction="output")
 
             self.send_response(200)
