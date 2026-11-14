@@ -204,6 +204,55 @@ class KrakenShield:
             "executed": False,
         }
 
+    def judge_vulnerability(self, evidence: dict[str, Any]) -> dict[str, Any]:
+        """Connect Kraken Jutsu's offline ontology judge; never execute fixes.
+
+        Evidence is caller-supplied and unverified, even when it uses official
+        source labels. This method does not fetch, enrich, or scan networks.
+        """
+        if not isinstance(evidence, dict):
+            raise ValueError("evidence_must_be_object")
+        expected = {
+            "cve": (str, type(None)),
+            "kev_record": (dict, type(None)),
+            "ssvc": (dict, type(None)),
+            "attack_techniques": (list, type(None)),
+            "oscal_controls": (list, type(None)),
+            "osint_evidence": (list, type(None)),
+        }
+        if set(evidence) - set(expected):
+            raise ValueError("unknown_evidence_field")
+        if any(not isinstance(value, expected[key]) for key, value in evidence.items()):
+            raise ValueError("invalid_evidence_type")
+        for key in ("attack_techniques", "oscal_controls"):
+            if any(not isinstance(item, str) for item in (evidence.get(key) or [])):
+                raise ValueError("invalid_evidence_list")
+        if any(not isinstance(item, dict) for item in (evidence.get("osint_evidence") or [])):
+            raise ValueError("invalid_osint_evidence")
+        encoded = _canonical(evidence)
+        if len(encoded) > _MAX_TEXT:
+            raise ValueError("evidence_too_large")
+        fingerprint = hashlib.sha256(encoded).hexdigest()
+        stop = stop_status()
+        policy = self.policy()
+        if stop["stopped"] or not policy["allowed"]:
+            reason = "operator_stop" if stop["stopped"] else policy["reason"]
+            digest = self._append("BLOCK", reason, fingerprint)
+            return {"decision": "BLOCK", "reason_code": reason, "audit_digest": digest, "executed": False}
+
+        from kraken_jutsu.ontology import OntologyJudge
+
+        judgment = OntologyJudge().judge(**evidence)
+        digest = self._append("READ_ONLY", "ontology_judgment", fingerprint)
+        return {
+            "schema": "kraken-shield/ontology-judgment-v1",
+            "decision": "READ_ONLY",
+            "judgment": judgment.to_dict(),
+            "audit_digest": digest,
+            "executed": False,
+            "evidence_verified_by_shield": False,
+        }
+
     def check_capability(self, capability: str) -> dict[str, Any]:
         """Advisory gate only. Even ALLOW does not execute a requested action."""
         if not isinstance(capability, str):
