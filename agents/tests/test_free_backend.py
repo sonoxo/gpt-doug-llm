@@ -36,17 +36,12 @@ class TestFreeOnlyBackend:
         assert PAID_MODE is False
         assert FREE_ONLY is True
 
-    def test_paid_mode_requires_explicit_opt_in(self):
-        os.environ["PAID_MODE"] = "false"
-        sys.modules.pop("agents.llm_backend_free", None)
-        from agents.llm_backend_free import PAID_MODE
-
-        assert PAID_MODE is False
+    def test_paid_mode_cannot_override_cl1(self):
         os.environ["PAID_MODE"] = "true"
         sys.modules.pop("agents.llm_backend_free", None)
         from agents.llm_backend_free import PAID_MODE as paid
 
-        assert paid is True
+        assert paid is False
         os.environ.pop("PAID_MODE", None)
 
     def test_no_backend_returns_error_not_paid(self):

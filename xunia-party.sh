@@ -27,7 +27,7 @@ logo = r"""
          ╚═════╝ ╚═╝        ╚═╝       ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝
 
                   SUPER XUNIA BRAIN 9000
-          OPENAI + CLAUDE + GEMINI + OLLAMA
+            CL1 / LOCAL OLLAMA / FREE ONLY
                    >>> GPT DOUG XO <<<
 """
 
@@ -55,8 +55,12 @@ print("\n\033[1;96mGPT XUNIA PARTY MODE: ONLINE\033[0m")
 PY
 
 if [[ "$MODE" == "run" ]]; then
-  export GPT_DOUG_PROVIDER="${GPT_DOUG_PROVIDER:-xunia}"
-  export GPT_DOUG_PROVIDER_ORDER="${GPT_DOUG_PROVIDER_ORDER:-claude,openai,gemini,ollama}"
+  export GPT_DOUG_FREE_ONLY=true
+  export PAID_MODE=false
+  export GPT_DOUG_PROVIDER=ollama
+  export GPT_DOUG_PROVIDER_ORDER=ollama
+  export OLLAMA_BASE_URL=http://127.0.0.1:11434
+  export OLLAMA_MODEL="${OLLAMA_MODEL:-qwen2.5-coder:3b}"
   chmod +x web/doug-web.sh
   ./web/doug-web.sh restart
 
