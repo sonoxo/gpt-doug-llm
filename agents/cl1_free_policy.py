@@ -40,3 +40,9 @@ def free_policy_status() -> dict[str, object]:
         "local_inference_allowed": True,
         "billing_credentials_required": False,
     }
+
+
+def is_local_ollama_model(model: str) -> bool:
+    """Ollama cloud models use the :cloud suffix and may require credits."""
+    name = model.strip().lower()
+    return bool(name) and not name.endswith(":cloud")
