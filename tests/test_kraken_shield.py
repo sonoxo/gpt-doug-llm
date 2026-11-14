@@ -102,6 +102,28 @@ class KrakenShieldTests(unittest.TestCase):
         self.fake.fail = True
         self.assertEqual(self.guard.inspect("hello")["reason_code"], "golden_shield_unavailable")
 
+    def test_kraken_jutsu_ontology_is_connected_without_executing(self):
+        judgment = self.guard.judge_vulnerability({
+            "cve": "CVE-2099-0001",
+            "kev_record": {"cveID": "CVE-2099-0001"},
+            "ssvc": {"Exploitation": "active"},
+            "oscal_controls": ["RA-5"],
+        })
+        self.assertEqual(judgment["decision"], "READ_ONLY")
+        self.assertFalse(judgment["executed"])
+        self.assertFalse(judgment["evidence_verified_by_shield"])
+        self.assertGreater(judgment["judgment"]["priority"], 0)
+        self.assertTrue(self.guard.verify_audit()["valid"])
+
+    def test_ontology_denied_during_operator_stop(self):
+        with mock.patch.dict(os.environ, {"GPT_DOUG_AI_BLOCK_ALL": "1"}):
+            judgment = self.guard.judge_vulnerability({"cve": "CVE-2099-0001"})
+        self.assertEqual(judgment["decision"], "BLOCK")
+
+    def test_ontology_rejects_unknown_evidence_fields(self):
+        with self.assertRaisesRegex(ValueError, "unknown_evidence_field"):
+            self.guard.judge_vulnerability({"url": "https://example.com"})
+
     def test_capability_is_advisory_and_cannot_run_deploy(self):
         self.assertEqual(self.guard.check_capability("local_report")["decision"], "ALLOW")
         blocked = self.guard.check_capability("deployment")
