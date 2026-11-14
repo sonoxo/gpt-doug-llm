@@ -253,6 +253,40 @@ class KrakenShield:
             "evidence_verified_by_shield": False,
         }
 
+    def check_service(self, sector: str, service: str, operation: str, *, url: str | None = None) -> dict[str, Any]:
+        """Audit an integration operation; never touch music or bank accounts.
+
+        No URL, credentials, payment details or banking records enter the audit.
+        A returned ALLOW is a policy decision, *not* authorization or execution.
+        """
+        from kraken_shield.service_policy import evaluate_service_access
+
+        assessment = evaluate_service_access(sector, service, operation, url=url)
+        stop = stop_status()
+        policy = self.policy()
+        decision = assessment.decision
+        reason = assessment.reason_code
+        if stop["stopped"]:
+            decision, reason = "BLOCK", "operator_stop"
+        elif not policy["allowed"]:
+            decision, reason = "BLOCK", policy["reason"]
+        # Only hash public policy enums, never arbitrary service IDs or URLs.
+        known_sector = sector.lower().strip() if isinstance(sector, str) and sector.lower().strip() in {"music", "bank"} else "unknown"
+        public_action = operation.lower().strip() if isinstance(operation, str) and operation.lower().strip() in {"status", "inventory", "policy", "open_public_link", "read_public_catalog"} else "restricted"
+        fingerprint = hashlib.sha256(f"glass-onion:{known_sector}:{public_action}".encode()).hexdigest()
+        digest = self._append(decision, reason, fingerprint)
+        return {
+            "schema": "glass-onion/audited-service-decision-v1",
+            "sector": known_sector,
+            "decision": decision,
+            "reason_code": reason,
+            "review_required": decision != "ALLOW",
+            "connected": False,
+            "executed": False,
+            "audit_digest": digest,
+            "scope": "policy_only",
+        }
+
     def check_capability(self, capability: str) -> dict[str, Any]:
         """Advisory gate only. Even ALLOW does not execute a requested action."""
         if not isinstance(capability, str):
