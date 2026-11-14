@@ -12,12 +12,35 @@ export OLLAMA_BASE_URL=http://127.0.0.1:11434
 export OLLAMA_MODEL="${OLLAMA_MODEL:-qwen2.5-coder:3b}"
 export GPT_DOUG_ENABLE_WORKER=false
 
+# Prefer the repository's isolated Python environment if it exists.
+PYTHON_BIN="$ROOT/.venv/bin/python3"
+if [[ ! -x "$PYTHON_BIN" ]]; then
+  PYTHON_BIN="$(command -v python3 || true)"
+fi
+
+setup() {
+  command -v python3 >/dev/null 2>&1 || {
+    echo "CL1: Python 3 is required." >&2
+    return 1
+  }
+  if [[ ! -x "$ROOT/.venv/bin/python3" ]]; then
+    python3 -m venv "$ROOT/.venv"
+  fi
+  "$ROOT/.venv/bin/python3" -m pip install -e '.[web]'
+  PYTHON_BIN="$ROOT/.venv/bin/python3"
+  echo "CL1 FREE ONLY: local Python environment installed."
+}
+
 doctor() {
   if ! command -v ollama >/dev/null 2>&1; then
     echo "CL1: Ollama is not installed. Install the open-source runtime locally." >&2
     return 1
   fi
-  if ! python3 - <<'PY'
+  if [[ -z "$PYTHON_BIN" ]] || ! "$PYTHON_BIN" -c 'from cryptography.fernet import Fernet' >/dev/null 2>&1; then
+    echo "CL1: missing Python web dependencies. Run: bash scripts/cl1-free-swarm.sh setup" >&2
+    return 1
+  fi
+  if ! "$PYTHON_BIN" - <<'PY'
 import json
 import os
 import urllib.error
@@ -42,15 +65,16 @@ PY
 }
 
 case "${1:-doctor}" in
+  setup) setup ;;
   doctor) doctor ;;
   run)
     doctor
     echo "CL1 SWARM: localhost-only XUNIA web UI at http://127.0.0.1:${PORT:-8787}"
     # Module invocation keeps the repository root importable for doug_core/web.
-    exec python3 -m web.xunia_server
+    exec "$PYTHON_BIN" -m web.xunia_server
     ;;
   *)
-    echo "Usage: bash scripts/cl1-free-swarm.sh {doctor|run}" >&2
+    echo "Usage: bash scripts/cl1-free-swarm.sh {setup|doctor|run}" >&2
     exit 2
     ;;
 esac
