@@ -12,6 +12,13 @@
     activeKind:'none'
   };
   const radioAudio=document.querySelector('#radioAudio');
+  const shield=window.GlassOnionMusicShield;
+  function approveMedia(item){
+    const result=shield?.checkMediaItem(item);
+    if(result?.allowed)return true;
+    if(typeof setStatus==='function')setStatus('Glass Onion blocked unapproved saved-media playback.','error');
+    return false;
+  }
   const playPauseBtn=document.querySelector('#playPauseBtn');
   const volume=document.querySelector('#volume');
   const queueEl=document.querySelector('#queue');
@@ -45,6 +52,10 @@
   const originalPlayUrl=window.playUrl;
   if(typeof originalPlayUrl==='function'){
     window.playUrl=function(url,title,opts={}){
+      if(!shield?.checkAudioSource(url).allowed){
+        if(typeof setStatus==='function')setStatus('Glass Onion blocked an unapproved audio source.','error');
+        return;
+      }
       if(radioAudio)radioAudio.pause();
       const item=normalize({kind:'direct',url,title,subtitle:opts.subtitle||'',crossOrigin:!!opts.crossOrigin,id:opts.id||url});
       setCurrent(item);
@@ -72,7 +83,7 @@
 
   window.addQueue=function(raw){
     const item=normalize(raw);
-    if(!item.url)return;
+    if(!item.url||!approveMedia(item))return;
     if(!state.queue.some(q=>itemId(q)===itemId(item)))state.queue.push(item);
     saveLocal(STORE_QUEUE,state.queue);
     if(state.currentItem&&itemId(state.currentItem)===itemId(item))state.queueIndex=state.queue.findIndex(q=>itemId(q)===itemId(item));
@@ -81,6 +92,7 @@
 
   function playItem(raw){
     const item=normalize(raw);
+    if(!approveMedia(item))return;
     if(item.kind==='radio'&&typeof window.ZYRAPlayRadio==='function')return window.ZYRAPlayRadio(item.station||item);
     if(item.kind==='direct'&&typeof window.playUrl==='function')return window.playUrl(item.url,item.title,{crossOrigin:item.crossOrigin,subtitle:item.subtitle,id:item.id});
     if((item.kind==='soundcloud'||item.kind==='youtube')&&item.url){
@@ -107,6 +119,7 @@
   function saveItem(raw){
     if(!raw)return false;
     const item=normalize(raw);
+    if(!approveMedia(item))return false;
     if(!state.favorites.some(x=>itemId(x)===itemId(item)))state.favorites.unshift(item);
     saveLocal(STORE_FAVORITES,state.favorites);
     renderFavorites();
@@ -200,8 +213,9 @@
 
   document.querySelector('#embedForm').addEventListener('submit',()=>{
     const u=document.querySelector('#embedUrl').value.trim();
-    if(/soundcloud\.com/i.test(u))setCurrent({kind:'soundcloud',id:u,url:u,title:'SoundCloud',subtitle:'SOUNDCLOUD'});
-    else{
+    if(shield?.check('soundcloud',u).allowed){
+      setCurrent({kind:'soundcloud',id:u,url:u,title:'SoundCloud',subtitle:'SOUNDCLOUD'});
+    }else if(shield?.check('youtube',u).allowed){
       const m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([A-Za-z0-9_-]{6,})/);
       if(m)setCurrent({kind:'youtube',id:m[1],url:u,title:'YouTube',subtitle:'YOUTUBE'});
     }
