@@ -1,0 +1,145 @@
+{
+  "schema": "kraken-shield/ontology-v1",
+  "id": "CL1-KRAKEN-SHIELD",
+  "operating_mode": "LOCAL_ONLY_DEFENSIVE",
+  "execution": "assessment_only",
+  "paid_services_allowed": false,
+  "autonomous_write": false,
+  "local_audit": "sha256-hash-linked-local-file",
+  "nodes": [
+    {
+      "id": "operator",
+      "type": "person",
+      "name": "Operator",
+      "writes": "none"
+    },
+    {
+      "id": "web",
+      "type": "interface",
+      "name": "CL1 localhost web server",
+      "port": 8787
+    },
+    {
+      "id": "kraken",
+      "type": "control",
+      "name": "Kraken Shield",
+      "decision": "ALLOW/BLOCK"
+    },
+    {
+      "id": "stop",
+      "type": "control",
+      "name": "AI Emergency Stop",
+      "fail_closed": true
+    },
+    {
+      "id": "cl1",
+      "type": "control",
+      "name": "Free-Only Provider Policy",
+      "approved": [
+        "none",
+        "ollama"
+      ]
+    },
+    {
+      "id": "golden",
+      "type": "control",
+      "name": "Golden Shield",
+      "role": "request inspection"
+    },
+    {
+      "id": "zyra",
+      "type": "control",
+      "name": "ZYRA",
+      "role": "policy review"
+    },
+    {
+      "id": "audit",
+      "type": "storage",
+      "name": "Local hash-linked decision audit",
+      "remote_sync": false
+    },
+    {
+      "id": "ollama",
+      "type": "model",
+      "name": "Local Ollama",
+      "external_api": false
+    },
+    {
+      "id": "ontology",
+      "type": "knowledge",
+      "name": "Kraken Jutsu ontology judge",
+      "execution": false
+    },
+    {
+      "id": "actions",
+      "type": "control",
+      "name": "Explicit operator approval gate",
+      "default": "DENY"
+    }
+  ],
+  "edges": [
+    [
+      "operator",
+      "web",
+      "request"
+    ],
+    [
+      "web",
+      "kraken",
+      "preflight"
+    ],
+    [
+      "kraken",
+      "stop",
+      "check"
+    ],
+    [
+      "kraken",
+      "cl1",
+      "check"
+    ],
+    [
+      "kraken",
+      "golden",
+      "inspect"
+    ],
+    [
+      "golden",
+      "zyra",
+      "policy"
+    ],
+    [
+      "kraken",
+      "audit",
+      "record"
+    ],
+    [
+      "cl1",
+      "ollama",
+      "local-inference-only"
+    ],
+    [
+      "ontology",
+      "kraken",
+      "evidence-context-only"
+    ],
+    [
+      "kraken",
+      "actions",
+      "advisory-only"
+    ]
+  ],
+  "safety_boundaries": {
+    "no_remote_inference": true,
+    "no_shell_execution": true,
+    "no_cloud_provisioning": true,
+    "no_billing": true,
+    "no_autonomous_mutation": true
+  },
+  "limitations": [
+    "Only integrated entry points are gated; unrelated processes are not controlled",
+    "Existing local audit file chain cannot prove that the log was not truncated or deleted",
+    "Existing streaming output audit remains post-delivery; shield is an inbound gate",
+    "Persistent audit state must be backed up by the operator"
+  ]
+}
