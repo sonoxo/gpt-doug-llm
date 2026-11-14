@@ -6,7 +6,7 @@ import urllib.request
 from unittest.mock import patch
 
 from agents import llm_backend
-from agents.cl1_free_policy import free_policy_status, is_local_inference_url
+from agents.cl1_free_policy import free_policy_status, is_local_inference_url, is_local_ollama_model
 
 
 class FreeOnlyTests(unittest.TestCase):
@@ -53,6 +53,14 @@ class FreeOnlyTests(unittest.TestCase):
         with patch.object(urllib.request, "urlopen", side_effect=AssertionError("network called")):
             with self.assertRaisesRegex(ValueError, "Refusing unsafe provider URL"):
                 llm_backend._safe_urlopen(request, timeout=1)
+
+    def test_ollama_cloud_models_are_blocked(self):
+        self.assertTrue(is_local_ollama_model("qwen2.5-coder:3b"))
+        self.assertFalse(is_local_ollama_model("gemma4:cloud"))
+        with patch.dict(os.environ, {"OLLAMA_MODEL": "gemma4:cloud"}):
+            provider = llm_backend.OllamaProvider()
+            result = provider.chat_once([{"role": "user", "content": "test"}], None, {})
+            self.assertEqual(result["error"], "cloud_model_blocked")
 
     def test_free_policy_cannot_be_overridden_by_paid_mode(self):
         with patch.dict(os.environ, {"PAID_MODE": "true", "GPT_DOUG_FREE_ONLY": "false"}):
