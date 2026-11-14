@@ -322,19 +322,19 @@ class OllamaProvider(Provider):
         }
 
     def chat_once(self, messages, model, options):
-        state = self.health()
-        if not state["configured"]:
-            return {
-                "message": {"role": "assistant", "content": "Ollama is not reachable."},
-                "done": True,
-                "error": "provider_unreachable",
-            }
         used_model = model or self.config.model
         if not is_local_ollama_model(used_model):
             return {
                 "message": {"role": "assistant", "content": "CL1 blocks Ollama cloud models."},
                 "done": True,
                 "error": "cloud_model_blocked",
+            }
+        state = self.health()
+        if not state["configured"]:
+            return {
+                "message": {"role": "assistant", "content": "Ollama is not reachable."},
+                "done": True,
+                "error": "provider_unreachable",
             }
         if used_model == self.config.model and not state["model_available"]:
             return {
