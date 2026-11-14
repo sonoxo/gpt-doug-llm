@@ -19,7 +19,8 @@ from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
 from agents.cl1_free_policy import is_local_inference_url, provider_is_cloud
-from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed, status as ai_stop_status
+from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed
+from ai_killswitch import status as ai_stop_status
 
 Message = dict[str, str]
 Event = dict
@@ -67,9 +68,10 @@ def _safe_urlopen(
         and parsed.scheme == "http"
         and host in {"127.0.0.1", "localhost", "::1"}
     )
+    # Emergency stop takes precedence, including for a denied cloud endpoint.
+    require_ai_allowed("AI provider HTTP transport")
     if not (is_https or is_loopback_http) or not is_local_inference_url(request.full_url):
         raise ValueError(f"Refusing unsafe provider URL: CL1 free-only policy blocks {parsed.scheme}://{host}")
-    require_ai_allowed("AI provider HTTP transport")
     return urllib.request.urlopen(request, timeout=timeout)  # nosec B310 -- scheme/host validated above
 
 
