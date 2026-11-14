@@ -186,11 +186,21 @@ tripBtn.addEventListener('click',()=>{manualTrip=!manualTrip;externalPlaying=fal
 $('#fullscreenBtn').addEventListener('click',async()=>{try{if(!document.fullscreenElement)await vizWrap.requestFullscreen();else await document.exitFullscreen()}catch(e){setStatus('Fullscreen unavailable: '+e.message,'error')}});
 document.addEventListener('fullscreenchange',()=>{$('#fullscreenBtn').textContent=document.fullscreenElement?'EXIT FULL SCREEN':'FULL SCREEN'});
 
+function glassOnionApprove(service,url){
+  const guard=window.GlassOnionMusicShield;
+  const result=guard&&guard.check(service,url);
+  if(!result||!result.allowed){
+    setStatus('Glass Onion blocked an unapproved or sensitive music link.','error');
+    return false;
+  }
+  return true;
+}
 async function searchArchive(){
   const q=$('#searchInput').value.trim();if(!q)return;
   setStatus('Searching Internet Archive...');results.innerHTML='';
   try{
     const u='https://archive.org/advancedsearch.php?q='+encodeURIComponent('mediatype:audio AND ('+q+')')+'&fl[]=identifier,title,creator&rows=20&page=1&output=json';
+    if(!glassOnionApprove('archive',u))return;
     const r=await fetch(u);if(!r.ok)throw new Error('Search request failed');const j=await r.json();
     for(const d of j.response.docs){
       const row=document.createElement('div');row.className='result';const info=document.createElement('div');
@@ -203,18 +213,26 @@ async function searchArchive(){
 async function resolveArchive(d){
   setStatus('Resolving audio file...');
   try{
-    const r=await fetch('https://archive.org/metadata/'+encodeURIComponent(d.identifier));if(!r.ok)throw new Error('Metadata request failed');const j=await r.json();
+    const metadataUrl='https://archive.org/metadata/'+encodeURIComponent(d.identifier);
+    if(!glassOnionApprove('archive',metadataUrl))return;
+    const r=await fetch(metadataUrl);if(!r.ok)throw new Error('Metadata request failed');const j=await r.json();
     const f=j.files.find(x=>/\.(mp3|ogg|m4a)$/i.test(x.name||''));if(!f)throw new Error('No browser-playable audio found');
     const url='https://archive.org/download/'+encodeURIComponent(d.identifier)+'/'+encodeURIComponent(f.name).replace(/%2F/g,'/'),title=d.title||d.identifier;
+    if(!glassOnionApprove('archive',url))return;
     playUrl(url,title,{crossOrigin:true});addQueue({url,title,crossOrigin:true});setStatus('Playing from Internet Archive with RetroViz.','ok');
   }catch(e){setStatus(e.message,'error')}
 }
 document.querySelectorAll('[data-provider]').forEach(b=>b.addEventListener('click',()=>{
   const q=$('#searchInput').value.trim()||'music',p=b.dataset.provider,base={soundcloud:'https://soundcloud.com/search?q=',youtube:'https://www.youtube.com/results?search_query=',bandcamp:'https://bandcamp.com/search?q=',audius:'https://audius.co/search/',jamendo:'https://www.jamendo.com/search?q='}[p];
-  if(p==='archive'){searchArchive();return}window.open(base+encodeURIComponent(q),'_blank','noopener,noreferrer');
+  if(p==='archive'){searchArchive();return}
+  const url=String(base||'')+encodeURIComponent(q);
+  if(!glassOnionApprove(p,url))return;
+  window.open(url,'_blank','noopener,noreferrer');
 }));
 
 function loadScript(src,id){
+  const provider=id==='soundcloud-widget-api'?'soundcloud':id==='youtube-iframe-api'?'youtube':null;
+  if(!provider||!glassOnionApprove(provider,src))return;
   if(document.getElementById(id))return;
   const s=document.createElement('script');s.id=id;s.src=src;s.async=true;document.head.appendChild(s);
 }
@@ -238,12 +256,12 @@ loadScript('https://www.youtube.com/iframe_api','youtube-iframe-api');
 
 $('#embedForm').addEventListener('submit',e=>{
   e.preventDefault();const u=$('#embedUrl').value.trim(),h=$('#embedHost');
-  if(/^https?:\/\/(?:www\.)?soundcloud\.com\//i.test(u)){
+  if(/^https?:\/\/(?:www\.)?soundcloud\.com\//i.test(u)&&glassOnionApprove('soundcloud',u)){
     h.innerHTML='<iframe id="scPlayer" title="SoundCloud player" allow="autoplay" src="https://w.soundcloud.com/player/?url='+encodeURIComponent(u)+'&auto_play=false&visual=true"></iframe>';
     const iframe=$('#scPlayer');iframe.addEventListener('load',()=>bindSoundCloud(iframe),{once:true});bindSoundCloud(iframe);vizStatus.textContent='SoundCloud loaded. RetroViz will enter linked ambient Trip Mode when playback starts.';
   }else{
     const m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([A-Za-z0-9_-]{6,})/);
-    if(m){createYouTube(m[1]);vizStatus.textContent='YouTube loaded. RetroViz will enter linked ambient Trip Mode when playback starts.'}
+    if(m&&glassOnionApprove('youtube',u)){createYouTube(m[1]);vizStatus.textContent='YouTube loaded. RetroViz will enter linked ambient Trip Mode when playback starts.'}
     else h.textContent='Unsupported link. Use a SoundCloud or YouTube URL.';
   }
 });
