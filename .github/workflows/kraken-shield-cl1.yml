@@ -5,6 +5,7 @@ on:
     paths:
       - 'kraken_shield/**'
       - 'tests/test_kraken_shield.py'
+      - 'tests/test_kraken_shield_web.py'
       - 'scripts/cl1-free-swarm.sh'
       - 'web/server.py'
       - 'web/xunia_server.py'
@@ -42,8 +43,12 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Compile Kraken Shield modules
         run: python -m compileall -q kraken_shield
+      - name: Install open-source local web dependencies
+        run: python -m pip install --disable-pip-version-check -e '.[web]'
       - name: Test audit, CL1 policy, stop, and ontology offline
         run: python -m unittest discover -s tests -p 'test_kraken_shield.py' -v
+      - name: Smoke-test web server and XUNIA chat guard
+        run: python -m unittest discover -s tests -p 'test_kraken_shield_web.py' -v
       - name: Validate Mac launch shell and JSON ontology
         run: |
           bash -n scripts/cl1-free-swarm.sh
