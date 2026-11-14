@@ -3,11 +3,11 @@ from __future__ import annotations
 import json
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Iterator
 
 from agents.cl1_free_policy import is_local_ollama_model
 from agents.llm_backend import _safe_urlopen
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Iterator
 
 Event = dict
 Message = dict[str, str]
