@@ -37,6 +37,7 @@ from agents import llm_backend
 from web import twilio_webhook
 from web.runner import ProjectRunner
 from zyra import Zyra
+from kraken_shield import KrakenShield
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECTS_DIR = os.path.join(DIR, "projects")
@@ -61,6 +62,25 @@ PUBLIC_URL = os.environ.get("PUBLIC_URL", "").rstrip("/")
 # so events are logged unsigned — still fail-closed on blocked verdicts.
 zyra = Zyra()
 runner = ProjectRunner()
+
+# Kraken preflight is enabled explicitly by the CL1 launcher, never by a prompt.
+_KRAKEN_ENABLED = os.environ.get("KRAKEN_SHIELD_ENFORCE", "").strip().lower() in {"1", "true", "yes"}
+_KRAKEN_GUARD = KrakenShield() if _KRAKEN_ENABLED else None
+
+
+def kraken_preflight(text: str) -> str | None:
+    """Return a non-sensitive denial reason; no model call occurs on denial."""
+    if _KRAKEN_GUARD is None:
+        return None
+    try:
+        decision = _KRAKEN_GUARD.inspect(text, source="cl1-web")
+        if decision["decision"] == "ALLOW":
+            return None
+        return "Kraken Shield blocked request (" + decision["reason_code"] + ")"
+    except Exception:
+        # A broken/corrupted audit or unavailable control must never fail open.
+        return "Kraken Shield unavailable; request blocked"
+
 
 # In-memory registry of background agent-chain jobs. Each job runs the
 # planner->executor->reviewer chain in its own thread since a single run
@@ -747,6 +767,9 @@ class Handler(BaseHTTPRequestHandler):
         model = payload.get("model", MODEL)
 
         last_user = next((m.get("content", "") for m in reversed(messages) if m.get("role") == "user"), "")
+        kraken_denial = kraken_preflight(last_user)
+        if kraken_denial:
+            return self._blocked_chat_response(stream, kraken_denial)
         verdict = zyra.inspect(last_user, direction="input")
         if not verdict.allowed:
             reason = "; ".join(verdict.reasons) or "blocked by policy"
