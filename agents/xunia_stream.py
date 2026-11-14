@@ -4,6 +4,7 @@ import json
 import urllib.parse
 import urllib.request
 
+from agents.cl1_free_policy import is_local_ollama_model
 from agents.llm_backend import _safe_urlopen
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterator
@@ -158,6 +159,9 @@ def stream_ollama(provider, messages, model, options) -> Iterator[Event]:
         yield provider.chat_once(messages, model, options)
         return
     used_model = model or provider.config.model
+    if not is_local_ollama_model(used_model):
+        yield _event("CL1 blocks Ollama cloud models.", provider="ollama", done=True, error="cloud_model_blocked")
+        return
     body = json.dumps({"model": used_model, "messages": messages, "stream": True, "options": options}).encode()
     request = urllib.request.Request(
         f"{provider.base_url}/api/chat",
