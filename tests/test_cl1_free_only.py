@@ -62,6 +62,15 @@ class FreeOnlyTests(unittest.TestCase):
             result = provider.chat_once([{"role": "user", "content": "test"}], None, {})
             self.assertEqual(result["error"], "cloud_model_blocked")
 
+    def test_checkout_and_webhooks_never_accept_payments(self):
+        from web import stripe_checkout
+
+        self.assertFalse(stripe_checkout.enabled())
+        with self.assertRaisesRegex(RuntimeError, "disables Stripe checkout"):
+            stripe_checkout.create_checkout_session("id", "task", "https://example.org", "https://example.org")
+        with self.assertRaisesRegex(ValueError, "rejects Stripe payment webhooks"):
+            stripe_checkout.verify_webhook_signature(b"{}", "t=123,v1=abc")
+
     def test_stream_refuses_cloud_model_before_network(self):
         from agents.xunia_stream import stream_ollama
 
