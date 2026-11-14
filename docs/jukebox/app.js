@@ -17,6 +17,11 @@ function ensureAudio(){
 }
 async function resumeAudio(){ensureAudio();if(ac&&ac.state==='suspended')try{await ac.resume()}catch(_){}}
 function playUrl(url,title,{crossOrigin=false}={}){
+  const policy=window.GlassOnionMusicShield?.checkAudioSource(url);
+  if(!policy?.allowed){
+    setStatus('Glass Onion blocked an unapproved or private audio source.','error');
+    return;
+  }
   audio.pause();
   if(crossOrigin)audio.crossOrigin='anonymous';else audio.removeAttribute('crossorigin');
   audio.src=url;now.textContent=title||url;
@@ -178,7 +183,16 @@ function draw(ts){
 audio.addEventListener('play',()=>{resumeAudio();externalPlaying=false;manualTrip=false;startVisuals('AUDIO REACTIVE')});
 audio.addEventListener('pause',()=>{if(!externalPlaying){manualTrip=false;stopVisuals('PAUSED')}});
 audio.addEventListener('ended',()=>{if(!externalPlaying){manualTrip=false;stopVisuals('TRACK COMPLETE')}});
-$('#localFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;playUrl(URL.createObjectURL(f),f.name,{crossOrigin:false})});
+$('#localFile').addEventListener('change',e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  const url=URL.createObjectURL(file);
+  if(!window.GlassOnionMusicShield?.registerLocalFile(url)){
+    URL.revokeObjectURL(url);
+    setStatus('Glass Onion could not verify a user-selected audio file.','error');
+    return;
+  }
+  playUrl(url,file.name,{crossOrigin:false});
+});
 $('#searchBtn').addEventListener('click',searchArchive);
 $('#searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchArchive()});
 vizMode.addEventListener('change',()=>{if(!audio.paused||externalPlaying||manualTrip){cancelAnimationFrame(raf);raf=requestAnimationFrame(draw)}});
@@ -251,17 +265,19 @@ function createYouTube(videoId){
   }
 }
 window.onYouTubeIframeAPIReady=()=>{if(pendingYouTube)createYouTube(pendingYouTube)};
-loadScript('https://w.soundcloud.com/player/api.js','soundcloud-widget-api');
-loadScript('https://www.youtube.com/iframe_api','youtube-iframe-api');
+// Third-party player scripts are intentionally lazy-loaded after user action.
 
 $('#embedForm').addEventListener('submit',e=>{
   e.preventDefault();const u=$('#embedUrl').value.trim(),h=$('#embedHost');
   if(/^https?:\/\/(?:www\.)?soundcloud\.com\//i.test(u)&&glassOnionApprove('soundcloud',u)){
+    loadScript('https://w.soundcloud.com/player/api.js','soundcloud-widget-api');
     h.innerHTML='<iframe id="scPlayer" title="SoundCloud player" allow="autoplay" src="https://w.soundcloud.com/player/?url='+encodeURIComponent(u)+'&auto_play=false&visual=true"></iframe>';
     const iframe=$('#scPlayer');iframe.addEventListener('load',()=>bindSoundCloud(iframe),{once:true});bindSoundCloud(iframe);vizStatus.textContent='SoundCloud loaded. RetroViz will enter linked ambient Trip Mode when playback starts.';
   }else{
     const m=u.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([A-Za-z0-9_-]{6,})/);
-    if(m&&glassOnionApprove('youtube',u)){createYouTube(m[1]);vizStatus.textContent='YouTube loaded. RetroViz will enter linked ambient Trip Mode when playback starts.'}
+    if(m&&glassOnionApprove('youtube',u)){
+      loadScript('https://www.youtube.com/iframe_api','youtube-iframe-api');
+      createYouTube(m[1]);vizStatus.textContent='YouTube loaded. RetroViz will enter linked ambient Trip Mode when playback starts.'}
     else h.textContent='Unsupported link. Use a SoundCloud or YouTube URL.';
   }
 });
