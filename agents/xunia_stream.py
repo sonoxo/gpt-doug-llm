@@ -3,10 +3,11 @@ from __future__ import annotations
 import json
 import urllib.parse
 import urllib.request
-
-from agents.llm_backend import _safe_urlopen
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterator
+
+from agents.cl1_free_policy import is_local_ollama_model
+from agents.llm_backend import _safe_urlopen
 
 Event = dict
 Message = dict[str, str]
@@ -153,11 +154,14 @@ def stream_gemini(provider, messages, model, options) -> Iterator[Event]:
 
 
 def stream_ollama(provider, messages, model, options) -> Iterator[Event]:
+    used_model = model or provider.config.model
+    if not is_local_ollama_model(used_model):
+        yield _event("CL1 blocks Ollama cloud models.", provider="ollama", done=True, error="cloud_model_blocked")
+        return
     state = provider.health()
     if not state.get("configured"):
         yield provider.chat_once(messages, model, options)
         return
-    used_model = model or provider.config.model
     body = json.dumps({"model": used_model, "messages": messages, "stream": True, "options": options}).encode()
     request = urllib.request.Request(
         f"{provider.base_url}/api/chat",

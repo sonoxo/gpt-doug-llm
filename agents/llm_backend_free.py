@@ -1,36 +1,24 @@
-"""Backward-compatible free-mode facade over the provider architecture."""
+"""Backward-compatible CL1 free-only facade over the provider architecture."""
 
 from __future__ import annotations
 
-import os
-
 from agents import llm_backend as _backend
 
-PAID_MODE = os.environ.get("PAID_MODE", "false").lower() == "true"
-FREE_ONLY = not PAID_MODE
+# Legacy PAID_MODE flags can no longer unlock billed inference.
+PAID_MODE = False
+FREE_ONLY = True
 DEFAULT_MODEL = _backend.DEFAULT_MODEL
 USING_BACKEND = _backend.health()["backend"]
-USING_FREE = _backend.health().get("free") is not False
+USING_FREE = True
 
 
 def health():
     status = _backend.health()
-    status.update({"paid_mode": PAID_MODE, "free": USING_FREE})
+    status.update({"paid_mode": False, "free": True, "billing_policy": "CL1_FREE_ONLY"})
     return status
 
 
 def chat_once(messages, model=None, options=None):
-    if _backend.health()["backend"] == "openai" and not PAID_MODE:
-        return {
-            "message": {
-                "role": "assistant",
-                "content": (
-                    "OpenAI is blocked unless PAID_MODE=true is explicitly set."
-                ),
-            },
-            "done": True,
-            "error": "paid_provider_blocked",
-        }
     result = _backend.chat_once(messages, model, options)
     if result.get("error") == "provider_not_configured":
         message = result.setdefault(

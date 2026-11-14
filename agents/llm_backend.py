@@ -18,7 +18,9 @@ from dataclasses import dataclass
 from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
-from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed, status as ai_stop_status
+from agents.cl1_free_policy import is_local_inference_url, is_local_ollama_model, provider_is_cloud
+from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed
+from ai_killswitch import status as ai_stop_status
 
 Message = dict[str, str]
 Event = dict
@@ -66,9 +68,10 @@ def _safe_urlopen(
         and parsed.scheme == "http"
         and host in {"127.0.0.1", "localhost", "::1"}
     )
-    if not (is_https or is_loopback_http):
-        raise ValueError(f"Refusing unsafe provider URL: {parsed.scheme}://{host}")
+    # Emergency stop takes precedence, including for a denied cloud endpoint.
     require_ai_allowed("AI provider HTTP transport")
+    if not (is_https or is_loopback_http) or not is_local_inference_url(request.full_url):
+        raise ValueError(f"Refusing unsafe provider URL: CL1 free-only policy blocks {parsed.scheme}://{host}")
     return urllib.request.urlopen(request, timeout=timeout)  # nosec B310 -- scheme/host validated above
 
 
@@ -115,6 +118,34 @@ class NoProvider(Provider):
             "done": True,
             "offline": True,
             "error": "provider_not_configured",
+        }
+
+
+class DisabledCloudProvider(Provider):
+    """Explicit fail-closed placeholder for cloud inference (no billing)."""
+
+    def __init__(self, name: str):
+        self.config = ProviderConfig(name, "", False, True)
+
+    def health(self) -> dict:
+        return {
+            "backend": self.config.name,
+            "provider": self.config.name,
+            "configured": False,
+            "model": "",
+            "model_available": False,
+            "models": [],
+            "free": True,
+            "blocked": True,
+            "message": "CL1 free-only: cloud inference is disabled",
+        }
+
+    def chat_once(self, messages, model, options):
+        return {
+            "message": {"role": "assistant", "content": "CL1 free-only: use local Ollama inference."},
+            "done": True,
+            "error": "paid_provider_blocked",
+            "provider": self.config.name,
         }
 
 
@@ -272,7 +303,7 @@ class OllamaProvider(Provider):
         except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError):
             reachable = False
         wanted = self.config.model
-        model_available = reachable and any(
+        model_available = is_local_ollama_model(wanted) and reachable and any(
             name == wanted or name.startswith(wanted + ":") for name in models
         )
         return {
@@ -291,6 +322,13 @@ class OllamaProvider(Provider):
         }
 
     def chat_once(self, messages, model, options):
+        used_model = model or self.config.model
+        if not is_local_ollama_model(used_model):
+            return {
+                "message": {"role": "assistant", "content": "CL1 blocks Ollama cloud models."},
+                "done": True,
+                "error": "cloud_model_blocked",
+            }
         state = self.health()
         if not state["configured"]:
             return {
@@ -298,7 +336,6 @@ class OllamaProvider(Provider):
                 "done": True,
                 "error": "provider_unreachable",
             }
-        used_model = model or self.config.model
         if used_model == self.config.model and not state["model_available"]:
             return {
                 "message": {
@@ -333,9 +370,13 @@ class AutoProvider(Provider):
     def __init__(self):
         requested = os.environ.get(
             "GPT_DOUG_PROVIDER_ORDER",
-            "claude,openai,gemini,ollama",
+            "ollama",
         )
-        self.order = [item.strip().lower() for item in requested.split(",") if item.strip()]
+        self.order = [
+            item.strip().lower()
+            for item in requested.split(",")
+            if item.strip() and not provider_is_cloud(item)
+        ]
         self.providers = [
             _make_provider(name)
             for name in self.order
@@ -495,6 +536,8 @@ PROVIDER_FACTORIES = {
 
 
 def _make_provider(name: str) -> Provider:
+    if provider_is_cloud(name):
+        return DisabledCloudProvider(name)
     factory = PROVIDER_FACTORIES.get(name)
     return factory() if factory else NoProvider()
 
