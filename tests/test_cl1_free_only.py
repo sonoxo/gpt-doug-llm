@@ -62,6 +62,14 @@ class FreeOnlyTests(unittest.TestCase):
             result = provider.chat_once([{"role": "user", "content": "test"}], None, {})
             self.assertEqual(result["error"], "cloud_model_blocked")
 
+    def test_stream_refuses_cloud_model_before_network(self):
+        from agents.xunia_stream import stream_ollama
+
+        provider = llm_backend.OllamaProvider()
+        with patch.object(urllib.request, "urlopen", side_effect=AssertionError("network called")):
+            events = list(stream_ollama(provider, [{"role": "user", "content": "test"}], "gemma4:cloud", {}))
+        self.assertEqual(events[-1]["error"], "cloud_model_blocked")
+
     def test_free_policy_cannot_be_overridden_by_paid_mode(self):
         with patch.dict(os.environ, {"PAID_MODE": "true", "GPT_DOUG_FREE_ONLY": "false"}):
             self.assertFalse(free_policy_status()["paid_inference_allowed"])
