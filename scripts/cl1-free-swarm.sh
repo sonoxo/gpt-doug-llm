@@ -11,6 +11,7 @@ export GPT_DOUG_PROVIDER_ORDER=ollama
 export OLLAMA_BASE_URL=http://127.0.0.1:11434
 export OLLAMA_MODEL="${OLLAMA_MODEL:-qwen2.5-coder:3b}"
 export GPT_DOUG_ENABLE_WORKER=false
+export KRAKEN_SHIELD_ENFORCE=true
 
 # Prefer the repository's isolated Python environment if it exists.
 PYTHON_BIN="$ROOT/.venv/bin/python3"
@@ -62,6 +63,11 @@ PY
   then
     return 1
   fi
+  if ! "$PYTHON_BIN" -m kraken_shield status >/dev/null; then
+    echo "KRAKEN SHIELD: policy/audit/stop preflight failed; refusing to start" >&2
+    return 1
+  fi
+  echo "KRAKEN SHIELD: defensive preflight ready"
 }
 
 case "${1:-doctor}" in
