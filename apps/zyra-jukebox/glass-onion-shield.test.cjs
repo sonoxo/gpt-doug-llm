@@ -1,7 +1,7 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const shield = require('../glass-onion-shield.js');
+const shield = require('./glass-onion-shield.js');
 
 test('known public music link can be navigated without account access', () => {
   for (const [name, url] of [
@@ -36,7 +36,7 @@ test('unknown provider is denied and no network call is performed', () => {
 });
 
 test('duplicated GitHub Pages shield has same policy', () => {
-  const docs = require('../../../docs/jukebox/glass-onion-shield.js');
+  const docs = require('../../docs/jukebox/glass-onion-shield.js');
   const cases = [
     ['soundcloud','https://soundcloud.com/search?q=abc'],
     ['youtube','https://youtube.com.evil.example/watch'],
