@@ -4,13 +4,16 @@
   const radioResults=document.querySelector('#radioResults');
   const radioStatus=document.querySelector('#radioStatus');
   const APIS=['https://de1.api.radio-browser.info','https://nl1.api.radio-browser.info','https://at1.api.radio-browser.info'];
+  const shield=window.GlassOnionMusicShield;
   const setRadioStatus=(t,c='')=>{radioStatus.textContent=t;radioStatus.className='status '+c};
   const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));
 
   async function apiFetch(path){
     let last=null;
     for(const base of APIS){
-      try{const r=await fetch(base+path,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('HTTP '+r.status);return {base,data:await r.json()}}catch(e){last=e}
+      const url=base+path;
+      if(!shield?.checkRadioDirectory(url).allowed)throw new Error('Glass Onion rejected radio-directory URL');
+      try{const r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error('HTTP '+r.status);return {base,data:await r.json()}}catch(e){last=e}
     }
     throw last||new Error('Radio directory unavailable');
   }
@@ -30,12 +33,18 @@
 
   async function clickStation(uuid){
     if(!uuid)return;
-    for(const base of APIS){try{await fetch(base+'/json/url/'+encodeURIComponent(uuid));break}catch(_){}}
+    for(const base of APIS){
+      const url=base+'/json/url/'+encodeURIComponent(uuid);
+      if(!shield?.checkRadioDirectory(url).allowed)return;
+      try{await fetch(url);break}catch(_){}
+    }
   }
 
   window.ZYRAPlayRadio=function(raw){
     const s=raw.station||raw,item=stationItem(s),url=item.url;
-    if(!url)return setRadioStatus('Station has no playable stream.','error');
+    if(!shield?.checkRadioStream(url).allowed){
+      return setRadioStatus('Glass Onion blocked an unsafe radio stream.','error');
+    }
     audio.pause();
     try{if(typeof ytPlayer!=='undefined'&&ytPlayer?.pauseVideo)ytPlayer.pauseVideo()}catch(_){}
     radioAudio.src=url;
@@ -70,7 +79,8 @@
       const row=document.createElement('div');row.className='result';
       const info=document.createElement('div');
       const meta=[s.countrycode,s.codec,s.bitrate?`${s.bitrate}kbps`:'',s.tags].filter(Boolean).join(' • ');
-      info.innerHTML=(s.favicon?'<img class="station-logo" src="'+esc(s.favicon)+'" alt="" onerror="this.style.display=\'none\'">':'')+'<strong>'+esc(s.name||'Live Radio')+'</strong><small>'+esc(meta)+'</small>';
+      // Remote favicon URLs are untrusted tracking pixels; don't auto-fetch them.
+      info.innerHTML='<strong>📻 '+esc(s.name||'Live Radio')+'</strong><small>'+esc(meta)+'</small>';
       const actions=document.createElement('div');actions.className='result-actions';
       const play=document.createElement('button');play.textContent='📻 PLAY';play.onclick=()=>{const item=stationItem(s);window.addQueue(item);state.queueIndex=state.queue.findIndex(q=>(q.id||q.url)===item.id);window.ZYRAPlayRadio(s)};
       const save=document.createElement('button');save.textContent='★ SAVE';save.onclick=()=>{
@@ -100,7 +110,8 @@
       }else{
         ({data:stations}=await apiFetch('/json/stations/search?hidebroken=true&limit=60&order=clickcount&reverse=true'+(country?'&countrycode='+encodeURIComponent(country):'')));
       }
-      stations=stations.filter(s=>s.lastcheckok!==0&&/^https:\/\//i.test(s.url_resolved||s.url||'')).slice(0,50);
+      stations=stations.filter(s=>s.lastcheckok!==0&&
+        shield?.checkRadioStream(s.url_resolved||s.url||'').allowed).slice(0,50);
       renderStations(stations);setRadioStatus(stations.length+' HTTPS live stations ready.','ok');
     }catch(e){setRadioStatus('Live radio search failed: '+e.message,'error')}
   }
