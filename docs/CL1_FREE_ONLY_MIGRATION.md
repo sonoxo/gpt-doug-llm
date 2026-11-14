@@ -2,7 +2,7 @@
 
 ## Non-negotiable operating policy
 
-**No paid API calls, commercial compute provisioning, metered deployment, or unattended billing.** The CL1 inference boundary blocks OpenAI, Anthropic, Gemini and other remote inference in the GPT-DOUG provider facade **even if** a developer accidentally supplies keys or sets `PAID_MODE=true`. Requests are served only by a locally operated Ollama model (or offline planning mode when no model is available). Cloud services elsewhere in the fleet have NOT been disabled by this single safeguard and must be inventoried individually.
+**No paid API calls, commercial compute provisioning, metered deployment, or unattended billing.** The CL1 inference boundary blocks OpenAI, Anthropic, Gemini, Ollama `:cloud` model names and other remote inference in the GPT-DOUG provider facade **even if** a developer accidentally supplies keys or sets `PAID_MODE=true`. Requests are served only by a locally operated Ollama model (or offline planning mode when no model is available). Cloud services elsewhere in the fleet have NOT been disabled by this single safeguard and must be inventoried individually.
 
 "Free" here means no mandatory license or API subscription. Hardware, power, disk, bandwidth, public domains and commercial-provider free tiers can still cost money. Do not silently upgrade a free tier or enable paid overages.
 
