@@ -46,7 +46,8 @@ case "${1:-doctor}" in
   run)
     doctor
     echo "CL1 SWARM: localhost-only XUNIA web UI at http://127.0.0.1:${PORT:-8787}"
-    exec python3 web/xunia_server.py
+    # Module invocation keeps the repository root importable for doug_core/web.
+    exec python3 -m web.xunia_server
     ;;
   *)
     echo "Usage: bash scripts/cl1-free-swarm.sh {doctor|run}" >&2
