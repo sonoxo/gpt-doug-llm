@@ -1,0 +1,54 @@
+name: Kraken Shield CL1 Gate
+
+on:
+  pull_request:
+    paths:
+      - 'kraken_shield/**'
+      - 'tests/test_kraken_shield.py'
+      - 'scripts/cl1-free-swarm.sh'
+      - 'web/server.py'
+      - 'web/xunia_server.py'
+      - 'pyproject.toml'
+      - '.github/workflows/kraken-shield-cl1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'kraken_shield/**'
+      - 'tests/test_kraken_shield.py'
+      - 'scripts/cl1-free-swarm.sh'
+      - 'web/server.py'
+      - 'web/xunia_server.py'
+      - 'pyproject.toml'
+      - '.github/workflows/kraken-shield-cl1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-architecture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile Kraken Shield modules
+        run: python -m compileall -q kraken_shield
+      - name: Test audit, CL1 policy, stop, and ontology offline
+        run: python -m unittest discover -s tests -p 'test_kraken_shield.py' -v
+      - name: Validate Mac launch shell and JSON ontology
+        run: |
+          bash -n scripts/cl1-free-swarm.sh
+          python -m json.tool kraken_shield/ontology.json >/dev/null
+      - name: Verify CLI safety verdicts offline
+        run: |
+          python -m kraken_shield status
+          python -m kraken_shield ontology >/dev/null
