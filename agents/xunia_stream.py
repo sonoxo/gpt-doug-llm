@@ -154,13 +154,13 @@ def stream_gemini(provider, messages, model, options) -> Iterator[Event]:
 
 
 def stream_ollama(provider, messages, model, options) -> Iterator[Event]:
-    state = provider.health()
-    if not state.get("configured"):
-        yield provider.chat_once(messages, model, options)
-        return
     used_model = model or provider.config.model
     if not is_local_ollama_model(used_model):
         yield _event("CL1 blocks Ollama cloud models.", provider="ollama", done=True, error="cloud_model_blocked")
+        return
+    state = provider.health()
+    if not state.get("configured"):
+        yield provider.chat_once(messages, model, options)
         return
     body = json.dumps({"model": used_model, "messages": messages, "stream": True, "options": options}).encode()
     request = urllib.request.Request(
