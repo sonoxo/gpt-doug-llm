@@ -168,8 +168,10 @@ def topology() -> dict:
         "bank_transactions_enabled": False,
         "vault_unlocked": False,
         "nodes": [
-            {"id": n.id, "name": n.name, "layer": n.layer,
-             "xyz": list(n.xyz), "kind": n.kind, "source": n.source}
+            {"id": n.id, "name": n.name, "short": n.short,
+             "layer": n.layer, "xyz": list(n.xyz),
+             "kind": n.kind, "details": n.details,
+             "source": n.source, "color": n.color}
             for n in NODES
         ],
         "edges": [{"source": a, "target": b, "relation": rel}
