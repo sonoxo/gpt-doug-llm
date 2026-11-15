@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>CL1-AURA | ECO-SHAGGOTH Spatial Terminal</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/aura.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead">
+      <div class="brand"><span class="emblem">✧</span> CL1<span class="separator">//</span>AURA
+        <span class="brand-caption">ECO-SHAGGOTH SPATIAL TERMINAL</span>
+      </div>
+      <div class="mast-right">
+        <span id="systemStatus" class="system-state">INITIALIZING</span>
+        <span class="offline">FREE • LOCAL • READ-ONLY</span>
+      </div>
+    </header>
+    <div class="main-grid">
+      <aside class="panel sidebar">
+        <div class="section-title">01 / ONTOLOGY LAYERS</div>
+        <nav id="layers" class="layer-stack" aria-label="Spatial layers"></nav>
+        <div class="section-title tele-title">02 / LOOPBACK TELEMETRY</div>
+        <div id="telemetry" class="telemetry">Checking local services...</div>
+        <div class="sidebar-foot">No bank credentials. No service control. Source nodes represent project architecture.</div>
+      </aside>
+      <main class="viewport">
+        <div class="canvas-topline">
+          <div><span class="live-dot"></span> SPATIAL FIELD <span class="coordinates" id="coords">X 0.0 / Y 0.0 / Z 1.00</span></div>
+          <span class="canvas-subtitle">CLICK NODES • DRAG TO ORBIT • WHEEL TO ZOOM</span>
+        </div>
+        <canvas id="world" tabindex="0" aria-label="Clickable 3D architectural node graph"></canvas>
+        <div class="canvas-bottomline">
+          <div id="selection">◉ SHAGGOTH CORE</div>
+          <div id="worldStats">18 NODES • INTERACTIVE</div>
+        </div>
+        <div class="toolbar" aria-label="Spatial camera controls">
+          <button data-action="rotate-left" title="Rotate left">◀ ORBIT</button>
+          <button data-action="rotate-right" title="Rotate right">ORBIT ▶</button>
+          <button data-action="zoom-out" title="Zoom out">−</button>
+          <button data-action="zoom-in" title="Zoom in">+</button>
+          <button data-action="reset">RESET</button>
+          <button data-action="scan">SCAN</button>
+          <button data-action="toggle-labels">LABELS</button>
+        </div>
+      </main>
+      <aside class="panel inspector">
+        <div class="section-title">03 / NODE INSPECTOR</div>
+        <div class="inspector-inner">
+          <div class="node-label">SELECTED MODULE</div>
+          <h1 id="nodeName">ECO-SHAGGOTH</h1>
+          <div id="nodeLayer" class="node-layer">CORE</div>
+          <dl>
+            <div><dt>NODE STATUS</dt><dd id="nodeStatus">MAPPED</dd></div>
+            <div><dt>TYPE</dt><dd id="nodeKind">Architectural core</dd></div>
+            <div><dt>REPOSITORY SOURCE</dt><dd id="nodeSource">—</dd></div>
+          </dl>
+          <div class="section-title">CONNECTED ARCHITECTURE</div>
+          <div id="connections" class="connections"></div>
+          <div class="section-title">QUICK FIND</div>
+          <input id="find" type="search" placeholder="Search a node..." autocomplete="off" aria-label="Find an architectural node">
+          <p id="nodeDetails" class="node-details"></p>
+        </div>
+      </aside>
+    </div>
+    <footer class="footer">
+      <div><span class="ready-square">◆</span> AURA INPUT ENABLED <span class="divider">/</span> NO PAID API</div>
+      <div id="hint">Node click • Drag orbit • Mouse wheel zoom • Keyboard arrows / Tab</div>
+    </footer>
+  </div>
+</body>
+</html>
