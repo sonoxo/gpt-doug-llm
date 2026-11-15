@@ -1,0 +1,740 @@
+{
+  "schema": "xunia.cl1.biological-data-center.v1",
+  "version": "1.0.0",
+  "title": "XUNIA / CL1 Biological Data Center",
+  "model": "software-biological-metaphor-not-biosensor-hardware",
+  "source_repo": "sonoxo/gpt-doug-llm",
+  "public_target": "xunia.org/biological-data-center/",
+  "public_hosting": "GitHub Pages static docs",
+  "local_telemetry": "opt-in Python localhost only",
+  "security": {
+    "paid_services": false,
+    "credentials_exported": false,
+    "bank_accounts_connected": false,
+    "biological_devices_connected": false,
+    "autonomous_execution": false
+  },
+  "telemetryPorts": {
+    "ollama": 11434,
+    "cl1": 8787,
+    "jukebox": 8844,
+    "aura": 8866,
+    "nexus": 8791
+  },
+  "layers": [
+    "ALL",
+    "CORE",
+    "NEURAL",
+    "IMMUNE",
+    "MEMORY",
+    "CIRCULATION",
+    "GOVERNANCE"
+  ],
+  "sourceCollections": [
+    {
+      "name": "Sonoxo public repository snapshot",
+      "url": "../ecosystem-observatory/snapshot.json",
+      "provenance": "GitHub repository search",
+      "note": "Dated public ownership metadata, not runtime service integration"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "bio-core",
+      "name": "BIOLOGICAL DATA CENTER",
+      "layer": "CORE",
+      "xyz": [
+        0,
+        0,
+        0
+      ],
+      "organ": "nucleus",
+      "kind": "software architecture",
+      "source": "docs/biological-data-center/ontology.json",
+      "source_state": "new-pr",
+      "description": "A living-system metaphor for a modular, local AI data center; no biological tissue or hardware is connected.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "cl1",
+      "name": "GPT-DOUG CL1",
+      "layer": "CORE",
+      "xyz": [
+        -2,
+        -2,
+        1
+      ],
+      "organ": "cerebral cortex",
+      "kind": "local AI runtime",
+      "source": "scripts/cl1-free-swarm.sh",
+      "source_state": "feature-branch",
+      "description": "Local AI control plane, not a Cortical Labs biological device.",
+      "activation": "localhost-probe"
+    },
+    {
+      "id": "ollama",
+      "name": "OLLAMA INFERENCE",
+      "layer": "CORE",
+      "xyz": [
+        -4,
+        -1,
+        -1
+      ],
+      "organ": "neural soma",
+      "kind": "localhost inference",
+      "source": "agents/llm_backend.py",
+      "source_state": "feature-branch",
+      "description": "Open-weight models run only on the operator's machine when Ollama is installed.",
+      "activation": "localhost-probe"
+    },
+    {
+      "id": "xunia",
+      "name": "XUNIA ORCHESTRATOR",
+      "layer": "NEURAL",
+      "xyz": [
+        -2,
+        2,
+        1
+      ],
+      "organ": "neural trunk",
+      "kind": "agent interface",
+      "source": "web/xunia_server.py",
+      "source_state": "main",
+      "description": "XUNIA chat and streaming source; runtime health requires a local probe.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "shaggoth",
+      "name": "ECO-SHAGGOTH",
+      "layer": "NEURAL",
+      "xyz": [
+        0,
+        2,
+        -2
+      ],
+      "organ": "neuronal dendrites",
+      "kind": "spatial model",
+      "source": "scripts/eco_shaggoth_cl1.py",
+      "source_state": "feature-branch",
+      "description": "Spatial CL1 ecosystem renderer; an artistic software construct.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "aura",
+      "name": "CL1 AURA",
+      "layer": "NEURAL",
+      "xyz": [
+        -5,
+        3,
+        1
+      ],
+      "organ": "sensory cortex",
+      "kind": "interactive visual control",
+      "source": "scripts/cl1_aura_web.py",
+      "source_state": "feature-branch",
+      "description": "Pointer-driven local spatial viewer; not a new device interface.",
+      "activation": "localhost-probe"
+    },
+    {
+      "id": "sfnn",
+      "name": "XUNIA STREAM",
+      "layer": "NEURAL",
+      "xyz": [
+        -4,
+        4,
+        -1
+      ],
+      "organ": "axon signal",
+      "kind": "local model streaming",
+      "source": "agents/xunia_stream.py",
+      "source_state": "feature-branch",
+      "description": "Existing stream path is not proof of pre-delivery output DLP.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "swarm",
+      "name": "BOUNDED SWARM",
+      "layer": "NEURAL",
+      "xyz": [
+        2,
+        4,
+        -1
+      ],
+      "organ": "synaptic cluster",
+      "kind": "bounded coordination",
+      "source": "gpt_zyra_shaggoth/",
+      "source_state": "main",
+      "description": "Logical bounded agents; not an autonomous self-replicating swarm.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "redpanda",
+      "name": "RED PANDA",
+      "layer": "NEURAL",
+      "xyz": [
+        4,
+        4,
+        1
+      ],
+      "organ": "inhibitory interneuron",
+      "kind": "review / critic",
+      "source": "agents/",
+      "source_state": "main",
+      "description": "Agent-review division shown as an architectural role; process not assumed active.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "kraken",
+      "name": "KRAKEN SHIELD",
+      "layer": "IMMUNE",
+      "xyz": [
+        4,
+        0,
+        -1
+      ],
+      "organ": "immune sentinel",
+      "kind": "local policy boundary",
+      "source": "kraken_shield/core.py",
+      "source_state": "feature-branch",
+      "description": "Policy and audit controls apply only where called by cooperating programs.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "glass",
+      "name": "GLASS ONION",
+      "layer": "IMMUNE",
+      "xyz": [
+        6,
+        -2,
+        0
+      ],
+      "organ": "selective membrane",
+      "kind": "service access policy",
+      "source": "kraken_shield/service_policy.py",
+      "source_state": "feature-branch",
+      "description": "Public music-link policy; banking account actions denied until separately authorized.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "zyra",
+      "name": "ZYRA POLICY",
+      "layer": "IMMUNE",
+      "xyz": [
+        3,
+        2,
+        1
+      ],
+      "organ": "immune response",
+      "kind": "policy assessment",
+      "source": "zyra.py",
+      "source_state": "main",
+      "description": "Inbound safety reviews and governance logic.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "golden",
+      "name": "GOLDEN SHIELD",
+      "layer": "IMMUNE",
+      "xyz": [
+        5,
+        2,
+        -1
+      ],
+      "organ": "phagocyte",
+      "kind": "defensive inspector",
+      "source": "golden_shield.py",
+      "source_state": "main",
+      "description": "Defensive inspection not universal enforcement across the whole computer.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "greenhouse",
+      "name": "GREEN HOUSE",
+      "layer": "IMMUNE",
+      "xyz": [
+        7,
+        3,
+        1
+      ],
+      "organ": "containment tissue",
+      "kind": "sandbox concept",
+      "source": "docs/BIOCHIP_SWARM_PROTOTYPE.md",
+      "source_state": "main",
+      "description": "Containment and experimental review layer; not a live biological enclosure.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "watchtower",
+      "name": "WATCHTOWER",
+      "layer": "IMMUNE",
+      "xyz": [
+        7,
+        0,
+        2
+      ],
+      "organ": "immune monitoring",
+      "kind": "separate local control plane",
+      "source": "universal_watchdog/",
+      "source_state": "main",
+      "description": "Bounded operator controls and evidence; no automatic control of unrelated models.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "audit",
+      "name": "AUDIT LEDGER",
+      "layer": "MEMORY",
+      "xyz": [
+        3,
+        -5,
+        0
+      ],
+      "organ": "epigenetic log",
+      "kind": "local evidence",
+      "source": "kraken_shield/core.py",
+      "source_state": "feature-branch",
+      "description": "Local hash-linked events; the chain cannot prove records weren't truncated.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "datasets",
+      "name": "DATASET FLEET",
+      "layer": "MEMORY",
+      "xyz": [
+        -5,
+        -4,
+        -1
+      ],
+      "organ": "nutrient store",
+      "kind": "public metadata registry",
+      "source": "data_fleet/",
+      "source_state": "main",
+      "description": "Curated datasets and provenance; no private dataset harvesting.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "fleet",
+      "name": "SONOXO REPOSITORY FLEET",
+      "layer": "MEMORY",
+      "xyz": [
+        -6,
+        1,
+        2
+      ],
+      "organ": "genome library",
+      "kind": "public repo catalog",
+      "source": "docs/ecosystem-observatory/snapshot.json",
+      "source_state": "main",
+      "description": "Dated public repository snapshot; ownership does not prove runtime integration.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "northstar",
+      "name": "NORTH STAR",
+      "layer": "GOVERNANCE",
+      "xyz": [
+        -1,
+        5,
+        2
+      ],
+      "organ": "homeostatic setpoint",
+      "kind": "strategy",
+      "source": "docs/",
+      "source_state": "main",
+      "description": "Strategy and evidence prioritization track.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "pages",
+      "name": "XUNIA.ORG",
+      "layer": "GOVERNANCE",
+      "xyz": [
+        -7,
+        3,
+        -1
+      ],
+      "organ": "outer skin",
+      "kind": "public GitHub Pages",
+      "source": "docs/CNAME",
+      "source_state": "main",
+      "description": "Static public presentation, unable to read private Mac telemetry on its own.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "foundry",
+      "name": "FOUNDRY ADAPTER",
+      "layer": "GOVERNANCE",
+      "xyz": [
+        7,
+        4,
+        -2
+      ],
+      "organ": "external receptor",
+      "kind": "optional connector",
+      "source": "docs/",
+      "source_state": "concept",
+      "description": "Not activated or entitled; shown for provenance only.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "nxyz",
+      "name": "NXYZ LOCAL COMPUTE",
+      "layer": "CIRCULATION",
+      "xyz": [
+        -7,
+        -3,
+        2
+      ],
+      "organ": "mitochondrion",
+      "kind": "self-hosted infrastructure",
+      "source": "docs/documentation.html",
+      "source_state": "main",
+      "description": "Local compute concept; no hosting subscription provisioned.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "jukebox",
+      "name": "ZYRA JUKEBOX",
+      "layer": "CIRCULATION",
+      "xyz": [
+        7,
+        -4,
+        -1
+      ],
+      "organ": "sensory sound",
+      "kind": "local music frontend",
+      "source": "apps/zyra-jukebox/",
+      "source_state": "main",
+      "description": "Static frontend; provider accounts aren't secured or connected by display.",
+      "activation": "localhost-probe"
+    },
+    {
+      "id": "bank",
+      "name": "BANK POLICY",
+      "layer": "CIRCULATION",
+      "xyz": [
+        9,
+        -1,
+        1
+      ],
+      "organ": "sealed receptor",
+      "kind": "disabled account adapter",
+      "source": "kraken_shield/service_policy.py",
+      "source_state": "feature-branch",
+      "description": "No banking access or balance, transfers, payment instructions, or provider control.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "vault",
+      "name": "PRIVATE VAULT",
+      "layer": "MEMORY",
+      "xyz": [
+        6,
+        -5,
+        2
+      ],
+      "organ": "protected nucleus",
+      "kind": "sealed secrets",
+      "source": "agents/glassonion_private_vault.py",
+      "source_state": "main",
+      "description": "Authentication remains required; this dashboard never opens the vault.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "biochip",
+      "name": "BIOCHIP SWARM SIM",
+      "layer": "CORE",
+      "xyz": [
+        1,
+        -4,
+        2
+      ],
+      "organ": "synthetic cell culture",
+      "kind": "bounded software simulation",
+      "source": "docs/BIOCHIP_SWARM_PROTOTYPE.md",
+      "source_state": "main",
+      "description": "Synthetic software worker heartbeat; not live neurons or biology.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "telemetry",
+      "name": "LOCAL VITALS",
+      "layer": "CIRCULATION",
+      "xyz": [
+        -2,
+        -5,
+        -2
+      ],
+      "organ": "circulatory pulse",
+      "kind": "localhost status collection",
+      "source": "scripts/xunia_bio_cl1.py",
+      "source_state": "new-pr",
+      "description": "Opt-in local TCP and host load readings; never published by this app.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "host",
+      "name": "MAC LOCAL HOST",
+      "layer": "CIRCULATION",
+      "xyz": [
+        -6,
+        -5,
+        -2
+      ],
+      "organ": "energy substrate",
+      "kind": "on-device compute",
+      "source": "scripts/xunia_bio_cl1.py",
+      "source_state": "new-pr",
+      "description": "Host load and loopback checks may be sampled only from the operator's Mac.",
+      "activation": "architectural-only"
+    },
+    {
+      "id": "nexus",
+      "name": "SHAGGOTH NEXUS",
+      "layer": "NEURAL",
+      "xyz": [
+        -3,
+        5,
+        2
+      ],
+      "organ": "cortical gateway",
+      "kind": "optional localhost service",
+      "source": "gpt_zyra_shaggoth/nexus.py",
+      "source_state": "main",
+      "description": "Optional separately started local service.",
+      "activation": "localhost-probe"
+    },
+    {
+      "id": "repository",
+      "name": "GITHUB SOURCE",
+      "layer": "MEMORY",
+      "xyz": [
+        -9,
+        0,
+        -1
+      ],
+      "organ": "genetic archive",
+      "kind": "versioned code and PRs",
+      "source": "https://github.com/sonoxo/gpt-doug-llm",
+      "source_state": "main",
+      "description": "The code source. CI passes only when workflows actually complete.",
+      "activation": "architectural-only"
+    }
+  ],
+  "edges": [
+    {
+      "from": "bio-core",
+      "to": "cl1",
+      "type": "governs"
+    },
+    {
+      "from": "bio-core",
+      "to": "shaggoth",
+      "type": "visualizes"
+    },
+    {
+      "from": "bio-core",
+      "to": "telemetry",
+      "type": "receives-local-readings"
+    },
+    {
+      "from": "bio-core",
+      "to": "nxyz",
+      "type": "models-local-infrastructure"
+    },
+    {
+      "from": "cl1",
+      "to": "ollama",
+      "type": "local-inference"
+    },
+    {
+      "from": "cl1",
+      "to": "xunia",
+      "type": "serves-interface"
+    },
+    {
+      "from": "cl1",
+      "to": "kraken",
+      "type": "defensive-preflight"
+    },
+    {
+      "from": "cl1",
+      "to": "biochip",
+      "type": "research-simulation"
+    },
+    {
+      "from": "xunia",
+      "to": "sfnn",
+      "type": "streams"
+    },
+    {
+      "from": "xunia",
+      "to": "aura",
+      "type": "renders"
+    },
+    {
+      "from": "xunia",
+      "to": "swarm",
+      "type": "orchestrates-bounded"
+    },
+    {
+      "from": "shaggoth",
+      "to": "aura",
+      "type": "input-layer"
+    },
+    {
+      "from": "shaggoth",
+      "to": "nexus",
+      "type": "optional-local-view"
+    },
+    {
+      "from": "swarm",
+      "to": "redpanda",
+      "type": "review-role"
+    },
+    {
+      "from": "swarm",
+      "to": "northstar",
+      "type": "strategy"
+    },
+    {
+      "from": "kraken",
+      "to": "glass",
+      "type": "service-policy"
+    },
+    {
+      "from": "kraken",
+      "to": "zyra",
+      "type": "policy"
+    },
+    {
+      "from": "kraken",
+      "to": "golden",
+      "type": "inspects"
+    },
+    {
+      "from": "kraken",
+      "to": "audit",
+      "type": "records"
+    },
+    {
+      "from": "glass",
+      "to": "jukebox",
+      "type": "public-link-policy"
+    },
+    {
+      "from": "glass",
+      "to": "bank",
+      "type": "deny-unverified-actions"
+    },
+    {
+      "from": "glass",
+      "to": "vault",
+      "type": "does-not-unlock"
+    },
+    {
+      "from": "golden",
+      "to": "zyra",
+      "type": "defensive-assessment"
+    },
+    {
+      "from": "zyra",
+      "to": "greenhouse",
+      "type": "safety-boundary"
+    },
+    {
+      "from": "watchtower",
+      "to": "audit",
+      "type": "observability-reference"
+    },
+    {
+      "from": "watchtower",
+      "to": "kraken",
+      "type": "separate-control-plane"
+    },
+    {
+      "from": "datasets",
+      "to": "swarm",
+      "type": "metadata-source"
+    },
+    {
+      "from": "datasets",
+      "to": "fleet",
+      "type": "repository-context"
+    },
+    {
+      "from": "fleet",
+      "to": "repository",
+      "type": "public-source-provenance"
+    },
+    {
+      "from": "fleet",
+      "to": "pages",
+      "type": "public-exhibits"
+    },
+    {
+      "from": "pages",
+      "to": "bio-core",
+      "type": "renders-public-ontology"
+    },
+    {
+      "from": "pages",
+      "to": "telemetry",
+      "type": "does-not-collect-private-data"
+    },
+    {
+      "from": "host",
+      "to": "telemetry",
+      "type": "opt-in-readings"
+    },
+    {
+      "from": "host",
+      "to": "ollama",
+      "type": "runs-locally"
+    },
+    {
+      "from": "host",
+      "to": "cl1",
+      "type": "runs-locally"
+    },
+    {
+      "from": "nxyz",
+      "to": "host",
+      "type": "self-hosted-concept"
+    },
+    {
+      "from": "foundry",
+      "to": "northstar",
+      "type": "optional-adapter"
+    },
+    {
+      "from": "northstar",
+      "to": "pages",
+      "type": "publishes-approved-artifacts"
+    },
+    {
+      "from": "vault",
+      "to": "audit",
+      "type": "separate-private-storage"
+    },
+    {
+      "from": "biochip",
+      "to": "datasets",
+      "type": "synthetic-observations"
+    },
+    {
+      "from": "sfnn",
+      "to": "ollama",
+      "type": "local-model-events"
+    },
+    {
+      "from": "redpanda",
+      "to": "audit",
+      "type": "review-evidence"
+    },
+    {
+      "from": "nexus",
+      "to": "aura",
+      "type": "alternative-visual-entry"
+    }
+  ]
+}
