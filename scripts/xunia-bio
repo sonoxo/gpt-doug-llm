@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# XUNIA Biological Data Center / CL1 LOCAL, FREE ONLY, READ ONLY
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+if [[ -x "$ROOT/.venv/bin/python3" ]]; then
+  exec "$ROOT/.venv/bin/python3" scripts/xunia_bio_cl1.py "$@"
+fi
+exec python3 scripts/xunia_bio_cl1.py "$@"
