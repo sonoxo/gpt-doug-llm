@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070b0d">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA CL1 biological data center: interactive spatial ontology, full module provenance, public repository genome, and opt-in localhost telemetry. Free software simulation.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA / Biological Data Center / CL1</title>
+<link rel="stylesheet" href="./style.css">
+<script src="./app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+<header class="top">
+  <div class="identity"><span class="sigil" aria-hidden="true">✧</span><div class="identity-stack"><span class="micro">SONOXO / GPT-DOUG-LLM / CL1</span><strong>XUNIA <span>BIOLOGICAL DATA CENTER</span></strong></div></div>
+  <nav aria-label="XUNIA destinations"><a href="../">XUNIA HQ</a><a href="../ecosystem-observatory/">Repository Fleet</a><a href="../metrics.html">Evidence Metrics</a><a href="../darkweb/">Glass Onion</a></nav>
+</header>
+<section class="intro">
+ <div class="intro-copy"><span class="eyebrow"><span class="pulse"></span> BIOLOGICAL COMPUTE ARCHITECTURE // SOFTWARE MODEL</span>
+ <h1>THE <span>ORGANISM</span><br>IS THE DATA CENTER.</h1>
+ <p>Explore the CL1 core, neural routing, immune defenses, memory, and local infrastructure as one navigable organism. Connections are <b>documented architecture</b>, not proof of running services or living neurons.</p></div>
+ <div class="headline-stats" aria-label="Architecture counts"><div><small>ONTOLOGY NODES</small><strong id="nodeCount">—</strong></div><div><small>RELATIONSHIPS</small><strong id="edgeCount">—</strong></div><div><small>PROVENANCE</small><strong>VERSIONED</strong></div><div><small>PUBLIC CLOUD COST</small><strong>NONE</strong></div></div>
+</section>
+<div class="workspace">
+ <aside class="panel left">
+   <div class="panel-heading">01 / ORGAN SYSTEMS</div>
+   <div id="layers" class="layers" role="group" aria-label="Filter biological architecture"></div>
+   <div class="panel-heading section-sep">02 / PROBE TELEMETRY</div>
+   <p id="telemetryMode" class="telemetry-mode" role="status" aria-live="polite">SCHEMATIC — NOT LIVE</p>
+   <div id="services" class="services" aria-label="Local service status"></div>
+   <div class="host-metrics" id="hostMetrics">Host metrics are local-only and require the operator's own CL1 server.</div>
+   <p class="privacy-note">No payment credentials, private biosignals, personal health records, or bank accounts are collected by this dashboard.</p>
+ </aside>
+ <main class="world-panel">
+   <div class="world-heading"><span>CL1 / CELLULAR TOPOLOGY</span><small>INTERACTIVE 3D PROJECTION · SYNTHETIC VISUAL PULSE</small></div>
+   <div class="canvas-wrap"><canvas id="world" tabindex="0" aria-label="Interactive biological data center ontology. Use buttons and the accessible node list for keyboard navigation." role="img"></canvas><div class="canvas-mark">ECO-SHAGGOTH / RECURSIVE ARCHITECTURE<br>NO LIVE BIOLOGICAL HARDWARE</div></div>
+   <div class="toolbar" role="group" aria-label="View controls">
+      <button type="button" data-view="left">◀ ORBIT</button><button type="button" data-view="right">ORBIT ▶</button>
+      <button type="button" data-view="zoomout">−</button><button type="button" data-view="zoomin">+</button>
+      <button type="button" data-view="reset">RESET</button><button type="button" data-view="labels">LABELS</button>
+      <button type="button" id="refreshStatus">REFRESH VITALS</button>
+   </div>
+   <div class="world-footer"><span id="camera">ORBIT 0° / TILT 0° / ZOOM 1.00</span><span>CLICK NODES · DRAG ROTATE · SCROLL ZOOM</span></div>
+ </main>
+ <aside class="panel right">
+   <div class="panel-heading">03 / CELL INSPECTOR</div>
+   <div class="inspector">
+      <span id="nodeState" class="state">ARCHITECTURE</span>
+      <h2 id="nodeTitle">XUNIA BIO CORE</h2>
+      <div id="nodeLayer" class="organ">CORE</div>
+      <dl><div><dt>BIOLOGICAL ANALOG</dt><dd id="nodeOrgan">Nucleus</dd></div>
+        <div><dt>IMPLEMENTATION EVIDENCE</dt><dd id="nodeEvidence">Versioned ontology</dd></div>
+        <div><dt>LIVE SIGNAL</dt><dd id="nodeSignal">UNVERIFIED</dd></div>
+        <div><dt>SOURCE PATH</dt><dd id="nodeSource">—</dd></div></dl>
+      <p id="nodeDescription" class="description"></p>
+      <div class="panel-heading">CONNECTED TISSUE</div>
+      <div id="connections" class="connections"></div>
+      <label for="find" class="panel-heading">SEARCH CELL / MODULE</label>
+      <input id="find" type="search" autocomplete="off" placeholder="Find CL1, Kraken, Glass Onion…">
+   </div>
+ </aside>
+</div>
+<section class="annex" aria-labelledby="genomeHeading">
+ <div><span class="eyebrow">04 / GENETIC LIBRARY</span><h2 id="genomeHeading">PUBLIC REPOSITORY GENOME</h2>
+ <p>Explore the existing Sonoxo public-repository snapshot with its original date and evidence labels. Repository membership is not proof of live runtime integration.</p></div>
+ <div class="annex-controls"><button id="openGenome" type="button">LOAD PUBLIC GENOME</button><input id="genomeSearch" type="search" placeholder="Filter repositories…" aria-label="Filter public repository genome" disabled></div>
+ <div id="genomeStatus" role="status">Optional public snapshot not loaded.</div>
+ <div id="genomeResults" class="genome-results"></div>
+</section>
+<footer class="footer"><span>GLASS ONION × KRAKEN SHIELD × XUNIA / CL1</span><span>FREE GITHUB PAGES + OPTIONAL LOCALHOST PYTHON · NO PAID HOSTING</span><a href="./ontology.json">FULL ONTOLOGY JSON</a></footer>
+</div>
+</body></html>
