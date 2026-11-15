@@ -50,7 +50,7 @@ For best results enlarge your Terminal to **at least 110 columns x 34 rows** (mi
 - **Right panel:** node inspector with type, source file provenance, local status, description and architectural relationships.
 - **Bottom controls:** interactive instructions and viewport telemetry.
 
-There are 17 mapped nodes spanning core inference, XUNIA, Kraken Shield, Glass Onion, ZYRA, bounded swarm, North Star, Jukebox, bank-deny policy, sealed vault, NXYZ, Greenhouse, optional Foundry adapter, audit and Shaggoth Nexus. Edges are *architectural relations*, not verified live network calls.
+There are 18 mapped nodes spanning core inference, XUNIA, Kraken Shield, Glass Onion, ZYRA, bounded swarm, North Star, Jukebox, bank-deny policy, sealed vault, NXYZ, Greenhouse, optional Foundry adapter, audit and Shaggoth Nexus. Edges are *architectural relations*, not verified live network calls.
 
 ## Truth and safety boundaries
 
