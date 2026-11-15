@@ -1,0 +1,56 @@
+name: CL1-AURA Clickable Spatial Controls
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/cl1_aura_mouse.py'
+      - 'scripts/cl1_aura_web.py'
+      - 'scripts/cl1-aura'
+      - 'scripts/eco_shaggoth_cl1.py'
+      - 'apps/cl1-aura/**'
+      - 'tests/test_cl1_aura_*.py'
+      - 'tests/test_eco_shaggoth_spatial.py'
+      - '.github/workflows/cl1-aura-clickable.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/cl1_aura_mouse.py'
+      - 'scripts/cl1_aura_web.py'
+      - 'scripts/cl1-aura'
+      - 'apps/cl1-aura/**'
+      - 'tests/test_cl1_aura_*.py'
+      - '.github/workflows/cl1-aura-clickable.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mouse-and-browser-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Validate Python/JS/Bash syntax
+        run: |
+          python -m compileall -q scripts/eco_shaggoth_cl1.py scripts/cl1_aura_mouse.py scripts/cl1_aura_web.py
+          node --check apps/cl1-aura/aura.js
+          bash -n scripts/cl1-aura
+      - name: Check spatial node/layer/footer click mapping and SGR input
+        run: python -m unittest discover -s tests -p 'test_cl1_aura_click.py' -v
+      - name: Validate local clickable fallback HTTP boundaries
+        run: python -m unittest discover -s tests -p 'test_cl1_aura_web.py' -v
+      - name: Preserve existing spatial topology tests
+        run: python -m unittest discover -s tests -p 'test_eco_shaggoth_spatial.py' -v

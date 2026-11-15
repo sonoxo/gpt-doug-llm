@@ -18,7 +18,15 @@ import sys
 import time
 from dataclasses import dataclass, field
 
-VERSION = "2026.11.14-spatial.1"
+try:
+    from scripts.cl1_aura_mouse import (
+        footer_targets, hit_test, try_read_sgr_mouse, click_mask,
+    )
+except ModuleNotFoundError:
+    # Direct invocation as "python3 scripts/eco_shaggoth_cl1.py".
+    from cl1_aura_mouse import footer_targets, hit_test, try_read_sgr_mouse, click_mask
+
+VERSION = "2026.11.14-aura-click.1"
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_PORTS = {"ollama": 11434, "cl1": 8787, "jukebox": 8844, "nexus": 8791}
 LAYERS = ("ALL", "CORE", "DEFENSE", "INTELLIGENCE", "MUSIC", "FINANCE", "INFRA")
@@ -160,8 +168,10 @@ def topology() -> dict:
         "bank_transactions_enabled": False,
         "vault_unlocked": False,
         "nodes": [
-            {"id": n.id, "name": n.name, "layer": n.layer,
-             "xyz": list(n.xyz), "kind": n.kind, "source": n.source}
+            {"id": n.id, "name": n.name, "short": n.short,
+             "layer": n.layer, "xyz": list(n.xyz),
+             "kind": n.kind, "details": n.details,
+             "source": n.source, "color": n.color}
             for n in NODES
         ],
         "edges": [{"source": a, "target": b, "relation": rel}
@@ -234,6 +244,10 @@ class View:
     notice: str = "Spatial topology loaded. Runtime status is independently probed."
     tick: int = 0
     coords: dict[str, tuple[int, int]] = field(default_factory=dict)
+    aura_drag: tuple[int, int] | None = None
+    aura_last_click: tuple[int, int, float] | None = None
+    aura_rescan: bool = False
+    aura_events: int = 0
 
 
 def visible_nodes(view: View) -> tuple[Node, ...]:
@@ -372,8 +386,8 @@ def _render(screen, view: View, health: dict[str, str]) -> None:
     mid_top, mid_bottom = 4, h - 5
     canvas = Canvas(mid_right - mid_left - 1, mid_bottom - mid_top - 1)
     view.coords = draw_world(canvas, view)
-    _safe_add(screen, 0, 2, "✧ ECO-SHAGGOTH-CL1 // SPATIAL TERMINAL", 1, True)
-    _safe_add(screen, 1, 2, "CL1 ◈ XUNIA ◈ KRAKEN ◈ GLASS ONION // FREE / LOCAL / READ-ONLY", 2)
+    _safe_add(screen, 0, 2, "✧ CL1-AURA // ECO-SHAGGOTH CLICKABLE SPATIAL TERMINAL", 1, True)
+    _safe_add(screen, 1, 2, "MOUSE: CLICK NODES / LAYERS / LINKS  ◈  CL1 / XUNIA / KRAKEN / GLASS ONION", 2)
     _safe_add(screen, 2, 2, "TOPOLOGY ≠ PROCESS STATUS  |  TCP LISTENING ≠ AUTHENTICATED", 4)
     _box(screen, 4, 0, h-5, left_width, "ECOSYSTEM", 1)
     _box(screen, mid_top, mid_left, mid_bottom, mid_right, "SPATIAL ECO // XYZ", 2)
@@ -418,12 +432,12 @@ def _render(screen, view: View, health: dict[str, str]) -> None:
               f"SELECT [{sel.id}]  ROTATE {math.degrees(view.yaw)%360:.0f}° "
               f"TILT {math.degrees(view.pitch):+.0f}°  ZOOM {view.zoom:.2f}× "
               f"LAYER {view.layer}", 4)
-    _safe_add(screen, h-3, 2,
-              "←→ ROTATE  ↑↓ TILT  HJKL PAN  +/- ZOOM  TAB SELECT  ENTER CENTER  N LAYER  / FIND",
-              2)
+    for left, _, label, _ in footer_targets():
+        _safe_add(screen, h-3, left, label, 1, True)
     _safe_add(screen, h-2, 2,
-              "R SCAN  G GRID  V ANIMATE  L LABELS  F RESET  ? HELP  Q QUIT  | " +
-              view.notice[:max(0, w-97)], 6)
+              "CLICK NODES / INSPECTOR / LAYERS  |  DRAG ROTATE  |  TAB / ARROWS  |  Q QUIT", 2)
+    # Keep the notice in the top strip instead of obscuring clickable actions.
+    _safe_add(screen, 3, 2, "AURA: " + view.notice[:max(0, w-15)], 4)
     if view.help:
         top = max(3, h//2-5)
         right = min(w-4, w//2+39)
@@ -437,7 +451,8 @@ def _render(screen, view: View, health: dict[str, str]) -> None:
             "/ : search nodes           R: rescan loopback TCP",
             "F: reset view              G: toggle star grid",
             "V: animated tentacles      L: node labels",
-            "MOUSE: click node (if terminal supports it)",
+            "MOUSE: click nodes, layers, linked entities, footer",
+            "DRAG: orbit view           WHEEL: zoom",
             "?: close help              Q: quit safely",
         )
         for i, tip in enumerate(tips):
@@ -460,8 +475,126 @@ def _step_selection(view: View, delta: int) -> None:
     view.selected = names[(index + delta) % len(names)]
 
 
+def _aura_apply_hit(view: View, hit) -> None:
+    """Change visible UI state only: no commands or repository mutations."""
+    action = hit.action
+    if action == "node":
+        if hit.target not in BY_ID:
+            return
+        view.selected = hit.target
+        if BY_ID[hit.target].layer != view.layer and view.layer != "ALL":
+            view.layer = "ALL"
+        view.notice = "INSPECT " + BY_ID[hit.target].name
+    elif action == "layer":
+        if hit.target not in LAYERS:
+            return
+        view.layer = hit.target
+        if view.selected not in {n.id for n in visible_nodes(view)}:
+            view.selected = visible_nodes(view)[0].id
+        view.notice = "FILTER " + view.layer
+    elif action == "scan":
+        view.aura_rescan = True
+        view.notice = "Refreshing localhost TCP only."
+    elif action == "rotate_left":
+        view.yaw -= 0.14
+        view.notice = "Orbit left"
+    elif action == "rotate_right":
+        view.yaw += 0.14
+        view.notice = "Orbit right"
+    elif action == "zoom_in":
+        view.zoom = min(3.0, view.zoom * 1.15)
+        view.notice = "Zoom in"
+    elif action == "zoom_out":
+        view.zoom = max(0.40, view.zoom / 1.15)
+        view.notice = "Zoom out"
+    elif action == "help":
+        view.help = not view.help
+        view.notice = "AURA help"
+    elif action == "reset":
+        view.yaw, view.pitch, view.zoom = 0.12, 0.26, 1.0
+        view.pan_x = view.pan_y = 0.0
+        view.layer = "ALL"
+        view.notice = "View reset"
+
+
+def aura_mouse_event(
+    view: View, mouse_x: int, mouse_y: int, button: int, screen,
+    *, sgr: bool = False, pressed: bool = True,
+) -> bool:
+    """Handle native curses and raw SGR Mac mouse reports.
+
+    Returns True if a user action changed the viewport or selection.
+    """
+    if sgr:
+        if button & 64:
+            view.zoom = min(3.0, view.zoom * 1.10) if (button & 1) == 0 else max(0.40, view.zoom / 1.10)
+            view.aura_events += 1
+            view.notice = "AURA scroll zoom"
+            return True
+        if button & 32:
+            moving = True
+        else:
+            moving = False
+        if not pressed:
+            view.aura_drag = None
+            return False
+        clicking = not moving and (button & 3) == 0
+    else:
+        if button & getattr(curses, "BUTTON4_PRESSED", 0):
+            view.zoom = min(3.0, view.zoom * 1.10)
+            view.aura_events += 1
+            return True
+        if button & getattr(curses, "BUTTON5_PRESSED", 0):
+            view.zoom = max(0.40, view.zoom / 1.10)
+            view.aura_events += 1
+            return True
+        moving = bool(button & getattr(curses, "REPORT_MOUSE_POSITION", 0))
+        clicking = bool(button & click_mask(curses)) and bool(
+            button & (
+                getattr(curses, "BUTTON1_PRESSED", 0) |
+                getattr(curses, "BUTTON1_CLICKED", 0) |
+                getattr(curses, "BUTTON1_DOUBLE_CLICKED", 0)
+            )
+        )
+        if button & getattr(curses, "BUTTON1_RELEASED", 0):
+            view.aura_drag = None
+            return False
+    if moving and view.aura_drag is not None:
+        dx = mouse_x - view.aura_drag[0]
+        dy = mouse_y - view.aura_drag[1]
+        if dx or dy:
+            view.yaw += dx * 0.045
+            view.pitch = max(-1.2, min(1.2, view.pitch - dy * 0.045))
+            view.aura_drag = (mouse_x, mouse_y)
+            view.aura_events += 1
+            view.notice = "AURA drag orbit"
+            return True
+    if not clicking:
+        return False
+    # One physical press is sometimes reported twice (PRESSED and CLICKED).
+    now = time.monotonic()
+    if view.aura_last_click is not None:
+        x0, y0, t0 = view.aura_last_click
+        if (x0, y0) == (mouse_x, mouse_y) and now - t0 < 0.18:
+            return False
+    view.aura_last_click = (mouse_x, mouse_y, now)
+    h, w = screen.getmaxyx()
+    hit = hit_test(
+        mouse_x, mouse_y, width=w, height=h, selected=view.selected,
+        coords=view.coords, edges=EDGES, visible=visible_nodes(view), layers=LAYERS,
+    )
+    # Clicking empty canvas starts an orbit drag without selecting an entity.
+    if 26 <= mouse_x < w - 33 and 5 <= mouse_y < h - 5:
+        view.aura_drag = (mouse_x, mouse_y)
+    if hit is None:
+        return False
+    _aura_apply_hit(view, hit)
+    view.aura_events += 1
+    return True
+
+
 def _handle_key(view: View, key: int, screen) -> None:
-    if key in (ord("q"), ord("Q"), 27):
+    if key in (ord("q"), ord("Q")):
         view.running = False
     elif key in (curses.KEY_RIGHT, ord("d")):
         view.yaw += 0.12
@@ -537,16 +670,18 @@ def _handle_key(view: View, key: int, screen) -> None:
                 pass
     elif key == curses.KEY_MOUSE:
         try:
-            _, mouse_x, mouse_y, _, button = curses.getmouse()
-            if button & curses.BUTTON1_CLICKED:
-                for nid, (x, y) in view.coords.items():
-                    if abs((x + 26) - mouse_x) < 3 and abs((y + 5) - mouse_y) < 2:
-                        view.selected = nid
-                        break
-            if hasattr(curses, "BUTTON4_PRESSED") and button & curses.BUTTON4_PRESSED:
-                view.zoom = min(3.0, view.zoom * 1.08)
+            _, x, y, _, button = curses.getmouse()
+            aura_mouse_event(view, x, y, button, screen)
         except curses.error:
             pass
+    elif key == 27:
+        # Some macOS curses builds forward raw xterm SGR mouse sequences as ESC.
+        report = try_read_sgr_mouse(screen)
+        if report is not None:
+            x, y, button, pressed = report
+            aura_mouse_event(view, x, y, button, screen, sgr=True, pressed=pressed)
+        else:
+            view.running = False
 
 
 def _init_colors() -> None:
@@ -574,8 +709,14 @@ def run_curses(screen, offline: bool = False) -> None:
     if curses.has_colors():
         _init_colors()
     try:
-        curses.mousemask(curses.ALL_MOUSE_EVENTS)
-    except curses.error:
+        curses.mouseinterval(0)
+        mask = curses.ALL_MOUSE_EVENTS | getattr(curses, "REPORT_MOUSE_POSITION", 0)
+        curses.mousemask(mask)
+        # SGR-1006 coordinates work beyond the legacy 223-cell mouse limit.
+        # Use button-event tracking; reset both modes on exit.
+        sys.stdout.write("\x1b[?1006h\x1b[?1002h")
+        sys.stdout.flush()
+    except (curses.error, OSError):
         pass
     view = View()
     health = health_snapshot(offline=offline)
@@ -594,6 +735,10 @@ def run_curses(screen, offline: bool = False) -> None:
             last_probe = now
         elif key != -1:
             _handle_key(view, key, screen)
+        if view.aura_rescan:
+            health = health_snapshot(offline=offline)
+            last_probe = now
+            view.aura_rescan = False
         if view.animated:
             view.tick += 1
         elapsed = time.monotonic() - last_frame
@@ -620,6 +765,13 @@ def main(argv: list[str] | None = None) -> int:
         curses.wrapper(lambda screen: run_curses(screen, offline=args.offline))
     except KeyboardInterrupt:
         pass
+    finally:
+        # Always restore the terminal's normal mouse/selection behavior.
+        try:
+            sys.stdout.write("\x1b[?1002l\x1b[?1006l")
+            sys.stdout.flush()
+        except OSError:
+            pass
     return 0
 
 
