@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Iterator
 
 from agents.cl1_free_policy import is_local_ollama_model
+from agents.cl1_runtime_v2 import bounded_ollama_options, resolve_installed_model
 from agents.llm_backend import _safe_urlopen
 
 Event = dict
@@ -162,7 +163,25 @@ def stream_ollama(provider, messages, model, options) -> Iterator[Event]:
     if not state.get("configured"):
         yield provider.chat_once(messages, model, options)
         return
-    body = json.dumps({"model": used_model, "messages": messages, "stream": True, "options": options}).encode()
+    resolved = resolve_installed_model(used_model, state.get("models", []))
+    if resolved is None:
+        yield _event(
+            "Requested local Ollama model is not installed.",
+            provider="ollama", done=True, error="model_unavailable",
+        )
+        return
+    try:
+        inference_options = bounded_ollama_options(options)
+    except ValueError:
+        yield _event(
+            "CL1 resource limits rejected inference options.",
+            provider="ollama", done=True, error="invalid_inference_options",
+        )
+        return
+    body = json.dumps({
+        "model": resolved, "messages": messages, "stream": True,
+        "options": inference_options,
+    }).encode()
     request = urllib.request.Request(
         f"{provider.base_url}/api/chat",
         body,
