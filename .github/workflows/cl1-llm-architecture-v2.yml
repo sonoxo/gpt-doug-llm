@@ -1,0 +1,54 @@
+name: CL1 LLM Architecture v2
+
+on:
+  pull_request:
+    paths:
+      - 'agents/cl1_runtime_v2.py'
+      - 'agents/llm_backend.py'
+      - 'agents/xunia_stream.py'
+      - 'agents/tests/test_free_backend.py'
+      - 'tests/test_cl1_llm_arch_v2.py'
+      - 'tests/test_cl1_free_only.py'
+      - 'scripts/cl1-free-swarm.sh'
+      - 'docs/LLM_ARCHITECTURE_V2.*'
+      - '.github/workflows/cl1-llm-architecture-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'agents/cl1_runtime_v2.py'
+      - 'agents/llm_backend.py'
+      - 'agents/xunia_stream.py'
+      - 'scripts/cl1-free-swarm.sh'
+      - 'tests/test_cl1_llm_arch_v2.py'
+      - '.github/workflows/cl1-llm-architecture-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-inference-boundary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile model routing and validation modules
+        run: |
+          python -m compileall -q agents/cl1_runtime_v2.py agents/llm_backend.py agents/xunia_stream.py
+          python -m json.tool docs/LLM_ARCHITECTURE_V2.json >/dev/null
+          bash -n scripts/cl1-free-swarm.sh
+      - name: Model admission, bounded resources, proxy and redirect tests
+        run: python -m unittest discover -s tests -p 'test_cl1_llm_arch_v2.py' -v
+      - name: Preserve CL1 free-only behavior
+        run: python -m unittest discover -s tests -p 'test_cl1_free_only.py' -v
+      - name: Preserve Kraken Shield local control
+        run: python -m unittest discover -s tests -p 'test_kraken_shield.py' -v
