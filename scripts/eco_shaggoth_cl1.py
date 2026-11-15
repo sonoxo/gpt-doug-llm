@@ -474,7 +474,7 @@ def _handle_key(view: View, key: int, screen) -> None:
     elif key in (ord("h"),):
         view.pan_x += 3
     elif key in (ord("l"),):
-        view.labels = not view.labels
+        view.pan_x -= 3
     elif key in (ord("j"),):
         view.pan_y -= 2
     elif key in (ord("k"),):
@@ -494,8 +494,8 @@ def _handle_key(view: View, key: int, screen) -> None:
         canvas_h = max(10, h - 11)
         x, y, _ = rotate_project(BY_ID[view.selected].xyz, view.yaw, view.pitch,
                                  view.zoom, canvas_w, canvas_h)
-        view.pan_x += canvas_w//2 - x
-        view.pan_y += canvas_h//2 - y
+        view.pan_x = canvas_w//2 - x
+        view.pan_y = canvas_h//2 - y
     elif key in (ord("n"), ord("b")):
         delta = 1 if key == ord("n") else -1
         view.layer = LAYERS[(LAYERS.index(view.layer) + delta) % len(LAYERS)]
