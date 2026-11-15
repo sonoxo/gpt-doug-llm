@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# CL1-AURA: one-command clickable ECO-SHAGGOTH terminal or local browser UI.
+# Local read-only graphics. No background services, privileged hooks, or paid APIs.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+if [ -x "$ROOT/.venv/bin/python3" ]; then
+  PYTHON="$ROOT/.venv/bin/python3"
+else
+  PYTHON="$(command -v python3)"
+fi
+case "${1:-terminal}" in
+  --web|web)
+    shift
+    exec "$PYTHON" scripts/cl1_aura_web.py "$@"
+    ;;
+  --terminal|terminal)
+    shift || true
+    exec "$PYTHON" scripts/eco_shaggoth_cl1.py "$@"
+    ;;
+  --snapshot|--json|--offline)
+    exec "$PYTHON" scripts/eco_shaggoth_cl1.py "$@"
+    ;;
+  *)
+    echo "Usage: bash scripts/cl1-aura [--terminal|--web|--snapshot|--json]" >&2
+    exit 2
+    ;;
+esac
