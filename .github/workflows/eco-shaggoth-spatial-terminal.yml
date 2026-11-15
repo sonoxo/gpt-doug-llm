@@ -1,0 +1,50 @@
+name: ECO-SHAGGOTH CL1 Spatial Terminal
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/eco_shaggoth_cl1.py'
+      - 'scripts/eco-shaggoth-cl1'
+      - 'tests/test_eco_shaggoth_spatial.py'
+      - 'docs/ECO_SHAGGOTH_CL1_SPATIAL_TERMINAL.md'
+      - '.github/workflows/eco-shaggoth-spatial-terminal.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/eco_shaggoth_cl1.py'
+      - 'scripts/eco-shaggoth-cl1'
+      - 'tests/test_eco_shaggoth_spatial.py'
+      - '.github/workflows/eco-shaggoth-spatial-terminal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  spatial-terminal-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Verify Python and shell syntax
+        run: |
+          python -m compileall -q scripts/eco_shaggoth_cl1.py
+          bash -n scripts/eco-shaggoth-cl1
+      - name: Test spatial render, keyboard, topology and loopback-only probes
+        run: python -m unittest discover -s tests -p 'test_eco_shaggoth_spatial.py' -v
+      - name: Render headless spatial preview without network
+        run: |
+          python scripts/eco_shaggoth_cl1.py --snapshot --offline > /tmp/eco-spatial.txt
+          grep 'SPATIAL ECOSYSTEM' /tmp/eco-spatial.txt
+          grep 'SHAGGOTH' /tmp/eco-spatial.txt
+          python scripts/eco_shaggoth_cl1.py --json > /tmp/eco-spatial.json
+          python -m json.tool /tmp/eco-spatial.json > /dev/null

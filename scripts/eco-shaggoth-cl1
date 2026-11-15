@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Full interactive terminal-only ECO-SHAGGOTH topology. No installs or cloud calls.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+if [ -x "$ROOT/.venv/bin/python3" ]; then
+  exec "$ROOT/.venv/bin/python3" scripts/eco_shaggoth_cl1.py "$@"
+fi
+exec python3 scripts/eco_shaggoth_cl1.py "$@"
