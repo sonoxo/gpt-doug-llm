@@ -2,6 +2,29 @@
 
 Free, source-aware, federated music and live-radio web player for the GPT-DOUG / ZYRA / XUNIA ecosystem.
 
+## Safe Mac launch — avoids Git branch overwrite conflicts
+
+If a prior CL1 checkout contains untracked `kraken_shield/` files, **do not** run `git clean -fd`, `git reset --hard`, or `git switch` to overwrite them. Keep the original checkout intact and clone MAX into a separate folder.
+
+```bash
+cd "$HOME" &&
+if [ -d "$HOME/gpt-doug-max-jukebox/.git" ]; then
+  git -C "$HOME/gpt-doug-max-jukebox" pull --ff-only
+else
+  git clone --depth 1 --single-branch \
+    --branch feat/gpt-doug-max-glass-onion-egress-20261114 \
+    https://github.com/sonoxo/gpt-doug-llm.git \
+    "$HOME/gpt-doug-max-jukebox"
+fi &&
+cd "$HOME/gpt-doug-max-jukebox" &&
+python3 -m http.server 8844 --bind 127.0.0.1 \
+  --directory apps/zyra-jukebox
+```
+
+Open `http://127.0.0.1:8844/` on the same Mac. Leave that terminal open while browsing. A `127.0.0.1 refused to connect` browser message means this local HTTP server is not listening; it is not a paid-service failure. Use another terminal to verify with `curl -I http://127.0.0.1:8844/`.
+
+The standalone static Jukebox on port 8844 does **not** automatically launch the CL1/Ollama backend on port 8787. The clone and server command do not erase or modify `~/gpt-doug-cl1` or external account data.
+
 ## v3 capabilities
 
 - Windows 95 / Winamp-inspired interface
