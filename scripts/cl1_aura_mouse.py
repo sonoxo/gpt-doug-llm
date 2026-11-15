@@ -45,7 +45,7 @@ def hit_test(
     height: int,
     selected: str,
     coords: dict[str, tuple[int, int]],
-    nodes: dict[str, Any],
+    edges: Iterable[tuple[str, str, str]],
     visible: Iterable[Any],
     layers: tuple[str, ...],
 ) -> AuraHit | None:
@@ -73,7 +73,7 @@ def hit_test(
     if height >= 34 and rx <= mouse_x < width - 2 and 25 <= mouse_y < height - 6:
         neighbors = [
             (b if a == selected else a)
-            for a, b, _ in getattr(nodes, "EDGES", ())
+            for a, b, _ in edges
             if a == selected or b == selected
         ]
         pos = mouse_y - 25
