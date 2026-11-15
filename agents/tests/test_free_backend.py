@@ -83,7 +83,11 @@ class TestFreeOnlyBackend:
         from agents.llm_backend import _safe_urlopen
 
         sentinel = object()
-        monkeypatch.setattr(urllib.request, "urlopen", lambda request, timeout: sentinel)
+        class LocalOpener:
+            def open(self, request, timeout):
+                assert request.full_url == "http://127.0.0.1:11434/api/tags"
+                return sentinel
+        monkeypatch.setattr(urllib.request, "build_opener", lambda *handlers: LocalOpener())
         request = urllib.request.Request("http://127.0.0.1:11434/api/tags")
         assert _safe_urlopen(request, timeout=1, allow_local_http=True) is sentinel
 
