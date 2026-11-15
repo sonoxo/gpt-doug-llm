@@ -1,0 +1,73 @@
+name: XUNIA Biological Data Center / CL1
+
+on:
+  pull_request:
+    paths:
+      - 'docs/biological-data-center/**'
+      - 'docs/index.html'
+      - 'docs/resources.json'
+      - 'docs/docs-index.json'
+      - 'docs/documentation.html'
+      - 'scripts/xunia_bio_cl1.py'
+      - 'scripts/xunia-bio'
+      - 'tests/test_xunia_biological_data_center.py'
+      - '.github/workflows/xunia-cl1-biological-data-center.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/biological-data-center/**'
+      - 'scripts/xunia_bio_cl1.py'
+      - 'scripts/xunia-bio'
+      - 'tests/test_xunia_biological_data_center.py'
+      - '.github/workflows/xunia-cl1-biological-data-center.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ontology-telemetry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Validate public site source and CL1 launcher
+        run: |
+          python -m json.tool docs/biological-data-center/ontology.json >/dev/null
+          python -m compileall -q scripts/xunia_bio_cl1.py
+          python scripts/xunia_bio_cl1.py --check
+          node --check docs/biological-data-center/app.js
+          bash -n scripts/xunia-bio
+      - name: Test localhost vitals and XUNIA Pages static ontology
+        run: python -m unittest discover -s tests -p 'test_xunia_biological_data_center.py' -v
+      - name: Verify Pages entry points and resources catalog
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path("docs")
+          home = (root / "index.html").read_text()
+          docs = (root / "documentation.html").read_text()
+          assert './biological-data-center/' in home
+          assert './biological-data-center/' in docs
+          resources = json.loads((root / "resources.json").read_text())
+          items = [it for it in resources["items"] if it["id"] == "xunia-cl1-biological-data-center"]
+          assert len(items) == 1 and items[0]["free"] and items[0]["interactive"]
+          assert items[0]["url"] == "./biological-data-center/"
+          idx = json.loads((root / "docs-index.json").read_text())
+          assert idx["publicSurfaces"]["biologicalDataCenter"] == "https://xunia.org/biological-data-center/"
+          assert (root / "CNAME").read_text().strip() == "xunia.org"
+          print("XUNIA Pages and free resources registry OK")
+          PY
