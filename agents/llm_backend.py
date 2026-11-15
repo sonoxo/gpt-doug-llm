@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
-from agents.cl1_free_policy import is_local_inference_url, is_local_ollama_model
+from agents.cl1_free_policy import is_local_inference_url, is_local_ollama_model, provider_is_cloud
 from agents.cl1_runtime_v2 import (
     architecture_status,
     bounded_ollama_options,
