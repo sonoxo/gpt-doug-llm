@@ -120,7 +120,7 @@ activate() {
   bash scripts/cl1-free-swarm.sh run
 }
 
-case "$1" in
+case "${1:-status}" in
   activate) activate ;;
   doctor) doctor ;;
   status) status ;;
