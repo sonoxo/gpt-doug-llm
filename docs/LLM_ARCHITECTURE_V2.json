@@ -1,0 +1,169 @@
+{
+  "schema": "cl1/llm-architecture-v2",
+  "title": "GPT-DOUG-LLM MAX / CL1 Local-Only Runtime",
+  "version": "2.0.0",
+  "deployment": {
+    "mode": "Mac localhost",
+    "host": "127.0.0.1",
+    "application_port": 8787,
+    "model_api_port": 11434,
+    "paid_service_required": false,
+    "cloud_compute_provisioned": false
+  },
+  "nodes": [
+    {
+      "id": "user",
+      "kind": "operator",
+      "name": "Mac Operator"
+    },
+    {
+      "id": "web",
+      "kind": "interface",
+      "name": "GPT-DOUG/XUNIA UI",
+      "binding": "127.0.0.1:8787"
+    },
+    {
+      "id": "kraken",
+      "kind": "policy",
+      "name": "Kraken Shield Inbound Preflight",
+      "fail_closed": true
+    },
+    {
+      "id": "zyra",
+      "kind": "policy",
+      "name": "Zyra/Golden Shield Assessment"
+    },
+    {
+      "id": "router",
+      "kind": "inference",
+      "name": "CL1 Model Admission",
+      "providers": [
+        "ollama"
+      ],
+      "remote_fallback": false,
+      "allow_uninstalled_models": false
+    },
+    {
+      "id": "limits",
+      "kind": "resource",
+      "name": "Bounded Options",
+      "context_max": 8192,
+      "output_max": 2048
+    },
+    {
+      "id": "transport",
+      "kind": "boundary",
+      "name": "Local Transport",
+      "proxy": false,
+      "redirect": false,
+      "remote_http": false
+    },
+    {
+      "id": "ollama",
+      "kind": "runtime",
+      "name": "Installed Ollama",
+      "endpoint": "http://127.0.0.1:11434"
+    },
+    {
+      "id": "sfnn",
+      "kind": "observability",
+      "name": "Streaming Self Monitor",
+      "scope": "pre-memory checkpoint, not pre-delivery outbound audit"
+    },
+    {
+      "id": "audit",
+      "kind": "storage",
+      "name": "Local Audit",
+      "scope": "policy decisions"
+    },
+    {
+      "id": "glassonion",
+      "kind": "policy",
+      "name": "Glass Onion Service Boundary",
+      "scope": "cooperating music/bank integration paths only"
+    },
+    {
+      "id": "stop",
+      "kind": "control",
+      "name": "Emergency Stop",
+      "fail_closed": true
+    }
+  ],
+  "edges": [
+    [
+      "user",
+      "web",
+      "request"
+    ],
+    [
+      "web",
+      "kraken",
+      "preflight"
+    ],
+    [
+      "kraken",
+      "stop",
+      "stop_gate"
+    ],
+    [
+      "kraken",
+      "zyra",
+      "policy_check"
+    ],
+    [
+      "zyra",
+      "router",
+      "authorized_messages"
+    ],
+    [
+      "router",
+      "limits",
+      "bound_config"
+    ],
+    [
+      "limits",
+      "transport",
+      "authorized_inference"
+    ],
+    [
+      "transport",
+      "ollama",
+      "localhost_only"
+    ],
+    [
+      "ollama",
+      "sfnn",
+      "stream"
+    ],
+    [
+      "sfnn",
+      "web",
+      "observed_events"
+    ],
+    [
+      "kraken",
+      "audit",
+      "hashlinked_decisions"
+    ],
+    [
+      "web",
+      "glassonion",
+      "app_integrations"
+    ]
+  ],
+  "invariants": [
+    "No remote provider in CL1 UI",
+    "No provider proxy or redirect allowed",
+    "No uninstalled model implicit pull",
+    "No Ollama :cloud model accepted",
+    "No unbounded context or prediction tokens",
+    "No autonomous financial actions"
+  ],
+  "limitations": [
+    "Existing streaming tokens can be delivered before post-hoc Zyra output audit",
+    "Only implemented entrypoints are governed",
+    "Local infrastructure still incurs hardware/power/network costs",
+    "Local user still must run and verify server",
+    "Model catalogs and package licenses need operator review"
+  ]
+}

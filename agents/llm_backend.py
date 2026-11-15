@@ -19,6 +19,11 @@ from typing import Iterator
 
 from agents.ai_action_plan import inject_policy
 from agents.cl1_free_policy import is_local_inference_url, is_local_ollama_model, provider_is_cloud
+from agents.cl1_runtime_v2 import (
+    architecture_status,
+    bounded_ollama_options,
+    resolve_installed_model,
+)
 from ai_killswitch import AIKillSwitchEngaged, guarded_stream, require_ai_allowed
 from ai_killswitch import status as ai_stop_status
 
@@ -48,6 +53,13 @@ def _safe_provider_error(name: str, exc: Exception) -> str:
     return f"{name}: provider failure"
 
 
+class _RejectInferenceRedirects(urllib.request.HTTPRedirectHandler):
+    """Reject redirects even when Ollama is served by a local reverse proxy."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("Refusing inference redirect")
+
+
 def _safe_urlopen(
     request: urllib.request.Request,
     *,
@@ -72,7 +84,13 @@ def _safe_urlopen(
     require_ai_allowed("AI provider HTTP transport")
     if not (is_https or is_loopback_http) or not is_local_inference_url(request.full_url):
         raise ValueError(f"Refusing unsafe provider URL: CL1 free-only policy blocks {parsed.scheme}://{host}")
-    return urllib.request.urlopen(request, timeout=timeout)  # nosec B310 -- scheme/host validated above
+    # Explicitly disable environment proxies and redirects. Otherwise an
+    # innocent localhost request can become a remote request after HTTP 302,
+    # or leak its payload through an HTTP(S)_PROXY environment setting.
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}), _RejectInferenceRedirects()
+    )
+    return opener.open(request, timeout=timeout)  # nosec B310 -- local target only
 
 
 @dataclass(frozen=True)
@@ -297,15 +315,15 @@ class OllamaProvider(Provider):
             models = [
                 item.get("name", "")
                 for item in data.get("models", [])
-                if item.get("name")
+                if isinstance(item, dict)
+                and isinstance(item.get("name"), str)
+                and is_local_ollama_model(item["name"])
             ]
             reachable = True
         except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError):
             reachable = False
         wanted = self.config.model
-        model_available = is_local_ollama_model(wanted) and reachable and any(
-            name == wanted or name.startswith(wanted + ":") for name in models
-        )
+        model_available = reachable and bool(resolve_installed_model(wanted, models))
         return {
             "backend": "ollama",
             "provider": "ollama",
@@ -336,20 +354,26 @@ class OllamaProvider(Provider):
                 "done": True,
                 "error": "provider_unreachable",
             }
-        if used_model == self.config.model and not state["model_available"]:
+        resolved = resolve_installed_model(used_model, state.get("models", []))
+        if resolved is None:
             return {
-                "message": {
-                    "role": "assistant",
-                    "content": "Configured Ollama model is not installed.",
-                },
+                "message": {"role": "assistant", "content": "Requested local Ollama model is not installed."},
                 "done": True,
                 "error": "model_unavailable",
             }
+        try:
+            inference_options = bounded_ollama_options(options)
+        except ValueError:
+            return {
+                "message": {"role": "assistant", "content": "CL1 resource limits rejected inference options."},
+                "done": True,
+                "error": "invalid_inference_options",
+            }
         body = json.dumps({
-            "model": used_model,
+            "model": resolved,
             "messages": messages,
             "stream": False,
-            "options": options,
+            "options": inference_options,
         }).encode()
         request = urllib.request.Request(
             f"{self.base_url}/api/chat",
@@ -372,11 +396,11 @@ class AutoProvider(Provider):
             "GPT_DOUG_PROVIDER_ORDER",
             "ollama",
         )
-        self.order = [
-            item.strip().lower()
-            for item in requested.split(",")
-            if item.strip() and not provider_is_cloud(item)
-        ]
+        # CL1 supports a single locally installed Ollama backend. A user
+        # cannot restore metered fallback by modifying provider-order env vars.
+        self.order = ["ollama"] if "ollama" in {
+            item.strip().lower() for item in requested.split(",")
+        } else []
         self.providers = [
             _make_provider(name)
             for name in self.order
@@ -565,6 +589,7 @@ def health() -> dict:
                 "message": "AI emergency stop engaged", "killswitch": stop_state}
     state = _provider.health()
     state["killswitch"] = stop_state
+    state["architecture"] = architecture_status()
     state["ai_action_plan_profile"] = os.environ.get("GPT_DOUG_AI_ACTION_PLAN", "1").strip().lower() not in {"0", "false", "off", "no", "disabled"}
     return state
 
@@ -645,17 +670,15 @@ def chat_stream(
 
 
 def available_providers() -> list[dict]:
+    """Advertise only free local inference; don't offer cloud choices in UI."""
     if ai_stop_status()["stopped"]:
         return [{"id": "none", "label": "AI stopped; offline workspace", "configured": True}]
-    providers = [AnthropicProvider(), OpenAIProvider(), GeminiProvider(), OllamaProvider()]
-    ready = any(provider.ready() for provider in providers)
+    local = OllamaProvider()
+    ready = local.ready()
     return [
         {"id": "none", "label": "Offline workspace", "configured": True},
-        {"id": "auto", "label": "Auto router", "configured": ready},
-        {"id": "astra", "label": "GPT-DOUG-ASTRA adaptive router", "configured": ready},
-        {"id": "xunia", "label": "GPT XUNIA consensus", "configured": ready},
-        {"id": "claude", "label": "Anthropic Claude", "configured": providers[0].ready()},
-        {"id": "openai", "label": "OpenAI", "configured": providers[1].ready()},
-        {"id": "gemini", "label": "Google Gemini", "configured": providers[2].ready()},
-        {"id": "ollama", "label": "Ollama (local)", "configured": providers[3].ready()},
+        {"id": "ollama", "label": "Ollama (local only)", "configured": ready},
+        {"id": "auto", "label": "Auto (Ollama only)", "configured": ready},
+        {"id": "astra", "label": "ASTRA (Ollama only)", "configured": ready},
+        {"id": "xunia", "label": "XUNIA (Ollama only)", "configured": ready},
     ]

@@ -44,21 +44,30 @@ doctor() {
   if ! "$PYTHON_BIN" - <<'PY'
 import json
 import os
-import urllib.error
 import urllib.request
 
+from agents.cl1_runtime_v2 import resolve_installed_model
+from agents.llm_backend import _safe_urlopen
+
 model = os.environ["OLLAMA_MODEL"]
-req = urllib.request.Request("http://127.0.0.1:11434/api/tags", headers={"Accept": "application/json"})
+req = urllib.request.Request(
+    "http://127.0.0.1:11434/api/tags", headers={"Accept": "application/json"}
+)
 try:
-    with urllib.request.urlopen(req, timeout=3) as response:
-        names = [item.get("name", "") for item in json.load(response).get("models", [])]
-except (OSError, ValueError, urllib.error.URLError) as exc:
-    print("CL1: local Ollama is not reachable. Start `ollama serve`.", flush=True)
+    with _safe_urlopen(req, timeout=3, allow_local_http=True) as response:
+        names = [
+            item.get("name", "") for item in json.load(response).get("models", [])
+            if isinstance(item, dict)
+        ]
+except Exception:
+    print("CL1: local Ollama health check failed. Confirm Ollama is running.", flush=True)
     raise SystemExit(1) from None
-if not any(name == model or name.startswith(model + ":") for name in names):
-    print(f"CL1: model {model} is not installed; run: ollama pull {model}", flush=True)
+resolved = resolve_installed_model(model, names)
+if resolved is None:
+    print(f"CL1: approved local model {model} is not installed.", flush=True)
+    print("CL1: select an installed open-weight model, never a :cloud model.", flush=True)
     raise SystemExit(1)
-print(f"CL1 FREE ONLY: local inference ready ({model}); cloud billing disabled.")
+print(f"CL1 FREE ONLY: verified installed model ({resolved}); proxies and redirects disabled.")
 PY
   then
     return 1
