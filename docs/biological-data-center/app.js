@@ -327,9 +327,12 @@
       paintLayers();paintInspector();paintTelemetry();setSize();drawMesh();
       window.addEventListener("resize",()=>{setSize();if(reduceMotion)drawMesh();});
       if(localOrigin){pollLocal();setInterval(pollLocal,6000);}
-    }catch(_){
-      show("telemetryMode","ONTOLOGY LOAD FAILED — CHECK THE PUBLICATION");
-      show("hostMetrics","No data substituted when the source fails.");
+    }catch(error){
+      // Never disguise a broken Canvas as a healthy interactive data center.
+      // Publicly display only the category; details stay in the browser console.
+      console.error("XUNIA CL1: spatial initialization failed", error);
+      show("telemetryMode","SPATIAL RENDER FAILED — OPEN BROWSER CONSOLE");
+      show("hostMetrics","Architecture unavailable; local telemetry was not altered.");
     }
   }
   window.addEventListener("pagehide",()=>{state.disposed=true;});
