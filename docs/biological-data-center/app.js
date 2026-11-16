@@ -178,6 +178,10 @@
         ctx.strokeStyle=arm%3===0?"rgba(211,201,245,.22)":"rgba(173,245,224,.19)";
         ctx.lineWidth=1.2;ctx.stroke();
       }
+      canvas.dataset.coreDebug = [
+        core.x, core.y, state.w, state.h, state.zoom, state.panX,
+        state.panY, state.yaw, state.pitch
+      ].map(String).join(",");
       const g=ctx.createRadialGradient(core.x,core.y,3,core.x,core.y,90);
       g.addColorStop(0,"rgba(213,250,242,.38)");g.addColorStop(.3,"rgba(133,222,208,.12)");g.addColorStop(1,"rgba(133,222,208,0)");
       ctx.fillStyle=g;ctx.beginPath();ctx.arc(core.x,core.y,90,0,Math.PI*2);ctx.fill();
