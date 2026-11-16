@@ -41,6 +41,7 @@ test('real ontology reaches 3D Canvas nodes and edges without JS runtime errors'
       disabled: false,
       replaceChildren() { this.children = []; },
       append(...children) { this.children.push(...children); },
+      appendChild(child) { this.children.push(child); return child; },
       addEventListener() {},
       getBoundingClientRect() { return { width: 940, height: 540, left: 0, top: 0 }; },
       getContext(type) { assert.equal(type, '2d'); return drawContext; },
