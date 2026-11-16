@@ -133,16 +133,27 @@
   }
 
   function projected(n){
-    const [x,y,z]=n.xyz;
-    const xx=x*Math.cos(state.yaw)-z*Math.sin(state.y);
-    const zz=x*Math.sin(state.yaw)+z*Math.cos(state.yaw);
-    const yy=y*Math.cos(state.pitch)-zz*Math.sin(state.pitch);
-    const depth=y*Math.sin(state.pitch)+zz*Math.cos(state.pitch);
+    // Treat all graph coordinates as untrusted data. One NaN must never blank
+    // the entire nucleus or block selection and graph rendering.
+    const [nx,ny,nz]=n.xyz.map(Number);
+    const x=Number.isFinite(nx)?nx:0;
+    const y=Number.isFinite(ny)?ny:0;
+    const z=Number.isFinite(nz)?nz:0;
+    const yaw=Number.isFinite(state.yaw)?state.yaw:0;
+    const pitch=Number.isFinite(state.pitch)?state.pitch:0;
+    const cosYaw=Math.cos(yaw), sinYaw=Math.sin(yaw);
+    const cosPitch=Math.cos(pitch), sinPitch=Math.sin(pitch);
+    let horizontal=x*cosYaw-z*sinYaw;
+    const rotatedDepth=x*sinYaw+z*cosYaw;
+    const yy=y*cosPitch-rotatedDepth*sinPitch;
+    const depth=y*sinPitch+rotatedDepth*cosPitch;
     const scale=Math.min(state.w/22,state.h/14)*state.zoom;
     const perspective=1/Math.max(.7,1+depth*.018);
-    return {x:state.w/2+state.panX+xx*scale*perspective,
-      y:state.h/2+state.panY-yy*scale*.77*perspective,depth,node:n,
-      _projectionDebug:[x,y,z,xx,zz,yy,depth,scale,perspective]};
+    if(!Number.isFinite(horizontal)) horizontal=x;
+    const px=state.w/2+state.panX+horizontal*scale*perspective;
+    const py=state.h/2+state.panY-yy*scale*.77*perspective;
+    return {x:Number.isFinite(px)?px:state.w/2,
+      y:Number.isFinite(py)?py:state.h/2,depth,node:n};
   }
 
   function drawMesh(){
@@ -179,10 +190,6 @@
         ctx.strokeStyle=arm%3===0?"rgba(211,201,245,.22)":"rgba(173,245,224,.19)";
         ctx.lineWidth=1.2;ctx.stroke();
       }
-      canvas.dataset.coreDebug = [
-        core.x, core.y, state.w, state.h, state.zoom, state.panX,
-        state.panY, state.yaw, state.pitch, ...core._projectionDebug
-      ].map(String).join(",");
       const g=ctx.createRadialGradient(core.x,core.y,3,core.x,core.y,90);
       g.addColorStop(0,"rgba(213,250,242,.38)");g.addColorStop(.3,"rgba(133,222,208,.12)");g.addColorStop(1,"rgba(133,222,208,0)");
       ctx.fillStyle=g;ctx.beginPath();ctx.arc(core.x,core.y,90,0,Math.PI*2);ctx.fill();
