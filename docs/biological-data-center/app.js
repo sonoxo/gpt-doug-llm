@@ -208,6 +208,11 @@
         ctx.fillStyle=color;ctx.fillText(text,p.x+18,p.y);
       } else p.labelWidth=0;
     }
+    // Expose a non-sensitive renderer health marker for real-browser smoke tests.
+    // It represents frame rendering, never the state of external services.
+    canvas.dataset.renderedNodes = String(state.points.length);
+    canvas.dataset.renderedEdges = String(state.model.edges.length);
+    canvas.dataset.renderFrames = String(state.frame + 1);
     show("camera","ORBIT "+Math.round(state.yaw*180/Math.PI)+"° / TILT "+Math.round(state.pitch*180/Math.PI)+"° / ZOOM "+state.zoom.toFixed(2));
     state.frame++;
     if(!reduceMotion && !state.disposed)requestAnimationFrame(drawMesh);
