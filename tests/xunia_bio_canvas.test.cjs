@@ -27,7 +27,10 @@ test('real ontology reaches 3D Canvas nodes and edges without JS runtime errors'
     lineTo() {},
     fillText(text) { canvasCalls.push(['fillText', text]); },
     measureText(text) { return { width: text.length * 7 }; },
-    createRadialGradient() { return { addColorStop() {} }; },
+    createRadialGradient(...args) {
+      assert.ok(args.every(Number.isFinite), 'Canvas radial gradient has non-finite coordinates: ' + JSON.stringify(args));
+      return { addColorStop() {} };
+    },
   };
   function element(id) {
     if (elements.has(id)) return elements.get(id);
