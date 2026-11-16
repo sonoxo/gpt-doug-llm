@@ -69,6 +69,8 @@ def main() -> int:
                 print("XUNIA: Chrome did not render the full ontology:", marker,
                       file=sys.stderr)
                 print("XUNIA canvas:", canvas[:1000], file=sys.stderr)
+                status = re.search(r'<[^>]+id="telemetryMode"[^>]*>.*?</[^>]+>', html, re.S)
+                print("XUNIA status:", status.group(0)[:500] if status else "absent", file=sys.stderr)
                 errors = [line for line in proc.stderr.splitlines()
                           if any(key in line for key in ("CONSOLE", "TypeError", "Uncaught", "ERROR"))]
                 print("Chrome diagnostics:", "\n".join(errors[-15:])[-2200:], file=sys.stderr)
