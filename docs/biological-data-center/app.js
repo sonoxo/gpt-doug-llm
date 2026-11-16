@@ -133,15 +133,27 @@
   }
 
   function projected(n){
-    const [x,y,z]=n.xyz;
-    const xx=x*Math.cos(state.yaw)-z*Math.sin(state.y);
-    const zz=x*Math.sin(state.yaw)+z*Math.cos(state.yaw);
-    const yy=y*Math.cos(state.pitch)-zz*Math.sin(state.pitch);
-    const depth=y*Math.sin(state.pitch)+zz*Math.cos(state.pitch);
+    // Treat all graph coordinates as untrusted data. One NaN must never blank
+    // the entire nucleus or block selection and graph rendering.
+    const [nx,ny,nz]=n.xyz.map(Number);
+    const x=Number.isFinite(nx)?nx:0;
+    const y=Number.isFinite(ny)?ny:0;
+    const z=Number.isFinite(nz)?nz:0;
+    const yaw=Number.isFinite(state.yaw)?state.yaw:0;
+    const pitch=Number.isFinite(state.pitch)?state.pitch:0;
+    const cosYaw=Math.cos(yaw), sinYaw=Math.sin(yaw);
+    const cosPitch=Math.cos(pitch), sinPitch=Math.sin(pitch);
+    let horizontal=x*cosYaw-z*sinYaw;
+    const rotatedDepth=x*sinYaw+z*cosYaw;
+    const yy=y*cosPitch-rotatedDepth*sinPitch;
+    const depth=y*sinPitch+rotatedDepth*cosPitch;
     const scale=Math.min(state.w/22,state.h/14)*state.zoom;
     const perspective=1/Math.max(.7,1+depth*.018);
-    return {x:state.w/2+state.panX+xx*scale*perspective,
-      y:state.h/2+state.panY-yy*scale*.77*perspective,depth,node:n};
+    if(!Number.isFinite(horizontal)) horizontal=x;
+    const px=state.w/2+state.panX+horizontal*scale*perspective;
+    const py=state.h/2+state.panY-yy*scale*.77*perspective;
+    return {x:Number.isFinite(px)?px:state.w/2,
+      y:Number.isFinite(py)?py:state.h/2,depth,node:n};
   }
 
   function drawMesh(){
@@ -208,6 +220,11 @@
         ctx.fillStyle=color;ctx.fillText(text,p.x+18,p.y);
       } else p.labelWidth=0;
     }
+    // Expose a non-sensitive renderer health marker for real-browser smoke tests.
+    // It represents frame rendering, never the state of external services.
+    canvas.dataset.renderedNodes = String(state.points.length);
+    canvas.dataset.renderedEdges = String(state.model.edges.length);
+    canvas.dataset.renderFrames = String(state.frame + 1);
     show("camera","ORBIT "+Math.round(state.yaw*180/Math.PI)+"° / TILT "+Math.round(state.pitch*180/Math.PI)+"° / ZOOM "+state.zoom.toFixed(2));
     state.frame++;
     if(!reduceMotion && !state.disposed)requestAnimationFrame(drawMesh);
@@ -327,9 +344,16 @@
       paintLayers();paintInspector();paintTelemetry();setSize();drawMesh();
       window.addEventListener("resize",()=>{setSize();if(reduceMotion)drawMesh();});
       if(localOrigin){pollLocal();setInterval(pollLocal,6000);}
-    }catch(_){
-      show("telemetryMode","ONTOLOGY LOAD FAILED — CHECK THE PUBLICATION");
-      show("hostMetrics","No data substituted when the source fails.");
+    }catch(error){
+      // Never disguise a broken Canvas as a healthy interactive data center.
+      // Publicly display only the category; details stay in the browser console.
+      console.error("XUNIA CL1: spatial initialization failed", error);
+      // Diagnostics contain only a bounded JS error class/message, not any
+      // local telemetry or account data. Needed to debug real browser issues.
+      canvas.dataset.renderFailure = (String(error?.name||"Error")+": "+
+        String(error?.message||"unknown")).slice(0,180);
+      show("telemetryMode","SPATIAL RENDER FAILED — OPEN BROWSER CONSOLE");
+      show("hostMetrics","Architecture unavailable; local telemetry was not altered.");
     }
   }
   window.addEventListener("pagehide",()=>{state.disposed=true;});

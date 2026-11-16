@@ -36,6 +36,9 @@ class OntologyContractTests(unittest.TestCase):
         self.assertTrue(all(e["from"] in ids and e["to"] in ids for e in self.data["edges"]))
         self.assertTrue(all(n["source_state"] in {"main","feature-branch","new-pr","concept"}
                             for n in self.data["nodes"]))
+        for node_id in ("bio-core", "telemetry", "host"):
+            node = next(n for n in self.data["nodes"] if n["id"] == node_id)
+            self.assertEqual(node["source_state"], "main")
         self.assertEqual(self.data["public_hosting"], "GitHub Pages static docs")
         self.assertFalse(self.data["security"]["bank_accounts_connected"])
         self.assertFalse(self.data["security"]["biological_devices_connected"])

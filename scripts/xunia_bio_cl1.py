@@ -9,6 +9,7 @@ access bank accounts, private vaults, biosensors, model prompts or cloud APIs.
 from __future__ import annotations
 
 import argparse
+import errno
 from datetime import datetime, timezone
 import json
 import os
@@ -219,8 +220,15 @@ def run(argv: list[str] | None = None) -> int:
             server.serve_forever(poll_interval=0.4)
     except KeyboardInterrupt:
         return 0
-    except OSError:
-        print("XUNIA CL1: localhost port in use; existing process untouched.", flush=True)
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            print(f"XUNIA CL1: port {args.port} already belongs to a running process.", flush=True)
+            print(f"Inspect safely: lsof -nP -iTCP:{args.port} -sTCP:LISTEN", flush=True)
+            print("If this is your earlier XUNIA Bio terminal tab, press Ctrl+C there", flush=True)
+            print("then rerun: cd ~/xunia-bio-cl1 && bash scripts/xunia-bio", flush=True)
+            print("No process was stopped, overwritten, or replaced.", flush=True)
+        else:
+            print("XUNIA CL1: cannot start local HTTP listener; existing services untouched.", flush=True)
         return 1
     return 0
 

@@ -11,6 +11,8 @@ on:
       - 'scripts/xunia_bio_cl1.py'
       - 'scripts/xunia-bio'
       - 'tests/test_xunia_biological_data_center.py'
+      - 'tests/xunia_bio_canvas.test.cjs'
+      - 'tests/xunia_bio_chrome_smoke.py'
       - '.github/workflows/xunia-cl1-biological-data-center.yml'
   push:
     branches: [main]
@@ -50,6 +52,10 @@ jobs:
           python scripts/xunia_bio_cl1.py --check
           node --check docs/biological-data-center/app.js
           bash -n scripts/xunia-bio
+      - name: Exercise browser Canvas rendering against real ontology
+        run: node --test tests/xunia_bio_canvas.test.cjs
+      - name: Verify real Chrome renders spatial nodes (not just background stars)
+        run: python tests/xunia_bio_chrome_smoke.py
       - name: Test localhost vitals and XUNIA Pages static ontology
         run: python -m unittest discover -s tests -p 'test_xunia_biological_data_center.py' -v
       - name: Verify Pages entry points and resources catalog

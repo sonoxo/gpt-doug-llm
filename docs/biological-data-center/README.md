@@ -35,6 +35,21 @@ The server refuses off-host Host and Origin requests, blocks cross-site fetches,
 
 The versioned source is docs/biological-data-center/ontology.json. A node tagged feature-branch is pending and is NOT proof of a merged deployed service. The repository genome is read-only from the existing dated docs/ecosystem-observatory/snapshot.json source; repository membership does not imply runtime integration.
 
+## Mac startup and blank spatial field recovery
+
+If Terminal prints `XUNIA CL1: localhost port in use`, an older process is still listening on port 8871. The launcher will **not** kill it or replace it. Find that specific earlier `Python scripts/xunia_bio_cl1.py` Terminal tab and press **Control+C** in that tab. If unsure, inspect it with `lsof -nP -iTCP:8871 -sTCP:LISTEN` and do not terminate other processes.
+
+After stopping the earlier XUNIA server:
+
+    cd ~/xunia-bio-cl1
+    git pull --ff-only
+    bash scripts/xunia-bio --check
+    bash scripts/xunia-bio
+
+Enter `http://127.0.0.1:8871/biological-data-center/` manually in Chrome and use **Command+Shift+R** to load the latest browser assets. Keep the server Terminal open.
+
+A previous build showed background stars but no ontology nodes because a non-finite horizontal projection broke the browser Canvas gradient. The renderer now bounds the projected coordinates. Both Node's full-ontology Canvas harness and a **real headless Chrome** test must render 30 nodes/43 edges before CI can pass. The browser reports a rendering error visibly instead of silently drawing an empty canvas. Synthetic pulses remain visual metaphors, not real biological data.
+
 ## Validate
 
     python3 -m unittest discover -s tests -p 'test_xunia_biological_data_center.py' -v
