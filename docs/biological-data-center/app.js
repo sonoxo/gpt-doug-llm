@@ -141,7 +141,8 @@
     const scale=Math.min(state.w/22,state.h/14)*state.zoom;
     const perspective=1/Math.max(.7,1+depth*.018);
     return {x:state.w/2+state.panX+xx*scale*perspective,
-      y:state.h/2+state.panY-yy*scale*.77*perspective,depth,node:n};
+      y:state.h/2+state.panY-yy*scale*.77*perspective,depth,node:n,
+      _projectionDebug:[x,y,z,xx,zz,yy,depth,scale,perspective]};
   }
 
   function drawMesh(){
@@ -180,7 +181,7 @@
       }
       canvas.dataset.coreDebug = [
         core.x, core.y, state.w, state.h, state.zoom, state.panX,
-        state.panY, state.yaw, state.pitch
+        state.panY, state.yaw, state.pitch, ...core._projectionDebug
       ].map(String).join(",");
       const g=ctx.createRadialGradient(core.x,core.y,3,core.x,core.y,90);
       g.addColorStop(0,"rgba(213,250,242,.38)");g.addColorStop(.3,"rgba(133,222,208,.12)");g.addColorStop(1,"rgba(133,222,208,0)");
