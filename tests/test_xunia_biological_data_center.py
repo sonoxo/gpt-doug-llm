@@ -150,6 +150,73 @@ class LocalHttpTests(unittest.TestCase):
         self.assertEqual(self.request("/api/telemetry",headers={"Origin":"https://attacker.example"})[0],403)
         self.assertEqual(self.request("/api/telemetry",headers={"Sec-Fetch-Site":"cross-site"})[0],403)
 
+    def test_chatgpt_link_opens_local_site_without_cross_site_api_access(self):
+        # Chrome reports a link from chatgpt.com as a cross-site navigation.
+        # A browser may also append utm_source=chatgpt.com to the URL.
+        navigation = {
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Dest": "document",
+            "Referer": "https://chatgpt.com/",
+        }
+        status, headers, _ = self.request(
+            "/?utm_source=chatgpt.com", headers=navigation
+        )
+        self.assertEqual(status, 302)
+        self.assertEqual(headers.get("Location"), "/biological-data-center/")
+        status, _, body = self.request(
+            "/biological-data-center/", headers=navigation
+        )
+        self.assertEqual(status, 200)
+        self.assertIn(b"BIOLOGICAL DATA CENTER", body)
+        self.assertEqual(self.request(
+            "/biological-data-center/index.html", headers=navigation
+        )[0], 200)
+
+        # Data and non-document paths remain inaccessible cross-site.
+        for path in (
+            "/api/telemetry",
+            "/biological-data-center/ontology.json",
+            "/biological-data-center/app.js",
+            "/ecosystem-observatory/snapshot.json",
+            "/",
+        ):
+            with self.subTest(path=path):
+                # A cross-site subresource fetch is never a top-level nav.
+                forged = {**navigation, "Sec-Fetch-Mode": "cors",
+                          "Sec-Fetch-Dest": "empty"}
+                self.assertEqual(self.request(path, headers=forged)[0], 403)
+        self.assertEqual(
+            self.request("/api/telemetry", headers=navigation)[0], 403,
+        )
+        self.assertEqual(
+            self.request("/biological-data-center/app.js",
+                         headers=navigation)[0], 403,
+        )
+
+    def test_foreign_origin_and_host_still_block_navigation(self):
+        nav = {
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Dest": "document",
+        }
+        self.assertEqual(self.request(
+            "/?utm_source=chatgpt.com",
+            headers={**nav, "Host": "attacker.example"},
+        )[0], 403)
+        self.assertEqual(self.request(
+            "/?utm_source=chatgpt.com",
+            headers={**nav, "Origin": "https://attacker.example"},
+        )[0], 403)
+        self.assertEqual(self.request(
+            "/?utm_source=chatgpt.com",
+            headers={**nav, "Sec-Fetch-Dest": "iframe"},
+        )[0], 403)
+        self.assertEqual(self.request(
+            "/?utm_source=chatgpt.com",
+            method="HEAD", headers=nav,
+        )[0], 403)
+
     def test_no_network_mutation_methods(self):
         for method in ("POST","PUT","OPTIONS"):
             with self.subTest(method=method):
