@@ -336,6 +336,10 @@
       // Never disguise a broken Canvas as a healthy interactive data center.
       // Publicly display only the category; details stay in the browser console.
       console.error("XUNIA CL1: spatial initialization failed", error);
+      // Diagnostics contain only a bounded JS error class/message, not any
+      // local telemetry or account data. Needed to debug real browser issues.
+      canvas.dataset.renderFailure = (String(error?.name||"Error")+": "+
+        String(error?.message||"unknown")).slice(0,180);
       show("telemetryMode","SPATIAL RENDER FAILED — OPEN BROWSER CONSOLE");
       show("hostMetrics","Architecture unavailable; local telemetry was not altered.");
     }
