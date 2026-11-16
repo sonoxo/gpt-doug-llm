@@ -127,7 +127,20 @@ class BioHandler(BaseHTTPRequestHandler):
         if origin and origin not in {f"http://{host}" for host in allowed}:
             return False
         if self.headers.get("Sec-Fetch-Site", "").lower() == "cross-site":
-            return False
+            # Opening a localhost link from ChatGPT, email, or another site
+            # is a *top-level navigation*, not a cross-origin API request.
+            # Allow only that safe document entry; never expose telemetry
+            # or arbitrary assets to a cross-site fetch/navigation.
+            entry = urlsplit(self.path).path
+            return (
+                self.command == "GET"
+                and entry in {
+                    "/", "/biological-data-center/",
+                    "/biological-data-center/index.html",
+                }
+                and self.headers.get("Sec-Fetch-Mode", "").lower() == "navigate"
+                and self.headers.get("Sec-Fetch-Dest", "").lower() == "document"
+            )
         return True
 
     def _respond(self, code: int, data: bytes, mime: str, *, head: bool = False) -> None:
