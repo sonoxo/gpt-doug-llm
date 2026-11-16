@@ -84,7 +84,8 @@ test('real ontology reaches 3D Canvas nodes and edges without JS runtime errors'
   await new Promise(resolve => setImmediate(resolve));
   assert.deepEqual(requests, ['./ontology.json']);
   assert.equal(errors.length, 0, 'JavaScript initialization failed: ' +
-    errors.map(args => args.map(String).join(' ')).join(' | '));
+    errors.map(args => args.map(String).join(' ')).join(' | ') +
+    ' core=' + (elements.get('world')?.dataset.coreDebug || 'missing'));
   assert.ok(elements.has('nodeTitle'), 'Node inspector did not mount');
   assert.equal(elements.get('nodeTitle').textContent, ontology.nodes[0].name);
   assert.ok(canvasCalls.some(x => x[0] === 'ellipse'), 'expected organic nucleus rings');
