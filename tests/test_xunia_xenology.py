@@ -47,14 +47,15 @@ class XenologyTests(unittest.TestCase):
                   "reportGrid","shoggothGrid","creatureCanvas","graphCanvas",
                   "tabs","tabBody","intensity","pauseScene","consoleForm",
                   "consoleInput","exportData","runSimulation","saveScene","shareView",
-                  "viewUrl","actionStatus"]:
+                  "viewUrl","actionStatus","runSelfTest"]:
             self.assertIn('id="'+x+'"',html)
         for x in ["function renderCards(", "function drawViewer(", "function drawGraph(",
                   "function command(raw)", "function choose(", "function exportData(",
                   "function updateMapMode(", "function togglePause(",
                   "function buildRelations(", "function safeOfficial(",
                   "function restoreSharedView(", "function shareView(",
-                  "function saveScene(", "function currentShareUrl("]:
+                  "function saveScene(", "function runSelfTest(",
+                  "function currentShareUrl("]:
             self.assertIn(x,js)
         self.assertIn('fetch("./catalog.json"',js)
         self.assertEqual(js.count("fetch("),1)
