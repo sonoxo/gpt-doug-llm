@@ -41,7 +41,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-python@v7
         with:
-          python-version: \${{ matrix.python }}
+          python-version: ${{ matrix.python }}
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
