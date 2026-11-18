@@ -63,6 +63,9 @@ window.addEventListener("load",()=>{
       assert(document.querySelector('[data-tab="data"]').getAttribute("aria-selected")==="true",
         "deep-link tab restore failed");
       assert(el("graphCanvas").dataset.mapMode==="field","deep-link graph mode failed");
+      el("runSelfTest").click();
+      assert(el("actionStatus").textContent.includes("SELF-TEST PASS"),
+        "local application self-test reported a failure");
       document.documentElement.dataset.xenologySmoke="pass";
     }catch(error){
       document.documentElement.dataset.xenologySmoke="fail";
