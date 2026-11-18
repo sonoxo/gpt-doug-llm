@@ -14,6 +14,8 @@ on:
       - 'tests/xunia_cosmos_chrome_smoke.py'
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
+      - 'tests/test_xunia_xenology.py'
+      - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
   push:
     branches: [main]
@@ -25,6 +27,8 @@ on:
       - 'tests/xunia_cosmos_chrome_smoke.py'
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
+      - 'tests/test_xunia_xenology.py'
+      - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
   workflow_dispatch:
 
@@ -53,9 +57,11 @@ jobs:
         run: |
           python -m json.tool docs/cosmos/catalogs/seed.json > /dev/null
           python -m json.tool docs/cosmos/planets/catalog.json > /dev/null
+          python -m json.tool docs/cosmos/xenology/catalog.json > /dev/null
           python -m compileall -q scripts/xunia_cosmos_import.py tests/xunia_cosmos_chrome_smoke.py
           node --check docs/cosmos/cosmos.js
           node --check docs/cosmos/planets/planets.js
+          node --check docs/cosmos/xenology/app.js
           bash -n scripts/xunia-cosmos
       - name: Validate astronomy hierarchy and NASA/ESA importer offline
         run: python -m unittest discover -s tests -p 'test_xunia_cosmos.py' -v
@@ -65,6 +71,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_xunia_planet_clones.py' -v
       - name: Verify CL1 planet render and interactive clone lifecycle in real Chrome
         run: python tests/xunia_planets_chrome_smoke.py
+      - name: Validate CL1 xenology source classifications and data boundaries
+        run: python -m unittest discover -s tests -p 'test_xunia_xenology.py' -v
+      - name: Verify real Xenology browser cards and Shaggoth viewer interactions
+        run: python tests/xunia_xenology_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
@@ -82,6 +92,12 @@ jobs:
           idx=json.loads((docs/"docs-index.json").read_text())
           assert idx["publicSurfaces"]["cosmos"]=="https://xunia.org/cosmos/"
           assert idx["publicSurfaces"]["planetaryForge"]=="https://xunia.org/cosmos/planets/"
+          assert idx["publicSurfaces"]["xenologyUapShaggoth"]=="https://xunia.org/cosmos/xenology/"
+          assert "./xenology/" in (docs/"cosmos/index.html").read_text()
+          assert "./cosmos/xenology/" in (docs/"index.html").read_text()
+          assert "../cosmos/xenology/" in (docs/"biological-data-center/index.html").read_text()
+          archive=json.loads((docs/"cosmos/xenology/catalog.json").read_text())
+          assert len(archive["records"])==36
           assert "./cosmos/planets/" in (docs/"index.html").read_text()
           assert "../cosmos/planets/" in (docs/"biological-data-center/index.html").read_text()
           planets=json.loads((docs/"cosmos/planets/catalog.json").read_text())

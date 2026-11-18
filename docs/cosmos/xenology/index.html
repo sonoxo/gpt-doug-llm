@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050b12"><meta name="referrer" content="no-referrer">
+<meta name="description" content="CL1 XUNIA COSMOS: interactive fictional alien forms, illustrated UAP archetypes, sourced UAP records and Shaggoth simulations.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA COSMOS / Xenology UAP Shaggoth Archive</title>
+<link rel="stylesheet" href="./style.css"><script defer src="./app.js"></script>
+</head>
+<body><div class="shell">
+<header class="topbar">
+  <a class="brand" href="../" aria-label="XUNIA COSMOS home"><span class="brand-mark">◉</span><span><strong>GPT-DOUG-LLM <em>//</em> XUNIA COSMOS <b>CL1</b></strong><small>Universal Xenology · UAP research · Shaggoth concept archive</small></span></a>
+  <nav class="top-nav" aria-label="XUNIA navigation">
+    <a href="../../">⌂ <span>HQ</span></a><a href="../">◎ COSMOS</a><a href="./" aria-current="page">◉ XENOLOGY</a><a href="../planets/">◌ PLANETS</a><a href="../../biological-data-center/">⌘ CL1 BIO</a>
+  </nav>
+  <div class="online">● CL1 SOFTWARE MODEL <span>NO LIVE SENSORS</span></div>
+</header>
+<div class="notice"><b>CLASSIFICATION / IMPORTANT</b> Aliens and Shaggoths here are fictional or speculative designs. UAP shape cards are illustrations. Documented records link to official AARO releases; none imply verified extraterrestrial life or technology.</div>
+<div class="columns">
+<aside class="sidebar panel" aria-label="Search and filter controls">
+  <div class="panel-title">SEARCH &amp; FILTER <span>01 / REGISTRY</span></div>
+  <label class="search-label" for="query">SEARCH ALL ENTITIES</label>
+  <input id="query" type="search" placeholder="Grey, saucer, Shaggoth…" autocomplete="off">
+  <div class="filter-heading">ENTITY TYPE</div>
+  <div id="groupFilters" class="filter-list" role="group" aria-label="Entity type filters">
+    <label><input type="checkbox" value="aliens" checked> Alien concepts <span data-count="aliens">—</span></label>
+    <label><input type="checkbox" value="uap" checked> UAP shapes <span data-count="uap">—</span></label>
+    <label><input type="checkbox" value="records" checked> AARO reports <span data-count="records">—</span></label>
+    <label><input type="checkbox" value="shaggoth" checked> Shaggoths <span data-count="shaggoth">—</span></label>
+  </div>
+  <div class="filter-heading">EVIDENCE / STATUS</div>
+  <div id="evidenceFilters" class="filter-list" role="group" aria-label="Evidence status filters">
+    <label><input type="checkbox" value="fictional" checked><i class="status-dot purple"></i> Fictional</label>
+    <label><input type="checkbox" value="speculative" checked><i class="status-dot violet"></i> Speculative</label>
+    <label><input type="checkbox" value="illustrative" checked><i class="status-dot blue"></i> Illustrated form</label>
+    <label><input type="checkbox" value="documented" checked><i class="status-dot amber"></i> Published report</label>
+    <label><input type="checkbox" value="resolved" checked><i class="status-dot green"></i> Resolved report</label>
+  </div>
+  <div class="filter-heading">LOCAL VIEW OPTIONS</div>
+  <div class="filter-list"><label><input id="motion" type="checkbox" checked> Animate scene</label><label><input id="linksToggle" type="checkbox" checked> Graph links</label></div>
+  <button id="resetFilters" type="button" class="secondary full">RESET FILTERS</button>
+  <div class="status-panel"><strong>● CL1 SYSTEM READY</strong><div>FILTERED OBJECTS <b id="filteredTotal">—</b></div><div>CURATED RECORDS <b id="recordTotal">—</b></div><div>PROVENANCE <b>SEPARATED</b></div><div>EXECUTION <b>LOCAL BROWSER</b></div></div>
+  <p class="footnote">No hidden files, classified feeds, extraterrestrial detections or external telemetry. Zero paid APIs.</p>
+</aside>
+<main class="gallery" aria-label="Entity galleries">
+  <section class="group-section" id="alienSection" aria-labelledby="alienHead"><div class="section-head"><h2 id="alienHead">EXTRATERRESTRIAL ARCHETYPES <small>FOLKLORE &amp; FICTION</small></h2><span id="alienCount">—</span></div><div id="alienGrid" class="entity-grid alien-grid"></div></section>
+  <section class="group-section" id="uapSection" aria-labelledby="uapHead"><div class="section-head"><h2 id="uapHead">UAP / UFO VISUAL MORPHOLOGIES <small>ILLUSTRATIONS</small></h2><span id="uapCount">—</span></div><div id="uapGrid" class="entity-grid uap-grid"></div></section>
+  <section class="group-section" id="reportSection" aria-labelledby="reportHead"><div class="section-head"><h2 id="reportHead">DOCUMENTED UAP RECORDS <small>AARO PUBLIC SOURCES</small></h2><span id="reportCount">—</span></div><div id="reportGrid" class="entity-grid report-grid"></div></section>
+  <section class="group-section" id="shoggothSection" aria-labelledby="shoggothHead"><div class="section-head"><h2 id="shoggothHead">SHAGGOTH / COSMIC ENTITY FORMS <small>ORIGINAL FICTIONAL IP</small></h2><span id="shoggothCount">—</span></div><div id="shoggothGrid" class="entity-grid shoggoth-grid"></div></section>
+</main>
+<aside class="right panel" aria-label="Selected entity interactive viewer">
+  <div class="panel-title">INTERACTIVE EXPLORER <span>02 / VISUAL LAB</span></div>
+  <div class="viewer"><canvas id="creatureCanvas" tabindex="0" role="img" aria-label="Interactive animated concept scene. Drag to rotate, scroll to zoom."></canvas><div class="viewer-label">CL1 // PROCEDURAL CONCEPT VIEWER <b>NOT OBSERVATIONAL IMAGERY</b></div><div class="viewer-ctrl">
+    <button id="sceneLeft" type="button" aria-label="Rotate left">↶</button><button id="sceneRight" type="button" aria-label="Rotate right">↷</button><button id="sceneZoomIn" type="button" aria-label="Zoom in">+</button><button id="sceneZoomOut" type="button" aria-label="Zoom out">−</button><button id="sceneReset" type="button" aria-label="Reset view">⌖</button>
+  </div></div>
+  <div id="tabs" class="tabs" role="tablist" aria-label="Inspector detail views"><button role="tab" aria-selected="true" data-tab="overview">Overview</button><button role="tab" aria-selected="false" data-tab="data">Data</button><button role="tab" aria-selected="false" data-tab="relations">Relations</button><button role="tab" aria-selected="false" data-tab="simulation">Simulation</button></div>
+  <section class="detail" aria-label="Selected record details"><h2 id="selectedName">Loading archive…</h2><p id="selectedDescription">Loading source-qualified catalog.</p><div class="facts">
+    <div><span>CLASSIFICATION</span><strong id="selectedGroup">—</strong></div>
+    <div><span>EVIDENCE STATUS</span><strong id="selectedEvidence">—</strong></div>
+    <div><span>CONTEXT</span><strong id="selectedDomain">—</strong></div>
+    <div><span>PROVENANCE</span><strong id="selectedOrigin">—</strong></div>
+  </div><div id="tabBody" class="tab-body" aria-live="polite"></div><a id="sourceLink" class="source-link" target="_blank" rel="noopener noreferrer" hidden>VIEW PRIMARY PUBLIC SOURCE ↗</a></section>
+  <div class="sim-controls"><label for="intensity">SIMULATION INTENSITY <output for="intensity" id="intensityValue">60%</output></label><input id="intensity" type="range" min="0" max="100" value="60" step="5"><button type="button" id="pauseScene" aria-pressed="false">PAUSE SCENE</button></div>
+</aside>
+</div>
+<div class="lower">
+<section class="map-panel panel" aria-labelledby="mapHead"><div class="section-head"><h2 id="mapHead">XENOLOGY KNOWLEDGE GRAPH <small>CONCEPT LINKS, NOT CONTACT ROUTES</small></h2><div class="map-tools"><button id="graphMode" type="button" aria-pressed="true">GRAPH</button><button id="fieldMode" type="button" aria-pressed="false">FIELD MAP</button></div></div><div class="map-stage"><canvas id="graphCanvas" tabindex="0" role="img" aria-label="Interactive map of curated conceptual relationships. Select a node to inspect."></canvas><div class="map-key">CL1 ◉ DESIGN GRAPH / NO ASSERTED EXTRATERRESTRIAL ORIGINS</div></div></section>
+<section class="totals panel"><div class="section-head"><h2>ECOSYSTEM TOTALS <small>CATALOG ONLY</small></h2></div><div class="total-list"><div><span>◉ Alien archetypes</span><b id="statAliens">—</b></div><div><span>⌁ UAP visual shapes</span><b id="statUap">—</b></div><div><span>◈ Official UAP records</span><b id="statReports">—</b></div><div><span>☄ Shaggoth forms</span><b id="statShaggoth">—</b></div><div><span>⛓ Conceptual links</span><b id="statEdges">—</b></div><div><span>∑ Curated entities</span><b id="statTotal">—</b></div></div></section>
+<section class="quick panel"><div class="section-head"><h2>QUICK ACTIONS <small>INTERACTIVE</small></h2></div><button id="exploreSelected" type="button">▶ FOCUS SELECTED ENTITY</button><button id="randomEntity" type="button">⤨ DISCOVER RANDOM CONCEPT</button><button id="exportData" type="button">⇩ EXPORT FILTERED JSON</button><button id="runSimulation" type="button">✧ START VISUAL SIMULATION</button><button id="openConsole" type="button">⌘ OPEN CL1 CONSOLE</button></section>
+</div>
+<section class="console panel" aria-label="Local command console"><div class="section-head"><h2>CL1 COMMAND CONSOLE <small>LOCAL VIEW CONTROLS ONLY / NO SYSTEM SHELL</small></h2><small id="cmdStatus" role="status" aria-live="polite">READY / TYPE /help</small></div><form id="consoleForm" autocomplete="off"><label for="consoleInput">CL1 &gt;</label><input id="consoleInput" maxlength="180" spellcheck="false" placeholder="/help · /find shaggoth · /select prime · /mode field · /export"><button type="submit">EXECUTE</button></form></section>
+<footer class="footer"><span>GPT-DOUG-LLM / XUNIA / CL1 / GLASS ONION CONTAINMENT</span><span>SPECULATIVE ≠ VERIFIED · <a href="https://science.nasa.gov/uap/faqs/" target="_blank" rel="noopener noreferrer">NASA UAP FAQ</a> · <a href="https://www.aaro.mil/UAP-Cases/Official-UAP-Imagery/" target="_blank" rel="noopener noreferrer">AARO PUBLIC IMAGERY</a></span></footer>
+</div></body></html>
