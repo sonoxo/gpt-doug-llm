@@ -92,9 +92,10 @@ def run_chrome(chrome: str, root: Path, reduced: bool, url: str) -> bool:
                   proc.stderr[-700:], file=sys.stderr)
             return False
         if 'data-live-core-smoke="pass"' not in proc.stdout:
-            found = re.search(r"<html\\b[^>]*>", proc.stdout)
+            found = re.search(r"<html\b[^>]*>", proc.stdout)
             print("HQ LIVE CORE: DOM smoke failed", found.group(0) if found else "no HTML",
-                  proc.stderr[-700:], file=sys.stderr)
+                  "stdout tail:", proc.stdout[-900:],
+                  "stderr:", proc.stderr[-250:], file=sys.stderr)
             return False
     print("HQ LIVE CORE CHROME OK:", "reduced-motion" if reduced else "interactive",
           "8 portals / Shaggoth / camera / PNG / keyboard")
