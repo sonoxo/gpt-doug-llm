@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# XUNIA COSMOS / CL1 / free-only spatial astronomy. No paid service.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+if [[ -x .venv/bin/python3 ]]; then
+  PYTHON="$ROOT/.venv/bin/python3"
+else
+  PYTHON="$(command -v python3)"
+fi
+if [[ "${1:-}" == "import" ]]; then
+  shift
+  exec "$PYTHON" scripts/xunia_cosmos_import.py "$@"
+fi
+if [[ "${1:-}" != "" && "${1:-}" != "serve" ]]; then
+  echo "Usage: bash scripts/xunia-cosmos [serve | import nasa|gaia --limit N]" >&2
+  exit 2
+fi
+echo "XUNIA COSMOS / http://127.0.0.1:8872/cosmos/"
+echo "Read-only static site; no paid APIs. Ctrl+C to stop."
+exec "$PYTHON" -m http.server 8872 --bind 127.0.0.1 --directory docs
