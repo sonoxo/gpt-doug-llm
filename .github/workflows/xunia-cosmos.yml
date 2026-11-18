@@ -5,6 +5,8 @@ on:
     paths:
       - 'docs/cosmos/**'
       - 'docs/index.html'
+      - 'docs/cl1-live.js'
+      - 'docs/cl1-live.css'
       - 'docs/biological-data-center/index.html'
       - 'docs/resources.json'
       - 'docs/docs-index.json'
@@ -17,6 +19,8 @@ on:
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
       - 'tests/test_xunia_xenology.py'
+      - 'tests/test_xunia_live_core.py'
+      - 'tests/xunia_live_core_chrome_smoke.py'
       - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
   push:
@@ -32,6 +36,8 @@ on:
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
       - 'tests/test_xunia_xenology.py'
+      - 'tests/test_xunia_live_core.py'
+      - 'tests/xunia_live_core_chrome_smoke.py'
       - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
   workflow_dispatch:
@@ -66,6 +72,8 @@ jobs:
           node --check docs/cosmos/cosmos.js
           node --check docs/cosmos/planets/planets.js
           node --check docs/cosmos/xenology/app.js
+          node --check docs/cl1-live.js
+          python -m compileall -q tests/test_xunia_live_core.py tests/xunia_live_core_chrome_smoke.py
           bash -n scripts/xunia-cosmos
       - name: Verify safe localhost port fallback and COSMOS app routes
         run: python -m unittest discover -s tests -p 'test_xunia_cosmos_server.py' -v
@@ -81,6 +89,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_xunia_xenology.py' -v
       - name: Verify real Xenology browser cards and Shaggoth viewer interactions
         run: python tests/xunia_xenology_chrome_smoke.py
+      - name: Verify XUNIA HQ living core eight-portals accessibility and local-only design
+        run: python -m unittest discover -s tests -p 'test_xunia_live_core.py' -v
+      - name: Verify live CL1 homepage organism and reduced motion in Chromium
+        run: python tests/xunia_live_core_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
