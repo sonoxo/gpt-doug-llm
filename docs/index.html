@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="./museum.css">
   <script src="./zyra-shell-v2.js" defer></script>
   <script src="./museum.js" defer></script>
+  <link rel="stylesheet" href="./cl1-live.css">
+  <script src="./cl1-live.js" defer></script>
 <style>
 /* XUNIA World: entry point; the original museum and catalog remain available. */
 .xw-entry{position:relative;overflow:hidden;display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;margin:0 0 27px;padding:clamp(22px,4vw,42px);border:1px solid #3b7089;border-radius:18px;background:radial-gradient(ellipse at 80% 50%,#28366085,transparent 60%),linear-gradient(125deg,#0d2639,#101b36 65%,#1b1640);box-shadow:0 12px 66px #0005}
@@ -43,6 +45,64 @@
       </div>
       <p class="hq-note"><strong>What “connected” means:</strong> a repository belongs to the connected Sonoxo GitHub inventory or XUNIAverse source graph. It does not automatically mean the repository is actively wired into one runtime, nor does it transfer upstream ownership or imply vendor/government endorsement.</p>
     </section>
+
+  <section class="cl1-live" id="cl1-live" aria-labelledby="cl1-live-title">
+    <div class="cl1-live-head">
+      <div>
+        <div class="cl1-live-kicker"><span class="cl1-live-indicator" aria-hidden="true"></span> NEW · XUNIA // CL1 LIVING CORE · INTERACTIVE ECOSYSTEM</div>
+        <h2 id="cl1-live-title">THE ECOSYSTEM IS <em>ALIVE.</em></h2>
+        <p>An interactive spatial gateway connecting COSMOS, Shaggoth, Planetary Forge, Biological CL1, Glass Onion and the public XUNIA tools. Select a node to explore its actual destination. All movement and signals are simulated in your browser.</p>
+      </div>
+      <div class="cl1-live-head-right"><strong>08</strong><small>CONNECTED PORTALS</small><span>SOFTWARE-ONLY DISPLAY</span></div>
+    </div>
+    <div class="cl1-live-layout">
+      <div class="cl1-live-visual">
+        <canvas id="cl1-live-canvas" tabindex="0" role="img" aria-label="Interactive CL1 spatial organism with eight clickable portals. Drag to rotate, use mouse wheel or Zoom buttons, arrow keys to select portals and Enter to visit."></canvas>
+        <div class="cl1-live-overlay-top"><span id="cl1-live-status" role="status" aria-live="polite">INITIALIZING / SIMULATED VISUAL</span><span id="cl1-live-fps">LOCAL / NO TELEMETRY</span></div>
+        <div class="cl1-live-overlay-bottom">DRAG TO ROTATE · SCROLL TO ZOOM · SELECT OR TAB TO PORTALS</div>
+        <div class="cl1-live-canvas-controls">
+          <button type="button" id="cl1-live-zoom-in" aria-label="Zoom closer">+</button>
+          <button type="button" id="cl1-live-zoom-out" aria-label="Zoom out">−</button>
+          <button type="button" id="cl1-live-recenter" aria-label="Reset camera">⌖</button>
+          <button type="button" id="cl1-live-fullscreen" aria-label="Toggle fullscreen view">⛶</button>
+        </div>
+      </div>
+      <aside class="cl1-live-desk" aria-label="Living core controls and portal details">
+        <div class="cl1-live-panel-title"><span>01 / CORE MODE</span><span id="cl1-live-mode-label">ONTOLOGY</span></div>
+        <div class="cl1-live-modes" role="group" aria-label="Visualization modes">
+          <button type="button" data-cl1-mode="ontology" aria-pressed="true">ONTOLOGY</button>
+          <button type="button" data-cl1-mode="shaggoth" aria-pressed="false">SHAGGOTH</button>
+          <button type="button" data-cl1-mode="signal" aria-pressed="false">SIGNAL</button>
+        </div>
+        <div class="cl1-live-panel-title"><span>02 / ENERGY</span><output id="cl1-live-energy-value" for="cl1-live-energy">65%</output></div>
+        <input id="cl1-live-energy" type="range" min="0" max="100" step="5" value="65" aria-label="Illustrative energy intensity">
+        <div class="cl1-live-control-row">
+          <button type="button" id="cl1-live-pause" aria-pressed="false">Ⅱ PAUSE MOTION</button>
+          <button type="button" id="cl1-live-audio" aria-pressed="false">♪ SOUND OFF</button>
+        </div>
+        <div class="cl1-live-panel-title"><span>03 / DESTINATION</span><span id="cl1-live-index">01 / 08</span></div>
+        <h3 id="cl1-live-name">XUNIA COSMOS</h3>
+        <p id="cl1-live-description">Loading connected destinations.</p>
+        <div class="cl1-live-selection" id="cl1-live-selection" role="group" aria-label="Select a destination portal">
+          <button type="button" data-cl1-portal="cosmos" aria-pressed="true">COSMOS</button>
+          <button type="button" data-cl1-portal="xenology" aria-pressed="false">XENOLOGY</button>
+          <button type="button" data-cl1-portal="planets" aria-pressed="false">PLANETS</button>
+          <button type="button" data-cl1-portal="biology" aria-pressed="false">CL1 BIO</button>
+          <button type="button" data-cl1-portal="glass-onion" aria-pressed="false">GLASS ONION</button>
+          <button type="button" data-cl1-portal="play" aria-pressed="false">XUNIA WORLD</button>
+          <button type="button" data-cl1-portal="fleet" aria-pressed="false">REPO FLEET</button>
+          <button type="button" data-cl1-portal="cinema" aria-pressed="false">CINEMA OS</button>
+        </div>
+        <a class="cl1-live-enter" id="cl1-live-enter" href="./cosmos/">ENTER XUNIA COSMOS <span aria-hidden="true">↗</span></a>
+        <button type="button" id="cl1-live-capture" class="cl1-live-capture">SAVE VISUAL PNG</button>
+        <output id="cl1-live-message" role="status" aria-live="polite">READY / NO LOGIN · NO PAID API</output>
+        <p class="cl1-live-note">CL1 is a local non-kinetic visualization. Shaggoth is fictional; moving nodes and pulses are not live biosignals, extraterrestrial telemetry or connected hardware. Sound is optional and off by default.</p>
+      </aside>
+    </div>
+    <div class="cl1-live-foot">
+      <span>GPT-DOUG-LLM / SONOXO / CL1</span><span>FREE STATIC CANVAS · ACCESSIBLE CONTROLS · MOTION PREFERENCE RESPECTED</span>
+    </div>
+  </section>
 
 <section id="xunia-world" class="xw-entry" aria-labelledby="xunia-world-title">
   <div class="xw-copy">
