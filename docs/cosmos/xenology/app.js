@@ -155,6 +155,7 @@ function updateInspector(){
   $("selectedName").textContent=r.name;$("selectedDescription").textContent=r.description;
   $("selectedGroup").textContent=groupNames[r.group];$("selectedEvidence").textContent=evidenceNames[r.evidence];
   $("selectedDomain").textContent=r.domain;$("selectedOrigin").textContent=r.origin;
+  $("viewUrl").value=currentShareUrl();
   const link=$("sourceLink");if(r.source_url&&safeOfficial(r.source_url)){link.href=r.source_url;link.textContent="VIEW "+r.source_label.toUpperCase()+" ↗";link.hidden=false}else{link.removeAttribute("href");link.hidden=true}
   const box=$("tabBody");box.replaceChildren();
   const para=(t)=>{const p=document.createElement("p");p.textContent=t;box.appendChild(p)};
@@ -197,6 +198,7 @@ const viewer=$("creatureCanvas"),vctx=viewer.getContext("2d"),graph=$("graphCanv
 function drawViewer(time){
   const r=selected();if(!r||!vctx)return;
   const [w,h]=scaleCanvas(viewer,vctx),t=state.motionTime;
+  vctx.clearRect(0,0,w,h);vctx.fillStyle="#06111c";vctx.fillRect(0,0,w,h);
   vctx.save();vctx.translate(w/2,h/2);vctx.scale(state.zoom,state.zoom);vctx.translate(-w/2,-h/2);
   art(vctx,w,h,r,t,state.angle,state.intensity/100);vctx.restore();
   viewer.dataset.entityId=r.id;viewer.dataset.rendered="true";viewer.dataset.frame=String(state.frame);
@@ -238,6 +240,72 @@ function updateMapMode(mode){
   if(!["graph","field"].includes(mode))return;
   state.mode=mode;$("graphMode").setAttribute("aria-pressed",String(mode==="graph"));$("fieldMode").setAttribute("aria-pressed",String(mode==="field"));drawGraph(0);
 }
+
+/* A share link contains only allowlisted view state, never personal data or sensors. */
+function currentShareUrl(){
+  const url=new URL(window.location.href);
+  const data=new URLSearchParams();
+  data.set("entity",state.selected);
+  data.set("tab",state.tab);
+  data.set("mode",state.mode);
+  data.set("zoom",state.zoom.toFixed(2));
+  data.set("intensity",String(state.intensity));
+  url.hash=data.toString();
+  return url.href;
+}
+function actionMessage(message){$("actionStatus").textContent=String(message);}
+function restoreSharedView(){
+  const fragment=window.location.hash.slice(1);
+  if(!fragment||fragment.length>280)return false;
+  const params=new URLSearchParams(fragment);
+  const entity=params.get("entity");
+  if(!entity||!state.byId.has(entity))return false;
+  state.selected=entity;
+  const tab=params.get("tab"),mode=params.get("mode");
+  if(["overview","data","relations","simulation"].includes(tab))state.tab=tab;
+  if(["graph","field"].includes(mode))state.mode=mode;
+  const zoom=Number(params.get("zoom")),power=Number(params.get("intensity"));
+  if(params.has("zoom")&&Number.isFinite(zoom)&&zoom>=.6&&zoom<=2.5)state.zoom=zoom;
+  if(params.has("intensity")&&Number.isFinite(power)&&power>=0&&power<=100)state.intensity=power;
+  $("intensity").value=String(state.intensity);
+  $("intensityValue").textContent=state.intensity+"%";
+  $("graphMode").setAttribute("aria-pressed",String(state.mode==="graph"));
+  $("fieldMode").setAttribute("aria-pressed",String(state.mode==="field"));
+  document.querySelectorAll("[data-tab]").forEach(b=>
+    b.setAttribute("aria-selected",String(b.dataset.tab===state.tab)));
+  if(state.ready){
+    if(!visible().some(x=>x.id===entity))resetFilters();
+    renderCards();updateInspector();drawViewer(0);drawGraph(0);
+    actionMessage("SHARED VIEW RESTORED / "+selected().name);
+  }
+  return true;
+}
+function shareView(){
+  const url=currentShareUrl();
+  window.history.replaceState(null,"",url);
+  const field=$("viewUrl");
+  field.value=url;field.focus();field.select();
+  if(navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(url).then(
+      ()=>actionMessage("VIEW LINK COPIED / "+selected().name),
+      ()=>actionMessage("VIEW LINK SELECTED / PRESS CMD+C TO COPY")
+    );
+  }else{actionMessage("VIEW LINK SELECTED / PRESS CMD+C TO COPY");}
+}
+function saveScene(){
+  const r=selected();if(!r){actionMessage("NO SELECTED OBJECT TO EXPORT");return;}
+  try{
+    drawViewer(0);
+    const image=viewer.toDataURL("image/png");
+    if(!image.startsWith("data:image/png;base64,"))throw Error("PNG encoder unavailable");
+    const a=document.createElement("a");
+    a.href=image;
+    a.download="cl1-"+r.id.replace(/[^a-z0-9-]/gi,"-")+"-scene.png";
+    document.body.appendChild(a);a.click();a.remove();
+    actionMessage("PNG SCENE GENERATED IN BROWSER / "+r.name);
+  }catch(_){actionMessage("PNG EXPORT UNAVAILABLE / TRY A DIFFERENT BROWSER");}
+}
+
 function exportData(){
   const data={schema:"xunia.cl1.xenology-export.v1",export_scope:"filtered-curated-only",generated_at:new Date().toISOString(),disclaimer:"Creative archetypes and illustrative UAP forms are not verified alien evidence.",records:visible(),relations:rootEdges.filter(e=>visible().some(r=>r.id===e.source)&&visible().some(r=>r.id===e.target))};
   const blob=new Blob([JSON.stringify(data,null,2)+"\n"],{type:"application/json"});
@@ -287,6 +355,9 @@ function wire(){
   $("exportData").addEventListener("click",exportData);
   $("runSimulation").addEventListener("click",()=>{togglePause(false);state.angle+=.25;state.tab="simulation";updateTabs();notify("SIMULATION ACTIVE / VISUAL ONLY")});
   $("openConsole").addEventListener("click",()=>{$("consoleInput").focus();notify("CL1 CONSOLE ACTIVE / /help")});
+  $("saveScene").addEventListener("click",saveScene);
+  $("shareView").addEventListener("click",shareView);
+  window.addEventListener("hashchange",restoreSharedView);
   $("consoleForm").addEventListener("submit",e=>{e.preventDefault();command($("consoleInput").value);$("consoleInput").value=""});
   document.addEventListener("keydown",e=>{
     const tag=document.activeElement?.tagName,editing=["INPUT","TEXTAREA","SELECT"].includes(tag);
@@ -326,6 +397,7 @@ async function boot(){
       ids.add(r.id);state.byId.set(r.id,r);
     }
     state.data=catalog.records;rootEdges=buildRelations();
+    restoreSharedView();
     if(!state.byId.has(state.selected))state.selected=state.data[0].id;
     updateStats();renderCards();updateInspector();state.ready=true;drawViewer(0);drawGraph(0);
     notify("READY / "+state.data.length+" CURATED ENTRIES · "+rootEdges.length+" EDITORIAL RELATIONSHIPS · NO EXTRATERRESTRIAL CLAIMS");
