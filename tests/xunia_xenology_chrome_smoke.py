@@ -47,6 +47,22 @@ window.addEventListener("load",()=>{
       assert(el("intensity").value==="85","intensity command failed");
       el("pauseScene").click();
       assert(el("pauseScene").textContent==="RESUME SCENE","pause failed");
+      const png=el("creatureCanvas").toDataURL("image/png");
+      assert(png.startsWith("data:image/png;base64,")&&png.length>300,
+        "procedural scene did not encode to a real PNG");
+      el("shareView").click();
+      assert(window.location.hash.includes("entity=r-gofast-official-footage"),
+        "share link did not store current selected entity");
+      assert(el("viewUrl").value.includes("entity=r-gofast-official-footage"),
+        "share field is not usable");
+      history.replaceState(null,"","#entity=s-shaggoth-prime&tab=data&mode=field&zoom=1.75&intensity=45");
+      window.dispatchEvent(new Event("hashchange"));
+      assert(el("selectedName").textContent==="Shaggoth Prime",
+        "deep-link restore did not select entity");
+      assert(el("intensity").value==="45","deep-link intensity failed");
+      assert(document.querySelector('[data-tab="data"]').getAttribute("aria-selected")==="true",
+        "deep-link tab restore failed");
+      assert(el("graphCanvas").dataset.mapMode==="field","deep-link graph mode failed");
       document.documentElement.dataset.xenologySmoke="pass";
     }catch(error){
       document.documentElement.dataset.xenologySmoke="fail";
