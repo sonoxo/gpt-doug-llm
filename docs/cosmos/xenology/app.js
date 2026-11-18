@@ -292,6 +292,32 @@ function shareView(){
     );
   }else{actionMessage("VIEW LINK SELECTED / PRESS CMD+C TO COPY");}
 }
+function runSelfTest(){
+  if(!state.ready){
+    actionMessage("SELF-TEST NOT READY / CATALOG STILL LOADING");
+    return false;
+  }
+  try{
+    drawViewer(0);drawGraph(0);
+    const displayed=visible().length;
+    const cards=document.querySelectorAll(".entity-card").length;
+    const graphCount=Number(graph.dataset.renderedNodes);
+    const sceneReady=viewer.width>0&&viewer.height>0&&viewer.dataset.rendered==="true";
+    const sourcesSafe=state.data.every(x=>!x.source_url||safeOfficial(x.source_url));
+    const success=state.data.length>=20&&displayed===cards&&
+      graphCount===displayed&&sceneReady&&!!selected()&&sourcesSafe;
+    const report=success?
+      "CL1 SELF-TEST PASS / "+state.data.length+" source-qualified entries / "+displayed+
+      " visible cards / graphics and graph responding":
+      "CL1 SELF-TEST FAILED / inspect view and refresh the page";
+    actionMessage(report);notify(report);
+    return success;
+  }catch(_){
+    actionMessage("CL1 SELF-TEST FAILED / BROWSER RENDER ERROR");
+    notify("CL1 SELF-TEST FAILED / CHECK BROWSER CONSOLE");
+    return false;
+  }
+}
 function saveScene(){
   const r=selected();if(!r){actionMessage("NO SELECTED OBJECT TO EXPORT");return;}
   try{
@@ -317,7 +343,7 @@ function command(raw){
   const line=String(raw||"").trim().replace(/^\//,"");const match=line.match(/^(\S+)(?:\s+(.*))?$/);
   if(!match){notify("EMPTY COMMAND / TRY /help");return;}
   const op=match[1].toLowerCase(),arg=(match[2]||"").trim();
-  if(op==="help"){notify("/find NAME · /select NAME · /group aliens|uap|records|shaggoth|all · /tab overview|data|relations|simulation · /mode graph|field · /intensity 0-100 · /zoom 0.6-2.5 · /pause · /play · /random · /export · /reset");return;}
+  if(op==="help"){notify("/find NAME · /select NAME · /group aliens|uap|records|shaggoth|all · /tab overview|data|relations|simulation · /mode graph|field · /intensity 0-100 · /zoom 0.6-2.5 · /pause · /play · /random · /export · /health · /reset");return;}
   if(op==="find"){$("query").value=arg;setFilter();notify("FILTERED TO / "+visible().length+" RECORDS");return;}
   if(op==="select"){const q=arg.toLowerCase();const hit=state.data.find(r=>r.id===q||r.name.toLowerCase()===q)||state.data.find(r=>r.name.toLowerCase().includes(q)&&q);
     if(hit){if(!state.groups.has(hit.group)||!state.evidence.has(hit.evidence)||state.query){resetFilters();}choose(hit.id);notify("INSPECTING / "+hit.name);}else notify("NOT FOUND / SEARCH CURATED NAMES");return;}
@@ -328,6 +354,7 @@ function command(raw){
   if(op==="zoom"){const n=Number(arg);if(!arg||!Number.isFinite(n)||n<.6||n>2.5){notify("ZOOM RANGE 0.6–2.5");return;}state.zoom=n;notify("SIMULATED CAMERA ZOOM / "+n.toFixed(2));return;}
   if(op==="pause"){togglePause(true);notify("SCENE PAUSED");return;}
   if(op==="play"){togglePause(false);notify("SCENE PLAYING / LOCAL ONLY");return;}
+  if(op==="health"){runSelfTest();return;}
   if(op==="random"){randomPick();return;}
   if(op==="export"){exportData();return;}
   if(op==="reset"){state.angle=0;state.zoom=1;state.intensity=60;$("intensity").value=60;$("intensityValue").textContent="60%";state.tab="overview";updateTabs();resetFilters();notify("CL1 VIEW RESET");return;}
@@ -355,6 +382,7 @@ function wire(){
   $("exportData").addEventListener("click",exportData);
   $("runSimulation").addEventListener("click",()=>{togglePause(false);state.angle+=.25;state.tab="simulation";updateTabs();notify("SIMULATION ACTIVE / VISUAL ONLY")});
   $("openConsole").addEventListener("click",()=>{$("consoleInput").focus();notify("CL1 CONSOLE ACTIVE / /help")});
+  $("runSelfTest").addEventListener("click",runSelfTest);
   $("saveScene").addEventListener("click",saveScene);
   $("shareView").addEventListener("click",shareView);
   window.addEventListener("hashchange",restoreSharedView);
