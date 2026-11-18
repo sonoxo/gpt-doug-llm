@@ -327,7 +327,7 @@ async function boot(){
     }
     state.data=catalog.records;rootEdges=buildRelations();
     if(!state.byId.has(state.selected))state.selected=state.data[0].id;
-    updateStats();renderCards();updateInspector();state.ready=true;
+    updateStats();renderCards();updateInspector();state.ready=true;drawViewer(0);drawGraph(0);
     notify("READY / "+state.data.length+" CURATED ENTRIES · "+rootEdges.length+" EDITORIAL RELATIONSHIPS · NO EXTRATERRESTRIAL CLAIMS");
     window.requestAnimationFrame(loop);
   }catch(error){notify("CL1 ARCHIVE ERROR / "+String(error.message).slice(0,110));$("selectedName").textContent="Catalog unavailable";}
