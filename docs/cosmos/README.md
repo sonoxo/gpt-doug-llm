@@ -14,7 +14,7 @@ XUNIA COSMOS is an astronomical **knowledge graph**, not a clone of all outer sp
 Clone into a separate folder to avoid overwriting other GPT-DOUG working trees.
 
     cd "$HOME"
-    git clone --depth 1 --single-branch -b feat/xunia-cosmos-outer-space-ontology-20261117 \
+    git clone --depth 1 --single-branch -b main \
       https://github.com/sonoxo/gpt-doug-llm.git xunia-cosmos
     cd ~/xunia-cosmos
     bash scripts/xunia-cosmos
