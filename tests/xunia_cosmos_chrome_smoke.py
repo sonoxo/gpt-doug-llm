@@ -5,9 +5,6 @@ No network egress: localhost static server, Chrome headless on a private temp pr
 """
 from __future__ import annotations
 
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 import os
 import re
 import shutil
@@ -15,6 +12,9 @@ import subprocess
 import sys
 import tempfile
 import threading
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
