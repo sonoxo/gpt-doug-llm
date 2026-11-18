@@ -21,6 +21,10 @@ Clone into a separate folder to avoid overwriting other GPT-DOUG working trees.
 
 Open the exact URL printed by the launcher, normally http://127.0.0.1:8872/cosmos/. **If 8872 is already busy, the launcher automatically selects the first free port from 8873 through 8899**, prints the new URLs for COSMOS, Planetary Forge and Xenology, and leaves the existing server untouched. To request a specific port: `bash scripts/xunia-cosmos serve 8873` or `XUNIA_COSMOS_PORT=8873 bash scripts/xunia-cosmos`. Existing CL1:8787, Jukebox:8844 and XUNIA Bio:8871 are unaffected. For later runs: cd ~/xunia-cosmos && git pull --ff-only && bash scripts/xunia-cosmos.
 
+## Optional archives and local 404 handling
+
+The `nasa.json` and `gaia.json` files are now shipped as explicitly labeled empty placeholders, so browsing the local COSMOS pages does not request nonexistent files. They provide **no imported NASA or ESA records** by default. Run `bash scripts/xunia-cosmos import nasa --limit 250` or `bash scripts/xunia-cosmos import gaia --limit 250` when you want a bounded data import; the importer atomically replaces the corresponding local placeholder. Imported data is not automatically published. The shared `docs/favicon.svg` prevents an unnecessary favicon 404 in supported browsers.
+
 ## Controls
 
 Click any celestial node for its type, parent, source, and available sourced data. Drag to orbit, scroll to zoom, use the category filters, connected entity buttons, search, and camera controls. Canvas keyboard: arrows rotate, Tab cycles visible objects, Enter focuses, slash opens search. The site labels incomplete or unimported catalogs.
