@@ -15,9 +15,9 @@ import json
 import math
 import tempfile
 from datetime import datetime, timezone
+from http.client import HTTPSConnection
 from pathlib import Path
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+from urllib.parse import urlencode, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "docs" / "cosmos" / "catalogs"
@@ -135,22 +135,48 @@ def read_payload(path: Path, catalog: str) -> list[dict[str, object]]:
 
 
 def download_rows(catalog: str, limit: int) -> list[dict[str, object]]:
+    """Connect only to an HTTPS origin from the fixed official provider map."""
+    if catalog not in ENDPOINTS or not 1 <= limit <= MAX_ROWS:
+        raise ValueError("Unknown archive or invalid bounded request")
     if catalog == "nasa":
-        query = ("select top " + str(limit) +
-                 " pl_name,hostname,ra,dec,sy_dist,pl_rade,disc_year "
-                 "from pscomppars order by pl_name")
+        # The only variable ADQL token is the validated positive integer limit.
+        query = " ".join((
+            "select", "top", str(limit),
+            "pl_name,hostname,ra,dec,sy_dist,pl_rade,disc_year",
+            "from", "pscomppars", "order by", "pl_name",
+        ))
         params = {"query": query, "format": "json"}
     else:
-        query = ("SELECT TOP " + str(limit) +
-                 " source_id,ra,dec,parallax,phot_g_mean_mag "
-                 "FROM gaiadr3.gaia_source WHERE parallax > 20 "
-                 "ORDER BY phot_g_mean_mag ASC")
-        params = {"REQUEST":"doQuery","LANG":"ADQL","FORMAT":"csv","QUERY":query}
-    req = Request(ENDPOINTS[catalog] + "?" + urlencode(params),
-                  headers={"User-Agent": "XUNIA-COSMOS/1.0 (free public dataset importer)",
-                           "Accept": "application/json" if catalog=="nasa" else "text/csv"})
-    with urlopen(req, timeout=35) as response:
+        query = " ".join((
+            "SELECT", "TOP", str(limit),
+            "source_id,ra,dec,parallax,phot_g_mean_mag",
+            "FROM", "gaiadr3.gaia_source",
+            "WHERE", "parallax", ">", "20",
+            "ORDER BY", "phot_g_mean_mag", "ASC",
+        ))
+        params = {"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "csv", "QUERY": query}
+    target = urlsplit(ENDPOINTS[catalog])
+    if target.scheme != "https" or not target.hostname or target.port not in (None, 443):
+        raise ValueError("Archive transport must be HTTPS only")
+    if target.hostname not in {
+        "exoplanetarchive.ipac.caltech.edu", "gea.esac.esa.int"
+    }:
+        raise ValueError("Unapproved astronomy data source")
+    conn = HTTPSConnection(target.hostname, timeout=35)
+    try:
+        conn.request(
+            "GET", target.path + "?" + urlencode(params),
+            headers={
+                "User-Agent": "XUNIA-COSMOS/1.0 (free public dataset importer)",
+                "Accept": "application/json" if catalog == "nasa" else "text/csv",
+            },
+        )
+        response = conn.getresponse()
+        if response.status != 200:
+            raise ValueError(f"Public archive returned HTTP {response.status}")
         payload = response.read(MAX_DOWNLOAD + 1)
+    finally:
+        conn.close()
     if len(payload) > MAX_DOWNLOAD:
         raise ValueError("Remote catalog response exceeds 8 MiB")
     if catalog == "nasa":
