@@ -1,0 +1,327 @@
+{
+  "schema": "xunia.cl1.planet-twins.v1",
+  "generated_at": "2026-11-17",
+  "mode": "planetary-sourced-reference-plus-browser-only-virtual-clones",
+  "domain": "Solar System eight major planets",
+  "coordinate_frame": "J2000 approximate heliocentric ecliptic positions; Earth is EM barycenter proxy",
+  "valid_from": "1800-01-01",
+  "valid_through": "2050-12-31",
+  "accuracy_notes": [
+    "JPL orbital elements approximate positions for 1800-2050 and are not integrated ephemerides.",
+    "Earth entry represents Earth-Moon barycenter orbital elements, not exact Earth center.",
+    "Browser rendering uses logarithmically compressed orbit spacing; planetary pixels are not true scale.",
+    "Procedural surfaces are illustrative, not observational textures; cloned settings are hypothetical."
+  ],
+  "sources": {
+    "physical": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "orbital": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+  },
+  "field_definitions": {
+    "elements_j2000": [
+      "a_au",
+      "eccentricity",
+      "inclination_deg",
+      "mean_longitude_deg",
+      "perihelion_longitude_deg",
+      "ascending_node_longitude_deg"
+    ],
+    "rates_per_century": [
+      "da_au_per_century",
+      "de_per_century",
+      "di_deg_per_century",
+      "dL_deg_per_century",
+      "d_peri_deg_per_century",
+      "d_node_deg_per_century"
+    ]
+  },
+  "planets": [
+    {
+      "id": "mercury",
+      "name": "Mercury",
+      "kind": "terrestrial",
+      "diameter_km": 4879,
+      "mass_1e24_kg": 0.33,
+      "gravity_ms2": 3.7,
+      "rotation_hours": 1407.6,
+      "axial_tilt_deg": 0.034,
+      "orbital_period_days": 88,
+      "mean_temperature_c": 167,
+      "ring_system": false,
+      "elements_j2000": [
+        0.38709927,
+        0.20563593,
+        7.00497902,
+        252.2503235,
+        77.45779628,
+        48.33076593
+      ],
+      "rates_per_century": [
+        3.7e-7,
+        0.00001906,
+        -0.00594749,
+        149472.67411175,
+        0.16047689,
+        -0.12534081
+      ],
+      "render_palette": [
+        "#b7b4ad",
+        "#393e45"
+      ],
+      "description": "Cratered rocky world nearest the Sun.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "venus",
+      "name": "Venus",
+      "kind": "terrestrial",
+      "diameter_km": 12104,
+      "mass_1e24_kg": 4.87,
+      "gravity_ms2": 8.9,
+      "rotation_hours": -5832.5,
+      "axial_tilt_deg": 177.4,
+      "orbital_period_days": 224.7,
+      "mean_temperature_c": 464,
+      "ring_system": false,
+      "elements_j2000": [
+        0.72333566,
+        0.00677672,
+        3.39467605,
+        181.9790995,
+        131.60246718,
+        76.67984255
+      ],
+      "rates_per_century": [
+        0.0000039,
+        -0.00004107,
+        -0.0007889,
+        58517.81538729,
+        0.00268329,
+        -0.27769418
+      ],
+      "render_palette": [
+        "#edcba1",
+        "#9c613e"
+      ],
+      "description": "Rocky world blanketed by dense clouds; surface heat is extreme.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "kind": "terrestrial",
+      "diameter_km": 12756,
+      "mass_1e24_kg": 5.97,
+      "gravity_ms2": 9.8,
+      "rotation_hours": 23.9,
+      "axial_tilt_deg": 23.4,
+      "orbital_period_days": 365.2,
+      "mean_temperature_c": 15,
+      "ring_system": false,
+      "elements_j2000": [
+        1.00000261,
+        0.01671123,
+        -0.00001531,
+        100.46457166,
+        102.93768193,
+        0
+      ],
+      "rates_per_century": [
+        0.00000562,
+        -0.00004392,
+        -0.01294668,
+        35999.37244981,
+        0.32327364,
+        0
+      ],
+      "render_palette": [
+        "#55aed6",
+        "#1d5479"
+      ],
+      "description": "Rocky world with oceans and atmosphere; the Earth-Moon barycenter approximates its orbit in this model.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "mars",
+      "name": "Mars",
+      "kind": "terrestrial",
+      "diameter_km": 6792,
+      "mass_1e24_kg": 0.642,
+      "gravity_ms2": 3.7,
+      "rotation_hours": 24.6,
+      "axial_tilt_deg": 25.2,
+      "orbital_period_days": 687,
+      "mean_temperature_c": -65,
+      "ring_system": false,
+      "elements_j2000": [
+        1.52371034,
+        0.0933941,
+        1.84969142,
+        -4.55343205,
+        -23.94362959,
+        49.55953891
+      ],
+      "rates_per_century": [
+        0.00001847,
+        0.00007882,
+        -0.00813131,
+        19140.30268499,
+        0.44441088,
+        -0.29257343
+      ],
+      "render_palette": [
+        "#bf623a",
+        "#713824"
+      ],
+      "description": "Rust-colored rocky world with a thin atmosphere.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "jupiter",
+      "name": "Jupiter",
+      "kind": "gas giant",
+      "diameter_km": 142984,
+      "mass_1e24_kg": 1898,
+      "gravity_ms2": 23.1,
+      "rotation_hours": 9.9,
+      "axial_tilt_deg": 3.1,
+      "orbital_period_days": 4331,
+      "mean_temperature_c": -110,
+      "ring_system": true,
+      "elements_j2000": [
+        5.202887,
+        0.04838624,
+        1.30439695,
+        34.39644051,
+        14.72847983,
+        100.47390909
+      ],
+      "rates_per_century": [
+        -0.00011607,
+        -0.00013253,
+        -0.00183714,
+        3034.74612775,
+        0.21252668,
+        0.20469106
+      ],
+      "render_palette": [
+        "#d4b392",
+        "#8a624d"
+      ],
+      "description": "Hydrogen-rich gas giant with banded clouds and a persistent large storm.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "saturn",
+      "name": "Saturn",
+      "kind": "gas giant",
+      "diameter_km": 120536,
+      "mass_1e24_kg": 568,
+      "gravity_ms2": 9,
+      "rotation_hours": 10.7,
+      "axial_tilt_deg": 26.7,
+      "orbital_period_days": 10747,
+      "mean_temperature_c": -140,
+      "ring_system": true,
+      "elements_j2000": [
+        9.53667594,
+        0.05386179,
+        2.48599187,
+        49.95424423,
+        92.59887831,
+        113.66242448
+      ],
+      "rates_per_century": [
+        -0.0012506,
+        -0.00050991,
+        0.00193609,
+        1222.49362201,
+        -0.41897216,
+        -0.28867794
+      ],
+      "render_palette": [
+        "#d3c9a7",
+        "#887f63"
+      ],
+      "description": "Ringed gas giant, mostly hydrogen and helium.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "uranus",
+      "name": "Uranus",
+      "kind": "ice giant",
+      "diameter_km": 51118,
+      "mass_1e24_kg": 86.8,
+      "gravity_ms2": 8.7,
+      "rotation_hours": -17.2,
+      "axial_tilt_deg": 97.8,
+      "orbital_period_days": 30589,
+      "mean_temperature_c": -195,
+      "ring_system": true,
+      "elements_j2000": [
+        19.18916464,
+        0.04725744,
+        0.77263783,
+        313.23810451,
+        170.9542763,
+        74.01692503
+      ],
+      "rates_per_century": [
+        -0.00196176,
+        -0.00004397,
+        -0.00242939,
+        428.48202785,
+        0.40805281,
+        0.04240589
+      ],
+      "render_palette": [
+        "#8de0d8",
+        "#3c8d9c"
+      ],
+      "description": "Blue-green ice giant with an extreme axial tilt.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    },
+    {
+      "id": "neptune",
+      "name": "Neptune",
+      "kind": "ice giant",
+      "diameter_km": 49528,
+      "mass_1e24_kg": 102,
+      "gravity_ms2": 11,
+      "rotation_hours": 16.1,
+      "axial_tilt_deg": 28.3,
+      "orbital_period_days": 59800,
+      "mean_temperature_c": -200,
+      "ring_system": true,
+      "elements_j2000": [
+        30.06992276,
+        0.00859048,
+        1.77004347,
+        -55.12002969,
+        44.96476227,
+        131.78422574
+      ],
+      "rates_per_century": [
+        0.00026291,
+        0.00005105,
+        0.00035372,
+        218.45945325,
+        -0.32241464,
+        -0.00508664
+      ],
+      "render_palette": [
+        "#427ad8",
+        "#183889"
+      ],
+      "description": "Outer ice giant with deep blue cloud layers.",
+      "physical_source": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "orbital_source": "https://ssd.jpl.nasa.gov/planets/approx_pos.html"
+    }
+  ]
+}
