@@ -736,5 +736,18 @@
       "to": "aura",
       "type": "alternative-visual-entry"
     }
+  ],
+  "externalOntologies": [
+    {
+      "id": "xunia-cosmos",
+      "title": "XUNIA COSMOS / Outer Space Ontology",
+      "type": "read-only-astronomical-knowledge-graph",
+      "reference": "../cosmos/catalogs/seed.json",
+      "public_url": "https://xunia.org/cosmos/",
+      "relationship": "biological-data-center references a separately versioned astronomy ontology",
+      "real_time_link": false,
+      "telemetry_shared": false,
+      "note": "Catalog relations are scientific context; no live telescope, biocell, or financial integrations"
+    }
   ]
 }
