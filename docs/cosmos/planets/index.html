@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b11">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA CL1 Planetary Forge: source-backed interactive planet digital twins and sandbox clones. Free, no physical actuation.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>CL1 PLANETARY FORGE / XUNIA COSMOS</title>
+<link rel="stylesheet" href="./style.css">
+<script src="./planets.js" defer></script>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <a class="brand" href="../" aria-label="Return to XUNIA COSMOS"><span class="logo">◉</span><span><small>GPT-DOUG-LLM × CL1</small><strong>PLANETARY <em>FORGE</em></strong></span></a>
+  <nav aria-label="Ecosystem navigation"><a href="../">COSMOS</a><a href="../../biological-data-center/">BIO DATA CENTER</a><a href="../../">XUNIA HQ</a></nav>
+  <span class="live"><span class="signal"></span> NON-KINETIC / FREE / LOCAL STATE</span>
+</header>
+<section class="hero">
+  <div><div class="kicker">XUNIA / BIOLOGICAL CL1 / PLANETARY DIGITAL TWINS / 001</div><h1>DECODE THE <em>PLANETS.</em><br>BUILD THEIR <em>TWINS.</em></h1>
+  <p>Eight planets. NASA physical measurements. JPL approximate orbital mechanics. Clone a planet into a safe experimental sandbox and alter its virtual properties without changing the source record.</p></div>
+  <div class="hero-stats" aria-label="Simulation scope"><span><b id="knownCount">8</b><small>REFERENCE PLANETS</small></span><span><b id="cloneCount">0</b><small>SANDBOX CLONES</small></span><span><b>1800–2050</b><small>ORBITAL VALIDITY</small></span></div>
+</section>
+<main class="workspace">
+  <aside class="panel planet-picker" aria-label="Sourced planet selection">
+    <div class="heading"><span>01 / PLANETARY ONTOLOGY</span><small>NASA PHYSICAL FACTS</small></div>
+    <div id="planetList" class="planet-list" role="group" aria-label="Select reference planet"></div>
+    <p class="disclaimer">Reference properties remain immutable. Earth uses JPL's Earth–Moon barycenter as an approximate orbital proxy. Moons and spacecraft are not modeled here.</p>
+    <a class="plain-link" href="./catalog.json">VIEW SOURCE-QUALIFIED ONTOLOGY ↗</a>
+  </aside>
+  <section class="panel center" aria-label="Interactive planetary orbits">
+    <div class="heading"><span>02 / HELIOCENTRIC ORRERY</span><small id="orbitStatus" role="status" aria-live="polite">LOADING CATALOG</small></div>
+    <div class="orbit-wrap">
+      <canvas id="orrery" tabindex="0" role="img" aria-label="Interactive projected heliocentric orrery. Click planets to select. Drag to orbit camera, scroll to zoom; use the planet list for keyboard access."></canvas>
+      <div class="overlay overlay-top">J2000 / ECLIPTIC PLANE / LOG DISTANCE DISPLAY</div>
+      <div class="overlay overlay-bottom">SELECT PLANETS · DRAG VIEW · SCROLL TO ZOOM</div>
+    </div>
+    <div class="timeline">
+      <label for="epochDate">SIMULATED DATE</label>
+      <input id="epochDate" type="date" min="1800-01-01" max="2050-12-31" value="2026-11-17">
+      <button id="nowDate" type="button">TODAY</button>
+      <button id="stepDate" type="button">+30 DAYS</button>
+      <button id="playPause" type="button" aria-pressed="false">PLAY ORBITS</button>
+      <label for="timeSpeed">SPEED</label>
+      <select id="timeSpeed" aria-label="Simulation days per second"><option value="1">1 d/s</option><option value="30" selected>30 d/s</option><option value="365">365 d/s</option></select>
+    </div>
+    <div class="view-controls">
+      <button type="button" id="zoomOut">− ZOOM</button><button type="button" id="zoomIn">+ ZOOM</button>
+      <button type="button" id="viewReset">RESET CAMERA</button><button type="button" id="labelsToggle" aria-pressed="true">LABELS ON</button>
+      <span id="coords">FRAME / SCHEMATIC</span>
+    </div>
+  </section>
+  <aside class="panel inspect" aria-label="Selected planet digital twin">
+    <div class="heading"><span>03 / 3D-STYLE DIGITAL TWIN</span><small id="recordType">REFERENCE</small></div>
+    <div class="globe-wrap"><canvas id="globe" role="img" aria-label="Illustrative illuminated procedural planet globe"></canvas><span id="globeNote">PROCEDURAL TEXTURE / NOT IMAGERY</span></div>
+    <div class="planet-name"><div><small id="planetClass">TERRESTRIAL</small><h2 id="planetName">Earth</h2></div><span id="planetOrder">03 / 08</span></div>
+    <p id="planetDescription">Loading planetary properties.</p>
+    <dl class="facts">
+      <div><dt>DIAMETER</dt><dd id="diameter">—</dd></div><div><dt>GRAVITY</dt><dd id="gravity">—</dd></div>
+      <div><dt>ORBITAL PERIOD</dt><dd id="period">—</dd></div><div><dt>SOLAR DISTANCE</dt><dd id="solarDistance">—</dd></div>
+      <div><dt>SIDEREAL ROTATION</dt><dd id="rotation">—</dd></div><div><dt>AXIAL TILT</dt><dd id="tilt">—</dd></div>
+    </dl>
+    <p class="disclaimer">Surface appearance, cloud patterns, lighting, and globe motion are stylized. Real planetary diameters and properties are displayed as sourced numbers, not pixel scale.</p>
+  </aside>
+</main>
+<section class="bottom-grid">
+  <div class="panel lab" aria-labelledby="labTitle">
+    <div class="heading"><span id="labTitle">04 / CL1 PLANET-CLONING SANDBOX</span><small>SIMULATED OBJECTS ONLY</small></div>
+    <p>Instantiate up to four independent virtual clones from the selected planet's reference parameters. Edit only the clone. All adjustments are hypothetical, not changes to NASA or JPL data.</p>
+    <div class="clone-actions"><button type="button" id="createClone" class="primary">+ CREATE VIRTUAL CLONE</button><button type="button" id="removeClone">DELETE SELECTED CLONE</button><button type="button" id="exportClone">EXPORT CLONE JSON</button></div>
+    <div id="cloneList" class="clone-list" role="group" aria-label="Select sandbox clone"><p class="empty">No clones. Create one from a planet to experiment.</p></div>
+    <div class="tuning">
+      <label for="cloneRadius">VIRTUAL DIAMETER SCALE <output id="radiusOut" for="cloneRadius">1.00×</output></label>
+      <input type="range" id="cloneRadius" min="0.5" max="2" step="0.05" value="1" disabled>
+      <label for="cloneSpin">VIRTUAL SPIN MULTIPLIER <output id="spinOut" for="cloneSpin">1.00×</output></label>
+      <input type="range" id="cloneSpin" min="-2" max="2" step="0.1" value="1" disabled>
+      <label for="cloneGlow">VIRTUAL CLOUD / GLOW <output id="glowOut" for="cloneGlow">50%</output></label>
+      <input type="range" id="cloneGlow" min="0" max="100" step="5" value="50" disabled>
+    </div>
+    <p id="cloneMessage" class="status" role="status" aria-live="polite">CL1 SANDBOX SECURE / Original catalog read-only.</p>
+  </div>
+  <div class="panel terminal" aria-labelledby="termTitle">
+    <div class="heading"><span id="termTitle">05 / NON-KINETIC COMMAND INTERFACE</span><small>NO SHELL / NO DEVICE API</small></div>
+    <p>Type commands to select, orbit, clone, and tune planetary digital twins. Press <kbd>⌘K</kbd> or <kbd>Ctrl+K</kbd> to focus.</p>
+    <form id="commandForm" autocomplete="off"><label for="commandInput">CL1 / PLANETARY FORGE &gt;</label><div class="command-row"><input id="commandInput" maxlength="160" spellcheck="false" placeholder="/planet Mars · /clone · /radius 1.25 · /date 2030-01-01 · /help"><button type="submit" class="primary">EXECUTE</button></div></form>
+    <output id="commandStatus" class="term-output" aria-live="polite" role="status">READY / /help for available commands.</output>
+    <div class="source-links"><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/" rel="noopener noreferrer" target="_blank">NASA PLANETARY FACT SHEET ↗</a><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" rel="noopener noreferrer" target="_blank">JPL KEPLERIAN ELEMENTS ↗</a></div>
+    <p class="disclaimer">This is a purely interactive browser model, not a physical planet, precise ephemeris, orbit-navigation system, radio transmitter, actuator or autonomous control system. Positions approximate JPL elements between 1800 and 2050.</p>
+  </div>
+</section>
+<footer><span>SONOXO / GPT-DOUG-LLM / CL1 PLANETARY FORGE</span><span>NO PAID API · NO VERCEL · NO TELEMETRY · SESSION-LOCAL CLONES</span></footer>
+</div>
+</body>
+</html>
