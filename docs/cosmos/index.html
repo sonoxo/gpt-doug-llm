@@ -54,6 +54,27 @@
         <button type="button" data-cam="labels">LABELS</button>
         <button type="button" id="refreshCatalogs">REFRESH LOCAL CATALOGS</button>
       </div>
+      <section class="nk-lab" aria-labelledby="nkTitle">
+        <div class="nk-heading"><b id="nkTitle">06 / NON-KINETIC SIMULATION LAB</b><span>SOFTWARE ONLY · NO PHYSICAL EFFECTS</span></div>
+        <div class="nk-modes" role="group" aria-label="Virtual field visualization">
+          <button type="button" data-nk-mode="observe" aria-pressed="true">OBSERVE</button>
+          <button type="button" data-nk-mode="signal" aria-pressed="false">SIGNAL WAVES</button>
+          <button type="button" data-nk-mode="gravity" aria-pressed="false">GRAVITY LENS</button>
+          <button type="button" data-nk-mode="field" aria-pressed="false">FIELD LINES</button>
+        </div>
+        <div class="nk-row">
+          <label for="nkPower">FIELD INTENSITY <output id="nkPowerValue" for="nkPower">50%</output></label>
+          <input type="range" id="nkPower" min="0" max="100" value="50" step="5" aria-label="Illustrative field intensity">
+          <button type="button" id="nkPause" aria-pressed="false">PAUSE FIELD</button>
+        </div>
+        <form id="nkForm" class="nk-console" autocomplete="off">
+          <label for="nkCommand">LOCAL COMMAND CONSOLE</label>
+          <input type="text" id="nkCommand" maxlength="140" spellcheck="false" placeholder="/go Andromeda · /mode signal · /zoom 1.5 · /help" aria-describedby="nkStatus">
+          <button type="submit">EXECUTE</button>
+        </form>
+        <output id="nkStatus" class="nk-status" role="status" aria-live="polite">READY / Commands and effects stay inside the browser simulation.</output>
+        <p class="nk-disclaimer">Demonstration-only imagery: not measured gravity, electromagnetic propagation, communication or celestial physics. No transmission, device control, network requests, or actions outside the app.</p>
+      </section>
       <div class="camera-stats"><span id="camera">YAW 0° / PITCH 0° / ZOOM 1.00</span><span>NO LIVE PHYSICAL TELEMETRY / NO EXTERNAL BROWSER REQUESTS</span></div>
     </main>
 
