@@ -3,6 +3,7 @@
 No external network or paid service; tests temporary same-origin static catalog.
 """
 from __future__ import annotations
+
 import os
 import re
 import shutil
@@ -77,7 +78,8 @@ def main()->int:
         (dest/"probe.js").write_text(PROBE,encoding="utf-8")
         server=ThreadingHTTPServer(("127.0.0.1",0),partial(Handler,directory=str(root)))
         server.daemon_threads=True
-        thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+        thread=threading.Thread(target=server.serve_forever,daemon=True)
+        thread.start()
         try:
             url=f"http://127.0.0.1:{server.server_port}/cosmos/xenology/"
             with tempfile.TemporaryDirectory(prefix="cl1-xeno-chrome-") as profile:
@@ -103,7 +105,9 @@ def main()->int:
             print("CL1 XENOLOGY CHROME OK: 36 cards / live canvas / search / graph / AARO / console / pause")
             return 0
         finally:
-            server.shutdown();server.server_close();thread.join(timeout=3)
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=3)
 
 if __name__=="__main__":
     raise SystemExit(main())
