@@ -502,6 +502,10 @@
       const r=await fetch(url,{cache:"no-store",credentials:"omit"});
       if(!r.ok)throw Error("not imported");
       const catalog=await r.json();
+      if(catalog?.data_mode==="not-imported"){
+        show(statusId,"NOT IMPORTED / OPTIONAL");
+        return;
+      }
       const before=state.nodes.length;
       mergeCatalog(catalog,name);
       show(statusId,(state.nodes.length-before)+" RECORDS LOADED");

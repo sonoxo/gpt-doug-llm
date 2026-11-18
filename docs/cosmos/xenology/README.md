@@ -36,6 +36,14 @@ The 36 objects and ontology link counts are **this project's curated entries onl
 
 The command console is **not a shell**; only a finite, local UI command parser.
 
+## Full browser interaction and diagnostics
+
+- Select any concept card to update the scene and evidence inspector; click graph nodes to navigate.
+- **SAVE CURRENT SCENE PNG** exports the actual current procedural Canvas view (not official footage) through the browser's download mechanism.
+- **COPY LINK TO THIS VIEW** places an explicit shareable URL with entity, inspector tab, map mode, zoom and intensity into the copy field. The link uses an allowlisted URL fragment, not local device data. Open the link again to restore the display. If browser clipboard permission is unavailable, the field is selected for manual Cmd+C.
+- **RUN LOCAL SELF-TEST** or `/health` checks catalog loading, source URL restrictions, visible cards and Canvas/graph rendering. It does not check NASA/ESA imports, remote government sites or live sensors.
+- COSMOS now ships explicit *unimported* NASA/ESA placeholder catalogs, avoiding 404 logs for optional archive files. These contain **zero scientific records** until you run the opt-in importer. An SVG favicon is included to avoid browser favicon 404s.
+
 ## Local Mac launch
 
 From a new working directory to avoid overwriting a previous clone:
