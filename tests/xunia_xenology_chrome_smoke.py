@@ -30,7 +30,7 @@ window.addEventListener("load",()=>{
       document.querySelector('[data-entity-id="s-void-shaggoth"]').click();
       assert(el("selectedName").textContent==="Void Shaggoth","card not interactive");
       document.querySelector('[data-tab="relations"]').click();
-      assert(el("tabBody").textContent.includes("concept"),"relationships tab failed");
+      assert(el("tabBody").textContent.includes("editorial")&&el("tabBody").querySelectorAll("button").length>0,"relationships tab failed");
       el("query").value="Shaggoth";el("query").dispatchEvent(new Event("input",{bubbles:true}));
       assert(el("filteredTotal").textContent==="7","text search filters wrong");
       el("resetFilters").click();
