@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#060a0e">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA COSMOS: free interactive 3D schematic of known outer space, with NASA and ESA catalog importers and versioned astronomical ontology.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; font-src 'none'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA COSMOS // Outer Space Ontology</title>
+<link rel="stylesheet" href="./style.css">
+<script src="./cosmos.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="logo" href="../" aria-label="Back to XUNIA headquarters"><span class="logo-icon">✧</span><span class="logo-copy"><small>GPT-DOUG-LLM / CL1</small><strong>XUNIA <em>COSMOS</em></strong></span></a>
+    <nav aria-label="XUNIA ecosystem"><a href="../">HEADQUARTERS</a><a href="../biological-data-center/">BIOLOGICAL DATA CENTER</a><a href="../ecosystem-observatory/">REPOSITORY FLEET</a></nav>
+    <div class="header-status"><span class="signal-dot"></span> FREE / STATIC / OPEN SCIENCE</div>
+  </header>
+
+  <section class="intro">
+    <div class="headline"><div class="eyebrow">01 / OUTER-SPACE ONTOLOGY  ·  LOCAL CL1 ARCHITECTURE</div><h1>MAP THE <span>KNOWN</span><br>UNIVERSE.</h1><p>Explore connected astronomical objects across the Solar System and deep space. Expand the catalog using NASA and ESA public archives. <strong>Positions are a schematic 3D layout—not real-time celestial coordinates or true scale.</strong></p></div>
+    <div class="metrics" aria-label="Imported astronomy record counts"><div><small>VISIBLE OBJECTS</small><strong id="visibleCount">—</strong></div><div><small>KNOWN CONNECTIONS</small><strong id="edgeCount">—</strong></div><div><small>CURATED SEED</small><strong id="seedCount">—</strong></div><div><small>DATA ACCESS</small><strong>NO KEY</strong></div></div>
+  </section>
+
+  <div class="workbench">
+    <aside class="panel side">
+      <div class="section-label">02 / COSMIC DOMAINS</div>
+      <div id="sectorFilters" class="sectors" role="group" aria-label="Filter astronomical object types"></div>
+      <div class="section-label source-heading">03 / CATALOG SOURCES</div>
+      <div class="source"><div><b>NASA EXOPLANET ARCHIVE</b><span>Validated public TAP endpoint</span></div><small id="nasaStatus">NOT IMPORTED</small></div>
+      <div class="source"><div><b>ESA GAIA DR3</b><span>Public stellar TAP catalog</span></div><small id="gaiaStatus">NOT IMPORTED</small></div>
+      <div class="source"><div><b>NASA SCIENCE / JPL</b><span>Curated reference links</span></div><small class="ok">55 STARTER ENTITIES</small></div>
+      <p class="safe-note">“Known” means curated identifiers or records from named catalogs. This is <b>not a complete inventory of the observable universe</b>, a mission navigation tool, or a live spacecraft tracker.</p>
+      <button id="catalogInfo" type="button" class="subtle">HOW TO IMPORT MORE DATA</button>
+      <p id="importHelp" class="hidden help">On your Mac, run <code>python3 scripts/xunia_cosmos_import.py nasa --limit 250</code> or replace <code>nasa</code> with <code>gaia</code>. Review and commit the generated JSON to make it available on the public site. No API key or paid provider.</p>
+    </aside>
+
+    <main class="universe">
+      <div class="viewport-label"><span><i></i> UNIVERSE / SPATIAL ONTOLOGY</span><small>DRAG TO ORBIT • WHEEL TO ZOOM • CLICK OBJECTS</small></div>
+      <div class="canvas-shell">
+        <canvas id="space" tabindex="0" aria-label="Interactive schematic map of cataloged celestial objects. Filters and searchable inspector are available as accessible controls." role="img"></canvas>
+        <div class="reticle" aria-hidden="true">+ <span>COSMOS 01</span></div>
+        <div id="canvasNotice" class="canvas-notice">SCHEMATIC SPATIAL COORDINATES / NOT TO SCALE</div>
+      </div>
+      <div class="camera-tools" role="group" aria-label="Cosmic camera and source controls">
+        <button type="button" data-cam="left">◀ ORBIT</button>
+        <button type="button" data-cam="right">ORBIT ▶</button>
+        <button type="button" data-cam="zoomout">−</button>
+        <button type="button" data-cam="zoomin">+</button>
+        <button type="button" data-cam="focus">FOCUS</button>
+        <button type="button" data-cam="reset">RESET</button>
+        <button type="button" data-cam="labels">LABELS</button>
+        <button type="button" id="refreshCatalogs">REFRESH LOCAL CATALOGS</button>
+      </div>
+      <div class="camera-stats"><span id="camera">YAW 0° / PITCH 0° / ZOOM 1.00</span><span>NO LIVE PHYSICAL TELEMETRY / NO EXTERNAL BROWSER REQUESTS</span></div>
+    </main>
+
+    <aside class="panel inspector">
+      <div class="section-label">04 / COSMIC OBJECT INSPECTOR</div>
+      <label for="search" class="search-label">SEARCH ENTITIES</label>
+      <input id="search" type="search" autocomplete="off" placeholder="Sun, Gaia, Andromeda…" aria-label="Find astronomical object">
+      <div id="searchResults" class="search-results" aria-label="Matching object controls"></div>
+      <div class="inspector-body">
+        <span id="objectKind" class="kind">STRUCTURES</span>
+        <h2 id="objectName">Observable universe</h2>
+        <p id="objectDescription">The schematic cosmic root node.</p>
+        <dl>
+          <div><dt>CATALOG EVIDENCE</dt><dd id="objectEvidence">Curated source</dd></div>
+          <div><dt>PARENT CONTEXT</dt><dd id="objectParent">—</dd></div>
+          <div><dt>RIGHT ASCENSION</dt><dd id="objectRA">Not recorded</dd></div>
+          <div><dt>DECLINATION</dt><dd id="objectDec">Not recorded</dd></div>
+          <div><dt>SYSTEM DISTANCE</dt><dd id="objectDistance">Not recorded</dd></div>
+        </dl>
+        <div class="section-label">RELATED COSMIC ENTITIES</div>
+        <div id="neighbors" class="neighbors"></div>
+        <a id="objectSource" class="source-link" href="https://science.nasa.gov/universe/" rel="noopener noreferrer" target="_blank">VIEW OFFICIAL SOURCE ↗</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="ingestion">
+    <div class="ingest-title"><span class="section-label">05 / SCIENCE DATA GATEWAYS</span><h2>OPEN CATALOG <i>SWARM</i></h2><p>Source-backed extensibility without copying entire remote archives or claiming omniscience. Imports run explicitly from your terminal; this public interface displays only version-controlled datasets.</p></div>
+    <div class="provider-grid">
+      <a href="https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html" target="_blank" rel="noopener noreferrer"><span>NASA / IPAC</span><b>EXOPLANET ARCHIVE</b><small>Confirmed exoplanets, host relationships, RA/Dec, distance and size when provided</small></a>
+      <a href="https://gea.esac.esa.int/archive/" target="_blank" rel="noopener noreferrer"><span>ESA</span><b>GAIA DR3</b><small>Stellar source identifiers, astrometry, parallax and brightness</small></a>
+      <a href="https://ssd-api.jpl.nasa.gov/" target="_blank" rel="noopener noreferrer"><span>NASA / JPL</span><b>HORIZONS REFERENCE</b><small>Solar-system ephemerides source; not synced or simulated by this map</small></a>
+      <a href="https://simbad.cds.unistra.fr/simbad/" target="_blank" rel="noopener noreferrer"><span>CDS / STRASBOURG</span><b>SIMBAD REFERENCE</b><small>Object IDs and literature metadata; source link only, no sync adapter yet</small></a>
+    </div>
+  </section>
+  <footer class="footer"><span>XUNIA COSMOS × ECO-SHAGGOTH × CL1 · SPACE DATA IS NOT TRUE-SCALE</span><span>GITHUB PAGES · ZERO PAID API · SOURCE-QUALIFIED</span><a href="./catalogs/seed.json">CURATED ONTOLOGY JSON</a></footer>
+</div>
+</body>
+</html>
