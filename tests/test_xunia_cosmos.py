@@ -128,6 +128,28 @@ class CosmosTests(unittest.TestCase):
         self.assertIn("Number.isFinite(px)",js)
         self.assertNotIn("innerHTML",js)
 
+    def test_nonkinetic_lab_is_interactive_accessible_and_local_only(self):
+        html=(self.root/"index.html").read_text(encoding="utf-8")
+        js=(self.root/"cosmos.js").read_text(encoding="utf-8")
+        css=(self.root/"style.css").read_text(encoding="utf-8")
+        for item in ('id="nkForm"', 'id="nkCommand"', 'id="nkStatus"',
+                     'id="nkPower"', 'id="nkPause"', 'aria-live="polite"'):
+            self.assertIn(item,html)
+        for mode in ("observe","signal","gravity","field"):
+            self.assertIn('data-nk-mode="'+mode+'"',html)
+        for feature in ("function runNonKineticCommand", "function drawNonKinetic",
+                        "function setMode", "function setFieldPower",
+                        "function setFieldPaused", 'drawNonKinetic(lookup)',
+                        'wireNonKineticLab();'):
+            self.assertIn(feature,js)
+        self.assertIn('.nk-modes button[aria-pressed="true"]',css)
+        self.assertIn("No transmission, device control, network requests",html)
+        for disallowed in ("eval(", "new Function(", "WebSocket(",
+                           "navigator.bluetooth", "navigator.serial",
+                           "navigator.geolocation", "SpeechRecognition", "innerHTML"):
+            self.assertNotIn(disallowed,js)
+        self.assertEqual(js.count("fetch("),2)
+
     def test_biological_data_center_links_to_cosmos_without_sharing_private_telemetry(self):
         bio=json.loads((ROOT/"docs"/"biological-data-center"/"ontology.json").read_text(encoding="utf-8"))
         ext=[x for x in bio.get("externalOntologies",[]) if x["id"]=="xunia-cosmos"]

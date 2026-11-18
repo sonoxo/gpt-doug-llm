@@ -24,7 +24,8 @@
     nodes:[],edges:[],nodeById:new Map(),selected:"universe",
     sector:"ALL",yaw:.22,pitch:.22,zoom:1,panX:0,panY:0,
     width:800,height:500,points:[],drag:null,labels:true,frame:0,
-    canvasValid:false,loaded:false,quiet:false
+    canvasValid:false,loaded:false,quiet:false,
+    nkMode:"observe",nkPower:50,nkPaused:false,nkTick:0
   };
   const show = (id,text) => { const e=$(id); if(e)e.textContent=String(text); };
   function fail(message) {
@@ -183,6 +184,62 @@
     ctx.fillStyle=color;ctx.fill();
     ctx.restore();
   }
+
+  // Illustrative geometry only: neither measured fields nor actual signals.
+  function drawNonKinetic(lookup){
+    if(state.nkMode==="observe" || state.nkPower===0)return;
+    const p=lookup.get(state.selected);
+    if(!p)return;
+    const power=state.nkPower/100;
+    const radius=28+75*power;
+    const time=(state.nkPaused?state.nkTick:(state.nkTick=state.frame))*.035;
+    ctx.save();
+    ctx.lineWidth=1.3;
+    if(state.nkMode==="signal"){
+      for(let i=0;i<4;i++){
+        const spread=((time*.36+i/4)%1);
+        ctx.beginPath();ctx.arc(p.x,p.y,14+radius*spread,0,2*Math.PI);
+        ctx.strokeStyle="rgba(131,241,219,"+(0.55*(1-spread)).toFixed(3)+")";ctx.stroke();
+      }
+      let linked=0;
+      for(const edge of state.edges){
+        if(linked>=30)break;
+        const id=edge.source===state.selected?edge.target:
+          edge.target===state.selected?edge.source:null;
+        const other=id&&lookup.get(id);if(!other)continue;
+        linked++;
+        ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(other.x,other.y);
+        ctx.strokeStyle="rgba(137,241,224,.48)";ctx.stroke();
+        const phase=(time*.3+linked*.16)%1;
+        ctx.beginPath();ctx.arc(p.x+(other.x-p.x)*phase,p.y+(other.y-p.y)*phase,2.7,0,2*Math.PI);
+        ctx.fillStyle="#b0fbed";ctx.fill();
+      }
+    }else if(state.nkMode==="gravity"){
+      for(let i=0;i<5;i++){
+        const rad=20+i*radius/5;
+        ctx.beginPath();ctx.ellipse(p.x,p.y,rad,rad*.58,time*.045+i*.16,0,2*Math.PI);
+        ctx.strokeStyle="rgba(202,196,244,"+(0.58-i*.075).toFixed(3)+")";ctx.stroke();
+      }
+      ctx.beginPath();ctx.arc(p.x,p.y,12+power*10,0,Math.PI*2);
+      ctx.strokeStyle="rgba(238,230,255,.75)";ctx.lineWidth=2;ctx.stroke();
+    }else if(state.nkMode==="field"){
+      for(let i=0;i<16;i++){
+        const angle=(Math.PI*2*i)/16+time*.015;
+        const inner=11,outer=radius+24;
+        const x1=p.x+inner*Math.cos(angle),y1=p.y+inner*Math.sin(angle);
+        const x2=p.x+outer*Math.cos(angle),y2=p.y+outer*Math.sin(angle);
+        const bend=(i%2===0?1:-1)*outer*.32;
+        ctx.beginPath();ctx.moveTo(x1,y1);
+        ctx.quadraticCurveTo(p.x+(outer*.56)*Math.cos(angle+.3)+bend*.16,
+          p.y+(outer*.56)*Math.sin(angle+.3)-bend*.16,x2,y2);
+        ctx.strokeStyle="rgba(138,204,255,.51)";ctx.stroke();
+        ctx.beginPath();ctx.arc(x2,y2,1.5,0,2*Math.PI);
+        ctx.fillStyle="#b7ebff";ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
   function draw(){
     if(!ctx||!state.loaded||state.quiet)return;
     try{
@@ -230,6 +287,7 @@
           ctx.globalAlpha=1;
         }
       }
+      drawNonKinetic(lookup);
       const selected=state.selected;
       const showCount=state.points.length<=80?50:15;
       const labelCandidates=state.points.slice(0,showCount);
@@ -339,6 +397,106 @@
     const p=$("importHelp");p.classList.toggle("hidden");
     $("catalogInfo").textContent=p.classList.contains("hidden")?"HOW TO IMPORT MORE DATA":"HIDE IMPORT INSTRUCTIONS";
   });
+
+  function labMessage(message){show("nkStatus",message);}
+  function setMode(mode){
+    if(!["observe","signal","gravity","field"].includes(mode))return false;
+    state.nkMode=mode;
+    document.querySelectorAll("[data-nk-mode]").forEach(b=>{
+      b.setAttribute("aria-pressed",String(b.dataset.nkMode===mode));
+    });
+    labMessage(mode.toUpperCase()+" / simulated scene effect · no real-world output");
+    if(reduced)draw();
+    return true;
+  }
+  function setFieldPower(value){
+    const n=Number(value);
+    if(!Number.isFinite(n)||n<0||n>100)return false;
+    state.nkPower=n;
+    $("nkPower").value=String(n);
+    show("nkPowerValue",Math.round(n)+"%");
+    if(reduced)draw();
+    return true;
+  }
+  function setFieldPaused(paused){
+    state.nkPaused=paused;
+    if(!paused)state.nkTick=state.frame;
+    $("nkPause").textContent=paused?"RESUME FIELD":"PAUSE FIELD";
+    $("nkPause").setAttribute("aria-pressed",String(paused));
+    labMessage(paused?"FIELD FROZEN / software-only scene":"FIELD PLAYING / software-only scene");
+    if(reduced)draw();
+  }
+  function runNonKineticCommand(raw){
+    const line=String(raw||"").trim().replace(/^\//,"");
+    if(!line){labMessage("EMPTY COMMAND / try /help");return;}
+    const firstSpace=line.indexOf(" ");
+    const command=(firstSpace<0?line:line.slice(0,firstSpace)).toLowerCase();
+    const arg=(firstSpace<0?"":line.slice(firstSpace+1)).trim();
+    if(command==="help"){
+      labMessage("/go NAME · /mode observe|signal|gravity|field · /orbit DEGREES · /zoom 0.38–4 · /power 0–100 · /filter SECTOR · /pause · /play · /reset");
+    }else if(command==="go"){
+      const name=arg.toLowerCase();
+      const node=name&&state.nodes.find(n=>n.name.toLowerCase()===name) ||
+        (name&&state.nodes.find(n=>n.name.toLowerCase().includes(name)||n.id.toLowerCase()===name));
+      if(!node){labMessage("NOT FOUND / choose a cataloged object");return;}
+      choose(node.id);focus();labMessage("FOCUSED "+node.name+" / simulated camera");
+    }else if(command==="mode"){
+      if(!setMode(arg.toLowerCase()))labMessage("INVALID MODE / observe, signal, gravity, field");
+    }else if(command==="orbit"){
+      const deg=Number(arg);
+      if(!arg||!Number.isFinite(deg)||Math.abs(deg)>360){labMessage("ORBIT RANGE / −360 to +360 degrees");return;}
+      state.yaw+=deg*Math.PI/180;labMessage("CAMERA ORBIT / "+deg+"°");
+    }else if(command==="zoom"){
+      const zoom=Number(arg);
+      if(!arg||!Number.isFinite(zoom)||zoom<.38||zoom>4){labMessage("ZOOM RANGE / 0.38 to 4");return;}
+      state.zoom=zoom;labMessage("CAMERA ZOOM / "+zoom.toFixed(2));
+    }else if(command==="power"){
+      if(!arg||!setFieldPower(arg)){labMessage("FIELD INTENSITY / 0 to 100");return;}
+      labMessage("VIRTUAL INTENSITY / "+Math.round(state.nkPower)+"%");
+    }else if(command==="filter"){
+      const sector=arg.toUpperCase().replace(/[\s-]+/g,"_");
+      if(sector!=="ALL"&&!Object.hasOwn(SECTORS,sector)){
+        labMessage("UNKNOWN SECTOR / choose one of the domain filters");return;
+      }
+      state.sector=sector;
+      if(sector!=="ALL"&&selectedNode()?.sector!==sector){
+        state.selected=state.nodes.find(n=>n.sector===sector)?.id||"universe";
+      }
+      layers();inspect();updateStats();labMessage("FILTER / "+sector.replaceAll("_"," "));
+    }else if(command==="pause"){setFieldPaused(true);
+    }else if(command==="play"){setFieldPaused(false);
+    }else if(command==="reset"){
+      toolbar("reset");setMode("observe");setFieldPower(50);setFieldPaused(false);
+      labMessage("RESET / scene and non-kinetic controls");
+    }else{labMessage("UNKNOWN COMMAND / enter /help");}
+    if(reduced)draw();
+  }
+  function wireNonKineticLab(){
+    document.querySelectorAll("[data-nk-mode]").forEach(button=>
+      button.addEventListener("click",()=>setMode(button.dataset.nkMode)));
+    $("nkPower").addEventListener("input",event=>{
+      setFieldPower(event.target.value);
+      labMessage("VIRTUAL INTENSITY / "+Math.round(state.nkPower)+"%");
+    });
+    $("nkPause").addEventListener("click",()=>setFieldPaused(!state.nkPaused));
+    $("nkForm").addEventListener("submit",event=>{
+      event.preventDefault();
+      runNonKineticCommand($("nkCommand").value);
+      $("nkCommand").value="";
+    });
+    document.addEventListener("keydown",event=>{
+      const edit=/^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName||"");
+      if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="k"){
+        event.preventDefault();$("nkCommand").focus();
+      }else if(event.key==="Escape"&&document.activeElement===$("nkCommand")){
+        event.preventDefault();canvas.focus();
+      }else if(event.key==="/"&&!edit&&!event.ctrlKey&&!event.metaKey){
+        event.preventDefault();$("nkCommand").focus();
+      }
+    });
+  }
+  wireNonKineticLab();
+
   async function loadOptional(name,url,statusId){
     try{
       const r=await fetch(url,{cache:"no-store",credentials:"omit"});

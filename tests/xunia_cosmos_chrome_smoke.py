@@ -67,6 +67,12 @@ def main() -> int:
                 print("Canvas:",data[:1200],file=sys.stderr)
                 print("Notice:",status.group()[:600] if status else "missing",file=sys.stderr)
                 return 1
+        for control in ('id="nkForm"', 'id="nkCommand"', 'id="nkPower"',
+                        'id="nkPause"', 'id="nkStatus"', 'data-nk-mode="signal"',
+                        'data-nk-mode="gravity"', 'data-nk-mode="field"'):
+            if control not in html:
+                print("XUNIA COSMOS: missing simulated control", control, file=sys.stderr)
+                return 1
         if "SPATIAL RENDER FAILED" in html:
             print("XUNIA COSMOS: app reported a browser error",file=sys.stderr)
             return 1
