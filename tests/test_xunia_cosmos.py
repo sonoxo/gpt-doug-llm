@@ -127,6 +127,16 @@ class CosmosTests(unittest.TestCase):
         self.assertIn("Number.isFinite(px)",js)
         self.assertNotIn("innerHTML",js)
 
+    def test_biological_data_center_links_to_cosmos_without_sharing_private_telemetry(self):
+        bio=json.loads((ROOT/"docs"/"biological-data-center"/"ontology.json").read_text(encoding="utf-8"))
+        ext=[x for x in bio.get("externalOntologies",[]) if x["id"]=="xunia-cosmos"]
+        self.assertEqual(len(ext),1)
+        self.assertEqual(ext[0]["reference"],"../cosmos/catalogs/seed.json")
+        self.assertFalse(ext[0]["telemetry_shared"])
+        links=self.seed["ecosystem_links"]
+        self.assertEqual(links[0]["id"],"xunia-cl1-biological-data-center")
+        self.assertFalse(links[0]["telemetry_shared"])
+
     def test_source_allowlist_no_arbitrary_navigation(self):
         script=(self.root/"cosmos.js").read_text(encoding="utf-8")
         self.assertIn("safeSource",script)
