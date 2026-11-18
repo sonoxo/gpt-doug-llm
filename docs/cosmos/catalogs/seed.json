@@ -1,0 +1,1121 @@
+{
+  "schema": "xunia.cosmos.catalog.v1",
+  "generated_at": "2026-11-17",
+  "coordinate_system": "illustrative-spatial-layout-not-measured-positions-or-distances",
+  "data_mode": "small-curated-seed; not exhaustive",
+  "source_policy": "source URLs point to public official NASA reference sites; no claims of per-object verification",
+  "sectors": [
+    "STRUCTURES",
+    "GALAXIES",
+    "BLACK_HOLES",
+    "SOLAR_SYSTEM",
+    "STARS",
+    "EXOPLANETS",
+    "NEBULAE",
+    "MISSIONS"
+  ],
+  "provenance": {
+    "publisher": "GPT-DOUG/XUNIA",
+    "catalog": "curated illustrative seed",
+    "license_notice": "NASA public reference links; object names and relationships compiled as facts; attribution recommended"
+  },
+  "nodes": [
+    {
+      "id": "universe",
+      "name": "Observable universe",
+      "sector": "STRUCTURES",
+      "parent": null,
+      "description": "Cosmological context for mapped objects; the complete universe cannot be enumerated.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -7.35,
+        4,
+        1
+      ]
+    },
+    {
+      "id": "cosmic-web",
+      "name": "Cosmic web",
+      "sector": "STRUCTURES",
+      "parent": "universe",
+      "description": "Large-scale arrangement of filaments, clusters and voids.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -8.9,
+        4.824,
+        2.19
+      ]
+    },
+    {
+      "id": "laniakea",
+      "name": "Laniakea supercluster region",
+      "sector": "STRUCTURES",
+      "parent": "cosmic-web",
+      "description": "Regional supercluster-scale context, not a physical boundary of the universe.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -7.873,
+        2.549,
+        0.693
+      ]
+    },
+    {
+      "id": "virgo-cluster",
+      "name": "Virgo Cluster",
+      "sector": "STRUCTURES",
+      "parent": "laniakea",
+      "description": "Large nearby galaxy cluster.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -7.004,
+        5.299,
+        -0.111
+      ]
+    },
+    {
+      "id": "local-group",
+      "name": "Local Group",
+      "sector": "STRUCTURES",
+      "parent": "laniakea",
+      "description": "Our neighboring group of galaxies.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -9.763,
+        3.688,
+        1.593
+      ]
+    },
+    {
+      "id": "milky-way",
+      "name": "Milky Way",
+      "sector": "GALAXIES",
+      "parent": "local-group",
+      "description": "The galaxy containing the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/milky-way/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.35,
+        5,
+        -2
+      ]
+    },
+    {
+      "id": "andromeda",
+      "name": "Andromeda Galaxy (M31)",
+      "sector": "GALAXIES",
+      "parent": "local-group",
+      "description": "Spiral galaxy neighboring the Milky Way.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -4.9,
+        5.824,
+        -0.81
+      ]
+    },
+    {
+      "id": "triangulum",
+      "name": "Triangulum Galaxy (M33)",
+      "sector": "GALAXIES",
+      "parent": "local-group",
+      "description": "Spiral galaxy within the Local Group.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.873,
+        3.549,
+        -2.307
+      ]
+    },
+    {
+      "id": "whirlpool",
+      "name": "Whirlpool Galaxy (M51)",
+      "sector": "GALAXIES",
+      "parent": "cosmic-web",
+      "description": "Interacting spiral system observed in deep-sky surveys.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.004,
+        6.299,
+        -3.111
+      ]
+    },
+    {
+      "id": "sombrero",
+      "name": "Sombrero Galaxy (M104)",
+      "sector": "GALAXIES",
+      "parent": "cosmic-web",
+      "description": "Edge-on galaxy notable for its dust lane.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/galaxies/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -5.763,
+        4.688,
+        -1.407
+      ]
+    },
+    {
+      "id": "sagittarius-a",
+      "name": "Sagittarius A*",
+      "sector": "BLACK_HOLES",
+      "parent": "milky-way",
+      "description": "Compact radio source associated with the Milky Way central supermassive black hole.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/black-holes/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -1.35,
+        2,
+        1
+      ]
+    },
+    {
+      "id": "m87-black-hole",
+      "name": "M87*",
+      "sector": "BLACK_HOLES",
+      "parent": "virgo-cluster",
+      "description": "Supermassive black hole in galaxy Messier 87.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/black-holes/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -2.9,
+        2.824,
+        2.19
+      ]
+    },
+    {
+      "id": "solar-system",
+      "name": "Solar System",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "milky-way",
+      "description": "Sun, planets, dwarf planets, moons, small bodies, and trans-Neptunian regions.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/solar-system/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.351,
+        -1,
+        0
+      ]
+    },
+    {
+      "id": "sun",
+      "name": "Sun",
+      "sector": "STARS",
+      "parent": "solar-system",
+      "description": "The star at the center of the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/sun/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        5.65,
+        2,
+        -2
+      ]
+    },
+    {
+      "id": "mercury",
+      "name": "Mercury",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Innermost planet of the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mercury/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.514,
+        -0.555,
+        1.19
+      ]
+    },
+    {
+      "id": "venus",
+      "name": "Venus",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Second planet from the Sun.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/venus/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.069,
+        -1.783,
+        -0.307
+      ]
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Our home planet.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/earth/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.538,
+        -0.298,
+        -1.111
+      ]
+    },
+    {
+      "id": "moon",
+      "name": "Moon",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "earth",
+      "description": "Earth's natural satellite.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/moon/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.048,
+        -1.168,
+        0.593
+      ]
+    },
+    {
+      "id": "mars",
+      "name": "Mars",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Rocky planet with polar ice and a thin atmosphere.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.877,
+        -1.558,
+        0.958
+      ]
+    },
+    {
+      "id": "phobos",
+      "name": "Phobos",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "mars",
+      "description": "Inner natural satellite of Mars.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mars/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.713,
+        0.067,
+        -0.84
+      ]
+    },
+    {
+      "id": "deimos",
+      "name": "Deimos",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "mars",
+      "description": "Outer natural satellite of Mars.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mars/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.463,
+        -2.034,
+        -0.742
+      ]
+    },
+    {
+      "id": "asteroid-belt",
+      "name": "Main asteroid belt",
+      "sector": "STRUCTURES",
+      "parent": "solar-system",
+      "description": "Region populated by many small bodies, between Mars and Jupiter.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/solar-system/asteroids/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -6.376,
+        2.967,
+        1.958
+      ]
+    },
+    {
+      "id": "ceres",
+      "name": "Ceres",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "asteroid-belt",
+      "description": "Dwarf planet in the main asteroid belt.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/dwarf-planets/ceres/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        2.147,
+        -0.581,
+        1.031
+      ]
+    },
+    {
+      "id": "jupiter",
+      "name": "Jupiter",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Largest planet in the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/jupiter/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -0.178,
+        -0.514,
+        0.476
+      ]
+    },
+    {
+      "id": "io",
+      "name": "Io",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "jupiter",
+      "description": "Volcanically active Galilean moon.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/jupiter/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.561,
+        -2.2,
+        -1.154
+      ]
+    },
+    {
+      "id": "europa",
+      "name": "Europa",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "jupiter",
+      "description": "Icy Galilean moon with evidence of a subsurface ocean.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/jupiter/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        1.411,
+        0.309,
+        -0.179
+      ]
+    },
+    {
+      "id": "ganymede",
+      "name": "Ganymede",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "jupiter",
+      "description": "Largest natural satellite in the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/jupiter/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -0.226,
+        -1.711,
+        1.2
+      ]
+    },
+    {
+      "id": "callisto",
+      "name": "Callisto",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "jupiter",
+      "description": "Outer Galilean moon of Jupiter.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/jupiter/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        2.427,
+        -1.314,
+        -0.13
+      ]
+    },
+    {
+      "id": "saturn",
+      "name": "Saturn",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Gas giant with prominent rings.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/saturn/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.136,
+        0.229,
+        -1.166
+      ]
+    },
+    {
+      "id": "titan",
+      "name": "Titan",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "saturn",
+      "description": "Saturn moon with a thick atmosphere and hydrocarbon lakes.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/saturn/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.802,
+        -2.53,
+        0.431
+      ]
+    },
+    {
+      "id": "enceladus",
+      "name": "Enceladus",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "saturn",
+      "description": "Icy Saturnian moon with water-rich plumes.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/saturn/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        2.21,
+        0.02,
+        1.055
+      ]
+    },
+    {
+      "id": "uranus",
+      "name": "Uranus",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Ice giant rotating on a highly tilted axis.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/uranus/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -0.619,
+        -0.933,
+        -0.703
+      ]
+    },
+    {
+      "id": "neptune",
+      "name": "Neptune",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "sun",
+      "description": "Outer giant planet of the Solar System.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/neptune/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        2.174,
+        -2.169,
+        -0.874
+      ]
+    },
+    {
+      "id": "triton",
+      "name": "Triton",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "neptune",
+      "description": "Neptune's large retrograde moon.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/neptune/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        0.922,
+        0.691,
+        0.928
+      ]
+    },
+    {
+      "id": "pluto",
+      "name": "Pluto",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "kuiper-belt",
+      "description": "Dwarf planet beyond Neptune.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/dwarf-planets/pluto/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -0.107,
+        -2.326,
+        0.635
+      ]
+    },
+    {
+      "id": "charon",
+      "name": "Charon",
+      "sector": "SOLAR_SYSTEM",
+      "parent": "pluto",
+      "description": "Largest moon of Pluto.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/dwarf-planets/pluto/moons/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        2.746,
+        -0.765,
+        -1.092
+      ]
+    },
+    {
+      "id": "kuiper-belt",
+      "name": "Kuiper belt",
+      "sector": "STRUCTURES",
+      "parent": "solar-system",
+      "description": "Broad trans-Neptunian small-body region.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/solar-system/kuiper-belt/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -8.531,
+        5.976,
+        0.16
+      ]
+    },
+    {
+      "id": "oort-cloud",
+      "name": "Oort cloud (hypothesized)",
+      "sector": "STRUCTURES",
+      "parent": "solar-system",
+      "description": "Hypothesized distant reservoir of icy bodies; not directly imaged as a complete structure.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/solar-system/oort-cloud/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -8.995,
+        2.085,
+        0.258
+      ]
+    },
+    {
+      "id": "alpha-centauri",
+      "name": "Alpha Centauri system",
+      "sector": "STARS",
+      "parent": "milky-way",
+      "description": "Nearby multiple-star system.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/stars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        4.1,
+        2.824,
+        -0.81
+      ]
+    },
+    {
+      "id": "proxima-centauri",
+      "name": "Proxima Centauri",
+      "sector": "STARS",
+      "parent": "alpha-centauri",
+      "description": "Nearest known star to the Sun.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/stars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        5.127,
+        0.549,
+        -2.307
+      ]
+    },
+    {
+      "id": "sirius",
+      "name": "Sirius",
+      "sector": "STARS",
+      "parent": "milky-way",
+      "description": "Brightest star in Earth's night sky.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/stars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        5.996,
+        3.299,
+        -3.111
+      ]
+    },
+    {
+      "id": "betelgeuse",
+      "name": "Betelgeuse",
+      "sector": "STARS",
+      "parent": "milky-way",
+      "description": "Red supergiant in Orion.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/stars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        3.237,
+        1.688,
+        -1.407
+      ]
+    },
+    {
+      "id": "trappist-1",
+      "name": "TRAPPIST-1",
+      "sector": "STARS",
+      "parent": "milky-way",
+      "description": "Ultracool dwarf star with a compact planetary system.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/exoplanets/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        6.624,
+        0.967,
+        -1.042
+      ]
+    },
+    {
+      "id": "kepler-452",
+      "name": "Kepler-452",
+      "sector": "STARS",
+      "parent": "milky-way",
+      "description": "Host star of the confirmed planet Kepler-452 b.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://exoplanetarchive.ipac.caltech.edu/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        4.469,
+        3.976,
+        -2.84
+      ]
+    },
+    {
+      "id": "proxima-b",
+      "name": "Proxima Centauri b",
+      "sector": "EXOPLANETS",
+      "parent": "proxima-centauri",
+      "description": "Cataloged exoplanet orbiting Proxima Centauri.",
+      "source_label": "NASA Exoplanet Archive",
+      "source_url": "https://exoplanetarchive.ipac.caltech.edu/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        8.65,
+        3,
+        2
+      ]
+    },
+    {
+      "id": "trappist-1e",
+      "name": "TRAPPIST-1 e",
+      "sector": "EXOPLANETS",
+      "parent": "trappist-1",
+      "description": "Cataloged exoplanet in the TRAPPIST-1 system.",
+      "source_label": "NASA Exoplanet Archive",
+      "source_url": "https://exoplanetarchive.ipac.caltech.edu/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        7.1,
+        3.824,
+        3.19
+      ]
+    },
+    {
+      "id": "kepler-452b",
+      "name": "Kepler-452 b",
+      "sector": "EXOPLANETS",
+      "parent": "kepler-452",
+      "description": "Cataloged planet around Kepler-452.",
+      "source_label": "NASA Exoplanet Archive",
+      "source_url": "https://exoplanetarchive.ipac.caltech.edu/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        8.127,
+        1.549,
+        1.693
+      ]
+    },
+    {
+      "id": "orion-nebula",
+      "name": "Orion Nebula (M42)",
+      "sector": "NEBULAE",
+      "parent": "milky-way",
+      "description": "Nearby stellar nursery in the constellation Orion.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/nebulae/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.35,
+        -4,
+        1
+      ]
+    },
+    {
+      "id": "crab-nebula",
+      "name": "Crab Nebula (M1)",
+      "sector": "NEBULAE",
+      "parent": "milky-way",
+      "description": "Supernova remnant with a central pulsar.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/nebulae/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -4.9,
+        -3.176,
+        2.19
+      ]
+    },
+    {
+      "id": "carina-nebula",
+      "name": "Carina Nebula",
+      "sector": "NEBULAE",
+      "parent": "milky-way",
+      "description": "Massive star-forming region.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/nebulae/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.873,
+        -5.451,
+        0.693
+      ]
+    },
+    {
+      "id": "eagle-nebula",
+      "name": "Eagle Nebula (M16)",
+      "sector": "NEBULAE",
+      "parent": "milky-way",
+      "description": "Star-forming nebula containing the Pillars of Creation.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/nebulae/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -3.004,
+        -2.701,
+        -0.111
+      ]
+    },
+    {
+      "id": "pulsar",
+      "name": "Pulsars",
+      "sector": "STRUCTURES",
+      "parent": "milky-way",
+      "description": "Class of rotating neutron stars, not a single catalog object.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/universe/stars/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        -5.875,
+        4.776,
+        2.031
+      ]
+    },
+    {
+      "id": "james-webb",
+      "name": "James Webb Space Telescope",
+      "sector": "MISSIONS",
+      "parent": "solar-system",
+      "description": "Space telescope; represented as a mission, not a fixed celestial body.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mission/webb/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        5.65,
+        -5,
+        1
+      ]
+    },
+    {
+      "id": "hubble",
+      "name": "Hubble Space Telescope",
+      "sector": "MISSIONS",
+      "parent": "earth",
+      "description": "Orbiting astronomical observatory.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mission/hubble/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        4.1,
+        -4.176,
+        2.19
+      ]
+    },
+    {
+      "id": "voyager-1",
+      "name": "Voyager 1",
+      "sector": "MISSIONS",
+      "parent": "solar-system",
+      "description": "Interstellar spacecraft; position varies by date.",
+      "source_label": "NASA Science / curated identifier",
+      "source_url": "https://science.nasa.gov/mission/voyager/",
+      "evidence": "curated identifier; relationships reviewed; positions schematic",
+      "layout": [
+        5.127,
+        -6.451,
+        0.693
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "universe",
+      "target": "cosmic-web",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "cosmic-web",
+      "target": "laniakea",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "laniakea",
+      "target": "virgo-cluster",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "laniakea",
+      "target": "local-group",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "local-group",
+      "target": "milky-way",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "local-group",
+      "target": "andromeda",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "local-group",
+      "target": "triangulum",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "cosmic-web",
+      "target": "whirlpool",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "cosmic-web",
+      "target": "sombrero",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "sagittarius-a",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "virgo-cluster",
+      "target": "m87-black-hole",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "solar-system",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "sun",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "mercury",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "venus",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "earth",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "earth",
+      "target": "moon",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "mars",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "mars",
+      "target": "phobos",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "mars",
+      "target": "deimos",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "asteroid-belt",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "asteroid-belt",
+      "target": "ceres",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "jupiter",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "jupiter",
+      "target": "io",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "jupiter",
+      "target": "europa",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "jupiter",
+      "target": "ganymede",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "jupiter",
+      "target": "callisto",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "saturn",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "saturn",
+      "target": "titan",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "saturn",
+      "target": "enceladus",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "uranus",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "sun",
+      "target": "neptune",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "neptune",
+      "target": "triton",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "kuiper-belt",
+      "target": "pluto",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "pluto",
+      "target": "charon",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "kuiper-belt",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "oort-cloud",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "alpha-centauri",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "alpha-centauri",
+      "target": "proxima-centauri",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "sirius",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "betelgeuse",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "trappist-1",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "kepler-452",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "proxima-centauri",
+      "target": "proxima-b",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "trappist-1",
+      "target": "trappist-1e",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "kepler-452",
+      "target": "kepler-452b",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "orion-nebula",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "crab-nebula",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "carina-nebula",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "eagle-nebula",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "milky-way",
+      "target": "pulsar",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "james-webb",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "earth",
+      "target": "hubble",
+      "relation": "contains/orbits/context (sector-dependent)"
+    },
+    {
+      "source": "solar-system",
+      "target": "voyager-1",
+      "relation": "contains/orbits/context (sector-dependent)"
+    }
+  ]
+}
