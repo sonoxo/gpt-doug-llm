@@ -43,6 +43,10 @@ jobs:
           test -f _site/biological-data-center/style.css
           test -f _site/biological-data-center/app.js
           test -f _site/biological-data-center/ontology.json
+          test -f _site/cosmos/index.html
+          test -f _site/cosmos/style.css
+          test -f _site/cosmos/cosmos.js
+          test -f _site/cosmos/catalogs/seed.json
           test -f _site/cinema-studio/index.html
           test -f _site/motion-1/index.html
           test -f _site/motion-1/app.js
@@ -113,6 +117,8 @@ jobs:
           python3 -m unittest discover -s tests -p test_xunia_web_mirror.py -v
           node --check docs/ecosystem-observatory/app.js
           node --check docs/biological-data-center/app.js
+          node --check docs/cosmos/cosmos.js
+          python3 -m unittest discover -s tests -p 'test_xunia_cosmos.py' -v
           python3 -m unittest discover -s tests -p 'test_xunia_biological_data_center.py' -v
           python3 -m unittest discover -s tests -p test_xunia_ecosystem_observatory.py -v
           node --check docs/darkweb/15-source-atlas/atlas.js
