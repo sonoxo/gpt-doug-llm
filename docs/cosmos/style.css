@@ -37,3 +37,9 @@
 .forge-enter{padding:13px 15px;border:1px solid #b3efe0;background:#addfd4;color:#102a2c;font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}
 .forge-enter:hover{background:#fff;color:#142c30}
 @media(max-width:700px){.forge-entry{flex-direction:column;align-items:start}.forge-enter{width:100%;text-align:center}}
+
+/* CL1 xenology archive entry */
+.xeno-entry{display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 12px;padding:17px 21px;background:linear-gradient(112deg,#16182d,#09212c 75%);border:1px solid #5d5b8a}
+.xeno-entry small{font:800 10px var(--mono);color:#b2bbf6;letter-spacing:.12em}.xeno-entry h2{font-size:23px;color:#e7f8fa;margin:8px 0}.xeno-entry p{color:#abb9cb;font-size:11px;line-height:1.6;margin:0;max-width:790px}
+.xeno-entry a{padding:12px 15px;white-space:nowrap;color:#0b2631;background:#9ddde9;text-decoration:none;font-size:10px;font-weight:800;border:1px solid #b6eeff}.xeno-entry a:hover{background:#fff}
+@media(max-width:700px){.xeno-entry{flex-direction:column;align-items:flex-start}.xeno-entry a{width:100%;text-align:center}}
