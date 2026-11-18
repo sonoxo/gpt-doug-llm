@@ -9,13 +9,13 @@ from __future__ import annotations
 
 import argparse
 import csv
-from datetime import datetime, timezone
 import hashlib
 import io
 import json
 import math
-from pathlib import Path
 import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
