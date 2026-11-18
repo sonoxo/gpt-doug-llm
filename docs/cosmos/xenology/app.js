@@ -11,7 +11,7 @@ const sectionIds={aliens:"alienSection",uap:"uapSection",records:"reportSection"
 const countIds={aliens:"alienCount",uap:"uapCount",records:"reportCount",shaggoth:"shoggothCount"};
 const evidenceNames={fictional:"FICTIONAL / CREATIVE",speculative:"SPECULATIVE / FOLKLORE",illustrative:"ILLUSTRATION / NO REPORT",documented:"DOCUMENTED PUBLIC REPORT",resolved:"RESOLVED PUBLIC REPORT"};
 const state={data:[],byId:new Map(),selected:"s-shaggoth-prime",query:"",groups:new Set(groups),evidence:new Set(Object.keys(evidenceNames)),tab:"overview",
-  angle:0,zoom:1,intensity:60,paused:false,animate:true,links:true,mode:"graph",points:[],drag:null,frame:0,lastDraw:0,ready:false,quiet:false};
+  angle:0,zoom:1,intensity:60,paused:false,animate:true,links:true,mode:"graph",points:[],drag:null,frame:0,motionTime:0,lastDraw:0,ready:false,quiet:false};
 const motionReduced=!!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
 let rootEdges=[];
 function visible(){return state.data.filter(r=>state.groups.has(r.group)&&state.evidence.has(r.evidence)&&
@@ -196,7 +196,7 @@ function togglePause(set){
 const viewer=$("creatureCanvas"),vctx=viewer.getContext("2d"),graph=$("graphCanvas"),gctx=graph.getContext("2d");
 function drawViewer(time){
   const r=selected();if(!r||!vctx)return;
-  const [w,h]=scaleCanvas(viewer,vctx),t=(!state.paused&&state.animate&&!motionReduced)?time*.00055:state.frame*.002;
+  const [w,h]=scaleCanvas(viewer,vctx),t=state.motionTime;
   vctx.save();vctx.translate(w/2,h/2);vctx.scale(state.zoom,state.zoom);vctx.translate(-w/2,-h/2);
   art(vctx,w,h,r,t,state.angle,state.intensity/100);vctx.restore();
   viewer.dataset.entityId=r.id;viewer.dataset.rendered="true";viewer.dataset.frame=String(state.frame);
@@ -306,7 +306,7 @@ function wire(){
 function loop(time){
   if(!state.ready)return;
   if(time-state.lastDraw>45){
-    if(!state.paused&&state.animate&&!motionReduced)state.angle+=.001;
+    if(!state.paused&&state.animate&&!motionReduced){state.angle+=.001;state.motionTime+=.021;}
     state.frame++;drawViewer(time);
     if(state.frame%3===0||state.frame===1)drawGraph(time);
     state.lastDraw=time;
