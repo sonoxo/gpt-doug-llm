@@ -4,9 +4,9 @@ from __future__ import annotations
 import importlib.util
 import json
 import math
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -92,7 +92,8 @@ class CosmosTests(unittest.TestCase):
     def test_offline_cli_writes_only_selected_json(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp)
-            seed=root/"input.json";out=root/"nasa.json"
+            seed=root/"input.json"
+            out=root/"nasa.json"
             seed.write_text(json.dumps([{"pl_name":"Offline b","hostname":"Offline",
                 "ra":10,"dec":20,"sy_dist":14}]),encoding="utf-8")
             with patch.object(imp,"download_rows",side_effect=AssertionError("network forbidden")):
