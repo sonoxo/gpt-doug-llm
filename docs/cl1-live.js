@@ -46,7 +46,7 @@
   });
   const clamp = (v,min,max) => Math.max(min,Math.min(max,v));
   const message = text => { $("cl1-live-message").textContent = text; };
-  const redraw = () => { state.dirty = true; if(state.paused || state.motionReduced) drawScene(); };
+  const redraw = () => { state.dirty = true; drawScene(); };
   function resize(){
     const r = canvas.getBoundingClientRect();
     const w = Math.max(250,Math.floor(r.width||600));
