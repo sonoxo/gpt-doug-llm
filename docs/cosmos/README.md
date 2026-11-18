@@ -25,6 +25,22 @@ Open http://127.0.0.1:8872/cosmos/. Existing CL1:8787, Jukebox:8844 and XUNIA Bi
 
 Click any celestial node for its type, parent, source, and available sourced data. Drag to orbit, scroll to zoom, use the category filters, connected entity buttons, search, and camera controls. Canvas keyboard: arrows rotate, Tab cycles visible objects, Enter focuses, slash opens search. The site labels incomplete or unimported catalogs.
 
+## Non-kinetic interactive lab
+
+The COSMOS viewport includes a **browser-only simulation lab**. Select a cataloged object by clicking, searching, or using the command console. Choose **OBSERVE**, **SIGNAL WAVES**, **GRAVITY LENS**, or **FIELD LINES**; adjust the intensity slider; pause/resume field animation. These are *illustrative* effects, not real electromagnetic, gravity or radio propagation calculations.
+
+Use **Ctrl+K** (or **Cmd+K** on macOS) to focus the command console, and **Escape** to return to the spatial view. Supported console commands include:
+
+- `/go Andromeda` — select and center the matching cataloged object
+- `/mode signal`, `/mode gravity`, `/mode field`, `/mode observe`
+- `/power 75` — illustrative field intensity from 0–100
+- `/orbit 45` — rotate the *camera* by degrees, from −360 to +360 per command
+- `/zoom 1.5` — set schematic zoom from 0.38 to 4
+- `/filter galaxies`, `/filter all` — select object sectors
+- `/pause`, `/play`, `/reset`, `/help`
+
+No command is executed in a shell. The parser only changes local viewer state; there are no transmitters, actuators, devices, sensor access, external command APIs, or network calls beyond loading local static catalog JSON. Mode labels such as "signal" and "gravity" indicate *visual metaphors*, not physics engines. Reduced-motion users see static effects that still respond to controls.
+
 ## Add actual NASA/ESA catalog subsets
 
 NASA Exoplanet Archive composite table, host stars and their cataloged planets:
