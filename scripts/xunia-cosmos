@@ -12,10 +12,11 @@ if [[ "${1:-}" == "import" ]]; then
   shift
   exec "$PYTHON" scripts/xunia_cosmos_import.py "$@"
 fi
-if [[ "${1:-}" != "" && "${1:-}" != "serve" ]]; then
-  echo "Usage: bash scripts/xunia-cosmos [serve | import nasa|gaia --limit N]" >&2
+if [[ "$#" -gt 2 || ( "$#" -ge 1 && "$1" != "serve" ) ]]; then
+  echo "Usage: bash scripts/xunia-cosmos [serve [PORT] | import nasa|gaia --limit N]" >&2
   exit 2
 fi
-echo "XUNIA COSMOS / http://127.0.0.1:8872/cosmos/"
-echo "Read-only static site; no paid APIs. Ctrl+C to stop."
-exec "$PYTHON" -m http.server 8872 --bind 127.0.0.1 --directory docs
+if [[ "$#" -eq 2 ]]; then
+  exec "$PYTHON" -u scripts/xunia_cosmos_serve.py "$2"
+fi
+exec "$PYTHON" -u scripts/xunia_cosmos_serve.py

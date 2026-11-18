@@ -11,6 +11,8 @@ on:
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
+      - 'tests/test_xunia_cosmos_server.py'
+      - 'scripts/xunia_cosmos_serve.py'
       - 'tests/xunia_cosmos_chrome_smoke.py'
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
@@ -24,6 +26,8 @@ on:
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
+      - 'tests/test_xunia_cosmos_server.py'
+      - 'scripts/xunia_cosmos_serve.py'
       - 'tests/xunia_cosmos_chrome_smoke.py'
       - 'tests/test_xunia_planet_clones.py'
       - 'tests/xunia_planets_chrome_smoke.py'
@@ -58,11 +62,13 @@ jobs:
           python -m json.tool docs/cosmos/catalogs/seed.json > /dev/null
           python -m json.tool docs/cosmos/planets/catalog.json > /dev/null
           python -m json.tool docs/cosmos/xenology/catalog.json > /dev/null
-          python -m compileall -q scripts/xunia_cosmos_import.py tests/xunia_cosmos_chrome_smoke.py
+          python -m compileall -q scripts/xunia_cosmos_import.py scripts/xunia_cosmos_serve.py tests/test_xunia_cosmos_server.py tests/xunia_cosmos_chrome_smoke.py
           node --check docs/cosmos/cosmos.js
           node --check docs/cosmos/planets/planets.js
           node --check docs/cosmos/xenology/app.js
           bash -n scripts/xunia-cosmos
+      - name: Verify safe localhost port fallback and COSMOS app routes
+        run: python -m unittest discover -s tests -p 'test_xunia_cosmos_server.py' -v
       - name: Validate astronomy hierarchy and NASA/ESA importer offline
         run: python -m unittest discover -s tests -p 'test_xunia_cosmos.py' -v
       - name: Confirm real Chrome renders 55 curated nodes and 54 edges

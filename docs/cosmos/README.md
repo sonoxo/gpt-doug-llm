@@ -19,7 +19,7 @@ Clone into a separate folder to avoid overwriting other GPT-DOUG working trees.
     cd ~/xunia-cosmos
     bash scripts/xunia-cosmos
 
-Open http://127.0.0.1:8872/cosmos/. Existing CL1:8787, Jukebox:8844 and XUNIA Bio:8871 are unaffected. For later runs: cd ~/xunia-cosmos && git pull --ff-only && bash scripts/xunia-cosmos.
+Open the exact URL printed by the launcher, normally http://127.0.0.1:8872/cosmos/. **If 8872 is already busy, the launcher automatically selects the first free port from 8873 through 8899**, prints the new URLs for COSMOS, Planetary Forge and Xenology, and leaves the existing server untouched. To request a specific port: `bash scripts/xunia-cosmos serve 8873` or `XUNIA_COSMOS_PORT=8873 bash scripts/xunia-cosmos`. Existing CL1:8787, Jukebox:8844 and XUNIA Bio:8871 are unaffected. For later runs: cd ~/xunia-cosmos && git pull --ff-only && bash scripts/xunia-cosmos.
 
 ## Controls
 
