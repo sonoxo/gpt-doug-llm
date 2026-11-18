@@ -1,0 +1,75 @@
+name: XUNIA COSMOS / Free Outer Space Ontology
+
+on:
+  pull_request:
+    paths:
+      - 'docs/cosmos/**'
+      - 'docs/index.html'
+      - 'docs/biological-data-center/index.html'
+      - 'docs/resources.json'
+      - 'docs/docs-index.json'
+      - 'scripts/xunia_cosmos_import.py'
+      - 'scripts/xunia-cosmos'
+      - 'tests/test_xunia_cosmos.py'
+      - 'tests/xunia_cosmos_chrome_smoke.py'
+      - '.github/workflows/xunia-cosmos.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/cosmos/**'
+      - 'scripts/xunia_cosmos_import.py'
+      - 'scripts/xunia-cosmos'
+      - 'tests/test_xunia_cosmos.py'
+      - 'tests/xunia_cosmos_chrome_smoke.py'
+      - '.github/workflows/xunia-cosmos.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cosmos-free-offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: \${{ matrix.python }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - name: Check code and ontology syntax
+        run: |
+          python -m json.tool docs/cosmos/catalogs/seed.json > /dev/null
+          python -m compileall -q scripts/xunia_cosmos_import.py tests/xunia_cosmos_chrome_smoke.py
+          node --check docs/cosmos/cosmos.js
+          bash -n scripts/xunia-cosmos
+      - name: Validate astronomy hierarchy and NASA/ESA importer offline
+        run: python -m unittest discover -s tests -p 'test_xunia_cosmos.py' -v
+      - name: Confirm real Chrome renders 55 curated nodes and 54 edges
+        run: python tests/xunia_cosmos_chrome_smoke.py
+      - name: Validate public XUNIA and CL1 entry points
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          docs=Path("docs")
+          assert (docs/"CNAME").read_text().strip()=="xunia.org"
+          assert "./cosmos/" in (docs/"index.html").read_text()
+          assert "../cosmos/" in (docs/"biological-data-center/index.html").read_text()
+          assert "./cosmos/" in (docs/"documentation.html").read_text()
+          registry=json.loads((docs/"resources.json").read_text())
+          matches=[x for x in registry["items"] if x["id"]=="xunia-cosmos-space-ontology"]
+          assert len(matches)==1 and matches[0]["free"] and matches[0]["interactive"]
+          assert matches[0]["url"]=="./cosmos/"
+          idx=json.loads((docs/"docs-index.json").read_text())
+          assert idx["publicSurfaces"]["cosmos"]=="https://xunia.org/cosmos/"
+          print("COSMOS GitHub Pages contract passed; no Vercel or paid APIs")
+          PY
