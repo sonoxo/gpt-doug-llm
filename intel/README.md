@@ -146,3 +146,23 @@ MERGE → AUDIT → RETAIN GAPS
 ## Independence
 
 The Black House is an independent open-source research component. References to Palantir Technologies, its products, employees, documentation, or public materials are for research, interoperability, and attribution only and do not imply endorsement, affiliation, certification, contract, customer status, or access to proprietary systems. References to White House or U.S. Government sources identify public primary-source material only and likewise do not imply endorsement, affiliation, certification, contract status, or governmental authority. Protected cyber references identify public reporting sources only and do not imply endorsement, affiliation, partnership, or verification of every claim they publish. CrowdStrike, Falcon, SafeMind, Red Tempest, Blue Solano, NVIDIA and Nemotron references identify public research sources and architecture concepts only; the Black House does not claim vendor affiliation, proprietary model access, customer telemetry, licensed tenant access or reproduction of vendor benchmarks.
+
+## CL1 public science/SDK/ontology intelligence
+
+The CL1 public-source index is at
+[`cl1/latest.json`](./cl1/latest.json).
+It is a **bounded metadata index**, not a copy of every article, all
+astronomical molecules, proprietary datasets or the model's learned weights.
+
+Run `bash scripts/doug-max brain-intel sync --limit 12` on a local copy
+to fetch fresh public Cortical Labs SDK/docs commits, NASA Science,
+arXiv organoid research, AWS announcement metadata, and Palantir open-source
+OSDK release entries. Refresh requires an explicit network action and
+canonical guardrail preflight. Read-only queries use
+`bash scripts/doug-max brain-intel search CL1 organoid`
+or `status`; no provider or paid API is required.
+
+The source rules above apply: third-party publication is a fact about
+**what was published**, not independent validation of the claim. Source
+failures remain visible, no records are fabricated, and last-good
+snapshots survive broken feed responses.
