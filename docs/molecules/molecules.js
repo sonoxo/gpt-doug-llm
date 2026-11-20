@@ -5,7 +5,7 @@
 (()=>{"use strict";
 const $=id=>document.getElementById(id),TAU=Math.PI*2;
 const colors={H:"#e7f7fa",C:"#9fc7d2",N:"#649bff",O:"#f18082",S:"#f5d56d",P:"#f7b47a",Cl:"#79dd99",F:"#72ddc0"};
-const atomic={H:1,C:6,N:7,O:8,S:16,P:15,Cl:17,F:9};
+const atomic=Object.fromEntries("H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(" ").map((symbol,index)=>[symbol,index+1]));
 const weight={H:1.008,C:12.011,N:14.007,O:15.999,S:32.06,P:30.974,Cl:35.45,F:18.998};
 const domains=["fundamental","astro","hydrocarbon","alcohol","organic","biochemical","imported"];
 const statuses=["astronomical-reference","chemistry-reference"];
@@ -68,7 +68,7 @@ function updateAtom(){
   return v.element+"#"+v.id+" ("+["","single","double","triple"][b.order]+")";
  });
  const rows=["Element: "+a.element+" (atomic number "+atomic[a.element]+")",
-   "Reference atomic mass: "+weight[a.element]+" u","Neighbors: "+(near.join(", ")||"none")];
+   "Approx. atomic mass: "+(weight[a.element]===undefined?"not bundled":weight[a.element]+" u"),"Neighbors: "+(near.join(", ")||"none")];
  rows.forEach(t=>{const p=document.createElement("div");p.textContent=t;box.appendChild(p);});
 }
 function inspect(){
