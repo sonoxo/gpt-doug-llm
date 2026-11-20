@@ -131,6 +131,18 @@ def record(source: Source, title: object, url: str, date: object, detail: object
     }
 
 
+def parse_feed_xml(body: bytes):
+    """Parse bounded, DTD-free public syndication without entity expansion."""
+    if len(body) > MAX_BYTES:
+        raise ValueError("Feed exceeds the response size limit")
+    upper = body.upper()
+    if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
+        raise ValueError("XML DTD/entity declarations are prohibited")
+    parser = ElementTree.XMLParser(target=ElementTree.TreeBuilder())
+    parser.feed(body)
+    return parser.close()
+
+
 def normalize(source: Source, body: bytes, limit: int) -> list[dict]:
     if source.kind in {"commits", "releases"}:
         feed = json.loads(body)
@@ -155,7 +167,7 @@ def normalize(source: Source, body: bytes, limit: int) -> list[dict]:
                     "Open-source SDK release metadata; does not imply connected platform access.",
                 ))
         return result
-    root = ElementTree.fromstring(body)
+    root = parse_feed_xml(body)
     output = []
     if source.kind == "rss":
         for item in root.findall("./channel/item")[:limit]:
