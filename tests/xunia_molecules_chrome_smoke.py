@@ -25,7 +25,7 @@ window.addEventListener("load", () => {
       check($("totalElements").textContent === "8", "element representation mismatch");
       check($("moleculeName").textContent === "Water", "default Water molecule not selected");
       check($("moleculeFormula").textContent === "H2O", "formula mismatch");
-      check(canvas.dataset.renderedAtoms === "3", "ball and stick atoms not rendered");
+      check(canvas.dataset.renderedAtoms === "3", "ball and stick atoms not rendered: "+canvas.dataset.renderedAtoms+" / "+$("actionStatus").textContent+" / "+$("renderState").textContent);
       check(graph.dataset.atoms === "3", "bond topology diagram not rendered");
       check($("importState").textContent.includes("NOT RUN"), "optional PubChem placeholder not recognized");
       document.querySelector('[data-mode="space"]').click();
