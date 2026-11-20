@@ -1,0 +1,411 @@
+{
+  "schema": "xunia.cl1.fusion-ontology.v1",
+  "version": "1.0.0",
+  "updated": "2026-11-19",
+  "license_context": "Original XUNIA visualization; vendor names are descriptive references only",
+  "boundaries": {
+    "nasa": "Eight factual planet records loaded from the existing same-origin NASA/JPL catalog; JPL positions approximate within 1800-2050",
+    "cloud": "AWS-style concepts are a proposed architecture; no AWS account or AWS runtime is connected",
+    "operations": "Anduril-inspired human-overview layout with synthetic read-only records; no Lattice credentials, real sensors or autonomous tasking",
+    "ontology": "Palantir-inspired typed objects and links implemented as original JSON/JS; not a Foundry instance"
+  },
+  "sources": {
+    "nasa": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+    "jpl": "https://ssd.jpl.nasa.gov/planets/approx_pos.html",
+    "aws": "https://aws.amazon.com/architecture/icons/",
+    "anduril": "https://www.anduril.com/lattice/command-and-control",
+    "palantir": "https://www.palantir.com/docs/foundry/ontologies/ontologies-overview"
+  },
+  "node_types": [
+    "Planet",
+    "Storage",
+    "Delivery",
+    "Ingestion",
+    "Index",
+    "Compute",
+    "Monitoring",
+    "Governance",
+    "Viewer",
+    "SampleTrack",
+    "SampleSensor",
+    "Review",
+    "Audit",
+    "ObjectType"
+  ],
+  "link_types": [
+    "delivers",
+    "receives",
+    "indexes",
+    "feeds",
+    "governs",
+    "observes",
+    "generates",
+    "visualizedBy",
+    "requiresReview",
+    "writesSample",
+    "modeledBy",
+    "describedBy",
+    "tracksSource",
+    "reviewedAs",
+    "reads",
+    "requiresProvenance",
+    "linkedThrough",
+    "instanceOf",
+    "derivedFrom"
+  ],
+  "nodes": [
+    {
+      "id": "cloud-store",
+      "name": "Object Vault",
+      "group": "cloud",
+      "kind": "Storage",
+      "status": "proposed",
+      "description": "Local/static object storage abstraction, not an AWS S3 bucket.",
+      "source_url": "https://aws.amazon.com/architecture/icons/"
+    },
+    {
+      "id": "cloud-edge",
+      "name": "Public Edge",
+      "group": "cloud",
+      "kind": "Delivery",
+      "status": "proposed",
+      "description": "GitHub Pages-compatible static delivery boundary, AWS-style diagram only.",
+      "source_url": "https://docs.aws.amazon.com/reference-architecture-diagrams/"
+    },
+    {
+      "id": "cloud-ingest",
+      "name": "Catalog Intake",
+      "group": "cloud",
+      "kind": "Ingestion",
+      "status": "proposed",
+      "description": "Bounded, validated import pipeline for approved public data; no automatic feeds.",
+      "source_url": "https://api.nasa.gov/"
+    },
+    {
+      "id": "cloud-index",
+      "name": "Ontology Index",
+      "group": "cloud",
+      "kind": "Index",
+      "status": "proposed",
+      "description": "Versioned graph and source metadata used for the browser explorer.",
+      "source_url": null
+    },
+    {
+      "id": "cloud-compute",
+      "name": "CL1 Sandbox",
+      "group": "cloud",
+      "kind": "Compute",
+      "status": "proposed",
+      "description": "Isolated non-kinetic computational visualization, not a paid cloud instance.",
+      "source_url": null
+    },
+    {
+      "id": "cloud-observe",
+      "name": "Observability",
+      "group": "cloud",
+      "kind": "Monitoring",
+      "status": "proposed",
+      "description": "Synthetic system health and evidence panels; no AWS account access.",
+      "source_url": "https://docs.aws.amazon.com/reference-architecture-diagrams/"
+    },
+    {
+      "id": "cloud-policy",
+      "name": "Access Boundary",
+      "group": "cloud",
+      "kind": "Governance",
+      "status": "proposed",
+      "description": "Fail-closed boundary concept; this public website holds no secrets.",
+      "source_url": null
+    },
+    {
+      "id": "ops-console",
+      "name": "Observation Console",
+      "group": "ops",
+      "kind": "Viewer",
+      "status": "synthetic",
+      "description": "Human-operated read-only operations-style visualization inspired by public C2 interface patterns.",
+      "source_url": "https://www.anduril.com/lattice/command-and-control"
+    },
+    {
+      "id": "ops-track-a",
+      "name": "Synthetic Track A",
+      "group": "ops",
+      "kind": "SampleTrack",
+      "status": "synthetic",
+      "description": "Fictional moving example used to demonstrate selection and provenance—not detected air traffic.",
+      "source_url": null
+    },
+    {
+      "id": "ops-track-b",
+      "name": "Synthetic Track B",
+      "group": "ops",
+      "kind": "SampleTrack",
+      "status": "synthetic",
+      "description": "Fictional moving example used to demonstrate record fusion—not a real aircraft or UAP.",
+      "source_url": null
+    },
+    {
+      "id": "ops-sensor-a",
+      "name": "Example Sensor A",
+      "group": "ops",
+      "kind": "SampleSensor",
+      "status": "synthetic",
+      "description": "Illustrative sensor-origin object; no sensor or hardware is connected.",
+      "source_url": null
+    },
+    {
+      "id": "ops-sensor-b",
+      "name": "Example Sensor B",
+      "group": "ops",
+      "kind": "SampleSensor",
+      "status": "synthetic",
+      "description": "Illustrative second source with simulated timestamps and confidence.",
+      "source_url": null
+    },
+    {
+      "id": "ops-review",
+      "name": "Human Review",
+      "group": "ops",
+      "kind": "Review",
+      "status": "synthetic",
+      "description": "Non-kinetic analyst verification stage; no autonomous tasking or actuation.",
+      "source_url": null
+    },
+    {
+      "id": "ops-audit",
+      "name": "Audit Timeline",
+      "group": "ops",
+      "kind": "Audit",
+      "status": "synthetic",
+      "description": "Locally generated illustrative events for the presentation—not operational logs.",
+      "source_url": null
+    },
+    {
+      "id": "ont-system",
+      "name": "CL1 System",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Semantic object type for a bounded XUNIA subsystem.",
+      "source_url": "https://www.palantir.com/docs/foundry/object-link-types/object-types-overview"
+    },
+    {
+      "id": "ont-world",
+      "name": "Planet Object",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Schema for NASA-sourced planet records and properties, not a Palantir deployment.",
+      "source_url": "https://www.palantir.com/docs/foundry/object-link-types/object-types-overview"
+    },
+    {
+      "id": "ont-source",
+      "name": "Source Asset",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Records the authoritative URL and license/evidence boundary for imported material.",
+      "source_url": "https://www.palantir.com/docs/foundry/ontologies/ontologies-overview"
+    },
+    {
+      "id": "ont-workflow",
+      "name": "Workflow",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Logical ingestion and validation process object with declared dependencies.",
+      "source_url": "https://www.palantir.com/docs/foundry/object-link-types/object-types-overview"
+    },
+    {
+      "id": "ont-observation",
+      "name": "Observation",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Schema for clearly labeled synthetic observations in the demonstration.",
+      "source_url": "https://www.palantir.com/docs/foundry/ontologies/ontologies-overview"
+    },
+    {
+      "id": "ont-review",
+      "name": "Review Decision",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Explicit, human-reviewed disposition record; no automatic operational action.",
+      "source_url": "https://www.palantir.com/docs/foundry/action-types/overview"
+    },
+    {
+      "id": "ont-lineage",
+      "name": "Lineage Record",
+      "group": "ontology",
+      "kind": "ObjectType",
+      "status": "schema",
+      "description": "Typed provenance and semantic-link audit path.",
+      "source_url": "https://www.palantir.com/docs/foundry/object-link-types/link-types-overview"
+    }
+  ],
+  "links": [
+    {
+      "source": "cloud-edge",
+      "target": "cloud-store",
+      "type": "delivers",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-store",
+      "target": "cloud-ingest",
+      "type": "receives",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-ingest",
+      "target": "cloud-index",
+      "type": "indexes",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-index",
+      "target": "cloud-compute",
+      "type": "feeds",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-policy",
+      "target": "cloud-ingest",
+      "type": "governs",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-policy",
+      "target": "cloud-compute",
+      "type": "governs",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-observe",
+      "target": "cloud-compute",
+      "type": "observes",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "cloud-observe",
+      "target": "cloud-edge",
+      "type": "observes",
+      "basis": "planned architecture"
+    },
+    {
+      "source": "ops-sensor-a",
+      "target": "ops-track-a",
+      "type": "generates",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "ops-sensor-b",
+      "target": "ops-track-b",
+      "type": "generates",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "ops-track-a",
+      "target": "ops-console",
+      "type": "visualizedBy",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "ops-track-b",
+      "target": "ops-console",
+      "type": "visualizedBy",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "ops-console",
+      "target": "ops-review",
+      "type": "requiresReview",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "ops-review",
+      "target": "ops-audit",
+      "type": "writesSample",
+      "basis": "synthetic example"
+    },
+    {
+      "source": "cloud-index",
+      "target": "ont-lineage",
+      "type": "describedBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "cloud-ingest",
+      "target": "ont-workflow",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "cloud-store",
+      "target": "ont-source",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "cloud-compute",
+      "target": "ont-system",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ops-console",
+      "target": "ont-system",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ops-sensor-a",
+      "target": "ont-observation",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ops-track-a",
+      "target": "ont-observation",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ops-review",
+      "target": "ont-review",
+      "type": "modeledBy",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ont-lineage",
+      "target": "ont-source",
+      "type": "tracksSource",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ont-observation",
+      "target": "ont-review",
+      "type": "reviewedAs",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ont-workflow",
+      "target": "ont-source",
+      "type": "reads",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ont-world",
+      "target": "ont-source",
+      "type": "requiresProvenance",
+      "basis": "ontology design"
+    },
+    {
+      "source": "ont-world",
+      "target": "ont-lineage",
+      "type": "linkedThrough",
+      "basis": "ontology design"
+    }
+  ]
+}
