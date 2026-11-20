@@ -71,6 +71,16 @@ class CL1IntelTests(unittest.TestCase):
         result = intel.normalize(arxiv, atom, 12)
         self.assertEqual(result[0]["url"], "https://arxiv.org/abs/2602.11632")
 
+    def test_syndication_parser_rejects_entities_and_oversized_payloads(self):
+        dangerous = (
+            b'<!DOCTYPE feed [ <!ENTITY xxe SYSTEM "file:///etc/passwd"> ]>'
+            b"<rss><channel><item><title>&xxe;</title></item></channel></rss>"
+        )
+        with self.assertRaisesRegex(ValueError, "DTD/entity"):
+            intel.parse_feed_xml(dangerous)
+        with self.assertRaisesRegex(ValueError, "size limit"):
+            intel.parse_feed_xml(b"x" * (intel.MAX_BYTES + 1))
+
     def test_atomic_sync_deduplicates_and_preserves_last_good_on_partial_failure(self):
         sdk = next(s for s in intel.SOURCES if s.id == "cortical-cl-sdk")
         nasa = next(s for s in intel.SOURCES if s.id == "nasa-science")
