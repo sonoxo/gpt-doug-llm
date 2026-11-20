@@ -20,6 +20,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from xml.etree import ElementTree
+from xml.parsers import expat
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT = ROOT / "intel" / "cl1" / "latest.json"
@@ -132,15 +133,53 @@ def record(source: Source, title: object, url: str, date: object, detail: object
 
 
 def parse_feed_xml(body: bytes):
-    """Parse bounded, DTD-free public syndication without entity expansion."""
+    """Construct a minimal XML tree from bounded data without entity resolution.
+
+    Expat callbacks prohibit DTD declarations, external entity lookups and
+    pathological nesting; only RSS/Atom title, link and date text is retained.
+    """
     if len(body) > MAX_BYTES:
         raise ValueError("Feed exceeds the response size limit")
     upper = body.upper()
     if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
         raise ValueError("XML DTD/entity declarations are prohibited")
-    parser = ElementTree.XMLParser(target=ElementTree.TreeBuilder())
-    parser.feed(body)
-    return parser.close()
+    parser = expat.ParserCreate(namespace_separator="}")
+    parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
+    stack = []
+    root = None
+    count = 0
+
+    def start(name, attrs):
+        nonlocal root, count
+        count += 1
+        if count > 5000 or len(stack) >= 18:
+            raise ValueError("XML feed exceeds nesting or node limit")
+        tag = "{" + name if "}" in name else name
+        node = ElementTree.Element(tag)
+        if stack:
+            stack[-1].append(node)
+        else:
+            root = node
+        stack.append(node)
+
+    def character(value):
+        if stack and value:
+            current = stack[-1]
+            current.text = (current.text or "") + value
+
+    def refuse(*_args):
+        raise ValueError("XML DTD/entity declarations are prohibited")
+
+    parser.StartElementHandler = start
+    parser.EndElementHandler = lambda _name: stack.pop()
+    parser.CharacterDataHandler = character
+    parser.StartDoctypeDeclHandler = refuse
+    parser.EntityDeclHandler = refuse
+    parser.ExternalEntityRefHandler = lambda *_args: 0
+    parser.Parse(body, True)
+    if root is None or stack:
+        raise ValueError("Malformed syndication XML")
+    return root
 
 
 def normalize(source: Source, body: bytes, limit: int) -> list[dict]:
