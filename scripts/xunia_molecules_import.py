@@ -17,7 +17,8 @@ import time
 from datetime import date
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs" / "molecules" / "catalogs" / "pubchem.json"
@@ -32,10 +33,27 @@ PERIODIC = ("H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr "
 ORDER_MAP = {1: 1, 2: 2, 3: 3}
 
 
+class RejectRedirects(HTTPRedirectHandler):
+    """Never follow a PubChem response to another URL or scheme."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("PubChem redirected the request; refusing remote target")
+
+
+OPENER = build_opener(RejectRedirects)
+
+
 def fetch_json(url: str) -> dict:
     """One bounded public API request; HTTP 429 retry only twice."""
-    if not url.startswith(BASE):
-        raise ValueError("Refusing a non-PubChem API address")
+    parsed = urlsplit(url)
+    if (
+        parsed.scheme != "https"
+        or parsed.netloc != "pubchem.ncbi.nlm.nih.gov"
+        or not parsed.path.startswith("/rest/pug/compound/cid/")
+        or parsed.username is not None
+        or parsed.password is not None
+    ):
+        raise ValueError("Refusing a non-PubChem HTTPS API address")
     for attempt in range(3):
         try:
             request = Request(
@@ -45,7 +63,7 @@ def fetch_json(url: str) -> dict:
                     "Accept": "application/json",
                 },
             )
-            with urlopen(request, timeout=18) as response:
+            with OPENER.open(request, timeout=18) as response:
                 raw = response.read(5_000_001)
             if len(raw) > 5_000_000:
                 raise ValueError("PubChem response exceeds maximum size")
