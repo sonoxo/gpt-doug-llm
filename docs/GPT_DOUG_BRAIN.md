@@ -64,3 +64,56 @@ The runtime is the backend for a Matrix/Minority-Report-inspired command center:
 - explicit LIVE / CACHED / SIMULATED / HYPOTHESIS / CONTRADICTED state labels.
 
 Predictive output is treated as evidence-ranked hypothesis, not certainty.
+
+## CL1 public intelligence expansion (free, provenance-first)
+
+`brain-intel` extends the existing GPT-Doug brain kernel with a local,
+searchable public-evidence index. It **does not retrain model weights** or
+connect to physical CL1/neural equipment.
+
+The source registry in `gpt_brain/cl1_intel.py` is narrowly allowlisted:
+
+- Cortical Labs official CL SDK and CL API documentation repository commits.
+- Palantir open-source OSDK release metadata (not Foundry platform access).
+- NASA Science RSS headlines (source statements, not verified claims).
+- AWS public architecture/product announcement RSS (not an AWS account).
+- arXiv organoid-computing abstracts (preprints; not peer-review certification).
+
+All downloads are bounded (default 12 entries per source; maximum 20), HTTPS
+only, with no redirects, no logins, no API keys, no device actuation and a
+two-megabyte response cap. URLs, publication dates, evidence labels, and
+metadata-level descriptions are preserved. Syncs retain last-good records if a
+source fails, and expose `complete` versus `partial` status.
+
+**One Mac command to refresh the source snapshot:**
+
+```bash
+cd ~/xunia-xenology-live
+git pull --ff-only
+bash scripts/doug-max brain-intel sync --limit 12
+```
+
+**Inspect and query without downloading:**
+
+```bash
+bash scripts/doug-max brain-intel status
+bash scripts/doug-max brain-intel search Cortical CL1 SDK
+bash scripts/doug-max brain-intel search NASA space
+bash scripts/doug-max brain-intel verify
+```
+
+The index lives in `intel/cl1/latest.json`. This is a provenance-labeled,
+**versioned research index**; it is not every page, paper, chemical,
+planet, proprietary platform, secret or live intelligence stream.
+
+GPT-Doug Brain reads relevant local index matches alongside ontology and
+episodic memory when you ask a CL1, organoid, COSMOS, NASA, Palantir or ontology
+question. Retrieved headlines, titles and summaries are **untrusted source
+data**, not instructions to agents or independently corroborated conclusions.
+The shipped starting snapshot is manually seeded from checked public pages,
+marked as such, and must not be called a live feed until `sync` completes.
+
+After merge to `main`, the free GitHub Actions workflow
+`CL1 Brain / Free Public Intelligence` performs a bounded refresh and
+uploads a **7-day downloadable JSON artifact**, without automatically
+publishing unreviewed third-party claims into the repository.

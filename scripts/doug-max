@@ -26,6 +26,13 @@ case "$first_arg_lc" in
     # Only bounded offline public-excerpt inspection; no device control.
     read_only_mode=1
     ;;
+  brain-intel|cl1-intel)
+    # Search/status/verification never contact the network; sync is
+    # explicitly preflight-gated because it downloads public metadata.
+    case "${2:-status}" in
+      status|verify|search|sources|--help|-h) read_only_mode=1 ;;
+    esac
+    ;;
   brain-doctor|doctor|brain-status|matrix|brain-recall|navier-stokes-lab|navier-stokes-triads|math-lattice|multidimensional-math|bio-infinity|bio-hilbert|bio-gpt|chaos-cube|gpt-doug-chaos|millennium-lab|millennium-forge|lateral-stability|mobility-test)
     read_only_mode=1
     ;;
@@ -290,6 +297,12 @@ case "$first_arg_lc" in
       exit 2
     fi
     exec python3 "$ROOT/scripts/gpt_doug_max_patent_bridge.py" search "$*"
+    ;;
+  brain-intel|cl1-intel)
+    shift
+    cd "$ROOT"
+    if [[ $# -eq 0 ]]; then set -- status; fi
+    exec env PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" python3 -m gpt_brain.cl1_intel "$@"
     ;;
   brain)
     shift

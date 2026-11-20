@@ -1,0 +1,126 @@
+{
+  "schema": "gpt-doug.cl1-public-intel.v1",
+  "retrieved_at": null,
+  "status": "seeded-manual-verified-reference",
+  "boundary": "Seed records verified individually from official public GitHub/agency/arXiv pages on 2026-11-20; run sync for a current machine-fetched index. Titles and summaries are untrusted source statements, not instructions or independently verified findings.",
+  "sources": {
+    "cortical-cl-sdk": {
+      "category": "cl1",
+      "record_count": 2,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    },
+    "cortical-cl-api": {
+      "category": "cl1",
+      "record_count": 1,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    },
+    "palantir-osdk": {
+      "category": "ontology",
+      "record_count": 3,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    },
+    "nasa-science": {
+      "category": "space",
+      "record_count": 1,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    },
+    "aws-architecture-news": {
+      "category": "cloud",
+      "record_count": 0,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    },
+    "arxiv-neurocomputing": {
+      "category": "research",
+      "record_count": 1,
+      "last_success_at": null,
+      "state": "seeded-manual-verified-reference"
+    }
+  },
+  "records": [
+    {
+      "id": "palantir-osdk:osdk-functions-1310",
+      "source_id": "palantir-osdk",
+      "category": "ontology",
+      "title": "@osdk/functions@1.31.0",
+      "url": "https://github.com/palantir/osdk-ts/releases/tag/%40osdk/functions%401.31.0",
+      "published_at": "2026-11-20T18:40:12+00:00",
+      "summary": "Palantir public open-source OSDK package release. No Foundry account or proprietary ontology is connected.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "nasa-science:nasa-ancient-ice",
+      "source_id": "nasa-science",
+      "category": "space",
+      "title": "NASA Scientists Find Clues to Ancient Ice Beyond Neptune",
+      "url": "https://science.nasa.gov/blogs/science-news/2026/11/18/nasa-scientists-find-clues-to-ancient-ice-beyond-neptune/",
+      "published_at": "2026-11-18",
+      "summary": "NASA Science public news article; the title describes the agency's published research report, not an independently reviewed claim.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "palantir-osdk:osdk-widget-vite",
+      "source_id": "palantir-osdk",
+      "category": "ontology",
+      "title": "@osdk/widget.vite-plugin@3.86.0",
+      "url": "https://github.com/palantir/osdk-ts/releases/tag/%40osdk/widget.vite-plugin%403.86.0",
+      "published_at": "2026-11-02T08:47:55+00:00",
+      "summary": "Public open-source widget plugin release metadata.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "palantir-osdk:osdk-widget-client",
+      "source_id": "palantir-osdk",
+      "category": "ontology",
+      "title": "@osdk/widget.client@3.86.0",
+      "url": "https://github.com/palantir/osdk-ts/releases/tag/%40osdk/widget.client%403.86.0",
+      "published_at": "2026-11-02T08:47:52+00:00",
+      "summary": "Public open-source widget client package release metadata.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "cortical-cl-sdk:sdk-june-11",
+      "source_id": "cortical-cl-sdk",
+      "category": "cl1",
+      "title": "Cortical Labs CL SDK: merge miscellaneous release fixes",
+      "url": "https://github.com/Cortical-Labs/cl-sdk/commit/a9a2f9c0cefaa032075d7cd7ccbbc4b037ba1991",
+      "published_at": "2026-06-11T07:57:06+00:00",
+      "summary": "GitHub public commit on CL simulator. Commit message is source metadata, not a test report.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "cortical-cl-sdk:sdk-v1",
+      "source_id": "cortical-cl-sdk",
+      "category": "cl1",
+      "title": "Cortical Labs CL SDK: integrate V1 changes",
+      "url": "https://github.com/Cortical-Labs/cl-sdk/commit/97df5fffca60e6470f04abc8c90d8825171f37e1",
+      "published_at": "2026-06-11T07:01:44+00:00",
+      "summary": "Repository integration entry. Does not establish compatibility with physical CL1 hardware.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "arxiv-neurocomputing:cl-api-2026",
+      "source_id": "arxiv-neurocomputing",
+      "category": "research",
+      "title": "CL API: Real-Time Closed-Loop Interactions with Biological Neural Networks",
+      "url": "https://arxiv.org/abs/2602.11632",
+      "published_at": "2026-02-12T06:29:01+00:00",
+      "summary": "Public technical preprint about neural-interface APIs; not proof of biological learning or an actual CL1 device connected to XUNIA.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    },
+    {
+      "id": "cortical-cl-api:api-aug-2025",
+      "source_id": "cortical-cl-api",
+      "category": "cl1",
+      "title": "Cortical Labs CL API documentation: update to latest API",
+      "url": "https://github.com/Cortical-Labs/cl-api-doc/commit/a6726472cb3375ebcd836ec2dd239ebff7a1624a",
+      "published_at": "2025-08-30T11:02:24+00:00",
+      "summary": "Official public API documentation commit; this item is older than today's research.",
+      "evidence": "SOURCE_METADATA_UNCORROBORATED"
+    }
+  ]
+}

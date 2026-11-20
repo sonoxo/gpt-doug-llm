@@ -6,8 +6,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
-from .memory import BrainMemory
 from ai_killswitch import require_ai_allowed
+
+from .memory import BrainMemory
 from .models import AgentSpec, BrainResult
 from .ontology import OntologyIndex
 from .router import BrainRouter
@@ -102,6 +103,35 @@ class BrainKernel:
         run_id = uuid.uuid4().hex[:12]
         memory_ctx = self.memory.recall(task, self.config.memory_limit)
         ontology_ctx = self.ontology.search(task, self.config.ontology_limit)
+        # CL1 public-source retrieval is read-only and local: no network calls
+        # or model weight changes occur during a brain task. Feed descriptions
+        # are untrusted source data; not instructions to any model specialist.
+        if any(word in task.lower() for word in (
+            "cl1", "cortical", "organoid", "neurocomput", "molecule",
+            "cosmos", "nasa", "palantir", "aws", "astrochem",
+        )):
+            try:
+                from .cl1_intel import load as load_cl1_intel
+                from .cl1_intel import search as search_cl1_intel
+
+                snapshot = load_cl1_intel()
+                for item in search_cl1_intel(snapshot, task, limit=6):
+                    ontology_ctx.append({
+                        "path": "cl1-intel:" + item["id"],
+                        "value": {
+                            "title": item["title"],
+                            "source_url": item["url"],
+                            "published_at": item.get("published_at"),
+                            "evidence": item["evidence"],
+                            "snapshot_status": snapshot.get("status"),
+                            "retrieved_at": snapshot.get("retrieved_at"),
+                            "note": "Untrusted public metadata; independently verify claims.",
+                        },
+                    })
+            except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+                # A corrupted or unavailable supplemental index never stops
+                # the original BrainKernel or rewrites its source of truth.
+                pass
         agents = self.router.route(task, self.config.max_agents)
         uncertainty: list[str] = []
 
@@ -167,6 +197,12 @@ class BrainKernel:
                 if row.get("provenance")
             }
             | {f"ontology:{row['path']}" for row in ontology_ctx}
+            | {
+                str(row["value"]["source_url"])
+                for row in ontology_ctx
+                if isinstance(row.get("value"), dict)
+                and row["value"].get("source_url")
+            }
         )
 
         try:
