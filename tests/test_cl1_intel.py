@@ -5,6 +5,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from gpt_brain import cl1_intel as intel
 
@@ -108,6 +109,32 @@ class CL1IntelTests(unittest.TestCase):
                 intel.sync(target, limit=4, source_ids={nasa.id},
                            downloader=partial)
             self.assertEqual(target.read_bytes(), before)
+
+    def test_brain_uses_local_cl1_evidence_without_fetching_network(self):
+        from gpt_brain.kernel import BrainKernel
+        from gpt_brain.memory import BrainMemory
+        from gpt_brain.ontology import OntologyIndex
+
+        prompts = []
+
+        def respond(messages, _model, _options):
+            prompts.append(messages[1]["content"])
+            return {"message": {"role": "assistant", "content": "Source-backed answer."}}
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            brain = BrainKernel(
+                chat_fn=respond,
+                memory=BrainMemory(root / "memory.jsonl"),
+                ontology=OntologyIndex(root / "missing.json"),
+            )
+            with patch("gpt_brain.kernel.require_ai_allowed"):
+                result = brain.run("Review Cortical CL1 SDK research")
+        self.assertTrue(any("cl1-intel:cortical-cl-sdk" in x for x in prompts))
+        self.assertTrue(any(url.startswith("https://github.com/Cortical-Labs/cl-sdk/")
+                            for url in result.provenance))
+        self.assertTrue(all("SOURCE_METADATA_UNCORROBORATED" in x
+                            for x in prompts if "cl1-intel:" in x))
 
     def test_reject_duplicate_invalid_snapshot_and_limits(self):
         snapshot = intel.load()
