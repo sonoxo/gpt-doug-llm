@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#050b15"><meta name="referrer" content="no-referrer">
+<meta name="description" content="CL1 Molecular Observatory: source-linked molecule catalog, interactive atom-bond viewer and astronomy/chemistry provenance. Free static educational model.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA CL1 // MOLECULAR OBSERVATORY</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="./style.css"><script defer src="./molecules.js"></script></head>
+<body><div class="shell">
+<header class="topbar">
+  <a class="brand" href="../"><span class="mark">◉</span><span><small>SONOXO / GPT-DOUG-LLM / CL1</small><strong>MOLECULAR <em>OBSERVATORY</em></strong></span></a>
+  <nav aria-label="XUNIA ecosystems"><a href="../">HQ</a><a href="../fusion/">FUSION</a><a href="../cosmos/">COSMOS</a><a href="../cosmos/planets/">PLANETS</a><a href="../biological-data-center/">CL1 BIO</a></nav>
+  <span class="top-status">● EDUCATIONAL / NON-KINETIC</span>
+</header>
+<section class="hero"><div><div class="eyebrow">CL1 / ATOM → MOLECULE → BIOCHEMISTRY → COSMOS</div>
+<h1>SEE MATTER.<br><em>EXPLORE STRUCTURE.</em></h1>
+<p>Explore an expandable, source-linked molecular atlas. Rotate atom-and-bond models, inspect elements and chemical formulas, and distinguish general chemical structures from compounds studied in astronomical spectroscopy.</p></div>
+<div class="hero-metrics"><div><strong id="totalMolecules">—</strong><small>LOADED MOLECULES</small></div><div><strong id="totalElements">—</strong><small>ELEMENT TYPES</small></div><div><strong id="astroMolecules">—</strong><small>ASTRO REFERENCES</small></div><div><strong>0</strong><small>PAID API KEYS</small></div></div></section>
+<div class="disclaimer"><b>SCIENTIFIC SCOPE</b> This is a curated educational dataset, <strong>not every molecule in the universe</strong>. Displayed 3D coordinates are illustrative—not measured bond geometry or optimized conformers. An astronomical reference label is not proof of any specific observation; verify detection claims in primary literature.</div>
+<main class="workspace">
+  <aside class="panel catalog" aria-label="Molecule search and filters">
+    <div class="panel-title"><span>01 / MOLECULAR INDEX</span><span id="resultCount">—</span></div>
+    <label class="micro-label" for="query">SEARCH NAME / FORMULA / ELEMENT</label>
+    <input type="search" id="query" placeholder="Water, CH4, C, oxygen…" autocomplete="off">
+    <div class="filters" id="filters" role="group" aria-label="Molecule scope">
+      <label><input type="checkbox" data-source="astronomical-reference" checked> Astronomy-linked examples</label>
+      <label><input type="checkbox" data-source="chemistry-reference" checked> Chemistry references</label>
+    </div>
+    <label class="micro-label" for="domain">CHEMICAL FAMILY</label>
+    <select id="domain"><option value="all">All families</option><option value="fundamental">Small / diatomic</option><option value="astro">Astrochemistry</option><option value="hydrocarbon">Hydrocarbons</option><option value="alcohol">Alcohols</option><option value="organic">Organics</option><option value="biochemical">Biochemistry</option><option value="imported">PubChem imports</option></select>
+    <div class="list-tools"><button type="button" id="resetFilter">RESET FILTER</button><button type="button" id="random">RANDOM</button></div>
+    <div class="molecule-list" id="moleculeList" role="group" aria-label="Select a molecule"></div>
+    <div class="catalog-footer">LOCAL CATALOG / NO LIVE SEARCH / BOUNDED PUBCHEM IMPORTS</div>
+  </aside>
+  <section class="panel visual" aria-label="Molecular interactive model">
+    <div class="panel-title"><span>02 / ROTATABLE MOLECULAR MODEL</span><span id="renderState" role="status" aria-live="polite">LOADING</span></div>
+    <div class="view-modes" role="group" aria-label="Molecular rendering mode">
+      <button type="button" data-mode="ball" aria-pressed="true">BALL + STICK</button>
+      <button type="button" data-mode="space" aria-pressed="false">SPACE-FILL</button>
+      <button type="button" data-mode="wire" aria-pressed="false">WIREFRAME</button>
+    </div>
+    <div class="viewer">
+      <canvas id="moleculeCanvas" tabindex="0" role="img" aria-label="Rotatable illustrative molecular structure. Drag to rotate, scroll to zoom, click an atom to inspect it."></canvas>
+      <div class="viewer-top">CL1 MOLECULAR TOPOLOGY <span>SCHEMATIC / NOT A MEASURED CONFORMER</span></div>
+      <div class="viewer-bot">DRAG TO ROTATE · SCROLL TO ZOOM · CLICK AN ATOM</div>
+      <div class="camera-tools"><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="recenter">RESET CAMERA</button></div>
+    </div>
+    <div class="control-strip">
+      <button type="button" id="previous">← PREVIOUS</button><button type="button" id="next">NEXT →</button>
+      <label for="speed">AUTO-ROTATION</label><input type="range" min="0" max="100" value="28" step="4" id="speed"><output id="speedValue" for="speed">28%</output>
+      <button type="button" id="pause" aria-pressed="false">PAUSE</button>
+    </div>
+    <div class="composition"><div class="panel-title"><span>03 / ELEMENTAL COMPOSITION</span></div><div id="composition" class="element-chips"></div></div>
+  </section>
+  <aside class="panel inspector" aria-label="Molecule scientific inspector">
+    <div class="panel-title"><span>04 / COMPOUND INSPECTOR</span><span id="referenceTag">—</span></div>
+    <div class="molecule-title"><small id="moleculeClass">CATALOG REFERENCE</small><h2 id="moleculeName">Loading molecules…</h2><strong id="moleculeFormula">—</strong></div>
+    <p id="description" class="description"></p>
+    <div class="fact-grid">
+      <div><small>MOLAR MASS</small><strong id="mass">—</strong></div><div><small>ATOM COUNT</small><strong id="atomCount">—</strong></div>
+      <div><small>BOND COUNT</small><strong id="bondCount">—</strong></div><div><small>SOURCE TYPE</small><strong id="sourceType">—</strong></div>
+    </div>
+    <div class="panel-title inset"><span>05 / ATOM INSPECTOR</span><span id="selectedAtomTag">NO SELECTION</span></div>
+    <div id="atomDetails" class="atom-details">Click any sphere in the viewer to inspect the element and bond neighbors.</div>
+    <div class="panel-title inset"><span>06 / STRUCTURE &amp; PROVENANCE</span></div>
+    <p id="astronomyNote" class="provenance"></p>
+    <a id="sourceLink" class="source-link" href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer">VIEW SCIENTIFIC DATABASE ↗</a>
+    <div class="inspector-buttons"><button type="button" id="savePng">SAVE VIEW PNG</button><button type="button" id="exportJson">EXPORT STRUCTURE JSON</button><button type="button" id="selfTest">RUN SELF-TEST</button></div>
+    <output id="actionStatus" role="status" aria-live="polite">READY / LOCAL REFERENCE ONLY</output>
+  </aside>
+</main>
+<section class="lower">
+ <div class="panel linkview"><div class="panel-title"><span>07 / MOLECULAR BOND ONTOLOGY</span><small>ATOMS + TYPED BONDS</small></div><canvas id="bondGraph" tabindex="0" role="img" aria-label="Schematic atom bond graph of selected molecule"></canvas><div class="graph-note">Atom nodes = element instances. Edges = curated or PubChem bond types. No physical synthesis or lab controls.</div></div>
+ <div class="panel sources"><div class="panel-title"><span>08 / PUBLIC CHEMISTRY SOURCES</span></div><p>Expand locally using a bounded, key-free PubChem import. Astronomy references require confirmation in spectroscopy inventories and source publications.</p><div class="source-row"><a href="https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest" target="_blank" rel="noopener noreferrer">PUBCHEM PUG REST ↗</a><a href="https://spec.jpl.nasa.gov/" target="_blank" rel="noopener noreferrer">NASA/JPL MOLECULAR SPECTROSCOPY ↗</a><a href="https://cdms.astro.uni-koeln.de/classic/molecules/" target="_blank" rel="noopener noreferrer">CDMS ASTRONOMICAL MOLECULES ↗</a><a href="https://molecules-in.space/" target="_blank" rel="noopener noreferrer">OBSERVED INTERSTELLAR MOLECULES ↗</a></div><div id="importState" role="status" aria-live="polite">PUBCHEM IMPORT / CHECKING LOCAL CATALOG</div></div>
+</section>
+<section class="panel terminal"><div class="panel-title"><span>CL1 / MOLECULAR CONSOLE</span><span>LOCAL UI COMMANDS · NO SHELL</span></div><form id="consoleForm"><label for="consoleInput">CL1 &gt;</label><input id="consoleInput" maxlength="160" autocomplete="off" placeholder="/find water · /select benzene · /mode space · /health"><button type="submit">EXECUTE</button></form><div id="consoleStatus" role="status" aria-live="polite">TYPE /help · CMD/CTRL+K FOCUSES THE CONSOLE</div></section>
+<footer><span>SONOXO / XUNIA / GPT-DOUG-LLM / CL1 · FREE STATIC MOLECULAR ATLAS</span><span>SPECTROSCOPY ≠ STRUCTURAL CARTOON · LAB CATALOG ≠ SPACE DETECTION</span></footer>
+</div></body></html>

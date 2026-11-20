@@ -65,6 +65,9 @@ class CosmosLocalServerTests(unittest.TestCase):
                 ("/favicon.svg", b'<svg'),
                 ("/cosmos/catalogs/nasa.json", b'"data_mode": "not-imported"'),
                 ("/cosmos/catalogs/gaia.json", b'"data_mode": "not-imported"'),
+                ("/molecules/", b'id="moleculeCanvas"'),
+                ("/molecules/catalogs/seed.json", b'"molecules": ['),
+                ("/molecules/catalogs/pubchem.json", b'"status": "not-imported"'),
             ]:
                 with self.subTest(relative=relative):
                     with urlopen(f"http://127.0.0.1:{port}{relative}", timeout=5) as response:
