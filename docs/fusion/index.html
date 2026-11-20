@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060d17"><meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA CL1 Fusion: NASA/JPL public planetary data, AWS-inspired infrastructure diagrams, Anduril-style synthetic observation displays and Palantir-style typed ontology. Free and non-kinetic.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA CL1 // FUSION INTELLIGENCE ATLAS</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="./style.css"><script src="./fusion.js" defer></script>
+</head>
+<body><div class="shell">
+<header class="topbar">
+ <a class="wordmark" href="../" aria-label="XUNIA headquarters"><span class="sigil">◉</span><span><small>SONOXO / GPT-DOUG-LLM / CL1</small><strong>XUNIA <em>FUSION</em></strong></span></a>
+ <nav aria-label="Ecosystem"><a href="../">HQ</a><a href="../cosmos/">COSMOS</a><a href="../cosmos/planets/">PLANETS</a><a href="../biological-data-center/">BIO CENTER</a><a href="../cosmos/xenology/">XENOLOGY</a></nav>
+ <span class="operational"><i></i> LOCAL SIMULATION · NON-KINETIC</span>
+</header>
+<section class="hero">
+ <div class="hero-copy"><div class="eyebrow">01 / MULTI-DOMAIN DATA · VISUAL OPERATIONS · SEMANTIC ONTOLOGY</div><h1>ONE WORLD.<br><em>CONNECTED INTELLIGENCE.</em></h1><p>NASA/JPL planetary reference objects meet cloud-architecture patterns, an observation-only synthetic operations display, and typed ontology relationships. The data stays visibly distinguished from proposed or fictional systems.</p></div>
+ <div class="hero-stats" aria-label="Graph scope"><div><strong id="nodeTotal">—</strong><small>GRAPH OBJECTS</small></div><div><strong id="edgeTotal">—</strong><small>TYPED LINKS</small></div><div><strong id="nasaTotal">—</strong><small>NASA/JPL PLANETS</small></div><div><strong>0</strong><small>PAID API KEYS</small></div></div>
+</section>
+<div class="notice"><b>PUBLIC RESEARCH + ORIGINAL DEMO</b> NASA/JPL planetary numbers are referenced from published sources. “AWS-style,” “Anduril-inspired,” and “Palantir-style” denote publicly documented design patterns only—not vendor products, live accounts, partnerships, classified feeds, or connected equipment.</div>
+<main class="layout">
+ <aside class="panel filters" aria-label="Graph filters">
+  <div class="panel-heading"><span>01 // DOMAIN MATRIX</span><small>SELECT LAYERS</small></div>
+  <div class="domain-controls" id="domainControls" role="group" aria-label="Domain visibility">
+   <label><input type="checkbox" data-domain="nasa" checked><i class="domain-dot nasa"></i><span>NASA / JPL SCIENCE</span><b id="nasaCount">8</b></label>
+   <label><input type="checkbox" data-domain="cloud" checked><i class="domain-dot cloud"></i><span>CLOUD FABRIC</span><b id="cloudCount">—</b></label>
+   <label><input type="checkbox" data-domain="ops" checked><i class="domain-dot ops"></i><span>OBSERVATION LAB</span><b id="opsCount">—</b></label>
+   <label><input type="checkbox" data-domain="ontology" checked><i class="domain-dot ontology"></i><span>SEMANTIC ONTOLOGY</span><b id="ontologyCount">—</b></label>
+  </div>
+  <label class="field-label" for="search">SEARCH OBJECTS + SOURCES</label>
+  <input id="search" type="search" autocomplete="off" placeholder="Earth, lineage, sensor…">
+  <div class="panel-heading subheading"><span>02 // DISPLAY CONTROLS</span></div>
+  <div class="check-pairs"><label><input id="edgesToggle" type="checkbox" checked> Typed connections</label><label><input id="labelsToggle" type="checkbox" checked> Object labels</label><label><input id="motionToggle" type="checkbox" checked> Animate model</label></div>
+  <button id="resetFilters" class="secondary full" type="button">RESTORE ALL DOMAINS</button>
+  <div class="signal-box"><b>CL1 BOUNDARY</b><p>Read-only / no telemetry or physical actuation</p><div>NASA DATA <span>LOCAL REFERENCE</span></div><div>CLOUD <span>PROPOSED</span></div><div>OBSERVATIONS <span>SYNTHETIC</span></div><div>ONTOLOGY <span>LOCAL SCHEMA</span></div></div>
+  <p class="note">No AWS billing, Anduril Lattice connectivity, Palantir Foundry session, or external network sensor is connected.</p>
+ </aside>
+ <section class="panel map" aria-label="Interactive fused ontology">
+   <div class="panel-heading"><span>03 // SPATIAL INTELLIGENCE VIEW</span><span id="mapStatus" role="status" aria-live="polite">LOADING SOURCED OBJECTS</span></div>
+   <div class="modes" id="viewModes" role="group" aria-label="Spatial layout modes"><button data-view="fusion" aria-pressed="true" type="button">FUSION GRAPH</button><button data-view="orbits" aria-pressed="false" type="button">NASA ORBITS</button><button data-view="architecture" aria-pressed="false" type="button">CLOUD FABRIC</button><button data-view="operations" aria-pressed="false" type="button">OBSERVATION GRID</button></div>
+   <div class="viewport">
+     <canvas id="atlas" tabindex="0" role="img" aria-label="Clickable source-qualified network diagram. Drag to orbit, scroll to zoom. Arrow keys select objects and Enter opens the inspector."></canvas>
+     <div class="corner-label">XUNIA CL1 / PROVENANCE-FIRST / NOT GEOGRAPHIC TRACKING</div>
+     <div class="view-tools"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="resetCamera">RESET VIEW</button><button type="button" id="pause" aria-pressed="false">PAUSE</button></div>
+   </div>
+   <div class="timeline"><label for="epoch">NASA ORBIT DATE</label><input id="epoch" type="date" min="1800-01-01" max="2050-12-31" value="2026-11-19"><button type="button" id="advance">+30 DAYS</button><label for="tempo">PLAYBACK</label><select id="tempo"><option value="0">Paused</option><option value="30">30 days/sec</option><option value="365">365 days/sec</option></select><span>JPL APPROX. / 1800–2050</span></div>
+   <div class="legend"><span><i class="domain-dot nasa"></i> NASA/JPL REFERENCE</span><span><i class="domain-dot cloud"></i> PROPOSED CLOUD</span><span><i class="domain-dot ops"></i> SYNTHETIC OPS</span><span><i class="domain-dot ontology"></i> TYPE SCHEMA</span></div>
+ </section>
+ <aside class="panel inspector" aria-label="Source and ontology inspector">
+   <div class="panel-heading"><span>04 // ENTITY INSPECTOR</span><small id="selectedState">LOADING</small></div>
+   <div class="entity-orb"><canvas id="emblem" role="img" aria-label="Stylized emblem of selected ontology object"></canvas><span>PROCEDURAL ILLUSTRATION</span></div>
+   <div class="entity-title"><small id="entityClass">—</small><h2 id="entityName">Connecting the graph…</h2></div>
+   <p id="entityDescription" class="description">Source-qualified details load from the versioned catalog.</p>
+   <dl class="fact-grid"><div><dt>DOMAIN</dt><dd id="entityDomain">—</dd></div><div><dt>TRUST LEVEL</dt><dd id="entityTrust">—</dd></div><div><dt>OBJECT TYPE</dt><dd id="entityKind">—</dd></div><div><dt>LINK COUNT</dt><dd id="entityLinks">—</dd></div></dl>
+   <div class="panel-heading subheading"><span>05 // TRACE RELATIONSHIPS</span></div><div id="related" class="related" role="group" aria-label="Connected objects"></div>
+   <div id="planetFacts" class="planet-facts" hidden><div>DIAMETER <b id="diameter">—</b></div><div>GRAVITY <b id="gravity">—</b></div><div>PERIOD <b id="period">—</b></div><div>ORBIT <b id="semimajor">—</b></div></div>
+   <a id="officialSource" class="source" href="https://science.nasa.gov/solar-system/" target="_blank" rel="noopener noreferrer" hidden>VIEW PUBLISHED SOURCE ↗</a>
+   <a id="localPage" class="source secondary-source" href="../cosmos/" hidden>OPEN CONNECTED XUNIA PAGE ↗</a>
+   <div id="inspectorStatus" role="status" aria-live="polite" class="inspector-status">OBJECT GRAPH READ ONLY</div>
+ </aside>
+</main>
+<section class="lower">
+ <article class="panel traces" aria-label="Evidence lineage and activity">
+  <div class="panel-heading"><span>06 // PROVENANCE &amp; REVIEW LOG</span><small>NOT LIVE SENSOR ACTIVITY</small></div>
+  <div id="eventLog" class="event-log" role="log" aria-live="polite"></div>
+ </article>
+ <article class="panel actions" aria-label="Safe local actions">
+  <div class="panel-heading"><span>07 // LOCAL COMMANDS</span><small>NO SHELL / NO ACTUATION</small></div>
+  <div class="action-buttons"><button type="button" id="trace">TRACE SELECTED LINEAGE</button><button type="button" id="exportJson">EXPORT VIEW JSON</button><button type="button" id="savePng">SAVE MAP PNG</button><button type="button" id="selfTest">RUN LOCAL SELF-TEST</button></div>
+  <form id="commandForm" autocomplete="off"><label for="command">CL1 / FUSION &gt;</label><input id="command" placeholder="/find Mars · /view orbits · /select cloud-index · /help" maxlength="160"><button type="submit">RUN</button></form>
+  <output id="actionStatus" role="status" aria-live="polite">READY / VERSIONED STATIC DATA · ZERO PAID APIS</output>
+ </article>
+</section>
+<footer><span>XUNIA / SONOXO / GPT-DOUG-LLM · ORIGINAL NON-KINETIC PRESENTATION</span><span><a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener noreferrer">NASA/JPL</a> · <a href="https://aws.amazon.com/architecture/icons/" target="_blank" rel="noopener noreferrer">AWS ARCHITECTURE</a> · <a href="https://www.anduril.com/lattice/command-and-control" target="_blank" rel="noopener noreferrer">ANDURIL PUBLIC OVERVIEW</a> · <a href="https://www.palantir.com/docs/foundry/ontologies/ontologies-overview" target="_blank" rel="noopener noreferrer">PALANTIR ONTOLOGY DOCS</a></span></footer>
+</div></body></html>
