@@ -9,6 +9,7 @@ const atomic=Object.fromEntries("H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K
 const weight={H:1.008,C:12.011,N:14.007,O:15.999,S:32.06,P:30.974,Cl:35.45,F:18.998};
 const domains=["fundamental","astro","hydrocarbon","alcohol","organic","biochemical","imported"];
 const statuses=["astronomical-reference","chemistry-reference"];
+const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const modes=["ball","space","wire"];
 const state={data:[],byId:new Map(),selected:null,atom:null,query:"",domain:"all",allowed:new Set(statuses),mode:"ball",
    yaw:.45,pitch:.36,zoom:1,phase:0,speed:28,paused:false,reduced:!!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
