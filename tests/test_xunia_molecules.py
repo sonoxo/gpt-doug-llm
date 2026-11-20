@@ -63,6 +63,17 @@ class MolecularAtlasTests(unittest.TestCase):
         assert spec is not None and spec.loader is not None
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
+        for malicious_url in (
+            "file:///etc/passwd",
+            "http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/962/JSON",
+            "https://evil.example/rest/pug/compound/cid/962/JSON",
+        ):
+            with self.assertRaisesRegex(ValueError, "non-PubChem"):
+                module.fetch_json(malicious_url)
+        with self.assertRaisesRegex(ValueError, "redirected"):
+            module.RejectRedirects().redirect_request(
+                None, None, 302, "Found", {}, "https://evil.example/"
+            )
         props = {"PropertyTable": {"Properties": [{
             "CID": 962, "MolecularFormula": "H2O",
             "MolecularWeight": "18.015", "IUPACName": "oxidane",
