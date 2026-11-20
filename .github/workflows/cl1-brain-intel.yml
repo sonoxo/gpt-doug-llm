@@ -1,0 +1,71 @@
+name: CL1 Brain / Free Public Intelligence
+
+on:
+  pull_request:
+    paths:
+      - 'gpt_brain/cl1_intel.py'
+      - 'gpt_brain/kernel.py'
+      - 'scripts/doug-max'
+      - 'intel/cl1/**'
+      - 'tests/test_cl1_intel.py'
+      - '.github/workflows/cl1-brain-intel.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'gpt_brain/cl1_intel.py'
+      - 'gpt_brain/kernel.py'
+      - 'scripts/doug-max'
+      - 'intel/cl1/**'
+      - 'tests/test_cl1_intel.py'
+      - '.github/workflows/cl1-brain-intel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Compile, validate, and offline-test CL1 knowledge
+        run: |
+          python -m compileall -q gpt_brain/cl1_intel.py gpt_brain/kernel.py tests/test_cl1_intel.py
+          python -m unittest discover -s tests -p 'test_cl1_intel.py' -v
+          python -m gpt_brain.cl1_intel verify
+          python -m gpt_brain.cl1_intel search Cortical Labs
+          bash -n scripts/doug-max
+
+  download-public-evidence:
+    if: github.event_name != 'pull_request'
+    needs: offline-integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download public CL1 + NASA + arXiv + OSDK + AWS metadata, with bounded limits
+        run: |
+          python -m gpt_brain.cl1_intel sync --limit 10 --output "$RUNNER_TEMP/cl1-latest.json"
+          python -m gpt_brain.cl1_intel verify --path "$RUNNER_TEMP/cl1-latest.json"
+      - name: Store evidence artifact without publishing unreviewed third-party content
+        uses: actions/upload-artifact@v4
+        with:
+          name: cl1-public-intel-snapshot
+          path: ${{ runner.temp }}/cl1-latest.json
+          retention-days: 7
+          if-no-files-found: error
