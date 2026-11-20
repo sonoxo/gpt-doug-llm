@@ -326,7 +326,7 @@ def sync(path: Path = DEFAULT, *, limit: int = 12,
                 "state": "ok",
             }
             success += 1
-        except (OSError, ValueError, KeyError, TypeError, ElementTree.ParseError,
+        except (OSError, ValueError, KeyError, TypeError, expat.ExpatError,
                 json.JSONDecodeError) as exc:
             errors += 1
             previous = dict(sources.get(source.id) or {})
