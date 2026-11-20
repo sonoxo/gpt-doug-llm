@@ -1,0 +1,2662 @@
+{
+  "schema": "xunia.cl1.molecules.v1",
+  "version": "1.0.0",
+  "updated": "2026-11-19",
+  "scope": "Curated teaching examples; not exhaustive of known molecules or space detections",
+  "status_explanation": {
+    "astronomical_reference": "Representative molecules studied in astronomical spectroscopy; each specific detection requires primary literature verification.",
+    "chemistry_reference": "Reference chemistry structure; no astronomical detection asserted."
+  },
+  "geometry_disclaimer": "Coordinates are procedurally illustrative and NOT geometry-optimized conformers, experimentally measured positions or line spectra.",
+  "sources": {
+    "chemistry": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+    "astronomical": "https://cdms.astro.uni-koeln.de/classic/molecules/",
+    "spectroscopy": "https://spec.jpl.nasa.gov/",
+    "external_census": "https://molecules-in.space/"
+  },
+  "molecules": [
+    {
+      "id": "hydrogen",
+      "name": "Hydrogen",
+      "formula": "H2",
+      "domain": "fundamental",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Diatomic hydrogen; common molecular gas.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "H",
+          "x": -0.6,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.6,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 2.016,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "oxygen",
+      "name": "Oxygen",
+      "formula": "O2",
+      "domain": "fundamental",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Diatomic oxygen in terrestrial air; astronomical abundance varies.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "O",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        }
+      ],
+      "molar_mass_gmol": 31.998,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "nitrogen",
+      "name": "Nitrogen",
+      "formula": "N2",
+      "domain": "fundamental",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Dominant diatomic molecule in Earth's atmosphere.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "N",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "N",
+          "x": 0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 3
+        }
+      ],
+      "molar_mass_gmol": 28.014,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "carbon-monoxide",
+      "name": "Carbon monoxide",
+      "formula": "CO",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Widely used spectral tracer of molecular gas in astronomical observations.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 3
+        }
+      ],
+      "molar_mass_gmol": 28.01,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "carbon-dioxide",
+      "name": "Carbon dioxide",
+      "formula": "CO2",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Carbon dioxide in planetary atmospheres and astrophysical environments.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "O",
+          "x": -1.2,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "O",
+          "x": 1.2,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 2
+        }
+      ],
+      "molar_mass_gmol": 44.009,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "water",
+      "name": "Water",
+      "formula": "H2O",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Water vapor and ice are important in astrochemistry and planetary science.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "O",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.453,
+          "y": -0.789,
+          "z": 0.38
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": 0.453,
+          "y": 0.789,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 18.015,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "methane",
+      "name": "Methane",
+      "formula": "CH4",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Methane is studied in interstellar, planetary and exoplanetary environments.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": -0.072,
+          "y": -0.907,
+          "z": 0.46
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": 0.776,
+          "y": -0.476,
+          "z": -0.48
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 0.776,
+          "y": 0.476,
+          "z": 0.43
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.072,
+          "y": 0.907,
+          "z": -0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 16.043,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "ammonia",
+      "name": "Ammonia",
+      "formula": "H3N",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Astronomical rotational lines of ammonia are used to probe cold molecular clouds.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "N",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.095,
+          "y": -0.905,
+          "z": 0.46
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": 0.91,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 0.095,
+          "y": 0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 17.031,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "hydrogen-cyanide",
+      "name": "Hydrogen cyanide",
+      "formula": "CHN",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Well-known nitrogen-bearing astronomical molecule.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.6,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "N",
+          "x": 0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -1.51,
+          "y": 0,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 3
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 27.026,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "formaldehyde",
+      "name": "Formaldehyde",
+      "formula": "CH2O",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Organic molecule used in interstellar and laboratory spectroscopy.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.45,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.85,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.903,
+          "y": 0.789,
+          "z": 0.38
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -0.903,
+          "y": -0.789,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 30.026,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "methanol",
+      "name": "Methanol",
+      "formula": "CH4O",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "A widespread complex organic molecule in molecular-cloud chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.795,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.61,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.795,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": 1.61,
+          "y": 0,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 6,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 32.042,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "acetylene",
+      "name": "Acetylene",
+      "formula": "C2H2",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Small hydrocarbon associated with carbon chemistry in space.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -1.61,
+          "y": 0,
+          "z": 0.22
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 1.61,
+          "y": 0,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 3
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 4,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 26.038,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "ethylene",
+      "name": "Ethylene",
+      "formula": "C2H4",
+      "domain": "hydrocarbon",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Unsaturated two-carbon hydrocarbon used in industrial chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.72,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0.72,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -1.173,
+          "y": 0.789,
+          "z": 0.38
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.173,
+          "y": -0.789,
+          "z": -0.38
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": 1.173,
+          "y": -0.789,
+          "z": 0.38
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": 1.173,
+          "y": 0.789,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 6,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 28.054,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "ethane",
+      "name": "Ethane",
+      "formula": "C2H6",
+      "domain": "hydrocarbon",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Saturated two-carbon hydrocarbon; geometry is schematic.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.74,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0.74,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.835,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.65,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.835,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": 0.835,
+          "y": -0.905,
+          "z": 0.46
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": 1.65,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 0.835,
+          "y": 0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 8,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 30.07,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "acetonitrile",
+      "name": "Acetonitrile",
+      "formula": "C2H3N",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Nitrile detected by astronomical spectroscopy.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -1.5,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": -0.1,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "N",
+          "x": 1.3,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.595,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -2.41,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -1.595,
+          "y": -0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 3
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 41.053,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "hydrogen-sulfide",
+      "name": "Hydrogen sulfide",
+      "formula": "H2S",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Sulfur-bearing molecular species in planetary and interstellar chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "S",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.453,
+          "y": -0.789,
+          "z": 0.38
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": 0.453,
+          "y": 0.789,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 34.076,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "sulfur-dioxide",
+      "name": "Sulfur dioxide",
+      "formula": "O2S",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Sulfur dioxide in planetary atmospheres and astronomical spectroscopy.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "S",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": -1.1,
+          "y": -0.65,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "O",
+          "x": 1.1,
+          "y": -0.65,
+          "z": 0,
+          "charge": 0
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 2
+        }
+      ],
+      "molar_mass_gmol": 64.058,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "formamide",
+      "name": "Formamide",
+      "formula": "CH3NO",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Nitrogen-containing organic species relevant to prebiotic astrochemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.8,
+          "y": 1,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "N",
+          "x": -1.15,
+          "y": -0.48,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 0.548,
+          "y": -0.727,
+          "z": 0.22
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -1.872,
+          "y": 0.074,
+          "z": 0.38
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -1.264,
+          "y": -1.383,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 6,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 45.041,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "formic-acid",
+      "name": "Formic acid",
+      "formula": "CH2O2",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Simple carboxylic acid observed in astronomical chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 1.1,
+          "y": 0.8,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "O",
+          "x": -1.1,
+          "y": 0.8,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 0,
+          "y": -0.91,
+          "z": 0.22
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -1.836,
+          "y": 1.335,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 5,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 46.025,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "ethanol",
+      "name": "Ethanol",
+      "formula": "C2H6O",
+      "domain": "alcohol",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Two-carbon alcohol; reference chemical structure.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -1.4,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "O",
+          "x": 1.2,
+          "y": 0.7,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.495,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -2.31,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -1.495,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": -0.644,
+          "y": -0.643,
+          "z": 0.38
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 0.88,
+          "y": -0.231,
+          "z": -0.38
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": 1.986,
+          "y": 1.159,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 9,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 46.069,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "acetic-acid",
+      "name": "Acetic acid",
+      "formula": "C2H4O2",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Carboxylic acid used across biological and industrial chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -1.6,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": -0.2,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "O",
+          "x": 0.7,
+          "y": 1,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "O",
+          "x": 0.7,
+          "y": -1,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -1.695,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -2.51,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": -1.695,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 1.309,
+          "y": -1.676,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 2
+        },
+        {
+          "a": 2,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 4,
+          "b": 8,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 60.052,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "benzene",
+      "name": "Benzene",
+      "formula": "C6H6",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Aromatic six-carbon ring; alternating bonds are one resonance representation.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": 1.3,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0.6500000000000001,
+          "y": 1.12583302491977,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "C",
+          "x": -0.6499999999999997,
+          "y": 1.1258330249197703,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "C",
+          "x": -1.3,
+          "y": 1.5920408388915593e-16,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "C",
+          "x": -0.6500000000000006,
+          "y": -1.1258330249197699,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 6,
+          "element": "C",
+          "x": 0.6500000000000001,
+          "y": -1.12583302491977,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": 2.21,
+          "y": 0,
+          "z": 0.22
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 1.105,
+          "y": 1.914,
+          "z": 0.22
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": -1.105,
+          "y": 1.914,
+          "z": 0.22
+        },
+        {
+          "id": 10,
+          "element": "H",
+          "x": -2.21,
+          "y": 0,
+          "z": 0.22
+        },
+        {
+          "id": 11,
+          "element": "H",
+          "x": -1.105,
+          "y": -1.914,
+          "z": 0.22
+        },
+        {
+          "id": 12,
+          "element": "H",
+          "x": 1.105,
+          "y": -1.914,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 4,
+          "order": 2
+        },
+        {
+          "a": 4,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 5,
+          "b": 6,
+          "order": 2
+        },
+        {
+          "a": 6,
+          "b": 1,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 9,
+          "order": 1
+        },
+        {
+          "a": 4,
+          "b": 10,
+          "order": 1
+        },
+        {
+          "a": 5,
+          "b": 11,
+          "order": 1
+        },
+        {
+          "a": 6,
+          "b": 12,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 78.114,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "glycine",
+      "name": "Glycine",
+      "formula": "C2H5NO2",
+      "domain": "biochemical",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Simple amino acid; chemical identification does not establish interstellar detection.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "N",
+          "x": -2,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "C",
+          "x": 0.75,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "O",
+          "x": 1.5,
+          "y": 1,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "O",
+          "x": 1.5,
+          "y": -1,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -2.453,
+          "y": 0.789,
+          "z": 0.38
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": -2.453,
+          "y": -0.789,
+          "z": -0.38
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": -0.197,
+          "y": -0.789,
+          "z": 0.38
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": -0.197,
+          "y": 0.789,
+          "z": -0.38
+        },
+        {
+          "id": 10,
+          "element": "H",
+          "x": 2.046,
+          "y": -1.728,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 4,
+          "order": 2
+        },
+        {
+          "a": 3,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 9,
+          "order": 1
+        },
+        {
+          "a": 5,
+          "b": 10,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 75.067,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "urea",
+      "name": "Urea",
+      "formula": "CH4N2O",
+      "domain": "biochemical",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Small nitrogen-rich molecule found in biology and laboratories.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0,
+          "y": 1.25,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "N",
+          "x": -1.25,
+          "y": -0.6,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "N",
+          "x": 1.25,
+          "y": -0.6,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -2,
+          "y": -0.084,
+          "z": 0.38
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -1.317,
+          "y": -1.508,
+          "z": -0.38
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": 1.317,
+          "y": -1.508,
+          "z": 0.38
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 2,
+          "y": -0.084,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 4,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 4,
+          "b": 8,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 60.056,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "acetone",
+      "name": "Acetone",
+      "formula": "C3H6O",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Simple ketone solvent with a carbonyl group.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -1.5,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "C",
+          "x": 1.5,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "O",
+          "x": 0,
+          "y": 1.35,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -1.595,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -2.41,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": -1.595,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 1.595,
+          "y": -0.905,
+          "z": 0.46
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": 2.41,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 10,
+          "element": "H",
+          "x": 1.595,
+          "y": 0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 4,
+          "order": 2
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 9,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 10,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 58.08,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "methylamine",
+      "name": "Methylamine",
+      "formula": "CH5N",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Small amine widely studied in laboratory chemistry.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "N",
+          "x": 0.7,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.795,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.61,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.795,
+          "y": -0.905,
+          "z": 0.43
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": 1.153,
+          "y": -0.789,
+          "z": 0.38
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": 1.153,
+          "y": 0.789,
+          "z": -0.38
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 7,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 31.058,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "dimethyl-ether",
+      "name": "Dimethyl ether",
+      "formula": "C2H6O",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Two-carbon ether with a bent C–O–C linkage.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -1.3,
+          "y": -0.4,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0,
+          "y": 0.5,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "C",
+          "x": 1.3,
+          "y": -0.4,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.893,
+          "y": 0.29,
+          "z": 0.46
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -2.048,
+          "y": -0.918,
+          "z": -0.48
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -0.863,
+          "y": -1.198,
+          "z": 0.43
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": 0.863,
+          "y": -1.198,
+          "z": 0.46
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 2.048,
+          "y": -0.918,
+          "z": -0.48
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": 1.893,
+          "y": 0.29,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 9,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 46.069,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "ethylene-glycol",
+      "name": "Ethylene glycol",
+      "formula": "C2H6O2",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Small diol with two hydroxyl groups.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "O",
+          "x": -1.95,
+          "y": 0.6,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "C",
+          "x": -0.8,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "C",
+          "x": 0.8,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 4,
+          "element": "O",
+          "x": 1.95,
+          "y": 0.6,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -2.757,
+          "y": 1.021,
+          "z": 0.22
+        },
+        {
+          "id": 6,
+          "element": "H",
+          "x": -1.674,
+          "y": -0.252,
+          "z": 0.38
+        },
+        {
+          "id": 7,
+          "element": "H",
+          "x": -0.141,
+          "y": -0.628,
+          "z": -0.38
+        },
+        {
+          "id": 8,
+          "element": "H",
+          "x": 0.141,
+          "y": -0.628,
+          "z": 0.38
+        },
+        {
+          "id": 9,
+          "element": "H",
+          "x": 1.674,
+          "y": -0.252,
+          "z": -0.38
+        },
+        {
+          "id": 10,
+          "element": "H",
+          "x": 2.757,
+          "y": 1.021,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 6,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 7,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 8,
+          "order": 1
+        },
+        {
+          "a": 3,
+          "b": 9,
+          "order": 1
+        },
+        {
+          "a": 4,
+          "b": 10,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 62.068,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "hydrogen-peroxide",
+      "name": "Hydrogen peroxide",
+      "formula": "H2O2",
+      "domain": "fundamental",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Two-oxygen peroxide; 3D conformations are not modeled here.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "O",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "O",
+          "x": 0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -1.56,
+          "y": 0,
+          "z": 0.22
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 1.56,
+          "y": 0,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 2,
+          "b": 4,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 34.014,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "phosphine",
+      "name": "Phosphine",
+      "formula": "H3P",
+      "domain": "astro",
+      "status": "astronomical-reference",
+      "astro_claim": "Catalog-linked representative astronomical molecule; consult the source for specific detection context.",
+      "description": "Phosphine is studied in planetary-atmosphere and astrochemical spectroscopy.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "P",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.095,
+          "y": -0.905,
+          "z": 0.46
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": 0.91,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": 0.095,
+          "y": 0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 33.998,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "CDMS astrochemistry catalog (inventory-level reference)",
+      "source_url": "https://cdms.astro.uni-koeln.de/classic/molecules/"
+    },
+    {
+      "id": "hydrogen-chloride",
+      "name": "Hydrogen chloride",
+      "formula": "ClH",
+      "domain": "fundamental",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Hydrogen chloride reference species.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "Cl",
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "H",
+          "x": 0.91,
+          "y": 0,
+          "z": 0.22
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 36.458,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "chloromethane",
+      "name": "Chloromethane",
+      "formula": "CH3Cl",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Halogenated small organic molecule.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "Cl",
+          "x": 0.75,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.745,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.56,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.745,
+          "y": -0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 50.485,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    },
+    {
+      "id": "fluoromethane",
+      "name": "Fluoromethane",
+      "formula": "CH3F",
+      "domain": "organic",
+      "status": "chemistry-reference",
+      "astro_claim": "No astronomical detection claim made.",
+      "description": "Single-fluorine methane derivative.",
+      "atoms": [
+        {
+          "id": 1,
+          "element": "C",
+          "x": -0.65,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 2,
+          "element": "F",
+          "x": 0.75,
+          "y": 0,
+          "z": 0,
+          "charge": 0
+        },
+        {
+          "id": 3,
+          "element": "H",
+          "x": -0.745,
+          "y": 0.905,
+          "z": 0.46
+        },
+        {
+          "id": 4,
+          "element": "H",
+          "x": -1.56,
+          "y": 0,
+          "z": -0.48
+        },
+        {
+          "id": 5,
+          "element": "H",
+          "x": -0.745,
+          "y": -0.905,
+          "z": 0.43
+        }
+      ],
+      "bonds": [
+        {
+          "a": 1,
+          "b": 2,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 3,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 4,
+          "order": 1
+        },
+        {
+          "a": 1,
+          "b": 5,
+          "order": 1
+        }
+      ],
+      "molar_mass_gmol": 34.033,
+      "geometry": "illustrative-3d-atom-bond-layout-not-optimized",
+      "source_label": "PubChem chemistry database (general reference)",
+      "source_url": "https://pubchem.ncbi.nlm.nih.gov/"
+    }
+  ]
+}
