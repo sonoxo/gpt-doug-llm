@@ -6,8 +6,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
-from .memory import BrainMemory
 from ai_killswitch import require_ai_allowed
+
+from .memory import BrainMemory
 from .models import AgentSpec, BrainResult
 from .ontology import OntologyIndex
 from .router import BrainRouter
@@ -107,7 +108,7 @@ class BrainKernel:
         # are untrusted source data; not instructions to any model specialist.
         if any(word in task.lower() for word in (
             "cl1", "cortical", "organoid", "neurocomput", "molecule",
-            "cosmos", "nasa", "palantir", "ontology", "intel",
+            "cosmos", "nasa", "palantir", "aws", "astrochem",
         )):
             try:
                 from .cl1_intel import load as load_cl1_intel
@@ -196,6 +197,12 @@ class BrainKernel:
                 if row.get("provenance")
             }
             | {f"ontology:{row['path']}" for row in ontology_ctx}
+            | {
+                str(row["value"]["source_url"])
+                for row in ontology_ctx
+                if isinstance(row.get("value"), dict)
+                and row["value"].get("source_url")
+            }
         )
 
         try:
