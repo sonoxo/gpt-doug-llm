@@ -81,7 +81,6 @@ def parse_cid(cid: int, properties: dict, structural: dict) -> dict:
         coord_aids = record_coords.get("aid", aids)
         xx, yy = conf.get("x", []), conf.get("y", [])
         if len(xx) == len(yy) == len(coord_aids):
-            zz = conf.get("z", [])
             # Preserve the 2D chemical drawing. Do not infer physical conformers.
             coords = {
                 aid: (float(xx[i]), float(yy[i]), 0.0)
