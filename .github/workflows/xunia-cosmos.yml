@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'docs/cosmos/**'
+      - 'docs/fusion/**'
       - 'docs/index.html'
       - 'docs/cl1-live.js'
       - 'docs/cl1-live.css'
@@ -20,6 +21,8 @@ on:
       - 'tests/xunia_planets_chrome_smoke.py'
       - 'tests/test_xunia_xenology.py'
       - 'tests/test_xunia_live_core.py'
+      - 'tests/test_xunia_fusion.py'
+      - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
       - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
@@ -27,6 +30,7 @@ on:
     branches: [main]
     paths:
       - 'docs/cosmos/**'
+      - 'docs/fusion/**'
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
@@ -37,6 +41,8 @@ on:
       - 'tests/xunia_planets_chrome_smoke.py'
       - 'tests/test_xunia_xenology.py'
       - 'tests/test_xunia_live_core.py'
+      - 'tests/test_xunia_fusion.py'
+      - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
       - 'tests/xunia_xenology_chrome_smoke.py'
       - '.github/workflows/xunia-cosmos.yml'
@@ -73,6 +79,9 @@ jobs:
           node --check docs/cosmos/planets/planets.js
           node --check docs/cosmos/xenology/app.js
           node --check docs/cl1-live.js
+          python -m json.tool docs/fusion/ontology.json > /dev/null
+          node --check docs/fusion/fusion.js
+          python -m compileall -q tests/test_xunia_fusion.py tests/xunia_fusion_chrome_smoke.py
           python -m compileall -q tests/test_xunia_live_core.py tests/xunia_live_core_chrome_smoke.py
           bash -n scripts/xunia-cosmos
       - name: Verify safe localhost port fallback and COSMOS app routes
@@ -93,6 +102,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_xunia_live_core.py' -v
       - name: Verify live CL1 homepage organism and reduced motion in Chromium
         run: python tests/xunia_live_core_chrome_smoke.py
+      - name: Validate source-qualified NASA/cloud/ops/ontology Fusion schema and links
+        run: python -m unittest discover -s tests -p 'test_xunia_fusion.py' -v
+      - name: Test real interactive Fusion browser and local source provenance
+        run: python tests/xunia_fusion_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
@@ -120,5 +133,11 @@ jobs:
           assert "../cosmos/planets/" in (docs/"biological-data-center/index.html").read_text()
           planets=json.loads((docs/"cosmos/planets/catalog.json").read_text())
           assert len(planets["planets"])==8
+          fusion=json.loads((docs/"fusion/ontology.json").read_text())
+          assert fusion["schema"]=="xunia.cl1.fusion-ontology.v1"
+          assert "./fusion/" in (docs/"index.html").read_text()
+          assert "../fusion/" in (docs/"cosmos/index.html").read_text()
+          assert "../fusion/" in (docs/"biological-data-center/index.html").read_text()
+          assert idx["publicSurfaces"]["fusionAtlas"]=="https://xunia.org/fusion/"
           print("COSMOS GitHub Pages contract passed; no Vercel or paid APIs")
           PY
