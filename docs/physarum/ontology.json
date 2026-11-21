@@ -1,0 +1,360 @@
+{
+  "schema": "xunia.cl1.physarum-ontology.v1",
+  "version": "1.0.0",
+  "updated": "2026-11-20",
+  "scientific_name": "Physarum polycephalum",
+  "common_names": [
+    "The Blob",
+    "many-headed slime mold"
+  ],
+  "taxonomy": {
+    "domain": "Eukaryota",
+    "supergroup": "Amoebozoa",
+    "group": "myxogastrid slime mold",
+    "fungus": false,
+    "organism": "amoeboid protist"
+  },
+  "lifecycle_scope": "The macroscopic plasmodium stage is a single large cell containing many nuclei in shared cytoplasm. Species has a multi-stage life cycle; not every stage is a giant cell.",
+  "observational_facts": [
+    {
+      "id": "multinucleate",
+      "title": "Multinucleate plasmodium",
+      "description": "A large, mobile, single-cell stage containing many nuclei; cytoplasm circulates throughout protoplasmic tubes.",
+      "source_id": "review-cognition-2023"
+    },
+    {
+      "id": "transport",
+      "title": "Pulsatile cytoplasmic flow",
+      "description": "Contractile protoplasmic tubes redistribute nutrients and signals, supporting adaptive foraging.",
+      "source_id": "tero-2007"
+    },
+    {
+      "id": "adaptive-paths",
+      "title": "Adaptive transport networks",
+      "description": "Experiments show formation of efficient network configurations that balance transport, length and robustness.",
+      "source_id": "tero-2010"
+    },
+    {
+      "id": "external-memory",
+      "title": "Externalized spatial memory",
+      "description": "Deposited extracellular slime tracks previously explored space and can influence future movement.",
+      "source_id": "reid-2012"
+    },
+    {
+      "id": "habituation",
+      "title": "Non-neural adaptive behavior",
+      "description": "Some experiments report habituation and other task-dependent adaptive behavior despite lack of neurons and a central brain.",
+      "source_id": "review-cognition-2023"
+    }
+  ],
+  "boundaries": [
+    "Not a fungus. The term slime mold refers to its growth form and life history, not membership in Fungi.",
+    "Plasmodium is a multinucleate single-cell stage, not a colony of individual neurons or an artificial general intelligence.",
+    "Intelligence is an informal analogy for task-dependent adaptive behavior; no conventional brain, neural synapses, subjective experience or consciousness is established.",
+    "Numerical solver is a simplified flow-reinforcement algorithm inspired by Physarum network studies; not a calibrated physiological, growth, or reaction-diffusion prediction.",
+    "Generated branch layout, food gradients, printed patterns and SVG are simulated/design outputs; no real organism, living network, implant, neural activity or device is controlled.",
+    "No biological culture or hardware is connected; browser interactions never send data to a physical actuator."
+  ],
+  "sources": [
+    {
+      "id": "tero-2007",
+      "citation": "Tero, Kobayashi & Nakagaki (2007), A mathematical model for adaptive transport network in path finding by true slime mold",
+      "doi": "10.1016/j.jtbi.2006.07.015",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17069858/",
+      "type": "peer-reviewed"
+    },
+    {
+      "id": "tero-2010",
+      "citation": "Tero et al. (2010), Rules for biologically inspired adaptive network design",
+      "doi": "10.1126/science.1177894",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20093467/",
+      "type": "peer-reviewed"
+    },
+    {
+      "id": "reid-2012",
+      "citation": "Reid et al. (2012), Slime mold uses an externalized spatial memory to navigate in complex environments",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3491460/",
+      "type": "peer-reviewed"
+    },
+    {
+      "id": "review-cognition-2023",
+      "citation": "Review of cognition in the slime mould Physarum polycephalum (2023)",
+      "url": "https://link.springer.com/article/10.1007/s10071-023-01782-1",
+      "type": "review"
+    },
+    {
+      "id": "flow-review-2024",
+      "citation": "Flow-network adaptation and behavior in slime molds",
+      "url": "https://www.sciencedirect.com/science/article/pii/S1754504823001022",
+      "type": "review"
+    },
+    {
+      "id": "adaptive-2017",
+      "citation": "The role of noise in self-organized decision making by the true slime mold Physarum polycephalum",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5371312/",
+      "type": "peer-reviewed"
+    }
+  ],
+  "node_types": [
+    "Organism",
+    "LifeStage",
+    "Cytoplasm",
+    "Nucleus",
+    "Tubule",
+    "Nutrient",
+    "Substrate",
+    "Pressure",
+    "Flux",
+    "Conductance",
+    "TrailMemory",
+    "Obstacle",
+    "VirtualGraph",
+    "Algorithm",
+    "Blueprint",
+    "EcosystemModule"
+  ],
+  "link_types": [
+    "hasStage",
+    "contains",
+    "transportsVia",
+    "attractedTo",
+    "avoids",
+    "deposits",
+    "reweights",
+    "solves",
+    "exports",
+    "connectsTo",
+    "inspiredBy",
+    "visualizes",
+    "constrainedBy"
+  ],
+  "nodes": [
+    {
+      "id": "physarum",
+      "type": "Organism",
+      "name": "Physarum polycephalum",
+      "verified": true,
+      "description": "Amoebozoan slime mold; nonfungal protist"
+    },
+    {
+      "id": "plasmodium",
+      "type": "LifeStage",
+      "name": "Multinucleate plasmodium",
+      "verified": true,
+      "description": "Single large cell with many nuclei"
+    },
+    {
+      "id": "cytoplasm",
+      "type": "Cytoplasm",
+      "name": "Streaming cytoplasm",
+      "verified": true,
+      "description": "Internal moving fluid"
+    },
+    {
+      "id": "nuclei",
+      "type": "Nucleus",
+      "name": "Many nuclei",
+      "verified": true,
+      "description": "Shared cytoplasm can contain very many nuclei"
+    },
+    {
+      "id": "tubules",
+      "type": "Tubule",
+      "name": "Adaptive protoplasmic tubes",
+      "verified": true,
+      "description": "Dynamic tubes convey cytoplasmic flow"
+    },
+    {
+      "id": "nutrients",
+      "type": "Nutrient",
+      "name": "Food patches",
+      "verified": true,
+      "description": "Sources of chemotactic attractants in studies"
+    },
+    {
+      "id": "obstacle",
+      "type": "Obstacle",
+      "name": "Virtual barrier",
+      "verified": false,
+      "description": "User-placed impermeable topology nodes in the simulation"
+    },
+    {
+      "id": "trail",
+      "type": "TrailMemory",
+      "name": "External slime trail",
+      "verified": true,
+      "description": "Deposited environmental memory observed in navigation studies"
+    },
+    {
+      "id": "flux",
+      "type": "Flux",
+      "name": "Modeled flow Q",
+      "verified": false,
+      "description": "Q_ij = D_ij/L_ij * (p_i - p_j) numerical analog"
+    },
+    {
+      "id": "conductance",
+      "type": "Conductance",
+      "name": "Modeled tube conductivity D",
+      "verified": false,
+      "description": "Reinforce used edges; unused edge strength decays"
+    },
+    {
+      "id": "graph",
+      "type": "VirtualGraph",
+      "name": "CL1 Physarum living network",
+      "verified": false,
+      "description": "Editable software grid with nutrient sinks and obstacles"
+    },
+    {
+      "id": "solver",
+      "type": "Algorithm",
+      "name": "Tero-inspired adaptive flow solver",
+      "verified": false,
+      "description": "Simplified pressure relaxation and flux-dependent edge adaptation"
+    },
+    {
+      "id": "blueprint",
+      "type": "Blueprint",
+      "name": "Vector network physicalization",
+      "verified": false,
+      "description": "Millimeter SVG paths for optional physical fabrication; no automatic manufacture"
+    },
+    {
+      "id": "synapse",
+      "type": "EcosystemModule",
+      "name": "CL1 Sensory Synapse",
+      "verified": false,
+      "description": "Simulated neural visual interface, not real neural tissue"
+    },
+    {
+      "id": "fusion",
+      "type": "EcosystemModule",
+      "name": "CL1 Fusion ontology",
+      "verified": false,
+      "description": "Typed object-links and source distinction"
+    },
+    {
+      "id": "brain",
+      "type": "EcosystemModule",
+      "name": "GPT-DOUG Brain",
+      "verified": false,
+      "description": "Local provenance-grounded knowledge retrieval"
+    }
+  ],
+  "links": [
+    {
+      "from": "physarum",
+      "type": "hasStage",
+      "to": "plasmodium"
+    },
+    {
+      "from": "plasmodium",
+      "type": "contains",
+      "to": "nuclei"
+    },
+    {
+      "from": "plasmodium",
+      "type": "contains",
+      "to": "cytoplasm"
+    },
+    {
+      "from": "plasmodium",
+      "type": "transportsVia",
+      "to": "tubules"
+    },
+    {
+      "from": "plasmodium",
+      "type": "attractedTo",
+      "to": "nutrients"
+    },
+    {
+      "from": "plasmodium",
+      "type": "deposits",
+      "to": "trail"
+    },
+    {
+      "from": "flux",
+      "type": "reweights",
+      "to": "conductance"
+    },
+    {
+      "from": "solver",
+      "type": "solves",
+      "to": "graph"
+    },
+    {
+      "from": "solver",
+      "type": "inspiredBy",
+      "to": "tubules"
+    },
+    {
+      "from": "graph",
+      "type": "avoids",
+      "to": "obstacle"
+    },
+    {
+      "from": "graph",
+      "type": "visualizes",
+      "to": "conductance"
+    },
+    {
+      "from": "graph",
+      "type": "visualizes",
+      "to": "flux"
+    },
+    {
+      "from": "graph",
+      "type": "exports",
+      "to": "blueprint"
+    },
+    {
+      "from": "graph",
+      "type": "connectsTo",
+      "to": "synapse"
+    },
+    {
+      "from": "graph",
+      "type": "connectsTo",
+      "to": "fusion"
+    },
+    {
+      "from": "graph",
+      "type": "connectsTo",
+      "to": "brain"
+    },
+    {
+      "from": "solver",
+      "type": "constrainedBy",
+      "to": "physarum"
+    }
+  ],
+  "simulation": {
+    "grid": {
+      "cols": 18,
+      "rows": 12
+    },
+    "units": "dimensionless normalized",
+    "solver": "Kirchhoff-like pressure Gauss-Seidel with flow reinforcement/decay",
+    "equations": [
+      "Q_ij=(D_ij/L_ij)(p_i-p_j)",
+      "D_next=clamp(D + dt*(alpha*abs(Q)/(k+abs(Q))-beta*D),Dmin,Dmax)"
+    ],
+    "parameters": {
+      "alpha": "conductance reinforcement",
+      "beta": "edge decay",
+      "k": "flow saturation"
+    },
+    "production_ready": false,
+    "experimental_predictions": false
+  },
+  "physicalization": {
+    "format": "SVG",
+    "size_mm": [
+      180,
+      120
+    ],
+    "intent": "Dimensioned, downloadable vector concept for physical plotting or subsequent CAD processing; verify scaling and line widths before fabrication.",
+    "control": "export only, no connected cutter/printer/robot/living sample"
+  }
+}

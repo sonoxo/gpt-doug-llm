@@ -7,6 +7,7 @@ on:
       - 'docs/fusion/**'
       - 'docs/molecules/**'
       - 'docs/synapse/**'
+      - 'docs/physarum/**'
       - 'docs/index.html'
       - 'docs/cl1-live.js'
       - 'docs/cl1-live.css'
@@ -28,6 +29,11 @@ on:
       - 'tests/xunia_molecules_chrome_smoke.py'
       - 'tests/test_xunia_synapse.py'
       - 'tests/xunia_synapse_chrome_smoke.py'
+      - 'tests/test_xunia_physarum.py'
+      - 'tests/xunia_physarum_model_smoke.js'
+      - 'tests/xunia_physarum_chrome_smoke.py'
+      - 'gpt_brain/physarum.py'
+      - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
       - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
@@ -40,6 +46,7 @@ on:
       - 'docs/fusion/**'
       - 'docs/molecules/**'
       - 'docs/synapse/**'
+      - 'docs/physarum/**'
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
@@ -55,6 +62,11 @@ on:
       - 'tests/xunia_molecules_chrome_smoke.py'
       - 'tests/test_xunia_synapse.py'
       - 'tests/xunia_synapse_chrome_smoke.py'
+      - 'tests/test_xunia_physarum.py'
+      - 'tests/xunia_physarum_model_smoke.js'
+      - 'tests/xunia_physarum_chrome_smoke.py'
+      - 'gpt_brain/physarum.py'
+      - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
       - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
@@ -99,6 +111,11 @@ jobs:
           python -m json.tool docs/molecules/catalogs/pubchem.json > /dev/null
           node --check docs/molecules/molecules.js
           node --check docs/synapse/synapse.js
+          node --check docs/physarum/model.js
+          node --check docs/physarum/forge.js
+          node --check tests/xunia_physarum_model_smoke.js
+          python -m json.tool docs/physarum/ontology.json > /dev/null
+          python -m compileall -q gpt_brain/physarum.py tests/test_xunia_physarum.py tests/xunia_physarum_chrome_smoke.py
           python -m compileall -q tests/test_xunia_synapse.py tests/xunia_synapse_chrome_smoke.py
           python -m compileall -q scripts/xunia_molecules_import.py tests/test_xunia_molecules.py tests/xunia_molecules_chrome_smoke.py
           python -m compileall -q tests/test_xunia_fusion.py tests/xunia_fusion_chrome_smoke.py
@@ -134,6 +151,12 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_xunia_synapse.py' -v
       - name: Verify actual CL1 neural interface and reduced-motion controls in Chromium
         run: python tests/xunia_synapse_chrome_smoke.py
+      - name: Validate Physarum source ontology and GPT-Doug brain retrieval
+        run: python -m unittest discover -s tests -p 'test_xunia_physarum.py' -v
+      - name: Verify real Tero-inspired flow adaptation and printable SVG via Node
+        run: node tests/xunia_physarum_model_smoke.js
+      - name: Verify real Physarum Forge browser edits and reduced-motion via Chromium
+        run: python tests/xunia_physarum_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
@@ -178,6 +201,12 @@ jobs:
           assert "../synapse/" in (docs/"fusion/index.html").read_text()
           assert "../synapse/" in (docs/"biological-data-center/index.html").read_text()
           assert idx["publicSurfaces"]["sensorySynapse"]=="https://xunia.org/synapse/"
+          assert "./physarum/" in (docs/"index.html").read_text()
+          assert "../physarum/" in (docs/"synapse/index.html").read_text()
+          assert "../physarum/" in (docs/"fusion/index.html").read_text()
+          assert "../physarum/" in (docs/"biological-data-center/index.html").read_text()
+          assert idx["publicSurfaces"]["physarumForge"]=="https://xunia.org/physarum/"
+          assert (docs/"physarum/ontology.json").exists()
           assert (docs/"synapse/index.html").exists()
           print("COSMOS GitHub Pages contract passed; no Vercel or paid APIs")
           PY

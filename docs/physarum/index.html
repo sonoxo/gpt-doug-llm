@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080e13"><meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA CL1 Physarum Forge: free interactive bio-inspired adaptive transport networks, source-qualified slime mold biology, nutrient and barrier editing, and physical-scale SVG blueprints.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA CL1 / PHYSARUM FORGE</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="./style.css">
+<script defer src="./model.js"></script><script defer src="./forge.js"></script>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+<a class="brand" href="../"><span class="sigil">◉</span><span><small>SONOXO // GPT-DOUG-LLM // CL1</small><strong>PHYSARUM <em>FORGE</em></strong></span></a>
+<nav aria-label="XUNIA ecosystem"><a href="../">HQ</a><a href="../synapse/">SYNAPSE</a><a href="../biological-data-center/">BIO CENTER</a><a href="../fusion/">ONTOLOGY</a><a href="../molecules/">MOLECULES</a></nav>
+<div class="top-state">● BIO-INSPIRED / SOFTWARE ONLY</div>
+</header>
+
+<section class="hero">
+<div>
+<div class="eyebrow">CL1 // DE CENTRALIZED BIOCOMPUTATION // PHYSA-01</div>
+<h1>THE <em>BLOB.</em><br><span>THE NETWORK LIVES.</span></h1>
+<p><i>Physarum polycephalum</i> is an amoebozoan protist whose giant multinucleate plasmodium grows an adaptive network of fluid-carrying tubes. Explore a simplified flow-reinforcement model, then export the resulting network as a millimeter-scale physical design.</p>
+</div>
+<div class="hero-spec"><div><strong>1</strong><small>GIANT CELL STAGE</small></div><div><strong id="speciesNodes">—</strong><small>ONTOLOGY OBJECTS</small></div><div><strong>0</strong><small>PHYSICAL ACTUATORS</small></div></div>
+</section>
+<div class="boundary"><strong>SCIENCE × SIMULATION BOUNDARY:</strong> Physarum has no neurons or central brain. Its documented adaptive behavior is not proof of consciousness or AI-like intelligence. This graph is a dimensionless model inspired by published transport-network studies—not a real cell, measured cytoplasmic flow, biological culture, or hardware-connected system.</div>
+
+<main class="workspace">
+<aside class="panel knowledge">
+<div class="panel-title"><span>01 / SPECIES INTELLIGENCE</span><span>AMOEBOZOA</span></div>
+<div class="species">
+<div class="species-token">◈ <span>PP</span></div>
+<h2>Physarum polycephalum</h2>
+<p>THE BLOB / ACELLULAR SLIME MOLD</p>
+<div class="class">EUKARYOTA <b>/</b> AMOEBOZOA <b>/</b> PROTIST</div>
+</div>
+<div class="facts" id="facts" aria-label="Biological facts and research citations"></div>
+<div class="panel-title inset"><span>02 / ENVIRONMENT EDITOR</span></div>
+<p class="microhelp">Select a tool, then click or drag across the organism's substrate. Foods are sinks; the cyan origin acts as a source of virtual flow.</p>
+<div class="toolgrid" id="brushes" role="group" aria-label="Editing mode">
+<button type="button" data-brush="food" aria-pressed="true"><span>◆</span> FOOD</button>
+<button type="button" data-brush="barrier" aria-pressed="false"><span>▦</span> BARRIER</button>
+<button type="button" data-brush="erase" aria-pressed="false"><span>✕</span> ERASE</button>
+<button type="button" data-brush="origin" aria-pressed="false"><span>⊕</span> ORIGIN</button>
+</div>
+<div class="legend"><div><span class="legend-swatch nutrient"></span> NUTRIENT SOURCES</div><div><span class="legend-swatch vein"></span> ACTIVE PROTOPLASM</div><div><span class="legend-swatch obstacle"></span> OBSTACLE</div><div><span class="legend-swatch trail"></span> REMAINING TRAIL</div></div>
+<a class="reading-link" href="https://pubmed.ncbi.nlm.nih.gov/20093467/" target="_blank" rel="noopener noreferrer">REVIEW SOURCE: ADAPTIVE NETWORK DESIGN ↗</a>
+</aside>
+
+<section class="panel world">
+<div class="panel-title"><span>03 / LIVING CYTOPLASMIC FIELD</span><span id="fieldStatus" role="status" aria-live="polite">LOADING</span></div>
+<div class="canvas-frame">
+<canvas id="physarumCanvas" tabindex="0" role="img" aria-label="Interactive Physarum-inspired transport graph. Choose a brush and click or drag to edit food sources or obstacles. Arrow keys navigate a grid cell; Enter applies the selected brush."></canvas>
+<div class="hud-top">MULTINUCLEATE PLASMODIUM / IN-SILICO <span>18 × 12 SUBSTRATE</span></div>
+<div class="hud-bottom">CLICK / DRAG: EDIT SUBSTRATE · ARROW KEYS: SELECT CELL · ENTER: APPLY BRUSH</div>
+</div>
+<div class="transport">
+<div class="controls-left">
+<button type="button" id="playPause" aria-pressed="false">Ⅱ PAUSE</button>
+<button type="button" id="stepOne">+1 TICK</button>
+<button type="button" id="stepThirty">+30 TICKS</button>
+<button type="button" id="resetNetwork">↻ RESET VEINS</button>
+</div>
+<div class="controls-right"><label for="simSpeed">SIM SPEED</label><input id="simSpeed" type="range" min="0" max="100" step="5" value="48"><output id="speedValue" for="simSpeed">48%</output></div>
+</div>
+<div class="parameter-row">
+<label>GROWTH / REINFORCE <input id="growth" type="range" min="15" max="240" value="115" step="5"><output id="growthValue" for="growth">1.15×</output></label>
+<label>EROSION / DECAY <input id="decay" type="range" min="10" max="180" value="78" step="5"><output id="decayValue" for="decay">0.78×</output></label>
+<label><input id="trailToggle" type="checkbox" checked> SHOW TRAIL MEMORY</label>
+</div>
+<div class="metric-grid">
+<div><small>ADAPTATION STEPS</small><strong id="tickCount">0</strong></div>
+<div><small>VISIBLE VEINS</small><strong id="veinCount">0</strong></div>
+<div><small>FOOD NODES</small><strong id="foodCount">2</strong></div>
+<div><small>TOTAL FLOW · MODEL UNITS</small><strong id="flowCount">0.000</strong></div>
+</div>
+<div class="panel-title inner-title"><span>04 / MORPHOLOGY TELEMETRY</span><span>VIRTUAL / NOT LAB DATA</span></div>
+<div class="telemetry"><canvas id="telemetryCanvas" role="img" aria-label="Line graph of modeled active vein count over simulation steps"></canvas><div id="graphSummary">WAITING FOR MODEL STEPS.</div></div>
+</section>
+
+<aside class="panel fabricator">
+<div class="panel-title"><span>05 / CL1 PHYSICALIZER</span><span>DESIGN EXPORT</span></div>
+<div class="physical-summary"><div class="symbol">⌬</div><h2>VIRTUAL → PHYSICAL</h2><p>Turn an adaptive software network into a <strong>dimensioned 180 × 120 mm SVG</strong> design for optional manual printing, cutting, plotting, or CAD import. No machine is controlled.</p></div>
+<div class="spec-grid"><div><small>SOURCE NETWORK</small><strong>Physarum-inspired</strong></div><div><small>DESIGN SCALE</small><strong>180 × 120 mm</strong></div><div><small>MODEL</small><strong>Pressure / Flux / Conductance</strong></div><div><small>OUTPUT STATUS</small><strong>NOT FABRICATED</strong></div></div>
+<div class="actions">
+<button type="button" id="exportSvg">DOWNLOAD PHYSICAL SVG</button>
+<button type="button" id="exportJson">EXPORT CL1 GRAPH JSON</button>
+<button type="button" id="savePng">SAVE LIVE VIEW PNG</button>
+<button type="button" id="health">RUN MODEL SELF-TEST</button>
+</div>
+<div class="panel-title inset"><span>06 / BIOLOGICAL MECHANICS</span></div>
+<div class="science-body">
+<p><b>1 — SENSE:</b> Virtual food nodes attract flow; barriers remove conducting routes.</p>
+<p><b>2 — ROUTE:</b> A graph-pressure solver distributes simulated flux through connected veins.</p>
+<p><b>3 — ADAPT:</b> Heavily used tubes reinforce while poorly used tubes erode.</p>
+<p><b>4 — REMEMBER:</b> A residual trace makes explored routes visible. This is a software analogy of slime-trail memory, not measured behavior.</p>
+<p><b>5 — PHYSICALIZE:</b> Export the current strongest tube network as a scale-marked vector layout.</p>
+</div>
+<div class="source-index" id="sourceIndex"></div>
+<output id="actionStatus" role="status" aria-live="polite">READY / FREE / LOCAL / NON-KINETIC</output>
+</aside>
+</main>
+
+<section class="bottom">
+<div class="panel command"><div class="panel-title"><span>07 / CL1 PHYSA COMMANDER</span><span>FINITE LOCAL COMMANDS · NOT A SHELL</span></div>
+<form id="consoleForm"><label for="consoleInput">CL1 &gt;</label><input id="consoleInput" maxlength="140" autocomplete="off" placeholder="/food 15 4 · /wall 8 6 · /step 50 · /health"><button type="submit">EXECUTE</button></form>
+<div id="consoleStatus" role="status" aria-live="polite">CMD/CTRL+K TO FOCUS · /help FOR COMMANDS</div>
+</div>
+<div class="panel integration"><div class="panel-title"><span>08 / CL1 ECOSYSTEM CONNECTIONS</span></div>
+<p>The Physarum-inspired network is a biological analogy for resilient routing and decentralized adaptation in GPT-DOUG-LLM. Its ontology links to CL1 Synapse and Fusion; export files remain proposals until reviewed and manufactured externally.</p>
+<div class="integration-links"><a href="../synapse/">CL1 SENSORY SYNAPSE ↗</a><a href="../fusion/">CL1 FUSION ONTOLOGY ↗</a><a href="../biological-data-center/">BIOLOGICAL DATA CENTER ↗</a></div></div>
+</section>
+<footer><span>GPT-DOUG-LLM / XUNIA / CL1 / PHYSA-01</span><span>NOT A FUNGUS · NOT A BRAIN · NOT LIVING HARDWARE · NO PAID API · NO VERCEL</span></footer>
+</div>
+</body></html>
