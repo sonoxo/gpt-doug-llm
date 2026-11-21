@@ -30,7 +30,7 @@ window.addEventListener("load",()=>{
       check($("audioToggle").getAttribute("aria-pressed")==="false","audio autoplays");
       check($("audioStatus").textContent.includes("AUDIO OFF"),"audio initial state mislabeled");
       check(document.querySelectorAll("[data-sense]").length===5,"missing five senses");
-      check(document.querySelectorAll("[data-view]").length===3,"missing views");
+      check(document.querySelectorAll("button[data-view]").length===3,"missing views");
       document.querySelector('[data-view="cortex"]').click();
       check(canvas.dataset.view==="cortex","cortex mode failed");
       document.querySelector('[data-view="field"]').click();
