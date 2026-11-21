@@ -167,3 +167,45 @@ test('privacy diagnostics accurately disclaim Tor routing',async({page})=>{
   await expect(page.locator('#privacy-results')).toContainText('Tor anonymity');
   await expect(page.locator('#privacy-results')).toContainText('NOT PROVIDED');
 });
+
+
+test('USA defensive scope builds NIST-aligned local plans across all 16 CISA sectors without operational claims',async({page})=>{
+  await page.goto(PATH+'#usa-defense');
+  await expect(page.locator('#usa-sector option')).toHaveCount(17);
+  await expect(page.locator('#usa-function option')).toHaveCount(7);
+  await expect(page.locator('#usa-sector-count')).toHaveText('16');
+  await expect(page.locator('#usa-function-count')).toHaveText('6');
+  await expect(page.locator('#usa-plan-steps .usa-plan-card')).toHaveCount(6);
+  await expect(page.locator('#usa-plan-summary')).toContainText('0 verified implementations');
+  await page.locator('#usa-sector').selectOption({label:'Energy'});
+  await page.locator('#usa-profile').selectOption('owner');
+  await page.locator('#usa-function').selectOption('detect');
+  await page.locator('#usa-generate-plan').click();
+  await expect(page.locator('#usa-plan-title')).toHaveText('Energy');
+  await expect(page.locator('#usa-plan-steps .usa-plan-card')).toHaveCount(1);
+  await expect(page.locator('#usa-plan-summary')).toContainText('2 defensive planning actions');
+  await expect(page.locator('#usa-plan-steps')).toContainText('authorized');
+  await expect(page.locator('#usa-plan-boundary')).toContainText('no government affiliation');
+  const downloadPromise=page.waitForEvent('download');
+  await page.locator('#usa-export-plan').click();
+  const download=await downloadPromise;
+  expect(download.suggestedFilename()).toBe('glass-onion-usa-defense-scope.json');
+  await expect(page.locator('#usa-scope-status')).toContainText('NO INFORMATION SUBMITTED');
+  const path=await download.path();
+  const plan=JSON.parse(await readFile(path,'utf8'));
+  expect(plan.sector).toBe('Energy');
+  expect(plan.profile).toBe('Authorized owner / operator');
+  expect(plan.phase).toBe('DETECT');
+  expect(plan.evidence_status).toBe('REFERENCE_GUIDANCE_NOT_A_SECURITY_ASSESSMENT');
+  await expect(page.locator('#usa-source-list a')).toHaveCount(5);
+  await expect(page.locator('#usa-source-list a[href="https://www.cisa.gov/report"]')).toHaveCount(1);
+});
+test('USA scope fails closed on absent source data rather than inventing nationwide coverage',async({page})=>{
+  await page.route('**/darkweb/usa-defense-scope.json',route=>route.abort('failed'));
+  await page.goto(PATH);
+  await expect(page.locator('#usa-scope-status')).toContainText('SCOPE REGISTRY UNAVAILABLE');
+  await expect(page.locator('#usa-generate-plan')).toBeDisabled();
+  await expect(page.locator('#usa-export-plan')).toBeDisabled();
+  await expect(page.locator('#usa-plan-steps .usa-plan-card')).toHaveCount(0);
+  await expect(page.locator('#usa-plan-boundary')).toContainText('No plans or protection claims');
+});
