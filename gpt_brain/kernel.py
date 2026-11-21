@@ -141,6 +141,14 @@ class BrainKernel:
             ontology_ctx.extend(search_physarum(task, limit=4))
         except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
             pass
+        # CL1 telemetry terms resolve to explicit dimensionless solver metrics;
+        # do not infer live sensors, kinetic actuation or biomedical data.
+        try:
+            from .telemetry import search as search_cl1_telemetry
+
+            ontology_ctx.extend(search_cl1_telemetry(task, limit=4))
+        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+            pass
         agents = self.router.route(task, self.config.max_agents)
         uncertainty: list[str] = []
 

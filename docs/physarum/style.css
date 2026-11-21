@@ -15,3 +15,6 @@ footer{padding:15px 0 22px;display:flex;flex-wrap:wrap;gap:15px;justify-content:
 @media(max-width:840px){.workspace{display:flex;flex-direction:column}.world{order:1}.knowledge{order:2}.fabricator{order:3}.facts{grid-template-columns:repeat(2,1fr)}.hero{display:block}.hero-spec{margin-top:22px}.bottom{grid-template-columns:1fr}.topbar{padding:11px 0}.topbar nav{width:100%}.canvas-frame{height:430px;min-height:380px}}
 @media(max-width:520px){.shell{padding:0 7px}.hero h1{font-size:43px}.hero-spec{grid-template-columns:repeat(2,1fr)}.hero-spec>div:last-child{grid-column:1/-1}.facts{grid-template-columns:1fr}.canvas-frame{height:345px;min-height:345px}.metric-grid{grid-template-columns:1fr 1fr}.metric-grid>div:nth-child(2){border-right:0}.command form{flex-wrap:wrap}.topbar nav{gap:11px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Link to source-qualified CL1 linear/kinetic/ontology telemetry */
+.deep-telemetry{display:block;text-align:center;padding:11px;margin:7px 12px 0;color:#e9fdf6;background:linear-gradient(92deg,#235d5d,#213e58);border:1px solid #8dcebe;font:800 10px ui-monospace,Menlo,monospace;letter-spacing:.04em}.deep-telemetry:hover{background:#316e71}

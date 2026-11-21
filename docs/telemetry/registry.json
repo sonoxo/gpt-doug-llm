@@ -1,0 +1,121 @@
+{
+  "schema": "xunia.cl1.telemetry-ontology.v1",
+  "updated": "2026-11-20",
+  "name": "CL1 Linear / Kinetic Telemetry Atlas",
+  "source_model": "../physarum/model.js",
+  "source_ontology": "../physarum/ontology.json",
+  "mode": "synthetic-kinematics-from-physarum-flow",
+  "physical_actuation": false,
+  "network_credentials": false,
+  "boundaries": [
+    "Simulation frame tick is not wall-clock sampling of an external instrument.",
+    "Animated kinetic particles show direction and relative speed proportional to simulated Q, not physical velocity in m/s.",
+    "Linear plots are derived from the same one deterministic Tero-inspired solver; no fabricated EEG, neuron telemetry, live sensors, laboratory measurements or external telemetry streams.",
+    "Kinetic means visible motion of software particles, not operation of a robot, weapon, neuron interface or physical actuator.",
+    "Ontology links and source records are those in the existing, source-qualified Physarum knowledge graph."
+  ],
+  "metrics": [
+    {
+      "id": "flux",
+      "label": "Absolute model flux",
+      "short": "Σ |Q|",
+      "unit": "model flow units",
+      "description": "Sum of absolute signed edge flows. Not measured cytoplasmic speed.",
+      "evidence": "SIMULATED",
+      "source_id": "tero-2007"
+    },
+    {
+      "id": "tubes",
+      "label": "Active conducting tubes",
+      "short": "D ≥ 0.26",
+      "unit": "virtual edges",
+      "description": "Count of unblocked edges above the simulator's visualization threshold.",
+      "evidence": "SIMULATED",
+      "source_id": "tero-2010"
+    },
+    {
+      "id": "conductance",
+      "label": "Mean edge conductance",
+      "short": "mean D",
+      "unit": "dimensionless",
+      "description": "Arithmetic mean tube conductance over unblocked edges.",
+      "evidence": "SIMULATED",
+      "source_id": "tero-2007"
+    },
+    {
+      "id": "energy",
+      "label": "Quadratic flow index",
+      "short": "Σ Q²",
+      "unit": "model units²",
+      "description": "Sum of squared edge flows, an illustrative cost proxy, not joules.",
+      "evidence": "SIMULATED",
+      "source_id": "tero-2010"
+    },
+    {
+      "id": "motion",
+      "label": "Directional motion index",
+      "short": "Σ |Q| / n",
+      "unit": "flow units per edge",
+      "description": "Mean absolute edge flow driving on-screen particles; not physical velocity.",
+      "evidence": "DERIVED_SIMULATION",
+      "source_id": "tero-2007"
+    },
+    {
+      "id": "delta",
+      "label": "Flux change per simulation tick",
+      "short": "Δ Σ |Q|",
+      "unit": "model flow units/tick",
+      "description": "Signed discrete difference from preceding recorded step. Not acceleration in m/s².",
+      "evidence": "DERIVED_SIMULATION",
+      "source_id": "tero-2007"
+    },
+    {
+      "id": "pressure",
+      "label": "Pressure-range index",
+      "short": "max p − min p",
+      "unit": "normalized pressure",
+      "description": "Difference between maximum and minimum unblocked solver pressures. Not pascals.",
+      "evidence": "SIMULATED",
+      "source_id": "tero-2007"
+    }
+  ],
+  "display": {
+    "max_history": 240,
+    "max_particles": 150,
+    "modes": [
+      "kinetic",
+      "linear",
+      "ontology"
+    ],
+    "default_metric": "flux",
+    "time_axis": "model step",
+    "kinetic_units": "qualitative relative flow"
+  },
+  "ecosystem": {
+    "physarum": "../physarum/",
+    "brain": "../",
+    "synapse": "../synapse/",
+    "fusion": "../fusion/",
+    "bio": "../biological-data-center/"
+  },
+  "sources": [
+    {
+      "id": "tero-2007",
+      "citation": "Tero et al. (2007), adaptive transport model",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/17069858/",
+      "type": "peer-reviewed"
+    },
+    {
+      "id": "tero-2010",
+      "citation": "Tero et al. (2010), network optimization rules",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20093467/",
+      "type": "peer-reviewed"
+    },
+    {
+      "id": "reid-2012",
+      "citation": "Reid et al. (2012), externalized slime-trail memory",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3491460/",
+      "type": "peer-reviewed"
+    }
+  ]
+}

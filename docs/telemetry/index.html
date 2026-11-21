@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080e17"><meta name="referrer" content="no-referrer">
+<meta name="description" content="XUNIA CL1 linear and kinetic telemetry atlas: interactive flow vectors, simulated time-series metrics, typed ontology relationships and local exports, no physical actuation.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<title>XUNIA CL1 / LINEAR × KINETIC TELEMETRY ATLAS</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="./style.css">
+<script defer src="../physarum/model.js"></script>
+<script defer src="./engine.js"></script>
+<script defer src="./atlas.js"></script>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+<a class="brand" href="../" aria-label="XUNIA HQ"><span class="brand-mark">◉</span><span><small>SONOXO // GPT-DOUG-LLM / CL1</small><strong>TELEMETRY <em>ATLAS</em></strong></span></a>
+<nav aria-label="Connected ontology modules"><a href="../">HQ</a><a href="../physarum/">PHYSARUM</a><a href="../synapse/">SYNAPSE</a><a href="../fusion/">FUSION</a><a href="../biological-data-center/">BIO CENTER</a></nav>
+<div class="state-chip"><span aria-hidden="true">●</span> <span id="globalState">SOURCE INIT</span></div>
+</header>
+
+<section class="hero">
+<div class="heading"><div class="eyebrow">LINEAR DATA / DIRECTIONAL MOTION / TYPED ONTOLOGY / RUNTIME VISUALIZATION</div>
+<h1>SEE <em>THE FLOW.</em><br><span>FOLLOW THE SIGNAL.</span></h1>
+<p>Three synchronized instruments driven by one local Physarum-inspired mathematical model: linear traces, kinetic edge flow, and an inspectable organism-to-network ontology. Change inputs, watch the curves respond, and export the evidence-labeled telemetry.</p></div>
+<div class="hero-metrics"><div><strong>03</strong><small>LINKED VISUAL PLANES</small></div><div><strong id="recordCount">0</strong><small>RECORDED MODEL STEPS</small></div><div><strong id="objectCount">—</strong><small>SOURCE ONTOLOGY OBJECTS</small></div></div>
+</section>
+
+<div class="disclaimer"><b>SIMULATION / NOT LIVE SENSORS.</b> Kinetic particles are animations scaled from modeled edge flux Q; values are dimensionless model units per solver tick, not measured motion, meters/second, biological neural signals, or real-world telemetry. No brain interface, robotics, hardware control, or paid network API is connected.</div>
+
+<main class="layout">
+<aside class="panel ontology-sidebar">
+<div class="panel-head"><span>01 / ONTOLOGY OBJECT LAYER</span><span id="ontologyCount">LOADING</span></div>
+<div class="sidebar-search"><label for="ontologyFilter">FILTER OBJECTS / TYPES</label><input id="ontologyFilter" type="search" placeholder="Flux, Conductance, Tubule..." autocomplete="off"></div>
+<div id="ontologyList" class="ontology-list" role="group" aria-label="Physarum scientific and simulation nodes"></div>
+<div class="selected" aria-live="polite"><div class="mini">CURRENT ONTOLOGY FOCUS</div><h2 id="selectedName">Loading sources…</h2><div id="selectedType" class="ontology-type">—</div><p id="selectedDescription">Source-qualified ontology metadata is loading.</p><div class="selected-flags"><span id="selectedEvidence">—</span><span id="selectedDegree">—</span></div><a id="selectedSource" href="../physarum/" target="_blank" rel="noopener noreferrer">OPEN SOURCE REFERENCE ↗</a></div>
+<div class="sidebar-footer"><a href="../physarum/ontology.json">VIEW PHYSA SCIENCE ONTOLOGY ↗</a><a href="./registry.json">VIEW TELEMETRY METRIC SCHEMA ↗</a></div>
+</aside>
+
+<section class="center">
+<div class="panel kinetic">
+<div class="panel-head"><span>02 / KINETIC FIELD · SIGNED DIRECTIONAL FLUX</span><span id="kineticStatus" role="status" aria-live="polite">SOLVER STANDBY</span></div>
+<div class="instrument-tabs" role="group" aria-label="Instrument focus">
+<button type="button" data-focus-mode="all" aria-pressed="true">ALL SYSTEMS</button>
+<button type="button" data-focus-mode="kinetic" aria-pressed="false">KINETIC FIELD</button>
+<button type="button" data-focus-mode="linear" aria-pressed="false">LINEAR TRACE</button>
+<button type="button" data-focus-mode="ontology" aria-pressed="false">ONTOLOGY GRAPH</button>
+</div>
+<div class="kinetic-viewport">
+<canvas id="kineticCanvas" role="img" tabindex="0" aria-label="Simulated Physarum transport network. Arrows and particles show signed flow direction and relative intensity, not physical velocity. Click or drag to inspect or edit nodes. Arrow keys move the selection; Enter applies the brush."></canvas>
+<div class="viewport-overline">PHYSA FLOW INTERPRETER <span>Q = (D/L) × Δp</span></div>
+<div class="viewport-footer">CLICK / DRAG TO EDIT · ARROWS + ENTER FOR KEYBOARD ACCESS · MOTION IS ILLUSTRATIVE</div>
+<div class="viewport-key"><div><i class="key-origin"></i> SOURCE</div><div><i class="key-food"></i> FOOD</div><div><i class="key-wall"></i> BARRIER</div><div><i class="key-flow"></i> FLOW</div></div>
+</div>
+<div class="kinetic-options">
+<label><input id="vectorToggle" type="checkbox" checked> FLOW VECTORS</label>
+<label><input id="particleToggle" type="checkbox" checked> KINETIC PARTICLES</label>
+<label for="kineticSpeed">VISUAL SPEED</label><input id="kineticSpeed" type="range" min="0" max="100" value="52" step="4">
+<output id="kineticSpeedValue" for="kineticSpeed">52%</output>
+</div>
+</div>
+
+<div class="lower-graphs">
+<section class="panel linear">
+<div class="panel-head"><span>03 / LINEAR TIME-SERIES</span><span id="traceStatus">0 SAMPLES</span></div>
+<div class="plot-title"><label for="metricSelect">SIGNAL CHANNEL</label><select id="metricSelect"></select><small id="metricUnit">MODEL UNITS</small></div>
+<div class="plot-frame"><canvas id="linearCanvas" role="img" tabindex="0" aria-label="Line plot of the chosen simulated metric against solver steps; move the pointer or arrow keys to inspect recorded values."></canvas></div>
+<div class="chart-meta"><span id="rangeReadout">STEP 0 · SIGNAL 0.000</span><span id="metricEvidence">SIMULATED / NEVER MEASURED</span></div>
+<p id="metricDescription" class="chart-help">Metric descriptions appear here.</p>
+</section>
+
+<section class="panel relations">
+<div class="panel-head"><span>04 / TYPED ONTOLOGY GRAPH</span><span id="graphStatus">SOURCE QUALIFIED</span></div>
+<div class="plot-frame ontology-frame"><canvas id="ontologyCanvas" role="img" tabindex="0" aria-label="Selectable source-qualified Physarum ontology. Click a node or use arrow keys to navigate; links show documented and simulated relationships."></canvas></div>
+<div class="ontology-legend"><span><i class="verified"></i> OBSERVATIONAL</span><span><i class="modelled"></i> SOFTWARE MODEL</span><span><i class="link"></i> TYPED LINK</span></div>
+<p class="chart-help">Select a vertex to inspect its type, evidence classification, definition, and original research source.</p>
+</section>
+</div>
+</section>
+
+<aside class="panel instruments">
+<div class="panel-head"><span>05 / SYNCHRONIZED SIGNALS</span><span>MODEL TICK</span></div>
+<div class="big-readout"><strong id="tickValue">0000</strong><small>SOLVER STEPS / NOT WALL-CLOCK SAMPLES</small></div>
+<div class="readouts">
+<div><small>Σ |Q| · TOTAL FLUX</small><strong id="fluxValue">0.000</strong><span>MODEL FLOW</span></div>
+<div><small>D ≥ 0.26 · ACTIVE TUBES</small><strong id="tubesValue">0</strong><span>EDGES</span></div>
+<div><small>MEAN D · CONDUCTANCE</small><strong id="conductanceValue">0.000</strong><span>DIMENSIONLESS</span></div>
+<div><small>Δ Σ |Q| · CHANGE / TICK</small><strong id="deltaValue">0.000</strong><span>MODEL FLOW/TICK</span></div>
+</div>
+<div class="panel-head subhead"><span>06 / SOLVER CONTROLS</span></div>
+<div class="transport-controls">
+<button type="button" id="playPause" aria-pressed="false">Ⅱ PAUSE MODEL</button><button type="button" id="stepOne">+1 STEP</button><button type="button" id="stepThirty">+30 STEPS</button>
+<button type="button" id="resetSimulation">RESET MODEL</button>
+</div>
+<div class="slider-block"><label for="growth">TUBE REINFORCEMENT <output id="growthValue" for="growth">1.15×</output></label><input id="growth" type="range" min="15" max="240" value="115" step="5"></div>
+<div class="slider-block"><label for="decay">TUBE EROSION <output id="decayValue" for="decay">0.78×</output></label><input id="decay" type="range" min="10" max="180" value="78" step="5"></div>
+<div class="panel-head subhead"><span>07 / SUBSTRATE BRUSH</span></div>
+<div class="brushes" role="group" aria-label="Select graph editing mode">
+<button type="button" data-brush="inspect" aria-pressed="true">INSPECT</button>
+<button type="button" data-brush="food" aria-pressed="false">+ FOOD</button>
+<button type="button" data-brush="barrier" aria-pressed="false">+ WALL</button>
+<button type="button" data-brush="erase" aria-pressed="false">ERASE</button>
+</div>
+<div class="panel-head subhead"><span>08 / DATA EXPORT</span></div>
+<div class="exports"><button type="button" id="exportCSV">EXPORT LINEAR CSV</button><button type="button" id="exportJSON">EXPORT ONTOLOGY JSON</button><button type="button" id="exportPNG">CAPTURE KINETIC PNG</button><button type="button" id="health">RUN ALL CHECKS</button></div>
+<output id="actionStatus" role="status" aria-live="polite">CL1 / SYNTHETIC SOURCE / READ ONLY EXCEPT MODEL EDITS</output>
+</aside>
+</main>
+<div class="secondary-row">
+<section class="panel command"><div class="panel-head"><span>09 / CL1 TELEMETRY TERMINAL</span><span>FINITE COMMANDS / NO SHELL</span></div>
+<form id="commandForm"><label for="commandInput">CL1 &gt;</label><input id="commandInput" maxlength="120" autocomplete="off" placeholder="/metric flux · /step 50 · /wall 8 6 · /focus ontology · /health"><button type="submit">RUN</button></form>
+<output id="commandStatus" role="status" aria-live="polite">CMD/CTRL+K · /help FOR COMMANDS</output></section>
+<section class="panel method"><div class="panel-head"><span>10 / VALIDATION & EVIDENCE BOUNDARIES</span></div><p>The linear trace, kinetic rendering, and ontology graph share a single deterministic Physarum model. Particle direction comes from the sign of Q, while speed is normalized for display—not physical velocity or acceleration. The ontology reuses the same curated <i>Physarum polycephalum</i> literature with explicit evidence classes.</p><div class="links"><a href="../physarum/">OPEN PHYSARUM FORGE ↗</a><a href="../synapse/">OPEN CL1 SYNAPSE ↗</a><a href="https://pubmed.ncbi.nlm.nih.gov/17069858/" target="_blank" rel="noopener noreferrer">ADAPTIVE NETWORK MODEL ↗</a></div></section>
+</div>
+<footer><span>XUNIA // CL1 // GPT-DOUG-LLM / LINEAR + KINETIC + ONTOLOGY</span><span>FREE · BROWSER LOCAL · SOURCE QUALIFIED · ZERO HARDWARE ACTUATION</span></footer>
+</div>
+</body></html>
