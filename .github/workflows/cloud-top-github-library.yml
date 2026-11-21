@@ -46,7 +46,7 @@ jobs:
           persist-credentials: false
       - name: Restore matching cache if it exists
         id: cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
           key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
@@ -78,7 +78,7 @@ jobs:
           fi
       - name: Save verified shard in GitHub cache
         if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
           key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
@@ -108,7 +108,7 @@ jobs:
           persist-credentials: false
       - name: Download Git object cache on a fresh runner
         id: cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ${{ runner.temp }}/gpt-doug-cloud/${{ matrix.category }}/shard-${{ matrix.shard }}
           key: cloud-git-v3-${{ hashFiles('data/github-cloud-library-targets.json') }}-${{ matrix.category }}-${{ matrix.shard }}
