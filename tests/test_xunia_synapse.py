@@ -11,7 +11,7 @@ DOCS = ROOT / "docs"
 SYNAPSE = DOCS / "synapse"
 APPROVED = {
     "pubchem.ncbi.nlm.nih.gov", "cdms.astro.uni-koeln.de",
-    "nssdc.gsfc.nasa.gov", "ssd.jpl.nasa.gov",
+    "nssdc.gsfc.nasa.gov", "ssd.jpl.nasa.gov", "api.nasa.gov",
     "www.palantir.com", "aws.amazon.com", "docs.aws.amazon.com",
     "www.anduril.com",
 }
