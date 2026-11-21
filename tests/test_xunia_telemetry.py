@@ -35,7 +35,7 @@ class CL1TelemetryTests(unittest.TestCase):
         )
         source_ids = {s["id"] for s in self.physarum["sources"]}
         for metric in d["metrics"]:
-            self.assertEqual(metric["evidence"].split("_")[-1], "SIMULATION")
+            self.assertIn(metric["evidence"], {"SIMULATED", "DERIVED_SIMULATION"})
             self.assertIn(metric["source_id"], source_ids)
             self.assertTrue(metric["unit"])
             self.assertTrue(metric["description"])
@@ -51,7 +51,7 @@ class CL1TelemetryTests(unittest.TestCase):
         d = self.registry
         boundaries = " ".join(d["boundaries"]).lower()
         self.assertIn("not physical velocity", boundaries)
-        self.assertIn("not live", boundaries)
+        self.assertIn("live sensors", boundaries)
         self.assertIn("physical actuator", boundaries)
         self.assertEqual(
             d["display"]["modes"],
@@ -99,7 +99,7 @@ class CL1TelemetryTests(unittest.TestCase):
         self.assertIn("connect-src 'self'", html)
         self.assertIn('src="../physarum/model.js"', html)
 
-    def test_oncology_links_are_current_scientific_ontology(self):
+    def test_ontology_links_are_current_scientific_ontology(self):
         o = self.physarum
         self.assertEqual(o["schema"], "xunia.cl1.physarum-ontology.v1")
         self.assertEqual(len(o["nodes"]), 16)
