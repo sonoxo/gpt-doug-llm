@@ -139,3 +139,17 @@ Tero-inspired transport-feedback equation; it exports millimeter-scale
 SVG design blueprints and graph JSON. The app does not make or control
 physical cultures, devices, or neurons. Evidence and implementation:
 `docs/physarum/README.md`.
+
+## CL1 linear + kinetic telemetry ontology
+
+The public [CL1 Telemetry Atlas](https://xunia.org/telemetry/) adds three
+synchronized visual planes to GPT-DOUG's Physarum-inspired architecture:
+line plots of seven dimensionless model signals, signed flow-vector animation,
+and clickable scientific-vs-synthetic ontology relationships.
+
+`docs/telemetry/registry.json` defines metrics and their provenance.
+`gpt_brain/telemetry.py` supplies bounded, read-only metric context for
+relevant prompts; `BrainKernel` now includes those records in its ontology
+recall. The software has **no live sensors, device control, brain recording or
+kinetic hardware outputs**. It exports CSV, JSON and a Canvas PNG locally,
+with no paid provider or API keys.
