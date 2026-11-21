@@ -32,3 +32,60 @@ GitHub Actions workflow `.github/workflows/glass-onion.yml` executes these on pu
 
 ## Truth boundary
 GitHub Pages hosts static files; it does not operate a Tor relay, search engine, breach-data subscription, onion mirror, or secure evidence server. No credentials, private records, or arbitrary websites should be automatically collected. No external commercial service is portrayed as installed. Feature branch builds are not publicly deployed until merged and the Pages job passes. This exhibit follows XUNIA Museum inclusion and provenance guidelines.
+
+## USA Defense Scope v1 / public defensive readiness
+
+**Launch:** `https://xunia.org/darkweb/#usa-defense`
+
+Glass Onion now includes a **U.S.-focused defensive scope planner**. The
+scope is deliberately **public-source, non-invasive and non-operational**:
+not a nationwide cybersecurity deployment, not a CISA/DHS/NIST/FBI
+partnership, not a scanning service or autonomous incident responder.
+
+Its data contract is `usa-defense-scope.json` and its browser-only UI
+is `usa-scope-app.mjs` with validated helpers in `usa-scope.mjs`.
+
+### Coverage, not access
+
+- **16 official critical infrastructure sectors**, as recognized by CISA;
+  the user can plan across sectors or select one. This is a taxonomy,
+  **not** access to infrastructure operators or their security posture.
+- **Six NIST CSF 2.0 functions**: GOVERN, IDENTIFY, PROTECT, DETECT,
+  RESPOND, RECOVER; two concrete planning actions for each function.
+- **Five contexts**: public/community, authorized owner/operator,
+  state/local/tribal/territorial teams, small business/nonprofit, and
+  federal planning. No program status, eligibility, security authority or
+  classified access is inferred.
+- **Local action plan** generation and JSON export. Every step is marked
+  `NOT_VERIFIED_OR_PERFORMED`; the output explicitly reports
+  **zero verified implementations**.
+- **External official links only** for CISA critical-infrastructure sectors,
+  CISA KEV, NIST CSF, CISA incident reporting, and FBI IC3. Reports are
+  filed only through the real agency sites by the user.
+
+No connected assets are discovered, no network scans, endpoint changes,
+blocking, live threat monitoring, credential collection or reports are
+initiated by this UI. It does not collect private asset inventories or
+case details. Users seeking real protection must separately deploy
+owner-approved controls and operational response processes. If a CISA
+reference changes, the source is reviewed and updated rather than
+substituting an invented live status.
+
+**Verified underlying references:** [CISA critical infrastructure sectors](https://www.cisa.gov/critical-infrastructure-sectors),
+[NIST CSF 2.0](https://www.nist.gov/cyberframework),
+[CISA known exploited vulnerabilities](https://www.cisa.gov/known-exploited-vulnerabilities-catalog),
+[CISA incident reporting](https://www.cisa.gov/report), and
+[FBI IC3](https://www.ic3.gov/).
+
+**Verification:**
+
+```sh
+node --check docs/darkweb/usa-scope.mjs
+node --check docs/darkweb/usa-scope-app.mjs
+node --test tests/xunia_usa_defense_scope.test.mjs
+cd tests/glass-onion-browser && npm test
+```
+
+The existing Glass Onion GitHub Actions workflow verifies the scope,
+authorization boundaries, both new local-plan browser journeys, and the
+original research tools before deployment.
