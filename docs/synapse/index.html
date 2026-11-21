@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070d18"><meta name="referrer" content="no-referrer">
+<meta name="description" content="CL1 Sensory Synapse: visual and sonic neural-network experience with source-qualified molecular, planetary and ontology objects. Free browser simulation; no neural implants, medical or stimulation interface.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data: blob:; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="./style.css"><script defer src="./synapse.js"></script>
+<title>XUNIA // CL1 SENSORY SYNAPSE</title>
+</head>
+<body>
+<div class="shell">
+<header class="topbar">
+<a class="brand" href="../" aria-label="XUNIA headquarters"><span class="brand-symbol">◉</span><span><small>SONOXO // GPT-DOUG-LLM // CL1</small><strong>SENSORY <em>SYNAPSE</em></strong></span></a>
+<nav aria-label="Ecosystem navigation"><a href="../">HQ</a><a href="../fusion/">FUSION</a><a href="../cosmos/">COSMOS</a><a href="../molecules/">MOLECULES</a><a href="../biological-data-center/">BIO CENTER</a></nav>
+<span class="device-state"><i aria-hidden="true"></i> BROWSER SIMULATION · NO NEURAL HARDWARE</span>
+</header>
+<section class="hero">
+ <div><div class="kicker">01 / MULTIMODAL EXPERIENCE ENGINE · ONTOLOGY CONNECTED</div>
+ <h1>FEEL THE <span>DATA.</span><br><em>SEE THE SIGNAL.</em></h1>
+ <p>Bring XUNIA's public ontology to life through a procedural neural mesh, voluntary spatial audio, optional spoken descriptions, touch-driven on-screen interaction, and conceptual aroma/taste descriptors.</p>
+ </div>
+ <div class="hero-facts"><div><strong>05</strong><small>SENSORY CHANNELS</small></div><div><strong id="sourceCount">—</strong><small>CONNECTED OBJECTS</small></div><div><strong>0</strong><small>IMPLANT CONNECTIONS</small></div></div>
+</section>
+<div class="truth"><b>SOFTWARE-ONLY EXPERIENCE</b> This interface does not read thoughts, activate Neuralink, connect to living CL1 neurons, stimulate anyone, generate real tactile sensation, or deliver odor/taste. Sound and speech require a deliberate click. Descriptions from source catalogs remain separate from simulated sensations.</div>
+<main class="grid">
+<aside class="panel library" aria-label="Source ontology and sensory routing">
+<div class="panel-title"><span>02 / SOURCE ONTOLOGY</span><span id="catalogState" role="status" aria-live="polite">LOADING</span></div>
+<div class="library-inner">
+<label for="sourceType">KNOWLEDGE DOMAIN</label>
+<select id="sourceType"><option value="molecules">MOLECULES · PUBCHEM-LINKED</option><option value="planets">PLANETS · NASA/JPL</option><option value="ontology">FUSION ONTOLOGY · DESIGN TYPES</option></select>
+<label for="sourceSearch">FILTER OBJECTS</label><input id="sourceSearch" type="search" autocomplete="off" placeholder="Water, Earth, neural…">
+<div class="source-list" id="sourceList" role="group" aria-label="Choose source object"></div>
+<div class="panel-title inner-title"><span>03 / FIVE SENSORY CHANNELS</span></div>
+<div class="sense-controls">
+<label><input type="checkbox" data-sense="vision" checked><span class="sense-icon">◉</span><span><strong>SIGHT</strong><small>Animated neural visualization</small></span></label>
+<label><input type="checkbox" data-sense="sound" checked><span class="sense-icon">♫</span><span><strong>HEARING</strong><small>Opt-in generated spatial tones</small></span></label>
+<label><input type="checkbox" data-sense="touch" checked><span class="sense-icon">⌖</span><span><strong>TOUCH</strong><small>Mouse/touch pressure-style display</small></span></label>
+<label><input type="checkbox" data-sense="smell" checked><span class="sense-icon">≈</span><span><strong>SMELL</strong><small>Conceptual descriptors only</small></span></label>
+<label><input type="checkbox" data-sense="taste" checked><span class="sense-icon">◇</span><span><strong>TASTE</strong><small>Conceptual descriptors only</small></span></label>
+</div>
+<button type="button" id="resetChannels" class="soft full">RESTORE CHANNELS</button>
+</div></aside>
+<section class="panel engine" aria-label="Interactive neural representation">
+<div class="panel-title"><span>04 / CL1 NEURAL FIELD</span><span id="fieldStatus" role="status" aria-live="polite">LOADING SOURCE DATA</span></div>
+<div class="engine-modes" role="group" aria-label="Visualization views">
+<button type="button" data-view="synapse" aria-pressed="true">SYNAPSE</button><button type="button" data-view="cortex" aria-pressed="false">CORTEX</button><button type="button" data-view="field" aria-pressed="false">FIELD</button>
+</div>
+<div class="viewport">
+<canvas id="neuralCanvas" tabindex="0" role="img" aria-label="Interactive simulated neural graph. Drag to rotate; move your cursor to interact with simulated touch; click to send a visual pulse. Arrow keys select nodes; Enter sends a pulse."></canvas>
+<div class="viewport-label">CL1 / SYNTHETIC NEURAL MESH <span id="meshLabel">READ ONLY · NO STIMULATION</span></div>
+<div class="viewport-footer">DRAG TO ROTATE · CLICK TO PULSE · SCROLL TO ZOOM · ARROWS TO NAVIGATE</div>
+<div class="camera"><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="zoomOut" aria-label="Zoom out">−</button><button type="button" id="recenter" aria-label="Recenter neural field">RESET</button></div>
+</div>
+<div class="controls">
+<label for="intensity">SIGNAL INTENSITY</label><input id="intensity" type="range" min="0" max="100" step="5" value="55"><output id="intensityValue" for="intensity">55%</output>
+<button type="button" id="pulse">EMIT VISUAL PULSE</button><button type="button" id="pause" aria-pressed="false">PAUSE MOTION</button>
+</div>
+<div class="audio">
+<button type="button" id="audioToggle" aria-pressed="false">♪ ENABLE AUDIO</button>
+<button type="button" id="speak">SPEAK SELECTED OBJECT</button>
+<button type="button" id="silence">STOP ALL SOUND</button>
+<div class="audio-label" id="audioStatus" role="status" aria-live="polite">AUDIO OFF / SPEECH OFF</div>
+</div>
+<div class="trace">
+<div class="panel-title"><span>05 / SENSORY EVENT LOG</span><span id="eventCount">0 EVENTS</span></div>
+<div id="eventLog" role="log" aria-label="Local sensory events" aria-live="polite"></div>
+</div>
+</section>
+<aside class="panel inspector" aria-label="Selected object and five channel outputs">
+<div class="panel-title"><span>06 / OBJECT INSPECTOR</span><span id="evidenceTag">—</span></div>
+<div class="object-header"><small id="objectType">CURATED</small><h2 id="objectName">Loading ontology…</h2><p id="objectDescription">Loading local, source-qualified records.</p></div>
+<dl class="object-facts"><div><dt>IDENTIFIER</dt><dd id="objectId">—</dd></div><div><dt>DOMAIN</dt><dd id="objectDomain">—</dd></div><div><dt>PROVENANCE</dt><dd id="objectProvenance">—</dd></div></dl>
+<div class="panel-title inner-title"><span>07 / THE FIVE CHANNELS</span></div>
+<div class="sense-results">
+<div><b><span>◉</span> SIGHT</b><p id="visionText">Visual mapping will appear here.</p></div>
+<div><b><span>♫</span> HEARING</b><p id="soundText">Generated tones are off by default.</p></div>
+<div><b><span>⌖</span> TOUCH</b><p id="touchText">Pointer contact is simulated visually.</p></div>
+<div><b><span>≈</span> SMELL</b><p id="smellText">No physical odor is generated.</p></div>
+<div><b><span>◇</span> TASTE</b><p id="tasteText">No physical flavor is generated.</p></div>
+</div>
+<a id="objectSource" class="source-link" href="../fusion/" target="_blank" rel="noopener noreferrer">OPEN ORIGINAL REFERENCE ↗</a>
+<div class="actions"><button type="button" id="savePng">SAVE VIEW PNG</button><button type="button" id="exportJson">EXPORT SESSION JSON</button><button type="button" id="selfTest">RUN SELF-TEST</button></div>
+<output id="actionStatus" role="status" aria-live="polite">READY · ALL EFFECTS LOCAL</output>
+</aside>
+</main>
+<section class="lower">
+<div class="panel notes"><div class="panel-title"><span>08 / HARDWARE & PRIVACY BOUNDARY</span></div><p>The official Cortical Labs CL SDK supports a local simulator, which is separate from this visual interface. Neuralink's implant and decoding application are not a public browser connection offered here. The site requests no camera, microphone, device access, or paid account; it sends no sensor data to a server.</p>
+<p>Screen animation and synthetic tones can approximate a multisensory experience; smell and taste remain <strong>semantic metaphors</strong> and must not be interpreted as verified compound characteristics.</p>
+<div class="sources"><a href="https://docs.corticallabs.com/" target="_blank" rel="noopener noreferrer">CORTICAL LABS CL API ↗</a><a href="https://neuralink.com/technology/" target="_blank" rel="noopener noreferrer">NEURALINK TECHNOLOGY ↗</a><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API" target="_blank" rel="noopener noreferrer">WEB AUDIO REFERENCE ↗</a></div></div>
+<div class="panel console"><div class="panel-title"><span>09 / CL1 SYNAPSE COMMANDS</span><span>FINITE LOCAL COMMANDS · NO SHELL</span></div>
+<form id="commandForm"><label for="commandInput">CL1 &gt;</label><input id="commandInput" maxlength="150" autocomplete="off" placeholder="/select Earth · /domain planets · /view cortex · /pulse · /health"><button type="submit">RUN</button></form>
+<output id="commandStatus" role="status" aria-live="polite">CMD/CTRL+K TO FOCUS · /help TO LIST COMMANDS</output>
+</div>
+</section>
+<footer><span>XUNIA · SONOXO · GPT-DOUG-LLM · CL1 SENSORY SYNAPSE</span><span>ORIGINAL BROWSER SIMULATION · NO IMPLANTS · NO HARDWARE STIMULATION · NO PAID API</span></footer>
+</div></body></html>
