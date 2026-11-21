@@ -1,0 +1,74 @@
+/* CL1 Telemetry numerical/kinetic regression: single source, no hardware. */
+"use strict";
+const assert=require("node:assert/strict");
+const Physarum=require("../docs/physarum/model.js");
+const Telemetry=require("../docs/telemetry/engine.js");
+const model=Physarum.create();
+const history=[];
+const initial=Telemetry.capture(model,history);
+assert.equal(initial.step,0);
+assert.equal(initial.flux,0);
+assert.equal(initial.tubes,0);
+assert.equal(initial.motion,0);
+assert.equal(initial.delta,0);
+assert.equal(history.length,1);
+assert.equal(Telemetry.METRICS.length,7);
+let prior=initial;
+for(let i=0;i<110;i++){
+ Physarum.tick(model);
+ const current=Telemetry.capture(model,history);
+ assert.equal(current.step,i+1);
+ assert.equal(current.delta,Number((current.flux-prior.flux).toFixed(6)));
+ assert.ok(current.flux>=0);
+ assert.ok(current.conductance>=0);
+ assert.ok(current.pressure>=0);
+ assert.ok(Number.isFinite(current.motion));
+ prior=current;
+}
+assert.equal(history.length,111);
+assert.ok(prior.flux>0);
+assert.ok(prior.tubes>20);
+assert.ok(prior.motion>0);
+assert.equal(prior.food,2);
+const vectors=Telemetry.vectors(model,120);
+assert.equal(vectors.length,120);
+assert.ok(vectors.some(v=>v.magnitude>0));
+assert.ok(vectors.every(v=>v.relativeSpeed>=0&&v.relativeSpeed<=1));
+assert.ok(vectors.every(v=>v.direction===1||v.direction===-1));
+assert.ok(vectors.every(v=>{
+ const edge=model.edges.find(e=>e.a===v.from&&e.b===v.to||e.a===v.to&&e.b===v.from);
+ return edge&&((edge.q>=0&&v.from===edge.a)||(edge.q<0&&v.from===edge.b));
+}),"signed flux must control arrow orientation");
+const csv=Telemetry.exportCSV(history);
+assert.equal(csv.split("\n").length,history.length+2);
+assert.ok(csv.startsWith("step,flux,tubes,conductance,energy,motion,delta,pressure"));
+const reg={metrics:Telemetry.METRICS.map(id=>({id,unit:"model units",evidence:"SIMULATED"}))};
+const json=JSON.parse(Telemetry.exportJSON(history,reg,model));
+assert.equal(json.schema,Telemetry.SCHEMA);
+assert.equal(json.history.length,history.length);
+assert.equal(json.latest.step,110);
+assert.equal(json.topology.nodes,216);
+assert.equal(json.topology.edges,402);
+assert.match(json.warning,/No hardware/);
+const cap=[];
+for(let i=0;i<300;i++)Telemetry.append(cap,{step:i,flux:i});
+assert.equal(cap.length,Telemetry.CAP);
+assert.equal(cap[0].step,60);
+assert.equal(cap.at(-1).step,299);
+Telemetry.append(cap,{step:299,flux:125});
+assert.equal(cap.length,Telemetry.CAP);
+assert.equal(cap.at(-1).flux,125);
+assert.throws(()=>Telemetry.append(cap,{step:200,flux:1}),/Out-of-order/);
+assert.equal(Physarum.barrier(model,Physarum.nearest(model,9,7),true),true);
+Physarum.tick(model);
+const afterWall=Telemetry.capture(model,history);
+assert.equal(afterWall.obstacles,1);
+assert.ok(Number.isFinite(afterWall.flux));
+assert.equal(Telemetry.vectors(model).every(v=>
+ !model.nodes[v.from].blocked&&!model.nodes[v.to].blocked),true);
+const alternate=Physarum.create();
+const other=[];
+Telemetry.capture(alternate,other);
+for(let i=0;i<110;i++){Physarum.tick(alternate);Telemetry.capture(alternate,other);}
+assert.deepEqual(history.slice(0,111),other,"deterministic solver must produce identical time-series");
+console.log("CL1 TELEMETRY PASS / seven metrics, 110 model samples, signed flow vectors, CSV/JSON, ring buffer, barrier and deterministic replay");
