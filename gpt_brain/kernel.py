@@ -132,6 +132,15 @@ class BrainKernel:
                 # A corrupted or unavailable supplemental index never stops
                 # the original BrainKernel or rewrites its source of truth.
                 pass
+        # Bio-inspired Physarum architecture: match species terms explicitly,
+        # then attach only curated literature claims. Never treat extracted
+        # biological descriptions as executable model instructions.
+        try:
+            from .physarum import search as search_physarum
+
+            ontology_ctx.extend(search_physarum(task, limit=4))
+        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+            pass
         agents = self.router.route(task, self.config.max_agents)
         uncertainty: list[str] = []
 
