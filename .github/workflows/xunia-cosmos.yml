@@ -8,6 +8,7 @@ on:
       - 'docs/molecules/**'
       - 'docs/synapse/**'
       - 'docs/physarum/**'
+      - 'docs/telemetry/**'
       - 'docs/index.html'
       - 'docs/cl1-live.js'
       - 'docs/cl1-live.css'
@@ -32,6 +33,9 @@ on:
       - 'tests/test_xunia_physarum.py'
       - 'tests/xunia_physarum_model_smoke.js'
       - 'tests/xunia_physarum_chrome_smoke.py'
+      - 'tests/test_xunia_telemetry.py'
+      - 'tests/xunia_telemetry_model_smoke.js'
+      - 'tests/xunia_telemetry_chrome_smoke.py'
       - 'gpt_brain/physarum.py'
       - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
@@ -47,6 +51,7 @@ on:
       - 'docs/molecules/**'
       - 'docs/synapse/**'
       - 'docs/physarum/**'
+      - 'docs/telemetry/**'
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
@@ -65,6 +70,9 @@ on:
       - 'tests/test_xunia_physarum.py'
       - 'tests/xunia_physarum_model_smoke.js'
       - 'tests/xunia_physarum_chrome_smoke.py'
+      - 'tests/test_xunia_telemetry.py'
+      - 'tests/xunia_telemetry_model_smoke.js'
+      - 'tests/xunia_telemetry_chrome_smoke.py'
       - 'gpt_brain/physarum.py'
       - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
@@ -113,6 +121,11 @@ jobs:
           node --check docs/synapse/synapse.js
           node --check docs/physarum/model.js
           node --check docs/physarum/forge.js
+          node --check docs/telemetry/engine.js
+          node --check docs/telemetry/atlas.js
+          node --check tests/xunia_telemetry_model_smoke.js
+          python -m json.tool docs/telemetry/registry.json > /dev/null
+          python -m compileall -q tests/test_xunia_telemetry.py tests/xunia_telemetry_chrome_smoke.py
           node --check tests/xunia_physarum_model_smoke.js
           python -m json.tool docs/physarum/ontology.json > /dev/null
           python -m compileall -q gpt_brain/physarum.py tests/test_xunia_physarum.py tests/xunia_physarum_chrome_smoke.py
@@ -157,6 +170,12 @@ jobs:
         run: node tests/xunia_physarum_model_smoke.js
       - name: Verify real Physarum Forge browser edits and reduced-motion via Chromium
         run: python tests/xunia_physarum_chrome_smoke.py
+      - name: Validate typed linear and kinetic telemetry ontology and free-only runtime
+        run: python -m unittest discover -s tests -p 'test_xunia_telemetry.py' -v
+      - name: Validate numerical trace capture, signed kinetic vectors and deterministic JSON CSV exports
+        run: node tests/xunia_telemetry_model_smoke.js
+      - name: Validate interactive telemetry dashboard in Chromium with reduced motion
+        run: python tests/xunia_telemetry_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
@@ -206,6 +225,13 @@ jobs:
           assert "../physarum/" in (docs/"fusion/index.html").read_text()
           assert "../physarum/" in (docs/"biological-data-center/index.html").read_text()
           assert idx["publicSurfaces"]["physarumForge"]=="https://xunia.org/physarum/"
+          assert "./telemetry/" in (docs/"index.html").read_text()
+          assert "../telemetry/" in (docs/"physarum/index.html").read_text()
+          assert "../telemetry/" in (docs/"synapse/index.html").read_text()
+          assert "../telemetry/" in (docs/"fusion/index.html").read_text()
+          assert "../telemetry/" in (docs/"biological-data-center/index.html").read_text()
+          assert idx["publicSurfaces"]["telemetryAtlas"]=="https://xunia.org/telemetry/"
+          assert (docs/"telemetry/registry.json").exists()
           assert (docs/"physarum/ontology.json").exists()
           assert (docs/"synapse/index.html").exists()
           print("COSMOS GitHub Pages contract passed; no Vercel or paid APIs")
