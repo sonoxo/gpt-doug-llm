@@ -36,6 +36,7 @@ on:
       - 'tests/test_xunia_telemetry.py'
       - 'tests/xunia_telemetry_model_smoke.js'
       - 'tests/xunia_telemetry_chrome_smoke.py'
+      - 'gpt_brain/telemetry.py'
       - 'gpt_brain/physarum.py'
       - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
@@ -73,6 +74,7 @@ on:
       - 'tests/test_xunia_telemetry.py'
       - 'tests/xunia_telemetry_model_smoke.js'
       - 'tests/xunia_telemetry_chrome_smoke.py'
+      - 'gpt_brain/telemetry.py'
       - 'gpt_brain/physarum.py'
       - 'gpt_brain/kernel.py'
       - 'scripts/xunia_molecules_import.py'
@@ -125,7 +127,7 @@ jobs:
           node --check docs/telemetry/atlas.js
           node --check tests/xunia_telemetry_model_smoke.js
           python -m json.tool docs/telemetry/registry.json > /dev/null
-          python -m compileall -q tests/test_xunia_telemetry.py tests/xunia_telemetry_chrome_smoke.py
+          python -m compileall -q tests/test_xunia_telemetry.py tests/xunia_telemetry_chrome_smoke.py gpt_brain/telemetry.py
           node --check tests/xunia_physarum_model_smoke.js
           python -m json.tool docs/physarum/ontology.json > /dev/null
           python -m compileall -q gpt_brain/physarum.py tests/test_xunia_physarum.py tests/xunia_physarum_chrome_smoke.py
