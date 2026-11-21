@@ -9,7 +9,7 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const canvas=$("physarumCanvas"),ctx=canvas?.getContext("2d"),plot=$("telemetryCanvas"),pctx=plot?.getContext("2d");
 const state={graph:null,ontology:null,mode:"food",active:!window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches,
  speed:48,showTrail:true,ready:false,phase:0,last:0,lastStep:0,history:[],
- pointer:null,down:false,keyboardId:0,visited:new Set(),actionCount:0,renderFrames:0};
+ pointer:null,down:false,keyboardId:0,visited:new Set(),actionCount:0,renderFrames:0,lastDraw:0};
 function status(t){$("actionStatus").textContent=String(t);}
 function consoleStatus(t){$("consoleStatus").textContent=String(t);}
 function size(el,c){
