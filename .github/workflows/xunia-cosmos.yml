@@ -6,6 +6,7 @@ on:
       - 'docs/cosmos/**'
       - 'docs/fusion/**'
       - 'docs/molecules/**'
+      - 'docs/synapse/**'
       - 'docs/index.html'
       - 'docs/cl1-live.js'
       - 'docs/cl1-live.css'
@@ -25,6 +26,8 @@ on:
       - 'tests/test_xunia_fusion.py'
       - 'tests/test_xunia_molecules.py'
       - 'tests/xunia_molecules_chrome_smoke.py'
+      - 'tests/test_xunia_synapse.py'
+      - 'tests/xunia_synapse_chrome_smoke.py'
       - 'scripts/xunia_molecules_import.py'
       - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
@@ -36,6 +39,7 @@ on:
       - 'docs/cosmos/**'
       - 'docs/fusion/**'
       - 'docs/molecules/**'
+      - 'docs/synapse/**'
       - 'scripts/xunia_cosmos_import.py'
       - 'scripts/xunia-cosmos'
       - 'tests/test_xunia_cosmos.py'
@@ -49,6 +53,8 @@ on:
       - 'tests/test_xunia_fusion.py'
       - 'tests/test_xunia_molecules.py'
       - 'tests/xunia_molecules_chrome_smoke.py'
+      - 'tests/test_xunia_synapse.py'
+      - 'tests/xunia_synapse_chrome_smoke.py'
       - 'scripts/xunia_molecules_import.py'
       - 'tests/xunia_fusion_chrome_smoke.py'
       - 'tests/xunia_live_core_chrome_smoke.py'
@@ -92,6 +98,8 @@ jobs:
           python -m json.tool docs/molecules/catalogs/seed.json > /dev/null
           python -m json.tool docs/molecules/catalogs/pubchem.json > /dev/null
           node --check docs/molecules/molecules.js
+          node --check docs/synapse/synapse.js
+          python -m compileall -q tests/test_xunia_synapse.py tests/xunia_synapse_chrome_smoke.py
           python -m compileall -q scripts/xunia_molecules_import.py tests/test_xunia_molecules.py tests/xunia_molecules_chrome_smoke.py
           python -m compileall -q tests/test_xunia_fusion.py tests/xunia_fusion_chrome_smoke.py
           python -m compileall -q tests/test_xunia_live_core.py tests/xunia_live_core_chrome_smoke.py
@@ -122,6 +130,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_xunia_molecules.py' -v
       - name: Verify interactive molecular atom viewer and provenance in Chromium
         run: python tests/xunia_molecules_chrome_smoke.py
+      - name: Validate CL1 five-channel sensory ontology and hardware safety boundaries
+        run: python -m unittest discover -s tests -p 'test_xunia_synapse.py' -v
+      - name: Verify actual CL1 neural interface and reduced-motion controls in Chromium
+        run: python tests/xunia_synapse_chrome_smoke.py
       - name: Validate public XUNIA and CL1 entry points
         run: |
           python - <<'PY'
@@ -162,5 +174,10 @@ jobs:
           assert "../molecules/" in (docs/"cosmos/index.html").read_text()
           assert "../molecules/" in (docs/"biological-data-center/index.html").read_text()
           assert idx["publicSurfaces"]["molecularObservatory"]=="https://xunia.org/molecules/"
+          assert "./synapse/" in (docs/"index.html").read_text()
+          assert "../synapse/" in (docs/"fusion/index.html").read_text()
+          assert "../synapse/" in (docs/"biological-data-center/index.html").read_text()
+          assert idx["publicSurfaces"]["sensorySynapse"]=="https://xunia.org/synapse/"
+          assert (docs/"synapse/index.html").exists()
           print("COSMOS GitHub Pages contract passed; no Vercel or paid APIs")
           PY
