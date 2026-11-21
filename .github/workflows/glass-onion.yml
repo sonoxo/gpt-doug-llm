@@ -8,6 +8,7 @@ on:
       - 'scripts/xunia_authorized_crawl.py'
       - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
+      - 'tests/xunia_usa_defense_scope.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -19,6 +20,7 @@ on:
       - 'scripts/xunia_authorized_crawl.py'
       - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
+      - 'tests/xunia_usa_defense_scope.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -39,6 +41,10 @@ jobs:
         run: |
           node --check docs/darkweb/core.mjs
           node --check docs/darkweb/app.mjs
+          node --check docs/darkweb/usa-scope.mjs
+          node --check docs/darkweb/usa-scope-app.mjs
+          node --test tests/xunia_usa_defense_scope.test.mjs
+          python3 -m json.tool docs/darkweb/usa-defense-scope.json >/dev/null
           node --test tests/xunia_glass_onion.test.mjs
           python3 -m py_compile scripts/xunia_authorized_crawl.py scripts/xunia_glass_onion_verify.py
           python3 -m unittest discover -s tests -p 'test_xunia_authorized_crawl.py' -v
@@ -62,6 +68,13 @@ jobs:
               assert feature in html, feature
               assert feature in app, feature
           assert "--authorized" in html
+          import json
+          scope=json.loads(Path("docs/darkweb/usa-defense-scope.json").read_text())
+          assert len(scope["sectors"])==16
+          assert len(scope["functions"])==6
+          assert scope["status"]=="PLANNING_ONLY_NO_NATIONWIDE_PROTECTION"
+          assert 'id="usa-defense"' in html
+          assert 'usa-scope-app.mjs' in html
           PY
 
   browser:
