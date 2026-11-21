@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./styles.css">
   <script src="https://unpkg.com/openpgp@5.11.3/dist/openpgp.min.js" crossorigin="anonymous" defer></script>
   <script src="./app.mjs" type="module"></script>
+  <script src="./usa-scope-app.mjs" type="module"></script>
 </head>
 <body>
   <a class="skip" href="#toolkit">Skip to tools</a>
@@ -21,6 +22,7 @@
         <span class="brand-copy"><strong>XUNIA<span class="brand-accent">/</span>GLASS ONION</strong><small>DEFENSIVE INTELLIGENCE LAB</small></span>
       </a>
       <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#usa-defense">USA Defense Scope</a>
         <a href="#toolkit">Tools</a>
         <a href="../ecosystem-observatory/">Ecosystem Map</a>
         <a href="../open-web-atlas/">Open Web Atlas</a>
@@ -72,6 +74,50 @@
       <div class="section-heading">
         <div><p class="section-kicker">NEW / OPEN-SOURCE REPOSITORY INTELLIGENCE</p><h2 id="source-atlas-title">15 Source Atlas<span class="section-highlight">.</span></h2><p>Fifteen video-ranked research categories, sixteen independently located upstream repositories, open-source substitutes and evidence-gated source attribution. Read-only catalog: no third-party code is downloaded or executed.</p></div>
         <div class="hero-actions"><a class="btn btn-primary" href="./15-source-atlas/">Explore the 15 Sources <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </section>
+
+    <section id="usa-defense" class="section wrap usa-defense-section" aria-labelledby="usa-defense-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">USA / GLASS ONION DEFENSIVE SCOPE · VERSION 1</p>
+          <h2 id="usa-defense-title">Defensive readiness<span class="section-highlight">.</span></h2>
+          <p>Public-source planning for U.S. communities and authorized defenders. Based on CISA's 16 critical-infrastructure sectors and NIST CSF 2.0. Generates local checklists, not scans, live monitoring, government permissions or guaranteed protection.</p>
+        </div>
+        <span class="section-coord">PUBLIC INTELLIGENCE / PLANNING ONLY</span>
+      </div>
+      <div class="usa-scope-warning"><strong>AUTHORIZATION BOUNDARY</strong> This is not a national cyber-defense deployment, agency partnership, automated incident responder, or surveillance system. Only investigate systems you own or are expressly authorized to assess. Never enter target addresses, private inventories, victim records or credentials into this public page.</div>
+      <div class="usa-scope-grid">
+        <div class="usa-scope-configuration panel">
+          <div class="usa-scope-head"><span>01 / MISSION SCOPE</span><span>FREE / STATIC / LOCAL</span></div>
+          <div class="usa-scope-counter">
+            <div><strong id="usa-sector-count">—</strong><small>CISA SECTORS</small></div>
+            <div><strong id="usa-function-count">—</strong><small>NIST FUNCTIONS</small></div>
+            <div><strong>0</strong><small>NETWORKS CONNECTED</small></div>
+          </div>
+          <label for="usa-sector">Critical infrastructure sector</label>
+          <select id="usa-sector" aria-label="Choose critical infrastructure sector"><option>Loading source registry…</option></select>
+          <label for="usa-profile">Defensive planning context</label>
+          <select id="usa-profile" aria-label="Choose defender role"><option>Loading source registry…</option></select>
+          <label for="usa-function">NIST CSF 2.0 function</label>
+          <select id="usa-function" aria-label="Choose cybersecurity function"><option>Loading source registry…</option></select>
+          <button id="usa-generate-plan" type="button" class="btn btn-primary">GENERATE DEFENSIVE SCOPE</button>
+          <button id="usa-export-plan" type="button" class="btn btn-outline" disabled>EXPORT SCOPE JSON ↓</button>
+          <p id="usa-scope-status" class="feedback" role="status" aria-live="polite">LOADING OFFICIAL-SOURCE SCOPE…</p>
+        </div>
+        <div class="usa-scope-output panel" aria-label="Source-qualified defensive action plan">
+          <div class="usa-scope-head"><span>02 / READINESS PLAN</span><span>UNVERIFIED ACTIONS</span></div>
+          <div class="usa-plan-heading">
+            <span>MISSION / USA CIVILIAN CYBER RESILIENCE</span>
+            <h3 id="usa-plan-title">Loading scope…</h3>
+            <p id="usa-plan-summary">No plan generated yet.</p>
+          </div>
+          <div id="usa-plan-steps" class="usa-plan-steps"></div>
+          <p id="usa-plan-boundary" class="usa-plan-boundary">Nothing here constitutes operational protection or a compliance audit.</p>
+        </div>
+      </div>
+      <div class="usa-scope-sources panel">
+        <div><strong>03 / OFFICIAL REFERENCES AND REPORTING</strong><p>Open official sites to review requirements or report incidents. This website does not submit incidents, store your scope profile or contact federal agencies on your behalf.</p></div>
+        <div id="usa-source-list" class="usa-source-list" aria-label="Official cybersecurity references"></div>
       </div>
     </section>
 
