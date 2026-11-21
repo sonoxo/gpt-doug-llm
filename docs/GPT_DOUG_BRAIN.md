@@ -117,3 +117,25 @@ After merge to `main`, the free GitHub Actions workflow
 `CL1 Brain / Free Public Intelligence` performs a bounded refresh and
 uploads a **7-day downloadable JSON artifact**, without automatically
 publishing unreviewed third-party claims into the repository.
+
+## Physarum bio-inspired adaptive network memory / PHYSA-01
+
+*Physarum polycephalum* is an amoebozoan protist. Its plasmodium is a
+large multinucleate cell, not fungus, neural tissue or a trained AI.
+Its flow-bearing tube network is a documented natural inspiration for
+resilient, decentralized routing.
+
+GPT-DOUG BrainKernel now retrieves curated, source-cited Physarum facts
+from `docs/physarum/ontology.json` through `gpt_brain/physarum.py`
+when a task explicitly mentions *Physarum*, slime mold, plasmodium,
+“The Blob”, or Amoebozoa. This read-only scientific context is
+distinct from the speculative software model, follows canonical
+BrainKernel safety controls and includes source URLs in provenance.
+
+Run the interactive, free public simulation at
+`https://xunia.org/physarum/` or locally through the COSMOS server.
+Its 216-node flow network adapts tube strengths according to a simplified
+Tero-inspired transport-feedback equation; it exports millimeter-scale
+SVG design blueprints and graph JSON. The app does not make or control
+physical cultures, devices, or neurons. Evidence and implementation:
+`docs/physarum/README.md`.
