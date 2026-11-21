@@ -80,9 +80,9 @@ class CL1PhysarumTests(unittest.TestCase):
             self.assertNotIn(forbidden, js)
             self.assertNotIn(forbidden, model)
         self.assertIn("width", model)
-        self.assertIn("180mm", html)
-        self.assertIn("no hardware", html.lower())
-        self.assertIn("Flow", html)
+        self.assertIn("180 × 120 mm", html)
+        self.assertIn("no machine is controlled", html.lower())
+        self.assertIn("flow-reinforcement model", html)
 
     def test_brain_local_retrieval_references_scientific_sources(self):
         self.assertTrue(physarum.applies("Physarum polycephalum"))
