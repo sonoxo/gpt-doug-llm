@@ -6,6 +6,8 @@ import unittest
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from gpt_brain import telemetry
+
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 ATLAS = DOCS / "telemetry"
@@ -107,6 +109,23 @@ class CL1TelemetryTests(unittest.TestCase):
         self.assertGreaterEqual(len(o["sources"]), 5)
         self.assertTrue(any(n["verified"] for n in o["nodes"]))
         self.assertTrue(any(not n["verified"] for n in o["nodes"]))
+
+    def test_brain_recalls_simulated_metrics_with_source_urls(self):
+        self.assertTrue(telemetry.applies("show linear telemetry"))
+        self.assertTrue(telemetry.applies("kinetic flow vectors"))
+        self.assertFalse(telemetry.applies("show my home security cameras"))
+        self.assertEqual(telemetry.load()["schema"], self.registry["schema"])
+        records = telemetry.search("linear telemetry flux history")
+        self.assertGreaterEqual(len(records), 3)
+        self.assertTrue(all(
+            row["path"].startswith("cl1-telemetry:")
+            and row["value"]["source_url"].startswith("https://")
+            and "Synthetic" in row["value"]["boundary"]
+            for row in records
+        ))
+        self.assertEqual(telemetry.search("weather tomorrow"), [])
+        kernel = (ROOT / "gpt_brain" / "kernel.py").read_text()
+        self.assertIn("search_cl1_telemetry(task", kernel)
 
     def test_registered_in_five_existing_xunia_modules(self):
         for path, anchor in (
