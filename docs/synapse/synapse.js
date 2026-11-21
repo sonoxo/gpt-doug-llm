@@ -23,7 +23,7 @@ function log(t){const line=document.createElement("div"),time=document.createEle
  while($("eventLog").children.length>7)$("eventLog").lastChild.remove();
  $("eventCount").textContent=++state.events+" EVENTS";}
 function permitted(url){try{const u=new URL(url);return u.protocol==="https:"&&
- ["nssdc.gsfc.nasa.gov","ssd.jpl.nasa.gov","cdms.astro.uni-koeln.de",
+ ["nssdc.gsfc.nasa.gov","ssd.jpl.nasa.gov","api.nasa.gov","cdms.astro.uni-koeln.de",
  "pubchem.ncbi.nlm.nih.gov","www.palantir.com","aws.amazon.com",
  "docs.aws.amazon.com","www.anduril.com"].includes(u.hostname);}catch(_){return false;}}
 function parseCatalogs(m,p,f){
