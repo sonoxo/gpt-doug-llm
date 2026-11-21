@@ -1,0 +1,150 @@
+{
+  "schema": "xunia.glass-onion.usa-defense-scope.v1",
+  "version": "1.0.0",
+  "reviewed_at": "2026-11-21",
+  "mission": "Assist U.S. communities and authorized system owners with public-source cyber readiness planning, defensive prioritization, evidence hygiene and official reporting pathways.",
+  "jurisdiction": "United States",
+  "status": "PLANNING_ONLY_NO_NATIONWIDE_PROTECTION",
+  "not_affiliated_with": [
+    "CISA",
+    "DHS",
+    "NIST",
+    "FBI"
+  ],
+  "sectors": [
+    "Chemical",
+    "Commercial Facilities",
+    "Communications",
+    "Critical Manufacturing",
+    "Dams",
+    "Defense Industrial Base",
+    "Emergency Services",
+    "Energy",
+    "Financial Services",
+    "Food and Agriculture",
+    "Government Facilities",
+    "Healthcare and Public Health",
+    "Information Technology",
+    "Nuclear Reactors, Materials, and Waste",
+    "Transportation Systems",
+    "Water and Wastewater Systems"
+  ],
+  "profiles": [
+    {
+      "id": "public",
+      "label": "Public awareness / community"
+    },
+    {
+      "id": "owner",
+      "label": "Authorized owner / operator"
+    },
+    {
+      "id": "local",
+      "label": "State, local, tribal or territorial team"
+    },
+    {
+      "id": "small",
+      "label": "Small business / nonprofit"
+    },
+    {
+      "id": "federal",
+      "label": "Federal program (planning only)"
+    }
+  ],
+  "functions": [
+    {
+      "id": "govern",
+      "label": "GOVERN",
+      "objective": "Define accountable ownership, policies, oversight and legal/privacy obligations.",
+      "actions": [
+        "Assign a named security decision-maker and document who can authorize changes.",
+        "Document reporting obligations, privacy requirements, critical suppliers and escalation contacts."
+      ]
+    },
+    {
+      "id": "identify",
+      "label": "IDENTIFY",
+      "objective": "Understand owned assets, dependencies and potential consequences of service disruption.",
+      "actions": [
+        "Inventory only assets you own or are explicitly authorized to assess; classify essential services and data.",
+        "Map critical suppliers and prioritize exposed products against official CISA Known Exploited Vulnerabilities notices."
+      ]
+    },
+    {
+      "id": "protect",
+      "label": "PROTECT",
+      "objective": "Reduce risk through preventive safeguards.",
+      "actions": [
+        "Use phishing-resistant multifactor authentication, least privilege and timely patching on authorized systems.",
+        "Maintain protected, routinely tested backups and segment high-consequence networks where approved."
+      ]
+    },
+    {
+      "id": "detect",
+      "label": "DETECT",
+      "objective": "Recognize unusual activity in authorized telemetry.",
+      "actions": [
+        "Review alerts and logs only from systems where monitoring is authorized.",
+        "Correlate official security advisories with the owned asset inventory; verify each alert before escalation."
+      ]
+    },
+    {
+      "id": "respond",
+      "label": "RESPOND",
+      "objective": "Coordinate and communicate verified cybersecurity incidents.",
+      "actions": [
+        "Follow the organization-approved incident response plan; preserve evidence and contain only under established authority.",
+        "Escalate through the owner/operator and relevant incident reporting channel; do not upload sensitive incident details to this public website."
+      ]
+    },
+    {
+      "id": "recover",
+      "label": "RECOVER",
+      "objective": "Restore service safely and learn from incidents.",
+      "actions": [
+        "Restore from tested backups under the organization-approved continuity and recovery plan.",
+        "Validate service integrity and document corrective actions, restoration status and lessons learned."
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "cisa-sectors",
+      "name": "CISA critical infrastructure sectors",
+      "url": "https://www.cisa.gov/critical-infrastructure-sectors",
+      "kind": "official_reference"
+    },
+    {
+      "id": "nist-csf",
+      "name": "NIST Cybersecurity Framework 2.0",
+      "url": "https://www.nist.gov/cyberframework",
+      "kind": "official_reference"
+    },
+    {
+      "id": "cisa-kev",
+      "name": "CISA Known Exploited Vulnerabilities",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "kind": "official_reference"
+    },
+    {
+      "id": "cisa-report",
+      "name": "CISA official incident reporting",
+      "url": "https://www.cisa.gov/report",
+      "kind": "external_reporting_portal"
+    },
+    {
+      "id": "fbi-ic3",
+      "name": "FBI Internet Crime Complaint Center",
+      "url": "https://www.ic3.gov/",
+      "kind": "external_reporting_portal"
+    }
+  ],
+  "boundaries": {
+    "public_publication": "Public source references and voluntary generic readiness plans only; no claim to protect or monitor all USA networks.",
+    "active_testing": "Active scanning, endpoint changes, account access or incident response require documented ownership/authorization and separate approved tools; this page implements none.",
+    "data": "No classified data, credentials, access tokens, private system inventories, victim data, financial records, or incident case files collected by this scope panel.",
+    "automation": "No continuous checks, live agent deployment, threat blocking, incident submission, or monitoring initiated by this page.",
+    "evidence": "Plans are advisory; they do not establish compliance, a completed security audit, or operational readiness.",
+    "authority": "Not a government agency, contractor, incident responder, or authorized nationwide infrastructure operator."
+  }
+}
