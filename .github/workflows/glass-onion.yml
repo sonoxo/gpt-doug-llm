@@ -9,6 +9,7 @@ on:
       - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
       - 'tests/xunia_usa_defense_scope.test.mjs'
+      - 'tests/xunia_cosmos_eyes.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -21,6 +22,7 @@ on:
       - 'scripts/xunia_glass_onion_verify.py'
       - 'tests/xunia_glass_onion.test.mjs'
       - 'tests/xunia_usa_defense_scope.test.mjs'
+      - 'tests/xunia_cosmos_eyes.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -47,6 +49,9 @@ jobs:
           node --check docs/darkweb/global/feed-core.mjs
           node --check docs/darkweb/global/global.mjs
           node --test tests/xunia_global_observatory.test.mjs
+          node --check docs/darkweb/cosmos/feed-core.mjs
+          node --check docs/darkweb/cosmos/cosmos.mjs
+          node --test tests/xunia_cosmos_eyes.test.mjs
           python3 -m json.tool docs/darkweb/usa-defense-scope.json >/dev/null
           node --test tests/xunia_glass_onion.test.mjs
           python3 -m py_compile scripts/xunia_authorized_crawl.py scripts/xunia_glass_onion_verify.py
@@ -79,6 +84,10 @@ jobs:
           assert 'id="usa-defense"' in html
           assert 'usa-scope-app.mjs' in html
           assert 'href="./global/"' in html
+          assert 'href="./cosmos/"' in html
+          cosmos_html=Path('docs/darkweb/cosmos/index.html').read_text()
+          assert 'COSMOS EYES' in cosmos_html
+          assert 'Content-Security-Policy' in cosmos_html
           global_html=Path("docs/darkweb/global/index.html").read_text()
           assert "GLOBAL OBSERVATORY" in global_html
           assert "Content-Security-Policy" in global_html
