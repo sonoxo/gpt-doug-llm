@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#060a14">
+<meta name="description" content="COSMOS EYES: source-qualified NOAA space weather, live-updating aurora model, NASA solar observatory imagery, and JPL asteroid close-approach forecasts.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://sdo.gsfc.nasa.gov; connect-src 'self' https://services.swpc.noaa.gov; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<title>COSMOS EYES // XUNIA GLASS ONION</title>
+<link rel="stylesheet" href="./cosmos.css">
+<script type="module" src="./cosmos.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#observatory">Skip to observatory</a>
+<header>
+ <a class="mark" href="../"><span class="sig">X<span>◉</span></span><span><strong>XUNIA // GLASS ONION</strong><small>GPT-DOUG-LLM · COSMIC DEFENSIVE INTELLIGENCE</small></span></a>
+ <nav aria-label="Navigation"><a href="../global/">EARTH INTEL</a><a href="../#usa-defense">USA DEFENSE</a><a href="https://xunia.org/">XUNIA HQ</a></nav>
+ <div class="top-state"><i id="status-light"></i><span id="overall-state">CONNECTING</span></div>
+</header>
+<main>
+ <section class="hero">
+  <div class="eyebrow">// SYSTEM: EYES OF THE COSMOS &nbsp; / &nbsp; PUBLIC-SPACE DATA STREAM</div>
+  <div class="hero-inner"><div><h1>EYES <small>OF THE</small><br><em>COSMOS</em><span class="terminal-cursor">_</span></h1><p>Observe the Sun–Earth environment from public scientific instruments. Time-stamped measurements, model output, and orbital forecasts remain separate. No fabricated spacecraft sensors or artificial sightings.</p></div>
+   <div class="hero-actions"><button id="refresh" type="button">↻ SYNCHRONIZE FEEDS</button><span class="subtle">AUTO UPDATE: 2 MIN · VISIBLE TAB ONLY</span><strong id="local-clock">—</strong></div></div>
+ </section>
+ <section class="strip" aria-label="Current space data status">
+  <div><small>SOLAR WIND</small><strong id="metric-speed">—</strong><span>km/s · NOAA L1</span></div>
+  <div><small>MAGNETIC Bz</small><strong id="metric-bz">—</strong><span>nT · GSM</span></div>
+  <div><small>PLANETARY Kp</small><strong id="metric-kp">—</strong><span>geomagnetic index</span></div>
+  <div><small>GOES X-RAY FLUX</small><strong id="metric-flare">—</strong><span>long band · flare class</span></div>
+  <div><small>AURORA GRID</small><strong id="metric-aurora">—</strong><span>NOAA OVATION cells</span></div>
+  <div><small>ASTEROID TRACKER</small><strong id="metric-neo">LINK</strong><span>NASA/JPL official site</span></div>
+ </section>
+ <section class="orbit-layout" id="observatory">
+  <div class="globe card">
+   <div class="card-head"><span><i></i> 01 / EARTH MAGNETOSPHERE OBSERVATORY</span><span>NOAA OVATION · AURORA MODEL</span></div>
+   <div class="mapframe">
+    <svg id="aurora-map" viewBox="0 0 1000 500" role="img" aria-label="Global map showing NOAA OVATION forecast intensity grid. Colored points represent modeled aurora, not exact visible sightings.">
+      <defs>
+        <radialGradient id="sea" cx="50%" cy="50%" r="80%"><stop offset="0" stop-color="#184657"/><stop offset="1" stop-color="#06131f"/></radialGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="2.3"/></filter>
+      </defs>
+      <rect width="1000" height="500" fill="url(#sea)"/>
+      <g id="lat-lines"></g>
+      <image href="../global/world-land.svg" x="0" y="0" width="1000" height="500" aria-hidden="true"/>
+      <g id="aurora-points"></g>
+      <text x="18" y="25" fill="#73d8e6" font-family="monospace" font-size="12" letter-spacing="2">EARTH / 360° OBSERVATION PLANE</text>
+    </svg>
+    <div class="grid-corner">WGS84 / EQUIRECTANGULAR</div>
+    <div class="color-key"><span>OVATION MODEL INTENSITY</span><div class="gradient"></div><div>LOW <span>HIGH</span></div></div>
+   </div>
+   <div class="sourcebar"><span id="aurora-state">AWAITING NOAA MODEL</span><span id="aurora-observed">OBSERVED: —</span><span id="aurora-forecast">FORECAST: —</span></div>
+   <p class="disclaimer">Colored cells are the NOAA OVATION aurora <strong>model/forecast</strong>, not confirmed ground observations or a live video feed. Model timestamps and age determine availability.</p>
+  </div>
+  <div class="solar card">
+   <div class="card-head"><span>02 / SOLAR OBSERVATORY</span><span>NASA SDO · LATEST PUBLIC IMAGE</span></div>
+   <div class="sunview">
+     <div class="solar-rim"></div>
+     <img id="sun-image" src="https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_0193.jpg" alt="Most recently published NASA Solar Dynamics Observatory extreme ultraviolet solar disk image; age must be checked with source." loading="lazy" referrerpolicy="no-referrer">
+     <div class="scanline"></div>
+   </div>
+   <div class="suntext"><span id="sun-status">NASA image: loading / freshness not verified</span><a href="https://sdo.gsfc.nasa.gov/data/" target="_blank" rel="noopener noreferrer">SOURCE / NASA SDO ↗</a></div>
+   <p class="disclaimer">Real NASA imagery, refreshed by the provider. Browser retrieval time is <strong>not</strong> the image's acquisition time. This is not continuous live video.</p>
+  </div>
+ </section>
+ <section class="analytics">
+  <div class="card">
+   <div class="card-head"><span>03 / SOLAR WIND TELEMETRY</span><span>L1 SPACE WEATHER MONITORING</span></div>
+   <div class="reading"><div><span>PLASMA SPEED</span><strong id="wind-speed">—</strong></div><div><span>PROTON DENSITY</span><strong id="wind-density">—</strong></div><div><span>INTERPLANETARY Bz</span><strong id="mag-bz">—</strong></div></div>
+   <svg id="wind-plot" viewBox="0 0 600 125" role="img" aria-label="Measured recent solar wind speed trend; when source unavailable no line is shown"><g class="plotgrid"></g><polyline id="wind-line" fill="none" stroke="#66f6ec" stroke-width="2" stroke-linejoin="round" points=""/></svg>
+   <p class="source-status" id="wind-state">NOAA solar wind source pending</p>
+  </div>
+  <div class="card">
+   <div class="card-head"><span>04 / RADIATION AND MAGNETIC INDICES</span><span>GOES · PLANETARY KP</span></div>
+   <div class="reading"><div><span>LATEST Kp</span><strong id="kp-value">—</strong></div><div><span>GOES LONG-BAND X-RAY</span><strong id="xray-value">—</strong></div></div>
+   <svg id="kp-plot" viewBox="0 0 600 125" role="img" aria-label="Recent NOAA planetary K-index plot"><g class="plotgrid"></g><polyline id="kp-line" fill="none" stroke="#c7fa78" stroke-width="2" stroke-linejoin="round" points=""/></svg>
+   <p class="source-status" id="radiation-state">NOAA Kp and GOES source pending</p>
+  </div>
+ </section>
+ <section class="bottom">
+  <div class="card neos">
+   <div class="card-head"><span>05 / NEAR-EARTH OBJECTS</span><span>NASA/JPL · PREDICTED APPROACHES</span></div>
+   <div class="intro-card"><h2>ASTEROID PASSAGE FORECAST</h2><p>NASA/JPL publishes calculations for upcoming near-Earth approaches. These are <strong>predictions</strong>, not live telescope detections. NASA/JPL does not permit its SSD/CNEOS API to be embedded in a third-party website.</p></div>
+   <div id="neo-list" class="neo-list"><a class="neo-launch" href="https://cneos.jpl.nasa.gov/ca/" target="_blank" rel="noopener noreferrer">OPEN NASA/JPL OFFICIAL CLOSE APPROACH TABLE ↗</a></div>
+   <p id="neo-state" class="source-status">Use NASA/JPL directly for current predictions.</p>
+  </div>
+  <div class="card sources">
+   <div class="card-head"><span>06 / PROVENANCE AND LINKED EYES</span><span>DATA QUALITY MONITOR</span></div>
+   <div id="feeds" class="feed-list" aria-label="Official data source status"></div>
+   <div class="launches"><h3>EXPLORE THE REST OF THE SOLAR SYSTEM</h3>
+     <a href="https://eyes.nasa.gov/apps/solar-system/" target="_blank" rel="noopener noreferrer">NASA EYES / FULL SOLAR SYSTEM 3D <b>↗</b></a>
+     <a href="https://eyes.nasa.gov/apps/asteroids/" target="_blank" rel="noopener noreferrer">NASA EYES / ASTEROID TRACKER <b>↗</b></a>
+     <a href="../global/" >GLASS ONION / GLOBAL EARTH OBSERVATORY <b>↗</b></a>
+   </div>
+  </div>
+ </section>
+ <section class="truth"><strong>OPERATIONAL TRUTH / NO FALSE EYES</strong><p>A browser cannot observe the entire cosmos in real time. This interface displays only public instruments and published model outputs where available. Signal latency, processing delays, forecasts, and outages are shown rather than concealed. It does not detect aliens/UAPs, control satellites, access classified networks, scan systems, or provide government monitoring authority.</p></section>
+</main>
+<footer><span>XUNIA // GLASS ONION / COSMOS EYES · FREE PUBLIC SCIENCE</span><span>OBSERVE · ATTRIBUTE · VERIFY · NEVER INVENT</span></footer>
+</body></html>

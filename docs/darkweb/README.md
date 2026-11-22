@@ -126,3 +126,34 @@ cd tests/glass-onion-browser && npm test
 
 The existing Glass Onion workflow validates the registry, script syntax,
 unit cases, browser-mocked failure cases, and static website integration.
+
+## COSMOS EYES / source-qualified space observatory
+
+**Route (after publish):** https://xunia.org/darkweb/cosmos/
+
+Interactive, free, static-site space-weather laboratory with the following
+public authoritative feeds:
+
+1. NOAA SWPC real-time solar wind (L1) and magnetic field products.
+2. NOAA planetary Kp index and GOES primary X-ray measurements.
+3. NOAA OVATION aurora model output on source geographic grid coordinates.
+4. A direct link to the official NASA/JPL near-Earth close-approach table; no JPL API is embedded in this website because its terms prohibit it.
+5. NASA Solar Dynamics Observatory latest public 193 Å image (provider
+   image age not inferred from the browser retrieval time).
+
+Browser refresh: 2 minutes for NOAA while the tab is visible. JPL is external navigation only. NOAA observation
+timestamps are checked against distinct freshness limits; errors and stale data
+do not present made-up values. Aurora forecast grid points are only rendered
+for current source timestamps. NOAA model intensity is not a direct sighting.
+Solar wind and Kp charts show only actual measured series (no extrapolation).
+CSP permits only the five NOAA public endpoints' host and the SDO image host.
+NASA's official Eyes projects are linked for 3-D mission/asteroid simulation.
+
+**Scope:** Public data and delayed science products only; does not relay
+spacecraft instrument video, cover the whole cosmos, locate UAPs, monitor
+classified systems or imply government access.
+
+```sh
+node --test tests/xunia_cosmos_eyes.test.mjs
+cd tests/glass-onion-browser && npm test
+```
