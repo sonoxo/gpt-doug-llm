@@ -1,21 +1,20 @@
-import {FEEDS,POLL_MS,REFRESH_NEO_MS,parseWind,parseMag,parseKp,parseXray,parseAurora,parseNEO,flareClass,classifyFreshness,mapPoint} from "./feed-core.mjs";
+import {FEEDS,POLL_MS,parseWind,parseMag,parseKp,parseXray,parseAurora,flareClass,classifyFreshness,mapPoint} from "./feed-core.mjs";
 
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
-const methods={wind:parseWind,mag:parseMag,kp:parseKp,xray:parseXray,aurora:parseAurora,neo:parseNEO};
-const labels={wind:"SOLAR WIND",mag:"MAGNETIC FIELD",kp:"PLANETARY KP",xray:"GOES X-RAY",aurora:"OVATION AURORA",neo:"JPL CLOSE APPROACHES"};
-const state={data:{},meta:{},running:false,latestRequest:0,lastNeoRequest:0};
+const methods={wind:parseWind,mag:parseMag,kp:parseKp,xray:parseXray,aurora:parseAurora};
+const labels={wind:"SOLAR WIND",mag:"MAGNETIC FIELD",kp:"PLANETARY KP",xray:"GOES X-RAY",aurora:"OVATION AURORA"};
+const state={data:{},meta:{},running:false,latestRequest:0};
 const el=(tag,cls,value)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(value!==undefined)node.textContent=String(value);return node;};
 const svg=(tag,attrs={})=>{const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));return e;};
 const utc=t=>Number.isFinite(t)?new Date(t).toISOString().slice(0,19).replace("T"," ")+" UTC":"—";
 const number=(n,d=0)=>typeof n==="number"&&Number.isFinite(n)?n.toFixed(d):"—";
 const put=(id,value)=>{$(id).textContent=value;};
 function originTime(kind){
- const d=state.data[kind];return kind==="aurora"?d?.observed:kind==="neo"?state.meta[kind]?.received:d?.latest?.t;
+ const d=state.data[kind];return kind==="aurora"?d?.observed:d?.latest?.t;
 }
 function status(kind){
  const m=state.meta[kind],data=state.data[kind];
  if(!m||!m.ok||!data)return "FAILED";
- if(kind==="neo")return "FORECAST";
  return classifyFreshness(originTime(kind),kind);
 }
 function sourceStatus(){
@@ -24,16 +23,16 @@ function sourceStatus(){
   const m=state.meta[kind],statusValue=status(kind);
   const card=el("div","feed"),top=el("div","feed-top");
   const link=el("a",null,labels[kind]+" ↗");link.href=FEEDS[kind];link.target="_blank";link.rel="noopener noreferrer";
-  const flag=el("span","indicator "+(statusValue==="CURRENT"||statusValue==="FORECAST"?"current":statusValue==="FAILED"?"failed":""),statusValue);
+  const flag=el("span","indicator "+(statusValue==="CURRENT"?"current":statusValue==="FAILED"?"failed":""),statusValue);
   top.append(link,flag);card.append(top);
   let sub="Not fetched yet";
-  if(m?.ok)sub="Retrieved "+utc(m.received)+" · source "+utc(originTime(kind))+(kind==="neo"?" (forecast catalog; receipt ≠ observation)":"");
+  if(m?.ok)sub="Retrieved "+utc(m.received)+" · source "+utc(originTime(kind));
   if(m&&!m.ok)sub="Unavailable: "+m.error+" · no values substituted";
   if(m?.ok&&statusValue==="STALE")sub+=" · STALE: outside freshness window";
   card.append(el("p",null,sub));frag.append(card);
  }
  $("feeds").replaceChildren(frag);
- const available=Object.keys(FEEDS).filter(k=>status(k)==="CURRENT"||status(k)==="FORECAST").length;
+ const available=Object.keys(FEEDS).filter(k=>status(k)==="CURRENT").length;
  put("overall-state",available+"/"+Object.keys(FEEDS).length+" SOURCES VALID");
  $("status-light").className=available===6?"online":available?"partial":"";
 }
@@ -82,7 +81,7 @@ function metrics(){
  applyMetric("metric-bz",number(mag?.bz,1),"mag");applyMetric("mag-bz",number(mag?.bz,1)+" nT","mag");
  applyMetric("metric-kp",number(kp?.kp,1),"kp");applyMetric("kp-value",number(kp?.kp,2),"kp");
  applyMetric("metric-flare",flareClass(xray?.flux),"xray");applyMetric("xray-value",flareClass(xray?.flux),"xray");
- put("metric-neo",status("neo")==="FORECAST"?String(state.data.neo.length):"—");
+ put("metric-neo","LINK");
  if(status("wind")==="CURRENT")drawPlot("wind-line",state.data.wind.series.map(x=>x.speed).filter(Number.isFinite));
  else drawPlot("wind-line",[]);
  if(status("kp")==="CURRENT")drawPlot("kp-line",state.data.kp.series.map(x=>x.kp).filter(Number.isFinite));
@@ -91,17 +90,7 @@ function metrics(){
  put("radiation-state","Kp "+status("kp")+" · "+utc(kp?.t)+" / X-RAY "+status("xray")+" · "+utc(xray?.t));
  paintAurora();
 }
-function renderNEO(){
- const panel=$("neo-list");panel.replaceChildren();
- if(status("neo")!=="FORECAST"){put("neo-state","NASA/JPL catalog unavailable; no simulated asteroid flybys.");return;}
- const d=state.data.neo;
- for(const item of d.slice(0,20)){
-  const row=el("div","neo-row"),name=el("strong",null,item.designation),date=el("span",null,item.date),dist=el("span",null,number(item.distanceAu,5)+" AU"),speed=el("small",null,number(item.speedKms,1)+" km/s");
-  row.append(name,date,dist,speed);panel.append(row);
- }
- if(d.length===0)panel.append(el("p","source-status","No close approaches in the current JPL response."));
- put("neo-state","NASA/JPL close-approach forecast · "+d.length+" returned entries · retrieved "+utc(state.meta.neo.received)+" · NOT live observation");
-}
+function renderNEO(){put("neo-state","NASA/JPL catalog: official external tracker only; this site does not embed the restricted API.");}
 function render(){metrics();renderNEO();sourceStatus();}
 async function collect(kind){
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),18000);
@@ -109,7 +98,7 @@ async function collect(kind){
   const response=await fetch(FEEDS[kind],{mode:"cors",cache:"no-store",signal:controller.signal});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const raw=await response.json(),data=methods[kind](raw);
-  if(kind!=="aurora"&&kind!=="neo"&&!data.latest)throw new Error("No valid instrument measurements");
+  if(kind!=="aurora"&&!data.latest)throw new Error("No valid instrument measurements");
   state.data[kind]=data;state.meta[kind]={ok:true,received:Date.now()};
  }catch(error){
   state.data[kind]=null;state.meta[kind]={ok:false,received:Date.now(),error:error?.name==="AbortError"?"request timeout":error instanceof Error?error.message:"fetch failed"};
@@ -119,8 +108,7 @@ async function update(){
  if(state.running)return;
  state.running=true;put("refresh","SYNCING…");$("refresh").disabled=true;
  const now=Date.now();state.latestRequest=now;
- const jobs=Object.keys(FEEDS).filter(kind=>kind!=="neo"||!state.lastNeoRequest||now-state.lastNeoRequest>=REFRESH_NEO_MS);
- if(jobs.includes("neo"))state.lastNeoRequest=now;
+ const jobs=Object.keys(FEEDS);
  await Promise.all(jobs.map(collect));
  render();state.running=false;$("refresh").disabled=false;put("refresh","↻ SYNCHRONIZE FEEDS");
 }
