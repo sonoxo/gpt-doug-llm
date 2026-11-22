@@ -58,7 +58,7 @@ export function parseCISA(doc){
     return {id:cve,feed:"cisa",title:text(v.vulnerabilityName)||cve,
       vendor:text(v.vendorProject,90),product:text(v.product,90),added:text(v.dateAdded,15),
       url:"https://www.cve.org/CVERecord?id="+encodeURIComponent(cve)};
-  }).filter(Boolean).sort((a,b)=>b.added.localeCompare(a.added)||a.id.localeCompare(b.id)).slice(0,150);
+  }).filter(Boolean).sort((a,b)=>b.added.localeCompare(a.added)||a.id.localeCompare(b.id));
 }
 export function filterEvents(events,{kind="all",query="",timeWindow="all",minMagnitude=0,now=Date.now()}={}){
   const q=String(query).trim().toLowerCase().slice(0,120);
