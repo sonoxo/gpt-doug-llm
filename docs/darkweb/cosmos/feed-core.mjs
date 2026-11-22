@@ -5,13 +5,11 @@ export const FEEDS=Object.freeze({
   mag:"https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json",
   kp:"https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",
   xray:"https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json",
-  aurora:"https://services.swpc.noaa.gov/json/ovation_aurora_latest.json",
-  neo:"https://ssd-api.jpl.nasa.gov/cad.api"
+  aurora:"https://services.swpc.noaa.gov/json/ovation_aurora_latest.json"
 });
 export const POLL_MS=120000;
 export const DISPLAY_LIMIT=2200;
-export const REFRESH_NEO_MS=1800000;
-export const LIMITS=Object.freeze({wind:45*60000,mag:45*60000,kp:6*3600000,xray:60*60000,aurora:3*3600000,neo:48*3600000});
+export const LIMITS=Object.freeze({wind:45*60000,mag:45*60000,kp:6*3600000,xray:60*60000,aurora:3*3600000});
 const str=(v,n=170)=>typeof v==="string"?v.trim().slice(0,n):"";
 const numeric=v=>v===null||v===undefined||v===""?null:Number.isFinite(Number(v))?Number(v):null;
 const first=(o,keys)=>keys.map(k=>o?.[k]).find(v=>numeric(v)!==null);
@@ -94,22 +92,6 @@ export function parseAurora(data){
  points.sort((a,b)=>b.intensity-a.intensity);
  return {observed,forecast,points:points.slice(0,DISPLAY_LIMIT),totalAboveThreshold:points.length};
 }
-export function parseNEO(data){
- if(!data||!Array.isArray(data.fields)||!Array.isArray(data.data))throw new Error("Unexpected NASA/JPL close approach format");
- const required=["des","cd","dist","v_rel"];if(!required.every(k=>data.fields.includes(k)))throw new Error("NASA/JPL required fields missing");
- const idx=Object.fromEntries(data.fields.map((k,i)=>[k,i]));
- const items=[];
- for(const row of data.data.slice(0,1000)){
-  if(!Array.isArray(row))continue;
-  const designation=str(String(row[idx.des]??""),100),date=str(String(row[idx.cd]??""),60);
-  const distance=numeric(row[idx.dist]),velocity=numeric(row[idx.v_rel]);
-  if(!designation||!date||distance===null||distance<0||distance>100||velocity===null||velocity<0||velocity>500)continue;
-  items.push({designation,date,distanceAu:distance,speedKms:velocity,
-   // Date and approach distances are predictions, not live detections.
-   source:"https://ssd-api.jpl.nasa.gov/doc/cad.html"});
- }
- return items.slice(0,40);
-}
 export function classifyFreshness(time,kind,now=Date.now()){
  const age=now-time;
  if(!Number.isFinite(time)||!Number.isFinite(age))return "UNKNOWN";
@@ -122,5 +104,5 @@ export function mapPoint(lon,lat){
  return {x:(lon+180)*1000/360,y:(90-lat)*500/180};
 }
 export function summary(data){
- return Object.fromEntries(Object.entries(data).map(([kind,value])=>[kind,kind==="aurora"?value?.points.length??0:kind==="neo"?value?.length??0:value?.series.length??0]));
+ return Object.fromEntries(Object.entries(data).map(([kind,value])=>[kind,kind==="aurora"?value?.points.length??0:value?.series.length??0]));
 }
