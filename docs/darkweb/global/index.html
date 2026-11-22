@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#060b12">
+  <meta name="description" content="XUNIA Glass Onion Global Observatory — source-attributed, near-real-time open data on global natural events and non-geographic cyber vulnerabilities.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://earthquake.usgs.gov https://eonet.gsfc.nasa.gov https://raw.githubusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="no-referrer">
+  <title>GLOBAL OBSERVATORY // XUNIA GLASS ONION</title>
+  <link rel="stylesheet" href="./global.css">
+  <script type="module" src="./global.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#map-panel">Skip to world map</a>
+<header class="header">
+  <a class="identity" href="../"><span class="insignia">X/</span><span><strong>GLASS ONION</strong><small>GLOBAL OBSERVATORY / GPT-DOUG-LLM</small></span></a>
+  <nav aria-label="Global Observatory navigation">
+    <a href="../#usa-defense">USA DEFENSE</a><a href="../#toolkit">INTEL TOOLKIT</a><a href="https://xunia.org/">XUNIA HQ</a>
+  </nav>
+  <div class="network-status"><span class="status-light" id="network-dot"></span><span id="network-label">CONNECTING SOURCES</span></div>
+</header>
+<main>
+  <section class="intro">
+    <div class="kicker">XUNIA / GLASS ONION / OPEN-SOURCE INTELLIGENCE</div>
+    <div class="intro-line"><div><h1>GLOBAL <em>OBSERVATORY</em></h1><p>Explore worldwide public observations in near real time. Live-source geographic events stay separate from non-geographic cyber risk reporting.</p></div>
+    <div class="mission-pill"><span class="pulse"></span> PUBLIC SOURCES · NOT GLOBAL SURVEILLANCE</div></div>
+  </section>
+  <section class="metrics" aria-label="Latest public-feed summary">
+    <div><small>GEOGRAPHIC OBSERVATIONS</small><strong id="count-global">—</strong><span>USGS + NASA EONET</span></div>
+    <div><small>EARTHQUAKES / 24H FEED</small><strong id="count-usgs">—</strong><span>USGS global catalog</span></div>
+    <div><small>NASA OPEN EVENTS WITH POINTS</small><strong id="count-nasa">—</strong><span>Natural event metadata</span></div>
+    <div><small>CISA KEV CATALOG</small><strong id="count-cisa">—</strong><span>Unlocated cyber risks</span></div>
+    <div><small>LAST REFRESH ATTEMPT</small><strong class="clock" id="last-refreshed">—</strong><span>Browser-local time</span></div>
+  </section>
+  <section class="workgrid" id="map-panel" aria-label="Interactive global event map and observation list">
+    <div class="map-shell">
+      <div class="panel-heading"><span><i class="live-signal"></i> 01 / GLOBAL GEOSPATIAL VIEW</span><span>EARTH · EQUIRECTANGULAR / PUBLIC FEEDS</span></div>
+      <div class="toolbar">
+        <label>DATA LAYER<select id="layer"><option value="all">All geographic events</option><option value="usgs">USGS earthquakes</option><option value="nasa">NASA natural events</option></select></label>
+        <label>OBSERVATION AGE<select id="window"><option value="all">Source coverage</option><option value="day">Last 24 hours</option><option value="week">Last 7 days</option></select></label>
+        <label>MIN QUAKE MAG<select id="magnitude"><option value="0">All magnitudes</option><option value="2.5">2.5+</option><option value="4.5">4.5+</option><option value="6">6.0+</option></select></label>
+        <button class="action" type="button" id="refresh">↻ REFRESH NOW</button>
+      </div>
+      <div class="map-container" id="map-container">
+        <svg id="world" viewBox="0 0 1000 500" role="img" aria-label="World map with public event observations. Select an event from the accessible event list to read details.">
+          <defs><radialGradient id="ocean" cx="50%" cy="48%" r="67%"><stop offset="0%" stop-color="#0e323e"/><stop offset="100%" stop-color="#07111c"/></radialGradient><clipPath id="map-clip"><rect x="0" y="0" width="1000" height="500"/></clipPath></defs>
+          <rect width="1000" height="500" fill="url(#ocean)"/>
+          <g id="viewport" clip-path="url(#map-clip)">
+            <g id="grid-lines"></g>
+            <image href="./world-land.svg" x="0" y="0" width="1000" height="500" aria-hidden="true"/>
+            <g id="markers"></g>
+          </g>
+        </svg>
+        <span class="map-corner top-left">CL1 / LIVE GEOSPATIAL INTELLIGENCE</span>
+        <span class="map-corner bottom-left">LAT -90°…90° · LON -180°…180°</span>
+        <span class="map-corner bottom-right">SOURCE COORDINATES ONLY</span>
+        <div class="zoom-controls"><button id="zoom-in" type="button" aria-label="Zoom in">+</button><button id="zoom-out" type="button" aria-label="Zoom out">−</button><button id="zoom-reset" type="button" aria-label="Reset map view">⌖</button></div>
+      </div>
+      <div class="map-foot"><div class="legend"><span><i class="dot quake"></i> USGS earthquake</span><span><i class="dot hazard"></i> NASA natural event</span><span><i class="dot missing"></i> No coordinates: never mapped</span></div><strong id="map-total">0 mapped</strong></div>
+      <div class="map-note">Point positions come from the source feeds, not modeled cyberattack locations. NASA open events may contain observations older than their last publication; data is near-real-time, not a global sensor network. Drag or zoom the map to explore.</div>
+    </div>
+    <aside class="side-shell">
+      <div class="panel-heading"><span>02 / OBSERVATION STREAM</span><span id="stream-count">—</span></div>
+      <div class="stream-filters">
+        <label for="event-search">SEARCH PUBLIC EVENTS</label><input id="event-search" type="search" maxlength="120" placeholder="Event, location, category…">
+        <div class="stream-tools"><label><input type="checkbox" id="auto" checked> AUTO-REFRESH / 5 MIN</label><button type="button" id="export">EXPORT JSON ↓</button></div>
+      </div>
+      <p id="stream-status" class="stream-status" role="status" aria-live="polite">Loading official public feeds…</p>
+      <div id="selected" class="selected" hidden aria-live="polite"></div>
+      <div class="event-list" id="event-list" aria-label="Select a geolocated observation"></div>
+    </aside>
+  </section>
+  <section class="bottom-grid" aria-label="Cyber intelligence and source integrity">
+    <div class="cyber panel">
+      <div class="panel-heading"><span>03 / CYBER THREAT INTELLIGENCE · NON-GEOGRAPHIC</span><span>OFFICIAL CISA KEV MIRROR</span></div>
+      <div class="cyber-intro"><div><h2>EXPLOITED VULNERABILITIES</h2><p>CISA lists vulnerabilities known to have been exploited. Its feed does not supply attack locations, target telemetry, or a real-time count of attacks. <strong>No cyberattack dots are inferred on the world map.</strong></p></div><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">OFFICIAL CATALOG ↗</a></div>
+      <div id="cisa-status" class="intel-status" role="status">Waiting for CISA…</div>
+      <div class="cyber-list" id="cisa-list" aria-label="Recent CISA known exploited vulnerabilities"></div>
+    </div>
+    <div class="sources panel">
+      <div class="panel-heading"><span>04 / SOURCE INTEGRITY</span><span>NO BACKEND · NO PAID API</span></div>
+      <div class="source-list">
+        <div class="source"><div><strong>USGS / EARTHQUAKES</strong><a href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php" target="_blank" rel="noopener noreferrer">Feed documentation ↗</a></div><span id="source-usgs" class="source-health">CONNECTING</span><small id="timestamp-usgs">Not received</small></div>
+        <div class="source"><div><strong>NASA / EONET</strong><a href="https://eonet.gsfc.nasa.gov/docs/v3" target="_blank" rel="noopener noreferrer">API documentation ↗</a></div><span id="source-nasa" class="source-health">CONNECTING</span><small id="timestamp-nasa">Not received</small></div>
+        <div class="source"><div><strong>CISA / KEV</strong><a href="https://github.com/cisagov/kev-data" target="_blank" rel="noopener noreferrer">Official mirror ↗</a></div><span id="source-cisa" class="source-health">CONNECTING</span><small id="timestamp-cisa">Not received</small></div>
+      </div>
+      <p class="boundary">Browser requests fetch only three public HTTPS data sources. Failed sources show errors and contribute no fabricated observations. No surveillance, targeting, automated scans, infrastructure control, government affiliation or private victim monitoring.</p>
+    </div>
+  </section>
+</main>
+<footer><span>GLASS ONION // GLOBAL OBSERVATORY · DEFENSIVE PUBLIC INTELLIGENCE</span><span>Coastlines: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth (public domain)</a> · <a href="https://github.com/sonoxo/gpt-doug-llm/tree/main/docs/darkweb/global" target="_blank" rel="noopener noreferrer">SOURCE / AUDIT ↗</a></span></footer>
+</body>
+</html>
