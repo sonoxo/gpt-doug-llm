@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {FEEDS,POLL_MS,REFRESH_NEO_MS,parseWind,parseMag,parseKp,parseXray,flareClass,parseAurora,parseNEO,classifyFreshness,mapPoint,timestamp} from "../docs/darkweb/cosmos/feed-core.mjs";
+import {FEEDS,POLL_MS,parseWind,parseMag,parseKp,parseXray,flareClass,parseAurora,classifyFreshness,mapPoint,timestamp} from "../docs/darkweb/cosmos/feed-core.mjs";
 const now=Date.parse("2026-11-22T02:30:00Z");
 const t="2026-11-22T02:29:00Z";
-test("public NOAA and JPL endpoints use TLS and have no keys or targets",()=>{
- assert.equal(Object.keys(FEEDS).length,6);assert.equal(POLL_MS,120000);assert.equal(REFRESH_NEO_MS,1800000);
+test("five NOAA public instrument endpoints use TLS and have no keys or targets",()=>{
+ assert.equal(Object.keys(FEEDS).length,5);assert.equal(POLL_MS,120000);
  for(const url of Object.values(FEEDS)){assert.ok(url.startsWith("https://"));assert.ok(!/apikey=|api_key=|token=|password=|target=/i.test(url));}
 });
 test("ISO timestamps are UTC and invalid or missing timestamps are rejected",()=>{
@@ -37,10 +37,13 @@ test("OVATION uses only source grid locations and rejects invalid data",()=>{
  assert.throws(()=>parseAurora({coordinates:[]}),/missing observation/);
  assert.throws(()=>parseAurora({foo:1}),/format/);
 });
-test("JPL near-earth object records are approach forecasts, never live detections",()=>{
- const d=parseNEO({fields:["des","cd","dist","v_rel"],data:[["2026 ZZ","2026-Nov-22 22:11","0.0012","18.3"],["bad","unknown","-3","4"]]});
- assert.equal(d.length,1);assert.equal(d[0].distanceAu,.0012);assert.equal(d[0].speedKms,18.3);
- assert.ok(!("coords" in d[0]));assert.throws(()=>parseNEO({fields:["des"],data:[]}),/required fields/);
+test("NASA/JPL terms are respected: no browser CAD API request or fake asteroid coordinates",()=>{
+ const html=readFileSync(new URL("../docs/darkweb/cosmos/index.html",import.meta.url),"utf8");
+ const js=readFileSync(new URL("../docs/darkweb/cosmos/cosmos.mjs",import.meta.url),"utf8");
+ assert.ok(html.includes('https://cneos.jpl.nasa.gov/ca/'));
+ assert.ok(!html.includes('connect-src \'self\' https://services.swpc.noaa.gov https://ssd-api.jpl.nasa.gov'));
+ assert.ok(!js.includes('ssd-api.jpl.nasa.gov'));
+ assert.ok(!Object.keys(FEEDS).includes("neo"));
 });
 test("freshness gates distinguish observation time from device clock",()=>{
  assert.equal(classifyFreshness(now-20*60000,"wind",now),"CURRENT");
