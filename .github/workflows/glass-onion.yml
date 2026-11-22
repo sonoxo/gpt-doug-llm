@@ -44,6 +44,9 @@ jobs:
           node --check docs/darkweb/usa-scope.mjs
           node --check docs/darkweb/usa-scope-app.mjs
           node --test tests/xunia_usa_defense_scope.test.mjs
+          node --check docs/darkweb/global/feed-core.mjs
+          node --check docs/darkweb/global/global.mjs
+          node --test tests/xunia_global_observatory.test.mjs
           python3 -m json.tool docs/darkweb/usa-defense-scope.json >/dev/null
           node --test tests/xunia_glass_onion.test.mjs
           python3 -m py_compile scripts/xunia_authorized_crawl.py scripts/xunia_glass_onion_verify.py
@@ -75,6 +78,11 @@ jobs:
           assert scope["status"]=="PLANNING_ONLY_NO_NATIONWIDE_PROTECTION"
           assert 'id="usa-defense"' in html
           assert 'usa-scope-app.mjs' in html
+          assert 'href="./global/"' in html
+          global_html=Path("docs/darkweb/global/index.html").read_text()
+          assert "GLOBAL OBSERVATORY" in global_html
+          assert "Content-Security-Policy" in global_html
+          assert Path("docs/darkweb/global/world-land.svg").stat().st_size > 1000
           PY
 
   browser:
