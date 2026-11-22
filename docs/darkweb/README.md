@@ -89,3 +89,40 @@ cd tests/glass-onion-browser && npm test
 The existing Glass Onion GitHub Actions workflow verifies the scope,
 authorization boundaries, both new local-plan browser journeys, and the
 original research tools before deployment.
+
+## Global Observatory / near-real-time world views
+
+**Launch after GitHub Pages deployment:** https://xunia.org/darkweb/global/
+
+Independent, open-source, browser-side world map with a local Natural Earth
+1:110m public-domain coastline. No commercial mapping service, subscription,
+account sign-in, API tokens, or proprietary provider.
+
+- **USGS** all-earthquakes past-day GeoJSON, with source coordinates.
+- **NASA EONET** open-events API, curated natural phenomena. Only events with
+  valid point coordinates are plotted; polygons are excluded, not given
+  synthetic center points.
+- **CISA** Known Exploited Vulnerabilities (KEV) JSON, shown in a **separate
+  non-geographic panel**. The catalog provides no attack-location telemetry.
+- Source integrity and fetch times appear independently for every feed.
+  Failed sources are cleared, not portrayed as having live data.
+- Browser-side 5-minute refresh while visible, manual refresh, time/layer/
+  magnitude/search filters, accessible event-list selection, drag/pan/zoom,
+  provenance links, and local JSON export.
+- The geographic view plots up to 450 filtered events for performance;
+  the list shows up to 65 events. Counters state the display cap.
+  USGS covers 24 hours; NASA open-event observations can be older.
+- GitHub Pages does **not** operate a global sensor network, security
+  operations center, national defense system, automated remediation
+  backend, or active cyberattack monitoring. No targets are scanned.
+  No private telemetry, credentials, government permissions or paid APIs.
+
+**Verification:**
+
+```sh
+node --test tests/xunia_global_observatory.test.mjs
+cd tests/glass-onion-browser && npm test
+```
+
+The existing Glass Onion workflow validates the registry, script syntax,
+unit cases, browser-mocked failure cases, and static website integration.
