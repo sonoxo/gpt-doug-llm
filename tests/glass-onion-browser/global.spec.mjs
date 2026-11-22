@@ -29,7 +29,7 @@ test("global map renders official feed positions, filters, selection, zoom and d
  await expect(page.locator(".marker[aria-label*='CVE-']")).toHaveCount(0);
  await page.locator("#layer").selectOption("nasa");
  await expect(page.locator(".marker")).toHaveCount(1);
- await page.getByRole("button",{name:/TEST ACTIVE WILDFIRE/}).click();
+ await page.locator("#event-list").getByRole("button",{name:/TEST ACTIVE WILDFIRE/}).click();
  await expect(page.locator("#selected")).toContainText("TEST ACTIVE WILDFIRE");
  await expect(page.locator("#selected a")).toHaveAttribute("href","https://eonet.gsfc.nasa.gov/api/v3/events/fire-1");
  const original=await page.locator("#world").getAttribute("viewBox");
