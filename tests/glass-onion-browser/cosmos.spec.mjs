@@ -38,7 +38,7 @@ test("official source measurements render without inventing global sensor covera
  await expect(page.locator("#neo-list")).toContainText("2026 XX");
  await expect(page.locator("#feeds .feed")).toHaveCount(6);
  await expect(page.locator("#sun-status")).toContainText("acquisition age unknown");
- const before=await page.locator("#wind-line").getAttribute("points");expect(before).toBe("");
+ const before=await page.locator("#wind-line").getAttribute("points");expect(before?.length).toBeGreaterThan(0); // actual two-point observed series
  await expect(page.locator("#kp-line")).toHaveAttribute("points",""); // single Kp reading: no invented trend
  await page.locator("#refresh").click();await expect(page.locator("#refresh")).toBeEnabled();
  await expect(page.locator("#overall-state")).toHaveText("6/6 SOURCES VALID");
