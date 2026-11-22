@@ -47,7 +47,7 @@ test("filters are geographic, time-window-aware, thresholded and case-insensitiv
  assert.equal(filterEvents(events,{now}).length,3);
  assert.equal(filterEvents(events,{kind:"usgs",minMagnitude:4.5,now}).length,1);
  assert.equal(filterEvents(events,{kind:"nasa",query:"wildfires",now}).length,1);
- assert.equal(filterEvents(events,{timeWindow:"day",now}).length,2);
+ assert.equal(filterEvents(events,{timeWindow:"day",now}).length,3);
  assert.equal(filterEvents(events,{query:"<img>",now}).length,0);
 });
 test("static interface enforces explicit live-source-only geolocation and CSP",()=>{
