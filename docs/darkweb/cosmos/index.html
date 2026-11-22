@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#060a14">
 <meta name="description" content="COSMOS EYES: source-qualified NOAA space weather, live-updating aurora model, NASA solar observatory imagery, and JPL asteroid close-approach forecasts.">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://sdo.gsfc.nasa.gov; connect-src 'self' https://services.swpc.noaa.gov https://ssd-api.jpl.nasa.gov; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https://sdo.gsfc.nasa.gov; connect-src 'self' https://services.swpc.noaa.gov; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
 <title>COSMOS EYES // XUNIA GLASS ONION</title>
 <link rel="stylesheet" href="./cosmos.css">
@@ -29,7 +29,7 @@
   <div><small>PLANETARY Kp</small><strong id="metric-kp">—</strong><span>geomagnetic index</span></div>
   <div><small>GOES X-RAY FLUX</small><strong id="metric-flare">—</strong><span>long band · flare class</span></div>
   <div><small>AURORA GRID</small><strong id="metric-aurora">—</strong><span>NOAA OVATION cells</span></div>
-  <div><small>NEO APPROACHES</small><strong id="metric-neo">—</strong><span>JPL forecast entries</span></div>
+  <div><small>ASTEROID TRACKER</small><strong id="metric-neo">LINK</strong><span>NASA/JPL official site</span></div>
  </section>
  <section class="orbit-layout" id="observatory">
   <div class="globe card">
@@ -80,9 +80,9 @@
  <section class="bottom">
   <div class="card neos">
    <div class="card-head"><span>05 / NEAR-EARTH OBJECTS</span><span>NASA/JPL · PREDICTED APPROACHES</span></div>
-   <div class="intro-card"><h2>ASTEROID PASSAGE FORECAST</h2><p>Next close-approach calculations from JPL's Small-Body Database. These are <strong>predictions</strong>, not live telescope detections. Distances are astronomical units (AU).</p></div>
-   <div id="neo-list" class="neo-list" aria-label="Upcoming predicted near-Earth asteroid approaches"></div>
-   <p id="neo-state" class="source-status">JPL forecast loading…</p>
+   <div class="intro-card"><h2>ASTEROID PASSAGE FORECAST</h2><p>NASA/JPL publishes calculations for upcoming near-Earth approaches. These are <strong>predictions</strong>, not live telescope detections. NASA/JPL does not permit its SSD/CNEOS API to be embedded in a third-party website.</p></div>
+   <div id="neo-list" class="neo-list"><a class="neo-launch" href="https://cneos.jpl.nasa.gov/ca/" target="_blank" rel="noopener noreferrer">OPEN NASA/JPL OFFICIAL CLOSE APPROACH TABLE ↗</a></div>
+   <p id="neo-state" class="source-status">Use NASA/JPL directly for current predictions.</p>
   </div>
   <div class="card sources">
    <div class="card-head"><span>06 / PROVENANCE AND LINKED EYES</span><span>DATA QUALITY MONITOR</span></div>
