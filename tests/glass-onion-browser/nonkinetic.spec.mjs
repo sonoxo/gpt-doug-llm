@@ -1,0 +1,48 @@
+import {test,expect} from "@playwright/test";
+import {readFile} from "node:fs/promises";
+const path="/darkweb/nonkinetic/";
+test("public ontology shows 11 evidence-linked systems and clickable relationships",async({page})=>{
+ await page.goto(path);
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(11);
+ await expect(page.locator("#metric-systems")).toHaveText("11");
+ await expect(page.locator("#metric-branches")).toHaveText("4");
+ await expect(page.locator("#metric-domains")).toHaveText("5");
+ await expect(page.locator("#graph-status")).toContainText("LINKS");
+ await expect(page.locator("#ontology-graph .graph-program")).toHaveCount(11);
+ await page.locator("#system-grid .system-card").filter({hasText:"HELIOS"}).click();
+ await expect(page.locator("#inspector h2")).toHaveText("HELIOS");
+ await expect(page.locator("#inspector")).toContainText("NOT_PUBLICLY_VERIFIED");
+ await expect(page.locator("#inspector .proof")).toHaveAttribute("href",/navy\.mil/);
+ await page.locator("#branch").selectOption("Space Force");
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(1);
+ await expect(page.locator("#inspector h2")).toContainText("Meadowlands");
+ await page.locator("#branch").selectOption("all");
+ await page.locator("#domain").selectOption("High-Energy Laser");
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(3);
+ await page.locator("#query").fill("absent-system");
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(0);
+ await expect(page.locator("#export")).toBeDisabled();
+ await expect(page.locator("#load-state")).toContainText("No matches");
+});
+test("ontology export includes only public evidence and no active arsenal claims",async({page})=>{
+ await page.goto(path);
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(11);
+ const waiter=page.waitForEvent("download");
+ await page.locator("#export").click();
+ const download=await waiter;
+ expect(download.suggestedFilename()).toBe("xunia-glass-onion-nonkinetic-ontology.json");
+ const data=JSON.parse(await readFile(await download.path(),"utf8"));
+ expect(data.palantir_connection).toBe("NOT_CONNECTED");
+ expect(data.live_activation_feeds).toBe(0);
+ expect(data.programs).toHaveLength(11);
+ expect(data.programs.every(p=>p.activation==="NOT_PUBLICLY_VERIFIED")).toBe(true);
+ expect(data.graph.edges).toHaveLength(44);
+});
+test("missing ontology fails closed and never invents operational systems",async({page})=>{
+ await page.route("**/darkweb/nonkinetic/ontology.json",route=>route.abort("failed"));
+ await page.goto(path);
+ await expect(page.locator("#load-state")).toContainText("PUBLIC ONTOLOGY UNAVAILABLE");
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(0);
+ await expect(page.locator("#export")).toBeDisabled();
+ await expect(page.locator("#graph-status")).toHaveText("NO VERIFIED DATA");
+});
