@@ -115,7 +115,7 @@ export function sweepSignals(data,now=Date.now()){
 }
 export function mapEvents(data,{earthquakes=true,natural=true,minMagnitude=3.5,now=Date.now()}={}){
  const out=[];
- if(earthquakes&&Array.isArray(data.usgs?.events))
+ if(earthquakes&&freshness("usgs",data.usgs,now)==="CURRENT"&&Array.isArray(data.usgs?.events))
   for(const e of data.usgs.events){
    if(!Array.isArray(e.coords)||!finite(e.coords[0])||!finite(e.coords[1])||!finite(e.magnitude)||e.magnitude<minMagnitude||!isRecent(e.observed,now,86400000))continue;
    out.push({id:e.id,kind:"earthquake",lat:e.coords[1],lon:e.coords[0],observed:e.observed,label:e.title,
