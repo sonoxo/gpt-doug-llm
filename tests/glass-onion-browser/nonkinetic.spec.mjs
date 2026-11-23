@@ -18,7 +18,7 @@ test("public ontology shows 11 evidence-linked systems and clickable relationshi
  await expect(page.locator("#inspector h2")).toContainText("Meadowlands");
  await page.locator("#branch").selectOption("all");
  await page.locator("#domain").selectOption("High-Energy Laser");
- await expect(page.locator("#system-grid .system-card")).toHaveCount(3);
+ await expect(page.locator("#system-grid .system-card")).toHaveCount(4);
  await page.locator("#query").fill("absent-system");
  await expect(page.locator("#system-grid .system-card")).toHaveCount(0);
  await expect(page.locator("#export")).toBeDisabled();
