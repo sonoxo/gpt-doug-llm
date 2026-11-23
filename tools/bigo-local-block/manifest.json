@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Glass Onion — BIGO Local Block",
+  "version": "1.0.0",
+  "description": "Opt-in local Chrome block for BIGO Live domains; no data collection or remote service disruption.",
+  "minimum_chrome_version": "120",
+  "permissions": [
+    "declarativeNetRequest"
+  ],
+  "action": {
+    "default_title": "Glass Onion / BIGO Block",
+    "default_popup": "popup.html"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "bigo",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}

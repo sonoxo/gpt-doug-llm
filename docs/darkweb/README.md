@@ -270,3 +270,25 @@ node --check docs/darkweb/fieldlab/fieldlab.mjs
 node --test tests/xunia_fieldlab_live_model.test.mjs
 cd tests/glass-onion-browser && npm test
 ```
+
+## BIGO Local Block (free Chrome extension; public source)
+
+**Website:** https://xunia.org/darkweb/bigo-block/ after GitHub Pages deployment.
+**Source:** https://github.com/sonoxo/gpt-doug-llm/tree/main/tools/bigo-local-block
+
+This is a small **local browser blocker**, not a global service-disruption
+system. Once the user chooses to install the open-source Manifest V3 extension
+in a Chrome/Chromium browser, its enabled static declarative rule blocks requests
+to `bigo.tv` and its subdomains. Its popup can enable and disable the rule.
+No data harvesting, credential access, tracking, runtime remote code or paid
+service is required. It does not block the native mobile app, other BIGO-related
+domains, or other users. It does not alter BIGO algorithms, contact BIGO systems,
+or run anything on a remote server.
+
+**Install:** Clone or download the repository, open `chrome://extensions`,
+enable Developer mode, choose **Load unpacked**, select
+`tools/bigo-local-block`, then refresh existing browser tabs. Merely visiting
+the public website does not install an extension.
+
+**Verify:** `node --test tests/bigo_local_block.test.mjs` and
+`node --check tools/bigo-local-block/popup.js`.
