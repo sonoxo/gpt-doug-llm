@@ -21,7 +21,8 @@ concurrency:
 
 jobs:
   offline-portfolio:
-    runs-on: ubuntu-latest
+    # Ubuntu 26.04 images do not provide Python 3.9 via setup-python; pin stable runner.
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     strategy:
       fail-fast: false
