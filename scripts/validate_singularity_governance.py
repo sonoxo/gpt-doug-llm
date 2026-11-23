@@ -89,6 +89,10 @@ def validate(
         errors.append("existing architecture contract drifted")
     if policy.get("governance_cycle") != REQUIRED_CYCLE:
         errors.append("observe/test/review/authorize loop drifted")
+    registry_binding = registry.get("gpt_doug_llm_governance")
+    if not isinstance(registry_binding, dict) or registry_binding.get("policy") != "config/gpt-doug-singularity-governance.json" or registry_binding.get("title") != "GPT-DOUG-LLM // Law of AI Singularity" or registry_binding.get("cycle") != REQUIRED_CYCLE:
+        errors.append("canonical GPT-DOUG-LLM singularity governance linkage missing")
+
     if not isinstance(policy.get("interpretation"), str) or "not an established scientific law" not in policy["interpretation"]:
         errors.append("project-defined status disclosure missing")
     if policy.get("effective_scope") != "REPOSITORY_CI_AND_DECLARED_GOVERNANCE_CONTRACT":
