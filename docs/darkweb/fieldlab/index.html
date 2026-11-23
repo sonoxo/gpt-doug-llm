@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06111e">
+<meta name="description" content="XUNIA SWARM HIVE SWEEP: actual NOAA space-weather telemetry, NASA EONET natural events and USGS earthquake feeds on a real interactive orthographic Earth with explicitly derived physics models.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://services.swpc.noaa.gov https://earthquake.usgs.gov https://eonet.gsfc.nasa.gov; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="./fieldlab.css">
+<script type="module" src="./fieldlab.mjs"></script>
+<title>SWARM / HIVE / SWEEP — XUNIA LIVE PHYSICS FIELDLAB</title>
+</head>
+<body>
+<a class="skip" href="#live-lab">Skip to live model</a>
+<header class="topbar">
+ <a href="../" class="brand"><span class="logo">X<span>◉</span></span><span><strong>GLASS ONION <b>/</b> XUNIA</strong><small>GPT-DOUG-LLM / DEFENSIVE RESEARCH LAB</small></span></a>
+ <nav aria-label="Research modules"><a href="../nonkinetic/">NON-KINETIC ONTOLOGY</a><a href="../cosmos/">COSMOS EYES</a><a href="../global/">GLOBAL OBSERVATORY</a></nav>
+ <div class="mode">PUBLIC SCIENCE <i></i> NO MILITARY NETWORK</div>
+</header>
+<main>
+ <section class="hero">
+   <div class="kicker">XUNIA • INSTRUMENTS → PHYSICS → ONTOLOGY → SIGNAL DETECTION</div>
+   <div class="hero-grid"><div><h1>SWARM <span>/</span> HIVE <span>/</span><br><em>SWEEP</em><span class="cursor">_</span></h1><p>Not a picture. A working geophysical data pipeline: seven public data sources drive a rotatable globe, time-stamped observations, a solar-wind pressure model, event inspection, and deterministic signal detection.</p></div>
+   <div class="opbox"><span>FIELDLAB STATUS</span><strong id="health">INITIALIZING</strong><div><span id="source-count">0/7 DATA SOURCES</span><span id="timestamp">— UTC</span></div><button id="refresh" type="button">↻ FETCH PUBLIC FEEDS</button><small>AUTO-POLL 120S WHEN VISIBLE · NO API KEYS</small></div></div>
+ </section>
+ <section class="truth"><strong>MODEL INTEGRITY:</strong> NOAA spacecraft measurements are not ground measurements; aurora is modeled, USGS/NASA reports have event timestamps, and solar-wind transit and boundary distances below are <strong>calculated estimates</strong>. There are no live weapons, operational military positions, Palantir Foundry access, or classified feeds.</section>
+ <section class="metric-strip" aria-label="Current measured and modeled quantities">
+   <div><span>SOLAR WIND SPEED</span><strong id="speed">—</strong><small>km/s · OBSERVED NOAA</small></div>
+   <div><span>SOLAR WIND DENSITY</span><strong id="density">—</strong><small>protons/cc · OBSERVED NOAA</small></div>
+   <div><span>IMF Bz</span><strong id="bz">—</strong><small>nT · OBSERVED NOAA</small></div>
+   <div><span>PLANETARY Kp</span><strong id="kp">—</strong><small>INDEX · OBSERVED NOAA</small></div>
+   <div><span>GOES X-RAY</span><strong id="flare">—</strong><small>CLASS · OBSERVED NOAA</small></div>
+   <div><span>MODEL PRESSURE</span><strong id="pressure">—</strong><small>nPa · DERIVED / SCENARIO</small></div>
+ </section>
+ <section class="primary" id="live-lab">
+   <div class="globe card">
+     <div class="panel-head"><span>01 / REAL EARTH GEOSPATIAL ENGINE</span><span id="globe-status">WAITING FOR INSTRUMENTS</span></div>
+     <div class="canvas-wrap"><canvas id="earth" width="1000" height="620" tabindex="0" role="img" aria-label="Interactive orthographic globe based on Natural Earth geography, UTC solar illumination, NOAA OVATION aurora, USGS earthquakes, and NASA natural events. Drag to rotate; scroll to zoom; click event markers to inspect their official source."></canvas>
+      <div class="canvas-overlay"><b>REAL GEOGRAPHY / REAL SOURCE COORDINATES</b><span>CAMERA ORBIT IS A DISPLAY EFFECT</span></div>
+     </div>
+     <div class="globe-control">
+      <fieldset><legend>LAYERS</legend>
+       <label><input type="checkbox" id="layer-aurora" checked> NOAA AURORA MODEL</label>
+       <label><input type="checkbox" id="layer-quakes" checked> USGS QUAKES</label>
+       <label><input type="checkbox" id="layer-nasa" checked> NASA EONET</label>
+       <label><input type="checkbox" id="layer-grid" checked> GEO GRID</label>
+      </fieldset>
+      <div class="camera-controls" aria-label="Globe camera controls">
+       <button type="button" id="rotate-left" aria-label="Rotate west">◀</button>
+       <button type="button" id="rotate-right" aria-label="Rotate east">▶</button>
+       <button type="button" id="zoom-in" aria-label="Zoom in">＋</button>
+       <button type="button" id="zoom-out" aria-label="Zoom out">－</button>
+       <button type="button" id="auto-orbit">CAMERA ORBIT: OFF</button>
+       <button type="button" id="freeze">PAUSE VISUAL: OFF</button>
+       <button type="button" id="reset-camera">RESET CAMERA</button>
+      </div>
+     </div>
+     <div class="footline"><span id="map-record-count">NO VALIDATED MAP EVENTS</span><span id="aurora-time">NOAA MODEL TIME: —</span><span>DRAG • SCROLL • SELECT</span></div>
+   </div>
+   <div class="models">
+    <section class="card model-panel">
+     <div class="panel-head"><span>02 / LIVE PHYSICS TWIN</span><span id="model-state">DATA-DRIVEN</span></div>
+     <div class="model-readings">
+      <div><small>PROTON DYNAMIC PRESSURE</small><strong id="dyn-pressure">—</strong><span>nPa · DERIVED, NOT DIRECTLY MEASURED</span></div>
+      <div><small>MAGNETOPAUSE STANDOFF PROXY</small><strong id="standoff">—</strong><span>Earth radii · SIXTH-ROOT APPROXIMATION</span></div>
+      <div><small>APPROX. L1 WIND TRANSIT</small><strong id="transit">—</strong><span>minutes · NOMINAL DISTANCE ONLY</span></div>
+     </div>
+     <svg id="model-chart" viewBox="0 0 590 210" role="img" aria-label="Calculated magnetopause standoff proxy as a function of solar-wind pressure, with the currently modeled state shown as a marker.">
+      <g class="model-grid"></g><path id="model-curve" fill="none" stroke="#65e2e9" stroke-width="3"></path><circle id="model-dot" r="8" fill="#c8fc7c" cx="-100" cy="-100"></circle><text x="15" y="200" fill="#8dabb6" font-size="11" font-family="monospace">PRESSURE (nPa) →</text><text x="16" y="25" fill="#8dabb6" font-size="11" font-family="monospace">EARTH RADII (Rₑ)</text>
+     </svg>
+     <div class="scenario">
+      <label class="scenario-switch"><input type="checkbox" id="scenario-mode"><strong>SCENARIO MODE</strong><span>isolate hypothetical input, never replace NOAA measurements</span></label>
+      <div class="slider-row"><label for="hyp-speed">HYPOTHETICAL WIND SPEED <output id="hyp-speed-label">450 km/s</output></label><input id="hyp-speed" type="range" min="150" max="1500" value="450" step="10" disabled></div>
+      <div class="slider-row"><label for="hyp-density">HYPOTHETICAL DENSITY <output id="hyp-density-label">5.0 /cc</output></label><input id="hyp-density" type="range" min="0.5" max="80" value="5" step="0.5" disabled></div>
+     </div>
+     <p class="caveat">P ≈ 1.67262192 × 10⁻⁶ · n · v² nPa (protons only); R ≈ 10 · (2/P)^(1/6) Rₑ (normalized pressure-only illustration). Actual magnetopause structure requires additional physics; no real orbit or shield strength is inferred.</p>
+    </section>
+    <section class="card inspector">
+      <div class="panel-head"><span>03 / SOURCE OBJECT INSPECTOR</span><span>HIVE / PROVENANCE</span></div>
+      <div id="inspected" aria-live="polite"><p>Select any visible public event marker on the rotating globe.</p></div>
+      <div class="inspector-foot">All links open original USGS/NASA sources. This panel never displays fabricated event locations or military asset details.</div>
+    </section>
+   </div>
+ </section>
+ <section class="secondary">
+  <section class="card">
+   <div class="panel-head"><span>04 / SWARM — SEVEN PUBLIC ENDPOINTS</span><span id="last-sync">NOT SYNCHRONIZED</span></div>
+   <div id="feeds" class="feeds" aria-label="Source-by-source availability and original observation timestamps"></div>
+  </section>
+  <section class="card">
+   <div class="panel-head"><span>05 / SWEEP — VERIFIED SIGNALS</span><span>DETERMINISTIC THRESHOLDS</span></div>
+   <div id="signals" class="signals" aria-live="polite"></div>
+   <p class="caveat">A SWEEP flag is a threshold crossed in public space-weather or geophysical data, not a cyberattack alert or a military threat assessment. No inference that space weather causes earthquakes.</p>
+  </section>
+ </section>
+ <section class="card lineage">
+  <div class="panel-head"><span>06 / HIVE — DATA-LINEAGE ONTOLOGY</span><span>OBJECTS / DERIVATIONS / PROVENANCE</span></div>
+  <div class="lineage-grid">
+   <div><span class="node-role">PUBLIC SOURCES</span><b>NOAA L1 PLASMA</b><b>NOAA MAG / Kp / X-RAY</b><b>NOAA OVATION</b><b>USGS + NASA EONET</b></div>
+   <div class="arrow" aria-hidden="true">→</div>
+   <div><span class="node-role">HIVE NORMALIZATION</span><b>INSTRUMENT FRAME (UTC)</b><b>EVENT COORDINATES (WGS84)</b><b>VALIDATION + FRESHNESS</b><b>OFFICIAL PROVENANCE</b></div>
+   <div class="arrow" aria-hidden="true">→</div>
+   <div><span class="node-role">DERIVED MODELS</span><b>PRESSURE / STANDOFF PROXY</b><b>UTC SOLAR ILLUMINATION</b><b>OBSERVATION THRESHOLDS</b><b>INTERACTIVE EARTH PROJECTION</b></div>
+  </div>
+  <div class="lineage-end"><span>NO PALANTIR FOUNDRY OR MILITARY CONNECTION / OPEN-SOURCE ONTOLOGY CONCEPTS ONLY</span><button id="export" type="button">EXPORT ATTRIBUTED SNAPSHOT ↓</button></div>
+ </section>
+ <section class="final-note"><b>INSTRUMENT MODEL, NOT AN ARSENAL COMMAND SYSTEM.</b> Live status refers to successful retrieval of public feeds, not current military operations. Data coverage is limited by what the publishing agencies actually report; the globe's movement is controlled visualization, while computations and map coordinates come from validated data.</section>
+</main>
+<footer><span>XUNIA / GLASS ONION · SWARM → HIVE → SWEEP · FREE AND AUDITABLE</span><span>PUBLIC DATA · NO PAID APIs · NO AUTONOMOUS OPERATIONS</span></footer>
+</body>
+</html>
