@@ -12,6 +12,8 @@ on:
       - 'tests/xunia_cosmos_eyes.test.mjs'
       - 'tests/xunia_nonkinetic_ontology.test.mjs'
       - 'tests/xunia_fieldlab_live_model.test.mjs'
+      - 'tests/bigo_local_block.test.mjs'
+      - 'tools/bigo-local-block/**'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -27,6 +29,8 @@ on:
       - 'tests/xunia_cosmos_eyes.test.mjs'
       - 'tests/xunia_nonkinetic_ontology.test.mjs'
       - 'tests/xunia_fieldlab_live_model.test.mjs'
+      - 'tests/bigo_local_block.test.mjs'
+      - 'tools/bigo-local-block/**'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -63,6 +67,8 @@ jobs:
           node --check docs/darkweb/fieldlab/earth-renderer.mjs
           node --check docs/darkweb/fieldlab/fieldlab.mjs
           node --test tests/xunia_fieldlab_live_model.test.mjs
+          node --check tools/bigo-local-block/popup.js
+          node --test tests/bigo_local_block.test.mjs
           python3 -m json.tool docs/darkweb/nonkinetic/ontology.json >/dev/null
           python3 -m json.tool docs/darkweb/usa-defense-scope.json >/dev/null
           node --test tests/xunia_glass_onion.test.mjs
@@ -99,6 +105,11 @@ jobs:
           assert 'href="./cosmos/"' in html
           assert 'href="./nonkinetic/"' in html
           assert 'href="./fieldlab/"' in html
+          assert 'href="./bigo-block/"' in html
+          bigo_page=Path("docs/darkweb/bigo-block/index.html").read_text()
+          assert "BIGO LOCAL BLOCK" in bigo_page
+          assert "Content-Security-Policy" in bigo_page
+          assert Path("tools/bigo-local-block/manifest.json").stat().st_size > 200
           fieldlab_html=Path("docs/darkweb/fieldlab/index.html").read_text()
           assert "SWARM" in fieldlab_html and "HIVE" in fieldlab_html and "SWEEP" in fieldlab_html
           assert "Content-Security-Policy" in fieldlab_html
