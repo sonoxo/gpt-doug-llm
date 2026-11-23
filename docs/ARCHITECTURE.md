@@ -149,3 +149,80 @@ The **AI Layer Gate** separately verifies that Classical AI, Machine Learning, N
 ## Architectural principle
 
 > Flexible reasoning should sit behind strict capabilities, observable state, and reversible execution.
+
+
+## GPT-DOUG-LLM: Law of AI Singularity (governed engineering loop)
+
+**Control root:** `sonoxo/gpt-doug-llm` / **GPT-DOUG-LLM**.
+
+In this repository, the **Law of AI Singularity** is a project-defined
+engineering policy, not an established law of nature or proof that AGI,
+recursive self-improvement, or technological singularity has occurred.
+
+The operating cycle is:
+
+```text
+GPT-DOUG-LLM / CANONICAL CONTROL ROOT
+    ↓
+OBSERVE public/repository evidence (timestamps, source, provenance)
+    ↓
+PROPOSE minimal change with threat model and exact diff
+    ↓
+TEST offline, deterministic contracts and regression tests
+    ↓
+REVIEW results, side effects, and rollback
+    ↓
+AUTHORIZE consequential external actions by a human
+    ↓
+DEPLOY through checked, permission-scoped CI
+    ↓
+VERIFY observed outcome rather than infer success
+    ↓
+LEARN by updating evidence and versioned policy
+    ↺ new evidence starts a fresh, bounded cycle
+```
+
+The policy is machine-readable in
+[`config/gpt-doug-singularity-governance.json`](../config/gpt-doug-singularity-governance.json);
+the cross-plane map remains
+[`ecosystem/registry.v4.json`](../ecosystem/registry.v4.json).
+The validation gate
+[`.github/workflows/singularity-governance-gate.yml`](../.github/workflows/singularity-governance-gate.yml)
+cross-checks that ontology, the six AI layers, action permissions, and
+maintenance behavior. This gate validates **declared repository controls**;
+it is not an enforcement mechanism inside every external application.
+
+### Infrastructure reliability changes, 2026-11-23
+
+- **XZSWEEP:** A scheduled GitHub App push failed because the automation
+  attempted to change `.github/workflows/universal-council.yml` without
+  workflow-modification permission. XZSWEEP is now report-only and publishes
+  an artifact; it performs **zero automatic source edits**, never pushes to
+  `main`, and does not request broader credentials. A human-reviewed PR
+  is the remediation route. This also removes one source of cascading
+  Cyber CPR heartbeat failures.
+- **Portfolio audit:** The Ubuntu 26.04 runner did not provide Python 3.9
+  through `actions/setup-python`. The affected two-version job is pinned
+  to `ubuntu-24.04` so the Python 3.9 and 3.12 matrix can run without
+  silently deleting test coverage. Its other jobs are unchanged.
+- **Verification:** These regressions are guarded by
+  `scripts/validate_singularity_governance.py` and
+  `tests/test_singularity_governance.py`. The dedicated GitHub Actions
+  gate executes an actual report-only XZSWEEP dry run with full Git history.
+
+### Explicit boundaries
+
+- GPT-DOUG-LLM coordinates the declared ontology. It is **not** a direct
+  connection to all referenced repositories or devices.
+- XUNIA, ZYRA, Glass Onion and other division names indicate declared
+  architectural responsibilities, not verified external network access.
+- No paid API requirement, unbounded self-replication, unsanctioned
+  offensive operations, force pushing, silent self-modification,
+  bypassing failed tests or autonomous merging.
+- The automated loop can observe, test, and publish findings. Merging,
+  production configuration, money movement, physical-device operation,
+  and assessments of external systems remain separately authorized.
+- Any prior CI failure is historical evidence. A new passing run
+  establishes that updated code passed its checks; it does not retroactively
+  erase previous failures or prove every external subsystem is healthy.
+

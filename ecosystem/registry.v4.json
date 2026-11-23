@@ -217,5 +217,23 @@
     "general_agentic_software": "zyra",
     "domain_registry_and_governance": "xunia-domain-root",
     "experimental_r_and_d": "chaotic-good"
+  },
+  "gpt_doug_llm_governance": {
+    "policy": "config/gpt-doug-singularity-governance.json",
+    "title": "GPT-DOUG-LLM // Law of AI Singularity",
+    "status": "REPOSITORY_GOVERNANCE_CONTRACT_NOT_AUTONOMOUS_SINGULARITY",
+    "applies_to": "canonical_control_root_and_declared_ontology_planes",
+    "cycle": [
+      "observe",
+      "propose",
+      "test",
+      "review",
+      "authorize",
+      "deploy",
+      "verify",
+      "learn"
+    ],
+    "validation_gate": ".github/workflows/singularity-governance-gate.yml",
+    "external_execution": "EXPLICIT_HUMAN_AUTHORIZATION_REQUIRED"
   }
 }

@@ -1,0 +1,99 @@
+{
+  "schema": "gpt-doug-llm/singularity-governance/v1",
+  "name": "GPT-DOUG-LLM // Law of AI Singularity",
+  "kind": "PROJECT_DEFINED_ENGINEERING_GOVERNANCE",
+  "interpretation": "The Law of AI Singularity is the project's iterative engineering rule: reliable observations and authorized improvements converge through bounded evaluation. It is not an established scientific law and does not establish AGI, autonomous self-improvement, or superintelligence.",
+  "effective_scope": "REPOSITORY_CI_AND_DECLARED_GOVERNANCE_CONTRACT",
+  "version": "1.0.0",
+  "canonical_control_root": "sonoxo/gpt-doug-llm",
+  "canonical_control_agent": "GPT-DOUG-LLM",
+  "source_of_truth": [
+    "ecosystem/registry.v4.json",
+    "config/ai-layer-manifest.json"
+  ],
+  "ontology_planes": [
+    "black-house",
+    "xunia-hq",
+    "xunia-domain-root",
+    "zyra",
+    "red-house",
+    "green-house",
+    "orange-house",
+    "glass-onion-spatial"
+  ],
+  "ai_layers": [
+    "classical_ai",
+    "machine_learning",
+    "neural_networks",
+    "deep_learning",
+    "generative_ai",
+    "agentic_ai"
+  ],
+  "governance_cycle": [
+    "observe",
+    "propose",
+    "test",
+    "review",
+    "authorize",
+    "deploy",
+    "verify",
+    "learn"
+  ],
+  "scope_state": {
+    "repository_control_plane": "SOURCE_GROUNDED",
+    "palantir_foundry_connection": "NOT_VERIFIED",
+    "military_infrastructure_control": "NONE",
+    "external_system_access": "EXPLICIT_AUTHORIZATION_ONLY",
+    "live_ontology_connectivity": "DECLARED_ONLY_UNLESS_VERIFIED"
+  },
+  "bounds": {
+    "max_parallel_review_workers": 8,
+    "max_automated_remediation_attempts": 2,
+    "auto_merge": false,
+    "force_push": false,
+    "silent_direct_main_commits": false,
+    "unrestricted_external_actions": false,
+    "automatic_repair_file_mutations": 0,
+    "paid_api_requirement": false,
+    "local_or_free_only": true
+  },
+  "automated_actions": [
+    "read_repository_state",
+    "validate_registry",
+    "analyze_ci_failures",
+    "run_offline_tests",
+    "publish_evidence_artifacts",
+    "draft_change_proposal"
+  ],
+  "authorized_actions": [
+    "merge_reviewed_pull_request",
+    "change_production_configuration",
+    "deploy_external_system",
+    "run_active_external_assessment",
+    "spend_money",
+    "operate_physical_device"
+  ],
+  "prohibitions": [
+    "remote_server_disruption",
+    "unauthorized_network_assessment",
+    "secret_exfiltration",
+    "unbounded_self_replication",
+    "unreviewed_dependency_upgrades",
+    "suppression_of_failing_checks",
+    "fabricated_telemetry"
+  ],
+  "recovery": {
+    "failed_workflow": "EVIDENCE_FIRST_NO_UNREVIEWED_AUTOFIX",
+    "stale_source": "FAIL_CLOSED",
+    "incompatible_runner": "PIN_KNOWN_COMPATIBLE_IMAGE",
+    "push_permission_failure": "DO_NOT_ESCALATE_TOKENS_SWITCH_TO_READ_ONLY_REPORT",
+    "rollback": "REVERT_REVIEWED_CHANGE",
+    "human_approval_required": true
+  },
+  "controls": {
+    "xzsweep_workflow": ".github/workflows/xzsweep.yml",
+    "portfolio_workflow": ".github/workflows/sonoxo-portfolio-audit.yml",
+    "singularity_ci": ".github/workflows/singularity-governance-gate.yml",
+    "evidence_validator": "scripts/validate_singularity_governance.py"
+  }
+}

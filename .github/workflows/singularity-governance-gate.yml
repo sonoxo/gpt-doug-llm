@@ -1,0 +1,94 @@
+name: GPT-DOUG-LLM Singularity Governance Gate
+
+on:
+  pull_request:
+    paths:
+      - 'config/gpt-doug-singularity-governance.json'
+      - 'config/ai-layer-manifest.json'
+      - 'ecosystem/registry.v4.json'
+      - 'scripts/validate_singularity_governance.py'
+      - 'scripts/xzsweep.py'
+      - 'tests/test_singularity_governance.py'
+      - '.github/workflows/singularity-governance-gate.yml'
+      - '.github/workflows/xzsweep.yml'
+      - '.github/workflows/sonoxo-portfolio-audit.yml'
+      - 'docs/ARCHITECTURE.md'
+  push:
+    branches: [main]
+    paths:
+      - 'config/gpt-doug-singularity-governance.json'
+      - 'config/ai-layer-manifest.json'
+      - 'ecosystem/registry.v4.json'
+      - 'scripts/validate_singularity_governance.py'
+      - 'scripts/xzsweep.py'
+      - 'tests/test_singularity_governance.py'
+      - '.github/workflows/singularity-governance-gate.yml'
+      - '.github/workflows/xzsweep.yml'
+      - '.github/workflows/sonoxo-portfolio-audit.yml'
+      - 'docs/ARCHITECTURE.md'
+  workflow_dispatch:
+
+# This CI gate validates governance declarations and safe repository workflows.
+# It cannot control external infrastructure, self-replicate or exercise authority.
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Fetch GPT-DOUG-LLM repository without reusable git credentials
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Prepare free Python runner
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Validate canonical ecosystem and six-layer AI architecture
+        run: |
+          python scripts/validate_ecosystem_v4.py
+          python scripts/validate_ai_layers.py
+      - name: Verify Law of AI Singularity governance invariants
+        run: |
+          python scripts/validate_singularity_governance.py
+          python -m unittest tests.test_singularity_governance -v
+      - name: Confirm read-only maintenance script compiles
+        run: python -m py_compile scripts/xzsweep.py
+  maintenance-dry-run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Fetch full history for accountable source freshness
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Prepare free Python runner
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Run GPT-DOUG-LLM XZSWEEP in read-only mode
+        run: |
+          python scripts/xzsweep.py --hours 24 --report .xzsweep/freshness.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path(".xzsweep/freshness.json").read_text())
+          assert report["schema"]=="xzsweep.freshness.v1"
+          assert report["mode"]=="check"
+          assert report["content_repairs"]==0
+          assert report["tracked_files_reviewed"]>0
+          print("GPT-DOUG-LLM: read-only sweep of",report["tracked_files_reviewed"],"tracked paths")
+          PY
+          git diff --exit-code -- . ':!.xzsweep/freshness.json'
+          git diff --cached --exit-code
+      - name: Retain governance evidence for human review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-doug-llm-singularity-maintenance-evidence
+          path: .xzsweep/freshness.json
+          if-no-files-found: ignore
+          retention-days: 14
