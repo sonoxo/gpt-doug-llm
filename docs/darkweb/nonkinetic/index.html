@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#071019">
+<meta name="description" content="Glass Onion Non-Kinetic Arsenal: documented U.S. electronic warfare and directed energy programs through a public-evidence, Palantir-style ontology.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="no-referrer">
+<title>NON-KINETIC ARSENAL // XUNIA GLASS ONION</title>
+<link rel="stylesheet" href="./nonkinetic.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#objects">Skip to systems</a>
+<header class="top">
+  <a class="identity" href="../"><span class="sig">X<span>◉</span></span><span><strong>GLASS ONION / XUNIA</strong><small>GPT-DOUG-LLM · EVIDENCE ONTOLOGY</small></span></a>
+  <nav aria-label="Glass Onion navigation"><a href="../cosmos/">COSMOS EYES</a><a href="../global/">GLOBAL OBSERVATORY</a><a href="../#usa-defense">USA DEFENSE</a></nav>
+  <div class="readonly"><i></i> PUBLIC INTELLIGENCE / READ ONLY</div>
+</header>
+<main>
+<section class="hero">
+ <div class="kicker">XUNIA / PALANTIR-STYLE OBJECT GRAPH / SOURCE-ATTRIBUTED CAPABILITY RESEARCH</div>
+ <div class="hero-row"><div><h1>NON-KINETIC<br><em>ARSENAL</em><span class="period">.</span></h1><p>Evidence-linked catalog of publicly disclosed U.S. electronic warfare, optical countermeasure, microwave, and high-energy laser systems. Explore the relationships between branches, capability domains, program milestones, and official documentation.</p></div>
+ <div class="access"><div>ONTOLOGY ACCESS STATUS</div><strong>LOCAL / PUBLIC</strong><span>PALANTIR FOUNDRY: NOT CONNECTED</span><span>WEAPONS TELEMETRY: 0 FEEDS</span><span>LIVE OPERATIONAL STATUS: UNKNOWN</span></div></div>
+</section>
+<div class="disclosure"><strong>PUBLIC SOURCE ≠ ACTIVE ARSENAL</strong> A named system with a public milestone is not proof of current activation, locations, readiness, deployments, or inventory counts. Experimental systems remain clearly marked. No tactical locations, frequencies, targeting instructions, device controls or confidential records are included.</div>
+<section class="metrics" aria-label="Public ontology scope"><div><small>PUBLIC SYSTEM RECORDS</small><strong id="metric-systems">—</strong><span>Curated, not exhaustive</span></div><div><small>SERVICE BRANCHES</small><strong id="metric-branches">—</strong><span>Official sources</span></div><div><small>CAPABILITY DOMAINS</small><strong id="metric-domains">—</strong><span>Non-kinetic taxonomy</span></div><div><small>LIVE WEAPON FEEDS</small><strong>0</strong><span>None connected</span></div><div><small>EVIDENCE CUTOFF</small><strong class="date">22 NOV 2026</strong><span>Static source review</span></div></section>
+<section class="controls" aria-label="Ontology filters">
+ <div><label for="query">SEARCH NAMED SYSTEM / CAPABILITY</label><input type="search" id="query" placeholder="HELIOS, jammer, laser, electromagnetic..." maxlength="120" autocomplete="off"></div>
+ <div><label for="branch">SERVICE BRANCH</label><select id="branch"><option value="all">ALL SERVICES</option></select></div>
+ <div><label for="domain">CAPABILITY DOMAIN</label><select id="domain"><option value="all">ALL DOMAINS</option></select></div>
+ <div><label for="status">PUBLIC STATUS</label><select id="status"><option value="all">ALL MILESTONES</option></select></div>
+ <button type="button" id="export">EXPORT EVIDENCE ONTOLOGY ↓</button>
+</section>
+<section class="workbench" aria-label="Capability ontology graph and system evidence">
+ <div class="graph-panel">
+   <div class="panel-head"><span>01 / OBJECT RELATIONSHIP GRAPH</span><span id="graph-status">LOADING MODEL...</span></div>
+   <div class="graph-guide"><span><i class="dot service"></i> SERVICE</span><span><i class="dot program"></i> SYSTEM</span><span><i class="dot domain"></i> DOMAIN</span><span><i class="dot evidence"></i> EVIDENCE-LINKED STATUS</span></div>
+   <div class="graph-scroller"><svg id="ontology-graph" viewBox="0 0 1320 850" role="img" aria-label="Interactive ontology visualization connecting military services, public system descriptions and non-kinetic capability categories. Select a named system for its evidence record."></svg></div>
+   <p class="graph-foot">Graph derived from public evidence registry, not an actual Palantir Foundry tenant or operational digital twin. Lines represent catalog relationships, never military command links or live deployments.</p>
+ </div>
+ <aside class="detail-panel">
+   <div class="panel-head"><span>02 / OBJECT INSPECTOR</span><span>VERIFIED SOURCE LINKS</span></div>
+   <div id="inspector" aria-live="polite"><p class="placeholder">Select a named system from the graph or catalog.</p></div>
+ </aside>
+</section>
+<section id="objects" class="catalog">
+ <div class="panel-head"><span>03 / CAPABILITY SYSTEM OBJECTS</span><span id="catalog-count">—</span></div>
+ <div id="system-grid" class="system-grid"></div>
+ <p id="load-state" class="load-state" role="status" aria-live="polite">Loading independently sourced catalog…</p>
+</section>
+<section class="legend-panel">
+ <div><h2>Evidence taxonomy</h2><p><strong>Operationally accepted / capability declared</strong> denotes an official milestone; not evidence of a system being switched on right now. <strong>Fielded / fleet-installed</strong> denotes reported installation or delivery; not quantity or live readiness. <strong>Demonstrated / prototype / production contract</strong> is not active operational service.</p></div>
+ <div><h2>PALANTIR MAPPING</h2><p>Objects: CapabilitySystem, ServiceBranch, CapabilityDomain, EvidenceRecord, PublicReadinessState. Links: System → Service, Domain, Evidence, Public Status. Built with free, static, auditable JavaScript; no Palantir license or government network access.</p><a href="https://www.palantir.com/docs/foundry/ontology" target="_blank" rel="noopener noreferrer">PALANTIR ONTOLOGY CONCEPTS ↗</a></div>
+</section>
+</main>
+<footer><span>GLASS ONION // NON-KINETIC PUBLIC INTELLIGENCE ONTOLOGY</span><span>ATTRIBUTION FIRST · NO TACTICAL TELEMETRY · NO AUTONOMOUS ACTIONS</span></footer>
+</body>
+</html>

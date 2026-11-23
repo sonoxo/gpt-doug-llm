@@ -10,6 +10,7 @@ on:
       - 'tests/xunia_glass_onion.test.mjs'
       - 'tests/xunia_usa_defense_scope.test.mjs'
       - 'tests/xunia_cosmos_eyes.test.mjs'
+      - 'tests/xunia_nonkinetic_ontology.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -23,6 +24,7 @@ on:
       - 'tests/xunia_glass_onion.test.mjs'
       - 'tests/xunia_usa_defense_scope.test.mjs'
       - 'tests/xunia_cosmos_eyes.test.mjs'
+      - 'tests/xunia_nonkinetic_ontology.test.mjs'
       - 'tests/test_xunia_authorized_crawl.py'
       - 'tests/glass-onion-browser/**'
       - '.github/workflows/glass-onion.yml'
@@ -52,6 +54,10 @@ jobs:
           node --check docs/darkweb/cosmos/feed-core.mjs
           node --check docs/darkweb/cosmos/cosmos.mjs
           node --test tests/xunia_cosmos_eyes.test.mjs
+          node --check docs/darkweb/nonkinetic/core.mjs
+          node --check docs/darkweb/nonkinetic/app.mjs
+          node --test tests/xunia_nonkinetic_ontology.test.mjs
+          python3 -m json.tool docs/darkweb/nonkinetic/ontology.json >/dev/null
           python3 -m json.tool docs/darkweb/usa-defense-scope.json >/dev/null
           node --test tests/xunia_glass_onion.test.mjs
           python3 -m py_compile scripts/xunia_authorized_crawl.py scripts/xunia_glass_onion_verify.py
@@ -85,6 +91,11 @@ jobs:
           assert 'usa-scope-app.mjs' in html
           assert 'href="./global/"' in html
           assert 'href="./cosmos/"' in html
+          assert 'href="./nonkinetic/"' in html
+          arsenal_html=Path("docs/darkweb/nonkinetic/index.html").read_text()
+          assert "NON-KINETIC ARSENAL" in arsenal_html
+          assert "Content-Security-Policy" in arsenal_html
+          assert Path("docs/darkweb/nonkinetic/ontology.json").stat().st_size > 1000
           cosmos_html=Path('docs/darkweb/cosmos/index.html').read_text()
           assert 'COSMOS EYES' in cosmos_html
           assert 'Content-Security-Policy' in cosmos_html

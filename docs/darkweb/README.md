@@ -157,3 +157,41 @@ classified systems or imply government access.
 node --test tests/xunia_cosmos_eyes.test.mjs
 cd tests/glass-onion-browser && npm test
 ```
+
+## Non-Kinetic Arsenal / Palantir-style public evidence ontology
+
+**Route after merge and Pages deployment:** https://xunia.org/darkweb/nonkinetic/
+
+An original, locally rendered, free, **read-only public-record model** of
+11 named U.S. non-kinetic defense programs, as documented through
+November 22, 2026. **Not an exhaustive inventory or an "active arsenal" feed.**
+
+- Capability system objects, service branches, high-level roles/domains,
+  public program milestones, and independently linked official evidence.
+- Relationship graph supports `CapabilitySystem → ServiceBranch`,
+  `CapabilityDomain`, `PublicReadinessState`, and `EvidenceRecord`.
+- Branch, category, public milestone and text filters; keyboard-accessible
+  graph objects and catalog cards; selection inspector with official source.
+- Filtered graph/records export as JSON. No editing of government data.
+- Development/test, contract award, installation, fielding, publicly
+  reported use and operational acceptance are separate historical statuses.
+  **Every record explicitly carries "NOT_PUBLICLY_VERIFIED" current activation
+  and "NOT_CONNECTED" telemetry.**
+- No equipment location, target data, frequencies, tactical weaknesses,
+  inventory quantities, troop movements, live readiness or fleet access.
+
+This is inspired by the *concepts* in the public [Palantir Foundry Ontology
+documentation](https://www.palantir.com/docs/foundry/ontology/).
+**No Palantir Foundry/AIP/Maven tenant, credentials, government data
+subscription, defense network, or physical system is connected.** The
+implementation is static JavaScript + a provenance registry, not Palantir.
+
+**Verification:**
+
+```sh
+node --test tests/xunia_nonkinetic_ontology.test.mjs
+cd tests/glass-onion-browser && npm test
+```
+
+Production deployment is gated by the existing Glass Onion GitHub Actions
+checks and the XUNIA Museum GitHub Pages publisher.

@@ -1,0 +1,225 @@
+{
+  "schema": "XUNIA_PUBLIC_NONKINETIC_ONTOLOGY_V1",
+  "as_of": "2026-11-22",
+  "organization": "XUNIA Glass Onion / independent public-source research",
+  "status": "OPEN_SOURCE_EVIDENCE_ONLY",
+  "palantir_connection": "NOT_CONNECTED",
+  "authorized_systems_connected": 0,
+  "live_activation_feeds": 0,
+  "scope": "Curated publicly documented U.S. non-kinetic defense programs; non-exhaustive and not an active arsenal inventory.",
+  "safe_use": "Source-based research, capability taxonomy, historical readiness milestones. No targeting, operating parameters, deployments, coordinates, force posture or tactical weaknesses.",
+  "object_types": [
+    "CapabilitySystem",
+    "ServiceBranch",
+    "CapabilityDomain",
+    "EvidenceRecord",
+    "PublicReadinessState"
+  ],
+  "link_types": [
+    "SYSTEM_BELONGS_TO_BRANCH",
+    "SYSTEM_HAS_DOMAIN",
+    "SYSTEM_SUPPORTED_BY_EVIDENCE",
+    "SYSTEM_REPORTED_STATUS"
+  ],
+  "statuses": [
+    "Operational capability declared",
+    "Operationally accepted",
+    "Fielded",
+    "Fleet-installed",
+    "Reported operational use",
+    "Production contract awarded",
+    "Demonstrated",
+    "Prototype agreement"
+  ],
+  "domains": [
+    "Electronic Warfare",
+    "Space Electromagnetic Warfare",
+    "High-Energy Laser",
+    "Optical Countermeasure",
+    "High-Power Microwave"
+  ],
+  "services": [
+    "Army",
+    "Navy",
+    "Air Force",
+    "Space Force"
+  ],
+  "programs": [
+    {
+      "id": "ngj-mb",
+      "name": "Next Generation Jammer Mid-Band (AN/ALQ-249)",
+      "branch": "Navy",
+      "domain": "Electronic Warfare",
+      "role": "Airborne electronic attack",
+      "status": "Operational capability declared",
+      "evidence_date": "2025-01-06",
+      "assessment": "The Navy declared initial operational capability in December 2024 and reported a deployed combat use. No current tasking is disclosed.",
+      "source": {
+        "publisher": "U.S. Navy",
+        "url": "https://www.navair.navy.mil/news/US-Navy-declares-initial-operational-capability-Next-Generation-Jammer-Mid-Band-system/Mon"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "meadowlands",
+      "name": "Counter Communications System Meadowlands",
+      "branch": "Space Force",
+      "domain": "Space Electromagnetic Warfare",
+      "role": "Space communications countermeasure",
+      "status": "Operationally accepted",
+      "evidence_date": "2026-06-08",
+      "assessment": "Space Force announced operational acceptance. This does not report live activation, locations, or individual unit readiness.",
+      "source": {
+        "publisher": "Space Systems Command",
+        "url": "https://www.ssc.spaceforce.mil/Newsroom/Article/4529590/us-space-force-grows-electromagnetic-warfare-capability-with-meadowlands-operat"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "tls-manpack",
+      "name": "Terrestrial Layer System BCT Manpack",
+      "branch": "Army",
+      "domain": "Electronic Warfare",
+      "role": "Tactical electromagnetic support and effects",
+      "status": "Fielded",
+      "evidence_date": "2026-05-01",
+      "assessment": "Army reported fielding TLS Manpack; the record does not establish how many systems are active today.",
+      "source": {
+        "publisher": "U.S. Army",
+        "url": "https://innovation.army.mil/Test-Page/dvpTag/4th/dvpmoduleid/93238/videoid/1005220/"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "sewip-blk3",
+      "name": "SEWIP Block 3 / AN/SLQ-32(V)7",
+      "branch": "Navy",
+      "domain": "Electronic Warfare",
+      "role": "Shipboard electronic warfare",
+      "status": "Fleet-installed",
+      "evidence_date": "2026-10-22",
+      "assessment": "Navy reported a warship installation and ongoing modernization, not a live activation status.",
+      "source": {
+        "publisher": "U.S. Navy",
+        "url": "https://paemaritime.navy.mil/press-release/USS-Pinckney-Begins-Second-Depot-Modernization-Period"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "helios",
+      "name": "HELIOS",
+      "branch": "Navy",
+      "domain": "High-Energy Laser",
+      "role": "Naval directed-energy defense",
+      "status": "Fleet-installed",
+      "evidence_date": "2026-05-12",
+      "assessment": "Navy described the HELIOS system as outfitted aboard USS Preble; no live firing or mission feed is implied.",
+      "source": {
+        "publisher": "U.S. Navy",
+        "url": "https://www.navy.mil/Press-Office/News-Stories/display-news/Article/4484796/navys-directed-energy-systems-integration-lab-to-train-sailors-on-laser-weapons/"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "odin",
+      "name": "Optical Dazzling Interdictor, Navy (ODIN)",
+      "branch": "Navy",
+      "domain": "Optical Countermeasure",
+      "role": "Naval laser dazzler",
+      "status": "Fleet-installed",
+      "evidence_date": "2026-05-12",
+      "assessment": "Navy described an ODIN unit associated with fleet service and maintenance; this is not a current operational alert.",
+      "source": {
+        "publisher": "U.S. Navy",
+        "url": "https://www.navy.mil/Press-Office/News-Stories/display-news/Article/4484796/navys-directed-energy-systems-integration-lab-to-train-sailors-on-laser-weapons/"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "m-hel",
+      "name": "Army Multipurpose High Energy Laser",
+      "branch": "Army",
+      "domain": "High-Energy Laser",
+      "role": "Counter-uncrewed aircraft defense",
+      "status": "Reported operational use",
+      "evidence_date": "2026-08-25",
+      "assessment": "Army publicly reported a defensive engagement. No ongoing operations or coordinates are displayed.",
+      "source": {
+        "publisher": "U.S. Army",
+        "url": "https://www.army.mil/article/294984"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "e-hel",
+      "name": "Enduring High Energy Laser (E-HEL)",
+      "branch": "Army",
+      "domain": "High-Energy Laser",
+      "role": "Counter-uncrewed aircraft defense",
+      "status": "Production contract awarded",
+      "evidence_date": "2026-09-02",
+      "assessment": "Army awarded a production contract; award alone is not evidence that the system has been fielded or activated.",
+      "source": {
+        "publisher": "U.S. Army",
+        "url": "https://www.army.mil/article/295045/army_awards_production_contract_for_enduring_high_energy_laser_system"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "thor",
+      "name": "Tactical High-Power Operational Responder (THOR)",
+      "branch": "Air Force",
+      "domain": "High-Power Microwave",
+      "role": "Counter-uncrewed aircraft research",
+      "status": "Demonstrated",
+      "evidence_date": "2023-04-05",
+      "assessment": "Air Force Research Laboratory reported a demonstration of a prototype. Operational deployment is not verified.",
+      "source": {
+        "publisher": "Air Force Research Laboratory",
+        "url": "https://www.afrl.af.mil/News/Article-Display/Article/3396995/afrl-conducts-swarm-technology-demonstration//"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "de-mshorad",
+      "name": "Directed Energy Maneuver Short Range Air Defense",
+      "branch": "Army",
+      "domain": "High-Energy Laser",
+      "role": "Mobile short-range air defense prototype",
+      "status": "Demonstrated",
+      "evidence_date": "2025-06-27",
+      "assessment": "Army reported testing laser prototypes with air defense systems. An active operational inventory is not established.",
+      "source": {
+        "publisher": "U.S. Army",
+        "url": "https://www.army.mil/article/286677/u_s_army_tests_laser_weapons_in_oklahoma_aiming_at_a_future_of_energy_based_air_defense"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    },
+    {
+      "id": "tls-eab",
+      "name": "Terrestrial Layer System Echelons Above Brigade",
+      "branch": "Army",
+      "domain": "Electronic Warfare",
+      "role": "Terrestrial intelligence and electronic attack",
+      "status": "Prototype agreement",
+      "evidence_date": "2023-06-28",
+      "assessment": "Army announced a prototype agreement. This is not evidence of completed fielding or live military use.",
+      "source": {
+        "publisher": "U.S. Army",
+        "url": "https://cpeisw.army.mil/2023/06/28/army-announces-terrestrial-layer-system-echelons-above-brigade-prototype-ota-agreement/"
+      },
+      "telemetry": "NOT_CONNECTED",
+      "activation": "NOT_PUBLICLY_VERIFIED"
+    }
+  ]
+}
