@@ -195,3 +195,78 @@ cd tests/glass-onion-browser && npm test
 
 Production deployment is gated by the existing Glass Onion GitHub Actions
 checks and the XUNIA Museum GitHub Pages publisher.
+
+## SWARM / HIVE / SWEEP — real browser fieldlab (not a picture)
+
+**Public route:** https://xunia.org/darkweb/fieldlab/ (after merge and Pages deployment).
+
+Open-source, self-contained science application; no paid services, no backend or
+credentials. This new live model is linked from the Glass Onion home page,
+COSMOS EYES, the global observatory, and the public non-kinetic ontology.
+
+### Actual software and source feeds
+
+| Sensor / catalog | Public endpoint | Use |
+| --- | --- | --- |
+| NOAA L1 plasma | `services.swpc.noaa.gov/json/rtsw/rtsw_wind_1m.json` | Observed wind speed/density |
+| NOAA L1 magnetic | `services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json` | Observed interplanetary Bz |
+| NOAA planetary Kp | `services.swpc.noaa.gov/products/noaa-planetary-k-index.json` | Observed geomagnetic index |
+| NOAA GOES X-ray | `services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json` | Observed flare class |
+| NOAA OVATION | `services.swpc.noaa.gov/json/ovation_aurora_latest.json` | Modeled aurora on source grid |
+| USGS global quakes | `earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson` | Time-stamped source events |
+| NASA EONET | `eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=200` | Public open natural events |
+
+SWARM independently fetches these seven resources at two-minute intervals while
+the page is visible, with 18-second timeouts. An unavailable source clears its
+measurements. Stale NOAA instruments and old USGS feed generations are not
+presented as current. EONET's "open" status is an event catalog, **not**
+evidence of a newly observed event today; reported observation timestamps stay
+visible. No background daemon or persistent surveillance is created.
+
+### Numerical model and visualization
+
+- **3-D orthographic Earth:** Real Natural Earth public-domain land outlines,
+  latitude/longitude projection, drag/touch/wheel/keyboard camera controls,
+  UTC solar illumination from a low-precision solar ephemeris, opt-in camera
+  orbit, layers for NOAA aurora model cells and source-located USGS/NASA events.
+  The globe is a computational canvas, **not an image mockup** or literal
+  photographic satellite feed.
+- **Proton dynamic pressure** from validated L1 density and speed:
+  `P[nPa] = 1.67262192e-6 * density[cm^-3] * speed[km/s]^2`.
+  Source: NASA/Aerospace SEAES-FC User's Guide, Appendix E.2
+  https://ccmc.gsfc.nasa.gov/seaesfc/ATR-2022-01665.pdf
+- **Pressure-only magnetopause proxy:**
+  `R[Earth radii] = 10*(2/P[nPa])^(1/6)` by definition normalized to 10
+  Earth radii at 2 nPa. A teaching approximation **not** a measured,
+  validated real-time magnetopause position or full Shue/MHD model.
+- **Nominal L1 propagation estimate:** `1,500,000 km / wind speed` (minutes
+  after dividing by 60). It neglects flow path, spacecraft position, storm
+  structure and other effects; **not a reliable arrival forecast**.
+- **Isolated what-if scenario** sliders vary plasma density and speed, changing
+  only the derived model, never altering actual NOAA readings or source status.
+- **HIVE** normalizes source frames and retains evidence/provenance, shows event
+  inspector, and exports a bounded attributed JSON snapshot.
+- **SWEEP** detects explicitly defined thresholds for Kp, negative Bz,
+  solar-wind speed, M-class X-rays and recent USGS magnitude ≥5 events. These
+  are environmental flags, not military threat predictions, cyberattack
+  detection, earthquake forecasts or causal links among the feeds.
+
+### Operational and privacy guardrails
+
+Browser-only, read-only, public-data science. Not Palantir Foundry, not a
+government integration, not real-time military activation or an "active
+arsenal" tracker. No defense personnel, unit positions, frequencies, commands,
+target lists, classified source claims, weapon controls or off-site data uploads.
+The restrictive CSP allows only the three listed official agency hosts for
+data and the site's static assets. When the canvas is unavailable the public
+source readings and validation remain usable.
+
+### Validation
+
+```bash
+node --check docs/darkweb/fieldlab/model-core.mjs
+node --check docs/darkweb/fieldlab/earth-renderer.mjs
+node --check docs/darkweb/fieldlab/fieldlab.mjs
+node --test tests/xunia_fieldlab_live_model.test.mjs
+cd tests/glass-onion-browser && npm test
+```
