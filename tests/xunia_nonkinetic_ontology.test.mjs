@@ -27,7 +27,7 @@ test("Palantir-style object and link taxonomy contains source, status, mission a
 });
 test("filters narrow programs without producing fake active status",()=>{
  assert.equal(viewSystems(data,{branch:"Navy"}).length,4);
- assert.equal(viewSystems(data,{domain:"High-Energy Laser"}).length,3);
+ assert.equal(viewSystems(data,{domain:"High-Energy Laser"}).length,4);
  assert.equal(viewSystems(data,{query:"meadowlands"}).length,1);
  assert.equal(viewSystems(data,{status:"Demonstrated"}).length,2);
  assert.equal(viewSystems(data,{branch:"no-such-service"}).length,0);
