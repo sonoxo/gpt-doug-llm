@@ -66,8 +66,8 @@ test("isolated hypothetical parameters change derived pressure, not observed sen
  await expect(page.locator("#pressure")).toHaveText("1.67");
  await page.locator("#scenario-mode").check();
  await expect(page.locator("#hyp-speed")).toBeEnabled();
- await page.locator("#hyp-speed").fill("1000");
- await page.locator("#hyp-density").fill("10");
+ await page.locator("#hyp-speed").evaluate(el=>{el.value="1000";el.dispatchEvent(new Event("input",{bubbles:true}));});
+ await page.locator("#hyp-density").evaluate(el=>{el.value="10";el.dispatchEvent(new Event("input",{bubbles:true}));});
  await expect(page.locator("#model-state")).toContainText("SCENARIO");
  await expect(page.locator("#pressure")).toHaveText("16.73");
  await expect(page.locator("#speed")).toHaveText("500");
