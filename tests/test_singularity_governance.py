@@ -60,6 +60,12 @@ class SingularityGovernanceTests(unittest.TestCase):
         registry["core_planes"].pop()
         self.assertTrue(any("ecosystem" in issue for issue in self.validate(registry=registry)))
 
+    def test_canonical_ontology_links_to_gpt_doug_llm_singularity_policy(self):
+        registry = copy.deepcopy(self.registry)
+        registry.pop("gpt_doug_llm_governance")
+        findings = self.validate(registry=registry)
+        self.assertTrue(any("governance linkage" in issue for issue in findings))
+
     def test_self_modification_and_external_actions_remain_permission_scoped(self):
         policy = copy.deepcopy(self.policy)
         policy["bounds"]["auto_merge"] = True
