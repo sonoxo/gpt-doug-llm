@@ -85,7 +85,7 @@ test("UTC solar geometry is seasonally plausible; orthographic projection has a 
  assert.ok(Math.abs(equinox.lat)<1.1);
  const june=subsolarPoint(Date.parse("2026-06-21T08:00:00Z"));
  assert.ok(june.lat>22&&june.lat<24.5);
- assert.deepEqual(projectOrthographic(20,-65,20,-65),{x:0,y:0,z:1,visible:true});
+ const centered=projectOrthographic(20,-65,20,-65);assert.ok(Math.abs(centered.x)<1e-12&&Math.abs(centered.y)<1e-12&&Math.abs(centered.z-1)<1e-12&&centered.visible);
  assert.equal(projectOrthographic(20,115,20,-65).visible,false);
  assert.equal(projectOrthographic(95,0,0,0),null);
 });
