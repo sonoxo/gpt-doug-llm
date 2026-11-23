@@ -107,7 +107,7 @@ export function sweepSignals(data,now=Date.now()){
  if(measured.flux!==null&&measured.flux>=THRESHOLDS.flare)
   add("xray","M-class or stronger X-ray flux",flareClass(measured.flux),"elevated",measured.observed.xray,
    "Observed NOAA/GOES long-band X-ray flux crosses the M-class threshold.",FEEDS.xray);
- const events=Array.isArray(data.usgs?.events)?data.usgs.events:[];
+ const events=freshness("usgs",data.usgs,now)==="CURRENT"&&Array.isArray(data.usgs?.events)?data.usgs.events:[];
  for(const event of events.filter(e=>finite(e.magnitude)&&e.magnitude>=THRESHOLDS.quake&&isRecent(e.observed,now,3600000)).slice(0,7))
   add("usgs","Recent earthquake report","M"+event.magnitude.toFixed(1),"event",event.observed,
    event.title,FEEDS.usgs);
