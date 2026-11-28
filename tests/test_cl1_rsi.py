@@ -59,6 +59,10 @@ class Cl1RsiTests(unittest.TestCase):
             with self.subTest(values=len(values)), self.assertRaises(ValueError):
                 decode_activity(values, baseline)
 
+    def test_three_bin_denoising_removes_isolated_noise_but_keeps_persistent_events(self):
+        self.assertEqual(decode_activity([5, 5, 5, 18, 5, 5, 5], 10), [0, 0, 0, 0, 0, 0, 0])
+        self.assertEqual(decode_activity([5, 18, 18, 18, 5], 10), [0, 1, 1, 1, 0])
+
     def test_heldout_synthetic_events_are_reproducible(self):
         self.assertEqual(make_case(113, 2), make_case(113, 2))
         rates, labels, baseline = make_case(113, 2)
