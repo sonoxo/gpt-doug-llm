@@ -45,7 +45,7 @@ Unit tests exercise mocked agent missions and regression decisions; they cannot 
 
 - The only changeable CL1 RSI target is `agents/cl1_rsi_policy.py`. Evaluation scripts, test suites, workflow policies and other modules are protected by a rollback-on-violation scope gate.
 - The held-out evaluator `scripts/cl1_rsi_heldout.py` tests **36 deterministic generated noisy traces** (six seeds × six scenarios), balanced accuracy, reproducibility, input validation and per-scenario regression thresholds. No CL SDK is needed for these tests.
-- The evaluator installer pins a checksum-identified copy **outside** the editable repository. Python's `-I` mode and filtered `PYTHONPATH` limit accidental code contamination; this is **not** an OS security sandbox for untrusted code.
+- The evaluator installer creates a **private, random per-installation challenge** (six extra synthetic seeds), embeds it into a checksum-identified evaluator **outside** the editable repository, and records a protected local provenance manifest. A prior installation remains immutable unless explicitly replaced. Python's `-I` mode and filtered `PYTHONPATH` limit accidental code contamination; this is **not** an OS security sandbox for untrusted code.
 - Three independent benchmark measurements establish the CL1 baseline and measure each candidate. Unstable measurements, known regressions or security failures block the mission. The loop is capped at three generations, and accepted changes remain local and require human review.
 
 ### One-command free evaluator setup on Mac
