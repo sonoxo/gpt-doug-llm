@@ -12,9 +12,9 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
 import secrets
 import tempfile
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "scripts" / "cl1_rsi_heldout.py"
