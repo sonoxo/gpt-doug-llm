@@ -205,7 +205,7 @@ class RecursiveImprovement:
             require_ai_allowed("RSI mission start")
             scope = (" Modify only agents/cl1_rsi_policy.py; this is synthetic CL1 data, never hardware."
                      if self.profile == "cl1-sim" else "")
-            objective = (f"{goal}\\nRSI generation {number}: make one minimal, testable improvement."
+            objective = (f"{goal}\nRSI generation {number}: make one minimal, testable improvement."
                          f" Do not modify evaluation infrastructure, policy, or tests.{scope}")
             mission = self.agent.run(objective, evolve=True)
             record: dict[str, Any] = {
