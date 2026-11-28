@@ -1,0 +1,77 @@
+name: GPT-DOUG-LLM CL1 RSI Held-out Benchmark Gate
+
+on:
+  pull_request:
+    paths:
+      - 'rsi_supervisor.py'
+      - 'agents/cl1_rsi_policy.py'
+      - 'scripts/cl1_rsi_heldout.py'
+      - 'scripts/prepare_cl1_rsi_evaluator.py'
+      - 'tests/test_cl1_rsi.py'
+      - 'tests/test_rsi_supervisor.py'
+      - 'docs/RECURSIVE_SELF_IMPROVEMENT.md'
+      - '.github/workflows/cl1-rsi.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'rsi_supervisor.py'
+      - 'agents/cl1_rsi_policy.py'
+      - 'scripts/cl1_rsi_heldout.py'
+      - 'scripts/prepare_cl1_rsi_evaluator.py'
+      - 'tests/test_cl1_rsi.py'
+      - 'tests/test_rsi_supervisor.py'
+      - '.github/workflows/cl1-rsi.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cl1-rsi-independent:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - name: Read repository without write permissions
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check pure Python syntax
+        run: |
+          python -m py_compile rsi_supervisor.py agents/cl1_rsi_policy.py scripts/cl1_rsi_heldout.py scripts/prepare_cl1_rsi_evaluator.py tests/test_cl1_rsi.py
+      - name: Run independent benchmark and scope regression tests
+        run: |
+          python -m unittest tests.test_rsi_supervisor tests.test_cl1_rsi -v
+      - name: Verify pinned evaluator physically outside editable checkout
+        shell: bash
+        run: |
+          export HOME="$RUNNER_TEMP/cl1-home"
+          mkdir -p "$HOME"
+          python scripts/prepare_cl1_rsi_evaluator.py
+          python -I "$HOME/.gpt-doug/rsi/evaluators/cl1-heldout.py" "$PWD" > "$RUNNER_TEMP/cl1-score.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          score=json.loads((Path(os.environ['RUNNER_TEMP'])/'cl1-score.json').read_text())
+          assert set(score)=={'quality','regressions','security_ok'}
+          assert score['security_ok'] is True
+          assert score['regressions']==0
+          assert 0.65 < score['quality'] <= 1
+          print('CL1-SIM RSI BASELINE:',score)
+          PY
+          git diff --exit-code
+      - name: Publish only synthetic benchmark evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gpt-doug-cl1-rsi-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/cl1-score.json
+          if-no-files-found: ignore
+          retention-days: 14

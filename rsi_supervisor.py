@@ -10,6 +10,8 @@ import argparse
 import hashlib
 import json
 import math
+import os
+import statistics
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -20,6 +22,25 @@ from ai_killswitch import require_ai_allowed
 from zyra_agent import MissionBudget, ZyraAgent
 
 MAX_CYCLES = 3
+MAX_BENCHMARK_SAMPLES = 5
+CL1_POLICY_PATH = "agents/cl1_rsi_policy.py"
+CL1_HELDOUT_PATH = Path.home() / ".gpt-doug" / "rsi" / "evaluators" / "cl1-heldout.py"
+
+
+def reject_unreviewed_scope(paths: list[str], profile: str) -> list[str]:
+    """Fail closed if an RSI mission attempts to alter its evaluation or trust base."""
+    forbidden = []
+    for original in paths:
+        rel = Path(original)
+        path = original.replace("\\", "/")
+        if (not path or rel.is_absolute() or ".." in rel.parts
+                or path.startswith(("tests/", ".github/", "scripts/", "config/"))
+                or path in {"rsi_supervisor.py", "zyra_agent.py", "ai_killswitch.py"}
+                or (profile == "cl1-sim" and path != CL1_POLICY_PATH)
+                or (profile != "cl1-sim" and path == CL1_POLICY_PATH)):
+            forbidden.append(original)
+    return forbidden
+
 
 
 @dataclass(frozen=True)
@@ -78,8 +99,10 @@ class ExternalBenchmark:
         if self._digest() != self.digest:
             raise ValueError("trusted benchmark changed during the cycle")
         proc = subprocess.run(
-            [sys.executable, str(self.script), str(self.repo)],
-            cwd=self.repo,
+            [sys.executable, "-I", str(self.script), str(self.repo)],
+            cwd=self.script.parent,
+            env={key: value for key, value in os.environ.items()
+                 if key not in {"PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONINSPECT"}},
             capture_output=True,
             text=True,
             timeout=self.timeout,
@@ -106,15 +129,44 @@ class RecursiveImprovement:
         cycles: int = 1,
         benchmark: Callable[[], Metrics] | None = None,
         min_gain: float = 0.01,
+        profile: str = "generic",
+        samples: int = 1,
     ):
         if not 1 <= cycles <= MAX_CYCLES:
             raise ValueError(f"cycles must be between 1 and {MAX_CYCLES}")
         if not math.isfinite(min_gain) or not 0.0 < min_gain <= 1:
             raise ValueError("min_gain must be finite and between 0 and 1")
+        if profile not in {"generic", "cl1-sim"}:
+            raise ValueError("unknown RSI profile")
+        if type(samples) is not int or not 1 <= samples <= MAX_BENCHMARK_SAMPLES:
+            raise ValueError(f"samples must be an integer from 1 to {MAX_BENCHMARK_SAMPLES}")
+        if profile == "cl1-sim" and (benchmark is None or samples < 3):
+            raise ValueError("CL1 simulator RSI requires an independent evaluator and at least 3 samples")
         self.agent = agent
         self.cycles = cycles
         self.benchmark = benchmark
         self.min_gain = min_gain
+        self.profile = profile
+        self.samples = samples
+
+    def _measure(self) -> tuple[Metrics, list[dict[str, Any]]]:
+        if self.benchmark is None:
+            raise ValueError("independent benchmark not configured")
+        measured = [self.benchmark() for _ in range(self.samples)]
+        for sample in measured:
+            if not isinstance(sample, Metrics):
+                raise ValueError("independent benchmark returned an invalid metric object")
+        qualities = [item.quality for item in measured]
+        if max(qualities) - min(qualities) > 0.015:
+            raise ValueError("independent benchmark is unstable across repeated measurements")
+        return (
+            Metrics(
+                quality=float(statistics.median(qualities)),
+                regressions=max(item.regressions for item in measured),
+                security_ok=all(item.security_ok for item in measured),
+            ),
+            [item.to_dict() for item in measured],
+        )
 
     def _checks(self, touched: list[str]) -> list[dict[str, Any]]:
         python_files = [path for path in touched if path.endswith(".py")]
@@ -134,17 +186,27 @@ class RecursiveImprovement:
             "goal": goal,
             "max_cycles": self.cycles,
             "benchmark_required_for_measured_gain": True,
+            "profile": self.profile,
+            "benchmark_samples": self.samples,
             "promotion": "never automatic",
             "status": "BLOCKED",
             "cycles": [],
         }
         baseline: Metrics | None = None
         if self.benchmark is not None:
-            baseline = self.benchmark()  # Fail before mutating if evaluator is invalid.
+            baseline, baseline_samples = self._measure()  # Fail before mutating if evaluator is invalid.
             evidence["baseline"] = baseline.to_dict()
+            evidence["baseline_samples"] = baseline_samples
+            if not baseline.security_ok or baseline.regressions:
+                raise ValueError("baseline benchmark failed security or known regression gates")
+            if isinstance(self.benchmark, ExternalBenchmark):
+                evidence["independent_benchmark_sha256"] = self.benchmark.digest
         for number in range(1, self.cycles + 1):
             require_ai_allowed("RSI mission start")
-            objective = f"{goal}\nRSI generation {number}: make one minimal, testable improvement. Do not modify evaluation infrastructure."
+            scope = (" Modify only agents/cl1_rsi_policy.py; this is synthetic CL1 data, never hardware."
+                     if self.profile == "cl1-sim" else "")
+            objective = (f"{goal}\nRSI generation {number}: make one minimal, testable improvement."
+                         f" Do not modify evaluation infrastructure, policy, or tests.{scope}")
             mission = self.agent.run(objective, evolve=True)
             record: dict[str, Any] = {
                 "generation": number,
@@ -160,6 +222,14 @@ class RecursiveImprovement:
                 if mission.touched_files and not mission.rolled_back:
                     rollback = self.agent.rollback(mission.mission_id)
                     record["rolled_back"] = bool(rollback.get("rolled_back"))
+                evidence["status"] = "BLOCKED"
+                break
+            forbidden_paths = reject_unreviewed_scope(list(mission.touched_files), self.profile)
+            if forbidden_paths:
+                record["decision"] = "REJECT_PROTECTED_SCOPE"
+                record["error"] = "RSI attempted to modify evaluation, security, or out-of-profile files"
+                rollback = self.agent.rollback(mission.mission_id)
+                record["rolled_back"] = bool(rollback.get("rolled_back"))
                 evidence["status"] = "BLOCKED"
                 break
             if not mission.touched_files or not any(
@@ -179,8 +249,9 @@ class RecursiveImprovement:
                     record["decision"] = "REVIEW_REQUIRED_UNMEASURED"
                     evidence["status"] = "REVIEW_REQUIRED"
                     break  # Never recursively compound unmeasured changes.
-                candidate = self.benchmark()
+                candidate, candidate_samples = self._measure()
                 record["candidate"] = candidate.to_dict()
+                record["candidate_samples"] = candidate_samples
                 assert baseline is not None
                 accepted, reason = measured_gain(baseline, candidate, self.min_gain)
                 record["reason"] = reason
@@ -224,15 +295,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repo", required=True)
     parser.add_argument("--goal", required=True)
     parser.add_argument("--model", default="qwen2.5-coder:7b")
+    parser.add_argument("--profile", choices=("generic", "cl1-sim"), default="generic",
+                        help="CL1 simulator-only profile locks edits to the synthetic decoder")
     parser.add_argument("--base-url", default="http://127.0.0.1:11434")
     parser.add_argument("--cycles", type=int, default=1)
     parser.add_argument("--benchmark", help="independent Python evaluator outside the repository")
     parser.add_argument("--min-gain", type=float, default=0.01)
+    parser.add_argument("--samples", type=int, help="independent benchmark repeats (CL1 defaults to 3)")
     parser.add_argument("--report", help="local JSON evidence path (must be outside repository)")
     args = parser.parse_args(argv)
     try:
         root = require_clean_git_repo(args.repo)
-        benchmark = ExternalBenchmark(Path(args.benchmark), root) if args.benchmark else None
+        benchmark_path = Path(args.benchmark) if args.benchmark else (
+            CL1_HELDOUT_PATH if args.profile == "cl1-sim" else None
+        )
+        if args.profile == "cl1-sim" and benchmark_path is not None and not benchmark_path.is_file():
+            raise ValueError("install CL1 evaluator first: python3 scripts/prepare_cl1_rsi_evaluator.py")
+        benchmark = ExternalBenchmark(benchmark_path, root) if benchmark_path else None
         if args.cycles > 1 and benchmark is None:
             raise ValueError("multiple cycles require an independent benchmark")
         state = Path.home() / ".gpt-doug" / "rsi"
@@ -243,6 +322,9 @@ def main(argv: list[str] | None = None) -> int:
         supervisor = RecursiveImprovement(
             ZyraAgent(root, model=args.model, base_url=args.base_url, budget=MissionBudget()),
             cycles=args.cycles, benchmark=benchmark, min_gain=args.min_gain,
+            profile=args.profile,
+            samples=(args.samples if args.samples is not None
+                     else 3 if args.profile == "cl1-sim" else 1),
         )
         report = supervisor.run(args.goal)
         report_path.parent.mkdir(parents=True, exist_ok=True)
