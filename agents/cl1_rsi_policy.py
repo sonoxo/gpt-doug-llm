@@ -14,7 +14,7 @@ def decode_activity(rates: list[float], baseline: float) -> list[int]:
 
     Parameters are sample rates per fixed synthetic bin and a known per-session
     baseline. The intentionally simple initial decoder is a benchmark baseline:
-    the held-out evaluator tests whether a change really improves it.
+    the held-out evaluator verifies whether this simple temporal denoiser helps.
     """
     if isinstance(baseline, bool) or not isinstance(baseline, (float, int)):
         raise ValueError("baseline must be finite and positive")
@@ -28,4 +28,13 @@ def decode_activity(rates: list[float], baseline: float) -> list[int]:
         for value in rates
     ):
         raise ValueError("rates must be nonnegative finite numbers")
-    return [1 if value >= 1.27 * baseline else 0 for value in rates]
+    raw = [1 if value >= 1.27 * baseline else 0 for value in rates]
+    if len(raw) < 3:
+        return raw
+    # A 3-bin median filter suppresses one-bin readout glitches while retaining
+    # all sustained activity transitions. It never invents a biological state.
+    denoised = raw.copy()
+    for index in range(1, len(raw) - 1):
+        if raw[index - 1] == raw[index + 1]:
+            denoised[index] = raw[index - 1]
+    return denoised
