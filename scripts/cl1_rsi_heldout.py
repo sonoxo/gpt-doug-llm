@@ -13,9 +13,9 @@ import ast
 import importlib.util
 import json
 import math
-from pathlib import Path
 import random
 import sys
+from pathlib import Path
 
 SEEDS = (113, 227, 347, 521, 691, 823)
 CASES_PER_SEED = 6
