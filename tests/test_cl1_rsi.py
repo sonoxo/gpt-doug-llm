@@ -14,7 +14,7 @@ from rsi_supervisor import (
     RecursiveImprovement,
     reject_unreviewed_scope,
 )
-from scripts.cl1_rsi_heldout import benchmark, balanced_accuracy, make_case
+from scripts.cl1_rsi_heldout import balanced_accuracy, benchmark, make_case
 from scripts.prepare_cl1_rsi_evaluator import install
 
 ROOT = Path(__file__).resolve().parents[1]
